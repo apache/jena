@@ -29,16 +29,11 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
 {
     private static Logger log = LoggerFactory.getLogger(DatasetGraphSpatial.class) ;
     private final SpatialIndex spatialIndex ;
-    private final Transactional dsgtxn ;
 
     public DatasetGraphSpatial(DatasetGraph dsg, SpatialIndex index, SpatialDocProducer producer)
     {
         super(dsg, producer) ;
         this.spatialIndex = index ;
-        if ( dsg instanceof Transactional )
-            dsgtxn = (Transactional)dsg ;
-        else
-            dsgtxn = new DatasetGraphWithLock(dsg) ;
     }
 
 //    public DatasetGraph getBase() { return getWrapped() ; }
@@ -64,7 +59,7 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
     @Override
     public void begin(ReadWrite readWrite)
     {
-        dsgtxn.begin(readWrite) ;
+        get().begin(readWrite) ;
         //textIndex.begin(readWrite) ;
         if ( readWrite == ReadWrite.WRITE )
         {
@@ -87,10 +82,10 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
             }
             needFinish = false ;
             //spatialIndex.commit() ;
-            dsgtxn.commit() ;
+            get().commit() ;
         } catch (Throwable ex) { 
             log.warn("Exception in commit: "+ex.getMessage(), ex) ;
-            dsgtxn.abort() ; 
+            get().abort() ; 
         }
     }
 
@@ -101,14 +96,14 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
             if ( needFinish )
                 spatialIndex.abortIndexing() ;
             //spatialIndex.abort() ;
-            dsgtxn.abort() ;
+            get().abort() ;
         } catch (Throwable ex) { log.warn("Exception in abort: "+ex.getMessage(), ex) ; }
     }
 
     @Override
     public boolean isInTransaction()
     {
-        return dsgtxn.isInTransaction() ;
+        return get().isInTransaction() ;
     }
 
     @Override
@@ -116,8 +111,21 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
     {
         try {
             //spatialIndex.end() ;
-            dsgtxn.end() ;
+            get().end() ;
         } catch (Throwable ex) { log.warn("Exception in end: "+ex.getMessage(), ex) ; }
+    }
+    
+    @Override
+    public boolean supportsTransactions() {
+        return get().supportsTransactions() ;
+    }
+    
+    /** Declare whether {@link #abort} is supported.
+     *  This goes along with clearing up after exceptions inside application transaction code.
+     */
+    @Override
+    public boolean supportsTransactionAbort() {
+        return get().supportsTransactionAbort() ;
     }
 }
 

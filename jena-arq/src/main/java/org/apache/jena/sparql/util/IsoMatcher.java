@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.util ;
 
-import static org.apache.jena.atlas.lib.Tuple.createTuple ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -148,7 +148,7 @@ public class IsoMatcher
         List<Tuple<Node>> tuples = new ArrayList<>() ;
         for ( ; iter.hasNext() ; ) {
             Triple t = iter.next() ;
-            Tuple<Node> tuple = createTuple(t.getSubject(), t.getPredicate(), t.getObject()) ;
+            Tuple<Node> tuple = tuple(t.getSubject(), t.getPredicate(), t.getObject()) ;
             tuples.add(tuple) ;
         }
         return tuples ;
@@ -158,7 +158,7 @@ public class IsoMatcher
         List<Tuple<Node>> tuples = new ArrayList<>() ;
         for ( ; iter.hasNext() ; ) {
             Quad q = iter.next() ;
-            Tuple<Node> tuple = createTuple(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
+            Tuple<Node> tuple = tuple(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
             tuples.add(tuple) ;
         }
         return tuples ;
@@ -229,11 +229,11 @@ public class IsoMatcher
 
     // Maybe several mappings!
     private Mapping gen(Tuple<Node> t1, Tuple<Node> t2, Mapping _mapping) {
-        if ( t1.size() != t2.size() )
+        if ( t1.len() != t2.len() )
             return null ;
         
         Mapping mapping = _mapping ;
-        for ( int i = 0 ; i < t1.size() ; i++ ) {
+        for ( int i = 0 ; i < t1.len() ; i++ ) {
             Node n1 = t1.get(i) ;
             Node n2 = t2.get(i) ;
             if ( ! nodeTest.equal(n1, n2) ) {

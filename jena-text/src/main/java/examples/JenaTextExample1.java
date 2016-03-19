@@ -24,7 +24,6 @@ import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.query.text.TextQuery ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
@@ -42,7 +41,6 @@ public class JenaTextExample1
     
     public static void main(String ... argv)
     {
-        TextQuery.init();
         Dataset ds = createCode() ;
         //Dataset ds = createAssembler() ;
         loadData(ds , "data.ttl") ;
@@ -56,7 +54,7 @@ public class JenaTextExample1
         // Here , in-memory base data and in-memeory Lucene index
 
         // Base data
-        Dataset ds1 = DatasetFactory.createMem() ; 
+        Dataset ds1 = DatasetFactory.create() ; 
 
         // Define the index mapping 
         EntityDefinition entDef = new EntityDefinition("uri", "text");

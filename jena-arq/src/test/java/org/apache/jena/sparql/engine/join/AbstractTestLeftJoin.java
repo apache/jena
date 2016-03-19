@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.join;
 
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 public abstract class AbstractTestLeftJoin extends AbstractTestJoin {
@@ -68,11 +69,33 @@ public abstract class AbstractTestLeftJoin extends AbstractTestJoin {
     // No key.
     @Test public void leftjoin_14()         { testJoin(null, tableD1(), tableD2(), tableD3()) ; }
 
-
     // Disjoint tables.
     @Test public void leftjoin_disjoint_01() { testJoin("a", tableD2(), tableD8(), tableD8x2()) ; }
     @Test public void leftjoin_disjoint_02() { testJoin("z", tableD2(), tableD8(), tableD8x2()) ; }
+    
+    // Conditions.
+    @Test public void leftjoin_condition_01() {
+        Table tableD1c = parseTableInt("(table", 
+                                       "   (row (?a 1) (?b 3))",
+                                       ")") ;
+        testJoin("a", table1(), tableD1(), "((= ?b 3))", tableD1c) ; 
+    }
+    
 
+    @Test public void leftjoin_condition_02() {
+        Table tableD3_LJc = parseTableInt("(table",
+                                       "   (row (?d 8) (?a 0))",
+                                       "   (row (?a 1) (?c 9) (?b 2))",
+                                       "   (row (?a 1) (?c 9) (?b 2))",
+                                       ")") ;
+        testJoin("a", tableD2(), tableD1(), "((= ?a 1) (= ?b 2))", tableD3_LJc) ; 
+    }
+    
+    @Test public void leftjoin_condition_03() {
+        // Never match 
+        ExprList exprs = SSE.parseExprList("((= ?b 99))") ; 
+        testJoin("a", table1(), tableD1(), "((= ?b 99))", table1()) ; 
+    }
 }
 
 

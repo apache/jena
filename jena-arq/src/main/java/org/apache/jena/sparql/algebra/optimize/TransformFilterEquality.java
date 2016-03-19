@@ -76,13 +76,12 @@ import org.apache.jena.sparql.expr.* ;
  * </p>
  */
 public class TransformFilterEquality extends TransformCopy {
-    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ... and
-    // better?
-    // Still need to be careful of double-nested OPTIONALS as intermediates of a
-    // different
-    // value can block overall results so don't mask immediately.
-    public TransformFilterEquality() {
-    }
+    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ...
+    // and better? Still need to be careful of double-nested OPTIONALS as
+    // intermediates of a different value can block overall results so
+    // don't mask immediately.
+    
+    public TransformFilterEquality() { }
 
     @Override
     public Op transform(OpFilter opFilter, Op subOp) {
@@ -113,23 +112,21 @@ public class TransformFilterEquality extends TransformCopy {
             return null;
 
         // ---- Check if the subOp is the right shape to transform.
-        Op op = subOp;
 
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, equalities, remaining))
             return OpTable.empty();
 
-        // Special case: the deep left op of a OpConditional/OpLeftJoin is unit
-        // table.
-        // This is
+        // Special case: the deep left op of a OpConditional/OpLeftJoin is the unit table.
+        // This is the case of:
         // { OPTIONAL{P1} OPTIONAL{P2} ... FILTER(?x = :x) }
         if (testSpecialCase1(subOp, equalities, remaining)) {
             // Find backbone of ops
             List<Op> ops = extractOptionals(subOp);
             ops = processSpecialCase1(ops, equalities);
             // Put back together
-            op = rebuild((Op2) subOp, ops);
+            Op op = rebuild((Op2) subOp, ops);
             // Put all filters - either we optimized, or we left alone.
             // Either way, the complete set of filter expressions.
             op = OpFilter.filter(exprs, op);
@@ -137,6 +134,7 @@ public class TransformFilterEquality extends TransformCopy {
         }
 
         // ---- Transform
+        Op op = subOp;
 
         if (!safeToTransform(varsMentioned, op))
             return null;

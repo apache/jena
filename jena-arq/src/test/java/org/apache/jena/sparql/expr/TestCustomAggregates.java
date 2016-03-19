@@ -47,13 +47,13 @@ public class TestCustomAggregates extends BaseTest {
     
     static AccumulatorFactory myAccumulatorFactory = new AccumulatorFactory() {
         @Override
-        public Accumulator createAccumulator(AggCustom agg) { return new MyAccumulator(agg) ; }
+        public Accumulator createAccumulator(AggCustom agg, boolean distinct) { return new MyAccumulator(agg, distinct) ; }
     } ;
     
     static class MyAccumulator implements Accumulator {
         int count = 0 ;
         private AggCustom agg ;
-        MyAccumulator(AggCustom agg) { this.agg = agg ; }
+        MyAccumulator(AggCustom agg, boolean ignored) { this.agg = agg ; }
 
         @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv) {

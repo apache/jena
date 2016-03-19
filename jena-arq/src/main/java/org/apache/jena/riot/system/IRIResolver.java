@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.system ;
 
+import java.io.PrintStream ;
 import java.util.concurrent.Callable ;
 
 import org.apache.jena.atlas.lib.Cache ;
@@ -27,47 +28,106 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
+import org.apache.jena.iri.impl.PatternCompiler ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.SysRIOT ;
 
-/** Package up IRI reolver functionality. */
-
+/** IRI handling */
 public abstract class IRIResolver
 {
-    // static IRIFactory iriFactory = IRIFactory.jenaImplementation() ;
-    // static IRIFactory iriFactory = IRIFactory.iriImplementation();
-
-    /** The IRI checker setup - more than usual Jena but not full IRI. */
-    public static final IRIFactory iriFactory     = new IRIFactory() ;
-    private static boolean         showExceptions = true ;
+    /** The IRI checker setup, focused on paring and languages.
+     *  This is a clean version of jena-iri IRIFactory.iriImplementation(), 
+     *  modified to allow unregistered schemes and allow <file:relative> IRIs.
+     *  
+     *  @see IRIFactory
+     */
+    public static final IRIFactory iriFactory        = new IRIFactory();
+    private static boolean         showExceptions    = true;
+    
+    private static final boolean   ShowResolverSetup = false;
     static {
-        // IRIFactory.iriImplementation() ...
+        // These two are from IRIFactory.iriImplementation() ...
         iriFactory.useSpecificationIRI(true) ;
         iriFactory.useSchemeSpecificRules("*", true) ;
 
         // Allow relative references for file: URLs.
         iriFactory.setSameSchemeRelativeReferences("file") ;
 
-        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
-        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
-
+        // Convert "SHOULD" to warning (default is "error").
         // iriFactory.shouldViolation(false,true);
+
+        if ( ShowResolverSetup ) {
+            System.out.println("---- Default settings ----") ;
+            printSetting(iriFactory) ;
+        }
         
-        // ** Consider not applying NFC tests
+        setErrorWarning(iriFactory, ViolationCodes.UNREGISTERED_IANA_SCHEME, false, false) ;
+
+        // Turn off?? (ignored in CheckerIRI.iriViolations anyway).
+        // setErrorWarning(iriFactory, ViolationCodes.LOWERCASE_PREFERRED, false, false) ;
+        // setErrorWarning(iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false) ;
+        // setErrorWarning(iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED, false, false) ;
+        
+        // NFC tests are not well understood by general developers and these cause confusion.
+        // See JENA-864
         //iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
         //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
+        //iriFactory.setIsWarning(ViolationCodes.NOT_NFC, false) ;
+        //iriFactory.setIsWarning(ViolationCodes.NOT_NFKC, false) ;
 
-        // ** Consider not applying -- applies to various unicode blocks. 
-        // iriFactory.setIsError(ViolationCodes.COMPATIBILITY_CHARACTER, false) ;
+        // ** Applies to various unicode blocks. 
+        // setErrorWarning(iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER, false, false) ;
 
-        // Moderate it -- allow unwise chars and any scheme name.
-        // iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
-        // iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
-        
-        // iriFactory.setIsError(ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false) ;
-        // iriFactory.setIsError(ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false) ;
-        
+        // This causes test failures.
+        // The tests catch warnings and a warning is expected.
+        // testing/RIOT/Lang/TurtleStd/turtle-eval-bad-02.ttl and 03 and TriG
+        //   > as \u003C  and < \u003E 
+        // Default is error=true, warning=false.
+        // Test pass with error=false, warning=true.
+        // setErrorWarning(iriFactory, ViolationCodes.UNWISE_CHARACTER, false, false) ;
+        setErrorWarning(iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false, false) ;
+
+        if ( ShowResolverSetup ) {
+            System.out.println("---- After initialization ----") ;
+            printSetting(iriFactory) ;
+        }
+
     }
 
+    // ---- Initialization support
+    
+    /** Set the error/warnign state of a violation code.
+     * @param factory   IRIFactory
+     * @param code      ViolationCodes constant
+     * @param isError   Whether it is to be treated an error.
+     * @param isWarning Whether it is to be treated a warning.
+     */
+    private static void setErrorWarning(IRIFactory factory, int code, boolean isError, boolean isWarning) {
+        factory.setIsError(code, isError);
+        factory.setIsWarning(code, isWarning);
+    }
+    
+    private static void printSetting(IRIFactory factory) {
+        PrintStream ps = System.out ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNREGISTERED_IANA_SCHEME) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.NOT_NFC) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.NOT_NFKC) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNWISE_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.UNDEFINED_UNICODE_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.COMPATIBILITY_CHARACTER) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.LOWERCASE_PREFERRED) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE) ;
+        printErrorWarning(ps, iriFactory, ViolationCodes.SCHEME_PATTERN_MATCH_FAILED) ;
+        ps.println() ;
+    }
+    
+    private static void printErrorWarning(PrintStream ps, IRIFactory factory, int code) {
+        String x = PatternCompiler.errorCodeName(code);
+        ps.printf("%-40s : E:%-5s W:%-5s\n", x, factory.isError(code), factory.isWarning(code)) ;
+    }
+
+    // ---- System-wide operations.
+    
     /** Check an IRI string (does not resolve it) */
     public static boolean checkIRI(String iriStr) {
         IRI iri = parseIRI(iriStr) ;
@@ -146,8 +206,7 @@ public abstract class IRIResolver
     }
 
     /**
-     * Resolve a URI against a base. If baseStr is a relative file IRI
-     * then it is first resolved against the current working directory.
+     * Resolve a URI against a base.
      * 
      * @param relStr
      * @param baseStr
@@ -163,25 +222,27 @@ public abstract class IRIResolver
     /**
      * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
+     * If it is an absolute URI, it is normalized.
      * 
-     * @param relStr
+     * @param uriStr
      * @return String An absolute URI
      * @throws RiotException
      *             If result would not be legal, absolute IRI
      */
-    static public String resolveString(String relStr) throws RiotException {
-        return exceptions(resolveIRI(relStr)).toString() ;
+    static public String resolveString(String uriStr) throws RiotException {
+        return exceptions(resolveIRI(uriStr)).toString() ;
     }
 
     /**
      * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
+     * If it is an absolute URI, it is normalized.
      * 
-     * @param relStr
+     * @param uriStr
      * @return String An absolute URI
      */
-    static public String resolveStringSilent(String relStr) throws RiotException {
-        return globalResolver.resolveSilent(relStr).toString() ;
+    static public String resolveStringSilent(String uriStr) throws RiotException {
+        return globalResolver.resolveSilent(uriStr).toString() ;
     }
 
     /**
@@ -250,14 +311,35 @@ public abstract class IRIResolver
         return iri.toString() ;
     }
 
+    /**
+     * The base of this IRIResolver.
+     * 
+     * @return String
+     */
     protected abstract IRI getBaseIRI() ;
 
-    /** Create a URI, resolving relative IRIs, and throw exception on bad a IRI */
-    public abstract IRI resolve(String uriStr) ;
+    /**
+     * Resolve a relative URI against the base of this IRIResolver
+     * or normalize an absolute URI.
+     * 
+     * @param uriStr
+     * @return the resolved IRI
+     * @throws RiotException
+     *             If resulting URI would not be legal, absolute IRI
+     */
+    public IRI resolve(String uriStr) {
+        return exceptions(resolveSilent(uriStr)) ;
+    }
 
     /**
-     * Create a URI, resolving relative IRIs, but do not throw exception on bad
-     * a IRI
+     * Create a URI, resolving relative IRIs, 
+     * normalize an absolute URI, 
+     * but do not throw exception on a bad IRI.
+     * 
+     * @param uriStr
+     * @return the resolved IRI
+     * @throws RiotException
+     *             If resulting URI would not be legal, absolute IRI
      */
     public abstract IRI resolveSilent(String uriStr) ;
 
@@ -277,28 +359,6 @@ public abstract class IRIResolver
     protected IRIResolver()
     {}
 
-//    /**
-//     * Print violations - convenience.
-//     * 
-//     * @param iri
-//     * @return iri
-//     */
-//    static private IRI exceptions2(IRI iri) {
-//        if (showExceptions && iri.hasViolation(false)) {
-//            try {
-//                IRI iri2 = cwd.create(iri) ;
-//                Iterator<Violation> vIter = iri2.violations(true) ;
-//                for (; vIter.hasNext();) {
-//                    Violation v = vIter.next() ;
-//                    System.err.println(v) ;
-//                }
-//            } catch (IRIException e) {
-//                throw new RiotException(e) ;
-//            }
-//        }
-//        return iri ;
-//    }
-
     /**
      * Throw any exceptions resulting from IRI.
      * 
@@ -317,8 +377,8 @@ public abstract class IRIResolver
     private static final int CacheSize = 1000 ;
 
     /**
-     * A resolver that does not resolve IRIs against base. Can generate relative
-     * IRIs.
+     * A resolver that does not resolve IRIs against base. 
+     * This can generate relative IRIs.
      **/
     static class IRIResolverNoOp extends IRIResolver
     {
@@ -333,20 +393,10 @@ public abstract class IRIResolver
         }
 
         @Override
-        public IRI resolve(String uriStr) {
-            return exceptions(resolveSilent(uriStr)) ;
-        }
-
-        @Override
         public IRI resolveSilent(final String uriStr) {
             if ( resolvedIRIs == null ) 
                 return iriFactory.create(uriStr) ;
-            Callable<IRI> filler = new Callable<IRI>() {
-                @Override
-                public IRI call() throws Exception {
-                    return iriFactory.create(uriStr) ;
-                }
-            } ;
+            Callable<IRI> filler = () -> iriFactory.create(uriStr) ;
             IRI iri = resolvedIRIs.getOrFill(uriStr, filler) ;
             return iri ;
         }
@@ -367,11 +417,9 @@ public abstract class IRIResolver
 
         /**
          * Construct an IRIResolver with base as the current working directory.
-         * 
          */
-        public IRIResolverNormal()
-        {
-            this((String)null) ;
+        public IRIResolverNormal() {
+            this((String)null);
         }
 
         /**
@@ -379,69 +427,54 @@ public abstract class IRIResolver
          * this is relative, it is relative against the current working
          * directory.
          * 
-         * @param baseS
+         * @param baseStr
          * @throws RiotException
          *             If resulting base unparsable.
          */
-        public IRIResolverNormal(String baseS)
-        {
-            if (baseS == null)
-                base = chooseBaseURI() ;
+        public IRIResolverNormal(String baseStr) {
+            if ( baseStr == null )
+                base = chooseBaseURI();
             else
-                base = globalResolver.resolveSilent(baseS) ;
+                base = globalResolver.resolveSilent(baseStr);
         }
 
-        public IRIResolverNormal(IRI baseIRI)
-        {
-            if (baseIRI == null)
-                baseIRI = chooseBaseURI() ;
-            base = baseIRI ;
+        public IRIResolverNormal(IRI baseIRI) {
+            if ( baseIRI == null )
+                baseIRI = chooseBaseURI();
+            base = baseIRI;
         }
 
-        /**
-         * The base of this IRIResolver.
-         * 
-         * @return String
-         */
         @Override
-        public IRI getBaseIRI() {
+        protected IRI getBaseIRI() {
             return base ;
         }
 
-        /**
-         * Resolve the relative URI against the base of this IRIResolver.
-         * 
-         * @param relURI
-         * @return the resolved IRI
-         * @throws RiotException
-         *             If resulting URI would not be legal, absolute IRI
-         */
         @Override
-        public IRI resolve(String relURI) {
-            return exceptions(resolveSilent(relURI)) ;
+        public IRI resolveSilent(String uriStr) {
+            if ( resolvedIRIs == null )
+                return resolveSilentNoCache(uriStr) ;
+            else
+                return resolveSilentCache(uriStr) ;
+        }
+        
+        private IRI resolveSilentNoCache(String uriStr) {
+            IRI x = IRIResolver.iriFactory.create(uriStr) ;
+            if ( SysRIOT.AbsURINoNormalization ) {
+                // Always process "file:", even in strict mode.
+                // file: is widely used in irregular forms.
+                if ( x.isAbsolute() && ! uriStr.startsWith("file:") )
+                    return x ;
+            }
+            return base.create(x) ;
         }
 
-        /**
-         * Resolve the relative URI against the base of this IRIResolver.
-         * 
-         * @param relURI
-         * @return the resolved IRI - not checked for violations.
-         */
-
-        @Override
-        public IRI resolveSilent(final String relURI) {
-            if ( resolvedIRIs == null ) 
-                return iriFactory.create(relURI) ;
-            Callable<IRI> filler = new Callable<IRI>() {
-                @Override
-                public IRI call() throws Exception {
-                    return base.create(relURI) ;
-                }
-            } ;
-            return resolvedIRIs.getOrFill(relURI, filler) ;
+        private IRI resolveSilentCache(final String uriStr) {
+            Callable<IRI> filler = () -> resolveSilentNoCache(uriStr) ;
+            return resolvedIRIs.getOrFill(uriStr, filler) ;
         }
     }
     
+    /** Thread safe wrapper for an IRIResolver */
     static class IRIResolverSync extends IRIResolver
     {
         private final IRIResolver other ;

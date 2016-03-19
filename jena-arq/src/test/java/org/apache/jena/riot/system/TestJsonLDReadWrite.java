@@ -119,6 +119,7 @@ public class TestJsonLDReadWrite extends BaseTest
 //        System.out.println();
         
         // Read as JSON-LD 
+        @SuppressWarnings("deprecation")
         Dataset ds2 = DatasetFactory.createMem() ;
         RDFDataMgr.read(ds2, r, null, JSONLD) ;
         

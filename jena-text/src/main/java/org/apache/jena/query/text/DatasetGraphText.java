@@ -33,7 +33,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
 {
     private static Logger       log = LoggerFactory.getLogger(DatasetGraphText.class) ;
     private final TextIndex     textIndex ;
-    private final Transactional dsgtxn ;
     private final Graph         dftGraph ;
     private final boolean       closeIndexOnClose;
     
@@ -52,10 +51,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     {
         super(dsg, producer) ;
         this.textIndex = index ;
-        if ( dsg instanceof Transactional )
-            dsgtxn = (Transactional)dsg ;
-        else
-            dsgtxn = new DatasetGraphWithLock(dsg) ;
         dftGraph = GraphView.createDefaultGraph(this) ;
         this.closeIndexOnClose = closeIndexOnClose;
     }
@@ -106,7 +101,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     @Override
     public void begin(ReadWrite readWrite) {
         readWriteMode.set(readWrite);
-        dsgtxn.begin(readWrite) ;
+        get().begin(readWrite) ;
         super.getMonitor().start() ;
     }
     
@@ -116,9 +111,8 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     @Override
     public void abort() {
         // Roll back all both objects, discarding any exceptions that occur
-        try { dsgtxn.abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
+        try { get().abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
         try { textIndex.rollback(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
-        
         readWriteMode.set(null) ;
         super.getMonitor().finish() ;
     }
@@ -152,7 +146,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         
         // Phase 2
         try {
-            dsgtxn.commit();
+            get().commit();
             if (readWriteMode.get() == ReadWrite.WRITE) {
                 textIndex.commit();
             }
@@ -183,7 +177,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         }
         
         try {
-            dsgtxn.end() ;
+            get().end() ;
         }
         catch (Throwable t) {
             log.warn("Exception in end: " + t.getMessage(), t) ;
@@ -194,11 +188,23 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     }
     
     @Override
+    public boolean supportsTransactions() {
+        return get().supportsTransactions() ;
+    }
+    
+    /** Declare whether {@link #abort} is supported.
+     *  This goes along with clearing up after exceptions inside application transaction code.
+     */
+    @Override
+    public boolean supportsTransactionAbort() {
+        return get().supportsTransactionAbort() ;
+    }
+    
+    @Override
     public void close() {
         super.close();
         if (closeIndexOnClose) {
             textIndex.close();
         }
     }
-    
 }

@@ -63,9 +63,17 @@ public class AggregatorFactory {
         return new AggNull() ;
     }
 
-    public static Aggregator createCustom(boolean usedAsFunction, boolean distinct, String iri, ExprList a) {
+    public static Aggregator createCustom(String iri, Args a) {
+        return createCustom(iri, a.distinct, ExprList.copy(a)) ;
+    }
+    
+    public static Aggregator createCustom(String iri, boolean distinct, Expr expr) {
+        return createCustom(iri, distinct, new ExprList(expr)) ;
+    }
+    
+    public static Aggregator createCustom(String iri, boolean distinct, ExprList exprs) {
         if ( ! AggregateRegistry.isRegistered(iri) )
             Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
-        return new AggCustom(iri, a) ;
+        return new AggCustom(iri, distinct, exprs) ;
     }
 }

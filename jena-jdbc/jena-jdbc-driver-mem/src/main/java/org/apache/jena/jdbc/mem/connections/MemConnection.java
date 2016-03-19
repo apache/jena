@@ -52,7 +52,14 @@ public class MemConnection extends DatasetConnection {
      */
     public MemConnection(Dataset ds, int holdability, boolean autoCommit, int transactionLevel, int compatibilityLevel)
             throws SQLException {
-        super(ds, holdability, autoCommit, transactionLevel, compatibilityLevel);
+        super(ds, holdability, autoCommit, TRANSACTION_NONE, compatibilityLevel);
+        // DatasetConnection extends JenaConnection
+        // JenaConnection.super calls setTransactionIsolation
+        // ... which calls DatasetConnection.checkTransactionIsolation
+        // ... which relies on DatasetConnection.ds being set if the transactionLevel isn't TRANSACTION_NONE
+        // ... which it isn't yet becaue during  JenaConnection.super, the rest of DatasetConnection.super has not run.
+        // So set to TRANSACTION_NONE in super(), then set properly.
+        setTransactionIsolation(transactionLevel);
         this.metadata = new MemDatasetMetadata(this);
     }
 

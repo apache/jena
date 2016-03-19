@@ -45,7 +45,7 @@ public class RDFReaderRIOT implements RDFReader {
     }
 
     public RDFReaderRIOT(String lang) {
-        this(RDFLanguages.nameToLang(lang)) ;
+        this(lang != null ? RDFLanguages.nameToLang(lang) : null) ;
     }
 
     public RDFReaderRIOT(Lang hintlang) {

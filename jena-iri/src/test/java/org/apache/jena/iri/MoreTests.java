@@ -47,7 +47,8 @@ public class MoreTests extends TestCase {
 
 	
 	public void testRelativizeFrag1() {
-		IRIFactory f = IRIFactory.jenaImplementation();
+		@SuppressWarnings("deprecation")
+        IRIFactory f = IRIFactory.jenaImplementation();
 		IRI base = f.create("http://example.org/somefolder/mybase.rdf");
 		IRI frag = f.create("http://example.org#foo");
 		IRI rel = base.relativize(frag);
@@ -58,6 +59,7 @@ public class MoreTests extends TestCase {
 	}
 
 	public void testRelativizeFrag2() {
+        @SuppressWarnings("deprecation")
 		IRIFactory f = IRIFactory.jenaImplementation();
 		IRI base = f.create("http://example.org/somefolder/mybase.rdf");
 		IRI frag = f.create("http://example.org/#foo");
@@ -68,6 +70,7 @@ public class MoreTests extends TestCase {
 	}
 	
 	public void testXPointer() {
+        @SuppressWarnings("deprecation")
 		IRIFactory f = IRIFactory.jenaImplementation();
 		IRI base = f.create("http://example.org/");
 		IRI frag = base.resolve("http://eg.com/test.txt#xpointer(/unit[5])");
@@ -80,6 +83,7 @@ public class MoreTests extends TestCase {
 		
 	}
 	public void testNotIDN() {
+        @SuppressWarnings("deprecation")
 		IRIFactory f = IRIFactory.jenaImplementation();
 		IRI base = f.create("http://example.org/");
 		IRI frag = base.resolve("outbind://4-00000000C45F478BF9F2A048A7A59DE"+

@@ -20,7 +20,7 @@ package org.apache.jena.tdb.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.NodeId ;

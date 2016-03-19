@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.join;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ResultSet ;
@@ -245,7 +246,7 @@ public abstract class AbstractTestJoin extends Assert {
         testJoin(var, left, right, null, tableOut); 
     }
     
-    protected void testJoin(String var, Table left, Table right, ExprList conditions, Table tableOut) {
+    protected void testJoin(String var, Table left, Table right, String conditions, Table tableOut) {
         JoinKey joinKey ;
         if ( var != null ) {
             if ( var.startsWith("?") )
@@ -258,8 +259,11 @@ public abstract class AbstractTestJoin extends Assert {
             // (and related algorithms).
             joinKey = null ;
         }
-
-        executeTest(joinKey, left, right, null, tableOut) ;
+        
+        ExprList exprs = null ;
+        if ( conditions != null )
+            exprs = SSE.parseExprList(conditions) ;
+        executeTest(joinKey, left, right, exprs, tableOut) ;
     }
 
     protected void testJoinWithKey(JoinKey joinKey, Table left, Table right, Table tableOut) {
@@ -280,41 +284,49 @@ public abstract class AbstractTestJoin extends Assert {
     protected void executeTestJoin(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) {
         Table x1 = joinMaterialize(joinKey, left, right, conditions) ;
         assertNotNull("Null table from join ("+msg+")", x1) ;
-        if ( false ) {
-            System.out.println("Test :    "+msg) ;
-            System.out.println("Joinkey:  "+joinKey) ;
-            System.out.println("Left:     \n"+left) ;
-            System.out.println("Right:    \n"+right) ;
-            System.out.println("Expected: \n"+expectedResults) ;
-            System.out.println("Actual:   \n"+x1) ;
-            System.out.println() ;
-        }
-        
-        check("Results not equal ("+msg+")", joinKey, left, right, expectedResults, x1) ;
+        if ( false )
+            print(msg, joinKey, left, right, conditions, expectedResults, x1) ;
+        check("Results not equal ("+msg+")", joinKey, left, right, conditions, expectedResults, x1) ;
     }
 
     private Table joinMaterialize(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        QueryIterator qIter = join(joinKey, left , right, null) ;
+        QueryIterator qIter = join(joinKey, left , right, conditions) ;
         return TableFactory.create(qIter) ;
     }
 
     public abstract QueryIterator join(JoinKey joinKey, Table left , Table right, ExprList conditions) ;
 
-    private static void check(String msg, JoinKey joinKey, Table left, Table right, Table expected, Table actual) {
+    private static void check(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expected, Table actual) {
         boolean b = equalTables(expected, actual) ;
-        if ( ! b ) {
-            System.out.flush() ;
-            System.err.println("Joinkey:  "+joinKey) ;
-            System.err.println("Left:     \n"+left) ;
-            System.err.println("Right:    \n"+right) ;
-            System.err.println("Expected: \n"+expected) ;
-            System.err.println("Actual:   \n"+actual) ;
-            System.err.println() ;
-        }
-
+        if ( ! b ) 
+            print(msg, joinKey, left, right, conditions, expected, actual); 
         assertTrue(msg, b) ;
     }
 
+    protected static void print(String msg, JoinKey joinKey, Table left, Table right, ExprList conditions, Table expected, Table actual) {
+        System.err.flush() ;
+        System.out.flush() ;
+        IndentedWriter out = IndentedWriter.stderr ;
+        out.println("Test :    "+msg) ;
+        out.println("Joinkey:  "+joinKey) ;
+        
+        print(out, "Left:", left) ;
+        print(out, "Right:", right) ;
+        if ( conditions != null )
+            out.println("Conditions: "+conditions) ;    
+        print(out, "Expected:", expected) ;
+        print(out, "Actual:", actual) ;
+        out.println() ;
+        out.flush() ;
+    }
+    
+    protected static void print(IndentedWriter out, String label, Table table) {
+        out.println(label) ;
+        out.incIndent();
+        out.println(table.toString()) ;
+        out.decIndent();
+    }
+    
     private static boolean equalTables(Table table1, Table table2) {
         ResultSet rs1 =  ResultSetFactory.create(table1.iterator(null), table1.getVarNames()) ;
         ResultSet rs2 =  ResultSetFactory.create(table2.iterator(null), table2.getVarNames()) ;

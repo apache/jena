@@ -32,20 +32,21 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context ;
 
 /** TriG pretty writer */
 public class TriGWriter extends TriGWriterBase
 {
     @Override
-    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI) {
-        TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI) ;
+    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
+        TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI, context) ;
         w.write(dsg) ;
     }
 
     private static class TriGWriter$ extends TurtleShell
     {
-        TriGWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI) {
-            super(out, prefixMap, baseURI) ;
+        TriGWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI, Context context) {
+            super(out, prefixMap, baseURI, context) ;
         }
 
         private void write(DatasetGraph dsg) {

@@ -18,15 +18,17 @@
 
 package org.apache.jena.tdb.solver;
 
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
 import static org.apache.jena.tdb.lib.Lib2.printAbbrev ;
 
 import java.util.* ;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.iterator.* ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorWrapper ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.QueryCancelledException ;
@@ -122,10 +124,10 @@ public class SolverLib
             Tuple<Node> tuple = null ;
             if ( graphNode == null )
                 // 3-tuples
-                tuple = Tuple.createTuple(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = tuple(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             else
                 // 4-tuples.
-                tuple = Tuple.createTuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = tuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
             chain = makeAbortable(chain, killList) ; 
         }
@@ -296,8 +298,7 @@ public class SolverLib
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter) ;
 
-        Iterator<NodeId> iter2 = Tuple.project(0, iter1) ;
-        // Project is cheap - don't brother wrapping iter1
+        Iterator<NodeId> iter2 = Iter.map(iter1, (t) -> t.get(0)) ;
         iter2 = makeAbortable(iter2, killList) ;
 
         Iterator<NodeId> iter3 = Iter.distinct(iter2) ;
@@ -331,7 +332,7 @@ public class SolverLib
     public static Iterator<Tuple<NodeId>> unionGraph(NodeTupleTable ntt)
     {
         Iterator<Tuple<NodeId>> iter = ntt.find((NodeId)null, null, null, null) ;
-        iter = Iter.operate(iter, quadsToAnyTriples) ;
+        iter = Iter.map(iter, quadsToAnyTriples) ;
         //iterMatches = Iter.distinct(iterMatches) ;
         
         // This depends on the way indexes are choose and
@@ -343,7 +344,9 @@ public class SolverLib
         return iter ;
     }
     
+    
     // -- Mutating "transform in place"
-    private static Consumer<Tuple<NodeId>> quadsToAnyTriples = item -> item.tuple()[0] = NodeId.NodeIdAny ;
-
+    private static Function<Tuple<NodeId>, Tuple<NodeId>> quadsToAnyTriples = item -> {
+        return TupleFactory.create4(NodeId.NodeIdAny, item.get(1), item.get(2), item.get(3) ) ;
+    } ;
 }

@@ -35,6 +35,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -49,7 +50,6 @@ import org.apache.jena.vocabulary.RDF ;
 public class ModelCom extends EnhGraph
 implements Model, PrefixMapping, Lock
 {
-
     private static final RDFReaderF readerFactory = new RDFReaderFImpl();
     private static final RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
@@ -57,9 +57,9 @@ implements Model, PrefixMapping, Lock
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
-        // have cleanly initialized from the calls of  RDFReaderFImpl and RDFWriterFImpl
+        // have cleanly initialized from the calls of RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
-        IO_Ctl.init();
+        JenaSystem.init() ;
     }
     
     /**
@@ -212,6 +212,8 @@ implements Model, PrefixMapping, Lock
         return readerFactory.getReader(lang);
     }
 
+    /** @deprecated Use {@code org.apache.jena.riot.RDFParserRegistry.register}
+     */
     @Override
     @Deprecated
     public String setReaderClassName(String lang, String className) {
@@ -299,6 +301,8 @@ implements Model, PrefixMapping, Lock
     }
 
 
+    /** @deprecated Use {@code org.apache.jena.riot.RDFWriterRegistry.register}
+     */
     @Override
     @Deprecated
     public String setWriterClassName(String lang, String className) {
@@ -531,6 +535,10 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, long O )
+    { return listStatements( S, P, createTypedLiteral( O ) ); }
+
+    @Override
+    public StmtIterator listLiteralStatements( Resource S, Property P, int O )
     { return listStatements( S, P, createTypedLiteral( O ) ); }
 
     @Override

@@ -20,13 +20,13 @@ package org.apache.jena.fuseki.server;
 
 public enum OperationName {
     // Fixed names give the codebase some resilience.
-    
     Query("SPARQL Query"),
     Update("SPARQL Update"),
     Upload("File Upload"),
-    GSP("Graph Store Protocol"),
+    GSP_RW("Graph Store Protocol"),
     GSP_R("Graph Store Protocol (Read)"),
-    Quads("HTTP Quads")
+    Quads_RW("HTTP Quads"),
+    Quads_R("HTTP Quads (Read)")
     ;
     
     private final String description ;

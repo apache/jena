@@ -22,8 +22,8 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;

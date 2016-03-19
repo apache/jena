@@ -30,6 +30,7 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.FileMode ;
@@ -40,6 +41,8 @@ import org.slf4j.LoggerFactory ;
 
 public class SystemTDB
 {
+    static { JenaSystem.init(); }
+    
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
@@ -131,9 +134,6 @@ public class SystemTDB
 
     private static Properties properties = readPropertiesFile() ;
 
-    // To make the class initialize
-    static public void init() {}
-    
     /** Size, in bytes, of a block */
     public static final int BlockSize               = 8*1024 ; // intValue("BlockSize", 8*1024) ;
 

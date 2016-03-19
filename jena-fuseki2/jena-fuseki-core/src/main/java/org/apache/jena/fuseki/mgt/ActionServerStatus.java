@@ -38,6 +38,8 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 /** Description of datasets for a server */ 
 public class ActionServerStatus extends ActionCtl
 {
+    private static final long serialVersionUID = 2080524239699772724L;
+
     public ActionServerStatus() { super() ; }
     
     @Override
@@ -90,11 +92,11 @@ public class ActionServerStatus extends ActionCtl
 //            .startObject()
 //            .key(JsonConst.port).value(port)
 //            .finishObject() ;
-        builder
-            .key(JsonConst.admin)
-            .startObject()
-            .key(JsonConst.port).value(requestPort)
-            .finishObject() ;
+//        builder
+//            .key(JsonConst.admin)
+//            .startObject()
+//            .key(JsonConst.port).value(requestPort)
+//            .finishObject() ;
 
         builder
             .key(JsonConst.version).value(versionStr)

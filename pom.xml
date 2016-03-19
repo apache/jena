@@ -15,7 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <name>Apache Jena</name>
@@ -23,7 +25,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0-SNAPSHOT</version>
 
   <!-- Needed for -Papache-release -->
   <!-- The org.apache:apache version is also in jena-parent pom.xml -->
@@ -56,27 +58,28 @@
   <profiles>
     <profile>
       <!--
-        This is the dev profile, typically used locally with "mvn clean install".
-        It only builds the common modules and
-        does not build SDB nor the slow-to-test JDBC module.
+          This is the dev profile, typically used locally with 
+          "mvn clean install -Pdev".
+          It only builds the moduels shipped in apache-jena binaries.
       -->
       <id>dev</id>
       <!-- The maven artifacts of the basic modules -->
       <modules>
         <module>jena-parent</module>
-	<!-- <module>jena-shared-guava</module> -->
-	<!-- <module>jena-iri</module> -->
-	<module>jena-base</module>
-
-	<module>jena-core</module>
+        <!-- <module>jena-shared-guava</module> -->
+        <!-- <module>jena-iri</module> -->
+        <module>jena-base</module>
+        
+        <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module> 
-	<module>apache-jena-libs</module>
+        <module>apache-jena-libs</module>
+        <module>jena-cmds</module>
 
         <!--<module>jena-fuseki1</module>-->
-	<module>jena-fuseki2</module>
+        <module>jena-fuseki2</module>
 
-	<module>jena-permissions</module>
+        <module>jena-permissions</module>
 
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
@@ -84,14 +87,14 @@
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
         <!-- <module>jena-elephas</module> -->
-	<!-- <module>jena-extras</module> -->
+        <!-- <module>jena-extras</module> -->
       </modules>
     </profile>
 
     <profile>
       <!--
-        This is the complete profile, it builds everything including slow
-        building modules and the distribution packages.
+          This is the complete profile, it builds everything including slow
+          building modules and the distribution packages.
       -->
       <id>complete</id>
       <activation>
@@ -111,20 +114,22 @@
         <module>jena-arq</module>
         <module>jena-tdb</module>
         <module>apache-jena-libs</module>
+        <module>jena-cmds</module>
 
         <module>jena-text</module>
         <module>jena-spatial</module>
         <module>jena-csv</module>
 
-	<module>jena-sdb</module>
+        <module>jena-sdb</module>
 
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
-	<module>jena-permissions</module>
+        <module>jena-permissions</module>
 
         <module>jena-jdbc</module>
         <module>jena-maven-tools</module>
         <module>jena-elephas</module>
+
         <module>apache-jena</module>
         <module>apache-jena-osgi</module>
 

@@ -38,5 +38,5 @@ public class E_GreaterThan extends ExprFunction2
     }
     
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_GreaterThan(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {  return new E_GreaterThan(e1 , e2) ; }
 }

@@ -93,6 +93,10 @@ public class ParserBase
     LabelToNodeMap activeLabelMap = anonVarLabels ;
     Set<String> previousLabels = new HashSet<>() ;
     
+    // Aggregates are only allowed in places where grouping can happen.
+    // e.g. SELECT clause but not a FILTER. 
+    private boolean allowAggregatesInExpressions = false ;
+    
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
     
@@ -121,6 +125,14 @@ public class ParserBase
     protected void setBNodesAreAllowed(boolean bNodesAreAllowed)
     {
         this.bNodesAreAllowed = bNodesAreAllowed ;
+    }
+
+    protected boolean getAllowAggregatesInExpressions() {
+        return allowAggregatesInExpressions;
+    }
+
+    protected void setAllowAggregatesInExpressions(boolean allowAggregatesInExpressions) {
+        this.allowAggregatesInExpressions = allowAggregatesInExpressions;
     }
 
     protected Element compressGroupOfOneGroup(ElementGroup elg)
@@ -484,7 +496,6 @@ public class ParserBase
         
         for ( int i = 0 ; i < len ; i++ )
         {
-            // Copied form unescape abobve - share!
             char ch = s.charAt(i) ;
             // Keep line and column numbers.
             switch (ch)
@@ -513,7 +524,8 @@ public class ParserBase
             i = i + 1 ;
 
            switch (ch2)
-           {
+           {   // PN_LOCAL_ESC
+               case '_' :
                case '~' :
                case '.' : 
                case '-' : 

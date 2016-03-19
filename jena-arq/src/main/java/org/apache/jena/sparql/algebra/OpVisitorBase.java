@@ -66,7 +66,8 @@ public class OpVisitorBase implements OpVisitor
 
     @Override public void visit(OpTable opTable)                {}
 
-    @Override public void visit(OpExt opExt)                    {}
+    // Has a default.
+    //@Override public void visit(OpExt opExt)                    {}
 
     @Override public void visit(OpNull opNull)                  {}
 

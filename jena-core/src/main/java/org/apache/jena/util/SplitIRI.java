@@ -69,7 +69,7 @@ public class SplitIRI
      * legal for Turtle and goes with {@link #localnameTTL}
      */
     public static String namespaceTTL(String string) {
-        return namespaceTTL(string) ;
+        return namespace(string) ;
     }
 
     /** Calculate a localname - enforce legal Turle
@@ -116,36 +116,27 @@ public class SplitIRI
         return isPN_LOCAL_ESC(ch) ; 
     }
     
-    public static boolean /*RiotChars.*/isPN_LOCAL_ESC(char ch) {
-        switch (ch) {
-            case '\\': case '_':  case '~': case '.': case '-': case '!': case '$':
-            case '&':  case '\'': case '(': case ')': case '*': case '+': case ',':
-            case ';':  case '=':  case '/': case '?': case '#': case '@': case '%':
-                return true ;
-            default:
-                return false ;
-        }
-    }
     
-    /* From the RDf 1.1 Turtle specification:
-[136s]  PrefixedName    ::=     PNAME_LN | PNAME_NS
-Productions for terminals
-
-
-[163s]  PN_CHARS_BASE   ::=     [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-[164s]  PN_CHARS_U  ::=     PN_CHARS_BASE | '_'
-[166s]  PN_CHARS    ::=     PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-[167s]  PN_PREFIX   ::=     PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
-
-[168s]  PN_LOCAL    ::=     (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
-[169s]  PLX     ::=     PERCENT | PN_LOCAL_ESC
-[170s]  PERCENT     ::=     '%' HEX HEX
-[171s]  HEX     ::=     [0-9] | [A-F] | [a-f]
-[172s]  PN_LOCAL_ESC    ::=     '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
+    // @formatter:off
+    /* From the RDF 1.1 Turtle specification:
+        [136s]  PrefixedName    ::=     PNAME_LN | PNAME_NS
+        Productions for terminals
+        
+        [163s]  PN_CHARS_BASE   ::=     [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+        [164s]  PN_CHARS_U  ::=     PN_CHARS_BASE | '_'
+        [166s]  PN_CHARS    ::=     PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+        [167s]  PN_PREFIX   ::=     PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
+        
+        [168s]  PN_LOCAL    ::=     (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
+        [169s]  PLX     ::=     PERCENT | PN_LOCAL_ESC
+        [170s]  PERCENT     ::=     '%' HEX HEX
+        [171s]  HEX     ::=     [0-9] | [A-F] | [a-f]
+        [172s]  PN_LOCAL_ESC    ::=     '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
 */
+    // @formatter:on
 
     /** Find the URI split point, return the index into the string that is the
-     * first character of a legal Turtle local name.   
+     *  first character of a legal Turtle local name.   
      * <p>
      * This is a pragmatic choice, not just finding the maximal point.
      * For example, with escaping '/' can be included but that means 
@@ -163,17 +154,13 @@ Productions for terminals
         // Fast track.  Still need to check validity of the prefix part.
         int idx1 = uri.lastIndexOf('#') ;
         // Not so simple - \/ in local names 
-        int idx2 = 
-            isURN ? uri.lastIndexOf(':') : uri.lastIndexOf('/') ;
+        int idx2 = isURN ? uri.lastIndexOf(':') : uri.lastIndexOf('/') ;
 
         // If absolute.
         int idx3 = uri.indexOf(':') ; 
     
-        // Special case.
-        // A final "." makes it illegal Turtle. 
-        if ( uri.endsWith(".") ) {
-            
-        }
+        // Note: local names can't end in "." in Turtle.
+        // This is handled by escape_PN_LOCAL_ESC which will escape it as "\."
         
         // Test the discovered local part.
         // Limit is exclusive.
@@ -233,7 +220,10 @@ Productions for terminals
         }
      
      */
-    /** Split point, according to XML rules. */
+    /** Split point, according to XML qname rules.
+     * This is the longest NCName at the end of the uri.
+     * See {@link Util#splitNamespaceXML}.
+     */
     public static int splitXML(String string) { return Util.splitNamespaceXML(string) ; }
 
     /** Namespace, according to XML qname rules.
@@ -253,6 +243,17 @@ Productions for terminals
     // Extracted from RiotChars
     // When/if RIOT becomes accessible to this code, then refactor 
     
+    private static boolean /*RiotChars.*/isPN_LOCAL_ESC(char ch) {
+        switch (ch) {
+            case '\\': case '_':  case '~': case '.': case '-': case '!': case '$':
+            case '&':  case '\'': case '(': case ')': case '*': case '+': case ',':
+            case ';':  case '=':  case '/': case '?': case '#': case '@': case '%':
+                return true ;
+            default:
+                return false ;
+        }
+    }
+
     /** ASCII 0-9 */
     private static boolean isDigit(int ch) {
         return range(ch, '0', '9') ;

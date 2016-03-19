@@ -47,6 +47,8 @@ import org.junit.Test ;
 
 /** Break expression testing suite into parts
 * @see TestExpressions
+* @see TestExpressions2
+* @see TestExpressions3
 * @see TestExprLib
 * @see TestNodeValue
 */

@@ -28,17 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.jena.atlas.web.auth.ApacheModAuthFormLogin;
-import org.apache.jena.atlas.web.auth.FormLogin;
-import org.apache.jena.atlas.web.auth.FormsAuthenticator;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.atlas.web.auth.* ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.system.JenaSystem ;
 
 /**
  * <p>
@@ -220,7 +215,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      */
     static {
         try {
-            ARQ.init();
+            JenaSystem.init() ;
             register();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to register Jena Remote Endpoint JDBC Driver", e);

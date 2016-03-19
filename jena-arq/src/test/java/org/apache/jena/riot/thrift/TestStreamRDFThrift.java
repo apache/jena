@@ -21,6 +21,7 @@ package org.apache.jena.riot.thrift;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.Iterator ;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -29,7 +30,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -40,14 +40,11 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.IsoMatcher ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestStreamRDFThrift extends BaseTest {
 
     private static final String DIR = TS_RDFThrift.TestingDir ;
-    
-    @BeforeClass public static void beforeClassInit() { RIOT.init(); }
     
     static String gs = StrUtils.strjoinNL(
         "(graph",
@@ -121,7 +118,7 @@ public class TestStreamRDFThrift extends BaseTest {
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
         BinRDF.inputStreamToStream(in, stream2) ;
         
@@ -139,7 +136,7 @@ public class TestStreamRDFThrift extends BaseTest {
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         
         StreamRDF stream2 = StreamRDFLib.dataset(dsg2) ;
         BinRDF.inputStreamToStream(in, stream2) ;

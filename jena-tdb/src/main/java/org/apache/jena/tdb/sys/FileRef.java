@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.TreeMap ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.FileSet ;

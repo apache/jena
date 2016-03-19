@@ -44,8 +44,8 @@ public class Builder
 {
     private static Logger log = Fuseki.builderLog ;
     
-    /** Build a DataAccessPoint, including DataServiceat Resource svc */
-    public static DataAccessPoint buildDataAccessPoint(Resource svc) {
+    /** Build a DataAccessPoint, including DataService at Resource svc */ 
+    public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
@@ -56,34 +56,29 @@ public class Builder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = Builder.buildDataService(svc) ;
-        DataAccessPoint dataAccess = new DataAccessPoint(name) ;
-        dataAccess.setDataService(dataService) ;
+        DataService dataService = Builder.buildDataService(svc, dsDescMap) ;
+        DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
     /** Build a DatasetRef starting at Resource svc */
-    public static DataService buildDataService(Resource svc) {
-        //log.debug("Service: " + nodeLabel(svc)) ;
-        // DO REAL WORK
+    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
+        if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-        
-        // Check if it is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
+        Dataset ds = getDataset(datasetDesc, dsDescMap);
+ 
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
         addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
         addServiceEP(dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
         addServiceEP(dataService, OperationName.GSP_R,  svc,    "fu:serviceReadGraphStore") ;
-        addServiceEP(dataService, OperationName.GSP,    svc,    "fu:serviceReadWriteGraphStore") ;
+        addServiceEP(dataService, OperationName.GSP_RW, svc,    "fu:serviceReadWriteGraphStore") ;
         
-        if ( ! dataService.getOperation(OperationName.GSP).isEmpty() )
-            dataService.addEndpoint(OperationName.Quads, "") ;
+        if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() )
+            dataService.addEndpoint(OperationName.Quads_RW, "") ;
         else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() )
-            dataService.addEndpoint(OperationName.Quads, "") ;
+            dataService.addEndpoint(OperationName.Quads_R, "") ;
         
         // XXX 
 //        // Extract timeout overriding configuration if present.
@@ -97,20 +92,36 @@ public class Builder
         return dataService ;
     }
     
+    static Dataset getDataset(Resource datasetDesc, DatasetDescriptionRegistry dsDescMap) {
+    	// check if this one already built
+    	Dataset ds = dsDescMap.get(datasetDesc);
+    	if (ds == null) {
+    	    // Check if the description is in the model.
+            if ( !datasetDesc.hasProperty(RDF.type) )
+                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+            ds = (Dataset)Assembler.general.open(datasetDesc) ;
+    	}
+    	// Some kind of check that it is "the same" dataset.  
+    	// It can be different if two descriptions in different files have the same URI.
+    	dsDescMap.register(datasetDesc, ds);
+    	return ds;
+    }
+    
     /** Build a DataService starting at Resource svc */
     public static DataService buildDataService(DatasetGraph dsg, boolean allowUpdate) {
         DataService dataService = new DataService(dsg) ;
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
-            addServiceEP(dataService, OperationName.Quads, "quads") ;
             addServiceEP(dataService, OperationName.GSP_R, "data") ;
+            addServiceEP(dataService, OperationName.Quads_R, "") ;
             return dataService ;
         }
-        addServiceEP(dataService, OperationName.GSP,    "data") ;
+        addServiceEP(dataService, OperationName.GSP_RW,    "data") ;
+        addServiceEP(dataService, OperationName.GSP_R,  "get") ;
         addServiceEP(dataService, OperationName.Update, "update") ;
         addServiceEP(dataService, OperationName.Upload, "upload") ;
-        addServiceEP(dataService, OperationName.Quads,  "") ;
+        addServiceEP(dataService, OperationName.Quads_RW,  "") ;
         return dataService ;
     }
 

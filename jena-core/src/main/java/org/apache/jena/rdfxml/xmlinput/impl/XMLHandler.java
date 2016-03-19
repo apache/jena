@@ -455,7 +455,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 } catch (MalformedURLException e) {
                     warning(null,
                             WARN_BAD_NAMESPACE_URI,
-                            "toAscii failed for namespace URI: <"
+                            "Bad namespace URI: <"
                                     + u.toString()
                                     + ">. " + e.getMessage());
               } 

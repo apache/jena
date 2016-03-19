@@ -30,6 +30,14 @@ public class ExprList implements Iterable<Expr>
     private final List<Expr> expressions ;
     /** Create a copy which does not share the list of expressions with the original */ 
     public static ExprList copy(ExprList other) { return new ExprList(other) ; }
+    
+    /** Create an ExprList that contaisn the expressions */
+    public static ExprList create(Collection<Expr> exprs) {
+        ExprList exprList = new ExprList() ;
+        exprs.forEach(exprList::add) ;
+        return exprList ; 
+    } 
+    
     /** Empty, immutable ExprList */
     public static final ExprList emptyList = new ExprList(Collections.<Expr> emptyList()) ;
     
@@ -93,7 +101,7 @@ public class ExprList implements Iterable<Expr>
 
     public void addAll(ExprList exprs)      { expressions.addAll(exprs.getList()) ; }
     public void add(Expr expr)              { expressions.add(expr) ; }
-    public List<Expr> getList()             { return expressions ; }
+    public List<Expr> getList()             { return Collections.unmodifiableList(expressions) ; }
     @Override
     public Iterator<Expr> iterator()        { return expressions.iterator() ; }
     

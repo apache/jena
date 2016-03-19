@@ -20,14 +20,17 @@ package org.apache.jena.riot.lang;
 
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.out.CharSpace;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -101,6 +104,7 @@ public class TestLangNTriples extends TestLangNTuples
         String string = StrUtils.strjoin("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
+        @SuppressWarnings("deprecation")
         LangNTriples x = RiotParsers.createParserNTriples(tokenizer, sink);
         x.getProfile().setHandler(new ErrorHandlerEx());
         x.parse();

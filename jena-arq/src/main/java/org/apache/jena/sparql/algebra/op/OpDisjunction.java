@@ -82,8 +82,6 @@ public class OpDisjunction extends OpN
         OpDisjunction other = (OpDisjunction) op ;
         return super.equalsSubOps(other, labelMap) ;
     }
-
-    
     
     @Override
     public Op apply(Transform transform, List<Op> elts)

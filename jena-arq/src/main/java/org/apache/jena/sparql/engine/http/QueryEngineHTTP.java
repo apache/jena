@@ -27,6 +27,7 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
@@ -412,7 +413,7 @@ public class QueryEngineHTTP implements QueryExecution {
     
     @Override
     public Dataset execConstructDataset(){
-        return execConstructDataset(DatasetFactory.createMem());
+        return execConstructDataset(DatasetFactory.createTxnMem());
     }
 
     @Override
@@ -694,22 +695,49 @@ public class QueryEngineHTTP implements QueryExecution {
     @Override
     public void close() {
         closed = true ;
-        if (retainedConnection != null) {
-            try {
-                retainedConnection.close();
-            } catch (java.io.IOException e) {
-                log.warn("Failed to close connection", e);
-            } finally {
-                retainedConnection = null;
-            }
-        }
+
+        // JENA-1063
+        // If we are going to shut down the HTTP client do this first as otherwise
+        // HTTP Client will by default try to re-use the connection and it will
+        // consume any outstanding response data in order to do this which can cause 
+        // the close() on the InputStream to hang for an extremely long time
+        // This also causes resources to continue to be consumed on the server regardless
+        // of the fact that the client has called our close() method and so clearly
+        // does not care about any remaining response
+        // i.e. if we don't do this we are badly behaved towards both the caller and 
+        // the remote server we're interacting with
         if (retainedClient != null) {
             try {
                 retainedClient.getConnectionManager().shutdown();
             } catch (RuntimeException e) {
-                log.warn("Failed to shutdown HTTP client", e);
+                log.debug("Failed to shutdown HTTP client", e);
             } finally {
                 retainedClient = null;
+            }
+        }
+        
+        if (retainedConnection != null) {
+            try {
+                // JENA-1063 - WARNING
+                // This call may take a long time if the response has not been consumed
+                // as HTTP client will consume the remaining response so it can re-use the
+                // connection
+                // If we're closing when we're not at the end of the stream then issue a
+                // warning to the logs
+                if (retainedConnection.read() != -1)
+                    log.warn("HTTP response not fully consumed, if HTTP Client is reusing connections (its default behaviour) then it will consume the remaining response data which may take a long time and cause this application to become unresponsive");
+                
+                retainedConnection.close();
+            } catch (RuntimeIOException e) {
+                // If we are closing early and the underlying stream is chunk encoded
+                // the close() can result in a IOException.  Unfortunately our TypedInputStream
+                // catches and re-wraps that and we want to suppress it when we are cleaning up
+                // and so we catch the wrapped exception and log it instead
+                log.debug("Failed to close connection", e);
+            } catch (java.io.IOException e) {
+                log.debug("Failed to close connection", e);
+            } finally {
+                retainedConnection = null;
             }
         }
     }

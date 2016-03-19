@@ -18,30 +18,26 @@
 
 package org.apache.jena.fuseki.http;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.fuseki.AbstractFusekiTest ;
+import org.apache.jena.fuseki.FusekiTest ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
 // especially error cases abnd unusual usage that the higher level APIs don't use.
-public class TestHttpOp extends BaseTest {
+public class TestHttpOp extends AbstractFusekiTest {
     
-    static String pingURL = ServerTest.urlRoot+"$/ping" ;
-    @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    @AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
-    
-    static String gspServiceURL     = ServerTest.serviceREST ;
-    static String defaultGraphURL   = ServerTest.serviceREST+"?default" ;
-    static String namedGraphURL     = ServerTest.serviceREST+"?graph=http://example/g" ;
+    static String pingURL           = ServerTest.urlRoot+"$/ping" ;
+    static String gspServiceURL     = ServerTest.serviceGSP ;
+    static String defaultGraphURL   = ServerTest.serviceGSP+"?default" ;
+    static String namedGraphURL     = ServerTest.serviceGSP+"?graph=http://example/g" ;
     static String queryURL          = ServerTest.serviceQuery ;
     static String updateURL         = ServerTest.serviceUpdate ;
     
@@ -53,13 +49,11 @@ public class TestHttpOp extends BaseTest {
         try ( TypedInputStream in = HttpOp.execHttpGet(pingURL) ) {}
     }
     
-    @Test(expected=HttpException.class) 
+    @Test
     public void httpGet_02() {
-        try ( TypedInputStream in = HttpOp.execHttpGet(ServerTest.urlRoot+"does-not-exist") ) { }
-        catch(HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-            throw ex ;
-        }
+        FusekiTest.exec404(() -> {
+            try (TypedInputStream in = HttpOp.execHttpGet(ServerTest.urlRoot + "does-not-exist")) {}
+        });
     }
 
     @Test public void httpGet_03() {
@@ -185,7 +179,7 @@ public class TestHttpOp extends BaseTest {
     }
     
     @Test public void gsp_06() {
-        //HttpOp.execHttpDelete(namedGraphURL) ; -- woudl be 404.
+        //HttpOp.execHttpDelete(namedGraphURL) ; -- would be 404.
         
         HttpOp.execHttpPost(namedGraphURL, WebContent.contentTypeTurtle, graphString) ;
         String s1 = HttpOp.execHttpGetString(namedGraphURL, WebContent.contentTypeNTriples) ;
@@ -196,13 +190,7 @@ public class TestHttpOp extends BaseTest {
         String s3 = HttpOp.execHttpGetString(defaultGraphURL, WebContent.contentTypeNTriples) ;
         assertTrue(s3.isEmpty()) ;
         
-        try {
-            HttpOp.execHttpDelete(namedGraphURL) ;
-            fail("Expected 404") ;
-        } catch (HttpException ex) {
-            assertEquals(ex.getResponseCode(), HttpSC.NOT_FOUND_404) ;
-        }
-        
+        FusekiTest.exec404(()->HttpOp.execHttpDelete(namedGraphURL)) ;
     }
 
     // Extended GSP - no ?default, no ?graph acts on the datasets as a whole.  

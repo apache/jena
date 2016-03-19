@@ -45,7 +45,7 @@ abstract class AggMaxBase extends AggregatorBase
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue maxSoFar = null ;
 
-        public AccMax(Expr expr) { super(expr) ; }
+        public AccMax(Expr expr) { super(expr, false) ; }
 
         static final boolean DEBUG = false ;
 

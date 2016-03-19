@@ -57,12 +57,15 @@ import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.* ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public abstract class NodeValue extends ExprNode
 {
+    static { JenaSystem.init() ; }
+
     // Maybe:: NodeValueStringLang - strings with language tag
     
     /* Naming:
@@ -125,6 +128,7 @@ public abstract class NodeValue extends ExprNode
     
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
+    public static final NodeValue nvTEN  = NodeValue.makeNode(NodeConst.nodeTen) ;
     
     public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDdouble) ;
     public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDdouble) ;
@@ -236,6 +240,9 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeString(String s) 
     { return new NodeValueString(s) ; }
+
+    public static NodeValue makeLangString(String s, String lang) 
+    { return new NodeValueLang(s, lang) ; }
 
     public static NodeValue makeDecimal(BigDecimal d)
     { return new NodeValueDecimal(d) ; }
@@ -544,8 +551,8 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_UNKNOWN:
             {
                 // One or two unknown value spaces, or one has a lang tag (but not both).
-                Node node1 = nv1.getNode() ;
-                Node node2 = nv2.getNode() ;
+                Node node1 = nv1.asNode() ;
+                Node node2 = nv2.asNode() ;
                 
                 if ( ! SystemARQ.ValueExtensions )
                     // No value extensions => raw rdfTermEquals
@@ -897,6 +904,7 @@ public abstract class NodeValue extends ExprNode
     
     public boolean isBoolean()      { return false ; } 
     public boolean isString()       { return false ; } 
+    public boolean isLangString()   { return false ; }
 
     public boolean isNumber()       { return false ; }
     public boolean isInteger()      { return false ; }
@@ -911,7 +919,12 @@ public abstract class NodeValue extends ExprNode
     public boolean isTime()         { return false ; }
     public boolean isDuration()     { return false ; }
 
-    public boolean isYearMonth()
+    @Deprecated
+    public boolean isYearMonth() {
+        return isYearMonthDuration() ;
+    }
+    
+    public boolean isYearMonthDuration()
     {
         if ( ! isDuration() ) return false ;
         Duration dur = getDuration() ;
@@ -919,7 +932,7 @@ public abstract class NodeValue extends ExprNode
                ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS) ;
     }
 
-    boolean isDayTime()
+    public boolean isDayTimeDuration()
     {
         if ( ! isDuration() ) return false ;
         Duration dur = getDuration() ;
@@ -935,6 +948,8 @@ public abstract class NodeValue extends ExprNode
     
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
+    public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
+    
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }
@@ -961,15 +976,13 @@ public abstract class NodeValue extends ExprNode
         if ( isPlainLiteral )
             return new NodeValueString(node.getLiteralLexicalForm(), node) ;
 
-        if ( hasLangTag )
-        {
+        if ( hasLangTag ) {
             // Works for RDF 1.0 and RDF 1.1
-            if ( node.getLiteralDatatype() != null && ! RDF.dtLangString.equals(node.getLiteralDatatype()) )
-            {
+            if ( node.getLiteralDatatype() != null && ! RDF.dtLangString.equals(node.getLiteralDatatype()) ) {
                 if ( NodeValue.VerboseWarnings )
                     Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
             }
-            return new NodeValueNode(node) ;
+            return new NodeValueLang(node) ;
         }
 
         // Typed literal
@@ -1003,8 +1016,10 @@ public abstract class NodeValue extends ExprNode
     
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node) {
+        // This should not happen. 
+        // nodeToNodeValue should have dealt with it.
         if ( NodeUtils.hasLang(node) )
-            return null ;
+            return new NodeValueLang(node) ;
         LiteralLabel lit = node.getLiteral() ;
         String lex = lit.getLexicalForm() ;
         RDFDatatype datatype = lit.getDatatype() ;
@@ -1019,7 +1034,6 @@ public abstract class NodeValue extends ExprNode
         }
 
         try { // DatatypeFormatException - should not happen
-            
             if ( XSDstring.isValidLiteral(lit) ) 
                 // String - plain or xsd:string, or derived datatype.
                 return new NodeValueString(lit.getLexicalForm(), node) ;

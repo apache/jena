@@ -27,14 +27,16 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.join.JoinKey ;
 
 /** The probe table for a hash join */
 class HashProbeTable {
-    private long s_count           = 0;
-    private long s_bucketCount     = 0;
-    private long s_maxBucketSize   = 0;
-    private long s_noKeyBucketSize = 0;
-    private long s_maxMatchGroup   = 0;
+    /*package*/ long s_count           = 0;
+    /*package*/ long s_bucketCount     = 0;
+    /*package*/ long s_maxBucketSize   = 0;
+    /*package*/ long s_noKeyBucketSize = 0;
+    /*package*/ long s_maxMatchGroup   = 0;
+    /*package*/ long s_countScanMiss   = 0;
 
     private final List<Binding>             noKeyBucket = new ArrayList<>();
     private final Multimap<Object, Binding> buckets;
@@ -65,6 +67,8 @@ class HashProbeTable {
             if ( x != null ) {
                 s_maxMatchGroup = Math.max(s_maxMatchGroup, x.size());
                 iter = x.iterator();
+            } else {
+                s_countScanMiss ++ ;
             }
         }
         // And the rows with no common hash key
@@ -102,6 +106,11 @@ class HashProbeTable {
         return list;
     }
 
+    public Iterator<Binding> values() {
+        return Iter.concat(buckets.values().iterator(),
+                           noKeyBucket.iterator()) ;
+    }
+    
     public void clear() {
         buckets.clear();
     }

@@ -20,26 +20,13 @@ package org.apache.jena.sparql.api;
 
 import java.util.Iterator;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.QuerySolutionMap;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -108,6 +95,19 @@ public class TestAPI extends BaseTest
         }
     }
 
+    // This test is slightly dubious. It is testing that the model for the
+    // resource in the result is the same object as the model supplied ot the
+    // query.
+    //
+    // It happens to be true for DatasetImpl and the default model but that's
+    // about it. It is not part of the contract of query/datasets.
+    //
+    // Left as an active test so the assumption is tested (it has been true for
+    // many years). 
+    //
+    // Using the Resource.getXXX and Resource.listXXX operations is dubious if
+    // there are named graphs and that has always been the case.
+    
     @Test public void test_API1()
     {
         try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
@@ -119,16 +119,6 @@ public class TestAPI extends BaseTest
         }
     }
     
-//    @Test public void test_OptRegex1()
-//    {
-//        execRegexTest(1, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x')}") ;
-//    }
-//
-//    @Test public void test_OptRegex2()
-//    {
-//        execRegexTest(2, "SELECT * {?s ?p ?o . FILTER regex(?o, '^x', 'i')}") ;
-//    }
-
     @Test public void testInitialBindings0()
     {
         QuerySolutionMap smap1 = new QuerySolutionMap() ;
@@ -262,14 +252,12 @@ public class TestAPI extends BaseTest
         assertEquals(3, count) ;
     }
     
-    
     @Test public void testReuseQueryObject2()
     {
-        String queryString = "SELECT (count(?s) AS ?c) {?s ?p ?o} GROUP BY ?s";
+        String queryString = "SELECT (count(?o) AS ?c) {?s ?p ?o} GROUP BY ?s";
         Query q = QueryFactory.create(queryString) ;
         
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
-            
             ResultSet rs = qExec.execSelect() ;
             QuerySolution qs = rs.nextSolution() ;
             assertEquals(3, qs.getLiteral("c").getInt()) ;
@@ -359,7 +347,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
@@ -367,7 +355,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 
@@ -383,13 +371,13 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> ts = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (ts.hasNext()) {
             count++;
             result.add( ts.next() );
         }
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(Quad.defaultGraphNodeGenerated, s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, count);
         assertTrue(IsoMatcher.isomorphic( expected, result) );
@@ -400,9 +388,7 @@ public class TestAPI extends BaseTest
     @Test public void testARQConstructQuad_b_1() {
         String queryString = "CONSTRUCT { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 } } WHERE { ?s ?p ?o. GRAPH ?g1 { ?s1 ?p1 ?o1 } }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        
         Iterator<Triple> ts = qExec.execConstructTriples();
         Model result = ModelFactory.createDefaultModel();
         while (ts.hasNext()) {
@@ -415,6 +401,18 @@ public class TestAPI extends BaseTest
         assertTrue(dft.isIsomorphicWith(result));
     }
     
+    @Test public void testARQConstructQuad_bnodes() {
+        String queryString = "PREFIX : <http://example/> CONSTRUCT { :s :p :o GRAPH _:a { :s :p :o1 } } WHERE { }";
+        Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        Dataset ds = qExec.execConstructDataset() ;
+        assertEquals(1, Iter.count(ds.asDatasetGraph().listGraphNodes())) ;
+        Node n = ds.asDatasetGraph().listGraphNodes().next();
+        assertTrue(n.isBlank());
+        Graph g = ds.asDatasetGraph().getGraph(n) ;
+        assertNotNull(g) ;
+        assertFalse(g.isEmpty()) ;
+   }
     
     // Allow duplicated quads in execConstructQuads()
     @Test public void testARQConstructQuad_Duplicate_1() {
@@ -443,7 +441,7 @@ public class TestAPI extends BaseTest
         
         Dataset result = qExec.execConstructDataset();
 
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         assertEquals(1, result.asDatasetGraph().size());
         assertTrue(IsoMatcher.isomorphic( expected, result.asDatasetGraph()) );
@@ -475,7 +473,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         
         Iterator<Quad> quads = qExec.execConstructQuads();
-        DatasetGraph result = DatasetGraphFactory.createMem();
+        DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
         while (quads.hasNext()) {
             count++;
@@ -483,7 +481,7 @@ public class TestAPI extends BaseTest
             result.add(qd);
         }
         
-        DatasetGraph expected = DatasetGraphFactory.createMem();
+        DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(g1.asNode(), s.asNode(), p.asNode(), o.asNode());
         
         assertEquals(1, count); 
@@ -513,7 +511,7 @@ public class TestAPI extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
         Dataset result = qExec.execConstructDataset();
         
-        Dataset expected = DatasetFactory.createMem();
+        Dataset expected = DatasetFactory.createTxnMem();
         expected.addNamedModel(g1.getURI(), m);
         
         assertTrue(IsoMatcher.isomorphic( expected.asDatasetGraph(), result.asDatasetGraph()) );

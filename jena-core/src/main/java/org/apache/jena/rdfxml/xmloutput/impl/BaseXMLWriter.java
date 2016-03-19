@@ -489,6 +489,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         jenaPrefixCount = 0;
         }
     
+    @SuppressWarnings("deprecation")
     static IRIFactory factory = IRIFactory.jenaImplementation();
 
    

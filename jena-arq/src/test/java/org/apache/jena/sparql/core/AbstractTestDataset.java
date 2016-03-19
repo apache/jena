@@ -31,8 +31,7 @@ import org.junit.Test ;
 
 public abstract class AbstractTestDataset extends BaseTest
 {
-    // Assumes a dadatset which need explicit add graph 
-    protected abstract Dataset createFixed() ;
+    protected abstract Dataset createDataset() ;
     
     static Model model1 = ModelFactory.createDefaultModel() ;
     static Model model2 = ModelFactory.createDefaultModel() ;
@@ -53,21 +52,21 @@ public abstract class AbstractTestDataset extends BaseTest
     
     @Test public void dataset_01()
     {
-        Dataset ds = createFixed() ;
+        Dataset ds = createDataset() ;
         assertNotNull(ds.getDefaultModel()) ;
         assertNotNull(ds.asDatasetGraph()) ;
     }
     
     @Test public void dataset_02()
     {
-        Dataset ds = createFixed() ;
+        Dataset ds = createDataset() ;
         ds.getDefaultModel().add(s1,p1,o1) ;
         assertTrue(model1.isIsomorphicWith(ds.getDefaultModel())) ;
     }
 
     @Test public void dataset_03()
     {
-        Dataset ds = createFixed() ;
+        Dataset ds = createDataset() ;
         ds.setDefaultModel(model2) ;
         assertTrue(model2.isIsomorphicWith(ds.getDefaultModel())) ;
     }
@@ -75,7 +74,7 @@ public abstract class AbstractTestDataset extends BaseTest
     @Test public void dataset_04()
     {
         String graphName = "http://example/" ;
-        Dataset ds = createFixed() ;
+        Dataset ds = createDataset() ;
         ds.addNamedModel(graphName, model1) ;
         assertTrue(ds.containsNamedModel(graphName)) ;
         
@@ -90,14 +89,14 @@ public abstract class AbstractTestDataset extends BaseTest
         assertTrue(model1.isIsomorphicWith(m)) ;
         
         ds.removeNamedModel(graphName) ;
-        // Not getNamedModel and test for null as some dadasets are "auto graph creating"
+        // Not getNamedModel and test for null as some datasets are "auto graph creating"
         assertFalse(ds.containsNamedModel(graphName)) ;
     }
 
     @Test public void dataset_05()
     {
         String graphName = "http://example/" ;
-        Dataset ds = createFixed() ;
+        Dataset ds = createDataset() ;
         ds.addNamedModel(graphName, model1) ;
         ds.replaceNamedModel(graphName, model2) ;
         assertTrue(ds.containsNamedModel(graphName)) ;

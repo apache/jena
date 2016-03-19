@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb.setup;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
@@ -27,6 +26,7 @@ import org.apache.jena.tdb.index.Index ;
 import org.apache.jena.tdb.index.IndexBuilder ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.RangeIndexBuilder ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.store.nodetable.NodeTableCache ;
 import org.apache.jena.tdb.store.nodetable.NodeTableInline ;

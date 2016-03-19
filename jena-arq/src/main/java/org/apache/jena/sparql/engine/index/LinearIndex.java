@@ -45,11 +45,10 @@ import org.apache.jena.sparql.engine.binding.BindingHashMap ;
  *       TreeMap is suggested here, since there would be commonVars.size() maps, which would take
  *       a lot of heap, particularly since performance of this class is only an issue when the
  *       data to search is significant.
- * <p>Contribution from Paul Gearon
  */
 
 public class LinearIndex implements IndexTable {
-
+    // Contribution from P Gearon (@quoll)
 	final Set<Var> commonVars ;
 	List<Binding> table = new ArrayList<>() ;
 

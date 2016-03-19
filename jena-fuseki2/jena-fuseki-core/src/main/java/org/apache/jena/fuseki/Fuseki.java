@@ -24,9 +24,6 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.spatial.SpatialQuery ;
-import org.apache.jena.query.text.TextQuery ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
@@ -35,6 +32,7 @@ import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
@@ -43,7 +41,7 @@ import org.slf4j.LoggerFactory ;
 public class Fuseki {
     // General fixed constants.
     // See also FusekiServer for the naming on the filesystem
-    
+
     /** Path to ??? */
     static public String    PATH                         = "org.apache.jena.fuseki" ;
 
@@ -58,15 +56,15 @@ public class Fuseki {
 
     /** Default location of the pages for the Fuseki UI  */
     static public String    PagesStatic                  = "pages" ;
-    
+
     /** Dummy base URi string for parsing SPARQL Query and Update requests */
     static public final String BaseParserSPARQL          = "http://server/unset-base/" ;
-    
+
     /** Dummy base URi string for parsing SPARQL Query and Update requests */
     static public final String BaseUpload                = "http://server/unset-base/" ;
 
     /**
-     * A relative resources path to the location of 
+     * A relative resources path to the location of
      * <code>fuseki-properties.xml</code> file.
      */
     static private String   metadataLocation             = "org/apache/jena/fuseki/fuseki-properties.xml" ;
@@ -92,7 +90,7 @@ public class Fuseki {
 
     /** Date when Fuseki was built */
     static public final String        BUILD_DATE        = metadata.get(PATH + ".build.datetime", "unknown") ;
-    
+
     /** Supporting Graph Store Protocol direct naming.
      * <p>
      *  A GSP "direct name" is a request, not using ?default or ?graph=, that names the graph
@@ -101,20 +99,33 @@ public class Fuseki {
      *  a longer URL that can't be a service {@code http://server/dataset/segment/segment/...}.
      *  <p>
      *  GSP "direct name" is usually off.  It is a rare feature and because of hard wiring to the URL
-     *  quite sensitive to request route. 
+     *  quite sensitive to request route.
      *  <p>
      *  The following places use this switch:
-     *  <li>{@code FusekiFilter} for the "clearly not a service" case 
+     *  <li>{@code FusekiFilter} for the "clearly not a service" case
      *  <li>{@code SPARQL_UberServlet}, end of dispatch (after checking for http://server/dataset/service)
      *  <li>{@code SPARQL_GSP.determineTarget} This is all-purpose code - should not get there because of other checks.
-     * 
+     *
      */
-    static public final boolean       GSP_DIRECT_NAMING = false ; 
+    static public final boolean       GSP_DIRECT_NAMING = false ;
 
+    /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
+     * because maven has not filtered the fuseki-properties.xml file.
+     */
+    public static boolean   developmentMode ;
+    static {
+        // See ServletBase.setCommonheaders
+        // If it look like a SNAPSHOT, or it's not set, we are in development mode.
+        developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") ) ;
+    }
+
+    public static boolean   outputJettyServerHeader     = developmentMode ;
+    public static boolean   outputFusekiServerHeader    = developmentMode ;
+    
     /** An identifier for the HTTP Fuseki server instance */
-    static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
-    /** Loger name for operations */
+    static public final String  serverHttpName          = NAME + " (" + VERSION + ")" ;
+    
+    /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 
     /** Instance of log for operations */
@@ -127,7 +138,7 @@ public class Fuseki {
     // Normally OFF
     /** Instance of a log for requests: format is NCSA. */
     public static final Logger        requestLog        = LoggerFactory.getLogger(requestLogName) ;
-    
+
     /** Admin log file for operations. */
     public static final String        adminLogName      = PATH + ".Admin" ;
 
@@ -177,32 +188,32 @@ public class Fuseki {
         webStreamManager.addLocator(new LocatorFTP()) ;
     }
 
-    /** Default (and development) root of the Fuseki installation for fixed files. */ 
+    /** Default (and development) root of the Fuseki installation for fixed files. */
     public static String DFT_FUSEKI_HOME = "." ;
-    /** Default (and development) root of the varying files in this deployment. */ 
+    /** Default (and development) root of the varying files in this deployment. */
     public static String DFT_FUSEKI_BASE = "." ;
-    
+
     private static boolean            initialized       = false ;
-    
+
     // Server start time and uptime.
     private static final long startMillis = System.currentTimeMillis() ;
     // Hide server locale
-    private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00")) ; 
+    private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00")) ;
     static { cal.setTimeInMillis(startMillis) ; }  // Exactly the same start point!
-    
-    private static final String startDateTime = DateTimeUtils.calendarToXSDDateTimeString(cal) ; 
-    
-    /** Return the number of milliseconds since the server started */  
+
+    private static final String startDateTime = DateTimeUtils.calendarToXSDDateTimeString(cal) ;
+
+    /** Return the number of milliseconds since the server started */
     public static long serverUptimeMillis() {
         return System.currentTimeMillis() - startMillis ;
     }
-    
-    /** Server uptime in seconds */ 
+
+    /** Server uptime in seconds */
     public static long serverUptimeSeconds() {
         long x = System.currentTimeMillis() - startMillis ;
         return TimeUnit.MILLISECONDS.toSeconds(x) ;
     }
-    
+
     /** XSD DateTime for when the server started */
     public static String serverStartedAt() {
         return startDateTime ;
@@ -215,22 +226,11 @@ public class Fuseki {
         if ( initialized )
             return ;
         initialized = true ;
-        // FusekiEnv.setEnvironment() ;
+        JenaSystem.init() ;
+        // Do explicitly so it happens after subsystem initialization.
         FusekiLogging.setLogging() ;
-        ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
-        RIOT.init() ;
-        
-        TDB.init() ;
-        // Initialize anyway (e.g. not to rely on assembler magic).
-        try { 
-            TextQuery.init() ;
-            SpatialQuery.init() ;
-        } catch ( Exception ex ) {
-            // In case jars are missing.
-        }
-        
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;
@@ -238,10 +238,10 @@ public class Fuseki {
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0 ;
     }
-    
+
     /**
      * Get server global {@link org.apache.jena.sparql.util.Context}.
-     * 
+     *
      * @return {@link org.apache.jena.query.ARQ#getContext()}
      */
     public static Context getContext() {

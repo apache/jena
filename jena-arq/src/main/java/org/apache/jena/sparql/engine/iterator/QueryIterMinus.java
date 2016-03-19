@@ -18,72 +18,67 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.Map;
-import java.util.Set ;
+import java.util.Set;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.index.IndexFactory ;
-import org.apache.jena.sparql.engine.index.IndexTable ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.index.IndexFactory;
+import org.apache.jena.sparql.engine.index.IndexTable;
 
 /** Minus by materializing the RHS - this is not streamed on the right */
-public class QueryIterMinus extends QueryIter2
-{
-	private IndexTable tableRight;
-	private Map<Var, Integer> varColumns ;
-	private Set<Node[]> rightTable;
-    Binding slot = null ;
+public class QueryIterMinus extends QueryIter2 {
+    private final IndexTable tableRight;
+    private Binding          slot = null;
 
-	public QueryIterMinus(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt)
-    {
-        super(left, right, qCxt) ;
-        tableRight = IndexFactory.createIndex(commonVars, right) ;
+    public static QueryIterator create(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt) {
+        if ( ! right.hasNext() )
+            // Empty MINUS left 
+            return left ;
+        return new QueryIterMinus(left, right, commonVars, qCxt) ;
+    }
+    
+    private QueryIterMinus(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt) {
+        super(left, right, qCxt);
+        tableRight = IndexFactory.createIndex(commonVars, right);
     }
 
-    protected Binding getNextSlot(Binding bindingLeft)
-    {
+    protected Binding getNextSlot(Binding bindingLeft) {
         if ( tableRight.containsCompatibleWithSharedDomain(bindingLeft) )
-        	return null ;
-        
+            return null;
         return bindingLeft;
     }
 
     @Override
-    protected final void closeSubIterator() { }
-    
+    protected final void closeSubIterator() {}
+
     @Override
-    protected void requestSubCancel() { }
-   
+    protected void requestSubCancel() {}
+
     @Override
-    protected final boolean hasNextBinding()
-    {
+    protected final boolean hasNextBinding() {
         if ( slot != null )
-            return true ;
-        
-        while ( getLeft().hasNext() )
-        {
-            Binding bindingLeft = getLeft().nextBinding() ;
-            slot = getNextSlot(bindingLeft) ;
-            if ( slot != null )
-            {
-                slot = bindingLeft ; 
-                return true ;
+            return true;
+
+        while (getLeft().hasNext()) {
+            Binding bindingLeft = getLeft().nextBinding();
+            slot = getNextSlot(bindingLeft);
+            if ( slot != null ) {
+                slot = bindingLeft;
+                return true;
             }
         }
-        getLeft().close() ;
-        return false ;
+        getLeft().close();
+        return false;
     }
 
     @Override
-    protected final Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            return null ;
-        Binding x = slot ;
-        slot = null ;
-        return x ;
+    protected final Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            return null;
+        Binding x = slot;
+        slot = null;
+        return x;
     }
 }

@@ -23,15 +23,14 @@ import java.util.Set;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.index.HashIndexTable.MissingBindingException ;
+import org.apache.jena.sparql.engine.iterator.QueryIterMinus ;
 
 /**
- * Creates {@link org.apache.jena.sparql.engine.index.IndexTable}s for use by
- * {@link org.apache.jena.sparql.engine.iterator.QueryIterMinus}.
- * <p>
- * Contribution from Paul Gearon
+ * Creates {@link IndexTable}s for use by
+ * {@link QueryIterMinus}.
  */
 public class IndexFactory {
-
+    // Contribution from P Gearon (@quoll)
     public static IndexTable createIndex(Set<Var> commonVars, QueryIterator data) {
         try {
             if (commonVars.size() == 1) {

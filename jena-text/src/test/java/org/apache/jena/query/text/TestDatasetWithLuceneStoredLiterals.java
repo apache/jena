@@ -27,12 +27,15 @@ import java.io.StringReader ;
 import java.util.Arrays ;
 import java.util.HashMap ;
 import java.util.HashSet ;
+import java.util.LinkedList ;
+import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.Query ;
@@ -147,6 +150,35 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         return literals;
     }
 
+    protected List<Node> doTestSearchWithLiteralsMultiple(String turtle, String queryString, String expectedEntityURI) {
+        List<Node> literals = new LinkedList<>();
+        Model model = dataset.getDefaultModel();
+        Reader reader = new StringReader(turtle);
+        dataset.begin(ReadWrite.WRITE);
+        model.read(reader, "", "TURTLE");
+        dataset.commit();
+
+        Query query = QueryFactory.create(queryString) ;
+        dataset.begin(ReadWrite.READ);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+            ResultSet results = qexec.execSelect() ;
+            int count;
+            for (count=0; results.hasNext(); count++) {
+                QuerySolution soln = results.nextSolution();
+                String entityURI = soln.getResource("s").getURI();
+                assertEquals(expectedEntityURI, entityURI);
+                Literal literal = soln.getLiteral("literal");
+                assertNotNull(literal);
+                literals.add(literal.asNode());
+            }
+        }
+        finally {
+            dataset.end() ;
+        }
+        return literals;
+    }
+
+
     @Test
     public void testLiteralValue() {
         // test basic capturing of the literal value in a variable
@@ -243,6 +275,62 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         Literal value = literals.get( RESOURCE_BASE + testName );
         assertNotNull(value);
         assertEquals(NodeFactory.createLiteral("true", XSDDatatype.XSDboolean), value.asNode());
+    }
+
+    @Test
+    public void testLiteralValueMultiple() {
+        // test capturing of multiple matching literal values in a variable
+        final String testName = "testLiteralValueMultiple";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:comment 'a nontext comment', 'another nontext comment'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?literal",
+                "WHERE {",
+                "    (?s ?score ?literal) text:query (rdfs:comment 'nontext') .",
+                "}"
+                );
+
+        String expectedURI = RESOURCE_BASE + testName;
+        List<Node> literals = doTestSearchWithLiteralsMultiple(turtle, queryString, expectedURI);
+
+        assertEquals(2, literals.size());
+        assertTrue(literals.contains(NodeFactory.createLiteral("a nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
+    }
+
+    @Test
+    public void testLiteralValueMultipleBoundSubject() {
+        // test capturing of multiple matching literal values in a variable, when using bound subject
+        final String testName = "testLiteralValueMultipleBoundSubject";
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + testName + ">",
+                "  rdfs:comment 'a nontext comment', 'another nontext comment'",
+                ".",
+                "<" + RESOURCE_BASE + "irrelevant>",
+                "  rdfs:comment 'an irrelevant nontext comment'",
+                "."
+                );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?literal",
+                "WHERE {",
+                "    BIND(<" + RESOURCE_BASE + testName + "> AS ?s)",
+                "    (?s ?score ?literal) text:query (rdfs:comment 'nontext') .",
+                "}"
+                );
+
+        String expectedURI = RESOURCE_BASE + testName;
+        List<Node> literals = doTestSearchWithLiteralsMultiple(turtle, queryString, expectedURI);
+
+        assertEquals(2, literals.size());
+        assertTrue(literals.contains(NodeFactory.createLiteral("a nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
     }
 
 }

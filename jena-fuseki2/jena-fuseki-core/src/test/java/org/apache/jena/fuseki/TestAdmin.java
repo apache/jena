@@ -40,7 +40,6 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -49,30 +48,15 @@ import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
 import org.junit.Test ;
 
 /** Tests of the admin functionality */
-public class TestAdmin extends BaseTest {
+public class TestAdmin extends AbstractFusekiTest {
     
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
+    static String fileBase = "testing/" ;
     
-    @Before public void beforeTest() {
-        ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
-    }
-    
-    @After public void afterTest() {
-        ServerTest.freeServer() ;
-    }
-
-    @AfterClass public static void afterClass() {
-        ServerTest.teardownServer() ;
-    }
-  
     // --- Ping 
     
     @Test public void ping_1() {
@@ -88,7 +72,7 @@ public class TestAdmin extends BaseTest {
     @Test public void server_1() {
         JsonValue jv = httpGetJson(ServerTest.urlRoot+"$/"+opServer) ;
         JsonObject obj = jv.getAsObject() ;
-        assertTrue(obj.hasKey(JsonConst.admin)) ;
+        // Now optional : assertTrue(obj.hasKey(JsonConst.admin)) ;
         assertTrue(obj.hasKey(JsonConst.datasets)) ;
         assertTrue(obj.hasKey(JsonConst.uptime)) ;
         assertTrue(obj.hasKey(JsonConst.startDT)) ;
@@ -120,11 +104,7 @@ public class TestAdmin extends BaseTest {
     
     // Specific dataset
     @Test public void list_datasets_4() {
-        try {
-            getDatasetDescription("does-not-exist") ;
-        } catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404( () -> getDatasetDescription("does-not-exist") ) ;
     }
     
     // Specific dataset
@@ -151,7 +131,7 @@ public class TestAdmin extends BaseTest {
     @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest) ;
 
-        File f = new File("testing/config-ds-1.ttl") ;
+        File f = new File(fileBase+"config-ds-1.ttl") ;
         { 
             org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
             HttpEntity e = new FileEntity(f, ct) ;
@@ -182,14 +162,29 @@ public class TestAdmin extends BaseTest {
         deleteDataset(dsTest) ;
     }
     
+    @Test public void add_error_1() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-1.ttl")) ;
+    }
+    
+    @Test public void add_error_2() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-2.ttl")) ;
+    }
+    
+    @Test public void add_error_3() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-3.ttl")) ;
+    }
+    
+    @Test public void add_error_4() {
+        FusekiTest.execWithHttpException(HttpSC.BAD_REQUEST_400, 
+                                         ()-> addTestDataset(fileBase+"config-ds-bad-name-4.ttl")) ;
+    }
+    
     @Test public void delete_dataset_1() {
         String name = "NoSuchDataset" ;
-        try {
-            execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
-            fail("delete did not cause an Http Exception") ;
-        } catch ( HttpException ex ) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404( ()-> execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ) ;
     }
 
     // ---- Active/Offline.
@@ -218,9 +213,7 @@ public class TestAdmin extends BaseTest {
 
     @Test public void state_3() {
         addTestDataset() ;
-        try {
-            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=offline", null) ;
-        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ; }
+        FusekiTest.exec404(()->execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=offline", null)) ;
         deleteDataset(dsTest) ;
     }
     
@@ -244,10 +237,9 @@ public class TestAdmin extends BaseTest {
 
     @Test public void stats_3() {
         addTestDataset() ;
-        try {
+        FusekiTest.exec404(()->{
             JsonValue v = execGetJSON(urlRoot+"$/"+opStats+"/DoesNotExist") ;
-            checkJsonStatsAll(v);
-        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()); }
+        }) ;
         deleteDataset(dsTest) ;
     }
 
@@ -262,11 +254,7 @@ public class TestAdmin extends BaseTest {
     @Test public void task_2() {
         String x = "NoSuchTask" ;
         String url = urlRoot+"$/tasks/"+x ;
-        try {
-            httpGetJson(url) ;
-        } catch (HttpException ex) {
-            assertEquals(404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404(()->httpGetJson(url) ) ;
         try { 
             checkInTasks(x) ;
             fail("No failure!") ;
@@ -327,26 +315,29 @@ public class TestAdmin extends BaseTest {
     }
 
     private static JsonValue getDatasetDescription(String dsName) {
-    try ( TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+dsName) ) {
-        assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
-        JsonValue v = JSON.parse(in) ;
-        return v ;
+        try (TypedInputStream in = execHttpGet(urlRoot + "$/" + opDatasets + "/" + dsName)) {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            JsonValue v = JSON.parse(in);
+            return v;
+        }
     }
-}
 
-// -- Add
+    // -- Add
 
-private static void addTestDataset() {
-    File f = new File("testing/config-ds-1.ttl") ;
-    org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
-    HttpEntity e = new FileEntity(f, ct) ;
-    execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
-}
+    private static void addTestDataset() {
+        addTestDataset(fileBase+"config-ds-1.ttl") ;
+    }
+    
+    private static void addTestDataset(String filename) {
+        File f = new File(filename) ;
+        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+        HttpEntity e = new FileEntity(f, ct) ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+    }
 
-private static void deleteDataset(String name) {
-    execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
-}
-
+    private static void deleteDataset(String name) {
+        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
+    }
 
     static class JsonResponseHandler implements HttpResponseHandler {
 
@@ -364,8 +355,6 @@ private static void deleteDataset(String name) {
         }
         
     }
-    
-    
     
     private String execSleepTask(String name, int millis) {
         String url = urlRoot+"$/sleep" ;
@@ -454,18 +443,10 @@ private static void deleteDataset(String name) {
     }
 
     private static void checkNotThere(String name) {
-        if ( name.startsWith("/") )
-            name = name.substring(1) ;
+        String n = (name.startsWith("/")) ? name.substring(1) : name ;
         // Check gone exists.
-        try { adminPing(name) ; }
-        catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
-        
-        try { askPing(name) ; }
-        catch (HttpException ex) {
-            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
-        }
+        FusekiTest.exec404(()->  adminPing(n) ) ;
+        FusekiTest.exec404(() -> askPing(n) ) ;
     }
 
     private static void checkJsonDatasetsAll(JsonValue v) {

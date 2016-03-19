@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
@@ -42,12 +42,12 @@ public class TestFileUpload extends AbstractFusekiTest
 {
     @Test public void upload_gsp_01()
     {
-        FileSender x = new FileSender(ServerTest.serviceREST+"?default") ;
+        FileSender x = new FileSender(serviceGSP+"?default") ;
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle") ;
         x.send("POST") ;
         
         Model m = ModelFactory.createDefaultModel() ;
-        TypedInputStream in = HttpOp.execHttpGet(serviceREST, "text/turtle") ;
+        TypedInputStream in = HttpOp.execHttpGet(serviceGSP, "text/turtle") ;
         RDFDataMgr.read(m, in, RDFLanguages.contentTypeToLang(in.getMediaType()) ) ;
         // which is is effectively :
 //        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
@@ -57,13 +57,13 @@ public class TestFileUpload extends AbstractFusekiTest
     
     @Test public void upload_gsp_02()
     {
-        FileSender x = new FileSender(ServerTest.serviceREST+"?default") ;
+        FileSender x = new FileSender(ServerTest.serviceGSP+"?default") ;
         x.add("D.ttl", "<http://example/s> <http://example/p> 123 .", "text/turtle") ;
         x.add("D.nt", "<http://example/s> <http://example/p> <http://example/o-456> .", "application/n-triples") ;
         x.send("PUT") ;
         
         // BUG
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         Model m = du.getModel() ;
         assertEquals(2, m.size()) ;
     }
@@ -71,12 +71,12 @@ public class TestFileUpload extends AbstractFusekiTest
     // Extension of GSP - no graph selector => dataset
     @Test public void upload_gsp_03()
     {
-        FileSender x = new FileSender(ServerTest.serviceREST) ;
+        FileSender x = new FileSender(ServerTest.serviceGSP) ;
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle") ;
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> <http://example/o> }", "text/trig") ;
         x.send("POST") ;
         
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         Model m = du.getModel() ;
         assertEquals(1, m.size()) ;
     }
@@ -84,7 +84,7 @@ public class TestFileUpload extends AbstractFusekiTest
     @Test public void upload_gsp_04()
     {
         {
-            DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+            DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
             Model m = du.getModel() ;
             assertEquals(0, m.size()) ;
         }
@@ -93,7 +93,7 @@ public class TestFileUpload extends AbstractFusekiTest
         x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/plain") ;
         x.send("POST") ;
         
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         Model m = du.getModel() ;
         assertEquals(1, m.size()) ;
         m = du.getModel("http://example/g") ;
@@ -107,7 +107,7 @@ public class TestFileUpload extends AbstractFusekiTest
         x.add("D.nq", "", "application/-n-quads") ;
         x.send("PUT") ;
         
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         Model m = du.getModel() ;
         assertEquals(0, m.size()) ;
     }
@@ -117,7 +117,7 @@ public class TestFileUpload extends AbstractFusekiTest
         x.add("D.nq", "<http://example/s> <http://example/p> <http://example/o-456> <http://example/g> .", "application/n-quads") ;
         x.send("PUT") ;
         
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         Model m = du.getModel("http://example/g") ;
         assertEquals(1, m.size()) ;
         m = du.getModel() ;

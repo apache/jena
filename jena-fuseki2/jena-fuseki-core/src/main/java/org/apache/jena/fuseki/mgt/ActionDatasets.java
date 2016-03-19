@@ -24,11 +24,15 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.StringReader ;
-import java.util.* ;
+import java.util.HashMap ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
@@ -38,9 +42,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.build.* ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.graph.Node ;
@@ -66,6 +68,8 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionDatasets extends ActionContainerItem {
     
+    private static final long serialVersionUID = 5171975468398320835L;
+
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     
@@ -104,12 +108,12 @@ public class ActionDatasets extends ActionContainerItem {
     
     // ---- POST 
     
-    // DB less version
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
         String newURI = uuid.asURI() ;
         Node gn = NodeFactory.createURI(newURI) ;
+        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
         
@@ -161,11 +165,25 @@ public class ActionDatasets extends ActionContainerItem {
             if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
             
-            String datasetName = object.getLexicalForm() ;
-            String datasetPath = DataAccessPoint.canonical(datasetName) ;
+            String datasetPath ;
+            {   // Check the name provided.
+                String datasetName = object.getLexicalForm() ;
+                
+                // ---- Check and canonicalize name.
+                if ( datasetName.isEmpty() )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name") ;
+                if ( StringUtils.isBlank(datasetName) )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetName)) ;
+                if ( datasetName.contains(" ") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetName)) ;
+                if ( datasetName.equals("/") )
+                    ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetName)) ;
+                datasetPath = DataAccessPoint.canonical(datasetName) ;
+            }
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-            
-            // ---- Check whether ti already exists 
+//            System.err.println("'"+datasetPath+"'") ;
+//            DataAccessPointRegistry.get().forEach((s,dap)->System.err.println("'"+s+"'")); 
+            // ---- Check whether it already exists 
             if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
@@ -173,7 +191,7 @@ public class ActionDatasets extends ActionContainerItem {
             configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
             List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
-                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for "+datasetPath+" already exists") ;
+                ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists") ;
 
             // Write to configuration directory.
             try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
@@ -187,7 +205,7 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
+            DataAccessPoint ref = Builder.buildDataAccessPoint(subject, registry) ;
             DataAccessPointRegistry.register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
@@ -260,7 +278,7 @@ public class ActionDatasets extends ActionContainerItem {
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
-        if ( dbType == null || dbName == null )
+        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
             ServletOps.errorBadRequest("Required parameters: dbName and dbType");
         
         Map<String, String> params = new HashMap<>() ;

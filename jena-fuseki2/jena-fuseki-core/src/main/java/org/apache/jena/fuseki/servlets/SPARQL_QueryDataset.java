@@ -27,24 +27,26 @@ import org.apache.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
+    private static final long serialVersionUID = 7831017147865247480L;
+
     public SPARQL_QueryDataset(boolean verbose)     { super() ; }
 
     public SPARQL_QueryDataset()
     { this(false) ; }
-    
+
     @Override
-    protected void validateRequest(HttpAction action) 
+    protected void validateRequest(HttpAction action)
     { }
 
     @Override
-    protected void validateQuery(HttpAction action, Query query) 
+    protected void validateQuery(HttpAction action, Query query)
     { }
-   
-    /** Decide the datset - this modifies the query 
-     *  If the query has a dataset description.   
+
+    /** Decide the dataset - this modifies the query
+     *  If the query has a dataset description.
      */
     @Override
-    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) { 
+    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetGraph dsg = action.getActiveDSG() ;
         DatasetDescription dsDesc = getDatasetDescription(action, query) ;
         if ( dsDesc != null ) {
@@ -54,7 +56,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
                 query.getNamedGraphURIs().clear() ;
             }
         }
-        
-        return DatasetFactory.create(dsg) ;
+
+        return DatasetFactory.wrap(dsg) ;
     }
 }

@@ -36,12 +36,26 @@ import org.apache.jena.sparql.core.DatasetGraph ;
  */
 
 public class REST_Quads_R extends REST_Quads {
+
+    private static final long serialVersionUID = 1309929984893333563L;
+
     public REST_Quads_R() {
         super() ;
     }
 
     @Override
-    protected void validate(HttpAction action) { }
+    protected void validate(HttpAction action) { 
+        // Allowed methods controlled by ActionREST.dispatch
+        String method = action.getRequest().getMethod() ;
+        switch(method) {
+            case HttpNames.METHOD_GET:
+            case HttpNames.METHOD_HEAD:
+            case HttpNames.METHOD_OPTIONS:
+                break ;
+            default:
+                ServletOps.errorMethodNotAllowed(method+" : Read-only dataset");
+        }
+    }
 
     @Override
     protected void doGet(HttpAction action) {

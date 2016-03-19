@@ -28,33 +28,26 @@ import org.apache.jena.sparql.util.Context ;
 /**
  * A DatasetGraph that uses the dataset lock to give weak transactional
  * behaviour, that is the application see transaction but they are not durable.
- * Only provides multiple-reader OR single-writer, and no write-transction
+ * Only provides multiple-reader OR single-writer, and no write-transaction
  * abort.
  */
 public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync {
-    static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
-        @Override
-        protected Boolean initialValue() {
-            return false ;
-        }
-    }
-
-    static class ThreadLocalReadWrite extends ThreadLocal<ReadWrite> {
-        @Override
-        protected ReadWrite initialValue() {
-            return null ;
-        }
-    }
-
-    private final ThreadLocalReadWrite readWrite     = new ThreadLocalReadWrite() ;
-    private final ThreadLocalBoolean   inTransaction = new ThreadLocalBoolean() ;
+    private final ThreadLocal<Boolean> writeTxn = ThreadLocal.withInitial(()->false) ;
     private final DatasetGraph dsg ;
+    private final TransactionalLock transactional ;  
     // Associated DatasetChanges (if any, may be null)
     private final DatasetChanges dsChanges ;
+    private final boolean abortSupported ;
 
     public DatasetGraphWithLock(DatasetGraph dsg) {
+        this(dsg, false) ;
+    }
+    
+    public DatasetGraphWithLock(DatasetGraph dsg, boolean abortSupported) {
         this.dsg = dsg ;
         this.dsChanges = findDatasetChanges(dsg) ;
+        this.transactional = TransactionalLock.create(dsg.getLock()) ;
+        this.abortSupported = abortSupported ;
     }
     
     /** Find a DatasetChanges handler.
@@ -91,37 +84,39 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     @Override
     public boolean isInTransaction() {
-        return inTransaction.get() ;
+        return transactional.isInTransaction() ;
     }
 
     protected boolean isTransactionType(ReadWrite readWriteType) {
-        return readWrite.get() == readWriteType ;
+        return transactional.isTransactionType(readWriteType) ;
     }
 
     @Override
     protected void _begin(ReadWrite readWrite) {
-        this.readWrite.set(readWrite) ;
-        boolean b = isTransactionType(ReadWrite.READ) ;
-        get().getLock().enterCriticalSection(b) ;
-        inTransaction.set(true) ;
+        transactional.begin(readWrite);
+        writeTxn.set(readWrite.equals(ReadWrite.WRITE));
         if ( dsChanges != null )
+            // Replace by transactional state.
             dsChanges.start() ;
     }
 
     @Override
     protected void _commit() {
-        if ( isTransactionType(ReadWrite.WRITE) )
+        if ( writeTxn.get() ) {
             sync() ;
+        }
+        transactional.commit();
         _end() ;
     }
 
     @Override
     protected void _abort() {
-        if ( isTransactionType(ReadWrite.WRITE) && ! abortImplemented() ) {
+        if ( writeTxn.get() && ! supportsTransactionAbort() ) {
             // Still clean up.
             _end() ; // This clears the transaction type.  
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
         }
+        transactional.abort(); 
         _end() ;
     }
 
@@ -129,16 +124,23 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
      *  Just by locking, a transaction can not write-abort (the changes have been made and not recorded).
      *  Subclasses may do better and still rely on this locking class.  
      */
-    protected boolean abortImplemented() { return false ; }
+    
+    @Override
+    public boolean supportsTransactions() {
+        return true;
+    }
 
     @Override
+    public boolean supportsTransactionAbort() {
+        return abortSupported;
+    }
+    
+    @Override
     protected void _end() {
-        if ( isInTransaction() ) {
-            if ( dsChanges != null )
-                dsChanges.finish();
-            get().getLock().leaveCriticalSection() ;
-            clearState() ;
-        }
+        if ( dsChanges != null )
+            dsChanges.finish();
+        transactional.end(); 
+        writeTxn.remove();
     }
 
     @Override
@@ -147,11 +149,6 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
             get().close() ;
     }
     
-    private void clearState() {
-        inTransaction.set(false) ;
-        readWrite.set(null) ;
-    }
-
     @Override
     public Context getContext() {
         return get().getContext() ;

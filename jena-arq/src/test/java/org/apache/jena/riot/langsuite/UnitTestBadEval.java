@@ -89,7 +89,7 @@ public class UnitTestBadEval extends LangTestCase
     
     private void run4()
     {
-        Dataset ds = DatasetFactory.createMem() ;
+        Dataset ds = DatasetFactory.createGeneral() ;
         try {
             RDFDataMgr.read(ds, input) ;
             fail("Managed to read a bad evaluation test without error") ;

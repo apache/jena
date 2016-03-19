@@ -68,7 +68,7 @@ public class TestTriXWriter extends BaseTest {
         ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
         RDFDataMgr.write(bout, dsg, Lang.TRIX) ;
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray()) ;
-        DatasetGraph dsg2 = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg2 = DatasetGraphFactory.create() ;
         RDFDataMgr.read(dsg2, bin, Lang.TRIX) ;
         boolean b = IsoMatcher.isomorphic(dsg, dsg2) ;
         assertTrue("Not isomorphic", b) ;

@@ -19,32 +19,25 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
-
-import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
-import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
-import org.apache.jena.arq.querybuilder.clauses.SelectClause;
-import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
-import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
-import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
-import org.apache.jena.arq.querybuilder.handlers.Handler;
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
-import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
-import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 /**
@@ -56,8 +49,6 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		implements Cloneable, PrologClause<T> {
 
-	// all queries have prologs
-	protected PrologHandler prologHandler;
 	// the query this builder is building
 	protected Query query;
 	// a map of vars to nodes for replacement during build.
@@ -75,11 +66,67 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * any other object type.</li>
 	 * </ul>
 	 * 
+	 * Uses the internal query prefix mapping to resolve prefixes.
+	 * 
 	 * @param o
 	 *            The object to convert. (may be null)
 	 * @return The Node value.
 	 */
 	public Node makeNode(Object o) {
+		return makeNode( o, query.getPrefixMapping() );
+	}
+	
+	/**
+	 * A convenience method to make an expression from a string.  Evaluates the 
+	 * expression with respect to the current query.
+	 * 
+	 * @param expression The expression to parse.
+	 * @return the Expr object.
+	 * @throws QueryParseExcpetion on error.
+	 */
+	public Expr makeExpr(String expression) throws QueryParseException
+	{
+		return ExprUtils.parse(query, expression, true);
+	}
+	
+	/**
+	 * A convenience method to quote a string.
+	 * @param q the string to quote.
+	 * 
+	 * Will use single quotes if there are no single quotes in the string or if the 
+	 * double quote is before the single quote in the string.
+	 * 
+	 * Will use double quote otherwise.
+	 * 
+	 * @return the quoted string. 
+	 */
+	public String quote(String q) {
+		int qt = q.indexOf('"');
+		int sqt = q.indexOf("'");
+		
+		if (sqt == -1 || qt<sqt)
+		{
+			return String.format( "'%s'", q);
+		}
+		return String.format( "\"%s\"", q);
+	}
+	
+	/**
+	 * Make a node from an object while using the associated prefix mapping.
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>Will call NodeFactoryExtra.parseNode() using the currently defined
+	 * prefixes if the object is a String</li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * @param o The object to convert (may be null).
+	 * @param pMapping The prefix mapping to use for prefix resolution.
+	 * @return The Node value.
+	 */
+	public static Node makeNode(Object o, PrefixMapping pMapping) {
 		if (o == null) {
 			return Node.ANY;
 		}
@@ -93,7 +140,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		if (o instanceof String) {
 			try {
 				return NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
-						.createForInput(query.getPrefixMapping()));
+						.createForInput(pMapping));
 			} catch (RiotException e) {
 				// expected in some cases -- do nothing
 			}
@@ -152,9 +199,20 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	protected AbstractQueryBuilder() {
 		query = new Query();
-		prologHandler = new PrologHandler(query);
 		values = new HashMap<Var, Node>();
 	}
+	
+	/**
+	 * Get the HandlerBlock for this query builder.
+	 * @return The associated handler block.
+	 */
+	public abstract HandlerBlock getHandlerBlock();
+	
+	@Override
+	public final PrologHandler getPrologHandler() {
+		return getHandlerBlock().getPrologHandler();
+	}
+
 
 	/**
 	 * Set a variable replacement. During build all instances of var in the
@@ -198,11 +256,6 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	}
 
 	@Override
-	public PrologHandler getPrologHandler() {
-		return prologHandler;
-	}
-
-	@Override
 	public T addPrefix(String pfx, Resource uri) {
 		return addPrefix(pfx, uri.getURI());
 	}
@@ -215,21 +268,21 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addPrefix(String pfx, String uri) {
-		prologHandler.addPrefix(pfx, uri);
+		getPrologHandler().addPrefix(pfx, uri);
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addPrefixes(Map<String, String> prefixes) {
-		prologHandler.addPrefixes(prefixes);
+		getPrologHandler().addPrefixes(prefixes);
 		return (T) this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public T setBase(String base) {
-		prologHandler.setBase(base);
+		getPrologHandler().setBase(base);
 		return (T) this;
 	}
 
@@ -262,6 +315,8 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public final Query build() {
 		Query q = new Query();
+		
+		// set the query type
 		switch (query.getQueryType())
 		{
 		case Query.QueryTypeAsk:
@@ -280,46 +335,20 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
 		
-		Stack<Handler> handlerStack = new Stack<Handler>();
-		PrologHandler ph = new PrologHandler(q);
-		handlerStack.push(ph);
-		ph.addAll(prologHandler);
-		ph.setVars(values);
-		if (this instanceof SelectClause) {
-			SelectHandler sh = new SelectHandler(q);
-			sh.addAll(((SelectClause<?>) this).getSelectHandler());
-			sh.setVars(values);
-			handlerStack.push(sh);
+		// use the HandlerBlock implementation to copy the data.
+		HandlerBlock handlerBlock = new HandlerBlock(q);
+		handlerBlock.addAll( getHandlerBlock() );
+		
+		// set the vars
+		handlerBlock.setVars(values);
+		
+		//  make sure we have a query pattern before we start building.
+		if (q.getQueryPattern() == null)
+		{
+			q.setQueryPattern( new ElementGroup() );
 		}
-		if (this instanceof ConstructClause) {
-			ConstructHandler ch = new ConstructHandler(q);
-			ch.addAll(((ConstructClause<?>) this).getConstructHandler());
-			ch.setVars(values);
-			handlerStack.push(ch);
-		}
-		if (this instanceof DatasetClause) {
-			DatasetHandler dh = new DatasetHandler(q);
-			dh.addAll(((DatasetClause<?>) this).getDatasetHandler());
-			dh.setVars(values);
-			handlerStack.push(dh);
-		}
-		if (this instanceof SolutionModifierClause) {
-			SolutionModifierHandler smh = new SolutionModifierHandler(q);
-			smh.addAll(((SolutionModifierClause<?>) this)
-					.getSolutionModifierHandler());
-			smh.setVars(values);
-			handlerStack.push(smh);
-		}
-		if (this instanceof WhereClause) {
-			WhereHandler wh = new WhereHandler(q);
-			wh.addAll(((WhereClause<?>) this).getWhereHandler());
-			wh.setVars(values);
-			handlerStack.push(wh);
-		}
-
-		while (!handlerStack.isEmpty()) {
-			handlerStack.pop().build();
-		}
+		
+		handlerBlock.build();
 
 		return q;
 	}
@@ -336,13 +365,26 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	public static Query clone(Query q2) {
 		Query retval = new Query();
-		new PrologHandler(retval).addAll(new PrologHandler(q2));
-		new ConstructHandler(retval).addAll(new ConstructHandler(q2));
-		new DatasetHandler(retval).addAll(new DatasetHandler(q2));
-		new SolutionModifierHandler(retval).addAll(new SolutionModifierHandler(
-				q2));
-		new WhereHandler(retval).addAll(new WhereHandler(q2));
-		new SelectHandler(retval).addAll(new SelectHandler(q2));
+		
+		// set the query type
+	    if (q2.isSelectType())
+	    {
+	    	retval.setQuerySelectType();
+	    } else if (q2.isAskType()) {
+	    	retval.setQueryAskType();
+	    } else if (q2.isDescribeType())
+	    {
+	    	retval.setQueryDescribeType();
+	    } else if (q2.isConstructType()) 
+	    {
+	    	retval.setQueryConstructType();
+	    }
+	    
+	    // use the handler block to clone the data
+	    HandlerBlock hb = new HandlerBlock( retval );
+	    HandlerBlock hb2 = new HandlerBlock( q2 );
+	    hb.addAll(hb2);
+		
 		return retval;
 	}
 
@@ -356,13 +398,8 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return The new query with the specified vars replaced.
 	 */
 	public static Query rewrite(Query q2, Map<Var, Node> values) {
-		new PrologHandler(q2).setVars(values);
-		new ConstructHandler(q2).setVars(values);
-		new DatasetHandler(q2).setVars(values);
-		new SolutionModifierHandler(q2).setVars(values);
-		new WhereHandler(q2).setVars(values);
-		new SelectHandler(q2).setVars(values);
+		HandlerBlock hb = new HandlerBlock(q2);
+		hb.setVars(values);
 		return q2;
 	}
-	
 }

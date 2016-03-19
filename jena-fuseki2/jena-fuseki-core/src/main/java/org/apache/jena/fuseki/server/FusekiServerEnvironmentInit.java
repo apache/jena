@@ -22,6 +22,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.FusekiLogging ;
+import org.apache.jena.system.JenaSystem ;
 
 /** Setup the enviroment and logging.
  *  Runs before the ShiroEnvironmentLoader.
@@ -32,10 +33,20 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiEnv.setEnvironment();
-        FusekiLogging.setLogging();
+        JenaSystem.init() ;
+        FusekiEnv.setEnvironment() ;
+        FusekiLogging.setLogging() ;
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {}
+    public void contextDestroyed(ServletContextEvent sce) {
+        // Stop handling requests.
+        
+        // ActionSPARQL uses DataAccessPointRegistry to map URI to services (DataAccessPoint)
+        
+        // DataService -> DataService
+//        DataAccessPointRegistry.shutdown() ;
+//        DatasetDescriptionRegistry.reset() ;
+        JenaSystem.shutdown(); 
+    }
 }

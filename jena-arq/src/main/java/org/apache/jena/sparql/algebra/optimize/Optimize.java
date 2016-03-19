@@ -20,6 +20,7 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -116,7 +117,7 @@ public class Optimize implements Rewrite
     }
 
     /** Alternative name for compatibility only */
-    public static final Symbol filterPlacementOldName = ARQConstants.allocSymbol("filterPlacement") ;
+    public static final Symbol filterPlacementOldName = SystemARQ.allocSymbol("filterPlacement") ;
     
     @Override
     public Op rewrite(Op op)
@@ -225,10 +226,11 @@ public class Optimize implements Rewrite
             }
         }
         
-        // Replace suitable FILTER(?x = TERM) with (assign) and write the TERm for ?x in the pattern.    
+        // Replace suitable FILTER(?x = TERM) with (assign) and write the TERM for ?x in the pattern.    
         // Apply (possible a second time) after FILTER placement as it can create new possibilities.
         // See JENA-616.
-        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
+  
+       if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
             op = apply("Filter Equality", new TransformFilterEquality(), op) ;
                 
         // Replace suitable FILTER(?x != TERM) with (minus (original) (table)) where the table contains
@@ -246,6 +248,10 @@ public class Optimize implements Rewrite
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
             op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+
+        // Normally, leave to the specific engines.
+        if ( context.isTrue(ARQ.optReorderBGP) )
+            op = apply("ReorderMerge BGPs", new TransformReorder(), op) ;
         
         // Merge (extend) and (assign) stacks
         if ( context.isTrueOrUndef(ARQ.optMergeExtends) )

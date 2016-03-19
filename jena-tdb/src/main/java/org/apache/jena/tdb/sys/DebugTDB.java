@@ -20,7 +20,7 @@ package org.apache.jena.tdb.sys;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.record.Record ;

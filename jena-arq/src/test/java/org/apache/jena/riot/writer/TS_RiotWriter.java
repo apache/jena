@@ -18,8 +18,6 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.riot.RIOT ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -37,9 +35,4 @@ import org.junit.runners.Suite.SuiteClasses ;
 })
 
 public class TS_RiotWriter
-{
-    @BeforeClass public static void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-}
+{}

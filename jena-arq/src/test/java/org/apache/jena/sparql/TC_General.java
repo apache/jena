@@ -24,6 +24,8 @@ import org.apache.jena.sparql.algebra.TS_Algebra ;
 import org.apache.jena.sparql.algebra.optimize.TS_Optimization ;
 import org.apache.jena.sparql.api.TS_API ;
 import org.apache.jena.sparql.core.TS_Core ;
+import org.apache.jena.sparql.core.assembler.TS_Assembler ;
+import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem ;
 import org.apache.jena.sparql.engine.TS_Engine ;
 import org.apache.jena.sparql.engine.join.TS_Join ;
 import org.apache.jena.sparql.expr.E_Function ;
@@ -46,7 +48,6 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TS_SSE.class
@@ -68,6 +69,8 @@ import org.junit.runners.Suite ;
     , TS_Syntax.class
     , TS_API.class
     , TS_Core.class
+    , TS_Assembler.class
+    , TS_DatasetTxnMem.class
     , TS_Path.class
     , TS_ParamString.class
     , TS_Update.class
@@ -76,14 +79,12 @@ import org.junit.runners.Suite ;
 
 public class TC_General
 {
-    @BeforeClass public static void beforeClass()
-    {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
+    @BeforeClass
+    public static void beforeClass() {
+        NodeValue.VerboseWarnings = false;
+        E_Function.WarnOnUnknownFunction = false;
     }
-    
-    @AfterClass  public static void afterClass()
-    {
-        
-    }
+
+    @AfterClass
+    public static void afterClass() { }
 }

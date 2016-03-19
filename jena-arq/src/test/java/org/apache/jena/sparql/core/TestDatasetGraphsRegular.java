@@ -28,7 +28,7 @@ import org.apache.jena.sparql.graph.GraphOps ;
 public class TestDatasetGraphsRegular extends AbstractTestGraphOverDataset
 {
     @Override
-    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.createMem() ; }
+    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }
     
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)

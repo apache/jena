@@ -52,6 +52,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.* ;
@@ -217,14 +218,15 @@ public class XSDFuncOp
     public static boolean booleanEffectiveValue(NodeValue nv) {
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
-        // string: length(string) > 0
+        // plain literal: lexical form length(string) > 0
         // numeric: number != Nan && number != 0
         // http://www.w3.org/TR/xquery/#dt-ebv
 
         if ( nv.isBoolean() )
             return nv.getBoolean() ;
-        if ( nv.isString() )
-            return nv.getString().length() > 0 ;
+        if ( nv.isString() || nv.isLangString() )
+            // Plain literals.
+            return ! nv.getString().isEmpty() ;
         if ( nv.isInteger() )
             return !nv.getInteger().equals(NodeValue.IntegerZERO) ;
         if ( nv.isDecimal() )
@@ -326,19 +328,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue sqrt(NodeValue v) {
-        switch (classifyNumeric("sqrt", v)) {
-            case OP_INTEGER :
-            case OP_DECIMAL :
-                double dec = v.getDecimal().doubleValue() ;
-                return NodeValue.makeDecimal(Math.sqrt(dec)) ;
-            case OP_FLOAT :
-                // NB - returns a double
-                return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
-            case OP_DOUBLE :
-                return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
-            default :
-                throw new ARQInternalErrorException("Unrecognized numeric operation : " + v) ;
-        }
+        return NodeValue.makeDouble(Math.sqrt(v.getDouble())) ;
     }
    
     // NB Java string start from zero and uses start/end
@@ -583,10 +573,8 @@ public class XSDFuncOp
         Node n = v.asNode() ;
         if ( !n.isLiteral() )
             throw new ExprEvalException("Not a literal") ;
-        if ( n.getLiteralDatatype() != null ) {
-            if ( !n.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
-                throw new ExprEvalException("Not a string literal") ;
-        }
+        if ( ! Util.isSimpleString(n) && ! Util.isLangString(n) )  
+            throw new ExprEvalException("Not a string literal") ;
 
         String str = n.getLiteralLexicalForm() ;
         String encStr = IRILib.encodeUriComponent(str) ;
@@ -1071,7 +1059,13 @@ public class XSDFuncOp
      */
     
     public static NodeValue dateTimeCast(NodeValue nv, XSDDatatype xsd) {
-        // http://www.w3.org/TR/xpath-functions/#casting-to-datetimes
+        if ( nv.isString() ) {
+            String s = nv.getString() ;
+            if ( ! xsd.isValid(s) )
+                throw new ExprEvalTypeException("Invalid lexical form: '"+s+"' for "+xsd.getURI()) ;
+            return NodeValue.makeNode(s, xsd) ;
+        }
+        
         if ( !nv.hasDateTime() )
             throw new ExprEvalTypeException("Not a date/time type: " + nv) ;
 

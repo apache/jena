@@ -28,6 +28,7 @@ jena.rdfcompare
 jena.rdfcopy
 jena.rdfparse
 jena.schemagen
+arq.rdfdiff
 arq.sparql
 arq.arq
 arq.iri

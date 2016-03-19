@@ -228,7 +228,12 @@ public class NodeFunctions {
     // -------- lang
 
     public static NodeValue lang(NodeValue nv) {
-        return NodeValue.makeString(lang(nv.asNode())) ;
+        if ( nv.isLangString() )
+            return NodeValue.makeString(nv.getLang()) ;
+        if ( nv.isLiteral() )
+            return NodeValue.nvEmptyString ;
+        NodeValue.raise(new ExprTypeException("lang: Not a literal: " + nv.asQuotedString())) ;
+        return null ;
     }
 
     public static String lang(Node node) {
@@ -469,10 +474,9 @@ public class NodeFunctions {
 
         String lex = v1.asString() ;
         String lang = v2.asString() ;
-        // Check?
-
-        Node n = NodeFactory.createLiteral(lex, lang) ;
-        return NodeValue.makeNode(n) ;
+        if ( lang.isEmpty() )
+            throw new ExprEvalException("Empty lang tag") ;
+        return NodeValue.makeLangString(lex, lang) ;
     }
 
 }

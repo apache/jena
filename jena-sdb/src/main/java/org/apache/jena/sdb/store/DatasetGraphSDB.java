@@ -23,93 +23,104 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.graph.GraphSDB ;
 import org.apache.jena.sdb.util.StoreUtils ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphCaching ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.graph.GraphUtils ;
 
-public class DatasetGraphSDB extends DatasetGraphCaching
-    implements DatasetGraph, Closeable 
+public class DatasetGraphSDB extends DatasetGraphTriplesQuads 
+    implements DatasetGraph, Closeable
+    /** SDB uses JDBC transactions, not Dataset transactions*/
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
     private final Context context ;
+    private GraphSDB defaultGraph;
     
-    public DatasetGraphSDB(Store store, Context context)
-    {
-        this(store, null, context) ;
+    public DatasetGraphSDB(Store store, Context context) {
+        this(store, new GraphSDB(store), context);
     }
-    
-    public DatasetGraphSDB(Store store, GraphSDB graph, Context context)
-    {
-        this.store = store ;
+
+    public DatasetGraphSDB(Store store, GraphSDB graph, Context context) {
+        this.store = store;
         // Force the "default" graph
-        this.defaultGraph = graph ;
-        this.context = context ;
+        this.defaultGraph = graph;
+        this.context = context;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    @Override
+    public Iterator<Node> listGraphNodes() {
+        return StoreUtils.storeGraphNames(store);
+    }
+
+    @Override
+    public boolean containsGraph(Node graphNode) {
+        return StoreUtils.containsGraph(store, graphNode);
+    }
+
+    @Override
+    public Graph getDefaultGraph() {
+        return defaultGraph;
+    }
+
+    @Override
+    public Graph getGraph(Node graphNode) {
+        return new GraphSDB(store, graphNode);
     }
     
-    public Store getStore() { return store ; }
-    
-    @Override
-    public Iterator<Node> listGraphNodes()
-    {
-        return StoreUtils.storeGraphNames(store) ;
-    }
-
-    @Override
-    protected boolean _containsGraph(Node graphNode)
-    {
-        return StoreUtils.containsGraph(store, graphNode) ;
-    }
-
-    @Override
-    protected Graph _createDefaultGraph()
-    {
-        return new GraphSDB(store) ;
-    }
-
-    @Override
-    protected Graph _createNamedGraph(Node graphNode)
-    {
-        return new GraphSDB(store, graphNode) ;
-    }
-
-    // Use unsubtle helper versions (the bulk loader copes with large additions).
+    // Use unsubtle versions (the bulk loader copes with large additions).
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
-    { Helper.addToDftGraph(this, s, p, o) ; }
+    { getDefaultGraph().add(new Triple(s, p, o)) ; }
 
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o)
-    { Helper.addToNamedGraph(this, g, s, p, o) ; }
+    { getGraph(g).add(new Triple(s, p, o)) ; }
 
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o)
-    { Helper.deleteFromDftGraph(this, s, p, o) ; }
+    { getDefaultGraph().delete(new Triple(s, p, o)) ; }
 
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
-    { Helper.deleteFromNamedGraph(this, g, s, p, o) ; }
+    { getGraph(g).delete(new Triple(s, p, o)) ; }
 
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
-    { return Helper.findInDftGraph(this, s, p, o) ; }
+    { return GraphUtils.triples2quadsDftGraph(LibSDB.findTriplesInDftGraph(this, s, p, o)) ; }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
-    { return Helper.findInAnyNamedGraphs(this, s, p, o) ; } 
+    { return LibSDB.findInQuads(this, Node.ANY, s, p, o) ; } 
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
-    { return Helper.findInSpecificNamedGraph(this, g, s, p, o) ; }
-
+    { return LibSDB.findInQuads(this, g, s, p, o) ; }
+    
     @Override
-    protected void _close()
+    public void close()
     { store.close() ; }
+    
+    private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return false ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
+
+    // Helper implementations of operations.
+    // Not necessarily efficient.
 
 }

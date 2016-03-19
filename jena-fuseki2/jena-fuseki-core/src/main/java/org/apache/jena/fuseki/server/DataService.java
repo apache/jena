@@ -43,7 +43,7 @@ public class DataService { //implements DatasetMXBean {
     
     public static DataService dummy = new DataService(null) ;
     static {
-        dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+        dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQuery) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }
@@ -90,7 +90,7 @@ public class DataService { //implements DatasetMXBean {
     }
 
     /** Return the OperationNames available here.
-     *  @see #getOperation(OperationName) to ge the endpoint list
+     *  @see #getOperation(OperationName) to get the endpoint list
      */
     public Collection<OperationName> getOperations() {
         return operations.keySet() ;

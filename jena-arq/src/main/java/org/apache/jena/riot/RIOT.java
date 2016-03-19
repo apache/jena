@@ -21,8 +21,16 @@ package org.apache.jena.riot ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 
 public class RIOT {
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.
+    private static volatile boolean initialized = false ;
+    private static Object           initLock    = new Object() ;
+    
     /** IRI for RIOT */
     public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
@@ -39,23 +47,26 @@ public class RIOT {
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
-
-    public static void setStrictMode(boolean state) {
-        SysRIOT.strictMode = state ;
-        SysRIOT.StrictXSDLexicialForms = state ;
+    
+    /** Control of multiline literals */ 
+    public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
+    
+    /** The system-wide context */
+    public static Context getContext() {
+        return ARQ.getContext();
     }
-
-    private static volatile boolean initialized = false ;
-    private static Object           initLock    = new Object() ;
 
     public static void init() {
         if ( initialized )
             return ;
         synchronized (initLock) {
-            if ( initialized )
+            if ( initialized ) {
+                JenaSystem.logLifecycle("RIOT.init - skip") ;
                 return ;
+            }
             initialized = true ;
-            // Becareful with what this touches - don't touch ARQ.*
+            JenaSystem.logLifecycle("RIOT.init - start") ;
+            // Be careful with what this touches - don't touch ARQ.*
             // because that depends on Jena core and we may be
             // initializing because IO_Ctl (ie. Jena core)
             // called RIOT.init.
@@ -68,6 +79,7 @@ public class RIOT {
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.
             // This is done in ARQ.init at the proper moment.
+            JenaSystem.logLifecycle("RIOT.init - finish") ;
         }
     }
 

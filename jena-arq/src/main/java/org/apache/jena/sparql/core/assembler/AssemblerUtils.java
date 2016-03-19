@@ -19,10 +19,12 @@
 package org.apache.jena.sparql.core.assembler;
 
 import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.ConstAssembler ;
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -33,6 +35,8 @@ import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.vocabulary.RDFS ;
 
 public class AssemblerUtils
 {
@@ -45,7 +49,7 @@ public class AssemblerUtils
     
     private static boolean initialized = false ; 
     
-    static { ARQ.init(); init() ; } 
+    static { JenaSystem.init() ; } 
     
     static public void init()
     {
@@ -53,37 +57,52 @@ public class AssemblerUtils
             return ;
         initialized = true ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        registerWith(Assembler.general) ;
+        registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
+        registerDataset(InMemDatasetAssembler.getType(),    new InMemDatasetAssembler()) ;
     }
     
-    static public void registerWith(AssemblerGroup g)
-    {
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        g.implementWith(DatasetAssembler.getType(), new DatasetAssembler()) ;
-        g.implementWith(DatasetNullAssembler.getType(), new DatasetNullAssembler()) ;
+    private static Model modelExtras = ModelFactory.createDefaultModel() ;
+    
+    /** Register an assembler that creates a dataset */
+    static public void registerDataset(Resource r, Assembler a) {
+        register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
+    }
+
+    /** Register an addition assembler */  
+    static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
+        registerAssembler(g, r, a) ;
+        if ( superType != null && ! superType.equals(r) ) 
+            modelExtras.add(r, RDFS.subClassOf, DatasetAssembler.getType()) ;
     }
     
-    private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
-    {
-        g.implementWith(r, a) ;
+    /** register */ 
+    public static void registerAssembler(AssemblerGroup group, Resource r, Assembler a) {
+        if ( group == null )
+            group = ConstAssembler.general();
+        group.implementWith(r, a);
+        // assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
-    
-    public static Object build(String assemblerFile, String typeURI)
-    {
-        Resource type = ResourceFactory.createResource(typeURI) ;
-        return build(assemblerFile, type) ; 
-    }
-    
-    public static Object build(String assemblerFile, Resource type)
-    {
-        if ( assemblerFile == null )
-            throw new ARQException("No assembler file") ;
+
+    public static Model readAssemblerFile(String assemblerFile) {
         Model spec = null ;
         try {
             spec = RDFDataMgr.loadModel(assemblerFile) ;
         } catch (Exception ex)
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
-
+        spec.add(modelExtras) ;
+        return spec ;
+    }
+    
+    public static Object build(String assemblerFile, String typeURI) {
+        Resource type = ResourceFactory.createResource(typeURI) ;
+        return build(assemblerFile, type) ; 
+    }
+    
+    public static Object build(String assemblerFile, Resource type) {
+        if ( assemblerFile == null )
+            throw new ARQException("No assembler file") ;
+        Model spec = readAssemblerFile(assemblerFile) ;
+        
         Resource root = null ;
         try {
             root = GraphUtils.findRootByType(spec, type) ;

@@ -23,14 +23,13 @@ import junit.framework.TestSuite ;
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.atlas.legacy.TC_Atlas_ARQ ;
 import org.apache.jena.common.TC_Common ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.TC_Riot ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.web.TS_Web ;
-import arq.TS_Cmd ;
 
 /**
  * All the ARQ tests 
@@ -60,7 +59,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TC_Common.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
 
-        ts.addTest(new JUnit4TestAdapter(TS_Cmd.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Web.class)) ;
         
         // Main ARQ internal test suite.
@@ -82,7 +80,7 @@ public class ARQTestSuite extends TestSuite
 	private ARQTestSuite()
 	{
         super("All ARQ tests");
-        ARQ.init() ;
+        JenaSystem.init();
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;

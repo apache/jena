@@ -54,7 +54,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected boolean lineNumbers = false ;
     protected boolean startingNewLine = true ;
     private char padChar = ' ' ;
-    private String endOfLineMarker = null ;     // Null mean none.
+    private String endOfLineMarker = null ;     // Null means none.
     private String padString = null ;
     
     protected boolean flatMode = false ;
@@ -182,8 +182,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         row++ ;
         column = 0 ;
         // Note that PrintWriters do not autoflush by default
-        // so if layered over a PrintWirter, need to flush that as well.  
-        if (flushOnNewline) flush() ;
+        // so if layered over a PrintWriter, need to flush that as well.  
+        if (flushOnNewline) 
+            flush() ;
     }
     
     private boolean atStartOfLine() { return column <= currentIndent ; }
@@ -195,17 +196,17 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
     
     @Override
-    public void close() { try { out.close(); } catch (IOException ex) {} }
+    public void close() { IO.close(out) ; }
     
     @Override
-    public void flush() { try { out.flush(); } catch (IOException ex) {} }
+    public void flush() { IO.flush(out); }
     
     /** Pad to the indent (if we are before it) */
     public void pad()
     {
         if ( startingNewLine && currentIndent > 0 )
             lineStart() ;
-        padInt() ;
+        padInternal() ;
     }
     
     /** Pad to a given number of columns EXCLUDING the indent.
@@ -233,7 +234,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
     
     
-    private void padInt() 
+    private void padInternal() 
     {
         if ( padString == null )
         {
@@ -301,7 +302,8 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     /** Flush on newline **/
     public boolean getFlushOnNewline()      { return flushOnNewline; }
-    public void setFlushOnNewline(boolean flushOnNewline) { this.flushOnNewline = flushOnNewline; } 
+    public void setFlushOnNewline(boolean flushOnNewline) 
+    { this.flushOnNewline = flushOnNewline; } 
     
     public char getPadChar()                { return padChar ; }
     public void setPadChar(char ch)         { this.padChar  = ch ; }
@@ -339,7 +341,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         // so that a final blank does not cause a line number  
         if ( startingNewLine )
             insertLineNumber() ;
-        padInt() ;
+        padInternal() ;
         startingNewLine = false ;
     }
     

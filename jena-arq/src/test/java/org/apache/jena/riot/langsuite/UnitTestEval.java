@@ -65,7 +65,7 @@ public class UnitTestEval extends LangTestCase
     }
     
     private void run4() { 
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         try {
             if ( baseIRI != null )
                 RDFDataMgr.read(dsg, input, baseIRI, lang) ;
@@ -74,7 +74,7 @@ public class UnitTestEval extends LangTestCase
             
             Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS) ;
             
-            DatasetGraph results = DatasetGraphFactory.createMem() ;
+            DatasetGraph results = DatasetGraphFactory.create() ;
             try {
                 RDFDataMgr.read(results, output, outLang) ;
             } catch (RiotException ex) {

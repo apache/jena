@@ -30,11 +30,9 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
 import org.apache.jena.sparql.lib.Metadata ;
@@ -42,6 +40,7 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
 import org.apache.jena.tdb.modify.UpdateEngineTDB ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;
@@ -55,6 +54,17 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public class TDB {
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.  Specifcally,
+    // initLock being null because elsewhere started the initialization
+    // and is calling into the TDB class. 
+    // The best order is:
+    //    Initialization controls
+    //    All calculated constants
+    //    static { JenaSystem.init() ; }
+    private static final Object initLock = new Object() ;
+    private static volatile boolean initialized = false ;
+    
     /** IRI for TDB */
     public static final String  tdbIRI                           = "http://jena.hpl.hp.com/#tdb" ;
 
@@ -101,15 +111,6 @@ public class TDB {
     public static Context getContext() {
         return ARQ.getContext() ;
     }
-
-    // Called on assembler loading.
-    // Real initializtion happnes due to class static blocks.
-    /**
-     * TDB System initialization - normally, this is not explicitly called
-     * because all routes to use TDB will cause initialization to occur.
-     * However, calling it repeatedly is safe and low cost.
-     */
-    public static void init() {}
 
     /**
      * Release any and all system resources held by TDB. This does NOT close or
@@ -208,39 +209,59 @@ public class TDB {
             ((Sync)object).sync() ;
     }
 
-    private static boolean initialized = false ;
-    static {
-        initialization1() ;
-    }
+    // ---- Static constants read by modVersion
+    // ---- Must be after initialization.
+    
+    static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
+    static private Metadata    metadata         = new Metadata(metadataLocation) ;
+    /** The root package name for TDB */
+    public static final String PATH             = "org.apache.jena.tdb" ;
+    // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
+    
+    public static final String NAME             = "TDB" ;
+    /** The full name of the current TDB version */
+    public static final String VERSION          = metadata.get(PATH + ".version", "DEV") ;
+    /** The date and time at which this release was built */
+    public static final String BUILD_DATE       = metadata.get(PATH + ".build.datetime", "unset") ;
 
-    private static synchronized void initialization1() {
+    static { JenaSystem.init(); }
+
+    /**
+     * TDB System initialization - normally, this is not explicitly called
+     * because Jena system wide initialization occurs automatically.
+     * However, calling it repeatedly is safe and low cost.
+     */
+    public static void init() {
         // Called at start.
-        if ( initialized )
+        if ( initialized ) {
             return ;
-        initialized = true ;
+        }
+        
+        synchronized(initLock) {
+            if ( initialized ) {
+                JenaSystem.logLifecycle("TDB.init - return") ;
+                return ;
+            }
+            initialized = true ;
+            JenaSystem.logLifecycle("TDB.init - start") ;
+            LangRDFXML.RiotUniformCompatibility = true ;
+            EnvTDB.processGlobalSystemProperties() ;
 
-        RIOT.init() ;
-        SystemTDB.init() ;
-        ARQ.init() ;
-        LangRDFXML.RiotUniformCompatibility = true ;
-        EnvTDB.processGlobalSystemProperties() ;
+            MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
+            AssemblerTDB.init() ;
+            QueryEngineTDB.register() ;
+            UpdateEngineTDB.register() ;
+            MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
-        MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
-        AssemblerUtils.init() ;
-        AssemblerTDB.init() ;
-        QueryEngineTDB.register() ;
-        UpdateEngineTDB.register() ;
-        MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
-
-        wireIntoExecution() ;
-
-        if ( log.isDebugEnabled() )
-            log.debug("\n" + ARQ.getContext()) ;
+            wireIntoExecution() ;
+            JenaSystem.logLifecycle("TDB.init - finish") ;
+        }
     }
 
     private static void wireIntoExecution() {
         // Globally change the stage generator to intercept BGP on TDB
-        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+        Context cxt = ARQ.getContext() ;
+        StageGenerator orig = StageBuilder.chooseStageGenerator(cxt) ; 
 
         // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used. This means that datasets of mixed
@@ -252,21 +273,9 @@ public class TDB {
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
 
-    static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
-    static private Metadata    metadata         = new Metadata(metadataLocation) ;
-
-    /** The root package name for TDB */
-    public static final String PATH             = "org.apache.jena.tdb" ;
+    
 
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
-
-    public static final String NAME             = "TDB" ;
-
-    /** The full name of the current TDB version */
-    public static final String VERSION          = metadata.get(PATH + ".version", "DEV") ;
-
-    /** The date and time at which this release was built */
-    public static final String BUILD_DATE       = metadata.get(PATH + ".build.datetime", "unset") ;
 
     // Final initialization (in case any statics in this file are important).
     static {

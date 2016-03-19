@@ -639,6 +639,14 @@ public interface ModelCon {
         matches <code>predicate</code>, and O matches the typed literal
         corresponding to <code>object</code>.
     */ 
+    StmtIterator listLiteralStatements(Resource subject, Property predicate, int object );
+
+    /** 
+        Answer a statement iterator that will iterate over all the statements
+        (S, P, O) in this model where S matches <code>subject</code>, P
+        matches <code>predicate</code>, and O matches the typed literal
+        corresponding to <code>object</code>.
+    */ 
     StmtIterator listLiteralStatements( Resource subject, Property predicate, float object );
 
     /** 

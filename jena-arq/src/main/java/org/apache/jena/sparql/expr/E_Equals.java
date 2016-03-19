@@ -42,5 +42,5 @@ public class E_Equals extends ExprFunction2
     }
     
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_Equals(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {  return new E_Equals(e1 , e2) ; }
 }

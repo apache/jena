@@ -40,14 +40,14 @@ public class SDBQueryTestSuite extends TestSuite
     
     private SDBQueryTestSuite()
     {
-        super("SDB") ;
-        
+        super("SDB Query") ;
+        SDB.init();
         if ( true )
             // PostgreSQL gets upset with comments in comments??
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
 
         QueryTestSDBFactory.make(this, SDBTestSetup.storeList, SDBTestSetup.manifestMain) ;
-        QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
+        //QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
     }
     
  

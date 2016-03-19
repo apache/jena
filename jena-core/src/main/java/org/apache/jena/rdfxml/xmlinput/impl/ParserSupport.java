@@ -29,6 +29,7 @@ import java.util.Map ;
 
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdfxml.xmlinput.ARPErrorNumbers ;
+import org.apache.xerces.util.XML11Char ;
 import org.apache.xerces.util.XMLChar ;
 import org.xml.sax.SAXParseException ;
 
@@ -80,26 +81,38 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 			}
 		}
 
-
-		checkXMLName(taintMe,str);
+		checkID_XMLName(taintMe,str);
 		checkEncoding(taintMe,str);
 	}
-	protected void checkXMLName( Taint taintMe, String str) throws SAXParseException {
-		if (!XMLChar.isValidNCName(str)) {
-			//   	System.err.println("not name (id): " + str);
+	
+	protected void checkNodeID_XMLName( Taint taintMe, String str) throws SAXParseException {
+	    if ( ! XMLChar.isValidNCName(str) ) { 
+            warning(taintMe,
+                WARN_BAD_NAME,
+                "Not an XML Name: '" + str + "'");
+        }
+	}
+	
+	protected void checkID_XMLName( Taint taintMe, String str) throws SAXParseException {
+	    // Was called "checkXMLName" and same code as checkNodeID_XMLName until Jena 3.1.0.
+	    // See JENA-1071
+	    
+	    // Java and xerces are XML 1.0 4th edition.
+	    // XML 1.0 5th edition and XML 1.1 allow a wider range of characters in an NCName.
+	    
+	    // rdf:about="..." is any string but rdf:ID="..." is an XML NCName.
+	    
+	    // This operation here should allow the wider range to make
+	    // it compatible with rdf:about="...full URI..."
+
+	    //if (!XMLChar.isValidNCName(str)) {
+		if ( ! XML11Char.isXML11ValidNCName(str) ) { 
 			warning(taintMe,
 				WARN_BAD_NAME,
 				"Not an XML Name: '" + str + "'");
 		}
-
 	}
-//	protected void checkNodeID(Taint taintMe, String str) throws SAXParseException {
-//		if (!XMLChar.isValidNCName(str)) {
-//			warning(taintMe,
-//				WARN_BAD_NAME,
-//				"Not an XML Name: '" + str + "'");
-//		}
-//	}
+
 	public void checkString(Taint taintMe,String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))
 			warning(taintMe,

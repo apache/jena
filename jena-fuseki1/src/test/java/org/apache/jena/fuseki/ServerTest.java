@@ -18,6 +18,11 @@
 
 package org.apache.jena.fuseki;
 
+import java.io.IOException ;
+import java.net.ServerSocket ;
+import java.util.Arrays ;
+
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -44,7 +49,7 @@ public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
     
-    public static final int port             = 3635 ;   // Different to the Fuseki2 test port.
+    public static final int port             = choosePort(3635, 3634, 3653, 3652, 103635, 103634, 103653, 103652) ;   // Different to the Fuseki2 test ports.
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
@@ -92,12 +97,13 @@ public class ServerTest
     
     protected static void setupServer()
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         server = EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
         server.start() ;
     }
     
     protected static void teardownServer() {
+        DatasetRegistry.get().clear() ;
         if ( server != null )
             server.stop() ;
         server = null ;
@@ -107,5 +113,21 @@ public class ServerTest
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
+    }
+    
+    // Imperfect probing for a port.
+    // There is a race condition on finding a free port and using it in the tests. 
+    private static int choosePort(int... ports) {
+        for (int port : ports) {
+            try {
+                @SuppressWarnings("resource")
+                ServerSocket s = new ServerSocket(port) ;
+                s.close();
+                return s.getLocalPort() ; // OK to call after close.
+            } catch (IOException ex) { 
+                continue;
+            }
+        }
+        throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }
 }

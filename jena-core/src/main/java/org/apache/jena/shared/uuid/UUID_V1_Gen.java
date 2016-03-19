@@ -22,6 +22,7 @@ import java.net.NetworkInterface ;
 import java.util.Enumeration ;
 import java.util.Locale ;
 
+import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.shared.uuid.JenaUUID.UUIDFormatException ;
 
 /* RFC 4122  "A Universally Unique IDentifier (UUID) URN Namespace"
@@ -177,16 +178,16 @@ public class UUID_V1_Gen implements UUIDFactory
         //       ^        ^    ^    ^    ^           
         // Byte: 0        4    6    8    10
         // Char: 0        9    14   19   24  including hyphens
-        int x = (int)Bits.unpack(s, 19, 23) ;
+        int x = (int)BitsLong.unpack(s, 19, 23) ;
         int variant = (x >>> 14) ;
         int clockSeq = x & 0x3FFF ;
 
-        long timeHigh = Bits.unpack(s, 15, 18) ;
-        long timeMid = Bits.unpack(s, 9, 13) ;
-        long timeLow = Bits.unpack(s, 0, 8) ;
+        long timeHigh = BitsLong.unpack(s, 15, 18) ;
+        long timeMid = BitsLong.unpack(s, 9, 13) ;
+        long timeLow = BitsLong.unpack(s, 0, 8) ;
 
-        long node = Bits.unpack(s, 24, 36) ;
-        int version = (int)Bits.unpack(s, 14, 15) ;
+        long node = BitsLong.unpack(s, 24, 36) ;
+        int version = (int)BitsLong.unpack(s, 14, 15) ;
         return generate(version, variant, timeHigh, timeMid, timeLow, clockSeq, node) ;
     }
     
@@ -275,7 +276,7 @@ public class UUID_V1_Gen implements UUIDFactory
         long random = LibUUID.makeRandom().nextLong() ;
         clockSeq = 0 ;
         if ( CLOCK_BITS != 0 )
-            clockSeq = (int)Bits.unpack(random, 48, (48 + CLOCK_BITS)) ;
+            clockSeq = (int)BitsLong.unpack(random, 48, (48 + CLOCK_BITS)) ;
 
         // Get the MAC address of an interface.
         // The loopback I/F does not have a MAC address.
@@ -302,8 +303,8 @@ public class UUID_V1_Gen implements UUIDFactory
 
         
 
-        node = Bits.unpack(random, 0, 47) ; // Low 48bits, except groups address bit
-        node = Bits.set(node, 47) ;         // Set group address bit
+        node = BitsLong.unpack(random, 0, 47) ; // Low 48bits, except groups address bit
+        node = BitsLong.set(node, 47) ;         // Set group address bit
 
         // Can also set the clock sequence number to increase the randomness.
         // Use up to 13 bits for the clock (actually, it's 14 bits as

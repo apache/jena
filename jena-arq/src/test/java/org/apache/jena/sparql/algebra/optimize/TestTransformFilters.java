@@ -75,7 +75,7 @@ public class TestTransformFilters extends AbstractTestTransform
     }
 
     @Test public void equality04() {
-        // Unused
+        // Eliminate unused
         testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
                t_equality,
                "(table empty)") ;
@@ -299,7 +299,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 ) ;
         //JENA-671
         // Note that "assign" is a filter as well
-        // so it filters the ?x fro the RHS of the conditional.
+        // so it filters the ?x from the RHS of the conditional.
         String ops2 = StrUtils.strjoinNL
             ("(sequence"
              ,"  (conditional"
@@ -486,6 +486,30 @@ public class TestTransformFilters extends AbstractTestTransform
                t_expandOneOf,
                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
     }
+    
+    @Test
+    public void oneOf6() {
+        // JENA-1113
+        int x = TransformExpandOneOf.REWRITE_LIMIT ;
+        try {
+            TransformExpandOneOf.REWRITE_LIMIT = 3 ;
+            testOp("(filter true (distinct (filter (notin ?x 1 2) (bgp (?s ?p ?x)) )))",
+                   t_expandOneOf,
+                "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+            testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
+                   t_expandOneOf,
+                   // No change.
+                   "(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))") ;
+            
+        } finally {
+            TransformExpandOneOf.REWRITE_LIMIT = x ;
+        }
+        // Check reset.
+        testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
+               t_expandOneOf,
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+    }
+
 
     @Test public void implicitJoin01() {
         testOp(

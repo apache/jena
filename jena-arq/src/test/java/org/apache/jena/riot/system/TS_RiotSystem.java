@@ -30,6 +30,9 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses({ 
     TestChecker.class
     , TestStreamRDF.class
+    , TestFactoryRDF.class
+    , TestFactoryRDFCaching.class
+
     // Prefix Map implementations
     , TestPrefixMap.class
     , TestPrefixMapWrapper.class
@@ -37,11 +40,13 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestFastAbbreviatingPrefixMap.class
     , TestPrefixMapExtended1.class
     , TestPrefixMapExtended2.class
+    
     , TestIO_JenaReaders.class
     , TestIO_JenaWriters.class
     , TestLangRegistration.class
     , TestFormatRegistration.class
     , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine. 
+    
     // May be subject to performance vagaries, with the improvements made
     // to the fast implementation this should be fairly safe
     //, TestAbbreviationPerformance.class

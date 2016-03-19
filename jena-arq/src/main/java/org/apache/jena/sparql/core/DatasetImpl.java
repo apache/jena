@@ -19,15 +19,11 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
-import java.util.concurrent.Callable ;
 
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -36,191 +32,159 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeUtils ;
 
-/** A implementation of a Dataset.
+/** An implementation of a Dataset.
  * This is the "usual" implementation based on wrapping a DatasetGraph
  * and providing an adapter layer from Model/Resource to Graph/Node
- * The characteristics of this adapter depend on the characteristics of
+ * The characteristics of this class depend on the characteristics of
  * DatasetGraph.   
  */
 
-public class DatasetImpl implements Dataset
+public class DatasetImpl implements Dataset 
 {
-    /* 
-     * We are cautious - SPARQL Update can change the graphs in a store
-     * so we assume DatasetGraph.getGraph is efficient and
-     * here cut the overhead of model wrappers.
-     */
-
     protected DatasetGraph dsg = null ;
+    // Allow for an external transactional. 
     private Transactional transactional = null ;
-    // Cache of graph -> model so that we don't churn model creation.
-    private Cache<Graph, Model> cache = createCache() ;
-    private Object internalLock = new Object() ;
+    private Model dftModel = null ;
 
-    //private DatasetImpl() {}
-    
-    protected DatasetImpl(DatasetGraph dsg)
-    {
-        this.dsg = dsg ;
-        if ( dsg instanceof Transactional )
-            this.transactional = (Transactional)dsg ; 
-    }
     /** Wrap an existing DatasetGraph */
-    public static Dataset wrap(DatasetGraph datasetGraph)
-    {
-        DatasetImpl ds = new DatasetImpl(datasetGraph) ;
-        return ds ;
+    public static Dataset wrap(DatasetGraph datasetGraph) {
+        return new DatasetImpl(datasetGraph) ;
     }
     
-    /** Clone the structure of a DatasetGraph.
-     * The current graph themselves are shared but new naming and new graphs are
-     * only in the cloned    
-     */
-    public static Dataset cloneStructure(DatasetGraph datasetGraph)
-    { 
-        return new DatasetImpl(new DatasetGraphMap(datasetGraph)) ;
+    protected DatasetImpl(DatasetGraph dsg) {
+        this(dsg,  (dsg.supportsTransactions() ? dsg : null)) ; 
     }
 
+    protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
+        this.dsg = dsg;
+        this.transactional = transactional ; 
+    }
+    
     /** Create a Dataset with the model as default model.
      *  Named models must be explicitly added to identify the storage to be used.
      */
     public DatasetImpl(Model model)
     {
-        addToCache(model) ;
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
+        this.transactional = dsg ;
+        dftModel = model ;
     }
 
+    /** Create a Dataset with a copy of the structure of another one,
+     * while sharing the graphs themselves.  
+     */
+    @Deprecated
     public DatasetImpl(Dataset ds)
     {
-        this.dsg = DatasetGraphFactory.create(ds.asDatasetGraph()) ;
+        this(DatasetGraphFactory.cloneStructure(ds.asDatasetGraph())) ;
     }
 
     @Override
-    public Model getDefaultModel() 
-    { 
-        synchronized(internalLock)
-        {
-            return graph2model(dsg.getDefaultGraph()) ;
-        }
+    public Model getDefaultModel() { 
+        if ( dftModel == null )
+            dftModel = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
+        return dftModel ;
     }
 
     @Override
     public Lock getLock() { return dsg.getLock() ; }
+
+    @Override
+    public Context getContext() {
+        return dsg.getContext();
+    }
     
     @Override
-    public Context getContext()
-    {
-        return dsg.getContext() ;
-    }
-    @Override
-    public boolean supportsTransactions()
-    {
-        return (transactional != null) ;
+    public boolean supportsTransactions() {
+        return dsg.supportsTransactions() ;
     }
 
-    @Override public void begin(ReadWrite mode)     
-    {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
-        transactional.begin(mode) ;
+    @Override
+    public boolean supportsTransactionAbort() {
+        return dsg.supportsTransactionAbort() ;
+    }
+
+    @Override
+    public void begin(ReadWrite mode) {
+        checkTransactional();
+        transactional.begin(mode);
     }
     
     /** Say whether a transaction is active */ 
     @Override
-    public boolean isInTransaction()
-    {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
-        return transactional.isInTransaction() ;
+    public boolean isInTransaction() {
+        checkTransactional();
+        return transactional != null && transactional.isInTransaction();
     }
 
     @Override
-    public void commit()
-    {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
-        transactional.commit() ;
+    public void commit() {
+        checkTransactional();
+        transactional.commit();
+        dftModel = null;
     }
 
     @Override
-    public void abort()
-    {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
-        transactional.abort() ;
+    public void abort() {
+        checkTransactional();
+        transactional.abort();
+        dftModel = null;
     }
 
     @Override
-    public void end()
-    {
-        if ( transactional == null )
-            throw new UnsupportedOperationException("Transactions not supported") ;
-        transactional.end() ;
+    public void end() {
+        checkTransactional();
+        transactional.end();
+        dftModel = null;
     }
 
+    private void checkTransactional() {
+        if ( ! supportsTransactions() )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+    }
+    
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     @Override
-    public Model getNamedModel(String uri)
-    { 
+    public Model getNamedModel(String uri) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        synchronized(internalLock)
-        {
-            Graph g = dsg.getGraph(n) ;
-            if ( g == null )
-                return null ;
-            return graph2model(g) ;
-        }
+        return graph2model(dsg.getGraph(n)) ;
     }
 
     @Override
-    public void addNamedModel(String uri, Model model) throws LabelExistsException
-    { 
+    public void addNamedModel(String uri, Model model) {
         checkGraphName(uri) ;
-        // Assumes single writer.
-        addToCache(model) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
     }
 
     @Override
-    public void removeNamedModel(String uri)
-    { 
+    public void removeNamedModel(String uri) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        // Assumes single writer.
-        removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
     }
 
     @Override
-    public void replaceNamedModel(String uri, Model model)
-    {
+    public void replaceNamedModel(String uri, Model model) {
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
-        removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
-        addToCache(model) ;
         dsg.addGraph(n, model.getGraph() ) ;
     }
 
     @Override
-    public void setDefaultModel(Model model)
-    { 
+    public void setDefaultModel(Model model) {
         if ( model == null )
             model = ModelFactory.createDefaultModel() ;
-        // Assumes single writer.
-        removeFromCache(dsg.getDefaultGraph()) ;
-        addToCache(model) ;
         dsg.setDefaultGraph(model.getGraph()) ;
     }
 
     @Override
-    public boolean containsNamedModel(String uri)
-    { 
+    public boolean containsNamedModel(String uri) {
         // Does not touch the cache.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
@@ -228,55 +192,22 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public Iterator<String> listNames()
-    { 
+    public Iterator<String> listNames() {
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
-
-    //  -------
-    //  Cache models wrapping graphs
-    // Assumes outser syncrhonization of necessary (multiple readers possible).
-    // Assume MRSW (Multiple Reader OR Single Writer)
-
     @Override
-    public void close()
-    {
+    public void close() {
         dsg.close() ;
-        cache = null ;
-    }
-
-    protected Cache<Graph, Model> createCache() { return CacheFactory.createCache(100) ; }
-    
-    protected void removeFromCache(Graph graph)
-    {
-        // Assume MRSW - no synchronized needed.
-        if ( graph == null )
-            return ;
-        cache.remove(graph) ;
-    }
-
-    protected void addToCache(Model model)
-    {
-        // Assume MRSW - no synchronized needed.
-        cache.put(model.getGraph(), model) ;
-    }
-
-    protected Model graph2model(final Graph graph)
-    { 
-        Callable<Model> filler = new Callable<Model>() {
-            @Override
-            public Model call() {
-                return ModelFactory.createModelForGraph(graph) ;
-            }
-        } ;
-        return cache.getOrFill(graph, filler) ;
+        dftModel = null ;
     }
     
-    protected static void checkGraphName(String uri)
-    {
+    protected Model graph2model(final Graph graph) {
+        return ModelFactory.createModelForGraph(graph);
+    }
+
+    protected static void checkGraphName(String uri) {
         if ( uri == null )
-            throw new ARQException("null for graph name") ; 
+            throw new ARQException("null for graph name");
     }
-
 }

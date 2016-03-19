@@ -20,33 +20,16 @@ package org.apache.jena.fuseki.validation;
 
 import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 
-import java.io.IOException ;
-import java.io.PrintStream ;
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.* ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RiotParsers ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.riot.* ;
+import org.apache.jena.riot.system.* ;
 
 public class DataValidator extends ValidatorBase
 {
@@ -66,11 +49,6 @@ public class DataValidator extends ValidatorBase
         try {
 //            if ( log.isInfoEnabled() )
 //                log.info("data validation request") ;
-            
-            Tokenizer tokenizer = createTokenizer(httpRequest, httpResponse) ;
-            if ( tokenizer == null )
-                return ;
-            
             String syntax = FusekiLib.safeParameter(httpRequest, paramSyntax) ;
             if ( syntax == null || syntax.equals("") )
                 syntax = RDFLanguages.NQUADS.getName() ;
@@ -81,13 +59,14 @@ public class DataValidator extends ValidatorBase
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: "+syntax) ;
                 return ;
             }
+            
+            Reader input = createInput(httpRequest, httpResponse) ;
 
             ServletOutputStream outStream = httpResponse.getOutputStream() ;
             ErrorHandlerMsg errorHandler = new ErrorHandlerMsg(outStream) ;
             
-            PrintStream stdout = System.out ;
+            // Capture logging errors.
             PrintStream stderr = System.err ;
-            System.setOut(new PrintStream(outStream)) ;
             System.setErr(new PrintStream(outStream)) ;
 
             // Headers
@@ -100,23 +79,31 @@ public class DataValidator extends ValidatorBase
             outStream.println("<h1>RIOT Parser Report</h1>") ;
             outStream.println("<p>Line and column numbers refer to original input</p>") ;
             outStream.println("<p>&nbsp;</p>") ;
+
+            // Need to escape HTML. 
+            OutputStream output1 = new OutputStreamNoHTML(new BufferedOutputStream(outStream)) ;
+            StreamRDF output = StreamRDFWriter.getWriterStream(output1, Lang.NQUADS) ;
             try {
-                LangRIOT parser = setupParser(tokenizer, language, errorHandler, outStream) ;
+                ReaderRIOT parser = setupParser(language, errorHandler) ;
                 startFixed(outStream) ;
                 RiotException exception = null ;
                 try {
-                    parser.parse() ;
-                    System.out.flush() ;
+                    output.start();
+                    parser.read(input, null, null, output, null);
+                    output.finish();
+                    output1.flush();
+                    outStream.flush(); 
                     System.err.flush() ;
-                } catch (RiotException ex) { exception = ex ; }
+                } catch (RiotException ex) {
+                    ex.printStackTrace(stderr); 
+                    exception = ex ; }
             } finally 
             {
                 finishFixed(outStream) ;
-                System.out.flush() ;
                 System.err.flush() ;
-                System.setOut(stdout) ;
-                System.setErr(stdout) ;
+                System.setErr(stderr) ;
             }
+            
             
             outStream.println("</body>") ;
             outStream.println("</html>") ;
@@ -128,49 +115,40 @@ public class DataValidator extends ValidatorBase
     
     static final long LIMIT = 50000 ;
     
+    static class OutputStreamNoHTML extends FilterOutputStream {
+
+        public OutputStreamNoHTML(OutputStream out) {
+            super(out);
+        }
+        
+        static byte[] escLT = { '&', 'l', 't' , ';' } ;
+        static byte[] escGT = { '&', 'g', 't' , ';' } ;
+        static byte[] escAmp = { '&', 'a', 'm' , 'p', ';' } ;
+        
+        @Override
+        public void write(int b) throws IOException {
+            //System.err.printf("0x%02X\n", b) ;
+            if ( b == '&' )      writeEsc(escAmp) ;
+            else if ( b == '>' ) writeEsc(escGT) ;
+            else if ( b == '<' ) writeEsc(escLT) ;
+            else
+                super.write(b) ;
+        }
+        
+        private void writeEsc(byte[] bytes) throws IOException {
+            for ( byte b : bytes )
+                super.write(b); 
+        }
+    }
     
-    private LangRIOT setupParser(Tokenizer tokenizer, Lang language, ErrorHandler errorHandler, final ServletOutputStream outStream)
+    
+    private ReaderRIOT setupParser(Lang language, ErrorHandler errorHandler)
     {
-        Sink<Quad> sink = new Sink<Quad>()
-        {
-            SerializationContext sCxt = new SerializationContext() ;
-            @Override
-            public void send(Quad quad)
-            {
-                // Clean up!
-                StringBuilder sb = new StringBuilder() ;
-
-                sb.append(formatNode(quad.getSubject())) ;
-                sb.append("  ") ;
-                sb.append(formatNode(quad.getPredicate())) ;
-                sb.append("  ") ;
-                sb.append(formatNode(quad.getObject())) ;
-                
-                if ( ! quad.isTriple() )
-                {
-                    sb.append("  ") ;
-                    sb.append(formatNode(quad.getGraph())) ;
-                }
-
-                String $ = htmlQuote(sb.toString()) ;
-                try { 
-                    outStream.print($) ;
-                    outStream.println(" .") ;
-                } catch (IOException ex) { IO.exception(ex) ; }
-            }
-            @Override
-            public void close() {}
-            @Override
-            public void flush() {}
-            String formatNode(Node n) { return FmtUtils.stringForNode(n, sCxt) ; }
-        } ;
-
-        StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
-        @SuppressWarnings("deprecation")
-        LangRIOT parser = RiotParsers.createParser(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
-        parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
-        return parser ;
+        ParserProfile profile = RiotLib.profile(null, false, true, errorHandler) ; 
+        ReaderRIOT reader = RDFDataMgr.createReader(language) ;
+        reader.setParserProfile(profile);
+        return reader ;
     }
 
     // Error handler that records messages
@@ -206,13 +184,13 @@ public class DataValidator extends ValidatorBase
         }
     }
     
-    @SuppressWarnings("deprecation")
-    private Tokenizer createTokenizer(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception
+    private Reader createInput(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception
     {
         Reader reader = null ;  
         String[] args = httpRequest.getParameterValues(paramData) ;
         if ( args == null || args.length == 0 )
         {
+            System.err.println("Not a form"); 
             // Not a form?
             reader = httpRequest.getReader() ;
         }
@@ -232,6 +210,6 @@ public class DataValidator extends ValidatorBase
             return null ;
         }
         
-        return TokenizerFactory.makeTokenizer(reader) ;
+        return reader ;
     }
 }

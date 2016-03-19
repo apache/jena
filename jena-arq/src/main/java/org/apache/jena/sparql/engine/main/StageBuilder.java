@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.main;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -66,28 +67,23 @@ public class StageBuilder
     
     // -------- Initialize
     
-    public static void init()
-    {
-        StageGenerator gen = getGenerator(ARQ.getContext()) ;
-        if ( gen == null )
-        {
-            gen = standardGenerator() ;
-            setGenerator(ARQ.getContext(), gen) ;
-        }
-    }
+    private static StageGenerator defaultStageGenerator = new StageGeneratorGeneric() ; 
     
     /** The plain StageGenerator, no reordering */
     public static StageGenerator executeInline = new StageGenerator() {
         @Override
         public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
         {
-                return QueryIterBlockTriples.create(input, pattern, execCxt) ;
+            return QueryIterBlockTriples.create(input, pattern, execCxt) ;
         }} ;
         
     // -------- Manage StageGenerator registration
     
     public static void setGenerator(Context context, StageGenerator builder)
     {
+        if ( ARQ.stageGenerator == null )
+            // Indicator of initialization problems
+            Log.warn(StageBuilder.class, "ARQ.stageGenerator = null") ;
         context.set(ARQ.stageGenerator, builder) ;
     }
     
@@ -105,7 +101,7 @@ public class StageBuilder
     
     public static StageGenerator standardGenerator()
     {
-        return new StageGeneratorGeneric() ;
+        return defaultStageGenerator ; 
     }
     
     public static StageGenerator chooseStageGenerator(Context context)

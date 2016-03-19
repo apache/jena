@@ -60,8 +60,10 @@ public class MappedLoader {
 
     public static String mapDynamicURI(String uri) {
         // Jena2 -> Jena3 transition
-        if ( uri.startsWith("http://jena.hpl.hp.com/ARQ") )
-            Log.warnOnce(MappedLoader.class, "Loading function or property function with old style 'jena.hpl.hp.com' used - preferred style is to use 'jena.apache.org': "+uri, uri) ;  
+        if ( uri.startsWith("http://jena.hpl.hp.com/ARQ") ) {
+            String newURI = uri.replace("http://jena.hpl.hp.com/", "http://jena.apache.org/") ;
+            Log.warnOnce(MappedLoader.class, "Loading function or property function with old style 'jena.hpl.hp.com' used - preferred style is to use 'jena.apache.org': "+uri+ " => "+newURI, uri) ;
+        }
         
         Map.Entry<String, String> e = find(uri);
         if (e == null) {

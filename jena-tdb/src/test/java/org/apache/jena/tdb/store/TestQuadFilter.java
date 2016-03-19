@@ -21,7 +21,7 @@ package org.apache.jena.tdb.store;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
@@ -67,7 +67,7 @@ public class TestQuadFilter extends BaseTest
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide)) ;
-        return item -> !( item.size() == 4 && item.get(0).equals(target) );
+        return item -> !( item.len() == 4 && item.get(0).equals(target) );
     }            
 
     @Test public void quad_filter_1()   { test("SELECT * { GRAPH ?g { ?s ?p ?o } }", 1, 2) ; }

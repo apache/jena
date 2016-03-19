@@ -32,7 +32,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestLeftJoinSimple.class
     , TestLeftJoinNestedLoopSimple.class    // Real simple materializing version.
     , TestLeftJoinNestedLoop.class
-    //, TestLeftHashJoin.class
+    , TestHashLeftJoin_Left.class           // Left hash, stream right 
+    , TestHashLeftJoin_Right.class          // Normal implementation.
 })
 
 public class TS_Join { }

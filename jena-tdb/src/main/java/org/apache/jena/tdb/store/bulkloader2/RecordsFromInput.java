@@ -26,10 +26,10 @@ import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Hex ;
 import org.apache.jena.tdb.base.record.Record ;
 import org.apache.jena.tdb.base.record.RecordFactory ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
 final

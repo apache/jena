@@ -16,13 +16,15 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>
   <packaging>bundle</packaging>
@@ -30,8 +32,7 @@
   <description>
     Embedding the main Jena modules (iri/core/arq/tdb) in a single OSGi bundle.
   </description>
-
-
+  
   <!--
        Most of the job is done by maven-bundle-plugin (see below).
        It inspects the embedded/shadowed class files from jena-* to
@@ -77,57 +78,63 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
-	<!-- These are all embedded within httpclient-osgi -->
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>commons-codec</groupId>
-	  <artifactId>commons-codec</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpmime</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient-cache</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>fluent-hc</artifactId>
-	</exclusion>
+        <!-- These are all embedded within httpclient-osgi -->
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpmime</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient-cache</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>fluent-hc</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
-
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <!--
+    NOTE: Also update 
+    src/main/resources/META-INF/services/org.apache.jena.system.JenaSubsystemLifecycle
+    to the concatenation of the different Jena modules' JenaSubsystemLifecycle
+    (order does not matter). See JENA-1139 for details.
+    -->
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -137,27 +144,27 @@
       <artifactId>httpclient-osgi</artifactId>
       <version>${ver.httpclient-osgi}</version>
       <exclusions>
-	<!-- These are all embedded within httpclient-osgi -->
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>commons-codec</groupId>
-	  <artifactId>commons-codec</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpmime</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient-cache</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>fluent-hc</artifactId>
-	</exclusion>
+        <!-- These are all embedded within httpclient-osgi -->
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpmime</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient-cache</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>fluent-hc</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>

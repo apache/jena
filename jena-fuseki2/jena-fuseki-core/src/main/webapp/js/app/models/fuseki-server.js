@@ -87,10 +87,14 @@ define(
         var mgmtURL = bURL;
 
         if (serverDesc.admin) {
-          mgmtURL = bURL.replace( ":" + window.location.port, ":" + serverDesc.admin.port );
-          this._managementURL = mgmtURL;
+	       // This is too simple.  window.location.port may be empty and matches protocol.
+	       //mgmtURL = bURL.replace( ":" + window.location.port, ":" + serverDesc.admin.port );
+           //console.log("managementURL -- s/"+window.location.port+"/"+serverDesc.admin.port+"/") ;
+	       var path = window.location.pathname.replace( /\/[^/]*$/, "" ) ;
+ 	       mgmtURL = sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, serverDesc.admin, path );
         }
-
+	    this._managementURL = mgmtURL ;
+	
         var datasets = _.map( serverDesc.datasets, function( d ) {
           return new Dataset( d, bURL, mgmtURL + DATASETS_MANAGEMENT_PATH );
         } );
@@ -137,9 +141,32 @@ define(
       /** Extract the server root path from the current window href */
       currentRootPath: function() {
         var path = window.location.pathname.replace( /\/[^/]*$/, "" );
- 	// Need some kind of relative URL
- 	// return path ; - See JENA-868 breaks the "info"
-	return sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+
+		/*
+		console.log("window.location="+window.location) ;
+		console.log("window.location.href="+window.location.href) ;
+		console.log("window.location.protocol="+window.location.protocol) ;
+		console.log("window.location.host="+window.location.host) ;
+		console.log("window.location.hostname="+window.location.hostname) ;
+		console.log("window.location.port="+window.location.port) ;
+		console.log("window.location.pathname="+window.location.pathname) ;
+		console.log("window.location.origin="+window.location.origin) ;
+		console.log("window.location.hash="+window.location.hash) ;
+		console.log("window.location.search="+window.location.search) ;
+	    console.log("path='"+path+"'") ;
+		*/
+	
+		var path2 ;
+		var port = window.location.port ;
+		//console.log("port='"+port+"'") ;
+		if ( !port || 0 === port.length ) {
+		    // No explicit port.
+		    path2 = sprintf( "%s//%s%s",  window.location.protocol, window.location.hostname, path ) ;
+		} else {
+		    path2 = sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
+		}
+	    //console.log("path2='"+path2+"'") ;
+		return path2 ;
       }
     } );
 

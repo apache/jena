@@ -18,6 +18,8 @@
 
 package org.apache.jena.shared.uuid;
 
+import org.apache.jena.atlas.lib.BitsLong ;
+
 /*
 Version 1:
 60 bits of time
@@ -95,9 +97,9 @@ public class UUID_V1 extends JenaUUID
     
     // Accessors
     
-    long getTimeHigh()  { return Bits.unpack(bitsMostSignificant, 0,  12) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeHigh ) ;
-    long getTimeMid()   { return Bits.unpack(bitsMostSignificant, 16, 32) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeMid ) >>> 16 ;
-    long getTimeLow()   { return Bits.unpack(bitsMostSignificant, 32, 64) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeLow ) >>> 32;
+    long getTimeHigh()  { return BitsLong.unpack(bitsMostSignificant, 0,  12) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeHigh ) ;
+    long getTimeMid()   { return BitsLong.unpack(bitsMostSignificant, 16, 32) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeMid ) >>> 16 ;
+    long getTimeLow()   { return BitsLong.unpack(bitsMostSignificant, 32, 64) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeLow ) >>> 32;
     
     public long getTimestamp()
     { 
@@ -106,9 +108,9 @@ public class UUID_V1 extends JenaUUID
     
     public long getClockSequence()
     {
-        return Bits.unpack(bitsLeastSignificant, 48, 62) ;
+        return BitsLong.unpack(bitsLeastSignificant, 48, 62) ;
     }
-    public long getNode() { return Bits.unpack(bitsLeastSignificant, 0, 48) ; }
+    public long getNode() { return BitsLong.unpack(bitsLeastSignificant, 0, 48) ; }
     
     @Override
     public int getVersion() { return super._getVersion(bitsMostSignificant, bitsLeastSignificant) ; }

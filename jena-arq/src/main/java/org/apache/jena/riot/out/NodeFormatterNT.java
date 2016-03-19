@@ -20,67 +20,65 @@ package org.apache.jena.riot.out;
 
 
 import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.lib.CharSpace ;
+import org.apache.jena.atlas.lib.EscapeStr ;
+import org.apache.jena.riot.out.quoted.QuotedStringOutput ;
+import org.apache.jena.riot.out.quoted.QuotedStringOutputNT ;
+import org.apache.jena.riot.out.quoted.QuotedURI ;
 
 public class NodeFormatterNT extends NodeFormatterBase
 {
     // Formatting for NTriples 
     // Turtles extends this class to intercept forms it can do better.
 
-    private final EscapeProc escapeProc ; 
+    private final QuotedStringOutput quotedStringProc ; 
+    private final QuotedURI quotedUriProc ; 
 
     public NodeFormatterNT() { this(CharSpace.UTF8) ; }
 
-    public NodeFormatterNT(CharSpace charSpace) { escapeProc = new EscapeProc(charSpace) ;}
-
-    @Override
-    public void formatURI(AWriter w, String uriStr)
-    {
-        w.print('<') ;
-        escapeProc.writeURI(w, uriStr) ;
-        w.print('>') ;
+    public NodeFormatterNT(CharSpace charSpace) {
+        quotedStringProc = new QuotedStringOutputNT(charSpace);
+        quotedUriProc = new QuotedURI(charSpace) ;
     }
 
     @Override
-    public void formatVar(AWriter w, String name)
-    {
-        w.print('?') ;
-        escapeProc.writeStr(w, name) ;
+    public void formatURI(AWriter w, String uriStr) {
+        quotedUriProc.writeURI(w, uriStr);
     }
 
     @Override
-    public void formatBNode(AWriter w, String label)
-    {
-        w.print("_:") ;
-        String lab = NodeFmtLib.encodeBNodeLabel(label) ;
-        w.print(lab) ;
+    public void formatVar(AWriter w, String name) {
+        w.print('?');
+        EscapeStr.stringEsc(w, name, false);
     }
 
     @Override
-    public void formatLitString(AWriter w, String lex)
-    {
-        writeEscaped(w, lex) ;
-    }
-
-    private void writeEscaped(AWriter w, String lex)
-    {
-        w.print('"') ;
-        escapeProc.writeStr(w, lex) ;
-        w.print('"') ;
+    public void formatBNode(AWriter w, String label) {
+        w.print("_:");
+        String lab = NodeFmtLib.encodeBNodeLabel(label);
+        w.print(lab);
     }
 
     @Override
-    public void formatLitLang(AWriter w, String lex, String langTag)
-    {
-        writeEscaped(w, lex) ;
-        w.print('@') ;
-        w.print(langTag) ;
+    public void formatLitString(AWriter w, String lex) {
+        writeEscaped(w, lex);
+    }
+
+    private void writeEscaped(AWriter w, String lex) {
+        quotedStringProc.writeStr(w, lex);
     }
 
     @Override
-    public void formatLitDT(AWriter w, String lex, String datatypeURI)
-    {
-        writeEscaped(w, lex) ;
-        w.print("^^") ;
-        formatURI(w, datatypeURI) ;
+    public void formatLitLang(AWriter w, String lex, String langTag) {
+        writeEscaped(w, lex);
+        w.print('@');
+        w.print(langTag);
+    }
+
+    @Override
+    public void formatLitDT(AWriter w, String lex, String datatypeURI) {
+        writeEscaped(w, lex);
+        w.print("^^");
+        formatURI(w, datatypeURI);
     }
 }

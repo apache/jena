@@ -23,6 +23,7 @@ import static org.apache.jena.atlas.lib.Lib.sleep ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -38,7 +39,7 @@ public class TestQueryExecutionTimeout1 extends BaseTest
 {
     static Graph                g   = SSE.parseGraph("(graph (<s> <p> <o1>) (<s> <p> <o2>) (<s> <p> <o3>))") ;
     static DatasetGraph         dsg = DatasetGraphFactory.createOneGraph(g) ;
-    static Dataset              ds  = DatasetFactory.create(dsg) ;
+    static Dataset              ds  = DatasetFactory.wrap(dsg) ;
 
     private static final String ns  = "http://example/ns#" ;
 
@@ -54,6 +55,13 @@ public class TestQueryExecutionTimeout1 extends BaseTest
         FunctionRegistry.get().remove(ns + "wait") ;
     }
 
+    // Loaded CI.
+    private static boolean mayBeErratic = Sys.isWindows ;
+    
+    private int timeout(int time1, int time2) {
+        return mayBeErratic ? time2 : time1 ;
+    }
+    
     static private String prefix = 
         "PREFIX f:       <http://example/ns#>\n"+
         "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n" ;
@@ -65,25 +73,26 @@ public class TestQueryExecutionTimeout1 extends BaseTest
     // level checking.
     
     @Test
-    public void timeout_01()
-    {
+    public void timeout_01() {
+        // Test unstable on loaded Jenkins CI on Windows.
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
-        sleep(120) ;
+        sleep(timeout(100, 300)) ;
         exceptionExpected(rs) ; 
     }
 
     @Test
     public void timeout_02()
     {
+        // Test unstable on loaded Jenkins CI on Windows.
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
         rs.next() ;
-        sleep(75) ;
+        sleep(timeout(75, 300)) ;
         exceptionExpected(rs) ; 
     }
 
@@ -239,7 +248,11 @@ public class TestQueryExecutionTimeout1 extends BaseTest
 
     private static void exceptionExpected(ResultSet rs)
     {
-        try { ResultSetFormatter.consume(rs) ; fail("QueryCancelledException expected") ; } catch (QueryCancelledException ex) {}
+        try {
+            ResultSetFormatter.consume(rs);
+            fail("QueryCancelledException expected");
+        }
+        catch (QueryCancelledException ex) {}
     }
     
 }

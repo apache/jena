@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.Context ;
  * is not defined; see the specific implementation.
  */
 
-public interface DatasetGraph extends Closeable
+public interface DatasetGraph extends Transactional, Closeable
 {
     // ---- Graph container view
 
@@ -45,9 +45,18 @@ public interface DatasetGraph extends Closeable
     /** Get the graph named by graphNode : returns null on no graph 
      * NB Whether a dataset contains a graph if there are no triples is not defined - see the specifc implementation.
      * Some datasets are "open" - they have all graphs even if no triples,
-     * */
+     */
     public Graph getGraph(Node graphNode) ;
-
+    
+    /**
+     * Does the DatasetGraph contain a specific named graph? 
+     * Whether a dataset contains a graph if there are no triples is
+     * not defined - see the specifc implementation. Some datasets are "open" -
+     * they have all graphs even if no triples and thsi returns true always.
+     * 
+     * @param graphNode
+     * @return boolean
+     */
     public boolean containsGraph(Node graphNode) ;
 
     /** Set the default graph.  Set the active graph if it was null.
@@ -62,7 +71,6 @@ public interface DatasetGraph extends Closeable
      * get the graph and add triples to it, or add quads to the dataset.
      * Do not assume that the same Java object is returned by {@link #getGraph}  
      */
-
     public void addGraph(Node graphName, Graph graph) ;
 
     /** Remove all data associated with the named graph */
@@ -132,4 +140,24 @@ public interface DatasetGraph extends Closeable
     /** Close the dataset */
     @Override
     public void close() ;
+
+    /**
+     * A {@code DatasetGraph} supports tranactions if it provides {@link #begin}/
+     * {@link #commit}/{@link #end}. There core storage {@code DatasetGraph} that
+     * provide fully serialized transactions.  {@code DatasetGraph} that provide
+     * functionality acorss independent systems can not provide such strong guarantees.
+     * For example, they may use MRSW locking and some isolation control.
+     * Specifically, they do not necessarily provide {@link #abort}.
+     * <p>
+     * See {@link #supportsTransactionAbort()} for {@link #abort}.
+     * In addition, check details of a specific implementation.
+     */
+    public boolean supportsTransactions() ;
+    
+    /** Declare whether {@link #abort} is supported.
+     *  This goes along with clearing up after exceptions inside application transaction code.
+     */
+    public default boolean supportsTransactionAbort() {
+        return false;
+    }
 }

@@ -24,15 +24,15 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import jena.cmd.CmdException;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
@@ -54,13 +54,11 @@ public class DumpOps
         NodeTupleTable nodeTupleTableQuads = dsg.getQuadTable().getNodeTupleTable() ;
 
         if ( nodeTupleTableTriples.getNodeTable() != nodeTupleTableQuads.getNodeTable() )
-            throw new CmdException("Different node tables for triples and quads") ;
+            throw new TDBException("Different node tables for triples and quads") ;
 
         NodeTable nodeTable = nodeTupleTableTriples.getNodeTable() ;
         // V special.
         Set<NodeTable> dumpedNodeTables = new HashSet<>() ;
-
-
 
         if ( true )
         {
@@ -172,7 +170,7 @@ public class DumpOps
         NodeId[] nodeIds = new NodeId[N] ;
         Arrays.fill(nodeIds, NodeId.NodeIdAny) ;
         
-        Tuple<NodeId> t = Tuple.create(nodeIds) ;
+        Tuple<NodeId> t = TupleFactory.asTuple(nodeIds) ;
 
         Iterator<Tuple<NodeId>> iter = tupleTable.find(t) ;
         for ( ; iter.hasNext() ; )

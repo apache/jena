@@ -35,7 +35,6 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
     public void before() {
         //deleteOldFiles();
         INDEX_DIR.mkdirs();
-        TextQuery.init() ;
         TextSearchUtil.createEmptyIndex(INDEX_DIR);
         dataset = TextDatasetFactory.create(TEST_ASSEM) ;
     }

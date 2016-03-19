@@ -31,11 +31,11 @@ import org.apache.jena.tdb.setup.StoreParamsBuilder.Item ;
  * and some parameters can only be changed at the point the database is
  * created.  
  * <p>
- * Getting paramters settings wrong can destroy a databse.   
+ * Getting parameters settings wrong can destroy a database.   
  * Alternating the block size is not encouraged and should only be
  * done if necessary.  It can silently destroy a database if set
- * to a different value than thatused to create the database.  The
- * default value of 8Kbytes is good for almost use.
+ * to a different value than that used to create the database. The
+ * default value of 8 kilobytes is good for almost use.
  * 
  * @see StoreParamsBuilder  for constructing StoreParams
  * @see StoreParamsConst    for default values. 
@@ -125,7 +125,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     
     /** A {@code StoreParams} that provides a smaller
      * in-JVM foot print.  This is compatible with
-     * any database but it it is wise to use this consistently,
+     * any database but it is wise to use this consistently,
      * that is, use when created and when opened later.
      * It reduces cache sizes and runs the database in "direct"
      * file mode so as not to use memory mapped files

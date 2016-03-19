@@ -69,6 +69,7 @@ public class WriterExpr
             output(out, exprs.get(i), sCxt) ;
         }
         out.print(")") ;
+        out.flush();
     }
     
     private static void outputTail(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
@@ -85,6 +86,7 @@ public class WriterExpr
     {
         FmtExprPrefixVisitor fmt = new FmtExprPrefixVisitor(out, sCxt) ;
         expr.visit(fmt) ;
+        out.flush() ;
     }
 
     // ----
@@ -99,9 +101,6 @@ public class WriterExpr
             out = writer ;
             context = cxt ;
         }
-
-        @Override
-        public void startVisit() {}
 
         @Override
         protected void visitExprFunction(ExprFunction func)
@@ -191,9 +190,6 @@ public class WriterExpr
         { 
             out.print(eAgg.getAggregator().toPrefixString()) ;
         }
-
-        @Override
-        public void finishVisit() { out.flush() ; }
 
         private void endLine()
         {

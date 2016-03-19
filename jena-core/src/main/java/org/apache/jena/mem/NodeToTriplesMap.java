@@ -39,6 +39,10 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     @Override public boolean add( Triple t ) 
         {
         Object o = getIndexField( t );
+        
+        // Feb 2016 : no measurable difference.
+        //OpenSetBunch s = (OpenSetBunch) bunchMap.getOrSet(o, (k)->createSetBunch()) ;
+        
         OpenSetBunch s = (OpenSetBunch) bunchMap.get( o );
         if (s == null) bunchMap.put( o, s = createSetBunch() );
         if (s.baseSet().add( t )) { size += 1; return true; } else return false; 

@@ -19,6 +19,9 @@ target/
 
 # Other
 .DS_Store
+hs_err_*
+
+# Binaries
 *.jar
 
 # Backups

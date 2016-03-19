@@ -18,16 +18,20 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
+
 import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -36,9 +40,6 @@ import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
-import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
-import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
 abstract public class TestLangNTuples extends BaseTest
@@ -178,7 +179,7 @@ abstract public class TestLangNTuples extends BaseTest
         Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(in) : TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
-//    
+    
     static protected Tokenizer tokenizer(String string)
     {
         // UTF-8
@@ -187,47 +188,21 @@ abstract public class TestLangNTuples extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
-//    
-//    protected void parse(StreamRDF sink, String... strings ) {
-//        ParserTestBaseLib.parse(getLang(), sink, strings);
-//    }
-//
-//    protected void parseASCII(StreamRDF sink, String string) {
-//        Tokenizer tokenizer = tokenizer(CharSpace.ASCII, string) ;
-//        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink) ;
-//        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-//        parser.parse() ;
-//    }
-//
-//    
-//    {
-//        String string = StrUtils.strjoin("\n", strings) ;
-//        Tokenizer tokenizer = tokenizer(string) ;
-//        LangRIOT parser = createParser(tokenizer(string), sink) ;
-//        parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-//        parser.parse() ;
-//    }
-//    
-////   protected abstract LangRIOT createParser(Tokenizer tokenizer, StreamRDF sink) ;
-//
+
     final protected void parseCheck(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
+        @SuppressWarnings("deprecation")
         LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink) ;
         x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         x.parse() ;
     }
-//    
+    
     protected abstract Lang getLang() ;
     
     protected long parseCount(String... strings) {
         return ParserTestBaseLib.parseCount(getLang(), strings) ;
     }
-    
-//    protected void parseCheck(String... strings) {
-//        ParserTestBaseLib.parseCount(getLang(), strings) ;
-//    }
-
 }

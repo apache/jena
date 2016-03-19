@@ -21,7 +21,7 @@ package org.apache.jena.tdb.base.file ;
 import java.io.File ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

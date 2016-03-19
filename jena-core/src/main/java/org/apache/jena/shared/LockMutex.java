@@ -18,20 +18,19 @@
 
 package org.apache.jena.shared;
 
+import java.util.concurrent.locks.ReentrantLock;
 
-public class LockMutex implements Lock 
-{
-    java.util.concurrent.locks.Lock mutex = new java.util.concurrent.locks.ReentrantLock() ;
-    
+public class LockMutex implements Lock {
+    java.util.concurrent.locks.Lock mutex = new ReentrantLock();
+
     @Override
-    public void enterCriticalSection(boolean readLockRequested)
-    {
+    public void enterCriticalSection(boolean readLockRequested) {
+        // Regardless of read or write, claim the lock. 
         mutex.lock();
     }
 
     @Override
-    public void leaveCriticalSection()
-    {
-        mutex.unlock() ;
+    public void leaveCriticalSection() {
+        mutex.unlock();
     }
 }

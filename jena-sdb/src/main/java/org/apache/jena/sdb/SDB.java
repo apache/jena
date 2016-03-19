@@ -18,7 +18,6 @@
 
 package org.apache.jena.sdb;
 
-import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sdb.assembler.AssemblerVocab ;
@@ -30,19 +29,22 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 
-
 public class SDB
 {
+    // Must be first, especially the initLock setup.
+    private static volatile boolean initialized = false ;
+    private static Object initLock = new Object() ;
+
     /** IRI for SDB */  
     public static final String sdbIRI = "http://jena.hpl.hp.com/#sdb" ;
     
@@ -71,49 +73,49 @@ public class SDB
     // Global context is the ARQ context.
     public static Context getContext() { return ARQ.getContext() ; }
     
-    static { initWorker() ; }
-    public static void init() { }
-    
-    /** Used by Jena assemblers for registration */ 
-    public static void whenRequiredByAssembler( AssemblerGroup g )
-    {
-        AssemblerUtils.init() ;         // ARQ 
-        AssemblerVocab.register(g) ;    // SDB
+    static { 
+        JenaSystem.init(); 
     }
     
-    private static boolean initialized = false ;
-    private static synchronized void initWorker()
-    {
-        // Called from 
-        // + StoreFactory
-        // + DatasetStore
-        // Commands call AssemblerVocab.init() ;
-
-        if ( initialized )
+//    /** Used by Jena assemblers for registration */ 
+//    public static void whenRequiredByAssembler( AssemblerGroup g )
+//    {
+//        AssemblerUtils.init() ;         // ARQ 
+//        AssemblerVocab.register(g) ;    // SDB
+//    }
+    
+    public static void init() {
+        if ( initialized ) 
             return ;
-        
-        // Set this immediately in case code below causes init() to be called.
-        // (It's better if there are no dependences but ...)
-        initialized = true ;
-        
-        // Better not to break up BGPs too much.
-        ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
-        MappingRegistry.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
+        synchronized(initLock) {
+            if ( initialized ) {
+                JenaSystem.logLifecycle("SDB.init - skip") ;
+                return ;
+            }
+            initialized = true ;
+            JenaSystem.logLifecycle("SDB.init - start") ;
 
-        // Default is 1000 4Kpages.
-        DerbyUtils.setDerbyPageCacheSize(10000) ;
+            // Better not to break up BGPs too much.
+            ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
+            MappingRegistry.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
 
-        // Wire in the SDB query engine
-        QueryEngineSDB.register() ;
-        // Wire in the SDB update engine
-        UpdateEngineSDB.register() ;
-        
-        SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
-        SDB.getContext().setIfUndef(streamGraphAPI,        false) ;
-        SDB.getContext().setIfUndef(jdbcStream,            true) ;
-        //SDB.getContext().setIfUndef(jdbcFetchSize,         ???) ;
-        SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
-        //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
+            // Default is 1000 4Kpages.
+            DerbyUtils.setDerbyPageCacheSize(10000) ;
+
+            // Wire in the SDB query engine
+            QueryEngineSDB.register() ;
+            // Wire in the SDB update engine
+            UpdateEngineSDB.register() ;
+
+            SDB.getContext().setIfUndef(useQuadRewrite,        false) ;
+            SDB.getContext().setIfUndef(streamGraphAPI,        false) ;
+            SDB.getContext().setIfUndef(jdbcStream,            true) ;
+            //SDB.getContext().setIfUndef(jdbcFetchSize,         ???) ;
+            SDB.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
+            //SDB.getContext().setIfUndef(unionDefaultGraph,     false) ;
+            AssemblerVocab.init(); 
+            JenaSystem.logLifecycle("SDB.init - finish") ;
+        }
     }
     
     /** RDF namespace prefix */
@@ -151,7 +153,7 @@ public class SDB
 
     // ----------------------------------
     
-    static private String metadataLocation = "org/apacge/jena/sdb/sdb-properties.xml" ;
+    static private String metadataLocation = "org/apache/jena/sdb/sdb-properties.xml" ;
     static private Metadata metadata = new Metadata(metadataLocation) ;
     
     /** The root package name for SDB */   

@@ -358,7 +358,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -370,7 +369,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -382,7 +380,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -394,12 +391,18 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
     public final void single_input_05() throws IOException, InterruptedException {
-        testSingleInput(mixed, 1, MIXED_SIZE / 2);
+        // JSON-LD overrides this because in JSON-LD parsing a bad document gives no triples. 
+        int x = single_input_05_expected() ;
+        testSingleInput(mixed, 1, x);
+    }
+
+    /** Results exected for test single_input_05 */ 
+    protected int single_input_05_expected() {
+        return MIXED_SIZE / 2 ;
     }
 
     /**
@@ -489,13 +492,20 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * tuples test with multiple inputs
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
     public final void multiple_inputs_02() throws IOException, InterruptedException {
-        testMultipleInputs(new File[] { folder.getRoot() }, this.canSplitInputs() ? 4 : 5, EMPTY_SIZE + SMALL_SIZE
-                + LARGE_SIZE + (MIXED_SIZE / 2));
+        int expectedTriples = multiple_inputs_02_expected() ; 
+        testMultipleInputs(new File[] { folder.getRoot() }, this.canSplitInputs() ? 4 : 5, expectedTriples);
+    }
+
+    /** Results exected for test multiple_inputs_02.
+     * JSON_LD has different characteristics on bad documents.
+     * See {@link #single_input_05}.
+     */ 
+    protected int multiple_inputs_02_expected() {
+        return EMPTY_SIZE + SMALL_SIZE + LARGE_SIZE + (MIXED_SIZE / 2) ;
     }
 
     protected final void testSplitInputs(Configuration config, File[] inputs, int expectedSplits, int expectedTuples)
@@ -554,7 +564,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_01() throws IOException, InterruptedException {
@@ -571,7 +580,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_02() throws IOException, InterruptedException {
@@ -589,7 +597,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_03() throws IOException, InterruptedException {

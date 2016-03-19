@@ -22,8 +22,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpJoin ;
 import org.apache.jena.sparql.algebra.op.OpLeftJoin ;
 import org.apache.jena.sparql.engine.main.JoinClassifier ;
@@ -120,9 +118,17 @@ public class TestClassify extends BaseTest
     { classifyJ("{ ?x ?y ?z { LET(?A := ?z+2) } UNION { }}", false) ; }
     
     @Test public void testClassify_Join_44() 
+    { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) } }", false) ; }
+
+    @Test public void testClassify_Join_45() 
     { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) ?s ?p ?o FILTER(?o=?type) } }", false) ; }
     
-    private void classifyJ(String pattern, boolean expected)
+    // Unsafe - deep MINUS
+    // JENA-1021
+    @Test public void testClassify_Join_50() 
+    { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 MINUS { ?a ?b ?c } } UNION {} }", false) ; }
+    
+    public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;

@@ -21,7 +21,7 @@ package org.apache.jena.tdb.store;
 import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -39,10 +39,9 @@ import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
     /* 
-     * Almost everythig is cached in the prefix map asociated with the
+     * Almost everything is cached in the prefix map associated with the
      * graph or dataset so this table is the persistent form and
-     * does nto need a cache of it's own.   
-     * 
+     * does not need a cache of it's own.   
      */
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
@@ -105,9 +104,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Map<String, String> map = new HashMap<>() ;
         // One class of problem from mangled databases
         // (non-transactional, not shutdown cleanly)
-        // ends up with NPE access the node table from
-        // prefix index. As prefixes are "nice extras", we
-        // keep calm and carry on in th eface of exceptions.
+        // ends up with NPE access to the node table from
+        // the prefix index. As prefixes are "nice extras", we
+        // keep calm and carry on in the face of exceptions.
         
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;

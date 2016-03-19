@@ -305,6 +305,9 @@ public class SPARQLServer {
 
         dsDesc.init() ;
 
+        if ( DatasetRegistry.get().isRegistered(datasetPath) )
+            throw new FusekiException("Already registered: "+datasetPath) ;
+        
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
 

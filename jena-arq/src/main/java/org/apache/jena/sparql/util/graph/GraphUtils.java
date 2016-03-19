@@ -24,12 +24,14 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
@@ -41,6 +43,18 @@ import org.apache.jena.vocabulary.RDF ;
 
 public class GraphUtils
 {
+    /** Convert an iterator of triples into quads for the default graph.
+     * This is {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated},
+     * which is for quads outside a dataset, usually the output of parsers. 
+     */
+    public static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
+        return triples2quads(Quad.defaultGraphIRI, iter) ;
+    }
+
+    /** Convert an iterator of triples into quads for the specificed graph name. */
+    public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
+        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
+    }
 
     public static List<String> multiValueString(Resource r, Property p)
     {

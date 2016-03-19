@@ -24,13 +24,13 @@ import java.util.concurrent.ExecutionException ;
 import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.ext.com.google.common.cache.CacheStats ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.ext.com.google.common.cache.CacheBuilder ;
 import org.apache.jena.ext.com.google.common.cache.RemovalListener ;
 
 /** Wrapper around a shaded com.google.common.cache */
-final public class CacheGuava<K,V> implements Cache<K, V>
-
+final public class CacheGuava<K,V> implements Cache<K, V> 
 {
     private BiConsumer<K, V> dropHandler = null ;
     
@@ -109,6 +109,10 @@ final public class CacheGuava<K,V> implements Cache<K, V>
     @Override
     public void setDropHandler(BiConsumer<K, V> dropHandler) {
         this.dropHandler = dropHandler ;
+    }
+    
+    public CacheStats stats() {
+        return cache.stats() ;
     }
 }
 

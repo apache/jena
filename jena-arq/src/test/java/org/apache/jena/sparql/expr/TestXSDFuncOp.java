@@ -833,10 +833,11 @@ public class TestXSDFuncOp extends BaseTest
     @Test public void testSqrt1()
     {
         NodeValue four = NodeValue.makeInteger(4) ;
-        NodeValue two = NodeValue.makeInteger(2) ;
+        NodeValue two = NodeValue.makeDouble(2) ;
         NodeValue result = XSDFuncOp.sqrt( four ) ;
         
-        assertTrue(result.isDecimal()) ;
+        assertTrue(result.isDouble()) ;
+        assertFalse(result.isDecimal()) ;
         assertTrue( NodeValue.sameAs( two, result)) ;
         assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
     }
@@ -851,8 +852,6 @@ public class TestXSDFuncOp extends BaseTest
         assertTrue( NodeValue.sameAs( two, result)) ;
         
         assertNotNull(result.asNode()) ;
-        
-        //assertTrue( two.asNode().sameValueAs(result.asNode()) ) ;
     }
     
     // All compatible - no timezone.

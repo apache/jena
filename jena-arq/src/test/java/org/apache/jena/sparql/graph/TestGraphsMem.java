@@ -33,11 +33,11 @@ public class TestGraphsMem extends GraphsTests
     @Override
     protected Dataset createDataset()
     {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         dsg.addGraph(NodeFactory.createURI(graph1), GraphFactory.createDefaultGraph()) ;
         dsg.addGraph(NodeFactory.createURI(graph2), GraphFactory.createDefaultGraph()) ;
         dsg.addGraph(NodeFactory.createURI(graph3), GraphFactory.createDefaultGraph()) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     @Override

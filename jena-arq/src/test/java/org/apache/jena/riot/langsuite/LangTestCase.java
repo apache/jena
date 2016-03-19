@@ -33,7 +33,6 @@ public abstract class LangTestCase extends EarlTestCase
     protected abstract void _tearDown() ; 
     
     protected boolean sysRIOT_strictMode ;
-    protected boolean sysRIOT_strictXSDLexicialForms ;
     
     @Override
     final public void setUpTest()
@@ -45,11 +44,8 @@ public abstract class LangTestCase extends EarlTestCase
         // If the test suite is sloppy, with IRIs that are not good practice, you may need
         // to run with warnings as not-errors ....
         //BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStd) ;
-        sysRIOT_strictMode = SysRIOT.strictMode ;
-        sysRIOT_strictXSDLexicialForms = SysRIOT.StrictXSDLexicialForms ;
-        
-        SysRIOT.strictMode = true ;
-        SysRIOT.StrictXSDLexicialForms = true ;
+        sysRIOT_strictMode = SysRIOT.isStrictMode() ;
+        SysRIOT.setStrictMode(true) ;
         _setUp() ;
     }
     
@@ -57,8 +53,7 @@ public abstract class LangTestCase extends EarlTestCase
     final public void tearDownTest()
     {
         _tearDown() ;
-        SysRIOT.strictMode = sysRIOT_strictMode ;
-        SysRIOT.StrictXSDLexicialForms = sysRIOT_strictXSDLexicialForms ;
+        SysRIOT.setStrictMode(sysRIOT_strictMode) ;
         BaseTest2.unsetTestLogging() ; 
     }
 

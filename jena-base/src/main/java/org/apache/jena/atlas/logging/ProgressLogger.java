@@ -18,105 +18,22 @@
 
 package org.apache.jena.atlas.logging;
 
-import static org.apache.jena.atlas.lib.DateTimeUtils.* ;
-import org.apache.jena.atlas.lib.Timer ;
+import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.slf4j.Logger ;
 
-/** Progress monitor */
-public class ProgressLogger
+/** 
+ * @deprecated Use {@link ProgressMonitor#create}. This class will be removed.
+ */
+@Deprecated
+public class ProgressLogger extends ProgressMonitor
 {
-    private final Logger log ;
-    private final long tickPoint ;
-    private final int superTick ;
-    private final Timer timer ;
-    private final String label ;
-    
-    private long counterBatch = 0 ;
-    private long counterTotal = 0 ;
-    
-    private long lastTime = 0 ;
-    
     public ProgressLogger(Logger log, String label, long tickPoint, int superTick)
     {
-        this.log = log ;
-        this.label = label ;
-        this.tickPoint = tickPoint ;
-        this.superTick = superTick ;
-        this.timer = new Timer() ;
-    }
-    
-    public void startMessage() { 
-        print("Start:") ;
-    }
-    
-    public void finishMessage() { 
-        // Elapsed.
-        long timePoint = timer.getTimeInterval() ;
-    
-        // *1000L is milli to second conversion
-        if ( timePoint != 0 ) {
-            double time = timePoint/1000.0 ;
-            long runAvgRate   = (counterTotal * 1000L) / timePoint ;
-            
-            print("Finished: %,d %s %.2fs (Avg: %,d)", counterTotal, label, time, runAvgRate) ;
-        }
-        else
-            print("Finished: %,d %s (Avg: ----)", counterTotal, label) ;
-    }
-    
-    public void start()
-    {
-        timer.startTimer() ;
-        lastTime = 0 ;
-    }
-
-    public long finish()
-    {
-        long totalTime = timer.endTimer() ;
-        return totalTime ;
-    }
-    
-    public long getTicks()
-    {
-        return counterTotal ;
-    }
-    
-    public void tick()
-    {
-        counterBatch++ ;
-        counterTotal++ ;
-    
-        if ( tickPoint(counterTotal, tickPoint) )
-        {
-            long timePoint = timer.readTimer() ;
-            long thisTime = timePoint - lastTime ;
-        
-            // *1000L is milli to second conversion
-            if ( thisTime != 0 && timePoint != 0 ) {
-                long batchAvgRate = (counterBatch * 1000L) / thisTime;
-                long runAvgRate   = (counterTotal * 1000L) / timePoint ;
-                print("Add: %,d %s (Batch: %,d / Avg: %,d)", counterTotal, label, batchAvgRate, runAvgRate) ;
-            } else {
-                print("Add: %,d %s (Batch: ---- / Avg: ----)", counterTotal, label) ;
-            }
-            
-            lastTime = timePoint ;
-
-            if ( tickPoint(counterTotal, superTick*tickPoint) )
-                elapsed(timePoint) ;
-            counterBatch = 0 ;
-            lastTime = timePoint ;
-        }
-    }
-    
-    private void elapsed(long timerReading)
-    {
-        float elapsedSecs = timerReading/1000F ;
-        print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, nowAsString()) ;
+        super(label, tickPoint, superTick, (fmt, args)->print(log, fmt, args) ) ;
     }
     
     /** Print a message in the form for this ProgressLogger */ 
-    public void print(String fmt, Object...args)
+    static void print(Logger log, String fmt, Object...args)
     {
         if ( log != null && log.isInfoEnabled() )
         {
@@ -124,10 +41,4 @@ public class ProgressLogger
             log.info(str) ;
         }
     }
-    
-    static boolean tickPoint(long counter, long quantum)
-    {
-        return counter%quantum == 0 ;
-    }
-
 }

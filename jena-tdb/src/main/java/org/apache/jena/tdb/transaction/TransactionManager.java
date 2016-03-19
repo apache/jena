@@ -93,16 +93,17 @@ public class TransactionManager
     static AtomicLong transactionId = new AtomicLong(1) ;
     
     // Accessed by SysTxnState
-    AtomicLong activeReaders = new AtomicLong(0) ; 
-    AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
+    // These must be AtomicLong
+    /*package*/ AtomicLong activeReaders = new AtomicLong(0) ; 
+    /*package*/ AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
     
     public long getCountActiveReaders()     { return activeReaders.get() ; }
     public long getCountActiveWriters()     { return activeWriters.get() ; }
     
-    // Misc stats
-    AtomicLong finishedReaders = new AtomicLong(0) ;
-    AtomicLong committedWriters = new AtomicLong(0) ;
-    AtomicLong abortedWriters = new AtomicLong(0) ;
+    // Misc stats (should be LongAdder / Java8?)
+    /*package*/ AtomicLong finishedReaders = new AtomicLong(0) ;
+    /*package*/ AtomicLong committedWriters = new AtomicLong(0) ;
+    /*package*/ AtomicLong abortedWriters = new AtomicLong(0) ;
     
     // This is the DatasetGraphTDB for the first read-transaction created for
     // a particular view.  The read DatasetGraphTDB can be used by all the readers
@@ -176,6 +177,7 @@ public class TransactionManager
     }
 
     
+    // Mixes stats and state variables :-(
     class TSM_Counters implements TSM
     {
         TSM_Counters() {}

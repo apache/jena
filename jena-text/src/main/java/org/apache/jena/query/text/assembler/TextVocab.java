@@ -43,6 +43,8 @@ public class TextVocab
     public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
+    public static final Property pTokenizer         = Vocab.property(NS, "tokenizer") ;
+    public static final Property pFilters           = Vocab.property(NS, "filters") ;
     
     // Entity definition
     public static final Resource entityMap          = Vocab.resource(NS, "EntityMap") ;
@@ -64,6 +66,18 @@ public class TextVocab
     public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
     public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
+    public static final Resource configurableAnalyzer = Vocab.resource(NS, "ConfigurableAnalyzer");
+    
+    // Tokenizers
+    public static final Resource standardTokenizer  = Vocab.resource(NS, "StandardTokenizer");
+    public static final Resource letterTokenizer    = Vocab.resource(NS, "LetterTokenizer");
+    public static final Resource keywordTokenizer   = Vocab.resource(NS, "KeywordTokenizer");
+    public static final Resource whitespaceTokenizer = Vocab.resource(NS, "WhitespaceTokenizer");
+    
+    // Filters
+    public static final Resource standardFilter     = Vocab.resource(NS, "StandardFilter");
+    public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
+    public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
 
 }
 

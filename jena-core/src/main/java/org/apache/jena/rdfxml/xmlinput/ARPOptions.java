@@ -67,6 +67,7 @@ public class ARPOptions implements ARPErrorNumbers {
     private boolean embedding = false;
     private int errorMode[] = defaultErrorMode.clone();
     
+    @SuppressWarnings("deprecation")
     private static IRIFactory defaultIriFactory = IRIFactory.jenaImplementation() ;
     private IRIFactory iriFactory = defaultIriFactory ;
 

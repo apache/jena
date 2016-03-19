@@ -17,6 +17,7 @@
  */
 
 package org.apache.jena.rdf.model.impl;
+import java.util.Objects ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -199,6 +200,7 @@ public class Util extends Object {
      * <li>(RDF 1.1) xsd:string
      */
     public static boolean isSimpleString(Node n) {
+        Objects.requireNonNull(n) ;
         RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt == null )
             return !isLangString(n) ;
@@ -212,25 +214,30 @@ public class Util extends Object {
      * (RDF 1.0 and RDF 1.1)
      */
     public static boolean isLangString(Node n) {
+        Objects.requireNonNull(n) ;
         String lang = n.getLiteralLanguage() ;
         if ( lang == null )
             return false ;
         return !lang.equals("") ;
     }
-
     
-    /** Return true if the literal should be written as a string, without datatype or lang. (RDF 1.0 and RDF 1.1) */ 
+    /** Return true if the literal is a simple string.
+     *  <p>RDF 1.0 => it is a plain literal, with no language tag
+     *  <p>RDF 1.1 => it has datatype xsd:string
+     */ 
     public static boolean isSimpleString(Literal lit) {
-        if ( lit.getDatatypeURI() == null ) {
+        Objects.requireNonNull(lit) ;
+        String dtStr = lit.getDatatypeURI() ;
+        if (  dtStr == null )
             return ! isLangString(lit) ;
-        }
-        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(XSDDatatype.XSDstring.getURI()) )
-            return true;
+        if ( JenaRuntime.isRDF11 )
+            return dtStr.equals(XSDDatatype.XSDstring.getURI());
         return false ;
     }
     
-    /** Return true if the literals shodul be written with a language string. (RDF 1.0 and RDF 1.1) */
+    /** Return true if the literal has a language tag. (RDF 1.0 and RDF 1.1) */
     public static boolean isLangString(Literal lit) {
+        Objects.requireNonNull(lit) ;
         String lang = lit.getLanguage() ;
         if ( lang == null )
             return false ;

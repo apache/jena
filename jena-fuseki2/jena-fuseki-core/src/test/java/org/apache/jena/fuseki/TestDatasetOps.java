@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
 import static org.apache.jena.fuseki.ServerTest.urlDataset ;
 import org.apache.http.HttpEntity ;
 import org.apache.http.entity.EntityTemplate ;
@@ -65,21 +65,21 @@ public class TestDatasetOps extends AbstractFusekiTest
     }
 
     @Test public void gsp_x_02() {
-        gsp_x(urlDataset, serviceREST) ;
+        gsp_x(urlDataset, serviceGSP) ;
     }
 
     @Test public void gsp_x_03() {
-        gsp_x(serviceREST, urlDataset) ;
+        gsp_x(serviceGSP, urlDataset) ;
     }
 
     @Test public void gsp_x_04() {
-        gsp_x(serviceREST, urlDataset) ;
+        gsp_x(serviceGSP, urlDataset) ;
     }
 
     private void gsp_x(String outward, String inward) {
         HttpEntity e = datasetToHttpEntity(data) ;
         HttpOp.execHttpPut(outward, e);
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         RDFDataMgr.read(dsg, inward) ;
 //        String x = HttpOp.execHttpGetString(inward, "application/n-quads") ;
 //        RDFDataMgr.read(dsg, new StringReader(x), null, Lang.NQUADS) ;
@@ -123,7 +123,7 @@ public class TestDatasetOps extends AbstractFusekiTest
         HttpOp.execHttpPut(urlDataset, e);
         TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ;
         assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
         RDFDataMgr.parse(dest, in) ;
     }

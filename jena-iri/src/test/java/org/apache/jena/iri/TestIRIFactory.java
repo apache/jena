@@ -29,6 +29,7 @@ public class TestIRIFactory {
 		return new JUnit4TestAdapter(TestIRIFactory.class);
 	}
 	
+    @SuppressWarnings("deprecation")
 	private static IRIFactory iriFactory = IRIFactory.jenaImplementation();
 	
 	@Test

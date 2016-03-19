@@ -1094,7 +1094,8 @@ public class Rule implements ClauseEntry {
      * during rule parsing.
      */
     public static class ParserException extends JenaException {
-        
+        private static final long serialVersionUID = -7297703783308663168L;
+
         /** constructor */
         public ParserException(String message, Parser parser) {
             super(constructMessage(message, parser));

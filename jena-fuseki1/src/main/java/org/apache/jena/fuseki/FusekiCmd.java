@@ -25,6 +25,10 @@ import java.io.InputStream ;
 import java.util.List ;
 import java.util.Objects;
 
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModDatasetAssembler ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -47,11 +51,6 @@ import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
-
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModDatasetAssembler ;
 
 public class FusekiCmd extends CmdARQ
 {
@@ -157,9 +156,7 @@ public class FusekiCmd extends CmdARQ
 
     static public void main(String...argv)
     {
-        // Just to make sure ...
-        ARQ.init() ;
-        TDB.init() ;
+        // Just to make sure ...s
         Fuseki.init() ;
         new FusekiCmd(argv).mainRun() ;
     }
@@ -256,11 +253,11 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argMem) )
         {
             log.info("Dataset: in-memory") ;
-            dsg = DatasetGraphFactory.createMem() ;
+            dsg = DatasetGraphFactory.create() ;
         }
         if ( contains(argFile) )
         {
-            dsg = DatasetGraphFactory.createMem() ;
+            dsg = DatasetGraphFactory.create() ;
             // replace by RiotLoader after ARQ refresh.
             String filename = getValue(argFile) ;
             log.info("Dataset: in-memory: load file: "+filename) ;

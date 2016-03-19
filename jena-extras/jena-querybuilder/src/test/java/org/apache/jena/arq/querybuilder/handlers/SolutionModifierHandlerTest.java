@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,10 +46,9 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAll() throws ParseException {
-		SolutionModifierHandler solutionModifier2 = new SolutionModifierHandler(
-				new Query());
-		solutionModifier2.addOrderBy("orderBy");
-		solutionModifier2.addGroupBy("groupBy");
+		SolutionModifierHandler solutionModifier2 = new SolutionModifierHandler(new Query());
+		solutionModifier2.addOrderBy(Var.alloc("orderBy"));
+		solutionModifier2.addGroupBy(Var.alloc("groupBy"));
 		solutionModifier2.addHaving("?having<10");
 		solutionModifier2.setLimit(500);
 		solutionModifier2.setOffset(200);
@@ -57,8 +57,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 		String[] s = byLine(query.toString());
 		assertContainsRegex(GROUP_BY + var("groupBy"), s);
-		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE
-				+ LT + OPT_SPACE + "10" + CLOSE_PAREN, s);
+		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE + LT + OPT_SPACE + "10" + CLOSE_PAREN, s);
 		assertContainsRegex(ORDER_BY + var("orderBy"), s);
 		assertContainsRegex(LIMIT + "500", s);
 		assertContainsRegex(OFFSET + "200", s);
@@ -66,59 +65,98 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAll() throws ParseException {
-		solutionModifier.addOrderBy("orderBy");
-		solutionModifier.addGroupBy("groupBy");
+		solutionModifier.addOrderBy(Var.alloc("orderBy"));
+		solutionModifier.addGroupBy(Var.alloc("groupBy"));
 		solutionModifier.addHaving("SUM(?lprice) > 10");
 		solutionModifier.setLimit(500);
 		solutionModifier.setOffset(200);
 
 		String[] s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy", s);
-		assertContainsRegex("HAVING\\s+\\( SUM\\(\\?lprice\\) > 10 \\)", s);
-		assertContainsRegex("ORDER BY\\s+\\?orderBy", s);
-		assertContainsRegex("LIMIT\\s+500", s);
-		assertContainsRegex("OFFSET\\s+200", s);
+		assertContainsRegex(GROUP_BY + var("groupBy"), s);
+		assertContainsRegex(HAVING + OPEN_PAREN + "SUM" + OPEN_PAREN + var("lprice") + CLOSE_PAREN + OPT_SPACE + GT
+				+ "10" + CLOSE_PAREN, s);
+		assertContainsRegex(ORDER_BY + var("orderBy"), s);
+		assertContainsRegex(LIMIT + "500", s);
+		assertContainsRegex(OFFSET + "200", s);
 
 	}
 
 	@Test
 	public void testAddOrderBy() {
-		solutionModifier.addOrderBy("orderBy");
+		solutionModifier.addOrderBy(Var.alloc("orderBy"));
 		List<SortCondition> sc = query.getOrderBy();
 		assertEquals("Wrong number of conditions", 1, sc.size());
-		assertEquals("Wrong value", sc.get(0).expression.asVar(),
-				Var.alloc("orderBy"));
+		assertEquals("Wrong value", sc.get(0).expression.asVar(), Var.alloc("orderBy"));
 
-		solutionModifier.addOrderBy("orderBy2");
+		solutionModifier.addOrderBy(Var.alloc("orderBy2"));
 		sc = query.getOrderBy();
 		assertEquals("Wrong number of conditions", 2, sc.size());
-		assertEquals("Wrong value", sc.get(0).expression.asVar(),
-				Var.alloc("orderBy"));
-		assertEquals("Wrong value", sc.get(1).expression.asVar(),
-				Var.alloc("orderBy2"));
+		assertEquals("Wrong value", sc.get(0).expression.asVar(), Var.alloc("orderBy"));
+		assertEquals("Wrong value", sc.get(1).expression.asVar(), Var.alloc("orderBy2"));
 	}
 
 	@Test
-	public void testAddGroupBy() {
-		solutionModifier.addGroupBy("groupBy");
+	public void testAddGroupByVar() {
+		solutionModifier.addGroupBy(Var.alloc("groupBy"));
 		String[] s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy", s);
+		assertContainsRegex(GROUP_BY + var("groupBy"), s);
 
-		solutionModifier.addGroupBy("groupBy2");
+		solutionModifier.addGroupBy(Var.alloc("groupBy2"));
 		s = byLine(query.toString());
-		assertContainsRegex("GROUP BY\\s+\\?groupBy\\s+\\?groupBy2", s);
+		assertContainsRegex(GROUP_BY + var("groupBy") + SPACE + var("groupBy2"), s);
 	}
 
 	@Test
-	public void testAddHaving() throws ParseException {
+	public void testAddGroupByExpr() {
+		solutionModifier.addGroupBy(new E_Random());
+		String[] s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN, s);
+
+		solutionModifier.addGroupBy(Var.alloc("groupBy2"));
+		s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("groupBy2"), s);
+	}
+
+	@Test
+	public void testAddGroupByVarAndExpr() {
+		solutionModifier.addGroupBy(Var.alloc("groupBy"), new E_Random());
+		String[] s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
+				+ var("groupBy") + CLOSE_PAREN, s);
+
+		solutionModifier.addGroupBy(Var.alloc("groupBy2"));
+		s = byLine(query.toString());
+		assertContainsRegex(GROUP_BY + OPEN_PAREN + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + "AS" + SPACE
+				+ var("groupBy") + CLOSE_PAREN + SPACE + var("groupBy2"), s);
+	}
+
+	@Test
+	public void testAddHavingString() throws ParseException {
 		solutionModifier.addHaving("?having<10");
-		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE
-				+ LT + OPT_SPACE + 10 + CLOSE_PAREN, query.toString());
+		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE + LT + 10 + CLOSE_PAREN, query.toString());
 
 		solutionModifier.addHaving("?having2");
-		assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE
-				+ LT + OPT_SPACE + 10 + CLOSE_PAREN + OPT_SPACE
-				+ var("having2"), query.toString());
+		assertContainsRegex(
+				HAVING + OPEN_PAREN + var("having") + OPT_SPACE + LT + 10 + CLOSE_PAREN + OPT_SPACE + var("having2"),
+				query.toString());
+	}
+
+	@Test
+	public void testAddHavingVar() throws ParseException {
+		solutionModifier.addHaving(Var.alloc("foo"));
+		assertContainsRegex(HAVING + var("foo"), query.toString());
+
+		solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + var("foo") + SPACE + var("having2"), query.toString());
+	}
+
+	@Test
+	public void testAddHavingExpr() throws ParseException {
+		solutionModifier.addHaving(new E_Random());
+		assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN, query.toString());
+
+		solutionModifier.addHaving("?having2");
+		assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN + SPACE + var("having2"), query.toString());
 	}
 
 	@Test

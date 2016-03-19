@@ -86,6 +86,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
             try
             {
                 db.addAll(qIter);
+                return db.iterator();
             }
             // Should we catch other exceptions too?  Theoretically the user should be using this
             // iterator in a try/finally block, and thus will call close() themselves. 
@@ -94,8 +95,6 @@ public class QueryIterSort extends QueryIterPlainWrapper
                 close();
                 throw e;
             }
-            
-            return db.iterator();
         }
 
         @Override

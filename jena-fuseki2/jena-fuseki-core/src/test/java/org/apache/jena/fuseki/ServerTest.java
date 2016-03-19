@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki ;
 
+import java.io.IOException ;
+import java.net.ServerSocket ;
 import java.nio.file.Paths ;
+import java.util.Arrays ;
 import java.util.Collection ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -52,14 +55,13 @@ import org.apache.jena.update.UpdateProcessor ;
  */
 public class ServerTest {
     // Abstraction that runs a SPARQL server for tests.
-
-    public static final int     port          = 3535 ;
+    public static final int     port          = choosePort(3535, 3534, 3735, 9035, 9135, 10035) ;
     public static final String  urlRoot       = "http://localhost:" + port + "/" ;
     public static final String  datasetPath   = "/dataset" ;
     public static final String  urlDataset    = "http://localhost:" + port + datasetPath ;
     public static final String  serviceUpdate = urlDataset + "/update" ;
     public static final String  serviceQuery  = urlDataset + "/query" ;
-    public static final String  serviceREST   = urlDataset + "/data" ;
+    public static final String  serviceGSP    = urlDataset + "/data" ;
 
     public static final String  gn1           = "http://graph/1" ;
     public static final String  gn2           = "http://graph/2" ;
@@ -85,8 +87,12 @@ public class ServerTest {
     // static { allocServer() ; }
 
     static public void allocServer() {
+        allocServer(true) ;
+    }
+    
+    static public void allocServer(boolean updateable) {
         if ( countServer == 0 )
-            setupServer() ;
+            setupServer(updateable) ;
         countServer++ ;
     }
 
@@ -98,24 +104,25 @@ public class ServerTest {
         }
     }
 
-    protected static void setupServer() {
+    protected static void setupServer(boolean updateable) {
         FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
         FileOps.ensureDir("target");
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
         FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
-        setupServer(ServerTest.port, null, ServerTest.datasetPath) ;
+        setupServer(ServerTest.port, null, ServerTest.datasetPath, updateable) ;
     }
     
-    protected static void setupServer(int port, String authConfigFile, String datasetPath) {
+    protected static void setupServer(int port, String authConfigFile, String datasetPath, boolean updateable) {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
         ServerInitialConfig params = new ServerInitialConfig() ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.create() ;
         params.dsg = dsg ;
         params.datasetPath = datasetPath ;
-        params.allowUpdate = true ;
+        params.allowUpdate = updateable ;
+        
         FusekiServerListener.initialSetup = params ;
         
         JettyServerConfig config = make(port, true, true) ;
@@ -154,5 +161,21 @@ public class ServerTest {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
+    }
+    
+    // Imperfect probing for a port.
+    // There is a race condition on finding a free port and using it in the tests. 
+    private static int choosePort(int... ports) {
+        for (int port : ports) {
+            try {
+                @SuppressWarnings("resource")
+                ServerSocket s = new ServerSocket(port) ;
+                s.close();
+                return s.getLocalPort() ; // OK to call after close.
+            } catch (IOException ex) { 
+                continue;
+            }
+        }
+        throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }
 }

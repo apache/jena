@@ -20,7 +20,7 @@ package org.apache.jena.tdb.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -86,22 +86,6 @@ public class OpExecutorTDB1 extends OpExecutor
             Explain.explain("TDB", op, super.execCxt.getContext()) ;
         return super.exec(op, input) ;
     } 
-    
-    // Retrieving nodes isn't so bad because they will be needed anyway.
-    // And if their duplicates, likely to be cached.
-    // Need to work with SolverLib which wraps the NodeId bindgins with a converter. 
-    
-    @Override
-    protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input)
-    {
-        return super.execute(opDistinct, input) ;
-    }
-    
-    @Override
-    protected QueryIterator execute(OpReduced opReduced, QueryIterator input)
-    {
-        return super.execute(opReduced, input) ;
-    }
     
     @Override
     protected QueryIterator execute(OpFilter opFilter, QueryIterator input)

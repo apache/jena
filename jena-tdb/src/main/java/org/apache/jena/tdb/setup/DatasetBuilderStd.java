@@ -23,7 +23,6 @@ import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.main.QC ;
@@ -40,6 +39,7 @@ import org.apache.jena.tdb.index.BuilderStdIndex ;
 import org.apache.jena.tdb.index.IndexBuilder ;
 import org.apache.jena.tdb.index.IndexParams ;
 import org.apache.jena.tdb.index.RangeIndexBuilder ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.solver.OpExecutorTDB1 ;
 import org.apache.jena.tdb.store.* ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;

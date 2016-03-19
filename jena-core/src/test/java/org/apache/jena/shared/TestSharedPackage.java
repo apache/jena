@@ -18,7 +18,8 @@
 
 package org.apache.jena.shared;
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class TestSharedPackage extends TestCase
     {
@@ -26,10 +27,11 @@ public class TestSharedPackage extends TestCase
         { super(); }
 
     public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
+        {
+        final TestSuite result = new TestSuite();
         result.addTest( TestPrefixMapping.suite() );
         result.addTest( TestJenaException.suite() );
+        result.addTest( TestLockMRPlusSW.suite() );
         return result;
         }
     }

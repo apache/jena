@@ -24,6 +24,9 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.aggregate.AggCount;
+import org.apache.jena.sparql.syntax.ElementGroup;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +38,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 	@Before
 	public void setup() {
 		query = new Query();
-		handler = new SelectHandler(query);
+		AggregationHandler aggHandler = new AggregationHandler(query);
+		handler = new SelectHandler(aggHandler);
 	}
 
 	@Test
@@ -66,6 +70,19 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		assertTrue( "Should be an E_Random", e instanceof E_Random);
 	}
 	
+	@Test
+	public void testAddAggregateStringVar() {
+		Var v = Var.alloc("foo");
+		handler.addVar("count(*)", v);
+		VarExprList expr = query.getProject();
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an ExprAggregator", e instanceof ExprAggregator);
+		assertTrue( "Should be AggCount", ((ExprAggregator)e).getAggregator() instanceof AggCount);
+	}
+	
+	@Test
 	public void testAddExprVar() {
 		Var v = Var.alloc("foo");
 		handler.addVar(new E_Random(), v);
@@ -150,7 +167,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAllResultStartReduced() {
-		SelectHandler sh = new SelectHandler(new Query());
+		AggregationHandler aggHandler = new AggregationHandler(new Query());
+		SelectHandler sh = new SelectHandler(aggHandler);
 		sh.addVar(null);
 		sh.setReduced(true);
 
@@ -161,11 +179,14 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAllVarsDistinct() {
-		SelectHandler sh = new SelectHandler(new Query());
+		AggregationHandler aggHandler = new AggregationHandler(new Query());
+		SelectHandler sh = new SelectHandler(aggHandler);
 		sh.addVar(Var.alloc("foo"));
 		sh.setDistinct(true);
 
 		handler.addAll(sh);
+		// make sure warning does not fire.
+		query.setQueryPattern( new ElementGroup() );
 		assertTrue(query.isDistinct());
 		assertFalse(query.isQueryResultStar());
 		assertEquals(1, query.getResultVars().size());

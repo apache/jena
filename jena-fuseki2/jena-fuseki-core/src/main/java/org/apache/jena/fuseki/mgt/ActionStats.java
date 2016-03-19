@@ -36,6 +36,8 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 
 public class ActionStats extends ActionContainerItem
 {
+    private static final long serialVersionUID = 7077403170416268730L;
+
     public ActionStats() { super() ; } 
     
     // This does not consult the system database for dormant etc.
@@ -187,7 +189,7 @@ public class ActionStats extends ActionContainerItem
     }
     
     private long gspValue(DataService dSrv, CounterName cn) {
-        return  counter(dSrv, OperationName.GSP, cn) +
+        return  counter(dSrv, OperationName.GSP_RW, cn) +
                 counter(dSrv, OperationName.GSP_R, cn) ;
     }
 

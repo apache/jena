@@ -68,7 +68,7 @@ public class AggAvg extends AggregatorBase
         
         static final boolean DEBUG = false ;
         
-        public AccAvg(Expr expr) { super(expr) ; }
+        public AccAvg(Expr expr) { super(expr, false) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)

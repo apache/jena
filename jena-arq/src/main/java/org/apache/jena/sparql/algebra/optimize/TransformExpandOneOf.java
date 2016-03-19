@@ -18,13 +18,15 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.apache.jena.sparql.expr.NodeValue.FALSE ;
-import static org.apache.jena.sparql.expr.NodeValue.TRUE ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.op.OpFilter ;
-import org.apache.jena.sparql.algebra.op.OpLeftJoin ;
-import org.apache.jena.sparql.expr.* ;
+import static org.apache.jena.sparql.expr.NodeValue.FALSE;
+import static org.apache.jena.sparql.expr.NodeValue.TRUE;
+
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.op.OpFilter;
+import org.apache.jena.sparql.algebra.op.OpLeftJoin;
+import org.apache.jena.sparql.expr.*;
 
 public class TransformExpandOneOf extends TransformCopy
 {
@@ -33,80 +35,86 @@ public class TransformExpandOneOf extends TransformCopy
     // Expressions to expand can be in two places: OpFilter and the expr of OpLeftJoin. 
     
     @Override
-    public Op transform(OpFilter opFilter, Op subOp)
-    {
-        ExprList exprList = opFilter.getExprs() ;
-        ExprList exprList2 = process(exprList) ;
+    public Op transform(OpFilter opFilter, Op subOp) {
+        ExprList exprList = opFilter.getExprs();
+        ExprList exprList2 = process(exprList);
         if ( exprList2 == null )
-            return super.transform(opFilter, subOp) ;
-        Op opFilter2 = OpFilter.filter(exprList2, subOp) ;
-        return opFilter2 ;
+            return super.transform(opFilter, subOp);
+        Op opFilter2 = OpFilter.filter(exprList2, subOp);
+        return opFilter2;
     }
-    
+
     @Override
-    public Op transform(OpLeftJoin opLeftJoin, Op opLeft, Op opRight)
-    {
-        ExprList exprList = opLeftJoin.getExprs() ;
+    public Op transform(OpLeftJoin opLeftJoin, Op opLeft, Op opRight) {
+        ExprList exprList = opLeftJoin.getExprs();
         if ( exprList == null )
-            return opLeftJoin ;
-        ExprList exprList2 = process(exprList) ;
+            return opLeftJoin;
+        ExprList exprList2 = process(exprList);
         if ( exprList2 == null )
-            return opLeftJoin ;
-        return OpLeftJoin.create(opLeft, opRight, exprList2) ;
+            return opLeftJoin;
+        return OpLeftJoin.create(opLeft, opRight, exprList2);
     }
 
-    private static ExprList process(ExprList exprList)
-    {
+    private static ExprList process(ExprList exprList) {
         if ( !interesting(exprList) )
-            return null ;
-        return expand(exprList) ; 
+            return null;
+        return expand(exprList);
     }
     
-    private static boolean interesting(ExprList exprList)
-    {
-        for ( Expr e : exprList )
-        {
-            if ( e instanceof E_OneOf ) return true ;
-            if ( e instanceof E_NotOneOf ) return true ;
-        }
-        return false ;
+    /** Prescan to see if anything to consider */ 
+    private static boolean interesting(ExprList exprList) {
+        return exprList.getList().stream().anyMatch((e) -> processable(e));
     }
 
-    private static ExprList expand(ExprList exprList)
-    {
+    /** Check whether the expression is to be processed here */ 
+    private static boolean processable(Expr e) {
+        return (e instanceof E_OneOfBase) && ((E_OneOfBase)e).getRHS().size() < REWRITE_LIMIT;
+    }
+
+    /*package*/ static int REWRITE_LIMIT = 250;
+
+    private static ExprList expand(ExprList exprList) {
         ExprList exprList2 = new ExprList() ;
         
-        for (  Expr e : exprList)
-        {
-            if ( e instanceof E_OneOf )
-            {
-                // ?x IN (a,b) ===> (?x == a) || (?x == b)
-                // ?x IN ()    ===> false
-                
-                E_OneOf exprOneOf = (E_OneOf)e ;
-                Expr x = exprOneOf.getLHS() ;
-                Expr disjunction = null ;
-                // if ?x IN () then it's false regardless.  
-                for ( Expr sub : exprOneOf.getRHS() )
-                {
-                    Expr e2 = new E_Equals(x, sub) ;
-                    if ( disjunction == null )
-                        disjunction = e2 ;
-                    else
-                        disjunction = new E_LogicalOr(disjunction, e2) ;
-                }
-                
-                if ( disjunction == null )
-                    exprList2.add(FALSE) ;
-                else
-                    exprList2.add(disjunction) ;
-                continue ;
+        for ( Expr e : exprList ) {
+
+            if ( !processable(e) ) {
+                exprList2.add(e);
+                continue;
             }
-            if ( e instanceof E_NotOneOf )
-            {
+
+            if ( e instanceof E_OneOf ) {
+                // ?x IN (a,b) ===> (?x == a) || (?x == b)
+                // ?x IN () ===> false
+
+                E_OneOf exprOneOf = (E_OneOf)e ;
+                if ( exprOneOf.getRHS().size() > REWRITE_LIMIT )
+                    // Too large - leave it alone.
+                    continue;
+                Expr x = exprOneOf.getLHS();
+                Expr disjunction = null;
+                // if ?x IN () then it's false regardless.
+                for ( Expr sub : exprOneOf.getRHS() ) {
+                    Expr e2 = new E_Equals(x, sub);
+                    if ( disjunction == null )
+                        disjunction = e2;
+                    else
+                        disjunction = new E_LogicalOr(disjunction, e2);
+                }
+
+                if ( disjunction == null )
+                    exprList2.add(FALSE);
+                else
+                    exprList2.add(disjunction);
+                continue;
+            }
+            if ( e instanceof E_NotOneOf ) {
                 // ?x NOT IN (a,b) ===> (?x != a) && (?x != b)
                 // ?x NOT IN () ===> TRUE (or nothing)
-                E_NotOneOf exprNotOneOf = (E_NotOneOf)e ;
+                E_NotOneOf exprNotOneOf = (E_NotOneOf)e;
+                if ( exprNotOneOf.getRHS().size() > REWRITE_LIMIT )
+                    // Too large - leave it alone.
+                    continue ;
                 Expr x = exprNotOneOf.getLHS() ;
                 if ( exprNotOneOf.getRHS().size() == 0 )
                     exprList2.add(TRUE) ;
@@ -117,10 +125,9 @@ public class TransformExpandOneOf extends TransformCopy
                 }
                 continue ;
             }
-            
-            exprList2.add(e) ;
+            throw new ARQInternalErrorException() ;
         }
-        
+
         return exprList2 ;
     }
 }

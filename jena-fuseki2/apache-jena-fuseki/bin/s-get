@@ -35,7 +35,7 @@ require 'ostruct'
 #  Follow redirects => 301:  puts response["location"] # All headers are lowercase?
 
 SOH_NAME="SOH"
-SOH_VERSION="0.0.2"
+SOH_VERSION="1.0.0"
 
 $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new  
 
@@ -192,6 +192,9 @@ end
 
 def send_body(dataset, graph, file, method)
   mt = content_type(file)
+  if mt.nil?
+    warn_exit "Can't identify the content type of '#{file}'", 9
+  end
   headers = {}
   headers.merge!($headers)
   headers[$hContentType] = mt

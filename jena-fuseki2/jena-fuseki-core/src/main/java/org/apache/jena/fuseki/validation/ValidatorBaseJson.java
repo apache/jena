@@ -43,6 +43,9 @@ import org.slf4j.Logger ;
 /** ValidationBase for JSON out */ 
 public abstract class ValidatorBaseJson extends ServletBase
 {
+
+    private static final long serialVersionUID = 6539771233008186266L;
+
     private static Logger vLog = Fuseki.validationLog ;
     public static final String jErrors          = "errors" ;
     public static final String jWarnings        = "warning" ;
@@ -82,12 +85,12 @@ public abstract class ValidatorBaseJson extends ServletBase
             OutputStream out = response.getOutputStream() ; 
             JSON.write(out, obj);
         } catch (ActionErrorException ex) {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-            if ( ex.message != null )
-                ServletOps.responseSendError(response, ex.rc, ex.message) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+            if ( ex.getMessage() != null )
+                ServletOps.responseSendError(response, ex.getRC(), ex.getMessage()) ;
             else
-                ServletOps.responseSendError(response, ex.rc) ;
+                ServletOps.responseSendError(response, ex.getRC()) ;
         } catch (Throwable th) {
             ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, "Internal Error") ;
         }

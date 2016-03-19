@@ -21,7 +21,8 @@ package org.apache.jena.hadoop.rdf.types;
 import java.io.DataInput;
 import java.io.IOException;
 
-import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 
 /**
@@ -70,11 +71,13 @@ public class NodeTupleWritable extends AbstractNodeTupleWritable<Tuple<Node>> {
 
     @Override
     protected Tuple<Node> createTuple(Node[] ns) {
-        return Tuple.create(ns);
+        return TupleFactory.create(ns);
     }
 
     @Override
     protected Node[] createNodes(Tuple<Node> tuple) {
-        return tuple.tuple();
+        Node n[] = new Node[tuple.len()] ;
+        tuple.copyInto(n);
+        return n ;
     }
 }

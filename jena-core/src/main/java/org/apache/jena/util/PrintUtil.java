@@ -102,7 +102,13 @@ public class PrintUtil {
      */
     public static String print(Node node) {
         if (node instanceof Node_URI) {
-            return node.toString( prefixMapping );
+            String uri = ((Node_URI)node).getURI();
+            String suri = prefixMapping == null ? uri : prefixMapping.shortForm(uri);
+            if (uri.equals(suri)) {
+                return "<" + uri + ">";
+            } else {
+                return suri;
+            }
         } else if (node instanceof Node_Literal) {
             String lf = node.getLiteralLexicalForm();
             // RDF 1.1 : Print xsd:string without ^^xsd:string 

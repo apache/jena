@@ -26,22 +26,26 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 
 class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
 {
-    Class< ? > extClass ;
-    
-    PropertyFunctionFactoryAuto(Class< ? > xClass)
-    {
-        extClass = xClass ;
-        
-        if ( ! PropertyFunction.class.isAssignableFrom(xClass) )
-            throw new ARQInternalErrorException("No PropertyFunction interface for "+Lib.classShortName(xClass)) ;
+    private final Class<? > extClass;
+
+    PropertyFunctionFactoryAuto(Class<? > xClass) {
+        extClass = xClass;
+
+        if ( !PropertyFunction.class.isAssignableFrom(xClass) )
+            throw new ARQInternalErrorException("No PropertyFunction interface for " + Lib.classShortName(xClass));
     }
-    
+
     @Override
-    public PropertyFunction create(String uri)
-    {
-        try
-        { return (PropertyFunction)extClass.newInstance() ; }
-        catch (Exception e)
-        { throw new QueryBuildException("Can't instantiate PropertyFunction for "+uri, e) ; } 
+    public PropertyFunction create(String uri) {
+        try {
+            return (PropertyFunction)extClass.newInstance();
+        }
+        catch (Exception e) {
+            throw new QueryBuildException("Can't instantiate PropertyFunction for " + uri, e);
+        }
+    }
+
+    public Class<? > getAutoClass() {
+        return extClass;
     }
 }

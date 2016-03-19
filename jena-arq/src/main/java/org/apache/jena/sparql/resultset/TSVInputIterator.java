@@ -54,102 +54,104 @@ public class TSVInputIterator extends QueryIteratorBase
 	 * Assumes the Header Row has already been read and that the next row to be read from the reader will be a Result Row
 	 * </p>
 	 */
-	public TSVInputIterator(BufferedReader reader, List<Var> vars)
-	{
-		this.reader = reader;
-		this.expectedItems = vars.size();
-		this.vars = vars;
-	}
-	
-	@Override
-	public void output(IndentedWriter out, SerializationContext sCxt) {
-	    // Not needed - only called as part of printing/debugging query plans.
-		out.println("TSVInputIterator") ;
-	}
+    public TSVInputIterator(BufferedReader reader, List<Var> vars) {
+        this.reader = reader;
+        this.expectedItems = vars.size();
+        this.vars = vars;
+    }
 
-	@Override
-	protected boolean hasNextBinding() {
-		if (this.reader != null)
-		{
-			if (this.binding == null)
-				return this.parseNextBinding();
-			else
-				return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	private boolean parseNextBinding()
-	{
-	    String line;
-	    try 
-	    {
-	        line = this.reader.readLine();
-	        //Once EOF has been reached we'll see null for this call so we can return false because there are no further bindings
-	        if (line == null) return false;
-	        this.lineNum++;
-	    } 
-	    catch (IOException e) 
-	    { throw new ResultSetException("Error parsing TSV results - " + e.getMessage()); }
+    @Override
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        // Not needed - only called as part of printing/debugging query plans.
+        out.println("TSVInputIterator");
+    }
 
-	    if ( line.isEmpty() )
-	    {
-	        // Empty input line - no bindings.
-	    	// Only valid when we expect zero/one values as otherwise we should get a sequence of tab characters
-	    	// which means a non-empty string which we handle normally
-	    	if (expectedItems > 1) throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
-	        this.binding = BindingFactory.create() ;
-	        return true ;
-	    }
-	    
+    @Override
+    protected boolean hasNextBinding() {
+        if ( this.reader != null ) {
+            if ( this.binding == null )
+                return this.parseNextBinding();
+            else
+                return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean parseNextBinding() {
+        String line;
+        try {
+            line = this.reader.readLine();
+            // Once EOF has been reached we'll see null for this call so we can
+            // return false because there are no further bindings
+            if ( line == null )
+                return false;
+            this.lineNum++;
+        }
+        catch (IOException e) {
+            throw new ResultSetException("Error parsing TSV results - " + e.getMessage());
+        }
+
+        if ( line.isEmpty() ) {
+            // Empty input line - no bindings.
+            // Only valid when we expect zero/one values as otherwise we should
+            // get a sequence of tab characters
+            // which means a non-empty string which we handle normally
+            if ( expectedItems > 1 )
+                throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected",
+                                                    this.lineNum, expectedItems));
+            this.binding = BindingFactory.create();
+            return true;
+        }
+
         String[] tokens = TSVInput.pattern.split(line, -1);
-	    
-        if (tokens.length != expectedItems)
-        	 throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.", this.lineNum, line, tokens.length, expectedItems));
+
+        if ( tokens.length != expectedItems )
+            throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.",
+                                                this.lineNum, line, tokens.length, expectedItems));
         this.binding = BindingFactory.create();
 
-        for ( int i = 0; i < tokens.length; i++ ) 
-        {
+        for ( int i = 0 ; i < tokens.length ; i++ ) {
             String token = tokens[i];
 
-            //If we see an empty string this denotes an unbound value
-            if (token.equals("")) continue; 
+            // If we see an empty string this denotes an unbound value
+            if ( token.equals("") )
+                continue;
 
-            //Bound value so parse it and add to the binding
+            // Bound value so parse it and add to the binding
             try {
-                Node node = NodeFactoryExtra.parseNode(token) ;
+                Node node = NodeFactoryExtra.parseNode(token);
                 if ( !node.isConcrete() )
-                    throw new ResultSetException(format("Line %d: Not a concrete RDF term: %s",lineNum, token)) ;
+                    throw new ResultSetException(format("Line %d: Not a concrete RDF term: %s", lineNum, token));
                 this.binding.add(this.vars.get(i), node);
-            } catch (RiotException ex)
-            {
+            }
+            catch (RiotException ex) {
                 throw new ResultSetException(format("Line %d: Data %s contains error: %s", lineNum, token, ex.getMessage()));
             }
         }
 
         return true;
-	}
-	
-	@Override
-	protected Binding moveToNextBinding() {
-        if (!hasNext()) throw new NoSuchElementException() ;
+    }
+
+    @Override
+    protected Binding moveToNextBinding() {
+        if ( !hasNext() )
+            throw new NoSuchElementException();
         Binding b = this.binding;
-        this.binding = null ;
+        this.binding = null;
         return b;
-	}
+    }
 
-	@Override
-	protected void closeIterator() {
-	    IO.close(reader) ;
-	    reader = null;
-	}
+    @Override
+    protected void closeIterator() {
+        IO.close(reader);
+        reader = null;
+    }
 
-	@Override
-	protected void requestCancel() {
-		//Don't need to do anything special to cancel
-		//Superclass should take care of that and call closeIterator() where we do our actual clean up
-	}
+    @Override
+    protected void requestCancel() {
+        // Don't need to do anything special to cancel
+        // Superclass should take care of that and call closeIterator() where we
+        // do our actual clean up
+    }
 }

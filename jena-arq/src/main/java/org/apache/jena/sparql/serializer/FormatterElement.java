@@ -233,7 +233,7 @@ public class FormatterElement extends FormatterBase
 
     @Override
     public void visit(ElementData el) {
-        QuerySerializer.outputDataBlock(out, el.getVars(), el.getRows(), context.getPrologue()) ;
+        QuerySerializer.outputDataBlock(out, el.getVars(), el.getRows(), context) ;
     }
 
     @Override

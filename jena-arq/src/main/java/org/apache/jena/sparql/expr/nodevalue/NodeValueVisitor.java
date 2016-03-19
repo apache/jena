@@ -28,6 +28,7 @@ public interface NodeValueVisitor
     public void visit(NodeValueFloat nv) ;
     public void visit(NodeValueInteger nv) ;
     public void visit(NodeValueNode nv) ;
+    public void visit(NodeValueLang nv) ;
     public void visit(NodeValueString nv) ;
     public void visit(NodeValueDT nv) ;
 //    public void visit(NodeValueTime nv) ;

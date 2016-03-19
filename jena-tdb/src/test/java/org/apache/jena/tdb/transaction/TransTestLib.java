@@ -32,7 +32,7 @@ public class TransTestLib {
     public static int count(String queryStr, DatasetGraph dsg) {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(dsg))) {
             ResultSet rs = qExec.execSelect() ;
             for ( ; rs.hasNext() ; ) {
                 rs.nextBinding() ;
@@ -46,7 +46,7 @@ public class TransTestLib {
     public static List<Node> query(String queryStr, String var, DatasetGraphTxn dsg) {
         Var v = Var.alloc(var) ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(dsg))) {
             List<Node> nodes = new ArrayList<>() ;
             ResultSet rs = qExec.execSelect() ;
             for ( ; rs.hasNext() ; ) {

@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.function.library;
 
-//import org.apache.commons.logging.*;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase1 ;

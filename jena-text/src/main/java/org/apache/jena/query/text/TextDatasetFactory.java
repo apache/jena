@@ -24,13 +24,14 @@ import org.apache.jena.query.text.assembler.TextVocab ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 import org.apache.solr.client.solrj.SolrServer ;
 
 public class TextDatasetFactory
 {
-    static { TextQuery.init(); }
+    static { JenaSystem.init(); }
     
     /** Use an assembler file to build a dataset with text search capabilities */ 
     public static Dataset create(String assemblerFile)
@@ -49,7 +50,7 @@ public class TextDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex, closeIndexOnDSGClose) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
     
     /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
@@ -57,7 +58,7 @@ public class TextDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex, closeIndexOnDSGClose, producer) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
 

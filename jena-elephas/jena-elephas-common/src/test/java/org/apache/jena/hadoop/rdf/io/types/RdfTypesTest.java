@@ -18,16 +18,11 @@
 
 package org.apache.jena.hadoop.rdf.io.types;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.* ;
 
 import org.apache.hadoop.io.WritableComparable;
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -301,7 +296,7 @@ public class RdfTypesTest {
      */
     @Test
     public void node_writable_bnode_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Node n = NodeFactory.createAnon();
+        Node n = NodeFactory.createBlankNode();
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
@@ -316,7 +311,7 @@ public class RdfTypesTest {
      */
     @Test
     public void node_writable_bnode_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Node n = NodeFactory.createAnon();
+        Node n = NodeFactory.createBlankNode();
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
         NodeWritable nw2 = new NodeWritable(n);
@@ -350,7 +345,7 @@ public class RdfTypesTest {
      */
     @Test
     public void triple_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Triple t = new Triple(NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
+        Triple t = new Triple(NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
         TripleWritable tw = new TripleWritable(t);
         testWriteRead(tw, tw);
     }
@@ -381,7 +376,7 @@ public class RdfTypesTest {
      */
     @Test
     public void quad_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"),
+        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"),
                 NodeFactory.createLiteral("value"));
         QuadWritable qw = new QuadWritable(q);
         testWriteRead(qw, qw);
@@ -397,8 +392,9 @@ public class RdfTypesTest {
      */
     @Test
     public void tuple_writable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"), NodeFactory.createLiteral("value"),
-                NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
+        Tuple<Node> t = tuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"),
+                              NodeFactory.createLiteral("value"),
+                              NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
         NodeTupleWritable tw = new NodeTupleWritable(t);
         testWriteRead(tw, tw);
     }

@@ -24,7 +24,8 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestNodeFmt.class
+    TestQuotedStringOutput.class
+    , TestNodeFmt.class
     , TestNodeFmtLib.class
 })
 

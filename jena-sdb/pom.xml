@@ -21,12 +21,12 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>15-SNAPSHOT</version>
+    <version>16-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -43,14 +43,20 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+    
     <!-- Need the tests as well -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -59,7 +65,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -67,7 +73,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -99,11 +105,21 @@
   </dependencies>
 
   <build>
+
     <resources>
       <resource>
-        <targetPath>org/apache/jena/sdb/</targetPath>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>org/apache/jena/sdb/sdb-properties.xml</exclude>
+        </excludes>
+      </resource>
+      <resource>
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/sdb/sdb-properties.xml</include>
+        </includes>
       </resource>
     </resources>
 
@@ -161,6 +177,27 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <tarLongFileMode>gnu</tarLongFileMode>    
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-distribution</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+              </descriptors>
+              <tarLongFileFormat>gnu</tarLongFileFormat>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>

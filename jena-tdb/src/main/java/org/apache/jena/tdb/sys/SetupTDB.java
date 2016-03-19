@@ -18,7 +18,6 @@
 
 package org.apache.jena.tdb.sys ;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.FileFactory ;
@@ -30,6 +29,7 @@ import org.apache.jena.tdb.index.Index ;
 import org.apache.jena.tdb.index.RangeIndex ;
 import org.apache.jena.tdb.index.SetupIndex ;
 import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
@@ -52,72 +52,6 @@ public class SetupTDB
     }
 
     private static StoreParams params = StoreParams.getDftStoreParams() ;
-
-//    // And here we make datasets ... 
-//    public static DatasetGraphTDB buildDataset(Location location)
-//    {
-//        return DatasetBuilderStd.build(location) ;
-//    }
-//
-//    //protected static DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
-//    
-//    public static TripleTable makeTripleTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
-//    {
-//        String primary = Names.primaryIndexTriples ;
-//        String indexes[] = Names.tripleIndexes ;
-//        
-//        if ( indexes.length != 3 )
-//            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-//        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
-//        
-//        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
-//        if ( tripleIndexes.length != indexes.length )
-//            error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-//        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
-//        return tripleTable ;
-//    }
-//    
-//    public static QuadTable makeQuadTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
-//    {
-//        String primary = Names.primaryIndexQuads ;
-//        String indexes[] = Names.quadIndexes ;
-//
-//        if ( indexes.length != 6 )
-//            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-//        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
-//        
-//        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
-//        if ( quadIndexes.length != indexes.length )
-//            error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
-//        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
-//        return quadTable ;
-//    }
-//
-//
-//    public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy)
-//    {
-//        // The index using for Graph+Prefix => URI
-//        String indexPrefixes = params.getIndexPrefix() ;
-//        String primary = params.getPrimaryIndexPrefix() ;
-//        String indexes[] = params.getPrefixIndexes() ;
-//        
-//        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
-//        if ( prefixIndexes.length != indexes.length )
-//            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
-//        
-//        // The nodetable.
-//        String pnNode2Id = params.getPrefixNode2Id() ;
-//        String pnId2Node = params.getPrefixId2Node() ;
-//        
-//        // No cache - the prefix mapping is a cache
-//        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
-//        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
-//                                                                prefixIndexes,
-//                                                                prefixNodes, policy) ;
-//        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
-//        log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
-//        return prefixes ;
-//    }
 
     public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs, String[] filenames)
     {

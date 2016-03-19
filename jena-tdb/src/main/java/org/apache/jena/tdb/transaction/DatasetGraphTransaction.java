@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import static java.lang.ThreadLocal.withInitial ;
+
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
@@ -29,12 +31,18 @@ import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 
 /**
- * Transactional DatasetGraph that allows one active transaction. For multiple
- * read transactions, create multiple DatasetGraphTransaction objects. This is
- * analogous to a "connection" in JDBC.
+ * A transactional {@code DatasetGraph} that allows one active transaction per thread.
+ * 
+ * {@link DatasetGraphTxn} holds the {~link Trasnaction} object.
+ *
+ * This is analogous to a "connection" in JDBC. 
+ * It is a holder of a {@link StoreConnection} combined with the machinary from
+ * {@link DatasetGraphTrackActive}.  
+ * 
+ * Not considered to be in the public API.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
+ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements Sync {
     /*
      * Initially, the app can use this DatasetGraph non-transactionally. But as
      * soon as it starts a transaction, the dataset can only be used inside
@@ -46,28 +54,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
      * transactions.
      */
 
-    static class ThreadLocalTxn extends ThreadLocal<DatasetGraphTxn> {
-        // This is the default - but nice to give it a name and to set it
-        // clearly.
-        @Override
-        protected DatasetGraphTxn initialValue() {
-            return null ;
-        }
-    }
-
-    static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
-        @Override
-        protected Boolean initialValue() {
-            return false ;
-        }
-    }
-
     // Transaction per thread per DatasetGraphTransaction object.
-    private ThreadLocalTxn        txn           = new ThreadLocalTxn() ;
-    private ThreadLocalBoolean    inTransaction = new ThreadLocalBoolean() ;
+    private ThreadLocal<DatasetGraphTxn> txn           = withInitial(() -> null);
+    private ThreadLocal<Boolean>         inTransaction = withInitial(() -> false);
 
-    private final StoreConnection sConn ;
-    private boolean               isClosed      = false ;
+    private final StoreConnection        sConn;
+    private boolean                      isClosed      = false;
 
     public DatasetGraphTransaction(Location location) {
         sConn = StoreConnection.make(location) ;
@@ -109,7 +101,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     @Override
     protected void checkActive() {
         checkNotClosed() ;
-        if ( sConn.haveUsedInTransaction() && !isInTransaction() )
+        if ( !isInTransaction() )
             throw new JenaTransactionException("Not in a transaction (" + getLocation() + ")") ;
     }
 
@@ -178,6 +170,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     }
 
     @Override
+    public boolean supportsTransactions()       { return true ; }
+    
+    @Override
+    public boolean supportsTransactionAbort()   { return true ; }
+    
+    @Override
     public String toString() {
         try {
             if ( isInTransaction() )
@@ -195,25 +193,32 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     protected void _close() {
         if ( isClosed )
             return ;
-
-        if ( !sConn.haveUsedInTransaction() && get() != null ) {
-            // Non-transactional behaviour.
-            DatasetGraphTDB dsg = get() ;
-            dsg.sync() ;
-            dsg.close() ;
-            StoreConnection.release(dsg.getLocation()) ;
-            isClosed = true ;
-            return ;
+        
+        if ( !sConn.haveUsedInTransaction() ) {
+            synchronized(this) {
+                if ( isClosed ) return ;
+                isClosed = true ;
+                if ( ! sConn.isValid() ) {
+                    // There may be another DatasetGraphTransaction using this location
+                    // and that DatasetGraphTransaction has been closed, invalidating
+                    // the StoreConnection.
+                    return ;
+                }
+                DatasetGraphTDB dsg = sConn.getBaseDataset() ;
+                dsg.sync() ;
+                dsg.close() ;
+                StoreConnection.release(getLocation()) ;
+                return ;
+            }
         }
 
         if ( isInTransaction() ) {
-            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation()
-                             + ")") ;
+            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
             return ;
         }
-        isClosed = true ;
         txn.remove() ;
         inTransaction.remove() ;
+        isClosed = true ;
     }
 
     @Override

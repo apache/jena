@@ -33,6 +33,8 @@ import org.apache.jena.riot.* ;
 /** Only the READ operations */
 public class SPARQL_GSP_R extends SPARQL_GSP
 {
+    private static final long serialVersionUID = 4247885351334928271L;
+
     public SPARQL_GSP_R()
     { super() ; }
     
@@ -106,17 +108,17 @@ public class SPARQL_GSP_R extends SPARQL_GSP
 
     @Override
     protected void doPost(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("POST") ; }
+    { ServletOps.errorMethodNotAllowed("POST : Read-only") ; }
 
     @Override
     protected void doDelete(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("DELETE") ; }
+    { ServletOps.errorMethodNotAllowed("DELETE : Read-only") ; }
 
     @Override
     protected void doPut(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("PUT") ; }
+    { ServletOps.errorMethodNotAllowed("PUT : Read-only") ; }
 
     @Override
     protected void doPatch(HttpAction action)
-    { ServletOps.errorMethodNotAllowed("PATCH") ; }
+    { ServletOps.errorMethodNotAllowed("PATCH : Read-only") ; }
 }

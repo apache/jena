@@ -71,8 +71,8 @@ public class TestTDBFactory extends BaseTest
     @Test public void testTDBMakerTxn1()
     {
         TDBMaker.reset() ;
-        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(DIR) ;
-        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(DIR) ;
+        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR)) ;
+        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR)) ;
         
         DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
         DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;

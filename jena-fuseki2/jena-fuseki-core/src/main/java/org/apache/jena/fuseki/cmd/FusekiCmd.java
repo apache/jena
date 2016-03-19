@@ -18,8 +18,14 @@
 
 package org.apache.jena.fuseki.cmd ;
 
+import java.nio.file.Files ;
+import java.nio.file.Path ;
 import java.util.List ;
 
+import arq.cmdline.CmdARQ ;
+import arq.cmdline.ModDatasetAssembler ;
+import jena.cmd.ArgDecl ;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLogging ;
@@ -27,23 +33,25 @@ import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
-import jena.cmd.ArgDecl ;
-import jena.cmd.CmdException ;
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModDatasetAssembler ;
 
+/**
+ * Handles the fuseki command, used to start a Fuseki server.
+ */
 public class FusekiCmd {
     // This allows us to set logging before calling FusekiCmdInner
     // FusekiCmdInner inherits from CmdMain which statically sets logging.
@@ -68,13 +76,14 @@ public class FusekiCmd {
         private static ArgDecl  argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
         private static ArgDecl  argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
 
-        private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue, "mem") ;
-        private static ArgDecl  argAllowUpdate  = new ArgDecl(ArgDecl.NoValue, "update", "allowUpdate") ;
+        private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem") ;
+        // This does not apply to empty in-memory setups. 
+        private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate") ;
         private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file") ;
-        private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
-        private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
+        private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem") ;
+        private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb") ;
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port") ;
-        private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue, "localhost", "local") ;
+        private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue,  "localhost", "local") ;
         private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout") ;
         private static ArgDecl  argFusekiConfig = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
         private static ArgDecl  argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
@@ -86,12 +95,9 @@ public class FusekiCmd {
         // private static ModLocation modLocation = new ModLocation() ;
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler() ;
 
-        // fuseki [--mem|--desc assembler.ttl] [--port PORT] **** /datasetURI
-
         static public void innerMain(String... argv) {
-            // Just to make sure ...
-            ARQ.init() ;
-            TDB.init() ;
+            JenaSystem.init() ;
+            // Do explicitly so it happens after subsystem initialization. 
             Fuseki.init() ;
             new FusekiCmdInner(argv).mainRun() ;
         }
@@ -106,7 +112,7 @@ public class FusekiCmd {
             jettyServerConfig.verboseLogging = false ;
         }
 
-        private ServerInitialConfig cmdLineDataset  = new ServerInitialConfig() ;
+        private final ServerInitialConfig cmdLineConfig  = new ServerInitialConfig() ;
 
         public FusekiCmdInner(String... argv) {
             super(argv) ;
@@ -117,29 +123,38 @@ public class FusekiCmd {
 
             getUsage().startCategory("Fuseki") ;
             addModule(modDataset) ;
-            add(argMem, "--mem", "Create an in-memory, non-persistent dataset for the server") ;
+            add(argMem, "--mem",
+                "Create an in-memory, non-persistent dataset for the server") ;
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
-            add(argTDB, "--loc=DIR", "Use an existing TDB database (or create if does not exist)") ;
-            add(argMemTDB, "--memTDB", "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
-            add(argPort, "--port", "Listen on this port number") ;
-            add(argPages, "--pages=DIR", "Set of pages to serve as static content") ;
+            add(argTDB, "--loc=DIR",
+                "Use an existing TDB database (or create if does not exist)") ;
+            add(argMemTDB, "--memTDB",
+                "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
+            add(argPort, "--port",
+                "Listen on this port number") ;
+            add(argPages, "--pages=DIR",
+                "Set of pages to serve as static content") ;
             // Set via jetty config file.
-            add(argLocalhost, "--localhost", "Listen only on the localhost interface") ;
-            add(argTimeout, "--timeout=", "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
-            add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
-            add(argFusekiConfig, "--config=", "Use a configuration file to determine the services") ;
-            add(argJettyConfig, "--jetty-config=FILE", "Set up the server (not services) with a Jetty XML file") ;
+            add(argLocalhost, "--localhost",
+                "Listen only on the localhost interface") ;
+            add(argTimeout, "--timeout=",
+                "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
+            add(argUpdate, "--update",
+                "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
+            add(argFusekiConfig, "--config=",
+                "Use a configuration file to determine the services") ;
+            add(argJettyConfig, "--jetty-config=FILE",
+                "Set up the server (not services) with a Jetty XML file") ;
             add(argBasicAuth) ;
-            //add(argMgt,     "--mgt",          "Enable the management commands") ;
-            add(argMgt) ; // Legacy
-            add(argMgtPort) ; // Legacy
-            //add(argMgtPort, "--mgtPort=port", "Port for management optations") ;
-            //add(argHome, "--home=DIR", "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ;
-            add(argGZip, "--gzip=on|off", "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
-
-            //add(argUber) ;
-            // add(argGSP) ;
+            add(argMgt) ;           // Legacy
+            add(argMgtPort) ;       // Legacy
+//            add(argMgt, "--mgt",
+//                "Enable the management commands") ;
+//            add(argMgtPort, "--mgtPort=port",
+//                "Port for management optations") ;
+            add(argGZip, "--gzip=on|off",
+                "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
 
             super.modVersion.addClass(TDB.class) ;
             super.modVersion.addClass(Fuseki.class) ;
@@ -156,10 +171,15 @@ public class FusekiCmd {
         protected void processModulesAndArgs() {
             int x = 0 ;
 
+            if ( super.isVerbose() || super.isDebug() ) {
+                jettyServerConfig.verboseLogging = true ;
+                // Output is still at level INFO (currently) 
+            }
+            
             Logger log = Fuseki.serverLog ;
 
             if ( contains(argFusekiConfig) )
-                cmdLineDataset.fusekiCmdLineConfigFile = getValue(argFusekiConfig) ;
+                cmdLineConfig.fusekiCmdLineConfigFile = getValue(argFusekiConfig) ;
 
             ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
 
@@ -176,7 +196,7 @@ public class FusekiCmd {
             if ( contains(argMemTDB) )
                 x++ ;
 
-            if ( cmdLineDataset.fusekiCmdLineConfigFile != null ) {
+            if ( cmdLineConfig.fusekiCmdLineConfigFile != null ) {
                 if ( x >= 1 )
                     throw new CmdException("Dataset specified on the command line but a configuration file also given.") ;
             } else {
@@ -186,11 +206,37 @@ public class FusekiCmd {
             }
             
             boolean cmdlineConfigPresent = ( x != 0 ) ;
+            if ( cmdlineConfigPresent && getPositional().size() == 0 )
+                throw new CmdException("Missing service name") ;
+
+            if ( cmdLineConfig.fusekiCmdLineConfigFile != null && getPositional().size() > 0 )
+                throw new CmdException("Service name will come from --conf; no command line service name allowed") ;
+
+            
+            if ( !cmdlineConfigPresent && getPositional().size() > 0 )
+                throw new CmdException("Service name given but no configuration argument to match (e.g. --mem, --loc/--tdb, --file)") ;
+            
+            if ( cmdlineConfigPresent && getPositional().size() > 1 )
+                throw new CmdException("Multiple dataset path names given") ;
+            
+            if ( ! cmdlineConfigPresent ) {
+                // In place config file. 
+                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
+                if ( Files.exists(cfg) )
+                    cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
+            }
+                
+            
+            cmdLineConfig.allowUpdate = contains(argUpdate) ; 
 
             if ( contains(argMem) ) {
                 log.info("Dataset: in-memory") ;
-                cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.argTemplateFile = Template.templateMemFN ; 
+                // Only one setup should be called by the test above but to be safe
+                // and in case of future changes, clear the configuration.  
+                cmdLineConfig.reset();
+                cmdLineConfig.argTemplateFile = Template.templateMemFN ;
+                // Always allow.
+                cmdLineConfig.allowUpdate = true ;
             }
 
             if ( contains(argFile) ) {
@@ -200,28 +246,35 @@ public class FusekiCmd {
                     throw new CmdException("File not found: " + filename) ;
 
                 // Directly populate the dataset.
-                cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.dsg = DatasetGraphFactory.createMem() ;
-
+                cmdLineConfig.reset();
+                cmdLineConfig.dsg = DatasetGraphFactory.createTxnMem() ;
+                
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
-                RDFDataMgr.read(cmdLineDataset.dsg, filename) ;
+                // XXX Replace by Txn.
+                cmdLineConfig.dsg.begin(ReadWrite.WRITE) ;
+                try {
+                    RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
+                    cmdLineConfig.dsg.commit() ;
+                } finally { cmdLineConfig.dsg.end() ; }
             }
 
             if ( contains(argMemTDB) ) {
                 //log.info("TDB dataset: in-memory") ;
-                cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.argTemplateFile = Template.templateTDBMemFN ;
-                cmdLineDataset.params.put(Template.DIR, Names.memName) ;
+                cmdLineConfig.reset();
+                cmdLineConfig.argTemplateFile = Template.templateTDBMemFN ;
+                cmdLineConfig.params.put(Template.DIR, Names.memName) ;
+                // Always allow.
+                cmdLineConfig.allowUpdate = true ;
             }
 
             if ( contains(argTDB) ) {
-                cmdLineDataset = new ServerInitialConfig() ;
-                cmdLineDataset.argTemplateFile = Template.templateTDBDirFN ;
+                cmdLineConfig.reset();
+                cmdLineConfig.argTemplateFile = Template.templateTDBDirFN ;
                 String dir = getValue(argTDB) ;
-                cmdLineDataset.params.put(Template.DIR, dir) ;
+                cmdLineConfig.params.put(Template.DIR, dir) ;
             }
 
             // Otherwise
@@ -232,24 +285,14 @@ public class FusekiCmd {
                 //cmdLineDataset.dsg = ds.asDatasetGraph() ;
             }
             
-            if ( cmdlineConfigPresent && getPositional().size() == 0 )
-                throw new CmdException("Missing service name") ;
-            if ( !cmdlineConfigPresent && getPositional().size() > 0 )
-                throw new CmdException("Service name given but no configuration argument to match") ;
-
-            if ( cmdLineDataset != null ) {
-                if ( getPositional().size() > 1 )
-                    throw new CmdException("Multiple dataset path names given") ;
-                if ( getPositional().size() == 1 ) {
-                    cmdLineDataset.datasetPath = getPositionalArg(0) ;
-                    if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
-                        throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
-                    cmdLineDataset.allowUpdate = contains(argAllowUpdate) ;
-                    if ( ! cmdLineDataset.allowUpdate )
-                        Fuseki.serverLog.info("Running in read-only mode for "+cmdLineDataset.datasetPath) ;
-                    // Include the dataset name as NAME for any templates.
-                    cmdLineDataset.params.put(Template.NAME,  cmdLineDataset.datasetPath) ;
-                }
+            if ( cmdlineConfigPresent ) {
+                cmdLineConfig.datasetPath = getPositionalArg(0) ;
+                if ( cmdLineConfig.datasetPath.length() > 0 && !cmdLineConfig.datasetPath.startsWith("/") )
+                    throw new CmdException("Dataset path name must begin with a /: " + cmdLineConfig.datasetPath) ;
+                if ( ! cmdLineConfig.allowUpdate )
+                    Fuseki.serverLog.info("Running in read-only mode for "+cmdLineConfig.datasetPath) ;
+                // Include the dataset name as NAME for any templates.
+                cmdLineConfig.params.put(Template.NAME,  cmdLineConfig.datasetPath) ;
             }
 
             // ---- Jetty server
@@ -330,7 +373,7 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            FusekiServerListener.initialSetup = cmdLineDataset ;
+            FusekiServerListener.initialSetup = cmdLineConfig ;
             // For standalone, command line use ...
             JettyFuseki.initializeServer(jettyServerConfig) ;
             JettyFuseki.instance.start() ;

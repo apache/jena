@@ -31,6 +31,9 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 public class QueryValidator extends ValidatorBaseJson {
+
+    private static final long serialVersionUID = 5113754839333382031L;
+
     public QueryValidator() {}
 
     @Override

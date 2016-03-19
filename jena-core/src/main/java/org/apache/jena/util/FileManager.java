@@ -23,10 +23,10 @@ import java.util.* ;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.impl.IO_Ctl ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.shared.WrappedIOException ;
+import org.apache.jena.system.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -70,10 +70,12 @@ import org.slf4j.LoggerFactory ;
  
 public class FileManager
 {
+    // The case of the FileManager used first.
+    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
+    
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
-    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
 
     static FileManager fmInstance = null ;
 
@@ -81,10 +83,8 @@ public class FileManager
     protected List<Locator> fmHandlers = new ArrayList<>() ;
     protected LocationMapper fmMapper = null ;
     
-    // This forces Jena to initialize and wire in RIOT if available.
-    // The global FileManager is reset. 
-    static { IO_Ctl.init() ; }
-    
+    static { JenaSystem.init(); }
+
     /** Get the global file manager.
      * @return the global file manager
      */

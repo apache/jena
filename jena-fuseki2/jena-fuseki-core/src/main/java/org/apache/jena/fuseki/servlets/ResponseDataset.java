@@ -68,16 +68,16 @@ public class ResponseDataset
         ResponseOps.put(shortNamesModel, contentOutputTriG,     WebContent.contentTypeTriG) ;
     }
 
-    public static void doResponseModel(HttpAction action, Model model) { 
+    public static void doResponseModel(HttpAction action, Model model) {
         Dataset ds = DatasetFactory.create(model) ;
         ResponseDataset.doResponseDataset(action, ds);
     }
-    
+
     public static void doResponseDataset(HttpAction action, Dataset dataset) {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
-        
-        String mimeType = null ;        // Header request type 
+
+        String mimeType = null ;        // Header request type
 
         MediaType i = ConNeg.chooseContentType(request, DEF.constructOffer, DEF.acceptTurtle) ;
         if ( i != null )
@@ -116,7 +116,7 @@ public class ResponseDataset
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
 
         try {
-            ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
+            ResponseResultSet.setHttpResponse(action, contentType, charset) ;
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
             if ( RDFLanguages.isQuads(lang) )
@@ -125,7 +125,7 @@ public class ResponseDataset
                 RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
             out.flush() ;
         }
-        catch (Exception ex) { 
+        catch (Exception ex) {
             action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
             ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
         }

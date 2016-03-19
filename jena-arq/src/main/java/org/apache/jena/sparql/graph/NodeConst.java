@@ -28,21 +28,32 @@ import org.apache.jena.vocabulary.RDF ;
 /** Some node constants */
 public class NodeConst
 {
-    public static final Node nodeTrue       = NodeFactory.createLiteral("true", XSDDatatype.XSDboolean) ; 
-    public static final Node nodeFalse      = NodeFactory.createLiteral("false",XSDDatatype.XSDboolean) ; 
-    public static final Node nodeZero       = NodeFactory.createLiteral("0",    XSDDatatype.XSDinteger) ;
-    public static final Node nodeOne        = NodeFactory.createLiteral("1",    XSDDatatype.XSDinteger) ;
-    public static final Node nodeTwo        = NodeFactory.createLiteral("2",    XSDDatatype.XSDinteger) ;
-    public static final Node nodeMinusOne   = NodeFactory.createLiteral("-1",   XSDDatatype.XSDinteger) ;
+    private static Node literal(String lex, RDFDatatype dt) {
+        return NodeFactory.createLiteral(lex, dt) ;
+    }
+    
+    private static Node uri(String uriStr) {
+        return NodeFactory.createURI(uriStr) ;
+    }
+    
+    public static final Node nodeTrue       = literal("true",  XSDDatatype.XSDboolean) ; 
+    public static final Node nodeFalse      = literal("false", XSDDatatype.XSDboolean) ; 
+    public static final Node nodeZero       = literal("0",     XSDDatatype.XSDinteger) ;
+    public static final Node nodeOne        = literal("1",     XSDDatatype.XSDinteger) ;
+    public static final Node nodeTwo        = literal("2",     XSDDatatype.XSDinteger) ;
+    public static final Node nodeTen        = literal("10",    XSDDatatype.XSDinteger) ;
+    public static final Node nodeMinusOne   = literal("-1",    XSDDatatype.XSDinteger) ;
     public static final Node emptyString    = NodeFactory.createLiteral("") ;
     
-    public static final Node nodeRDFType    = RDF.Nodes.type ;
-    public static final Node nodeFirst      = RDF.Nodes.first ;
-    public static final Node nodeRest       = RDF.Nodes.rest ;
-    public static final Node nodeNil        = RDF.Nodes.nil ;
+    // It should be safe to use RDF.Nodes.
+    // Falback code "just in case"
+    public static final Node nodeRDFType    = RDF.Nodes.type ;  //uri(RDF.uri+"type") ;
+    public static final Node nodeFirst      = RDF.Nodes.first ; //uri(RDF.uri+"first") ;
+    public static final Node nodeRest       = RDF.Nodes.rest ;  //uri(RDF.uri+"rest") ;
+    public static final Node nodeNil        = RDF.Nodes.nil;    //uri(RDF.uri+"nil") ;
     public static final Node nodeANY        = Node.ANY ;
     
-    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ;
+    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ; //NodeFactory.createURI("http://www.w3.org/2002/07/owl#sameAs") ;
     public static final Node rdfLangString          = RDF.Nodes.langString ;
     public static final RDFDatatype dtLangString    = RDF.dtLangString ;
 }

@@ -23,9 +23,9 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
+import org.apache.jena.sparql.core.mem.DatasetGraphInMemory ;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -33,11 +33,14 @@ import org.apache.jena.sparql.util.Context ;
  * <p>DatasetGraph framework : readonly dataset need only provide find(g,s,p,o), getGraph() and getDefaultGraph()
  * although it may wish to override other operations and do better.</p>
  * 
- * <p>Other implementations include:</p>
+ * <p>Implementations include:</p>
  * <ul>
  * <li>{@link DatasetGraphBase} that adds an implementation of find based on default / named graphs.</li>
- * <li>{@link DatasetGraphCollection} that adds mutating quad operations mapped to a collection of graphs.</li>
- * <li>{@link DatasetGraphQuad} that maps graph operations to a quad view.
+ * <li>{@link DatasetGraphInMemory} provides full transactions for an in-memory {@code DatasetGraph}.</li>
+ * <li>{@link DatasetGraphTriplesQuads} that adds mutating quad operations.</li>
+ * <li>{@link DatasetGraphMap} provides for operations working over a collection of in-memory graphs.</li>
+ * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provived by the application.</li>
+ * <li>{@link DatasetGraphCollection} that provides for operations working over a collection of graphs.</li>
  * </ul> 
  */
 abstract public class DatasetGraphBase implements DatasetGraph
@@ -83,86 +86,82 @@ abstract public class DatasetGraphBase implements DatasetGraph
     private static final int DeleteBufferSize = 1000 ;
     @Override
     /** Simple implementation but done without assuming iterator.remove() */
-    public void deleteAny(Node g, Node s, Node p, Node o)
-    {
-        // Delete in slices rather than assume .remove() on the iterator is implemented. 
+    public void deleteAny(Node g, Node s, Node p, Node o) {
+        // Delete in slices rather than assume .remove() on the iterator is
+        // implemented.
         // We keep executing find(g, s, p, o) until we don't get a full slice.
-        Quad[] buffer = new Quad[DeleteBufferSize] ;
-        while(true) {
-            Iterator<Quad> iter = find(g, s, p, o) ;
+        Quad[] buffer = new Quad[DeleteBufferSize];
+        while (true) {
+            Iterator<Quad> iter = find(g, s, p, o);
             // Get a slice
-            int len = 0 ;
-            for (; len < DeleteBufferSize; len++) {
+            int len = 0;
+            for ( ; len < DeleteBufferSize ; len++ ) {
                 if ( !iter.hasNext() )
-                    break ;
-                buffer[len] = iter.next() ;
+                    break;
+                buffer[len] = iter.next();
             }
             // Delete them.
-            for (int i = 0; i < len; i++) {
-                delete(buffer[i]) ;
-                buffer[i] = null ;
+            for ( int i = 0 ; i < len ; i++ ) {
+                delete(buffer[i]);
+                buffer[i] = null;
             }
             // Finished?
             if ( len < DeleteBufferSize )
-                break ;
+                break;
         }
     }
-    
+
     @Override
     public Iterator<Quad> find()
     { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
-    
+
     @Override
-    public Iterator<Quad> find(Quad quad)
-    { 
+    public Iterator<Quad> find(Quad quad) {
         if ( quad == null )
-            return find() ;
-        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
-    
+            return find();
+        return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    }
+
     @Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
 
     @Override
-    public boolean contains(Node g, Node s, Node p , Node o)
-    {
-        Iterator<Quad> iter = find(g, s, p, o) ;
-        boolean b = iter.hasNext() ;
-        Iter.close(iter) ;
-        return b ;
+    public boolean contains(Node g, Node s, Node p, Node o) {
+        Iterator<Quad> iter = find(g, s, p, o);
+        boolean b = iter.hasNext();
+        Iter.close(iter);
+        return b;
     }
     
-    protected static boolean isWildcard(Node g)
-    {
-        return g == null || g == Node.ANY ;
-    }
-    
-    @Override
-    public void clear()
-    {
-        deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+    protected static boolean isWildcard(Node g) {
+        return g == null || g == Node.ANY;
     }
 
     @Override
-    public boolean isEmpty()
-    {
-        return ! contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+    public void clear() {
+        deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
     }
 
     @Override
-    public long size() { return -1 ; } 
-    
-    @Override
-    public Lock getLock()
-    {
-        return lock ;
+    public boolean isEmpty() {
+        return !contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
     }
-    
+
     @Override
-    public Context getContext()
-    {
-        return context ;
+    public long size() {
+        return -1;
     }
-    
+
+    @Override
+    public Lock getLock() {
+        return lock;
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
     @Override
     public void close()
     { }
@@ -176,20 +175,5 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return out.asString() ;
     }
 
-    // Helpers
-    
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    {
-        //return triples2quads(Quad.defaultGraphIRI, iter) ;
-        return triples2quads(Quad.defaultGraphNodeGenerated, iter) ;
-        //return triples2quads(Quad.tripleInQuad, iter) ;
-    }
-
-    protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
-    {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
-    }
-
-    
-
+    // Helpers: See GraphUtils.
 }

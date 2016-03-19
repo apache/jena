@@ -18,44 +18,38 @@
 
 package org.apache.jena.sparql.resultset;
 
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
 
 /** A class to walk a result set. */
 
-public class ResultSetApply
-{
-    ResultSetProcessor proc = null ;
-    ResultSet rs = null ;
-    
-    public ResultSetApply(ResultSet rs, ResultSetProcessor proc)
-    {
-        this.proc = proc ;
-        this.rs = rs ;
+public class ResultSetApply {
+    ResultSetProcessor proc = null;
+    ResultSet          rs   = null;
+
+    public ResultSetApply(ResultSet rs, ResultSetProcessor proc) {
+        this.proc = proc;
+        this.rs = rs;
     }
-    
-    public void apply()
-    {
-        proc.start(rs) ;
-        for ( ; rs.hasNext() ; )
-        {
-            QuerySolution qs = rs.next() ;
-            proc.start(qs) ;
-            for ( String varName : rs.getResultVars()  )
-            {
-                RDFNode node = qs.get(varName) ;
+
+    public void apply() {
+        proc.start(rs);
+        for ( ; rs.hasNext() ; ) {
+            QuerySolution qs = rs.next();
+            proc.start(qs);
+            for ( String varName : rs.getResultVars() ) {
+                RDFNode node = qs.get(varName);
                 // node may be null
-                proc.binding(varName, node) ;
+                proc.binding(varName, node);
             }
-            proc.finish(qs) ;
+            proc.finish(qs);
         }
-        proc.finish(rs) ;
+        proc.finish(rs);
     }
-    
-    public static void apply(ResultSet rs, ResultSetProcessor proc)
-    {
-        ResultSetApply rsa = new ResultSetApply(rs, proc) ;
-        rsa.apply() ;
+
+    public static void apply(ResultSet rs, ResultSetProcessor proc) {
+        ResultSetApply rsa = new ResultSetApply(rs, proc);
+        rsa.apply();
     }
 }

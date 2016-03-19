@@ -19,19 +19,22 @@
 package org.apache.jena.query;
 
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.http.Service ;
-import org.apache.jena.sparql.engine.main.StageBuilder ;
+import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
+import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.Explain ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
+import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.system.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -39,14 +42,35 @@ import org.slf4j.LoggerFactory ;
 
 public class ARQ
 {
+    // Initialization statics must be first in the class to avoid
+    // problems with recursive initialization.  Specifcally,
+    // initLock being null because elsewhere started the initialization
+    // and is calling into the TDB class. 
+    // The best order is:
+    //    Initialization controls
+    //    All calculated constants
+    //    static { JenaSystem.init() ; }
+    // Otherwise, using constants after JenaSystem.init can lead to null being seen.
+    
+    private static volatile boolean initialized = false ;
+    private static final Object initLock = new Object() ;
+    
+    // Initialization notes:
+    // 1/   No use of ARQConstants before the initialization block. (Can be afterwards.)
+    // Risk is 
+    //   ARQConstants -> OWL -> ModelFactory -> jena initialization  
+    //     -> ARQ.init while initializing -> StageBuilder.init -> NodeConst -> rdf.type -> OWL 
+    // recursing initialization, hits NPE via OWL.
+    // 2/ stageGenerator constant must be set before the call to ARQ.init.
+
     /** Name of the execution logger */
-    public static final String logExecName = "com.hp.hpl.jena.arq.exec" ;
+    public static final String logExecName = "org.apache.jena.arq.exec" ;
     
     /** Name of the information logger */
-    public static final String logInfoName = "com.hp.hpl.jena.arq.info" ;
+    public static final String logInfoName = "org.apache.jena.arq.info" ;
     
     /** Name of the logger for remote HTTP requests */
-    public static final String logHttpRequestName = "com.hp.hpl.jena.arq.service" ;
+    public static final String logHttpRequestName = "org.apache.jena.arq.service" ;
     
     private static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
     private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
@@ -67,12 +91,12 @@ public class ARQ
      * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.sparql.exec=INFO
      * See the <a href="http://jena.apache.org/documentation/query/logging.html">ARQ Logging Documentation</a>.
      */
-    public static final Symbol symLogExec           = ARQConstants.allocSymbol("logExec") ;
+    public static final Symbol symLogExec           = SystemARQ.allocSymbol("logExec") ;
     
     /** Get the currently global execution logging setting */  
     public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec) ; }
     
-    /** Set execution logging - logging is to logger "com.hp.hpl.jena.arq.exec" at level INFO.
+    /** Set execution logging - logging is to logger "org.apache.jena.arq.exec" at level INFO.
      *  An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(Explain.InfoLevel infoLevel)
@@ -100,7 +124,7 @@ public class ARQ
     /** Stick exactly to the spec.
      */
     public static final Symbol strictSPARQL =
-        ARQConstants.allocSymbol("strictSPARQL") ;
+        SystemARQ.allocSymbol("strictSPARQL") ;
     
     /** Controls bNode labels as &lt;_:...&gt; or not -
      * that is a pseudo URIs.
@@ -108,7 +132,7 @@ public class ARQ
      */
 
     public static final Symbol constantBNodeLabels =
-        ARQConstants.allocSymbol("constantBNodeLabels") ;
+        SystemARQ.allocSymbol("constantBNodeLabels") ;
     
     /** Enable built-in property functions - also called "magic properties".
      * These are properties in triple patterns that need
@@ -117,27 +141,27 @@ public class ARQ
      */
 
     public static final Symbol enablePropertyFunctions =
-        ARQConstants.allocSymbol("enablePropertyFunctions") ;
+        SystemARQ.allocSymbol("enablePropertyFunctions") ;
 
     /** Enable logging of execution timing. 
      */
 
     public static final Symbol enableExecutionTimeLogging =
-        ARQConstants.allocSymbol("enableExecutionTimeLogging") ;
+        SystemARQ.allocSymbol("enableExecutionTimeLogging") ;
 
     /** If true, XML result sets written will contain the graph bNode label
      *  See also inputGraphBNodeLabels
      */
     
     public static final Symbol outputGraphBNodeLabels =  
-        ARQConstants.allocSymbol("outputGraphBNodeLabels") ;
+        SystemARQ.allocSymbol("outputGraphBNodeLabels") ;
 
     /** If true, XML result sets will use the bNode label in the result set itself.
      *  See also outputGraphBNodeLabels
      */
     
     public static final Symbol inputGraphBNodeLabels =  
-        ARQConstants.allocSymbol("inputGraphBNodeLabels") ;
+        SystemARQ.allocSymbol("inputGraphBNodeLabels") ;
 
     /** Turn on processing of blank node labels in queries */  
     public static void enableBlankNodeResultLabels() { enableBlankNodeResultLabels(true) ; }
@@ -150,7 +174,6 @@ public class ARQ
         globalContext.set(outputGraphBNodeLabels, b) ;
     }
 
-
     /**
      * Set timeout.  The value of this symbol gives thevalue of the timeout in milliseconds
      * <ul>
@@ -161,7 +184,7 @@ public class ARQ
      * @see QueryExecution#setTimeout(long)
      * @see QueryExecution#setTimeout(long,long)
      */
-    public static final Symbol queryTimeout = ARQConstants.allocSymbol("queryTimeout") ;
+    public static final Symbol queryTimeout = SystemARQ.allocSymbol("queryTimeout") ;
     
     // This can't be a context constant because NodeValues don't look in the context.
 //    /**
@@ -172,19 +195,19 @@ public class ARQ
     /**
      * Context key for StageBuilder used in BGP compilation 
      */
-    public static final Symbol stageGenerator = ARQConstants.allocSymbol("stageGenerator") ;
+    public static final Symbol stageGenerator = SystemARQ.allocSymbol("stageGenerator") ;
 
     /**
      * Context key to control hiding non-distinuished variables 
      */
-    public static final Symbol hideNonDistiguishedVariables = ARQConstants.allocSymbol("hideNonDistiguishedVariables") ;
+    public static final Symbol hideNonDistiguishedVariables = SystemARQ.allocSymbol("hideNonDistiguishedVariables") ;
 
     /**
      * Use the SAX parser for XML result sets.  The default is to use StAX for
      * full streaming of XML results.  The SAX parser takes a copy of the result set
      * before giving the ResultSet to the calling application.
      */
-    public static final Symbol useSAX = ARQConstants.allocSymbol("useSAX") ;
+    public static final Symbol useSAX = SystemARQ.allocSymbol("useSAX") ;
     
     /** 
      * Indicate whether duplicate select and groupby variables are allowed. 
@@ -200,13 +223,13 @@ public class ARQ
      *   xercesRegex : use the internal XPath regex engine (more compliant)  
      */
     
-    public static final Symbol regexImpl =  ARQConstants.allocSymbol("regexImpl") ;
+    public static final Symbol regexImpl =  SystemARQ.allocSymbol("regexImpl") ;
     
         
     /** Symbol to name java.util.regex regular expression engine */ 
-    public static final Symbol javaRegex =  ARQConstants.allocSymbol("javaRegex") ;
+    public static final Symbol javaRegex =  SystemARQ.allocSymbol("javaRegex") ;
     /** Symbol to name the Xerces-J regular expression engine */ 
-    public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
+    public static final Symbol xercesRegex =  SystemARQ.allocSymbol("xercesRegex") ;
 
     /** 
      * Use this Symbol to allow passing additional query parameters to a 
@@ -218,7 +241,7 @@ public class ARQ
      * 
      * @see org.apache.jena.sparql.engine.http.Service
      */
-    public static final Symbol serviceParams = ARQConstants.allocSymbol("serviceParams") ;
+    public static final Symbol serviceParams = SystemARQ.allocSymbol("serviceParams") ;
     
     /**
      * Control whether SERVICE processing is allowed.
@@ -250,7 +273,7 @@ public class ARQ
     // Some possible additions to the list:
     // Sort: DISTINCT, merge joins<br>
     // Hash table: GROUP BY, MINUS, SERVICE, VALUES, and hash joins <br>
-    public static final Symbol spillToDiskThreshold = ARQConstants.allocSymbol("spillToDiskThreshold") ;
+    public static final Symbol spillToDiskThreshold = SystemARQ.allocSymbol("spillToDiskThreshold") ;
     
     // Optimizer controls.
     
@@ -279,27 +302,27 @@ public class ARQ
      *  Context key controlling whether the main query engine applies the
      *  default optimization transformations.
      */  
-    public static final Symbol optimization = ARQConstants.allocSymbol("optimization") ;
+    public static final Symbol optimization = SystemARQ.allocSymbol("optimization") ;
     
     /** 
      *  Context key controlling whether the main query engine flattens simple paths
      *  (e.g. <tt>?x :p/:q ?z => ?x :p ?.0 . ?.0 ?q ?z</tt>)   
      *  <p>Default is "true"
      */  
-    public static final Symbol optPathFlatten = ARQConstants.allocSymbol("optPathFlatten") ;
+    public static final Symbol optPathFlatten = SystemARQ.allocSymbol("optPathFlatten") ;
     
     /** 
      *  Context key controlling whether the main query engine moves filters to the "best" place.
      *  Default is "true" - filter placement is done.
      */  
-    public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
+    public static final Symbol optFilterPlacement = SystemARQ.allocSymbol("optFilterPlacement") ;
 
     /** 
      *  Context key controlling whether to do filter placement within BGP and quad blocks.
      *  Modies the effect of optFilterPlacement. 
      *  Default is "true" - filter placement is pushed into BGPs.
      */  
-    public static final Symbol optFilterPlacementBGP = ARQConstants.allocSymbol("optFilterPlacementBGP") ;
+    public static final Symbol optFilterPlacementBGP = SystemARQ.allocSymbol("optFilterPlacementBGP") ;
     
     /** 
      *  Context key controlling whether the main query engine moves filters to the "best" place using 
@@ -308,19 +331,19 @@ public class ARQ
      *  Filter placement, via {@link #optFilterPlacement} must also be active (which it is by default).
      * @see #optFilterPlacement
      */ 
-    public static final Symbol optFilterPlacementConservative = ARQConstants.allocSymbol("optFilterPlacementConservative") ;
+    public static final Symbol optFilterPlacementConservative = SystemARQ.allocSymbol("optFilterPlacementConservative") ;
 
     /** 
      *  Context key controlling whether an ORDER BY-LIMIT query is done avoiding total sort using an heap.
      *  Default is "true" - total sort if avoided by default when ORDER BY is used with LIMIT.
      */  
-    public static final Symbol optTopNSorting = ARQConstants.allocSymbol("optTopNSorting") ;
+    public static final Symbol optTopNSorting = SystemARQ.allocSymbol("optTopNSorting") ;
     
     /** 
      *  Context key controlling whether a DISTINCT-ORDER BY query is done by replacing the distinct with a reduced.
      *  Default is "true" - the reduced operator does not need to keep a data structure with all previously seen bindings.
      */  
-    public static final Symbol optDistinctToReduced = ARQConstants.allocSymbol("optDistinctToReduced") ;
+    public static final Symbol optDistinctToReduced = SystemARQ.allocSymbol("optDistinctToReduced") ;
     
     /**
      * Context key controlling whether a DISTINCT-ORDER BY query is done by applying the ORDER BY after the DISTINCT
@@ -330,7 +353,7 @@ public class ARQ
      * See {@link TransformOrderByDistinctApplication} for more discussion on exactly when this may apply
      * </p>
      */
-    public static final Symbol optOrderByDistinctApplication = ARQConstants.allocSymbol("optOrderByDistinctApplication");
+    public static final Symbol optOrderByDistinctApplication = SystemARQ.allocSymbol("optOrderByDistinctApplication");
 
     /** 
      *  Context key controlling whether the standard optimizer applies
@@ -338,7 +361,7 @@ public class ARQ
      *  This optimization is conservative - it does not take place if
      *  there is a potential risk of changing query semantics. 
      */  
-    public static final Symbol optFilterEquality = ARQConstants.allocSymbol("optFilterEquality") ;
+    public static final Symbol optFilterEquality = SystemARQ.allocSymbol("optFilterEquality") ;
     
     /**
      * Context key controlling whether the standard optimizer applies 
@@ -346,103 +369,111 @@ public class ARQ
      * This optimization is conservative - it does not take place if
      * there is a potential risk of changing query semantics
      */
-    public static final Symbol optFilterInequality = ARQConstants.allocSymbol("optFilterInequality") ;
+    public static final Symbol optFilterInequality = SystemARQ.allocSymbol("optFilterInequality") ;
     
     /**
      * Context key controlling whether the standard optimizer applies optimizations to implicit joins in FILTERs.
      * This optimization is conservative - it does not take place if there is a potential risk of changing query semantics.
      */
-    public static final Symbol optFilterImplicitJoin = ARQConstants.allocSymbol("optFilterImplicitJoin");
+    public static final Symbol optFilterImplicitJoin = SystemARQ.allocSymbol("optFilterImplicitJoin");
     
     /**
      * Context key controlling whether the standard optimizer applies optimizations to implicit left joins.
      * This optimization is conservative - it does not take place if there is a potential risk of changing query semantics.
      */
-    public static final Symbol optImplicitLeftJoin = ARQConstants.allocSymbol("optImplicitLeftJoin");
+    public static final Symbol optImplicitLeftJoin = SystemARQ.allocSymbol("optImplicitLeftJoin");
 
-    /** 
-     *  Context key for a declaration that xsd:strings and simple literals are
-     *  different in the storage.  They are the same value in a memory store.
-     *  When in doubt, xsd:strings are assumed to be the same value as simple literals   
-     */  
-    public static final Symbol optTermStrings = ARQConstants.allocSymbol("optTermStrings") ;
-    
     /**
-     * Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  <p>By default, this transformation is applied.
      */
-    public static final Symbol optExprConstantFolding = ARQConstants.allocSymbol("optExprConstantFolding");
+    public static final Symbol optExprConstantFolding = SystemARQ.allocSymbol("optExprConstantFolding");
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to conjunctions (&&) in filters.
+     *  <p>By default, this transformation is applied.
      */  
-    public static final Symbol optFilterConjunction = ARQConstants.allocSymbol("optFilterConjunction") ;
+    public static final Symbol optFilterConjunction = SystemARQ.allocSymbol("optFilterConjunction") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to IN and NOT IN.
+     *  <p>By default, this transformation is applied.
      */  
-    public static final Symbol optFilterExpandOneOf = ARQConstants.allocSymbol("optFilterExpandOneOf") ;
+    public static final Symbol optFilterExpandOneOf = SystemARQ.allocSymbol("optFilterExpandOneOf") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to disjunctions (||) in filters.
+     * <p>By default, this transformation is applied.
      */  
-    public static final Symbol optFilterDisjunction = ARQConstants.allocSymbol("optFilterDisjunction") ;
+    public static final Symbol optFilterDisjunction = SystemARQ.allocSymbol("optFilterDisjunction") ;
     
     /**
      * Context key controlling whether the standard optimizer applies table empty promotion
      */
-    public static final Symbol optPromoteTableEmpty = ARQConstants.allocSymbol("optPromoteTableEmpty") ;
+    public static final Symbol optPromoteTableEmpty = SystemARQ.allocSymbol("optPromoteTableEmpty") ;
     
     /**
      * Context key controlling whether the standard optimizer applies optimizations to the evaluation
      * of joins to favour index joins wherever possible
      */
-    public static final Symbol optIndexJoinStrategy = ARQConstants.allocSymbol("optIndexJoinStrategy");
+    public static final Symbol optIndexJoinStrategy = SystemARQ.allocSymbol("optIndexJoinStrategy");
     
     /**
      * Context key controlling whether the standard optimizer applies optimizations where by some
      * assignments may be eliminated/inlined into the operators where their values are used only once
+     * <p>By default, this transformation is not applied.
      */
-    public static final Symbol optInlineAssignments = ARQConstants.allocSymbol("optInlineAssignments");
+    public static final Symbol optInlineAssignments = SystemARQ.allocSymbol("optInlineAssignments");
     
     /**
      * Context key controlling whether the standard optimizer aggressively inlines assignments whose
      * values are used only once into operators where those expressions may be evaluated multiple times e.g. order
+     * <p>This is modifier to {@link #optInlineAssignments}.
      */
-    public static final Symbol optInlineAssignmentsAggressive = ARQConstants.allocSymbol("optInlineAssignmentsAggressive");
+    public static final Symbol optInlineAssignmentsAggressive = SystemARQ.allocSymbol("optInlineAssignmentsAggressive");
     
     /**
      * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
      * merge them into single BGPs.
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
-    public static final Symbol optMergeBGPs = ARQConstants.allocSymbol("optMergeBGPs");
+    public static final Symbol optMergeBGPs = SystemARQ.allocSymbol("optMergeBGPs");
     
     /**
      * Context key controlling whether the standard optimizater applies the optimization
      * to combine stacks of (extend) into one compound operation.  Ditto (assign). 
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
-    public static final Symbol optMergeExtends = ARQConstants.allocSymbol("optMergeExtends");
+    public static final Symbol optMergeExtends = SystemARQ.allocSymbol("optMergeExtends");
+
+    /**
+     * Context key controlling whether the standard optimizater applies the optimization
+     * to reorder basic graph patterns. 
+     * <p>By default, this transformation is NOT applied. 
+     * It is left to the specific engines to decide.
+     */
+    // However, StageGeneratorGeneric does reorder based on partial results. 
+    public static final Symbol optReorderBGP = SystemARQ.allocSymbol("optReorderBGP");
 
     /** 
      *  Context key controlling whether the main query engine processes property functions.
-     *  
+     *  <p>By default, this is applied.
      */  
-    public static final Symbol propertyFunctions = ARQConstants.allocSymbol("propertyFunctions") ;
+    public static final Symbol propertyFunctions = SystemARQ.allocSymbol("propertyFunctions") ;
     
     /**
      * Expression evaluation without extension types (e.g. xsd:date, language tags)
      */
-    public static final Symbol extensionValueTypes = ARQConstants.allocSymbol("extensionValueTypesExpr") ;
+    public static final Symbol extensionValueTypes = SystemARQ.allocSymbol("extensionValueTypesExpr") ;
 
     /**
      * Generate the ToList operation in the algebra (as ARQ is stream based, ToList is a non-op).
      * Default is not to do so.  Strict mode will also enable this.
      */
-    public static final Symbol generateToList = ARQConstants.allocSymbol("generateToList") ;
+    public static final Symbol generateToList = SystemARQ.allocSymbol("generateToList") ;
 
     /** Set strict mode, including expression evaluation */
     public static void setStrictMode() { setStrictMode(ARQ.getContext()) ; }
@@ -514,52 +545,53 @@ public class ARQ
    
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
-    
-    // A correct way to manage without synchonized using the double checked locking pattern.
-    //   http://en.wikipedia.org/wiki/Double-checked_locking
-    //   http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html 
-    private static volatile boolean initialized = false ;
-    private static final Object initLock = new Object() ;
 
+    // Initialize now in case other initialization uses getContext(). 
     private static Context globalContext = null ;
 
     /** Ensure things have started - applications do not need call this.
      * The method is public so any part of ARQ can call it.
-     * Note the final static initializer call 
      */
     
-    public static void init()
-    { 
-        if ( initialized )
+    static { JenaSystem.init(); }
+    
+    public static void init() { 
+        if ( initialized ) {
             return ;
+        }
         synchronized(initLock)
         {
-            if ( initialized )
+            if ( initialized ) {
+                JenaSystem.logLifecycle("ARQ.init - skip") ;
                 return ;
+            }
             initialized = true ;
+            JenaSystem.logLifecycle("ARQ.init - start") ;
             globalContext = defaultSettings() ;
-            
-            RIOT.init() ;
-            StageBuilder.init() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
             
             // This is the pattern for any subsystem to register. 
             SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.PATH, ARQ.VERSION, ARQ.BUILD_DATE) ;
             SystemARQ.registerSubSystem(sysInfo) ;
-
+            AssemblerUtils.init() ;
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.
             RIOT.register() ;
+            
+            // Initialise the standard library.
+            FunctionRegistry.init() ;
+            AggregateRegistry.init() ;
+            PropertyFunctionRegistry.init() ;
+            
+            JenaSystem.logLifecycle("ARQ.init - finish") ;
         }
     }
-    
-    // Force a call
-    static { init() ; }
     
     /* Side effects */
     private static Context defaultSettings()
     {
+        // This must be exeutable before initialization 
         SystemARQ.StrictDateTimeFO      = false ;
         SystemARQ.ValueExtensions       = true ;
         SystemARQ.EnableRomanNumerals   = false ; 
@@ -577,7 +609,6 @@ public class ARQ
 
     public static Context getContext()
     { 
-        //ARQ.init() ;
         return globalContext ;
     }
     

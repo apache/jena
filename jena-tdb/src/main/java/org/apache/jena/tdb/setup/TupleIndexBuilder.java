@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb.setup;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.tdb.base.file.FileSet ;
+import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
 
 public interface TupleIndexBuilder {

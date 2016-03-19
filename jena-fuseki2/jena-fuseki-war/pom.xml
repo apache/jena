@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.4.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -68,8 +68,8 @@
           </execution>
         </executions>
         <configuration>
-	  <warSourceDirectory>../jena-fuseki-core/src/main/webapp</warSourceDirectory>
-	  <webXml>../jena-fuseki-core/src/main/webapp/WEB-INF/web.xml</webXml>
+          <warSourceDirectory>../jena-fuseki-core/src/main/webapp</warSourceDirectory>
+          <webXml>../jena-fuseki-core/src/main/webapp/WEB-INF/web.xml</webXml>
           <!-- Safe: Don't put in the Jetty dependency nor javax.servlet -->
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
         </configuration>

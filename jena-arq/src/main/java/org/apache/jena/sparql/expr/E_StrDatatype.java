@@ -37,8 +37,6 @@ public class E_StrDatatype extends ExprFunction2
         return NodeFunctions.strDatatype(v1, v2) ;
     }
     
-   
-    
     @Override
-    public Expr copy(Expr expr1, Expr expr2) { return new E_StrDatatype(expr1, expr2) ; } 
+    public Expr copy(Expr e1, Expr e2) { return new E_StrDatatype(e1, e2) ; } 
 }

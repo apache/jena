@@ -61,6 +61,8 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.ontology.OntModel ;
+import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -206,4 +208,12 @@ public class JenaOSGITest {
 		runQuery(dataset);
 		dataset.end();
 	}
+
+	/*
+	@Test
+	public void createOntModel()
+	{ 
+	    final OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+	}
+    */
 }

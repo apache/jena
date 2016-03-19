@@ -33,20 +33,23 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String OPEN_PAREN = "\\(" + OPT_SPACE;
 	protected static final String CLOSE_PAREN = OPT_SPACE + "\\)";
 	protected static final String QUOTE = "\\\"";
-	protected static final String LT = "\\<";
-	protected static final String GT = "\\>";
-	protected static final String EQ = "=";
-	protected static final String DOT = "\\.";
+	protected static final String LT = "\\<"+OPT_SPACE;
+	protected static final String GT = "\\>"+OPT_SPACE;
+	protected static final String EQ = "="+OPT_SPACE;
+	protected static final String DOT = OPT_SPACE+"\\.";
 	protected static final String ORDER_BY = "ORDER" + SPACE + "BY" + SPACE;
 	protected static final String GROUP_BY = "GROUP" + SPACE + "BY" + SPACE;
 	protected static final String HAVING = "HAVING" + SPACE;
 	protected static final String PREFIX = "PREFIX" + SPACE;
+	protected static final String CONSTRUCT = "CONSTRUCT" + SPACE;
+	protected static final String ASK = "ASK" + SPACE;
 	protected static final String SELECT = "SELECT" + SPACE;
 	protected static final String UNION = "UNION" + SPACE;
 	protected static final String LIMIT = "LIMIT" + SPACE;
 	protected static final String OFFSET = "OFFSET" + SPACE;
 	protected static final String OPTIONAL = "OPTIONAL" + SPACE;
 	protected static final String BIND = "BIND";
+	protected static final String SEMI = OPT_SPACE+"\\;";
 
 	protected static String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);

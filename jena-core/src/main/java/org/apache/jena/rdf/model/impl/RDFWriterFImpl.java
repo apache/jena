@@ -18,140 +18,146 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.util.Arrays;
-import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import org.apache.jena.* ;
-import org.apache.jena.n3.N3JenaWriter ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
-
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.n3.N3JenaWriter;
+import org.apache.jena.rdf.model.RDFWriter;
+import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.shared.ConfigException;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.NoWriterForLangException ;
 
 /**
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
-
-    protected static Properties langToClassName = null;
-
-    // predefined languages - these should probably go in a properties file
-
-    protected static final String LANGS[] =
-        { "RDF/XML",
-          "RDF/XML-ABBREV",
-          
-          "N-TRIPLE",
-          "N-TRIPLES",
-          "N-Triples",
-          
-          "N3",
-          N3JenaWriter.n3WriterPrettyPrinter,
-          N3JenaWriter.n3WriterPlain,
-          N3JenaWriter.n3WriterTriples,
-          N3JenaWriter.n3WriterTriplesAlt,
-          
-          N3JenaWriter.turtleWriter,
-          N3JenaWriter.turtleWriterAlt1, 
-          N3JenaWriter.turtleWriterAlt2 
-        };
-    // default readers for each language
-
-    protected static final String DEFAULTWRITERS[] =
-        {
-            org.apache.jena.rdfxml.xmloutput.impl.Basic.class.getName(),
-            org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class.getName(),
-            
-            org.apache.jena.rdf.model.impl.NTripleWriter.class.getName(),
-            org.apache.jena.rdf.model.impl.NTripleWriter.class.getName(),
-            org.apache.jena.rdf.model.impl.NTripleWriter.class.getName(),
-            
-            org.apache.jena.n3.N3JenaWriter.class.getName(),
-            org.apache.jena.n3.N3JenaWriterPP.class.getName(),
-            org.apache.jena.n3.N3TurtleJenaWriter.class.getName(),   // Write Turtle to ensure safe round tripping.
-            org.apache.jena.n3.N3TurtleJenaWriter.class.getName(),   // Ditto.
-            org.apache.jena.n3.N3JenaWriterTriples.class.getName(),     
-
-            org.apache.jena.n3.N3TurtleJenaWriter.class.getName(),      // Alternative names for Turtle
-            org.apache.jena.n3.N3TurtleJenaWriter.class.getName(),
-            org.apache.jena.n3.N3TurtleJenaWriter.class.getName()
-             };
-
-    protected static final String DEFAULTLANG = LANGS[0];
-
-    protected static final String PROPNAMEBASE = Jena.PATH + ".writer.";
-
-    static { // static initializer - set default readers
-    	reset();
+    public static final String DEFAULTLANG = "RDF/XML";
+    private static Map<String, Class<? extends RDFWriter>> custom = new LinkedHashMap<>();
+    private static RDFWriterF rewiredAlternative = null ;
+    /** Rewire to use an external RDFWriterF (typically, RIOT).
+     * Set to null to use old jena-core setup.
+     * @param other
+     */
+    public static void alternative(RDFWriterF other) {
+        rewiredAlternative = other ;
     }
     
-    private static void reset() {
-    	Properties newLangToClassName = new Properties();
-        for (int i = 0; i < LANGS.length; i++) {
-        	newLangToClassName.setProperty(
-                LANGS[i],
-                JenaRuntime.getSystemProperty(PROPNAMEBASE + LANGS[i], DEFAULTWRITERS[i]));
-        }
-        // do the setup all at once.
-        langToClassName = newLangToClassName;  	
-    }
-    
-    private static String remove( String lang) throws IllegalArgumentException {
-    	if (Arrays.asList( LANGS ).contains( lang ))
-    	{
-    		throw new IllegalArgumentException( lang+" is a required language set in initialization");
-    	}
-    	Object prev = langToClassName.remove(lang);
-    	return prev==null?null:prev.toString();  	
-    }
-
     /** Creates new RDFReaderFImpl */
-    public RDFWriterFImpl() {
-    }
+    public RDFWriterFImpl() {}
 
     @Override
-    public RDFWriter getWriter()  {
+    public RDFWriter getWriter() {
         return getWriter(DEFAULTLANG);
     }
 
     @Override
-    public RDFWriter getWriter(String lang)  {
-
-        // setup default language
-        if (lang == null || lang.equals("")) {
-            lang = LANGS[0];
-        }
-
-        String className = langToClassName.getProperty(lang);
-        if (className == null || className.equals("")) {
-            throw new NoWriterForLangException( lang );
-        }
+    public RDFWriter getWriter(String lang) {
+        // If RIOT ->
+        if ( rewiredAlternative != null )
+            return rewiredAlternative.getWriter(lang) ;
+        if (lang==null || lang.equals(""))
+            lang = DEFAULTLANG ;
+        Class<? extends RDFWriter> c = custom.get(lang);
+        if ( c == null )
+            throw new NoWriterForLangException("Writer not found: " + lang);
         try {
-            return (RDFWriter) Class.forName(className).newInstance();
-        } catch (Exception e) {
-            if ( e instanceof JenaException )
-                throw (JenaException)e ;
+            return c.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw new JenaException(e);
+        }
+    }
+
+    /**
+     * Use RIOT to add custom RDF parsers. See
+     * {@code RDFWriterRegistry.registerLang}
+     * 
+     * @deprecated Register with RIOT.
+     */
+    @Override
+    @Deprecated
+    public String setWriterClassName(String lang, String className) {
+        return setBaseWriterClassName(lang, className);
+    }
+
+    /**
+     * Use RIOT to add custom RDF parsers. See
+     * {@code RDFWriterRegistry.registerLang}
+     * 
+     * @deprecated Register with RIOT.
+     */
+    @Deprecated
+    public static String setBaseWriterClassName(String lang, String className) {
+        if ( rewiredAlternative != null )
+            Log.fatal(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
+        String oldClassName = currentEntry(lang);
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends RDFWriter> newClass = (Class<? extends RDFWriter>)Class.forName(className, false,
+                                                                                            Thread.currentThread().getContextClassLoader());
+            custom.put(lang, newClass);
+            return oldClassName;
+        }
+        catch (ClassNotFoundException e) {
+            throw new ConfigException("Reader not found on classpath", e);
+        }
+        catch (Exception e) {
             throw new JenaException(e);
         }
     }
 
     @Override
-    public String setWriterClassName(String lang, String className) {
-    	return setBaseWriterClassName(lang, className);
+    public void resetRDFWriterF() {
+        reset();
     }
 
-    public static String setBaseWriterClassName(String lang, String className) {
-        String oldClassName = langToClassName.getProperty(lang);
-        langToClassName.setProperty(lang, className);
+    @Override
+    public String removeWriter(String lang) throws IllegalArgumentException {
+        return remove(lang);
+    }
+
+    static { // static initializer - set default readers
+        reset();
+    }
+
+    private static void reset() {
+        Class<? extends RDFWriter> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.Basic.class;
+        Class<? extends RDFWriter> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class;
+        Class<? extends RDFWriter> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
+        Class<? extends RDFWriter> ttlWriter = org.apache.jena.n3.N3TurtleJenaWriter.class;
+
+        custom.put("RDF/XML", rdfxmlWriter);
+        custom.put("RDF/XML-ABBREV", rdfxmlAbbrevWriter);
+
+        custom.put("N-TRIPLE", ntWriter);
+        custom.put("N-TRIPLES", ntWriter);
+        custom.put("N-Triples", ntWriter);
+
+        custom.put("N3", org.apache.jena.n3.N3JenaWriter.class);
+        custom.put(N3JenaWriter.n3WriterPrettyPrinter, org.apache.jena.n3.N3JenaWriterPP.class);
+        custom.put(N3JenaWriter.n3WriterPlain, org.apache.jena.n3.N3JenaWriterPP.class);
+        custom.put(N3JenaWriter.n3WriterTriples, ttlWriter);
+        custom.put(N3JenaWriter.n3WriterTriplesAlt, org.apache.jena.n3.N3JenaWriterTriples.class);
+
+        custom.put(N3JenaWriter.turtleWriter, ttlWriter);
+        custom.put(N3JenaWriter.turtleWriterAlt1, ttlWriter);
+        custom.put(N3JenaWriter.turtleWriterAlt2, ttlWriter);
+    }
+
+    private static String currentEntry(String lang) {
+        Class<? extends RDFWriter> oldClass = custom.get(lang);
+        if ( oldClass != null )
+            return oldClass.getName();
+        else
+            return null;
+    }
+
+    private static String remove(String lang) {
+        if ( rewiredAlternative != null )
+            Log.fatal(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
+        String oldClassName = currentEntry(lang);
+        custom.remove(lang);
         return oldClassName;
     }
-
-	@Override
-	public void resetRDFWriterF() {
-		reset();
-	}
-
-	@Override
-	public String removeWriter(String lang) throws IllegalArgumentException {
-		return remove(lang);
-	}
-
 }

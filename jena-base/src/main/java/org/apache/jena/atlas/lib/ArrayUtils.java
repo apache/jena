@@ -28,37 +28,17 @@ public class ArrayUtils
     
     /** Allocate an array of generic type T (initialized to null) */
     @SuppressWarnings("unchecked")
-    public static <T> T[] alloc(Class<T> cls, int n)
-    {
-        return (T[])Array.newInstance(cls, n) ;
+    public static <T> T[] alloc(Class<T> cls, int n) {
+        return (T[])Array.newInstance(cls, n);
     }
-    
- // Compiles but fails at runtime (class cast exception if the reuls is assigned or accessed)
-//        @SuppressWarnings("unchecked")
-//        T[] array = (T[])new Object[n] ;
-// or is T known 
-//        @SuppressWarnings("unchecked")
-//        Set<T> x[] = new Set[length] ;
-//        return array ;
-        
-    /** Allocation space and copy */ 
-    public static <T> T[] copy(T[] array)
-    {
-        return copy(array, 0, array.length) ;
-    }
-    
-    /** Allocation space and copy */ 
-    public static <T> T[] copy(T[] array, int start, int finish)
-    {    
-        return Arrays.copyOfRange(array, start, finish) ;
 
-//        // Java5.
-//        // Fails for arrays of length 0;
-//        if ( array.length <= start )
-//            throw new IllegalArgumentException("Zero length array not supported") ;
-//        @SuppressWarnings("unchecked")
-//        T[] array2 = (T[])Array.newInstance(array[start].getClass(), finish-start) ;
-//        System.arraycopy(array, start, array2, 0, finish-start) ;
-//        return array2 ;
+    /** Allocation space and copy */
+    public static <T> T[] copy(T[] array) {
+        return copy(array, 0, array.length);
+    }
+    
+    /** Allocation space and copy */ 
+    public static <T> T[] copy(T[] array, int start, int finish) {
+        return Arrays.copyOfRange(array, start, finish) ;
     }
 }

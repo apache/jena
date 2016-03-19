@@ -29,6 +29,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.jena.query.text.analyzer.ConfigurableAnalyzer ;
 import org.apache.jena.query.text.analyzer.LowerCaseKeywordAnalyzer ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -56,6 +57,7 @@ public class TestEntityMapAssembler {
     private static final Resource spec4;
     private static final Resource spec5;
     private static final Resource spec6;
+    private static final Resource spec7;
     private static final Resource specNoEntityField;
     private static final Resource specNoDefaultField;
     private static final Resource specNoMapProperty;
@@ -117,6 +119,12 @@ public class TestEntityMapAssembler {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec6,  null);
         assertEquals(LowerCaseKeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
+    }    
+    
+    @Test public void EntityHasMapEntryWithConfigurableAnalyzer() {
+        EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec7,  null);
+        assertEquals(ConfigurableAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }    
     
     @Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
@@ -252,6 +260,24 @@ public class TestEntityMapAssembler {
                                                              .addProperty(TextVocab.pAnalyzer, 
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.lowerCaseKeywordAnalyzer))
+                                                  }));
+                
+
+        // create an entity map specification using a configurable analyzer
+        
+                spec7 = model.createResource(TESTBASE + "spec7")
+                             .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
+                             .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
+                             .addProperty(TextVocab.pMap,
+                                          model.createList(
+                                                  new RDFNode[] {
+                                                        model.createResource()
+                                                             .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
+                                                             .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
+                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                                          model.createResource()
+                                                                               .addProperty(RDF.type, TextVocab.configurableAnalyzer)
+                                                                               .addProperty(TextVocab.pTokenizer, TextVocab.standardTokenizer))
                                                   }));
                 
         // bad assembler spec

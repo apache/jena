@@ -39,6 +39,8 @@ import org.apache.jena.riot.system.StreamRDF ;
 /** SPARQL request lifecycle */
 public abstract class ActionSPARQL extends ActionBase
 {
+    private static final long serialVersionUID = 8655400764034493574L;
+
     protected ActionSPARQL() { super(Fuseki.actionLog) ; }
     
     protected abstract void validate(HttpAction action) ;
@@ -145,7 +147,7 @@ public abstract class ActionSPARQL extends ActionBase
     
     /**
      * Map request {@link HttpAction} to uri in the registry.
-     * A return of ull means no mapping done (passthrough).
+     * A return of {@code null} means no mapping done (passthrough).
      * @param uri the URI
      * @return the dataset
      */
@@ -154,7 +156,7 @@ public abstract class ActionSPARQL extends ActionBase
     }
 
     /**
-     * Map request to uri in the registry. null means no mapping done
+     * Map request to uri in the registry. {@code null} means no mapping done
      * (passthrough).
      */
     protected String mapRequestToOperation(HttpAction action, DataAccessPoint dataAccessPoint) {

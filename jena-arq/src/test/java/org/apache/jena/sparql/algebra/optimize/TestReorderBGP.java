@@ -19,13 +19,12 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.optimize.TransformReorder ;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderFixed ;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.junit.Test ;
 
 /** Test BGP reordering using the fixed reordering algorithm */ 
 public class TestReorderBGP extends AbstractTestTransform {
-    private static Transform t_reorder = new TransformReorder(new ReorderFixed()) ; 
+    private static Transform t_reorder = new TransformReorder(ReorderLib.fixed()) ; 
     
     public TestReorderBGP() {}
 

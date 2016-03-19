@@ -35,10 +35,7 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphWithLock ;
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.* ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the
@@ -110,35 +107,23 @@ public class HttpAction
     public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
-        DatasetGraph basedsg = unwrap(dsg) ;
-        
-        if ( isTransactional(dsg) ) {
+        setTransactionalPolicy(dsg) ;
+    }
+    
+    private void setTransactionalPolicy(DatasetGraph dsg) {
+        if ( dsg.supportsTransactionAbort() ) {
             // Use transactional if it looks safe - abort is necessary.
-            // It is the responsibility of dsg to manage the basedsg
-            // if the basedsg is not transactional.
-            transactional = (Transactional)dsg ;
+            transactional = dsg ;
             isTransactional = true ;
-        } else if ( isTransactional(basedsg) ) {
-            transactional = (Transactional)basedsg ;
-            // Intermediates may be stateful so there is no real abort. 
+        } else if ( dsg.supportsTransactions() ) {
+            // No abort - e.g. loading data needs buffering against syntax errors.
+            transactional = dsg ;
             isTransactional = false ;
         } else {
-            transactional = new DatasetGraphWithLock(dsg) ;
-            // No real abort.
+            // Nothing to build on.  Be safe.
+            transactional = new TransactionalMutex(dsg.getLock()) ;
             isTransactional = false ;
         }
-    }
-
-    /**
-     * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
-     * <code>false otherwise</code>.
-     *
-     * @param dsg a {@link DatasetGraph}
-     * @return <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
-     * <code>false otherwise</code>
-     */
-    private static boolean isTransactional(DatasetGraph dsg) {
-        return (dsg instanceof Transactional) ;
     }
 
     /**
@@ -149,7 +134,8 @@ public class HttpAction
      * @param dsg a {@link DatasetGraph}
      * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
      */
-    private static DatasetGraph unwrap(DatasetGraph dsg) {
+    // Unused currently.
+    private static DatasetGraph x_unwrap(DatasetGraph dsg) {
         while (dsg instanceof DatasetGraphWrapper) {
             dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
         }

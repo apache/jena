@@ -17,19 +17,13 @@
  */
 
 package org.apache.jena.sparql.pfunction;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappedLoader ;
-import org.apache.jena.sparql.vocabulary.ListPFunction ;
-import org.apache.jena.vocabulary.RDFS ;
 
 
 public class PropertyFunctionRegistry
@@ -39,11 +33,17 @@ public class PropertyFunctionRegistry
     Map<String, PropertyFunctionFactory> registry = new HashMap<>() ;
     Set<String> attemptedLoads = new HashSet<>() ;
     
-    public synchronized static PropertyFunctionRegistry standardRegistry()
+    public static PropertyFunctionRegistry standardRegistry()
     {
+        PropertyFunctionRegistry reg = get(ARQ.getContext()) ;
+        return reg ;   
+    }
+    
+    public static void init() {
+        // Intialize if there is no registry already set 
         PropertyFunctionRegistry reg = new PropertyFunctionRegistry() ;
-        reg.loadStdDefs() ;
-        return reg ;
+        StandardPropertyFunctions.loadStdDefs(reg) ;
+        set(ARQ.getContext(), reg) ;
     }
 
     public static PropertyFunctionRegistry get(Context context)
@@ -79,14 +79,6 @@ public class PropertyFunctionRegistry
     }
     
     
-    /** Insert an PropertyFunction factory. Re-inserting with the same URI 
-     * overwrites the old entry. 
-     * 
-     * @param uri        String URI for the PropertyFunction
-     * @param factory    Factory to make PropertyFunction instances
-     */
-    public void put(String uri, PropertyFunctionFactory factory) { registry.put(uri,factory) ; }
-
     /** Insert an PropertyFunction class.
      *  Re-inserting with the same URI overwrites the old entry.
      *  New instance created on retrieval (auto-factory)  
@@ -102,8 +94,16 @@ public class PropertyFunctionRegistry
             return ; 
         }
         
-        registry.put(uri,new PropertyFunctionFactoryAuto(extClass)) ;
+        put(uri,new PropertyFunctionFactoryAuto(extClass)) ;
     }
+
+    /** Insert an PropertyFunction factory. Re-inserting with the same URI 
+     * overwrites the old entry. 
+     * 
+     * @param uri        String URI for the PropertyFunction
+     * @param factory    Factory to make PropertyFunction instances
+     */
+    public void put(String uri, PropertyFunctionFactory factory) { registry.put(uri,factory) ; }
 
     public boolean manages(String uri)
     {
@@ -145,22 +145,4 @@ public class PropertyFunctionRegistry
     
     /** Iterate over URIs */
     public Iterator<String> keys() { return registry.keySet().iterator() ; }
-    
-    @SuppressWarnings("deprecation")
-    private void loadStdDefs()
-    {
-        put(ListPFunction.member.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;
-        put(ListPFunction.index.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
-        put(ListPFunction.length.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
-        put(ListPFunction.memberJ2.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;
-        put(ListPFunction.indexJ2.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
-        put(ListPFunction.lengthJ2.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
-
-        // (Very) old forms
-        put(ListPFunction.listMember.getURI() , org.apache.jena.sparql.pfunction.library.listMember.class) ;
-        put(ListPFunction.listIndex.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
-        put(ListPFunction.listLength.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
-        
-        put(RDFS.member.getURI(), org.apache.jena.sparql.pfunction.library.container.class) ;
-    }
 }

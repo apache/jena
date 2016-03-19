@@ -56,21 +56,21 @@ public class AggCountVarDistinct extends AggregatorBase
     }
 
     // ---- Accumulator
-    class AccCountVarDistinct extends AccumulatorDistinctExpr
+    class AccCountVarDistinct extends AccumulatorExpr
     {
         private long count = 0 ;
 
-        public AccCountVarDistinct() { super(getExpr()) ; } 
-        // The group key part of binding will be the same for all elements of the group.
+        public AccCountVarDistinct() { super(getExpr(), true) ; } 
+
         @Override
-        public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { count++ ; } 
 
+        // Ignore errors.
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
         {}
 
-        // Ignore errors.
         @Override
         public NodeValue getValue()
         { return getAccValue() ; }

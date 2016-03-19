@@ -27,17 +27,21 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.compose.Polyadic ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.graph.GraphWrapper ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.util.Symbol ;
 
 public class SystemARQ
 {
     // Various system wide settings, "constants" that might change e.g. test setups
+    // ** This can be loaded before the rest of ARQ is initialized **
 
     // NodeValues work without the context so somethings only have global settings.
     
@@ -120,14 +124,17 @@ public class SystemARQ
         }
         else
         {
-            sync(dataset.getDefaultGraph()) ;
-            // Go through each graph.
-            Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next();
-                Graph g = dataset.getGraph(n) ;
-                sync(g) ;
+            Graph gDft = dataset.getDefaultGraph() ;
+            if ( ! ( gDft instanceof GraphView ) ) {
+                // GraphView sync the DatasetGraph leading to possible recursion. 
+                sync(gDft) ;
+                // Go through each graph.
+                Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
+                for ( ; iter.hasNext() ; ) {
+                    Node n = iter.next();
+                    Graph g = dataset.getGraph(n) ;
+                    sync(g) ;
+                }
             }
         }
     }
@@ -154,6 +161,20 @@ public class SystemARQ
     public static Iterator<SystemInfo> registeredSubsystems()
     {
         return versions.iterator() ;
+    }
+
+    public static Symbol allocSymbol(String shortName)
+    { 
+        if ( shortName.startsWith(ARQ.arqSymbolPrefix)) 
+            throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace prefix: "+shortName) ;
+        if ( shortName.startsWith("http:")) 
+            throw new ARQInternalErrorException("Symbol short name begins with http: "+shortName) ;
+        return SystemARQ.allocSymbol(ARQ.arqParamNS, shortName) ;
+    }
+
+    public static Symbol allocSymbol(String base, String shortName)
+    {
+        return Symbol.create(base+shortName) ;
     }
 
 }

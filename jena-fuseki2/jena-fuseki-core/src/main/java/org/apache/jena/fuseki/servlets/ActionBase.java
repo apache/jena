@@ -39,6 +39,8 @@ import org.slf4j.Logger ;
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
+    private static final long serialVersionUID = -8235479824229554685L;
+
     protected final Logger log ;
 
     protected ActionBase(Logger log) {
@@ -88,13 +90,13 @@ public abstract class ActionBase extends ServletBase
                 // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
                 ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
-                if ( ex.exception != null )
-                    ex.exception.printStackTrace(System.err) ;
+                if ( ex.getCause() != null )
+                    ex.getCause().printStackTrace(System.err) ;
                 // Log message done by printResponse in a moment.
-                if ( ex.message != null )
-                    ServletOps.responseSendError(response, ex.rc, ex.message) ;
+                if ( ex.getMessage() != null )
+                    ServletOps.responseSendError(response, ex.getRC(), ex.getMessage()) ;
                 else
-                    ServletOps.responseSendError(response, ex.rc) ;
+                    ServletOps.responseSendError(response, ex.getRC()) ;
             } catch (RuntimeIOException ex) {
                 log.warn(format("[%d] Runtime IO Exception (client left?) RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
@@ -157,9 +159,11 @@ public abstract class ActionBase extends ServletBase
      */
     protected abstract void execCommonWorker(HttpAction action) ;
     
-    /** Extract the name after the container name (serverlet name).
-     * Returns "/name" or null 
-     */  
+    /**
+     * Extract the name after the container name (servlet name).
+     * @param action an HTTP action
+     * @return item name as "/name" or {@code null}
+     */
     protected static String extractItemName(HttpAction action) {
 //      action.log.info("context path  = "+action.request.getContextPath()) ;
 //      action.log.info("pathinfo      = "+action.request.getPathInfo()) ;
@@ -201,10 +205,10 @@ public abstract class ActionBase extends ServletBase
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
                 if ( !vals.hasMoreElements() )
-                    log.info(format("[%d]   %s", action.id, h)) ;
+                    log.info(format("[%d]   => %s", action.id, h+":")) ;
                 else {
                     for (; vals.hasMoreElements();)
-                        log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
+                        log.info(format("[%d]   => %-20s %s", action.id, h+":", vals.nextElement())) ;
                 }
             }
         }
@@ -224,11 +228,11 @@ public abstract class ActionBase extends ServletBase
         HttpServletResponseTracker response = action.response ;
         if ( action.verbose ) {
             if ( action.contentType != null )
-                log.info(format("[%d]   %-20s %s", action.id, HttpNames.hContentType, action.contentType)) ;
+                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.contentType)) ;
             if ( action.contentLength != -1 )
-                log.info(format("[%d]   %-20s %d", action.id, HttpNames.hContentLengh, action.contentLength)) ;
+                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.contentLength)) ;
             for (Map.Entry<String, String> e : action.headers.entrySet())
-                log.info(format("[%d]   %-20s %s", action.id, e.getKey(), e.getValue())) ;
+                log.info(format("[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue())) ;
         }
 
         String timeStr = fmtMillis(time) ;
@@ -246,7 +250,7 @@ public abstract class ActionBase extends ServletBase
      * <p>Given a time point, return the time as a milli second string if it is less than 1000,
      * otherwise return a seconds string.</p>
      * <p>It appends a 'ms' suffix when using milli seconds,
-     *  and <i>s</i> for seconds.</p>
+     *  and 's' for seconds.</p>
      * <p>For instance: </p>
      * <ul>
      * <li>10 emits 10 ms</li>

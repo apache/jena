@@ -31,8 +31,6 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /* Tests of RDFDataMgr.
@@ -44,16 +42,6 @@ public class TestReadData extends BaseTest
 
     private static Context context = new Context() ;
     
-    @BeforeClass static public void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-    
-    @AfterClass static public void afterClass()
-    { 
-        // Unwire?
-    }
-
     // Model, graph
     
     @Test public void read_01() { read("D.nq") ; }
@@ -138,6 +126,7 @@ public class TestReadData extends BaseTest
     private static void read(String dataurl, Lang lang)
     {
         dataurl = filename(dataurl) ;
+        @SuppressWarnings("deprecation")
         Dataset ds = DatasetFactory.createMem() ;
         RDFDataMgr.read(ds, dataurl, lang) ;
     }
@@ -152,12 +141,14 @@ public class TestReadData extends BaseTest
         filename = filename(filename) ;
         
         // Read with a base
+        @SuppressWarnings("deprecation")
         Dataset ds0 = DatasetFactory.createMem() ;
         try(FileInputStream in0 = new FileInputStream(filename)) {
             RDFDataMgr.read(ds0, in0, "http://example/base2", lang) ;
         }
         
         // Read again, but without base
+        @SuppressWarnings("deprecation")
         Dataset ds1 = DatasetFactory.createMem() ;
         try(FileInputStream in1 = new FileInputStream(filename)) {
             RDFDataMgr.read(ds1, in1, null, lang) ;

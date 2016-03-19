@@ -18,28 +18,25 @@
 
 package org.apache.jena.sparql.resultset;
 
-import java.io.OutputStream ;
+import java.io.OutputStream;
 
-import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSet;
 
-public class JSONOutput extends OutputBase
-{
+public class JSONOutput extends OutputBase {
     public JSONOutput() {}
-    
+
     @Override
-    public void format(OutputStream out, ResultSet resultSet)
-    {
+    public void format(OutputStream out, ResultSet resultSet) {
         // Use direct string output - more control
-    
-        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out) ;
-        ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
-        a.apply() ;
+
+        JSONOutputResultSet jsonOut = new JSONOutputResultSet(out);
+        ResultSetApply a = new ResultSetApply(resultSet, jsonOut);
+        a.apply();
     }
 
     @Override
-    public void format(OutputStream out, boolean booleanResult)
-    {
-        JSONOutputASK jsonOut = new JSONOutputASK(out) ;
-        jsonOut.exec(booleanResult) ;
+    public void format(OutputStream out, boolean booleanResult) {
+        JSONOutputASK jsonOut = new JSONOutputASK(out);
+        jsonOut.exec(booleanResult);
     }
 }

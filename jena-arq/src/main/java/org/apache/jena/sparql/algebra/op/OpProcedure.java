@@ -91,7 +91,7 @@ public class OpProcedure extends Op1
     @Override
     public Op1 copy(Op subOp)
     {
-        return new OpProcedure(procId, args, getSubOp()) ;
+        return new OpProcedure(procId, args, subOp) ;
     }
 
     public Node getProcId()

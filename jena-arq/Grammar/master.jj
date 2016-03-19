@@ -90,6 +90,7 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.path.* ;
 import org.apache.jena.sparql.expr.aggregate.* ;
 #ifdef  UPDATE
+import org.apache.jena.sparql.expr.aggregate.lib.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 #endif
@@ -98,9 +99,7 @@ import org.apache.jena.sparql.core.Quad ;
 #endif
 
 public class CLASS extends PARSERBASE
-{
-    boolean allowAggregatesInExpressions = false ;
-}
+{}
 PARSER_END(CLASS)
 
 // // Common top for single entry point.
@@ -190,7 +189,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
   | <REDUCED>  { getQuery().setReduced(true); }
   )? 
 
-  { allowAggregatesInExpressions = true ; }
+  { setAllowAggregatesInExpressions(true) ; }
   (
     (
       v = Var()                     { getQuery().addResultVar(v) ; }
@@ -229,7 +228,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
   |
     <STAR> { getQuery().setQueryResultStar(true) ; }
   )
-  { allowAggregatesInExpressions = false ; }
+  { setAllowAggregatesInExpressions(false) ; }
 }
 
 #if 0
@@ -266,23 +265,12 @@ void ConstructQuery() : { Template t ;
       getQuery().setQueryPattern(elg) ;
     }
  )
-//#endif
 }
 #else
-
+// Complete compatibility - this differs from the above at "new Template"
 void ConstructQuery() : { Template t ; 
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }
 {
-// #ifndef ARQ
-//   <CONSTRUCT>
-//      { getQuery().setQueryConstructType() ; }
-//   t = ConstructTemplate() 
-//     { getQuery().setConstructTemplate(t) ; }
-//   ( DatasetClause() )*
-//   WhereClause()
-//   SolutionModifier()
-// #else
-
  <CONSTRUCT>
    { getQuery().setQueryConstructType() ; }
  (
@@ -311,7 +299,6 @@ void ConstructQuery() : { Template t ;
       getQuery().setQueryPattern(elg) ;
     }
  )
-//#endif
 }
 #endif
 
@@ -410,9 +397,9 @@ void GroupCondition() : { Var v = null ; Expr expr = null ; }
 
 void HavingClause() : { }
 {
-    { allowAggregatesInExpressions = true ; }
+    { setAllowAggregatesInExpressions(true) ; }
     <HAVING> (HavingCondition())+
-    { allowAggregatesInExpressions = false ; }
+    { setAllowAggregatesInExpressions(false) ; }
 }
 
 void HavingCondition() : { Expr c ; }
@@ -423,9 +410,9 @@ void HavingCondition() : { Expr c ; }
 
 void OrderClause() : { }
 {
-  { allowAggregatesInExpressions = true ; }
+  { setAllowAggregatesInExpressions(true) ; }
   <ORDER> <BY> ( OrderCondition() )+
-  { allowAggregatesInExpressions = false ; }
+  { setAllowAggregatesInExpressions(false) ; }
 }
 
 void OrderCondition() :
@@ -738,24 +725,28 @@ void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; 
     (TriplesTemplate(acc))?
     <RBRACE>
     { setAccGraph(acc, prev) ; }
-    
 }
 #ifdef ARQ
+// See "/* TriG template :: ..... */" below.
+// If not TriG like, check this is not "QuadPattern" 
 void ConstructQuads(QuadAcc acc) : {}
 {
-    (TriplesTemplate(acc))?
+    (/* TriG template: LOOKAHEAD(2) */TriplesTemplate(acc))?
     (
        ConstructQuadsNotTriples(acc)
        (<DOT>)?
-       (TriplesTemplate(acc))?
+       (/* TriG template: LOOKAHEAD(2) */TriplesTemplate(acc))?
     )*    
 }
 
-void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNodeGenerated ; Node prev = acc.getGraph() ; }
+void ConstructQuadsNotTriples(QuadAccSink acc) :
+     { Node gn = Quad.defaultGraphNodeGenerated ;
+       Node prev = acc.getGraph() ;
+     }
 {
     (
-  	 <GRAPH>
-     gn = VarOrIri()
+   	  <GRAPH> /* TriG template :: (<GRAPH>)?*/
+      gn = VarOrBlankNodeOrIri()
     )?
 
     { setAccGraph(acc, gn) ; }
@@ -763,9 +754,9 @@ void ConstructQuadsNotTriples(QuadAccSink acc) : {Node gn = Quad.defaultGraphNod
     (TriplesTemplate(acc))?
     <RBRACE>
     { setAccGraph(acc, prev) ; }
-    
 }
 #endif
+
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
 #if SPARQL_11
@@ -980,6 +971,9 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
+#ifdef ARQ
+| n = BlankNode()       { return n ; }
+#endif
 | <UNDEF>               { return null ; }
 }
 
@@ -1065,17 +1059,16 @@ Expr Constraint() : { Expr c ; }
   { return c ; }
 }
 
-Expr FunctionCall() : { String fname ; ExprList a ; }
+Expr FunctionCall() : { String fname ; Args a ; }
 {
   fname = iri()
   a = ArgList()
-
   {
      if ( AggregateRegistry.isRegistered(fname) ) {
          // aggregates
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, fname, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
      }
@@ -1083,17 +1076,16 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
   }
 }
 
-ExprList ArgList() : { Expr expr ; boolean distinct = false ;
-                      ExprList args = new ExprList() ; Token t ; }
+Args ArgList() : { Expr expr ; Args args = new Args() ; Token t ; }
 { 
   (
     <NIL>
   |
     <LPAREN>
-      (t = <DISTINCT> { distinct = true ; }
+      (t = <DISTINCT> { args.distinct = true ; }
       { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
         {
-          if ( ! allowAggregatesInExpressions )
+          if ( ! getAllowAggregatesInExpressions() )
               throwParseException("Aggregate expression not legal at this point",
                                  beginLine, beginColumn) ;
         }
@@ -1105,17 +1097,17 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
     { return args ; }
 }
 
-ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() ;}
+ExprList ExpressionList() : { Expr expr = null ; ExprList exprList = new ExprList() ;}
 {
   (
     <NIL>
   |
     <LPAREN>
-    expr = Expression() { args.add(expr) ; } 
-      (<COMMA> expr = Expression() { args.add(expr) ; } )* 
+    expr = Expression() { exprList.add(expr) ; } 
+      (<COMMA> expr = Expression() { exprList.add(expr) ; } )* 
     <RPAREN>
   )
-  { return args ; }
+  { return exprList ; }
 }
 
 
@@ -1178,7 +1170,7 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
 
 void PropertyList(Node s, TripleCollector acc) : { }
 {
-  ( PropertyListNotEmpty(s, acc) ) ?
+  ( /* TriG template: LOOKAHEAD(2) */ PropertyListNotEmpty(s, acc) ) ?
 }
 
 void PropertyListNotEmpty(Node s, TripleCollector acc) : 
@@ -1187,7 +1179,7 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) :
     p = Verb()
     ObjectList(s, p, null, acc)
   ( <SEMICOLON> 
-    (
+    ( /* TriG template: LOOKAHEAD(2) */
        p = Verb()
       ObjectList(s, p, null, acc)
     )? 
@@ -1990,9 +1982,8 @@ Expr NotExistsFunc() : { Element el ; }
 }
 
 Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
-                     boolean distinct = false ;
                      Expr expr = null ;  Expr expr2 = null ;
-                     ExprList a = new ExprList() ;
+                     boolean distinct = false ;
                      ExprList ordered = new ExprList() ;
                      Token t ; }
 {
@@ -2025,7 +2016,7 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
   | t = <GROUP_CONCAT>
     <LPAREN>
     (t = <DISTINCT> { distinct = true ; })?
-    expr = Expression() { a.add(expr) ; } 
+    expr = Expression()
 #ifdef SPARQL_11
     // Single arg version
     (<SEMICOLON> <SEPARATOR> <EQ> sep=String())?
@@ -2044,37 +2035,48 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
 
 #ifdef ARQ
-    /* Explicit syntax (aggregate even if not registered) */
-    | t = <AGG>
-          { String iri ; }
-          iri = iri()
-          <LPAREN>
-          ( <DISTINCT> { distinct = true ; } )?
-          (
-             expr = Expression() { a.add(expr) ; } 
-             (<COMMA> expr = Expression() { a.add(expr) ; } )*            
-          )?
-          <RPAREN>
-      { agg = AggregatorFactory.createCustom(false, distinct, iri, a) ; }
-#endif
-   )
+  | t = <STDEV> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev, distinct, expr) ; }
 
-   {
-     if ( ! allowAggregatesInExpressions )
-            throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
-   }
-   { Expr exprAgg = getQuery().allocAggregate(agg) ;
-     return exprAgg ; }
+  | t = <STDEV_SAMP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev_samp, distinct, expr) ; }
+
+  | t = <STDEV_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.stdev_pop, distinct, expr) ; }
+
+  | t = <VARIANCE> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.variance, distinct, expr) ; }
+
+  | t = <VAR_SAMP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.var_samp, distinct, expr) ; }
+
+  | t = <VAR_POP> <LPAREN> ( <DISTINCT> { distinct = true ; } )? expr = Expression() <RPAREN>
+    { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
+
+    /* Explicit syntax (aggregate even if not registered) */
+  | t = <AGG>
+    { String iri ; }
+    iri = iri()
+    { Args a = new Args() ; }
+    a = ArgList()
+    { agg = AggregatorFactory.createCustom(iri, a) ; }
+#endif
+  )
+
+  {
+    if ( ! getAllowAggregatesInExpressions() )
+           throwParseException("Aggregate expression not legal at this point",
+                                t.beginLine, t.beginColumn) ;
+  }
+  { Expr exprAgg = getQuery().allocAggregate(agg) ;
+    return exprAgg ; }
 }
 
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr iriOrFunction() : { String iri ; ExprList a = null ; 
-                         ExprList params = null ; 
-                         boolean distinct = false ; }
+Expr iriOrFunction() : { String iri ; Args a = null ; }
 {
   iri = iri()
   (a = ArgList())?
@@ -2082,9 +2084,9 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
        return asExpr(createNode(iri)) ;
     if ( AggregateRegistry.isRegistered(iri) ) {
          // aggregates
-         if ( ! allowAggregatesInExpressions )
+         if ( ! getAllowAggregatesInExpressions() )
             throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
-         Aggregator agg = AggregatorFactory.createCustom(true, false, iri, a) ;
+         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
       }
@@ -2318,7 +2320,13 @@ TOKEN [IGNORE_CASE] :
 |  < MAX:         "max" >
 |  < SUM:         "sum" >
 |  < AVG:         "avg" >
-|  < STDDEV:      "stdev" >
+|  < STDEV:       "stdev" >
+|  < STDEV_SAMP:  "stdev_samp" >
+|  < STDEV_POP:   "stdev_pop" >
+|  < VARIANCE:    "variance" >
+|  < VAR_SAMP:    "var_samp" >
+|  < VAR_POP:     "var_pop" >
+
 |  < SAMPLE:      "sample" >
 |  < GROUP_CONCAT: "group_concat" >
 

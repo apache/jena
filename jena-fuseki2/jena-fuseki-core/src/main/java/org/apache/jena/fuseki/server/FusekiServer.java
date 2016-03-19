@@ -34,10 +34,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.FusekiConfig ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.build.* ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
@@ -246,21 +243,10 @@ public class FusekiServer
             datasets.addAll(confDatasets) ;
         }
         else if ( params.dsg != null ) {
-            DataAccessPoint dap = defaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
+            DataAccessPoint dap = datasetDefaultConfiguration(params.datasetPath, params.dsg, params.allowUpdate) ;
             datasets.add(dap) ;
         } else if ( params.argTemplateFile != null ) {
-            Fuseki.configLog.info("Template file: " + params.argTemplateFile) ;
-            String dir = params.params.get(Template.DIR) ;
-            if ( dir != null ) {
-                if ( Objects.equals(dir, Names.memName) ) {
-                    Fuseki.configLog.info("TDB dataset: in-memory") ;
-                } else {
-                    if ( !FileOps.exists(dir) )
-                        throw new CmdException("Directory not found: " + dir) ;
-                    Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
-                }
-            }
-            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.params) ;
+            DataAccessPoint dap = configFromTemplate(params.argTemplateFile, params.datasetPath, params.allowUpdate, params.params) ;
             datasets.add(dap) ;
         }
         // No datasets is valid.
@@ -276,12 +262,10 @@ public class FusekiServer
         return FusekiConfig.readConfigFile(configFilename) ;
     }
     
-    private static DataAccessPoint configFromTemplate(String templateFile, 
-                                                      String datasetPath, 
-                                                      Map<String, String> params) {
-        datasetPath = DataAccessPoint.canonical(datasetPath) ;
-        
-        // DRY -- ActionDatasets (and others?)
+    private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
+                                                      boolean allowUpdate, Map<String, String> params) {
+        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ; 
+        // ---- Setup
         if ( params == null ) {
             params = new HashMap<>() ;
             params.put(Template.NAME, datasetPath) ;
@@ -291,7 +275,23 @@ public class FusekiServer
                 params.put(Template.NAME, datasetPath) ;   
             }
         }
+        //-- Logging
+        Fuseki.configLog.info("Template file: " + templateFile) ;
+        String dir = params.get(Template.DIR) ;
+        if ( dir != null ) {
+            if ( Objects.equals(dir, Names.memName) ) {
+                Fuseki.configLog.info("TDB dataset: in-memory") ;
+            } else {
+                if ( !FileOps.exists(dir) )
+                    throw new CmdException("Directory not found: " + dir) ;
+                Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
+            }
+        }
+        //-- Logging
         
+        datasetPath = DataAccessPoint.canonical(datasetPath) ;
+        
+        // DRY -- ActionDatasets (and others?)
         addGlobals(params); 
 
         String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL) ;
@@ -300,7 +300,7 @@ public class FusekiServer
         Model model = ModelFactory.createDefaultModel() ;
         RDFDataMgr.read(model, sr, datasetPath, lang);
         
-        // Find DataAccessPoint
+        // ---- DataAccessPoint
         Statement stmt = getOne(model, null, FusekiVocab.pServiceName, null) ;
         if ( stmt == null ) {
             StmtIterator sIter = model.listStatements(null, FusekiVocab.pServiceName, (RDFNode)null ) ;
@@ -312,7 +312,12 @@ public class FusekiServer
             throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
         }
         Resource subject = stmt.getSubject() ;
-        DataAccessPoint dap = Builder.buildDataAccessPoint(subject) ;
+        if ( ! allowUpdate ) {
+            // Opportunity for more sophisticated "read-only" mode.
+            //  1 - clean model, remove "fu:serviceUpdate", "fu:serviceUpload", "fu:serviceReadGraphStore", "fu:serviceReadWriteGraphStore"
+            //  2 - set a flag on DataAccessPoint
+        }
+        DataAccessPoint dap = Builder.buildDataAccessPoint(subject, registry) ;
         return dap ;
     }
     
@@ -345,11 +350,10 @@ public class FusekiServer
         return stmt ;
     }
     
-    private static DataAccessPoint defaultConfiguration( String name, DatasetGraph dsg, boolean updatable) {
+    private static DataAccessPoint datasetDefaultConfiguration( String name, DatasetGraph dsg, boolean allowUpdate) {
         name = DataAccessPoint.canonical(name) ;
-        DataAccessPoint dap = new DataAccessPoint(name) ;
-        DataService ds = Builder.buildDataService(dsg, updatable) ;
-        dap.setDataService(ds) ;
+        DataService ds = Builder.buildDataService(dsg, allowUpdate) ;
+        DataAccessPoint dap = new DataAccessPoint(name, ds) ;
         return dap ;
     }
     
@@ -395,5 +399,24 @@ public class FusekiServer
 //        try { path = path.toRealPath() ; }
 //        catch (IOException e) { IO.exception(e) ; }
         return path ;
+    }
+
+    /**
+     * <ul>
+     * <li>GLOBAL: sharing across all descriptions
+     * <li>FILE: sharing within files but not across files.
+     * </ul>
+     */
+    enum DatasetDescriptionScope { GLOBAL, FILE }
+    private static DatasetDescriptionRegistry globalDatasets = new DatasetDescriptionRegistry() ;
+    private static DatasetDescriptionScope policyDatasetDescriptionScope = DatasetDescriptionScope.FILE ;
+    
+    /** Call this once per configuration file. */
+    public static DatasetDescriptionRegistry registryForBuild() {
+        switch (policyDatasetDescriptionScope) {
+            case FILE :     return new DatasetDescriptionRegistry() ;
+            case GLOBAL :   return globalDatasets ;
+            default:        throw new InternalErrorException() ;
+        }
     }
 }

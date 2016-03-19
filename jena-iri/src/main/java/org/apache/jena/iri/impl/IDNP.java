@@ -45,6 +45,8 @@ public class IDNP {
     // We try to follow java.net.IDN behaviour in our exceptions, in anticipation
     // of dumping this class.
     private static void checkPart(String part) {
+        if ( part.isEmpty() )
+            throw new IllegalArgumentException("Empty IDN part");
         if (part.charAt(0) == '-' || 
                 part.charAt(part.length() - 1) == '-') {
             throw new IllegalArgumentException("Has leading or trailing hyphen");

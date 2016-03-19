@@ -71,7 +71,6 @@ public class JettyFuseki {
     public static final String resourceBase1   = "webapp" ;
     // Development
     public static final String resourceBase2   = "src/main/webapp" ;
-    
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
@@ -106,8 +105,12 @@ public class JettyFuseki {
         if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
             buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
         
-        if ( version != null && buildDate != null )
-            serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
+        if ( version != null ) {
+            if ( Fuseki.developmentMode && buildDate != null )
+                serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
+            else
+                serverLog.info(format("%s %s", Fuseki.NAME, version)) ;
+        }
         // This does not get set usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         // serverLog.info(format("Jetty %s",jettyVersion)) ;
@@ -276,17 +279,19 @@ public class JettyFuseki {
         // Some people do try very large operations ... really, should use POST.
         f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
         f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
-        
-        //SslConnectionFactory f2 = new SslConnectionFactory() ;
-        
-        ServerConnector connector = new ServerConnector(server, f1) ; //, f2) ;
+        // Do not add "Server: Jetty(....) when not a development system.
+        if ( ! Fuseki.outputJettyServerHeader )
+            f1.getHttpConfiguration().setSendServerVersion(false) ;
+
+        // https is better done with a Jetty configuration file
+        // because there are several things to configure. 
+        // See "examples/fuseki-jetty-https.xml"
+
+        ServerConnector connector = new ServerConnector(server, f1) ;
         connector.setPort(port) ;
-        
         server.addConnector(connector);
-        
         if ( loopback )
             connector.setHost("localhost");
-        connector.setPort(port) ;
         serverConnector = connector ;
     }
 }

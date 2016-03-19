@@ -28,9 +28,12 @@ public class DatasetAssemblerVocab
     public static final String NS = JA.getURI() ;
     public static String getURI() { return NS ; }
     
+    // General dataset
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
-    public static final Resource tGraphStore         = ResourceFactory.createResource(NS+"GraphStore") ;
+    // In-memory dataset
+    public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"DatasetTxnMem") ;
     public static final Resource tDatasetNull        = ResourceFactory.createResource(NS+"DatasetNull") ;
+    
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
     public static final Property pNamedGraph         = ResourceFactory.createProperty(NS, "namedGraph") ;
     

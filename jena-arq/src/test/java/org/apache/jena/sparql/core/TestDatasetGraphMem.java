@@ -27,6 +27,6 @@ public class TestDatasetGraphMem extends AbstractDatasetGraphTests
     @Override
     public DatasetGraph emptyDataset()
     {
-        return DatasetGraphFactory.createMem() ;
+        return DatasetGraphFactory.create() ;
     }
 }

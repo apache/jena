@@ -23,7 +23,7 @@ import static org.apache.jena.fuseki.ServerTest.gn2 ;
 import static org.apache.jena.fuseki.ServerTest.model1 ;
 import static org.apache.jena.fuseki.ServerTest.model2 ;
 import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
 
 import java.io.IOException ;
 import java.net.HttpURLConnection ;
@@ -61,15 +61,14 @@ public class TestQuery extends BaseTest {
     @BeforeClass
     public static void beforeClass() {
         ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
 
     @AfterClass
     public static void afterClass() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.deleteDefault() ;
         ServerTest.freeServer() ;
     }
@@ -111,7 +110,7 @@ public class TestQuery extends BaseTest {
 
     @Test
     public void query_dynamic_dataset_01() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1);
         du.putModel(gn1, model2);
         {
@@ -133,10 +132,10 @@ public class TestQuery extends BaseTest {
             }
         }
     }
-    
+
     @Test
     public void query_dynamic_dataset_02() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
         du.putModel(model1);
         du.putModel(gn1, model1);
         du.putModel(gn2, model2);
@@ -147,13 +146,13 @@ public class TestQuery extends BaseTest {
             assertEquals(2, n) ;
         }
     }
-    
+
     @Test
     public void query_construct_quad_01()
     {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}" ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-               
+
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
             Iterator<Quad> result = qExec.execConstructQuads();
             Assert.assertTrue(result.hasNext());
@@ -161,20 +160,20 @@ public class TestQuery extends BaseTest {
 
         }
     }
-    
+
     @Test
     public void query_construct_quad_02()
     {
         String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}" ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-               
+
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query) ) {
             Dataset result = qExec.execConstructDataset();
             Assert.assertTrue(result.asDatasetGraph().find().hasNext());
             Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
         }
     }
-    
+
     @Test
     public void query_construct_01()
     {
@@ -184,7 +183,7 @@ public class TestQuery extends BaseTest {
             Assert.assertTrue(result.hasNext());
         }
     }
-    
+
     @Test
     public void query_construct_02()
     {
@@ -194,7 +193,7 @@ public class TestQuery extends BaseTest {
             assertEquals(1, result.size());
         }
     }
-    
+
     @Test
     public void query_describe_01() {
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}" ;
@@ -215,7 +214,7 @@ public class TestQuery extends BaseTest {
 
     private static final AcceptList rdfOfferTest = DEF.rdfOffer ;
     private static final AcceptList quadsOfferTest = DEF.quadsOffer ;
-    
+
     @Test
     public void query_construct_conneg() {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
@@ -230,7 +229,7 @@ public class TestQuery extends BaseTest {
             }
         }
     }
-    
+
     @Test
     public void query_construct_quad_conneg() {
         String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}" ;
@@ -246,7 +245,7 @@ public class TestQuery extends BaseTest {
             }
         }
     }
-    
+
     @Test
     public void query_describe_conneg() {
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}" ;

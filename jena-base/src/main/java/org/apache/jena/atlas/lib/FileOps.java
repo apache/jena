@@ -21,8 +21,11 @@ package org.apache.jena.atlas.lib ;
 import java.io.File ;
 import java.io.IOException ;
 import java.nio.file.Files;
+
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.atlas.logging.Log ;
 
 /** A library of utility operations on files and the filing system */
@@ -146,7 +149,7 @@ public class FileOps {
             basename = basename.substring(0, i) ;
         }
 
-        return Tuple.createTuple(path, basename, ext) ;
+        return TupleFactory.tuple(path, basename, ext) ;
     }
 
     /**
@@ -165,7 +168,7 @@ public class FileOps {
             path = filename.substring(0, j) ;
             fn = filename.substring(j + 1) ;
         }
-        return Tuple.createTuple(path, fn) ;
+        return TupleFactory.tuple(path, fn) ;
     }
 
     /** Return the basename (no path, no extension) */

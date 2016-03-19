@@ -29,8 +29,8 @@ import org.apache.jena.shared.impl.JenaParameters ;
 /**
  * Base implementation for all numeric datatypes derived from
  * xsd:decimal. The only purpose of this place holder is
- * to support the isValidLiteral tests across numeric types. Note
- * that float and double are not included in this set.
+ * to support the isValidLiteral tests across numeric types. 
+ *  * <p>Note that float and double are not included in this set.
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -87,7 +87,7 @@ public class XSDBaseNumericType extends XSDDatatype {
     @Override
     public boolean isValidValue(Object valueForm) {
         if (valueForm instanceof Number) {
-            return isValid(valueForm.toString());
+            return isValid(unparse(valueForm));
         } else {
             return false;
         }
@@ -118,7 +118,6 @@ public class XSDBaseNumericType extends XSDDatatype {
      */
     private Object cannonicalizeDecimal(BigDecimal value) {
         // This could can be simplified by using toBigIntegerExact
-        // once we drop Java 1.4 support
         if (value.scale() > 0) {
             // Check if we can strip off any trailing zeros after decimal point
             BigInteger i = value.unscaledValue();
@@ -160,6 +159,20 @@ public class XSDBaseNumericType extends XSDDatatype {
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         checkWhitespace(lexicalForm);        
         return super.parse(lexicalForm);
+    }
+    
+    /**
+     * Convert a value of this datatype to lexical form.
+     * Certain forms are not a simple matter of java's toString on the Number object. 
+     */
+    @Override
+    public String unparse(Object value) {
+        if ( value instanceof BigDecimal )
+            // Avoid exponent usage.
+            return ((BigDecimal)value).toPlainString() ;
+        // See also for XSDfloat and XSDdouble. 
+        // Integer hierarchy is OK.
+        return value.toString();
     }
     
     /**

@@ -37,37 +37,32 @@ public class QueryIterExtendByVar extends QueryIter
     private Var var ;
     private Iterator<Node> members ;
     
-    public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt)
-    {
-        super(execCxt) ;
+    public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt) {
+        super(execCxt);
         if ( true ) { // Assume not too costly.
             if ( binding.contains(var) )
-                throw new ARQInternalErrorException("Var "+var+" already set in "+binding) ;
+                throw new ARQInternalErrorException("Var " + var + " already set in " + binding);
         }
-        this.binding = binding ;
-        this.var = var ;
-        this.members = members ;
+        this.binding = binding;
+        this.var = var;
+        this.members = members;
     }
 
     @Override
-    protected boolean hasNextBinding()
-    {
-        return members.hasNext() ;
+    protected boolean hasNextBinding() {
+        return members.hasNext();
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        Node n = members.next() ;
-        Binding b = BindingFactory.binding(binding, var, n) ;
-        return b ;
+    protected Binding moveToNextBinding() {
+        Node n = members.next();
+        Binding b = BindingFactory.binding(binding, var, n);
+        return b;
     }
 
     @Override
-    protected void closeIterator()
-    { }
-    
+    protected void closeIterator() {}
+
     @Override
-    protected void requestCancel()
-    { }
+    protected void requestCancel() {}
 }

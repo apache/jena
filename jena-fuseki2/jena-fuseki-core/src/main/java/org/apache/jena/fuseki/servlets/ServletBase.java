@@ -32,6 +32,9 @@ import org.apache.jena.riot.web.HttpNames ;
  * Addition HTTP Servlet operations. 
  */
 public abstract class ServletBase extends HttpServlet {
+
+    private static final long serialVersionUID = -4391231243228221820L;
+
     public static final String METHOD_DELETE    = "DELETE" ;
     public static final String METHOD_HEAD      = "HEAD" ;
     public static final String METHOD_GET       = "GET" ;
@@ -82,6 +85,7 @@ public abstract class ServletBase extends HttpServlet {
         httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
     }
 
+    /** Done via web.xml */ 
     public static boolean CORS_ENABLED = false ;
     
     public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
@@ -93,6 +97,7 @@ public abstract class ServletBase extends HttpServlet {
     public static void setCommonHeaders(HttpServletResponse httpResponse) {
         if ( CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
-        httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
+        if ( Fuseki.outputFusekiServerHeader )
+            httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
 }

@@ -21,17 +21,18 @@ package org.apache.jena.riot.out ;
 import java.net.MalformedURLException ;
 
 import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.RiotChars ;
 
+/** Node formatter for Turtle using single line strings */ 
 public class NodeFormatterTTL extends NodeFormatterNT
 {
     private final NodeToLabel nodeToLabel ;
@@ -51,7 +52,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         this.prefixMap = prefixMap ;
         this.baseIRI = baseIRI ;
         this.iriResolver = 
-            baseIRI != null ? IRIFactory.jenaImplementation().construct(baseIRI) : null ;
+            baseIRI != null ? IRIResolver.iriFactory.construct(baseIRI) : null ;
     }
 
     @Override
@@ -207,37 +208,49 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     @Override
     public void formatLitDT(AWriter w, String lex, String datatypeURI) {
+        boolean b = writeLiteralAbbreviated(w, lex, datatypeURI) ;
+        if ( b ) return ;
+        writeLiteralLongForm(w, lex, datatypeURI) ;
+    }
+    
+    protected void writeLiteralLongForm(AWriter w, String lex, String datatypeURI) {
+        writeLiteralOneLine(w, lex, datatypeURI);
+    }
+
+    protected void writeLiteralOneLine(AWriter w, String lex, String datatypeURI) {
+        super.formatLitDT(w, lex, datatypeURI) ;
+    }
+
+    /** Write in a short form, e.g. integer.
+     * @return True if a short form was output else false. 
+     */
+    protected boolean writeLiteralAbbreviated(AWriter w, String lex, String datatypeURI) {
         if ( dtDecimal.equals(datatypeURI) ) {
             if ( validDecimal(lex) ) {
                 w.print(lex) ;
-                return ;
+                return true ;
             }
         } else if ( dtInteger.equals(datatypeURI) ) {
             if ( validInteger(lex) ) {
                 w.print(lex) ;
-                return ;
+                return true ;
             }
-        }
-        if ( dtDouble.equals(datatypeURI) ) {
+        } else if ( dtDouble.equals(datatypeURI) ) {
             if ( validDouble(lex) ) {
                 w.print(lex) ;
-                return ;
+                return true ;
             }
-        }
-        // Boolean
-        if ( dtBoolean.equals(datatypeURI) ) {
+        } else if ( dtBoolean.equals(datatypeURI) ) {
             // We leave "0" and "1" as-is assumign that if written like that,
             // there was a reason.
             if ( lex.equals("true") || lex.equals("false") ) {
                 w.print(lex) ;
-                return ;
+                return true ;
             }
         }
-
-        // else.
-        super.formatLitDT(w, lex, datatypeURI) ;
+        return false ;
     }
-
+    
     private static boolean validInteger(String lex) {
         int N = lex.length() ;
         if ( N == 0 )

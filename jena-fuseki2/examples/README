@@ -2,5 +2,9 @@ This directory includes some examples - they will need to be adapted to
 local requirements.
 
 service-* ; Examples of service assembler descriptions
+Put in the configuration/ directory.
 
-jetty-fuseki.xml : A Jetty XML configuration file.
+
+fuseki-jetty-https.xml : A Jetty XML configuration file for running
+  This file will require configuration and also installing a certificate
+  Requires Jetty 9.3.3 first used in Fuseki 2.3.1

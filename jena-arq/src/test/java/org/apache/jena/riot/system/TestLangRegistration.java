@@ -35,7 +35,7 @@ public class TestLangRegistration extends BaseTest
     @Parameters(name = "{0} -- {1} {2} {3}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
-        add("NULL",     x, Lang.RDFNULL,    false, false)  ;
+        add("NULL",     x, Lang.RDFNULL,    true, true)  ;
         add("RDFXML",   x, Lang.RDFXML,     true, false) ;
         add("NTRIPLES", x, Lang.NTRIPLES,   true, false) ;
         add("NT",       x, Lang.NT,         true, false) ;

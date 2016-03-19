@@ -24,12 +24,13 @@ import org.apache.jena.query.spatial.assembler.SpatialVocab;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.store.Directory;
 import org.apache.solr.client.solrj.SolrServer;
 
 public class SpatialDatasetFactory
 {
-    static { SpatialQuery.init(); }
+    static { JenaSystem.init(); }
     
     /** Use an assembler file to build a dataset with spatial search capabilities */ 
     public static Dataset create(String assemblerFile)
@@ -42,7 +43,7 @@ public class SpatialDatasetFactory
     {
         DatasetGraph dsg = base.asDatasetGraph() ;
         dsg = create(dsg, textIndex) ;
-        return DatasetFactory.create(dsg) ;
+        return DatasetFactory.wrap(dsg) ;
     }
 
 

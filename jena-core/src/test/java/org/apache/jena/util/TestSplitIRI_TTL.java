@@ -52,7 +52,6 @@ public class TestSplitIRI_TTL {
     
     // Bizarre but legal URIs
     @Test public void split_weird_1() { testPrefixLocalname("abc:def",       "abc:", "def" ) ; }
-    
 
     // Turtle details.
     // "." leading dot is not legal.
@@ -71,18 +70,16 @@ public class TestSplitIRI_TTL {
     
     // Turtle details, including escaping.
     // Test for PrefixLocalnameEsc
-    @Test public void split_ttl_esc_01() { testPrefixLocalnameEsc("http://example/id=89",  "id\\=89"   ) ; }
-    @Test public void split_ttl_esc_02() { testPrefixLocalnameEsc("http://example/a,b",  "a\\,b"   ) ; }
+    @Test public void split_ttl_esc_01() { testPrefixLocalnameEsc("http://example/id=89",  "http://example/", "id\\=89"   ) ; }
+    @Test public void split_ttl_esc_02() { testPrefixLocalnameEsc("http://example/a,b",  "http://example/", "a\\,b"   ) ; }
     // Trailing '.'
-    @Test public void split_ttl_esc_033() { testPrefixLocalnameEsc("http://example/2.3.", "2.3\\."     ) ; }
+    @Test public void split_ttl_esc_03() { testPrefixLocalnameEsc("http://example/2.3.", "http://example/", "2.3\\."     ) ; }
     
     // URNs split differently.
     @Test public void split_urn_01() { testPrefixLocalname("urn:foo:bar",                   "urn:foo:",              "bar"       ) ; }
 
     // Anti-tests
     @Test public void split_51() { testPrefixLocalnameNot("http://example/foo#bar:baz", "http://example/foo#bar", "baz"     ) ; }
-
-    
     
     private void testSplit(String string, int expected) {
         int i = splitpoint(string) ;
@@ -114,36 +111,43 @@ public class TestSplitIRI_TTL {
         String msg = string ;
         if ( i != -1 ) {
             // Better error message.
-            String ns = namespace(string) ;
-            String ln = localname(string) ;
+            String ns = namespaceTTL(string) ;
+            String ln = localnameTTL(string) ;
             msg = "Unexpected split of '"+string+"' into ("+ns+", "+ln+") [index="+i+"]" ;
         }
         Assert.assertEquals(msg, -1, i) ;
     }
     
-    private void testPrefixLocalname(String string, String expectedPrefix, String expectedLocalname) {
-        String ns = namespace(string) ;
-        String ln = localname(string) ;
-
-        if ( expectedPrefix != null )
-            Assert.assertEquals(expectedPrefix, ns);
-        if ( expectedLocalname != null )
-            Assert.assertEquals(expectedLocalname, ln);
-        if (  expectedPrefix != null && expectedLocalname != null ) {
-            String x = ns+ln ;
+    // Don't worry about local name escaping.
+    private void testPrefixLocalname(String string, String expectedNamespace, String expectedLocalname) {
+        String actualNamespace = namespace(string) ;
+        String actualLocalName = localname(string) ;
+        checkPrefixLocalname(string,
+                             expectedNamespace, actualNamespace,
+                             expectedLocalname, actualLocalName) ;
+        if ( expectedNamespace != null && expectedLocalname != null ) {
+            String x = actualNamespace+actualLocalName ;
             Assert.assertEquals(string, x) ;
         }
     }
 
-    private void testPrefixLocalnameEsc(String string, String expectedLocalname) {
-      String ln = localnameTTL(string) ;
-      Assert.assertEquals(expectedLocalname, ln);
-  }
+    // Do worry about local name escaping.
+    private void testPrefixLocalnameEsc(String string, String expectedNamespace, String expectedLocalname) {
+        checkPrefixLocalname(string,
+                             expectedNamespace, namespaceTTL(string),
+                             expectedLocalname, localnameTTL(string)) ;
+    }
+    
+    private void checkPrefixLocalname(String string,
+                                      String expectedNamespace, String actualNamespace, 
+                                      String expectedLocalname, String actualLocalName) {
+        if ( expectedNamespace != null )
+            Assert.assertEquals(expectedNamespace, actualNamespace);
+        if ( expectedLocalname != null )
+            Assert.assertEquals(expectedLocalname, actualLocalName);
+    }
 
     private void testPrefixLocalnameNot(String string, String expectedPrefix, String expectedLocalname) {
-//      Node n = NodeFactory.createURI(string) ;
-//      String ns = n.getNameSpace() ;
-//      String ln = n.getLocalName() ;
         String ns = namespace(string) ;
         String ln = localname(string) ;
 

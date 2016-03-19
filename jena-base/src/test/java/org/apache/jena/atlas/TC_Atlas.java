@@ -21,6 +21,8 @@ package org.apache.jena.atlas;
 import org.apache.jena.atlas.io.TS_IO ;
 import org.apache.jena.atlas.iterator.TS_Iterator ;
 import org.apache.jena.atlas.lib.TS_Lib ;
+import org.apache.jena.atlas.lib.persistent.TS_Persistent;
+import org.apache.jena.atlas.lib.tuple.TS_Tuple ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -28,14 +30,16 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     // Library
       TS_Lib.class
+    , TS_Tuple.class
     , TS_Iterator.class
     , TS_IO.class
+    , TS_Persistent.class
 //    , TS_Event.class
 //    , TS_JSON.class
 //    , TS_Data.class
 //    , TS_Web.class
 //    , TestCSVParser.class
-}) 
+})
 
 public class TC_Atlas
 {}

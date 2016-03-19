@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.core;
 
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
-
-
 
 /** A DatasetGraph base class for triples+quads storage.     
  */
@@ -62,4 +62,21 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     protected abstract void addToNamedGraph(Node g, Node s, Node p, Node o) ;
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
     protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
+    
+    // Default implementations - copy based.
+    
+    @Override
+    public void setDefaultGraph(Graph graph) { 
+        GraphUtil.addInto(getDefaultGraph(), graph) ;
+    }
+    
+    @Override
+    public void addGraph(Node graphName, Graph graph) {
+        GraphUtil.addInto(getGraph(graphName), graph) ;
+    }
+    
+    @Override
+    public void removeGraph(Node graphName) {
+        deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
+    }
 }
