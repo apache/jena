@@ -289,21 +289,21 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private static Query parseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
-        QueryParser queryParser = new QueryParser(VER, primaryField, analyzer) ;
+    private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
         queryParser.setAllowLeadingWildcard(true) ;
         Query query = queryParser.parse(queryString) ;
         return query ;
     }
     
-    protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
-        return parseQuery(queryString, primaryField, analyzer);
+    protected Query preParseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        return parseQuery(queryString, analyzer);
     }
 
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -351,7 +351,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<TextHit> query$(IndexReader indexReader, Node property, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
