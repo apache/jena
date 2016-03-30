@@ -44,7 +44,7 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
 
-    private static String makeSpec(String analyzer) {
+    private static String makeSpec(String analyzer, String parser) {
         return StrUtils.strjoinNL(
                     "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
                     "prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> ",
@@ -73,6 +73,7 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
                     ":indexLucene",
                     "    a text:TextIndexLucene ;",
                     "    text:directory \"mem\" ;",
+                    "    text:queryParser " + parser + ";",
                     "    text:entityMap :entMap ;",
                     "    .",
                     "",
@@ -90,8 +91,8 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
                     );
     }      
     
-    public void init(String analyzer) {
-        Reader reader = new StringReader(makeSpec(analyzer));
+    public void init(String analyzer, String parser) {
+        Reader reader = new StringReader(makeSpec(analyzer, parser));
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
         TextAssembler.init();            
@@ -99,6 +100,9 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
         dataset = (Dataset) Assembler.general.open(root);
     }
     
+    public void init(String analyzer) {
+        init(analyzer, "text:QueryParser");
+    }   
     
     @Before
     public void before() {

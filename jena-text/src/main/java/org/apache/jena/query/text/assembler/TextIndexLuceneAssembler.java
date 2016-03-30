@@ -94,6 +94,18 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 Resource analyzerResource = (Resource) qaNode;
                 queryAnalyzer = (Analyzer) a.open(analyzerResource);
             }
+            
+            String queryParser = null;
+            Statement queryParserStatement = root.getProperty(pQueryParser);
+            if (null != queryParserStatement) {
+                RDFNode qpNode = queryParserStatement.getObject();
+                if (! qpNode.isResource()) {
+                    throw new TextIndexException("Text query parser property is not a resource : " + qpNode);
+                }
+                Resource parserResource = (Resource) qpNode;
+                queryParser = parserResource.getLocalName();
+                System.out.println("query parser: " + queryParser);
+            }
 
             boolean isMultilingualSupport = false;
             Statement mlSupportStatement = root.getProperty(pMultilingualSupport);
@@ -120,6 +132,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             TextIndexConfig config = new TextIndexConfig(docDef);
             config.setAnalyzer(analyzer);
             config.setQueryAnalyzer(queryAnalyzer);
+            config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
 

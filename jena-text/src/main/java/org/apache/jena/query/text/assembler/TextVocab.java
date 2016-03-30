@@ -42,6 +42,7 @@ public class TextVocab
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
     public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
+    public static final Property pQueryParser       = Vocab.property(NS, "queryParser") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
     public static final Property pTokenizer         = Vocab.property(NS, "tokenizer") ;
     public static final Property pFilters           = Vocab.property(NS, "filters") ;
