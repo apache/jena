@@ -104,7 +104,6 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 }
                 Resource parserResource = (Resource) qpNode;
                 queryParser = parserResource.getLocalName();
-                System.out.println("query parser: " + queryParser);
             }
 
             boolean isMultilingualSupport = false;
