@@ -91,6 +91,8 @@ public class TextIndexLucene implements TextIndex {
         analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
         if ( docDef.getGraphField() != null )
             analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
+        if ( docDef.getLangField() != null )
+            analyzerPerField.put(docDef.getLangField(), new KeywordAnalyzer()) ;
 
         for (String field : docDef.fields()) {
             Analyzer _analyzer = docDef.getAnalyzer(field);
