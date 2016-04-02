@@ -74,7 +74,7 @@ import org.apache.jena.shared.* ;
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
-        RDFReaderF, RDFWriterF, PrefixMapping, Lock
+        RDFReaderF, RDFWriterF, PrefixMapping, Lock, AutoCloseable
 {
 
 
@@ -953,6 +953,7 @@ public interface Model
 	 *     some do, so in general its best to call it when done with the object,
 	 *     rather than leave it to the finalizer.</p>
 	 */
+        @Override
 	public void close();
 
 //    /** Get the model lock for this model.
