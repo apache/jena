@@ -47,14 +47,14 @@
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.12</ver.slf4j>
+    <ver.slf4j>1.7.20</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.7.0</ver.jsonldjava>
+    <ver.jsonldjava>0.8.2</ver.jsonldjava>
     <!-- Used by jena-osgi and must be in-step with jsonldjava -->
-    <ver.jackson>2.3.3</ver.jackson>
+    <ver.jackson>2.6.3</ver.jackson>
 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.2.6</ver.httpclient>
