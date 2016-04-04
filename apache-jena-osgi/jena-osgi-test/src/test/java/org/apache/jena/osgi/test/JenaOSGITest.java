@@ -20,10 +20,10 @@ package org.apache.jena.osgi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -31,22 +31,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.inject.Inject;
-
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.CoreOptions;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
-
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.ontology.OntModel;
@@ -61,12 +47,19 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
  * Brief tests of the Jena modules covered by jena-osgi
@@ -76,35 +69,40 @@ import org.apache.jena.tdb.TDBFactory;
 @ExamReactorStrategy(PerClass.class)
 public class JenaOSGITest {
 
-	@Inject
-	private BundleContext bc;
-
 	@Configuration
 	public Option[] config() {
+
 		return options(
-        // bundle with org.slf4j implementation
-				linkBundle("org.ops4j.pax.logging.pax-logging-log4j2"),
-				linkBundle("org.ops4j.pax.logging.pax-logging-api"),
-
-        // jena-osgi
-				mavenBundle("org.apache.jena", "jena-osgi", 
-          System.getProperty("jena-osgi.version", "LATEST")),
-
-        // dependencies of jena-osgi
-				linkBundle("org.apache.httpcomponents.httpclient"),
-				linkBundle("org.apache.httpcomponents.httpcore"),
-				linkBundle("com.github.jsonld-java"),
-				linkBundle("org.apache.commons.csv"),
-				linkBundle("org.apache.thrift"),
-				linkBundle("jcl.over.slf4j"),
+				// OSGi container configuration
+				karafDistributionConfiguration().frameworkUrl(
+						maven().groupId("org.apache.karaf")
+								.artifactId("apache-karaf").type("zip")
+								.version("3.0.6")).useDeployFolder(false),
 				
-				linkBundle("com.fasterxml.jackson.core.jackson-core"),
-				linkBundle("com.fasterxml.jackson.core.jackson-databind"),
-				linkBundle("com.fasterxml.jackson.core.jackson-annotations"),
-				linkBundle("org.apache.commons.lang3"),
-				
-				junitBundles()
-				);
+								mavenBundle("org.apache.aries.spifly",
+						"org.apache.aries.spifly.dynamic.bundle", "1.0.8"),
+
+				mavenBundle("org.apache.jena", "jena-osgi", "3.1.0-SNAPSHOT"),
+				mavenBundle("com.github.andrewoma.dexx", "collection", "0.4.0"),
+				mavenBundle("com.github.jsonld-java", "jsonld-java", "0.8.0"),
+				mavenBundle("org.apache.httpcomponents", "httpcore-osgi",
+						"4.4.4"),
+				mavenBundle("org.apache.httpcomponents", "httpclient-osgi",
+						"4.5.1"),
+				mavenBundle("commons-cli", "commons-cli", "1.3.1"),
+				mavenBundle("org.apache.commons", "commons-csv", "1.2"),
+				mavenBundle("org.apache.commons", "commons-lang3", "3.4"),
+				mavenBundle("org.apache.thrift", "libthrift", "0.9.3"),
+
+				mavenBundle("com.fasterxml.jackson.core", "jackson-core",
+						"2.6.3"),
+				mavenBundle("com.fasterxml.jackson.core", "jackson-databind",
+						"2.6.3"),
+				mavenBundle("com.fasterxml.jackson.core",
+						"jackson-annotations", "2.6.3")
+
+		);
+
 	}
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
@@ -115,19 +113,13 @@ public class JenaOSGITest {
 	@Test
 	public void testJenaCore() throws Exception {
 		Model model = makeModel();
-
-		// Does Model's Class.forName() still work?
-		model.setWriterClassName("someWriter",
-				"com.hp.hpl.jena.rdf.model.impl.NTripleWriter");
 		Writer writer = new StringWriter();
-		model.write(writer, "someWriter");
-		// yes, but only as long as that classname is accessible within
-		// jena-osgi bundle
+		model.write(writer, "N-Triples");		
+
 		assertEquals(
 				"<http://example.com/alice> <http://xmlns.com/foaf/0.1/knows> <http://example.com/bob> .",
 				writer.toString().trim());
-
-		// Let's also test com.hp.hpl.jena.ontology
+		
 		OntModel ontModel = ModelFactory
 				.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF);
 		ObjectProperty knowsObjProp = ontModel.createObjectProperty(knows
@@ -140,15 +132,6 @@ public class JenaOSGITest {
 		Individual bobIndividiual = ontModel.createIndividual(bob);
 		ontModel.add(aliceIndividual, hasFriend, bobIndividiual);
 		assertTrue(aliceIndividual.hasProperty(knowsObjProp, bobIndividiual));
-	}
-
-	private Model makeModel() {
-		Model model = ModelFactory.createDefaultModel();
-		alice = model.createResource("http://example.com/alice");
-		knows = model.createProperty("http://xmlns.com/foaf/0.1/knows");
-		bob = model.createResource("http://example.com/bob");
-		model.add(model.createStatement(alice, knows, bob));
-		return model;
 	}
 
 	@Test
@@ -209,11 +192,12 @@ public class JenaOSGITest {
 		dataset.end();
 	}
 
-	/*
-	@Test
-	public void createOntModel()
-	{ 
-	    final OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+	private Model makeModel() {
+		Model model = ModelFactory.createDefaultModel();
+		alice = model.createResource("http://example.com/alice");
+		knows = model.createProperty("http://xmlns.com/foaf/0.1/knows");
+		bob = model.createResource("http://example.com/bob");
+		model.add(model.createStatement(alice, knows, bob));
+		return model;
 	}
-    */
 }
