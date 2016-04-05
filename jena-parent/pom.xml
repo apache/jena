@@ -195,8 +195,8 @@
       <!-- supports persistent data structures -->
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
-        <artifactId>dexx-collections</artifactId>
-        <version>0.2</version>
+        <artifactId>collection</artifactId>
+        <version>0.6</version>
       </dependency>
       
       <dependency>
