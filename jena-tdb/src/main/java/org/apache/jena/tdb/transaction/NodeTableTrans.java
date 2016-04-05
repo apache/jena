@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.transaction;
 
 import static org.apache.jena.atlas.logging.FmtLog.warn ;
-import static org.apache.jena.atlas.logging.Log.warn ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -312,7 +311,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         long expected = base.allocOffset().getId() ;
         long len = journalObjFile.length() ;
         if ( expected != allocOffset )
-            warn(log, "Inconsistency: base.allocOffset() = "+expected+" : allocOffset = "+allocOffset) ;
+            warn(log, "Inconsistency: base.allocOffset() = %d : allocOffset = %d", expected, allocOffset) ;
         
         long newbase = -1 ; 
         append() ;      // Calls all() which does a buffer flish.

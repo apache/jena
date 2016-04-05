@@ -155,7 +155,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     //public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
 
-    public GraphTDB getEffectiveDefaultGraph()             { return effectiveDefaultGraph ; }
+    public GraphTDB getEffectiveDefaultGraph()              { return effectiveDefaultGraph ; }
 
     public StorageConfig getConfig()                        { return config ; }
     
