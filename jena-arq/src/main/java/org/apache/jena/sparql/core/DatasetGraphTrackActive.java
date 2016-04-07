@@ -73,6 +73,6 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
         _close();
     }
 
-    /** close() has been called. Subcklasses can make this a no-op. */ 
+    /** close() has been called. Subclasses can make this a no-op. */ 
     protected abstract void  _close() ;
 }
