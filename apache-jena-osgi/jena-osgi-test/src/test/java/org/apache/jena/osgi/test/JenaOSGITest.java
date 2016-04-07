@@ -83,23 +83,17 @@ public class JenaOSGITest {
 						"org.apache.aries.spifly.dynamic.bundle", "1.0.8"),
 
 				mavenBundle("org.apache.jena", "jena-osgi", "3.1.0-SNAPSHOT"),
-				mavenBundle("com.github.andrewoma.dexx", "collection", "0.4.0"),
+				mavenBundle("com.github.andrewoma.dexx", "collection", "0.6.0-SNAPSHOT"),
 				mavenBundle("com.github.jsonld-java", "jsonld-java", "0.8.0"),
-				mavenBundle("org.apache.httpcomponents", "httpcore-osgi",
-						"4.4.4"),
-				mavenBundle("org.apache.httpcomponents", "httpclient-osgi",
-						"4.5.1"),
+				mavenBundle("org.apache.httpcomponents", "httpcore-osgi","4.4.4"),
+				mavenBundle("org.apache.httpcomponents", "httpclient-osgi","4.5.1"),
 				mavenBundle("commons-cli", "commons-cli", "1.3.1"),
 				mavenBundle("org.apache.commons", "commons-csv", "1.2"),
 				mavenBundle("org.apache.commons", "commons-lang3", "3.4"),
 				mavenBundle("org.apache.thrift", "libthrift", "0.9.3"),
-
-				mavenBundle("com.fasterxml.jackson.core", "jackson-core",
-						"2.6.3"),
-				mavenBundle("com.fasterxml.jackson.core", "jackson-databind",
-						"2.6.3"),
-				mavenBundle("com.fasterxml.jackson.core",
-						"jackson-annotations", "2.6.3")
+				mavenBundle("com.fasterxml.jackson.core", "jackson-core","2.6.3"),
+				mavenBundle("com.fasterxml.jackson.core", "jackson-databind","2.6.3"),
+				mavenBundle("com.fasterxml.jackson.core","jackson-annotations", "2.6.3")
 
 		);
 
