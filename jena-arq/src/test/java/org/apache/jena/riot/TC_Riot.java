@@ -38,7 +38,7 @@ import org.junit.runners.Suite ;
     , TS_Out.class
     , TS_Lang.class
     , TS_LangSuite.class
-    , TS_ReaderRIOT.class
+    , TS_RiotGeneral.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
     , TS_Process.class

@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.stream.TestStreamManager ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -28,13 +27,13 @@ import org.junit.runners.Suite.SuiteClasses ;
 { 
     TestLangRIOT.class
     , TestSyntaxDetermination.class
-    , TestStreamManager.class 
     , TestJenaReaderRIOT.class
     , TestReadData.class
     , TestRiotReader.class
     , TestParserRegistry.class
+    , TestSysRIOT.class
 })
 
-public class TS_ReaderRIOT
+public class TS_RiotGeneral
 {}
 
