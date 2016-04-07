@@ -79,8 +79,7 @@ public class JenaOSGITest {
 								.artifactId("apache-karaf").type("zip")
 								.version("3.0.6")).useDeployFolder(false),
 				
-								mavenBundle("org.apache.aries.spifly",
-						"org.apache.aries.spifly.dynamic.bundle", "1.0.8"),
+				//mavenBundle("org.apache.aries.spifly","org.apache.aries.spifly.dynamic.bundle", "1.0.8"),
 
 				mavenBundle("org.apache.jena", "jena-osgi", "3.1.0-SNAPSHOT"),
 				mavenBundle("com.github.andrewoma.dexx", "collection", "0.6.0-SNAPSHOT"),
