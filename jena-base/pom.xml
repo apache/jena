@@ -53,7 +53,7 @@
     <!-- supports persistent data structures -->
     <dependency>
       <groupId>com.github.andrewoma.dexx</groupId>
-      <artifactId>dexx-collections</artifactId>
+      <artifactId>collection</artifactId>
     </dependency>
     
     <dependency>

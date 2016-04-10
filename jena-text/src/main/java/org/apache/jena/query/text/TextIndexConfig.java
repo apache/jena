@@ -25,6 +25,7 @@ public class TextIndexConfig {
     EntityDefinition entDef;
     Analyzer analyzer;
     Analyzer queryAnalyzer;
+    String queryParser;
     boolean multilingualSupport;
     boolean valueStored;
 
@@ -50,6 +51,14 @@ public class TextIndexConfig {
 
     public void setQueryAnalyzer(Analyzer queryAnalyzer) {
         this.queryAnalyzer = queryAnalyzer;
+    }
+    
+    public String getQueryParser() {
+        return ((queryParser != null) ? queryParser : "QueryParser");
+    }
+    
+    public void setQueryParser(String queryParser) {
+        this.queryParser = queryParser;
     }
 
     public boolean isMultilingualSupport() {

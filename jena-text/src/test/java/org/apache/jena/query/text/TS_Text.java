@@ -51,6 +51,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestLuceneWithMultipleThreads.class
     , TestDatasetWithLocalizedAnalyzer.class
     , TestDatasetWithConfigurableAnalyzer.class
+    , TestDatasetWithAnalyzingQueryParser.class
 })
 
 public class TS_Text

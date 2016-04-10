@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,23 +18,25 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.stream.TestStreamManager ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-@RunWith(Suite.class)
-@SuiteClasses(
-{ 
-    TestLangRIOT.class
-    , TestSyntaxDetermination.class
-    , TestStreamManager.class 
-    , TestJenaReaderRIOT.class
-    , TestReadData.class
-    , TestRiotReader.class
-    , TestParserRegistry.class
-})
+public class TestSysRIOT {
+    @Test public void chooseBaseIRI_1() {
+        testChooseBaseIRI("http://example/foo/bar", "http://example/foo/bar") ;
+    }
 
-public class TS_ReaderRIOT
-{}
+    @Test public void chooseBaseIRI_2() {
+        testChooseBaseIRI("-", "http://localhost/stdin/") ;
+    }
 
+    @Test public void chooseBaseIRI_10() {
+        String x = SysRIOT.chooseBaseIRI(null, "foo") ;
+        Assert.assertTrue(x.startsWith("file:///"));
+    }
+
+    private void testChooseBaseIRI(String input, String expected) {
+        String x = SysRIOT.chooseBaseIRI(null, input) ;
+        Assert.assertEquals(expected, x) ;
+    }
+}

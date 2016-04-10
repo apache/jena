@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,37 +18,22 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
-import org.apache.jena.riot.lang.TS_Lang ;
-import org.apache.jena.riot.out.TS_Out ;
-import org.apache.jena.riot.process.TS_Process ;
-import org.apache.jena.riot.resultset.TS_ResultSetRIOT ;
-import org.apache.jena.riot.stream.TS_IO2 ;
-import org.apache.jena.riot.system.TS_RiotSystem ;
-import org.apache.jena.riot.thrift.TS_RDFThrift ;
-import org.apache.jena.riot.tokens.TS_Tokens ;
-import org.apache.jena.riot.web.TS_RiotWeb ;
-import org.apache.jena.riot.writer.TS_RiotWriter ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TS_Tokens.class
-    , TS_Out.class
-    , TS_Lang.class
-    , TS_LangSuite.class
-    , TS_RiotGeneral.class
-    , TS_IO2.class
-    , TS_RIOTAdapters.class
-    , TS_Process.class
-    , TS_RiotWriter.class
-    , TS_RiotSystem.class
-    , TS_RiotWeb.class
-    , TS_ResultSetRIOT.class
-    , TS_RDFThrift.class
+@SuiteClasses(
+{ 
+    TestLangRIOT.class
+    , TestSyntaxDetermination.class
+    , TestJenaReaderRIOT.class
+    , TestReadData.class
+    , TestRiotReader.class
+    , TestParserRegistry.class
+    , TestSysRIOT.class
 })
 
+public class TS_RiotGeneral
+{}
 
-public class TC_Riot
-{ }

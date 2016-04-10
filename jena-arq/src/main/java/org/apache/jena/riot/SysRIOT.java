@@ -102,11 +102,14 @@ public class SysRIOT
 
     /** Choose base IRI, from a given one and a filename.
      *  Prefer the given base ; turn any filename into an IRI.   
+     *  String will need to be resolved as well.
      */
-    public static String chooseBaseIRI(String baseIRI, String filename)
+    public static String chooseBaseIRI(String baseIRI, String fileOrIri)
     {
         if ( baseIRI != null )
             return baseIRI ;
-        return filename2baseIRI(filename) ;
+        if ( fileOrIri == null || fileOrIri.equals("-") )
+            return "http://localhost/stdin/" ;
+        return chooseBaseIRI(fileOrIri) ;
     }
 }
