@@ -82,11 +82,12 @@ public class TestFunctions
             test("afn:sprintf('%1$tm %1$te,%1$tY', "+nodeStr+")",NodeValue.makeString("10 14,2005")) ;
     }
     @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
-    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to 11.22")) ; }
-    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString("1.235")) ; }
+    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to "+String.format("%.2f",11.22))) ; }
+    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString(String.format("%.3f",1.23456789))) ; }
     @Test public void exprSprintf_09()      { test("afn:sprintf('this number is equal to %o in the octal system', '11'^^xsd:integer)",NodeValue.makeString("this number is equal to 13 in the octal system")) ; }
-    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to 1.23457")) ; }
-
+    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))) ; }
+    @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")) ; }
+    @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")) ; }
 
     @Test public void exprStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     @Test public void exprStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }

@@ -33,6 +33,7 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.util.ArrayList;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
@@ -353,42 +354,46 @@ public class XSDFuncOp
     }
 
     // expecting nvString = format | nvStart = value (int,float, string,....)
-    public static NodeValue javaSprintf(NodeValue nvFormat, NodeValue nvValue) {
+    public static NodeValue javaSprintf(NodeValue nvFormat, List<NodeValue> valuesToPrint) {
         try {
             String formatForOutput = nvFormat.getString() ;
-            ValueSpaceClassification vlSpClass = nvValue.getValueSpace();
-            switch(vlSpClass){
-                case VSPACE_NUM:
-                    NumericType type = classifyNumeric("javaSprintf",nvValue);
-                    switch(type) {
-                        case OP_DECIMAL:
-                            BigDecimal decimalValue = nvValue.getDecimal();
-                            return NodeValue.makeString(String.format(formatForOutput,decimalValue)) ;
-                        case OP_INTEGER:
-                            BigInteger integerValue = nvValue.getInteger();
-                            return NodeValue.makeString(String.format(formatForOutput,integerValue)) ;
-                        case OP_DOUBLE:
-                            Double doubValue = nvValue.getDouble();
-                            return NodeValue.makeString(String.format(formatForOutput,doubValue)) ;
-                        case OP_FLOAT:
-                            Float floatValue = nvValue.getFloat();
-                            return NodeValue.makeString(String.format(formatForOutput,floatValue)) ;
-                    }
-                case VSPACE_DATE:
-                case VSPACE_DATETIME:
-                    XMLGregorianCalendar gregorianCalendarValue = nvValue.getDateTime();
-                    return NodeValue.makeString(String.format(formatForOutput,gregorianCalendarValue.toGregorianCalendar().getTime())) ;
-                case VSPACE_STRING:
-                    String strValue = nvValue.getString();
-                    return NodeValue.makeString(String.format(formatForOutput,strValue));
-                case VSPACE_BOOLEAN:
-                    Boolean boolValue = nvValue.getBoolean();
-                    return NodeValue.makeString(String.format(formatForOutput,boolValue));
-                case VSPACE_LANG:
-                    String langValue = nvValue.getLang();
-                    return NodeValue.makeString(String.format(formatForOutput,langValue));
-                default:
-/*              These cases for the moment are not supported. Maybe we could treat them all like strings.
+            List<Object> objVals = new ArrayList<>();
+            for(NodeValue nvValue:valuesToPrint) {
+                ValueSpaceClassification vlSpClass = nvValue.getValueSpace();
+                switch (vlSpClass) {
+                    case VSPACE_NUM:
+                        NumericType type = classifyNumeric("javaSprintf", nvValue);
+                        switch (type) {
+                            case OP_DECIMAL:
+                                objVals.add(nvValue.getDecimal());
+                                break;
+                            case OP_INTEGER:
+                                objVals.add(nvValue.getInteger());
+                                break;
+                            case OP_DOUBLE:
+                                objVals.add(nvValue.getDouble());
+                                break;
+                            case OP_FLOAT:
+                                objVals.add(nvValue.getFloat());
+                                break;
+                        }
+                        break;
+                    case VSPACE_DATE:
+                    case VSPACE_DATETIME:
+                        XMLGregorianCalendar gregorianCalendarValue = nvValue.getDateTime();
+                        objVals.add(gregorianCalendarValue.toGregorianCalendar().getTime());
+                        break;
+                    case VSPACE_STRING:
+                        objVals.add(nvValue.getString());
+                        break;
+                    case VSPACE_BOOLEAN:
+                        objVals.add(nvValue.getBoolean());
+                        break;
+                    case VSPACE_LANG:
+                        objVals.add(nvValue.getLang());
+                        break;
+                    default:
+/*              These cases for the moment are not supported. We treat them all like strings.
                 case VSPACE_NODE:
                 case VSPACE_TIME:
                 case VSPACE_G_DAY:
@@ -399,8 +404,13 @@ public class XSDFuncOp
                 case VSPACE_DURATION:
                 case VSPACE_UNKNOWN:
 */
-                    throw new ARQInternalErrorException("Unrecognized sprintf type, value: "+nvValue);
+                        objVals.add(NodeFunctions.str(nvValue));
+                        break;
+                }
             }
+
+            return NodeValue.makeString(String.format(formatForOutput,objVals.toArray()));
+
         } catch (IndexOutOfBoundsException ex) {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
         }

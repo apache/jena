@@ -8,6 +8,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** sprintf(string,string) - Java style */
@@ -18,20 +19,22 @@ public class sprintf extends FunctionBase
 
     @Override
     public void checkBuild(String uri, ExprList args) {
-        if ( args.size() != 2)
-            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes two or three arguments") ;
+        if(args.size() < 2)
+            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes at least two arguments") ;
     }
 
     @Override
     public NodeValue exec(List<NodeValue> args) {
-        if ( args.size() != 2 )
+        if ( args.size() < 2 )
             throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: "+
-                    args.size()+" : [wanted 2]") ;
+                    args.size()+" : [wanted at least 2]") ;
 
         NodeValue v1 = args.get(0) ;
-        NodeValue v2 = args.get(1) ;
+        List<NodeValue> allArgs = new ArrayList<NodeValue>();
+        for(int i = 1;i < args.size();i++)
+            allArgs.add(args.get(i));
 
-        return XSDFuncOp.javaSprintf(v1, v2) ;
+        return XSDFuncOp.javaSprintf(v1, allArgs) ;
     }
 
 }
