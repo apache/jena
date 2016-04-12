@@ -135,14 +135,14 @@ public interface TransactionalComponent
     public void abort(Transaction transaction) ;
 
     /** Finalization - the coordinator will not mention the transaction again
-     *  although recovery after a crash may do.
+     *  although recovery after a crash may do so.
      */
     public void complete(Transaction transaction) ;
     
     // ---- End of operations
     
     /** Detach this component from the transaction of the current thread
-     * and return some internal state taht can be used in a future call of 
+     * and return some internal state that can be used in a future call of 
      * {@link #attach(SysTransState)}
      * <p>
      * After this call, the component is not in a transaction but the
@@ -151,7 +151,7 @@ public interface TransactionalComponent
      * detached transaction.
      * <p>
      * Returns {@code null} if the current thread not in a transaction.
-     * The component may return null to idnciate it has no state. 
+     * The component may return null to indicate it has no state. 
      * The return system state should be used in a call to {@link #attach(SysTransState)}
      * and the transaction ended in the usual way. 
      *   
