@@ -21,8 +21,8 @@ package org.apache.jena.osgi.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 
 import java.io.OutputStream;
@@ -71,30 +71,24 @@ public class JenaOSGITest {
 
 	@Configuration
 	public Option[] config() {
-
 		return options(
-				// OSGi container configuration
+		// OSGi container configuration
 				karafDistributionConfiguration().frameworkUrl(
 						maven().groupId("org.apache.karaf")
 								.artifactId("apache-karaf").type("zip")
+								/*
+								 * Version 4.0.4 does not work at the moment:
+								 * Error: Could not find or load main class
+								 * org.apache.karaf.main.Main (layout of the
+								 * archive/file naming changed).
+								 */
 								.version("3.0.6")).useDeployFolder(false),
-				
-				//mavenBundle("org.apache.aries.spifly","org.apache.aries.spifly.dynamic.bundle", "1.0.8"),
-
-				mavenBundle("org.apache.jena", "jena-osgi", "3.1.0-SNAPSHOT"),
-				mavenBundle("com.github.andrewoma.dexx", "collection", "0.6.0-SNAPSHOT"),
-				mavenBundle("com.github.jsonld-java", "jsonld-java", "0.8.0"),
-				mavenBundle("org.apache.httpcomponents", "httpcore-osgi","4.4.4"),
-				mavenBundle("org.apache.httpcomponents", "httpclient-osgi","4.5.1"),
-				mavenBundle("commons-cli", "commons-cli", "1.3.1"),
-				mavenBundle("org.apache.commons", "commons-csv", "1.2"),
-				mavenBundle("org.apache.commons", "commons-lang3", "3.4"),
-				mavenBundle("org.apache.thrift", "libthrift", "0.9.3"),
-				mavenBundle("com.fasterxml.jackson.core", "jackson-core","2.6.3"),
-				mavenBundle("com.fasterxml.jackson.core", "jackson-databind","2.6.3"),
-				mavenBundle("com.fasterxml.jackson.core","jackson-annotations", "2.6.3")
-
-		);
+				// Install core Jena feature
+				features(
+						maven().groupId("org.apache.jena")
+								.artifactId("jena-osgi-features").type("xml")
+								.classifier("features")
+								.version("3.1.0-SNAPSHOT"), "jena"));
 
 	}
 
@@ -107,12 +101,12 @@ public class JenaOSGITest {
 	public void testJenaCore() throws Exception {
 		Model model = makeModel();
 		Writer writer = new StringWriter();
-		model.write(writer, "N-Triples");		
+		model.write(writer, "N-Triples");
 
 		assertEquals(
 				"<http://example.com/alice> <http://xmlns.com/foaf/0.1/knows> <http://example.com/bob> .",
 				writer.toString().trim());
-		
+
 		OntModel ontModel = ModelFactory
 				.createOntologyModel(OntModelSpec.OWL_DL_MEM_RULE_INF);
 		ObjectProperty knowsObjProp = ontModel.createObjectProperty(knows
@@ -132,15 +126,13 @@ public class JenaOSGITest {
 		Dataset dataset = DatasetFactory.createMem();
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
 
+		// We test JSON-LD as it involves multiple other bundles
 		Path path = Files.createTempFile("example", ".jsonld");
-		// System.out.println(path);
 		path.toFile().deleteOnExit();
 
 		try (OutputStream output = Files.newOutputStream(path)) {
 			RDFDataMgr.write(output, dataset, Lang.JSONLD);
 		}
-		// We test JSON-LD as it involves multiple other bundles
-
 		Dataset dataset2 = RDFDataMgr.loadDataset(path.toUri().toString());
 		assertTrue(dataset2.containsNamedModel(EXAMPLE_COM_GRAPH));
 
