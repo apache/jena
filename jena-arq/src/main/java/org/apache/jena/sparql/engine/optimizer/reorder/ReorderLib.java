@@ -67,10 +67,19 @@ public class ReorderLib
         return _identity ;
     }
 
+    /**
+     * Return a ReorderTransformation that performance some basic reordering
+     * based on most grounded triples first, but otherwise leaves things
+     * in query-written order. 
+     */
     public static ReorderTransformation fixed() {
         return new ReorderFixed() ;
     }
 
+    /**
+     * Return a ReorderTransformation that uses statistics.
+     * <a href="https://jena.apache.org/documentation/tdb/optimizer.html">As used in TDB</a>.
+     */
     public static ReorderTransformation weighted(String filename) {
         StatsMatcher stats = new StatsMatcher(filename) ;
         return new ReorderWeighted(stats) ;
