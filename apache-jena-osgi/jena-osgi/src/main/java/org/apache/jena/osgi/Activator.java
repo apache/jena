@@ -18,8 +18,6 @@
 
 package org.apache.jena.osgi;
 
-import org.apache.jena.system.JenaSubsystemRegistry;
-import org.apache.jena.system.JenaSubsystemRegistryBasic;
 import org.apache.jena.system.JenaSystem;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -27,21 +25,13 @@ import org.osgi.framework.BundleContext;
 // Sample bundle activator explicitly calling the static Jena initialization.
 public class Activator implements BundleActivator {
 
-	public void start(BundleContext context) throws Exception {
-
-		JenaSubsystemRegistry r = new JenaSubsystemRegistryBasic() {
-			@Override
-			public void load() {
-				super.load();
-			}
-		};
-		JenaSystem.setSubsystemRegistry(r);
-		JenaSystem.DEBUG_INIT = true;
+	@Override
+    public void start(BundleContext context) throws Exception {
 		JenaSystem.init();
-		System.out.println("Jena-OSGi bundle configuration done!");
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	@Override
+    public void stop(BundleContext context) throws Exception {
 
 	}
 }
