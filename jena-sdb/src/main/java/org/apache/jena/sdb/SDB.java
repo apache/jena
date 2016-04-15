@@ -95,8 +95,6 @@ public class SDB
             initialized = true ;
             JenaSystem.logLifecycle("SDB.init - start") ;
 
-            // Better not to break up BGPs too much.
-            ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
             MappingRegistry.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
 
             // Default is 1000 4Kpages.

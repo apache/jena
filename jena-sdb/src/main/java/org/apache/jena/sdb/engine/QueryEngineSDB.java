@@ -80,6 +80,9 @@ public class QueryEngineSDB extends QueryEngineBase
     {
         if ( context == null )
             context = ARQ.getContext().copy() ;
+        // Better (?) not to break BGPs up
+        context.set(ARQ.optFilterPlacementBGP, false) ;
+
         // See "DynamicDatasets" -- this could be enabled.
         if ( query != null )
         {
