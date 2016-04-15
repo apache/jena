@@ -26,7 +26,7 @@
     <artifactId>apache-jena-osgi</artifactId>
     <version>3.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>jena-osgi</artifactId>
+  <artifactId>jena-osgi</artifactId>  
   <packaging>bundle</packaging>
   <name>Apache Jena - OSGi bundle</name>
   <description>
@@ -219,6 +219,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>5.0.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -230,11 +235,19 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>
+            <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>            
+            <Embed-Dependency>artifactId=jena*;inline=true</Embed-Dependency>
+			<!--            
             <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
+            -->
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+            <!-- Do not embed but import Xerces classes via OSGi -->			
+            <Import-Package>org.osgi.framework.*,org.apache.xml.*,org.apache.xerces.*;version="2.11.0",!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+			<!--
+            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+			-->
             <Private-Package>org.apache.jena.ext.*</Private-Package>
+            <Bundle-Activator>org.apache.jena.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
