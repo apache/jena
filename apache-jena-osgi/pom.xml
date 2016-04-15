@@ -46,7 +46,11 @@
   <modules>
     <module>jena-osgi</module>
     <module>jena-osgi-features</module>
-    <module>jena-osgi-test</module>
+    <!--
+        See JENA-913 - tests do not work with "mvn clean verify"
+        only with an "install"
+        <module>jena-osgi-test</module>
+    -->
   </modules>
   
 </project>
