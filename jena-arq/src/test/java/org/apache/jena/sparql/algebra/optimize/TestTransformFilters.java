@@ -74,12 +74,13 @@ public class TestTransformFilters extends AbstractTestTransform
                (String[])null) ;
     }
 
-    @Test public void equality04() {
-        // Eliminate unused
-        testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
-               t_equality,
-               "(table empty)") ;
-    }
+//    // JENA-1184 workaround - this optimization is current not active. 
+//    @Test public void equality04() {
+//        // Eliminate unused
+//        testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
+//               t_equality,
+//               "(table empty)") ;
+//    }
 
     @Test public void equality05() {
         // Can't optimize if filter does not cover vars in LHS 
