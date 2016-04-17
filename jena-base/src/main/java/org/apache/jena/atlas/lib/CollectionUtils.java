@@ -22,8 +22,13 @@ import java.util.Collection ;
 
 public class CollectionUtils
 {   
-    static public <T> boolean disjoint(Collection<T> c1, Collection<T> c2)
+    public static <T> boolean disjoint(Collection<T> c1, Collection<T> c2)
     {
 		return c1.stream().noneMatch(c2::contains);
+    }
+    
+    /** Test for same elements, regarless of carinality */ 
+    public static <T> boolean sameElts(Collection<T> left, Collection<T> right) {
+        return right.containsAll(left) && left.containsAll(right) ;
     }
 }
