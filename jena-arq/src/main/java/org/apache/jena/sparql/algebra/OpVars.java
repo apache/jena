@@ -56,7 +56,7 @@ public class OpVars
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
     
-    /** The set of variables that wil be in every solution of this Op */
+    /** The set of variables that will be in every solution of this Op */
     public static Set<Var> fixedVars(Op op) {
         Set<Var> acc = collector() ;
         fixedVars(op, acc) ;
