@@ -36,6 +36,7 @@ import org.junit.runners.Suite ;
     , TestHex.class
     , TestListUtils.class
     , TestSetUtils.class
+    , TestCollectionUtils.class
     , TestCache.class
     , TestCache2.class
     , TestFileOps.class
