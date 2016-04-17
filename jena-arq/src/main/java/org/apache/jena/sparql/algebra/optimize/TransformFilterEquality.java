@@ -116,7 +116,15 @@ public class TransformFilterEquality extends TransformCopy {
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, equalities, remaining))
-            return OpTable.empty();
+            // JENA-1184
+            // If this is run after join-strategy, then scope is not a simple matter
+            // of looking at the subOp.  But running before join-strategy
+            // causes other code to not optimize (presumablty because it was developed
+            // to run after join-strategy probably by conincidence)
+            // @Test TestTransformFilters.equality04
+            //return OpTable.empty();
+            // JENA-1184 woraround. Return unchanged.
+            return null ;
 
         // Special case: the deep left op of a OpConditional/OpLeftJoin is the unit table.
         // This is the case of:
