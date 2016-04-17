@@ -500,6 +500,19 @@ public class TransformFilterPlacement extends TransformCopy {
         Op right = opJoin.getRight() ;
         Collection<Var> leftVars = fixedVars(left) ;
         Collection<Var> rightVars = fixedVars(right) ;
+
+        // More sophisticated - consider optionl variables as well.
+        // This code check the two ways to get fixed vars yields the same
+        // and it does for the test suite. 
+//        //---
+//        VarFinder vfLeft = VarFinder.process(left) ;
+//        VarFinder vfRight = VarFinder.process(right) ;
+//        if ( ! CollectionUtils.sameElts(leftVars, vfLeft.getFixed() ) )
+//            System.err.println("Left: "+leftVars+" : "+vfLeft.getFixed() ) ;
+//        if ( ! CollectionUtils.sameElts(rightVars, vfRight.getFixed() ) )
+//            System.err.println("Right: "+rightVars+" : "+vfRight.getFixed() ) ;
+//        //---
+        
         ExprList unpushed = new ExprList() ;
         ExprList pushLeft = new ExprList() ;
         ExprList pushRight = new ExprList() ;
