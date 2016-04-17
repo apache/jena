@@ -40,6 +40,10 @@ import org.apache.jena.sparql.util.VarUtils ;
 
 public class VarFinder
 {
+    public static VarFinder process(Op op) {
+        return new VarFinder(op) ;
+    }
+
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
     
@@ -61,7 +65,7 @@ public class VarFinder
 
     VarUsageVisitor varUsageVisitor ;
     
-    public VarFinder(Op op)
+    private VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
     public Set<Var> getOpt() { return varUsageVisitor.optDefines ; }

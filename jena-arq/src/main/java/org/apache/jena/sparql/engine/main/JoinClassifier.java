@@ -88,7 +88,7 @@ public class JoinClassifier
         }
 
         // Need only check left/rght.
-        VarFinder vfLeft = new VarFinder(leftOp) ;
+        VarFinder vfLeft = VarFinder.process(leftOp) ;
         Set<Var> vLeftFixed = vfLeft.getFixed() ;
         Set<Var> vLeftOpt = vfLeft.getOpt() ;
         // Set<Var> vLeftFilter = vfLeft.getFilter() ;
@@ -98,7 +98,7 @@ public class JoinClassifier
             System.err.println("Left/opt:      " + vLeftOpt) ;
         // if (print) System.err.println("Left/filter:   " + vLeftFilter) ;
 
-        VarFinder vfRight = new VarFinder(rightOp) ;
+        VarFinder vfRight = VarFinder.process(rightOp) ;
         Set<Var> vRightFixed = vfRight.getFixed() ;
         Set<Var> vRightOpt = vfRight.getOpt() ;
         Set<Var> vRightFilter = vfRight.getFilter() ;

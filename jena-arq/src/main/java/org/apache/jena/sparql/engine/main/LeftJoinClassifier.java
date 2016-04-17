@@ -62,7 +62,7 @@ public class LeftJoinClassifier
             return false ;
         
         Set<Var> leftVars = OpVars.visibleVars(left) ;
-        VarFinder vf = new VarFinder(right) ;
+        VarFinder vf = VarFinder.process(right) ;
         
         Set<Var> optRight = vf.getOpt() ;
         Set<Var> fixedRight = vf.getFixed() ;

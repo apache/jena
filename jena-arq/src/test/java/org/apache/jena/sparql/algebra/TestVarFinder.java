@@ -67,7 +67,7 @@ public class TestVarFinder extends BaseTest
     private static void varfind(String string, String[] varsFixed, String [] varsOpt, String [] varsFilter)
     {
         Op op = SSE.parseOp(string) ;
-        VarFinder vf = new VarFinder(op) ;
+        VarFinder vf = VarFinder.process(op) ;
         if ( varsFixed != null ) check(varsFixed, vf.getFixed()) ;
         if ( varsOpt != null ) check(varsOpt, vf.getOpt()) ;
         if ( varsFilter != null ) check(varsFilter, vf.getFilter()) ;
