@@ -36,9 +36,10 @@ public class TestFilenameProcessing extends BaseTest
     static boolean isWindows = File.separatorChar != '/' ;
 
     private static String cwd = Paths.get(".").toAbsolutePath().normalize().toString() ;
-    // Sort out cwd.
-    // Must start "/", must not end "/"
-    // Must be /-style, not \
+    // Sort out cwd, not using the IRILib code.
+    //   Must start "/", must not end "/"
+    //   Must be /-style, not \
+    //   Must %-encode URI-metacharacters
     static {
         if ( isWindows ) {
             // Canonical
@@ -47,6 +48,7 @@ public class TestFilenameProcessing extends BaseTest
             if ( ! cwd.startsWith("/" ) )
                 cwd = "/" + cwd ;
         }
+        cwd = IRILib.encodeUriPath(cwd) ;
     }
     
     @Test
