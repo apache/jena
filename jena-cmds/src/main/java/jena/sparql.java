@@ -19,7 +19,7 @@
 package jena;
 
 public class sparql {
-    public static void main(String[] args) {
+    public static void main(String... args) {
         arq.sparql.main(args);
     }
 }
