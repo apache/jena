@@ -29,6 +29,8 @@ import static org.apache.jena.riot.writer.WriterConst.rdfNS ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.* ;
+import java.util.function.Function ;
+import java.util.function.Predicate ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -38,7 +40,10 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -73,10 +78,35 @@ public class RiotLib
         return NodeFactory.createURI(iri) ;
     }
 
-    /** Test whether  */
-    public static boolean isBNodeIRI(String iri)
-    {
+    /** Test whether a IRI is a ARQ-encoded blank node. */
+    public static boolean isBNodeIRI(String iri) {
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
+    }
+    
+    // These two must be in-step.
+    /** Function applied to undefined prefixes to convert to a URI string */  
+    public static final Function<String,String> fixupPrefixes      = (x) -> "::"+x ;
+
+    /** Function to test for undefined prefix URIs*/  
+    public static final Predicate<String> testFixupedPrefixURI     = (x) -> x.startsWith("::") ;
+    
+    /** Test whether a IRI is a ARQ-encoded blank node. */
+    public static boolean isPrefixIRI(String iri) {
+        return testFixupedPrefixURI.test(iri) ;
+    }
+    
+    /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+     * @see ARQ#fixupUndefinedPrefixes
+     */
+    public static String fixupPrefixIRI(String prefix, String localPart) {
+        return fixupPrefixIRI(prefix+":"+localPart) ;
+    }
+
+    /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+     * @see ARQ#fixupUndefinedPrefixes
+     */
+    public static String fixupPrefixIRI(String prefixedName) {
+        return fixupPrefixes.apply(prefixedName) ;
     }
     
     private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, ErrorHandlerFactory.errorHandlerStd) ;

@@ -268,9 +268,6 @@ public class ParserBase
         return iriStr ;
     }
     
-    // Pragmatic.
-    private final boolean fixupUndefinedPrefixedNames = ARQ.isTrue(ARQ.fixupUndefinedPrefixes) ;
-    
     protected String resolvePName(String prefixedName, int line, int column) {
         // It's legal.
         int idx = prefixedName.indexOf(':') ;
@@ -284,8 +281,8 @@ public class ParserBase
 
         String s = getPrologue().expandPrefixedName(prefixedName) ;
         if ( s == null ) {
-            if ( fixupUndefinedPrefixedNames )
-                return ARQ.fixupPrefixes.apply(prefixedName) ;
+            if ( ARQ.isTrue(ARQ.fixupUndefinedPrefixes) )
+                return RiotLib.fixupPrefixes.apply(prefixedName) ;
             throwParseException("Unresolved prefixed name: " + prefixedName, line, column) ;
         }
         return s ;

@@ -103,7 +103,9 @@ public class ParserProfileChecker extends ParserProfileBase // implements Parser
 
     @Override
     public Node createURI(String x, long line, long col) {
-        if ( ! RiotLib.isBNodeIRI(x) )
+        if ( RiotLib.isBNodeIRI(x) ) {}
+        else if ( RiotLib.isPrefixIRI(x) ) {}
+        else
             x = resolveIRI(x, line, col) ;
         return super.createURI(x, line, col) ;
     }
