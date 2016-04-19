@@ -50,6 +50,7 @@ public class qparse extends CmdARQ
     protected final ArgDecl argDeclPrint    = new ArgDecl(ArgDecl.HasValue, "print") ;
     protected final ArgDecl argDeclOpt      = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
     protected final ArgDecl argDeclExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
+    protected final ArgDecl argDeclFixup    = new ArgDecl(ArgDecl.NoValue, "fixup") ;
     
     protected boolean printNone             = false ;
     protected boolean printQuery            = false ;
@@ -73,7 +74,8 @@ public class qparse extends CmdARQ
         super.getUsage().startCategory(null) ;
         super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
         super.add(argDeclExplain, "--explain", "Print with algebra-level optimization") ;
-        super.add(argDeclOpt, "--opt", "[deprecated]") ; 
+        super.add(argDeclOpt, "--opt", "[deprecated]") ;
+        super.add(argDeclFixup, "--fixup", "Convert undeclared prefix names to URIs") ;
     }
     
     @Override
@@ -87,6 +89,10 @@ public class qparse extends CmdARQ
         {
             printQuery = true ;
             printOpt = true ;
+        }
+        if ( contains(argDeclFixup) ) {
+            // Fixup undeclared prefix names.
+            ARQ.set(ARQ.fixupUndefinedPrefixes, true);
         }
 
         for ( String arg : getValues( argDeclPrint ) )

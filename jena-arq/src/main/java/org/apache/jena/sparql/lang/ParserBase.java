@@ -286,25 +286,31 @@ public class ParserBase
         return iriStr ;
     }
     
-    protected String resolvePName(String qname, int line, int column)
+    // Pragmatic.
+    private final boolean fixupUndefinedPrefixedNames = ARQ.isTrue(ARQ.fixupUndefinedPrefixes) ;
+    
+    protected String resolvePName(String prefixedName, int line, int column)
     {
         // It's legal.
-        int idx = qname.indexOf(':') ;
+        int idx = prefixedName.indexOf(':') ;
         
         // -- Escapes in local name
-        String prefix = qname.substring(0, idx) ;
-        String local = qname.substring(idx+1) ;
+        String prefix = prefixedName.substring(0, idx) ;
+        String local = prefixedName.substring(idx+1) ;
         local = unescapePName(local, line, column) ;
-        qname = prefix+":"+local ;
+        prefixedName = prefix+":"+local ;
         // --
         
-        String s = getPrologue().expandPrefixedName(qname) ;
-        if ( s == null )
-            throwParseException("Unresolved prefixed name: "+qname, line, column) ;
+        String s = getPrologue().expandPrefixedName(prefixedName) ;
+        if ( s == null ) {
+            if ( fixupUndefinedPrefixedNames )
+                return ARQ.fixupPrefixes.apply(prefixedName) ;
+            throwParseException("Unresolved prefixed name: "+prefixedName, line, column) ;
+        }
         return s ;
     }
     
-    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
+    private boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
     protected Node createNode(String iri)
     {
         if ( skolomizedBNodes )
