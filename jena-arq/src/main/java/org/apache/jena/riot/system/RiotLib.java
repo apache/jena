@@ -83,12 +83,14 @@ public class RiotLib
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
+    private static final String URI_PREFIX_FIXUP = "::";
+    
     // These two must be in-step.
     /** Function applied to undefined prefixes to convert to a URI string */  
-    public static final Function<String,String> fixupPrefixes      = (x) -> "::"+x ;
+    public static final Function<String,String> fixupPrefixes      = (x) -> URI_PREFIX_FIXUP.concat(x) ;
 
     /** Function to test for undefined prefix URIs*/  
-    public static final Predicate<String> testFixupedPrefixURI     = (x) -> x.startsWith("::") ;
+    public static final Predicate<String> testFixupedPrefixURI     = (x) -> x.startsWith(URI_PREFIX_FIXUP) ;
     
     /** Test whether a IRI is a ARQ-encoded blank node. */
     public static boolean isPrefixIRI(String iri) {
