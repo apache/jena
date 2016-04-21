@@ -18,8 +18,8 @@
 
 package jena;
 
-public class sparql {
+public class riot {
     public static void main(String... args) {
-        arq.sparql.main(args);
+        riotcmd.riot.main(args);
     }
 }

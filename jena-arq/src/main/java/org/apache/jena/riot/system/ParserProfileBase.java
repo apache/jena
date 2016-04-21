@@ -26,6 +26,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.tokens.Token ;
@@ -217,8 +218,11 @@ public class ParserProfileBase implements ParserProfile {
 
     private static String expandPrefixedName(ParserProfile pp, String prefix, String localPart, Token token) {
         String expansion = pp.getPrologue().getPrefixMap().expand(prefix, localPart) ;
-        if (expansion == null)
+        if (expansion == null) {
+            if ( ARQ.isTrue(ARQ.fixupUndefinedPrefixes) )
+                return RiotLib.fixupPrefixIRI(prefix, localPart) ;
             pp.getHandler().fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn()) ;
+        }
         return expansion ;
     }
 

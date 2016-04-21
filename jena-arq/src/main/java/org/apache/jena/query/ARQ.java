@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
@@ -250,6 +251,14 @@ public class ARQ
      */
     
     public static final Symbol serviceAllowed = Service.serviceAllowed ;
+    
+    /** If set to true, the parsers will convert undefined prefixes to a URI
+     * according to the fixup function {@link RiotLib#fixupPrefixes}.
+     * Normally, unset (which equates to false).
+     * 
+     * @see RiotLib#isPrefixIRI
+     */
+    public static final Symbol fixupUndefinedPrefixes   = SystemARQ.allocSymbol("fixupPrefixes") ;
     
     /**
      * A Long value that specifies the number of bindings (or triples for CONSTRUCT queries) to be stored in memory by sort

@@ -18,8 +18,8 @@
 
 package jena;
 
-public class sparql {
+public class qparse {
     public static void main(String... args) {
-        arq.sparql.main(args);
+        arq.qparse.main(args);
     }
 }
