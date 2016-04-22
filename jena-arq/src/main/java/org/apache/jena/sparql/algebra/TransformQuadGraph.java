@@ -46,6 +46,9 @@ public class TransformQuadGraph extends TransformCopy
 
     @Override
     public Op transform(OpGraph opGraph, Op op) {
+        
+        //System.err.println("transform(OpGraph)\n"+opGraph+op) ;
+        
         // ?? Could just leave the (graph) in place always - just rewrite BGPs. 
         boolean noPattern = false ;
         
@@ -113,6 +116,7 @@ public class TransformQuadGraph extends TransformCopy
     
     @Override
     public Op transform(OpBGP opBGP) { 
+        //System.err.println("transform(OpBGP) : "+getNode()+"\n"+opBGP) ;
         return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
     }
     

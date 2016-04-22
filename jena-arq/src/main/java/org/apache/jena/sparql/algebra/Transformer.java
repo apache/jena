@@ -25,6 +25,7 @@ import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformApplyTransform ;
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.* ;
@@ -119,21 +120,30 @@ public class Transformer
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
+        // XXX
         ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
         return transformation(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
-    }
+    }   
+    
+    protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        // XXX Switch on before/after via the Walker.
+        if ( true )
+            return Walker.transform(op, transform, exprTransform, beforeVisitor, afterVisitor) ;
         
-    protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-    {
+        if ( beforeVisitor == null && afterVisitor == null )
+            return Walker.transform(op, transform, exprTransform) ;
+//        static Set<Class<?>> seen = new HashSet<>() ;
+//        if ( ! seen.contains(beforeVisitor.getClass()) ) {
+//            System.out.println("T:"+beforeVisitor.getClass().getName()) ;
+//            seen.add(beforeVisitor.getClass()) ;
+//        }
         ApplyTransformVisitor v = new ApplyTransformVisitor(transform, exprTransform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
     
-    protected Op transformation(ApplyTransformVisitor transformApply,
-                                Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-    {
-        if ( op == null )
-        {
+    protected Op transformation(ApplyTransformVisitor transformApply, Op op, 
+                                OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        if ( op == null ) {
             Log.warn(this, "Attempt to transform a null Op - ignored") ;
             return op ;
         }
@@ -141,9 +151,8 @@ public class Transformer
     }
 
     /** The primitive operation to apply a transformation to an Op */
-    protected Op applyTransformation(ApplyTransformVisitor transformApply,
-                                     Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-    {
+    private /*protected*/ Op applyTransformation(ApplyTransformVisitor transformApply, Op op,
+                                     OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         OpWalker.walk(op, transformApply, beforeVisitor, afterVisitor) ;
         Op r = transformApply.result() ;
         return r ;
