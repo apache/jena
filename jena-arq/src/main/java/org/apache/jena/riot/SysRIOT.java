@@ -19,8 +19,8 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.base.Sys ;
 import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -39,14 +39,11 @@ public class SysRIOT
      * where the unnormalized part is in a prefix name changes the outcome.
      * Jena has always normalized abolute URIs.  
      */
-    public static boolean AbsURINoNormalization       = false ;
-    public static final String BNodeGenIdPrefix       = "genid" ;
+    public static final boolean AbsURINoNormalization   = false ;
+    public static final String BNodeGenIdPrefix         = "genid" ;
     
-    /**
-     * @deprecated Use Sys.isWindows
-     */
-    @Deprecated
-    public static final boolean isWindows = Sys.isWindows ;
+    /** Context key for old style RDFWriter properties */ 
+    public static final Symbol rdfWriterProperties      = Symbol.create("riot.rdfWriter_properties") ;
     
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;

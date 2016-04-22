@@ -20,7 +20,9 @@ package org.apache.jena.riot.adapters;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
+import java.util.HashMap ;
 import java.util.Locale ;
+import java.util.Map ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
@@ -39,31 +41,17 @@ public class RDFWriterRIOT implements RDFWriter
     private final String basename ; 
     private final String jenaName ; 
     private Context context = new Context() ;
+    private Map<String, Object> properties = new HashMap<>() ;
     private WriterGraphRIOT writer ;
     private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
-    
-//    public RDFWriterRIOT() {
-//        this.basename = "org.apache.jena.riot.writer.generic" ;
-//        this.jenaName = null ;
-//        writer = writer() ;
-//    }
     
     public RDFWriterRIOT(String jenaName) {
         this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
         this.jenaName = jenaName;
+        context.put(SysRIOT.rdfWriterProperties, properties);
     }
 
-    // Initialize late to avoid confusing exceptions during newInstance.
     private WriterGraphRIOT writer() {
-        if ( writer != null )
-            return writer;
-        if ( jenaName == null )
-            throw new IllegalArgumentException("Jena writer name is null");
-        writer = setWriter();
-        return writer;
-    }
-
-    private WriterGraphRIOT setWriter() {
         if ( writer != null )
             return writer;
         if ( jenaName == null )
@@ -96,8 +84,10 @@ public class RDFWriterRIOT implements RDFWriter
 
     @Override
     public Object setProperty(String propName, Object propValue) {
-        Symbol sym = Symbol.create(basename + propName);
+        Symbol sym = Symbol.create(basename + "#" + propName);
         Object oldObj = context.get(sym);
+        context.set(sym, propValue);
+        properties.put(propName, propValue) ;
         return oldObj;
     }
 
