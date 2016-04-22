@@ -39,7 +39,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     }
 
     public void visitExpr(ExprList exprs) ;
-    public void visitExpr(VarExprList exprs) ;
+    public void visitVarExpr(VarExprList exprs) ;
     //public void visitAssignVar(Var var) ;
     
     public default void visitModifer(OpModifier opMod) {
@@ -177,7 +177,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpGroup opGroup) {
-        visitExpr(opGroup.getGroupVars()) ;
+        visitVarExpr(opGroup.getGroupVars()) ;
         // XXX
         //opGroup.getAggregators() ;
         visit1(opGroup);
@@ -192,13 +192,13 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     
     @Override
     public default void visit(OpAssign opAssign) {
-        visitExpr(opAssign.getVarExprList()) ;
+        visitVarExpr(opAssign.getVarExprList()) ;
         visit1(opAssign);
     }
 
     @Override
     public default void visit(OpExtend opExtend) {
-        visitExpr(opExtend.getVarExprList()) ;
+        visitVarExpr(opExtend.getVarExprList()) ;
         visit1(opExtend);
     }
 
