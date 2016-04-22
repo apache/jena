@@ -114,7 +114,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     }
 
     @Override
-    public void visitExpr(VarExprList varExprList) {
+    public void visitVarExpr(VarExprList varExprList) {
         if ( exprVisitor != null )
             walk(varExprList);
     }
@@ -137,13 +137,17 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     @Override
     public void visit1(Op1 op) {
         before(op) ;
+        visit1$(op) ;
+        after(op) ;
+    }
+    
+    private void visit1$(Op1 op) {
         if ( op.getSubOp() != null )
             op.getSubOp().visit(this) ;
         if ( opVisitor != null )
             op.visit(opVisitor) ;
-        after(op) ;
     }
-    
+
     @Override
     public void visit2(Op2 op) {
         before(op) ;
@@ -186,6 +190,45 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         OpVisitorByTypeAndExpr.super.visit(op) ;
     }
     
+    @Override
+    public void visit(OpOrder opOrder) {
+        // XXX
+//        List<SortCondition> conditions = opOrder.getConditions() ;
+//        List<SortCondition> conditions2 = new ArrayList<>() ;
+//        boolean changed = false ;
+//
+//        for ( SortCondition sc : conditions ) {
+//            Expr e = sc.getExpression() ;
+//            Expr e2 = transform(e) ;
+//            conditions2.add(new SortCondition(e2, sc.getDirection())) ;
+//            if ( e != e2 )
+//                changed = true ;
+//        }
+//        OpOrder x = opOrder ;
+//        if ( changed )
+//            x = new OpOrder(opOrder.getSubOp(), conditions2) ;
+        visit1(opOrder) ;
+    }
+
+    @Override
+    public void visit(OpAssign opAssign) {
+        before(opAssign) ;
+        VarExprList varExpr = opAssign.getVarExprList() ;
+        visitVarExpr(varExpr); 
+        visit1$(opAssign) ;
+        after(opAssign) ;
+    }
+
+    @Override
+    public void visit(OpExtend opExtend) {
+        before(opExtend) ;
+        VarExprList varExpr = opExtend.getVarExprList() ;
+        visitVarExpr(varExpr); 
+        visit1$(opExtend) ;
+        after(opExtend) ;
+    }
+
+    
     // Transforming to quads needs the graph node handled before doing the sub-algebra ops
     // so it has to be done as before/after by the Walker. By the time visit(OpGraph) is called,
     // the sub-tree has already been visited. 
@@ -210,7 +253,6 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
 //        stack.pop() ;
 //    }
 
-    // Shared with ElementWalker - mixin
     @Override
     public void visit(ExprFunction0 func) { visitExprFunction(func) ; }
     @Override

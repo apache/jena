@@ -57,15 +57,48 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     /*package*/ final Expr exprResult() {
         return pop(exprStack) ;
     }
+    
+    private static boolean ISOLATE = false ;
 
     protected Op transform(Op op) {
-        // reuse this ApplyTransformVisitor? with stack checking?
-        return Walker.transform(op, this, beforeVisitor, afterVisitor) ;
+        if ( ISOLATE ) {
+            ApplyTransformVisitor atv = new ApplyTransformVisitor(opTransform, exprTransform, beforeVisitor, afterVisitor) ;
+            return Walker.transform(op, atv, beforeVisitor, afterVisitor) ;
+        }
+        
+        int x1 = opStack.size() ;
+        int x2 = exprStack.size() ;
+        try {
+            // reuse this ApplyTransformVisitor? with stack checking?
+            return Walker.transform(op, this, beforeVisitor, afterVisitor) ;
+        } finally {
+            int y1 = opStack.size() ;
+            int y2 = exprStack.size() ;
+            if ( x1 != y1 )
+                System.err.println("Misaligned opStack") ;
+            if ( x2 != y2 )
+                System.err.println("Misaligned exprStack") ;
+        }
     }
     
     protected Expr transform(Expr expr) {
+        if ( ISOLATE ) {
+            ApplyTransformVisitor atv = new ApplyTransformVisitor(opTransform, exprTransform, beforeVisitor, afterVisitor) ;
+            return Walker.transform(expr, atv, beforeVisitor, afterVisitor) ;
+        }
+        int x1 = opStack.size() ;
+        int x2 = exprStack.size() ;
         // reuse this ApplyTransformVisitor? with stack checking?
-        return Walker.transform(expr, this, beforeVisitor, afterVisitor) ;
+        try {
+            return Walker.transform(expr, this, beforeVisitor, afterVisitor) ;
+        } finally {
+            int y1 = opStack.size() ;
+            int y2 = exprStack.size() ;
+            if ( x1 != y1 )
+                System.err.println("Misaligned opStack") ;
+            if ( x2 != y2 )
+                System.err.println("Misaligned exprStack") ;
+        }
     }
     
     protected ExprList transform(ExprList exprList) {
@@ -115,6 +148,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         visit1(opExtend2) ;
     }
 
+    // VarExprLists are not visited by OpVisitorByTypeAndExpr 
+    // XXX Maybe they should.
     private VarExprList process(VarExprList varExprList) {
         if ( varExprList == null )
             return varExprList ;
@@ -138,32 +173,39 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         return varExpr2 ;
     }
 
-    private ExprList process(ExprList exprList) {
+    private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
-        ExprList exprList2 = new ExprList() ;
-        boolean changed = false ;
-        for ( Expr e : exprList ) {
-            Expr e2 = process(e) ;
-            exprList2.add(e2) ;
-            if ( e != e2 )
-                changed = true ;
-        }
-        if ( !changed )
-            return exprList ;
-        return exprList2 ;
+        ExprList ex2 = new ExprList() ;
+        exprList.forEach((e)->ex2.add(pop(exprStack)));
+        return ex2 ; 
     }
-
-    private Expr process(Expr expr) {
-        Expr e = expr ;
-        Expr e2 = e ;
-        if ( e != null )
-            e2 = transform(e) ;
-        if ( e == e2 )
-            return expr ;
-        return e2 ;
-    }
-
+     
+//    private ExprList process(ExprList exprList) {
+//        if ( exprList == null )
+//            return null ;
+//        ExprList exprList2 = new ExprList() ;
+//        boolean changed = false ;
+//        for ( Expr e : exprList ) {
+//            Expr e2 = process(e) ;
+//            exprList2.add(e2) ;
+//            if ( e != e2 )
+//                changed = true ;
+//        }
+//        if ( !changed )
+//            return exprList ;
+//        return exprList2 ;
+//
+//    private Expr process(Expr expr) {
+//        Expr e = expr ;
+//        Expr e2 = e ;
+//        if ( e != null )
+//            e2 = transform(e) ;
+//        if ( e == e2 )
+//            return expr ;
+//        return e2 ;
+//    }
+//
     @Override
     public void visit(OpGroup opGroup) {
         boolean changed = false ;
@@ -249,6 +291,14 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         push(opStack, opX) ;
     }
 
+    private void dump(String label) {
+        System.out.println(label) ;
+        String x = opStack.toString().replace('\n', ' ').replaceAll("  +", " ") ;
+        String y = exprStack.toString().replace('\n', ' ').replaceAll("  +", " ") ;
+        System.out.println("    O:"+x);
+        System.out.println("    E:"+y);
+    }
+    
     @Override
     public void visit(OpFilter opFilter) {
         Op subOp = null ;
@@ -257,7 +307,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         boolean changed = (opFilter.getSubOp() != subOp) ;
 
         ExprList ex = opFilter.getExprs() ;
-        ExprList ex2 = process(ex) ;
+        ExprList ex2 = collect(ex) ;
+        
         OpFilter f = opFilter ;
         if ( ex != ex2 )
             f = (OpFilter)OpFilter.filter(ex2, subOp) ;
@@ -276,7 +327,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             left = pop(opStack) ;
 
         ExprList exprs = op.getExprs() ;
-        ExprList exprs2 = process(exprs) ;
+        ExprList exprs2 = collect(exprs) ;
         OpLeftJoin x = op ;
         if ( exprs != exprs2 )
             x = OpLeftJoin.createLeftJoin(left, right, exprs2) ;
@@ -302,6 +353,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     
     @Override
     public void visitExpr(ExprList exprs) { 
+        // XXX
         System.err.println("visitExpr(ExprList)") ;
         if ( exprs != null && exprTransform != null ) {
             
@@ -309,7 +361,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
     
     @Override
-    public void visitExpr(VarExprList exprVarExprList)  {
+    public void visitVarExpr(VarExprList exprVarExprList)  {
         System.err.println("visitExpr(ExprList)") ;
         if ( exprVarExprList != null && exprTransform != null ) {
             
@@ -348,12 +400,12 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
 
     @Override
     public void visit(ExprFunctionN func) {
-        ExprList x = process(func.getArgs()) ;
+        ExprList x = collect(func.getArgs()) ;
         Expr e = func.apply(exprTransform, x) ;
         push(exprStack, e) ;
     }
 
-    private ExprList process(List<Expr> exprList) {
+    private ExprList collect(List<Expr> exprList) {
         if ( exprList == null )
             return null ;
         int N = exprList.size() ;
@@ -369,10 +421,10 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     @Override
     public void visit(ExprFunctionOp funcOp) {
         ExprList x = null ;
-//        Op op = transform(funcOp.getGraphPattern()) ;
         if ( funcOp.getArgs() != null )
-            x = process(funcOp.getArgs()) ;
-        Expr e = funcOp.apply(exprTransform, x, funcOp.getGraphPattern()) ;
+            x = collect(funcOp.getArgs()) ;
+        Op op = pop(opStack) ;
+        Expr e = funcOp.apply(exprTransform, x, op) ;
         push(exprStack, e) ;
     }
 
