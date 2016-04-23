@@ -170,7 +170,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpOrder opOrder) {
-        // XXX
+        // XXX XXX
         //opOrder.getConditions() ;
         visitModifer(opOrder);
     }
@@ -178,14 +178,14 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     @Override
     public default void visit(OpGroup opGroup) {
         visitVarExpr(opGroup.getGroupVars()) ;
-        // XXX
+        // XXX XXX
         //opGroup.getAggregators() ;
         visit1(opGroup);
     }
 
     @Override
     public default void visit(OpTopN opTop) {
-        // XXX
+        // XXX XXX
         // opTop.getConditions() ;
         visit1(opTop);
     }

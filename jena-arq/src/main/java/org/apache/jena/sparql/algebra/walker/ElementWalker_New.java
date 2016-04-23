@@ -189,7 +189,7 @@ public class ElementWalker_New {
         @Override
         public void visit(ExprAggregator eAgg)  {
             //eAgg.getAggVar().visit(visitorExpr);
-            // XXX Hack for varsMentioned
+            // XXX XXX Hack for varsMentioned
             eAgg.visit(exprVisitor) ; 
         }
     }

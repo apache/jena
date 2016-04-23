@@ -332,13 +332,13 @@ public class OpAsQuery {
 
         private static void processExtends(List<OpExtend> ext, BiConsumer<Var, Expr> action) {
             ext.forEach(extend->{
-                extend.getVarExprList().forEach(action) ;
+                extend.getVarExprList().forEachExpr(action) ;
             });
         }
         
         private static void processAssigns(List<OpAssign> assigns, BiConsumer<Var, Expr> action) {
             assigns.forEach(assign->{
-                assign.getVarExprList().forEach(action) ;
+                assign.getVarExprList().forEachExpr(action) ;
             });
         }
 

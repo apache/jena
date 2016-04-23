@@ -102,11 +102,10 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void walk(VarExprList varExprList) {
         if ( varExprList == null )
             return ;
-        varExprList.forEach((v,e) -> walk(e));
+        varExprList.forEachVarExpr((v,e) -> walk( e!=null ? e : ExprNone.NONE ));
     }
 
     // ---- Mode swapping between op and expr. visit=>?walk
-    // XXX
     @Override
     public void visitExpr(ExprList exprList) {
         if ( exprVisitor != null )
@@ -130,8 +129,10 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
 
     @Override
     public void visit0(Op0 op) {
+        before(op) ;
         if ( opVisitor != null )
             op.visit(opVisitor) ;
+        after(op) ;
     }
 
     @Override
@@ -141,6 +142,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         after(op) ;
     }
     
+    // Can be called via different routes. 
     private void visit1$(Op1 op) {
         if ( op.getSubOp() != null )
             op.getSubOp().visit(this) ;
@@ -192,7 +194,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     
     @Override
     public void visit(OpOrder opOrder) {
-        // XXX
+        // XXX XXX
 //        List<SortCondition> conditions = opOrder.getConditions() ;
 //        List<SortCondition> conditions2 = new ArrayList<>() ;
 //        boolean changed = false ;
@@ -304,8 +306,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
 
         // visitAssignVar(eAgg.getAggVar().asVar()) ;
 
-        // XXX Hack for varsMentioned
-
+        // XXX XXX Hack for varsMentioned
         if ( exprVisitor != null )
             eAgg.visit(exprVisitor) ;
     }

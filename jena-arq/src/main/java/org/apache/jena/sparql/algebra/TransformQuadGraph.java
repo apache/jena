@@ -116,7 +116,7 @@ public class TransformQuadGraph extends TransformCopy
     
     @Override
     public Op transform(OpBGP opBGP) { 
-        //System.err.println("transform(OpBGP) : "+getNode()+"\n"+opBGP) ;
+        //System.out.print("transform(OpBGP) : "+getNode()+"\n"+opBGP) ;
         return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
     }
     

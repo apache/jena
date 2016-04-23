@@ -31,6 +31,9 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
 
+/** Apply the {@link Transform}, {@link ExprTransform}
+ *  Works in conjunction with {@link WalkerVisitor}. 
+ */
 public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisitor {
     private final Transform     opTransform ;
     private final ExprTransform exprTransform ;
@@ -131,7 +134,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     @Override
     public void visit(OpAssign opAssign) {
         VarExprList varExpr = opAssign.getVarExprList() ;
-        VarExprList varExpr2 = process(varExpr) ;
+        VarExprList varExpr2 = collect(varExpr) ;
         OpAssign opAssign2 = opAssign ;
         if ( varExpr != varExpr2 )
             opAssign2 = OpAssign.create(opAssign.getSubOp(), varExpr2) ;
@@ -141,47 +144,64 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     @Override
     public void visit(OpExtend opExtend) {
         VarExprList varExpr = opExtend.getVarExprList() ;
-        VarExprList varExpr2 = process(varExpr) ;
+        VarExprList varExpr2 = collect(varExpr) ;
         OpExtend opExtend2 = opExtend ;
         if ( varExpr != varExpr2 )
             opExtend2 = OpExtend.create(opExtend.getSubOp(), varExpr2) ;
         visit1(opExtend2) ;
     }
 
-    // VarExprLists are not visited by OpVisitorByTypeAndExpr 
-    // XXX Maybe they should.
-    private VarExprList process(VarExprList varExprList) {
+    // Special test cases for collectors.
+    
+    // XXX XXX Check order 
+    private VarExprList collect(VarExprList varExprList) {
         if ( varExprList == null )
             return varExprList ;
-        List<Var> vars = varExprList.getVars() ;
-        VarExprList varExpr2 = new VarExprList() ;
-        boolean changed = false ;
-        for ( Var v : vars ) {
-            Expr e = varExprList.getExpr(v) ;
-            Expr e2 = e ;
-            if ( e != null )
-                e2 = transform(e) ;
-            if ( e2 == null )
-                varExpr2.add(v) ;
-            else
-                varExpr2.add(v, e2) ;
-            if ( e != e2 )
-                changed = true ;
-        }
-        if ( !changed )
-            return varExprList ;
-        return varExpr2 ;
-    }
+      List<Var> vars = varExprList.getVars() ;
+      VarExprList varExpr2 = new VarExprList() ;
+      
+      List<Expr> x = collect(vars.size()) ;
+      
+      boolean changed = false ;     // XXX XXX
 
+      for ( int i = 0 ; i < vars.size() ; i++ ) {
+          Var v = vars.get(i) ;
+          Expr e2 = x.get(i) ;
+          if ( e2 == null || e2 ==  ExprNone.NONE )
+              varExpr2.add(v) ;
+          else
+              varExpr2.add(v, e2) ;
+      }
+      return varExpr2 ;
+    }  
+        
+    // XXX XXX Check order 
     private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
-        ExprList ex2 = new ExprList() ;
-        exprList.forEach((e)->ex2.add(pop(exprStack)));
-        return ex2 ; 
+        return new ExprList(collect(exprList.size())) ;
     }
-     
-//    private ExprList process(ExprList exprList) {
+    
+    // XXX XXX Check order 
+    private ExprList collect(List<Expr> exprList) {
+        if ( exprList == null )
+            return null ;
+        return new ExprList(collect(exprList.size())) ;
+    }
+    
+    // collect and return in the original order (stacks reverse order). 
+    private List<Expr> collect(int N) {
+        List<Expr> x = new ArrayList<>(N) ;
+        for ( int i = N-1 ; i >= 0 ; i-- ) {
+            Expr e2 = pop(exprStack) ;
+            x.add(0, e2) ;
+        }
+        return x ;
+    }
+    
+    // XXX collectExpr(N)
+
+    //    private ExprList process(ExprList exprList) {
 //        if ( exprList == null )
 //            return null ;
 //        ExprList exprList2 = new ExprList() ;
@@ -211,7 +231,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         boolean changed = false ;
 
         VarExprList varExpr = opGroup.getGroupVars() ;
-        VarExprList varExpr2 = process(varExpr) ;
+        VarExprList varExpr2 = collect(varExpr) ;
         if ( varExpr != varExpr2 )
             changed = true ;
 
@@ -353,7 +373,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     
     @Override
     public void visitExpr(ExprList exprs) { 
-        // XXX
+        // XXX XXX
+        // Not called?
         System.err.println("visitExpr(ExprList)") ;
         if ( exprs != null && exprTransform != null ) {
             
@@ -362,6 +383,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     
     @Override
     public void visitVarExpr(VarExprList exprVarExprList)  {
+        // XXX XXX
+        // Not called?
         System.err.println("visitExpr(ExprList)") ;
         if ( exprVarExprList != null && exprTransform != null ) {
             
@@ -405,19 +428,6 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         push(exprStack, e) ;
     }
 
-    private ExprList collect(List<Expr> exprList) {
-        if ( exprList == null )
-            return null ;
-        int N = exprList.size() ;
-        List<Expr> x = new ArrayList<>(N) ;
-        for ( Expr anExprList : exprList ) {
-            Expr e2 = pop(exprStack) ;
-            // Add in reverse.
-            x.add(0, e2) ;
-        }
-        return new ExprList(x) ;
-    }
-
     @Override
     public void visit(ExprFunctionOp funcOp) {
         ExprList x = null ;
@@ -457,7 +467,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
                 Log.warn(ApplyTransformVisitor.class, "Pop null from "+stackLabel(stack)+" stack") ;
             return v ;
         }
-        catch (EmptyStackException ex) {
+        catch (NoSuchElementException ex) {
             Log.warn(ApplyTransformVisitor.class, "Empty "+stackLabel(stack)+" stack") ;
             return null ;
         }

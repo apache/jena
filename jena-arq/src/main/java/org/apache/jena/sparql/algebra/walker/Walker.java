@@ -102,7 +102,7 @@ public class Walker {
      public static void walk(VarExprList varExprList, OpVisitor opVisitor, ExprVisitor exprVisitor) {
          if ( varExprList == null )
              return ;
-         varExprList.forEach((v,e)->walk(e,opVisitor, exprVisitor)) ;
+         varExprList.forEachExpr((v,e)->walk(e,opVisitor, exprVisitor)) ;
      }
  
     private static OpVisitor   nullOpVisitor   = new OpVisitorBase() ;
@@ -180,10 +180,11 @@ public class Walker {
     }
  
     public static ApplyTransformVisitor createTransformer(Transform opTransform, ExprTransform exprTransform, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        // XXX XXX Copy forms?
         if ( opTransform == null )
             opTransform = nullOpTransform ;
         if ( exprTransform == null )
-            exprTransform = nullExprTransform ;
+            exprTransform = new ExprTransformCopy() ;
         return new ApplyTransformVisitor(opTransform, exprTransform, null, null) ;
     }
 }

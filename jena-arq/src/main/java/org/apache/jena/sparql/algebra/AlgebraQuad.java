@@ -65,7 +65,9 @@ public class AlgebraQuad
      *  an assign is done after the execution of the graph pattern block. 
      */
     static class QuadSlot
-    {   // Oh scala, where art thou!
+    {
+        // No longer needed (rewriting done elsewhere).
+        // Remove and use a stack of Nodes.
         final Node actualGraphName ;
         final Node rewriteGraphName ;
         QuadSlot(Node actualGraphName, Node rewriteGraphName)
@@ -95,6 +97,7 @@ public class AlgebraQuad
                 if ( vars.contains(gn) )
                     gnQuad = varAlloc.allocVar() ;
             }
+            //System.out.println("Pusher: "+gn) ;
             stack.push(new QuadSlot(gn, gnQuad)) ;
         }
     }
@@ -109,7 +112,8 @@ public class AlgebraQuad
             // The final work is done in the main vistor, 
             // which is called after the subnode has been 
             // rewritten.
-            stack.pop() ;
+            QuadSlot qs = stack.pop() ;
+            //System.out.println("Popper: "+qs.rewriteGraphName) ;
         }
     }    
 }

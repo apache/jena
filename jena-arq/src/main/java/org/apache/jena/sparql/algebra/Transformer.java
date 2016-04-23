@@ -24,7 +24,6 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
-import org.apache.jena.sparql.algebra.optimize.ExprTransformApplyTransform ;
 import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
@@ -79,6 +78,8 @@ public class Transformer
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
+        // XXX XXX REPLACED? ApplyTransformVisitor has a flag.
+        
         // Skip SERVICE
         if ( true )
         {
@@ -88,9 +89,7 @@ public class Transformer
         }
         else
         {
-            // Don't transform OpService and don't walk the sub-op 
-            ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
-            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, exprTransform) ;
+            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, null) ;
             WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
             OpWalker.walk(walker, op) ;
             return v.result() ;
@@ -120,13 +119,13 @@ public class Transformer
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        // XXX
-        ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
-        return transformation(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+        // XXX XXX
+        //ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
+        return transformation(transform, null, op, beforeVisitor, afterVisitor) ;
     }   
     
     protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        // XXX Switch on before/after via the Walker.
+        // XXX XXX Switch on before/after via the Walker.
         if ( true )
             return Walker.transform(op, transform, exprTransform, beforeVisitor, afterVisitor) ;
         
