@@ -20,6 +20,7 @@ package org.apache.jena.sparql.core;
 
 import java.util.* ;
 import java.util.function.BiConsumer ;
+import java.util.function.Consumer ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -61,8 +62,32 @@ public class VarExprList
     public List<Var> getVars()          { return vars ; }
     public Map<Var, Expr> getExprs()    { return exprs ; }
     
-    public void forEach(BiConsumer<Var, Expr> action) {
-        exprs.forEach(action); 
+    /** Call the action for each (variable, expression) defined.
+     *  Not called when there is no expression, just a variable.
+     *  Not order preserving.
+     */
+    public void forEachExpr(BiConsumer<Var, Expr> action) {
+        exprs.forEach(action);
+    }
+    
+    /** Call the action for each variable, in order.
+     *  The expression may be null.
+     *  Not called when there is no expression, just a variable.
+     */
+    public void forEachVarExpr(BiConsumer<Var, Expr> action) {
+        //*  See {@link #forEach}    
+        getVars().forEach((v) -> {
+            // Maybe null.
+            Expr e = exprs.get(v) ;
+            action.accept(v, e);
+        }) ;
+    }
+
+    /** Call the action for each variable, in order. */
+    public void forEachVar(Consumer<Var> action) {
+        getVars().forEach((v) -> {
+            action.accept(v);
+        }) ;
     }
 
     public boolean contains(Var var) { return vars.contains(var) ; }

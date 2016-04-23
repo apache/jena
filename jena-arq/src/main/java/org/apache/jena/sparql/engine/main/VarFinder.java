@@ -237,19 +237,20 @@ public class VarFinder
         @Override
         public void visit(OpAssign opAssign) {
             opAssign.getSubOp().visit(this);
-            processVarExprList(opAssign.getVarExprList());
+            processAssignVarExprList(opAssign.getVarExprList());
         }
 
         @Override
         public void visit(OpExtend opExtend) {
             opExtend.getSubOp().visit(this);
-            processVarExprList(opExtend.getVarExprList());
+            processAssignVarExprList(opExtend.getVarExprList());
         }
         
-        private void processVarExprList(VarExprList varExprList) {
-            varExprList.forEach((v,e)-> {
+        private void processAssignVarExprList(VarExprList varExprList) {
+            varExprList.forEachVarExpr((v,e)-> {
                 defines.add(v) ;
-                e.varsMentioned(assignMentions);
+                if ( e != null )
+                    e.varsMentioned(assignMentions);
             }) ;
         }
 
@@ -316,12 +317,10 @@ public class VarFinder
 
         @Override
         public void visit(OpGroup opGroup) {
-            // Not subOp.
+            // Only the group variables are visible.
+            // So not the subOp, and not expressions.
             VarExprList varExprs = opGroup.getGroupVars() ;
-            varExprs.forEach((v,expr)->{
-                addVar(defines, v) ;
-                // Not the expressions.
-            }) ;
+            varExprs.forEachVar((v)->addVar(defines, v)) ;
         }
 
         @Override
