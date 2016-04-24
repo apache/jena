@@ -433,6 +433,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
 
     private <T> void push(Deque<T> stack, T value) {
+        if ( value == null )
+            Log.warn(ApplyTransformVisitor.class, "Pushing null onto the "+stackLabel(stack)+" stack") ;
         stack.push(value) ;
     }
 
@@ -440,10 +442,11 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         try {
             T v = stack.pop() ;
             if ( v ==  null )
-                Log.warn(ApplyTransformVisitor.class, "Pop null from "+stackLabel(stack)+" stack") ;
+                Log.warn(ApplyTransformVisitor.class, "Pop null from the "+stackLabel(stack)+" stack") ;
             return v ;
         }
         catch (NoSuchElementException ex) {
+            if ( true ) throw new RuntimeException() ;
             Log.warn(ApplyTransformVisitor.class, "Empty "+stackLabel(stack)+" stack") ;
             return null ;
         }

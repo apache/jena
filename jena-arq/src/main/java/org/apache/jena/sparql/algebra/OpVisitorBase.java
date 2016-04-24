@@ -23,7 +23,8 @@ import org.apache.jena.sparql.algebra.op.* ;
 
 public class OpVisitorBase implements OpVisitor
 {
-
+    public OpVisitorBase() {}
+    
     @Override public void visit(OpBGP opBGP)                    {}
 
     @Override public void visit(OpQuadPattern quadPattern)      {}

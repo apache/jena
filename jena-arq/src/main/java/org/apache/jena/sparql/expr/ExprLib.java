@@ -95,11 +95,11 @@ public class ExprLib
         return ExprTransformer.transform(replaceAgg, expr) ;
     }
 
-    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
-    public static ExprList replaceAggregateByVariable(ExprList exprs)
-    {
-        return ExprTransformer.transform(replaceAgg, exprs) ;
-    }
+//    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
+//    public static ExprList replaceAggregateByVariable(ExprList exprs)
+//    {
+//        return ExprTransformer.transform(replaceAgg, exprs) ;
+//    }
     
     private static ExprTransform replaceAgg = new ExprTransformCopy()
     {

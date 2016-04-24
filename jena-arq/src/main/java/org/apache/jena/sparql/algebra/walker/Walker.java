@@ -133,10 +133,15 @@ public class Walker {
         if ( opVisitor == null )
             opVisitor = nullOpVisitor ;
         if ( exprVisitor == null )
-            exprVisitor = new ExprVisitorBase() ;
+            exprVisitor = nullExprVisitor ;
         return new WalkerVisitor(opVisitor, exprVisitor, beforeVisitor, afterVisitor)  ;
     }
     
+    /** Transform an algebra expression */
+    public static Op transform(Op op, Transform transform) {
+       return transform(op, transform, null) ;
+    }
+
     /** Transform an {@link Op}. */
     public static Op transform(Op op, Transform opTransform, ExprTransform exprTransform) {
         ApplyTransformVisitor v = createTransformer(opTransform, exprTransform) ;
@@ -147,12 +152,6 @@ public class Walker {
     public static Op transform(Op op, Transform opTransform, ExprTransform exprTransform, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         ApplyTransformVisitor v = createTransformer(opTransform, exprTransform) ;
         return transform(op, v, beforeVisitor, afterVisitor) ;
-    }
-
-    /** Transform an {@link Expr}. */
-    public static Expr transform(Expr expr, Transform opTransform, ExprTransform exprTransform) {
-        ApplyTransformVisitor v = createTransformer(opTransform, exprTransform) ;
-        return transform(expr, v) ;
     }
 
     /** Transform an {@link Op}. */
@@ -166,9 +165,20 @@ public class Walker {
         return v.opResult() ;
     }
 
+    /** Transform an expression */
+    public static Expr transform(Expr expr, ExprTransform exprTransform) {
+        return transform(expr, null, exprTransform) ;
+    }
+
+    /** Transform an {@link Expr}. */
+    public static Expr transform(Expr expr, Transform opTransform, ExprTransform exprTransform) {
+        ApplyTransformVisitor v = createTransformer(opTransform, exprTransform) ;
+        return transform(expr, v) ;
+    }
+
     /** Transform an {@link Expr}. */
     public static Expr transform(Expr expr, ApplyTransformVisitor v) {
-        walk(expr, v) ;
+        walk(expr, v, v, null, null) ;
         return v.exprResult() ;
     }
 
@@ -178,29 +188,18 @@ public class Walker {
         return v.exprResult() ;
     }
 
-    /** Transform an algebra expression */
-    public static Op transform(Op op, Transform transform) {
-       return transform(op, transform, null) ;
-    }
-    
-    /** Transform an expression */
-    public static Expr transform(Expr expr, ExprTransform exprTransform) {
-        return transform(expr, null, exprTransform) ;
-    }
-        
-    private static Transform     nullOpTransform   = new TransformBase() ;
-    private static ExprTransform nullExprTransform = new ExprTransformBase() ;
+    private static Transform     nullOpTransform   = new TransformCopy() ;
+    private static ExprTransform nullExprTransform = new ExprTransformCopy() ;
     
     public static ApplyTransformVisitor createTransformer(Transform opTransform, ExprTransform exprTransform) {
         return createTransformer(opTransform, exprTransform, null, null) ;
     }
  
     public static ApplyTransformVisitor createTransformer(Transform opTransform, ExprTransform exprTransform, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        // XXX XXX Copy forms?
         if ( opTransform == null )
             opTransform = nullOpTransform ;
         if ( exprTransform == null )
-            exprTransform = new ExprTransformCopy() ;
+            exprTransform = nullExprTransform ;
         return new ApplyTransformVisitor(opTransform, exprTransform, null, null) ;
     }
 }

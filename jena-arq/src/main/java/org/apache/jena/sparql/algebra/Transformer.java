@@ -67,12 +67,24 @@ public class Transformer
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
-    public static Op transformSkipService(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor,
+    public static Op transformSkipService(Transform opTransform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor,
                                           OpVisitor afterVisitor) {
+
+        // XXX XXX Needs fixing
+//        if ( opTransform == null )
+//            opTransform = new TransformBase() ;
+//        if ( exprTransform == null )
+//            exprTransform = new ExprTransformCopy() ;
+//        Transform transform2 = new TransformSkipService(opTransform) ;
+//        ApplyTransformVisitor atv = new ApplyTransformVisitor(transform2, exprTransform, beforeVisitor, afterVisitor) ;
+//        WalkerVisitor wv = new WalkerVisitorSkipService(atv, atv, beforeVisitor, afterVisitor) ;
+//        return Walker.transform(op, atv) ;
+
+        // OLD
         // Simplest way but still walks the OpService subtree (and throws away the
         // transformation).
-        Transform walker = new TransformSkipService(transform) ;
-        return Transformer.transform(walker, exprTransform, op, beforeVisitor, afterVisitor) ;
+        Transform transform = new TransformSkipService(opTransform) ;
+        return Transformer.transform(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
         // XXX XXX Better to modify the walk and force the transform to be a no-op.
     }
 
@@ -86,6 +98,10 @@ public class Transformer
     }
     
     protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        return transformation$(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+    }
+    
+    private Op transformation$(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         return Walker.transform(op, transform, exprTransform, beforeVisitor, afterVisitor) ;
     }
     
