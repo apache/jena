@@ -54,7 +54,7 @@ public class AlgebraQuad
         OpVisitor after = new Popper(stack) ;
         
         TransformQuadGraph qg = new TransformQuadGraph(stack, before, after) ;
-        return Transformer.transformSkipService(qg, op, before, after) ;
+        return Transformer.transformSkipService(qg, null, op, before, after) ;
     }
     
     /** This is the record of the transformation.

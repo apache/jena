@@ -31,7 +31,6 @@ import org.apache.jena.sparql.expr.* ;
 public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunction {
     protected final ExprVisitor exprVisitor ;
     protected final OpVisitor   opVisitor ;
-    protected boolean           visitService      = true ;
     protected int               opDepthLimit      = Integer.MAX_VALUE ;
     protected int               exprDepthLimit    = Integer.MAX_VALUE ;
 
@@ -62,12 +61,12 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         afterVisitor = after ;
     }
 
-    private void before(Op op) {
+    protected final void before(Op op) {
         if ( beforeVisitor != null )
             op.visit(beforeVisitor) ;
     }
 
-    private void after(Op op) {
+    protected final void after(Op op) {
         if ( afterVisitor != null )
             op.visit(afterVisitor) ;
     }
@@ -102,7 +101,11 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void walk(VarExprList varExprList) {
         if ( varExprList == null )
             return ;
-        varExprList.forEachVarExpr((v,e) -> walk( e!=null ? e : ExprNone.NONE ));
+        // retains order.
+        varExprList.forEachVarExpr((v,e) -> {
+            Expr expr = (e!=null) ? e : ExprNone.NONE ; 
+            walk(expr) ;
+        });
     }
 
     // ---- Mode swapping between op and expr. visit=>?walk
@@ -173,7 +176,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
             op.visit(opVisitor) ;
         after(op) ;
     }
-
+    
     @Override
     public void visitExt(OpExt op) {
         before(op) ;
@@ -182,16 +185,6 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         after(op) ;
     }
 
-    // Special case Ops.
-    // These should call super.visit to do full processing.
-    
-    @Override
-    public void visit(OpService op) {
-        if ( ! visitService )
-            return ;
-        OpVisitorByTypeAndExpr.super.visit(op) ;
-    }
-    
     @Override
     public void visit(OpOrder opOrder) {
         // XXX XXX

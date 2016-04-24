@@ -48,7 +48,16 @@ public class Walker {
     public static void walk(Op op, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         if ( op == null )
             return ;
-        createWalker(opVisitor, exprVisitor, beforeVisitor, afterVisitor).walk(op);
+        walk$(op, opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
+    }
+    
+    private static void walk$(Op op, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        WalkerVisitor wv = createWalker(opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
+        walk$(op, wv) ;
+    }
+    
+    private static void walk$(Op op, WalkerVisitor walker) {
+        walker.walk(op);
     }
 
     /** Walk visiting every {@link Expr} with an {@link ExprVisitor},
@@ -72,10 +81,17 @@ public class Walker {
     public static void walk(Expr expr, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         if ( expr == null )
             return ;
-        Objects.requireNonNull(expr) ;
-        createWalker(opVisitor, exprVisitor, beforeVisitor,afterVisitor).walk(expr);
+        walk$(expr, opVisitor, exprVisitor, beforeVisitor,afterVisitor) ;
     }
     
+    private static void walk$(Expr expr, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        WalkerVisitor wv = createWalker(opVisitor, exprVisitor, beforeVisitor,afterVisitor) ;
+        walk$(expr, wv);
+    }
+    
+    private static void walk$(Expr expr, WalkerVisitor walker) {
+        walker.walk(expr);
+    }
 
     /** Walk visiting every {@link Expr} with an {@link ExprVisitor},
      * including inside any {@link Op} in expressions.

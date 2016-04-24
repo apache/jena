@@ -45,7 +45,7 @@ public class TestTransformOpExt extends BaseTest
 
         @Override
         public Op apply(Transform transform, OpVisitor before, OpVisitor after) {
-            Op opx = Transformer.transformSkipService(transform, op, before, after) ;
+            Op opx = Transformer.transformSkipService(transform, null, op, before, after) ;
             return new OpExtTest(opx) ;
         }
 

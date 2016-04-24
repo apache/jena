@@ -20,29 +20,23 @@ package org.apache.jena.sparql.algebra.walker;
 
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.ExprList ;
 
 /** A visitor helper that maps all visits to a few general ones.
- *  Includes visitring expressions.  */ 
-public interface OpVisitorByTypeAndExpr extends OpVisitor
+ *  Does not visit expressions at all. */ 
+public interface OpVisitorByType extends OpVisitor
 {
-    public void visit0(Op0 op) ;    
+    public void visitN(OpN op) ;
+
+    public void visit2(Op2 op) ;
     
     public void visit1(Op1 op) ;
     
-    public void visit2(Op2 op) ;
+    public void visit0(Op0 op) ;    
     
-    public void visitN(OpN op) ;
-
     public default void visitExt(OpExt op) {
         op.effectiveOp().visit(this);
     }
 
-    public void visitExpr(ExprList exprs) ;
-    public void visitVarExpr(VarExprList exprs) ;
-    //public void visitAssignVar(Var var) ;
-    
     public default void visitModifer(OpModifier opMod) {
         visit1(opMod);
     }
@@ -104,7 +98,6 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpLeftJoin opLeftJoin) {
-        visitExpr(opLeftJoin.getExprs());
         visit2(opLeftJoin);
     }
 
@@ -130,7 +123,6 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpFilter opFilter) {
-        visitExpr(opFilter.getExprs());
         visit1(opFilter);
     }
 
@@ -178,9 +170,6 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpGroup opGroup) {
-        visitVarExpr(opGroup.getGroupVars()) ;
-        // XXX XXX
-        //opGroup.getAggregators() ;
         visit1(opGroup);
     }
 
@@ -193,13 +182,11 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     
     @Override
     public default void visit(OpAssign opAssign) {
-        visitVarExpr(opAssign.getVarExprList()) ;
         visit1(opAssign);
     }
 
     @Override
     public default void visit(OpExtend opExtend) {
-        visitVarExpr(opExtend.getVarExprList()) ;
         visit1(opExtend);
     }
 

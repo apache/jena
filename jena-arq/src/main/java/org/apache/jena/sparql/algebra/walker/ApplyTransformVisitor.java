@@ -153,7 +153,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
 
     // Special test cases for collectors.
     
-    // XXX XXX Check order 
+    // XXX XXX Check order : Check for "same"/unchanged
     private VarExprList collect(VarExprList varExprList) {
         if ( varExprList == null )
             return varExprList ;
@@ -167,7 +167,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
       for ( int i = 0 ; i < vars.size() ; i++ ) {
           Var v = vars.get(i) ;
           Expr e2 = x.get(i) ;
-          if ( e2 == null || e2 ==  ExprNone.NONE )
+          if ( e2 == null )
               varExpr2.add(v) ;
           else
               varExpr2.add(v, e2) ;
@@ -175,57 +175,33 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
       return varExpr2 ;
     }  
         
-    // XXX XXX Check order 
+    // XXX XXX Check order : Check for "same"/unchanged
     private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
         return new ExprList(collect(exprList.size())) ;
     }
     
-    // XXX XXX Check order 
+    // XXX XXX Check order : Check for "same"/unchanged
     private ExprList collect(List<Expr> exprList) {
         if ( exprList == null )
             return null ;
         return new ExprList(collect(exprList.size())) ;
     }
     
-    // collect and return in the original order (stacks reverse order). 
+    // collect and return in the original order (take account of stack reversal). 
     private List<Expr> collect(int N) {
+        // Check for "same"/unchanged
         List<Expr> x = new ArrayList<>(N) ;
         for ( int i = N-1 ; i >= 0 ; i-- ) {
             Expr e2 = pop(exprStack) ;
+            if ( e2 ==  ExprNone.NONE )
+                e2 = null ;
             x.add(0, e2) ;
         }
         return x ;
     }
     
-    // XXX collectExpr(N)
-
-    //    private ExprList process(ExprList exprList) {
-//        if ( exprList == null )
-//            return null ;
-//        ExprList exprList2 = new ExprList() ;
-//        boolean changed = false ;
-//        for ( Expr e : exprList ) {
-//            Expr e2 = process(e) ;
-//            exprList2.add(e2) ;
-//            if ( e != e2 )
-//                changed = true ;
-//        }
-//        if ( !changed )
-//            return exprList ;
-//        return exprList2 ;
-//
-//    private Expr process(Expr expr) {
-//        Expr e = expr ;
-//        Expr e2 = e ;
-//        if ( e != null )
-//            e2 = transform(e) ;
-//        if ( e == e2 )
-//            return expr ;
-//        return e2 ;
-//    }
-//
     @Override
     public void visit(OpGroup opGroup) {
         boolean changed = false ;

@@ -43,7 +43,7 @@ public class OpWalker
         op.visit(walkerVisitor) ;
     }
     
-    public static class WalkerVisitor extends OpVisitorByType {
+    protected static class WalkerVisitor extends OpVisitorByType {
         private final OpVisitor   beforeVisitor ;
         private final OpVisitor   afterVisitor ;
         protected final OpVisitor visitor ;
