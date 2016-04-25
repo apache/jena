@@ -103,7 +103,7 @@ public class WalkerVisitor0 implements OpVisitorByTypeAndExpr, ExprVisitorFuncti
             return ;
         // retains order.
         varExprList.forEachVarExpr((v,e) -> {
-            Expr expr = (e!=null) ? e : ExprNone.NONE ; 
+            Expr expr = (e!=null) ? e : Expr.NONE ; 
             walk(expr) ;
         });
     }

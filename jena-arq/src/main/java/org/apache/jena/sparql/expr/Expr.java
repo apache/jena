@@ -30,6 +30,8 @@ import org.apache.jena.sparql.graph.NodeTransform;
 
 public interface Expr
 {
+    public static final Expr NONE = ExprNone.NONE0 ;
+    
     public static final int CMP_GREATER  =  DatatypeConstants.GREATER ;
     public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL ;
     public static final int CMP_LESS     =  DatatypeConstants.LESSER ;

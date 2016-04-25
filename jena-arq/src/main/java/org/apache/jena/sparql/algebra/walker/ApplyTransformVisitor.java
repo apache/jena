@@ -219,7 +219,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         List<Expr> x = new ArrayList<>(N) ;
         for ( int i = N-1 ; i >= 0 ; i-- ) {
             Expr e2 = pop(exprStack) ;
-            if ( e2 ==  ExprNone.NONE )
+            if ( e2 ==  Expr.NONE )
                 e2 = null ;
             x.add(0, e2) ;
         }
