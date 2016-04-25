@@ -19,8 +19,10 @@
 package org.apache.jena.sparql.algebra;
 
 import org.apache.jena.sparql.algebra.op.OpService ;
+import org.apache.jena.sparql.algebra.walker.ApplyTransformVisitor ;
 import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.expr.ExprTransform ;
+import org.apache.jena.sparql.expr.ExprTransformCopy ;
 
 /** A bottom-top application of a transformation of SPARQL algebra */  
 public class Transformer
@@ -67,25 +69,29 @@ public class Transformer
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
-    public static Op transformSkipService(Transform opTransform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor,
-                                          OpVisitor afterVisitor) {
-
-        // XXX XXX Needs fixing
-//        if ( opTransform == null )
-//            opTransform = new TransformBase() ;
-//        if ( exprTransform == null )
-//            exprTransform = new ExprTransformCopy() ;
-//        Transform transform2 = new TransformSkipService(opTransform) ;
-//        ApplyTransformVisitor atv = new ApplyTransformVisitor(transform2, exprTransform, beforeVisitor, afterVisitor) ;
-//        WalkerVisitor wv = new WalkerVisitorSkipService(atv, atv, beforeVisitor, afterVisitor) ;
-//        return Walker.transform(op, atv) ;
-
-        // OLD
-        // Simplest way but still walks the OpService subtree (and throws away the
-        // transformation).
+    public static Op transformSkipService(Transform opTransform, ExprTransform exprTransform, Op op,
+                                          OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        
+        if ( true ) {
+            // XXX XXX Better work with Walker.
+            if ( opTransform == null )
+                opTransform = new TransformCopy() ;
+            if ( exprTransform == null )
+                exprTransform = new ExprTransformCopy() ;
+            Transform transform2 = new TransformSkipService(opTransform) ;
+            transform2 = opTransform ;
+            ApplyTransformVisitor atv = new ApplyTransformVisitor(transform2, exprTransform, false, beforeVisitor, afterVisitor) ;
+            return Walker.transformSkipService(op, atv, beforeVisitor, afterVisitor) ;
+        }
+        
         Transform transform = new TransformSkipService(opTransform) ;
         return Transformer.transform(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
-        // XXX XXX Better to modify the walk and force the transform to be a no-op.
+//        // OLD
+//        // Simplest way but still walks the OpService subtree (and throws away the
+//        // transformation).
+//        Transform transform = new TransformSkipService(opTransform) ;
+//        return Transformer.transform(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+//        // XXX XXX Better to modify the walk and force the transform to be a no-op.
     }
 
     // To allow subclassing this class, we use a singleton pattern

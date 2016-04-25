@@ -51,11 +51,22 @@ public class Walker {
         walk$(op, opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
     }
     
+    public static void walkSkipService(Op op, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        if ( op == null )
+            return ;
+        walkSkipService$(op, opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
+    }
+
     private static void walk$(Op op, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         WalkerVisitor wv = createWalker(opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
         walk$(op, wv) ;
     }
     
+    private static void walkSkipService$(Op op, OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        WalkerVisitor wv = createWalkerSkipService(opVisitor, exprVisitor, beforeVisitor, afterVisitor) ;
+        walk$(op, wv) ;
+    }
+
     private static void walk$(Op op, WalkerVisitor walker) {
         walker.walk(op);
     }
@@ -129,7 +140,6 @@ public class Walker {
     }
     
     public static WalkerVisitor createWalker(OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        
         if ( opVisitor == null )
             opVisitor = nullOpVisitor ;
         if ( exprVisitor == null )
@@ -137,6 +147,14 @@ public class Walker {
         return new WalkerVisitor(opVisitor, exprVisitor, beforeVisitor, afterVisitor)  ;
     }
     
+    public static WalkerVisitor createWalkerSkipService(OpVisitor opVisitor, ExprVisitor exprVisitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        if ( opVisitor == null )
+            opVisitor = nullOpVisitor ;
+        if ( exprVisitor == null )
+            exprVisitor = nullExprVisitor ;
+        return new WalkerVisitorSkipService(opVisitor, exprVisitor, beforeVisitor, afterVisitor)  ;
+    }
+
     /** Transform an algebra expression */
     public static Op transform(Op op, Transform transform) {
        return transform(op, transform, null) ;
@@ -150,7 +168,7 @@ public class Walker {
     
     /** Transform an {@link Op}. */
     public static Op transform(Op op, Transform opTransform, ExprTransform exprTransform, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        ApplyTransformVisitor v = createTransformer(opTransform, exprTransform) ;
+        ApplyTransformVisitor v = createTransformer(opTransform, exprTransform, beforeVisitor,afterVisitor) ;
         return transform(op, v, beforeVisitor, afterVisitor) ;
     }
 
@@ -162,6 +180,12 @@ public class Walker {
     /** Transform an {@link Op}. */
     public static Op transform(Op op, ApplyTransformVisitor v, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         walk(op, v, v, beforeVisitor, afterVisitor) ;
+        return v.opResult() ;
+    }
+
+    /** Transform an {@link Op}. */
+    public static Op transformSkipService(Op op, ApplyTransformVisitor v, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        walkSkipService(op, v, v, beforeVisitor, afterVisitor) ;
         return v.opResult() ;
     }
 
@@ -200,7 +224,7 @@ public class Walker {
             opTransform = nullOpTransform ;
         if ( exprTransform == null )
             exprTransform = nullExprTransform ;
-        return new ApplyTransformVisitor(opTransform, exprTransform, null, null) ;
+        return new ApplyTransformVisitor(opTransform, exprTransform, true, null, null) ;
     }
 }
 

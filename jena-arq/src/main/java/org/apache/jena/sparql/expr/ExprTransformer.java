@@ -24,7 +24,6 @@ public class ExprTransformer
 {
     /** Transform an expression */
     public static Expr transform(ExprTransform transform, Expr expr)
-    //{ return get().transformation(transform, expr) ; }
     { return Walker.transform(expr, transform) ;}
 
     /** Transform an expression list */

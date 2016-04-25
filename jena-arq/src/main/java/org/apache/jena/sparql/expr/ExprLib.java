@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
@@ -191,7 +192,7 @@ public class ExprLib
      */
     public static boolean isStable(Expr expr) {
         try {
-            ExprWalker.walk(exprVisitorCheckForNonFunctions, expr) ;
+            Walker.walk(expr, exprVisitorCheckForNonFunctions) ;
             return true ;
         } catch ( ExprUnstable ex ) {
             return false ;

@@ -31,7 +31,9 @@ public class WalkerVisitorSkipService extends WalkerVisitor {
     
     @Override
     public void visit(OpService op) {
-        return ;
+        // Visit the op itself but not the subOp. 
+        if ( opVisitor != null )
+            op.visit(opVisitor) ;
     }
 }
 

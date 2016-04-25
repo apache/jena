@@ -38,7 +38,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     private final Transform     opTransform ;
     private final ExprTransform exprTransform ;
 
-    protected boolean           visitService = true ;
+    protected final boolean     visitService ;
     
     private final Deque<Op>     opStack   = new ArrayDeque<>() ;
     private final Deque<Expr>   exprStack = new ArrayDeque<>() ;
@@ -46,14 +46,17 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     private final OpVisitor     beforeVisitor ;
     private final OpVisitor     afterVisitor ;
 
-    public ApplyTransformVisitor(Transform opTransform, ExprTransform exprTransform, OpVisitor before, OpVisitor after) {
+    public ApplyTransformVisitor(Transform opTransform, ExprTransform exprTransform,
+                                 boolean visitService,
+                                 OpVisitor before, OpVisitor after) {
         this.opTransform = opTransform ;
         this.exprTransform = exprTransform ;
         this.beforeVisitor = before ;
         this.afterVisitor = after ;
+        this.visitService = visitService ;
     }
 
-    /*package*/ final Op opResult() {
+    public /*package*/ final Op opResult() {
         return pop(opStack) ;
     }
 
@@ -64,10 +67,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     private static boolean ISOLATE = false ;
 
     protected Op transform(Op op) {
-        if ( ISOLATE ) {
-            ApplyTransformVisitor atv = new ApplyTransformVisitor(opTransform, exprTransform, beforeVisitor, afterVisitor) ;
-            return Walker.transform(op, atv, beforeVisitor, afterVisitor) ;
-        }
+        // XXX XXX
+        //if ( ISOLATE ) { }
         
         int x1 = opStack.size() ;
         int x2 = exprStack.size() ;
@@ -85,10 +86,9 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
     
     protected Expr transform(Expr expr) {
-        if ( ISOLATE ) {
-            ApplyTransformVisitor atv = new ApplyTransformVisitor(opTransform, exprTransform, beforeVisitor, afterVisitor) ;
-            return Walker.transform(expr, atv, beforeVisitor, afterVisitor) ;
-        }
+        // XXX XXX
+        //if ( ISOLATE ) { }
+        
         int x1 = opStack.size() ;
         int x2 = exprStack.size() ;
         // reuse this ApplyTransformVisitor? with stack checking?
@@ -334,7 +334,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     @Override
     public void visit(OpService op) {
         if ( ! visitService ) {
-            // No visit - push input.
+            // No visit - no transform - push input.
             push(opStack, op) ;
             return ;
         }
