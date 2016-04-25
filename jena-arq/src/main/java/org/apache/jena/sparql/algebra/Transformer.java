@@ -91,7 +91,6 @@ public class Transformer
 //        // transformation).
 //        Transform transform = new TransformSkipService(opTransform) ;
 //        return Transformer.transform(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
-//        // XXX XXX Better to modify the walk and force the transform to be a no-op.
     }
 
     // To allow subclassing this class, we use a singleton pattern

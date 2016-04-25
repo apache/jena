@@ -23,6 +23,7 @@ import java.util.List ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.ExprList ;
@@ -46,7 +47,7 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     public void visitExpr(ExprList exprs) ;
     public void visitVarExpr(VarExprList exprs) ;
-    //public void visitAssignVar(Var var) ;
+    public default void visitAssignVar(Var var) {}
     
     // Currently, we assume these are handled by the visitor/transformer.
     public default void visitSortConditions(List<SortCondition> list)       {}

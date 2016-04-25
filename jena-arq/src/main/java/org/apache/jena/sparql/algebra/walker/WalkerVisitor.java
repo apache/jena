@@ -187,21 +187,13 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
 
     @Override
     public void visit(OpOrder opOrder) {
-        // XXX XXX
-//        List<SortCondition> conditions = opOrder.getConditions() ;
-//        List<SortCondition> conditions2 = new ArrayList<>() ;
-//        boolean changed = false ;
-//
-//        for ( SortCondition sc : conditions ) {
-//            Expr e = sc.getExpression() ;
-//            Expr e2 = transform(e) ;
-//            conditions2.add(new SortCondition(e2, sc.getDirection())) ;
-//            if ( e != e2 )
-//                changed = true ;
-//        }
-//        OpOrder x = opOrder ;
-//        if ( changed )
-//            x = new OpOrder(opOrder.getSubOp(), conditions2) ;
+        // XXX Why not this?
+        // ApplyTransformVisitor handles the parts of OpOrder.  
+//        before(opOrder) ;
+//        visitSortConditions(opOrder.getConditions()) ;
+//        visitModifer(opOrder);
+//        visit1$(opOrder);
+//        after(opOrder) ;
         visit1(opOrder) ;
     }
 
@@ -302,10 +294,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     public void visit(ExprAggregator eAgg) {
         // This is the assignment variable of the aggregation
         // not a normal variable of an expression.
-
-        // visitAssignVar(eAgg.getAggVar().asVar()) ;
-
-        // XXX XXX Hack for varsMentioned
+        visitAssignVar(eAgg.getAggVar().asVar()) ;
         if ( exprVisitor != null )
             eAgg.visit(exprVisitor) ;
     }
