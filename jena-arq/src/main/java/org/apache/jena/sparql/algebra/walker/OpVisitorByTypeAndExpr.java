@@ -18,13 +18,18 @@
 
 package org.apache.jena.sparql.algebra.walker;
 
+import java.util.List ;
+
+import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.expr.ExprAggregator ;
 import org.apache.jena.sparql.expr.ExprList ;
 
 /** A visitor helper that maps all visits to a few general ones.
- *  Includes visitring expressions.  */ 
+ *  Includes visiting expressions, sort conditions etc
+ */
 public interface OpVisitorByTypeAndExpr extends OpVisitor
 {
     public void visit0(Op0 op) ;    
@@ -43,6 +48,10 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     public void visitVarExpr(VarExprList exprs) ;
     //public void visitAssignVar(Var var) ;
     
+    // Currently, we assume these are handled by the visitor/transformer.
+    public default void visitSortConditions(List<SortCondition> list)       {}
+    public default void visitAggregators(List<ExprAggregator> aggregators)  {}
+
     public default void visitModifer(OpModifier opMod) {
         visit1(opMod);
     }
@@ -171,23 +180,20 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpOrder opOrder) {
-        // XXX XXX
-        //opOrder.getConditions() ;
+        visitSortConditions(opOrder.getConditions()) ;
         visitModifer(opOrder);
     }
 
     @Override
     public default void visit(OpGroup opGroup) {
         visitVarExpr(opGroup.getGroupVars()) ;
-        // XXX XXX
-        //opGroup.getAggregators() ;
+        visitAggregators(opGroup.getAggregators()) ;
         visit1(opGroup);
     }
 
     @Override
     public default void visit(OpTopN opTop) {
-        // XXX XXX
-        // opTop.getConditions() ;
+        visitSortConditions(opTop.getConditions()) ;
         visit1(opTop);
     }
     

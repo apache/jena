@@ -20,6 +20,7 @@ package org.apache.jena.sparql.algebra.walker;
 
 import java.util.* ;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -64,34 +65,25 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         return pop(exprStack) ;
     }
     
-    private static boolean ISOLATE = false ;
+//    protected Op transform(Op op) {
+//        int x1 = opStack.size() ;
+//        int x2 = exprStack.size() ;
+//        try {
+//            return Walker.transform(op, this, beforeVisitor, afterVisitor) ;
+//        } finally {
+//            int y1 = opStack.size() ;
+//            int y2 = exprStack.size() ;
+//            if ( x1 != y1 )
+//                System.err.println("Misaligned opStack") ;
+//            if ( x2 != y2 )
+//                System.err.println("Misaligned exprStack") ;
+//        }
+//    }
 
-    protected Op transform(Op op) {
-        // XXX XXX
-        //if ( ISOLATE ) { }
-        
-        int x1 = opStack.size() ;
-        int x2 = exprStack.size() ;
-        try {
-            // reuse this ApplyTransformVisitor? with stack checking?
-            return Walker.transform(op, this, beforeVisitor, afterVisitor) ;
-        } finally {
-            int y1 = opStack.size() ;
-            int y2 = exprStack.size() ;
-            if ( x1 != y1 )
-                System.err.println("Misaligned opStack") ;
-            if ( x2 != y2 )
-                System.err.println("Misaligned exprStack") ;
-        }
-    }
-    
+    // These three could be calls within WalkerVisitor followed by "collect".
     protected Expr transform(Expr expr) {
-        // XXX XXX
-        //if ( ISOLATE ) { }
-        
         int x1 = opStack.size() ;
         int x2 = exprStack.size() ;
-        // reuse this ApplyTransformVisitor? with stack checking?
         try {
             return Walker.transform(expr, this, beforeVisitor, afterVisitor) ;
         } finally {
@@ -111,6 +103,25 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         exprList.forEach( e->exprList2.add(transform(e)) );
         return exprList2 ;
     }
+
+    protected List<SortCondition> transform(List<SortCondition> conditions) {
+        List<SortCondition> conditions2 = new ArrayList<>() ;
+        boolean changed = false ;
+
+        for ( SortCondition sc : conditions ) {
+            Expr e = sc.getExpression() ;
+            Expr e2 = transform(e) ;
+            conditions2.add(new SortCondition(e2, sc.getDirection())) ;
+            if ( e != e2 )
+                changed = true ;
+        }
+        if ( changed )
+            return conditions2 ;
+        else
+            return conditions ;
+  }
+
+    // Interact with WalkerVisitor.
 
     @Override
     public void visit(OpOrder opOrder) {
@@ -152,8 +163,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
 
     // Special test cases for collectors.
-    
-    // XXX XXX Check order : Check for "same"/unchanged
+
+    // Careful about order.
     private VarExprList collect(VarExprList varExprList) {
         if ( varExprList == null )
             return varExprList ;
@@ -161,28 +172,41 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
       VarExprList varExpr2 = new VarExprList() ;
       
       List<Expr> x = collect(vars.size()) ;
+
+//      for ( int i = 0 ; i < vars.size() ; i++ ) {
+//          Var v = vars.get(i) ;
+//          Expr e2 = x.get(i) ;
+//          if ( e2 == null )
+//              varExpr2.add(v) ;
+//          else
+//              varExpr2.add(v, e2) ;
+//      }
+//      return varExpr2 ;
       
-      boolean changed = false ;     // XXX XXX
+      boolean changed = false ;
 
       for ( int i = 0 ; i < vars.size() ; i++ ) {
           Var v = vars.get(i) ;
           Expr e2 = x.get(i) ;
+          Expr e = varExpr2.getExpr(v) ;
+          if ( e != e2 )
+              changed = true ;
           if ( e2 == null )
               varExpr2.add(v) ;
-          else
+          else {
               varExpr2.add(v, e2) ;
+          }
       }
-      return varExpr2 ;
+      return changed ? varExpr2 : varExprList ;
+
     }  
         
-    // XXX XXX Check order : Check for "same"/unchanged
     private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
         return new ExprList(collect(exprList.size())) ;
     }
     
-    // XXX XXX Check order : Check for "same"/unchanged
     private ExprList collect(List<Expr> exprList) {
         if ( exprList == null )
             return null ;
@@ -338,7 +362,6 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             push(opStack, op) ;
             return ;
         }
-        // op.getService()
         OpVisitorByTypeAndExpr.super.visit(op);
     }
 
@@ -349,22 +372,12 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     
     @Override
     public void visitExpr(ExprList exprs) { 
-        // XXX XXX
-        // Not called?
-        System.err.println("visitExpr(ExprList)") ;
-        if ( exprs != null && exprTransform != null ) {
-            
-        }
+        throw new InternalErrorException("Didn't expect as call to ApplyTransformVisit.visitExpr") ;
     }
     
     @Override
     public void visitVarExpr(VarExprList exprVarExprList)  {
-        // XXX XXX
-        // Not called?
-        System.err.println("visitExpr(ExprList)") ;
-        if ( exprVarExprList != null && exprTransform != null ) {
-            
-        }
+        throw new InternalErrorException("Didn't expect as call to ApplyTransformVisit.visitVarExpr") ;
     }
     
     @Override

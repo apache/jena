@@ -201,6 +201,12 @@ public class Walker {
     }
 
     /** Transform an {@link Expr}. */
+    public static Expr transform(Expr expr, Transform opTransform, ExprTransform exprTransform, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        ApplyTransformVisitor v = createTransformer(opTransform, exprTransform, beforeVisitor,afterVisitor) ;
+        return transform(expr, v, beforeVisitor, afterVisitor) ;
+    }
+
+    /** Transform an {@link Expr}. */
     public static Expr transform(Expr expr, ApplyTransformVisitor v) {
         walk(expr, v, v, null, null) ;
         return v.exprResult() ;

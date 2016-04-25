@@ -25,6 +25,8 @@ import org.apache.jena.sparql.algebra.op.* ;
  *  Does not visit expressions at all. */ 
 public interface OpVisitorByType extends OpVisitor
 {
+    public void DUMMY() ;
+
     public void visitN(OpN op) ;
 
     public void visit2(Op2 op) ;
@@ -163,8 +165,6 @@ public interface OpVisitorByType extends OpVisitor
 
     @Override
     public default void visit(OpOrder opOrder) {
-        // XXX XXX
-        //opOrder.getConditions() ;
         visitModifer(opOrder);
     }
 
@@ -175,8 +175,6 @@ public interface OpVisitorByType extends OpVisitor
 
     @Override
     public default void visit(OpTopN opTop) {
-        // XXX XXX
-        // opTop.getConditions() ;
         visit1(opTop);
     }
     

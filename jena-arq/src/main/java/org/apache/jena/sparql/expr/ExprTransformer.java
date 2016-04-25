@@ -35,5 +35,16 @@ public class ExprTransformer
             exprList2.add(e2) ;
         }) ;
         return exprList2 ;
+//        boolean changed = false ;
+//        for ( Expr e : exprList ) {
+//            Expr e2 = transform(transform, e) ;
+//            exprList2.add(e2) ;
+//            if ( e != e2 )
+//                changed = true ;
+//        } ;
+//        if ( changed )
+//            return exprList2 ;
+//        else
+//            return exprList ;
     }
 }
