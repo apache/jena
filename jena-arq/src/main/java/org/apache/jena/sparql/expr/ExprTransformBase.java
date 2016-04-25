@@ -29,6 +29,7 @@ public class ExprTransformBase implements ExprTransform
     @Override public Expr transform(ExprFunctionN func, ExprList args)                        { return func ; }
     @Override public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)           { return funcOp ; }
     @Override public Expr transform(NodeValue nv)                                             { return nv ; }
+    @Override public Expr transform(ExprNone exprNone)                                        { return exprNone ; }
     @Override public Expr transform(ExprVar ev)                                               { return ev ; }
     @Override public Expr transform(ExprAggregator eAgg)                                      { return eAgg ; }
 }

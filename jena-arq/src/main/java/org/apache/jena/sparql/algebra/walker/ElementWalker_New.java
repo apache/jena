@@ -168,7 +168,7 @@ public class ElementWalker_New {
                 Expr expr = func.getArg(i) ;
                 if ( expr == null )
                     // Put a dummy in, e.g. to keep the transform stack aligned.
-                    NodeValue.nvNothing.visit(this) ;
+                    Expr.NONE.visit(this) ;
                 else
                     expr.visit(this) ;
             }

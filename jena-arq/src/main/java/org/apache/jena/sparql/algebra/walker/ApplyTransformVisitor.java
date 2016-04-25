@@ -219,7 +219,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         List<Expr> x = new ArrayList<>(N) ;
         for ( int i = N-1 ; i >= 0 ; i-- ) {
             Expr e2 = pop(exprStack) ;
-            if ( e2 ==  Expr.NONE )
+            if ( e2 == Expr.NONE )
                 e2 = null ;
             x.add(0, e2) ;
         }
@@ -442,6 +442,11 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     @Override
     public void visit(ExprAggregator eAgg) {
         Expr e = eAgg.apply(exprTransform) ;
+        push(exprStack, e) ;
+    }
+    
+    @Override
+    public void visit(ExprNone e) {
         push(exprStack, e) ;
     }
 

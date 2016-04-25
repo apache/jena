@@ -26,16 +26,22 @@ import org.apache.jena.sparql.graph.NodeTransform ;
 /** Marker, used in place of a null.
  *  This may be tested for using {@code ==} */
 
-/*package*/ class ExprNone extends ExprNode {
-    
-    /*paclage*/ static Expr NONE0 = new ExprNone() ; 
-    
-    private ExprNone() {}
+//public /*package*/ class ExprNone extends ExprVar { // extends ExprNode {
+//    
+//    /*package*/ static Expr NONE0 = new ExprNone() ; 
+//    
+//    private ExprNone() { super("") ; }
+//}
 
-    @Override public void visit(ExprVisitor visitor) {}
+public class ExprNone extends ExprNode {
+    
+    /*package*/ static Expr NONE0 = new ExprNone() ;
+    private ExprNone() {}
+    
+    @Override public void visit(ExprVisitor visitor) { visitor.visit(this); }
 
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
-        throw new InternalErrorException("Attempt to evalk ExprNone") ;
+        throw new InternalErrorException("Attempt to eval ExprNone") ;
     }
 
     @Override

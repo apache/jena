@@ -103,7 +103,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
             return ;
         // retains order.
         varExprList.forEachVarExpr((v,e) -> {
-            Expr expr = (e!=null) ? e : Expr.NONE ; 
+            Expr expr = (e!=null) ? e : Expr.NONE ;
             walk(expr) ;
         });
     }
@@ -265,7 +265,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
             Expr expr = func.getArg(i) ;
             if ( expr == null )
                 // Put a dummy in, e.g. to keep the transform stack aligned.
-                NodeValue.nvNothing.visit(this) ;
+                Expr.NONE.visit(this) ;
             else
                 expr.visit(this) ;
         }
@@ -293,6 +293,12 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
     }
 
     @Override
+    public void visit(ExprNone none) {
+        if ( exprVisitor != null )
+            none.visit(exprVisitor) ;
+    }
+
+    @Override
     public void visit(ExprAggregator eAgg) {
         // This is the assignment variable of the aggregation
         // not a normal variable of an expression.
@@ -304,5 +310,3 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
             eAgg.visit(exprVisitor) ;
     }
 }
-
-
