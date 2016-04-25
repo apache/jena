@@ -121,5 +121,5 @@ public abstract class ExprNode implements Expr
     public boolean isGraphPattern()     { return false ; }
     public Op getGraphPattern()         { return null ; }
     @Override
-    public String toString()            { return WriterExpr.asString(this) ; } // was ExprUtils.fmtSPARQL(this) 
+    public String toString()            { return WriterExpr.asString(this) ; } 
 }
