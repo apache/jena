@@ -97,9 +97,6 @@ public class Transformer
     // To allow subclassing this class, we use a singleton pattern
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        // XXX XXX
-        // ExprTransform exprTransform = new ExprTransformApplyTransform(transform,
-        // beforeVisitor, afterVisitor) ;
         return transformation(transform, null, op, beforeVisitor, afterVisitor) ;
     }
     
