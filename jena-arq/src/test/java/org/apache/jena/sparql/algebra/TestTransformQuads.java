@@ -151,7 +151,38 @@ public class TestTransformQuads extends BaseTest
                                          "                         (quadpattern (quad ?g ?x ?y ?z))))))",
                                          "    (table unit))") ; }
 
-        
+    // Don't touch SERVICE 
+    @Test public void quads38() { test ("{ {?s ?p ?o } UNION { SERVICE <http://host/endpoint> { GRAPH ?gr { ?sr ?pr ?or }}} }",
+                                        "(union",
+                                        "  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o))",
+                                        "  (service <http://host/endpoint>",
+                                        "    (graph ?gr",
+                                        "      (bgp (triple ?sr ?pr ?or))))",
+                                        ")") ; }
+    
+    // Don't touch SERVICE 
+    @Test public void quads39() { test ("{ { GRAPH ?g { ?s ?p ?o } } UNION { SERVICE <http://host/endpoint> { GRAPH ?gr { ?sr ?pr ?or }}} }",
+                                        "(union",
+                                        "  (quadpattern (?g ?s ?p ?o))",
+                                        "  (service <http://host/endpoint>",
+                                        "    (graph ?gr",
+                                        "      (bgp (triple ?sr ?pr ?or))))",
+                                        ")") ; }
+    
+    // Don't touch SERVICE 
+    @Test public void quads40() { test ("{ GRAPH ?g { SERVICE <http://host/endpoint> { ?s ?p ?o }}}",
+                                        "(service <http://host/endpoint> (bgp (triple ?s ?p ?o)))") ;
+                                }
+
+    // Don't touch SERVICE 
+    @Test public void quads41() { test ("{ GRAPH ?g1 { SERVICE <http://host/endpoint> { ?s ?p ?o } ?s1 ?p1 ?o1 } }",
+                                        "(sequence",
+                                        "   (service <http://host/endpoint> (bgp (triple ?s ?p ?o)))",
+                                        "   (quadpattern (?g1 ?s1 ?p1 ?o1))",
+                                        ")") ;
+                                }
+
+
 
     private static void test(String patternString, String... strExpected) {
         test(patternString, true, strExpected) ;
