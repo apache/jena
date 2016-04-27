@@ -39,7 +39,7 @@ import org.apache.jena.sparql.syntax.ElementGroup ;
 /** Support for transformation of query abstract syntax. */ 
 
 public class QueryTransformOps {
-    public static Query transform(Query query, Map<Var, Node> substitutions) {
+    public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions) ;
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions) ;
         ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans) ;
@@ -83,11 +83,12 @@ public class QueryTransformOps {
             if ( ev != ev2 ) {
                 if ( e != null )
                     throw new ARQException("Can't substitute " + v + " because it's used as an AS variable") ;
-                if ( ev2 instanceof NodeValue ) {
-                    // Convert to (substit value AS ?var)
+                if ( ev2.isConstant() || ev2.isVariable() ) {
+                    // Convert to (substitute value AS ?var)
                     map.put(v, ev2) ;
                     continue ;
-                } else
+                } 
+                else
                     throw new ARQException("Can't substitute " + v + " because it's not a simple value: " + ev2) ;
             }
             if ( e == null )
