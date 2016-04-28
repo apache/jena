@@ -27,6 +27,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.shared.CannotEncodeCharacterException ;
+import org.apache.jena.util.SplitIRI ;
 import org.apache.xerces.util.XMLChar ;
 
 /** Some utility functions.
@@ -45,6 +46,7 @@ public class Util extends Object {
      * 
      * @param uri
      * @return the index of the first character of the localname
+     * @see SplitIRI
      */
     public static int splitNamespaceXML(String uri) {
         
