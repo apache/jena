@@ -74,9 +74,14 @@ public class TextQueryFuncs {
         String field = defn.getField(p) ;
         if ( field == null )
             return null ;
-    
+        if ( !o.isLiteral() ) {
+            Log.warn(TextQuery.class, "Not a literal value for mapped field-predicate: " + field + " :: "
+                     + FmtUtils.stringForString(field)) ;
+            return null ;
+        }
         String x = TextQueryFuncs.subjectToString(s) ;
         String graphText = TextQueryFuncs.graphNodeToString(g) ;
+
         String language = o.getLiteral().language() ;
         RDFDatatype datatype = o.getLiteral().getDatatype() ;
         Entity entity = new Entity(x, graphText, language, datatype) ;
@@ -84,11 +89,6 @@ public class TextQueryFuncs {
         if ( defn.getGraphField() != null )
             entity.put(graphField, graphText) ;
     
-        if ( !o.isLiteral() ) {
-            Log.warn(TextQuery.class, "Not a literal value for mapped field-predicate: " + field + " :: "
-                     + FmtUtils.stringForString(field)) ;
-            return null ;
-        }
         entity.put(field, o.getLiteralLexicalForm()) ;
         return entity ;
     }
