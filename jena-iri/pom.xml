@@ -23,11 +23,11 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - IRI</name>
-  <version>3.1.0</version>
+  <version>3.1.1-SNAPSHOT</version>
     <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
   
