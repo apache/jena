@@ -16,18 +16,20 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>17-SNAPSHOT</version>
+    <version>16-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
   <name>Apache Jena - Command line tools</name>
   <artifactId>jena-cmds</artifactId>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.0-SNAPSHOT</version>
 
   <description>Command line tools</description>
 
@@ -67,7 +69,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.1.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -93,7 +95,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.1.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -101,7 +103,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.1.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -109,7 +111,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.1.1-SNAPSHOT</version>
+      <version>3.1.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
