@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
   <name>Apache Jena - OSGi</name>
   <artifactId>apache-jena-osgi</artifactId>
-  <version>3.1.0</version>
+  <version>3.1.1-SNAPSHOT</version>
 
   <description>Apache Jena OSGi distribution and test</description>
   <packaging>pom</packaging>
