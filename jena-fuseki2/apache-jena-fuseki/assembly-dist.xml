@@ -39,7 +39,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-	    <include>org.apache.jena:jena-fuseki-server:jar</include>
+        <include>org.apache.jena:jena-fuseki-server:jar</include>
       </includes>
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
 
@@ -48,7 +48,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-	    <include>org.apache.jena:jena-fuseki-war:war</include>
+        <include>org.apache.jena:jena-fuseki-war:war</include>
       </includes>
       <outputFileNameMapping>fuseki.war</outputFileNameMapping>
 
@@ -71,7 +71,7 @@
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-	    <include>templates/*</include>
+        <include>templates/*</include>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
       </includes>
@@ -84,7 +84,7 @@
         <include>fuseki</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>
-	    <include>bin/*</include>
+        <include>bin/*</include>
       </includes>
     </fileSet>
 
