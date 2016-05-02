@@ -181,6 +181,12 @@ public class TestFunctions
     @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)") ; }
     @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
 
+    @Test public void exprStrNormalizeSpace0() { test("fn:normalize-space(' The    wealthy curled darlings                                         of    our    nation. ')",
+            NodeValue.makeString("The wealthy curled darlings of our nation.")) ; }
+    @Test public void exprStrNormalizeSpace1() { test("fn:normalize-space('')",NodeValue.nvEmptyString) ; }
+    @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
+    @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
+
     @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
     @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
     @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }

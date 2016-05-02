@@ -710,6 +710,15 @@ public class XSDFuncOp
         return NodeValue.makeString(sb.toString()) ;
     }
 
+    /** fn:normalizeSpace */
+    public static NodeValue strNormalizeSpace(NodeValue v){
+        String str = v.asString() ;
+        if(str == "" )
+            return NodeValue.nvEmptyString;
+        str = str.trim().replaceAll("\\s+"," ");
+        return NodeValue.makeString(str) ;
+    }
+
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2) {
         if ( !nv1.isNumber() )
             throw new ExprEvalTypeException("Not a number (first arg to " + fName + "): " + nv1) ;
