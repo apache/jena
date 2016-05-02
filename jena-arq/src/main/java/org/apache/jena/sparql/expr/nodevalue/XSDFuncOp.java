@@ -310,20 +310,61 @@ public class XSDFuncOp
 
     public static NodeValue round(NodeValue v) {
         switch (classifyNumeric("round", v)) {
-            case OP_INTEGER :
-                return v ;
-            case OP_DECIMAL :
-                int sgn = v.getDecimal().signum() ;
-                BigDecimal dec ;
-                if ( sgn < 0 )
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN) ;
+            case OP_INTEGER:
+                return v;
+            case OP_DECIMAL:
+                int sgn = v.getDecimal().signum();
+                BigDecimal dec;
+                if (sgn < 0)
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN);
                 else
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP) ;
-                return NodeValue.makeDecimal(dec) ;
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP);
+                return NodeValue.makeDecimal(dec);
+            case OP_FLOAT:
+                return NodeValue.makeFloat(Math.round(v.getFloat()));
+            case OP_DOUBLE:
+                return NodeValue.makeDouble(Math.round(v.getDouble()));
+            default:
+                throw new ARQInternalErrorException("Unrecognized numeric operation : " + v);
+        }
+    }
+
+    // THE FOLLOWING ROUND FUNCTION IS the xpath3 compatible version of the round function above.
+    // I created a new one because the round function is used in the E_NumRound class used for
+    // SPARQL 1.1 compatible syntax that in turn is compatible with Xpath 2 for which the spec
+    // for round was different.
+    private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
+    {
+        if(isHalfToEven){
+            return dec.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+        }
+        else {
+            int sgn = dec.signum();
+            if (sgn < 0)
+                return dec.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
+            else
+                return dec.setScale(precision, BigDecimal.ROUND_HALF_UP);
+        }
+    }
+
+    public static NodeValue roundXpath3(NodeValue v,NodeValue precision,boolean isHalfEven) {
+        if(!precision.isInteger()){
+            throw new ExprEvalTypeException("The precision for rounding should be an integer");
+        }
+        int precisionInt = precision.getInteger().intValue();
+        String fName = isHalfEven ? "round-half-to-even" : "round";
+        switch (classifyNumeric(fName, v)) {
+            case OP_INTEGER :
+                BigDecimal decFromInt = roundDecimalValue(new BigDecimal(v.getInteger()),precisionInt,isHalfEven);
+                return NodeValue.makeInteger(decFromInt.toBigIntegerExact());
+            case OP_DECIMAL :
+                return NodeValue.makeDecimal(roundDecimalValue(v.getDecimal(),precisionInt,isHalfEven)) ;
             case OP_FLOAT :
-                return NodeValue.makeFloat(Math.round(v.getFloat())) ;
+                BigDecimal decFromFloat = roundDecimalValue(new BigDecimal(v.getFloat()),precisionInt,isHalfEven);
+                return NodeValue.makeFloat(decFromFloat.floatValue()) ;
             case OP_DOUBLE :
-                return NodeValue.makeDouble(Math.round(v.getDouble())) ;
+                BigDecimal decFromDouble = roundDecimalValue(new BigDecimal(v.getDouble()),precisionInt,isHalfEven);
+                return NodeValue.makeDouble(decFromDouble.doubleValue()) ;
             default :
                 throw new ARQInternalErrorException("Unrecognized numeric operation : " + v) ;
         }

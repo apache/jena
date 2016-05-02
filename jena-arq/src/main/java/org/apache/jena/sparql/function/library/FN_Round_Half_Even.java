@@ -22,17 +22,15 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.List;
 
-/** round(expression) */ 
-
-public class FN_Round  extends FunctionBase
+public class FN_Round_Half_Even extends FunctionBase
 {
-    public FN_Round() { super() ; }
+    public FN_Round_Half_Even() { super() ; }
 
     @Override
     public void checkBuild(String uri, ExprList args)
@@ -52,9 +50,9 @@ public class FN_Round  extends FunctionBase
         if ( args.size() == 2 )
         {
             NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.roundXpath3(v1, v2,false) ;
+            return XSDFuncOp.roundXpath3(v1, v2,true) ;
         }
 
-        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0),false) ;
+        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0),true) ;
     }
 }
