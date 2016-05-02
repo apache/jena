@@ -187,6 +187,32 @@ public class TestFunctions
     @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
     @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
 
+    // from http://www.unicode.org/reports/tr15/
+    //l
+    @Test public void exprStrNormalizeUnicode0() { test("fn:normalize-unicode('Äffin','nfd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode1() { test("fn:normalize-unicode('Äffin','nfc')",NodeValue.makeString("Äffin")) ; }
+    //m
+    @Test public void exprStrNormalizeUnicode2() { test("fn:normalize-unicode('Ä\\uFB03n','nfd')",NodeValue.makeString("Äﬃn")) ; }
+    @Test public void exprStrNormalizeUnicode3() { test("fn:normalize-unicode('Ä\\uFB03n','nfc')",NodeValue.makeString("Äﬃn")) ; }
+    //n
+    @Test public void exprStrNormalizeUnicode4() { test("fn:normalize-unicode('Henry IV','nfd')",NodeValue.makeString("Henry IV")) ; }
+    @Test public void exprStrNormalizeUnicode5() { test("fn:normalize-unicode('Henry IV','nfc')",NodeValue.makeString("Henry IV")) ; }
+    //l'
+    @Test public void exprStrNormalizeUnicode6() { test("fn:normalize-unicode('Äffin','nfkd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode7() { test("fn:normalize-unicode('Äffin','nfkc')",NodeValue.makeString("Äffin")) ; }
+    // r
+    @Test public void exprStrNormalizeUnicode8() { test("fn:normalize-unicode('hw_ka + hw_ten','nfd')",NodeValue.makeString("hw_ka + hw_ten")) ; }
+    @Test public void exprStrNormalizeUnicode9() { test("fn:normalize-unicode('hw_ka + hw_ten','nfc')",NodeValue.makeString("hw_ka + hw_ten")) ; }
+    // r'
+    // not sure why test 10 and 11 are not passing... maybe because it is not fully clear what they are testing.
+    @Test public void exprStrNormalizeUnicode10() { test("fn:normalize-unicode('hw_ka + hw_ten','nfkd')",NodeValue.makeString("ka + ten")) ; }
+    @Test public void exprStrNormalizeUnicode11() { test("fn:normalize-unicode('hw_ka + hw_ten','nfkc')",NodeValue.makeString("ga")) ; }
+    // empty argument <-> returns the input string
+    @Test public void exprStrNormalizeUnicode12() { test("fn:normalize-unicode('some word','')",NodeValue.makeString("some word")) ; }
+    // one argument <-> NFC
+    @Test public void exprStrNormalizeUnicode13() { test("fn:normalize-unicode('Äffin')",NodeValue.makeString("Äffin")) ; }
+
+
     @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
     @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
     @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }

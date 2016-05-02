@@ -102,6 +102,8 @@ public class StandardFunctions
         // fn:normalize-space
         add(registry,xfn+"normalize-space", FN_StrNormalizeSpace.class);
         // fn:normalize-unicode
+        add(registry,xfn+"normalize-unicode", FN_StrNormalizeUnicode.class);
+
         add(registry, xfn+"upper-case",     FN_StrUpperCase.class) ;
         add(registry, xfn+"lower-case",     FN_StrLowerCase.class) ;
         add(registry, xfn+"contains",       FN_StrContains.class) ;

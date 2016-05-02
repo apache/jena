@@ -33,6 +33,7 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet ;
 import java.util.List ;
@@ -715,8 +716,44 @@ public class XSDFuncOp
         String str = v.asString() ;
         if(str == "" )
             return NodeValue.nvEmptyString;
+        // is it possible that str is null?
         str = str.trim().replaceAll("\\s+"," ");
         return NodeValue.makeString(str) ;
+    }
+
+    public static NodeValue strNormalizeUnicode(NodeValue v1, NodeValue v2) {
+        String normalizationFormStr = "nfc";
+        if(v2 != null)
+            normalizationFormStr = v2.asNode().getLiteralLexicalForm().toLowerCase();
+
+        String inputString = v1.asString();
+        if(normalizationFormStr.isEmpty())
+            return NodeValue.makeString(inputString);
+        // is it possible that normalizationFormStr is null?
+
+        Normalizer.Form normalizationForm = Normalizer.Form.NFC;
+        switch(normalizationFormStr)
+        {
+            case "nfd":
+                normalizationForm = Normalizer.Form.NFD;
+                break;
+            case "nfkd":
+                normalizationForm = Normalizer.Form.NFKD;
+                break;
+            case "nfkc":
+                normalizationForm = Normalizer.Form.NFKC;
+                break;
+            case "nfc":
+                normalizationForm = Normalizer.Form.NFC;
+                break;
+            case "fully-normalized":
+                // not fully understood how to implement the fully-normalized normalization form.
+                throw new ExprEvalTypeException("The fully-normalized normalization form is not supported.");
+            default:
+                throw new ExprEvalTypeException("Unrecognized normalization form "+normalizationFormStr+". Supported normalization forms: NFC,NFD,NFKD and NFKC.");
+        }
+
+        return NodeValue.makeString(Normalizer.normalize(inputString,normalizationForm));
     }
 
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2) {
