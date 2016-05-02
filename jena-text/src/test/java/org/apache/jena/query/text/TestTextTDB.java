@@ -200,6 +200,27 @@ public class TestTextTDB extends BaseTest
         assertEquals(1,x.size());
     }
 
+    @Test public void textDB_8_bnode_subject() {
+        Dataset ds = create() ;
+        data(ds, 
+            "(<ex:g1> _:s1 rdfs:label 'foo')");
+        
+        ds.begin(ReadWrite.READ) ;
+        String qs = StrUtils.strjoinNL(
+            "PREFIX text:   <http://jena.apache.org/text#>",
+            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT *",
+            "FROM <ex:g1>",
+            "{ ?s text:query 'foo' }"
+            ) ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
+        ResultSet rs = qexec.execSelect() ;
+        List<QuerySolution> x = Iter.toList(rs) ;
+        ds.end() ;
+        assertEquals(1,x.size());
+    }
+
     private static void data(Dataset ds, String... quadStrs) {
         for ( String qs : quadStrs ) {
             Quad quad = SSE.parseQuad(qs) ;
