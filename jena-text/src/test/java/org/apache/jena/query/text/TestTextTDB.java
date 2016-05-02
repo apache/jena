@@ -18,12 +18,15 @@
 
 package org.apache.jena.query.text;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.TDB ;
@@ -202,16 +205,43 @@ public class TestTextTDB extends BaseTest
 
     @Test public void textDB_8_bnode_subject() {
         Dataset ds = create() ;
-        data(ds, 
-            "(<ex:g1> _:s1 rdfs:label 'foo')");
+        dataTurtle(ds,
+            StrUtils.strjoinNL(
+                "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                "[] a <http://example.org/Entity>; rdfs:label 'foo' ."
+            )
+        );
         
         ds.begin(ReadWrite.READ) ;
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "FROM <ex:g1>",
-            "{ ?s text:query 'foo' }"
+            "{ ?s text:query 'foo' . ?s a <http://example.org/Entity> }"
+            ) ;
+        Query q = QueryFactory.create(qs) ;
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
+        ResultSet rs = qexec.execSelect() ;
+        List<QuerySolution> x = Iter.toList(rs) ;
+        ds.end() ;
+        assertEquals(1,x.size());
+    }
+
+    @Test public void textDB_9_bnode_subject_bound_first() {
+        Dataset ds = create() ;
+        dataTurtle(ds,
+            StrUtils.strjoinNL(
+                "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                "[] a <http://example.org/Entity>; rdfs:label 'foo' ."
+            )
+        );
+        
+        ds.begin(ReadWrite.READ) ;
+        String qs = StrUtils.strjoinNL(
+            "PREFIX text:   <http://jena.apache.org/text#>",
+            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT *",
+            "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' }"
             ) ;
         Query q = QueryFactory.create(qs) ;
         QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
@@ -226,6 +256,14 @@ public class TestTextTDB extends BaseTest
             Quad quad = SSE.parseQuad(qs) ;
             ds.asDatasetGraph().add(quad) ;
         }
+    }
+
+    private static void dataTurtle(Dataset ds, String turtle) {
+        Model model = ds.getDefaultModel();
+        Reader reader = new StringReader(turtle);
+        ds.begin(ReadWrite.WRITE);
+        model.read(reader, "", "TURTLE");
+        ds.commit();
     }
     
     // With transactions
