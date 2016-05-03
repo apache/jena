@@ -186,7 +186,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <overWrig diffteSnapshots>true</overWriteSnapshots>
+              <overWriteSnapshots>true</overWriteSnapshots>
               <includeScope>runtime</includeScope>
               <includeTypes>jar</includeTypes>
               <outputDirectory>lib/</outputDirectory>
@@ -198,7 +198,7 @@
 
       <!-- 
       As we copy dependencies into lib/ to make scripts work in dev environments we also need to clean up that directory
-      -->
+      - -> JENA-1173
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -209,6 +209,7 @@
           </filesets>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
 
