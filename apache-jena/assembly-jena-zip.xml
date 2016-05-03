@@ -55,6 +55,9 @@
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
+    <!-- All the javadoc is quite large yet one use of the binary download
+         is for people with limited or unreliable connectivity.
+         **javadoc**
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>javadoc-core</outputDirectory>
@@ -87,6 +90,7 @@
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
+    **javadoc** -->
 
   </dependencySets>
 

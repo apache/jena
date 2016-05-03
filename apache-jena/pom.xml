@@ -174,7 +174,7 @@
       
       <!-- 
       Use the dependencies plugin to copy the dependencies into the lib/ directory which makes the scripts work in dev enivronments 
-      -->
+      - -> JENA-1173
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -186,7 +186,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWrig diffteSnapshots>true</overWriteSnapshots>
               <includeScope>runtime</includeScope>
               <includeTypes>jar</includeTypes>
               <outputDirectory>lib/</outputDirectory>
@@ -194,6 +194,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
 
       <!-- 
       As we copy dependencies into lib/ to make scripts work in dev environments we also need to clean up that directory
