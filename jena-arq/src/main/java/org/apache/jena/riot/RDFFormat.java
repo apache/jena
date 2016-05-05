@@ -79,7 +79,6 @@ public class RDFFormat {
     /** TriG - one line per triple  */ 
     public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
 
-    // fps
     // variants for the JsonLD outputs.
     // because of the prexisting JSONLD_PRETTY and JSONLD_FLAT,
     // we're more or less obliged to create all of these
@@ -87,24 +86,23 @@ public class RDFFormat {
     
     public static final RDFFormatVariant EXPAND_PRETTY      = new RDFFormatVariant("expand pretty") ;
     public static final RDFFormatVariant EXPAND_FLAT        = new RDFFormatVariant("expand flat") ;
-    public static final RDFFormatVariant COMPACT_PRETTY       = new RDFFormatVariant("compact pretty") ;
-    public static final RDFFormatVariant COMPACT_FLAT         = new RDFFormatVariant("compact flat") ;
+    public static final RDFFormatVariant COMPACT_PRETTY     = new RDFFormatVariant("compact pretty") ;
+    public static final RDFFormatVariant COMPACT_FLAT       = new RDFFormatVariant("compact flat") ;
     public static final RDFFormatVariant FLATTEN_PRETTY     = new RDFFormatVariant("flatten pretty") ;
     public static final RDFFormatVariant FLATTEN_FLAT       = new RDFFormatVariant("flatten flat") ;
-    public static final RDFFormatVariant FRAME_PRETTY         = new RDFFormatVariant("frame pretty") ;
+    public static final RDFFormatVariant FRAME_PRETTY       = new RDFFormatVariant("frame pretty") ;
     public static final RDFFormatVariant FRAME_FLAT         = new RDFFormatVariant("frame flat") ;
 
     public static final RDFFormat        JSONLD_EXPAND_PRETTY   = new RDFFormat(Lang.JSONLD, EXPAND_PRETTY) ;
     public static final RDFFormat        JSONLD_EXPAND_FLAT     = new RDFFormat(Lang.JSONLD, EXPAND_FLAT) ;
-    public static final RDFFormat        JSONLD_COMPACT_PRETTY    = new RDFFormat(Lang.JSONLD, COMPACT_PRETTY) ;
-    public static final RDFFormat        JSONLD_COMPACT_FLAT      = new RDFFormat(Lang.JSONLD, COMPACT_FLAT) ;
+    public static final RDFFormat        JSONLD_COMPACT_PRETTY  = new RDFFormat(Lang.JSONLD, COMPACT_PRETTY) ;
+    public static final RDFFormat        JSONLD_COMPACT_FLAT    = new RDFFormat(Lang.JSONLD, COMPACT_FLAT) ;
     public static final RDFFormat        JSONLD_FLATTEN_PRETTY  = new RDFFormat(Lang.JSONLD, FLATTEN_PRETTY) ;
     public static final RDFFormat        JSONLD_FLATTEN_FLAT    = new RDFFormat(Lang.JSONLD, FLATTEN_FLAT) ;
-    public static final RDFFormat        JSONLD_FRAME_PRETTY      = new RDFFormat(Lang.JSONLD, FRAME_PRETTY) ;
+    public static final RDFFormat        JSONLD_FRAME_PRETTY    = new RDFFormat(Lang.JSONLD, FRAME_PRETTY) ;
     public static final RDFFormat        JSONLD_FRAME_FLAT      = new RDFFormat(Lang.JSONLD, FRAME_FLAT) ;
 
-    // fps
-    // redefine following ones in a way that preserve what they were doing in previous version
+     // redefine following ones in a way that preserve what they were doing in previous version
     public static final RDFFormat        JSONLD_PRETTY  = JSONLD_COMPACT_PRETTY ;
     public static final RDFFormat        JSONLD         = JSONLD_COMPACT_PRETTY ;
     public static final RDFFormat        JSONLD_FLAT    = JSONLD_COMPACT_FLAT ;

@@ -945,7 +945,6 @@ public class RDFDataMgr
         write(out, model.getGraph(), serialization);
     }
     
-    // fps
     /** Write the model to the output stream with a given serialization format.
      * @param out           OutputStream
      * @param model         Model to write
@@ -1012,10 +1011,9 @@ public class RDFDataMgr
      * @param serialization Serialization format
      */
     public static void write(OutputStream out, Graph graph, RDFFormat serialization) {
-        write$(out, graph, serialization, RIOT.getContext()); // fps
+        write$(out, graph, serialization, RIOT.getContext());
     }
 
-    // fps
     /** Write the model to the output stream with a given serialization format.
      * @param out           OutputStream
      * @param model         Model to write
@@ -1229,7 +1227,6 @@ public class RDFDataMgr
         return wf.create(serialization);
     }
 
-    // fps
     private static void write$(OutputStream out, Graph graph, RDFFormat serialization, Context ctx) {
 	      WriterGraphRIOT w = createGraphWriter$(serialization);
 	      w.write(out, graph, RiotLib.prefixMap(graph), null, ctx);

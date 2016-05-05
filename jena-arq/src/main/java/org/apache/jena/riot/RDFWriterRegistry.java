@@ -171,7 +171,6 @@ public class RDFWriterRegistry
          register(RDFFormat.JSONLD,                      wgJsonldfactory) ;
          register(RDFFormat.JSONLD_FLAT,                 wgJsonldfactory) ;
          register(RDFFormat.JSONLD_PRETTY,               wgJsonldfactory) ;
-         // fps
          register(RDFFormat.JSONLD_COMPACT_PRETTY,       wgJsonldfactory) ;
          register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wgJsonldfactory) ;
          register(RDFFormat.JSONLD_EXPAND_PRETTY,        wgJsonldfactory) ;
@@ -212,7 +211,6 @@ public class RDFWriterRegistry
          register(RDFFormat.JSONLD,                      wdsJsonldfactory) ;
          register(RDFFormat.JSONLD_FLAT,                 wdsJsonldfactory) ;
          register(RDFFormat.JSONLD_PRETTY,               wdsJsonldfactory) ;
-         // fps
          register(RDFFormat.JSONLD_COMPACT_PRETTY,       wdsJsonldfactory) ;
          register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wdsJsonldfactory) ;
          register(RDFFormat.JSONLD_EXPAND_PRETTY,        wdsJsonldfactory) ;
