@@ -84,14 +84,14 @@ public class RDFFormat {
     // we're more or less obliged to create all of these
     // (I'd have preferred to use a flag for pretty vs flat)
     
-    public static final RDFFormatVariant EXPAND_PRETTY      = new RDFFormatVariant("expand pretty") ;
-    public static final RDFFormatVariant EXPAND_FLAT        = new RDFFormatVariant("expand flat") ;
-    public static final RDFFormatVariant COMPACT_PRETTY     = new RDFFormatVariant("compact pretty") ;
-    public static final RDFFormatVariant COMPACT_FLAT       = new RDFFormatVariant("compact flat") ;
-    public static final RDFFormatVariant FLATTEN_PRETTY     = new RDFFormatVariant("flatten pretty") ;
-    public static final RDFFormatVariant FLATTEN_FLAT       = new RDFFormatVariant("flatten flat") ;
-    public static final RDFFormatVariant FRAME_PRETTY       = new RDFFormatVariant("frame pretty") ;
-    public static final RDFFormatVariant FRAME_FLAT         = new RDFFormatVariant("frame flat") ;
+    private static final RDFFormatVariant EXPAND_PRETTY      = new RDFFormatVariant("expand pretty") ;
+    private static final RDFFormatVariant EXPAND_FLAT        = new RDFFormatVariant("expand flat") ;
+    private static final RDFFormatVariant COMPACT_PRETTY     = new RDFFormatVariant("compact pretty") ;
+    private static final RDFFormatVariant COMPACT_FLAT       = new RDFFormatVariant("compact flat") ;
+    private static final RDFFormatVariant FLATTEN_PRETTY     = new RDFFormatVariant("flatten pretty") ;
+    private static final RDFFormatVariant FLATTEN_FLAT       = new RDFFormatVariant("flatten flat") ;
+    private static final RDFFormatVariant FRAME_PRETTY       = new RDFFormatVariant("frame pretty") ;
+    private static final RDFFormatVariant FRAME_FLAT         = new RDFFormatVariant("frame flat") ;
 
     public static final RDFFormat        JSONLD_EXPAND_PRETTY   = new RDFFormat(Lang.JSONLD, EXPAND_PRETTY) ;
     public static final RDFFormat        JSONLD_EXPAND_FLAT     = new RDFFormat(Lang.JSONLD, EXPAND_FLAT) ;

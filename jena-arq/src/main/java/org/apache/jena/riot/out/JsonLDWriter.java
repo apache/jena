@@ -18,20 +18,17 @@
 
 package org.apache.jena.riot.out ;
 
+import static org.apache.jena.rdf.model.impl.Util.isLangString;
+import static org.apache.jena.rdf.model.impl.Util.isSimpleString;
+
 import java.io.IOException ;
 import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
 import java.io.Writer ;
-import java.util.* ;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
-
-import com.fasterxml.jackson.core.JsonGenerationException ;
-import com.fasterxml.jackson.databind.JsonMappingException ;
-import com.github.jsonldjava.core.JsonLdError ;
-import com.github.jsonldjava.core.JsonLdOptions ;
-import com.github.jsonldjava.core.JsonLdProcessor ;
-import com.github.jsonldjava.utils.JsonUtils ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -41,11 +38,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.Model;
-
-import static org.apache.jena.rdf.model.impl.Util.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
-import org.apache.jena.riot.RDFFormatVariant;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory;
@@ -54,6 +48,13 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.vocabulary.RDF ;
+
+import com.fasterxml.jackson.core.JsonGenerationException ;
+import com.fasterxml.jackson.databind.JsonMappingException ;
+import com.github.jsonldjava.core.JsonLdError ;
+import com.github.jsonldjava.core.JsonLdOptions ;
+import com.github.jsonldjava.core.JsonLdProcessor ;
+import com.github.jsonldjava.utils.JsonUtils ;
 
 /**
  * Writer that prints out JSON-LD.
@@ -108,22 +109,18 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     }
 
     private JSONLD_FORMAT getOutputFormat() {
-	  		RDFFormatVariant v = format.getVariant() ;
-	  		if ((RDFFormat.COMPACT_PRETTY.equals(v)) || (RDFFormat.COMPACT_FLAT.equals(v))) return JSONLD_FORMAT.COMPACT;
-	  		if ((RDFFormat.EXPAND_PRETTY.equals(v)) || (RDFFormat.EXPAND_FLAT.equals(v))) return JSONLD_FORMAT.EXPAND;
-	  		if ((RDFFormat.FLATTEN_PRETTY.equals(v)) || (RDFFormat.FLATTEN_FLAT.equals(v))) return JSONLD_FORMAT.FLATTEN;
-	  		if ((RDFFormat.FRAME_PRETTY.equals(v)) || (RDFFormat.FRAME_FLAT.equals(v))) return JSONLD_FORMAT.FRAME;
-	  		return JSONLD_FORMAT.COMPACT ;
+	  		if ((RDFFormat.JSONLD_COMPACT_PRETTY.equals(format)) || (RDFFormat.JSONLD_COMPACT_FLAT.equals(format))) return JSONLD_FORMAT.COMPACT;
+	  		if ((RDFFormat.JSONLD_EXPAND_PRETTY.equals(format)) || (RDFFormat.JSONLD_EXPAND_FLAT.equals(format))) return JSONLD_FORMAT.EXPAND;
+	  		if ((RDFFormat.JSONLD_FLATTEN_PRETTY.equals(format)) || (RDFFormat.JSONLD_FLATTEN_FLAT.equals(format))) return JSONLD_FORMAT.FLATTEN;
+	  		if ((RDFFormat.JSONLD_FRAME_PRETTY.equals(format)) || (RDFFormat.JSONLD_FRAME_FLAT.equals(format))) return JSONLD_FORMAT.FRAME;
+	  		throw new RuntimeException("Unexpected output format");
     }
     
     private boolean isPretty() {
-        // return RDFFormat.PRETTY.equals(format.getVariant()) ;
-    		RDFFormatVariant v = format.getVariant() ;
-    		// return ((v == null) || (v.toString().indexOf("pretty") > -1)) ;
-    		return (((RDFFormat.COMPACT_PRETTY.equals(v))
-    				|| (RDFFormat.FLATTEN_PRETTY.equals(v))
-    				|| (RDFFormat.EXPAND_PRETTY.equals(v)))
-    				|| (RDFFormat.FRAME_PRETTY.equals(v))) ;
+    		return (((RDFFormat.JSONLD_COMPACT_PRETTY.equals(format))
+    				|| (RDFFormat.JSONLD_FLATTEN_PRETTY.equals(format))
+    				|| (RDFFormat.JSONLD_EXPAND_PRETTY.equals(format)))
+    				|| (RDFFormat.JSONLD_FRAME_PRETTY.equals(format))) ;
     }
     
     private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
