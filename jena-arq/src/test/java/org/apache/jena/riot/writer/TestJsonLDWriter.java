@@ -21,10 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
@@ -34,38 +36,51 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.github.jsonldjava.utils.JsonUtils;
+
 public class TestJsonLDWriter extends BaseTest {
 
 @Test public final void prettyIsNotFlat() {
 	Model m = simpleModel();
 	m.setNsPrefix("ex", "http://www.a.com/foo/");
 	String s;
+	
 	// pretty is pretty
+	
 	s = toString(m, RDFFormat.JSONLD_EXPAND_PRETTY, null);
 	assertTrue(s.trim().indexOf("\n") > -1);
 	s = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
 	assertTrue(s.trim().indexOf("\n") > -1);
 	s = toString(m, RDFFormat.JSONLD_FLATTEN_PRETTY, null);
 	assertTrue(s.trim().indexOf("\n") > -1);
+
 	// and flat is flat
+	
 	s = toString(m, RDFFormat.JSONLD_EXPAND_FLAT, null);
 	assertTrue(s.trim().indexOf("\n") < 0);
 	s = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
 	assertTrue(s.trim().indexOf("\n") < 0);
 	s = toString(m, RDFFormat.JSONLD_FLATTEN_FLAT, null);
 	assertTrue(s.trim().indexOf("\n") < 0);
+	assertTrue(s.trim().indexOf("\n") < 0);
+	// JSON_LD FRAME case not tested here, but in testFrames
 }
 
 @Test public final void contextOrNot() {
 	Model m = simpleModel();
 	m.setNsPrefix("ex", "http://www.a.com/foo/");
 	String s;
-	// no context in expand
+	
+	// there's no "@context" in expand
+	
 	s = toString(m, RDFFormat.JSONLD_EXPAND_PRETTY, null);
 	assertTrue(s.indexOf("@context") < 0);
 	s = toString(m, RDFFormat.JSONLD_EXPAND_FLAT, null);
 	assertTrue(s.indexOf("@context") < 0);
-	// context in compact, etc.
+	
+	// there's an "@context" in compact and flatten
+	
 	s = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
 	assertTrue(s.indexOf("@context") > -1);
 	s = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
@@ -87,10 +102,12 @@ private Model simpleModel() {
 }
 
 // write a model and parse it back: you should get the same thing
+// (except with frame)
 @Test public final void roundTrip() {
 	Model m = simpleModel();
 	m.setNsPrefix("ex", "http://www.a.com/foo/");
 	for (RDFFormat f : JSON_LD_FORMATS) {
+		if (f.getVariant().toString().indexOf("frame") > -1) continue;
 		String s = toString(m, f, null);
 		Model m2 = parse(s);
 		assertTrue(m2.isIsomorphicWith(m));		
@@ -137,7 +154,7 @@ private Model simpleModel() {
 	Model m1 = parse(s1);
 	
 	// the context used in this case, created automatically by jena as none is set
-	// it includes one nsprefix
+	// it includes one prefix
 	Object ctx = JsonLDWriter.createJsonldContext(m.getGraph());
 	
 	// remove the prefix from m
@@ -157,6 +174,54 @@ private Model simpleModel() {
 	assertTrue(m3.isIsomorphicWith(m));
 	assertTrue(m3.isIsomorphicWith(m1));
 
+}
+
+@Test public final void testFrames() throws JsonParseException, IOException {
+	Model m = ModelFactory.createDefaultModel();
+	String ns = "http://schema.org/";
+	Resource person = m.createResource(ns + "Person");
+	Resource s = m.createResource();
+	m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+	m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
+	m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
+	m.add(s, RDF.type, person);
+	s = m.createResource();
+	m.add(s, m.createProperty(ns + "name"), "Gado Salamatou");
+	m.add(s, m.createProperty(ns + "url"), "http://www.salamatou.com");
+	m.add(s, RDF.type, person);
+	s = m.createResource();
+	m.add(s, m.createProperty(ns + "name"), "Not a person");
+	m.add(s, RDF.type, m.createResource(ns + "Event"));
+	
+	Context jenaCtx = new Context();
+	JsonObject frame = new JsonObject();
+	
+	// only ouput the persons using a frame
+	
+	frame.put("@type", ns +"Person");
+	jenaCtx.set(JsonLDWriter.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
+	String jsonld = toString(m, RDFFormat.JSONLD_FRAME_PRETTY, jenaCtx);
+	Model m2 = parse(jsonld);
+	// 2 subjects with a type in m2
+	assertTrue(m2.listStatements((Resource) null, RDF.type, (RDFNode) null).toList().size() == 2);
+	// 2 persons in m2
+	assertTrue(m2.listStatements((Resource) null, RDF.type, person).toList().size() == 2);
+	// something we hadn't tested in prettyIsNotFlat
+	assertTrue(jsonld.trim().indexOf("\n") > -1);
+	
+	// only output the subjects which have a jobTitle
+	
+	frame = new JsonObject();
+	frame.put("http://schema.org/jobTitle", new JsonObject());
+	jenaCtx.set(JsonLDWriter.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
+	jsonld = toString(m, RDFFormat.JSONLD_FRAME_FLAT, jenaCtx);
+	m2 = parse(jsonld);
+	// 1 subject with a type in m2
+	assertTrue(m2.listStatements((Resource) null, RDF.type, (RDFNode) null).toList().size() == 1);
+	// 1 subject with a jobTitle in m2
+	assertTrue(m2.listStatements((Resource) null, m.createProperty(ns + "jobTitle"), (RDFNode) null).toList().size() == 1);
+	// something we hadn't tested in prettyIsNotFlat
+	assertTrue(jsonld.trim().indexOf("\n") < 0);
 }
 
 @Test public final void testContextByUri() {
@@ -247,9 +312,8 @@ java.lang.NoSuchMethodError: org.apache.http.impl.client.cache.CacheConfig.custo
 
 	String jsonld = toString(m, RDFFormat.JSONLD_FLAT, null);
 	
-	// remove line:  
+	// without following line in JsonLDWriter, the test fails 
 	// if (! isLangString(o) && ! isSimpleString(o) )
-	// in JsonLDWriter and the test fails
 	String vv = "\"plangstring\":{\"@language\":\"fr\",\"@value\":\"a langstring\"}";
 	assertTrue(jsonld.indexOf(vv) > -1);
 }
