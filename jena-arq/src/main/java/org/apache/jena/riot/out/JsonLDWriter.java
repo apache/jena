@@ -40,18 +40,58 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.rdf.model.Model;
+
 import static org.apache.jena.rdf.model.impl.Util.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.riot.RDFFormatVariant;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.vocabulary.RDF ;
 
+/**
+ * Writer that prints out JSON-LD.
+ * 
+ * By default, the output is "compact" (in JSON-LD terminology).
+ * One can choose another form using one of the dedicated RDFFormats (JSONLD_EXPAND_PRETTY, etc.).
+ * For formats using a context ("@context" node), (compact and expand), this automatically generates a default one.
+ * One can pass a jsonld context using the (jena) context mechanism, defining a (jena) Context
+ * (sorry for this clash of contexts), (cf. 4th argument in
+ * {@link org.apache.jena.riot.RDFDataMgr#write(OutputStream out, Model model, RDFFormat serialization, Context ctx)})
+ * with:
+ * <pre>
+ * Context jenaContext = new Context()
+ * jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, jsonldCtx);
+ * </pre>
+ * where jsonldCtx is the object expected by the JSONLD-java API.
+ * 
+ * One can also pass a frame with the {@link #JSONLD_FRAME}, or define the options expected
+ * by JSONLD-java using {@link #JSONLD_OPTIONS} 
+ * 
+ * 
+ */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
+		// fps
+		/** value: the context expected by JsonLdProcessor.compact, flatten or frame */
+		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
+		/** value: the frame object expected by JsonLdProcessor.frame */
+		public static final Symbol JSONLD_FRAME = Symbol.create("JSONLD_FRAME");
+		/** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
+		public static final Symbol JSONLD_OPTIONS = Symbol.create("JSONLD_OPTIONS");
+		private static enum JSONLD_FORMAT {
+			COMPACT,
+			FLATTEN,
+			EXPAND,
+			FRAME
+		}
+
     private final RDFFormat format ;
 
     public JsonLDWriter(RDFFormat syntaxForm) {
@@ -65,11 +105,42 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     @Override
     public void write(Writer out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) {
-        serialize(out, dataset, prefixMap, baseURI) ;
+        serialize(out, dataset, prefixMap, baseURI, context) ; // fps
     }
 
+    // fps
+    private JSONLD_FORMAT getOutputFormat() {
+	  		RDFFormatVariant v = format.getVariant() ;
+	  		if ((RDFFormat.COMPACT_PRETTY.equals(v)) || (RDFFormat.COMPACT_FLAT.equals(v))) return JSONLD_FORMAT.COMPACT;
+	  		if ((RDFFormat.EXPAND_PRETTY.equals(v)) || (RDFFormat.EXPAND_FLAT.equals(v))) return JSONLD_FORMAT.EXPAND;
+	  		if ((RDFFormat.FLATTEN_PRETTY.equals(v)) || (RDFFormat.FLATTEN_FLAT.equals(v))) return JSONLD_FORMAT.FLATTEN;
+	  		if ((RDFFormat.FRAME_PRETTY.equals(v)) || (RDFFormat.FRAME_FLAT.equals(v))) return JSONLD_FORMAT.FRAME;
+	  		return JSONLD_FORMAT.COMPACT ;
+    }
+    
     private boolean isPretty() {
-        return RDFFormat.PRETTY.equals(format.getVariant()) ;
+    		// fps
+        // return RDFFormat.PRETTY.equals(format.getVariant()) ;
+    		RDFFormatVariant v = format.getVariant() ;
+    		// return ((v == null) || (v.toString().indexOf("pretty") > -1)) ;
+    		return (((RDFFormat.COMPACT_PRETTY.equals(v))
+    				|| (RDFFormat.FLATTEN_PRETTY.equals(v))
+    				|| (RDFFormat.EXPAND_PRETTY.equals(v))));
+    }
+    
+    private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
+	  		JsonLdOptions opts = null;
+	  		if (jenaContext != null) {
+	  			opts = (JsonLdOptions) jenaContext.get(JSONLD_OPTIONS);
+	  		}
+	  		if (opts == null) {
+	        opts = new JsonLdOptions(baseURI);
+	        opts.useNamespaces = true ;
+	        //opts.setUseRdfType(true);
+	        opts.setUseNativeTypes(true);
+	        opts.setCompactArrays(true);	  			
+	  		} 
+	  		return opts;
     }
 
     @Override
@@ -79,24 +150,65 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         IO.flush(w) ;
     }
 
-    private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI) {
-        final Map<String, Object> ctx = new LinkedHashMap<>() ;
-        addProperties(ctx, dataset.getDefaultGraph()) ;
-        addPrefixes(ctx, prefixMap) ;
-
+    private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) { // fps
         try {
-            JsonLdOptions opts = new JsonLdOptions(baseURI);
-            opts.useNamespaces = true ;
-            //opts.setUseRdfType(true);
-            opts.setUseNativeTypes(true);
-            opts.setCompactArrays(true);
+        		JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
+        		
             Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
             
-            Map<String, Object> localCtx = new HashMap<>() ;
-            localCtx.put("@context", ctx) ;
+            JSONLD_FORMAT outputForm = getOutputFormat() ;
+      	    if (outputForm == JSONLD_FORMAT.EXPAND) {
+      	    	// nothing more to do
+      	    
+      	    } else if (outputForm == JSONLD_FORMAT.FRAME) {
+      	    	Object frame = null;
+      	    	if (jenaContext != null) 
+      	    		frame = jenaContext.get(JSONLD_FRAME);
+      	    	
+      	    	if (frame == null) {
+      	    		// throw new IllegalArgumentException("No frame object found in context");
+      	    		// I don't whether this makes sense
+      	    		Map<String, Object> fr = new HashMap<>() ;
+      	    		fr.put("@context", createJsonldContext(dataset.getDefaultGraph(), prefixMap)) ;
+      	    		frame = fr;
+      	    	}
+      	    	obj = JsonLdProcessor.frame(obj, frame, opts);
 
-            // Unclear as to the way to set better printing.
-            obj = JsonLdProcessor.compact(obj, localCtx, opts) ;
+      	    } else { // we need a context
+      	  		Object ctx = null;
+      	  		boolean isCtxDefined = false; // to allow jenaContext to set ctx to null. Useful?
+
+      	  		if (jenaContext != null) {
+      	  			if (jenaContext.isDefined(JSONLD_CONTEXT)) {
+      	  				isCtxDefined = true;
+      	  				ctx = jenaContext.get(JSONLD_CONTEXT);
+      	  			}
+      	  		}
+
+      	  		if (!isCtxDefined) {
+      	  			// if no ctx passed via jenaContext, create one in order to have localnames as keys for properties
+      	  			ctx = createJsonldContext(dataset.getDefaultGraph(), prefixMap) ;
+      	  			
+                // fps I don't think this should be done: the JsonLdProcessor begins
+                // by looking whether the argument passed is a map with key "@context" and takes corresponding value
+                // Better not to do this: we create a map for nothing, and worse,
+      	  			// if the context object has been created by a user and passed through the (jena) context
+                // in case he got the same idea, we would end up with 2 levels of maps an it would work
+//                Map<String, Object> localCtx = new HashMap<>() ;
+//                localCtx.put("@context", ctx) ;
+//              	obj = JsonLdProcessor.compact(obj, localCtx, opts) ;
+      	  		}
+      	
+      	  		if (outputForm == JSONLD_FORMAT.COMPACT) {
+      	      	obj = JsonLdProcessor.compact(obj, ctx, opts);
+      	      	
+      	      } else if (outputForm == JSONLD_FORMAT.FLATTEN) {
+      	      	obj = JsonLdProcessor.flatten(obj, ctx, opts);
+      	      	
+      	      } else {
+      	      	throw new IllegalArgumentException("Unexpected output form " + outputForm);
+      	      }
+      	    }
 
             if ( isPretty() )
                 JsonUtils.writePrettyPrint(writer, obj) ;
@@ -112,21 +224,39 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         }
     }
 
+    //
+    // creating a context
+    //
+    
+  	// useful to help people wanting to create their own context?
+  	public static Object createJsonldContext(Graph g) {
+  		return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()));
+  	}
+
+  	private static Object createJsonldContext(Graph g, PrefixMap prefixMap) {
+  		final Map<String, Object> ctx = new LinkedHashMap<>() ;
+  		addProperties(ctx, g) ;
+  		addPrefixes(ctx, prefixMap) ;	
+  		return ctx ;
+  	}
+
     private static void addPrefixes(Map<String, Object> ctx, PrefixMap prefixMap) {
         Map<String, IRI> pmap = prefixMap.getMapping() ;
         for ( Entry<String, IRI> e : pmap.entrySet() ) {
             String key = e.getKey() ;
-            if ( key.isEmpty() )
+            if ( key.isEmpty() ) {
                 // Prefix "" is not allowed in JSON-LD
-                continue ;
-            IRI iri = e.getValue() ;
-            ctx.put(e.getKey(), e.getValue().toString()) ;
+            		// we could replace "" with "@vocab" // fps
+              	// key = "@vocab" ;
+            		continue;
+            }
+            ctx.put(key, e.getValue().toString()) ;
         }
     }
 
     private static void addProperties(final Map<String, Object> ctx, Graph graph) {
         // Add some properties directly so it becomes "localname": ....
-        final Set<String> dups = new HashSet<>() ;
+//        final Set<String> dups = new HashSet<>() ; // fps unused
         Consumer<Triple> x = new Consumer<Triple>() {
             @Override
             public void accept(Triple item) {
@@ -135,8 +265,8 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 if ( p.equals(RDF.type.asNode()) )
                     return ;
                 String x = p.getLocalName() ;
-                if ( dups.contains(x) )
-                    return ;
+//                if ( dups.contains(x) ) // fps unused
+//                    return ;
 
                 if ( ctx.containsKey(x) ) {
                     // Check different URI
@@ -155,7 +285,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         // typed literal)
                         Map<String, Object> x2 = new LinkedHashMap<>() ;
                         x2.put("@id", p.getURI()) ;
-                        x2.put("@id", p.getURI()) ;
+                        // x2.put("@id", p.getURI()) ; // fps once is enough
                         if (! isLangString(o) && ! isSimpleString(o) ) 
                             // RDF 1.1 : Skip if rdf:langString or xsd:string.
                             x2.put("@type", literalDatatypeURI) ; 

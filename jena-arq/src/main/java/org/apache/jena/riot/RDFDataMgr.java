@@ -936,7 +936,7 @@ public class RDFDataMgr
         write(out, model.getGraph(), lang);
     }
 
-    /** Write the model to the output stream in the default serialization for the language.
+    /** Write the model to the output stream with a given serialization format.
      * @param out           OutputStream
      * @param model         Model to write
      * @param serialization Serialization format
@@ -945,7 +945,18 @@ public class RDFDataMgr
         write(out, model.getGraph(), serialization);
     }
     
-    /** Write the graph to the output stream in the default serialization for the language.
+    // fps
+    /** Write the model to the output stream with a given serialization format.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param serialization Serialization format
+     * @param context       Content object to control writing process.
+     */
+    public static void write(OutputStream out, Model model, RDFFormat serialization, Context ctx) {
+      write(out, model.getGraph(), serialization, ctx);
+    }
+  
+   /** Write the graph to the output stream in the default serialization for the language.
      * @param out           StringWriter
      * @param model         Model to write
      * @param lang          Serialization format
@@ -965,7 +976,7 @@ public class RDFDataMgr
         write(out, model.getGraph(), lang);
     }
 
-    /** Write the graph to the output stream in the default serialization for the language.
+    /** Write the graph to the output stream with a given serialization format.
      * @param out           StringWriter
      * @param model         Model to write
      * @param serialization Serialization format
@@ -995,13 +1006,24 @@ public class RDFDataMgr
         write(out, graph, serialization);
     }
 
-    /** Write the graph to the output stream in the default serialization for the language.
+    /** Write the graph to the output stream with a given serialization format.
      * @param out           OutputStream
      * @param graph         Graph to write
      * @param serialization Serialization format
      */
     public static void write(OutputStream out, Graph graph, RDFFormat serialization) {
-        write$(out, graph, serialization);
+        write$(out, graph, serialization, RIOT.getContext()); // fps
+    }
+
+    // fps
+    /** Write the model to the output stream with a given serialization format.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param serialization Serialization format
+     * @param context       Content object to control writing process.
+     */
+    public static void write(OutputStream out, Graph graph, RDFFormat serialization, Context ctx) {
+      write$(out, graph, serialization, ctx);
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1207,9 +1229,10 @@ public class RDFDataMgr
         return wf.create(serialization);
     }
 
-    private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
-        WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
+    // fps
+    private static void write$(OutputStream out, Graph graph, RDFFormat serialization, Context ctx) {
+	      WriterGraphRIOT w = createGraphWriter$(serialization);
+	      w.write(out, graph, RiotLib.prefixMap(graph), null, ctx);
     }
 
     private static void write$(Writer out, Graph graph, RDFFormat serialization) {

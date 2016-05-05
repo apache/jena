@@ -168,10 +168,19 @@ public class RDFWriterRegistry
          register(RDFFormat.NTRIPLES,       wgfactory) ;
          register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
          
-         register(RDFFormat.JSONLD,         wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLAT,    wgJsonldfactory) ;
-         register(RDFFormat.JSONLD_PRETTY,  wgJsonldfactory) ;
-         
+         register(RDFFormat.JSONLD,                      wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLAT,                 wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_PRETTY,               wgJsonldfactory) ;
+         // fps
+         register(RDFFormat.JSONLD_COMPACT_PRETTY,       wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_EXPAND_PRETTY,        wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FRAME_PRETTY,         wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_COMPACT_FLAT,         wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLATTEN_FLAT,         wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_EXPAND_FLAT,          wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FRAME_FLAT,           wgJsonldfactory) ;
+        
          register(RDFFormat.RDFJSON,        wgfactory) ;
 
          register(RDFFormat.RDFXML_PRETTY,  wgfactory) ;
@@ -200,10 +209,19 @@ public class RDFWriterRegistry
          register(RDFFormat.NQUADS_ASCII,   wdsfactory) ;
          register(RDFFormat.RDFNULL,        wdsfactory) ;
          
-         register(RDFFormat.JSONLD,         wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_FLAT,    wdsJsonldfactory) ;
-         register(RDFFormat.JSONLD_PRETTY,  wdsJsonldfactory) ;
-         
+         register(RDFFormat.JSONLD,                      wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLAT,                 wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_PRETTY,               wdsJsonldfactory) ;
+         // fps
+         register(RDFFormat.JSONLD_COMPACT_PRETTY,       wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLATTEN_PRETTY,       wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_EXPAND_PRETTY,        wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FRAME_PRETTY,         wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_COMPACT_FLAT,         wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLATTEN_FLAT,         wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_EXPAND_FLAT,          wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FRAME_FLAT,           wdsJsonldfactory) ;
+
          register(RDFFormat.RDF_THRIFT,     wdsThriftFactory) ;
          register(RDFFormat.RDF_THRIFT_VALUES, wdsThriftFactory) ;
          
