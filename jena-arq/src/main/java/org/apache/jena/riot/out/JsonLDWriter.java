@@ -108,6 +108,13 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         serialize(out, dataset, prefixMap, baseURI, context) ;
     }
 
+    @Override
+    public void write(OutputStream out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) {
+        Writer w = new OutputStreamWriter(out, Chars.charsetUTF8) ;
+        write(w, dataset, prefixMap, baseURI, context) ;
+        IO.flush(w) ;
+    }
+
     private JSONLD_FORMAT getOutputFormat() {
 	  		if ((RDFFormat.JSONLD_COMPACT_PRETTY.equals(format)) || (RDFFormat.JSONLD_COMPACT_FLAT.equals(format))) return JSONLD_FORMAT.COMPACT;
 	  		if ((RDFFormat.JSONLD_EXPAND_PRETTY.equals(format)) || (RDFFormat.JSONLD_EXPAND_FLAT.equals(format))) return JSONLD_FORMAT.EXPAND;
@@ -136,13 +143,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 	        opts.setCompactArrays(true);	  			
 	  		} 
 	  		return opts;
-    }
-
-    @Override
-    public void write(OutputStream out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) {
-        Writer w = new OutputStreamWriter(out, Chars.charsetUTF8) ;
-        write(w, dataset, prefixMap, baseURI, context) ;
-        IO.flush(w) ;
     }
 
     private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) {
@@ -257,9 +257,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 String x = p.getLocalName() ;
 
                 if ( ctx.containsKey(x) ) {
-                    // Check different URI
-                    // pmap2.remove(x) ;
-                    // dups.add(x) ;
                 } else if ( o.isBlank() || o.isURI() ) {
                     // add property as a property (the object is an IRI)
                     Map<String, Object> x2 = new LinkedHashMap<>() ;
