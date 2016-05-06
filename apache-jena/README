@@ -2,13 +2,13 @@
                                   Apache Jena
                                   ===========
 
-  Jena is a Java framework for building semantic web applications. It provides 
-  tools and Java libraries to help you to develop semantic web and linked-data 
+  Jena is a Java framework for building semantic web applications. It provides
+  tools and Java libraries to help you to develop semantic web and linked-data
   apps, tools and servers.
 
-  This distribution includes the following Apache Jena modules: 
+  This distribution includes the following Apache Jena modules:
 
-  - jena-core: provides the Jena RDF APIs, Ontology APIs and Inference APIs. 
+  - jena-core: provides the Jena RDF APIs, Ontology APIs and Inference APIs.
   - jena-arq: SPARQL 1.1, query and update.
   - jena-tdb: scalable and performant storage subsystem for Jena
   - jena-iri: provides an implementation of RFC 3987 (IRI) and RFC 3986 (URI)
@@ -28,33 +28,33 @@
   command path.
 
   To use the Jena tools from the command line you need to set the JENA_HOME
-  environment variable to point to the location where you have 
+  environment variable to point to the location where you have
   unzipped the Jena distribution:
 
   Windows:
     set JENA_HOME=\path\to\apache-jena-x.y.z
-    bat\sparql.bat --version    
+    bat\sparql.bat --version
 
   Linux:
     The command scripts automatically set JENA_HOME but if you want
     to switch to a different version fro the same scripts:
 
     export JENA_HOME=/path/to/apache-jena-x.y.z
-    bin/sparql --version    
+    bin/sparql --version
 
-  Where x.y.z is the version of the Jena command line tools you have 
+  Where x.y.z is the version of the Jena command line tools you have
   downloaded
-    
-  If you receive a class not found exception when trying to run one of the 
+
+  If you receive a class not found exception when trying to run one of the
   scripts then you may have set JENA_HOME incorrectly. A quick and easy way
   to validate that JENA_HOME is set correctly is to run the following:
-  
+
   Windows:
     cd %JENA_HOME%
-    
+
   Linux:
     cd $JENA_HOME
-    
+
   If this command returns an error then JENA_HOME is not pointed to a valid directory
 
 
@@ -81,7 +81,7 @@
   The Apache Jena source code repository is here:
   http://svn.apache.org/repos/asf/jena/
 
-  If you are interested in getting involved with Apache Jena development: 
+  If you are interested in getting involved with Apache Jena development:
   http://jena.apache.org/getting_involved/
 
 
@@ -90,3 +90,36 @@
 
   Jena is provided under the Apache Software License v2.0
   See LICENSE for the full text.
+
+
+  Export restrictions
+  -------------------
+
+  This distribution includes cryptographic software.
+  The country in which you currently reside may have restrictions
+  on the import, possession, use, and/or re-export to another country,
+  of encryption software. BEFORE using any encryption software,
+  please check your country's laws, regulations and policies
+  concerning the import, possession, or use, and re-export of
+  encryption software, to see if this is permitted.
+  See <http://www.wassenaar.org/> for more information.
+
+  The U.S. Government Department of Commerce, Bureau of Industry and Security (BIS),
+  has classified this software as Export Commodity Control Number (ECCN) 5D002.C.1,
+  which includes information security software using or performing
+  cryptographic functions with asymmetric algorithms.
+  The form and manner of this Apache Software Foundation distribution makes
+  it eligible for export under the License Exception
+  ENC Technology Software Unrestricted (TSU) exception
+  (see the BIS Export Administration Regulations, Section 740.13)
+  for both object code and source code.
+
+  The following provides more details on the included cryptographic software:
+
+  * jena-arq and jena-cmds (e.g. bin/riot) facilitate
+    Apache HTTPComponents Client, which can initiate
+    encrypted https:// connections using
+    Java Secure Socket Extension (JSSE).
+  * The binary distribution of Jena includes
+    Apache HTTP Components Client and
+    Apache HTTP Components Core (lib/).

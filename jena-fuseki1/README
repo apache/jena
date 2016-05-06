@@ -1,16 +1,23 @@
-Jena README
-===========
+Apache Jena Fuseki 1.x
+======================
 
-Welcome to Apache Jena, a Java framework for writing Semantic Web applications.
+Apache Jena Fuseki is a SPARQL server backed by Apache Jena.
 
-See http://jena.apache.org/ for the project website, including documentation.
+Documentation: https://jena.apache.org/documentation/serving_data/
 
-The codebase for the active modules is in git:
-
-https://git-wip-us.apache.org/repos/asf?p=jena.git
+Note that Fuseki 1 has been replaced by Fuseki 2 (jena-fuseki2).
 
 
-# Export restrictions
+Licensing
+---------
+
+Apache Jena Fuseki is provided under the Apache Software License v2.0.
+See LICENSE for the full text, and NOTICE for required
+notices.
+
+
+Export restrictions
+-------------------
 
 This distribution includes cryptographic software.
 The country in which you currently reside may have restrictions
@@ -33,6 +40,11 @@ for both object code and source code.
 
 The following provides more details on the included cryptographic software:
 
-* apache-jena/README
-* jena-fuseki1/README
-* jena-fuseki2/README
+* Fuseki facilitate
+  Apache HTTPComponents Client, which can initiate
+  encrypted https:// connections using
+  Java Secure Socket Extension (JSSE).
+* The binary distribution of Fuseki includes
+  Apache HTTP Components Client,
+  Apache HTTP Components Core (lib/),
+  Apache Shiro, Apache Solr and Jetty.
