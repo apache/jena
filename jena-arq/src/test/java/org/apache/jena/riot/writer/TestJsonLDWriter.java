@@ -43,7 +43,7 @@ public class TestJsonLDWriter extends BaseTest {
 
 /**
  * Checks that JSON-LD RDFFormats supposed to be pretty are pretty
- * and those supposed to be flat are flat
+ * and that those supposed to be flat are flat
  */
 @Test public final void prettyIsNotFlat() {
 	Model m = simpleModel();
@@ -72,7 +72,7 @@ public class TestJsonLDWriter extends BaseTest {
 }
 
 /**
- * Checks that JSON-LD RDFFormats that are supposed to return a "&context"
+ * Checks that JSON-LD RDFFormats that are supposed to return a "@context"
  * actually do so.
  */
 @Test public final void contextOrNot() {
