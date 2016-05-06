@@ -51,6 +51,7 @@ import org.apache.jena.vocabulary.RDF ;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException ;
 import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.JsonLdOptions ;
@@ -169,43 +170,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
       	    	}
       	    	obj = JsonLdProcessor.frame(obj, frame, opts);
 
-      	    } else { // we need a (jsonld) context
-      	  		Object ctx = null;
-      	  		boolean isCtxDefined = false; // to allow jenaContext to set ctx to null. Useful?
-
-      	  		if (jenaContext != null) {
-      	  			if (jenaContext.isDefined(JSONLD_CONTEXT)) {
-      	  				isCtxDefined = true;
-      	  				Object o = jenaContext.get(JSONLD_CONTEXT);
-      	  				if (o != null) {
-      	  					// I won't assume it is a string, to leave the possibility to pass
-      	  					// the context expected by JSON-LD JsonLdProcessor.compact and flatten
-      	  					// (should not be useful)
-      	  					if (o instanceof String) {
-          	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT);
-          	  				if (jsonString != null) ctx = JsonUtils.fromString(jsonString);     	  						
-      	  					} else {
-      	  						Logger.getLogger(getClass()).warn("JSONLD_CONTEXT value is not a String. Assuming a context object expected by JSON-LD JsonLdProcessor.compact or flatten");
-      	  						ctx = o;
-      	  					}
-      	  				}
-      	  			}
-      	  		}
-
-      	  		if (!isCtxDefined) {
-      	  			// if no ctx passed via jenaContext, create one in order to have localnames as keys for properties
-      	  			ctx = createJsonldContext(dataset.getDefaultGraph(), prefixMap) ;
-      	  			
-                // I don't think this should be done: the JsonLdProcessor begins
-                // by looking whether the argument passed is a map with key "@context" and takes corresponding value
-                // Better not to do this: we create a map for nothing, and worse,
-      	  			// if the context object has been created by a user and passed through the (jena) context
-                // in case he got the same idea, we would end up with 2 levels of maps an it would work
-//                Map<String, Object> localCtx = new HashMap<>() ;
-//                localCtx.put("@context", ctx) ;
-//              	obj = JsonLdProcessor.compact(obj, localCtx, opts) ;
-      	  		}
-      	
+      	    } else {
+      	    	// we need a (jsonld) context. Get it from jenaContext, or make one:
+      	  		Object ctx = getJsonldContext(dataset, prefixMap, jenaContext);
+      	  		
       	  		if (outputForm == JSONLD_FORMAT.COMPACT) {
       	      	obj = JsonLdProcessor.compact(obj, ctx, opts);
       	      	
@@ -232,8 +200,48 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     }
 
     //
-    // creating a (jsonld) context
+    // getting / creating a (jsonld) context
     //
+    
+    /** Get the (jsonld) context from the jena context, or create one */
+    protected Object getJsonldContext(DatasetGraph dataset, PrefixMap prefixMap, Context jenaContext) throws JsonParseException, IOException {
+  		Object ctx = null;
+  		boolean isCtxDefined = false; // to allow jenaContext to set ctx to null. Useful?
+
+  		if (jenaContext != null) {
+  			if (jenaContext.isDefined(JSONLD_CONTEXT)) {
+  				isCtxDefined = true;
+  				Object o = jenaContext.get(JSONLD_CONTEXT);
+  				if (o != null) {
+  					// I won't assume it is a string, to leave the possibility to pass
+  					// the context expected by JSON-LD JsonLdProcessor.compact and flatten
+  					// (should not be useful)
+  					if (o instanceof String) {
+  	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT);
+  	  				if (jsonString != null) ctx = JsonUtils.fromString(jsonString);     	  						
+  					} else {
+  						Logger.getLogger(JsonLDWriter.class).warn("JSONLD_CONTEXT value is not a String. Assuming a context object expected by JSON-LD JsonLdProcessor.compact or flatten");
+  						ctx = o;
+  					}
+  				}
+  			}
+  		}
+
+  		if (!isCtxDefined) {
+  			// if no ctx passed via jenaContext, create one in order to have localnames as keys for properties
+  			ctx = createJsonldContext(dataset.getDefaultGraph(), prefixMap) ;
+  			
+        // I don't think this should be done: the JsonLdProcessor begins
+        // by looking whether the argument passed is a map with key "@context" and takes corresponding value
+        // Better not to do this: we create a map for nothing, and worse,
+  			// if the context object has been created by a user and passed through the (jena) context
+        // in case he got the same idea, we would end up with 2 levels of maps an it would work
+//        Map<String, Object> localCtx = new HashMap<>() ;
+//        localCtx.put("@context", ctx) ;
+//      	obj = JsonLdProcessor.compact(obj, localCtx, opts) ;
+  		}
+  		return ctx;
+    }
     
   	// useful to help people wanting to create their own context?
   	public static Object createJsonldContext(Graph g) {
