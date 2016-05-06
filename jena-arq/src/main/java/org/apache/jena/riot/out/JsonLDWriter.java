@@ -79,8 +79,12 @@ import com.github.jsonldjava.utils.JsonUtils ;
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
-		/** value: the context expected by JsonLdProcessor.compact anf flatten */
+		/** value: the context expected by JSON-LD JsonLdProcessor.compact and flatten */
 		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
+		public static final Symbol JSONLD_CONTEXT_AS_JSON_STRING = Symbol.create("JSONLD_CONTEXT_AS_JSON_STRING");
+		
+		/** value: a context to replace the one used to compute the output */
+		public static final Symbol JSONLD_OUT_CONTEXT = Symbol.create("JSONLD_OUT_CONTEXT");
 		/** value: the frame object expected by JsonLdProcessor.frame */
 		public static final Symbol JSONLD_FRAME = Symbol.create("JSONLD_FRAME");
 		/** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
@@ -91,8 +95,8 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 			EXPAND,
 			FRAME
 		}
-		
-    private final RDFFormat format ;
+
+		private final RDFFormat format ;
 
     public JsonLDWriter(RDFFormat syntaxForm) {
         format = syntaxForm ;
@@ -173,6 +177,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
       	  			if (jenaContext.isDefined(JSONLD_CONTEXT)) {
       	  				isCtxDefined = true;
       	  				ctx = jenaContext.get(JSONLD_CONTEXT);
+      	  			} else if (jenaContext.isDefined(JSONLD_CONTEXT_AS_JSON_STRING)) {
+      	  				isCtxDefined = true;
+      	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT_AS_JSON_STRING);
+      	  				if (jsonString != null) ctx = JsonUtils.fromString(jsonString);
       	  			}
       	  		}
 
