@@ -83,7 +83,19 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 {
 		/** Expected value: the value of the "@context" (a JSON String) */
 		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
-		
+		/**
+		 * Expected value: the value of the "@context" to be put in final output (a JSON String) 
+		 * This is NOT the context used to produce the output (given by JSONLD_CONTEXT,
+		 * or computed from the input RDF. It is something that will replace the @content content
+		 * This is useful 1) for the cases you want to have a URI as value of @context,
+		 * without having JSON-LD java to download it and 2) as a trick to
+		 * change the URIs in your result. 
+		 * 
+		 * Only for compact and flatten formats.
+		 * 
+		 * Note that it is supposed to be a JSON String: to set the value of @context to a URI,
+		 * the String to use must be quoted.*/
+		public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = Symbol.create("JSONLD_CONTEXT_SUBSTITUTION");		
 		/** value: the frame object expected by JsonLdProcessor.frame */
 		public static final Symbol JSONLD_FRAME = Symbol.create("JSONLD_FRAME");
 		/** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
@@ -181,9 +193,22 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
       	      } else {
       	      	throw new IllegalArgumentException("Unexpected output form " + outputForm);
       	      }
+      	  		
+      	  		// replace @context in output?
+      	  		if (jenaContext != null) {
+	      	  		Object ctxReplacement = jenaContext.get(JSONLD_CONTEXT_SUBSTITUTION);
+	      	  		if (ctxReplacement != null) {
+	      	  			if (obj instanceof Map) {
+	      	  				Map map = (Map) obj;
+	      	  				if (map.containsKey("@context")) {
+	      	  					map.put("@context", JsonUtils.fromString((String) ctxReplacement));
+	      	  				}
+	      	  			}
+	      	  		}
+      	  		}
       	    }
 
-            if ( isPretty() )
+      	    if ( isPretty() )
                 JsonUtils.writePrettyPrint(writer, obj) ;
             else
                 JsonUtils.write(writer, obj) ;

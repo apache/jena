@@ -329,6 +329,28 @@ java.lang.NoSuchMethodError: org.apache.http.impl.client.cache.CacheConfig.custo
 }
 
 /**
+ * Test using a context to compute the output, and replacing the @context with a given value
+ */
+@Test public void testSubstitutingContext() {
+	Model m = ModelFactory.createDefaultModel();
+	String ns = "http://schema.org/";
+	Resource person = m.createResource(ns + "Person");
+	Resource s = m.createResource();
+	m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+	m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
+	m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
+	m.add(s, RDF.type, person);
+	
+	Context jenaCtx = new Context();
+	jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT_SUBSTITUTION, "\"" + ns + "\"");
+
+	String jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
+	String c = "\"@context\":\"http://schema.org/\"";
+	assertTrue(jsonld.indexOf(c) > -1);
+}
+
+
+/**
  * Checking frames
  */
 @Test public final void testFrames() throws JsonParseException, IOException {
