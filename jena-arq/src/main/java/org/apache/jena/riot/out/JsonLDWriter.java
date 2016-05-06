@@ -48,6 +48,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.vocabulary.RDF ;
+import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
 import com.fasterxml.jackson.databind.JsonMappingException ;
@@ -62,15 +63,15 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * By default, the output is "compact" (in JSON-LD terminology).
  * One can choose another form using one of the dedicated RDFFormats (JSONLD_EXPAND_PRETTY, etc.).
  * For formats using a context ("@context" node), (compact and expand), this automatically generates a default one.
- * One can pass a jsonld context using the (jena) context mechanism, defining a (jena) Context
+ * One can pass a jsonld context using the (jena) Context mechanism, defining a (jena) Context
  * (sorry for this clash of contexts), (cf. 4th argument in
  * {@link org.apache.jena.riot.RDFDataMgr#write(OutputStream out, Model model, RDFFormat serialization, Context ctx)})
  * with:
  * <pre>
  * Context jenaContext = new Context()
- * jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, jsonldCtx);
+ * jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, contextAsJsonString);
  * </pre>
- * where jsonldCtx is the object expected by the JSONLD-java API.
+ * where contextAsJsonString is a JSON string containing the value of the "@context".
  * 
  * One can also pass a frame with the {@link #JSONLD_FRAME}, or define the options expected
  * by JSONLD-java using {@link #JSONLD_OPTIONS} 
@@ -79,12 +80,11 @@ import com.github.jsonldjava.utils.JsonUtils ;
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
-		/** value: the context expected by JSON-LD JsonLdProcessor.compact and flatten */
+//		/** value: the context expected by JSON-LD JsonLdProcessor.compact and flatten */
+//		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
+		/** Expected value: the value of the "@context" (a JSON String) */
 		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
-		public static final Symbol JSONLD_CONTEXT_AS_JSON_STRING = Symbol.create("JSONLD_CONTEXT_AS_JSON_STRING");
 		
-		/** value: a context to replace the one used to compute the output */
-		public static final Symbol JSONLD_OUT_CONTEXT = Symbol.create("JSONLD_OUT_CONTEXT");
 		/** value: the frame object expected by JsonLdProcessor.frame */
 		public static final Symbol JSONLD_FRAME = Symbol.create("JSONLD_FRAME");
 		/** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
@@ -176,11 +176,19 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
       	  		if (jenaContext != null) {
       	  			if (jenaContext.isDefined(JSONLD_CONTEXT)) {
       	  				isCtxDefined = true;
-      	  				ctx = jenaContext.get(JSONLD_CONTEXT);
-      	  			} else if (jenaContext.isDefined(JSONLD_CONTEXT_AS_JSON_STRING)) {
-      	  				isCtxDefined = true;
-      	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT_AS_JSON_STRING);
-      	  				if (jsonString != null) ctx = JsonUtils.fromString(jsonString);
+      	  				Object o = jenaContext.get(JSONLD_CONTEXT);
+      	  				if (o != null) {
+      	  					// I won't assume it is a string, to leave the possibility to pass
+      	  					// the context expected by JSON-LD JsonLdProcessor.compact and flatten
+      	  					// (should not be useful)
+      	  					if (o instanceof String) {
+          	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT);
+          	  				if (jsonString != null) ctx = JsonUtils.fromString(jsonString);     	  						
+      	  					} else {
+      	  						Logger.getLogger(getClass()).warn("JSONLD_CONTEXT value is not a String. Assuming a context object expected by JSON-LD JsonLdProcessor.compact or flatten");
+      	  						ctx = o;
+      	  					}
+      	  				}
       	  			}
       	  		}
 
