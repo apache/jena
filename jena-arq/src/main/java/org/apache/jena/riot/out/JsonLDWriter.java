@@ -81,8 +81,6 @@ import com.github.jsonldjava.utils.JsonUtils ;
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
-//		/** value: the context expected by JSON-LD JsonLdProcessor.compact and flatten */
-//		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
 		/** Expected value: the value of the "@context" (a JSON String) */
 		public static final Symbol JSONLD_CONTEXT = Symbol.create("JSONLD_CONTEXT");
 		
@@ -204,7 +202,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     //
     
     /** Get the (jsonld) context from the jena context, or create one */
-    protected Object getJsonldContext(DatasetGraph dataset, PrefixMap prefixMap, Context jenaContext) throws JsonParseException, IOException {
+    private static Object getJsonldContext(DatasetGraph dataset, PrefixMap prefixMap, Context jenaContext) throws JsonParseException, IOException {
   		Object ctx = null;
   		boolean isCtxDefined = false; // to allow jenaContext to set ctx to null. Useful?
 
@@ -214,7 +212,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
   				Object o = jenaContext.get(JSONLD_CONTEXT);
   				if (o != null) {
   					// I won't assume it is a string, to leave the possibility to pass
-  					// the context expected by JSON-LD JsonLdProcessor.compact and flatten
+  					// the context object expected by JSON-LD JsonLdProcessor.compact and flatten
   					// (should not be useful)
   					if (o instanceof String) {
   	  				String jsonString = (String) jenaContext.get(JSONLD_CONTEXT);
@@ -244,6 +242,8 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     }
     
   	// useful to help people wanting to create their own context?
+    // It is used in TestJsonLDWriter (marginally) (TestJsonLDWriter which happens to be in another package,
+    // so either I remove the test, or this has to be public)
   	public static Object createJsonldContext(Graph g) {
   		return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()));
   	}
