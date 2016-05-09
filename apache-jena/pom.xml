@@ -29,7 +29,7 @@
   <packaging>pom</packaging>
   <name>Apache Jena - Distribution</name>
   <url>http://jena.apache.org/</url>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <description>
     Apache Jena is a API and toolkit for working with semantic web technologies such as RDF and SPARQL using Java.  This artifact represents the source and binary distribution packages generated for releases.
   </description>
@@ -37,7 +37,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -60,13 +60,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
       <optional>true</optional>
     </dependency>
@@ -82,13 +82,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
       <optional>true</optional>
     </dependency>
@@ -104,13 +104,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
       <optional>true</optional>
     </dependency>
@@ -126,13 +126,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -140,7 +140,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>javadoc</classifier>
       <optional>true</optional>
     </dependency>
@@ -174,7 +174,7 @@
       
       <!-- 
       Use the dependencies plugin to copy the dependencies into the lib/ directory which makes the scripts work in dev enivronments 
-      -->
+      - -> JENA-1173
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -194,10 +194,11 @@
           </execution>
         </executions>
       </plugin>
+      -->
 
       <!-- 
       As we copy dependencies into lib/ to make scripts work in dev environments we also need to clean up that directory
-      -->
+      - -> JENA-1173
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -208,6 +209,7 @@
           </filesets>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
 
