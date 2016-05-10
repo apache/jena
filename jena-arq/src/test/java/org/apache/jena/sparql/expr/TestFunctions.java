@@ -30,6 +30,14 @@ import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Test ;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class TestFunctions
 {
     private static final NodeValue INT_ZERO = NodeValue.makeInteger(0) ;
@@ -81,28 +89,35 @@ public class TestFunctions
 //            test("afn:sprintf('%1$tm %1$te,%1$tY', "+nodeStr+")",NodeValue.makeString("10 14,2005")) ;
 //    }
     
-    private static void test_exprSprintf_05(String nodeStr, String... possible) {
-        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime("2005-10-14T13:09:43Z").toString()+")" ;
+    private static void test_exprSprintf_05(String nodeStr) {
+        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
         assertTrue(r.isString()) ;
         String s = r.getString() ;
-        // Timezones! The locale data can be -1, 0, +1 from the Z day.
-        boolean b = false ;
-        for (String poss : possible ) {
-            if ( poss.equals(s) )
-                b = true ;
+        // Parse the date
+        String dtFormat = "yyyy-MM-dd'T'HH:mm:ssXXX";
+        SimpleDateFormat sdtFormat = new SimpleDateFormat(dtFormat);
+        Date dtDate = null;
+        try {
+            dtDate = sdtFormat.parse(nodeStr);
+        } catch (ParseException e) {
+            assertFalse("Cannot parse the input date string. Message:"+e.getMessage(),false);
         }
-        assertTrue(b) ;
+        // print the date based on the current timeZone.
+        SimpleDateFormat stdFormatOut = new SimpleDateFormat("MM dd,yyyy");
+        stdFormatOut.setTimeZone(TimeZone.getDefault());
+        String outDate = stdFormatOut.format(dtDate);
+        assertEquals(s,outDate);
     }
     
     // Temporary fix for JENA-1175
     // Timezone -11:00 to any timezone can be a day ahead
-    @Test public void exprSprintf_05a() { test_exprSprintf_05("2005-10-14T14:09:43-11:00",  "10 14,2005", "10 15,2005") ; }
+    @Test public void exprSprintf_05a() { test_exprSprintf_05("2005-10-14T14:09:43-11:00") ; }
     // Timezone Z to any timezone can be a day behind or a day ahead
-    @Test public void exprSprintf_05b() { test_exprSprintf_05("2005-10-14T12:09:43Z",       "10 13,2005", "10 14,2005", "10 15,2005") ; }
+    @Test public void exprSprintf_05b() { test_exprSprintf_05("2005-10-14T12:09:43+00:00") ; }
     // Timezone +11:00 can be a day behind
-    @Test public void exprSprintf_05c() { test_exprSprintf_05("2005-10-14T10:09:43+11:00",  "10 13,2005", "10 14,2005") ; }
+    @Test public void exprSprintf_05d() { test_exprSprintf_05("2005-10-14T10:09:43+11:00") ; }
     
     @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
     @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to "+String.format("%.2f",11.22))) ; }
