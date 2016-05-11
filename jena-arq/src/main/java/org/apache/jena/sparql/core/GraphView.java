@@ -94,12 +94,7 @@ public class GraphView extends GraphBase implements Sync
     
     @Override
     protected PrefixMapping createPrefixMapping() {
-//        // Unwrap if possible, else put in an in-memory placeholder. 
-//        // Does not work so simply - TDB may have gone transactional.        
-//        if ( dsg instanceof DatasetGraphWrapper ) {
-//            DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getBase() ;
-//            return dsg2.getDefaultGraph().getPrefixMapping() ;    
-//        }
+        // Subclasses should override this but in the absence of anything better ...
         return new PrefixMappingImpl() ;
     }
 
