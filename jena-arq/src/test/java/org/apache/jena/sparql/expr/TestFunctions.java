@@ -82,7 +82,7 @@ public class TestFunctions
 //    }
     
     private static void test_exprSprintf_05(String nodeStr, String... possible) {
-        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime("2005-10-14T13:09:43Z").toString()+")" ;
+        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
         assertTrue(r.isString()) ;
