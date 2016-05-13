@@ -51,12 +51,6 @@ public class WriterConst
     /** Column for start of object */
     public static final int INDENT_OBJECT   = 8 ;
 
-    /** Indent for triples in default graph blocks */
-    public static final int INDENT_GDFT          = 2 ;
-    /** Indent for trinples in named graph blocks */
-    public static final int INDENT_GNMD          = 4 ;
-
-    
     /** Minimum gap from S to P and from P to O */
     public static final int MIN_GAP         = 2 ;
 
@@ -65,17 +59,25 @@ public class WriterConst
     /** Minimum gap from P to O */
     public static final int GAP_P_O         = MIN_GAP ;  
     
+    // TriG constants.
+    /** Whether to put in {} for the default graph when pretty writing */   
+    public static final boolean GDFT_BRACE      =  false ;
+    
     /** Whether to put in a newline after the opening { of a default graph block */   
-    public static final boolean NL_GDFT_START    =  false ;
+    public static final boolean NL_GDFT_START   =  false ;
     /** Whether to put in a newline after the opening { of a named graph block */   
-    public static final boolean NL_GNMD_START    =  true ;
+    public static final boolean NL_GNMD_START   =  true ;
     
     /** Whether to put the closing } of a default graph block on a newline */
-    public static final boolean NL_GDFT_END      =  true ;
+    public static final boolean NL_GDFT_END     =  true ;
     /** Whether to put the closing } of a named graph block on a newline */
-    public static final boolean NL_GNMD_END      =  true ;
+    public static final boolean NL_GNMD_END     =  true ;
 
-    
+    /** Indent for triples in default graph blocks if inside {} */
+    public static final int INDENT_GDFT          = 2 ;
+    /** Indent for trinples in named graph blocks */
+    public static final int INDENT_GNMD          = 4 ;
+
     // Constants.
     public static final String rdfNS        = RDF.getURI() ;
     public static final Node RDF_type       = RDF.Nodes.type ;

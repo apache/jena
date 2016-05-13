@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.apache.jena.riot.writer.WriterConst.GDFT_BRACE ;
 import static org.apache.jena.riot.writer.WriterConst.INDENT_GDFT ;
 import static org.apache.jena.riot.writer.WriterConst.INDENT_GNMD ;
 import static org.apache.jena.riot.writer.WriterConst.NL_GDFT_END ;
@@ -70,6 +71,18 @@ public class TriGWriter extends TriGWriterBase
         /** Return true if anything written */
         private boolean writeGraphTriG(DatasetGraph dsg, Node name) {
             boolean dftGraph =  ( name == null || name == Quad.defaultGraphNodeGenerated  ) ;
+            
+            if ( dftGraph && dsg.getDefaultGraph().isEmpty() )
+                return false ;
+            
+            if ( dftGraph && ! GDFT_BRACE ) {
+                // Non-empty default graph, no braces.
+                // No indenting.
+                writeGraphTTL(dsg, name) ;
+                return true ;
+            }
+            
+            // The graph will go in braces, whether non-empty default graph or a named graph. 
             boolean NL_START =  ( dftGraph ? NL_GDFT_START : NL_GNMD_START ) ; 
             boolean NL_END =    ( dftGraph ? NL_GDFT_END : NL_GNMD_END ) ; 
             int INDENT_GRAPH =  ( dftGraph ? INDENT_GDFT : INDENT_GNMD ) ; 
@@ -77,9 +90,6 @@ public class TriGWriter extends TriGWriterBase
             if ( !dftGraph ) {
                 writeNode(name) ;
                 out.print(" ") ;
-            } else {
-                if ( dsg.getDefaultGraph().isEmpty() )
-                    return false ;
             }
 
             out.print("{") ;
