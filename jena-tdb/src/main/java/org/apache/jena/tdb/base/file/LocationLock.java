@@ -157,9 +157,9 @@ public class LocationLock {
 
         // Get current owner
         int owner = this.getOwner();
+        int pid = ProcessUtils.getPid(NO_OWNER);
         if (owner == NO_OWNER) {
             // No owner currently so try to obtain the lock
-            int pid = ProcessUtils.getPid(NO_OWNER);
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
@@ -174,10 +174,11 @@ public class LocationLock {
         } else {
             // Someone other process potentially owns the lock on this location
             // Check if the owner is alive
-            if (ProcessUtils.isAlive(owner))
+            if (ProcessUtils.isAlive(owner)) {
                 throw new TDBException("Location " + location.getDirectoryPath() + " is currently locked by PID "
-                        + owner
+                        + owner + "(this process is PID "+pid+")"
                         + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
+            }
 
             // Otherwise the previous owner is dead so we can take the lock
             takeLock(ProcessUtils.getPid(NO_OWNER));
