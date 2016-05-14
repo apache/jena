@@ -51,10 +51,13 @@ public class GraphUnionRead extends GraphBase
         PrefixMapping pmap = new PrefixMappingImpl() ;
         for ( Node gn : graphs )
         {
-            if ( ! gn.isURI() ) continue ;
+            if ( ! gn.isURI() ) 
+                continue ;
             Graph g = dataset.getGraph(gn) ;
-            PrefixMapping pmapNamedGraph = g.getPrefixMapping() ;
-            pmap.setNsPrefixes(pmapNamedGraph) ;
+            if ( g != null ) {
+                PrefixMapping pmapNamedGraph = g.getPrefixMapping() ;
+                pmap.setNsPrefixes(pmapNamedGraph) ;
+            }
         }
         return pmap ;
     }

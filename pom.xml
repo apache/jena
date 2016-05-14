@@ -58,7 +58,7 @@
       <!--
           This is the dev profile, typically used locally with 
           "mvn clean install -Pdev".
-          It only builds the moduels shipped in apache-jena binaries.
+          It only builds the modules shipped in apache-jena binaries.
       -->
       <id>dev</id>
       <!-- The maven artifacts of the basic modules -->

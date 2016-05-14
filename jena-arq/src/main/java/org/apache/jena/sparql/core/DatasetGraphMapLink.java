@@ -25,7 +25,6 @@ import java.util.Map ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
@@ -86,7 +85,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      *  but new graphs are created in memory.
      */
     private DatasetGraphMapLink(DatasetGraph dsg) {
-        this(dsg, DatasetGraphFactory.memGraphMaker) ;
+        this(dsg, DatasetGraphFactory.graphMakerMem) ;
     }
 
     private DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
@@ -113,7 +112,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      */
     public DatasetGraphMapLink(Graph dftGraph) {
         this.defaultGraph = dftGraph ;
-        this.graphMaker = DatasetGraphFactory.graphMakerNull ;
+        this.graphMaker = DatasetGraphFactory.graphMakerMem ;
     }
 
     // ----
@@ -152,10 +151,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * Return null for "nothing created as a graph"
      */
     protected Graph getGraphCreate() { 
-        Graph g = graphMaker.create() ;
-        if ( g == null )
-            throw new ARQException("Can't make new graphs") ;
-        return g ;
+        return graphMaker.create() ;
     }
 
     @Override

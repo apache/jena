@@ -43,7 +43,10 @@ public interface DatasetPrefixStorage extends Closeable, Sync
     /** Add a prefix mapping for a specific graph */ 
     public void insertPrefix(String graphName, String prefix, String uri) ;
     
-    /** Copy in a set of mappings */ 
+    /** Copy the prefixes for a graph into the given {@link PrefixMapping}
+     * @param graphName Graph name
+     * @param pmap      Destination.
+     */
     public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
 
     /** Remove the association of a prefix for a specific graph */ 

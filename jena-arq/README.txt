@@ -7,15 +7,15 @@ or graph, including ones stored in databases.
 Download
 --------
 
-Also available via SVN:
-https://svn.apache.org/repos/asf/jena/trunk/jena-arq
+See
+https://jena.apache.org/download/
+
+Also available via git:
+https://git-wip-us.apache.org/repos/asf/jena.git
 
 Maven:
 GroupId: org.apache.jena
 ArtifactId: jena-arq
-
-Development repository:
-  https://repository.apache.org/content/repositories/snapshots/org/apache/jena/ 
 
 Online demos and services
 -------------------------
@@ -36,11 +36,9 @@ Installation
 The apache-jena distribution includes ARQ and all it's dependencies.  It
 also includes scripts to run the command line tools.
 
-http://www.apache.org/dist/jena/
+https://www.apache.org/dist/jena/
 
 Unpack zip : it unpacks into a directory, including the version number.
-
-Set environment variable ARQROOT to the path of this direrctory.
 
 Maven Distribution
 ------------------
@@ -55,15 +53,6 @@ jena-arq-VER-test-sources.jar    Sourecs for test code
 jena-arq-VER-tests.zip           Datafiles for tests, and test scripts.
 
 jena-arq-VER.pom                 ARQ POM
-
-jena-arq-VER.zip                 The complete distribution file (if available)
-jena-arq-VER-source-release.zip  Complete copy of the codebase at the release.
-
-To run tests, you will need 'jena-arq-VER.jar', 'jena-arq-VER-tests.jar' and all
-dependences and to unpack 'jena-arq-VER-tests.zip' to get the "testing" data
-directory and test scripts.
-
-Or download the distribution 'jena-arq-VER.zip'. 
 
 Running from the command line
 -----------------------------
@@ -112,11 +101,6 @@ ARQ.Net
 
 ARQ has been run under IKVM (http://www.ikvm.net/), using IKVM to
 translate the bytecodes to IL and using IKVM as a JVM.
-
-Changes
--------
-
-See ChangeLog.txt
 
 Support and Questions
 ---------------------

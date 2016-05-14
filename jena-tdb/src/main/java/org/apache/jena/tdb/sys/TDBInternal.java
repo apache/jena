@@ -109,12 +109,11 @@ public class TDBInternal
      * up-to-date.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphTransaction )
-            // Latest.
-            return ((DatasetGraphTransaction)dsg).getDatasetGraphToQuery() ;
-        // Core.
-        // .getBaseDatasetGraph() ;
-
+        if ( dsg instanceof DatasetGraphTransaction ) {
+                // Latest. Must be inside a transaction or completely non-transactional.
+                // See getBaseDatasetGraphTDB
+                return ((DatasetGraphTransaction)dsg).getDatasetGraphToQuery() ;
+        }
         if ( dsg instanceof DatasetGraphTDB )
             return (DatasetGraphTDB)dsg ;
 
@@ -128,7 +127,7 @@ public class TDBInternal
     public static DatasetGraphTDB getBaseDatasetGraphTDB(DatasetGraph datasetGraph) {
         if ( datasetGraph instanceof DatasetGraphTransaction )
             return ((DatasetGraphTransaction)datasetGraph).getBaseDatasetGraph() ;
-        throw new TDBException("Not a suitable DatasetGraph to get it's base storage: " + Lib.classShortName(datasetGraph.getClass())) ;
+        throw new TDBException("Not a suitable DatasetGraph to get its base storage: " + Lib.classShortName(datasetGraph.getClass())) ;
     }
 
     /** Look at a directory and see if it is a new area */
