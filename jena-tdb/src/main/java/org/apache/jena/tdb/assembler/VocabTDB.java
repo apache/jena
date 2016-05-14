@@ -35,7 +35,7 @@ public class VocabTDB
     // Types
     public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
     public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB") ;
-    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
+//    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
