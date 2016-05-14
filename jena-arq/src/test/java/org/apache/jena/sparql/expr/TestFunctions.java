@@ -246,6 +246,8 @@ public class TestFunctions
     @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
     @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
 
+    // https://www.w3.org/TR/xpath-functions-30/#func-normalize-unicode
+    // and
     // from http://www.unicode.org/reports/tr15/
     //l
     @Test public void exprStrNormalizeUnicode0() { test("fn:normalize-unicode('Äffin','nfd')",NodeValue.makeString("Äffin")) ; }
@@ -260,12 +262,30 @@ public class TestFunctions
     @Test public void exprStrNormalizeUnicode6() { test("fn:normalize-unicode('Äffin','nfkd')",NodeValue.makeString("Äffin")) ; }
     @Test public void exprStrNormalizeUnicode7() { test("fn:normalize-unicode('Äffin','nfkc')",NodeValue.makeString("Äffin")) ; }
     // r
-    @Test public void exprStrNormalizeUnicode8() { test("fn:normalize-unicode('hw_ka + hw_ten','nfd')",NodeValue.makeString("hw_ka + hw_ten")) ; }
-    @Test public void exprStrNormalizeUnicode9() { test("fn:normalize-unicode('hw_ka + hw_ten','nfc')",NodeValue.makeString("hw_ka + hw_ten")) ; }
+    String hw_ka="\uFF76";
+    String hw_ten="\uFF9F";
+    @Test public void exprStrNormalizeUnicode8() { test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfd')",NodeValue.makeString(hw_ka+hw_ten)) ; }
+    @Test public void exprStrNormalizeUnicode9() {
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfc')",NodeValue.makeString(hw_ka+hw_ten)) ;
+    }
+    // Not sure why the following tests are not passing
+    // both examples are taken from the http://www.unicode.org/reports/tr15/ (Table 8 r')
+    // the translation of hw_ka,hw_ten,ka and ten are taken from Table 4 of the same document
+    // I took the ga translation by association (it was not defined in the unicode report) and chosen to be: KATAKANA LETTER GA U+30AC
+    // Everything seems ok to me so there are two options in my opinion:
+    // 1) the java implementation of the nfkd has some flaws
+    // 2) the unicode example is wrong (I cannot judge as I do not know japanese or unicode enough :))
+    // The test is failing because the expected string has code when looking in the debugger (UTF-16?) (12459 | 12442)  while the Nomalizer.normalize is giving  (12459 | 12441)
     // r'
-    // not sure why test 10 and 11 are not passing... maybe because it is not fully clear what they are testing.
-    @Test public void exprStrNormalizeUnicode10() { test("fn:normalize-unicode('hw_ka + hw_ten','nfkd')",NodeValue.makeString("ka + ten")) ; }
-    @Test public void exprStrNormalizeUnicode11() { test("fn:normalize-unicode('hw_ka + hw_ten','nfkc')",NodeValue.makeString("ga")) ; }
+    @Test public void exprStrNormalizeUnicode10() {
+        String ka = "\u30AB";
+        String ten="\u3099";
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkd')",NodeValue.makeString(ka+ten)) ;
+    }
+    @Test public void exprStrNormalizeUnicode11() {
+        String ga="\u30AC";
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkc')",NodeValue.makeString(ga)) ;
+    }
     // empty argument <-> returns the input string
     @Test public void exprStrNormalizeUnicode12() { test("fn:normalize-unicode('some word','')",NodeValue.makeString("some word")) ; }
     // one argument <-> NFC
@@ -327,7 +347,7 @@ public class TestFunctions
     @Test public void exprRoundHalfEven_06()    { test("fn:round-half-to-even(4.7564e-3, 2)",     NodeValue.makeDouble(0.0e0)) ; }
     @Test public void exprRoundHalfEven_07()    { test("fn:round-half-to-even(35612.25, -2)",     NodeValue.makeDecimal(35600)) ; }
     // counter-intuitive -- would fail if float/double not translated to decimal
-    @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even(150.015, 2)",     NodeValue.makeDouble(150.01)) ; }
+    @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)) ; }
 
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
