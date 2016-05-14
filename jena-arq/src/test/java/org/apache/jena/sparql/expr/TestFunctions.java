@@ -18,14 +18,20 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.fail ;
+
+import java.text.ParseException ;
+import java.text.SimpleDateFormat ;
+import java.util.Date ;
+import java.util.TimeZone ;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Test ;
@@ -76,12 +82,47 @@ public class TestFunctions
     @Test public void exprSprintf_02()      { test("afn:sprintf('%s', 'abcdefghi')",NodeValue.makeString("abcdefghi")) ; }
     @Test public void exprSprintf_03()      { test("afn:sprintf('sometext %s', 'abcdefghi')",NodeValue.makeString("sometext abcdefghi")) ; }
     @Test public void exprSprintf_04()      { test("afn:sprintf('%1$tm %1$te,%1$tY', '2016-03-17'^^xsd:date)",NodeValue.makeString("03 17,2016")) ; }
-//    @Test public void exprSprintf_05()      {
-//            String nodeStr = NodeValue.makeDateTime("2005-10-14T13:09:43Z").toString();
-//            test("afn:sprintf('%1$tm %1$te,%1$tY', "+nodeStr+")",NodeValue.makeString("10 14,2005")) ;
-//    }
+
+
+    @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
+    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to "+String.format("%.2f",11.22))) ; }
+    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString(String.format("%.3f",1.23456789))) ; }
+    @Test public void exprSprintf_09()      { test("afn:sprintf('this number is equal to %o in the octal system', '11'^^xsd:integer)",NodeValue.makeString("this number is equal to 13 in the octal system")) ; }
+    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))) ; }
+    @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")) ; }
+    @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")) ; }
+
+    // Timezone tests
     
-    private static void test_exprSprintf_05(String nodeStr, String... possible) {
+    // Timezone -11:00 to any timezone can be a day ahead
+    @Test public void exprSprintf_20() { test_exprSprintf_tz_exact("2005-10-14T14:09:43-11:00") ; }
+    // Timezone Z to any timezone can be a day behind or a day ahead
+    @Test public void exprSprintf_21() { test_exprSprintf_tz_exact("2005-10-14T12:09:43+00:00") ; }
+    // Timezone +11:00 can be a day behind
+    @Test public void exprSprintf_22() { test_exprSprintf_tz_exact("2005-10-14T10:09:43+11:00") ; }
+    private static void test_exprSprintf_tz_exact(String nodeStr) {
+        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        assertTrue(r.isString()) ;
+        String s = r.getString() ;
+        // Parse the date
+        String dtFormat = "yyyy-MM-dd'T'HH:mm:ssXXX";
+        SimpleDateFormat sdtFormat = new SimpleDateFormat(dtFormat);
+        Date dtDate = null;
+        try {
+            dtDate = sdtFormat.parse(nodeStr);
+        } catch (ParseException e) {
+            assertFalse("Cannot parse the input date string. Message:"+e.getMessage(),false);
+        }
+        // print the date based on the current timeZone.
+        SimpleDateFormat stdFormatOut = new SimpleDateFormat("MM dd,yyyy");
+        stdFormatOut.setTimeZone(TimeZone.getDefault());
+        String outDate = stdFormatOut.format(dtDate);
+        assertEquals(s,outDate);
+    }
+    
+    private static void test_exprSprintf_tz_possibilites(String nodeStr, String... possible) {
         String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
@@ -96,22 +137,13 @@ public class TestFunctions
         assertTrue(b) ;
     }
     
-    // Temporary fix for JENA-1175
     // Timezone -11:00 to any timezone can be a day ahead
-    @Test public void exprSprintf_05a() { test_exprSprintf_05("2005-10-14T14:09:43-11:00",  "10 14,2005", "10 15,2005") ; }
+    @Test public void exprSprintf_23() { test_exprSprintf_tz_possibilites("2005-10-14T14:09:43-11:00",  "10 14,2005", "10 15,2005") ; }
     // Timezone Z to any timezone can be a day behind or a day ahead
-    @Test public void exprSprintf_05b() { test_exprSprintf_05("2005-10-14T12:09:43Z",       "10 13,2005", "10 14,2005", "10 15,2005") ; }
+    @Test public void exprSprintf_24() { test_exprSprintf_tz_possibilites("2005-10-14T12:09:43Z",       "10 13,2005", "10 14,2005", "10 15,2005") ; }
     // Timezone +11:00 can be a day behind
-    @Test public void exprSprintf_05c() { test_exprSprintf_05("2005-10-14T10:09:43+11:00",  "10 13,2005", "10 14,2005") ; }
+    @Test public void exprSprintf_25() { test_exprSprintf_tz_possibilites("2005-10-14T10:09:43+11:00",  "10 13,2005", "10 14,2005") ; }
     
-    @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
-    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to "+String.format("%.2f",11.22))) ; }
-    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString(String.format("%.3f",1.23456789))) ; }
-    @Test public void exprSprintf_09()      { test("afn:sprintf('this number is equal to %o in the octal system', '11'^^xsd:integer)",NodeValue.makeString("this number is equal to 13 in the octal system")) ; }
-    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))) ; }
-    @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")) ; }
-    @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")) ; }
-
     @Test public void exprStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     @Test public void exprStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }
     @Test public void exprStrStart2() { test("fn:starts-with('abc', 'ab')", TRUE) ; }
