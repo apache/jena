@@ -38,6 +38,7 @@ import org.apache.http.entity.ContentType ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.AbstractHttpClient ;
+import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.impl.conn.PoolingClientConnectionManager ;
 import org.apache.http.impl.conn.SchemeRegistryFactory ;
@@ -268,10 +269,26 @@ public class HttpOp {
         useDefaultClientWithAuthentication = useWithAuth;
     }
 
+    public static HttpClient createPoolingHttpClient() {
+        String s = System.getProperty("http.maxConnections", "5");
+        int max = Integer.parseInt(s);
+        return HttpClientBuilder.create()
+            .setMaxConnPerRoute(max)
+            .setMaxConnTotal(2*max)
+            .build() ;
+    }
+    
+//    /** @deprecated Use {@link #createPoolingHttpClient()} */
+//    @Deprecated
+//    public static HttpClient createCachingHttpClient() {
+//        return createPoolingHttpClient() ; 
+//    }
+    
     /**
      * Create an HttpClient that performs connection pooling. This can be used
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
+    @SuppressWarnings("deprecation")
     public static HttpClient createCachingHttpClient() {
         return new SystemDefaultHttpClient() {
             /**
@@ -280,8 +297,8 @@ public class HttpOp {
              */
             @Override
             protected ClientConnectionManager createClientConnectionManager() {
-                PoolingClientConnectionManager connmgr = new PoolingClientConnectionManager(
-                        SchemeRegistryFactory.createSystemDefault());
+                PoolingClientConnectionManager connmgr = 
+                    new PoolingClientConnectionManager(SchemeRegistryFactory.createSystemDefault());
                 String s = System.getProperty("http.maxConnections", "5");
                 int max = Integer.parseInt(s);
                 connmgr.setDefaultMaxPerRoute(max);
