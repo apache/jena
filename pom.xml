@@ -69,7 +69,7 @@
     <ver.tdb>${ver.jena}</ver.tdb>
     <ver.fuseki>2.4.1-SNAPSHOT</ver.fuseki>
     <ver.junit>4.12</ver.junit>
-    <ver.slf4j>1.7.12</ver.slf4j>
+    <ver.slf4j>1.7.21</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
   </properties>
 

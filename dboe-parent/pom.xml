@@ -36,12 +36,41 @@ information regarding copyright ownership.
   <dependencyManagement>
     <dependencies>
 
+      <!-- For clarity, Jena dependencies do not incldue TDB -->
+      <!-- Be picky for the moment.
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>apache-jena-libs</artifactId>
+        <version>${ver.jena}</version>
+        <exclusions> 
+          <exclusion>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      -->
+      
+      <!-- ARQ is essential anyway.
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-core</artifactId>
+        <version>${ver.jena}</version>
+      </dependency>
+      -->
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-arq</artifactId>
         <version>${ver.jena}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-cmds</artifactId>
+        <version>${ver.jena}</version>
+      </dependency>
+
+      <!-- Tests -->
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-base</artifactId>
@@ -66,11 +95,15 @@ information regarding copyright ownership.
         <scope>test</scope>
       </dependency>
 
+      <!--
       <dependency>
         <groupId>org.apache.jena</groupId>
-        <artifactId>jena-cmds</artifactId>
-        <version>${ver.jena}</version>
+        <artifactId>jena-tdb</artifactId>
+        <version>${ver.tdb}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
       </dependency>
+      -->
 
       <!-- Logging -->
       <dependency>
@@ -100,28 +133,12 @@ information regarding copyright ownership.
         <version>${ver.log4j}</version>
       </dependency>
 
-      <!--
-          <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb</artifactId>
-            <version>${ver.tdb}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb</artifactId>
-            <version>${ver.tdb}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-          </dependency>
-          -->
-          
-          <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${ver.junit}</version>
-            <scope>test</scope>
-          </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${ver.junit}</version>
+        <scope>test</scope>
+      </dependency>
           
     </dependencies>
 
