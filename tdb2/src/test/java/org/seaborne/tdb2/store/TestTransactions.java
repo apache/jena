@@ -31,7 +31,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
@@ -74,7 +74,7 @@ public class TestTransactions extends BaseTest
     
     @Before public void before() {
         location = Location.mem() ;
-        dataset = TDBFactory.connectDataset(location) ;
+        dataset = TDB2Factory.connectDataset(location) ;
     }
 
     @After public void after() {

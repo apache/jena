@@ -34,7 +34,7 @@ import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.setup.TDBDatasetDetails ;
@@ -63,7 +63,7 @@ public class CloneTDB {
         StoreParams storeParams = dsgBase.getConfig() ;
         // Force 
         StoreConnection.make(newLocation, storeParams) ;
-        DatasetGraphTDB dsg2 = (DatasetGraphTDB)TDBFactory.connectDatasetGraph(newLocation) ;
+        DatasetGraphTDB dsg2 = (DatasetGraphTDB)TDB2Factory.connectDatasetGraph(newLocation) ;
         Txn.executeRead(dsgBase, () -> { 
             Txn.executeWrite(dsg2, () -> {
                 Iterator<Quad> iter = dsgBase.find();

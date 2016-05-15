@@ -26,9 +26,9 @@ import org.seaborne.tdb2.sys.StoreConnection ;
 
 
 /** Public factory for creating objects datasets backed by TDB storage */
-public class TDBFactory
+public class TDB2Factory
 {
-    private TDBFactory() {} 
+    private TDB2Factory() {} 
     
     public static DatasetGraph connectDatasetGraph(Location location) {
         StoreConnection sConn = StoreConnection.connectCreate(location) ;

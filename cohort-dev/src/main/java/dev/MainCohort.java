@@ -19,14 +19,15 @@ package dev;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
 public class MainCohort {
@@ -37,13 +38,12 @@ public class MainCohort {
     static Journal journal = Journal.create(Location.mem()) ;
 
     public static void main(String... args) {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)TDBFactory.createDatasetGraph() ;
-        TransactionCoordinator coord = dsg.getTxnSystem().getTxnMgr() ;
+        DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
+        TransactionalSystem txnSystem = ((DatasetGraphTDB)dsg).getTxnSystem() ;
+        
         dsg.begin(ReadWrite.READ);
         
-        //Txn.threadTxnWrite(dsg, ()->{}).run(); 
-        
-        Transaction txn = dsg.getTxnSystem().getThreadTransaction() ;
+        Transaction txn = txnSystem.getThreadTransaction() ;
         boolean b = txn.promote() ;
         if ( ! b )
             System.out.println("Did not promote");

@@ -23,11 +23,11 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 
 public class VocabTDB
 {
-    private static final String NS = TDB.namespace ;
+    private static final String NS = TDB2.namespace ;
     
     public static String getURI() { return NS ; } 
 

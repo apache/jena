@@ -21,7 +21,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
 
 public class TDBSimpleRun {
@@ -29,7 +29,7 @@ public class TDBSimpleRun {
     public static void main(String[] args) {
         String qs = "SELECT * {?s ?p ?o}" ;
         Query query = QueryFactory.create(qs) ;
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDB2Factory.createDataset() ;
         
         TDBTxn.executeWrite(ds,()->RDFDataMgr.read(ds, "D.ttl")) ;
         

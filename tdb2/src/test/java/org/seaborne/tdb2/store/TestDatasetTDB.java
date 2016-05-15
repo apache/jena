@@ -31,7 +31,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.junit.TL ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
@@ -179,7 +179,7 @@ public class TestDatasetTDB extends BaseTest
         String qs = "CONSTRUCT {?s ?p ?o } WHERE { ?s ?p ?o }" ;
         Query q = QueryFactory.create(qs) ;
         QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
-        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        qExec.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Model m2 = qExec.execConstruct() ;
         if ( ! m.isIsomorphicWith(m2) )
         {
@@ -219,7 +219,7 @@ public class TestDatasetTDB extends BaseTest
         // dataset
         long c_ds ;
         try (QueryExecution qExec = QueryExecutionFactory.create(q, ds)) {
-            qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;        
+            qExec.getContext().set(TDB2.symUnionDefaultGraph, true) ;        
             c_ds = qExec.execSelect().next().getLiteral("c").getLong() ;
         }
         

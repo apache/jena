@@ -32,9 +32,9 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 
 public class TDBGraphAssembler extends AssemblerBase implements Assembler
 {
@@ -44,7 +44,7 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         // In case we go via explicit index construction,
         // although given we got here, the assembler is wired in
         // and that probably means TDB.init
-        TDB.init() ;
+        TDB2.init() ;
         
         // Make a model - the default model of the TDB dataset
         // [] rdf:type tdb:GraphTDB ;
@@ -79,7 +79,7 @@ public class TDBGraphAssembler extends AssemblerBase implements Assembler
         if ( locationDir != null )
         {
             Location location = Location.create(locationDir) ;
-            ds = TDBFactory.connectDataset(location) ;
+            ds = TDB2Factory.connectDataset(location) ;
         }
         else
             ds = DatasetAssemblerTDB.make(dataset) ;

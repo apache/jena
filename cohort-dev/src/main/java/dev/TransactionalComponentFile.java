@@ -33,7 +33,7 @@ public class TransactionalComponentFile extends TransactionalComponentLifecycle<
     private static Logger LOG = LoggerFactory.getLogger(TransactionalComponentFile.class) ; 
     
     // Implemented as two files.
-    // The compoent state is the current file.
+    // The component state is the current file.
     
     // The file state.
     static class FileState {

@@ -23,14 +23,14 @@ import java.util.Set ;
 
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 
 public class EnvTDB
 {
     public static void processGlobalSystemProperties()
     {
         Context context = processProperties(System.getProperties()) ;
-        TDB.getContext().putAll(context) ;
+        TDB2.getContext().putAll(context) ;
     }
     
     static final String prefix = SystemTDB.tdbSymbolPrefix+":" ;

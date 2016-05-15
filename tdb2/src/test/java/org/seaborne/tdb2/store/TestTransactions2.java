@@ -20,14 +20,14 @@ package org.seaborne.tdb2.store;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 
 /** Transaction tests - from ARQ */
 public class TestTransactions2 extends AbstractTestTransactionLifecycle
 {
     @Override
     protected Dataset create() {
-        return TDBFactory.createDataset() ;
+        return TDB2Factory.createDataset() ;
     }
 }
 

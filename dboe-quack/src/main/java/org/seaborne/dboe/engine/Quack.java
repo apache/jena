@@ -38,7 +38,7 @@ import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
 import org.seaborne.dboe.engine.tdb.PlannerSubstitution ;
 import org.seaborne.dboe.engine.tdb.QueryEngineQuackTDB ;
 import org.seaborne.dboe.sys.Names ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.solver.QueryEngineTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
@@ -88,7 +88,7 @@ public class Quack {
             return ;
         Quack.log.info("Quack");
         initialized = true ;
-        TDB.init();
+        TDB2.init();
         MappingRegistry.addPrefixMapping("quack", "quack:");
         
         QueryEngineTDB.unregister(); 

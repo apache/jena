@@ -29,8 +29,8 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2 ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
@@ -50,7 +50,7 @@ public class TestQuadFilter extends BaseTest
     /** Example setup - in-memory dataset with two graphs, one triple in each */
     private static Dataset setup()
     {
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDB2Factory.createDataset() ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)") ;
@@ -89,13 +89,13 @@ public class TestQuadFilter extends BaseTest
         try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
             // Install filter for this query only.
             qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
-            qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
             long x1 = ResultSetFormatter.consume(qExec.execSelect()) ;
             assertEquals(withFilter, x1) ;
         }
         // No filter.
         try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
-            qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            qExec.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
             long x2 = ResultSetFormatter.consume(qExec.execSelect()) ;
             assertEquals(withoutFilter, x2) ;
         }

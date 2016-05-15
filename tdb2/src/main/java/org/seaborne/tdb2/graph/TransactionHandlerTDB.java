@@ -20,7 +20,7 @@ package org.seaborne.tdb2.graph;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.impl.TransactionHandlerBase ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.store.GraphTDB ;
 
 /** Support for when TDB is used non-transactionally. Does not support ACID transactions.  
@@ -51,7 +51,7 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
     @Override
     public void commit()
     {
-        TDB.sync(graph) ;
+        TDB2.sync(graph) ;
     }
 
     @Override

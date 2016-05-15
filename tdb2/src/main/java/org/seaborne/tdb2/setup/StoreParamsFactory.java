@@ -18,7 +18,7 @@
 package org.seaborne.tdb2.setup;
 
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 
 public class StoreParamsFactory {
     /** Choose the StoreParams.  This is the policy applied when creating or reattaching to a database.
@@ -45,7 +45,7 @@ public class StoreParamsFactory {
      * <p>
      * Do not edit store parameters recorded at a location after the database has been created.
      * Only the dynamic parameters cna be safely changed. That is better done though the application
-     * providing some parameters in the {@link TDBFactory} call.
+     * providing some parameters in the {@link TDB2Factory} call.
      * <p>
      * This includes changing filenames,  indexing choices and block size. 
      * Otherwise, the database may be permanetly and irrecovably corrupted.

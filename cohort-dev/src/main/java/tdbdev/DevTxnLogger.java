@@ -35,7 +35,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.TransactionalMonitor ;
 import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -199,7 +199,7 @@ public class DevTxnLogger {
     }
     
     public static void main(String ... argv)  {
-        DatasetGraphTDB dsgBase = (DatasetGraphTDB)TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsgBase = (DatasetGraphTDB)TDB2Factory.createDatasetGraph() ;
         
         // ---- Collect
         TransactionalMonitorLogging tml = new TransactionalMonitorLogging(dsgBase, Location.mem()) ;

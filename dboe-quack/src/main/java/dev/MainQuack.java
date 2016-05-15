@@ -36,7 +36,7 @@ import org.seaborne.dboe.engine.general.OpExecutorRowsMain ;
 import org.seaborne.dboe.engine.general.OpExecutorStageMain ;
 import org.seaborne.dboe.engine.general.QueryEngineMain2 ;
 import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 public class MainQuack {
@@ -79,7 +79,7 @@ public class MainQuack {
         Quack.init() ;
         
         Query query = QueryFactory.read(queryFile) ;
-        Dataset dsMem = TDBFactory.createDataset() ;
+        Dataset dsMem = TDB2Factory.createDataset() ;
         RDFDataMgr.read(dsMem, datafile) ;
         
 //        // TDB current execution.
@@ -195,7 +195,7 @@ public class MainQuack {
 
         // Test 
         optimizerOff() ;
-        ds = TDBFactory.createDataset() ;
+        ds = TDB2Factory.createDataset() ;
         RDFDataMgr.read(ds, datafile) ;
         // Test
         if ( factory != null )

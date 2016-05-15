@@ -35,6 +35,10 @@ public class NOTES_TDB {
     
     // see package txnlog
 
+    // Transactions and nodes.dat-jrnl
+    
+    // tdb2loader.
+    
     // Needs to work with the switching DatasetGraphTDB.
     //   Abstract DatasetGraphTDB as an interface!
     //     Storage unit to have indexes and node table.

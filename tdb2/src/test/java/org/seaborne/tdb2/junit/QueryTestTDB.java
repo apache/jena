@@ -32,7 +32,7 @@ import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.util.FileManager ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -83,7 +83,7 @@ public class QueryTestTDB extends EarlTestCase
     boolean oldValueUsePlainGraph = SystemARQ.UsePlainGraph ;
     
     @Override public void setUpTest() {
-        dataset = TDBFactory.createDataset() ;
+        dataset = TDB2Factory.createDataset() ;
         TDBTxn.executeWrite(dataset, ()->{
             setupData() ;
         }) ;

@@ -39,7 +39,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.engine.Quack ;
 import org.seaborne.dboe.sys.Names ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 /** Basic testing of OpExecutorQuackTDB, mainly to make sure its called. 
@@ -56,7 +56,7 @@ public class TestEngine extends Assert {
         String x = Names.tripleIndexes[2] ;
         Names.tripleIndexes[2] = "PSO" ;
         try { 
-            Dataset ds = TDBFactory.connectDataset(loc) ;
+            Dataset ds = TDB2Factory.connectDataset(loc) ;
             SystemTDB.setNonTransactional(ds) ;
             
             if ( datafile != null )

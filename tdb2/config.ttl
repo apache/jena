@@ -20,10 +20,10 @@
      <#service_tdb2>
    ) .
 
-# TDB2
-[] ja:loadClass "org.seaborne.tdb2.TDB" .
-tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+## # TDB2
+## [] ja:loadClass "org.seaborne.tdb2.TDB2" .
+## tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 ## ---------------------------------------------------------------
 ## Updatable TDB dataset with all services enabled.

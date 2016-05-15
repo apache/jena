@@ -22,7 +22,7 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.engine.join.TS_Join ;
 import org.seaborne.dboe.engine.tdb.TS_Engine2 ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -43,7 +43,7 @@ import org.seaborne.tdb2.TDB ;
 public class TC_Quack {
     
     @BeforeClass static public void beforeClass() {
-        TDB.init();
+        TDB2.init();
         Quack.init() ;
         // Assumes POS, PSO
         Quack.hardRewire() ;

@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.NodeId ;
@@ -49,7 +49,7 @@ public class SystemTDB
     
     // NB Same logger as the TDB class because this class is the system info but kept out of TDB javadoc.
     // It's visibility is TDB, not really public. 
-    private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    private static final Logger log = LoggerFactory.getLogger(TDB2.class) ;
     
     /** TDB System log - use for general messages (a few) and warnings.
      *  Generally, do not log events unless you want every user to see them every time.
@@ -294,7 +294,7 @@ public class SystemTDB
         String x = properties.getProperty(name) ;
         if ( x == null )
             return defaultValue ; 
-        TDB.logInfo.info("Set: "+name+" = "+x) ;
+        TDB2.logInfo.info("Set: "+name+" = "+x) ;
         int v = Integer.parseInt(x) ;
         return v ;
     }
@@ -307,7 +307,7 @@ public class SystemTDB
         Properties p = new Properties() ;
         try
         {
-            TDB.logInfo.info("Using properties from '"+propertyFileName+"'") ;
+            TDB2.logInfo.info("Using properties from '"+propertyFileName+"'") ;
             PropertyUtils.loadFromFile(p, propertyFileName) ;
         } catch (FileNotFoundException ex)
         { 
@@ -338,7 +338,7 @@ public class SystemTDB
         if ( s != null )
         {
             boolean b = s.equals("64") ; 
-            TDB.logInfo.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
+            TDB2.logInfo.debug("System architecture: "+(b?"64 bit":"32 bit")) ;
             return b ;
         }
         // Not a SUN VM
@@ -350,7 +350,7 @@ public class SystemTDB
         }
         log.debug("Can't determine the data model from 'sun.arch.data.model' - using java.vm.info") ;
         boolean b = s.contains("64") ;
-        TDB.logInfo.debug("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
+        TDB2.logInfo.debug("System architecture: (from java.vm.info) "+(b?"64 bit":"32 bit")) ;
         return b ;
     }
     
@@ -389,12 +389,12 @@ public class SystemTDB
 
         if ( x.equalsIgnoreCase("direct") )
         {
-            TDB.logInfo.info("File mode: direct (forced)") ;
+            TDB2.logInfo.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            TDB.logInfo.info("File mode: mapped (forced)") ;
+            TDB2.logInfo.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -402,10 +402,10 @@ public class SystemTDB
         {
             if ( is64bitSystem )
             {
-                TDB.logInfo.debug("File mode: Mapped") ;
+                TDB2.logInfo.debug("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            TDB.logInfo.debug("File mode: Direct") ;
+            TDB2.logInfo.debug("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;

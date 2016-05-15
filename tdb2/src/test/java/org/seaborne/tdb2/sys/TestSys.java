@@ -21,13 +21,13 @@ package org.seaborne.tdb2.sys;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 
 public class TestSys extends BaseTest
 {
     @Test public void sys1()
     {
-        assertNotNull(TDB.VERSION) ;
-        assertNotNull(TDB.BUILD_DATE) ;
+        assertNotNull(TDB2.VERSION) ;
+        assertNotNull(TDB2.BUILD_DATE) ;
     }
 }

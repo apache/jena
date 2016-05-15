@@ -19,19 +19,19 @@
 package org.seaborne.tdb2.sys;
 
 import org.apache.jena.system.JenaSubsystemLifecycle ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 
 public class InitTDB implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
-        TDB.init() ;
+        TDB2.init() ;
     }
 
     @Override
     public void stop() {
         // This is savage and does not take account of in-flight transactions.
-        TDB.closedown() ; 
+        TDB2.closedown() ; 
     }
     
     @Override

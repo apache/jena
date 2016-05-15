@@ -36,7 +36,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.util.Context ;
-import org.seaborne.tdb2.TDB ;
+import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.migrate.A2 ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
@@ -74,7 +74,7 @@ public class QueryEngineTDB extends QueryEngineMain
         if ( dsDesc != null )
         {
             doingDynamicDatasetBySpecialDataset = true ;
-            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB.symUnionDefaultGraph) ) ;
+            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB2.symUnionDefaultGraph) ) ;
         }
         this.initialInput = input ; 
     }
@@ -104,7 +104,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
         // Fix DatasetGraph for global union.
-        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
+        if ( context.isTrue(TDB2.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
         {
             op = A2.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;

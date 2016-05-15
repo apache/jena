@@ -39,7 +39,7 @@ import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
 import org.seaborne.tdb2.sys.SystemTDB ;
@@ -148,7 +148,7 @@ public class TestPatterns extends Assert
     @Test public void bgp_input_04()       { test("bgp-input-04.rq") ; }
     
     private void test(String fn) {
-        Dataset dataset2 = TDBFactory.createDataset() ;
+        Dataset dataset2 = TDB2Factory.createDataset() ;
         TDBTxn.executeWrite(dataset2, ()->{
             RDFDataMgr.read(dataset2, DIR+"/data-bgp.ttl") ;
             if ( factory != null )

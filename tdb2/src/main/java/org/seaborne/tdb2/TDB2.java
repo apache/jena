@@ -46,18 +46,18 @@ import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class TDB {
+public class TDB2 {
     /** IRI for TDB */
-    public static final String  tdbIRI                           = "http://jena.hpl.hp.com/#tdb" ;
+    public static final String  tdbIRI                           = "http://seaborne.org/#tdb" ;
 
     /** Root of TDB-defined parameter names */
-    public static final String  tdbParamNS                       = "http://jena.hpl.hp.com/TDB#" ;
+    public static final String  tdbParamNS                       = "http://seaborne.org/TDB#" ;
 
     /** Prefix for TDB-defined parameter names */
     public static final String  tdbSymbolPrefix                  = "tdb" ;
 
     // Internal logging
-    private static final Logger log                              = LoggerFactory.getLogger(TDB.class) ;
+    private static final Logger log                              = LoggerFactory.getLogger(TDB2.class) ;
 
     /** Logger for loading information */
     public static final String  logLoaderName                    = "org.apache.jena.tdb.loader" ;
@@ -75,7 +75,7 @@ public class TDB {
     // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
     // ;
 
-    public final static String  namespace                        = "http://jena.hpl.hp.com/2008/tdb#" ;
+    public final static String  namespace                        = "http://jena.apache.org/2016/tdb#" ;
 
     /** Symbol to use the union of named graphs as the default graph of a query */
     public static final Symbol  symUnionDefaultGraph             = SystemTDB.allocSymbol("unionDefaultGraph") ;
@@ -215,7 +215,7 @@ public class TDB {
             VocabTDB.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;
-            MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
+            MappingRegistry.addPrefixMapping(TDB2.tdbSymbolPrefix, TDB2.tdbParamNS) ;
 
             wireIntoExecution() ;
             if ( JenaSystem.DEBUG_INIT )
@@ -262,7 +262,7 @@ public class TDB {
 
     private static void initialization2() {
         // Set management information.
-        SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.PATH, TDB.VERSION, TDB.BUILD_DATE) ;
+        SystemInfo systemInfo = new SystemInfo(TDB2.tdbIRI, TDB2.PATH, TDB2.VERSION, TDB2.BUILD_DATE) ;
         SystemARQ.registerSubSystem(systemInfo) ;
     }
 

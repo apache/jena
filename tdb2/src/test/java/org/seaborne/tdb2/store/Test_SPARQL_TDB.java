@@ -29,8 +29,8 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.update.* ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.TDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2 ;
+import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.lib.TDBTxn ;
 
 /**
@@ -39,11 +39,11 @@ import org.seaborne.tdb2.lib.TDBTxn ;
 public class Test_SPARQL_TDB extends BaseTest
 {
     private static Dataset create() {
-        return TDBFactory.createDataset() ;
+        return TDB2Factory.createDataset() ;
     }
 
     private static Dataset create(Location location) {
-        return TDBFactory.connectDataset(location) ;
+        return TDB2Factory.connectDataset(location) ;
     }
 
     private static String graphName = "http://example/" ;
@@ -178,12 +178,12 @@ public class Test_SPARQL_TDB extends BaseTest
 
     @Test public void sparql_update_unionGraph()
     {
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDB2Factory.createDataset() ;
         // Update concrete default graph
         TDBTxn.executeWrite(ds, ()->{
             ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
         }) ;
-        ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+        ds.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
             
         TDBTxn.executeWrite(ds, ()->{
             // Update by looking in union graph

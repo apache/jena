@@ -37,8 +37,8 @@ import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.TDB ;
-import org.seaborne.tdb2.TDBFactory ;
+import org.seaborne.tdb2.TDB2 ;
+import org.seaborne.tdb2.TDB2Factory ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
@@ -46,7 +46,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
     
     @Override
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        TDB.init() ;
+        TDB2.init() ;
         return make(root) ;
     }
 
@@ -56,13 +56,13 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = Location.create(dir) ;
-        DatasetGraph dsg = TDBFactory.connectDatasetGraph(loc) ;
+        DatasetGraph dsg = TDB2Factory.connectDatasetGraph(loc) ;
 
         if ( root.hasProperty(pUnionDefaultGraph) ) {
             Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode() ;
             NodeValue nv = NodeValue.makeNode(b) ;
             if ( nv.isBoolean() )
-                dsg.getContext().set(TDB.symUnionDefaultGraph, nv.getBoolean()) ;
+                dsg.getContext().set(TDB2.symUnionDefaultGraph, nv.getBoolean()) ;
             else
                 Log.warn(DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b) ;
         }
