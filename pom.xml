@@ -90,6 +90,16 @@
     </profile>
 
     <profile>
+      <!-- From the start, up until profile "dev" -->
+      <id>bootstrap</id>
+       <modules>
+         <module>jena-parent</module>
+         <module>jena-shaded-guava</module>
+         <module>jena-iri</module>
+       </modules>
+    </profile>
+
+    <profile>
       <!--
           This is the complete profile, it builds everything including slow
           building modules and the distribution packages.
