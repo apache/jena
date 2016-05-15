@@ -71,6 +71,6 @@ public class VocabTDB
             return;
         initialized = true;
         AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
+        AssemblerUtils.registerModel(tGraphTDB, new TDBGraphAssembler());
     }
 }
