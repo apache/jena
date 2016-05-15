@@ -45,6 +45,11 @@ public class NOTES_TDB {
         private DatasetPrefixStorage prefixes ;
         private Location location ;
     }
+    
+    // StorageRDF
+    
+    // Hash and/or increments
+    // NodeId as > 8 byte.
 
     // Loader: Try with StreamRDFBatchSplit and a parallel index update.
     //   Needs multi-threaded transaction control.
@@ -57,11 +62,6 @@ public class NOTES_TDB {
     // Abort notification.
     // Or NodeTableCache part of the transaction.
 
-    // Quack clean / split into general and TDB
-    // Quack and SPO, POS (fast load mode)
-    //   Index to index copy pogram.
-    //   Work with Lizard?
-    
     // DatasetGraph.exec(op)
     //   Interface ExecuteOp + generic registration.
     // DatasetGraph.getBaseDatasetGraph
