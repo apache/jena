@@ -20,12 +20,15 @@ package org.seaborne.tdb2.assembler;
 
 
 import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.ConstAssembler ;
+import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.seaborne.tdb2.TDB2 ;
 
-public class VocabTDB
+public class VocabTDB2
 {
     private static final String NS = TDB2.namespace ;
     
@@ -78,16 +81,7 @@ public class VocabTDB
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
         // Separated and use ja:imports
-        assemblerClass(g, tDatasetTDB,            new DatasetAssemblerTDB()) ;
-        
-        assemblerClass(g, tGraphTDB,          new TDBGraphAssembler()) ;
-    }
-    
-    public static void assemblerClass(AssemblerGroup group, Resource r, Assembler a)
-    {
-        if ( group == null )
-            group = Assembler.general ;
-        group.implementWith(r, a) ;
-        //assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
     }
 }

@@ -21,7 +21,7 @@ package org.seaborne.tdb2.assembler;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue ;
-import static org.seaborne.tdb2.assembler.VocabTDB.* ;
+import static org.seaborne.tdb2.assembler.VocabTDB2.* ;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;

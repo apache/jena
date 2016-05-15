@@ -13,20 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix tdb2:    <http://jena.apache.org/2016/tdb#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdfs:	 <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 <#dataset> rdf:type      ja:RDFDataset ;
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset <#dataset> ;
+<#graph> rdf:type tdb2:GraphTDB ;
+    tdb2:dataset <#dataset> ;
     .
 
-<#dataset> rdf:type tdb:DatasetTDB ;
-    tdb:location "--mem--" ;
+<#dataset> rdf:type tdb2:DatasetTDB ;
+    tdb2:location "--mem--" ;
     .
-

@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.system.JenaSystem ;
-import org.seaborne.tdb2.assembler.VocabTDB ;
+import org.seaborne.tdb2.assembler.VocabTDB2 ;
 import org.seaborne.tdb2.modify.UpdateEngineTDB ;
 import org.seaborne.tdb2.solver.QueryEngineTDB ;
 import org.seaborne.tdb2.solver.StageGeneratorDirectTDB ;
@@ -212,7 +212,7 @@ public class TDB2 {
 
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
             AssemblerUtils.init() ;
-            VocabTDB.init() ;
+            VocabTDB2.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;
             MappingRegistry.addPrefixMapping(TDB2.tdbSymbolPrefix, TDB2.tdbParamNS) ;

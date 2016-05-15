@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
-@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb2:    <http://jena.apache.org/2016/tdb#> .
+@prefix rdfs:	 <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
@@ -22,7 +22,7 @@
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb:GraphTDB ;
-    tdb:location "--mem--" ;
-    tdb:graphName "http://example.com/graph" ;
+<#graph> rdf:type tdb2:GraphTDB ;
+    tdb2:location "--mem--" ;
+    tdb2:graphName "http://example.com/graph" ;
     .

@@ -33,7 +33,7 @@ import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.assembler.VocabTDB ;
+import org.seaborne.tdb2.assembler.VocabTDB2 ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
 import org.seaborne.tdb2.store.GraphTDB ;
@@ -65,7 +65,7 @@ public class TestTDBAssembler extends BaseTest
     
     @Test public void createDatasetDirect()
     {
-        createTest(dirAssem+"/tdb-dataset.ttl", VocabTDB.tDatasetTDB) ;
+        createTest(dirAssem+"/tdb-dataset.ttl", VocabTDB2.tDatasetTDB) ;
     }
     
     @Test public void createDatasetEmbed()
@@ -127,7 +127,7 @@ public class TestTDBAssembler extends BaseTest
     private static void testGraph(String assemblerFile, boolean named) 
     {
         Object thing = null ;
-        try { thing = AssemblerUtils.build( assemblerFile, VocabTDB.tGraphTDB) ; }
+        try { thing = AssemblerUtils.build( assemblerFile, VocabTDB2.tGraphTDB) ; }
         catch (AssemblerException e)
         { 
             e.getCause().printStackTrace(System.err) ;
