@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.assembler;
 
-
-import org.apache.jena.assembler.ConstAssembler ;
-import org.apache.jena.assembler.JA ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
