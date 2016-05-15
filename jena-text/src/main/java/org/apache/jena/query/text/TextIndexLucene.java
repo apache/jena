@@ -35,6 +35,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.document.* ;
 import org.apache.lucene.index.* ;
 import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser ;
+import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser ;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -291,13 +292,15 @@ public class TextIndexLucene implements TextIndex {
             throw new TextIndexException(ex) ;
         }
     }
-    
+
     private QueryParser getQueryParser(Analyzer analyzer) {
         switch(queryParserType) {
             case "QueryParser":
                 return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
             case "AnalyzingQueryParser":
                 return new AnalyzingQueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+            case "ComplexPhraseQueryParser":
+                return new ComplexPhraseQueryParser(VER, docDef.getPrimaryField(), analyzer);
             default:
                 log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
                 return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
@@ -310,7 +313,7 @@ public class TextIndexLucene implements TextIndex {
         Query query = queryParser.parse(queryString) ;
         return query ;
     }
-    
+
     protected Query preParseQuery(String queryString, Analyzer analyzer) throws ParseException {
         return parseQuery(queryString, analyzer);
     }
