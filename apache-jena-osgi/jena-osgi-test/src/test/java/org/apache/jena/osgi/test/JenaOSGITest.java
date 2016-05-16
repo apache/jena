@@ -71,7 +71,7 @@ public class JenaOSGITest {
 
 	@Configuration
 	public Option[] config() {
-		return options(
+	    return options(
 		// OSGi container configuration
 				karafDistributionConfiguration().frameworkUrl(
 						maven().groupId("org.apache.karaf")
@@ -122,8 +122,17 @@ public class JenaOSGITest {
 	}
 
 	@Test
-	public void testJenaArq() throws Exception {
-		Dataset dataset = DatasetFactory.createMem();
+	public void testJenaArq1() throws Exception {
+	    Dataset dataset = DatasetFactory.create();
+	    testJenaARQ(dataset) ;
+	}
+	
+	@Test
+	public void testJenaArq2() throws Exception {
+	    Dataset dataset = DatasetFactory.createTxnMem();
+	}
+	
+	public void testJenaARQ(Dataset dataset) throws Exception {
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
 
 		// We test JSON-LD as it involves multiple other bundles
@@ -157,7 +166,7 @@ public class JenaOSGITest {
 
 	@Test
 	public void testJenaIRI() throws Exception {
-		IRIFactory iriFactory = IRIFactory.jenaImplementation();
+		IRIFactory iriFactory = IRIFactory.iriImplementation() ;
 		IRI iri = iriFactory.create("http://example.com/");
 		assertEquals("http://example.com/", iri.toASCIIString());
 	}
@@ -177,6 +186,13 @@ public class JenaOSGITest {
 		dataset.end();
 	}
 
+	@Test
+	public void testMaking() {
+		DatasetFactory.createTxnMem() ;
+		DatasetFactory.create() ;
+		ModelFactory.createDefaultModel();
+	}
+	
 	private Model makeModel() {
 		Model model = ModelFactory.createDefaultModel();
 		alice = model.createResource("http://example.com/alice");
