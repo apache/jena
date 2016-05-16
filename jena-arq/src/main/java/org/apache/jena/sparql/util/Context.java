@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.util ;
 
 import java.util.* ;
+import java.util.concurrent.ConcurrentHashMap ;
 
 import org.apache.jena.atlas.lib.Callback ;
 import org.apache.jena.atlas.lib.Lib ;
@@ -35,7 +36,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 public class Context {
     public static final Context      emptyContext = new Context(true) ;
 
-    protected Map<Symbol, Object>    context      = new HashMap<>() ;
+    protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>() ;
     protected List<Callback<Symbol>> callbacks    = new ArrayList<>() ;
     protected boolean                readonly     = false ;
 
@@ -307,36 +308,20 @@ public class Context {
         return context.size() ;
     }
 
-    // @Override
-    // public int hashCode()
-    // {
-    // return context.hashCode() ;
-    // }
-    //
-    // @Override
-    // public boolean equals(Object other)
-    // {
-    // if ( this == other ) return true ;
-    //
-    // if ( ! ( other instanceof Context ) ) return false ;
-    // Context cxt = (Context)other ;
-    // return context.equals(cxt.context) ;
-    // }
-
     // ---- Callbacks
-    public void addCallback(Callback<Symbol> m) {
+    public synchronized void addCallback(Callback<Symbol> m) {
         callbacks.add(m) ;
     }
 
-    public void removeCallback(Callback<Symbol> m) {
+    public synchronized void removeCallback(Callback<Symbol> m) {
         callbacks.remove(m) ;
     }
 
-    public List<Callback<Symbol>> getCallbacks() {
-        return callbacks ;
+    public synchronized List<Callback<Symbol>> getCallbacks() {
+        return Collections.unmodifiableList(callbacks) ;
     }
 
-    private void doCallbacks(Symbol symbol) {
+    private synchronized void doCallbacks(Symbol symbol) {
         for ( Callback<Symbol> c : callbacks ) {
             c.apply(symbol) ;
         }
@@ -376,6 +361,34 @@ public class Context {
         // setOp)
 
         return context ;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + ((context == null) ? 0 : context.hashCode()) ;
+        result = prime * result + (readonly ? 1231 : 1237) ;
+        return result ;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( getClass() != obj.getClass() )
+            return false ;
+        Context other = (Context)obj ;
+        if ( context == null ) {
+            if ( other.context != null )
+                return false ;
+        } else if ( !context.equals(other.context) )
+            return false ;
+        if ( readonly != other.readonly )
+            return false ;
+        return true ;
     }
 
 }
