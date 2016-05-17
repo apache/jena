@@ -15,24 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.sparql.function.library;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.List;
 
-/** round(expression) */ 
-
-public class FN_Round  extends FunctionBase
+public class FN_StrNormalizeUnicode extends FunctionBase
 {
-    public FN_Round() { super() ; }
+    public FN_StrNormalizeUnicode() { super() ; }
 
     @Override
     public void checkBuild(String uri, ExprList args)
@@ -52,9 +49,9 @@ public class FN_Round  extends FunctionBase
         if ( args.size() == 2 )
         {
             NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.roundXpath3(v1, v2,false) ;
+            return XSDFuncOp.strNormalizeUnicode(v1, v2) ;
         }
 
-        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0),false) ;
+        return XSDFuncOp.strNormalizeUnicode(v1, null) ;
     }
 }

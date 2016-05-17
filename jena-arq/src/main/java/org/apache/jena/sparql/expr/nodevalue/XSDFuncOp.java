@@ -33,6 +33,7 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet ;
 import java.util.List ;
@@ -309,20 +310,61 @@ public class XSDFuncOp
 
     public static NodeValue round(NodeValue v) {
         switch (classifyNumeric("round", v)) {
-            case OP_INTEGER :
-                return v ;
-            case OP_DECIMAL :
-                int sgn = v.getDecimal().signum() ;
-                BigDecimal dec ;
-                if ( sgn < 0 )
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN) ;
+            case OP_INTEGER:
+                return v;
+            case OP_DECIMAL:
+                int sgn = v.getDecimal().signum();
+                BigDecimal dec;
+                if (sgn < 0)
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_DOWN);
                 else
-                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP) ;
-                return NodeValue.makeDecimal(dec) ;
+                    dec = v.getDecimal().setScale(0, BigDecimal.ROUND_HALF_UP);
+                return NodeValue.makeDecimal(dec);
+            case OP_FLOAT:
+                return NodeValue.makeFloat(Math.round(v.getFloat()));
+            case OP_DOUBLE:
+                return NodeValue.makeDouble(Math.round(v.getDouble()));
+            default:
+                throw new ARQInternalErrorException("Unrecognized numeric operation : " + v);
+        }
+    }
+
+    // THE FOLLOWING ROUND FUNCTION IS the xpath3 compatible version of the round function above.
+    // I created a new one because the round function is used in the E_NumRound class used for
+    // SPARQL 1.1 compatible syntax that in turn is compatible with Xpath 2 for which the spec
+    // for round was different.
+    private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
+    {
+        if(isHalfToEven){
+            return dec.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
+        }
+        else {
+            int sgn = dec.signum();
+            if (sgn < 0)
+                return dec.setScale(precision, BigDecimal.ROUND_HALF_DOWN);
+            else
+                return dec.setScale(precision, BigDecimal.ROUND_HALF_UP);
+        }
+    }
+
+    public static NodeValue roundXpath3(NodeValue v,NodeValue precision,boolean isHalfEven) {
+        if(!precision.isInteger()){
+            throw new ExprEvalTypeException("The precision for rounding should be an integer");
+        }
+        int precisionInt = precision.getInteger().intValue();
+        String fName = isHalfEven ? "round-half-to-even" : "round";
+        switch (classifyNumeric(fName, v)) {
+            case OP_INTEGER :
+                BigDecimal decFromInt = roundDecimalValue(new BigDecimal(v.getInteger()),precisionInt,isHalfEven);
+                return NodeValue.makeInteger(decFromInt.toBigIntegerExact());
+            case OP_DECIMAL :
+                return NodeValue.makeDecimal(roundDecimalValue(v.getDecimal(),precisionInt,isHalfEven)) ;
             case OP_FLOAT :
-                return NodeValue.makeFloat(Math.round(v.getFloat())) ;
+                BigDecimal decFromFloat = roundDecimalValue(new BigDecimal(v.getFloat()),precisionInt,isHalfEven);
+                return NodeValue.makeFloat(decFromFloat.floatValue()) ;
             case OP_DOUBLE :
-                return NodeValue.makeDouble(Math.round(v.getDouble())) ;
+                BigDecimal decFromDouble = roundDecimalValue(new BigDecimal(v.getDouble()),precisionInt,isHalfEven);
+                return NodeValue.makeDouble(decFromDouble.doubleValue()) ;
             default :
                 throw new ARQInternalErrorException("Unrecognized numeric operation : " + v) ;
         }
@@ -708,6 +750,51 @@ public class XSDFuncOp
 
         // No types - i.e. no arguments
         return NodeValue.makeString(sb.toString()) ;
+    }
+
+    /** fn:normalizeSpace */
+    public static NodeValue strNormalizeSpace(NodeValue v){
+        String str = v.asString() ;
+        if(str == "" )
+            return NodeValue.nvEmptyString;
+        // is it possible that str is null?
+        str = str.trim().replaceAll("\\s+"," ");
+        return NodeValue.makeString(str) ;
+    }
+
+    public static NodeValue strNormalizeUnicode(NodeValue v1, NodeValue v2) {
+        String normalizationFormStr = "nfc";
+        if(v2 != null)
+            normalizationFormStr = v2.asNode().getLiteralLexicalForm().toLowerCase();
+
+        String inputString = v1.asString();
+        if(normalizationFormStr.isEmpty())
+            return NodeValue.makeString(inputString);
+        // is it possible that normalizationFormStr is null?
+
+        Normalizer.Form normalizationForm = Normalizer.Form.NFC;
+        switch(normalizationFormStr)
+        {
+            case "nfd":
+                normalizationForm = Normalizer.Form.NFD;
+                break;
+            case "nfkd":
+                normalizationForm = Normalizer.Form.NFKD;
+                break;
+            case "nfkc":
+                normalizationForm = Normalizer.Form.NFKC;
+                break;
+            case "nfc":
+                normalizationForm = Normalizer.Form.NFC;
+                break;
+            case "fully-normalized":
+                // not fully understood how to implement the fully-normalized normalization form.
+                throw new ExprEvalTypeException("The fully-normalized normalization form is not supported.");
+            default:
+                throw new ExprEvalTypeException("Unrecognized normalization form "+normalizationFormStr+". Supported normalization forms: NFC,NFD,NFKD and NFKC.");
+        }
+
+        return NodeValue.makeString(Normalizer.normalize(inputString,normalizationForm));
     }
 
     public static NumericType classifyNumeric(String fName, NodeValue nv1, NodeValue nv2) {

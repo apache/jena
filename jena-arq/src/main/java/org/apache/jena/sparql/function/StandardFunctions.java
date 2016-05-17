@@ -100,7 +100,10 @@ public class StandardFunctions
         add(registry, xfn+"substring",      FN_StrSubstring.class) ;
         add(registry, xfn+"string-length",  FN_StrLength.class) ;
         // fn:normalize-space
+        add(registry,xfn+"normalize-space", FN_StrNormalizeSpace.class);
         // fn:normalize-unicode
+        add(registry,xfn+"normalize-unicode", FN_StrNormalizeUnicode.class);
+
         add(registry, xfn+"upper-case",     FN_StrUpperCase.class) ;
         add(registry, xfn+"lower-case",     FN_StrLowerCase.class) ;
         add(registry, xfn+"contains",       FN_StrContains.class) ;
@@ -131,7 +134,7 @@ public class StandardFunctions
         add(registry, xfn+"floor",          FN_Floor.class) ;
         add(registry, xfn+"round",          FN_Round.class) ;
         //fn:round-half-to-even
-        
+        add(registry, xfn+"round-half-to-even",          FN_Round_Half_Even.class) ;
 //        6.1 fn:resolve-uri        -- Two argument form makes sense.
 //        6.2 fn:encode-for-uri
 //        6.3 fn:iri-to-uri         -- meaningless in SPARQL.

@@ -236,6 +236,58 @@ public class TestFunctions
     @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)") ; }
     @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
 
+    @Test public void exprStrNormalizeSpace0() { test("fn:normalize-space(' The    wealthy curled darlings                                         of    our    nation. ')",
+            NodeValue.makeString("The wealthy curled darlings of our nation.")) ; }
+    @Test public void exprStrNormalizeSpace1() { test("fn:normalize-space('')",NodeValue.nvEmptyString) ; }
+    @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
+    @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
+
+    // https://www.w3.org/TR/xpath-functions-30/#func-normalize-unicode
+    // and
+    // from http://www.unicode.org/reports/tr15/
+    //l
+    @Test public void exprStrNormalizeUnicode0() { test("fn:normalize-unicode('Äffin','nfd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode1() { test("fn:normalize-unicode('Äffin','nfc')",NodeValue.makeString("Äffin")) ; }
+    //m
+    @Test public void exprStrNormalizeUnicode2() { test("fn:normalize-unicode('Ä\\uFB03n','nfd')",NodeValue.makeString("Äﬃn")) ; }
+    @Test public void exprStrNormalizeUnicode3() { test("fn:normalize-unicode('Ä\\uFB03n','nfc')",NodeValue.makeString("Äﬃn")) ; }
+    //n
+    @Test public void exprStrNormalizeUnicode4() { test("fn:normalize-unicode('Henry IV','nfd')",NodeValue.makeString("Henry IV")) ; }
+    @Test public void exprStrNormalizeUnicode5() { test("fn:normalize-unicode('Henry IV','nfc')",NodeValue.makeString("Henry IV")) ; }
+    //l'
+    @Test public void exprStrNormalizeUnicode6() { test("fn:normalize-unicode('Äffin','nfkd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode7() { test("fn:normalize-unicode('Äffin','nfkc')",NodeValue.makeString("Äffin")) ; }
+    // r
+    String hw_ka="\uFF76";
+    String hw_ten="\uFF9F";
+    @Test public void exprStrNormalizeUnicode8() { test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfd')",NodeValue.makeString(hw_ka+hw_ten)) ; }
+    @Test public void exprStrNormalizeUnicode9() {
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfc')",NodeValue.makeString(hw_ka+hw_ten)) ;
+    }
+    // Not sure why the following tests are not passing
+    // both examples are taken from the http://www.unicode.org/reports/tr15/ (Table 8 r')
+    // the translation of hw_ka,hw_ten,ka and ten are taken from Table 4 of the same document
+    // I took the ga translation by association (it was not defined in the unicode report) and chosen to be: KATAKANA LETTER GA U+30AC
+    // Everything seems ok to me so there are two options in my opinion:
+    // 1) the java implementation of the nfkd has some flaws
+    // 2) the unicode example is wrong (I cannot judge as I do not know japanese or unicode enough :))
+    // The test is failing because the expected string has code when looking in the debugger (UTF-16?) (12459 | 12442)  while the Nomalizer.normalize is giving  (12459 | 12441)
+    // r'
+    @Test public void exprStrNormalizeUnicode10() {
+        String ka = "\u30AB";
+        String ten="\u3099";
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkd')",NodeValue.makeString(ka+ten)) ;
+    }
+    @Test public void exprStrNormalizeUnicode11() {
+        String ga="\u30AC";
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkc')",NodeValue.makeString(ga)) ;
+    }
+    // empty argument <-> returns the input string
+    @Test public void exprStrNormalizeUnicode12() { test("fn:normalize-unicode('some word','')",NodeValue.makeString("some word")) ; }
+    // one argument <-> NFC
+    @Test public void exprStrNormalizeUnicode13() { test("fn:normalize-unicode('Äffin')",NodeValue.makeString("Äffin")) ; }
+
+
     @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
     @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
     @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
@@ -269,7 +321,30 @@ public class TestFunctions
     @Test public void exprBoolean8()    { test("fn:not('X')", FALSE) ; }
     @Test public void exprBoolean9()    { test("fn:not(1)", FALSE) ; }
     @Test public void exprBoolean10()   { test("fn:not(0)", TRUE) ; }
-    
+
+    @Test public void exprRound_01()    { test("fn:round(123)",   NodeValue.makeInteger(123)) ; }
+    @Test public void exprRound_02()    { test("fn:round(123.5)",  NodeValue.makeDecimal(124)) ; }
+    @Test public void exprRound_03()    { test("fn:round(-0.5e0)", NodeValue.makeDouble(0.0e0)) ; }
+    @Test public void exprRound_04()    { test("fn:round(-1.5)",   NodeValue.makeDecimal(-1)) ; }
+    // !! I don't think that this is working correctly also if the test is passing... need to check!
+    @Test public void exprRound_05()    { test("fn:round(-0)",     NodeValue.makeInteger("-0")) ; }
+    @Test public void exprRound_06()    { test("fn:round(1.125, 2)",     NodeValue.makeDecimal(1.13)) ; }
+    @Test public void exprRound_07()    { test("fn:round(8452, -2)",     NodeValue.makeInteger(8500)) ; }
+    @Test public void exprRound_08()    { test("fn:round(3.1415e0, 2)",     NodeValue.makeDouble(3.14e0)) ; }
+    // counter-intuitive -- would fail if float/double not translated to decimal
+    @Test public void exprRound_09()    { test("fn:round(35.425e0, 2)",     NodeValue.makeDouble(35.42)) ; }
+
+    @Test public void exprRoundHalfEven_01()    { test("fn:round-half-to-even(0.5)",   NodeValue.makeDecimal(0)) ; }
+    @Test public void exprRoundHalfEven_02()    { test("fn:round-half-to-even(1.5)",  NodeValue.makeDecimal(2)) ; }
+    @Test public void exprRoundHalfEven_03()    { test("fn:round-half-to-even(2.5)", NodeValue.makeDecimal(2)) ; }
+    @Test public void exprRoundHalfEven_04()    { test("fn:round-half-to-even(3.567812e+3, 2)",   NodeValue.makeDouble(3567.81e0)) ; }
+    // !! I don't think that this is working correctly also if the test is passing... need to check!
+    @Test public void exprRoundHalfEven_05()    { test("fn:round-half-to-even(-0)",     NodeValue.makeInteger(-0)) ; }
+    @Test public void exprRoundHalfEven_06()    { test("fn:round-half-to-even(4.7564e-3, 2)",     NodeValue.makeDouble(0.0e0)) ; }
+    @Test public void exprRoundHalfEven_07()    { test("fn:round-half-to-even(35612.25, -2)",     NodeValue.makeDecimal(35600)) ; }
+    // counter-intuitive -- would fail if float/double not translated to decimal
+    @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)) ; }
+
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
