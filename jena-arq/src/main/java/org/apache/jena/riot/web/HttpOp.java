@@ -1176,10 +1176,17 @@ public class HttpOp {
     }
 
     // ---- Perform the operation!
-    // With logging.
 
     private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler,
-            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+                             HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        // Prepare authentication, if any.
+        httpClient = ensureClient(httpClient, authenticator);
+        httpContext = ensureContext(httpContext);
+        applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
+        exec(url, request, acceptHeader, handler, httpClient, httpContext); 
+    }
+    
+    private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         try {
             if (handler == null)
                 // This cleans up.
@@ -1196,10 +1203,6 @@ public class HttpOp {
             // User-Agent
             applyUserAgent(request);
 
-            // Prepare and execute
-            httpClient = ensureClient(httpClient, authenticator);
-            httpContext = ensureContext(httpContext);
-            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
             HttpResponse response = httpClient.execute(request, httpContext);
 
             // Response
