@@ -43,7 +43,7 @@ public class substring extends FunctionBase
     @Override
     public NodeValue exec(List<NodeValue> args)
     {
-        if ( args.size() != 2 || args.size() != 3 )
+        if ( args.size() != 2 && args.size() != 3 )
             throw new ExprEvalException("substring: Wrong number of arguments: "+args.size()+" : [wanted 2 or 3]") ;
         
         NodeValue v1 = args.get(0) ;
