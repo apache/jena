@@ -30,7 +30,7 @@ import java.util.List;
 
 /** round(expression) */ 
 
-public class FN_Round  extends FunctionBase
+public class FN_Round extends FunctionBase
 {
     public FN_Round() { super() ; }
 
@@ -43,9 +43,11 @@ public class FN_Round  extends FunctionBase
     @Override
     public NodeValue exec(List<NodeValue> args)
     {
+        
+        if ( args.size() == 0  )
+            throw new ExprEvalException("FN_Round: Wrong number of arguments: zero arguments") ;
         if ( args.size() > 2 )
-            throw new ExprEvalException("substring: Wrong number of arguments: "+
-                    args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("FN_Round: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
 

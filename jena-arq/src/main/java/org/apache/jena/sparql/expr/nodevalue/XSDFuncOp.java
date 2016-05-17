@@ -329,10 +329,9 @@ public class XSDFuncOp
         }
     }
 
-    // THE FOLLOWING ROUND FUNCTION IS the xpath3 compatible version of the round function above.
-    // I created a new one because the round function is used in the E_NumRound class used for
-    // SPARQL 1.1 compatible syntax that in turn is compatible with Xpath 2 for which the spec
-    // for round was different.
+    // The following function 'roundXpath3' implements the definition for "fn:round" in F&O v3.
+    // This is diffrent to the "fn:round" in F&O v2. 
+    // SPARQL 1.1 references F&O v2.
     private static BigDecimal roundDecimalValue(BigDecimal dec,int precision,boolean isHalfToEven)
     {
         if(isHalfToEven){
@@ -347,7 +346,7 @@ public class XSDFuncOp
         }
     }
 
-    public static NodeValue roundXpath3(NodeValue v,NodeValue precision,boolean isHalfEven) {
+    public static NodeValue roundXpath3(NodeValue v, NodeValue precision, boolean isHalfEven) {
         if(!precision.isInteger()){
             throw new ExprEvalTypeException("The precision for rounding should be an integer");
         }

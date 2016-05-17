@@ -42,7 +42,7 @@ public class FN_Round_Half_Even extends FunctionBase
     public NodeValue exec(List<NodeValue> args)
     {
         if ( args.size() > 2 )
-            throw new ExprEvalException("substring: Wrong number of arguments: "+
+            throw new ExprEvalException("FN_Round_Half_Even: Wrong number of arguments: "+
                     args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;

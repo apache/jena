@@ -40,9 +40,8 @@ public class FN_StrNormalizeUnicode extends FunctionBase
     @Override
     public NodeValue exec(List<NodeValue> args)
     {
-        if ( args.size() > 2 )
-            throw new ExprEvalException("substring: Wrong number of arguments: "+
-                    args.size()+" : [wanted 1 or 2]") ;
+        if ( args.size() != 1 || args.size() != 2 )
+            throw new ExprEvalException("FN_StrNormalizeUnicode: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
 
