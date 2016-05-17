@@ -97,6 +97,12 @@ public class Context {
     private void _put(Symbol property, Object value) {
         if ( readonly )
             throw new ARQException("Context is readonly") ;
+        if ( property == null )
+            throw new ARQException("Context key is null") ;
+        if ( value == null ) {
+            context.remove(property) ;
+            return ;
+        }
         context.put(property, value) ;
     }
 
