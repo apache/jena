@@ -19,8 +19,10 @@
 package tdb;
 
 import arq.cmdline.ModLangOutput ;
+import jena.cmd.CmdException ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import tdb.cmdline.CmdTDB ;
 
@@ -60,6 +62,8 @@ public class tdbdump extends CmdTDB
         if ( fmt == null )
             // Default.
             fmt = RDFFormat.NQUADS ;
+        if ( ! RDFLanguages.isQuads(fmt.getLang() ))
+            throw new CmdException("Databases can be dumped only in quad formats (e.g. Trig, N-Quads), not "+fmt.getLang()) ;
         RDFDataMgr.write(System.out, dsg, fmt) ;
     }
 }
