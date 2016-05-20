@@ -42,7 +42,7 @@ public class Fuseki {
     // General fixed constants.
     // See also FusekiServer for the naming on the filesystem
 
-    /** Path to ??? */
+    /** Path as package name */
     static public String    PATH                         = "org.apache.jena.fuseki" ;
 
     /** a unique IRI for the Fuseki namespace */
@@ -221,6 +221,10 @@ public class Fuseki {
 
     /**
      * Initialize an instance of the Fuseki server stack.
+     * This is not done via Jena's initialization mechanism
+     * but done explicitly to give more control.
+     * Touching this class causes this to happen 
+     * (see static block at the end of this class). 
      */
     public synchronized static void init() {
         if ( initialized )
