@@ -27,6 +27,7 @@ import javax.servlet.ServletOutputStream ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
@@ -83,9 +84,19 @@ public class REST_Quads_R extends REST_Quads {
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
             action.response.setHeader("Content-type", lang.getContentType().toHeaderString());
+            // ActionLib.contentNegotationQuads above
+            // RDF/XML is not a choice but this code is general.
             RDFFormat fmt =
-                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ; 
-            RDFDataMgr.write(out, dsg, fmt) ;
+                // Choose streaming.
+                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;
+            try {
+                RDFDataMgr.write(out, dsg, fmt) ;
+            } catch (JenaException ex) {
+                if ( fmt.getLang().equals(Lang.RDFXML) )
+                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage()) ;
+                else
+                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex) ;
+            }
             ServletOps.success(action) ;
         } finally {
             action.endRead() ;

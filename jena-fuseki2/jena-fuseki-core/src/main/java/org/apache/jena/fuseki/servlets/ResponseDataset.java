@@ -39,6 +39,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.web.HttpSC;
 
 public class ResponseDataset
@@ -119,12 +120,22 @@ public class ResponseDataset
             ResponseResultSet.setHttpResponse(action, contentType, charset) ;
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
-            if ( RDFLanguages.isQuads(lang) )
-                RDFDataMgr.write(out, dataset, lang) ;
-            else
-                RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
-            out.flush() ;
+            try {
+                if ( RDFLanguages.isQuads(lang) )
+                    RDFDataMgr.write(out, dataset, lang) ;
+                else
+                    RDFDataMgr.write(out, dataset.getDefaultModel(), lang) ;
+                out.flush() ;
+            } catch (JenaException ex) { 
+                // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
+                // request (inappropriate content type).
+                if ( lang.equals(Lang.RDFXML) )
+                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage()) ;
+                else
+                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex) ;
+            }
         }
+        catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex) {
             action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
             ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
