@@ -30,7 +30,7 @@
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <!-- This version number is also in the top POM -->
-    <version>16</version>
+    <version>18</version>
     <relativePath />
   </parent>
 
