@@ -432,6 +432,9 @@
         <configuration>
           <excludeSubProjects>true</excludeSubProjects>
           <excludes>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
             <exclude>**/META-INF/services/*</exclude>
             <!--
                 jena-core exclusions
