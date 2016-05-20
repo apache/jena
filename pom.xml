@@ -134,7 +134,10 @@
         <module>jena-permissions</module>
 
         <module>jena-jdbc</module>
-        <module>jena-maven-tools</module>
+        <!-- Removed because this breaks the build after the 
+             upgrade of Apache parent PM to v18 - see JENA-1184 
+        -->
+        <!-- <module>jena-maven-tools</module> -->
         <module>jena-elephas</module>
 
         <module>apache-jena</module>
