@@ -22,6 +22,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
+import java.net.URL ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
@@ -194,7 +195,10 @@ public class FusekiServer
         } else {
             try {
                 // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
-                InputStream in = FusekiServer.class.getResource(fn).openStream() ;
+                URL url = FusekiServer.class.getResource(fn) ;
+                if ( url == null )
+                    throw new FusekiConfigException("Field to find resource '"+fn+"'") ; 
+                InputStream in = url.openStream() ;
                 Files.copy(in, dstFile) ;
             }
             catch (IOException e) {
