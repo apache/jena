@@ -101,11 +101,19 @@ public class JenaSystem {
             
             // Debug : what did we find?
             if ( JenaSystem.DEBUG_INIT ) {
+                logLifecycle("Found:") ;
                 get().snapshot().forEach(mod->
-                    logLifecycle("  %s", mod.getClass().getSimpleName())) ;
+                logLifecycle("  %-20s [%d]", mod.getClass().getSimpleName(), mod.level())) ;
             }
+            
             get().add(new JenaInitLevel0()) ;
-
+            
+            if ( JenaSystem.DEBUG_INIT ) {
+                logLifecycle("Initialization sequence:") ;
+                JenaSystem.forEach( module ->
+                    logLifecycle("  %-20s [%d]", module.getClass().getSimpleName(), module.level()) ) ;
+            }
+            
             JenaSystem.forEach( module -> {
                 logLifecycle("Init: %s", module.getClass().getSimpleName());
                 module.start() ;
@@ -176,9 +184,9 @@ public class JenaSystem {
     }
 
     // Order by level (increasing)
-    private static Comparator<JenaSubsystemLifecycle> comparator = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
+    private static Comparator<JenaSubsystemLifecycle> comparator        = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
     // Order by level (decreasing)
-    private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * Integer.compare(obj1.level(), obj2.level()) ;
+    private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * comparator.compare(obj1,  obj2) ;
 
     private synchronized static void forEach(Consumer<JenaSubsystemLifecycle> action, Comparator<JenaSubsystemLifecycle> ordering) {
         List<JenaSubsystemLifecycle> x = get().snapshot() ;
