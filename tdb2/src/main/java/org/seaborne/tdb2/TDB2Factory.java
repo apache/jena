@@ -24,7 +24,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
-
 /** Public factory for creating objects datasets backed by TDB storage */
 public class TDB2Factory
 {
