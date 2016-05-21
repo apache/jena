@@ -46,12 +46,6 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 	}
 
 	@Override
-	public void startVisit() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void visit(ExprFunction0 func) {
 		push(func);
 	}
@@ -151,12 +145,6 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		} else {
 			push(NodeValue.makeNode(n));
 		}
-
-	}
-
-	@Override
-	public void finishVisit() {
-		// TODO Auto-generated method stub
 
 	}
 
