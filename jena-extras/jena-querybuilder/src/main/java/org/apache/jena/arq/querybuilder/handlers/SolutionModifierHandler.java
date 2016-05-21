@@ -116,7 +116,7 @@ public class SolutionModifierHandler implements Handler {
 
 	/**
 	 * Add a node to the group by clause. 
-	 * @param node The node to add.
+	 * @param var The variable to add.
 	 */
 	public void addGroupBy(Var var) {
 		query.addGroupBy(var);
