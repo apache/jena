@@ -37,31 +37,18 @@
   </licenses>
 
   <!--
-  <developers></developers>
-
-  <contributors></contributors>
-  
-  <mailingLists></mailingLists>
+      <developers></developers>
+      <contributors></contributors>
+      <mailingLists></mailingLists>
+      <issueManagement></issueManagement>
+      <ciManagement></ciManagement>
+  -->
 
   <scm>
-    <connection/>
-    <developerConnection/>
-    <tag/>
-    <url/>
+    <connection>scm:git:https://github.com/afs/mantis</connection>
+    <developerConnection>scm:git:git@github.com:afs/mantis.git</developerConnection>
   </scm>
   
-  <issueManagement></issueManagement>
-
-  <ciManagement></ciManagement>
-
-  <distributionManagement></<distributionManagement>
-  -->
-
-  <!--
-    <profiles></profiles>
-  -->
-
-  <!-- Important settings : see also the mantis-parent POM -->
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
@@ -74,18 +61,345 @@
   </properties>
 
   <modules>
-    <module>dboe-parent</module>
     <module>dboe-base</module>
     <module>dboe-transaction</module>
     <module>dboe-index</module>
     <module>dboe-index-test</module>
-    <!-- Non-transactional, archived.
-    <module>archive/dboe-index-ext</module>
-    <module>archive/dboe-index-btree</module>
-    -->
     <module>dboe-quack</module>
     <module>dboe-trans-data</module>
     <module>tdb2</module>
   </modules>
+
+  <dependencyManagement>
+
+    <dependencies>
+      <!-- For clarity, Jena dependencies do not incldue TDB -->
+      <!-- For now, use more precise control
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>apache-jena-libs</artifactId>
+        <version>${ver.jena}</version>
+        <exclusions> 
+          <exclusion>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-tdb</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      -->
+
+      <!-- ARQ is essential anyway.
+           <dependency>
+           <groupId>org.apache.jena</groupId>
+           <artifactId>jena-core</artifactId>
+           <version>${ver.jena}</version>
+           </dependency>
+      -->
+
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-arq</artifactId>
+        <version>${ver.jena}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-cmds</artifactId>
+        <version>${ver.jena}</version>
+      </dependency>
+
+      <!-- Tests -->
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-base</artifactId>
+        <version>${ver.jena}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-core</artifactId>
+        <version>${ver.jena}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-arq</artifactId>
+        <version>${ver.jena}</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${ver.junit}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Logging -->
+    
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${ver.slf4j}</version>
+        <optional>true</optional>
+      </dependency>
+
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
+      -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${ver.slf4j}</version>
+        <optional>true</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${ver.log4j}</version>
+        <optional>true</optional>
+      </dependency>
+
+    </dependencies>
+    
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <!-- Logging in tests -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+      
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+  
+  <build>
+    <pluginManagement>
+      <plugins>
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.2</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+            <debug>true</debug>
+            <debuglevel>source,lines,vars</debuglevel>
+            <optimize>true</optimize>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.12</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.9</version>
+          <configuration>
+            <overWriteReleases>false</overWriteReleases>
+            <overWriteIfNewer>true</overWriteIfNewer>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+
+      </plugins> 
+
+    </pluginManagement>
+
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh.snapshots</id>
+      <name>Sonatype Snapshots Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh.releases</id>
+      <name>Sonatype Gateway to Maven Central</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+  
+  <repositories>
+    <!-- Apache Snapshot Repository -->
+    <repository>
+      <id>apache-repository-snapshots</id>
+      <!-- <name>Mantis (${project.artifactId})</name> -->
+      <url>https://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </repository>
+
+    <!-- Sonatype snapshot repository -->
+    <repository>
+      <id>sonatype.public</id>
+      <name>Sonatype Snapshots Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
 
 </project>
