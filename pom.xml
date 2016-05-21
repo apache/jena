@@ -319,11 +319,16 @@
   </build>
 
   <profiles>
-    <profile>
+        <profile>
       <id>release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
       <build>
         <plugins>
-          
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
@@ -337,7 +342,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
@@ -352,10 +356,10 @@
               </execution>
             </executions>
           </plugin>
-          
         </plugins>
       </build>
     </profile>
+
   </profiles>
 
   <distributionManagement>
