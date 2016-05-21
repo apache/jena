@@ -22,28 +22,22 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
-import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
     
-    static RecordFactory recordFactory = new RecordFactory(4, 0) ;
-    
-    static Journal journal = Journal.create(Location.mem()) ;
-
     public static void main(String... args) {
-        DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
+        DatasetGraph dsg = TDB2Factory.connectDatasetGraph("DB") ;
         TransactionalSystem txnSystem = ((DatasetGraphTDB)dsg).getTxnSystem() ;
         
         dsg.begin(ReadWrite.READ);
-        
         Transaction txn = txnSystem.getThreadTransaction() ;
+        
         boolean b = txn.promote() ;
         if ( ! b )
             System.out.println("Did not promote");
@@ -56,7 +50,6 @@ public class MainCohort {
         dsg.end() ;
         
         System.out.println("DONE") ;
-        
     }
 }
 
