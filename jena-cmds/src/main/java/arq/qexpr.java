@@ -49,8 +49,8 @@ import org.apache.jena.system.JenaSystem ;
 public class qexpr
 {
     static {
-        JenaSystem.init() ;
         LogCtl.setCmdLogging() ;
+        JenaSystem.init() ;
     }
 
     public static void main (String... argv)
