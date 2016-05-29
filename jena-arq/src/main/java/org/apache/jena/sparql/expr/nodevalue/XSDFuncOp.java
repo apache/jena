@@ -1590,6 +1590,11 @@ public class XSDFuncOp
             }
             Duration tzDuration = nv2.getDuration();
             tzOffset = tzDuration.getSign()*(tzDuration.getMinutes() + 60*tzDuration.getHours());
+            if(tzDuration.getSeconds() > 0)
+                throw new ExprEvalException("The timezone duration should be an integral number of minutes");
+            int absTzOffset = java.lang.Math.abs(tzOffset);
+            if(absTzOffset > 14*60)
+                throw new ExprEvalException("The timezone should be a duration between -PT14H and PT14H.");
         }
         String tzSign = (tzOffset-inputOffset) > 0 ? "" : "-";
         Duration durToAdd = NodeValue.makeDuration(tzSign+"PT"+java.lang.Math.abs(tzOffset-inputOffset)+"M").getDuration();
