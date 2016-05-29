@@ -34,10 +34,7 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -1426,10 +1423,9 @@ public class XSDFuncOp
         return NodeValue.makeString(dts.timezone) ;
     }
 
-    public static NodeValue dtGetTimezone(NodeValue nv) {
-        DateTimeStruct dts = parseAnyDT(nv) ;
+    private static NodeValue fromTimezoneToDuration(DateTimeStruct dts){
         if ( dts == null || dts.timezone == null )
-            throw new ExprEvalException("Not a datatype with a timezone: " + nv) ;
+            return null;
         if ( "".equals(dts.timezone) )
             return null ;
         if ( "Z".equals(dts.timezone) ) {
@@ -1458,6 +1454,13 @@ public class XSDFuncOp
         digitsTwo(s, idx, sb, 'M') ;
         idx += 2 ;
         return NodeValue.makeNode(sb.toString(), null, XSDDatatype.XSD + "#dayTimeDuration") ;
+    }
+
+    public static NodeValue dtGetTimezone(NodeValue nv) {
+        DateTimeStruct dts = parseAnyDT(nv) ;
+        if ( dts == null || dts.timezone == null )
+            throw new ExprEvalException("Not a datatype with a timezone: " + nv) ;
+        return fromTimezoneToDuration(dts);
     }
 
     private static void digitsTwo(String s, int idx, StringBuilder sb, char indicator) {
@@ -1553,5 +1556,49 @@ public class XSDFuncOp
 //        if ( normalize )
 //            dur = ... 
         return dur ;
+    }
+
+    public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
+        if(nv1 == null)
+            return null;
+
+        if(!nv1.isDateTime() && !nv1.isDate()){
+            throw new ExprEvalException("Not a valid date or datetime:"+nv1);
+        }
+        DateTimeStruct dts = parseAnyDT(nv1);
+        NodeValue inputTimezone = fromTimezoneToDuration(dts);
+        Boolean hasTz = inputTimezone == null ? false : true;
+        XMLGregorianCalendar calValue = nv1.getDateTime();
+        int inputOffset = 0;
+        if(hasTz){
+            Duration inputDuration = inputTimezone.getDuration();
+            inputOffset = inputDuration.getSign()*(inputDuration.getMinutes() + 60*inputDuration.getHours());
+        }
+
+        int tzOffset = TimeZone.getDefault().getRawOffset() / (1000*60);
+        if(nv2 != null){
+            if(!nv2.isDuration()) {
+                String nv2StrValue = nv2.getString();
+                if(nv2StrValue.equals("")){
+                    calValue.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+                    if(nv1.isDateTime())
+                        return NodeValue.makeDateTime(calValue);
+                    else
+                        return NodeValue.makeDate(calValue);
+                }
+                throw new ExprEvalException("Not a valid duration:" + nv2);
+            }
+            Duration tzDuration = nv2.getDuration();
+            tzOffset = tzDuration.getSign()*(tzDuration.getMinutes() + 60*tzDuration.getHours());
+        }
+        String tzSign = (tzOffset-inputOffset) > 0 ? "" : "-";
+        Duration durToAdd = NodeValue.makeDuration(tzSign+"PT"+java.lang.Math.abs(tzOffset-inputOffset)+"M").getDuration();
+        if(hasTz)
+            calValue.add(durToAdd);
+        calValue.setTimezone(tzOffset);
+        if(nv1.isDateTime())
+            return NodeValue.makeDateTime(calValue);
+        else
+            return NodeValue.makeDate(calValue);
     }
 }

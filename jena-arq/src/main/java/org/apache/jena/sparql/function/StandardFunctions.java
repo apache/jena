@@ -164,6 +164,7 @@ public class StandardFunctions
         
         // XQ/XP 3.
 //        9.6.1 fn:adjust-dateTime-to-timezone
+        add(registry, xfn+"adjust-dateTime-to-timezone",  FN_AdjustDatetimeToTimezone.class) ;
 //        9.6.2 fn:adjust-date-to-timezone
 //        9.6.3 fn:adjust-time-to-timezone
 //        9.8.1 fn:format-dateTime
