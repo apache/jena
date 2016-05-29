@@ -377,6 +377,25 @@ public class TestFunctions
 
     @Test public void exprAdjustDatetimeToTz_08(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
 
+    @Test public void exprAdjustDateToTz_01(){
+        testEqual(
+                "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date)",
+                "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDateToTz_02(){
+        testEqual(
+                "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date)",
+                "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDateToTz_03(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-07-10:00"));}
+
+    @Test public void exprAdjustDateToTz_04(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-06-10:00"));}
+
+    @Test public void exprAdjustDateToTz_05(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+
+    @Test public void exprAdjustDateToTz_06(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
