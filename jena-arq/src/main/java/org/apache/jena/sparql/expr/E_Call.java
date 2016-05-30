@@ -65,14 +65,14 @@ public class E_Call extends ExprFunctionN
         if (func == null) throw new ExprEvalException("CALL: Function identifier unbound");
         if (func.isIRI()) {
         	Expr e = buildFunction(func.getNode().getURI(), argExprs, env.getContext());
-        	if (e == null) throw new ExprEvalException("CALL: Function identifier <" + func.getNode().getURI() + "> does not identify a known function");
+        	if (e == null) 
+        	    throw new ExprEvalException("CALL: Function identifier <" + func.getNode().getURI() + "> does not identify a known function");
         	//Calling this may throw an error which we will just let bubble up
         	return e.eval(binding, env);
         } else {
         	throw new ExprEvalException("CALL: Function identifier not an IRI");
         }
     }
-     
     
     @Override
     public Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
