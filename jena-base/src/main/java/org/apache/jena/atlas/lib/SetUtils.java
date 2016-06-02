@@ -48,6 +48,21 @@ public class SetUtils
         return s3 ;
     }
 
+    /** union difference intersection */ 
+    public static <T> Set<T> symmetricDifference(Set<? extends T> s1, Set<? extends T> s2)
+    {
+        Set<T> s3 = new HashSet<>() ;
+        s1.forEach(x -> { 
+            if ( ! s2.contains(x) )
+                s3.add(x) ;
+        }) ;
+        s2.forEach(x -> { 
+            if ( ! s1.contains(x) )
+                s3.add(x) ;
+        }) ;
+        return s3 ;
+    }
+
     /** Return is s1 \ s2 */
 
     public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2)
