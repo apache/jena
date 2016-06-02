@@ -28,6 +28,7 @@ import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -213,8 +214,25 @@ public class VarFinder
 
         @Override
         public void visit(OpUnion opUnion) {
-            mergeVars(opUnion.getLeft());
-            mergeVars(opUnion.getRight());
+            VarUsageVisitor usage1 = VarUsageVisitor.apply(opUnion.getLeft());
+            VarUsageVisitor usage2 = VarUsageVisitor.apply(opUnion.getRight());
+
+            // Fixed both sides.
+            Set<Var> fixed = SetUtils.intersection(usage1.defines, usage2.defines) ;  
+            defines.addAll(fixed) ;
+            
+            // Fixed one side or the other, not both.
+            Set<Var> notFixed = SetUtils.symmetricDifference(usage1.defines, usage2.defines) ;
+            optDefines.addAll(notFixed) ;                              
+
+            optDefines.addAll(usage1.optDefines);
+            optDefines.addAll(usage2.optDefines);
+            
+            filterMentions.addAll(usage1.filterMentions);
+            filterMentions.addAll(usage2.filterMentions);
+            
+            assignMentions.addAll(usage1.assignMentions);
+            assignMentions.addAll(usage2.assignMentions);
         }
         
         @Override

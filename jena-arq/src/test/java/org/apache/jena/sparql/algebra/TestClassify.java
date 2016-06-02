@@ -104,9 +104,10 @@ public class TestClassify extends BaseTest
     // Use of a filter variable from the LHS but optional in RHS
     @Test public void testClassify_Join_35() 
     { classifyJ("{ GRAPH ?g { ?x ?y ?z } { OPTIONAL{?a ?b ?z} FILTER (?z) } }", false) ; }
-    
-    @Test public void testClassify_Join_40() 
-    { classifyJ("{ ?x ?y ?z { ?x ?y ?z } UNION { ?x1 ?y1 ?z1 }}", true) ; }
+
+    // The fix for JENA-1187 invalidates this test.
+//    @Test public void testClassify_Join_40()
+//    { classifyJ("{ ?x ?y ?z { ?x ?y ?z } UNION { ?x1 ?y1 ?z1 }}", true) ; }
 
     @Test public void testClassify_Join_41() 
     { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 BIND(?z+2 AS ?A) } UNION { ?x1 ?y1 ?z1 }}", false) ; }
