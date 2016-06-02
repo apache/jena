@@ -48,9 +48,9 @@ import org.apache.jena.sparql.util.FmtUtils ;
 
 public class WriterOp
 {
-    private static final int NL = WriterLib.NL ;
-    private static final int NoNL = WriterLib.NoNL ;    // No newline, with space
-    private static final int NoSP = WriterLib.NoSP ;
+    private static final int NL     = WriterLib.NL ;
+    private static final int NoNL   = WriterLib.NoNL ;    // No newline, with space
+    private static final int NoSP   = WriterLib.NoSP ;
     
     public static void output(Op op)
     { output(System.out, op) ; }
@@ -73,115 +73,99 @@ public class WriterOp
     public static void output(IndentedWriter iWriter, Op op)
     { output(iWriter, op, (PrefixMapping)null) ; }
 
-    public static void output(IndentedWriter iWriter, Op op, PrefixMapping pMap)
-    {
+    public static void output(IndentedWriter iWriter, Op op, PrefixMapping pMap) {
         if ( pMap == null )
             pMap = OpPrefixesUsed.used(op, ARQConstants.getGlobalPrefixMap()) ;
         SerializationContext sCxt = new SerializationContext(pMap) ;
         output(iWriter, op, sCxt) ;
     }
 
-    public static void output(IndentedWriter iWriter, Op op, Prologue prologue)
-    {
+    public static void output(IndentedWriter iWriter, Op op, Prologue prologue) {
         SerializationContext sCxt = new SerializationContext(prologue) ;
         output(iWriter, op, sCxt) ;
     }
-    
-    public static void output(OutputStream out, Op op, SerializationContext sCxt)
-    {
+
+    public static void output(OutputStream out, Op op, SerializationContext sCxt) {
         output(new IndentedWriter(out), op, sCxt) ;
     }
 
     // Actual work
-    public static void output(final IndentedWriter iWriter, final Op op, SerializationContext sCxt)
-    {
+    public static void output(final IndentedWriter iWriter, final Op op, SerializationContext sCxt) {
         if ( sCxt == null )
             sCxt = new SerializationContext() ;
         final SerializationContext sCxt2 = sCxt ;
-        WriterBasePrefix.Fmt fmt = 
-            new WriterBasePrefix.Fmt() {
-                @Override
-                public void format() {op.visit(new OpWriterWorker(iWriter, sCxt2)) ;}
-                } ;
+        WriterBasePrefix.Fmt fmt = new WriterBasePrefix.Fmt() {
+            @Override
+            public void format() {
+                op.visit(new OpWriterWorker(iWriter, sCxt2)) ;
+            }
+        } ;
         WriterBasePrefix.output(iWriter, fmt, sCxt2.getPrologue()) ;
-    }        
+    }
     
-    // Without the base/prefix wrapper. 
-    static void outputNoPrologue(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt)
-    {
+    // Without the base/prefix wrapper.
+    static void outputNoPrologue(final IndentedWriter iWriter, final Op op, final SerializationContext sCxt) {
         OpWriterWorker v = new OpWriterWorker(iWriter, sCxt) ;
         op.visit(v) ;
-    }        
-    
-    
-    public static class OpWriterWorker implements OpVisitor
-    {
-        private IndentedWriter out ;
+    }
+
+    public static class OpWriterWorker implements OpVisitor {
+        private IndentedWriter       out ;
         private SerializationContext sContext ;
-        
-        public OpWriterWorker(IndentedWriter out, SerializationContext sCxt)
-        { 
+
+        public OpWriterWorker(IndentedWriter out, SerializationContext sCxt) {
             this.sContext = sCxt ;
             this.out = out ;
         }
-        
-        private void visitOpN(OpN op)
-        {
+
+        private void visitOpN(OpN op) {
             start(op, NL) ;
-            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
-            {
+            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; ) {
                 Op sub = iter.next() ;
                 out.ensureStartOfLine() ;
                 printOp(sub) ;
             }
             finish(op) ;
         }
-        
-        private void visitOp2(Op2 op, ExprList exprs)
-        {
+
+        private void visitOp2(Op2 op, ExprList exprs) {
             start(op, NL) ;
             printOp(op.getLeft()) ;
 
             out.ensureStartOfLine() ;
 
             printOp(op.getRight()) ;
-            if ( exprs != null )
-            { 
+            if ( exprs != null ) {
                 out.ensureStartOfLine() ;
                 WriterExpr.output(out, exprs, sContext) ;
             }
             finish(op) ;
         }
 
-        private void visitOp1(Op1 op)
-        {
+        private void visitOp1(Op1 op) {
             start(op, NL) ;
             printOp(op.getSubOp()) ;
             finish(op) ;
         }
 
         @Override
-        public void visit(OpBGP opBGP)
-        {
-            if ( opBGP.getPattern().size() == 1 )
-            {
+        public void visit(OpBGP opBGP) {
+            if ( opBGP.getPattern().size() == 1 ) {
                 start(opBGP, NoNL) ;
                 write(opBGP.getPattern(), true) ;
                 finish(opBGP) ;
                 return ;
             }
-            
+
             start(opBGP, NL) ;
             write(opBGP.getPattern(), false) ;
             finish(opBGP) ;
         }
 
         @Override
-        public void visit(OpQuadPattern opQuadP)
-        { 
+        public void visit(OpQuadPattern opQuadP) {
             QuadPattern quads = opQuadP.getPattern() ;
-            if ( quads.size() == 1 )
-            {
+            if ( quads.size() == 1 ) {
                 start(opQuadP, NoNL) ;
                 formatQuad(quads.get(0)) ;
                 finish(opQuadP) ;
@@ -191,13 +175,11 @@ public class WriterOp
             write(quads, false) ;
             finish(opQuadP) ;
         }
-        
+
         @Override
-        public void visit(OpQuadBlock opQuads)
-        { 
+        public void visit(OpQuadBlock opQuads) {
             QuadPattern quads = opQuads.getPattern() ;
-            if ( quads.size() == 1 )
-            {
+            if ( quads.size() == 1 ) {
                 start(opQuads, NoNL) ;
                 formatQuad(quads.get(0)) ;
                 finish(opQuads) ;
@@ -207,76 +189,66 @@ public class WriterOp
             write(quads, false) ;
             finish(opQuads) ;
         }
-        
-        private void write(BasicPattern pattern, boolean oneLine)
-        {
+
+        private void write(BasicPattern pattern, boolean oneLine) {
             boolean first = true ;
-            for ( Triple t : pattern )
-            {
-               formatTriple(t) ;
-               if ( oneLine )
-               {
-                   if ( ! first ) out.print(" ") ;
-               }
-               else
-                   out.println() ;
-               first = false ;
+            for ( Triple t : pattern ) {
+                formatTriple(t) ;
+                if ( oneLine ) {
+                    if ( !first )
+                        out.print(" ") ;
+                } else
+                    out.println() ;
+                first = false ;
             }
         }
-        
+
         private void write(QuadPattern quads, boolean oneLine) {
             boolean first = true ;
-            for ( Quad t : quads )
-            {
-               formatQuad(t) ;
-               if ( oneLine ) {
-                   if ( ! first ) out.print(" ") ;
-               }
-               else
-                   out.println() ;
-               first = false ;
+            for ( Quad t : quads ) {
+                formatQuad(t) ;
+                if ( oneLine ) {
+                    if ( !first )
+                        out.print(" ") ;
+                } else
+                    out.println() ;
+                first = false ;
             }
         }
 
         @Override
-        public void visit(OpTriple opTriple)
-        {
+        public void visit(OpTriple opTriple) {
             formatTriple(opTriple.getTriple()) ;
         }
 
         @Override
-        public void visit(OpQuad opQuad)
-        {
+        public void visit(OpQuad opQuad) {
             formatQuad(opQuad.getQuad()) ;
         }
 
-
         @Override
-        public void visit(OpPath opPath)
-        {
-            //start(opPath, NoNL) ;
+        public void visit(OpPath opPath) {
+            // start(opPath, NoNL) ;
             formatTriplePath(opPath.getTriplePath()) ;
-            //finish(opPath) ;
+            // finish(opPath) ;
         }
 
         @Override
-        public void visit(OpProcedure opProc)
-        {
+        public void visit(OpProcedure opProc) {
             start(opProc, NoNL) ;
             WriterNode.output(out, opProc.getProcId(), sContext) ;
-            out.println();
+            out.println() ;
             WriterExpr.output(out, opProc.getArgs(), true, false, sContext) ;
             out.println() ;
             printOp(opProc.getSubOp()) ;
             finish(opProc) ;
         }
-        
+
         @Override
-        public void visit(OpPropFunc opPropFunc)
-        {
+        public void visit(OpPropFunc opPropFunc) {
             start(opPropFunc, NoNL) ;
             out.print(FmtUtils.stringForNode(opPropFunc.getProperty(), sContext)) ;
-            out.println();
+            out.println() ;
 
             outputPF(opPropFunc.getSubjectArgs()) ;
             out.print(" ") ;
@@ -285,72 +257,73 @@ public class WriterOp
             printOp(opPropFunc.getSubOp()) ;
             finish(opPropFunc) ;
         }
-        
-        private void outputPF(PropFuncArg pfArg)
-        {
-            if ( pfArg.isNode() )
-            {
+
+        private void outputPF(PropFuncArg pfArg) {
+            if ( pfArg.isNode() ) {
                 WriterNode.output(out, pfArg.getArg(), sContext) ;
                 return ;
             }
             WriterNode.output(out, pfArg.getArgList(), sContext) ;
         }
-        
-        @Override
-        public void visit(OpJoin opJoin)
-        { visitOp2(opJoin, null) ; }
 
         @Override
-        public void visit(OpSequence opSequence)
-        { visitOpN(opSequence) ; }
+        public void visit(OpJoin opJoin) {
+            visitOp2(opJoin, null) ;
+        }
 
         @Override
-        public void visit(OpDisjunction opDisjunction)
-        { visitOpN(opDisjunction) ; }
-        
-        @Override
-        public void visit(OpLeftJoin opLeftJoin)
-        { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }
-        
-        @Override
-        public void visit(OpDiff opDiff)
-        { visitOp2(opDiff, null) ; }
-    
-        @Override
-        public void visit(OpMinus opMinus)
-        { visitOp2(opMinus, null) ; }
+        public void visit(OpSequence opSequence) {
+            visitOpN(opSequence) ;
+        }
 
         @Override
-        public void visit(OpUnion opUnion)
-        { visitOp2(opUnion, null) ; } 
-    
-        @Override
-        public void visit(OpConditional opCondition)
-        { visitOp2(opCondition, null) ; }
+        public void visit(OpDisjunction opDisjunction) {
+            visitOpN(opDisjunction) ;
+        }
 
         @Override
-        public void visit(OpFilter opFilter)
-        { 
+        public void visit(OpLeftJoin opLeftJoin) {
+            visitOp2(opLeftJoin, opLeftJoin.getExprs()) ;
+        }
+
+        @Override
+        public void visit(OpDiff opDiff) {
+            visitOp2(opDiff, null) ;
+        }
+
+        @Override
+        public void visit(OpMinus opMinus) {
+            visitOp2(opMinus, null) ;
+        }
+
+        @Override
+        public void visit(OpUnion opUnion) {
+            visitOp2(opUnion, null) ;
+        }
+
+        @Override
+        public void visit(OpConditional opCondition) {
+            visitOp2(opCondition, null) ;
+        }
+
+        @Override
+        public void visit(OpFilter opFilter) {
             start(opFilter, NoNL) ;
-//            int x = out.getCurrentOffset() ;
-//            out.incIndent(x) ;
-            
+
             ExprList exprs = opFilter.getExprs() ;
-            if ( exprs == null )
-            { start() ; finish() ; }
-            else
+            if ( exprs == null ) {
+                start() ;
+                finish() ;
+            } else
                 WriterExpr.output(out, exprs, sContext) ;
-            out.println();
+            out.println() ;
             printOp(opFilter.getSubOp()) ;
-            
-//            out.decIndent(x) ;
-            
+
             finish(opFilter) ;
         }
-    
+
         @Override
-        public void visit(OpGraph opGraph)
-        {
+        public void visit(OpGraph opGraph) {
             start(opGraph, NoNL) ;
             out.println(FmtUtils.stringForNode(opGraph.getNode(), sContext)) ;
             opGraph.getSubOp().visit(this) ;
@@ -358,8 +331,7 @@ public class WriterOp
         }
 
         @Override
-        public void visit(OpService opService)
-        {
+        public void visit(OpService opService) {
             start(opService, NoNL) ;
             if ( opService.getSilent() )
                 out.println("silent ") ;
@@ -369,64 +341,57 @@ public class WriterOp
         }
 
         @Override
-        public void visit(OpTable opTable)
-        {
-            if ( TableUnit.isTableUnit(opTable.getTable()) )
-            {
+        public void visit(OpTable opTable) {
+            if ( TableUnit.isTableUnit(opTable.getTable()) ) {
                 start(opTable, NoNL) ;
                 out.print("unit") ;
                 finish(opTable) ;
                 return ;
             }
-            
-            if ( opTable.getTable().isEmpty() )
-            {
+
+            if ( opTable.getTable().isEmpty() ) {
                 start(opTable, NoNL) ;
                 out.print("empty") ;
                 finish(opTable) ;
                 return ;
             }
-            
+
             start(opTable, NoNL) ;
             WriterNode.outputVars(out, opTable.getTable().getVars(), sContext) ;
             out.println() ;
-            WriterTable.outputPlain(out, opTable.getTable(), sContext);
+            WriterTable.outputPlain(out, opTable.getTable(), sContext) ;
             finish(opTable) ;
         }
 
         @Override
-        public void visit(OpDatasetNames dsNames)
-        {
+        public void visit(OpDatasetNames dsNames) {
             start(dsNames, NoNL) ;
             WriterNode.output(out, dsNames.getGraphNode(), sContext) ;
             finish(dsNames) ;
         }
 
         @Override
-        public void visit(OpExt opExt)
-        {
-            //start(opExt, NL) ;
+        public void visit(OpExt opExt) {
+            // start(opExt, NL) ;
             opExt.output(out, sContext) ;
-            //finish(opExt) ;
+            // finish(opExt) ;
         }
 
         @Override
-        public void visit(OpNull opNull)
-        { start(opNull, NoSP) ; finish(opNull) ; } 
-        
+        public void visit(OpNull opNull) {
+            start(opNull, NoSP) ;
+            finish(opNull) ;
+        }
+
         @Override
-        public void visit(OpLabel opLabel)
-        { 
+        public void visit(OpLabel opLabel) {
             String x = FmtUtils.stringForString(opLabel.getObject().toString()) ;
-            if ( opLabel.hasSubOp() )
-            {
+            if ( opLabel.hasSubOp() ) {
                 start(opLabel, NL) ;
                 out.println(x) ;
                 printOp(opLabel.getSubOp()) ;
                 finish(opLabel) ;
-            }
-            else
-            {
+            } else {
                 start(opLabel, NoNL) ;
                 out.print(x) ;
                 finish(opLabel) ;
@@ -434,37 +399,32 @@ public class WriterOp
         }
 
         @Override
-        public void visit(OpList opList)
-        {
+        public void visit(OpList opList) {
             visitOp1(opList) ;
         }
-        
+
         @Override
-        public void visit(OpGroup opGroup)
-        {
+        public void visit(OpGroup opGroup) {
             start(opGroup, NoNL) ;
             writeNamedExprList(opGroup.getGroupVars()) ;
-            if ( ! opGroup.getAggregators().isEmpty() )
-            {
+            if ( !opGroup.getAggregators().isEmpty() ) {
                 // --- Aggregators
                 out.print(" ") ;
                 start() ;
                 out.incIndent() ;
                 boolean first = true ;
-                for ( ExprAggregator agg : opGroup.getAggregators() )
-                {
-                    if ( !first )
-                    {
-                        out.print( " " );
+                for ( ExprAggregator agg : opGroup.getAggregators() ) {
+                    if ( !first ) {
+                        out.print(" ") ;
                     }
-                    first = false;
-                    Var v = agg.getVar();
-                    String str = agg.getAggregator().toPrefixString();
-                    start();
-                    out.print( v.toString() );
-                    out.print( " " );
-                    out.print( str );
-                    finish();
+                    first = false ;
+                    Var v = agg.getVar() ;
+                    String str = agg.getAggregator().toPrefixString() ;
+                    start() ;
+                    out.print(v.toString()) ;
+                    out.print(" ") ;
+                    out.print(str) ;
+                    finish() ;
                 }
                 finish() ;
                 out.decIndent() ;
@@ -473,128 +433,112 @@ public class WriterOp
             printOp(opGroup.getSubOp()) ;
             finish(opGroup) ;
         }
-        
+
         @Override
-        public void visit(OpOrder opOrder)
-        { 
+        public void visit(OpOrder opOrder) {
             start(opOrder, NoNL) ;
-            
+
             // Write conditions
             start() ;
 
             boolean first = true ;
-            for ( SortCondition sc : opOrder.getConditions() )
-            {
-                if ( ! first )
+            for ( SortCondition sc : opOrder.getConditions() ) {
+                if ( !first )
                     out.print(" ") ;
                 first = false ;
                 formatSortCondition(sc) ;
             }
             finish() ;
-            out.newline();
+            out.newline() ;
             printOp(opOrder.getSubOp()) ;
             finish(opOrder) ;
         }
-        
+
         @Override
-        public void visit(OpTopN opTop)
-        { 
+        public void visit(OpTopN opTop) {
             start(opTop, NoNL) ;
-            
+
             // Write conditions
             start() ;
             writeIntOrDefault(opTop.getLimit()) ;
             out.print(" ") ;
 
             boolean first = true ;
-            for ( SortCondition sc : opTop.getConditions() )
-            {
-                if ( ! first )
+            for ( SortCondition sc : opTop.getConditions() ) {
+                if ( !first )
                     out.print(" ") ;
                 first = false ;
                 formatSortCondition(sc) ;
             }
             finish() ;
-            out.newline();
+            out.newline() ;
             printOp(opTop.getSubOp()) ;
             finish(opTop) ;
         }
-        
-        // Neater would be a pair of explicit SortCondition formatter
-        private void formatSortCondition(SortCondition sc)
-        {
+
+        // Neater would be a pair of explicit SortCondition formatters
+        private void formatSortCondition(SortCondition sc) {
             boolean close = true ;
             String tag = null ;
-            
-            if ( sc.getDirection() != Query.ORDER_DEFAULT ) 
-            {            
-                if ( sc.getDirection() == Query.ORDER_ASCENDING )
-                {
-                    tag = Tags.tagAsc ; 
+
+            if ( sc.getDirection() != Query.ORDER_DEFAULT ) {
+                if ( sc.getDirection() == Query.ORDER_ASCENDING ) {
+                    tag = Tags.tagAsc ;
                     WriterLib.start(out, tag, NoNL) ;
                 }
-            
-                if ( sc.getDirection() == Query.ORDER_DESCENDING )
-                {
-                    tag = Tags.tagDesc ; 
+
+                if ( sc.getDirection() == Query.ORDER_DESCENDING ) {
+                    tag = Tags.tagDesc ;
                     WriterLib.start(out, tag, NoNL) ;
                 }
-                
+
             }
-            
+
             WriterExpr.output(out, sc.getExpression(), sContext) ;
-            
+
             if ( tag != null )
                 WriterLib.finish(out, tag) ;
         }
 
-
-
         @Override
-        public void visit(OpProject opProject)
-        { 
+        public void visit(OpProject opProject) {
             start(opProject, NoNL) ;
             writeVarList(opProject.getVars()) ;
-            out.println();
+            out.println() ;
             printOp(opProject.getSubOp()) ;
             finish(opProject) ;
         }
 
         @Override
-        public void visit(OpDistinct opDistinct)
-        {
+        public void visit(OpDistinct opDistinct) {
             visitOp1(opDistinct) ;
         }
-        
+
         @Override
-        public void visit(OpReduced opReduced)
-        {
+        public void visit(OpReduced opReduced) {
             visitOp1(opReduced) ;
         }
-        
+
         @Override
-        public void visit(OpAssign opAssign)
-        {
+        public void visit(OpAssign opAssign) {
             start(opAssign, NoNL) ;
             writeNamedExprList(opAssign.getVarExprList()) ;
-            out.println();
+            out.println() ;
             printOp(opAssign.getSubOp()) ;
             finish(opAssign) ;
         }
-        
+
         @Override
-        public void visit(OpExtend opExtend)
-        {
+        public void visit(OpExtend opExtend) {
             start(opExtend, NoNL) ;
             writeNamedExprList(opExtend.getVarExprList()) ;
-            out.println();
+            out.println() ;
             printOp(opExtend.getSubOp()) ;
             finish(opExtend) ;
         }
-        
+
         @Override
-        public void visit(OpSlice opSlice)
-        { 
+        public void visit(OpSlice opSlice) {
             start(opSlice, NoNL) ;
             writeIntOrDefault(opSlice.getStart()) ;
             out.print(" ") ;
@@ -604,87 +548,79 @@ public class WriterOp
             finish(opSlice) ;
         }
 
-        private void writeIntOrDefault(long value)
-        {
+        private void writeIntOrDefault(long value) {
             String x = "_" ;
             if ( value != Query.NOLIMIT )
                 x = Long.toString(value) ;
             out.print(x) ;
         }
-            
-        private void start(Op op, int newline)
-        {
+
+        private void start(Op op, int newline) {
             WriterLib.start(out, op.getName(), newline) ;
         }
-        
-        private void finish(Op op)
-        {
+
+        private void finish(Op op) {
             WriterLib.finish(out, op.getName()) ;
         }
 
-        private void start()    { WriterLib.start(out) ; }
-        private void finish()   { WriterLib.finish(out) ; }
+        private void start() {
+            WriterLib.start(out) ;
+        }
 
-        
-        private void printOp(Op op)
-        {
-            if ( op == null )
-            {
+        private void finish() {
+            WriterLib.finish(out) ;
+        }
+
+        private void printOp(Op op) {
+            if ( op == null ) {
                 WriterLib.start(out, Tags.tagNull, NoSP) ;
                 WriterLib.finish(out, Tags.tagNull) ;
-            }
-            else
+            } else
                 op.visit(this) ;
         }
-        
-        private void writeVarList(List<Var> vars)
-        {
+
+        private void writeVarList(List<Var> vars) {
             start() ;
             boolean first = true ;
-            for (Var var : vars)
-            {
-                if ( ! first )
-                  out.print(" ") ;
+            for ( Var var : vars ) {
+                if ( !first )
+                    out.print(" ") ;
                 first = false ;
                 out.print(var.toString()) ;
             }
             finish() ;
         }
-        
-        private void writeNamedExprList(VarExprList project)
-        {
+
+        private void writeNamedExprList(VarExprList project) {
             start() ;
             boolean first = true ;
-            for ( Var v : project.getVars() )
-            {
-                if ( ! first )
-                  out.print(" ") ;
+            for ( Var v : project.getVars() ) {
+                if ( !first )
+                    out.print(" ") ;
                 first = false ;
                 Expr expr = project.getExpr(v) ;
-                if ( expr != null )
-                {
+                if ( expr != null ) {
                     start() ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
-                    
-                    String $ = WriterExpr.asString(expr) ;
-                    
                     WriterExpr.output(out, expr, sContext) ;
                     finish() ;
-                }
-                else
+                } else
                     out.print(v.toString()) ;
             }
             finish() ;
         }
 
-        private void formatTriple(Triple tp)
-        { WriterNode.output(out, tp, sContext) ; }
-        
-        private void formatQuad(Quad qp)
-        { WriterNode.output(out, qp, sContext) ; }
-        
-        private void formatTriplePath(TriplePath tp)
-        { WriterPath.output(out, tp, sContext) ; }
+        private void formatTriple(Triple tp) {
+            WriterNode.output(out, tp, sContext) ;
+        }
+
+        private void formatQuad(Quad qp) {
+            WriterNode.output(out, qp, sContext) ;
+        }
+
+        private void formatTriplePath(TriplePath tp) {
+            WriterPath.output(out, tp, sContext) ;
+        }
     }
 }
