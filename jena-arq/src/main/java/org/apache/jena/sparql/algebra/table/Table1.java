@@ -52,7 +52,7 @@ public class Table1 extends TableBase {
     public QueryIterator iterator(ExecutionContext execCxt) {
         // Root binding?
         Binding binding = BindingFactory.binding(var, value) ;
-        QueryIterator qIter = QueryIterSingleton.create(binding, var, value, execCxt) ;
+        QueryIterator qIter = QueryIterSingleton.create(null, var, value, execCxt) ;
         return qIter ;
     }
 
