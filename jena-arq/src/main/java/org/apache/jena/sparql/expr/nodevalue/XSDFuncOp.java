@@ -1423,9 +1423,10 @@ public class XSDFuncOp
         return NodeValue.makeString(dts.timezone) ;
     }
 
-    private static NodeValue fromTimezoneToDuration(DateTimeStruct dts){
+    public static NodeValue dtGetTimezone(NodeValue nv) {
+        DateTimeStruct dts = parseAnyDT(nv) ;
         if ( dts == null || dts.timezone == null )
-            return null;
+            throw new ExprEvalException("Not a datatype with a timezone: " + nv) ;
         if ( "".equals(dts.timezone) )
             return null ;
         if ( "Z".equals(dts.timezone) ) {
@@ -1454,13 +1455,6 @@ public class XSDFuncOp
         digitsTwo(s, idx, sb, 'M') ;
         idx += 2 ;
         return NodeValue.makeNode(sb.toString(), null, XSDDatatype.XSD + "#dayTimeDuration") ;
-    }
-
-    public static NodeValue dtGetTimezone(NodeValue nv) {
-        DateTimeStruct dts = parseAnyDT(nv) ;
-        if ( dts == null || dts.timezone == null )
-            throw new ExprEvalException("Not a datatype with a timezone: " + nv) ;
-        return fromTimezoneToDuration(dts);
     }
 
     private static void digitsTwo(String s, int idx, StringBuilder sb, char indicator) {
