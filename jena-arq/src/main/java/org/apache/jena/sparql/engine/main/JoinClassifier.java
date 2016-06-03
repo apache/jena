@@ -98,11 +98,11 @@ public class JoinClassifier
             System.err.println("Left/opt:      " + vLeftOpt) ;
         // if (print) System.err.println("Left/filter:   " + vLeftFilter) ;
 
-        VarFinder vfRight = VarFinder.process(rightOp) ;
-        Set<Var> vRightFixed = vfRight.getFixed() ;
-        Set<Var> vRightOpt = vfRight.getOpt() ;
-        Set<Var> vRightFilter = vfRight.getFilter() ;
-        Set<Var> vRightAssign = vfRight.getAssign() ;
+        VarFinder vfRight       = VarFinder.process(rightOp) ;
+        Set<Var> vRightFixed    = vfRight.getFixed() ;
+        Set<Var> vRightOpt      = vfRight.getOpt() ;
+        Set<Var> vRightFilter   = vfRight.getFilter() ;
+        Set<Var> vRightAssign   = vfRight.getAssign() ;
 
         if ( print )
             System.err.println("Right/fixed:   " + vRightFixed) ;

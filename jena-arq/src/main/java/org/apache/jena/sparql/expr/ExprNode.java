@@ -29,7 +29,6 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.sse.writers.WriterExpr ;
 
-
 /** A node that is a constraint expression that can be evaluated
  * An Expr is already a Constraint - ExprNode is the base implementation
  * of all Expr classes that provides the Constraint machinary. */
