@@ -1565,14 +1565,12 @@ public class XSDFuncOp
         if(!nv1.isDateTime() && !nv1.isDate()){
             throw new ExprEvalException("Not a valid date or datetime:"+nv1);
         }
-        DateTimeStruct dts = parseAnyDT(nv1);
-        NodeValue inputTimezone = fromTimezoneToDuration(dts);
-        Boolean hasTz = inputTimezone == null ? false : true;
+
         XMLGregorianCalendar calValue = nv1.getDateTime();
+        Boolean hasTz = calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED;
         int inputOffset = 0;
         if(hasTz){
-            Duration inputDuration = inputTimezone.getDuration();
-            inputOffset = inputDuration.getSign()*(inputDuration.getMinutes() + 60*inputDuration.getHours());
+            inputOffset = calValue.getTimezone();
         }
 
         int tzOffset = TimeZone.getDefault().getRawOffset() / (1000*60);
