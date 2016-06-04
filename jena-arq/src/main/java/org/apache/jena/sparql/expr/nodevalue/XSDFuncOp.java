@@ -1556,8 +1556,8 @@ public class XSDFuncOp
         if(nv1 == null)
             return null;
 
-        if(!nv1.isDateTime() && !nv1.isDate()){
-            throw new ExprEvalException("Not a valid date or datetime:"+nv1);
+        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime()){
+            throw new ExprEvalException("Not a valid date, datetime or time:"+nv1);
         }
 
         XMLGregorianCalendar calValue = nv1.getDateTime();
@@ -1575,6 +1575,8 @@ public class XSDFuncOp
                     calValue.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
                     if(nv1.isDateTime())
                         return NodeValue.makeDateTime(calValue);
+                    else if(nv1.isTime())
+                        return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
                     else
                         return NodeValue.makeDate(calValue);
                 }
@@ -1595,6 +1597,8 @@ public class XSDFuncOp
         calValue.setTimezone(tzOffset);
         if(nv1.isDateTime())
             return NodeValue.makeDateTime(calValue);
+        else if(nv1.isTime())
+            return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
         else
             return NodeValue.makeDate(calValue);
     }

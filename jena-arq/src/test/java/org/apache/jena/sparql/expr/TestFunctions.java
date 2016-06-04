@@ -396,6 +396,28 @@ public class TestFunctions
     @Test public void exprAdjustDateToTz_05(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
 
     @Test public void exprAdjustDateToTz_06(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+
+    @Test public void exprAdjustTimeToTz_01(){
+        testEqual(
+                "fn:adjust-time-to-timezone('10:00:00'^^xsd:time)",
+                "fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustTimeToTz_02(){
+        testEqual(
+                "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time)",
+                "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustTimeToTz_03(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("10:00:00-10:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_04(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("07:00:00-10:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_05(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_06(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_07(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
