@@ -72,9 +72,10 @@ public class TestTransformQuads extends BaseTest
                                         ) ; }
     
     // Nested and filter
+    // ?g is unbound in the filter. 
     @Test public void quads20() { test ("{ GRAPH ?g { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 FILTER (str(?g) = 'graphURI') } } }",
                                         "(assign ((?g ?*g0))" +
-                                        "   (sequence" +
+                                        "   (join" +
                                         "     (quadpattern (quad ?*g0 ?s ?p ?o))" +
                                         "     (filter (= (str ?g) 'graphURI')" +
                                         "       (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
