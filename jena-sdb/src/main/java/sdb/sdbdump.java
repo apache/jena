@@ -21,6 +21,7 @@ package sdb;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
@@ -97,6 +98,7 @@ public class sdbdump extends CmdArgsDB
                 RDFDataMgr.write(System.out, model, lang);
             }
         }
+        catch (CmdException ex) { throw ex ; }
         catch (Exception ex) {
             System.err.println("Exception: " + ex + " :: " + ex.getMessage());
             ex.printStackTrace(System.err);
