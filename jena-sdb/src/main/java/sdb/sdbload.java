@@ -18,22 +18,24 @@
 
 package sdb;
 
-
 import java.util.Iterator ;
 import java.util.List ;
 
 import jena.cmd.ArgDecl;
-
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphListener ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sdb.SDB ;
+import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.store.StoreBaseHSQL ;
-import org.apache.jena.util.FileUtils ;
-
 import sdb.cmd.CmdArgsDB ;
 import sdb.cmd.ModGraph ;
  
@@ -98,33 +100,54 @@ public class sdbload extends CmdArgsDB
     {
         Monitor monitor = null ;
         
-        Model model = modGraph.getModel(getStore()) ;
-        Graph graph = model.getGraph() ;    
-
+        Model model = null ;
+        Dataset dataset = null ;
+        Lang lang = RDFLanguages.filenameToLang(filename) ;
+        if ( lang == null )
+            throw new CmdException("Data syntax not recognized: "+filename) ;
+        
+        if ( modGraph.getGraphName() != null )
+            model = modGraph.getModel(getStore()) ;
+        else
+            dataset = SDBFactory.connectDataset(getStore()) ;
+        
+        // For monitoring only.
+        Graph monitorGraph = (model==null) ? null : model.getGraph() ;
+        
         if ( isVerbose() && replace )
             System.out.println("Emptying: "+filename) ;
-        if (replace)
-            model.removeAll();
+        if (replace) {
+            if ( model != null ) 
+                model.removeAll();
+            else
+                dataset.asDatasetGraph().clear();
+        }
 
         if ( isVerbose() || getModTime().timingEnabled() )
             System.out.println("Start load: "+filename) ;
-        if ( getModTime().timingEnabled() )
-        {
+        if ( getModTime().timingEnabled() ) {
+            if ( monitorGraph == null ) {
+                // This old monitor code only works for graphs.  
+                // See TDB for a better way using org.apache.jena.atlas.lib.ProgressMonitor
+                throw new CmdException("Timing only implemented for graphs, not whole datasets") ;
+            }
             monitor = new Monitor(getStore().getLoader().getChunkSize(), isVerbose()) ;
-            graph.getEventManager().register(monitor) ;
+            monitorGraph.getEventManager().register(monitor) ;
         }
 
         // Crude but convenient
         if ( filename.indexOf(':') == -1 )
             filename = "file:"+filename ;
 
-        String lang = FileUtils.guessLang(filename) ;
         
         // Always time, only print if enabled. 
         getModTime().startTimer() ;
         
         // Load here
-        model.read(filename, lang) ;
+        if ( model == null )
+            RDFDataMgr.read(dataset, filename, lang);
+        else
+            RDFDataMgr.read(model, filename, lang);
 
         long timeMilli = getModTime().endTimer() ;
             
@@ -135,7 +158,7 @@ public class sdbload extends CmdArgsDB
             if ( getModTime().timingEnabled() && !isQuiet() )
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
-            graph.getEventManager().unregister(monitor) ;
+            monitorGraph.getEventManager().unregister(monitor) ;
         }
     }
         
