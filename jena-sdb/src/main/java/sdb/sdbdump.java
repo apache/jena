@@ -50,21 +50,19 @@ public class sdbdump extends CmdArgsDB
     public static final String usage = "sdbdump --sdb <SPEC> [--out syntax]" ;
 
     private static ModGraph modGraph = new ModGraph() ;
-    static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
+    static ArgDecl argDeclSyntax = new ArgDecl(true, "output", "out") ;
 
-    public static void main(String ... argv)
-    {
-        SDB.init();
+    public static void main(String... argv) {
+        SDB.init() ;
         new sdbdump(argv).mainRun() ;
     }
 
-    protected sdbdump(String ... args)
-    {
-        super(args);
+    protected sdbdump(String... args) {
+        super(args) ;
         addModule(modGraph) ;
-        add(argDeclSyntax) ;
+        add(argDeclSyntax, "--output=", "RDF Syntax for output (For datasets, TriG, N-Quads; for graphs, any RDF syntax)") ;
     }
-    
+
     @Override
     protected String getCommandName() { return Lib.className(this) ; }
     
@@ -72,15 +70,13 @@ public class sdbdump extends CmdArgsDB
     protected String getSummary()  { return Lib.className(this)+" --sdb <SPEC> [--out syntax]" ; }
 
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;
     }
-    
+
     @Override
-    protected void execCmd(List<String> args)
-    {
+    protected void execCmd(List<String> args) {
         // This is a streamable syntax.
         String syntax = "N-QUADS";
         if ( contains(argDeclSyntax) )
@@ -104,5 +100,4 @@ public class sdbdump extends CmdArgsDB
             ex.printStackTrace(System.err);
         }
     }
-
 }
