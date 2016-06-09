@@ -349,8 +349,11 @@ public class TestFunctions
     @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)) ; }
 
     private String getDynamicDurationString(){
-        int tzOffset = TimeZone.getDefault().getRawOffset() / (1000*60);
-        return "PT"+tzOffset+"M";
+        int tzOffset = TimeZone.getDefault().getOffset(new Date().getTime()) / (1000*60);
+        String off = "PT"+Math.abs(tzOffset)+"M";
+        if(tzOffset < 0)
+            off = "-"+off;
+        return off;
     }
 
     @Test public void exprAdjustDatetimeToTz_01(){

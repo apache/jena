@@ -1567,7 +1567,7 @@ public class XSDFuncOp
             inputOffset = calValue.getTimezone();
         }
 
-        int tzOffset = TimeZone.getDefault().getRawOffset() / (1000*60);
+        int tzOffset = 0;
         if(nv2 != null){
             if(!nv2.isDuration()) {
                 String nv2StrValue = nv2.getString();
@@ -1590,8 +1590,10 @@ public class XSDFuncOp
             if(absTzOffset > 14*60)
                 throw new ExprEvalException("The timezone should be a duration between -PT14H and PT14H.");
         }
-        String tzSign = (tzOffset-inputOffset) > 0 ? "" : "-";
-        Duration durToAdd = NodeValue.makeDuration(tzSign+"PT"+java.lang.Math.abs(tzOffset-inputOffset)+"M").getDuration();
+        else{
+            tzOffset = TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
+        }
+        Duration durToAdd = NodeValue.xmlDatatypeFactory.newDurationDayTime((tzOffset-inputOffset) > 0,0,0,java.lang.Math.abs(tzOffset-inputOffset),0);
         if(hasTz)
             calValue.add(durToAdd);
         calValue.setTimezone(tzOffset);
