@@ -21,6 +21,7 @@ package sdb;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
@@ -85,11 +86,11 @@ public class sdbdump extends CmdArgsDB
         if ( contains(argDeclSyntax) )
             syntax = getArg(argDeclSyntax).getValue();
         Lang lang = RDFLanguages.nameToLang(syntax);
-        if ( ! RDFLanguages.isQuads(lang) )
-            cmdError("Not a 'quads' language (try 'N-Quads' or 'TriG')", true) ;
 
         try {
             if ( modGraph.getGraphName() == null ) {
+                if ( ! RDFLanguages.isQuads(lang) )
+                    cmdError("Not a 'quads' language (try 'N-Quads' or 'TriG')", true) ;
                 Dataset dataset = getModStore().getDataset();
                 RDFDataMgr.write(System.out, dataset, lang);
             } else {
@@ -97,6 +98,7 @@ public class sdbdump extends CmdArgsDB
                 RDFDataMgr.write(System.out, model, lang);
             }
         }
+        catch (CmdException ex) { throw ex ; }
         catch (Exception ex) {
             System.err.println("Exception: " + ex + " :: " + ex.getMessage());
             ex.printStackTrace(System.err);

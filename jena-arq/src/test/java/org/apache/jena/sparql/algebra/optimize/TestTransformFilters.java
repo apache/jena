@@ -194,6 +194,30 @@ public class TestTransformFilters extends AbstractTestTransform
                t_equality,
                (String[])null);
     }
+    
+    @Test public void equality_path_1() {
+        testOp("(filter (= ?x <http://constant1/>) (path ?x (path+ :p) ?y))",
+               t_equality,
+               "(assign ((?x <http://constant1/>)) (path <http://constant1/> (path+ :p) ?y) )") ;
+    }
+
+    @Test public void equality_path_2() {
+        testOp("(filter (= ?y <http://constant1/>) (path ?x (path+ :p) ?y))",
+               t_equality,
+               "(assign ((?y <http://constant1/>)) (path ?x (path+ :p) <http://constant1/>) )") ;
+    }
+
+    @Test public void equality_path_3() {
+        testOp("(filter ((= ?x <http://constant1/>) (= ?y <http://constant2/>)) (path ?x (path+ :p) ?y))",
+               t_equality,
+               "(assign ((?x <http://constant1/>) (?y <http://constant2/>)) (path <http://constant1/> (path+ :p) <http://constant2/>) )") ;
+    }
+
+    @Test public void equality_path_4() {
+        testOp("(filter (= ?x <http://constant1/>) (join (bgp (?x :q ?z)) (path ?x (path+ :p) ?y) ))",
+               t_equality,
+               "(assign ((?x <http://constant1/>)) (join (bgp (<http://constant1/> :q ?z)) (path <http://constant1/> (path+ :p) ?y) ))") ;
+    }
 
     @Test public void optionalEqualitySubQuery_01() {
         // Presence of ?test in the projection blocks the rewrite.
