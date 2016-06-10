@@ -173,6 +173,13 @@ public class StoreFactory
                     @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashMySQL(conn, desc, desc.engineType) ; } }) ;
+        
+        // Treat as MySQL
+        register(MariaDB, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesHashMySQL(conn, desc, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutTripleNodesHash,
                  new StoreMaker() {
@@ -232,6 +239,12 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexMySQL(conn, desc, desc.engineType) ; } }) ;
 
+        register(MariaDB, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesIndexMySQL(conn, desc, desc.engineType) ; } }) ;
+        
         register(PostgreSQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
                     @Override
@@ -290,6 +303,12 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleMySQL(conn, desc, desc.engineType) ; } }) ;
 
+        register(MariaDB,  LayoutSimple,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreSimpleMySQL(conn, desc, desc.engineType) ; } }) ;
+ 
         register(PostgreSQL, LayoutSimple,
                  new StoreMaker() {
                     @Override
@@ -323,7 +342,7 @@ public class StoreFactory
     
     static private void checkRegistry()
     {
-        DatabaseType[] dbTypes = {Derby, HSQLDB, H2, MySQL, PostgreSQL, SQLServer, Oracle, SAP} ;
+        DatabaseType[] dbTypes = {Derby, HSQLDB, H2, MySQL, MariaDB, PostgreSQL, SQLServer, Oracle, SAP} ;
         LayoutType[] layoutTypes = {LayoutTripleNodesHash, LayoutTripleNodesIndex, LayoutSimple} ;
         
         Set <StoreMaker> seen = new HashSet<StoreMaker>() ;

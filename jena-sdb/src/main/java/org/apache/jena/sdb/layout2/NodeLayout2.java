@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class NodeLayout2
 {
-    // Turn into the lexcial form
+    // Turn into the lexical form
 
     public static String nodeToLex(Node node)
     {

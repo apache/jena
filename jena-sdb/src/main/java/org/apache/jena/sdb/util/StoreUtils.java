@@ -18,13 +18,9 @@
 
 package org.apache.jena.sdb.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collection;
-import java.util.HashSet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.* ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
@@ -67,7 +63,10 @@ public class StoreUtils
 
     public static boolean isMySQL(Store store)
     {
-        return store.getDatabaseType().equals(DatabaseType.MySQL) ;
+        DatabaseType type = store.getDatabaseType() ;
+        
+        return Objects.equals(type, DatabaseType.MySQL) ||
+               Objects.equals(type, DatabaseType.MariaDB) ;
     }
     
     public static boolean isSQLServer(Store store)

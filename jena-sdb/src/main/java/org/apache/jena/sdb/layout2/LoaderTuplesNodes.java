@@ -285,8 +285,7 @@ public class LoaderTuplesNodes
     		if (currentLoader == null) { // make a new loader
     			try {
 					currentLoader =
-						tupleLoaderClass.getConstructor(SDBConnection.class, TableDesc.class, 
-								Integer.TYPE).newInstance(connection(), tuple.table, chunkSize);
+						tupleLoaderClass.getConstructor(SDBConnection.class, TableDesc.class, Integer.TYPE).newInstance(connection(), tuple.table, chunkSize);
 				} catch (Exception e) {
 					throw new SDBException("Problem making new tupleloader", e);
 				}
