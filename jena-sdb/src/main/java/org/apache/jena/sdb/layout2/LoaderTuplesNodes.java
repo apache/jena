@@ -116,20 +116,20 @@ public class LoaderTuplesNodes extends SDBConnectionHolder implements StoreLoade
 
     @Override
     public void addTriple(Triple triple) {
-    	updateStore(new TupleChange(true, store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()));
+        addTuple(store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
 	}
     
     @Override
     public void deleteTriple(Triple triple) {
-    	updateStore(new TupleChange(false, store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()));
+        deleteTuple(store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
 	@Override
     public void addQuad(Node g, Node s, Node p, Node o) {
 	    if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(o) )
-	        updateStore(new TupleChange(true, store.getTripleTableDesc(), s, p, o));
+	        addTuple(store.getTripleTableDesc(), s, p, o);
 	    else
-	        updateStore(new TupleChange(true, store.getQuadTableDesc(), g, s, p, o));		
+	        addTuple(store.getQuadTableDesc(), g, s, p, o);		
 	}
 
 	@Override
@@ -140,9 +140,9 @@ public class LoaderTuplesNodes extends SDBConnectionHolder implements StoreLoade
 	@Override
     public void deleteQuad(Node g, Node s, Node p, Node o) {
 	    if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(o) )
-            updateStore(new TupleChange(false, store.getTripleTableDesc(), s, p, o));
+	        deleteTuple(store.getTripleTableDesc(), s, p, o);
         else
-            updateStore(new TupleChange(false, store.getQuadTableDesc(), g, s, p, o));
+            deleteTuple(store.getQuadTableDesc(), g, s, p, o);
 	}
 
 	@Override
