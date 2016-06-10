@@ -34,10 +34,7 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -1553,5 +1550,58 @@ public class XSDFuncOp
 //        if ( normalize )
 //            dur = ... 
         return dur ;
+    }
+
+    public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
+        if(nv1 == null)
+            return null;
+
+        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime()){
+            throw new ExprEvalException("Not a valid date, datetime or time:"+nv1);
+        }
+
+        XMLGregorianCalendar calValue = nv1.getDateTime();
+        Boolean hasTz = calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED;
+        int inputOffset = 0;
+        if(hasTz){
+            inputOffset = calValue.getTimezone();
+        }
+
+        int tzOffset = 0;
+        if(nv2 != null){
+            if(!nv2.isDuration()) {
+                String nv2StrValue = nv2.getString();
+                if(nv2StrValue.equals("")){
+                    calValue.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+                    if(nv1.isDateTime())
+                        return NodeValue.makeDateTime(calValue);
+                    else if(nv1.isTime())
+                        return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
+                    else
+                        return NodeValue.makeDate(calValue);
+                }
+                throw new ExprEvalException("Not a valid duration:" + nv2);
+            }
+            Duration tzDuration = nv2.getDuration();
+            tzOffset = tzDuration.getSign()*(tzDuration.getMinutes() + 60*tzDuration.getHours());
+            if(tzDuration.getSeconds() > 0)
+                throw new ExprEvalException("The timezone duration should be an integral number of minutes");
+            int absTzOffset = java.lang.Math.abs(tzOffset);
+            if(absTzOffset > 14*60)
+                throw new ExprEvalException("The timezone should be a duration between -PT14H and PT14H.");
+        }
+        else{
+            tzOffset = TimeZone.getDefault().getOffset(new Date().getTime())/(1000*60);
+        }
+        Duration durToAdd = NodeValue.xmlDatatypeFactory.newDurationDayTime((tzOffset-inputOffset) > 0,0,0,java.lang.Math.abs(tzOffset-inputOffset),0);
+        if(hasTz)
+            calValue.add(durToAdd);
+        calValue.setTimezone(tzOffset);
+        if(nv1.isDateTime())
+            return NodeValue.makeDateTime(calValue);
+        else if(nv1.isTime())
+            return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
+        else
+            return NodeValue.makeDate(calValue);
     }
 }
