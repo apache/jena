@@ -19,7 +19,9 @@
 package org.apache.jena.sdb.compiler;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.shared.SDBInternalError ;
+import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -30,7 +32,11 @@ import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 public class QueryIterOpSQL extends QueryIterRepeatApply
 {
 
-    private OpSQL opSQL ;
+    private final OpSQL opSQL ;
+    // Modifed to remove the query - after substitution, the query is no longer useful
+    // information.  This also stops the bridge attempting to project variables -
+    // by this stage, we want all variables back.
+    private final SDBRequest request ;  
     
     public QueryIterOpSQL(OpSQL op, 
                         QueryIterator input ,
@@ -38,16 +44,24 @@ public class QueryIterOpSQL extends QueryIterRepeatApply
     { 
         super(input, context) ;
         this.opSQL = op ;
+        SDBRequest req = op.getRequest() ;
+        if ( req == null )
+            this.request = null ;
+        else {
+            PrefixMapping pmap = req.getQuery() == null ? null : req.getQuery().getPrefixMapping() ;
+            this.request = 
+                op.getRequest() == null 
+                ? null
+                : new SDBRequest(op.getRequest().getStore(), pmap, context.getContext()) ;
+        }
     }
     
     @Override
-    protected QueryIterator nextStage(Binding binding)
-    {
+    protected QueryIterator nextStage(Binding binding) {
         OpSQL execSQL = this.opSQL ;
 
-        if ( binding != null && ! isRoot(binding) )
-        {
-            QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(opSQL.getRequest()) ;
+        if ( binding != null && ! isRoot(binding) ) {
+            QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(request) ;
             Op op2 = Substitute.substitute(opSQL.getOriginal(), binding) ;
             Op op = qc.compile(op2) ;
             if ( op instanceof OpSQL )
@@ -57,16 +71,21 @@ public class QueryIterOpSQL extends QueryIterRepeatApply
         }
 
         return execSQL.exec(binding, getExecContext()) ;
+//        QueryIterator qIter = execSQL.exec(binding, getExecContext()) ;
+//        List<Binding> x = Iter.toList(qIter) ;
+//        qIter = new QueryIterPlainWrapper(x.iterator(), getExecContext()) ;
+//        System.out.println("SQL Eval:") ;
+//        x.forEach(b -> System.out.println("  "+b) );
+//        System.out.println() ;
+//        return qIter ;
     }
-    
-    private static boolean isRoot(Binding binding)
-    {
-        return ! binding.vars().hasNext() ; 
+
+    private static boolean isRoot(Binding binding) {
+        return !binding.vars().hasNext() ;
     }
 
     @Override
-    public void output(IndentedWriter out)
-    {
+    public void output(IndentedWriter out) {
         opSQL.output(out) ;
     }
 }
