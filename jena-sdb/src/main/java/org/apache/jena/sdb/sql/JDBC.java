@@ -126,10 +126,6 @@ public class JDBC
             throw new SDBNotFoundException("Class.forName("+className+")", ex) ; }
     }
 
-    static private void loadClass1(String className) {
-        
-    }
-    
     public static String makeURL(String type, String host, String dbName)
     { return makeURL(type, host, dbName, null, null) ; }
 
