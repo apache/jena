@@ -415,7 +415,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         
         out.print("( ") ;
         
-        String sep = " AND " ;
+        String sep = "  AND " ;
         
         boolean first = true ;
         boolean lastAnnotated = false ;
