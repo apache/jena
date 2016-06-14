@@ -122,12 +122,12 @@ abstract public class PathEngine
 
     protected abstract void doNegatedPropertySet(P_NegPropSet pathNotOneOf, Node node, Collection<Node> output) ;
 
-    // path{*} : default implementation
+    // path{*} : possibly counting (if the engine supports that): default implementation
     protected void doZeroOrMoreN(Path pathStep, Node node, Collection<Node> output) {
         doZeroOrMore(pathStep, node, output) ;
     }
 
-    // path{+} : default implementation
+    // path{+} : possibly counting (if the engine supports that): default implementation
     protected void doOneOrMoreN(Path pathStep, Node node, Collection<Node> output) {
         doOneOrMore(pathStep, node, output) ;
     }

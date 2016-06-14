@@ -95,7 +95,7 @@ final class PathEngine1 extends PathEngine
 
     @Override
     protected void doMultiLengthPath(Path pathStep, Node node, long min1, long max1, Collection<Node> output) {
-        // This algrothim can be used for counting {n,m}
+        // This algorithm can be used for counting {n,m}
         // abstract ALP(=>rename?) , doFixedLength
 
         if ( min1 == P_Mod.UNSET )
@@ -176,18 +176,14 @@ final class PathEngine1 extends PathEngine
 
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output) {
-        // Reuse "output"
-        Collection<Node> visited = new LinkedList<>() ; // new
-                                                            // HashSet<Node>() ;
+        Set<Node> visited = new HashSet<Node>() ;
         ALP1(forwardMode, 0, -1, node, path, visited) ;
         output.addAll(visited) ;
     }
 
     @Override
     protected void doOneOrMore(Path path, Node node, Collection<Node> output) {
-        // Reuse "output"
-        Collection<Node> visited = new LinkedList<>() ; // new
-                                                            // HashSet<Node>() ;
+        Set<Node> visited = new HashSet<Node>() ;
         // Do one step without including.
         Iter<Node> iter1 = eval(path, node) ;
         for (; iter1.hasNext();) {
@@ -197,12 +193,12 @@ final class PathEngine1 extends PathEngine
         output.addAll(visited) ;
     }
 
-    private void ALP1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited) {
+    private void ALP1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited) {
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
             return ;
-        if ( visited.contains(node) )
-            return ;
-
+        // If visited not a set ... 
+//        if ( visited.contains(node) )
+//            return ;
         if ( !visited.add(node) )
             return ;
 
