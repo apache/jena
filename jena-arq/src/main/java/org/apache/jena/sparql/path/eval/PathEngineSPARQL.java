@@ -76,29 +76,23 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected void doZeroOrOne(Path pathStep, Node node, Collection<Node> output) {
-        // Force unique evaluation.
         Collection<Node> x = new HashSet<>() ;
         eval(pathStep, node, x) ;
         x.add(node) ;
         output.addAll(x) ;
     }
-
+    
     @Override
     protected void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) {
-        // Reuse "output"
-        Collection<Node> visited = new LinkedList<>() ; // new
-                                                            // HashSet<Node>() ;
+        Set<Node> visited = new HashSet<Node>() ;
         ALP_1(forwardMode, 0, -1, node, pathStep, visited) ;
         output.addAll(visited) ;
     }
 
     @Override
     protected void doOneOrMore(Path pathStep, Node node, Collection<Node> output) {
-        // Reuse "output"
-        Collection<Node> visited = new LinkedList<>() ; // new
-                                                            // HashSet<Node>() ;
+        Set<Node> visited = new HashSet<Node>() ;
         // Do one step without including.
-        // TODO switch to PathEngine1 for the sub-step as we only need uniques.
         Iter<Node> iter1 = eval(pathStep, node) ;
         for (; iter1.hasNext();) {
             Node n1 = iter1.next() ;
@@ -113,16 +107,11 @@ public class PathEngineSPARQL extends PathEngine
         output.add(node) ;
     }
 
-    // TODO ?? switch to PathEngine1 for the sub-step as we only need uniques.
-    private void ALP_1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited) {
+    private void ALP_1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited) {
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
             return ;
-        if ( visited.contains(node) )
-            return ;
-
         if ( !visited.add(node) )
             return ;
-
         Iter<Node> iter1 = eval(path, node) ;
         // For each step, add to results and recurse.
         for (; iter1.hasNext();) {
@@ -131,6 +120,7 @@ public class PathEngineSPARQL extends PathEngine
         }
     }
 
+    // Not SPARQL - counting versions.
     @Override
     protected void doZeroOrMoreN(Path pathStep, Node node, Collection<Node> output) {
         Set<Node> visited = new HashSet<>() ;
@@ -148,11 +138,10 @@ public class PathEngineSPARQL extends PathEngine
         }
     }
 
-    // This is the worker function for path{*}
+    // This is the worker function for path{*} /counting (non_SPARQL) semantics.
     private void ALP_N(Node node, Path path, Collection<Node> visited, Collection<Node> output) {
         if ( visited.contains(node) )
             return ;
-
         // If output is a set, then no point going on if node has been added to
         // the results.
         // If output includes duplicates, more solutions are generated
@@ -198,7 +187,6 @@ public class PathEngineSPARQL extends PathEngine
         long min2 = dec(min1) ;
         long max2 = dec(max1) ;
 
-        // TODO Rewrite
         Path p1 = pathStep ;
         Path p2 = new P_Mod(pathStep, min2, max2) ;
 
@@ -213,7 +201,6 @@ public class PathEngineSPARQL extends PathEngine
             // cardinality of the
             // two operations is different.
         }
-        // ****
 
         // One step.
         Iterator<Node> iter = eval(p1, node) ;
