@@ -60,7 +60,7 @@ public class JenaSystem {
     /** Initialize Jena.
      * <p>
      * This function is cheap to call when already initialized so can be called to be sure.
-     * A commonly used idom in jena is in static initailizers in key classes.
+     * A commonly used idiom in jena is a static initializer in key classes.
      * <p> 
      * By default, initialization happens by using {@code ServiceLoader.load} to find
      * {@link JenaSubsystemLifecycle} objects.
