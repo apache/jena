@@ -213,9 +213,8 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;
         
-        ErrorHandler errHandler = null ;
-        if ( checking )
-        {
+        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
+        if ( checking ) {
             if ( modLangParse.stopOnBadTerm() )
                 errHandler = ErrorHandlerFactory.errorHandlerStd  ;
             else
@@ -223,8 +222,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         }
         
-        if ( modLangParse.skipOnBadTerm() )
-        {
+        if ( modLangParse.skipOnBadTerm() ) {
             // TODO skipOnBadterm
         }
         
@@ -240,10 +238,8 @@ public abstract class CmdLangParse extends CmdGeneral
         // If multiple files, choose the overall labels. 
         if ( langHandlerOverall == null )
             langHandlerOverall = handler ;
-        else
-        {
-            if ( langHandlerOverall != langHandlerAny )
-            {
+        else {
+            if ( langHandlerOverall != langHandlerAny ) {
                 if ( langHandlerOverall != handler )
                     langHandlerOverall = langHandlerAny ;
             }
