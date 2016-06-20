@@ -60,7 +60,7 @@ abstract public class PathEngine
             registry$ = PropertyFunctionRegistry.chooseRegistry(context) ;
             if ( registry$ != null ) {
                 doingRDFSmember$ = ( registry$.get(RDFSmember.getURI()) != null ) ;
-                doingRDFSmember$ = ( registry$.get(ListMember.getURI()) != null ) ;
+                doingListMember$ = ( registry$.get(ListMember.getURI()) != null ) ;
             }
         }
         
@@ -79,20 +79,12 @@ abstract public class PathEngine
         PathEval.eval$(graph, node, path, this, output) ;
     }
 
-    // protected final void eval(Path path, Node node, Collection<Node> output)
-
     protected abstract void flipDirection() ;
 
     protected abstract boolean direction() ;
 
-    protected abstract Collection<Node> collector() ;
+    // protected abstract void doOne(Path pathStep, Node node, Collection<Node> output) ;
 
-    // protected abstract void doZero(Path pathStep, Node node, Collection<Node>
-    // output) ;
-    // protected abstract void doOne(Path pathStep, Node node, Collection<Node>
-    // output) ;
-
-    // --- Where we touch the graph
     // Because for SP? or ?PO, no duplicates occur, so works for both strategies.
     protected final Iterator<Node> doOne(Node node, Node property) {
         Iterator<Node> iter2 = null ;
