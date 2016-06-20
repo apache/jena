@@ -28,7 +28,9 @@ import org.apache.jena.sparql.path.P_NegPropSet ;
 import org.apache.jena.sparql.path.Path ;
 
 /** Path evaluation visitor that provide distinct nodes visited only.
+ * 
  * This is NOT SPARQL semantics.
+ * 
  * This class exists for experimentation.
  * It is written to get the right results - not necessarily with maximum efficiency.
  */
@@ -42,13 +44,13 @@ final class PathEngine1 extends PathEngine
         this.forwardMode = forward ;
     }
 
-    // Choose the underlying impl - different choice for debugging.
-    @Override
     protected Collection<Node> collector() {
-        return new ArrayList<>() ;
-        // { return new HashSet<Node>() ; }
+        return new HashSet<Node>() ;
     }
 
+    protected Set<Node> visitedAcc() {
+        return new HashSet<Node>() ;
+    }
 
     @Override
     protected void flipDirection() {
@@ -63,7 +65,7 @@ final class PathEngine1 extends PathEngine
     @Override
     protected void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) {
         // Must be duplicate supressing.
-        Collection<Node> nodes = new HashSet<>() ;
+        Collection<Node> nodes = collector() ;
         // Insert directly.
         eval(pathStepLeft, node, nodes) ;
         // Need to reduce/check other side.
@@ -78,7 +80,7 @@ final class PathEngine1 extends PathEngine
 
         Collection<Node> nodes = collector() ;
         eval(part1, node, nodes) ;
-        Collection<Node> nodes2 = new HashSet<>() ;
+        Collection<Node> nodes2 = collector() ;
         for (Node n : nodes)
             eval(part2, n, nodes2) ;
         output.addAll(nodes2) ;
@@ -152,7 +154,7 @@ final class PathEngine1 extends PathEngine
         // Special for small?
         // if ( fixedLength < 3 )
         // {}
-        Collection<Node> visited = collector() ;
+        Collection<Node> visited = visitedAcc() ;
 
         if ( fixedLength == 0 ) {
             doZero(pathStep, node, output) ;
@@ -176,14 +178,14 @@ final class PathEngine1 extends PathEngine
 
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = visitedAcc() ;
         ALP1(forwardMode, 0, -1, node, path, visited) ;
         output.addAll(visited) ;
     }
 
     @Override
     protected void doOneOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = visitedAcc() ;
         // Do one step without including.
         Iter<Node> iter1 = eval(path, node) ;
         for (; iter1.hasNext();) {

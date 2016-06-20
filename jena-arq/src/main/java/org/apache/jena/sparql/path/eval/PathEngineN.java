@@ -43,11 +43,14 @@ final class PathEngineN extends PathEngine
         this.forwardMode = forward ;
     }
 
-    @Override
     protected Collection<Node> collector() {
         return new ArrayList<>() ;
     }
-
+    
+    protected Set<Node> visitedAcc() {
+        return new HashSet<Node>() ;
+    }
+    
     @Override
     protected void flipDirection() {
         forwardMode = !forwardMode ;
@@ -185,13 +188,13 @@ final class PathEngineN extends PathEngine
 
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<>() ;
+        Set<Node> visited = visitedAcc() ;
         ALP(node, path, visited, output) ;
     }
 
     @Override
     protected void doOneOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<>() ;
+        Set<Node> visited = visitedAcc() ;
         // Do one step without including.
         Iterator<Node> iter1 = eval(path, node) ;
         for (; iter1.hasNext();) {
@@ -201,7 +204,7 @@ final class PathEngineN extends PathEngine
     }
 
     // This is the worker function for path*
-    private void ALP(Node node, Path path, Collection<Node> visited, Collection<Node> output) {
+    private void ALP(Node node, Path path, Set<Node> visited, Collection<Node> output) {
         if ( visited.contains(node) )
             return ;
 

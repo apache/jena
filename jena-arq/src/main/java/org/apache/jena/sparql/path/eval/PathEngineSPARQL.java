@@ -43,6 +43,14 @@ public class PathEngineSPARQL extends PathEngine
         this.forwardMode = forward ;
     }
 
+    protected Collection<Node> collector() {
+        return new HashSet<Node>() ;
+    }
+
+    protected Set<Node> visitedAcc() {
+        return new HashSet<Node>() ;
+    }
+    
     @Override
     protected void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) {
         Path part1 = forwardMode ? pathStepLeft : pathStepRight ;
@@ -76,7 +84,7 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected void doZeroOrOne(Path pathStep, Node node, Collection<Node> output) {
-        Collection<Node> x = new HashSet<>() ;
+        Collection<Node> x = visitedAcc() ;
         eval(pathStep, node, x) ;
         x.add(node) ;
         output.addAll(x) ;
@@ -84,14 +92,14 @@ public class PathEngineSPARQL extends PathEngine
     
     @Override
     protected void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = visitedAcc() ;
         ALP_1(forwardMode, 0, -1, node, pathStep, visited) ;
         output.addAll(visited) ;
     }
 
     @Override
     protected void doOneOrMore(Path pathStep, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = visitedAcc() ;
         // Do one step without including.
         Iter<Node> iter1 = eval(pathStep, node) ;
         for (; iter1.hasNext();) {
@@ -103,7 +111,7 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected void doZero(Path path, Node node, Collection<Node> output) {
-        // Not SPARQL
+        // {0} -- Not SPARQL
         output.add(node) ;
     }
 
@@ -245,10 +253,5 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected boolean direction() {
         return forwardMode ;
-    }
-
-    @Override
-    protected Collection<Node> collector() {
-        return new ArrayList<>() ;
     }
 }
