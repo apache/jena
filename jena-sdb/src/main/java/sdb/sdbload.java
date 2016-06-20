@@ -41,7 +41,7 @@ import org.apache.jena.sdb.SDBFactory ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.store.StoreBaseHSQL ;
 import org.apache.jena.sdb.store.StoreLoaderPlus ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.Quad ;
 import sdb.cmd.CmdArgsDB ;
 import sdb.cmd.ModGraph ;
@@ -111,14 +111,20 @@ public class sdbload extends CmdArgsDB {
     private void loadOne(String filename, boolean replace) {
         Model model = null ;
         Dataset dataset = null ;
+        PrefixMapping pmap ;
+        
         Lang lang = RDFLanguages.filenameToLang(filename) ;
         if ( lang == null )
             throw new CmdException("Data syntax not recognized: " + filename) ;
 
-        if ( modGraph.getGraphName() != null )
+        // --graph or not
+        if ( modGraph.getGraphName() != null ) {
             model = modGraph.getModel(getStore()) ;
-        else
+            pmap = model;
+        } else {
             dataset = SDBFactory.connectDataset(getStore()) ;
+            pmap = dataset.asDatasetGraph().getDefaultGraph().getPrefixMapping() ;
+        }
 
         // For monitoring only.
         Graph monitorGraph = (model == null) ? null : model.getGraph() ;
@@ -135,7 +141,7 @@ public class sdbload extends CmdArgsDB {
         if ( showProgress )
             output.print("Start load: %s", filename) ;
         
-        StreamRDF stream = streamToStore(dataset.asDatasetGraph(), getStore()) ;
+        StreamRDF stream = streamToStore(pmap, getStore()) ;
         if ( modGraph.getGraphName() != null ) {
             Node gn = NodeFactory.createURI(modGraph.getGraphName()) ;
             stream = StreamRDFLib.extendTriplesToQuads(gn, stream) ;
@@ -159,7 +165,7 @@ public class sdbload extends CmdArgsDB {
         }
     }
 
-    private StreamRDF streamToStore(DatasetGraph dsg, Store store) {
+    private StreamRDF streamToStore(PrefixMapping pmap, Store store) {
         StoreLoaderPlus sl = (StoreLoaderPlus)store.getLoader() ;
         return new StreamRDF() {
 
@@ -183,7 +189,7 @@ public class sdbload extends CmdArgsDB {
 
             @Override
             public void prefix(String prefix, String iri) {
-                dsg.getDefaultGraph().getPrefixMapping().setNsPrefix(prefix, iri) ;
+                pmap.setNsPrefix(prefix, iri) ;
             }
 
             @Override
