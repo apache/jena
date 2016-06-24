@@ -281,24 +281,21 @@ public class LPBRuleEngine {
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
     public synchronized Generator generatorFor(final TriplePattern goal, final List<RuleClauseCode> clauses) {
-          return getCachedTabledGoal(goal, new Callable<Generator>() {
-      		 	@Override
-      		    public Generator call() {
-      		 		/** FIXME: Unify with #generatorFor(TriplePattern) - but investigate what about
-      		 		 * the edge case that this method might have been called with the of goal == null
-      		 		 * or goal.size()==0 -- which gives different behaviour in
-      		 		 * LPInterpreter constructor than through the route of
-      		 		 * generatorFor(TriplePattern) which calls a different LPInterpreter constructor
-      		 		 * which would fill in from RuleStore.
-      		 		 */
-      		        LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, clauses, false);
-      		        activeInterpreters.add(interpreter);
-      		        Generator generator = new Generator(interpreter, goal);
-      		        schedule(generator);
-      		        return generator;
-      		 	}
-      		});
-    }
+        return getCachedTabledGoal(goal, () -> {
+	 		/** FIXME: Unify with #generatorFor(TriplePattern) - but investigate what about
+	 		 * the edge case that this method might have been called with the of goal == null
+	 		 * or goal.size()==0 -- which gives different behaviour in
+	 		 * LPInterpreter constructor than through the route of
+	 		 * generatorFor(TriplePattern) which calls a different LPInterpreter constructor
+	 		 * which would fill in from RuleStore.
+	 		 */
+			LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, clauses, false);
+			activeInterpreters.add(interpreter);
+			Generator generator = new Generator(interpreter, goal);
+			schedule(generator);
+			return generator;
+		});
+	}
 
     /**
      * Return a generator for the given goal (assumes that the caller knows that
@@ -306,15 +303,12 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      */
     public synchronized Generator generatorFor(final TriplePattern goal) {
-		return getCachedTabledGoal(goal, new Callable<Generator>() {
-		 	@Override
-		    public Generator call() {
-	            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, false);
-	            activeInterpreters.add(interpreter);
-	            Generator generator = new Generator(interpreter, goal);
-	            schedule(generator);
-	            return generator;
-		 	}
+    	return getCachedTabledGoal(goal, () -> {
+            LPInterpreter interpreter = new LPInterpreter(LPBRuleEngine.this, goal, false);
+            activeInterpreters.add(interpreter);
+            Generator generator = new Generator(interpreter, goal);
+            schedule(generator);
+            return generator;
 		});
     }
 
