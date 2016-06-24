@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.jena.JenaRuntime;
 import org.apache.jena.ext.com.google.common.cache.Cache;
 import org.apache.jena.ext.com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
@@ -68,8 +69,8 @@ public class LPBRuleEngine {
     /** List of engine instances which are still processing queries */
     protected List<LPInterpreter> activeInterpreters = new LinkedList<>();
 
-    protected final int MAX_CACHED_TABLED_GOALS =
-			Integer.getInteger("jena.rulesys.lp.max_cached_tabled_goals", 512*1024);
+    protected final int MAX_CACHED_TABLED_GOALS = Integer.parseInt(
+    		JenaRuntime.getSystemProperty("jena.rulesys.lp.max_cached_tabled_goals", "524288"));
 
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries.
