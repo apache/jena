@@ -31,7 +31,10 @@ import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
-import org.eclipse.jetty.server.* ;
+import org.eclipse.jetty.server.HttpConnectionFactory ;
+import org.eclipse.jetty.server.Server ;
+import org.eclipse.jetty.server.ServerConnector ;
+import org.eclipse.jetty.server.handler.gzip.GzipHandler ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
@@ -87,9 +90,15 @@ public class JettyFuseki {
     
     private JettyFuseki(JettyServerConfig config) {
         this.serverConfig = config ;
-        buildServerWebapp(serverConfig.contextPath, serverConfig.jettyConfigFile, config.enableCompression) ;
+        buildServerWebapp(serverConfig.contextPath, serverConfig.jettyConfigFile) ;
         if ( mgtConnector == null )
             mgtConnector = serverConnector ;
+
+        if ( config.enableCompression ) {
+            GzipHandler gzipHandler = new GzipHandler();
+            gzipHandler.setHandler(server.getHandler());
+            server.setHandler(gzipHandler); 
+        }
     }
 
     /**
@@ -218,7 +227,7 @@ public class JettyFuseki {
         return currentResourceBase ;
     }
     
-    private void buildServerWebapp(String contextPath, String jettyConfig, boolean enableCompression) {
+    private void buildServerWebapp(String contextPath, String jettyConfig) {
         if ( jettyConfig != null )
             // --jetty-config=jetty-fuseki.xml
             // for detailed configuration of the server using Jetty features.
