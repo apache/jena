@@ -25,6 +25,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
@@ -33,21 +34,22 @@ import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
 public class TestPackage extends TestSuite {
 
     protected static Logger logger = LoggerFactory.getLogger(TestPackage.class);
-    
+
     static public TestSuite suite() {
         return new TestPackage();
     }
-    
+
     /** Creates new TestPackage */
     private TestPackage() {
         super("RuleSys");
-        
+
         addTestSuite( TestConfigVocabulary.class );
         addTestSuite( TestGenericRuleReasonerConfig.class );
         addTest( "TestBasics", TestBasics.suite() );
         addTest( "TestBackchainer", TestBackchainer.suite() );
         addTest( "TestLPBasics", TestBasicLP.suite() );
         addTest( "TestLPDerivation", TestLPDerivation.suite() );
+        addTest( TestLPBRuleEngine.suite() );
         addTest( "TestFBRules", TestFBRules.suite() );
         addTest( "TestGenericRules", TestGenericRules.suite() );
         addTest( "TestRETE", TestRETE.suite() );
@@ -60,7 +62,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
         //addTest ("TestRuleLoader", TestRuleLoader.suite() );
-        
+
         try {
             /* uncomment the following block when we switch to java 1.6 and update ConcurrentTest to do deadlock detection */
 //            // Check the JVM supports the management interfaces needed for
@@ -73,7 +75,7 @@ public class TestPackage extends TestSuite {
         }
         addTestSuite( TestInferenceReification.class );
         addTestSuite( TestRestrictionsDontNeedTyping.class );
-        
+
         // No longer needed because the tests are now subsumed in OWLUnitTest
         // addTest( "TestOWLConsistency", TestOWLRules.suite() );
     }

@@ -58,27 +58,33 @@
     </dependency>
 
     <dependency>
+    	<groupId>org.apache.jena</groupId>
+    	<artifactId>jena-shaded-guava</artifactId>
+    	<version>3.1.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
     </dependency>
-    
-     <dependency> 
-       <artifactId>commons-cli</artifactId> 
-       <groupId>commons-cli</groupId> 
-     </dependency> 
+
+     <dependency>
+       <artifactId>commons-cli</artifactId>
+       <groupId>commons-cli</groupId>
+     </dependency>
 
     <dependency>
       <groupId>org.xenei</groupId>
       <artifactId>junit-contracts</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>com.jayway.awaitility</groupId>
       <artifactId>awaitility</artifactId>
@@ -90,7 +96,7 @@
       <artifactId>jena-base</artifactId>
       <version>3.1.1-SNAPSHOT</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
