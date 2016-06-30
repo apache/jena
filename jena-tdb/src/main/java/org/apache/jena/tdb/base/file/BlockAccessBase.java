@@ -52,10 +52,10 @@ public abstract class BlockAccessBase implements BlockAccess
         seq = new AtomicLong(numFileBlocks) ;
 
         if ( numFileBlocks > Integer.MAX_VALUE )
-            getLog().warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
+            getLog().warn(format("File size (%d) exceeds tested block number limits (%d) [%s]", filesize, blockSize, filename)) ;
 
         if ( filesize%longBlockSize != 0 )
-            throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
+            throw new BlockException(format("File size (%d) not a multiple of blocksize (%d) [%s]", filesize, blockSize, filename)) ;
 
         if ( filesize == 0 )
             isEmpty = true ;
