@@ -22,6 +22,9 @@ import java.util.List ;
 
 import org.apache.jena.sparql.algebra.op.* ;
 
+/** When writing {@link Transform}s to be applied to a tree,
+ * extend {@link TransformCopy}, not this class. 
+ */
 public class TransformBase implements Transform
 {
     @Override

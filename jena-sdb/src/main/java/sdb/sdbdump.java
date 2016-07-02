@@ -21,6 +21,7 @@ package sdb;
 import java.util.List;
 
 import jena.cmd.ArgDecl;
+import jena.cmd.CmdException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
@@ -49,21 +50,19 @@ public class sdbdump extends CmdArgsDB
     public static final String usage = "sdbdump --sdb <SPEC> [--out syntax]" ;
 
     private static ModGraph modGraph = new ModGraph() ;
-    static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
+    static ArgDecl argDeclSyntax = new ArgDecl(true, "output", "out") ;
 
-    public static void main(String ... argv)
-    {
-        SDB.init();
+    public static void main(String... argv) {
+        SDB.init() ;
         new sdbdump(argv).mainRun() ;
     }
 
-    protected sdbdump(String ... args)
-    {
-        super(args);
+    protected sdbdump(String... args) {
+        super(args) ;
         addModule(modGraph) ;
-        add(argDeclSyntax) ;
+        add(argDeclSyntax, "--output=", "RDF Syntax for output (For datasets, TriG, N-Quads; for graphs, any RDF syntax)") ;
     }
-    
+
     @Override
     protected String getCommandName() { return Lib.className(this) ; }
     
@@ -71,25 +70,23 @@ public class sdbdump extends CmdArgsDB
     protected String getSummary()  { return Lib.className(this)+" --sdb <SPEC> [--out syntax]" ; }
 
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;
     }
-    
+
     @Override
-    protected void execCmd(List<String> args)
-    {
+    protected void execCmd(List<String> args) {
         // This is a streamable syntax.
         String syntax = "N-QUADS";
         if ( contains(argDeclSyntax) )
             syntax = getArg(argDeclSyntax).getValue();
         Lang lang = RDFLanguages.nameToLang(syntax);
-        if ( ! RDFLanguages.isQuads(lang) )
-            cmdError("Not a 'quads' language (try 'N-Quads' or 'TriG')", true) ;
 
         try {
             if ( modGraph.getGraphName() == null ) {
+                if ( ! RDFLanguages.isQuads(lang) )
+                    cmdError("Not a 'quads' language (try 'N-Quads' or 'TriG')", true) ;
                 Dataset dataset = getModStore().getDataset();
                 RDFDataMgr.write(System.out, dataset, lang);
             } else {
@@ -97,10 +94,10 @@ public class sdbdump extends CmdArgsDB
                 RDFDataMgr.write(System.out, model, lang);
             }
         }
+        catch (CmdException ex) { throw ex ; }
         catch (Exception ex) {
             System.err.println("Exception: " + ex + " :: " + ex.getMessage());
             ex.printStackTrace(System.err);
         }
     }
-
 }

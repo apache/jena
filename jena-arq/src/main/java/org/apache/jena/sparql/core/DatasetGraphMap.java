@@ -51,7 +51,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     /**  DatasetGraphMap defaulting to storage in memory.
      */
     public DatasetGraphMap() {
-        this(DatasetGraphFactory.memGraphMaker) ; 
+        this(DatasetGraphFactory.graphMakerMem) ; 
     }
     
     /**  DatasetGraphMap with a specific policy for graph creation.

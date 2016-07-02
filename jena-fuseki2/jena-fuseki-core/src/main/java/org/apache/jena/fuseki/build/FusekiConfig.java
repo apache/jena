@@ -159,9 +159,7 @@ public class FusekiConfig {
     }
     
     private static Model readAssemblerFile(String filename) {
-        Model m = AssemblerUtils.readAssemblerFile(filename) ;
-        // Any extras.
-        return m ;
+        return AssemblerUtils.readAssemblerFile(filename) ;
     }
     
     private static void execute(Model m, String x) {

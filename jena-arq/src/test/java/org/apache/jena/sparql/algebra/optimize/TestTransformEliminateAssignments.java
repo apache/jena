@@ -451,32 +451,59 @@ public class TestTransformEliminateAssignments {
         //@formatter:on
     }
 
-    @Test
-    public void ineligible_10() {
-        // We can't inline out of an EXISTS since the assignment isn't projected
-        // out anyway
-        //@formatter:off
-        testNoChange("(project (?y)",
-                     "  (filter (exprlist ?x (exists",
-                     "                         (extend (?x true)",
-                     "                           (table unit))))",
-                     "    (table unit)))");
-        //@formatter:on
-    }
+    // Test not correct.
+    // The "(extend (?x ...))" is not used - it does not cause ?x to come out of (exists).
+    // This would be true regardless of the (project) but the current code is only
+    // triggered by (project)
 
-    @Test
-    public void ineligible_11() {
-        // We can't inline out of an EXISTS since the assignment isn't projected
-        // out anyway
-        //@formatter:off
-        testNoChange("(project (?y)",
-                     "  (filter (exprlist ?x)",
-                     "    (filter (exprlist (exists",
-                     "                         (extend (?x true)",
-                     "                           (table unit))))",
-                     "      (table unit))))");
-        //@formatter:on
-    }
+    // OLD - wrong (new walker correctly waks into the exist). 
+//    @Test
+//    public void ineligible_10() {
+//        // We can't inline out of an EXISTS since the assignment isn't projected
+//        // out anyway
+//        //@formatter:off
+//        testNoChange("(project (?y)",
+//                     "  (filter (exprlist ?x (exists",
+//                     "                         (extend (?x true)",
+//                     "                           (table unit))))",
+//                     "    (table unit)))");
+//        //@formatter:on
+//    }
+    
+    // Checks the right output though for the wrong reason. 
+//    @Test
+//    public void eligible_10() {
+//        // The "(extend (?x ...)" is not used - it does not com eout of the (exists).
+//        // This would be true reagrdless of the (project) but the current code is only
+//        // triggered by (project)
+//        //@formatter:off
+//        test(StrUtils.strjoinNL("(project (?y)",
+//                                "  (filter (exprlist ?x (exists",
+//                                "                         (extend (?x true)",
+//                                "                           (table unit))))",
+//                                "    (table unit)))"),
+//             "(project (?y)",
+//             "  (filter (exprlist ?x (exists",
+//             "                         (extend (?x true)",
+//             "                           (table unit))))",
+//             "    (table unit)))");
+//             ;
+//        //@formatter:on
+//    }
+//
+//    @Test
+//    public void ineligible_11() {
+//        // We can't inline out of an EXISTS since the assignment isn't projected
+//        // out anyway
+//        //@formatter:off
+//        testNoChange("(project (?y)",
+//                     "  (filter (exprlist ?x)",
+//                     "    (filter (exprlist (exists",
+//                     "                         (extend (?x true)",
+//                     "                           (table unit))))",
+//                     "      (table unit))))");
+//        //@formatter:on
+//    }
 
     @Test
     public void ineligible_12() {
@@ -504,41 +531,57 @@ public class TestTransformEliminateAssignments {
 
     @Test
     public void exists_01() {
-        // We can't inline into an EXISTS since the assignment isn't projected
-        // out anyway and its an n-ary operator so would change semantics
-        // However this makes the assignment unused so can still remove it
+        // (extend) used in the filter-exists
         //@formatter:off
-        test(StrUtils.strjoinNL("(project (?y)",
-                               "  (filter (exprlist (exists",
-                               "                      (filter (exprlist ?x)",
-                               "                        (table unit))))",
-                               "    (extend (?x true)",
-                               "      (table unit))))"),
-            "(project (?y)",
-            "  (filter (exprlist (exists",
-            "                      (filter (exprlist ?x)",
-            "                        (table unit))))",
-            "    (table unit)))");
+        testNoChange("(project (?y)",
+                     "  (filter (exists",
+                     "            (filter  ?x (table unit)))",
+                     "    (extend (?x true)",
+                     "      (table unit))))") ; 
         //@formatter:on
     }
 
     @Test
     public void exists_02() {
-        // Could inline within an exists but still needs to meet other rules
-        // Even though an exists is technically a form of projection can't
-        // discount the variable being needed elsewhere
+        // We can't inline into an EXISTS since the assignment isn't projected
+        // out anyway and its an n-ary operator so would change semantics
+        // However this makes the assignment unused so can still remove it
         //@formatter:off
-        testNoChange("(project (?y)",
-                     "  (filter (exprlist (exists",
-                     "                      (filter (exprlist ?x)",
-                     "                        (extend (?x true)",
-                     "                          (table unit)))))",
-                     "    (table unit)))");
+        test(StrUtils.strjoinNL("(project (?y)",
+                               "  (filter (exists",
+                               "            (filter ?z",
+                               "              (table unit)))",
+                               "    (extend (?x true)",
+                               "      (table unit))))"),
+            "(project (?y)",
+            "  (filter (exprlist (exists",
+            "                      (filter (exprlist ?z)",
+            "                        (table unit))))",
+            "    (table unit)))");
+        //@formatter:on
+    }
+
+
+    @Test
+    public void exists_03() {
+        // "?x" not used elsewhere.
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (filter (exists ",
+                                "            (filter ?x",
+                                "              (extend (?x true)",
+                                "                 (table unit))))",
+                                "    (table unit)))"),
+            "(project (?y)",
+            "  (filter (exists (filter true (table unit)))",
+            "     (table unit)",
+            "))") ;
+            
         //@formatter:on
     }
 
     @Test
-    public void exists_03() {
+    public void exists_04() {
         // Can inline within an exists provided it meets normal conditions of
         // being inside a projection
         //@formatter:off

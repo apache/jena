@@ -27,8 +27,9 @@ import javax.servlet.ServletOutputStream ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.* ;
+import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.shared.JenaException ;
 
 /** Only the READ operations */
 public class SPARQL_GSP_R extends SPARQL_GSP
@@ -74,8 +75,18 @@ public class SPARQL_GSP_R extends SPARQL_GSP
             Graph g = target.graph() ;
             //Special case RDF/XML to be the plain (faster, less readable) form
             RDFFormat fmt = 
-                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;  
-            RDFDataMgr.write(out, g, fmt) ;
+                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;
+            try { 
+                RDFDataMgr.write(out, g, fmt) ;
+            } catch (JenaException ex) { 
+                // Some RDF/XML data is unwritable. All we can do is pretend it's a bad
+                // request (inappropriate content type).
+                // Good news - this happens before any output for RDF/XML-ABBREV. 
+                if ( fmt.getLang().equals(Lang.RDFXML) )
+                    ServletOps.errorBadRequest("Failed to write output in RDF/XML: "+ex.getMessage()) ;
+                else
+                    ServletOps.errorOccurred("Failed to write output: "+ex.getMessage(), ex) ;
+            }
             ServletOps.success(action) ;
         } finally { action.endRead() ; }
     }

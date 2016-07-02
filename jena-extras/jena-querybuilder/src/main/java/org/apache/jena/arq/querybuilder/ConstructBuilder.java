@@ -23,16 +23,11 @@ import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
-import org.apache.jena.arq.querybuilder.handlers.ConstructHandler;
-import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
-import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
-import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.arq.querybuilder.handlers.* ;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 

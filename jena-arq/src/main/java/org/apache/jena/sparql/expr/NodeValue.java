@@ -138,7 +138,9 @@ public abstract class NodeValue extends ExprNode
     
     // Use "==" for equality.
     private static final String strForUnNode = "node value nothing" ;
-    public static final NodeValue nvNothing = NodeValue.makeNode(NodeFactory.createBlankNode("node value nothing")) ;
+    /** @deprecated Use Expr.NONE */
+    @Deprecated
+    public static final NodeValue nvNothing = NodeValue.makeNode(NodeFactory.createBlankNode(strForUnNode)) ;
     
     public static final String xsdNamespace = XSD+"#" ; 
     

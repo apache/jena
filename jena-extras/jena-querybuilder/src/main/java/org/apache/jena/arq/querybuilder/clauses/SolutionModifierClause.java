@@ -21,7 +21,6 @@ import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 

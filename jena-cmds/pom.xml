@@ -87,9 +87,8 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency> 
-    
-    <!-- Testing -->
 
+    <!-- Testing -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>

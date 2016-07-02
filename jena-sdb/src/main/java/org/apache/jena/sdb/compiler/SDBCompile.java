@@ -24,6 +24,7 @@ import org.apache.jena.sdb.SDB ;
 import org.apache.jena.sdb.Store ;
 import org.apache.jena.sdb.core.SDBRequest ;
 import org.apache.jena.sdb.util.StoreUtils ;
+import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -42,7 +43,7 @@ public class SDBCompile
         if ( context == null )
             context = SDB.getContext() ;
         
-        SDBRequest request = new SDBRequest(store, null, context) ;
+        SDBRequest request = new SDBRequest(store, (PrefixMapping)null, context) ;
         return compile(store, op, null, context, request) ;
     }
     

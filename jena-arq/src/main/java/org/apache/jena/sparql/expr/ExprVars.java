@@ -24,6 +24,7 @@ import java.util.Set ;
 
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.OpVars ;
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 
 public class ExprVars
@@ -56,7 +57,7 @@ public class ExprVars
                 }
             } ;
         ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, action) ;
-        ExprWalker.walk(vv, expr) ;
+        Walker.walk(expr, vv) ;
     }
     
     public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr)
@@ -70,7 +71,7 @@ public class ExprVars
                     }
                 } ;
         ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, action) ;
-        ExprWalker.walk(vv, expr) ;
+        Walker.walk(expr, vv) ;
     }
     
     public static Set<String> getVarNamesMentioned(Expr expr)
@@ -91,7 +92,7 @@ public class ExprVars
                 }
             } ;
         ExprVarsWorker<String> vv = new ExprVarsWorker<>(acc, action) ;
-        ExprWalker.walk(vv, expr) ;
+        Walker.walk(expr, vv) ;
     }
     
     

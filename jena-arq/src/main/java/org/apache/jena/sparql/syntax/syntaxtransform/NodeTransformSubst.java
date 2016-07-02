@@ -28,7 +28,7 @@ import org.apache.jena.sparql.graph.NodeTransform ;
 public class NodeTransformSubst implements NodeTransform {
     private final Map<Var, ? extends Node> map ;
 
-    NodeTransformSubst(Map<Var, ? extends Node> map) {
+    public NodeTransformSubst(Map<Var, ? extends Node> map) {
         this.map = map ;
     }
 

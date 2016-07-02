@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
@@ -95,11 +96,11 @@ public class ExprLib
         return ExprTransformer.transform(replaceAgg, expr) ;
     }
 
-    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
-    public static ExprList replaceAggregateByVariable(ExprList exprs)
-    {
-        return ExprTransformer.transform(replaceAgg, exprs) ;
-    }
+//    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
+//    public static ExprList replaceAggregateByVariable(ExprList exprs)
+//    {
+//        return ExprTransformer.transform(replaceAgg, exprs) ;
+//    }
     
     private static ExprTransform replaceAgg = new ExprTransformCopy()
     {
@@ -191,7 +192,7 @@ public class ExprLib
      */
     public static boolean isStable(Expr expr) {
         try {
-            ExprWalker.walk(exprVisitorCheckForNonFunctions, expr) ;
+            Walker.walk(expr, exprVisitorCheckForNonFunctions) ;
             return true ;
         } catch ( ExprUnstable ex ) {
             return false ;

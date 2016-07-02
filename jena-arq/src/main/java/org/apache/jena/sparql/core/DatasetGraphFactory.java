@@ -56,7 +56,7 @@ public class DatasetGraphFactory
      * 
      * @return a general-purpose DatasetGraph
      */
-    public static DatasetGraph createGeneral() { return new DatasetGraphMapLink(memGraphMaker) ; }
+    public static DatasetGraph createGeneral() { return new DatasetGraphMapLink(graphMakerMem) ; }
 
     /**
      * @return a DatasetGraph which features transactional in-memory operation
@@ -131,6 +131,10 @@ public class DatasetGraphFactory
     /** A graph maker that doesn't make graphs */
     public static GraphMaker graphMakerNull = () -> null ;
 
+//    /** @deprecated Use graphMakerMem */
+//    @Deprecated 
+//    public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
+    
     /** A graph maker that create Jena default graphs */ 
-    public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
+    public static GraphMaker graphMakerMem = () -> GraphFactory.createDefaultGraph() ;
 }

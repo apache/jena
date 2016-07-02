@@ -89,7 +89,10 @@ public class ExprVar extends ExprNode
     @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     
-    public Expr apply(ExprTransform transform)  { return transform.transform(this) ; }
+    public Expr apply(ExprTransform transform)  { 
+        if ( transform == null )
+            throw new NullPointerException() ;
+        return transform.transform(this) ; }
     
     public void format(Query query, IndentedWriter out)
     {

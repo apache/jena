@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.expr;
 
 import java.util.* ;
+
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -109,7 +111,7 @@ public class ExprList implements Iterable<Expr>
         ExprBuild build = new ExprBuild(context) ;
         // Give each expression the chance to set up (bind functions)
         for (Expr expr : expressions)
-            ExprWalker.walk(build, expr) ;
+            Walker.walk(expr, build) ;
     }
     
     @Override

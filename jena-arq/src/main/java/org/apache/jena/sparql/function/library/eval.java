@@ -18,54 +18,31 @@
 
 package org.apache.jena.sparql.function.library;
 
-
-//import org.apache.commons.logging.*;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.E_Call ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 
-/** Function that evaluates an expression - catches evaluation failures
- *  and returns false.
- *  Mainly used in extensions.
- *  Would be better if that were eval and this were "safe" or somesuch */
+/** Function that evaluates an expression.
+ *  To convert errors to true or false, use COALESCE. 
+ */
 
 public class eval implements Function
 {
     @Override
-    public void build(String uri, ExprList args)
-    {
-        if ( args.size() != 1 )
-            throw new QueryBuildException("'eval' takes one argument") ;
-    }
+    public void build(String uri, ExprList args) {}
 
-    
     /** Processes unevaluated arguments */
     
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
-        if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException("function eval: Null args list") ;
-        
-        if ( args.size() != 1 )
-            throw new ARQInternalErrorException("function eval: Arg list not of size 1") ;
-        
-        Expr ex = args.get(0) ;
-        try {
-            NodeValue v = ex.eval(binding, env) ;
-            return v ;
-        } catch (ExprEvalException evalEx)
-        {
-            return NodeValue.FALSE ;
-        }
+        E_Call e = new E_Call(args) ;
+        NodeValue nv = e.evalSpecial(binding, env) ;
+        if ( nv != null )
+            return nv ;
+        return e.eval(binding, env) ;
     }  
-
-    
 }

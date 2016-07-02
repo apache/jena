@@ -55,7 +55,7 @@ import org.junit.runners.Suite ;
     , TS_Index.class
     , TS_TupleTable.class
     , TS_TDBSetup.class
-    , TS_Store.class        // The main storage implementation.  Slow tests.
+    , TS_Store.class        // The main storage implementation.  Some slow tests.
     , TS_SolverTDB.class
     , TS_Sys.class
     , TS_Graph.class
@@ -73,12 +73,9 @@ public class TC_TDB
     }
     static ReorderTransformation dftReorder = null ; 
         
-    @BeforeClass static public void beforeClass()   
-    {
-        //org.apache.log4j.LogManager.resetConfiguration() ;
-        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
+    @BeforeClass static public void beforeClass() {
         Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;
-        //Logger.getLogger("org.apache.jena.tdb.exec").setLevel(Level.WARN) ;
+        // Turn off general reorderign (turned on for specific reorder tests)  
         dftReorder = SystemTDB.defaultReorderTransform ;
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }

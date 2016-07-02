@@ -40,11 +40,11 @@ public class PatternVars
     
     public static void vars(Element element, PatternVarsVisitor visitor)
     {
-        ElementWalker.Walker walker = new WalkerSkipMinus(visitor) ;
+        ElementWalker.EltWalker walker = new WalkerSkipMinus(visitor) ;
         ElementWalker.walk$(element, walker) ;
     }
     
-    public static class WalkerSkipMinus extends ElementWalker.Walker
+    public static class WalkerSkipMinus extends ElementWalker.EltWalker
     {
         protected WalkerSkipMinus(ElementVisitor visitor)
         {

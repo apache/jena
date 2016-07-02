@@ -18,13 +18,18 @@
 
 package tdb;
 
-import org.apache.jena.riot.Lang ;
+import arq.cmdline.ModLangOutput ;
+import jena.cmd.CmdException ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import tdb.cmdline.CmdTDB ;
 
 public class tdbdump extends CmdTDB
 {
+    static ModLangOutput modLangOutput = new ModLangOutput() ;
+    
     static public void main(String... argv)
     { 
         CmdTDB.init() ;
@@ -34,18 +39,31 @@ public class tdbdump extends CmdTDB
     protected tdbdump(String[] argv)
     {
         super(argv) ;
+        addModule(modLangOutput) ;
     }
     
     @Override
     protected String getSummary()
     {
-        return getCommandName()+" : Write N-Quads to stdout" ;
+        return getCommandName()+" : Write a dataset to stdout (defaults to N-Quads)" ;
     }
 
     @Override
     protected void exec()
     {
         DatasetGraph dsg = super.getDatasetGraphTDB() ;
-        RDFDataMgr.write(System.out, dsg, Lang.NQUADS) ;
+        
+        // Prefer stream over fully pretty output formats.
+        RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
+        // Stream writing happens naturally - no need to call StreamRDFWriter.
+        //if ( fmt != null && StreamRDFWriter.registered(fmt) )
+        if ( fmt == null )
+            fmt = modLangOutput.getOutputFormatted() ;
+        if ( fmt == null )
+            // Default.
+            fmt = RDFFormat.NQUADS ;
+        if ( ! RDFLanguages.isQuads(fmt.getLang() ))
+            throw new CmdException("Databases can be dumped only in quad formats (e.g. Trig, N-Quads), not "+fmt.getLang()) ;
+        RDFDataMgr.write(System.out, dsg, fmt) ;
     }
 }

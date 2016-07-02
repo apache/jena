@@ -35,6 +35,8 @@ public class DatabaseType extends Symbol implements Named
     public static final DatabaseType H2              = new DatabaseType("H2") ;
     public static final DatabaseType HSQLDB          = new DatabaseType("HSQLDB") ;
     public static final DatabaseType MySQL           = new DatabaseType("MySQL") ;
+    // MariaDB is currently treated as MySQL - the only difference is that a different JDBC driver is loaded.  
+    public static final DatabaseType MariaDB         = new DatabaseType("MariaDB") ;
     public static final DatabaseType PostgreSQL      = new DatabaseType("PostgreSQL") ;
     public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
     public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
@@ -63,7 +65,6 @@ public class DatabaseType extends Symbol implements Named
     
     static void init()
     {
-        // Java databases
         register(Derby) ;
         registerName("JavaDB", Derby) ;
         
@@ -78,14 +79,12 @@ public class DatabaseType extends Symbol implements Named
         registerName("h2:tcp", H2) ;
         registerName("h2", H2) ;
         
-        // Open source DBs
         register(MySQL) ;
-        // registerName("MySQL5", HSQLDB) ;      // am I right in assuming that "HSQLDB" should actually be "MySQL"
+        register(MariaDB) ;
         registerName("MySQL5", MySQL) ;
         
         register(PostgreSQL) ;
         
-        // Commercial DBs
         register(SQLServer) ;
         registerName("MSSQLServer" , SQLServer) ;
         registerName("MSSQLServerExpress" , SQLServer) ;

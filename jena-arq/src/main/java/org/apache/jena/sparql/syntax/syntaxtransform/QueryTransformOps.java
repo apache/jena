@@ -52,6 +52,9 @@ public class QueryTransformOps {
         transformVarExprList(q2.getProject(), exprTransform) ;
         transformVarExprList(q2.getGroupBy(), exprTransform) ;
         // Nothing to do about ORDER BY - leave to sort by that variable.
+        
+//        if ( q2.hasHaving() ) {}
+//        if ( q2.hasAggregators() ) {}
 
         Element el = q2.getQueryPattern() ;
         Element el2 = ElementTransformer.transform(el, transform, exprTransform) ;

@@ -82,7 +82,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * 
 	 * @param expression The expression to parse.
 	 * @return the Expr object.
-	 * @throws QueryParseExcpetion on error.
+	 * @throws QueryParseException on error.
 	 */
 	public Expr makeExpr(String expression) throws QueryParseException
 	{
