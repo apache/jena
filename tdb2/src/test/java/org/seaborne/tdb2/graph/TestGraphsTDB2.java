@@ -22,8 +22,8 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 
 public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 {
@@ -40,7 +40,7 @@ public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 
     @Override
     protected void fillDataset(Dataset dataset) {
-        TDBTxn.executeWrite(dataset, ()->{
+        Txn.execWrite(dataset, ()->{
             super.fillDataset(dataset) ;
         });
     }

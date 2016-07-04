@@ -23,8 +23,8 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.loader.Loader ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 
@@ -62,7 +62,7 @@ public class TDB_Dev_Main {
     }
     
     public static void count(Dataset ds) {
-        long x = TDBTxn.executeReadReturn(ds, () -> {
+        long x = Txn.execReadRtn(ds, () -> {
             return Iter.count(ds.asDatasetGraph().find()) ;
         }) ;
         System.out.printf("Count = %,d\n", x) ;
@@ -70,7 +70,7 @@ public class TDB_Dev_Main {
     
     public static void query(Dataset ds, String queryString) {
         Query q = QueryFactory.create(queryString) ;
-        TDBTxn.executeRead(ds, ()->{
+        Txn.execRead(ds, ()->{
             try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
                 QueryExecUtils.executeQuery(qExec);
             }

@@ -43,7 +43,7 @@ public class TestThreadingTransactions {
 
     // Read synchronously in a transaction.
     void readTxn(String label, TransactionalInteger trans, long expected) {
-        Txn.executeRead(trans, () -> {
+        Txn.execRead(trans, () -> {
             read(label, trans, expected) ;
         }) ;
     }
@@ -54,7 +54,7 @@ public class TestThreadingTransactions {
     }
 
     ThreadTxn threadRead(String label, TransactionalInteger trans, long expectedValue) {
-        return Txn.threadTxnRead(trans, ()->{
+        return ThreadTxn.threadTxnRead(trans, ()->{
             read(label, trans, expectedValue) ;
         }) ;
     }
@@ -101,16 +101,16 @@ public class TestThreadingTransactions {
         ThreadTxn async2 = threadRead("[04/2]", transInt, InitValue);
         ThreadTxn async3 = threadRead("[04/3]", transInt, InitValue);
         
-        Txn.executeWrite(transInt, transInt::inc);
+        Txn.execWrite(transInt, transInt::inc);
 
         ThreadTxn async4 = threadRead("[04/3]", transInt, InitValue+1);
         async1.run() ;
 
-        Txn.executeWrite(transInt, transInt::inc);  // ++
+        Txn.execWrite(transInt, transInt::inc);  // ++
         async2.run() ;
         async4.run() ;
 
-        Txn.executeWrite(transInt, transInt::inc);  // ++
+        Txn.execWrite(transInt, transInt::inc);  // ++
         async3.run() ;
         
         readTxn("[04/4]", transInt, InitValue+3) ;

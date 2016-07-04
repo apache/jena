@@ -30,7 +30,7 @@ import org.apache.jena.sparql.core.Transactional ;
 /**
  * An action that will happen on a different thread later when {@link #run} is
  * called. A thread is created and the transaction started during a call to the
- * creation operations {@link Txn#threadTxnRead} or {@link Txn#threadTxnWrite}.
+ * creation operations {@link #threadTxnRead} or {@link #threadTxnWrite}.
  * The associated Runnable is called and the transaction completed when
  * {@link #run} is called. Being on a thread, the state of the world the
  * forked transaction sees is outside the creating thread which may itself be in a
@@ -38,6 +38,25 @@ import org.apache.jena.sparql.core.Transactional ;
  * will cause deadlock.
  */ 
 public class ThreadTxn {
+    
+    /** Create a thread-backed delayed READ transaction action. */
+    public static ThreadTxn threadTxnRead(Transactional trans, Runnable action) {
+        return ThreadTxn.create(trans, ReadWrite.READ, action, false) ;
+    }
+    
+    /** Create a thread-backed delayed WRITE  action.
+     * If called from inside a write transaction on the {@code trans},
+     * this will deadlock.
+     */
+    public static ThreadTxn threadTxnWrite(Transactional trans, Runnable action) {
+        return ThreadTxn.create(trans, ReadWrite.WRITE, action, true) ;
+    }
+    
+    /** Create a thread-backed delayed WRITE-abort action (testing). */
+    public static ThreadTxn threadTxnWriteAbort(Transactional trans, Runnable action) {
+        return ThreadTxn.create(trans, ReadWrite.WRITE, action, false) ;
+    }
+    
     private final Semaphore semaStart ;
     private final Semaphore semaFinish ;
     private final AtomicReference<RuntimeException> thrownRuntimeException = new AtomicReference<>(null) ; 

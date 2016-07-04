@@ -31,8 +31,8 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** Transactions and store connections - extended tests assuming the
@@ -85,11 +85,11 @@ public class TestTransactions extends BaseTest
     // Models across transactions
     @Test public void trans_01() {
         Model named = dataset.getNamedModel(ns+"g") ;
-        TDBTxn.executeWrite(dataset, ()->{
+        Txn.execWrite(dataset, ()->{
             RDFDataMgr.read(dataset, new StringReader(data1), null, Lang.TRIG) ;
         }) ;
 
-        TDBTxn.executeRead(dataset, ()->{
+        Txn.execRead(dataset, ()->{
             long x1 = Iter.count(dataset.getDefaultModel().listStatements()) ;
             assertEquals(2, x1) ;
             long x2 = Iter.count(named.listStatements()) ;
@@ -100,10 +100,10 @@ public class TestTransactions extends BaseTest
     
     @Test public void trans_02() {
         Model model = dataset.getDefaultModel() ;
-        TDBTxn.executeWrite(dataset, ()->{
+        Txn.execWrite(dataset, ()->{
             RDFDataMgr.read(model, new StringReader(data2), null, Lang.TURTLE) ;
         }) ;
-        TDBTxn.executeRead(dataset, ()->{
+        Txn.execRead(dataset, ()->{
             assertEquals(4, model.size()) ;
         }) ;        
     }

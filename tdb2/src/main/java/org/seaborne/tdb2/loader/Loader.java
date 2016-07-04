@@ -24,7 +24,7 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.ProgressStreamRDF ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.seaborne.tdb2.lib.TDBTxn ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -44,7 +44,7 @@ public class Loader {
         StreamRDF s3 = sMonitor ;
 
         plog.start(); 
-        TDBTxn.executeWrite(ds, () -> {
+        Txn.execWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
                     FmtLog.info(LOG, "File: %s",fn);
@@ -64,7 +64,7 @@ public class Loader {
         StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
 
         plog.start(); 
-        TDBTxn.executeWrite(ds, () -> {
+        Txn.execWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
                     FmtLog.info(LOG, "File: %s",fn);

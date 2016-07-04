@@ -27,10 +27,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelMem ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.ThreadTxn ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.seaborne.dboe.transaction.* ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
@@ -51,20 +48,20 @@ public class TestTransBlob extends Assert {
     @After public void after() { }
     
     public static void write(Transactional transactional, TransBlob transBlob, String data) {
-        Txn.executeWrite(transactional, ()->{
+        Txn.execWrite(transactional, ()->{
             transBlob.setString(data);
         }) ;
     }
     
     public static String read(Transactional transactional, TransBlob transBlob) {
-        return Txn.executeReadReturn(transactional, ()->{
+        return Txn.execReadRtn(transactional, ()->{
             return transBlob.getString() ;
         }) ;
     }
     
     void threadRead(String expected) {
         AtomicReference<String> result = new AtomicReference<>() ;
-        Txn.threadTxnRead(transactional, ()-> {
+        ThreadTxn.threadTxnRead(transactional, ()-> {
             String s = transBlob.getString() ;
             result.set(s);
         }).run(); 
@@ -110,14 +107,14 @@ public class TestTransBlob extends Assert {
         assertEquals(str1, s2) ;
         
         // Start now.
-        ThreadTxn tt = Txn.threadTxnRead(transactional, ()-> {
+        ThreadTxn tt = ThreadTxn.threadTxnRead(transactional, ()-> {
             String sr = transBlob.getString() ;
             Assert.assertEquals(str1, sr) ;
         }) ;
         
         write(transactional, transBlob, str2) ;
         
-        Txn.executeWrite(transactional, ()->{
+        Txn.execWrite(transactional, ()->{
             transBlob.setString(str2) ; 
             String s = transBlob.getString() ;
             assertEquals(str2, s) ;

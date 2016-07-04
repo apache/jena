@@ -26,7 +26,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.lib.TDBTxn ;
+import org.seaborne.dboe.transaction.*;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** StoreConnection and transactions - basic wiring.
@@ -78,15 +78,15 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
 
         { // Isolate to stop mix ups on variables.
             DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
-            TDBTxn.executeWrite(dsg, ()->{
+            Txn.execWrite(dsg, ()->{
                 dsg.add(q1) ;
             }) ;
 
-            TDBTxn.executeWrite(dsg, ()->{
+            Txn.execWrite(dsg, ()->{
                 assertTrue(dsg.contains(q1)) ;
             }) ;
 
-            TDBTxn.executeRead(dsg, ()->{
+            Txn.execRead(dsg, ()->{
                 assertTrue(dsg.contains(q1)) ;
             }) ;
         }
@@ -94,7 +94,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         {
             StoreConnection sConn2 = StoreConnection.make(location) ;
             DatasetGraphTDB dsg2 = sConn.getDatasetGraphTDB() ;
-            TDBTxn.executeRead(dsg2, ()->{
+            Txn.execRead(dsg2, ()->{
                 assertTrue(dsg2.contains(q1)) ;
             }) ;
         }
@@ -106,7 +106,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
             if ( ! location.isMem() ) {
                 StoreConnection sConn2 = StoreConnection.make(location) ;
                 DatasetGraphTDB dsg3 = sConn2.getDatasetGraphTDB() ;
-                TDBTxn.executeRead(dsg3, ()->{
+                Txn.execRead(dsg3, ()->{
                     assertTrue(dsg3.contains(q1)) ;
                 }) ;
             }
@@ -119,23 +119,23 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         StoreConnection sConn = StoreConnection.make(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             dsg.add(q1) ;
         }) ;
         
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             assertTrue(dsg.contains(q1)) ;
         }) ;
         
         try { 
-            TDBTxn.executeWrite(dsg, ()->{
+            Txn.execWrite(dsg, ()->{
                 dsg.add(q2) ;
                 throw new RuntimeException() ; 
             }) ;
             fail("Should not get to here!") ;
         } catch (RuntimeException ex) {}
 
-        TDBTxn.executeRead(dsg, ()->{
+        Txn.execRead(dsg, ()->{
             assertTrue(dsg.contains(q1)) ;
             assertFalse(dsg.contains(q2)) ;
         }) ;
@@ -147,11 +147,11 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         StoreConnection sConn = StoreConnection.make(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             dsg.add(q1) ;
         }) ;
         
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             assertTrue(dsg.contains(q1)) ;
         }) ;
 
@@ -160,7 +160,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         dsg.abort() ;
         dsg.end() ;
                 
-        TDBTxn.executeRead(dsg, ()->{
+        Txn.execRead(dsg, ()->{
             assertTrue(dsg.contains(q1)) ;
             assertFalse(dsg.contains(q2)) ;
         }) ;
@@ -172,11 +172,11 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         StoreConnection sConn = StoreConnection.make(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             dsg.add(q3) ;
         }) ;
         
-        TDBTxn.executeWrite(dsg, ()->{
+        Txn.execWrite(dsg, ()->{
             assertTrue(dsg.contains(q3)) ;
         }) ;
     }

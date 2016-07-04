@@ -76,7 +76,7 @@ public class TestTxnSwitching {
     
     @Test public void txnSwitch_02() {
         long z = integer.value() ;
-        Txn.executeWrite(transactional, ()->integer.inc());
+        Txn.execWrite(transactional, ()->integer.inc());
         assertEquals(z+1, integer.value()) ;
         
         
@@ -88,13 +88,13 @@ public class TestTxnSwitching {
         // Can't transactional read.
         try { integer.read() ; fail() ; } catch (TransactionException ex) {}
         
-        long z1 = Txn.executeReadReturn(transactional, ()->integer.get()) ;
+        long z1 = Txn.execReadRtn(transactional, ()->integer.get()) ;
         assertEquals(z+1, z1) ;
         transactional.attach(txnState) ;
         integer.inc();
         assertEquals(z+3, integer.get()) ;
         
-        ThreadTxn threadTxn = Txn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())) ;
+        ThreadTxn threadTxn = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())) ;
         threadTxn.run() ;
         
         transactional.commit() ;
@@ -106,7 +106,7 @@ public class TestTxnSwitching {
 
     @Test public void txnSwitch_03() {
         long z = integer.value() ;
-        Txn.executeWrite(transactional, ()->integer.inc());
+        Txn.execWrite(transactional, ()->integer.inc());
         assertEquals(z+1, integer.value()) ;
         
         Transaction txn = txnMgr.begin(ReadWrite.WRITE) ;
@@ -125,7 +125,7 @@ public class TestTxnSwitching {
         integer.inc();
         assertEquals(z+3, integer.get()) ;
         
-        Txn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())).run();
+        ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())).run();
         txn.commit(); 
         txn.end() ;
     }
@@ -137,8 +137,8 @@ public class TestTxnSwitching {
         transactional.begin(ReadWrite.READ);
         TransactionCoordinatorState txnStateR1 = transactional.detach() ;
         
-        ThreadTxn t1 = Txn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
-        ThreadTxn t2 = Txn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+        ThreadTxn t1 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+        ThreadTxn t2 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
 
         transactional.begin(ReadWrite.WRITE);
         integer.inc();
@@ -146,7 +146,7 @@ public class TestTxnSwitching {
         TransactionCoordinatorState txnStateW1 = transactional.detach() ;
         
         // Currently, thread has no transaction.
-        long z1 = Txn.executeReadReturn(transactional, ()->integer.get() );
+        long z1 = Txn.execReadRtn(transactional, ()->integer.get() );
         assertEquals(z, z1) ;
         
         // Back to writer.

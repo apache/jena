@@ -64,8 +64,8 @@ public class CloneTDB {
         // Force 
         StoreConnection.make(newLocation, storeParams) ;
         DatasetGraphTDB dsg2 = (DatasetGraphTDB)TDB2Factory.connectDatasetGraph(newLocation) ;
-        Txn.executeRead(dsgBase, () -> { 
-            Txn.executeWrite(dsg2, () -> {
+        Txn.execRead(dsgBase, () -> { 
+            Txn.execWrite(dsg2, () -> {
                 Iterator<Quad> iter = dsgBase.find();
                 iter.forEachRemaining(dsg2::add);
             });});
@@ -115,7 +115,7 @@ public class CloneTDB {
                 BinaryDataFile bdf2 = FileFactory.createBinaryDataFile(fs, Names.extObjNodeData) ;
                 bdf2.open(); 
                 // Could do better!
-                Txn.executeRead(dsgBase.getTxnSystem(), ()->{
+                Txn.execRead(dsgBase.getTxnSystem(), ()->{
                     final int N = 1024*1024*10 ;
                     byte[] buff = new byte[1024*1024*10] ;
                     long addr = 0 ;
@@ -154,11 +154,11 @@ public class CloneTDB {
                                                                        rf.keyLength(),
                                                                        rf.valueLength()) ;
     //        Transactional transactional = null ;
-    //        Txn.executeWrite(transactional, ()->bpt.forEach(bpt2::insert)) ;
+    //        Txn.execWrite(transactional, ()->bpt.forEach(bpt2::insert)) ;
             
     
             bpt2.nonTransactional();
-            Txn.executeRead(transactionalSystem, ()->{
+            Txn.execRead(transactionalSystem, ()->{
                 /* bulk writer */
                 bpt.forEach(bpt2::insert) ;
             });

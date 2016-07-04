@@ -21,17 +21,9 @@ import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
-import org.junit.Assert ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.junit.* ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.MethodSorters ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
-import org.seaborne.dboe.engine.Quack2 ;
-import org.seaborne.dboe.engine.tdb.OpExecutorQuackTDB ;
-import org.apache.jena.query.* ;
 import org.apache.jena.sparql.algebra.optimize.Optimize ;
 import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
@@ -39,8 +31,14 @@ import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.junit.* ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.MethodSorters ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
+import org.seaborne.dboe.engine.Quack2 ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
@@ -149,7 +147,7 @@ public class TestPatterns extends Assert
     
     private void test(String fn) {
         Dataset dataset2 = TDB2Factory.createDataset() ;
-        TDBTxn.executeWrite(dataset2, ()->{
+        Txn.execWrite(dataset2, ()->{
             RDFDataMgr.read(dataset2, DIR+"/data-bgp.ttl") ;
             if ( factory != null )
                 QC.setFactory(dataset2.getContext(), factory) ;

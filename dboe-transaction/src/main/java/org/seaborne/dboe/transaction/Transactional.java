@@ -28,8 +28,8 @@ import org.apache.jena.query.ReadWrite ;
  * <p>{@code end()} is optional but preferred.
  * <p>
  * Helper code is available {@link Txn} so, for example:
- * <pre>Txn.executeRead(dataset, ()-> { ... sparql query ... });</pre> 
- * <pre>Txn.executeWrite(dataset, ()-> { ... sparql update ... });</pre>
+ * <pre>Txn.execRead(dataset, ()-> { ... sparql query ... });</pre> 
+ * <pre>Txn.execWrite(dataset, ()-> { ... sparql update ... });</pre>
  * <p>
  * Directly called, code might look like:
  * <pre>

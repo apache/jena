@@ -57,7 +57,7 @@ public class TestTransactionCoordinatorControl {
         AtomicInteger counter2 = new AtomicInteger(0) ;
 
         txnMgr.disableWriters() ;
-        ThreadTxn threadTxn1 = Txn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
+        ThreadTxn threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
         threadTxn1.run() ;
         assertEquals(1, counter1.get()) ;
     }
@@ -118,7 +118,7 @@ public class TestTransactionCoordinatorControl {
     @Test public void txn_coord_exclusive_2() {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         Semaphore finalSema = new Semaphore(0) ;
-        ThreadTxn ttxn = Txn.threadTxnWrite(unit, ()->{
+        ThreadTxn ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
             counter1.incrementAndGet() ;
         }) ;
         boolean b = txnMgr.tryExclusiveMode(false);
@@ -126,7 +126,7 @@ public class TestTransactionCoordinatorControl {
         assertEquals(0, counter1.get()) ;
         ttxn.run(); // Now run thread
         assertEquals(1, counter1.get()) ;
-        Txn.executeWrite(unit, ()->{});
+        Txn.execWrite(unit, ()->{});
         b = txnMgr.tryExclusiveMode(false);
         assertTrue(b) ;
     }

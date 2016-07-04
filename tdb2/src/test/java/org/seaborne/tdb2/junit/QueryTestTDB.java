@@ -32,8 +32,8 @@ import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.util.FileManager ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -84,7 +84,7 @@ public class QueryTestTDB extends EarlTestCase
     
     @Override public void setUpTest() {
         dataset = TDB2Factory.createDataset() ;
-        TDBTxn.executeWrite(dataset, ()->{
+        Txn.execWrite(dataset, ()->{
             setupData() ;
         }) ;
         // Make sure a plain, no sameValueAs graph is used.
@@ -156,7 +156,7 @@ public class QueryTestTDB extends EarlTestCase
         // ---- Second, execute in persistent graph
 
         Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
-        TDBTxn.executeRead(ds2, ()->{
+        Txn.execRead(ds2, ()->{
             try(QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2)) {
                 ResultSet rs = qExec2.execSelect() ;
                 ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;

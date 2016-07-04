@@ -21,8 +21,8 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.lib.TDBTxn ;
 
 public class TDBSimpleRun {
     static { LogCtl.setLog4j(); }
@@ -31,9 +31,9 @@ public class TDBSimpleRun {
         Query query = QueryFactory.create(qs) ;
         Dataset ds = TDB2Factory.createDataset() ;
         
-        TDBTxn.executeWrite(ds,()->RDFDataMgr.read(ds, "D.ttl")) ;
+        Txn.execWrite(ds,()->RDFDataMgr.read(ds, "D.ttl")) ;
         
-        TDBTxn.executeRead(ds, ()->{
+        Txn.execRead(ds, ()->{
             try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)){
                 QueryExecUtils.executeQuery(query, qExec);
             }}) ;

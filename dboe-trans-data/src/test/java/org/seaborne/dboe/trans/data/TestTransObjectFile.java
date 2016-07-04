@@ -63,14 +63,14 @@ public class TestTransObjectFile extends Assert {
     
     private static long writeOne(Transactional transactional, TransObjectFile transObjectFile, String data) {
         return 
-            Txn.executeWriteReturn(transactional, ()->{
+            Txn.execWriteRtn(transactional, ()->{
                 ByteBuffer bb = str2bb(data) ;
                 return transObjectFile.write(bb) ;
         }) ;
     }
     
     private static String readOne(Transactional transactional, TransObjectFile transObjectFile, long posn) {
-        return Txn.executeReadReturn(transactional, ()->{
+        return Txn.execReadRtn(transactional, ()->{
             ByteBuffer bb = transObjectFile.read(posn) ;
             return Bytes.fromByteBuffer(bb) ;
         }) ;
@@ -109,7 +109,7 @@ public class TestTransObjectFile extends Assert {
         ByteBuffer bb = str2bb(str2) ;
         long x2 = baseObjectFile.write(bb) ;
         baseObjectFile.sync();
-        long x3 = Txn.executeReadReturn(transactional, ()->transObjectFile.length()) ;
+        long x3 = Txn.execReadRtn(transactional, ()->transObjectFile.length()) ;
         assertEquals(x2, x3);
         assertNotEquals(x3, baseObjectFile.length());
 
@@ -123,7 +123,7 @@ public class TestTransObjectFile extends Assert {
         // Recovery.
         //transObjectFile.recover(bb);
         TransactionalBase transBase = (TransactionalBase)TransactionalFactory.createTransactional(journal, transObjectFile) ;
-        ByteBuffer bb1 = Txn.executeReadReturn(transBase, ()->transObjectFile.read(x3)) ;
+        ByteBuffer bb1 = Txn.execReadRtn(transBase, ()->transObjectFile.read(x3)) ;
         String s1 = Bytes.fromByteBuffer(bb1) ;
         assertEquals(str2, s1);
         // Woot!

@@ -22,7 +22,6 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.TDB2Factory ;
