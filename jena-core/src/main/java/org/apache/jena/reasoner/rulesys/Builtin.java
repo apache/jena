@@ -31,7 +31,7 @@ import org.apache.jena.graph.* ;
  * <p>
  * The mapping from the rule definition (which uses functors to hold the parsed call)
  * to the java implementation of the builtin is done via the 
- * {@link BuiltinRegistry BuiltinRegistry} which can
+ * {@link MapBuiltinRegistry BuiltinRegistry} which can
  * be user extended.
  */
 public interface Builtin {
