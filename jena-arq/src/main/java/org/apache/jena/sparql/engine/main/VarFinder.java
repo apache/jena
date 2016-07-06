@@ -105,10 +105,15 @@ public class VarFinder
             return v;
         }
 
+        // Fixed by pattern
         Set<Var> defines            = null ;
+        // Fixed in optional
         Set<Var> optDefines         = null ;
+        // Used in a filter
         Set<Var> filterMentions     = null ;
-        Set<Var> filterMentionsOnly = null ;    // Mentioned in filter before defined. 
+        // Used in a filter, before defined
+        Set<Var> filterMentionsOnly = null ;
+        // Used in assign or extend expression
         Set<Var> assignMentions     = null ;
 
         VarUsageVisitor() {
@@ -317,7 +322,7 @@ public class VarFinder
         
         private void processAssignVarExprList(VarExprList varExprList) {
             varExprList.forEachVarExpr((v,e)-> {
-                defines.add(v) ;
+                defines.add(v) ; // Expression may eval to error -> unset? 
                 if ( e != null )
                     e.varsMentioned(assignMentions);
             }) ;
