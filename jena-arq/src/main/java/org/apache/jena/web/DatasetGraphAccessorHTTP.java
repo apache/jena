@@ -21,14 +21,11 @@ package org.apache.jena.web ;
 import java.io.OutputStream ;
 
 import org.apache.http.HttpEntity ;
-import org.apache.http.client.methods.HttpHead ;
-import org.apache.http.client.methods.HttpUriRequest ;
+import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ContentProducer ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -49,7 +46,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     private static final RDFFormat           defaultSendLang   = RDFFormat.RDFXML_PLAIN ;
 
     private final String                     remote ;
-    private HttpAuthenticator                authenticator ;
+    private HttpClient                client ;
 
     private RDFFormat                        formatPutPost     = defaultSendLang ;
 
@@ -78,7 +75,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
      *            Remote URL
      */
     public DatasetGraphAccessorHTTP(String remote) {
-        this.remote = remote ;
+        this(remote, HttpOp.getDefaultHttpClient());
     }
 
     /**
@@ -86,34 +83,21 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
      * 
      * @param remote
      *            Remote URL
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP Client
      */
-    public DatasetGraphAccessorHTTP(String remote, HttpAuthenticator authenticator) {
-        this(remote) ;
-        this.setAuthenticator(authenticator) ;
+    public DatasetGraphAccessorHTTP(String remote, HttpClient client) {
+        this.remote = remote ;
+        this.setClient(client) ;
     }
 
     /**
-     * Sets authentication credentials for the remote URL
+     * Sets an HTTP client for use to this dataset
      * 
-     * @param username
-     *            User name
-     * @param password
-     *            Password
+     * @param client Client
      */
-    public void setAuthentication(String username, char[] password) {
-        this.setAuthenticator(new SimpleAuthenticator(username, password)) ;
-    }
-
-    /**
-     * Sets an authenticator to use for authentication to the remote URL
-     * 
-     * @param authenticator
-     *            Authenticator
-     */
-    public void setAuthenticator(HttpAuthenticator authenticator) {
-        this.authenticator = authenticator ;
+    public void setClient(HttpClient client) {
+        this.client = client ;
     }
 
     @Override
@@ -129,7 +113,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     protected Graph doGet(String url) {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
-            HttpOp.execHttpGet(url, graphAcceptHeader, graph, this.authenticator) ;
+            HttpOp.execHttpGet(url, graphAcceptHeader, graph, client, null) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
@@ -149,9 +133,8 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     }
 
     protected boolean doHead(String url) {
-        HttpUriRequest httpHead = new HttpHead(url) ;
         try {
-            HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, null, null, this.authenticator) ;
+            HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, client, null) ;
             return true ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
@@ -172,7 +155,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
 
     protected void doPut(String url, Graph data) {
         HttpEntity entity = graphToHttpEntity(data) ;
-        HttpOp.execHttpPut(url, entity, null, null, this.authenticator) ;
+        HttpOp.execHttpPut(url, entity, client, null) ;
     }
 
     @Override
@@ -187,7 +170,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
 
     protected void doDelete(String url) {
         try {
-            HttpOp.execHttpDelete(url, noResponse, null, null, this.authenticator) ;
+            HttpOp.execHttpDelete(url, noResponse, client, null) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return ;
@@ -206,7 +189,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
 
     protected void doPost(String url, Graph data) {
         HttpEntity entity = graphToHttpEntity(data) ;
-        HttpOp.execHttpPost(url, entity, null, null, this.authenticator) ;
+        HttpOp.execHttpPost(url, entity, client, null) ;
     }
 
     @Override

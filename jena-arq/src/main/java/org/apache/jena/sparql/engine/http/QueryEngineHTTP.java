@@ -30,8 +30,6 @@ import org.apache.http.client.HttpClient ;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -39,7 +37,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
@@ -72,7 +69,7 @@ public class QueryEngineHTTP implements QueryExecution {
     // Protocol
     private List<String> defaultGraphURIs = new ArrayList<>();
     private List<String> namedGraphURIs = new ArrayList<>();
-    private HttpAuthenticator authenticator;
+    private HttpClient client;
 
     private boolean closed = false;
 
@@ -117,23 +114,23 @@ public class QueryEngineHTTP implements QueryExecution {
         this(serviceURI, query, query.toString());
     }
     
-    public QueryEngineHTTP(String serviceURI, Query query, HttpAuthenticator authenticator) {
-        this(serviceURI, query, query.toString(), authenticator);
+    public QueryEngineHTTP(String serviceURI, Query query, HttpClient client) {
+        this(serviceURI, query, query.toString(), client);
     }
 
     public QueryEngineHTTP(String serviceURI, String queryString) {
         this(serviceURI, null, queryString);
     }
     
-    public QueryEngineHTTP(String serviceURI, String queryString, HttpAuthenticator authenticator) {
-        this(serviceURI, null, queryString, authenticator);
+    public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client) {
+        this(serviceURI, null, queryString, client);
     }
     
     private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
         this(serviceURI, query, queryString, null);
     }
 
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpAuthenticator authenticator) {
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client) {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
@@ -141,13 +138,12 @@ public class QueryEngineHTTP implements QueryExecution {
         this.context = new Context(ARQ.getContext());
 
         // Apply service configuration if relevant
-        QueryEngineHTTP.applyServiceConfig(serviceURI, this);
+        applyServiceConfig(serviceURI, this);
         
-        // Don't want to overwrite credentials we may have picked up from
+        // Don't want to overwrite client config we may have picked up from
         // service context in the parent constructor if the specified
-        // authenticator is null
-        if (authenticator != null)
-            this.setAuthenticator(authenticator);
+        // client is null
+        if (client != null) setClient(client);
     }
 
     /**
@@ -182,16 +178,13 @@ public class QueryEngineHTTP implements QueryExecution {
             engine.setAllowDeflate(serviceContext.isTrueOrUndef(Service.queryDeflate));
             applyServiceTimeouts(engine, serviceContext);
 
-            // Apply authentication settings
-            String user = serviceContext.getAsString(Service.queryAuthUser);
-            String pwd = serviceContext.getAsString(Service.queryAuthPwd);
+            // Apply context-supplied client settings
+            HttpClient client = serviceContext.get(Service.queryClient);
 
-            if (user != null || pwd != null) {
-                user = user == null ? "" : user;
-                pwd = pwd == null ? "" : pwd;
+            if (client != null) {
                 if (log.isDebugEnabled())
-                    log.debug("Setting basic HTTP authentication for endpoint URI {} with username: {} ", serviceURI, user);
-                engine.setBasicAuthentication(user, pwd.toCharArray());
+                    log.debug("Using context-supplied HTTP client for endpoint URI {}", serviceURI);
+                engine.setClient(client);
             }
         }
     }
@@ -303,44 +296,24 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Gets whether an authentication mechanism has been provided.
-     * <p>
-     * Even if this returns false authentication may still be used if the
-     * default authenticator applies, this is controlled via the
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method
-     * </p>
+     * Sets the HTTP client to use, if none is set then the default
+     * client is used.
      * 
-     * @return True if an authenticator has been provided
+     * @param client
+     *            HTTP client
      */
-    public boolean isUsingBasicAuthentication() {
-        return this.authenticator != null;
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
-
+    
     /**
-     * Set user and password for basic authentication. After the request is made
-     * (one of the exec calls), the application can overwrite the password array
-     * to remove details of the secret.
-     * <p>
-     * Note that it may be more flexible to
-     * </p>
+     * Get the HTTP client in use, if none is set then null.
      * 
-     * @param user
-     * @param password
+     * @param client
+     *            HTTP client
      */
-    public void setBasicAuthentication(String user, char[] password) {
-        this.authenticator = new SimpleAuthenticator(user, password);
-    }
-
-    /**
-     * Sets the HTTP authenticator to use, if none is set then the default
-     * authenticator is used. This may be configured via the
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
-     * 
-     * @param authenticator
-     *            HTTP authenticator
-     */
-    public void setAuthenticator(HttpAuthenticator authenticator) {
-        this.authenticator = authenticator;
+    public HttpClient getClient() {
+        return client;
     }
 
     /** The Content-Type response header received (null before the remote operation is attempted). */
@@ -646,7 +619,7 @@ public class QueryEngineHTTP implements QueryExecution {
         if (allowDeflate)
             httpQuery.setAllowDeflate(true);
 
-        httpQuery.setAuthenticator(this.authenticator);
+        httpQuery.setClient(client);
 
         // Apply timeouts
         if (connectTimeout > 0) {
