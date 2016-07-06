@@ -42,13 +42,14 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.SSEParseException ;
 import org.apache.jena.sparql.sse.builders.ExprBuildException ;
+import org.apache.jena.system.JenaSystem ;
 
 
 /** Misc support for Expr */
 
 public class ExprUtils
 {
- 
+    static { JenaSystem.init(); }
     public static Expr nodeToExpr(Node n)
     {
         if ( n.isVariable() )
