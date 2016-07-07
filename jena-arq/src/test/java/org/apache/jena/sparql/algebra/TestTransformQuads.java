@@ -115,7 +115,6 @@ public class TestTransformQuads extends BaseTest
                                          "  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o)))"
                                          ) ; }
     
-    // Regression in toQuadForm() - currently disable as the test fails with an ARQInternalErrorException
     @Test public void quads33() { test ( "{ GRAPH ?g { { SELECT ?x WHERE { ?x ?p ?g } } } }",
                                           "(project (?x)",
                                           "  (quadpattern (quad ?g ?x ?/p ?/g)))") ; }
