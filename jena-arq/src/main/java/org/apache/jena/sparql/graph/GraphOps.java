@@ -29,60 +29,49 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
 // Combine with Jena GraphUtils.
-public class GraphOps
-{
-    
-    public static boolean containsGraph(DatasetGraph dsg, Node gn)
-    {
-        // [[DynDS]]
-        if ( Quad.isDefaultGraph(gn))
+public class GraphOps {
+    public static boolean containsGraph(DatasetGraph dsg, Node gn) {
+        if ( Quad.isDefaultGraph(gn) )
             return true ;
-        if ( Quad.isUnionGraph(gn))
+        if ( Quad.isUnionGraph(gn) )
             return true ;
         return dsg.containsGraph(gn) ;
     }
-    
-    public static Graph getGraph(DatasetGraph dsg, Node gn)
-    {
-        // [[DynDS]]
+
+    public static Graph getGraph(DatasetGraph dsg, Node gn) {
         if ( gn == null )
             return dsg.getDefaultGraph() ;
         if ( Quad.isDefaultGraph(gn) )
             // Explicit or generated.
             return dsg.getDefaultGraph() ;
-        if ( Quad.isUnionGraph(gn))
+        if ( Quad.isUnionGraph(gn) )
             return unionGraph(dsg) ;
         return dsg.getGraph(gn) ;
     }
-    
-    public static Graph unionGraph(DatasetGraph dsg)
-    {
+
+    public static Graph unionGraph(DatasetGraph dsg) {
+        // Snapshot it now.
         List<Node> x = Iter.toList(dsg.listGraphNodes()) ;
         return new GraphUnionRead(dsg, x) ;
     }
 
-    public static void addAll(Graph g, Iterator<Triple> iter)
-    {
-        while(iter.hasNext())
+    public static void addAll(Graph g, Iterator<Triple> iter) {
+        while (iter.hasNext())
             g.add(iter.next()) ;
         Iter.close(iter) ;
     }
 
-    public static void addAll(Graph g, Iterable<Triple> iter)
-    {
+    public static void addAll(Graph g, Iterable<Triple> iter) {
         addAll(g, iter.iterator()) ;
     }
 
-    public static void deleteAll(Graph g, Iterator<Triple> iter)
-    {
-        while(iter.hasNext())
+    public static void deleteAll(Graph g, Iterator<Triple> iter) {
+        while (iter.hasNext())
             g.delete(iter.next()) ;
         Iter.close(iter) ;
     }
 
-    public static void deleteAll(Graph g, Iterable<Triple> iter)
-    {
+    public static void deleteAll(Graph g, Iterable<Triple> iter) {
         deleteAll(g, iter.iterator()) ;
     }
-
 }
