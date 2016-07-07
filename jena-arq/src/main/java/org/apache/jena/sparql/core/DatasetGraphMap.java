@@ -106,7 +106,6 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         Iterator<Triple> iter = getDefaultGraph().find(s, p, o) ;
         return triples2quadsDftGraph(iter)  ;
-        
     }
 
     @Override
@@ -121,8 +120,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         IteratorConcat<Quad> iter = new IteratorConcat<>() ;
 
         // Named graphs
-        for ( ; gnames.hasNext() ; )  
-        {
+        for ( ; gnames.hasNext() ; ) {
             Node gn = gnames.next();
             Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
             if ( qIter != null )
