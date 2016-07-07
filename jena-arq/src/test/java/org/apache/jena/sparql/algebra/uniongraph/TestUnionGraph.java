@@ -52,48 +52,44 @@ public class TestUnionGraph extends BaseTest
     
     static DatasetGraph dsg2 = BuilderGraph.buildDataset(SSE.parse(x2)) ;
 
-    
-    @Test public void union_graph_triples_1()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<s2> ?p ?o)))", false, dsg1) ;
+    @Test
+    public void union_graph_triples_1() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<s2> ?p ?o)))", false, dsg1) ;
         assertEquals(1, results.size()) ;
     }
 
-    @Test public void union_graph_triples_2()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<x2> ?p ?o)))", false, dsg1) ;
+    @Test
+    public void union_graph_triples_2() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<x2> ?p ?o)))", false, dsg1) ;
         assertEquals(0, results.size()) ;
     }
 
-    @Test public void union_graph_quads_1()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<s2> ?p ?o)))", true, dsg1) ;
+    @Test
+    public void union_graph_quads_1() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<s2> ?p ?o)))", true, dsg1) ;
         assertEquals(1, results.size()) ;
     }
 
-    @Test public void union_graph_quads_2()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<x2> ?p ?o)))", true, dsg1) ;
+    @Test
+    public void union_graph_quads_2() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<x2> ?p ?o)))", true, dsg1) ;
         assertEquals(0, results.size()) ;
     }
 
     // Patterns
-    @Test public void union_graph_triples_10()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<s1> ?p ?z) (?z ?q ?o) ))", false, dsg2) ;
+    @Test
+    public void union_graph_triples_10() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<s1> ?p ?z) (?z ?q ?o) ))", false, dsg2) ;
         assertEquals(2, results.size()) ;
     }
 
-    @Test public void union_graph_quads_10()
-    {
-        List<Binding> results = exec("(graph <"+Quad.unionGraph+"> (bgp (<s1> ?p ?z) (?z ?q ?o) ))", false, dsg2) ;
+    @Test
+    public void union_graph_quads_10() {
+        List<Binding> results = exec("(graph <" + Quad.unionGraph + "> (bgp (<s1> ?p ?z) (?z ?q ?o) ))", false, dsg2) ;
         assertEquals(2, results.size()) ;
     }
 
-    
-    
-    static private List<Binding> exec(String pattern, boolean applyQuad, DatasetGraph dsg)
-    {
+    static private List<Binding> exec(String pattern, boolean applyQuad, DatasetGraph dsg) {
         Op op = SSE.parseOp(pattern) ;
         if ( applyQuad )
             op = Algebra.toQuadForm(op) ;
@@ -101,6 +97,4 @@ public class TestUnionGraph extends BaseTest
         QueryIterator qIter = Algebra.exec(op, TestUnionGraph.dsg1) ;
         return Iter.toList(qIter) ;
     }
-    
-    
 }

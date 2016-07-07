@@ -25,8 +25,7 @@ import org.apache.jena.sparql.sse.SSE ;
 public class TestUnionTransformTriples extends AbstractTestUnionTransform  
 {
     @Override
-    protected Op op(String pattern)
-    {
+    protected Op op(String pattern) {
         Op op = SSE.parseOp(pattern) ;
         Op op2 = Algebra.unionDefaultGraph(op) ;
         return op2 ;
