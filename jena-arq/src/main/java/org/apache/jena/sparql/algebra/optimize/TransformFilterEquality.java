@@ -211,9 +211,10 @@ public class TransformFilterEquality extends TransformCopy {
             return Pair.create(var, constant);
         }
 
-        // At this point, ( e instanceof E_Equals)
+        // At this point, (e instanceof E_Equals)
         
-        Node n = constant.getNode() ;
+        // 'constant' can be a folded expression - no node yet - so use asNode. 
+        Node n = constant.asNode() ; 
         if ( JenaRuntime.isRDF11 ) {
             // RDF 1.1 : simple literals are xsd:strings.  
             if ( Util.isSimpleString(n) )
