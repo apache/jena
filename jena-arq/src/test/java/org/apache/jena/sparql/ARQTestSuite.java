@@ -29,6 +29,7 @@ import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.system.TS_System ;
 import org.apache.jena.web.TS_Web ;
 
 /**
@@ -60,6 +61,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
 
         ts.addTest(new JUnit4TestAdapter(TS_Web.class)) ;
+        ts.addTest(new JUnit4TestAdapter(TS_System.class)) ;
         
         // Main ARQ internal test suite.
         ts.addTest(new JUnit4TestAdapter(TC_General.class)) ;
