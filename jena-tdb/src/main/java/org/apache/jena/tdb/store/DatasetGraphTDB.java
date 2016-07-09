@@ -129,7 +129,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     // Empty graphs don't "exist" 
     public boolean containsGraph(Node graphNode) { 
-        if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
+        if ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.

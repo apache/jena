@@ -92,7 +92,7 @@ public class Quad
         return defaultGraphNodeGenerated.equals(node) ;
     }
     
-    /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
+    /** Default, explicitly named concrete graph */
     public static boolean isDefaultGraphExplicit(Node node)
     {
         return defaultGraphIRI.equals(node) ; 

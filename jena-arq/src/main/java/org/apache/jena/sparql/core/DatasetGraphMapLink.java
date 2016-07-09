@@ -26,6 +26,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
+import org.apache.jena.sparql.graph.GraphUnionRead ;
 
 /** Implementation of a DatasetGraph as an extensible set of graphs.
  *  <p>
@@ -138,11 +139,16 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     @Override
     public Graph getGraph(Node graphNode) {
+        if ( Quad.isUnionGraph(graphNode) ) 
+            return new GraphUnionRead(this) ;
+        if ( Quad.isDefaultGraph(graphNode))
+            return getDefaultGraph() ;
+        // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
             g = getGraphCreate();
             if ( g != null )
-                addGraph(graphNode, g);
+                graphs.put(graphNode, g);
         }
         return g;
     }

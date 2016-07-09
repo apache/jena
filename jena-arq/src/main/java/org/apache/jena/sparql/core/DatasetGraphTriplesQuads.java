@@ -27,32 +27,26 @@ import org.apache.jena.graph.Node ;
 public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 {
     @Override
-    final
-    public void add(Quad quad)
-    {
-        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    final public void add(Quad quad) {
+        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     @Override
-    final
-    public void delete(Quad quad)
-    {
-        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    final public void delete(Quad quad) {
+        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     @Override
-    public void add(Node g, Node s, Node p, Node o)
-    {
-        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+    public void add(Node g, Node s, Node p, Node o) {
+        if ( Quad.isDefaultGraph(g) )
             addToDftGraph(s, p, o) ;
         else
             addToNamedGraph(g, s, p, o) ;
     }
 
     @Override
-    public void delete(Node g, Node s, Node p, Node o)
-    {
-        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+    public void delete(Node g, Node s, Node p, Node o) {
+        if ( Quad.isDefaultGraph(g) )
             deleteFromDftGraph(s, p, o) ;
         else
             deleteFromNamedGraph(g, s, p, o) ;

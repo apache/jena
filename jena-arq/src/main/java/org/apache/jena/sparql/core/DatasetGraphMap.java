@@ -32,6 +32,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
+import org.apache.jena.sparql.graph.GraphUnionRead ;
 
 /** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
@@ -106,7 +107,6 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         Iterator<Triple> iter = getDefaultGraph().find(s, p, o) ;
         return triples2quadsDftGraph(iter)  ;
-        
     }
 
     @Override
@@ -121,8 +121,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         IteratorConcat<Quad> iter = new IteratorConcat<>() ;
 
         // Named graphs
-        for ( ; gnames.hasNext() ; )  
-        {
+        for ( ; gnames.hasNext() ; ) {
             Node gn = gnames.next();
             Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
             if ( qIter != null )
@@ -138,6 +137,11 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
 
     @Override
     public Graph getGraph(Node graphNode) {
+        if ( Quad.isUnionGraph(graphNode) ) 
+            return new GraphUnionRead(this) ;
+        if ( Quad.isDefaultGraph(graphNode))
+            return getDefaultGraph() ;
+        // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
             g = getGraphCreate();
@@ -149,7 +153,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
 
     /** Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph".
-     * Sub classes reimplement this or pr  
+     * Sub classes can reimplement this.  
      */
     protected Graph getGraphCreate() { 
         Graph g = graphMaker.create() ;
