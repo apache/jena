@@ -47,7 +47,7 @@ public class ThreadTxn {
         return ThreadTxn.create(trans, ReadWrite.READ, action, false) ;
     }
 
-    /** Create a thread-backed delayed WRITE  action.
+    /** Create a thread-backed delayed WRITE action.
      * Call {@link ThreadTxn#run} to perform the write transaction.
      * (If called from inside a write transaction on the {@code trans},
      * this will deadlock.)
@@ -61,16 +61,16 @@ public class ThreadTxn {
         return ThreadTxn.create(trans, ReadWrite.WRITE, action, false) ;
     }
     
-    private final Semaphore semaStart ;
-    private final Semaphore semaFinish ;
+    private final Semaphore semaStart   = new Semaphore(0, true) ;
+    private final Semaphore semaFinish  = new Semaphore(0, true) ;
+    
+    // Catch the two kinds that do not need a "throws" clause. 
     private final AtomicReference<RuntimeException> thrownRuntimeException = new AtomicReference<>(null) ; 
     private final AtomicReference<Error> thrownError = new AtomicReference<>(null) ;
     private final Runnable action ;
     
     private ThreadTxn(Runnable action) {
         this.action = action ;
-        this.semaStart = new Semaphore(0, true) ;
-        this.semaFinish = new Semaphore(0, true) ;
     }
     
     /**
@@ -78,6 +78,8 @@ public class ThreadTxn {
      * {@link java.lang.RuntimeException} or {@link java.lang.Error}
      */
     public void run() { 
+        // Signal the thread, which is already running and inside
+        // the transaction, can now call the action.
         semaStart.release();
         semaFinish.acquireUninterruptibly() ;
         if ( thrownError.get() != null )
@@ -102,47 +104,48 @@ public class ThreadTxn {
         Objects.requireNonNull(action) ;
         
         ThreadTxn threadAction = new ThreadTxn(action) ;
-        // Startup semaphore so that the thread has started by the
-        // time we exit this setup function. 
-        Semaphore semaStartup = new Semaphore(0, true) ;
+        // Startup semaphore so that the thread has started and entered the
+        // transaction by the time we exit this setup function. 
+        Semaphore semaCreateStart = new Semaphore(0, true) ;
         executor.execute( ()-> {
-            // NB. trans.begin then semaStartup.release() ;
+            // NB. trans.begin then semaCreateStartup.release() ;
             // This ensures that the transaction has really started.
             trans.begin(mode) ;
             
             // Signal the creator (see below) that the transaction has started.
-            semaStartup.release() ;
+            semaCreateStart.release() ;
             
             // Wait for the signal to run the action.
             threadAction.semaStart.acquireUninterruptibly();
             
             try {
-                // Performane the action, catch and record any RuntimeException or Error. 
+                // Perform the action, catching and recording any RuntimeException or Error. 
                 threadAction.trigger() ;
                 
                 // Finish transaction (if no throwable)
-                if ( mode == ReadWrite.WRITE ) {
-                    if ( isCommit )
-                        trans.commit();
-                    else
-                        trans.abort() ;
-                    trans.end() ;
-                } else {
-                    // Read
-                    if ( isCommit )
-                        trans.commit();
-                    trans.end() ;
+                switch (mode) {
+                    case WRITE : {
+                        if ( isCommit )
+                            trans.commit() ;
+                        else
+                            trans.abort() ;
+                        trans.end() ;
+                    }
+                    case READ : {
+                        if ( isCommit )
+                            trans.commit() ;
+                        trans.end() ;
+                    }
                 }
-            } 
-            catch (Throwable ex) { 
-                       // Surpress now it has trigger transaction mechanism in
-                       // the presence of an unchecked exception.
-                       // Passed to the main thread via ThreadTxn
+            }
+            catch (Throwable ex) {
+                // Surpress. trigger() recorded it and it is passed
+                // to the caller in run(). 
             }
             finally { threadAction.semaFinish.release() ; }
         }) ;
         // Don't return until the transaction has started.
-        semaStartup.acquireUninterruptibly();
+        semaCreateStart.acquireUninterruptibly();
         return threadAction ;
     }
 }
