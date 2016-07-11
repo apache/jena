@@ -34,7 +34,6 @@ public class TestVocabularies extends TestCase
         result.addTest( TestVocabRDF.suite() );
         result.addTest( TestVocabRDFS.suite() );
         result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabDB.suite() );
         result.addTest( TestVocabRSS.suite() );
         result.addTest( TestVocabDC10.suite() );
         result.addTestSuite( TestOWL2Vocabulary.class );
