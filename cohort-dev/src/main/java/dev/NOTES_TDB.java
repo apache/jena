@@ -39,6 +39,11 @@ public class NOTES_TDB {
     
     // tdb2loader.
     
+    // Exclusive mode uses a reentrant RW lock so the calling thread is unaffected.
+    // Consider a pair of plain locks or a semaphore (?)
+    // http://stackoverflow.com/questions/10711447/is-there-a-non-reentrant-readwritelock-i-can-use
+    // http://codereview.stackexchange.com/questions/17913/java-non-reentrant-lock-implementation
+    
     // Needs to work with the switching DatasetGraphTDB.
     //   Abstract DatasetGraphTDB as an interface!
     //     Storage unit to have indexes and node table.
