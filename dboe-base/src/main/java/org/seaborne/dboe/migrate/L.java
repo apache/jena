@@ -24,9 +24,7 @@ import java.io.Writer ;
 import java.nio.ByteBuffer ;
 import java.nio.charset.StandardCharsets ;
 import java.util.UUID ;
-import java.util.concurrent.Callable ;
-import java.util.concurrent.FutureTask ;
-import java.util.concurrent.Semaphore ;
+import java.util.concurrent.* ;
 import java.util.concurrent.locks.Lock ;
 import java.util.function.Supplier ;
 
@@ -71,9 +69,11 @@ public class L {
         //JenaUUID.toString(mostSignificantBits, leastSignificantBits)
     }
     
+    private static ExecutorService executor = Executors.newCachedThreadPool() ; 
+    
     /**
-     * Run asynchronously another thread ; the thread has started when this
-     * function returns.
+     * Run asynchronously on another thread ; the thread has started
+     * when this function returns.
      */
     public static void async(Runnable r) {
         Semaphore semaStart = new Semaphore(0, true) ;
@@ -81,46 +81,34 @@ public class L {
             semaStart.release(1) ;
             r.run();
         } ;
-        new Thread(r2).start();
+        executor.execute(r2);
         semaStart.acquireUninterruptibly();
     }
     
     /** Run synchronously but on another thread. */
     public static void syncOtherThread(Runnable r) {
-        Semaphore semaStart = new Semaphore(0, true) ;
-        Semaphore semaFinish = new Semaphore(0, true) ;
-        Runnable r2 = () -> {
-            semaStart.acquireUninterruptibly(); 
+        runCallable(()->{
             r.run();
-            semaFinish.release(1);
-        } ;
-        new Thread(r2).start();
-        semaStart.release(1);
-        semaFinish.acquireUninterruptibly();
+            return null ;
+        }) ;
     }
 
     /** Run synchronously but on another thread. */
     public static <T> T syncCallThread(Supplier<T> r) {
-        Semaphore semaStart = new Semaphore(0, true) ;
-        Semaphore semaFinish = new Semaphore(0, true) ;
-        Callable<T> r2 = () -> {
-            semaStart.acquireUninterruptibly(); 
+        return runCallable(() -> {
             T t = r.get() ;
-            semaFinish.release(1);
             return t ;
-        } ;
-        FutureTask<T> ft = new FutureTask<T>(r2) ;
-        new Thread(ft).start(); 
-        semaStart.release(1);
-        semaFinish.acquireUninterruptibly();
-        try {
-            return ft.get() ;
-        }
+        }) ;
+    }
+    
+    private static <T> T runCallable(Callable<T> action) {
+        try { return executor.submit(action).get() ; }
         catch (Exception e) {
             e.printStackTrace();
             return null ;
         }
     }
+    
 
     /** Execute. Preform the "before" action, then main action.
      *  Always call the "after" runnable if the "bafore" succeeded.
@@ -163,18 +151,11 @@ public class L {
     /** Run inside a Lock */
     public static  <V> V callWithLock(Lock lock, Supplier<V> r) {
         return callWithBeforeAfter(r, ()->lock.lock(), ()->lock.unlock()) ;  
-//        lock.lock();
-//        try { return r.get() ; }
-//        finally { lock.unlock() ; }
     }
     
     /** Run inside a Lock */
-    // Surely there is a utility in the std library to do this?
     public static void withLock(Lock lock, Runnable r) {
         withBeforeAfter(r, ()->lock.lock(), ()->lock.unlock()) ;
-//        lock.lock();
-//        try { r.run(); } 
-//        finally { lock.unlock() ; }
     }
     
     // ==> IO.writeWholeFileAsUTF8
