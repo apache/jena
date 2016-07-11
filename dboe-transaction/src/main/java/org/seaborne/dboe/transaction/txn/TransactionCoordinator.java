@@ -332,9 +332,9 @@ public class TransactionCoordinator {
     /** Execute an action in exclusive mode.  This method can block.
      * Equivalent to:
      * <pre>
-     *  beginExclusive() ;
+     *  startExclusiveMode() ;
      *  try { action.run(); }
-     *  finally { endExclusive(); }
+     *  finally { finishExclusiveMode(); }
      * </pre>
      * 
      * @param action
