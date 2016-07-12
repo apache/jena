@@ -462,7 +462,14 @@ def SPARQL_query_GET(service, query, args2)
   args = { "query" => query }
   args.merge!(args2)
   qs=args.collect { |k,v| "#{k}=#{uri_escape(v)}" }.join('&')
-  action="#{service}?#{qs}"
+
+  if service.include? "?"
+  then
+    action="#{service}&#{qs}"
+  else
+    action="#{service}?#{qs}"
+  end
+
   headers={}
   headers.merge!($headers)
   headers[$hAccept]=$accept_results
