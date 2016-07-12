@@ -26,32 +26,18 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Context ;
 
-/** Interface to value-testing extensions to the expression evaluator. */
+/** Impleemntation root for custom function evaluation. */  
+public abstract class FunctionBase implements Function {
 
-public abstract class FunctionBase implements Function
-{
-    String uri = null ;
-    protected ExprList arguments = null ;
-    private FunctionEnv env ;
-    
     @Override
-    public final void build(String uri, ExprList args)
-    {
-        this.uri = uri ;
-        arguments = args ;
+    public final void build(String uri, ExprList args) {
+        // Rename for legacy reasons.
         checkBuild(uri, args) ;
     }
 
     @Override
-    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
-    {
-        // This is merely to allow functions to be 
-        // It duplicates code in E_Function/ExprFunctionN.
-        
-        this.env = env ;
-        
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
@@ -64,24 +50,11 @@ public abstract class FunctionBase implements Function
         }
         
         NodeValue nv =  exec(evalArgs) ;
-        arguments = null ;
         return nv ;
     }
-    
-    /** Return the Context object for this execution */
-    public Context getContext() { return env.getContext() ; }
     
     /** Function call to a list of evaluated argument values */ 
     public abstract NodeValue exec(List<NodeValue> args) ;
 
     public abstract void checkBuild(String uri, ExprList args) ;
-    
-//    /** Get argument, indexing from 1 **/
-//    public NodeValue getArg(int i)
-//    {
-//        i = i-1 ;
-//        if ( i < 0 || i >= arguments.size()  )
-//            return null ;
-//        return (NodeValue)arguments.get(i) ;
-//    }
 }
