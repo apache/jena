@@ -21,6 +21,8 @@ public class NOTES_Mantis {
     // B+Trees - use a random access, zero copy encoding like Cap'n Proto, FlatBuffers, SBE (via real-logic) or messagebuffers
     // Definitely from files: flatmessage
     
+    // Check TestTxn*
+    
     // Multi-threaded transactions with per-thread over the top.
     
     // Logging to JUL by default.

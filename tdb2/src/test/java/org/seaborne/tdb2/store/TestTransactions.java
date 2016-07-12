@@ -31,7 +31,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 

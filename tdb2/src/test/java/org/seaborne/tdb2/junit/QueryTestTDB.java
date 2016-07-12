@@ -32,7 +32,7 @@ import org.apache.jena.sparql.junit.TestItem ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.util.FileManager ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

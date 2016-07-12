@@ -22,11 +22,11 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.*;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** StoreConnection and transactions - basic wiring.

@@ -25,7 +25,7 @@ import org.seaborne.dboe.index.test.IndexTestLib ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 
 /** Tests of B+Tree and transactions */ 

@@ -20,6 +20,7 @@ package org.seaborne.dboe.transaction;
 import java.util.concurrent.Semaphore ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;

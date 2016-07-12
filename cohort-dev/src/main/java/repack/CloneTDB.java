@@ -31,7 +31,7 @@ import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.trans.bplustree.BPlusTree ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.TDB2Factory ;

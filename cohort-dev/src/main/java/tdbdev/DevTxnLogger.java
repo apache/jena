@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.TransactionalMonitor ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.slf4j.Logger ;

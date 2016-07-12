@@ -18,6 +18,7 @@
 package org.seaborne.dboe.transaction;
 
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;

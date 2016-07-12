@@ -29,7 +29,7 @@ import static org.junit.Assert.* ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 
 // See TestBPlusTreeTxn
 public abstract class AbstractTestTxnRangeIndex {

@@ -22,7 +22,7 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
 import org.junit.Before ;
-import org.seaborne.dboe.transaction.Txn ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 
 public class TestGraphsTDB2 extends AbstractTestGraphsTDB
