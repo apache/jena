@@ -13,5 +13,5 @@ source syn-func.sh
     cd Syntax-SPARQL-Update
     clean 
     source ../syn-update.sh 
-    createManifest "Syntax SPARQL Update"
+    createManifest "Syntax SPARQL Update" '<manifest#>'
 )

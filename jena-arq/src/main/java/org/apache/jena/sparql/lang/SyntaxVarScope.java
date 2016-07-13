@@ -59,22 +59,24 @@ public class SyntaxVarScope
         if ( query.getQueryPattern() == null )
             // DESCRIBE may not have a pattern
             return ;
-        
-        checkSubQuery(query.getQueryPattern()) ;
-        checkBind(query) ;
+        check(query.getQueryPattern()) ;
         // Check this level.
         checkQueryScope(query) ;
-    
         // Other checks.
         Collection<Var> vars = varsOfQuery(query) ;
         check(query, vars) ;
     }
 
+    public static void check(Element queryPattern) {
+        checkSubQuery(queryPattern) ;
+        checkBind(queryPattern);
+    }
+
     // Check BIND by accumulating variables and making sure BIND does not attempt to reuse one  
-    private static void checkBind(Query query)
+    private static void checkBind(Element queryPattern)
     {
         BindScopeChecker v = new BindScopeChecker() ;
-        ElementWalker.walk(query.getQueryPattern(), v) ;
+        ElementWalker.walk(queryPattern, v) ;
     }
     
     // Check subquery by finding subquries and recurisively checking.

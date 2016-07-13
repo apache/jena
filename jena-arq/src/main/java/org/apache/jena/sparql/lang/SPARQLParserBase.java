@@ -18,12 +18,7 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.util.ArrayDeque ;
-import java.util.ArrayList ;
-import java.util.Deque ;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
@@ -35,8 +30,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.modify.UpdateSink ;
-import org.apache.jena.sparql.modify.request.QuadAcc ;
-import org.apache.jena.sparql.modify.request.QuadDataAccSink ;
+import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.update.Update ;
 
@@ -70,7 +64,6 @@ public class SPARQLParserBase extends ParserBase
 //        this.query = new Query () ;
 //    }
 
-    // SPARQL Update (W3C RECommendation)
     private UpdateSink sink = null ;
 
     // Places to push settings across points where we reset.
@@ -188,13 +181,26 @@ public class SPARQLParserBase extends ParserBase
     
     protected void emitUpdate(Update update)
     {
+
         // The parser can send null if it already performed an INSERT_DATA or DELETE_DATA
-        if (null != update)
-        {
+        if (null != update) {
+            // Verify each operation
+            verifyUpdate(update) ;
             sink.send(update);
         }
     }
     
+    private static UpdateVisitor v = new UpdateVisitorBase() {
+        @Override
+        public void visit(UpdateModify mod) {
+            SyntaxVarScope.check(mod.getWherePattern()) ;
+        }
+    } ;
+    
+    private void verifyUpdate(Update update) {
+        update.visit(v); 
+    }
+
     protected QuadDataAccSink createInsertDataSink()
     {
         return sink.createInsertDataSink();
