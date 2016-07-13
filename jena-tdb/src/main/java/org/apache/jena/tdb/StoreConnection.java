@@ -121,6 +121,11 @@ public class StoreConnection
         return baseDSG;
     }
     
+    /** For internal use only */ 
+    public TransactionManager getTransactionManager() {
+        return transactionManager ; 
+    }
+    
     /** Flush the delayed write queue to the base storage.
      *  This can only be done if there are no active transactions.
      *  If there are active transactions, nothing is done but this is safe to call. 

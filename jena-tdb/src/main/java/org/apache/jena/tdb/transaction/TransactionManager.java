@@ -33,6 +33,8 @@ import java.util.concurrent.LinkedBlockingDeque ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.atomic.AtomicReference ;
+import java.util.concurrent.locks.ReadWriteLock ;
+import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
@@ -75,6 +77,7 @@ public class TransactionManager
         return 0 ;
     }
     
+    // Records the states that a transaction goes though.
     enum TxnPoint { BEGIN, COMMIT, ABORT, CLOSE, QUEUE, UNQUEUE }
     private List<Pair<Transaction, TxnPoint>> transactionStateTransition ;
     
@@ -114,10 +117,14 @@ public class TransactionManager
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
+    
+    // All transactions need a "read" lock throughout their lifetime. 
+    // Do not confuse with read/write transactions.  We need a 
+    // "one exclusive, or many other" lock which happens to be called a ReadWriteLock
+    private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
+    
     // Delayes enacting transactions.
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<>() ;
-
-    private Thread committerThread ;    // Later
 
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
@@ -288,28 +295,54 @@ public class TransactionManager
         return begin(mode, null) ;
     }
     
-    
     public /*for testing only*/ static final boolean DEBUG = false ; 
     
     /** Control logging - the logger must be set as well */
     //public /*for testing only*/ static boolean LOG = false ;
 
+//  public Transaction begin(ReadWrite readWrite, boolean canBlock) {
+//  Objects.nonNull(readWrite) ;
+//  checkActive() ;
+//  
+//  if ( canBlock )
+//      exclusivitylock.readLock().lock() ;
+//  else {
+//      if ( ! exclusivitylock.readLock().tryLock() )
+//          return null ;
+//  }
+//  
+//  // Readers never block.
+//  if ( readWrite == WRITE ) {
+//      // Writers take a WRITE permit from the semaphore to ensure there
+//      // is at most one active writer, else the attempt to start the
+//      // transaction blocks.
+//      // Released by in notifyCommitFinish/notifyAbortFinish
+//      boolean b = acquireWriterLock(canBlock) ;
+//      if ( !b ) {
+//          exclusivitylock.readLock().unlock() ;
+//          return null ;
+//      }
+//  }
+//  Transaction transaction = begin$(readWrite) ;
+//  startActiveTransaction(transaction) ;
+//  transaction.begin();
+//  return transaction;
+//}
+
+
+    
     public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
+        exclusivitylock.readLock().lock() ;
+        
         // Not synchronized (else blocking on semaphore will never wake up
         // because Semaphore.release is inside synchronized.
         // Allow only one active writer. 
-        if ( mode == ReadWrite.WRITE )
-        {
+        if ( mode == ReadWrite.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
-            try { writersWaiting.acquire() ; }
-            catch (InterruptedException e)
-            { 
-                log.error(label, e) ;
-                throw new TDBTransactionException(e) ;
-            }
+            acquireWriterLock(true) ;
         }
         // entry synchronized part
         return begin$(mode, label) ;
@@ -367,7 +400,7 @@ public class TransactionManager
         noteStartTxn(txn) ;
         return dsgTxn ;
     }
-
+    
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
     {
         Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
@@ -420,7 +453,7 @@ public class TransactionManager
             case READ: break ;
             case WRITE:
                 currentReaderView.set(null) ;       // Clear the READ transaction cache.
-                writersWaiting.release() ;          // Single writer: let another (waiting?) writer have a turn.
+                releaseWriterLock();
         }
     }
 
@@ -436,8 +469,96 @@ public class TransactionManager
         switch ( transaction.getMode() )
         {
             case READ: break ;
-            case WRITE: writersWaiting.release() ;
+            case WRITE: releaseWriterLock();
         }
+    }
+    
+    private void releaseWriterLock() {
+        int x = writersWaiting.availablePermits() ;
+        if ( x != 0 )
+            throw new TDBTransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls") ;
+        writersWaiting.release() ;
+    }
+    
+    private boolean acquireWriterLock(boolean canBlock) {
+        if ( ! canBlock )
+            return writersWaiting.tryAcquire() ;
+        try { 
+            writersWaiting.acquire() ; 
+            return true;
+        } catch (InterruptedException e) { throw new TDBTransactionException(e) ; }
+    }
+    
+    /** Block until no writers are active.
+     * Must call {@link #enableWriters} later.
+     * Return 'true' if the writers semaphore was grabbed, else false.
+     * This operation must not be nested (will block).
+     * See {@link #tryDisableWriters}.
+     */
+    public void disableWriters() {
+        acquireWriterLock(true) ;
+    }
+
+    /** Block until no writers are active or, optionally, return if can't at the moment. 
+     * Must call {@link #enableWriters} later.
+     * Return 'true' if the writers semaphore was grabbed, else false.
+     */
+    public boolean tryDisableWriters() {
+        return acquireWriterLock(false) ;
+    }
+
+    /** Allow writers.  
+     * This must be used in conjunction with {@link #disableWriters}
+     */ 
+    public void enableWriters() {
+        releaseWriterLock();
+    }
+    
+    /** Enter exclusive mode. 
+     * <p>
+     * There are no active transactions on return; new transactions will be held up in 'begin'.
+     * Return to normal (release waiting transactions, allow new transactions)
+     * with {@link #finishExclusiveMode}.
+     * <p>
+     * The caller must not be inside a transaction associated with this TransactionManager.
+     * (The call will block waiting for that transaction to finish.)
+     */
+    public void startExclusiveMode() {
+        startExclusiveMode(true);
+    }
+    
+    /** Try to enter exclusive mode. 
+     *  If return is true, then are no active transactions on return and new transactions will be held up in 'begin'.
+     *  If false, there is an in-progress transactions.
+     *  Return to normal (release waiting transactions, allow new transactions)
+     *  with {@link #finishExclusiveMode}.
+     *  <p>
+     *  The call must not itself be in a transaction (this call wil return false).    
+     */
+    public boolean tryExclusiveMode() {
+        return startExclusiveMode(false);
+    }
+    
+    private boolean startExclusiveMode(boolean canBlock) {
+        if ( canBlock ) {
+            exclusivitylock.writeLock().lock() ;
+            processDelayedReplayQueue(null);
+            return true ;
+        }
+        boolean b = exclusivitylock.writeLock().tryLock() ;
+        if ( ! b ) return false ;
+        processDelayedReplayQueue(null);
+        return true ;
+    }
+
+    /** Return the exclusivity lock. Testing and internal use only. */
+    public ReadWriteLock getExclusivityLock$() { return exclusivitylock ; } 
+    
+    /** Return to normal (release waiting transactions, allow new transactions).
+     * Must be paired with an earlier {@link #startExclusiveMode}. 
+     */
+    public void finishExclusiveMode() {
+        exclusivitylock.writeLock().unlock() ;
     }
     
     /** The stage in a commit after committing - make the changes permanent in the base data */ 
@@ -621,6 +742,7 @@ public class TransactionManager
             case WRITE : writerCommits(transaction) ; break ;
         }
         transactionFinishes(transaction) ;
+        exclusivitylock.readLock().unlock() ;
     }
     
     private void noteTxnAbort(Transaction transaction)
@@ -631,6 +753,7 @@ public class TransactionManager
             case WRITE : writerAborts(transaction) ; break ;
         }
         transactionFinishes(transaction) ;
+        exclusivitylock.readLock().unlock() ;
     }
     
     private void noteTxnClose(Transaction transaction)
