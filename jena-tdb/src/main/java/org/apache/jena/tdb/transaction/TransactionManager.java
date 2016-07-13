@@ -490,25 +490,38 @@ public class TransactionManager
     }
     
     /** Block until no writers are active.
-     * Must call {@link #enableWriters} later.
-     * Return 'true' if the writers semaphore was grabbed, else false.
-     * This operation must not be nested (will block).
-     * See {@link #tryDisableWriters}.
+     *  When this returns, yhis guarantees that the database is not changing
+     *  and the jounral is flush to disk.
+     * <p> 
+     * The application must call {@link #enableWriters} later.
+     * <p> 
+     * This operation must not be nested (it will block).
+     * 
+     * @see #tryBlockWriters()
+     * @see #enableWriters()
+     * 
      */
-    public void disableWriters() {
+    public void blockWriters() {
         acquireWriterLock(true) ;
     }
 
-    /** Block until no writers are active or, optionally, return if can't at the moment. 
-     * Must call {@link #enableWriters} later.
-     * Return 'true' if the writers semaphore was grabbed, else false.
+    /** Block until no writers are active or, optionally, return if can't at the moment.
+     * Return 'true' if the operation succeeded.
+     * <p>
+     * If it returns true, the application must call {@link #enableWriters} later.
+     *  
+     * @see #blockWriters()
+     * @see #enableWriters()
      */
-    public boolean tryDisableWriters() {
+    public boolean tryBlockWriters() {
         return acquireWriterLock(false) ;
     }
 
     /** Allow writers.  
-     * This must be used in conjunction with {@link #disableWriters}
+     * This must be used in conjunction with {@link #blockWriters()} or {@link #tryBlockWriters()}
+     * 
+     * @see #blockWriters()
+     * @see #tryBlockWriters()
      */ 
     public void enableWriters() {
         releaseWriterLock();
