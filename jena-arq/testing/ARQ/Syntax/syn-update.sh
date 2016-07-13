@@ -337,3 +337,8 @@ EOF
 N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 INSERT { } WHERE { ?s ?p ?X BIND(1 AS ?X) }
 EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+INSERT { } WHERE { {SELECT (?X+1 AS ?X) {}} }
+EOF
+

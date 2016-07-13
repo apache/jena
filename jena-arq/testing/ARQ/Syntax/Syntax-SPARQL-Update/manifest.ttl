@@ -66,6 +66,7 @@
 :test_53
 :test_54
 :test_55
+:test_56
 ) .
 
 :test_1 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
@@ -342,5 +343,10 @@
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-update-bad-15.ru" ;
    mf:action  <syntax-update-bad-15.ru> ;.
+
+:test_56 rdf:type   mf:NegativeUpdateSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-update-bad-16.ru" ;
+   mf:action  <syntax-update-bad-16.ru> ;.
 
 
