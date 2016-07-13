@@ -50,7 +50,6 @@ public class ParserSPARQL11 extends SPARQLParser
         } ;
 
         perform(query, queryString, action) ;
-        validateParsedQuery(query) ;
         return query ;
     }
     

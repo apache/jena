@@ -22,6 +22,7 @@ import java.io.FileReader ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.QueryException ;
 import org.apache.jena.query.QueryParseException ;
 import org.apache.jena.shared.JenaException ;
@@ -75,16 +76,16 @@ public class ParserARQUpdate extends UpdateParser
 
         catch (QueryException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
-//        catch (Error err)
-//        {
-//            // The token stream can throw errors.
-//            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
-//        }
-//        catch (Throwable th)
-//        {
-//            Log.fatal(this, "Unexpected throwable: ",th) ;
-//            throw new QueryException(th.getMessage(), th) ;
-//        }
+        catch (Error err)
+        {
+            // The token stream can throw errors.
+            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
+        }
+        catch (Throwable th)
+        {
+            Log.fatal(this, "Unexpected throwable: ",th) ;
+            throw new QueryException(th.getMessage(), th) ;
+        }
     }
 
 
