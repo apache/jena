@@ -61,14 +61,14 @@ public class TestTransactionCoordinatorControl {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         AtomicInteger counter2 = new AtomicInteger(0) ;
 
-        txnMgr.disableWriters() ;
+        txnMgr.blockWriters();
         ThreadTxn threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
         threadTxn1.run() ;
         assertEquals(1, counter1.get()) ;
     }
 
     @Test public void txn_coord_disable_writers_2() {
-        txnMgr.disableWriters() ;
+        txnMgr.blockWriters();
         Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.WRITE, false)) ;
         assertNull(txn) ;
         txnMgr.enableWriters();
@@ -77,7 +77,7 @@ public class TestTransactionCoordinatorControl {
     }
     
     @Test public void txn_coord_disable_writers_3() {
-        txnMgr.disableWriters() ;
+        txnMgr.blockWriters();
         Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.READ, false)) ;
         assertNotNull(txn) ;
         txnMgr.enableWriters();
@@ -89,15 +89,15 @@ public class TestTransactionCoordinatorControl {
     
     @Test(expected=TransactionException.class)
     public void txn_coord_disable_writers_4() {
-        txnMgr.disableWriters() ;
+        txnMgr.blockWriters();
         txnMgr.enableWriters();
         txnMgr.enableWriters();
     }
 
     @Test
     public void txn_coord_disable_writers_() {
-        txnMgr.disableWriters() ;
-        boolean b = txnMgr.tryDisableWriters() ;
+        txnMgr.blockWriters();
+        boolean b = txnMgr.tryBlockWriters() ;
         assertFalse(b) ;
         txnMgr.enableWriters();
     }
