@@ -50,14 +50,9 @@ public class Service {
     public static final String base = "http://jena.hpl.hp.com/Service#";
 
     /**
-     * Use to set the HttpQuery.allowDeflate flag.
+     * Use to set the HttpQuery.allowCompression flag.
      */
-    public static final Symbol queryDeflate = SystemARQ.allocSymbol(base, "queryDeflate");
-
-    /**
-     * Use to set the HttpQuery.allowGZip flag.
-     */
-    public static final Symbol queryGzip = SystemARQ.allocSymbol(base, "queryGzip");
+    public static final Symbol queryCompression = SystemARQ.allocSymbol(base, "queryCompression");
 
     /**
      * Use to set the HTTP client for a service.
@@ -227,8 +222,7 @@ public class Service {
         // configure the query object.
         httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
         httpQuery.addParam(HttpParams.pQuery, query.toString());
-        httpQuery.setAllowGZip(context.isTrueOrUndef(queryGzip));
-        httpQuery.setAllowDeflate(context.isTrueOrUndef(queryDeflate));
+        httpQuery.setAllowCompression(context.isTrueOrUndef(queryCompression));
 
         HttpClient client = context.get(queryClient);
         if (client != null) httpQuery.setClient(client);    

@@ -154,8 +154,7 @@ public class TestService {
         // Check that no settings were changed
         Assert.assertEquals(-1, engine.getTimeout1());
         Assert.assertEquals(-1, engine.getTimeout2());
-        Assert.assertTrue(engine.getAllowGZip());
-        Assert.assertTrue(engine.getAllowDeflate());
+        Assert.assertTrue(engine.getAllowCompression());
         Assert.assertNull(engine.getClient());
     }
 
@@ -184,8 +183,7 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(-1, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
+            Assert.assertTrue(engine.getAllowCompression());
             Assert.assertEquals(testClient, engine.getClient());
 
         } finally {
@@ -216,8 +214,7 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(10, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
+            Assert.assertTrue(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
             serviceContext.remove(Service.queryTimeout);
@@ -247,8 +244,7 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(20, engine.getTimeout1());
             Assert.assertEquals(10, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
+            Assert.assertTrue(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
             serviceContext.remove(Service.queryTimeout);
@@ -269,8 +265,7 @@ public class TestService {
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryGzip, false);
-            serviceContext.put(Service.queryDeflate, false);
+            serviceContext.put(Service.queryCompression, false);
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -279,12 +274,10 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(-1, engine.getTimeout2());
-            Assert.assertFalse(engine.getAllowGZip());
-            Assert.assertFalse(engine.getAllowDeflate());
+            Assert.assertFalse(engine.getAllowCompression());
             Assert.assertNull(engine.getClient());
         } finally {
-            serviceContext.remove(Service.queryGzip);
-            serviceContext.remove(Service.queryDeflate);
+            serviceContext.remove(Service.queryCompression);
         }
     }
 

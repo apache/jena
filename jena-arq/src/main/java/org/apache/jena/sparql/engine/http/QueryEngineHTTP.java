@@ -80,8 +80,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
     // Compression Support
-    private boolean allowGZip = true;
-    private boolean allowDeflate = true;
+    private boolean allowCompression = true;
 
     // Content Types
     private String selectContentType    = defaultSelectHeader();
@@ -174,8 +173,7 @@ public class QueryEngineHTTP implements QueryExecution {
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
 
             // Apply behavioral options
-            engine.setAllowGZip(serviceContext.isTrueOrUndef(Service.queryGzip));
-            engine.setAllowDeflate(serviceContext.isTrueOrUndef(Service.queryDeflate));
+            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service.queryCompression));
             applyServiceTimeouts(engine, serviceContext);
 
             // Apply context-supplied client settings
@@ -256,17 +254,10 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Sets whether the HTTP request will specify Accept-Encoding: gzip
+     * Sets whether the HTTP requests will permit compressed encoding
      */
-    public void setAllowGZip(boolean allowed) {
-        allowGZip = allowed;
-    }
-
-    /**
-     * Sets whether the HTTP requests will specify Accept-Encoding: deflate
-     */
-    public void setAllowDeflate(boolean allowed) {
-        allowDeflate = allowed;
+    public void setAllowCompression(boolean allowed) {
+        allowCompression = allowed;
     }
 
     public void addParam(String field, String value) {
@@ -570,23 +561,13 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Gets whether HTTP requests will indicate to the remote server that GZip
-     * encoding of responses is accepted
-     * 
-     * @return True if GZip encoding will be accepted
-     */
-    public boolean getAllowGZip() {
-        return allowGZip;
-    }
-
-    /**
      * Gets whether HTTP requests will indicate to the remote server that
-     * Deflate encoding of responses is accepted
+     * compressed encoding of responses is accepted
      * 
-     * @return True if Deflate encoding will be accepted
+     * @return True if compressed encoding will be accepted
      */
-    public boolean getAllowDeflate() {
-        return allowDeflate;
+    public boolean getAllowCompression() {
+        return allowCompression;
     }
 
     private static long asMillis(long duration, TimeUnit timeUnit) {
@@ -613,11 +594,8 @@ public class QueryEngineHTTP implements QueryExecution {
         if (params != null)
             httpQuery.merge(params);
 
-        if (allowGZip)
-            httpQuery.setAllowGZip(true);
+        httpQuery.setAllowCompression(allowCompression);
 
-        if (allowDeflate)
-            httpQuery.setAllowDeflate(true);
 
         httpQuery.setClient(client);
 

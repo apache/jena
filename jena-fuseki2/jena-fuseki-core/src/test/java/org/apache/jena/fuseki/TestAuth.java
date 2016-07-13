@@ -140,8 +140,7 @@ public class TestAuth {
     public void query_with_auth_05() {
         // Uses auth and enables compression
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-        qe.setAllowDeflate(true);
-        qe.setAllowGZip(true);
+        qe.setAllowCompression(true);
 
         // Auth credentials for valid user with correct password
         qe.setClient(withBasicAuth(ANY, "allowed", "password"));
@@ -152,8 +151,7 @@ public class TestAuth {
     public void query_with_auth_06() {
         // Uses auth and enables compression
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-        qe.setAllowDeflate(true);
-        qe.setAllowGZip(true);
+        qe.setAllowCompression(true);
 
         // Auth credentials for valid user with bad password
         qe.setClient(withBasicAuth(ANY, "allowed", "incorrect"));

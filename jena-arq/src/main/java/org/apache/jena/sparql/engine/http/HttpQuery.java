@@ -66,8 +66,7 @@ public class HttpQuery extends Params {
     private boolean serviceParams = false;
     private final Pattern queryParamPattern = Pattern.compile(".+[&|\\?]query=.*");
     private int connectTimeout = 0, readTimeout = 0;
-    private boolean allowGZip = false;
-    private boolean allowDeflate = false;
+    private boolean allowCompression = false;
     private HttpClient client;
     private boolean requireClientShutdown = true;
 
@@ -157,24 +156,14 @@ public class HttpQuery extends Params {
     }
 
     /**
-     * Sets whether the HTTP request will include a Accept-Encoding: gzip header
-     * 
-     * @param allow
-     *            Whether to allow GZip encoding
-     */
-    public void setAllowGZip(boolean allow) {
-        allowGZip = allow;
-    }
-
-    /**
-     * Sets whether the HTTP request will include a Accept-Encoding: deflate
+     * Sets whether the HTTP request will include compressed encoding
      * header
      * 
      * @param allow
-     *            Whether to allow Deflate encoding
+     *            Whether to allow compressed encoding
      */
-    public void setAllowDeflate(boolean allow) {
-        allowDeflate = allow;
+    public void setAllowCompression(boolean allow) {
+        allowCompression = allow;
     }
 
     /**
@@ -295,7 +284,7 @@ public class HttpQuery extends Params {
     
     private void contextualizeCompressionSettings() {
         final RequestConfig.Builder builder = RequestConfig.copy(context.getRequestConfig());
-        builder.setContentCompressionEnabled(allowGZip || allowDeflate);
+        builder.setContentCompressionEnabled(allowCompression);
         context.setRequestConfig(builder.build());
     }
     
