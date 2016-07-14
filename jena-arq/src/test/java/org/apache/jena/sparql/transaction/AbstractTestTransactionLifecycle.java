@@ -215,7 +215,6 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
         ds.end() ;
         ds.abort() ;
     }    
-
     
     @Test
     public void transaction_err_01()    { testBeginBegin(WRITE, WRITE) ; }
