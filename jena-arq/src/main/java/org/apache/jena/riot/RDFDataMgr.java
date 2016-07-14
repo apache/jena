@@ -810,8 +810,7 @@ public class RDFDataMgr
      */
     public static TypedInputStream open(String filenameOrURI, Context context) {
         StreamManager sMgr = StreamManager.get() ;
-        if ( context != null )
-        {
+        if ( context != null ) {
             try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
             catch (ClassCastException ex) 
             { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Lib.classShortName(StreamManager.class)) ; }
@@ -848,8 +847,7 @@ public class RDFDataMgr
     // different threads. The Context Reader object gives the per-run
     // configuration.
 
-    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context)
-    {
+    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context) {
         Objects.requireNonNull(in, "TypedInputStream is null") ;
         ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
         if ( ct == null )
@@ -1234,8 +1232,7 @@ public class RDFDataMgr
      * @param baseIRI Base IRI
      * @return Iterator over the triples
      */
-    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
-    {
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
             return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNTriples(input, null), input);
@@ -1254,8 +1251,7 @@ public class RDFDataMgr
      * @param baseIRI Base IRI
      * @return Iterator over the quads
      */
-    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
-    {
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
             return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNQuads(input, null), input);
