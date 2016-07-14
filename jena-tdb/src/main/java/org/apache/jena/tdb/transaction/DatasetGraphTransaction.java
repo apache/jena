@@ -227,12 +227,8 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
         return getBaseDatasetGraph().getContext() ;
     }
 
-    /**
-     * Return some information about the store connection and transaction
-     * manager for this dataset.
-     */
-    public SysTxnState getTransMgrState() {
-        return sConn.getTransMgrState() ;
+    public StoreConnection getStoreConnection() {
+        return sConn ;
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.tdb.transaction.TransactionManager ;
 
 /** A collection of helpers to abstract away from internal details of TDB. 
  * Use with care.
@@ -105,8 +106,8 @@ public class TDBInternal
     }
 
     /**
-     * Return the DatasetGraphTDB for a DatasetGraph, or null. May not be
-     * up-to-date.
+     * Return the DatasetGraphTDB for a DatasetGraph, or null.
+     * May not be up-to-date.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphTransaction ) {
@@ -121,15 +122,25 @@ public class TDBInternal
     }
 
     /**
-     * Return a DatasetGraphTDB that uses the raw storage for tables Use with
-     * care.
+     * Return a DatasetGraphTDB that uses the raw storage for tables.
+     * Use with great care.
      */
-    public static DatasetGraphTDB getBaseDatasetGraphTDB(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphTransaction )
-            return ((DatasetGraphTransaction)datasetGraph).getBaseDatasetGraph() ;
-        throw new TDBException("Not a suitable DatasetGraph to get its base storage: " + Lib.classShortName(datasetGraph.getClass())) ;
+    public static DatasetGraphTDB getBaseDatasetGraphTDB(DatasetGraph dsg) {
+        return getStoreConnection(dsg).getBaseDataset() ;
     }
 
+    /** Return the TransactionManager of this DatasetGraphTransaction */ 
+    public static TransactionManager getTransactionManager(DatasetGraph dsg) {
+        return getStoreConnection(dsg).getTransactionManager() ;
+    }
+
+    /* Use with great care */ 
+    public static StoreConnection getStoreConnection(DatasetGraph dsg) {
+        if ( dsg instanceof DatasetGraphTransaction )
+            return ((DatasetGraphTransaction)dsg).getStoreConnection() ;
+        throw new TDBException("Not a suitable TDB-backed DatasetGraph: " + Lib.classShortName(dsg.getClass())) ;
+    }
+    
     /** Look at a directory and see if it is a new area */
     public static boolean isNewDatabaseArea(Location location) {
         StoreConnection sConn = StoreConnection.getExisting(location) ;
