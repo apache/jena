@@ -179,12 +179,12 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     { get().abort() ; }
 
     @Override
-    public boolean isInTransaction() 
-    { return get().isInTransaction() ; }    
-
-    @Override
     public void end()
     { get().end() ; }
+
+    @Override
+    public boolean isInTransaction() 
+    { return get().isInTransaction() ; }    
 
     @Override
     public boolean supportsTransactions() {
