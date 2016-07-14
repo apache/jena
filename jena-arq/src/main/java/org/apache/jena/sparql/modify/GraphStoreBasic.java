@@ -22,7 +22,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.update.GraphStore ;
 
-@SuppressWarnings("deprecation")
+@Deprecated
 public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
 {
     public GraphStoreBasic(DatasetGraph dsg)
