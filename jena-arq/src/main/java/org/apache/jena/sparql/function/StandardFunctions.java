@@ -28,8 +28,34 @@ import org.apache.jena.sparql.function.library.leviathan.* ;
 
 public class StandardFunctions
 {
-    public static void loadStdDefs(FunctionRegistry registry)
-    {
+    /* JENA-508
+     * Missing: (July 2016)
+     * 
+     *   fn:format-number
+     *   fn:format-dateTime
+     *   fn:format-date
+     *   fn:format-time
+     *   fn:normalize-space
+     *  fn:normalize-unicode
+     * 
+     * and adapters to SPARQL operations that have keywords:
+     *   fn:replace
+     *   fn:matches
+     * and sparql:* for all the SPARQL builtins. 
+     */
+    
+    /* Implementation notes
+     * fn:normalize-space   : leading and trailing whitespace removed, 
+     *                        sequences of internal whitespace reduced to a single space character.
+     *                        Whitespace is "Character.isWhitespace" 
+     *                        Regex \v \h (check). 
+     * fn:normalize-unicode : Java Normalizer.normalize applies the rules.
+     * fn:format-number     : Java NumberFormat picture strings.
+     * fn:format-dateTime/fn:format-time/fn:format-date : Java SimpleDateFormat
+     *     Like adjust-* we may need only one function. 
+     */
+    
+    public static void loadStdDefs(FunctionRegistry registry) {
         String xfn = ARQConstants.fnPrefix ;
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
@@ -120,7 +146,7 @@ public class StandardFunctions
         // Needs adapter to E_StrReplace (is it a good enough match?)
 //        add(registry, xfn+"replace",        FN_StrReplace.class) ;
         // fn:replace
-        // fn:tokenize
+        // fn:tokenize -> sequence
         
 //        4.7.2 fn:format-number
 
@@ -133,7 +159,6 @@ public class StandardFunctions
         add(registry, xfn+"ceiling",        FN_Ceiling.class) ;
         add(registry, xfn+"floor",          FN_Floor.class) ;
         add(registry, xfn+"round",          FN_Round.class) ;
-        //fn:round-half-to-even
         add(registry, xfn+"round-half-to-even",          FN_Round_Half_Even.class) ;
 //        6.1 fn:resolve-uri        -- Two argument form makes sense.
 //        6.2 fn:encode-for-uri
@@ -271,24 +296,19 @@ public class StandardFunctions
 //        9.7.14 op:subtract-dayTimeDuration-from-time
     }
     
-    private static void addCastXSD(FunctionRegistry registry, XSDDatatype dt)
-    {
-        registry.put(dt.getURI(), new CastXSD(dt) ) ;
-    }
-    
-    private static void addCastNumeric(FunctionRegistry registry, XSDDatatype dt)
-    {
-        registry.put(dt.getURI(), new CastXSD(dt) ) ;
+    private static void addCastXSD(FunctionRegistry registry, XSDDatatype dt) {
+        registry.put(dt.getURI(), new CastXSD(dt)) ;
     }
 
-    private static void addCastTemporal(FunctionRegistry registry, XSDDatatype dt)
-    {
-        registry.put(dt.getURI(), new CastXSD(dt) ) ;
+    private static void addCastNumeric(FunctionRegistry registry, XSDDatatype dt) {
+        registry.put(dt.getURI(), new CastXSD(dt)) ;
     }
 
-    private static void add(FunctionRegistry registry, String uri, Class<?> funcClass)
-    {
+    private static void addCastTemporal(FunctionRegistry registry, XSDDatatype dt) {
+        registry.put(dt.getURI(), new CastXSD(dt)) ;
+    }
+
+    private static void add(FunctionRegistry registry, String uri, Class<? > funcClass) {
         registry.put(uri, funcClass) ;
     }
-
 }
