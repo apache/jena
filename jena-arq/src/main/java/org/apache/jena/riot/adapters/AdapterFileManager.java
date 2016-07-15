@@ -21,10 +21,12 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.stream.* ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
@@ -275,11 +277,20 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
             log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
 
         Lang lang = 
-            syntax != null 
-            ? RDFLanguages.nameToLang(syntax) 
+            (syntax != null)
+            ? RDFLanguages.nameToLang(syntax)
             : RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML) ;
-            
-        RDFDataMgr.read(model, mappedURI, baseURI, lang);
+    
+        if ( false ) {
+            RDFDataMgr.read(model, mappedURI, baseURI, lang);
+        } else {
+            if ( baseURI == null )
+                baseURI = SysRIOT.chooseBaseIRI(filenameOrURI) ;
+            try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
+                // May be overridden by model implementation.
+                model.read(in, baseURI, lang.getName()) ;
+            }
+        }
         return model ;
     }
 
