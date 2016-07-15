@@ -33,7 +33,10 @@ import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.DecimalFormat ;
+import java.text.DecimalFormatSymbols ;
 import java.text.Normalizer;
+import java.text.NumberFormat ;
 import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
@@ -1603,5 +1606,45 @@ public class XSDFuncOp
             return NodeValue.makeNode(calValue.toXMLFormat(),XSDDatatype.XSDtime);
         else
             return NodeValue.makeDate(calValue);
+    }
+    
+    /** fn:format-number
+     * 
+     * The 3rd argument, if present, called decimal-format-name, is here a 
+     * IETF BCP 47 language tag string.
+     */
+    public static NodeValue formatNumber(NodeValue nv, NodeValue picture, NodeValue nvLocale) {
+        if ( !nv.isNumber() )
+            NodeValue.raise(new ExprEvalException("Not a number: " + nv)) ;
+        if ( !picture.isString() )
+            NodeValue.raise(new ExprEvalException("Not a string: " + picture)) ;
+        if ( nvLocale != null && !nvLocale.isString() )
+            NodeValue.raise(new ExprEvalException("Not a string: " + nvLocale)) ;
+
+        Locale locale = Locale.ROOT ;
+        if ( nvLocale != null )
+            locale = Locale.forLanguageTag(nvLocale.asString()) ;
+        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale) ;
+        
+        NumberFormat formatter = 
+            (dfs == null )
+                ? new DecimalFormat(picture.getString())
+                : new DecimalFormat(picture.getString(), dfs) ;
+            
+        NumericType nt = XSDFuncOp.classifyNumeric("fn:formatNumber", nv) ;
+        String s = null ;
+        switch(nt) {
+            case OP_DECIMAL :
+            case OP_DOUBLE :
+            case OP_FLOAT :
+                s = formatter.format(nv.getDouble()) ;
+                break ;
+            case OP_INTEGER :
+                s = formatter.format(nv.getInteger().longValue()) ;
+                break ;
+            default :
+                break ;
+        }
+        return NodeValue.makeString(s) ; 
     }
 }

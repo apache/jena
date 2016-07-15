@@ -31,12 +31,9 @@ public class StandardFunctions
     /* JENA-508
      * Missing: (July 2016)
      * 
-     *   fn:format-number
      *   fn:format-dateTime
      *   fn:format-date
      *   fn:format-time
-     *   fn:normalize-space
-     *  fn:normalize-unicode
      * 
      * and adapters to SPARQL operations that have keywords:
      *   fn:replace
@@ -45,13 +42,9 @@ public class StandardFunctions
      */
     
     /* Implementation notes
-     * fn:normalize-space   : leading and trailing whitespace removed, 
-     *                        sequences of internal whitespace reduced to a single space character.
-     *                        Whitespace is "Character.isWhitespace" 
-     *                        Regex \v \h (check). 
-     * fn:normalize-unicode : Java Normalizer.normalize applies the rules.
-     * fn:format-number     : Java NumberFormat picture strings.
-     * fn:format-dateTime/fn:format-time/fn:format-date : Java SimpleDateFormat
+     *   fn:format-dateTime / fn:format-time / fn:format-date
+     *   This is not Java's SimpleDateFormat.
+     *   It has its own picture syntax.
      *     Like adjust-* we may need only one function. 
      */
     
@@ -103,7 +96,7 @@ public class StandardFunctions
         addCastTemporal(registry, XSDDatatype.XSDgDay) ;
 
         //TODO op:numeric-greater-than etc.
-        //TODO sparql:* for al the SPARQL builtins.
+        //TODO sparql:* for all the SPARQL builtins.
         
         // Sections refer to XQ/XP Expression 3.1
         // https://www.w3.org/TR/xpath-functions-3/
@@ -149,6 +142,8 @@ public class StandardFunctions
         // fn:tokenize -> sequence
         
 //        4.7.2 fn:format-number
+        add(registry, xfn+"format-number",  FN_FormatNumber.class) ;
+        
 
 //        4.4.1 fn:abs
 //        4.4.2 fn:ceiling

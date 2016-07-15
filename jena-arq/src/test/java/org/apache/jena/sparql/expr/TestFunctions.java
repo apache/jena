@@ -34,6 +34,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
 public class TestFunctions
@@ -423,6 +424,51 @@ public class TestFunctions
     @Test public void exprAdjustTimeToTz_07(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
     
+    private static void testNumberFormat(String expression, String expected) {
+        Expr expr = ExprUtils.parse(expression) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        Assert.assertTrue(r.isString());
+        Assert.assertEquals(expected, r.getString()) ;
+        
+    }
+    
+    @Test public void formatNumber_01()     { testNumberFormat("fn:format-number(0,'#')", "0") ; }
+    @Test public void formatNumber_02()     { testNumberFormat("fn:format-number(1234, '#')", "1234") ; }
+    @Test public void formatNumber_03()     { testNumberFormat("fn:format-number(1234, '#,###')", "1,234") ; }
+    @Test public void formatNumber_04()     { testNumberFormat("fn:format-number(1e3, '#,###,###.#')", "1,000") ; }
+    @Test public void formatNumber_05()     { testNumberFormat("fn:format-number(10.5, '##.#')", "10.5") ; }
+    @Test public void formatNumber_06()     { testNumberFormat("fn:format-number(-10.5, '##.##')", "-10.5") ; }
+    @Test public void formatNumber_08()     { testNumberFormat("fn:format-number(123, 'NotAPattern')", "NotAPattern123") ; }
+    
+    @Test public void formatNumber_11()     { testNumberFormat("fn:format-number(0, '#', 'fr')", "0") ; }
+    // No-break space
+    @Test public void formatNumber_12()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'fr')", "1\u00A0234,5") ; }
+    @Test public void formatNumber_13()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'de')", "1.234,5") ; }
+    
+    @Test public void formatNumber_14()     { testNumberFormat("fn:format-number(12, '0,000.0', 'en')", "0,012.0") ; }
+    @Test public void formatNumber_15()     { testNumberFormat("fn:format-number(0, '00,000', 'fr')", "00\u00A0000") ; }
+
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_20() {
+        // String as number
+        testNumberFormat("fn:format-number('String', '#')", null) ;
+    }
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_21() {
+        // Pattern is not a string
+        testNumberFormat("fn:format-number(123, <uri>)", null) ; 
+    }
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_22() {
+        // Locale is not a string
+        testNumberFormat("fn:format-number(123, '###', 123)", null) ; 
+    }
+
+    public void formatNumber_23() {
+        // Not a locale - default to Locale.ROOT
+        testNumberFormat("fn:format-number(123, '###', 'WhereAmI?')", null) ; 
+    }
+    
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
     @Test public void exprSameTerm2()     { test("sameTerm(1,1.0)",         FALSE) ; }
     @Test public void exprSameTerm3()     { test("sameTerm(1,1e0)",         FALSE) ; }
@@ -468,28 +514,25 @@ public class TestFunctions
     E_IRI
     E_BNode
     */ 
-    
-    private void test(String exprStr, NodeValue result)
-    {
+
+    private void test(String exprStr, NodeValue result) {
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
         assertEquals(result, r) ;
     }
-
-    private void testEqual(String exprStr, String exprStrExpected)
-    {
+    
+    private void testEqual(String exprStr, String exprStrExpected) {
         Expr expr = ExprUtils.parse(exprStrExpected) ;
         NodeValue rExpected = expr.eval(null, FunctionEnvBase.createTest()) ;
-        test(exprStr,rExpected);
+        test(exprStr, rExpected) ;
     }
-
-    private void testEvalException(String exprStr)
-    {
+    
+    private void testEvalException(String exprStr) {
         Expr expr = ExprUtils.parse(exprStr) ;
         try {
-             NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
-             fail("No exception raised") ;
-        } catch (ExprEvalException ex) {}
-            
+            NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+            fail("No exception raised") ;
+        }
+        catch (ExprEvalException ex) {}
     }
 }
