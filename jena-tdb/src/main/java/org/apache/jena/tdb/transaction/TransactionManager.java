@@ -289,7 +289,7 @@ public class TransactionManager
         exclusivitylock.readLock().lock() ;
         
         // Not synchronized (else blocking on semaphore will never wake up
-        // because Semaphore.release is inside synchronized.
+        // because Semaphore.release is inside synchronized).
         // Allow only one active writer. 
         if ( mode == ReadWrite.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
@@ -300,7 +300,45 @@ public class TransactionManager
         // entry synchronized part
         return begin$(mode, label) ;
     }
+    
+    /** Ensure a DatasetGraphTxn is for a write transaction.
+     * <p>
+     * If the transaction is already a write transaction, this is an efficient
+     * no-op.
+     * <p>
+     * If the transaction is a read transaction then promotion can either respect the transactions current
+     * view of the data where no changes from other writers that started after this transaction are visible
+     * ("serialized") or the promotion can include changes by other such writers ("read committed").
+     * <p>
+     * However, "serialized" can fail, in which case an exception {@link TDBTransactionException}
+     * is thrown. The transactions can continue as a read transaction.
+     * There is no point retrying - later committed changes have been made and will remain.
+     */
+    /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, boolean readCommited) throws TDBTransactionException {
+        if ( dsgtxn.getTransaction().getMode() == ReadWrite.WRITE )
+            return dsgtxn ;
+        return promote$(dsgtxn.getTransaction(), readCommited) ;
+    }
         
+    synchronized
+    private DatasetGraphTxn promote$(Transaction txn, boolean readCommited) {
+        // check state
+        if ( txn.getState() != TxnState.ACTIVE )
+            throw new TDBTransactionException("promote: transaction is not active") ;
+        
+        DatasetGraphTDB basedsg = txn.getBaseDataset() ;
+        // if read commiter - pick up any currentReaderView (last commited transaction)
+        if ( ! readCommited ) {
+            // Compare by object identity.
+            if ( currentReaderView.get() != basedsg )
+                throw new TDBTransactionException("Dataset changed - can't promote") ;
+        }
+        
+        // Need to go through begin for the writers lock. 
+        DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
+        return dsgtxn2 ;
+    }
+
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
     // of the low level object directly so we'll play safe.  

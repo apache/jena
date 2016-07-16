@@ -20,13 +20,12 @@ package tdb.cmdline;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.tdb.store.GraphTDB ;
+import org.apache.jena.tdb.store.GraphNonTxnTDB ;
 
 public abstract class CmdTDBGraph extends CmdTDB
 {
@@ -64,12 +63,12 @@ public abstract class CmdTDBGraph extends CmdTDB
     
     public Node getGraphName()  { return graphName == null ? null : NodeFactory.createURI(graphName) ; } 
     
-    protected GraphTDB getGraph()
+    protected GraphNonTxnTDB getGraph()
     {
         if ( graphName != null )
-            return (GraphTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
+            return (GraphNonTxnTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
         else
-            return (GraphTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
+            return (GraphNonTxnTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
     }
     
     @Override

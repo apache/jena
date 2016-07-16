@@ -21,14 +21,19 @@ package org.apache.jena.tdb.transaction ;
 import static java.lang.ThreadLocal.withInitial ;
 
 import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.store.GraphNonTxnTDB ;
+import org.apache.jena.tdb.store.GraphTxnTDB ;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
@@ -69,6 +74,7 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
         return sConn.getLocation() ;
     }
 
+    // getCurrentTxnDSG
     public DatasetGraphTDB getDatasetGraphToQuery() {
         checkNotClosed() ;
         return get() ;
@@ -80,6 +86,22 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
         return sConn.getBaseDataset() ;
     }
 
+    /*private*/public/*for development*/ static boolean promotion = false ; 
+    
+    @Override public DatasetGraph getW() {
+        if ( isInTransaction() ) {
+            if ( promotion ) {
+                DatasetGraphTxn dsgTxn = txn.get() ;
+                if ( dsgTxn.getTransaction().isRead() ) {
+                    TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
+                    DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, true) ;
+                    txn.set(dsgTxn2); 
+                }
+            }
+        }
+        return super.getW() ;
+    }
+    
     /** Get the current DatasetGraphTDB */
     @Override
     public DatasetGraphTDB get() {
@@ -130,6 +152,22 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
     public void syncIfNotTransactional() {
         if ( !sConn.haveUsedInTransaction() )
             sConn.getBaseDataset().sync() ;
+    }
+    
+    @Override
+    public Graph getDefaultGraph() { 
+        if ( sConn.haveUsedInTransaction() )
+            return new GraphTxnTDB(this, null) ;
+        else
+            return new GraphNonTxnTDB(getBaseDatasetGraph(), null) ;
+    }
+
+    @Override
+    public Graph getGraph(Node graphNode) {      
+        if ( sConn.haveUsedInTransaction() )
+            return new GraphTxnTDB(this, graphNode) ;
+        else
+            return new GraphNonTxnTDB(getBaseDatasetGraph(), graphNode) ;
     }
 
     @Override

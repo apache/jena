@@ -61,7 +61,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private final ReorderTransformation transform ;
     private final StorageConfig config ;
     
-    private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
@@ -71,7 +70,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         this.prefixes = prefixes ;
         this.transform = transform ;
         this.config = config ;
-        this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
 
     public QuadTable getQuadTable()         { return quadTable ; }
@@ -105,11 +103,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
     { getQuadTable().delete(g, s, p, o) ; }
     
-    public GraphTDB getDefaultGraphTDB() 
-    { return (GraphTDB)getDefaultGraph() ; }
+    public GraphNonTxnTDB getDefaultGraphTDB() 
+    { return (GraphNonTxnTDB)getDefaultGraph() ; }
 
-    public GraphTDB getGraphTDB(Node graphNode)
-    { return (GraphTDB)getGraph(graphNode) ; }
+    public GraphNonTxnTDB getGraphTDB(Node graphNode)
+    { return (GraphNonTxnTDB)getGraph(graphNode) ; }
 
     @Override
     public void close() {
@@ -145,17 +143,15 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return result ;
     }
 
+    // When not yet transactional, these can be called??
+    
     @Override
     public Graph getDefaultGraph()
-    { return new GraphTDB(this, null) ; }
+    { return new GraphNonTxnTDB(this, null) ; }
 
     @Override
     public Graph getGraph(Node graphNode)
-    { return new GraphTDB(this, graphNode) ; }
-
-    //public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
-
-    public GraphTDB getEffectiveDefaultGraph()              { return effectiveDefaultGraph ; }
+    { return new GraphNonTxnTDB(this, graphNode) ; }
 
     public StorageConfig getConfig()                        { return config ; }
     

@@ -159,22 +159,22 @@ public class OpExecutorTDB1 extends OpExecutor
     private static QueryIterator executeBGP(GraphTDB graph, OpBGP opBGP, QueryIterator input, ExprList exprs, 
                                             ExecutionContext execCxt)
     {
+        DatasetGraphTDB dsgtdb = graph.getDatasetGraphTDB() ;
         // Is it the real default graph (normal route or explicitly named)?
         if ( ! isDefaultGraphStorage(graph.getGraphName()))
         {
             // Not default storage - it's a named graph in storage. 
-            DatasetGraphTDB ds = graph.getDSG() ;
-            return optimizeExecuteQuads(ds, input, graph.getGraphName(), opBGP.getPattern(), exprs, execCxt) ;
+            return optimizeExecuteQuads(dsgtdb, input, graph.getGraphName(), opBGP.getPattern(), exprs, execCxt) ;
         }
         
         // Execute a BGP on the real default graph
-        return optimizeExecuteTriples(graph, input, opBGP.getPattern(), exprs, execCxt) ;
+        return optimizeExecuteTriples(dsgtdb, input, opBGP.getPattern(), exprs, execCxt) ;
     }
 
     /** Execute, with optimization, a basic graph pattern on the default graph storage */
-    private static QueryIterator optimizeExecuteTriples(GraphTDB graph, QueryIterator input,
+    private static QueryIterator optimizeExecuteTriples(DatasetGraphTDB dsgtdb, QueryIterator input,
                                                         BasicPattern pattern, ExprList exprs,
-                                                        ExecutionContext execCxt)
+                                                        ExecutionContext execCxt) 
     {
         if ( ! input.hasNext() )
             return input ;
@@ -184,7 +184,7 @@ public class OpExecutorTDB1 extends OpExecutor
         if ( pattern.size() >= 2 )
         {
             // Must be 2 or triples to reorder. 
-            ReorderTransformation transform = graph.getDSG().getReorderTransform() ;
+            ReorderTransformation transform = dsgtdb.getReorderTransform() ;
             if ( transform != null )
             {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
@@ -216,7 +216,7 @@ public class OpExecutorTDB1 extends OpExecutor
 
         gn = decideGraphNode(gn, execCxt) ;
         if ( gn == null )
-            return optimizeExecuteTriples(ds.getEffectiveDefaultGraph(), input, bgp, exprs, execCxt) ;
+            return optimizeExecuteTriples(ds, input, bgp, exprs, execCxt) ;
         
         // ---- Execute quads+filters
         if ( bgp.size() >= 2 )
@@ -306,8 +306,6 @@ public class OpExecutorTDB1 extends OpExecutor
 
         if ( Quad.isUnionGraph(gn) ) 
             return Node.ANY ;
-        boolean doingUnion = false ;
-        
         return gn ;
     }
 
@@ -374,7 +372,7 @@ public class OpExecutorTDB1 extends OpExecutor
                 //return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
                 GraphTDB gtdb = (GraphTDB)g ;
                 Node gn = decideGraphNode(gtdb.getGraphName(), execCxt) ;
-                return SolverLib.execute(gtdb.getDSG(), gn, bgp, input, filter, execCxt) ;
+                return SolverLib.execute(gtdb.getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-GraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opBGP, input) ;
@@ -402,7 +400,7 @@ public class OpExecutorTDB1 extends OpExecutor
                 BasicPattern bgp = opQuadPattern.getBasicPattern() ;
                 Explain.explain("Execute", bgp, execCxt.getContext()) ;
                 // Don't pass in G -- gn may be different.
-                return SolverLib.execute(((GraphTDB)g).getDSG(), gn, bgp, input, filter, execCxt) ;
+                return SolverLib.execute(((GraphTDB)g).getDatasetGraphTDB(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opQuadPattern, input) ;
