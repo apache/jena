@@ -24,18 +24,14 @@ import java.util.regex.Pattern ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.sse.Tags ;
 
-public class E_StrReplace extends ExprFunctionN
-{
-    private static final String symbol = Tags.tagReplace ;
-    private Pattern pattern = null ;
+public class E_StrReplace extends ExprFunctionN {
+    private static final String symbol  = Tags.tagReplace ;
+    private Pattern             pattern = null ;
 
-    public E_StrReplace(Expr expr1, Expr expr2, Expr expr3, Expr expr4)
-    {
+    public E_StrReplace(Expr expr1, Expr expr2, Expr expr3, Expr expr4) {
         super(symbol, expr1, expr2, expr3, expr4) ;
-        
-        
-        if ( isString(expr2) && (expr4 == null || isString(expr4) ) )
-        {
+
+        if ( isString(expr2) && (expr4 == null || isString(expr4)) ) {
             int flags = 0 ;
             if ( expr4 != null && expr4.isConstant() && expr4.getConstant().isString() )
                 flags = RegexJava.makeMask(expr4.getConstant().getString()) ;
@@ -43,11 +39,12 @@ public class E_StrReplace extends ExprFunctionN
         }
     }
 
-    private static boolean isString(Expr expr) { return expr.isConstant() && expr.getConstant().isString() ; }
-    
+    private static boolean isString(Expr expr) {
+        return expr.isConstant() && expr.getConstant().isString() ;
+    }
+
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    {
+    public NodeValue eval(List<NodeValue> args) {
         if ( pattern != null )
             return XSDFuncOp.strReplace(args.get(0), pattern, args.get(2)) ;
 
@@ -57,26 +54,9 @@ public class E_StrReplace extends ExprFunctionN
     }
 
     @Override
-    public Expr copy(ExprList newArgs)
-    {
+    public Expr copy(ExprList newArgs) {
         if ( newArgs.size() == 3 )
             return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), null) ;
         return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), newArgs.get(3)) ;
     }
-    
-    
-    
-//    @Override
-//    public NodeValue eval(NodeValue x, NodeValue y, NodeValue z)
-//    {
-//        if ( pattern == null )
-//            return XSDFuncOp.strReplace(x, y, z) ;
-//        return XSDFuncOp.strReplace(x, pattern, z) ;
-//    }
-//
-//    @Override
-//    public Expr copy(Expr arg1, Expr arg2, Expr arg3)
-//    {
-//        return new E_StrReplace(arg1, arg2, arg3) ;   
-//    }
 }
