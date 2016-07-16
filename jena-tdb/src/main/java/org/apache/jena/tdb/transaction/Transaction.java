@@ -269,16 +269,14 @@ public class Transaction
     
     public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
 
-    public void setActiveDataset(DatasetGraphTxn activedsg) { 
+    /*package*/ void setActiveDataset(DatasetGraphTxn activedsg) { 
         this.activedsg = activedsg ;
         if ( activedsg.getTransaction() != this )
             Log.warn(this, "Active DSG does not point to this transaction; "+this) ;
     }
 
-    public Journal getJournal()                     { return journal ; }
+    /*package*/ Journal getJournal()                     { return journal ; }
 
-//    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
-//    
     private int count = 0 ;
     private int peekCount = 0 ;
 
@@ -307,11 +305,11 @@ public class Transaction
         return x ;
     }
     
-    public void addComponent(NodeTableTrans ntt) {
+    /*package*/ void addComponent(NodeTableTrans ntt) {
         nodeTableTrans.add(ntt) ;
     }
 
-    public void addComponent(BlockMgrJournal blkMgr) {
+    /*package*/ void addComponent(BlockMgrJournal blkMgr) {
         blkMgrs.add(blkMgr) ;
     }
 

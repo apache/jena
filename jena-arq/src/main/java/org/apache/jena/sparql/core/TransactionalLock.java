@@ -81,11 +81,6 @@ public class TransactionalLock implements Transactional {
         this.lock = lock ;
     }
 
-    /** Transactional MRSW */
-    private TransactionalLock() {
-        this(new LockMRSW()) ;
-    }
-
     @Override
     public void begin(ReadWrite readWrite) {
         if ( isInTransaction() )

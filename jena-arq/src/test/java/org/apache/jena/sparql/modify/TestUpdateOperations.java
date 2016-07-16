@@ -113,13 +113,13 @@ public class TestUpdateOperations extends BaseTest
             @Override
             public void add(Quad quad) { 
                 counterIns.incrementAndGet() ;
-                get().add(quad) ;
+                super.add(quad) ;
             }
 
             @Override
             public void delete(Quad quad) {
                 counterDel.incrementAndGet() ;
-                get().delete(quad) ; 
+                super.delete(quad) ; 
             }
         } ;
         

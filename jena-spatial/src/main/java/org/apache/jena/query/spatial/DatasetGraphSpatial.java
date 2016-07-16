@@ -59,7 +59,7 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
     @Override
     public void begin(ReadWrite readWrite)
     {
-        get().begin(readWrite) ;
+        super.begin(readWrite) ;
         //textIndex.begin(readWrite) ;
         if ( readWrite == ReadWrite.WRITE )
         {
@@ -82,10 +82,10 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
             }
             needFinish = false ;
             //spatialIndex.commit() ;
-            get().commit() ;
+            super.commit() ;
         } catch (Throwable ex) { 
             log.warn("Exception in commit: "+ex.getMessage(), ex) ;
-            get().abort() ; 
+            super.abort() ; 
         }
     }
 
@@ -96,14 +96,14 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
             if ( needFinish )
                 spatialIndex.abortIndexing() ;
             //spatialIndex.abort() ;
-            get().abort() ;
+            super.abort() ;
         } catch (Throwable ex) { log.warn("Exception in abort: "+ex.getMessage(), ex) ; }
     }
 
     @Override
     public boolean isInTransaction()
     {
-        return get().isInTransaction() ;
+        return super.isInTransaction() ;
     }
 
     @Override
@@ -111,13 +111,13 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
     {
         try {
             //spatialIndex.end() ;
-            get().end() ;
+            super.end() ;
         } catch (Throwable ex) { log.warn("Exception in end: "+ex.getMessage(), ex) ; }
     }
     
     @Override
     public boolean supportsTransactions() {
-        return get().supportsTransactions() ;
+        return super.supportsTransactions() ;
     }
     
     /** Declare whether {@link #abort} is supported.
@@ -125,7 +125,7 @@ public class DatasetGraphSpatial extends DatasetGraphMonitor implements Transact
      */
     @Override
     public boolean supportsTransactionAbort() {
-        return get().supportsTransactionAbort() ;
+        return super.supportsTransactionAbort() ;
     }
 }
 

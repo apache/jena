@@ -101,7 +101,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     @Override
     public void begin(ReadWrite readWrite) {
         readWriteMode.set(readWrite);
-        get().begin(readWrite) ;
+        super.begin(readWrite) ;
         super.getMonitor().start() ;
     }
     
@@ -111,7 +111,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     @Override
     public void abort() {
         // Roll back all both objects, discarding any exceptions that occur
-        try { get().abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
+        try { super.abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
         try { textIndex.rollback(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
         readWriteMode.set(null) ;
         super.getMonitor().finish() ;
@@ -146,7 +146,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         
         // Phase 2
         try {
-            get().commit();
+            super.commit();
             if (readWriteMode.get() == ReadWrite.WRITE) {
                 textIndex.commit();
             }
@@ -177,7 +177,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         }
         
         try {
-            get().end() ;
+            super.end() ;
         }
         catch (Throwable t) {
             log.warn("Exception in end: " + t.getMessage(), t) ;
@@ -189,7 +189,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     
     @Override
     public boolean supportsTransactions() {
-        return get().supportsTransactions() ;
+        return super.supportsTransactions() ;
     }
     
     /** Declare whether {@link #abort} is supported.
@@ -197,7 +197,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      */
     @Override
     public boolean supportsTransactionAbort() {
-        return get().supportsTransactionAbort() ;
+        return super.supportsTransactionAbort() ;
     }
     
     @Override

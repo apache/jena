@@ -25,7 +25,7 @@ import org.apache.jena.tdb.store.DatasetGraphTDB;
 /**
  * A DatasetGraph that is a single transaction.
  * It does not support transactions.
- * It is the DatasetGraph apsect of a Transaction (single use).
+ * It is the DatasetGraph aspect of a Transaction (single use).
  */
 public class DatasetGraphTxn extends DatasetGraphWrapper {
     
