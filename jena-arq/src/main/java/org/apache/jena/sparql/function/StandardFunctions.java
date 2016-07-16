@@ -134,16 +134,13 @@ public class StandardFunctions
 
 //      5.6.2 fn:matches
 //      5.6.3 fn:replace c.f. SPARQL REPLACE.
-//      Not 5.6.4 fn:tokenize - returns a sequence.
         add(registry, xfn+"matches",        FN_Matches.class) ;
-        // Needs adapter to E_StrReplace (is it a good enough match?)
-//        add(registry, xfn+"replace",        FN_StrReplace.class) ;
-        // fn:replace
-        // fn:tokenize -> sequence
+        add(registry, xfn+"replace",        FN_StrReplace.class) ;
+
+//      Not 5.6.4 fn:tokenize - returns a sequence.
         
 //        4.7.2 fn:format-number
         add(registry, xfn+"format-number",  FN_FormatNumber.class) ;
-        
 
 //        4.4.1 fn:abs
 //        4.4.2 fn:ceiling

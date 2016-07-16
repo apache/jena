@@ -310,6 +310,14 @@ public class TestFunctions
     @Test public void exprReplace11()  { test("REPLACE('', '.', 'Z')",      NodeValue.makeString("")) ; }
     @Test public void exprReplace12()  { test("REPLACE('', '(a|b)?', 'Z')", NodeValue.makeString("Z")) ; }
 
+    @Test public void exprFnReplace01()  { test("fn:replace('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
+    @Test public void exprFnReplace02()  { test("fn:replace('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
+    @Test public void exprFnReplace03()  { test("fn:replace('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
+    
+    @Test public void exprFnReplace04()  { test("fn:replace('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)) ; }
+    @Test public void exprFnReplace05()  { test("fn:replace('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)) ; }
+    @Test public void exprFnReplace06()  { test("fn:replace('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
+
     // Bad group
     @Test public void exprReplace13()  { testEvalException("REPLACE('abc', '.*', '$1')") ; }
 
