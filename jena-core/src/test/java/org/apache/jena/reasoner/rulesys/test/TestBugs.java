@@ -635,7 +635,7 @@ public class TestBugs extends TestCase {
      */
     public void testGroundClosure2() {
         Flag myFlag = new Flag();
-        MapBuiltinRegistry.theRegistry.register(myFlag);
+        BuiltinRegistry.theRegistry.register(myFlag);
         List<Rule> rules = Rule.rulesFromURL("file:testing/reasoners/bugs/groundClosure2.rules");
         GenericRuleReasoner reasoner = new GenericRuleReasoner( rules );
         InfModel inf = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
@@ -792,7 +792,7 @@ public class TestBugs extends TestCase {
         assertEquals( culprit, ResourceFactory.createTypedLiteral( new Integer(42) ));
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 'foo').  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
         assertEquals( culprit, ResourceFactory.createPlainLiteral("foo"));
-        MapBuiltinRegistry.theRegistry.register( new SomeTriple() );
+        BuiltinRegistry.theRegistry.register( new SomeTriple() );
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?Y), someTriple(?X).");
         assertTrue( culprit.isLiteral() );
         Object val = ((Literal)culprit).getValue();

@@ -18,9 +18,8 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.util.*;
-
-import org.apache.jena.reasoner.rulesys.builtins.* ;
+import java.util.HashMap;
+import java.util.Map;
 
 /** * A registry for mapping functor names on java objects (instances 
  * of subclasses of Builtin) which implement their behvaiour.

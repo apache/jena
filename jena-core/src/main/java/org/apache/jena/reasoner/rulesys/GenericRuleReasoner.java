@@ -18,13 +18,23 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.impl.* ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.reasoner.IllegalParameterException;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerException;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.rulesys.impl.LPRuleStore;
+import org.apache.jena.reasoner.rulesys.impl.OWLRuleTranslationHook;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * A reasoner interface that is able to invoke any of the useful
