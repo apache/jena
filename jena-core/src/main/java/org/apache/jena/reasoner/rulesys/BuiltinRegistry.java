@@ -1,3 +1,7 @@
+package org.apache.jena.reasoner.rulesys;
+
+import org.apache.jena.reasoner.rulesys.builtins.*;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,35 +20,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.reasoner.rulesys;
-
-import java.util.*;
-
-import org.apache.jena.reasoner.rulesys.builtins.* ;
-
-/** * A registry for mapping functor names on java objects (instances 
- * of subclasses of Builtin) which implement their behvaiour.
- * <p>
- * This is currently implemented as a singleton to simply any future
- * move to support different sets of builtins.
- * 
- * @see Builtin
- */
-public class BuiltinRegistry {
-
-    /** The single global static registry */
+public abstract class BuiltinRegistry {
+    /** The default base registry */
     public static BuiltinRegistry theRegistry;
-    
-    /** Mapping from functor name to Builtin implementing it */
-    protected Map<String,Builtin> builtins = new HashMap<>();
-    
-    /** Mapping from URI of builtin to implementation */
-    protected Map<String,Builtin> builtinsByURI = new HashMap<>();
-    
-    // Static initilizer for the singleton instance
     static {
-        theRegistry = new BuiltinRegistry();
-        
+        theRegistry=new MapBuiltinRegistry();
         theRegistry.register(new Print());
         theRegistry.register(new AddOne());
         theRegistry.register(new LessThan());
@@ -82,66 +62,54 @@ public class BuiltinRegistry {
         theRegistry.register(new ListNotContains());
         theRegistry.register(new ListMapAsSubject());
         theRegistry.register(new ListMapAsObject());
-        
+
         theRegistry.register(new MakeInstance());
         theRegistry.register(new Table());
         theRegistry.register(new TableAll());
-        
+
         theRegistry.register(new MakeSkolem());
-        
+
         theRegistry.register(new Hide());
-        
+
         theRegistry.register(new StrConcat());
         theRegistry.register(new UriConcat());
         theRegistry.register(new Regex());
-        
+
         theRegistry.register(new Now());
-        
+
         // Special purposes support functions for OWL
         theRegistry.register(new AssertDisjointPairs());
+
     }
-    
+
     /**
-     * Construct an empty registry
+     * Register an implementation for a given builtin using its default name.
+     * @param impl the implementation of the builtin
      */
-    public BuiltinRegistry() {
-    }
-    
+
+    public abstract void register(Builtin impl);
     /**
      * Register an implementation for a given builtin functor.
      * @param functor the name of the functor used to invoke the builtin
      * @param impl the implementation of the builtin
      */
-    public void register(String functor, Builtin impl) {
-        builtins.put(functor, impl);
-        builtinsByURI.put(impl.getURI(), impl);
-    }
-   
-    /**
-     * Register an implementation for a given builtin using its default name.
-     * @param impl the implementation of the builtin
-     */
-    public void register(Builtin impl) {
-        builtins.put(impl.getName(), impl);
-        builtinsByURI.put(impl.getURI(), impl);
-    }
-    
+
+    public abstract void register(String functor, Builtin impl);
     /**
      * Find the implementation of the given builtin functor.
      * @param functor the name of the functor being invoked.
      * @return a Builtin or null if there is none registered under that name
      */
-    public Builtin getImplementation(String functor) {
-        return builtins.get(functor);
-    }
-    
+
+    public abstract Builtin getImplementation(String functor);
+
     /**
      * Find the implementation of the given builtin functor.
      * @param uri the URI of the builtin to be retrieved
      * @return a Builtin or null if there is none registered under that name
      */
-    public Builtin getImplementationByURI(String uri) {
-        return builtinsByURI.get(uri);
-    }
-    
+
+    public abstract Builtin getImplementationByURI(String uri);
+
+
 }

@@ -21,9 +21,16 @@ package org.apache.jena.reasoner.rulesys.test;
 import java.util.*;
 
 import org.apache.jena.assembler.test.AssemblerTestBase ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.rulesys.* ;
+import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
+
+import static org.apache.jena.reasoner.rulesys.Rule.parseRule;
+
 
 /**
     Your eyes will bleed with the number of backslashes required in the substitute
@@ -121,4 +128,43 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         rules.addAll( Rule.rulesFromURL( whereB ) );
         return rules;
         }
+
+    public void testRuleLoadingWithOverridenBuiltins() {
+        List<Node> savedNode=new ArrayList<>();
+        Builtin b= new BaseBuiltin() {
+            @Override
+            public String getName() {
+                return "groo";
+            }
+
+            @Override
+            public int getArgLength() {
+                return 1;
+            }
+
+            @Override
+            public void headAction(Node[] args, int length, RuleContext context) {
+                savedNode.add(getArg(0,args,context));
+            }
+
+
+        };
+        BuiltinRegistry r=new OverrideBuiltinRegistry(BuiltinRegistry.theRegistry);
+        r.register(b);
+        assertEquals(b,r.getImplementation("groo"));
+        List<Rule> rules=new ArrayList<>();
+        //
+        // note that the head action does not appear to fire unless we put a triple in the head as well..  is
+        // this expected?
+        //
+        rules.add(parseRule("[ (?instance rdf:type ?type) -> groo(?type) ]",r));
+        GenericRuleReasoner article=new GenericRuleReasoner(rules);
+        article.setMode(GenericRuleReasoner.FORWARD_RETE);
+        Model input=ModelFactory.createDefaultModel();
+        input.add(input.createResource(), RDF.type,input.createResource("http://example.com/Renegade"));
+        InfModel output=ModelFactory.createInfModel(article,input);
+        output.size(); // not optional, inferences are not run if we don't trigger them
+        assertEquals(1,savedNode.size());
+        assertEquals("http://example.com/Renegade",savedNode.get(0).getURI());
     }
+}

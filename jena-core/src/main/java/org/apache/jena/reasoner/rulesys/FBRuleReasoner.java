@@ -280,7 +280,7 @@ public class FBRuleReasoner implements RuleReasoner {
         // Create a dummy rule which tables the predicate ...
         Rule tablePredicateRule = new Rule("", 
                 new ClauseEntry[]{
-                    new Functor("table", new Node[] { predicate })
+                    new Functor("table", new Node[] { predicate },BuiltinRegistry.theRegistry)
                 }, 
                 new ClauseEntry[]{});
         // ... end append the rule to the ruleset
