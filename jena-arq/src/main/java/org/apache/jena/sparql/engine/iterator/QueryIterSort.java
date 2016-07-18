@@ -67,6 +67,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
     @Override
     public void requestCancel()
     {
+    	this.db.cancel();
         this.embeddedIterator.cancel() ;
         super.requestCancel() ;
     }
