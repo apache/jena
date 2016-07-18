@@ -22,26 +22,33 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.shared.* ;
 
 /**
-     
-    A base for transaction handlers - all it does is provide the canonical
-    implementation of executeInTransaction.
-*/
-public abstract class TransactionHandlerBase implements TransactionHandler
-    {
-    public TransactionHandlerBase()
-        { super(); }
+ * A base for transaction handlers - all it does is provide the
+ * canonical implementation of executeInTransaction.
+ */
+public abstract class TransactionHandlerBase implements TransactionHandler {
+    public TransactionHandlerBase() {
+        super() ;
+    }
 
     /**
-        Execute the command <code>c</code> within a transaction. If it
-        completes normally, commit the transaction and return the result.
-        Otherwise abort the transaction and throw a wrapped exception.
-    */
+     * Execute the command <code>c</code> within a transaction. If it completes normally,
+     * commit the transaction and return the result. Otherwise abort the transaction.
+     */
     @Override
-    public Object executeInTransaction( Command c )
-        {
-        begin();
-        try { Object result = c.execute(); commit(); return result; }
-        catch (JenaException e) { abort(); throw e ; }
-        catch (Throwable e) { abort(); throw new JenaException( e ); }
+    public Object executeInTransaction(Command c) {
+        begin() ;
+        try {
+            Object result = c.execute() ;
+            commit() ;
+            return result ;
         }
+        catch (JenaException e) { abortSilent() ; throw e ; }
+        catch (Throwable e)     { abortSilent() ; throw new JenaException(e) ; }
     }
+
+    /* Abort but don't let problmes with the transaction system itself cause loss of exception handling */ 
+    private void abortSilent() {
+        try { abort() ; } catch (Throwable th) {}
+    }
+}
+
