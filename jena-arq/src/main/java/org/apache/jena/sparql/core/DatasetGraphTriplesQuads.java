@@ -37,7 +37,7 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     }
 
     @Override
-    public void add(Node g, Node s, Node p, Node o) {
+    final public void add(Node g, Node s, Node p, Node o) {
         if ( Quad.isDefaultGraph(g) )
             addToDftGraph(s, p, o) ;
         else
@@ -45,7 +45,7 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     }
 
     @Override
-    public void delete(Node g, Node s, Node p, Node o) {
+    final public void delete(Node g, Node s, Node p, Node o) {
         if ( Quad.isDefaultGraph(g) )
             deleteFromDftGraph(s, p, o) ;
         else
@@ -57,8 +57,19 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
     protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
     
+//    // Ensure we loop back here
+//    @Override
+//    public Graph getDefaultGraph() {
+//        return GraphView.createDefaultGraph(this) ;
+//    }
+//
+//    @Override
+//    public Graph getGraph(Node graphNode) {
+//        return GraphView.createNamedGraph(this, graphNode) ;
+//    }
+
     // Default implementations - copy based.
-    
+      
     @Override
     public void setDefaultGraph(Graph graph) { 
         GraphUtil.addInto(getDefaultGraph(), graph) ;
