@@ -27,14 +27,16 @@ public final class AbortableComparator<E> implements Comparator<E>
 		this.baseComparator = comparator;
 	}
 	
-    /**
-        <code>AbandonSort</code> is the exception thrown from
-        <code>AbortableComparator</code> to abandon a sort.
-    */
+	/**
+        	<code>AbandonSort</code> is the exception thrown from
+        	<code>AbortableComparator</code> to abandon a sort.
+	 */
 	public static class AbandonSort extends RuntimeException 
-    {
+	{
 		private static final long serialVersionUID = 1L;
-    }
+	}
+	
+	public static enum Finish {COMPLETED, ABORTED}
 	
 	/**
 	    The test for whether the sort has been cancelled is
@@ -67,7 +69,7 @@ public final class AbortableComparator<E> implements Comparator<E>
 	    Sort the array <code>e</code> using this comparator
 	 	with the additional ability to abort the sort.
 	*/
-	public boolean abortableSort(E[] e) 
+	public Finish abortableSort(E[] e) 
 	{
 		try 
 		{ 
@@ -75,9 +77,9 @@ public final class AbortableComparator<E> implements Comparator<E>
 		}
 		catch (AbandonSort s) 
 		{ 
-			return true;
+			return Finish.ABORTED;
 		}
-		return false;
+		return Finish.COMPLETED;
 	}
 	
 	/**

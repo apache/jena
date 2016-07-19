@@ -36,73 +36,69 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingComparator ;
 
-/** 
- * Sort a query iterator.  The sort will happen in-memory unless the size of the
+/**
+ * Sort a query iterator. The sort will happen in-memory unless the size of the
  * iterator exceeds a configurable threshold. In that case, a disk sort is used.
  * 
  * @see SortedDataBag
  */
 
-public class QueryIterSort extends QueryIterPlainWrapper
-{
-	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
-	final SortedDataBag<Binding> db;
-	
-    public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context)
-    {
-        this(qIter, new BindingComparator(conditions, context), context) ;
-    }
+public class QueryIterSort extends QueryIterPlainWrapper {
+	private final QueryIterator embeddedIterator ; // Keep a record of the
+							// underlying source for
+							// .cancel.
+	final SortedDataBag<Binding> db ;
 
-    public QueryIterSort(final QueryIterator qIter, final Comparator<Binding> comparator, final ExecutionContext context)
-    {
-        super(null, context) ;
-        this.embeddedIterator = qIter ;
-        
-        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext());
-        this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
-        
-        this.setIterator(new SortedBindingIterator(qIter));
-    }
+	public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context) {
+		this(qIter, new BindingComparator(conditions, context), context) ;
+	}
 
-    @Override
-    public void requestCancel()
-    {
-    	this.db.cancel();
-        this.embeddedIterator.cancel() ;
-        super.requestCancel() ;
-    }
+	public QueryIterSort(final QueryIterator qIter, final Comparator<Binding> comparator,
+			final ExecutionContext context) {
+		super(null, context) ;
+		this.embeddedIterator = qIter ;
 
-    private class SortedBindingIterator extends IteratorDelayedInitialization<Binding> implements Closeable
-    {
-        private final QueryIterator qIter;
-        
-        public SortedBindingIterator(final QueryIterator qIter)
-        {
-            this.qIter = qIter;
-        }
-        
-        @Override
-        protected Iterator<Binding> initializeIterator()
-        {
-            try
-            {
-                db.addAll(qIter);
-                return db.iterator();
-            }
-            // Should we catch other exceptions too?  Theoretically the user should be using this
-            // iterator in a try/finally block, and thus will call close() themselves. 
-            catch (QueryCancelledException e)
-            {
-                close();
-                throw e;
-            }
-        }
+		ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext()) ;
+		this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(),
+				comparator) ;
 
-        @Override
-        public void close()
-        {
-            db.close();
-        }
-    }
-    
+		this.setIterator(new SortedBindingIterator(qIter)) ;
+	}
+
+	@Override
+	public void requestCancel() {
+		this.db.cancel() ;
+		this.embeddedIterator.cancel() ;
+		super.requestCancel() ;
+	}
+
+	private class SortedBindingIterator extends IteratorDelayedInitialization<Binding> implements Closeable {
+		private final QueryIterator qIter ;
+
+		public SortedBindingIterator(final QueryIterator qIter) {
+			this.qIter = qIter ;
+		}
+
+		@Override
+		protected Iterator<Binding> initializeIterator() {
+			try {
+				db.addAll(qIter) ;
+				return db.iterator() ;
+			}
+			// Should we catch other exceptions too? Theoretically
+			// the user should be using this
+			// iterator in a try/finally block, and thus will call
+			// close() themselves.
+			catch (QueryCancelledException e) {
+				close() ;
+				throw e ;
+			}
+		}
+
+		@Override
+		public void close() {
+			db.close() ;
+		}
+	}
+
 }

@@ -32,6 +32,7 @@ import java.util.NoSuchElementException ;
 import java.util.PriorityQueue ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.data.AbortableComparator.Finish;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.lib.Closeable ;
@@ -149,7 +150,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
             // never get around to using it anyway.
             
             E[] array = (E[]) memory.toArray();
-            if (!comparator.abortableSort(array)) 
+            if (comparator.abortableSort(array) == Finish.COMPLETED) 
             {
 	            Sink<E> serializer = serializationFactory.createSerializer(out);
 	            try
@@ -209,13 +210,8 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         // Constructing an iterator from this class is not thread-safe (just like all the the other methods)
         if (!finishedAdding && memSize > 1)
         {
-            // Again, some ugliness for speed
             E[] array = (E[]) memory.toArray();
-            if (comparator.abortableSort(array)) 
-            {
-            	// if we comment this back in, we lose the timeout message!
-            	// return Iter.nullIterator();
-            }
+            comparator.abortableSort(array); // don't care if we aborted or not
             memory = Arrays.asList(array);
         }
         
