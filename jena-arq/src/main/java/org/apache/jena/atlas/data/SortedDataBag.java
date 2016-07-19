@@ -101,9 +101,9 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
 		final Comparator<? super E> baseComparator;
 		
 		public CanAbortComparator(Comparator<? super E> comparator) 
-			{
+		{
 			this.baseComparator = comparator;
-			}
+		}
 
 		@Override public int compare(E o1, E o2) 
 		{	
@@ -119,9 +119,16 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
 		    Sort the array <code>e</code> using this comparator
 		 	with the additional ability to abort the sort.
 		*/
-		public boolean abortableSort(E[] e) {
-			try { Arrays.sort(e, this); }
-			catch (AbandonSort s) { return true; }
+		public boolean abortableSort(E[] e) 
+		{
+			try 
+			{ 
+				Arrays.sort(e, this); 
+			}
+			catch (AbandonSort s) 
+			{ 
+				return true;
+			}
 			return false;
 		}
 	}
