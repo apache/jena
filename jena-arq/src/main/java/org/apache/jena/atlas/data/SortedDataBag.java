@@ -69,21 +69,20 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     
     protected final ThresholdPolicy<E> policy;
     protected final SerializationFactory<E> serializationFactory;
-    protected final CanAbortComparator comparator;
+    protected final AbortableComparator<E> comparator;
     
     protected boolean finishedAdding = false;
     protected boolean spilled = false;
     protected boolean closed = false;
-    protected volatile boolean cancelled;
     
     public SortedDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<? super E> comparator)
     {
         this.policy = policy;
         this.serializationFactory = serializerFactory;
-        this.comparator = new CanAbortComparator(comparator);
+        this.comparator = new AbortableComparator<E>(comparator);
     }
     
-    private final class CanAbortComparator implements Comparator<E> 
+    private static final class AbortableComparator<E> implements Comparator<E> 
     	{
     	/**
     	    The test for whether the sort has been cancelled is
@@ -98,9 +97,11 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     	*/
 		int count = 0;
 		
+		protected volatile boolean cancelled;
+		
 		final Comparator<? super E> baseComparator;
 		
-		public CanAbortComparator(Comparator<? super E> comparator) 
+		public AbortableComparator(Comparator<? super E> comparator) 
 		{
 			this.baseComparator = comparator;
 		}
@@ -131,11 +132,20 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
 			}
 			return false;
 		}
+		
+		/**
+		    Arrange that the next on-frequency cancellation test
+		    in compare will succeed, aborting the sort. 
+		*/
+		public void cancel() 
+		{
+			cancelled = true;
+		}
 	}
 
     /**
         <code>AbandonSort</code> is the exception thrown from
-        <code>CanAbortComparator</code> to abandon a sort.
+        <code>AbortableComparator</code> to abandon a sort.
     */
 	public static class AbandonSort extends RuntimeException 
     {
@@ -148,7 +158,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
 	*/
 	public void cancel() 
 	{
-		cancelled = true;
+		comparator.cancel();
 	}
     
     protected void checkClosed()
