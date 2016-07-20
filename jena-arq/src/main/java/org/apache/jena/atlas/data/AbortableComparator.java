@@ -30,7 +30,7 @@ public final class AbortableComparator<E> implements Comparator<E>
 	/**
         	<code>AbandonSort</code> is the exception thrown from
         	<code>AbortableComparator</code> to abandon a sort.
-	 */
+	*/
 	public static class AbandonSort extends RuntimeException 
 	{
 		private static final long serialVersionUID = 1L;
@@ -38,30 +38,13 @@ public final class AbortableComparator<E> implements Comparator<E>
 	
 	public static enum Finish {COMPLETED, ABORTED}
 	
-	/**
-	    The test for whether the sort has been cancelled is
-	    performed every <code>cancelTestFrequency</code> comparisons.
-	    This reduces the (presumed) overhead of access to a
-	    volatile boolean.    	    
-	*/
-	static final int cancelTestFrequency = 10000;
-	
-	/**
-	    Count of the number of times this comparator has been called.
-	*/
-	int count = 0;
-	
 	protected volatile boolean cancelled;
 	
 	final Comparator<? super E> baseComparator;
 
 	@Override public int compare(E o1, E o2) 
 	{	
-		count += 1;
-		if (count % cancelTestFrequency == 0) 
-		{
-			if (cancelled) throw new AbandonSort();
-		}
+		if (cancelled) throw new AbandonSort();
 		return baseComparator.compare(o1, o2);
 	}
 	
