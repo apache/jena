@@ -46,7 +46,7 @@ public abstract class TransactionHandlerBase implements TransactionHandler {
         catch (Throwable e)     { abortSilent() ; throw new JenaException(e) ; }
     }
 
-    /* Abort but don't let problmes with the transaction system itself cause loss of exception handling */ 
+    /* Abort but don't let problems with the transaction system itself cause loss of exception handling */ 
     private void abortSilent() {
         try { abort() ; } catch (Throwable th) {}
     }
