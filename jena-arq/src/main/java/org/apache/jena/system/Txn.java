@@ -21,7 +21,6 @@ package org.apache.jena.system;
 import java.util.function.Supplier ;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.Transactional ;
 
 /** Application utilities for transactions.
@@ -41,7 +40,7 @@ public class Txn {
             txn.begin(ReadWrite.READ) ;
         try { r.run() ; }
         catch (Throwable th) {
-            onThrowable(txn);
+            onThrowable(th, txn);
             throw th ;
         }
         if ( ! b )
@@ -59,7 +58,7 @@ public class Txn {
                 txn.end() ;
             return x ;
         } catch (Throwable th) {
-            onThrowable(txn);
+            onThrowable(th, txn);
             throw th ;
         }
     }
@@ -71,7 +70,7 @@ public class Txn {
             txn.begin(ReadWrite.WRITE) ;
         try { r.run() ; }
         catch (Throwable th) {
-            onThrowable(txn);
+            onThrowable(th, txn);
             throw th ;
         }
         if ( !b ) {
@@ -90,7 +89,7 @@ public class Txn {
         X x = null ;
         try { x = r.get() ; } 
         catch (Throwable th) {
-            onThrowable(txn);
+            onThrowable(th, txn);
             throw th ;
         }
         if ( !b ) {
@@ -103,10 +102,10 @@ public class Txn {
     }
     
     // Attempt some kind of cleanup.
-    private static <T extends Transactional> void onThrowable(T txn) {
+    private static <T extends Transactional> void onThrowable(Throwable th, T txn) {
         try {
             txn.abort() ;
             txn.end() ;
-        } catch (JenaTransactionException ex) { }
+        } catch (Throwable th2) { th.addSuppressed(th2); }
     }
 }
