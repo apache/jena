@@ -38,18 +38,19 @@ public abstract class TransactionHandlerBase implements TransactionHandler {
     public Object executeInTransaction(Command c) {
         begin() ;
         Object result ;
-        try { result = c.execute() ; }
-        catch (JenaException e) { abortSilent() ; throw e ; }
-        catch (Throwable e)     { abortSilent() ; throw new JenaException(e) ; }
-        
-        // If this goes wrong, propagate the exception
-        commit() ;
-        return result ;
+        try {
+            result = c.execute() ;
+            commit() ;
+            return result ;
+        }
+        catch (JenaException e) { abort(e) ; throw e ; }
+        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
     }
 
     /* Abort but don't let problems with the transaction system itself cause loss of the exception */ 
-    private void abortSilent() {
-        try { abort() ; } catch (Throwable th) {}
+    private void abort(Throwable e) {
+        try { abort() ; }
+        catch (Throwable th) { e.addSuppressed(th); }
     }
 }
 
