@@ -83,13 +83,22 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         this.comparator = new AbortableComparator<E>(comparator);
     }
     
-	/**
-	    cancel arranges that further comparisons using the supplied
-	    comparator will abandon the sort in progress.
-	*/
+    /**
+	cancel arranges that further comparisons using the supplied
+	comparator will abandon the sort in progress.
+     */
 	public void cancel() 
 	{
 		comparator.cancel();
+	}
+	
+	/**
+		isCancelled is true iff cancel has been called on this
+		bags comparator. (Used in testing.)
+	*/
+	public boolean isCancelled()
+	{
+		return comparator.cancelled;
 	}
     
     protected void checkClosed()
