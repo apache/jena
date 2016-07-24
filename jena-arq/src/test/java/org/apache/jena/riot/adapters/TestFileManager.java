@@ -21,7 +21,11 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.ontology.Individual ;
+import org.apache.jena.ontology.OntModel ;
+import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.stream.TestLocationMapper ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
@@ -130,6 +134,21 @@ public class TestFileManager extends BaseTest
         } catch (NotFoundException ex) {}
     }
     
+    @Test public void testFileManagerReadOntModel() {
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) ;
+        FileManager.get().readModel(model, testingDir+"/data.ttl") ;
+        // Check
+        Individual ind = model.getIndividual("http://example.com/individual") ;
+        String t = ind.getOntClass().getURI() ;
+        assertEquals("http://example.com/T", t) ;
+        long c1 = model.size() ;
+        
+        model.loadImports();
+
+        long c2 = model.size() ;
+        assertEquals(c1,c2) ;
+    }
+
     
     @Test public void testLocationMappingURLtoFileOpen() {
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;

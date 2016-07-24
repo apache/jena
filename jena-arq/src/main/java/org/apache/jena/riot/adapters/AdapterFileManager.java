@@ -24,7 +24,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.stream.* ;
@@ -277,19 +276,17 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
             log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
 
         Lang lang = 
-            (syntax != null)
+            (syntax != null) 
             ? RDFLanguages.nameToLang(syntax)
             : RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML) ;
-    
-        if ( false ) {
-            RDFDataMgr.read(model, mappedURI, baseURI, lang);
-        } else {
-            if ( baseURI == null )
-                baseURI = SysRIOT.chooseBaseIRI(filenameOrURI) ;
-            try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
-                // May be overridden by model implementation.
-                model.read(in, baseURI, lang.getName()) ;
-            }
+
+        // Not : RDFDataMgr.read(model, mappedURI, baseURI, lang);
+        // Allow model.read to be overridden e.g. by OntModel which does import processing.   
+        if ( baseURI == null )
+            baseURI = SysRIOT.chooseBaseIRI(filenameOrURI) ;
+        try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
+            // May be overridden by model implementation.
+            model.read(in, baseURI, lang.getName()) ;
         }
         return model ;
     }
