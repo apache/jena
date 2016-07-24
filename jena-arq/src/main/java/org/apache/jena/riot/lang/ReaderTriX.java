@@ -112,7 +112,6 @@ public class ReaderTriX implements ReaderRIOT {
         State state = OUTER ;
         Node g = null ;
         List<Node> terms = new ArrayList<>() ; 
-        output.start() ;
         try { 
             while(parser.hasNext()) {
                 int event = parser.next() ;
@@ -229,7 +228,6 @@ public class ReaderTriX implements ReaderRIOT {
         } catch (XMLStreamException ex) {
             staxError(parser.getLocation(), "XML error: "+ex.getMessage()) ;
         }
-        output.finish() ;
     }
     
     private void add(Collection<Node> acc, Node node, int max, XMLStreamReader parser) {
