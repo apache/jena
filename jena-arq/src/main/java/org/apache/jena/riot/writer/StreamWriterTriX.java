@@ -63,6 +63,7 @@ public class StreamWriterTriX implements StreamRDF {
     @Override public void start() {
         if ( depth == 0 ) {
             StreamWriterTriX.startXML(out) ;
+            // Wirte using the element name from the W3C DTD.
             StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
             out.println() ;
         }

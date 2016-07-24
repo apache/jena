@@ -160,6 +160,8 @@ public class ReaderTriX implements ReaderRIOT {
                                 g = null ;
                                 break ;
                             case TriX.tagTriX:
+                            case TriX.tagTriXAlt:
+                                // We don't worry about mismatched tags.
                                 state = OUTER ;
                                 break ;
                         }
@@ -170,6 +172,7 @@ public class ReaderTriX implements ReaderRIOT {
                         
                         switch (tag) {
                             case TriX.tagTriX:
+                            case TriX.tagTriXAlt:
                                 if ( state != OUTER )
                                     staxErrorOutOfPlaceElement(parser) ;
                                 state = TRIX ;
