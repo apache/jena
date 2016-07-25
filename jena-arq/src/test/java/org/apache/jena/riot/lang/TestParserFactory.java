@@ -77,7 +77,6 @@ public class TestParserFactory extends BaseTest
         // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ;
         CatchParserOutput sink = new CatchParserOutput() ;
-        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();
@@ -104,7 +103,6 @@ public class TestParserFactory extends BaseTest
         // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserTurtle(tokenizer, "http://base/", sink) ;
         parserSetup(parser) ;
         parser.parse();
@@ -130,7 +128,6 @@ public class TestParserFactory extends BaseTest
         // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotParsers.createParserNQuads(tokenizer, sink) ;
         parserSetup(parser) ;
         parser.parse();

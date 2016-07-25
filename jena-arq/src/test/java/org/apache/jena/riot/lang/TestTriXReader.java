@@ -65,7 +65,10 @@ public class TestTriXReader extends BaseTest {
 //                  //{ "trix-ex-2.trix", null },  // Contains <integer> 
                   { DIR+"/trix-ex-3.trix", null },
                   { DIR+"/trix-ex-4.trix", null },
-                  { DIR+"/trix-ex-5.trix", null }
+                  { DIR+"/trix-ex-5.trix", null },
+                  // W3C DTD
+                  { DIR+"/trix-w3c-1.trix", DIR+"/trix-w3c-1.nq" },
+                  { DIR+"/trix-w3c-2.trix", DIR+"/trix-w3c-2.nq" }
                   });
     }
     
