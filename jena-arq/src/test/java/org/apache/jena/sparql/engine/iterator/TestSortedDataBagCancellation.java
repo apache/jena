@@ -234,6 +234,7 @@ public class TestSortedDataBagCancellation extends TestCase
 			trapCompare = true;
 		}
 
+		@Override
 		public int compare(Binding x, Binding y) 
 		{
 			if (trapCompare) throw new RuntimeException("compare() no longer allowed.");
