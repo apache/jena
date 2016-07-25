@@ -55,191 +55,179 @@ import junit.framework.TestCase;
 	test the SortedDataBag correctly?
  
 */
-public class TestSortedDataBagCancellation extends TestCase 
-{	
-	
-	static final BindingMap b1 = BindingFactory.create();
-	static final BindingMap b2 = BindingFactory.create();
-	static final BindingMap b3 = BindingFactory.create();
-	static final BindingMap b4 = BindingFactory.create();
-	
-	static
-	{
-		b1.add(Var.alloc("v1"), NodeFactory.createLiteral("alpha")); 
-		b2.add(Var.alloc("v2"), NodeFactory.createLiteral("beta"));
-		b3.add(Var.alloc("v3"), NodeFactory.createLiteral("gamma"));
-		b4.add(Var.alloc("v4"), NodeFactory.createLiteral("delta"));		
-	}
-	
-	final Context params = new Context();
-	
-	final OpExecutorFactory factory = new OpExecutorFactory() {
-		
-		@Override public OpExecutor create(ExecutionContext ec) {
-			throw new UnsupportedOperationException();
-		}
-	};
-	
-	final Graph activeGraph = new GraphMemPlain();
-	
-	final DatasetGraph dataset = DatasetGraphFactory.create();
-	
-	final List<SortCondition> conditions = new ArrayList<SortCondition>();
-	
-	final ExecutionContext ec = new ExecutionContext
-		(		
-		params,
-		activeGraph,
-		dataset,
-		factory
-		);
-	
-	final BindingComparator base_bc = new BindingComparator(conditions, ec);
-	final SpecialBindingComparator bc = new SpecialBindingComparator(base_bc, ec);
-	
-	QueryIteratorItems baseIter = new QueryIteratorItems();
-	
-	{
-		baseIter.bindings.add(b1);
-		baseIter.bindings.add(b2);
-		baseIter.bindings.add(b3);
-		baseIter.bindings.add(b4);;
-	}
-	
-	QueryIterSort qs = new QueryIterSort(baseIter, bc, ec);
+public class TestSortedDataBagCancellation extends TestCase {
 
-	/**
-		In this test, the iterator is not cancelled; 
-		all items should be delivered, and the compare
-		count should be monotonic-nondecreasing.
-	*/
-	@Test public void testIteratesToCompletion()
-	{
-		int count = 0;
-		assertEquals(0, count = bc.count);
-		Set<Binding> results = new HashSet<Binding>();
-		
-		assertTrue(qs.hasNext());
-		assertTrue(bc.count >= count); count = bc.count;
-		results.add(qs.next());
+    static final BindingMap b1 = BindingFactory.create();
+    static final BindingMap b2 = BindingFactory.create();
+    static final BindingMap b3 = BindingFactory.create();
+    static final BindingMap b4 = BindingFactory.create();
 
-		assertTrue(qs.hasNext());
-		assertTrue(bc.count >= count); count = bc.count;
-		results.add(qs.next());
+    static {
+        b1.add(Var.alloc("v1"), NodeFactory.createLiteral("alpha"));
+        b2.add(Var.alloc("v2"), NodeFactory.createLiteral("beta"));
+        b3.add(Var.alloc("v3"), NodeFactory.createLiteral("gamma"));
+        b4.add(Var.alloc("v4"), NodeFactory.createLiteral("delta"));
+    }
 
-		assertTrue(qs.hasNext());
-		assertTrue(bc.count >= count); count = bc.count;
-		results.add(qs.next());
+    final Context params = new Context();
 
-		assertTrue(qs.hasNext());
-		assertTrue(bc.count >= count); count = bc.count;
-		results.add(qs.next());
+    final OpExecutorFactory factory = new OpExecutorFactory() {
 
-		assertFalse(qs.hasNext());
-		
-		Set<Binding> expected = new HashSet<Binding>();
-		expected.add(b1);
-		expected.add(b2);
-		expected.add(b3);
-		expected.add(b4);
-		
-		assertEquals(expected, results);
-	}	
-	
-	/**
-		In this test, the iterator is cancelled after
-		the first result is delivered. Any attempt to
-		run the comparator should be trapped an exception
-		thrown. The iterators should deliver no more values.
-	 */
-	@Test public void testIteratesWithCancellation()
-	{
-		int count = 0;
-		assertEquals(0, count = bc.count);
-		Set<Binding> results = new HashSet<Binding>();
-		
-		assertTrue(qs.hasNext());
-		assertTrue(bc.count >= count); count = bc.count;
-		results.add(qs.next());
+        @Override
+        public OpExecutor create(ExecutionContext ec) {
+            throw new UnsupportedOperationException();
+        }
+    };
 
-		qs.cancel();
-		try 
-		{
-			bc.noMoreCalls();
-			while (qs.hasNext()) qs.next();
-		} 
-		catch (QueryCancelledException qe) 
-		{
-			assertTrue(qs.db.isCancelled());
-			return;
-			
-		}
-		fail("query was not cancelled");		
-	}	
-	
-	/**
-		A QueryIterator that delivers the elements of a list of bindings. 
-	*/
-	private static final class QueryIteratorItems extends QueryIteratorBase 
-	{
-		List<Binding> bindings = new ArrayList<Binding>();
-		int index = 0;
+    final Graph activeGraph = new GraphMemPlain();
 
-		@Override
-		public void output(IndentedWriter out, SerializationContext sCxt) {
-			out.write("a QueryIteratorItems");
-		}
+    final DatasetGraph dataset = DatasetGraphFactory.create();
 
-		@Override
-		protected boolean hasNextBinding() 
-		{
-			return index < bindings.size();
-		}
+    final List<SortCondition> conditions = new ArrayList<SortCondition>();
 
-		@Override
-		protected Binding moveToNextBinding()
-		{
-			index += 1;
-			return bindings.get(index - 1);
-		}
+    final ExecutionContext ec = new ExecutionContext(params, activeGraph, dataset, factory);
 
-		@Override
-		protected void closeIterator() 
-		{			
-		}
+    final BindingComparator base_bc = new BindingComparator(conditions, ec);
+    final SpecialBindingComparator bc = new SpecialBindingComparator(base_bc, ec);
 
-		@Override
-		protected void requestCancel() 
-		{			
-		}
-	}
-	
-	/**
-		A BindingComparator that wraps another BindingComparator
-		and counts how many times compare() is called.
-	*/
-	static class SpecialBindingComparator extends BindingComparator 
-	{
-		final BindingComparator base;
-		int count = 0;
-		boolean trapCompare = false;
-		
-		public SpecialBindingComparator(BindingComparator base, ExecutionContext ec)
-		{
-			super(base.getConditions(), ec);
-			this.base = base;
-		}
-		
-		public void noMoreCalls() {
-			trapCompare = true;
-		}
+    QueryIteratorItems baseIter = new QueryIteratorItems();
 
-		@Override
-		public int compare(Binding x, Binding y) 
-		{
-			if (trapCompare) throw new RuntimeException("compare() no longer allowed.");
-			count += 1;
-			return base.compare(x, y);
-		}
-	}
+    {
+        baseIter.bindings.add(b1);
+        baseIter.bindings.add(b2);
+        baseIter.bindings.add(b3);
+        baseIter.bindings.add(b4);
+        ;
+    }
+
+    QueryIterSort qs = new QueryIterSort(baseIter, bc, ec);
+
+    /**
+     * In this test, the iterator is not cancelled; all items should be
+     * delivered, and the compare count should be monotonic-nondecreasing.
+     */
+    @Test
+    public void testIteratesToCompletion() {
+        int count = 0;
+        assertEquals(0, count = bc.count);
+        Set<Binding> results = new HashSet<Binding>();
+
+        assertTrue(qs.hasNext());
+        assertTrue(bc.count >= count);
+        count = bc.count;
+        results.add(qs.next());
+
+        assertTrue(qs.hasNext());
+        assertTrue(bc.count >= count);
+        count = bc.count;
+        results.add(qs.next());
+
+        assertTrue(qs.hasNext());
+        assertTrue(bc.count >= count);
+        count = bc.count;
+        results.add(qs.next());
+
+        assertTrue(qs.hasNext());
+        assertTrue(bc.count >= count);
+        count = bc.count;
+        results.add(qs.next());
+
+        assertFalse(qs.hasNext());
+
+        Set<Binding> expected = new HashSet<Binding>();
+        expected.add(b1);
+        expected.add(b2);
+        expected.add(b3);
+        expected.add(b4);
+
+        assertEquals(expected, results);
+    }
+
+    /**
+     * In this test, the iterator is cancelled after the first result is
+     * delivered. Any attempt to run the comparator should be trapped an
+     * exception thrown. The iterators should deliver no more values.
+     */
+    @Test
+    public void testIteratesWithCancellation() {
+        int count = 0;
+        assertEquals(0, count = bc.count);
+        Set<Binding> results = new HashSet<Binding>();
+
+        assertTrue(qs.hasNext());
+        assertTrue(bc.count >= count);
+        count = bc.count;
+        results.add(qs.next());
+
+        qs.cancel();
+        try {
+            bc.noMoreCalls();
+            while (qs.hasNext())
+                qs.next();
+        } catch (QueryCancelledException qe) {
+            assertTrue(qs.db.isCancelled());
+            return;
+
+        }
+        fail("query was not cancelled");
+    }
+
+    /**
+     * A QueryIterator that delivers the elements of a list of bindings.
+     */
+    private static final class QueryIteratorItems extends QueryIteratorBase {
+        List<Binding> bindings = new ArrayList<Binding>();
+        int index = 0;
+
+        @Override
+        public void output(IndentedWriter out, SerializationContext sCxt) {
+            out.write("a QueryIteratorItems");
+        }
+
+        @Override
+        protected boolean hasNextBinding() {
+            return index < bindings.size();
+        }
+
+        @Override
+        protected Binding moveToNextBinding() {
+            index += 1;
+            return bindings.get(index - 1);
+        }
+
+        @Override
+        protected void closeIterator() {
+        }
+
+        @Override
+        protected void requestCancel() {
+        }
+    }
+
+    /**
+     * A BindingComparator that wraps another BindingComparator and counts how
+     * many times compare() is called.
+     */
+    static class SpecialBindingComparator extends BindingComparator {
+        final BindingComparator base;
+        int count = 0;
+        boolean trapCompare = false;
+
+        public SpecialBindingComparator(BindingComparator base, ExecutionContext ec) {
+            super(base.getConditions(), ec);
+            this.base = base;
+        }
+
+        public void noMoreCalls() {
+            trapCompare = true;
+        }
+
+        @Override
+        public int compare(Binding x, Binding y) {
+            if (trapCompare)
+                throw new RuntimeException("compare() no longer allowed.");
+            count += 1;
+            return base.compare(x, y);
+        }
+    }
 }
