@@ -1,0 +1,6 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX :     <http://example.com/>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+
+:T a owl:Class .
+:individual a :T .
