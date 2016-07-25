@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory ;
  *  </p>
  *  <p>Operations fall into the following categories:</p>
  *  <ul>
- *  <li>{@code read}    -- Read data from a location into a Model/Dataset etc</li>
+ *  <li>{@code read}    -- Read data from a location into a Model, Dataset, etc. The methods in this class treat all types of Model in the same way. For behavior specific to a subtype of Model, use the methods of that specific class.</li>
  *  <li>{@code loadXXX} -- Read data and return an in-memory object holding the data.</li>
  *  <li>{@code parse}   -- Read data and send to an {@link StreamRDF}</li>
  *  <li>{@code open}    -- Open a typed input stream to the location, using any alternative locations</li>
