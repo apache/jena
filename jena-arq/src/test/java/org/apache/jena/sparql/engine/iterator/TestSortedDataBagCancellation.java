@@ -167,7 +167,6 @@ public class TestSortedDataBagCancellation extends TestCase {
         } catch (QueryCancelledException qe) {
             assertTrue(qs.db.isCancelled());
             return;
-
         }
         fail("query was not cancelled");
     }
