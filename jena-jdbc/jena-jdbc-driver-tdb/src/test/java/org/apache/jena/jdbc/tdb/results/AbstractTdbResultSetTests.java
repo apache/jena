@@ -62,7 +62,7 @@ public abstract class AbstractTdbResultSetTests extends AbstractResultSetTests {
         // scenes and so we need a temporary fake final dataset for closing the
         // connection or we get an error that the underlying dataset is already
         // closed
-        connection.setJenaDataset(DatasetFactory.createMem());
+        connection.setJenaDataset(DatasetFactory.create());
         connection.close();
     }
 
