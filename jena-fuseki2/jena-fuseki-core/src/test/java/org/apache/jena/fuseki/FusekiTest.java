@@ -26,12 +26,11 @@ import org.apache.http.StatusLine ;
 import org.apache.http.client.methods.HttpOptions ;
 import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.impl.client.CloseableHttpClient ;
-import org.apache.http.impl.client.HttpClientBuilder ;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.riot.web.HttpResponseLib ;
 import org.apache.jena.web.HttpSC ;
 import org.junit.Assert ;
@@ -42,7 +41,6 @@ public class FusekiTest {
     public static void assertStringList(String str, String... expected) {
         str = str.replace(" ", "") ;
         String[] x = str.split(",") ;
-        int count = 0 ;
         for ( String ex : expected ) {
             Assert.assertTrue("Got: "+str+" - Does not contain "+ex, containsStr(ex, x)) ;
         }
@@ -63,9 +61,7 @@ public class FusekiTest {
     /** Do an HTTP Options. */
     public static String execOptions(String url) {
         // Prepare and execute
-        HttpResponseHandler handler = HttpResponseLib.nullResponse ;
-
-        try ( CloseableHttpClient httpClient = HttpClientBuilder.create().build() ) {
+        try ( CloseableHttpClient httpClient = HttpClients.createDefault() ) {
             HttpUriRequest request = new HttpOptions(url) ;
             HttpResponse response = httpClient.execute(request, (HttpContext)null);
 
@@ -77,10 +73,9 @@ public class FusekiTest {
                 String contentPayload = "" ;
                 if ( response.getEntity() != null )
                     contentPayload = EntityUtils.toString(response.getEntity()) ;
-                throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase(), contentPayload);
+                throw new HttpException(statusCode, statusLine.getReasonPhrase(), contentPayload);
             }
-            if (handler != null)
-                handler.handle(url, response);
+            HttpResponseLib.nullResponse.handle(url, response);
             return response.getFirstHeader(HttpNames.hAllow).getValue() ;
         } catch (IOException ex) { 
             throw new HttpException(ex);

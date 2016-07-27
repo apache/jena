@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.engine.http;
 
+import static java.util.stream.Collectors.toList;
+
 import java.nio.charset.StandardCharsets ;
 import java.util.* ;
-
 import org.apache.http.NameValuePair ;
 import org.apache.http.client.utils.URLEncodedUtils ;
 
@@ -60,19 +61,14 @@ public class Params
     /** Add a parameter.
      * @param name  Name of the parameter
      * @param value Value - May be null to indicate none - the name still goes.
+     * @return this Params for continued operation
      */
-    
-    public void addParam(String name, String value)
+    public Params addParam(String name, String value)
     {
         Pair p = new Pair(name, value) ;
         paramList.add(p) ;
-        List<String> x = params.get(name) ;
-        if ( x == null )
-        {
-            x = new ArrayList<>() ;
-            params.put(name, x) ;
-        }
-        x.add(value) ;
+        params.computeIfAbsent(name, n -> new ArrayList<>()).add(value);
+        return this;
     }
 
     /** Valueless parameter */
@@ -98,12 +94,7 @@ public class Params
     public void remove(String name)
     {
         // Absolute record
-        for ( Iterator<Pair> iter = paramList.iterator() ; iter.hasNext() ; )
-        {
-            Pair p = iter.next() ;
-            if ( p.getName().equals(name) )
-                iter.remove() ;
-        }
+        paramList.removeIf(p -> p.getName().equals(name));
         // Map
         params.remove(name) ;
     }
@@ -119,15 +110,7 @@ public class Params
     /** Get the names of parameters - one ocurrence */ 
     public List<String> names()
     {
-        List<String> names = new ArrayList<>() ;
-        for (Pair pair : paramList)
-        {
-            String s = pair.getName() ;
-            if ( names.contains(s) )
-                continue ;
-            names.add(s) ;
-        }
-        return names ; 
+        return paramList.stream().map(Pair::getName).distinct().collect(toList()); 
     }
 
     /** Query string, without leading "?" */ 
@@ -145,19 +128,11 @@ public class Params
         MultiValueException(String msg) { super(msg) ; }
     }
         
-    public static class Pair implements NameValuePair
-    { 
-        String name ;
-        String value ;
-
-        Pair(String name, String value) { setName(name) ; setValue(value) ; }
+    public static class Pair extends org.apache.jena.atlas.lib.Pair<String, String> implements NameValuePair { 
+        public Pair(String name, String value) { super(name, value); }    
         @Override
-        public String getName()  { return name ;  }
+        public String getName()  { return getLeft() ;  }
         @Override
-        public String getValue() { return value ; }
-
-        void setName(String name)   { this.name = name ; }
-        void setValue(String value) { this.value = value ; }
-        
+        public String getValue() { return getRight() ; }     
     }
 }

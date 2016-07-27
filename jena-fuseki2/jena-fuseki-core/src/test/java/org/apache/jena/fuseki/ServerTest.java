@@ -167,13 +167,10 @@ public class ServerTest {
     private static int choosePort(int... ports) {
         for (int port : ports) {
             try {
-                @SuppressWarnings("resource")
                 ServerSocket s = new ServerSocket(port) ;
                 s.close();
                 return s.getLocalPort() ; // OK to call after close.
-            } catch (IOException ex) { 
-                continue;
-            }
+            } catch (IOException ex) { }
         }
         throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }

@@ -38,7 +38,6 @@ import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair ;
-import org.apache.http.protocol.BasicHttpContext ;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.io.IO ;
@@ -1026,7 +1025,6 @@ public class HttpOp {
     // ---- Perform the operation!
     private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         httpClient = ensureClient(httpClient);
-        httpContext = ensureContext(httpContext);
         try {
             if (handler == null)
                 // This cleans up.
@@ -1063,10 +1061,7 @@ public class HttpOp {
     }
 
 	public static String readPayload(HttpEntity entity) throws IOException {
-		if (entity == null) {
-			return null;
-		}
-		return EntityUtils.toString(entity, ContentType.getOrDefault(entity).getCharset());
+        return entity == null ? null : EntityUtils.toString(entity, ContentType.getOrDefault(entity).getCharset());
 	}
 
     /**
@@ -1088,18 +1083,6 @@ public class HttpOp {
         return client != null ? client
                 : getDefaultHttpClient() != null ? getDefaultHttpClient()
                         : HttpClients.createSystem();
-    }
-
-    /**
-     * Ensures that a context is non-null, uses a new {@link BasicHttpContext}
-     * if none is provided
-     * 
-     * @param context
-     *            HTTP Context
-     * @return Non-null HTTP Context
-     */
-    private static HttpContext ensureContext(HttpContext context) {
-        return context != null ? context : new BasicHttpContext();
     }
 
     /**
