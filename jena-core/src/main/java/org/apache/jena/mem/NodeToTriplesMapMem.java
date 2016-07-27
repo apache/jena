@@ -43,6 +43,10 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
     @Override public boolean add( Triple t ) 
        {
        Object o = getIndexField( t );
+
+       // Feb 2016 : no measurable difference.
+       //TripleBunch s = bunchMap.getOrSet(o, (k)->new ArrayBunch()) ;
+       
        TripleBunch s = bunchMap.get( o );
        if (s == null) bunchMap.put( o, s = new ArrayBunch() );
        if (s.contains( t ))

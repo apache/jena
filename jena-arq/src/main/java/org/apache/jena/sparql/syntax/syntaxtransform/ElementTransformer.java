@@ -86,8 +86,7 @@ public class ElementTransformer {
     /** The primitive operation to apply a transformation to an Op */
     protected Element applyTransformation(ApplyTransformVisitor transformApply, Element element,
                                           ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
-        ElementWalker.walk(element, transformApply) ; // , beforeVisitor,
-                                                      // afterVisitor) ;
+        ElementWalker.walk(element, transformApply, beforeVisitor, afterVisitor) ;
         Element r = transformApply.result() ;
         return r ;
     }
@@ -205,7 +204,7 @@ public class ElementTransformer {
         public void visit(ElementDataset el) {
             Element sub = pop() ;
             Element el2 = transform.transform(el, sub) ;
-            push(el) ;
+            push(el2) ;
         }
 
         @Override
@@ -213,7 +212,7 @@ public class ElementTransformer {
             Node n = el.getGraphNameNode() ;
             Node n1 = transformNode(n) ;
             Element elt1 = pop() ;
-            Element el2 = transform.transform(el, n, elt1) ; 
+            Element el2 = transform.transform(el, n1, elt1) ; 
             push(el2) ;
         }
 
@@ -253,10 +252,8 @@ public class ElementTransformer {
 
         @Override
         public void visit(ElementService el) {
-            boolean b = el.getSilent() ;
             Node n = el.getServiceNode() ;
             Node n1 = transformNode(n) ;
-            Element elt = el.getElement() ;
             Element elt1 = pop() ;
             Element el2 = transform.transform(el, n1, elt1) ;
             push(el2) ;

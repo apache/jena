@@ -68,7 +68,7 @@ public class DynamicDatasets
     public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         Graph dft = new GraphUnionRead(dsg, defaultGraphs) ;
-        DatasetGraph dsg2 = new DatasetGraphMap(dft) ;
+        DatasetGraph dsg2 = new DatasetGraphMapLink(dft) ;
         
         // The named graphs.
         for ( Node gn : namedGraphs )
@@ -99,34 +99,31 @@ public class DynamicDatasets
     
     public static class DynamicDatasetGraph extends DatasetGraphReadOnly
     {
-        public DynamicDatasetGraph(DatasetGraph dsg)
-        {
+        public DynamicDatasetGraph(DatasetGraph dsg) {
             super(dsg) ;
         }
 
         private Graph unionGraph = null ;
-        
+
         @Override
-        public boolean containsGraph(Node graphNode)
-        {
+        public boolean containsGraph(Node graphNode) {
             if ( Quad.isUnionGraph(graphNode) ) return true ;
             if ( Quad.isDefaultGraphExplicit(graphNode)) return true ;
             return super.containsGraph(graphNode) ;
         }
-        
+
         // See also the GraphOps
         @Override
         public Graph getGraph(Node graphNode)
         {
-            if ( Quad.isUnionGraph(graphNode) )
-            {
+            if ( Quad.isUnionGraph(graphNode) ) {
                 if ( unionGraph == null )
                     unionGraph = GraphOps.unionGraph(super.getWrapped()) ;
                 return unionGraph ;
             }
-            if ( Quad.isDefaultGraphExplicit(graphNode))
+            if ( Quad.isDefaultGraph(graphNode))
                 return getDefaultGraph() ;
-            
+
             return super.getGraph(graphNode) ;
         }
     }

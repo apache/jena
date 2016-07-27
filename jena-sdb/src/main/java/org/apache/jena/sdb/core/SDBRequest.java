@@ -38,7 +38,7 @@ import org.apache.jena.sparql.util.Context ;
 public class SDBRequest extends StoreHolder
 {
     private PrefixMapping prefixMapping ;
-    private Query query ;
+    private final Query query ;
     
     // Per request unique variables.
     private VarAlloc varAlloc = new VarAlloc(AliasesSparql.VarBase) ;
@@ -46,7 +46,7 @@ public class SDBRequest extends StoreHolder
     // Set in SDBCompile.compile
     public boolean LeftJoinTranslation = true ;     // Does the DB support general join expressions? 
     public boolean LimitOffsetTranslation = false ; // Does the DB grok the Limit/Offset SQL?
-    public boolean DistinctTranslation = true ;     // Some DBs can't do DISTINCt on CLOBS.
+    public boolean DistinctTranslation = true ;     // Some DBs can't do DISTINCT on CLOBS.
     
     private Context context ;
 
@@ -63,6 +63,15 @@ public class SDBRequest extends StoreHolder
         this.context = new Context(context) ;
     }
 
+    public SDBRequest(Store store, PrefixMapping prefixMapping, Context context) {
+        super(store) ;
+        this.query = null ;
+        this.prefixMapping = prefixMapping ;
+        if ( context == null )
+            context = SDB.getContext() ;
+        this.context = new Context(context) ;
+    }
+    
     public SDBRequest(Store store, Query query)
     { 
         this(store, query, null) ;

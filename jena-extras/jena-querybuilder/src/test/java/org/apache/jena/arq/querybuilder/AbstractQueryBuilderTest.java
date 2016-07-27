@@ -19,6 +19,8 @@
 package org.apache.jena.arq.querybuilder;
 
 import static org.junit.Assert.*;
+
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -41,9 +43,22 @@ public class AbstractQueryBuilderTest {
 	}
 
 	private class TestBuilder extends AbstractQueryBuilder<TestBuilder> {
+		private HandlerBlock handlerBlock;
+		
+		public TestBuilder()
+		{
+			super();
+			handlerBlock = new HandlerBlock( query );
+			
+		}
 		@Override
 		public String toString() {
 			return "TestBuilder";
+		}
+
+		@Override
+		public HandlerBlock getHandlerBlock() {
+			return handlerBlock;
 		}
 	}
 

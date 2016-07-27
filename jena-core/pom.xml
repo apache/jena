@@ -22,12 +22,12 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Core</name>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -37,20 +37,6 @@
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
-
- <!--  here for testing only -->
-   <repositories>
-    <repository>
-      <id>sonatype_snapshot</id>
-      <name>Sonatype Snapshots</name>
-      <layout>default</layout>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <!--  end of testing only -->
 
   <dependencies>
 
@@ -68,31 +54,31 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
     </dependency>
-    
-     <dependency> 
-       <artifactId>commons-cli</artifactId> 
-       <groupId>commons-cli</groupId> 
-     </dependency> 
+
+     <dependency>
+       <artifactId>commons-cli</artifactId>
+       <groupId>commons-cli</groupId>
+     </dependency>
 
     <dependency>
       <groupId>org.xenei</groupId>
       <artifactId>junit-contracts</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>com.jayway.awaitility</groupId>
       <artifactId>awaitility</artifactId>
@@ -102,13 +88,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -274,25 +260,6 @@
           </execution>
         </executions>
       </plugin>
-      
-      <!--
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-      <!- - see: http://maven.apache.org/guides/mini/guide-attached-tests.html - ->
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-      </plugin>
-      -->
     </plugins>
   </build>
 

@@ -26,7 +26,6 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
@@ -40,8 +39,7 @@ import org.apache.jena.sparql.util.FmtUtils ;
  * </ul>
  */
 
-public class ParserProfileChecker extends ParserProfileBase // implements
-                                                            // ParserProfile
+public class ParserProfileChecker extends ParserProfileBase // implements ParserProfile
 {
     private boolean checkLiterals = true ;
 
@@ -49,8 +47,8 @@ public class ParserProfileChecker extends ParserProfileBase // implements
         super(prologue, errorHandler) ;
     }
 
-    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping) {
-        super(prologue, errorHandler, labelMapping) ;
+    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler, FactoryRDF factory) {
+        super(prologue, errorHandler, factory) ;
     }
 
     @Override
@@ -105,19 +103,11 @@ public class ParserProfileChecker extends ParserProfileBase // implements
 
     @Override
     public Node createURI(String x, long line, long col) {
-        try {
-            if ( RiotLib.isBNodeIRI(x) )
-                return RiotLib.createIRIorBNode(x) ;
-            else {
-                String resolvedIRI = resolveIRI(x, line, col) ;
-                return NodeFactory.createURI(resolvedIRI) ;
-            }
-        }
-        catch (RiotException ex) {
-            // Error was handled.
-            // errorHandler.error(ex.getMessage(), line, col) ;
-            throw ex ;
-        }
+        if ( RiotLib.isBNodeIRI(x) ) {}
+        else if ( RiotLib.isPrefixIRI(x) ) {}
+        else
+            x = resolveIRI(x, line, col) ;
+        return super.createURI(x, line, col) ;
     }
 
     @Override
@@ -134,14 +124,14 @@ public class ParserProfileChecker extends ParserProfileBase // implements
         return n ;
     }
 
-    @Override
-    public Node createStringLiteral(String lexical, long line, long col) {
-        return NodeFactory.createLiteral(lexical) ;
-    }
-
-    @Override
-    public Node createBlankNode(Node scope, String label, long line, long col) {
-        return labelMapping.get(scope, label) ;
-    }
-
+    // No checks
+//    @Override
+//    public Node createStringLiteral(String lexical, long line, long col) {
+//        return super.createStringLiteral(lexical, line, col) ;
+//    }
+//
+//    @Override
+//    public Node createBlankNode(Node scope, String label, long line, long col) {
+//        return super.createBlankNode(scope, label, line, col) ;
+//    }
 }

@@ -92,7 +92,8 @@ public class QueryEngineSDB extends QueryEngineBase
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
         this.originalOp = getOp() ;
-        // Enable transformations
+        // Enable transformations : use own choice of transformations.
+        // e.g. don't place filters
         // Op op = Algebra.optimize(originalOp, context) ;
         Op op = originalOp ;
         

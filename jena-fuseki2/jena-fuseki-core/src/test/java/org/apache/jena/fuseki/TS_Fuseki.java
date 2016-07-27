@@ -20,6 +20,7 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.fuseki.build.TestBuilder ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
@@ -33,6 +34,7 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestHttpOp.class
     , TestSPARQLProtocol.class
+    , TestHttpOperations.class
     , TestHttpOptions.class
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
@@ -42,6 +44,7 @@ import org.junit.runners.Suite ;
     , TestFileUpload.class
     , TestAdmin.class
     , TestServerReadOnly.class
+    , TestBuilder.class
 })
 
 public class TS_Fuseki extends ServerTest

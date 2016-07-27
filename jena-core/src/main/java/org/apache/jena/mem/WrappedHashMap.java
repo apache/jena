@@ -19,6 +19,7 @@
 package org.apache.jena.mem;
 
 import java.util.Map;
+import java.util.function.Function ;
 
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
@@ -29,6 +30,8 @@ import org.apache.jena.util.iterator.* ;
 public class WrappedHashMap implements BunchMap
     {
     protected final Map<Object, TripleBunch> map = CollectionFactory.createHashedMap();
+    
+    public WrappedHashMap() {}
     
     @Override
     public void clear()
@@ -45,6 +48,11 @@ public class WrappedHashMap implements BunchMap
     @Override
     public void put( Object key, TripleBunch value )
         { map.put( key, value ); }
+
+    @Override
+    public TripleBunch getOrSet( Object key, Function<Object, TripleBunch> setter) {
+        return map.computeIfAbsent(key, setter);
+    }
 
     @Override
     public void remove( Object key )

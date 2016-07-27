@@ -41,6 +41,8 @@ public class ModContext extends ModBase
 
     private Context context = new Context() ;
 
+    public ModContext() {}
+    
     @Override
     public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Symbol definition");

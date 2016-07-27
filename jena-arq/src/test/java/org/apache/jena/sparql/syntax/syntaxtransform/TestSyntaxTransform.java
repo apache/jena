@@ -76,11 +76,22 @@ public class TestSyntaxTransform extends BaseTest
                   "o", "1");
     }
 
-    @Test public void subst_query_11() { testQuery
-        ("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
-         "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
-         "o", "1") ; }
+    @Test public void subst_query_11() { 
+        testQuery("SELECT * { ?s ?p ?o { SELECT ?x { ?x ?p ?o } } }",
+                  "SELECT * { ?s ?p 1  { SELECT ?x { ?x ?p 1 } } }",
+                  "o", "1") ; }
 
+    @Test public void subst_query_20() { 
+        testQuery("SELECT * { ?s ?p ?g GRAPH ?g { ?s ?p ?g } }",
+                  "SELECT * { ?s ?p <urn:graph> GRAPH <urn:graph> { ?s ?p <urn:graph> } }",
+                  "g", "<urn:graph>") ; }
+
+    @Test public void subst_query_21() { 
+        testQuery("SELECT * { ?s ?p ?srv SERVICE ?srv { ?s ?p ?srv}}",
+                  "SELECT * { ?s ?p <urn:service> SERVICE <urn:service> { ?s ?p <urn:service>}}",
+                  "srv", "<urn:service>") ; }
+
+    
     @Test public void subst_update_01() { 
         testUpdate("DELETE { ?s <urn:p> ?x } WHERE {}", 
                    "DELETE { ?s <urn:p> <urn:x> } WHERE {}",

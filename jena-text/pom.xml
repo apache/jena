@@ -21,12 +21,12 @@
   <artifactId>jena-text</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Text Search</name>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -41,14 +41,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
     
     <dependency>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -96,14 +96,14 @@
       <scope>test</scope>
       <optional>true</optional>
       <exclusions>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-api</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-jdk14</artifactId>
-	</exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -121,97 +121,98 @@
     
     <resources>
       <resource>
-	<filtering>true</filtering>
-	<directory>src/main/resources</directory>
-	<includes>
-	  <include>org/apache/jena/query/text/properties.xml</include>
-	</includes>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/query/text/properties.xml</include>
+        </includes>
       </resource>
       <resource>
-	<filtering>false</filtering>
-	<directory>src/main/resources</directory>
-	<excludes>
-	  <exclude>org/apache/jena/query/text/properties.xml</exclude>
-	</excludes>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>org/apache/jena/query/text/properties.xml</exclude>
+        </excludes>
       </resource>
     </resources>
 
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
-	<configuration>
-	  <includes>
-	    <include>**/TS_*.java</include>
-	  </includes>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+          <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
+               <goals> <goal>test-jar-no-fork</goal> </goals> </execution> 
+               -->
+        </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-source-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>attach-sources</id>
-	    <goals>
-	      <goal>jar-no-fork</goal>
-	    </goals>
-	  </execution>
-	  <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
-	       <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<configuration>
-	  <version>true</version>
-	  <show>public</show>
-	  <quiet>true</quiet>
-	  <encoding>UTF-8</encoding>
-	  <windowtitle>${project.name} ${project.version}</windowtitle>
-	  <doctitle>${project.name} ${project.version}</doctitle>
-	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
-	<configuration>
-	  <encoding>UTF-8</encoding>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
-	<configuration>
-	  <overWriteReleases>false</overWriteReleases>
-	  <overWriteIfNewer>true</overWriteIfNewer>
-	</configuration>
-      </plugin>
-
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-eclipse-plugin</artifactId>
-	<configuration>
-	  <!-- By default, have separate Eclipse and maven build areas -->
-	  <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-	  <downloadSources>true</downloadSources>
-	  <downloadJavadocs>false</downloadJavadocs>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <!-- By default, have separate Eclipse and maven build areas -->
+          <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
       </plugin>
 
     </plugins>

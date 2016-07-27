@@ -35,7 +35,7 @@ public interface Dataset extends Transactional
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     
-    /** Set the background graph.  Can be set to null for none.  */
+    /** Set the default graph.  Can be set to null for none. */ 
     public void  setDefaultModel(Model model) ;
 
     /** Get a graph by name as a Jena Model */
@@ -62,12 +62,26 @@ public interface Dataset extends Transactional
     /** Get the context associated with this dataset */
     public Context getContext() ;
 
-    /** Does this dataset support transactions?
-     *  Supporting transactions mean that the dataset implementation
-     *  provides {@link #begin}, {@link #commit}, {@link #abort}, {@link #end}
-     *  which otherwise may throw {@link UnsupportedOperationException}
+    /**
+     * Does this dataset support transactions? Supporting transactions means that
+     * the dataset implementation provides {@link #begin}, {@link #commit},
+     * {@link #end} which otherwise may throw
+     * {@link UnsupportedOperationException}.
+     * <p>
+     * See {@link #supportsTransactionAbort()} for {@link #abort}.
+     * A {@code Dataset} that provides functionality across independent systems
+     * can not provide all features strong guarantees. For example, they may use MRSW
+     * locking and some isolation control. Specifically, they do not necessarily
+     * provide {@link #abort}.
+     * <p>
+     * In addition, check details of a specific implementation.
      */
     public boolean supportsTransactions() ;
+    
+    /** Declare whether {@link #abort} is supported.
+     *  This goes along with clearing up after exceptions inside application transaction code.
+     */
+    public boolean supportsTransactionAbort() ;
     
     /** Start either a READ or WRITE transaction */ 
     @Override

@@ -80,11 +80,8 @@ public class OpQuadPattern extends Op0
     
     /** Is this quad pattern referring to the default graph by quad transformation or explict naming? */ 
     public boolean isDefaultGraph()         { return Quad.isDefaultGraph(graphNode) ; }
-    
-    /** Is this quad pattern explicitly naming the default graph? */ 
-    public boolean isExplicitDefaultGraph() { return Quad.isDefaultGraphExplicit(graphNode) ; }
+
     /** Is this quad pattern explicitly naming the union graph? */
-    
     public boolean isUnionGraph()           { return Quad.isUnionGraph(graphNode) ; }
     
     @Override

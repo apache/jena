@@ -107,7 +107,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         return null ;
     }
     
-    // Add the "bridge" that gets the lecical forms etc for the projected, or all, variables. 
+    // Add the "bridge" that gets the lexical forms etc for the projected, or all, variables. 
     private class SqlNodesFinisher extends OpVisitorBase
     {
         private boolean justProjectVars ;

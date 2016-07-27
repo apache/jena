@@ -158,7 +158,7 @@ public class Rule implements ClauseEntry {
                 else
                 {
                     throw new ReasonerException(
-                        "Undefined Functor " + ( (Functor) elt ).getName() + " in " + toShortString() );
+                            "(allMonotonic) Undefined Functor " + ( (Functor) elt ).getName() + " in " + toShortString() );
                 }
             }
         }
@@ -376,7 +376,7 @@ public class Rule implements ClauseEntry {
         for (int i = 0; i < args.length; i++) {
             cargs[i] = cloneNode(args[i], vmap, env);
         }
-        Functor fn = new Functor(f.getName(), cargs);
+        Functor fn = new Functor(f.getName(), cargs, f.getImplementor());
         fn.setImplementor(f.getImplementor());
         return fn;
     }
@@ -482,19 +482,31 @@ public class Rule implements ClauseEntry {
 // parser access
 
     /**
-     * Parse a string as a rule.
+     * Parse a string as a rule,  using the default BuiltinRegistry to resolve functor names
+     *
      * @throws ParserException if there is a problem
      */
     public static Rule parseRule(String source) throws ParserException {
-        Parser parser = new Parser(source);
+        return parseRule(source,BuiltinRegistry.theRegistry);
+    }
+
+    /**
+     * Parse a string as a rule using a specified BuiltinRegistry to resolve functor names
+     *
+     * @param source the source string for the rule
+     * @param registry the BuiltinRegistry used to resolve functor names
+     * @throws ParserException if there is a problem
+     */
+    public static Rule parseRule(String source,BuiltinRegistry registry) throws ParserException {
+        Parser parser = new Parser(source,registry);
         return parser.parseRule();
     }
-    
+
     /**
      * Answer the list of rules parsed from the given URL.
      * @throws RulesetNotFoundException
      */
-    public static List<Rule> rulesFromURL( String uri ) {
+    public static List<Rule> rulesFromURL( String uri,BuiltinRegistry registry) {
         BufferedReader br = null;
         try {
             InputStream in = FileManager.get().open(uri);
@@ -505,6 +517,14 @@ public class Rule implements ClauseEntry {
             if (br != null) try { br.close(); } catch (IOException e2) {}
         }
     }
+
+    /**
+     * Answer the list of rules parsed from the given URL.
+     * @throws RulesetNotFoundException
+     */
+    public static List<Rule> rulesFromURL( String uri) {
+        return rulesFromURL(uri,BuiltinRegistry.theRegistry);
+    }
         
     /**
      * Processes the source reader stripping off comment lines and noting prefix
@@ -512,7 +532,7 @@ public class Rule implements ClauseEntry {
      * Returns a parser which is bound to the stripped source text with 
      * associated prefix and rule inclusion definitions.
     */
-    public static Parser rulesParserFromReader( BufferedReader src ) {
+    public static Parser rulesParserFromReader( BufferedReader src, BuiltinRegistry registry ) {
        try {
            StringBuilder result = new StringBuilder();
            String line;
@@ -557,7 +577,7 @@ public class Rule implements ClauseEntry {
                    result.append("\n");
                }
            }
-           Parser parser = new Parser(result.toString());
+           Parser parser = new Parser(result.toString(),registry);
            parser.registerPrefixMap(prefixes);
            parser.addRulesPreload(preloadedRules);
            return parser;
@@ -565,6 +585,16 @@ public class Rule implements ClauseEntry {
        catch (IOException e) 
            { throw new WrappedIOException( e ); }
    }
+
+    /**
+     * Processes the source reader stripping off comment lines and noting prefix
+     * definitions (@prefix) and rule inclusion commands (@include).
+     * Returns a parser which is bound to the stripped source text with
+     * associated prefix and rule inclusion definitions.
+     */
+    public static Parser rulesParserFromReader( BufferedReader src) {
+       return rulesParserFromReader(src,BuiltinRegistry.theRegistry);
+    }
 
     /** 
      * Helper function find a URI argument in the current string,
@@ -644,8 +674,17 @@ public class Rule implements ClauseEntry {
      * @return a list of rules
      * @throws ParserException if there is a problem
      */
+    public static List<Rule> parseRules(String source,BuiltinRegistry registry) throws ParserException {
+        return parseRules(new Parser(source,registry));
+    }
+
+    /**
+     * Parse a string as a list a rules.
+     * @return a list of rules
+     * @throws ParserException if there is a problem
+     */
     public static List<Rule> parseRules(String source) throws ParserException {
-        return parseRules(new Parser(source));
+        return parseRules(source,BuiltinRegistry.theRegistry);
     }
     
 
@@ -658,13 +697,17 @@ public class Rule implements ClauseEntry {
      * No embedded spaces supported.
      */
     public static class Parser {
-        
+
+
         /** Tokenizer */
         private Tokenizer stream;
         
         /** Look ahead, null if none */
         private String lookahead;
-        
+
+        // registry for builtin name lookup
+        private final BuiltinRegistry registry;
+
         // Literal parse state flags
         private static final int NORMAL = 0;
         private static final int STARTED_LITERAL = 1;
@@ -691,9 +734,10 @@ public class Rule implements ClauseEntry {
          * Constructor
          * @param source the string to be parsed
          */
-        Parser(String source) {
+        Parser(String source,BuiltinRegistry registry) {
             stream = new Tokenizer(source, "()[], \t\n\r", "'\"", true);
             lookahead = null;
+            this.registry=registry;
         }
         
         /**
@@ -859,7 +903,7 @@ public class Rule implements ClauseEntry {
                 }
                 return NodeFactory.createURI(exp);
             } else if (peekToken().equals("(")) {
-                Functor f = new Functor(token, parseNodeList(), BuiltinRegistry.theRegistry);
+                Functor f = new Functor(token, parseNodeList(), registry);
                 return Functor.makeFunctorNode( f );
             } else if (token.equals("'") || token.equals("\"")) {
                 // A plain literal
@@ -968,7 +1012,7 @@ public class Rule implements ClauseEntry {
             } else {
                 String name = nextToken();
                 List<Node> args = parseNodeList();
-                Functor clause = new Functor(name, args, BuiltinRegistry.theRegistry);
+                Functor clause = new Functor(name, args, registry);
                 if (clause.getImplementor() == null) {
                     // Not a.error error becase later processing can add this
                     // implementation to the registry

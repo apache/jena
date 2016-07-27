@@ -43,15 +43,19 @@ public class PrefixMappingImpl implements PrefixMapping
         URItoPrefix = CollectionFactory.createHashedMap(); 
         }
     
-    protected void set( String prefix, String uri )
-        {
+    protected void set(String prefix, String uri) {
         prefixToURI.put(prefix, uri) ;
         URItoPrefix.put(uri, prefix) ;
-        }
-    
-    protected String get( String prefix )
-        { return prefixToURI.get( prefix ); }
-           
+    }
+
+    protected String get(String prefix) {
+        return prefixToURI.get(prefix) ;
+    }
+
+    protected void remove(String prefix) {
+        prefixToURI.remove(prefix) ;
+    }
+
     @Override
     public PrefixMapping lock()
         { 
@@ -74,8 +78,8 @@ public class PrefixMappingImpl implements PrefixMapping
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
-        prefixToURI.remove( prefix );
-        regenerateReverseMapping();
+        remove(prefix);
+        regenerateReverseMapping() ;
         return this;
         }
     

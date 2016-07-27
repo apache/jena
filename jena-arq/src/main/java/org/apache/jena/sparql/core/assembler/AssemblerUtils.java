@@ -59,7 +59,6 @@ public class AssemblerUtils
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
         registerDataset(InMemDatasetAssembler.getType(),    new InMemDatasetAssembler()) ;
-        registerDataset(DatasetNullAssembler.getType(),     new DatasetNullAssembler()) ;
     }
     
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
@@ -69,11 +68,16 @@ public class AssemblerUtils
         register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
     }
 
+    /** Register an assembler that creates a dataset */
+    static public void registerModel(Resource r, Assembler a) {
+        register(ConstAssembler.general(), r, a, JA.Model) ;
+    }
+
     /** Register an addition assembler */  
     static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
         registerAssembler(g, r, a) ;
         if ( superType != null && ! superType.equals(r) ) 
-            modelExtras.add(r, RDFS.subClassOf, DatasetAssembler.getType()) ;
+            modelExtras.add(r, RDFS.subClassOf, superType) ;
     }
     
     /** register */ 

@@ -24,12 +24,12 @@ import static org.apache.jena.sparql.util.VarUtils.addVarsFromQuad ;
 import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriple ;
 import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriplePath ;
 
+import java.io.PrintStream ;
 import java.util.HashSet ;
 import java.util.List ;
-import java.util.Map ;
-import java.util.Map.Entry ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -42,6 +42,10 @@ import org.apache.jena.sparql.util.VarUtils ;
 
 public class VarFinder
 {
+    public static VarFinder process(Op op) {
+        return new VarFinder(op) ;
+    }
+
     // See also VarUtils and OpVars.
     // This class is specific to the needs of the main query engine and scoping of variables
     
@@ -63,14 +67,34 @@ public class VarFinder
 
     VarUsageVisitor varUsageVisitor ;
     
-    public VarFinder(Op op)
+    private VarFinder(Op op)
     { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
-    public Set<Var> getOpt() { return varUsageVisitor.optDefines ; }
-    public Set<Var> getFilter() { return varUsageVisitor.filterMentions ; }
-    public Set<Var> getAssign() { return varUsageVisitor.assignMentions ; }
-    public Set<Var> getFixed() { return varUsageVisitor.defines ; }
+    public Set<Var> getOpt()        { return varUsageVisitor.optDefines ; }
+    public Set<Var> getFilter()     { return varUsageVisitor.filterMentions ; }
+    public Set<Var> getFilterOnly() { return varUsageVisitor.filterMentionsOnly ; }
+    public Set<Var> getAssign()     { return varUsageVisitor.assignMentions ; }
+    public Set<Var> getFixed()      { return varUsageVisitor.defines ; }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder() ;
+        sb.append("Fixed:").append(getFixed()) ;
+        sb.append(", Filter:").append(getFilter()) ;
+        sb.append(", Filter2:").append(getFilterOnly()) ;
+        sb.append(", Opt:").append(getOpt()) ;
+        sb.append(", Assign:").append(getAssign()) ;
+        return sb.toString() ;
+    }
+    
+    public void print(PrintStream out) {
+        out.printf("  Filter:  %s\n", getFilter()) ;
+        out.printf("  Filter2: %s\n", getFilterOnly()) ;
+        out.printf("  Fixed :  %s\n", getFixed()) ;
+        out.printf("  Opt:     %s\n", getOpt()) ;
+        out.printf("  Assign:  %s\n", getAssign()) ;
+    }
+
     private static class VarUsageVisitor 
         //extends OpVisitorBase
         implements OpVisitor
@@ -81,22 +105,30 @@ public class VarFinder
             return v;
         }
 
-        Set<Var> defines        = null;
-        Set<Var> optDefines     = null;
-        Set<Var> filterMentions = null;
-        Set<Var> assignMentions = null;
+        // Fixed by pattern
+        Set<Var> defines            = null ;
+        // Fixed in optional
+        Set<Var> optDefines         = null ;
+        // Used in a filter
+        Set<Var> filterMentions     = null ;
+        // Used in a filter, before defined
+        Set<Var> filterMentionsOnly = null ;
+        // Used in assign or extend expression
+        Set<Var> assignMentions     = null ;
 
         VarUsageVisitor() {
             defines = new HashSet<>();
             optDefines = new HashSet<>();
             filterMentions = new HashSet<>();
+            filterMentionsOnly = new HashSet<>();
             assignMentions = new HashSet<>();
         }
 
-        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions) {
+        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _filterMentions2, Set<Var> _assignMentions) {
             defines = _defines;
             optDefines = _optDefines;
             filterMentions = _filterMentions;
+            filterMentionsOnly = _filterMentions2 ;
             assignMentions = _assignMentions;
         }
 
@@ -153,6 +185,7 @@ public class VarFinder
             defines.addAll(usage.defines);
             optDefines.addAll(usage.optDefines);
             filterMentions.addAll(usage.filterMentions);
+            filterMentionsOnly.addAll(usage.filterMentionsOnly);
             assignMentions.addAll(usage.assignMentions);
         }
 
@@ -174,13 +207,22 @@ public class VarFinder
         private void mergeMinusDiff(Op left, Op right) {
             mergeVars(left) ;
             VarUsageVisitor usage = VarUsageVisitor.apply(right);
-            // Everything in the right side is really a filter.  
+            // Everything in the right side is really a filter.
+            combinefilterMentions(this, usage.filterMentionsOnly) ;
+            
             filterMentions.addAll(usage.defines) ;
             filterMentions.addAll(usage.optDefines) ;
             filterMentions.addAll(usage.filterMentions) ;
             filterMentions.addAll(usage.assignMentions) ;
         }
 
+        private static void combinefilterMentions(VarUsageVisitor usage, Set<Var> mentions) {
+            for ( Var v : mentions ) {
+                if ( ! usage.defines.contains(v) )
+                    usage.filterMentionsOnly.add(v) ;
+            }
+        }
+        
         @Override
         public void visit(OpConditional opLeftJoin) {
             leftJoin(opLeftJoin.getLeft(), opLeftJoin.getRight(), null);
@@ -193,11 +235,13 @@ public class VarFinder
             defines.addAll(leftUsage.defines);
             optDefines.addAll(leftUsage.optDefines);
             filterMentions.addAll(leftUsage.filterMentions);
+            filterMentionsOnly.addAll(leftUsage.filterMentionsOnly);
             assignMentions.addAll(leftUsage.assignMentions);
 
             optDefines.addAll(rightUsage.defines); // Asymmetric.
             optDefines.addAll(rightUsage.optDefines);
             filterMentions.addAll(rightUsage.filterMentions);
+            filterMentionsOnly.addAll(rightUsage.filterMentionsOnly);
             assignMentions.addAll(rightUsage.assignMentions);
 
             // Remove any definites that are in the optionals
@@ -205,14 +249,46 @@ public class VarFinder
             optDefines.removeAll(leftUsage.defines);
 
             // And the associated filter.
-            if ( exprs != null )
+            if ( exprs != null ) {
+                processExpr(exprs, rightUsage.defines) ;
                 exprs.varsMentioned(filterMentions);
+            }
+        }
+
+        // additionalDefines - set of variables which are defined is the filter is executed. 
+        private void processExpr(ExprList exprs, Set<Var> additionalDefines) {
+            Set<Var> vars = exprs.getVarsMentioned() ;
+            filterMentions.addAll(vars) ;
+            for ( Var v : vars ) {
+                if ( ! defines.contains(v) && (additionalDefines == null || ! additionalDefines.contains(v) ) )
+                    filterMentionsOnly.add(v) ;
+            }
         }
 
         @Override
         public void visit(OpUnion opUnion) {
-            mergeVars(opUnion.getLeft());
-            mergeVars(opUnion.getRight());
+            VarUsageVisitor usage1 = VarUsageVisitor.apply(opUnion.getLeft());
+            VarUsageVisitor usage2 = VarUsageVisitor.apply(opUnion.getRight());
+
+            // Fixed both sides.
+            Set<Var> fixed = SetUtils.intersection(usage1.defines, usage2.defines) ;  
+            defines.addAll(fixed) ;
+            
+            // Fixed one side or the other, not both.
+            Set<Var> notFixed = SetUtils.symmetricDifference(usage1.defines, usage2.defines) ;
+            optDefines.addAll(notFixed) ;                              
+
+            optDefines.addAll(usage1.optDefines);
+            optDefines.addAll(usage2.optDefines);
+            
+            filterMentions.addAll(usage1.filterMentions);
+            filterMentions.addAll(usage2.filterMentions);
+            
+            filterMentionsOnly.addAll(usage1.filterMentionsOnly);
+            filterMentionsOnly.addAll(usage2.filterMentionsOnly);
+            
+            assignMentions.addAll(usage1.assignMentions);
+            assignMentions.addAll(usage2.assignMentions);
         }
         
         @Override
@@ -228,28 +304,28 @@ public class VarFinder
 
         @Override
         public void visit(OpFilter opFilter) {
-            opFilter.getExprs().varsMentioned(filterMentions);
             opFilter.getSubOp().visit(this);
+            processExpr(opFilter.getExprs(), null) ;
         }
 
         @Override
         public void visit(OpAssign opAssign) {
             opAssign.getSubOp().visit(this);
-            processVarExprList(opAssign.getVarExprList());
+            processAssignVarExprList(opAssign.getVarExprList());
         }
 
         @Override
         public void visit(OpExtend opExtend) {
             opExtend.getSubOp().visit(this);
-            processVarExprList(opExtend.getVarExprList());
+            processAssignVarExprList(opExtend.getVarExprList());
         }
-
-        private void processVarExprList(VarExprList varExprList) {
-            Map<Var, Expr> map = varExprList.getExprs();
-            for ( Entry<Var, Expr> e : map.entrySet() ) {
-                defines.add(e.getKey());
-                e.getValue().varsMentioned(assignMentions);
-            }
+        
+        private void processAssignVarExprList(VarExprList varExprList) {
+            varExprList.forEachVarExpr((v,e)-> {
+                defines.add(v) ; // Expression may eval to error -> unset? 
+                if ( e != null )
+                    e.varsMentioned(assignMentions);
+            }) ;
         }
 
         @Override
@@ -259,10 +335,12 @@ public class VarFinder
             subUsage.defines.retainAll(vars);
             subUsage.optDefines.retainAll(vars);
             subUsage.filterMentions.retainAll(vars) ;
+            subUsage.filterMentionsOnly.retainAll(vars) ;
             subUsage.assignMentions.retainAll(vars) ;
             defines.addAll(subUsage.defines);
             optDefines.addAll(subUsage.optDefines);
             filterMentions.addAll(subUsage.filterMentions);
+            filterMentionsOnly.addAll(subUsage.filterMentionsOnly);
             assignMentions.addAll(subUsage.assignMentions);
         }
 
@@ -315,12 +393,10 @@ public class VarFinder
 
         @Override
         public void visit(OpGroup opGroup) {
-            // Not subOp.
+            // Only the group variables are visible.
+            // So not the subOp, and not expressions.
             VarExprList varExprs = opGroup.getGroupVars() ;
-            varExprs.getExprs().forEach((v,expr)->{
-                addVar(defines, v) ;
-                // Not the expressions.
-            }) ;
+            varExprs.forEachVar((v)->addVar(defines, v)) ;
         }
 
         @Override
@@ -334,6 +410,17 @@ public class VarFinder
                 Set<Var> vars = expr.getVarsMentioned() ;
                 defines.addAll(vars) ;
             }
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder() ;
+            sb.append("Fixed:").append(defines) ;
+            sb.append(", Filter:").append(filterMentions) ;
+            sb.append(", Filter2:").append(filterMentionsOnly) ;
+            sb.append(", Opt:").append(optDefines) ;
+            sb.append(", Assign:").append(assignMentions) ;
+            return sb.toString() ;
         }
     }
 }

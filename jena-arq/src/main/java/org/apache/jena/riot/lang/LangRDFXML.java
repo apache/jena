@@ -70,24 +70,19 @@ public class LangRDFXML implements LangRIOT
     public void setProfile(ParserProfile profile)
     { this.profile = profile ; }
 
-    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
-    {
+    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
         return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
     }
-    
-    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
-    {
-        return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;
-    }
-    
 
-    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
-    {
+    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
+        return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;
+    }    
+
+    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
         return create(IO.openFile(filename), xmlBase, filename, errorHandler, sink) ;
     }
-    
-    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
-    {
+
+    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
         this.reader = reader ;
         this.xmlBase = xmlBase ;
         this.filename = filename ;
@@ -95,8 +90,7 @@ public class LangRDFXML implements LangRIOT
         this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
     }
     
-    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
-    {
+    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
         this.input = in ;
         this.xmlBase = xmlBase ;
         this.filename = filename ;
@@ -117,48 +111,46 @@ public class LangRDFXML implements LangRIOT
     } ;
     
     @Override
-    public void parse()
-    {   
+    public void parse() {
         // Hacked out of ARP because of all the "private" methods
         sink.start() ;
         HandlerSink rslt = new HandlerSink(sink, getProfile().getHandler()) ;
-        arp.getHandlers().setStatementHandler(rslt);
+        arp.getHandlers().setStatementHandler(rslt) ;
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
-        
-        if ( RiotUniformCompatibility )
-        {
+
+        if ( RiotUniformCompatibility ) {
             ARPOptions options = arp.getOptions() ;
-            // Convert some warnings to errors for compatible behaviour for all parsers. 
+            // Convert some warnings to errors for compatible behaviour for all parsers.
             for ( int code : additionalErrors )
                 options.setErrorMode(code, ARPErrorNumbers.EM_FATAL) ;
             arp.setOptionsWith(options) ;
         }
-        
+
         try {
             if ( reader != null )
-                arp.load(reader, xmlBase);
+                arp.load(reader, xmlBase) ;
             else
-                arp.load(input, xmlBase);
-        } catch (IOException e) {
-            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
-        } catch (SAXParseException e) {
+                arp.load(input, xmlBase) ;
+        }
+        catch (IOException e) {
+            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(e), -1, -1) ;
+        }
+        catch (SAXParseException e) {
             // already reported.
-        } catch (SAXException sax) {
-            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(sax), -1 , -1) ;
+        }
+        catch (SAXException sax) {
+            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(sax), -1, -1) ;
         }
         sink.finish() ;
     }
-
     
-    private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
-    {
-        private StreamRDF output ;
-        private ErrorHandler errHandler ;
+    private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
+        private StreamRDF       output ;
+        private ErrorHandler    errHandler ;
         private CheckerLiterals checker ;
 
-        HandlerSink(StreamRDF output, ErrorHandler errHandler)
-        {
+        HandlerSink(StreamRDF output, ErrorHandler errHandler) {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
             this.errHandler = errHandler ;
@@ -202,41 +194,35 @@ public class LangRDFXML implements LangRIOT
 
         }
 
-        private Triple convert(AResource s, AResource p, AResource o)
-        {
-            return Triple.create(convert(s), convert(p), convert(o));
+        private Triple convert(AResource s, AResource p, AResource o) {
+            return Triple.create(convert(s), convert(p), convert(o)) ;
         }
 
-        private Triple convert(AResource s, AResource p, ALiteral o)
-        {
+        private Triple convert(AResource s, AResource p, ALiteral o) {
             Node object = convert(o) ;
             checker.check(object, -1, -1) ;
-            return Triple.create(convert(s), convert(p), object);
+            return Triple.create(convert(s), convert(p), object) ;
         }
-        
+
         @Override
-        public void startPrefixMapping(String prefix, String uri)
-        {
+        public void startPrefixMapping(String prefix, String uri) {
             output.prefix(prefix, uri) ;
         }
-        
+
         @Override
-        public void endPrefixMapping(String prefix)
-        {}
+        public void endPrefixMapping(String prefix) {}
     }
-    
-    private static class ErrorHandlerBridge implements RDFErrorHandler
-    {
+
+    private static class ErrorHandlerBridge implements RDFErrorHandler {
         private ErrorHandler errorHandler ;
 
-        ErrorHandlerBridge(ErrorHandler hander)
-        {
+        ErrorHandlerBridge(ErrorHandler hander) {
             this.errorHandler = hander ;
         }
 
         @Override
-        public void warning(Exception e) { 
-            Pair<Integer, Integer> p =  getLineCol(e) ;
+        public void warning(Exception e) {
+            Pair<Integer, Integer> p = getLineCol(e) ;
             errorHandler.warning(e.getMessage(), p.getLeft(), p.getRight()) ;
         }
 
@@ -253,9 +239,9 @@ public class LangRDFXML implements LangRIOT
         }
 
         private static Pair<Integer, Integer> getLineCol(Exception e) {
-            if (e instanceof SAXParseException) {
-                SAXParseException esax = (SAXParseException) e;
-                return Pair.create(esax.getLineNumber(), esax.getColumnNumber()) ; 
+            if ( e instanceof SAXParseException ) {
+                SAXParseException esax = (SAXParseException)e ;
+                return Pair.create(esax.getLineNumber(), esax.getColumnNumber()) ;
             } else {
                 return Pair.create(-1, -1) ;
             }

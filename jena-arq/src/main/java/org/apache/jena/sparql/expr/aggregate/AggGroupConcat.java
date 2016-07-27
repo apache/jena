@@ -141,7 +141,7 @@ public class AggGroupConcat extends AggregatorBase
         private final String separator ;
 
         public AccGroupConcat(Expr expr, String sep)
-        { super(expr) ; this.separator = sep ; }
+        { super(expr, false) ; this.separator = sep ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)

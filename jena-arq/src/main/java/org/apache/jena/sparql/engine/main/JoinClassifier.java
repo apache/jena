@@ -87,40 +87,45 @@ public class JoinClassifier
             System.err.println(rightOp) ;
         }
 
-        // Need only check left/rght.
-        VarFinder vfLeft = new VarFinder(leftOp) ;
+        // Need only check left/right.
+        VarFinder vfLeft = VarFinder.process(leftOp) ;
         Set<Var> vLeftFixed = vfLeft.getFixed() ;
         Set<Var> vLeftOpt = vfLeft.getOpt() ;
         // Set<Var> vLeftFilter = vfLeft.getFilter() ;
-        if ( print )
-            System.err.println("Left/fixed:    " + vLeftFixed) ;
-        if ( print )
-            System.err.println("Left/opt:      " + vLeftOpt) ;
-        // if (print) System.err.println("Left/filter:   " + vLeftFilter) ;
+        if ( print ) {
+            System.err.println("Left") ;
+            vfLeft.print(System.err) ;
+        }
+        VarFinder vfRight           = VarFinder.process(rightOp) ;
+        if ( print ) {
+            System.err.println("Right") ;
+            vfRight.print(System.err) ;
+        }
+        
+        Set<Var> vRightFixed        = vfRight.getFixed() ;
+        Set<Var> vRightOpt          = vfRight.getOpt() ;
+        Set<Var> vRightFilter       = vfRight.getFilter() ;
+        Set<Var> vRightFilterOnly   = vfRight.getFilterOnly() ;
+        Set<Var> vRightAssign       = vfRight.getAssign() ;
 
-        VarFinder vfRight = new VarFinder(rightOp) ;
-        Set<Var> vRightFixed = vfRight.getFixed() ;
-        Set<Var> vRightOpt = vfRight.getOpt() ;
-        Set<Var> vRightFilter = vfRight.getFilter() ;
-        Set<Var> vRightAssign = vfRight.getAssign() ;
-
-        if ( print )
-            System.err.println("Right/fixed:   " + vRightFixed) ;
-        if ( print )
-            System.err.println("Right/opt:     " + vRightOpt) ;
-        if ( print )
-            System.err.println("Right/filter:  " + vRightFilter) ;
-        if ( print )
-            System.err.println("Right/assign:  " + vRightAssign) ;
-
-        // Step 1 : remove any variable definitely fixed from the floating sets
+        // Step 1 : If there are any variables in the LHS that are filter-only or filter-before define,
+        // we can't do anything.
+        if ( ! vRightFilterOnly.isEmpty() ) {
+            // A tigher condition is to see of any of the getFilterOnly are possible from the
+            // left.  If not, then we can still use a sequence. 
+            // But an outer sequence may push arbitrary here so play safe on the argument
+            // this is a relative uncommon case.
+            return false ;
+        }
+        
+        // Step 2 : remove any variable definitely fixed from the floating sets
         // because the nature of the "join" will deal with that.
         vLeftOpt = SetUtils.difference(vLeftOpt, vLeftFixed) ;
         vRightOpt = SetUtils.difference(vRightOpt, vRightFixed) ;
 
         // And also assign/filter variables in the RHS which are always defined
-        // in the
-        // RHS. Leaves any potentially free variables in RHS filter.
+        // in the RHS.
+        // Leaves any potentially free variables in RHS filter.
         vRightFilter = SetUtils.difference(vRightFilter, vRightFixed) ;
         vRightAssign = SetUtils.difference(vRightAssign, vRightFixed) ;
 
@@ -156,7 +161,7 @@ public class JoinClassifier
         if ( print )
             System.err.println("Case 1 = " + bad1) ;
 
-        // Case 2 : a filter in the RHS is uses a variable from the LHS (whether
+        // Case 3 : a filter in the RHS is uses a variable from the LHS (whether
         // fixed or optional)
         // Scoping means we must hide the LHS value form the RHS
         // Could mask (??). For now, we stop linearization of this join.
@@ -167,7 +172,7 @@ public class JoinClassifier
         if ( print )
             System.err.println("Case 2 = " + bad2) ;
 
-        // Case 3 : an assign in the RHS uses a variable not introduced
+        // Case 4 : an assign in the RHS uses a variable not introduced
         // Scoping means we must hide the LHS value from the RHS
 
         // Think this may be slightly relaxed, using variables in an

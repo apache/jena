@@ -35,8 +35,12 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 
+/** Operation to convert the given Node to a normalized form */ 
 class NormalizeValue
 {
+    /** Handler that makes no changes and returns the input node */ 
+    private static DatatypeHandler identity = (Node node, String lexicalForm, RDFDatatype datatype) -> node ;
+    
     // What about whitespace for 
     //   hexBinary, base64Binary.
     
@@ -47,121 +51,106 @@ class NormalizeValue
 
     // See Normalizevalue2 for "faster" versions (less parsing overhead). 
     
-    static DatatypeHandler dtBoolean = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
-            if ( lexicalForm.equals("0") ) return NodeConst.nodeFalse ;
+    static DatatypeHandler dtBoolean = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
+        if ( lexicalForm.equals("0") ) return NodeConst.nodeFalse ;
+        return node ;
+    } ;
+    
+    static DatatypeHandler dtAnyDateTime = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        // Fast test: 
+        if ( lexicalForm.indexOf('.') < 0 )
+            // No fractional seconds.
             return node ;
-        }
-    } ;
-    
-    static DatatypeHandler dtAnyDateTime = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            // Fast test: 
-            if ( lexicalForm.indexOf('.') < 0 )
-                // No fractional seconds.
-                return node ;
-            
-            // Could use XMLGregorianCalendar but still need to canonicalize fractional seconds.
-            // Record for history. 
-            if ( false )
-            {
-                XMLGregorianCalendar xcal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
-                if ( xcal.getFractionalSecond() != null )
-                {
-                    if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
-                        xcal.setFractionalSecond(null) ;
-                    else
-                        // stripTrailingZeros does the right thing on fractional values. 
-                        xcal.setFractionalSecond(xcal.getFractionalSecond().stripTrailingZeros()) ;
-                }
-                String lex2 = xcal.toXMLFormat() ;
-                if ( lex2.equals(lexicalForm) )
-                    return node ;
-                return NodeFactory.createLiteral(lex2, datatype) ;
-            }
-            // The only variablity for a valid date/dateTime/g* type is:
-            //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
-            DateTimeStruct dts = DateTimeStruct.parseDateTime(lexicalForm) ;
-            int idx = dts.second.indexOf('.') ;     // We have already tested for the existence of '.'
-            int i = dts.second.length()-1 ;
-            for ( ; i > idx ; i-- )
-            {
-                if ( dts.second.charAt(i) != '0' )
-                    break ;
-            }
-            if ( i == dts.second.length() )
-                return node ;
-            
-            if ( i == idx )
-                // All trailings zeros, drop the '.' as well.
-                dts.second = dts.second.substring(0, idx) ;    
-            else
-                dts.second = dts.second.substring(0, i+1) ;
-            
-            String lex2 = dts.toString() ;
-            // Can't happen.  We munged dts.second. 
-//            if ( lex2.equals(lexicalForm) )
-//                return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
-        }
-    } ;
-    
-    static DatatypeHandler dtDateTime = dtAnyDateTime ;
 
-    static DatatypeHandler dtInteger = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
+        // Could use XMLGregorianCalendar but still need to canonicalize fractional seconds.
+        // Record for history. 
+        if ( false )
         {
-            char[] chars = lexicalForm.toCharArray() ;
-            if ( chars.length == 0 )
-                // Illegal lexical form.
-                return node ;
-            
-            // If valid and one char, it must be legal.
-            // If valid, and two chars and not leading 0, it must be valid.
-            String lex2 = lexicalForm ;
-            
-            if ( lex2.startsWith("+") )
-                lex2 = lex2.substring(1) ;
-            
-            if ( lex2.length() > 8 )
-                // Maybe large than an int so do carefully.
-                lex2 = new BigInteger(lexicalForm).toString() ;
-            else
+            XMLGregorianCalendar xcal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
+            if ( xcal.getFractionalSecond() != null )
             {
-                // Avoid object churn.
-                int x = Integer.parseInt(lex2) ;
-                lex2 = Integer.toString(x) ;
+                if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
+                    xcal.setFractionalSecond(null) ;
+                else
+                    // stripTrailingZeros does the right thing on fractional values. 
+                    xcal.setFractionalSecond(xcal.getFractionalSecond().stripTrailingZeros()) ;
             }
-            
-            // If it's a subtype of integer, then output a new node of datatype integer.
-            if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
-                return node ;
-            return NodeFactory.createLiteral(lex2, XSDDatatype.XSDinteger) ;
-        }
-    } ;
-
-    static DatatypeHandler dtDecimal = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
-            String lex2 = bd.toPlainString() ;
-            
-            // Ensure there is a "."
-            //if ( bd.scale() <= 0 )
-            if ( lex2.indexOf('.') == -1 )
-                // Must contain .0
-                lex2 = lex2+".0" ;
+            String lex2 = xcal.toXMLFormat() ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
             return NodeFactory.createLiteral(lex2, datatype) ;
         }
+        // The only variablity for a valid date/dateTime/g* type is:
+        //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
+        DateTimeStruct dts = DateTimeStruct.parseDateTime(lexicalForm) ;
+        int idx = dts.second.indexOf('.') ;     // We have already tested for the existence of '.'
+        int i = dts.second.length()-1 ;
+        for ( ; i > idx ; i-- )
+        {
+            if ( dts.second.charAt(i) != '0' )
+                break ;
+        }
+        if ( i == dts.second.length() )
+            return node ;
+
+        if ( i == idx )
+            // All trailings zeros, drop the '.' as well.
+            dts.second = dts.second.substring(0, idx) ;    
+        else
+            dts.second = dts.second.substring(0, i+1) ;
+
+        String lex2 = dts.toString() ;
+        // Can't happen.  We munged dts.second. 
+//            if ( lex2.equals(lexicalForm) )
+//                return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
+    } ;
+    
+    static DatatypeHandler dtDateTime = dtAnyDateTime ;
+
+    static DatatypeHandler dtInteger = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        char[] chars = lexicalForm.toCharArray() ;
+        if ( chars.length == 0 )
+            // Illegal lexical form.
+            return node ;
+
+        // If valid and one char, it must be legal.
+        // If valid, and two chars and not leading 0, it must be valid.
+        String lex2 = lexicalForm ;
+
+        if ( lex2.startsWith("+") )
+            lex2 = lex2.substring(1) ;
+
+        if ( lex2.length() > 8 )
+            // Maybe large than an int so do carefully.
+            lex2 = new BigInteger(lexicalForm).toString() ;
+        else
+        {
+            // Avoid object churn.
+            int x = Integer.parseInt(lex2) ;
+            lex2 = Integer.toString(x) ;
+        }
+
+        // If it's a subtype of integer, then output a new node of datatype integer.
+        if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteral(lex2, XSDDatatype.XSDinteger) ;
+    } ;
+
+    static DatatypeHandler dtDecimal = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
+        String lex2 = bd.toPlainString() ;
+
+        // Ensure there is a "."
+        //if ( bd.scale() <= 0 )
+        if ( lex2.indexOf('.') == -1 )
+            // Must contain .0
+            lex2 = lex2+".0" ;
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
+
     } ;
     
     static private DecimalFormatSymbols decimalNumberSymbols = new DecimalFormatSymbols(Locale.ROOT) ;
@@ -182,65 +171,41 @@ class NormalizeValue
      * represented is zero. The canonical representation for zero is 0.0E0.
      */
     
-    static DatatypeHandler dtDouble = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            double d = Double.parseDouble(lexicalForm) ;
-            String lex2 = fmtFloatingPoint.format(d) ;
-            if ( lex2.equals(lexicalForm) )
-                return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
-        }
+    static DatatypeHandler dtDouble = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        double d = Double.parseDouble(lexicalForm) ;
+        String lex2 = fmtFloatingPoint.format(d) ;
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
     
-    static DatatypeHandler dtFloat = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            float f = Float.parseFloat(lexicalForm) ;
-            String lex2 = fmtFloatingPoint.format(f) ;
-            if ( lex2.equals(lexicalForm) )
-                return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
-        }
+    static DatatypeHandler dtFloat = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        float f = Float.parseFloat(lexicalForm) ;
+        String lex2 = fmtFloatingPoint.format(f) ;
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
 
     /** Convert xsd:string to simple literal */
-    static DatatypeHandler dtXSDString = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            return NodeFactory.createLiteral(lexicalForm) ;
-        }
-    } ;
+    static DatatypeHandler dtXSDString = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm) ;
     
     /** Convert simple literal to xsd:string */
-    static DatatypeHandler dtSimpleLiteral = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            return NodeFactory.createLiteral(lexicalForm, datatype) ;
-        }
-    } ;
+    static DatatypeHandler dtSimpleLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm, datatype) ;
 
+    /** rdf:langString */
+    static DatatypeHandler dtLangString = identity ;
     
-    static DatatypeHandler dtPlainLiteral = new DatatypeHandler() {
-        @Override
-        public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
-        {
-            int idx = lexicalForm.lastIndexOf('@') ;
-            if ( idx == -1 )
-            {
-                // Bad.
-                return node ;
-            }
+    static DatatypeHandler dtPlainLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        int idx = lexicalForm.lastIndexOf('@') ;
+        if ( idx == -1 )
+            // Bad rdf:PlainLiteral
+            return node ;
             
-            String lex = lexicalForm.substring(0, idx) ;
-            if ( idx == lexicalForm.length()-1 )
-                return NodeFactory.createLiteral(lex) ;
-            String lang = lexicalForm.substring(idx+1) ;
-            return NodeFactory.createLiteral(lex,lang) ;
-        }
+        String lex = lexicalForm.substring(0, idx) ;
+        if ( idx == lexicalForm.length()-1 )
+            return NodeFactory.createLiteral(lex) ;
+        String lang = lexicalForm.substring(idx+1) ;
+        return NodeFactory.createLiteral(lex, lang) ;
     } ;
 }

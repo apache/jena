@@ -98,7 +98,7 @@ public class BindingVector implements BindingEnvironment {
                 }
                 boundargs.add( binding );
             }
-            Functor newf = new Functor( functor.getName(), boundargs );
+            Functor newf = new Functor( functor.getName(), boundargs, functor.getImplementor() );
             return Functor.makeFunctorNode( newf );
         } else {
             return node;

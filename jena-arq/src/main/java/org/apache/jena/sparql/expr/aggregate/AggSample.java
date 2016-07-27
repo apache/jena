@@ -44,6 +44,7 @@ public class AggSample extends AggregatorBase
 
     @Override
     public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
+    
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
         if ( other == null ) return false ;
@@ -60,15 +61,14 @@ public class AggSample extends AggregatorBase
         // Sample: first evaluation of the expression that is not an error.
         private NodeValue sampleSoFar = null ;
 
-        public AccSample(Expr expr) { super(expr) ; }
+        // SAMPLE is different : it treats errors as "just another value" and tries to return a defined value if any have been seen.
+        public AccSample(Expr expr) { super(expr, false) ; }
 
         @Override
-        public void accumulate(NodeValue nv , Binding binding, FunctionEnv functionEnv)
-        { 
-            if ( sampleSoFar == null )
-            {
-                sampleSoFar = nv ;
-                return ;
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
+            if ( sampleSoFar == null && nv != null ) {
+                sampleSoFar = nv;
+                return;
             }
         }
 
@@ -79,5 +79,11 @@ public class AggSample extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         { return sampleSoFar ; }
+        
+        @Override
+        public NodeValue getValue() {
+            // Return any seen value and null only if none.
+            return getAccValue();
+        }
     }
 }

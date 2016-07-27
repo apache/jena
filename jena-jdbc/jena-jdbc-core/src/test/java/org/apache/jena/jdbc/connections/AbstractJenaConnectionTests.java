@@ -1135,7 +1135,7 @@ public abstract class AbstractJenaConnectionTests {
     @Test
     public void connection_transactions_04() throws SQLException {
         // Set up connection
-        JenaConnection conn = this.getConnection(DatasetFactory.createMem());
+        JenaConnection conn = this.getConnection();
         Assume.assumeNotNull(conn.getMetaData());
         Assume.assumeTrue(conn.getMetaData().supportsTransactions());
         conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);

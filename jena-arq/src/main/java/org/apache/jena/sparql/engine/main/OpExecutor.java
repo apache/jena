@@ -24,7 +24,6 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryExecException ;
@@ -152,9 +151,6 @@ public class OpExecutor
             return execute(subOp, input, cxt2) ;
         }
 
-        if ( Quad.isUnionGraph(gn) )
-            Log.warn(this, "Not implemented yet: union default graph in general OpExecutor") ;
-
         // Bad news -- if ( Lib.equals(gn, Quad.tripleInQuad) ) {}
         return null ;
     }
@@ -263,7 +259,7 @@ public class OpExecutor
         Set<Var> commonVars = OpVars.visibleVars(lhsOp) ;
         commonVars.retainAll(OpVars.visibleVars(rhsOp)) ;
 
-        return new QueryIterMinus(left, right, commonVars, execCxt) ;
+        return QueryIterMinus.create(left, right, commonVars, execCxt) ;
     }
 
     protected QueryIterator execute(OpDisjunction opDisjunction, QueryIterator input) {

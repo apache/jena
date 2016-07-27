@@ -130,7 +130,6 @@ public class TransformDistinctToReduced extends TransformCopy {
                 ok = false;
                 break;
             }
-            // XXX
             // As soon as we've seen all variables we know this is safe and any
             // further sort conditions are irrelevant
             if (seenVars.size() == projectVars.size())

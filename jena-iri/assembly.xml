@@ -65,7 +65,7 @@
         <exclude>merge</exclude>
         <exclude>produce</exclude>
         <exclude>template.html</exclude>
-	<exclude>javadoc/**</exclude>
+        <exclude>javadoc/**</exclude>
         <exclude>**/_*/**</exclude>
         <exclude>**/desktop.ini</exclude>
       </excludes>

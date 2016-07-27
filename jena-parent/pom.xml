@@ -23,14 +23,14 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>16-SNAPSHOT</version>
+  <version>17-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <!-- This version number is also in the top POM -->
-    <version>16</version>
+    <version>18</version>
     <relativePath />
   </parent>
 
@@ -40,38 +40,38 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
- 
+  
   <organization>
     <name>The Apache Software Foundation</name>
     <url>http://www.apache.org/</url>
   </organization>
 
   <properties>
-    <ver.slf4j>1.7.12</ver.slf4j>
+    <ver.slf4j>1.7.21</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.7.0</ver.jsonldjava>
+    <ver.jsonldjava>0.8.2</ver.jsonldjava>
     <!-- Used by jena-osgi and must be in-step with jsonldjava -->
-    <ver.jackson>2.3.3</ver.jackson>
+    <ver.jackson>2.6.3</ver.jackson>
 
     <!-- These are connected because solr4j depends on httpclient as well -->
-    <ver.httpclient>4.2.6</ver.httpclient>
-    <ver.httpcore>4.2.5</ver.httpcore>
+    <ver.httpclient>4.5.2</ver.httpclient>
+    <ver.httpcore>4.4.4</ver.httpcore>
     <!-- Normally, these are the same as the above
          In the case of 4.2.6, there isn't a httpcore-osgi.
     -->
-    <ver.httpcore-osgi>4.2.5</ver.httpcore-osgi>
-    <ver.httpclient-osgi>4.2.6</ver.httpclient-osgi>
+    <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
+    <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
-    <ver.commons-codec>1.9</ver.commons-codec>
+    <ver.commons-codec>1.10</ver.commons-codec>
     <ver.lucene>4.9.1</ver.lucene>
     <ver.solr>4.9.1</ver.solr>
-    <ver.spatial4j>0.4.1</ver.spatial4j>
+    <ver.spatial4j>0.5</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
-    <ver.awaitility>1.6.4</ver.awaitility>
+    <ver.awaitility>1.7.0</ver.awaitility>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
@@ -154,7 +154,7 @@
       <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.3</version>
         <exclusions>
           <!-- Use whatever version Jena is using -->
           <exclusion>
@@ -171,32 +171,32 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.0</version>
+        <version>1.3</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.3.2</version>
+        <version>3.4</version>
       </dependency>
 
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.3.1</version>
+        <version>1.3.2</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.0</version>
+        <version>4.1</version>
       </dependency>
       
       <!-- supports persistent data structures -->
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
-        <artifactId>dexx-collections</artifactId>
-        <version>0.2</version>
+        <artifactId>collection</artifactId>
+        <version>0.6</version>
       </dependency>
       
       <dependency>
@@ -254,7 +254,7 @@
 
       <!-- Solr client -->
       <!-- Exclusion of slf4j: Necessary so as to pick the version we want. 
-        solrj->zookeeper has a dependency on slf4j -->
+           solrj->zookeeper has a dependency on slf4j -->
 
       <dependency>
         <artifactId>solr-solrj</artifactId>
@@ -298,8 +298,9 @@
         <version>${ver.slf4j}</version>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging e.g. Apache Common 
-        HTTP client. -->
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
+      -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -310,26 +311,8 @@
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${ver.log4j}</version>
-        <exclusions>
-          <!-- Exclude things that don't resolve in some versions of log4j -->
-          <exclusion>
-            <groupId>javax.jms</groupId>
-            <artifactId>jms</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jdmk</groupId>
-            <artifactId>jmxtools</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jmx</groupId>
-            <artifactId>jmxri</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
+
       <dependency>
         <groupId>commons-cli</groupId>
         <artifactId>commons-cli</artifactId>
@@ -348,7 +331,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-   
+      
       <dependency>
         <groupId>org.xenei</groupId>
         <artifactId>contract-test-maven-plugin</artifactId>
@@ -362,8 +345,8 @@
         <version>${ver.mockito}</version>
         <scope>test</scope>
       </dependency>
- 
-     <dependency>
+      
+      <dependency>
         <groupId>com.jayway.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
@@ -387,12 +370,13 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <optional>true</optional>
     </dependency>
 
-    <!-- Needed because of the logging helper code -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>
@@ -446,96 +430,99 @@
           </execution>
         </executions>
         <configuration>
-           <excludeSubProjects>true</excludeSubProjects>
-         <excludes>
-           <exclude>**/META-INF/services/*</exclude>
-               <!--
-               jena-core exclusions
-               -->
-               <exclude>**/src-examples/data/*</exclude>
-               
-               <!--
-               jena-fuseki exclusions
-               -->
-               <exclude>**/dist/ABOUT</exclude>
-               <exclude>**/SEE_FUSEKI2</exclude>
-               <!-- 
-               Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
-               e.g. Bootstrap, Qonsole
-               
-               -->
-               <exclude>**/src/main/webapp/css/*</exclude>
-               <exclude>**/src/main/webapp/fonts/*</exclude>
-               <exclude>**/src/main/webapp/js/**/*</exclude>
-               
-               <!-- General exclusions -->
-               <!-- 
-               Vocabularies are often just local copies of vocabularies
-               published by others
-               -->
-               <exclude>**/vocabularies/*</exclude>
-               <exclude>**/Vocabularies/*</exclude>
+          <excludeSubProjects>true</excludeSubProjects>
+          <excludes>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/META-INF/services/*</exclude>
+            <!--
+                jena-core exclusions
+            -->
+            <exclude>**/src-examples/data/*</exclude>
+            
+            <!--
+                jena-fuseki exclusions
+            -->
+            <exclude>**/dist/ABOUT</exclude>
+            <exclude>**/SEE_FUSEKI2</exclude>
+            <!-- 
+                 Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
+                 e.g. Bootstrap, Qonsole
+                 
+            -->
+            <exclude>**/src/main/webapp/css/*</exclude>
+            <exclude>**/src/main/webapp/fonts/*</exclude>
+            <exclude>**/src/main/webapp/js/**/*</exclude>
+            
+            <!-- General exclusions -->
+            <!-- 
+                 Vocabularies are often just local copies of vocabularies
+                 published by others
+            -->
+            <exclude>**/vocabularies/*</exclude>
+            <exclude>**/Vocabularies/*</exclude>
 
-               <!--
-               Javadoc add-ons files are required to be simple and our javadoc configuration
-               will ensure appropriate license and copyright statements are inserted
-               into generated documentation anyway so no need to put license statements in these
-               files
-               -->
-               <exclude>**/src/main/**/*.html</exclude>
-               <exclude>**/src/**/package-info.java</exclude>
-               
-               <exclude>**/DEPENDENCIES</exclude>
-               
-               <!--
-               Text and Markdown files are typically used only for documentation purposes
-               and license declarations are usually spurious in these files since often they
-               will refer to the LICENSE/NOTICE for users to find the actual licenses
-               -->
-               <exclude>**/*.txt</exclude>
-               <exclude>**/*.md</exclude>
-               
-               <!--
-               META-INF services files can include comments but a license header would be
-               unecessarily clutter so we exclude these
-               -->
-               <exclude>**/META-INF/services/*</exclude>
-               
-               <!--
-               Jena historically has large numbers of small test file
-               with no license headers.  Such small files are not required 
-               to have headers. 
+            <!--
+                Javadoc add-ons files are required to be simple and our javadoc configuration
+                will ensure appropriate license and copyright statements are inserted
+                into generated documentation anyway so no need to put license statements in these
+                files
+            -->
+            <exclude>**/src/main/**/*.html</exclude>
+            <exclude>**/src/**/package-info.java</exclude>
+            
+            <exclude>**/DEPENDENCIES</exclude>
+            
+            <!--
+                Text and Markdown files are typically used only for documentation purposes
+                and license declarations are usually spurious in these files since often they
+                will refer to the LICENSE/NOTICE for users to find the actual licenses
+            -->
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.md</exclude>
+            
+            <!--
+                META-INF services files can include comments but a license header would be
+                unecessarily clutter so we exclude these
+            -->
+            <exclude>**/META-INF/services/*</exclude>
+            
+            <!--
+                Jena historically has large numbers of small test file
+                with no license headers.  Such small files are not required 
+                to have headers. 
 
-               In addition, there are files with different Licenses
-               (e.g. W3C Software Licence, W3C Test Suite License) as
-               noted in the code tree.
-               -->
-               <exclude>**/src/test/resources/**/*</exclude>
-               <exclude>**/testing/**/*</exclude>
+                In addition, there are files with different Licenses
+                (e.g. W3C Software Licence, W3C Test Suite License) as
+                noted in the code tree.
+            -->
+            <exclude>**/src/test/resources/**/*</exclude>
+            <exclude>**/testing/**/*</exclude>
 
-               <exclude>**/log4j.properties</exclude>
-               <exclude>**/log4j-testing.properties</exclude>
-               <exclude>**/derby.log</exclude>
-               <exclude>**/DB/**/*</exclude>
-           <!-- TDB config files JSON - no comments allowed -->
-               <exclude>**/tdb*.cfg</exclude>
-           <!-- Fuseki2 server "run" area -->
-           <exclude>**/run/**/*</exclude>
-           <!-- Cached classpath for commands - autogenerated -->
-           <exclude>**/*.classpath</exclude>
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/log4j-testing.properties</exclude>
+            <exclude>**/derby.log</exclude>
+            <exclude>**/DB/**/*</exclude>
+            <!-- TDB config files JSON - no comments allowed -->
+            <exclude>**/tdb*.cfg</exclude>
+            <!-- Fuseki2 server "run" area -->
+            <exclude>**/run/**/*</exclude>
+            <!-- Cached classpath for commands - autogenerated -->
+            <exclude>**/*.classpath</exclude>
 
-           <!-- Exclude anything created during the build (plugin generated files) ->-->
-           <exclude>**/target/**/*</exclude>
-           <!-- MSHADE-124 -->
-           <exclude>**/dependency-reduced-pom.xml</exclude>
-            </excludes>
+            <!-- Exclude anything created during the build (plugin generated files) ->-->
+            <exclude>**/target/**/*</exclude>
+            <!-- MSHADE-124 -->
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+          </excludes>
         </configuration>
       </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <extensions>true</extensions>
-        </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
     </plugins>
 
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
@@ -564,8 +551,8 @@
               <pluginExecutions>
                 <pluginExecution>
                   <!-- 
-            Warning:
-            "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+                       Warning:
+                       "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -581,8 +568,8 @@
                 </pluginExecution>
                 <pluginExecution>
                   <!-- 
-            Warning:
-            "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+                       Warning:
+                       "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -599,8 +586,8 @@
                 
                 <pluginExecution>
                   <!--
-            Error:
-            Plugin execution not covered by lifecycle configuration
+                      Error:
+                      Plugin execution not covered by lifecycle configuration
                   -->
                   <pluginExecutionFilter>
                     <groupId>org.apache.rat</groupId>
@@ -655,7 +642,7 @@
               </goals>
             </execution>
             <!-- Only needed in some jars <execution> <id>attach-sources-test</id> 
-              <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+                 <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
           </executions>
         </plugin>
 
@@ -771,11 +758,11 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
 
 
       </plugins>

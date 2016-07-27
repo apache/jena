@@ -64,7 +64,7 @@ public class AggSum  extends AggregatorBase
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = null ;
 
-        public AccSum(Expr expr) { super(expr) ; }
+        public AccSum(Expr expr) { super(expr, false) ; }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)

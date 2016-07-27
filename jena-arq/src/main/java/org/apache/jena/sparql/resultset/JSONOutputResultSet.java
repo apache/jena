@@ -195,11 +195,11 @@ public class JSONOutputResultSet implements ResultSetProcessor {
                     out.println();
             }
         } else {
-            out.print(quoteName(kDatatype) + ": " + quote(datatype) + " , ");
+            out.print(quoteName(kType) + ": " + quote(kLiteral) + " , ");
             if ( multiLineValues )
                 out.println();
 
-            out.print(quoteName(kType) + ": " + quote(kTypedLiteral) + " , ");
+            out.print(quoteName(kDatatype) + ": " + quote(datatype) + " , ");
             if ( multiLineValues )
                 out.println();
         }

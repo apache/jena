@@ -18,11 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
 
 public interface ExprVisitor
 {
-    void startVisit() ;
-    
     //void visit(ExprFunction func) ;
     void visit(ExprFunction0 func) ;
     void visit(ExprFunction1 func) ;
@@ -33,6 +32,6 @@ public interface ExprVisitor
     void visit(NodeValue nv) ;
     void visit(ExprVar nv) ;
     void visit(ExprAggregator eAgg) ;
-
-    void finishVisit() ;
+    //void visit(ExprNone exprNone) ;
+    default void visit(ExprNone exprNone) { throw new InternalErrorException("Visit Expr.NONE") ; }
 }

@@ -123,4 +123,32 @@ public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDat
         expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/ParisInEnglish")) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
+
+    @Test
+    public void testLiteralLanguageSearchItalian(){
+        final String turtle = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "ParisInEnglish>",
+                "  rdfs:label 'Paris, capital of France'@en",
+                ".",
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "ParisInItalian>",
+                "  rdfs:label \"Paris è l'endonimo francese di Parigi, capitale della Francia\"@it",
+                ".",
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "ParisInFrench>",
+                "  rdfs:label 'Paris, capitale de la France'@fr",
+                "."
+        );
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'paris' 'lang:it' 10 ) .",
+                "}"
+        );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/ParisInItalian")) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
 }

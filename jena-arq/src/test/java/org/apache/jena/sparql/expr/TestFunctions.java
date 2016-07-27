@@ -19,16 +19,22 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertTrue ;
 import static org.junit.Assert.fail ;
+
+import java.text.ParseException ;
+import java.text.SimpleDateFormat ;
+import java.util.Date ;
+import java.util.TimeZone ;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
 public class TestFunctions
@@ -71,6 +77,73 @@ public class TestFunctions
     @Test public void exprJavaSubstring4() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,1)", NodeValue.makeString("a")) ; }
     // Test from JENA-785
     @Test public void exprJavaSubstring5() { test("afn:substr('𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿𐐲', 0, 1)", NodeValue.makeString("𐐈")) ; }
+
+    // SPRINTF
+    @Test public void exprSprintf_01()      { test("afn:sprintf('%06d', 11)",NodeValue.makeString("000011")) ; }
+    @Test public void exprSprintf_02()      { test("afn:sprintf('%s', 'abcdefghi')",NodeValue.makeString("abcdefghi")) ; }
+    @Test public void exprSprintf_03()      { test("afn:sprintf('sometext %s', 'abcdefghi')",NodeValue.makeString("sometext abcdefghi")) ; }
+    @Test public void exprSprintf_04()      { test("afn:sprintf('%1$tm %1$te,%1$tY', '2016-03-17'^^xsd:date)",NodeValue.makeString("03 17,2016")) ; }
+
+
+    @Test public void exprSprintf_06()      { test("afn:sprintf('this is %s', 'false'^^xsd:boolean)",NodeValue.makeString("this is false")) ; }
+    @Test public void exprSprintf_07()      { test("afn:sprintf('this number is equal to %.2f', '11.22'^^xsd:decimal)",NodeValue.makeString("this number is equal to "+String.format("%.2f",11.22))) ; }
+    @Test public void exprSprintf_08()      { test("afn:sprintf('%.3f', '1.23456789'^^xsd:float)",NodeValue.makeString(String.format("%.3f",1.23456789))) ; }
+    @Test public void exprSprintf_09()      { test("afn:sprintf('this number is equal to %o in the octal system', '11'^^xsd:integer)",NodeValue.makeString("this number is equal to 13 in the octal system")) ; }
+    @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))) ; }
+    @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")) ; }
+    @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")) ; }
+
+    // Timezone tests
+    
+    // Timezone -11:00 to any timezone can be a day ahead
+    @Test public void exprSprintf_20() { test_exprSprintf_tz_exact("2005-10-14T14:09:43-11:00") ; }
+    // Timezone Z to any timezone can be a day behind or a day ahead
+    @Test public void exprSprintf_21() { test_exprSprintf_tz_exact("2005-10-14T12:09:43+00:00") ; }
+    // Timezone +11:00 can be a day behind
+    @Test public void exprSprintf_22() { test_exprSprintf_tz_exact("2005-10-14T10:09:43+11:00") ; }
+    private static void test_exprSprintf_tz_exact(String nodeStr) {
+        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        assertTrue(r.isString()) ;
+        String s = r.getString() ;
+        // Parse the date
+        String dtFormat = "yyyy-MM-dd'T'HH:mm:ssXXX";
+        SimpleDateFormat sdtFormat = new SimpleDateFormat(dtFormat);
+        Date dtDate = null;
+        try {
+            dtDate = sdtFormat.parse(nodeStr);
+        } catch (ParseException e) {
+            assertFalse("Cannot parse the input date string. Message:"+e.getMessage(),false);
+        }
+        // print the date based on the current timeZone.
+        SimpleDateFormat stdFormatOut = new SimpleDateFormat("MM dd,yyyy");
+        stdFormatOut.setTimeZone(TimeZone.getDefault());
+        String outDate = stdFormatOut.format(dtDate);
+        assertEquals(s,outDate);
+    }
+    
+    private static void test_exprSprintf_tz_possibilites(String nodeStr, String... possible) {
+        String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        assertTrue(r.isString()) ;
+        String s = r.getString() ;
+        // Timezones! The locale data can be -1, 0, +1 from the Z day.
+        boolean b = false ;
+        for (String poss : possible ) {
+            if ( poss.equals(s) )
+                b = true ;
+        }
+        assertTrue(b) ;
+    }
+    
+    // Timezone -11:00 to any timezone can be a day ahead
+    @Test public void exprSprintf_23() { test_exprSprintf_tz_possibilites("2005-10-14T14:09:43-11:00",  "10 14,2005", "10 15,2005") ; }
+    // Timezone Z to any timezone can be a day behind or a day ahead
+    @Test public void exprSprintf_24() { test_exprSprintf_tz_possibilites("2005-10-14T12:09:43Z",       "10 13,2005", "10 14,2005", "10 15,2005") ; }
+    // Timezone +11:00 can be a day behind
+    @Test public void exprSprintf_25() { test_exprSprintf_tz_possibilites("2005-10-14T10:09:43+11:00",  "10 13,2005", "10 14,2005") ; }
     
     @Test public void exprStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     @Test public void exprStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }
@@ -164,6 +237,61 @@ public class TestFunctions
     @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)") ; }
     @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
 
+    @Test public void exprStrNormalizeSpace0() { test("fn:normalize-space(' The    wealthy curled darlings                                         of    our    nation. ')",
+            NodeValue.makeString("The wealthy curled darlings of our nation.")) ; }
+    @Test public void exprStrNormalizeSpace1() { test("fn:normalize-space('')",NodeValue.nvEmptyString) ; }
+    @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
+    @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
+
+    // https://www.w3.org/TR/xpath-functions-30/#func-normalize-unicode
+    // and
+    // from http://www.unicode.org/reports/tr15/
+    //l
+    @Test public void exprStrNormalizeUnicode0() { test("fn:normalize-unicode('Äffin','nfd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode1() { test("fn:normalize-unicode('Äffin','nfc')",NodeValue.makeString("Äffin")) ; }
+    //m
+    @Test public void exprStrNormalizeUnicode2() { test("fn:normalize-unicode('Ä\\uFB03n','nfd')",NodeValue.makeString("Äﬃn")) ; }
+    @Test public void exprStrNormalizeUnicode3() { test("fn:normalize-unicode('Ä\\uFB03n','nfc')",NodeValue.makeString("Äﬃn")) ; }
+    //n
+    @Test public void exprStrNormalizeUnicode4() { test("fn:normalize-unicode('Henry IV','nfd')",NodeValue.makeString("Henry IV")) ; }
+    @Test public void exprStrNormalizeUnicode5() { test("fn:normalize-unicode('Henry IV','nfc')",NodeValue.makeString("Henry IV")) ; }
+    //l'
+    @Test public void exprStrNormalizeUnicode6() { test("fn:normalize-unicode('Äffin','nfkd')",NodeValue.makeString("Äffin")) ; }
+    @Test public void exprStrNormalizeUnicode7() { test("fn:normalize-unicode('Äffin','nfkc')",NodeValue.makeString("Äffin")) ; }
+    // r
+    String hw_ka="\uFF76";
+    String hw_ten="\uFF9F";
+    @Test public void exprStrNormalizeUnicode8() { test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfd')",NodeValue.makeString(hw_ka+hw_ten)) ; }
+    @Test public void exprStrNormalizeUnicode9() {
+        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfc')",NodeValue.makeString(hw_ka+hw_ten)) ;
+    }
+    // Not sure why the following tests are not passing
+    // both examples are taken from the http://www.unicode.org/reports/tr15/ (Table 8 r')
+    // the translation of hw_ka,hw_ten,ka and ten are taken from Table 4 of the same document
+    // 
+    // I (Alessandro Seganti) took the ga translation by association (it was not defined in the unicode report)
+    // and chosen to be: KATAKANA LETTER GA U+30AC
+    // Everything seems ok to me so there are two options in my opinion:
+    // 1) the java implementation of the nfkd has some flaws
+    // 2) the unicode example is wrong (I cannot judge as I do not know japanese or unicode enough :))
+    // The test is failing because the expected string has code when looking in the debugger (UTF-16?) (12459 | 12442) 
+    // while the Nomalizer.normalize is giving  (12459 | 12441)
+//    @Test public void exprStrNormalizeUnicode10() {
+//        String ka = "\u30AB";
+//        String ten="\u3099";
+//        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkd')", NodeValue.makeString(ka+ten)) ;
+//    }
+//    @Test public void exprStrNormalizeUnicode11() {
+//        String ga="\u30AC";
+//        test("fn:normalize-unicode('"+hw_ka+hw_ten+"','nfkc')",NodeValue.makeString(ga)) ;
+//    }
+
+    // empty argument <-> returns the input string
+    @Test public void exprStrNormalizeUnicode12() { test("fn:normalize-unicode('some word','')",NodeValue.makeString("some word")) ; }
+    // one argument <-> NFC
+    @Test public void exprStrNormalizeUnicode13() { test("fn:normalize-unicode('Äffin')",NodeValue.makeString("Äffin")) ; }
+
+
     @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
     @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
     @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
@@ -182,6 +310,14 @@ public class TestFunctions
     @Test public void exprReplace11()  { test("REPLACE('', '.', 'Z')",      NodeValue.makeString("")) ; }
     @Test public void exprReplace12()  { test("REPLACE('', '(a|b)?', 'Z')", NodeValue.makeString("Z")) ; }
 
+    @Test public void exprFnReplace01()  { test("fn:replace('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
+    @Test public void exprFnReplace02()  { test("fn:replace('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
+    @Test public void exprFnReplace03()  { test("fn:replace('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
+    
+    @Test public void exprFnReplace04()  { test("fn:replace('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)) ; }
+    @Test public void exprFnReplace05()  { test("fn:replace('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)) ; }
+    @Test public void exprFnReplace06()  { test("fn:replace('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
+
     // Bad group
     @Test public void exprReplace13()  { testEvalException("REPLACE('abc', '.*', '$1')") ; }
 
@@ -197,8 +333,149 @@ public class TestFunctions
     @Test public void exprBoolean8()    { test("fn:not('X')", FALSE) ; }
     @Test public void exprBoolean9()    { test("fn:not(1)", FALSE) ; }
     @Test public void exprBoolean10()   { test("fn:not(0)", TRUE) ; }
-    
+
+    @Test public void exprRound_01()    { test("fn:round(123)",   NodeValue.makeInteger(123)) ; }
+    @Test public void exprRound_02()    { test("fn:round(123.5)",  NodeValue.makeDecimal(124)) ; }
+    @Test public void exprRound_03()    { test("fn:round(-0.5e0)", NodeValue.makeDouble(0.0e0)) ; }
+    @Test public void exprRound_04()    { test("fn:round(-1.5)",   NodeValue.makeDecimal(-1)) ; }
+    // !! I don't think that this is working correctly also if the test is passing... need to check!
+    @Test public void exprRound_05()    { test("fn:round(-0)",     NodeValue.makeInteger("-0")) ; }
+    @Test public void exprRound_06()    { test("fn:round(1.125, 2)",     NodeValue.makeDecimal(1.13)) ; }
+    @Test public void exprRound_07()    { test("fn:round(8452, -2)",     NodeValue.makeInteger(8500)) ; }
+    @Test public void exprRound_08()    { test("fn:round(3.1415e0, 2)",     NodeValue.makeDouble(3.14e0)) ; }
+    // counter-intuitive -- would fail if float/double not translated to decimal
+    @Test public void exprRound_09()    { test("fn:round(35.425e0, 2)",     NodeValue.makeDouble(35.42)) ; }
+
+    @Test public void exprRoundHalfEven_01()    { test("fn:round-half-to-even(0.5)",   NodeValue.makeDecimal(0)) ; }
+    @Test public void exprRoundHalfEven_02()    { test("fn:round-half-to-even(1.5)",  NodeValue.makeDecimal(2)) ; }
+    @Test public void exprRoundHalfEven_03()    { test("fn:round-half-to-even(2.5)", NodeValue.makeDecimal(2)) ; }
+    @Test public void exprRoundHalfEven_04()    { test("fn:round-half-to-even(3.567812e+3, 2)",   NodeValue.makeDouble(3567.81e0)) ; }
+    // !! I don't think that this is working correctly also if the test is passing... need to check!
+    @Test public void exprRoundHalfEven_05()    { test("fn:round-half-to-even(-0)",     NodeValue.makeInteger(-0)) ; }
+    @Test public void exprRoundHalfEven_06()    { test("fn:round-half-to-even(4.7564e-3, 2)",     NodeValue.makeDouble(0.0e0)) ; }
+    @Test public void exprRoundHalfEven_07()    { test("fn:round-half-to-even(35612.25, -2)",     NodeValue.makeDecimal(35600)) ; }
+    // counter-intuitive -- would fail if float/double not translated to decimal
+    @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)) ; }
+
+    private String getDynamicDurationString(){
+        int tzOffset = TimeZone.getDefault().getOffset(new Date().getTime()) / (1000*60);
+        String off = "PT"+Math.abs(tzOffset)+"M";
+        if(tzOffset < 0)
+            off = "-"+off;
+        return off;
+    }
+
+    @Test public void exprAdjustDatetimeToTz_01(){
+        testEqual(
+                "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime)",
+                "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDatetimeToTz_02(){
+        testEqual(
+                "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime)",
+                "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDatetimeToTz_03(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T10:00:00-10:00"));}
+
+    @Test public void exprAdjustDatetimeToTz_04(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T07:00:00-10:00"));}
+
+    @Test public void exprAdjustDatetimeToTz_05(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-08T03:00:00+10:00"));}
+
+    @Test public void exprAdjustDatetimeToTz_06(){test("fn:adjust-dateTime-to-timezone('2002-03-07T00:00:00+01:00'^^xsd:dateTime,'-PT8H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-06T15:00:00-08:00"));}
+
+    @Test public void exprAdjustDatetimeToTz_07(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
+
+    @Test public void exprAdjustDatetimeToTz_08(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
+
+    @Test public void exprAdjustDateToTz_01(){
+        testEqual(
+                "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date)",
+                "fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDateToTz_02(){
+        testEqual(
+                "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date)",
+                "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustDateToTz_03(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-07-10:00"));}
+
+    @Test public void exprAdjustDateToTz_04(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-06-10:00"));}
+
+    @Test public void exprAdjustDateToTz_05(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+
+    @Test public void exprAdjustDateToTz_06(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+
+    @Test public void exprAdjustTimeToTz_01(){
+        testEqual(
+                "fn:adjust-time-to-timezone('10:00:00'^^xsd:time)",
+                "fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustTimeToTz_02(){
+        testEqual(
+                "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time)",
+                "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
+    }
+
+    @Test public void exprAdjustTimeToTz_03(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("10:00:00-10:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_04(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("07:00:00-10:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_05(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_06(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+
+    @Test public void exprAdjustTimeToTz_07(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
+    
+    private static void testNumberFormat(String expression, String expected) {
+        Expr expr = ExprUtils.parse(expression) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        Assert.assertTrue(r.isString());
+        Assert.assertEquals(expected, r.getString()) ;
+        
+    }
+    
+    @Test public void formatNumber_01()     { testNumberFormat("fn:format-number(0,'#')", "0") ; }
+    @Test public void formatNumber_02()     { testNumberFormat("fn:format-number(1234, '#')", "1234") ; }
+    @Test public void formatNumber_03()     { testNumberFormat("fn:format-number(1234, '#,###')", "1,234") ; }
+    @Test public void formatNumber_04()     { testNumberFormat("fn:format-number(1e3, '#,###,###.#')", "1,000") ; }
+    @Test public void formatNumber_05()     { testNumberFormat("fn:format-number(10.5, '##.#')", "10.5") ; }
+    @Test public void formatNumber_06()     { testNumberFormat("fn:format-number(-10.5, '##.##')", "-10.5") ; }
+    @Test public void formatNumber_08()     { testNumberFormat("fn:format-number(123, 'NotAPattern')", "NotAPattern123") ; }
+    
+    @Test public void formatNumber_11()     { testNumberFormat("fn:format-number(0, '#', 'fr')", "0") ; }
+    // No-break space
+    @Test public void formatNumber_12()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'fr')", "1\u00A0234,5") ; }
+    @Test public void formatNumber_13()     { testNumberFormat("fn:format-number(1234.5,'#,###.#', 'de')", "1.234,5") ; }
+    
+    @Test public void formatNumber_14()     { testNumberFormat("fn:format-number(12, '0,000.0', 'en')", "0,012.0") ; }
+    @Test public void formatNumber_15()     { testNumberFormat("fn:format-number(0, '00,000', 'fr')", "00\u00A0000") ; }
+
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_20() {
+        // String as number
+        testNumberFormat("fn:format-number('String', '#')", null) ;
+    }
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_21() {
+        // Pattern is not a string
+        testNumberFormat("fn:format-number(123, <uri>)", null) ; 
+    }
+    @Test(expected=ExprEvalException.class)
+    public void formatNumber_22() {
+        // Locale is not a string
+        testNumberFormat("fn:format-number(123, '###', 123)", null) ; 
+    }
+
+    public void formatNumber_23() {
+        // Not a locale - default to Locale.ROOT
+        testNumberFormat("fn:format-number(123, '###', 'WhereAmI?')", null) ; 
+    }
     
     @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE) ; }
     @Test public void exprSameTerm2()     { test("sameTerm(1,1.0)",         FALSE) ; }
@@ -245,21 +522,25 @@ public class TestFunctions
     E_IRI
     E_BNode
     */ 
-    
-    private void test(String exprStr, NodeValue result)
-    {
+
+    private void test(String exprStr, NodeValue result) {
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
         assertEquals(result, r) ;
     }
     
-    private void testEvalException(String exprStr)
-    {
+    private void testEqual(String exprStr, String exprStrExpected) {
+        Expr expr = ExprUtils.parse(exprStrExpected) ;
+        NodeValue rExpected = expr.eval(null, FunctionEnvBase.createTest()) ;
+        test(exprStr, rExpected) ;
+    }
+    
+    private void testEvalException(String exprStr) {
         Expr expr = ExprUtils.parse(exprStr) ;
         try {
-             NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
-             fail("No exception raised") ;
-        } catch (ExprEvalException ex) {}
-            
+            NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+            fail("No exception raised") ;
+        }
+        catch (ExprEvalException ex) {}
     }
 }

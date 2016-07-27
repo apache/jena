@@ -40,7 +40,9 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
     public void load() {
         synchronized (registryLock) {
             // Find subsystems asking for initialization. 
-            ServiceLoader<JenaSubsystemLifecycle> sl = ServiceLoader.load(JenaSubsystemLifecycle.class) ;
+            ServiceLoader<JenaSubsystemLifecycle> sl = 
+                // Use this->classloader form : better for OSGi 
+                ServiceLoader.load(JenaSubsystemLifecycle.class, this.getClass().getClassLoader()) ;
             sl.forEach(this::add) ;
         }
     }
@@ -83,6 +85,8 @@ public class JenaSubsystemRegistryBasic implements JenaSubsystemRegistry {
     
     @Override
     public List<JenaSubsystemLifecycle> snapshot() {
-        return new ArrayList<>(registry) ;
+        synchronized (registryLock) {
+            return new ArrayList<>(registry) ;
+        }
     }
 }

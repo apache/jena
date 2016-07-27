@@ -104,7 +104,6 @@ public class TestLangNTriples extends TestLangNTuples
         String string = StrUtils.strjoin("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        @SuppressWarnings("deprecation")
         LangNTriples x = RiotParsers.createParserNTriples(tokenizer, sink);
         x.getProfile().setHandler(new ErrorHandlerEx());
         x.parse();

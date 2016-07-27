@@ -45,17 +45,15 @@ public class PropFuncArg extends PrintSerializableBase
     private List<Node> argList = null ;
     private Node arg = null ;
     
-    public PropFuncArg(List<Node> argList, Node arg)
-    {
+    public PropFuncArg(List<Node> argList, Node arg) {
         // arg is always the argument, which may be a list in argList.
         // If it's a list, remember that.
-        if ( argList == null )
-        {
+        if ( argList == null ) {
             this.arg = arg ;
             return ;
         }
         this.argList = argList ;
-        // If the list is zero length, it's rdf:nil.  Be careful!
+        // If the list is zero length, it's rdf:nil. Be careful!
         if ( argList.isEmpty() )
             this.arg = NodeConst.nodeNil ;
     }
@@ -66,66 +64,81 @@ public class PropFuncArg extends PrintSerializableBase
     public Node getArg()                    { return arg ; }
     public List<Node> getArgList()          { return argList ; }
     public int  getArgListSize()            { return argList==null ? -1 : argList.size() ; }
-    public Node getArg(int index)
-    {
-        if ( argList == null ) return null ;
+
+    public Node getArg(int index) {
+        if ( argList == null )
+            return null ;
         return argList.get(index) ;
     }
-    
+
     @Override
-    public int hashCode()
-    {
-        if ( isNode() ) return arg.hashCode() ;
+    public int hashCode() {
+        if ( isNode() )
+            return arg.hashCode() ;
         return argList.hashCode() ;
     }
-    
+
     @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof PropFuncArg ) ) return false ;
+    public boolean equals(Object other) {
+        if ( this == other )
+            return true ;
+        if ( !(other instanceof PropFuncArg) )
+            return false ;
         PropFuncArg pfArg = (PropFuncArg)other ;
         if ( isNode() )
             return arg.equals(pfArg.arg) ;
         return argList.equals(pfArg.argList) ;
-        
+
     }
     
     public boolean isList()             { return argList != null  ; }
     public boolean isNode()             { return arg != null  ; }
     
-    public ExprList asExprList(PropFuncArg pfArg)
-    {
+    
+    /** @deprecated To be removed - use {@link #asExprList()} */
+    @Deprecated
+    public ExprList asExprList(PropFuncArg pfArg) {
         ExprList exprList = new ExprList() ;
-        if ( pfArg.isNode() )
-        {
+        if ( pfArg.isNode() ) {
             Node n = pfArg.getArg() ;
             Expr expr = ExprUtils.nodeToExpr(n) ;
             exprList.add(expr) ;
             return exprList ;
         }
 
-        for ( Node n : pfArg.getArgList() )
-        {
-            Expr expr = ExprUtils.nodeToExpr( n );
-            exprList.add( expr );
+        for ( Node n : pfArg.getArgList() ) {
+            Expr expr = ExprUtils.nodeToExpr(n) ;
+            exprList.add(expr) ;
         }
         return exprList ;
     }
+    
+    public ExprList asExprList() {
+        ExprList exprList = new ExprList() ;
+        if ( isNode() ) {
+            Node n = getArg() ;
+            Expr expr = ExprUtils.nodeToExpr(n) ;
+            exprList.add(expr) ;
+            return exprList ;
+        }
 
+        for ( Node n : getArgList() ) {
+            Expr expr = ExprUtils.nodeToExpr(n) ;
+            exprList.add(expr) ;
+        }
+        return exprList ;
+    }
     
     @Override
-    public void output(final IndentedWriter out, final SerializationContext sCxt)
-    {
+    public void output(final IndentedWriter out, final SerializationContext sCxt) {
         if ( argList == null && arg == null )
             out.print("<<null>>") ;
-        if ( argList != null )
-        {
+        if ( argList != null ) {
             out.print("(") ;
             boolean first = true ;
-            for ( Node n : argList )
-            {
-                if ( ! first ) out.print(" ") ;
+            for ( Node n : argList ) {
+                if ( !first )
+                    out.print(" ") ;
                 String str = FmtUtils.stringForNode(n, sCxt) ;
                 out.print(str) ;
                 first = false ;
@@ -137,11 +150,11 @@ public class PropFuncArg extends PrintSerializableBase
     }
 
     public static void addVars(Collection<Var> acc, PropFuncArg pfArg) {
-        if (pfArg.isNode()) {
+        if ( pfArg.isNode() ) {
             addVar(acc, pfArg.getArg()) ;
             return ;
         }
-        for (Node n : pfArg.getArgList())
+        for ( Node n : pfArg.getArgList() )
             addVar(acc, n) ;
     }
 }

@@ -31,7 +31,6 @@ import org.apache.jena.sparql.core.Quad;
 /**
  * A simplex or multiplex table of {@link Quad}s. Implementations may wish to override {@link #listGraphNodes()} with a
  * more efficient implementation.
- *
  */
 public interface QuadTable extends TupleTable<Quad> {
 
@@ -44,7 +43,7 @@ public interface QuadTable extends TupleTable<Quad> {
      * @param o the object node of the pattern
      * @return an {@link Stream} of matched quads
      */
-    Stream<Quad> find(Node g, Node s, Node p, Node o);
+    Stream<Quad> find(final Node g, final Node s, final Node p, final Node o);
 
     /**
      * Discover the graphs named in the table
@@ -63,9 +62,9 @@ public interface QuadTable extends TupleTable<Quad> {
     default Stream<Quad> findInUnionGraph(final Node s, final Node p, final Node o) {
         final Set<Triple> seen = new HashSet<>();
         return find(ANY, s, p, o).sequential()
-            .filter(q -> !q.isDefaultGraph())
-            .map(Quad::asTriple)
-            .filter(seen::add)
-            .map(t -> Quad.create(Quad.unionGraph, t)) ;
+                .filter(q -> !q.isDefaultGraph())
+                .map(Quad::asTriple)
+                .filter(seen::add)
+                .map(t -> Quad.create(Quad.unionGraph, t));
     }
 }

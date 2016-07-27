@@ -29,6 +29,8 @@ import static org.apache.jena.riot.writer.WriterConst.rdfNS ;
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.* ;
+import java.util.function.Function ;
+import java.util.function.Predicate ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -76,13 +78,40 @@ public class RiotLib
         return NodeFactory.createURI(iri) ;
     }
 
-    /** Test whether  */
-    public static boolean isBNodeIRI(String iri)
-    {
+    /** Test whether a IRI is a ARQ-encoded blank node. */
+    public static boolean isBNodeIRI(String iri) {
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
-    private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, null) ;
+    private static final String URI_PREFIX_FIXUP = "::";
+    
+    // These two must be in-step.
+    /** Function applied to undefined prefixes to convert to a URI string */  
+    public static final Function<String,String> fixupPrefixes      = (x) -> URI_PREFIX_FIXUP.concat(x) ;
+
+    /** Function to test for undefined prefix URIs*/  
+    public static final Predicate<String> testFixupedPrefixURI     = (x) -> x.startsWith(URI_PREFIX_FIXUP) ;
+    
+    /** Test whether a IRI is a ARQ-encoded blank node. */
+    public static boolean isPrefixIRI(String iri) {
+        return testFixupedPrefixURI.test(iri) ;
+    }
+    
+    /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+     * @see ARQ#fixupUndefinedPrefixes
+     */
+    public static String fixupPrefixIRI(String prefix, String localPart) {
+        return fixupPrefixIRI(prefix+":"+localPart) ;
+    }
+
+    /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+     * @see ARQ#fixupUndefinedPrefixes
+     */
+    public static String fixupPrefixIRI(String prefixedName) {
+        return fixupPrefixes.apply(prefixedName) ;
+    }
+    
+    private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, ErrorHandlerFactory.errorHandlerStd) ;
     static {
         PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
@@ -147,9 +176,23 @@ public class RiotLib
             prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
-            return new ParserProfileChecker(prologue, handler, labelToNode) ;
+            return new ParserProfileChecker(prologue, handler, factoryRDF(labelToNode)) ;
         else
-            return new ParserProfileBase(prologue, handler, labelToNode) ;
+            return new ParserProfileBase(prologue, handler, factoryRDF(labelToNode)) ;
+    }
+
+    /** Create a new (notinfluenced by anything else) FactoryRDF
+     * using the label to blank node scheme provided. 
+     */
+    public static FactoryRDF factoryRDF(LabelToNode labelMapping) {
+        return new FactoryRDFCaching(FactoryRDFCaching.DftNodeCacheSize, labelMapping);
+    }
+
+    /** Create a new (not influenced by anything else) FactoryRDF
+     * using the label to blank node scheme scope by this FactoryRDF. 
+     */  
+    public static FactoryRDF factoryRDF() {
+        return factoryRDF(SyntaxLabels.createLabelToNode());
     }
 
     /** Get triples with the same subject */

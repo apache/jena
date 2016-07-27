@@ -18,15 +18,17 @@
 
 package org.apache.jena.riot.system ;
 
+import java.util.Objects ;
+
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
-import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.sparql.core.Quad ;
@@ -38,17 +40,20 @@ import org.apache.jena.sparql.core.Quad ;
 public class ParserProfileBase implements ParserProfile {
     protected ErrorHandler errorHandler ;
     protected Prologue     prologue ;
-    protected LabelToNode  labelMapping ;
     protected boolean      strictMode = SysRIOT.isStrictMode() ;
+    protected FactoryRDF   factory ;
 
     public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler) {
-        this(prologue, errorHandler, SyntaxLabels.createLabelToNode()) ;
+        this(prologue, errorHandler, RiotLib.factoryRDF()) ;
     }
 
-    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping) {
+    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler, FactoryRDF factory) {
+        Objects.requireNonNull(prologue) ;
+        Objects.requireNonNull(errorHandler) ;
+        Objects.requireNonNull(factory) ;
         this.prologue = prologue ;
         this.errorHandler = errorHandler ;
-        this.labelMapping = labelMapping ;
+        this.factory = factory ;
     }
 
     @Override
@@ -72,15 +77,15 @@ public class ParserProfileBase implements ParserProfile {
     }
 
     @Override
-    public LabelToNode getLabelToNode() {
-        return labelMapping ;
+    public FactoryRDF getFactoryRDF() {
+        return factory;
     }
 
     @Override
-    public void setLabelToNode(LabelToNode mapper) {
-        labelMapping = mapper ;
+    public void setFactoryRDF(FactoryRDF factory) {
+        this.factory = factory;
     }
-
+   
     @Override
     public String resolveIRI(String uriStr, long line, long col) {
         return prologue.getResolver().resolveToString(uriStr) ;
@@ -93,44 +98,44 @@ public class ParserProfileBase implements ParserProfile {
 
     @Override
     public Quad createQuad(Node g, Node s, Node p, Node o, long line, long col) {
-        return new Quad(g, s, p, o) ;
+        return factory.createQuad(g, s, p, o);
     }
 
     @Override
     public Triple createTriple(Node s, Node p, Node o, long line, long col) {
-        return new Triple(s, p, o) ;
+        return factory.createTriple(s, p, o);
     }
 
     @Override
     public Node createURI(String uriStr, long line, long col) {
-        return RiotLib.createIRIorBNode(uriStr) ;
+        return factory.createURI(uriStr);
     }
 
     @Override
     public Node createBlankNode(Node scope, String label, long line, long col) {
-        return labelMapping.get(scope, label) ;
+        return factory.createBlankNode(label);
     }
 
     @Override
     public Node createBlankNode(Node scope, long line, long col) {
-        return labelMapping.create() ;
+        return factory.createBlankNode();
     }
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col) {
-        return NodeFactory.createLiteral(lexical, dt) ;
+        return factory.createTypedLiteral(lexical, dt);
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
-        return NodeFactory.createLiteral(lexical, langTag) ;
+        return factory.createLangLiteral(lexical, langTag);
     }
 
     @Override
     public Node createStringLiteral(String lexical, long line, long col) {
-        return NodeFactory.createLiteral(lexical) ;
+        return factory.createStringLiteral(lexical);
     }
-
+  
     /** Special token forms */
     @Override
     public Node createNodeFromToken(Node scope, Token token, long line, long col) {
@@ -144,27 +149,31 @@ public class ParserProfileBase implements ParserProfile {
 
     @Override
     public Node create(Node currentGraph, Token token) {
-        // Dispatches to the underlying operation
+        return create(this, currentGraph, token) ;
+    }
+        
+    private static Node create(ParserProfile pp, Node currentGraph, Token token) {
+        // Dispatches to the underlying ParserProfile operation
         long line = token.getLine() ;
         long col = token.getColumn() ;
         String str = token.getImage() ;
         switch (token.getType()) {
             case BNODE :
-                return createBlankNode(currentGraph, str, line, col) ;
+                return pp.createBlankNode(currentGraph, str, line, col) ;
             case IRI :
-                return createURI(str, line, col) ;
+                return pp.createURI(str, line, col) ;
             case PREFIXED_NAME : {
                 String prefix = str ;
                 String suffix = token.getImage2() ;
-                String expansion = expandPrefixedName(prefix, suffix, token) ;
-                return createURI(expansion, line, col) ;
+                String expansion = expandPrefixedName(pp, prefix, suffix, token) ;
+                return pp.createURI(expansion, line, col) ;
             }
             case DECIMAL :
-                return createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col) ;
+                return pp.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col) ;
             case DOUBLE :
-                return createTypedLiteral(str, XSDDatatype.XSDdouble, line, col) ;
+                return pp.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col) ;
             case INTEGER :
-                return createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
+                return pp.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col) ;
             case LITERAL_DT : {
                 Token tokenDT = token.getSubToken2() ;
                 String uriStr ;
@@ -176,41 +185,44 @@ public class ParserProfileBase implements ParserProfile {
                     case PREFIXED_NAME : {
                         String prefix = tokenDT.getImage() ;
                         String suffix = tokenDT.getImage2() ;
-                        uriStr = expandPrefixedName(prefix, suffix, tokenDT) ;
+                        uriStr = expandPrefixedName(pp, prefix, suffix, tokenDT) ;
                         break ;
                     }
                     default :
                         throw new RiotException("Expected IRI for datatype: " + token) ;
                 }
 
-                uriStr = resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn()) ;
+                uriStr = pp.resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn()) ;
                 RDFDatatype dt = NodeFactory.getType(uriStr) ;
-                return createTypedLiteral(str, dt, line, col) ;
+                return pp.createTypedLiteral(str, dt, line, col) ;
             }
 
             case LITERAL_LANG :
-                return createLangLiteral(str, token.getImage2(), line, col) ;
+                return pp.createLangLiteral(str, token.getImage2(), line, col) ;
 
             case STRING :
             case STRING1 :
             case STRING2 :
             case LONG_STRING1 :
             case LONG_STRING2 :
-                return createStringLiteral(str, line, col) ;
+                return pp.createStringLiteral(str, line, col) ;
             default : {
-                Node x = createNodeFromToken(currentGraph, token, line, col) ;
+                Node x = pp.createNodeFromToken(currentGraph, token, line, col) ;
                 if (x != null)
                     return x ;
-                errorHandler.fatal("Not a valid token for an RDF term: " + token, line, col) ;
+                pp.getHandler().fatal("Not a valid token for an RDF term: " + token, line, col) ;
                 return null ;
             }
         }
     }
 
-    private String expandPrefixedName(String prefix, String localPart, Token token) {
-        String expansion = prologue.getPrefixMap().expand(prefix, localPart) ;
-        if (expansion == null)
-            errorHandler.fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn()) ;
+    private static String expandPrefixedName(ParserProfile pp, String prefix, String localPart, Token token) {
+        String expansion = pp.getPrologue().getPrefixMap().expand(prefix, localPart) ;
+        if (expansion == null) {
+            if ( ARQ.isTrue(ARQ.fixupUndefinedPrefixes) )
+                return RiotLib.fixupPrefixIRI(prefix, localPart) ;
+            pp.getHandler().fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn()) ;
+        }
         return expansion ;
     }
 

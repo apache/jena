@@ -22,6 +22,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
+import java.net.URL ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
@@ -34,10 +35,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.FusekiConfig ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.build.* ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
@@ -197,7 +195,10 @@ public class FusekiServer
         } else {
             try {
                 // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
-                InputStream in = FusekiServer.class.getResource(fn).openStream() ;
+                URL url = FusekiServer.class.getResource(fn) ;
+                if ( url == null )
+                    throw new FusekiConfigException("Field to find resource '"+fn+"'") ; 
+                InputStream in = url.openStream() ;
                 Files.copy(in, dstFile) ;
             }
             catch (IOException e) {
@@ -267,6 +268,7 @@ public class FusekiServer
     
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
                                                       boolean allowUpdate, Map<String, String> params) {
+        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ; 
         // ---- Setup
         if ( params == null ) {
             params = new HashMap<>() ;
@@ -319,7 +321,7 @@ public class FusekiServer
             //  1 - clean model, remove "fu:serviceUpdate", "fu:serviceUpload", "fu:serviceReadGraphStore", "fu:serviceReadWriteGraphStore"
             //  2 - set a flag on DataAccessPoint
         }
-        DataAccessPoint dap = Builder.buildDataAccessPoint(subject) ;
+        DataAccessPoint dap = Builder.buildDataAccessPoint(subject, registry) ;
         return dap ;
     }
     
@@ -354,9 +356,8 @@ public class FusekiServer
     
     private static DataAccessPoint datasetDefaultConfiguration( String name, DatasetGraph dsg, boolean allowUpdate) {
         name = DataAccessPoint.canonical(name) ;
-        DataAccessPoint dap = new DataAccessPoint(name) ;
         DataService ds = Builder.buildDataService(dsg, allowUpdate) ;
-        dap.setDataService(ds) ;
+        DataAccessPoint dap = new DataAccessPoint(name, ds) ;
         return dap ;
     }
     
@@ -402,5 +403,24 @@ public class FusekiServer
 //        try { path = path.toRealPath() ; }
 //        catch (IOException e) { IO.exception(e) ; }
         return path ;
+    }
+
+    /**
+     * <ul>
+     * <li>GLOBAL: sharing across all descriptions
+     * <li>FILE: sharing within files but not across files.
+     * </ul>
+     */
+    enum DatasetDescriptionScope { GLOBAL, FILE }
+    private static DatasetDescriptionRegistry globalDatasets = new DatasetDescriptionRegistry() ;
+    private static DatasetDescriptionScope policyDatasetDescriptionScope = DatasetDescriptionScope.FILE ;
+    
+    /** Call this once per configuration file. */
+    public static DatasetDescriptionRegistry registryForBuild() {
+        switch (policyDatasetDescriptionScope) {
+            case FILE :     return new DatasetDescriptionRegistry() ;
+            case GLOBAL :   return globalDatasets ;
+            default:        throw new InternalErrorException() ;
+        }
     }
 }

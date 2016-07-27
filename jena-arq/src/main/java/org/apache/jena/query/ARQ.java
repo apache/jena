@@ -19,15 +19,19 @@
 package org.apache.jena.query;
 
 import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.http.Service ;
+import org.apache.jena.sparql.expr.aggregate.AggregateRegistry ;
+import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.mgt.Explain.InfoLevel ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
@@ -61,13 +65,13 @@ public class ARQ
     // 2/ stageGenerator constant must be set before the call to ARQ.init.
 
     /** Name of the execution logger */
-    public static final String logExecName = "com.hp.hpl.jena.arq.exec" ;
+    public static final String logExecName = "org.apache.jena.arq.exec" ;
     
     /** Name of the information logger */
-    public static final String logInfoName = "com.hp.hpl.jena.arq.info" ;
+    public static final String logInfoName = "org.apache.jena.arq.info" ;
     
     /** Name of the logger for remote HTTP requests */
-    public static final String logHttpRequestName = "com.hp.hpl.jena.arq.service" ;
+    public static final String logHttpRequestName = "org.apache.jena.arq.service" ;
     
     private static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
     private static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
@@ -93,7 +97,7 @@ public class ARQ
     /** Get the currently global execution logging setting */  
     public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec) ; }
     
-    /** Set execution logging - logging is to logger "com.hp.hpl.jena.arq.exec" at level INFO.
+    /** Set execution logging - logging is to logger "org.apache.jena.arq.exec" at level INFO.
      *  An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(Explain.InfoLevel infoLevel)
@@ -248,6 +252,14 @@ public class ARQ
     
     public static final Symbol serviceAllowed = Service.serviceAllowed ;
     
+    /** If set to true, the parsers will convert undefined prefixes to a URI
+     * according to the fixup function {@link RiotLib#fixupPrefixes}.
+     * Normally, unset (which equates to false).
+     * 
+     * @see RiotLib#isPrefixIRI
+     */
+    public static final Symbol fixupUndefinedPrefixes   = SystemARQ.allocSymbol("fixupPrefixes") ;
+    
     /**
      * A Long value that specifies the number of bindings (or triples for CONSTRUCT queries) to be stored in memory by sort
      * operations or hash tables before switching to temporary disk files.  The value defaults to -1, which will always
@@ -380,33 +392,30 @@ public class ARQ
      */
     public static final Symbol optImplicitLeftJoin = SystemARQ.allocSymbol("optImplicitLeftJoin");
 
-    /** 
-     *  Context key for a declaration that xsd:strings and simple literals are
-     *  different in the storage.  They are the same value in a memory store.
-     *  When in doubt, xsd:strings are assumed to be the same value as simple literals   
-     */  
-    public static final Symbol optTermStrings = SystemARQ.allocSymbol("optTermStrings") ;
-    
     /**
-     * Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  Context key controlling whether the standard optimizer applies constant folding to expressions
+     *  <p>By default, this transformation is applied.
      */
     public static final Symbol optExprConstantFolding = SystemARQ.allocSymbol("optExprConstantFolding");
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to conjunctions (&&) in filters.
+     *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterConjunction = SystemARQ.allocSymbol("optFilterConjunction") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to IN and NOT IN.
+     *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterExpandOneOf = SystemARQ.allocSymbol("optFilterExpandOneOf") ;
 
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to disjunctions (||) in filters.
+     * <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterDisjunction = SystemARQ.allocSymbol("optFilterDisjunction") ;
     
@@ -424,31 +433,43 @@ public class ARQ
     /**
      * Context key controlling whether the standard optimizer applies optimizations where by some
      * assignments may be eliminated/inlined into the operators where their values are used only once
+     * <p>By default, this transformation is not applied.
      */
     public static final Symbol optInlineAssignments = SystemARQ.allocSymbol("optInlineAssignments");
     
     /**
      * Context key controlling whether the standard optimizer aggressively inlines assignments whose
      * values are used only once into operators where those expressions may be evaluated multiple times e.g. order
+     * <p>This is modifier to {@link #optInlineAssignments}.
      */
     public static final Symbol optInlineAssignmentsAggressive = SystemARQ.allocSymbol("optInlineAssignmentsAggressive");
     
     /**
      * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
      * merge them into single BGPs.
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
     public static final Symbol optMergeBGPs = SystemARQ.allocSymbol("optMergeBGPs");
     
     /**
      * Context key controlling whether the standard optimizater applies the optimization
      * to combine stacks of (extend) into one compound operation.  Ditto (assign). 
-     * By default, this transformation is applied.
+     * <p>By default, this transformation is applied.
      */
     public static final Symbol optMergeExtends = SystemARQ.allocSymbol("optMergeExtends");
 
+    /**
+     * Context key controlling whether the standard optimizater applies the optimization
+     * to reorder basic graph patterns. 
+     * <p>By default, this transformation is NOT applied. 
+     * It is left to the specific engines to decide.
+     */
+    // However, StageGeneratorGeneric does reorder based on partial results. 
+    public static final Symbol optReorderBGP = SystemARQ.allocSymbol("optReorderBGP");
+
     /** 
      *  Context key controlling whether the main query engine processes property functions.
+     *  <p>By default, this is applied.
      */  
     public static final Symbol propertyFunctions = SystemARQ.allocSymbol("propertyFunctions") ;
     
@@ -550,13 +571,11 @@ public class ARQ
         synchronized(initLock)
         {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("ARQ.init - skip") ;
+                JenaSystem.logLifecycle("ARQ.init - skip") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("ARQ.init - start") ;
+            JenaSystem.logLifecycle("ARQ.init - start") ;
             globalContext = defaultSettings() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
@@ -568,8 +587,13 @@ public class ARQ
             // Register RIOT details here, not earlier, to avoid
             // initialization loops with RIOT.init() called directly.
             RIOT.register() ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("ARQ.init - finish") ;
+            
+            // Initialise the standard library.
+            FunctionRegistry.init() ;
+            AggregateRegistry.init() ;
+            PropertyFunctionRegistry.init() ;
+            
+            JenaSystem.logLifecycle("ARQ.init - finish") ;
         }
     }
     

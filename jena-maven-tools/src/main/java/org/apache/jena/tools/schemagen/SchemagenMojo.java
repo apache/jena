@@ -236,11 +236,6 @@ public class SchemagenMojo
     protected void processFile( String fileName )
         throws MojoExecutionException, SchemagenOptionsConfigurationException
     {
-        //fix windows paths
-        if( File.separator.equals("\\") ){
-            fileName = fileName.replaceAll( "\\\\", "/" );
-        }
-
         getLog().info( "processFile with " + fileName );
         getLog().info( optIndex.keySet().toString() );
         SchemagenOptions so = optIndex.get( fileName );
@@ -265,6 +260,10 @@ public class SchemagenMojo
         getLog().info( "baseDir = " + baseDir );
         getLog().info( "getBaseDir() = " + getBaseDir() );
         soFileName = relative ? "file:" + baseDir + File.separator + soFileName : soFileName;
+        //fix windows paths
+        if( File.separator.equals("\\") ){
+            soFileName = soFileName.replaceAll( "\\\\", "/" );
+        }
         getLog().info( "input after adjustment: " + soFileName );
         Resource input = ResourceFactory.createResource( soFileName );
         so.setOption( OPT.INPUT, input );

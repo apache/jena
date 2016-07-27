@@ -34,22 +34,29 @@ public class FunctionRegistry //extends HashMap<String, Function>
     // Extract a Registry class and do casting and initialization here.
     Map<String, FunctionFactory> registry = new HashMap<>() ;
     Set<String> attemptedLoads = new HashSet<>() ;
-    
-    public synchronized static FunctionRegistry standardRegistry()
+
+    public static FunctionRegistry standardRegistry()
     {
-        FunctionRegistry reg = new FunctionRegistry() ;
-        StandardFunctions.loadStdDefs(reg) ;
+        FunctionRegistry reg = get(ARQ.getContext()) ;
         return reg ;   
     }
+
+    public static void init() {
+        // Intialize if there is no registry already set 
+        FunctionRegistry reg = new FunctionRegistry() ;
+        StandardFunctions.loadStdDefs(reg) ;
+        set(ARQ.getContext(), reg) ;
+    }
     
-    public synchronized static FunctionRegistry get()
+    public static FunctionRegistry get()
     {
         // Intialize if there is no registry already set 
         FunctionRegistry reg = get(ARQ.getContext()) ;
         if ( reg == null )
         {
-            reg = standardRegistry() ;
-            set(ARQ.getContext(), reg) ;
+            Log.warn(FunctionRegistry.class, "Standard function registry should already have been initialized");
+            init() ;
+            reg = get(ARQ.getContext()) ;
         }
 
         return reg ;
@@ -69,13 +76,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
 
     public FunctionRegistry()
     {}
-    /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
-     * 
-     * @param uri
-     * @param f
-     */
-    public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
-
+    
     /** Insert a class that is the function implementation 
      * 
      * @param uri           String URI
@@ -89,9 +90,16 @@ public class FunctionRegistry //extends HashMap<String, Function>
             return ; 
         }
         
-        registry.put(uri, new FunctionFactoryAuto(funcClass)) ;
+        put(uri, new FunctionFactoryAuto(funcClass)) ;
     }
-    
+
+    /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
+     * 
+     * @param uri
+     * @param f
+     */
+    public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
+
     /** Lookup by URI */
     public FunctionFactory get(String uri)
     {

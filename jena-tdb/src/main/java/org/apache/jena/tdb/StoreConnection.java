@@ -50,6 +50,8 @@ public class StoreConnection
         transactionManager = new TransactionManager(baseDSG);
     }
 
+    public boolean isValid() { return isValid ; } 
+    
     private void checkValid() {
         if (!isValid) 
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?)") ;
@@ -117,6 +119,11 @@ public class StoreConnection
     public DatasetGraphTDB getBaseDataset() {
         checkValid();
         return baseDSG;
+    }
+    
+    /** For internal use only */ 
+    public TransactionManager getTransactionManager() {
+        return transactionManager ; 
     }
     
     /** Flush the delayed write queue to the base storage.

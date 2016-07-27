@@ -46,12 +46,6 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 	}
 
 	@Override
-	public void startVisit() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void visit(ExprFunction0 func) {
 		push(func);
 	}
@@ -87,9 +81,9 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		push(retval);
 	}
 
-	private void setExprList(ExprNode n, ExprList exprList) {
+	private void setExprList(ExprFunctionN n, ExprList exprList) {
 		try {
-			Field f = n.getClass().getField("ExprList");
+			Field f = ExprFunctionN.class.getDeclaredField("args");
 			f.setAccessible(true);
 			f.set(n, exprList);
 		} catch (NoSuchFieldException e) {
@@ -151,12 +145,6 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		} else {
 			push(NodeValue.makeNode(n));
 		}
-
-	}
-
-	@Override
-	public void finishVisit() {
-		// TODO Auto-generated method stub
 
 	}
 

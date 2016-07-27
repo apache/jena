@@ -37,6 +37,9 @@ public class ARQConstants
     /** The prefix of XQuery/Xpath functions and operator */
     public static final String fnPrefix = "http://www.w3.org/2005/xpath-functions#" ;
     
+    /** The prefix of XQuery/Xpath functions and operator math: */
+    public static final String mathPrefix = "http://www.w3.org/2005/xpath-functions/math#" ;
+    
     /** RDF namespace prefix */
     public static final String rdfPrefix = RDF.getURI() ;
 
@@ -66,6 +69,9 @@ public class ARQConstants
     /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
     
+    /** The ARQ aggregate function library URI space */
+    public static final String ARQAggregateLibraryURI = "http://jena.apache.org/ARQ/function/aggregate#" ;
+
     /** The ARQ function library URI space - old Jena2 name
      * @deprecated Use #ARQFunctionLibraryURI 
      */
@@ -102,6 +108,7 @@ public class ARQConstants
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
         globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
         globalPrefixMap.setNsPrefix("fn" ,  fnPrefix) ; 
+        globalPrefixMap.setNsPrefix("math" ,  mathPrefix) ;
         globalPrefixMap.setNsPrefix("afn",  ARQFunctionLibraryURI) ;
         globalPrefixMap.setNsPrefix("apf",  ARQPropertyFunctionLibraryURI) ;
     }

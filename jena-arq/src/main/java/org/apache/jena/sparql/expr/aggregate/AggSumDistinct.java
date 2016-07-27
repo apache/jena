@@ -59,15 +59,15 @@ public class AggSumDistinct  extends AggregatorBase
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
 
     // ---- Accumulator
-    class AccSumDistinct extends AccumulatorDistinctExpr
+    class AccSumDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
         private NodeValue total = null ;
 
-        public AccSumDistinct(Expr expr) { super(expr) ; }
+        public AccSumDistinct(Expr expr) { super(expr, true) ; }
 
         @Override
-        public void accumulateDistinct(NodeValue nv, Binding binding, FunctionEnv functionEnv)
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
             if ( nv.isNumber() )
             {

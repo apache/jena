@@ -21,8 +21,8 @@ package org.apache.jena.tdb.store.bulkloader2;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.setup.Build ;
 import org.apache.jena.tdb.store.NodeId ;
@@ -71,7 +71,7 @@ public class ProcIndexCopy
     }
 
     private static void tupleIndexCopy(TupleIndex index1, TupleIndex index2, String label) {
-        ProgressLogger monitor = new ProgressLogger(log, label, tickQuantum, superTick);
+        ProgressMonitor monitor = ProgressMonitor.create(log, label, tickQuantum, superTick);
         monitor.start();
 
         Iterator<Tuple<NodeId>> iter1 = index1.all();

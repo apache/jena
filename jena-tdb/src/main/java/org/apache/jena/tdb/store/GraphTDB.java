@@ -72,20 +72,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
     }
 
     @Override
-    public final void performAdd(Triple triple) {
-        startUpdate() ;
-        super.performAdd(triple) ;
-        finishUpdate() ;
-    }
-
-    @Override
-    public final void performDelete(Triple triple) {
-        startUpdate() ;
-        super.performDelete(triple) ;
-        finishUpdate() ;
-    }
-
-    @Override
     public final void sync() {
         dataset.sync() ;
     }
@@ -135,22 +121,6 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         // See SolverLib.
         iter = Iter.distinctAdjacent(iter) ;
         return WrappedIterator.createNoRemove(iter) ;
-    }
-
-    public void startRead() {
-        getDSG().startRead() ;
-    }
-
-    public void finishRead() {
-        getDSG().finishRead() ;
-    }
-
-    public final void startUpdate() {
-        getDSG().startUpdate() ;
-    }
-
-    public final void finishUpdate() {
-        getDSG().finishUpdate() ;
     }
 
     @Override

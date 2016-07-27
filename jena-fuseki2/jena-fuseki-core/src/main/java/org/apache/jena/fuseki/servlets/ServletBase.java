@@ -97,8 +97,7 @@ public abstract class ServletBase extends HttpServlet {
     public static void setCommonHeaders(HttpServletResponse httpResponse) {
         if ( CORS_ENABLED )
             httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
-        httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
-        if ( Fuseki.serverHttpNameDev != null )
-            httpResponse.setHeader("X-"+HttpNames.hServer, Fuseki.serverHttpNameDev) ;
+        if ( Fuseki.outputFusekiServerHeader )
+            httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
 }

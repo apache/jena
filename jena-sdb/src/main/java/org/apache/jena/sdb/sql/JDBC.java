@@ -40,9 +40,13 @@ public class JDBC
     // The "well known" not a JDBC connection really scheme
     public static final String jdbcNone = "jdbc:none" ;
 
+    public static final String jdbcDriverClassMySQL ; 
+    public static final String jdbcDriverClassMariaDB ;
+    
     private static Map<DatabaseType, String> driver = new HashMap<DatabaseType, String>() ;
     static {
         driver.put(DatabaseType.MySQL,      "com.mysql.jdbc.Driver") ;
+        driver.put(DatabaseType.MariaDB,    "org.mariadb.jdbc.Driver") ;
         driver.put(DatabaseType.PostgreSQL, "org.postgresql.Driver") ;
         driver.put(DatabaseType.H2,         "org.h2.Driver") ;
         driver.put(DatabaseType.HSQLDB,     "org.hsqldb.jdbcDriver") ;
@@ -52,6 +56,9 @@ public class JDBC
         driver.put(DatabaseType.Oracle,     "oracle.jdbc.driver.OracleDriver") ;
         driver.put(DatabaseType.DB2,        "com.ibm.db2.jcc.DB2Driver") ;
         driver.put(DatabaseType.SAP,        "com.sap.db.jdbc.Driver") ;
+        
+        jdbcDriverClassMySQL       = driver.get(DatabaseType.MySQL) ;
+        jdbcDriverClassMariaDB     = driver.get(DatabaseType.MariaDB) ;
     }
     
     static public String getDriver(DatabaseType dbType) { return driver.get(dbType) ; }
@@ -62,6 +69,8 @@ public class JDBC
     static public void loadDriverH2()  { loadDriver(driver.get(DatabaseType.H2)) ; }
     /** Explicitly load the MySQL driver */ 
     static public void loadDriverMySQL() { loadDriver(driver.get(DatabaseType.MySQL)) ; }
+    /** Explicitly load the MariaDB driver */ 
+    static public void loadDriverMariaDB() { loadDriver(driver.get(DatabaseType.MariaDB)) ; }
     /** Explicitly load the PostgreSQL driver */ 
     static public void loadDriverPGSQL() { loadDriver(driver.get(DatabaseType.PostgreSQL)); }
     /** Explicitly load the Derby driver */ 
@@ -99,14 +108,22 @@ public class JDBC
         return DriverManager.getConnection(url, user, password) ;
     }
     
-//    static public void loadClass(String className)
-//    { Loader.loadClass(className) ; }
-
     static private void loadClass(String className)
     { 
-        try { Class.forName(className); }
+        try { Class.forName(className); return ; }
         catch (ClassNotFoundException ex)
-        { throw new SDBNotFoundException("Class.forName("+className+")", ex) ; } 
+        {
+            // Ir MySQL or MariaDB, try the other one.
+            if ( className.equals(jdbcDriverClassMySQL) || className.equals(jdbcDriverClassMariaDB) ) {
+                String classNameAlt = null ; 
+                if ( className.equals(jdbcDriverClassMySQL) )
+                    classNameAlt = jdbcDriverClassMariaDB ;
+                else if ( className.equals(jdbcDriverClassMariaDB) )
+                    classNameAlt = jdbcDriverClassMySQL ;
+                try { Class.forName(classNameAlt) ; return ; }
+                catch (ClassNotFoundException ex2) {}
+            }
+            throw new SDBNotFoundException("Class.forName("+className+")", ex) ; }
     }
 
     public static String makeURL(String type, String host, String dbName)
@@ -125,8 +142,11 @@ public class JDBC
         if ( password == null )
             password = Access.getPassword() ;
         
-        if ( type.equals("mysql") )
+        if ( type.equals("mysql") || type.equals("mariadb") )
         {
+            // MariaDB responds to jdbc:mysql:... 
+            // but MySQL does not respond to jdbc:mariadb:...
+            type = "mysql" ;
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
             return s ;
         }

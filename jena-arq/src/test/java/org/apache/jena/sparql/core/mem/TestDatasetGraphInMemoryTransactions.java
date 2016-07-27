@@ -21,11 +21,11 @@ package org.apache.jena.sparql.core.mem;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.transaction.AbstractTestTransaction ;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
-public class TestDatasetGraphInMemoryTransactions extends AbstractTestTransaction {
+public class TestDatasetGraphInMemoryTransactions extends AbstractTestTransactionLifecycle {
     static Class<?> targetClassLogger = DatasetGraphInMemory.class ;
     @BeforeClass public static void beforeClassLoggingOff() { LogCtl.disable(targetClassLogger) ; } 
     @AfterClass public static void afterClassLoggingOn()    { LogCtl.setInfo(targetClassLogger) ; }

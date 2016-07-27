@@ -79,7 +79,7 @@ public class TransformFilterPlacement extends TransformCopy {
     
     private static Placement result(Op op, ExprList remaining) { 
         if ( op == null )
-            return null ;
+            return noChangePlacement ;
         return new Placement(op, remaining) ; 
     }
     
@@ -88,7 +88,11 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private boolean isNoChange(Placement placement) { 
-        return placement == noChangePlacement ;
+        return ! isChange(placement) ;
+    }
+
+    private boolean isChange(Placement placement) { 
+        return placement != noChangePlacement ;
     }
 
     /** Apply filter placement to a BGP */
@@ -157,7 +161,7 @@ public class TransformFilterPlacement extends TransformCopy {
         }
         
         Placement placement = transform(exprs, x) ;
-        if ( placement == null )  
+        if ( isNoChange(placement) )  
             // Didn't do anything.
             return super.transform(opFilter, x) ;
         Op op = buildFilter(placement) ;
@@ -170,7 +174,7 @@ public class TransformFilterPlacement extends TransformCopy {
     /** Transform and always at least wrap the op with the exprs */
     private Op transformOpAlways(ExprList exprs, Op x) {
         Placement placement = transform(exprs, x) ;
-        if ( placement == null )
+        if ( isNoChange(placement) )
             return buildFilter(exprs, x) ;
         return buildFilter(placement) ;
     }
@@ -246,7 +250,7 @@ public class TransformFilterPlacement extends TransformCopy {
 
         // Outer
         Placement p = transform(exprsOuter, input.getSubOp()) ;
-        if ( p != null ) {
+        if ( isChange(p) ) {
             op = p.op ;
             exprsOuter = p.unplaced ;
         }
@@ -316,10 +320,11 @@ public class TransformFilterPlacement extends TransformCopy {
         }
         
         // Can't push anything into a filter around this BGP
-        if (pushed.size() == 0) return null;
-        
+        if (pushed.size() == 0) 
+            return noChangePlacement ;
         // Safe to place some conditions around the BGP
-        return new Placement(OpFilter.filter(pushed, new OpBGP(pattern)), unpushed);
+        Op opx = OpFilter.filter(pushed, new OpBGP(pattern)) ;
+        return result(opx, unpushed);
 
     }
 
@@ -450,6 +455,8 @@ public class TransformFilterPlacement extends TransformCopy {
         }
         if ( ! exprListPlaceable.isEmpty() ) {
             Placement p = transform(exprListPlaceable, op.getSubOp()) ;
+            if ( isNoChange(p) )
+                return resultNoChange(op);
             Op newOp = op.copy(p.op) ;
             p.unplaced.addAll(exprListRetain);
             return result(newOp, p.unplaced) ;
@@ -480,8 +487,7 @@ public class TransformFilterPlacement extends TransformCopy {
             op = insertAnyFilter$( exprs, varScope, op );
             Op seqElt = op1;
             Placement p = transform( exprs, seqElt );
-            if ( p != null )
-            {
+            if ( isChange(p) ) {
                 exprs = p.unplaced;
                 seqElt = p.op;
             }
@@ -500,6 +506,19 @@ public class TransformFilterPlacement extends TransformCopy {
         Op right = opJoin.getRight() ;
         Collection<Var> leftVars = fixedVars(left) ;
         Collection<Var> rightVars = fixedVars(right) ;
+
+        // More sophisticated - consider optionl variables as well.
+        // This code check the two ways to get fixed vars yields the same
+        // and it does for the test suite. 
+//        //---
+//        VarFinder vfLeft = VarFinder.process(left) ;
+//        VarFinder vfRight = VarFinder.process(right) ;
+//        if ( ! CollectionUtils.sameElts(leftVars, vfLeft.getFixed() ) )
+//            System.err.println("Left: "+leftVars+" : "+vfLeft.getFixed() ) ;
+//        if ( ! CollectionUtils.sameElts(rightVars, vfRight.getFixed() ) )
+//            System.err.println("Right: "+rightVars+" : "+vfRight.getFixed() ) ;
+//        //---
+        
         ExprList unpushed = new ExprList() ;
         ExprList pushLeft = new ExprList() ;
         ExprList pushRight = new ExprList() ;
@@ -547,7 +566,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op left = opConditional.getLeft() ;
         Op right = opConditional.getRight() ;
         Placement nLeft = transform(exprs, left) ;
-        if ( nLeft == null )
+        if ( isNoChange(nLeft) )
             return result(opConditional, exprs) ;
         Op op = new OpConditional(nLeft.op, right) ;
         return result(op, nLeft.unplaced) ;
@@ -558,7 +577,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op left = opLeftJoin.getLeft() ;
         Op right = opLeftJoin.getRight() ;
         Placement nLeft = transform(exprs, left) ;
-        if ( nLeft == null )
+        if ( isNoChange(nLeft) )
             return result(opLeftJoin, exprs) ;
         Op op = OpLeftJoin.create(nLeft.op, right, opLeftJoin.getExprs()) ;
         return result(op, nLeft.unplaced) ;
@@ -609,8 +628,8 @@ public class TransformFilterPlacement extends TransformCopy {
         ExprList exprs2 = null ;
         
         for ( Expr expr : exprs ) {
-            boolean unplacedLeft =  ( pLeft == null  || pLeft.unplaced.getList().contains(expr) ) ;
-            boolean unplacedRight = ( pRight == null || pRight.unplaced.getList().contains(expr) ) ;
+            boolean unplacedLeft =  ( isNoChange(pLeft)  || pLeft.unplaced.getList().contains(expr) ) ;
+            boolean unplacedRight = ( isNoChange(pRight) || pRight.unplaced.getList().contains(expr) ) ;
             
 //            if ( unplacedLeft && unplacedRight ) {
 //                System.out.println("Unplaced:     "+expr) ;
@@ -665,7 +684,7 @@ public class TransformFilterPlacement extends TransformCopy {
         // Case 1 : Do as much inner placement as possible.
         ExprList remaining = exprs ;
         Placement p = transform(exprs, input.getSubOp()) ;
-        if ( p != null ) {
+        if ( isChange(p) ) {
             subOp = p.op ;
             remaining = p.unplaced ;
         }
@@ -727,7 +746,7 @@ public class TransformFilterPlacement extends TransformCopy {
     private Placement processSubOp1(ExprList pushed, ExprList unpushed, Op1 input) {
         Op opSub = input.getSubOp() ;
         Placement subPlacement = transform(pushed, opSub) ;
-        if ( subPlacement == null ) {
+        if ( isNoChange(subPlacement) ) {
             // (Same as if a placement of the exprlist and op passed in is given).
             // Didn't make any changes below, so add a filter for the 'pushed' and
             // return a placement for the unpushed. 
@@ -748,7 +767,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op subOp = input.getSubOp() ;
         Placement p = transform(exprs, subOp) ;
 
-        if ( p == null )
+        if ( isNoChange(p) )
             // No effect - we do not manage to make a change.
             return resultNoChange(input) ;
 

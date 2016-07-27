@@ -34,6 +34,8 @@ import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.document.* ;
 import org.apache.lucene.index.* ;
+import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser ;
+import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser ;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -67,6 +69,7 @@ public class TextIndexLucene implements TextIndex {
     private final Directory        directory ;
     private final Analyzer         analyzer ;
     private final Analyzer         queryAnalyzer ;
+    private final String           queryParserType ;
     private final FieldType        ftText ;
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
@@ -91,6 +94,8 @@ public class TextIndexLucene implements TextIndex {
         analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
         if ( docDef.getGraphField() != null )
             analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
+        if ( docDef.getLangField() != null )
+            analyzerPerField.put(docDef.getLangField(), new KeywordAnalyzer()) ;
 
         for (String field : docDef.fields()) {
             Analyzer _analyzer = docDef.getAnalyzer(field);
@@ -102,6 +107,7 @@ public class TextIndexLucene implements TextIndex {
         this.analyzer = new PerFieldAnalyzerWrapper(
                 (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer(VER), analyzerPerField) ;
         this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
+        this.queryParserType = config.getQueryParser() ;
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;
         if (config.isValueStored() && docDef.getLangField() == null)
             log.warn("Values stored but langField not set. Returned values will not have language tag or datatype.");
@@ -287,21 +293,35 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private static Query parseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
-        QueryParser queryParser = new QueryParser(VER, primaryField, analyzer) ;
+    private QueryParser getQueryParser(Analyzer analyzer) {
+        switch(queryParserType) {
+            case "QueryParser":
+                return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+            case "AnalyzingQueryParser":
+                return new AnalyzingQueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+            case "ComplexPhraseQueryParser":
+                return new ComplexPhraseQueryParser(VER, docDef.getPrimaryField(), analyzer);
+            default:
+                log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
+                return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+        }
+    }
+
+    private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        QueryParser queryParser = getQueryParser(analyzer) ;
         queryParser.setAllowLeadingWildcard(true) ;
         Query query = queryParser.parse(queryString) ;
         return query ;
     }
-    
-    protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
-        return parseQuery(queryString, primaryField, analyzer);
+
+    protected Query preParseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        return parseQuery(queryString, analyzer);
     }
 
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -349,7 +369,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<TextHit> query$(IndexReader indexReader, Node property, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = preParseQuery(qs, docDef.getPrimaryField(), queryAnalyzer) ;
+        Query query = preParseQuery(qs, queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;

@@ -27,8 +27,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.util.ExprUtils ;
-
+import org.apache.jena.sparql.sse.writers.WriterExpr ;
 
 /** A node that is a constraint expression that can be evaluated
  * An Expr is already a Constraint - ExprNode is the base implementation
@@ -121,5 +120,5 @@ public abstract class ExprNode implements Expr
     public boolean isGraphPattern()     { return false ; }
     public Op getGraphPattern()         { return null ; }
     @Override
-    public String toString()            { return ExprUtils.fmtSPARQL(this) ; } 
+    public String toString()            { return WriterExpr.asString(this) ; } 
 }

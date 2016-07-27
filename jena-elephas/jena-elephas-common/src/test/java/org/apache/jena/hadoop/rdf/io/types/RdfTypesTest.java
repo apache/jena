@@ -296,7 +296,7 @@ public class RdfTypesTest {
      */
     @Test
     public void node_writable_bnode_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Node n = NodeFactory.createAnon();
+        Node n = NodeFactory.createBlankNode();
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
@@ -311,7 +311,7 @@ public class RdfTypesTest {
      */
     @Test
     public void node_writable_bnode_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Node n = NodeFactory.createAnon();
+        Node n = NodeFactory.createBlankNode();
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
         NodeWritable nw2 = new NodeWritable(n);
@@ -345,7 +345,7 @@ public class RdfTypesTest {
      */
     @Test
     public void triple_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Triple t = new Triple(NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
+        Triple t = new Triple(NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
         TripleWritable tw = new TripleWritable(t);
         testWriteRead(tw, tw);
     }
@@ -376,7 +376,7 @@ public class RdfTypesTest {
      */
     @Test
     public void quad_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"),
+        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"),
                 NodeFactory.createLiteral("value"));
         QuadWritable qw = new QuadWritable(q);
         testWriteRead(qw, qw);

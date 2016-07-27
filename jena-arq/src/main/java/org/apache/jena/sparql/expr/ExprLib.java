@@ -18,12 +18,68 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
+import org.apache.jena.sparql.algebra.walker.Walker ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.function.FunctionEnv ;
 
 public class ExprLib
 {
+    /** Evaluate or return null.  
+     * <p>
+     * This is better (faster) than the simple implementation 
+     * which captures {@link ExprEvalException} and returns null.
+     */
+    
+    public static NodeValue evalOrNull(Expr expr, Binding binding, FunctionEnv functionEnv) {
+        return evalOrElse(expr, binding, functionEnv, null) ;
+    }
+    
+    /** evaluate or throw an exception */
+    // This post dates a lot of code that uses expr.eval directly.
+    // Placeholder for now.
+    private static NodeValue evalOrException(Expr expr, Binding binding, FunctionEnv functionEnv) {
+        return expr.eval(binding, functionEnv) ;
+    }
+
+    private static NodeValue evalOrElse(Expr expr, Binding binding, FunctionEnv functionEnv, NodeValue exceptionValue) {
+        // Exceptions in java are expensive if the stack information is
+        // collected which is the default behaviour.  The expensive step is
+        // Throwable.fillInStackTrace.
+        // 
+        // Otherwise, they are reasonable cheap. It needs special exceptions
+        // which overrides fillInStackTrace to be cheap but they loose the 
+        // general information for development.
+        // 
+        // Instead, pick out specal cases, the expression being a single variable
+        // being the important one.
+        // 
+        // BOUND(?x) is a important case where the expression is often an exception
+        // in general evaluation.
+
+        if ( expr.isConstant() )
+            // Easy case.
+            return expr.getConstant() ;
+        if ( expr.isVariable() ) {
+            // The case of the expr being a single variable.
+            Var v = expr.asVar() ;
+            Node n = binding.get(v) ;
+            if ( n == null )
+                return exceptionValue ; 
+            NodeValue nv = NodeValue.makeNode(n) ;
+            return nv ;
+        }
+
+        try { 
+            return expr.eval(binding, functionEnv) ;
+        } catch (ExprEvalException ex) {
+            return exceptionValue ;
+        }
+    }
+    
     /** Attempt to fold any sub-expressions of the Expr.
      * Return an expression that is euqivalent to the argument but maybe simpler.    
      * @param expr
@@ -40,11 +96,11 @@ public class ExprLib
         return ExprTransformer.transform(replaceAgg, expr) ;
     }
 
-    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
-    public static ExprList replaceAggregateByVariable(ExprList exprs)
-    {
-        return ExprTransformer.transform(replaceAgg, exprs) ;
-    }
+//    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */  
+//    public static ExprList replaceAggregateByVariable(ExprList exprs)
+//    {
+//        return ExprTransformer.transform(replaceAgg, exprs) ;
+//    }
     
     private static ExprTransform replaceAgg = new ExprTransformCopy()
     {
@@ -136,7 +192,7 @@ public class ExprLib
      */
     public static boolean isStable(Expr expr) {
         try {
-            ExprWalker.walk(exprVisitorCheckForNonFunctions, expr) ;
+            Walker.walk(expr, exprVisitorCheckForNonFunctions) ;
             return true ;
         } catch ( ExprUnstable ex ) {
             return false ;
@@ -158,5 +214,10 @@ public class ExprLib
         }
     } ;
     
-    private static class ExprUnstable extends ExprException {}
+    private static class ExprUnstable extends ExprException {
+        // Filling in the stack trace is the expensive part of
+        // an exception but we don't need it. 
+        @Override
+        public Throwable fillInStackTrace() { return this ; }
+    }
 }

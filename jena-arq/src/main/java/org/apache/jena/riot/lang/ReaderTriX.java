@@ -112,7 +112,6 @@ public class ReaderTriX implements ReaderRIOT {
         State state = OUTER ;
         Node g = null ;
         List<Node> terms = new ArrayList<>() ; 
-        output.start() ;
         try { 
             while(parser.hasNext()) {
                 int event = parser.next() ;
@@ -160,6 +159,8 @@ public class ReaderTriX implements ReaderRIOT {
                                 g = null ;
                                 break ;
                             case TriX.tagTriX:
+                            case TriX.tagTriXAlt:
+                                // We don't worry about mismatched tags.
                                 state = OUTER ;
                                 break ;
                         }
@@ -170,6 +171,7 @@ public class ReaderTriX implements ReaderRIOT {
                         
                         switch (tag) {
                             case TriX.tagTriX:
+                            case TriX.tagTriXAlt:
                                 if ( state != OUTER )
                                     staxErrorOutOfPlaceElement(parser) ;
                                 state = TRIX ;
@@ -226,7 +228,6 @@ public class ReaderTriX implements ReaderRIOT {
         } catch (XMLStreamException ex) {
             staxError(parser.getLocation(), "XML error: "+ex.getMessage()) ;
         }
-        output.finish() ;
     }
     
     private void add(Collection<Node> acc, Node node, int max, XMLStreamReader parser) {

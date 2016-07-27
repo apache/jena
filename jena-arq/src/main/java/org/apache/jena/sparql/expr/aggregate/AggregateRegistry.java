@@ -22,6 +22,7 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.expr.aggregate.lib.StandardAggregates ;
 
 /** Registry of custom aggregates
  * There is only a single global registry of aggregates - it affects parsing
@@ -29,8 +30,12 @@ import org.apache.jena.graph.Node ;
  */
 public class AggregateRegistry {
     
-    private static Map<String, AccumulatorFactory> registry = new HashMap<>() ;
-    private static Map<String, Node>               noGroupValues = new HashMap<>() ;
+    private static Map<String, AccumulatorFactory> registry         = new HashMap<>() ;
+    private static Map<String, Node>               noGroupValues    = new HashMap<>() ;
+    
+    public static void init() {
+        StandardAggregates.register();
+    }
     
     /**
      * Register a custom aggregate, with its associated factory for accumulators.
@@ -44,9 +49,7 @@ public class AggregateRegistry {
         noGroupValues.put(uri, noGroupValue) ;
     }
 
-    /**
-     * Remove a registration.
-     */
+    /** Remove a registration. */
     public static void unregister(String uri) {
         registry.remove(uri) ;
         noGroupValues.remove(uri) ;
@@ -57,12 +60,12 @@ public class AggregateRegistry {
         return registry.get(uri) ;
     }
     
-    /** Return the AccumulatorFactory for a registered custom aggregate. */
+    /** Return the registered "no groups" value */ 
     public static Node getNoGroupValue(String uri) {
         return noGroupValues.get(uri) ;
     }
 
-    /** Return the AccumulatorFactory for a registered custom aggregate. */
+    /** Is the URI registered as an aggregate function? */
     public static boolean isRegistered(String uri) {
         return registry.containsKey(uri) ;
     }

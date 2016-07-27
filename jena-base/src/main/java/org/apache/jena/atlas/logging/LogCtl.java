@@ -19,6 +19,9 @@
 package org.apache.jena.atlas.logging;
 
 import java.io.* ;
+import java.nio.file.Files ;
+import java.nio.file.Path ;
+import java.nio.file.Paths ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -192,8 +195,9 @@ public class LogCtl {
     // ---- java.util.logging - because that's always present.
     static String defaultProperties = StrUtils.strjoinNL
         ("handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStdout"
-         ,"org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO"
-         ,"java.util.logging.ConsoleHandler.formatter=org.apache.atlas.logging.java.TextFormatter"
+        ,"org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO"
+        ,"org.apache.jena.atlas.logging.java.ConsoleHandlerStdout.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
+        //,"java.util.logging.ConsoleHandler.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
         ) ;
 
     /**
@@ -251,8 +255,14 @@ public class LogCtl {
         System.setProperty("log4j.configuration", "set") ;
     }
 
+    private static String JUL_LOGGING = "logging.properties" ;
+    
     public static void setJavaLogging() {
-        setJavaLogging("logging.properties") ;
+        Path p = Paths.get(JUL_LOGGING) ;
+        if ( Files.exists(p) )
+            setJavaLogging("logging.properties") ;
+        else
+            setJavaLoggingDft();
     }
 
     public static void setJavaLogging(String file) {

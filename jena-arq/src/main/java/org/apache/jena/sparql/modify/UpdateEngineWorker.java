@@ -278,7 +278,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         return new Sink<Quad>() {
             @Override
             public void send(Quad quad) {
-                addTodatasetGraph(datasetGraph, quad);
+                addToDatasetGraph(datasetGraph, quad);
             }
 
             @Override
@@ -294,7 +294,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     @Override
     public void visit(UpdateDataInsert update) {
         for ( Quad quad : update.getQuads() )
-            addTodatasetGraph(datasetGraph, quad);
+            addToDatasetGraph(datasetGraph, quad);
     }
 
     @Override
@@ -336,7 +336,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(datasetGraph.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory());
         try {
-            Iterator<Binding> bindings = evalBindings(el, null);
+            Iterator<Binding> bindings = evalBindings(el);
             db.addAll(bindings);
             Iter.close(bindings);
 
@@ -362,23 +362,16 @@ public class UpdateEngineWorker implements UpdateVisitor
         // WITH
         // USING overrides WITH
         if ( dsg == null && withGraph != null ) {
-            if ( false ) {
-                // Subtle difference : WITH <uri>... WHERE {}
-                // and an empty/unknown graph <uri>
-                //   rewrite with GRAPH -> no match.
-                //   redo as dataset with different default graph -> match
-                //     SPARQL is unclear about what happens when the graph does not exist.
-                //     but the rewrite with ElementNamedGraph is closer to SPARQL.
-                
-                // Ye Olde way - create a special dataset
-                dsg = processWithOld(update) ;
-                withGraph = null ;
-            }
-            else
-                // Better, treat as
-                // WHERE { GRAPH <with> { ... } }
-                // This is the SPARQL wording (which is a bit loose).  
-                elt = new ElementNamedGraph(withGraph, elt) ;
+            // Subtle difference : WITH <uri>... WHERE {}
+            // and an empty/unknown graph <uri>
+            //   rewrite with GRAPH -> no match.
+            //   redo as dataset with different default graph -> match
+            // SPARQL is unclear about what happens when the graph does not exist.
+            //   but the rewrite with ElementNamedGraph is closer to SPARQL.
+            // Better, treat as
+            // WHERE { GRAPH <with> { ... } }
+            // This is the SPARQL wording (which is a bit loose).  
+            elt = new ElementNamedGraph(withGraph, elt) ;
         }
 
         // WITH :
@@ -407,11 +400,11 @@ public class UpdateEngineWorker implements UpdateVisitor
             Iter.close(bindings);
 
             Iterator<Binding> it = db.iterator();
-            execDelete(dsg, update.getDeleteQuads(), withGraph, it);
+            execDelete(datasetGraph, update.getDeleteQuads(), withGraph, it);
             Iter.close(it);
 
             Iterator<Binding> it2 = db.iterator();
-            execInsert(dsg, update.getInsertQuads(), withGraph, it2);
+            execInsert(datasetGraph, update.getInsertQuads(), withGraph, it2);
             Iter.close(it2);
         }
         finally {
@@ -423,17 +416,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected DatasetGraph processUsing(UpdateModify update) {
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null;
-
         return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), datasetGraph, false);
-    }
-
-    protected DatasetGraph processWithOld(UpdateModify update) {
-        Node withGraph = update.getWithIRI();
-        if ( withGraph == null )
-            return null;
-        Graph g = graphOrDummy(datasetGraph, withGraph);
-        DatasetGraph dsg = new DatasetGraphAltDefaultGraph(datasetGraph, g);
-        return dsg;
     }
 
     private Graph graphOrDummy(DatasetGraph dsg, Node gn) {
@@ -530,16 +513,16 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected static void execInsert(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
         if ( onceQuads != null && bindings.hasNext() ) {
             onceQuads = remapDefaultGraph(onceQuads, dftGraph) ;
-            onceQuads.forEach((q)->addTodatasetGraph(dsg, q)) ;
+            onceQuads.forEach((q)->addToDatasetGraph(dsg, q)) ;
         }
         Iterator<Quad> it = template(templateQuads, dftGraph, bindings) ;
         if ( it == null )
             return ;
-        it.forEachRemaining((q)->addTodatasetGraph(dsg, q)) ;
+        it.forEachRemaining((q)->addToDatasetGraph(dsg, q)) ;
     }
 
     // Catch all individual adds of quads
-    private static void addTodatasetGraph(DatasetGraph datasetGraph, Quad quad) {
+    private static void addToDatasetGraph(DatasetGraph datasetGraph, Quad quad) {
         // Check legal triple.
         if ( quad.isLegalAsData() )
             datasetGraph.add(quad);
@@ -549,6 +532,8 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     // Catch all individual deletes of quads
     private static void deleteFromDatasetGraph(DatasetGraph datasetGraph, Quad quad) {
+        if ( datasetGraph instanceof DatasetGraphReadOnly )
+            System.err.println("READ ONLY") ;
         datasetGraph.delete(quad);
     }
 
@@ -563,19 +548,9 @@ public class UpdateEngineWorker implements UpdateVisitor
         return query;
     }
 
-    protected Iterator<Binding> evalBindings(Element pattern, Node dftGraph) {
-        return evalBindings(elementToQuery(pattern), dftGraph);
-    }
-
-    protected Iterator<Binding> evalBindings(Query query, Node dftGraph) {
-        DatasetGraph dsg = datasetGraph;
-        if ( query != null ) {
-            if ( dftGraph != null ) {
-                Graph g = graphOrDummy(dsg, dftGraph);
-                dsg = new DatasetGraphAltDefaultGraph(dsg, g);
-            }
-        }
-        return evalBindings(query, dsg, inputBinding, context);
+    protected Iterator<Binding> evalBindings(Element pattern) {
+        Query query = elementToQuery(pattern);
+        return evalBindings(query, datasetGraph, inputBinding, context);
     }
 
     protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {

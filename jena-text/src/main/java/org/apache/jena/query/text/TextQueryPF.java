@@ -232,18 +232,13 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        if (!s.isURI()) {
-            log.warn("Subject not a URI: " + s) ;
-            return IterLib.noResults(execCxt) ;
-        }
-
         String qs = match.getQueryString() ;
         ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
         
-        List<TextHit> r = x.get(s.getURI());
+        List<TextHit> r = x.get(TextQueryFuncs.subjectToString(s));
 
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
@@ -279,6 +274,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             log.debug("Text query: {} ({})", queryString,limit) ;
 
         String cacheKey = limit + " " + property + " " + queryString ;
+        @SuppressWarnings("unchecked")
         Cache<String,ListMultimap<String,TextHit>> queryCache = 
             (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
         if (queryCache == null) { /* doesn't yet exist, need to create it */
@@ -291,7 +287,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             List<TextHit> resultList = textIndex.query(property, queryStr, limit) ;
             ListMultimap<String,TextHit> resultMultimap = LinkedListMultimap.create();
             for (TextHit result : resultList) {
-                resultMultimap.put(result.getNode().getURI(), result);
+                resultMultimap.put(TextQueryFuncs.subjectToString(result.getNode()), result);
             }
             return resultMultimap;
         });

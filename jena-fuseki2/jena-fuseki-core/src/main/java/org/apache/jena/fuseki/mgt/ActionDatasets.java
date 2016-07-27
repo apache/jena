@@ -42,9 +42,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.build.* ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.graph.Node ;
@@ -115,6 +113,7 @@ public class ActionDatasets extends ActionContainerItem {
         JenaUUID uuid = JenaUUID.generate() ;
         String newURI = uuid.asURI() ;
         Node gn = NodeFactory.createURI(newURI) ;
+        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
         
@@ -206,7 +205,7 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
+            DataAccessPoint ref = Builder.buildDataAccessPoint(subject, registry) ;
             DataAccessPointRegistry.register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;

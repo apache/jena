@@ -18,6 +18,8 @@
 
 package org.apache.jena.graph ;
 
+import java.util.Objects ;
+
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -27,6 +29,8 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 public class NodeFactory {
 
     public static RDFDatatype getType(String s) {
+        if ( s == null )
+            return null ;
         return TypeMapper.getInstance().getSafeTypeByName(s) ;
     }
 
@@ -38,6 +42,7 @@ public class NodeFactory {
     /** make a blank node with the specified label
      */
     public static Node createBlankNode(BlankNodeId id) {
+        Objects.requireNonNull(id, "Argument to NodeFactory.createBlankNode is null") ;
         return new Node_Blank(id) ; 
     }
 
@@ -60,6 +65,7 @@ public class NodeFactory {
      */
     @Deprecated
     public static Node createAnon(BlankNodeId id) {
+        Objects.requireNonNull(id, "Argument to NodeFactory.createAnon is null") ;
         return new Node_Blank(id) ; 
     }
 
@@ -68,26 +74,31 @@ public class NodeFactory {
      */
     @Deprecated
     public static Node createAnon(String string) {
+        Objects.requireNonNull(string, "Argument to NodeFactory.createAnon is null") ;
         BlankNodeId id = BlankNodeId.create(string) ;
         return new Node_Blank(id) ; 
     }
 
     /** make a literal node with the specified literal value */
     public static Node createLiteral(LiteralLabel lit) {
+        Objects.requireNonNull(lit, "Argument to NodeFactory.createLiteral is null") ;
         return new Node_Literal( lit ) ;
     }
 
     /** make a URI node with the specified URIref string */
     public static Node createURI(String uri) {
+        Objects.requireNonNull(uri, "Argument to NodeFactory.createURI is null") ;
         return new Node_URI(uri) ;
     }
 
     /** make a variable node with a given name */
     public static Node createVariable(String name) {
+        Objects.requireNonNull(name, "Argument to NodeFactory.createVariable is null") ;
         return new Node_Variable(name) ;
     }
 
     public static Node createLiteral(String value) {
+        Objects.requireNonNull(value, "Argument to NodeFactory.createLiteral is null") ;
         return createLiteral(value, "", false) ;
     }
 
@@ -168,12 +179,13 @@ public class NodeFactory {
      * @throws DatatypeFormatException
      */
     public static Node createLiteralByValue(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, "", dtype)) ;
     }
 
     /** Create a Node based on the value
      * If the value is a string we
-     * assume this is inteded to be a lexical form after all.
+     * assume this is intended to be a lexical form after all.
      * @param value
      *          The value, mapped according to registered types. 
      * @param lang
@@ -184,18 +196,21 @@ public class NodeFactory {
      * @throws DatatypeFormatException
      */
     public static Node createLiteralByValue(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return new Node_Literal(LiteralLabelFactory.createByValue(value, lang, dtype)) ;
     }
 
     /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, RDFDatatype)} */ 
     @Deprecated
     public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return createLiteralByValue(value, dtype) ;
     }
 
     /** @deprecated To be removed: Use {@link #createLiteralByValue(Object, String, RDFDatatype)} */ 
     @Deprecated
     public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        Objects.requireNonNull(value, "Argument 'value' to NodeFactory.createLiteralByValue is null") ;
         return createLiteralByValue(value, lang, dtype) ;
     }
 }

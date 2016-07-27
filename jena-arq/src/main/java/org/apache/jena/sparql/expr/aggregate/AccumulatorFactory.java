@@ -22,10 +22,6 @@ package org.apache.jena.sparql.expr.aggregate;
  * processor for one group key for one execution.
  */
 public interface AccumulatorFactory {
-    /**
-     * 
-     * @return Accumulator
-     */
-    public Accumulator createAccumulator(AggCustom agg) ;
+    public Accumulator createAccumulator(AggCustom agg, boolean distinct) ;
 }
 

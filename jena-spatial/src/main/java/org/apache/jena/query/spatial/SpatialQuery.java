@@ -62,13 +62,11 @@ public class SpatialQuery
         synchronized(lock)
         {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("SpatialQuery.init - skip") ;
+                JenaSystem.logLifecycle("SpatialQuery.init - skip") ;
                 return ; 
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("SpatialQuery.init - start") ;
+            JenaSystem.logLifecycle("SpatialQuery.init - start") ;
 
             SpatialAssembler.init() ;
             
@@ -131,8 +129,7 @@ public class SpatialQuery
                 }
             });
             
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("SpatialQuery.init - finish") ;
+            JenaSystem.logLifecycle("SpatialQuery.init - finish") ;
 
         }
     }

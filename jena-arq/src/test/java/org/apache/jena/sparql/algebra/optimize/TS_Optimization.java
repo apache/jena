@@ -29,6 +29,7 @@ import org.junit.runners.Suite ;
     , TestSemanticEquivalence.class
     , TestTransformConstantFolding.class
     , TestTransformFilters.class
+    , TestTransformFilterEquality.class
     , TestTransformFilterPlacement.class
     , TestTransformMergeBGPs.class
     , TestTransformPromoteTableEmpty.class

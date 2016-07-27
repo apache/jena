@@ -37,9 +37,6 @@ public class Template
     
     public static final String templateMemFN_1      = templateDir+"/config-mem-txn" ;
 
-
-    
-    
     // Template may be in a resources area of a jar file so you can't do a directory listing.
     public static final String[] templateNames = {
         templateMemFN ,
@@ -52,6 +49,5 @@ public class Template
     public static final String NAME = "NAME" ;
     public static final String DATA = "DATA" ;
     public static final String DIR =  "DIR" ;
-    
 }
 

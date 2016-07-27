@@ -27,32 +27,26 @@ import org.apache.jena.graph.Node ;
 public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 {
     @Override
-    final
-    public void add(Quad quad)
-    {
-        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    final public void add(Quad quad) {
+        add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     @Override
-    final
-    public void delete(Quad quad)
-    {
-        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
+    final public void delete(Quad quad) {
+        delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     @Override
-    public void add(Node g, Node s, Node p, Node o)
-    {
-        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+    final public void add(Node g, Node s, Node p, Node o) {
+        if ( Quad.isDefaultGraph(g) )
             addToDftGraph(s, p, o) ;
         else
             addToNamedGraph(g, s, p, o) ;
     }
 
     @Override
-    public void delete(Node g, Node s, Node p, Node o)
-    {
-        if ( Quad.isDefaultGraphGenerated(g) || Quad.isDefaultGraphExplicit(g) )
+    final public void delete(Node g, Node s, Node p, Node o) {
+        if ( Quad.isDefaultGraph(g) )
             deleteFromDftGraph(s, p, o) ;
         else
             deleteFromNamedGraph(g, s, p, o) ;
@@ -63,7 +57,24 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     protected abstract void deleteFromDftGraph(Node s, Node p, Node o) ;
     protected abstract void deleteFromNamedGraph(Node g, Node s, Node p, Node o) ;
     
-    // Default implementations.
+//    // Ensure we loop back here
+//    @Override
+//    public Graph getDefaultGraph() {
+//        return GraphView.createDefaultGraph(this) ;
+//    }
+//
+//    @Override
+//    public Graph getGraph(Node graphNode) {
+//        return GraphView.createNamedGraph(this, graphNode) ;
+//    }
+
+    // Default implementations - copy based.
+      
+    @Override
+    public void setDefaultGraph(Graph graph) { 
+        GraphUtil.addInto(getDefaultGraph(), graph) ;
+    }
+    
     @Override
     public void addGraph(Node graphName, Graph graph) {
         GraphUtil.addInto(getGraph(graphName), graph) ;

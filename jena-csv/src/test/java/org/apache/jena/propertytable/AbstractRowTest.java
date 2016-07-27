@@ -65,7 +65,7 @@ public abstract class AbstractRowTest extends AbstractColumnTest{
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetListWithANonExistantColumn() {
-		Assert.assertNull(row.getValue( NodeFactory.createAnon() ));
+		Assert.assertNull(row.getValue( NodeFactory.createBlankNode() ));
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public abstract class AbstractRowTest extends AbstractColumnTest{
     
     @Test
     public void testRowExistsFalse(){
-    	Assert.assertNull(table.getRow(NodeFactory.createAnon()));
+    	Assert.assertNull(table.getRow(NodeFactory.createBlankNode()));
     }
     
     @Test
@@ -94,8 +94,8 @@ public abstract class AbstractRowTest extends AbstractColumnTest{
 
     @Test
     public void testGetRowFalseAndDoesntCreateRow() {
-    	Assert.assertNull(table.getRow(NodeFactory.createAnon()));
-    	Assert.assertNull(table.getRow(NodeFactory.createAnon()));
+    	Assert.assertNull(table.getRow(NodeFactory.createBlankNode()));
+    	Assert.assertNull(table.getRow(NodeFactory.createBlankNode()));
     }
     
     @Test(expected=IllegalArgumentException.class)

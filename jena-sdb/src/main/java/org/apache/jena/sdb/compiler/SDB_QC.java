@@ -102,26 +102,6 @@ public class SDB_QC
         // Project variables
         List<Var> vars = toList(map(query.getResultVars().iterator(), Var::alloc)) ;
         
-        if ( vars.size() == 0 )
-        {
-            // This works around a bug in ARQ 2.7.0 where a SPARQL/Update is made programmtically.
-            // The query is not created fully - this worksaround that.
-            // TODO Remove when ARQ 2.7.1/2.8.0 released.
-            // Can occur with programmatically created patterns that are not fully setup.
-            Query q2 = new Query() ;
-            q2.setQueryPattern(query.getQueryPattern()) ;
-            q2.setQuerySelectType() ;
-            q2.setQueryResultStar(true) ;
-            vars = toList(map(q2.getResultVars().iterator(), Var::alloc)) ;
-        }
-        
-        
-        if ( vars.size() == 0 )
-        {
-            // SELECT * {} or SPARQL Update with WHERE {}
-            // LoggerFactory.getLogger(SDB_QC.class).warn("No project variables") ;
-        }
-        
         // Add the ORDER BY variables
         List<SortCondition> orderConditions = query.getOrderBy() ;
         if ( orderConditions != null )

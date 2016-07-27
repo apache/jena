@@ -26,9 +26,9 @@ import org.apache.jena.sparql.graph.NodeTransform ;
 
 /** A {@link NodeTransform} substituting variables for {@link Node}s. */
 public class NodeTransformSubst implements NodeTransform {
-    private final Map<Var, Node> map ;
+    private final Map<Var, ? extends Node> map ;
 
-    NodeTransformSubst(Map<Var, Node> map) {
+    public NodeTransformSubst(Map<Var, ? extends Node> map) {
         this.map = map ;
     }
 

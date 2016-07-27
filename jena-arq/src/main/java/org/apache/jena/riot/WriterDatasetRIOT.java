@@ -33,12 +33,6 @@ import org.apache.jena.sparql.util.Context ;
  */
 public interface WriterDatasetRIOT
 {
-//    public void  write(OutputStream out, DatasetGraph datasetGraph) ;
-//    
-//    //public void  write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap) ;
-//
-//    public void  write(OutputStream out, DatasetGraph datasetGraph, String baseURI) ;
-    
     /**
      * @param out           OutputStream
      * @param datasetGraph  DatasetGraph to be written
@@ -48,9 +42,6 @@ public interface WriterDatasetRIOT
      */
     public void  write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) ;
 
-//    /** Use of Writer is discouraged - let the serializer manage character sets in accordance with the format */
-//    public void  write(Writer out, DatasetGraph datasetGraph) ;
-    
     /** Use of Writer is discouraged - let the serializer manage character sets in accordance with the format
      * @param out           Writer
      * @param datasetGraph  DatasetGraph to be written

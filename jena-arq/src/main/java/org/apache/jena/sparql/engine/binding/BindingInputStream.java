@@ -82,8 +82,8 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         // Don't do anything with IRIs.
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-        ParserProfile profile = new ParserProfileBase(prologue, handler) ;
-        profile.setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+        FactoryRDF factory = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
+        ParserProfile profile = new ParserProfileBase(prologue, handler, factory) ;
         // Include safe bNode labels.
         return profile ;
     }

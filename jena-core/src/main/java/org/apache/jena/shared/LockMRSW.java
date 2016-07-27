@@ -57,7 +57,6 @@ public class LockMRSW implements Lock
             log.debug("Lock : "+Thread.currentThread().getName()) ;
     }
     
-    
     /** Application controlled locking - enter a critical section.
      *  Locking is reentrant so an application can have nested critical sections.
      *  Typical code:

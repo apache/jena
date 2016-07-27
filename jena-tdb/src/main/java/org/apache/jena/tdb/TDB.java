@@ -239,13 +239,11 @@ public class TDB {
         
         synchronized(initLock) {
             if ( initialized ) {
-                if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("TDB.init - return") ;
+                JenaSystem.logLifecycle("TDB.init - return") ;
                 return ;
             }
             initialized = true ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TDB.init - start") ;
+            JenaSystem.logLifecycle("TDB.init - start") ;
             LangRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
 
@@ -256,8 +254,7 @@ public class TDB {
             MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
             wireIntoExecution() ;
-            if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TDB.init - finish") ;
+            JenaSystem.logLifecycle("TDB.init - finish") ;
         }
     }
 

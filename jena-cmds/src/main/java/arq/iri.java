@@ -37,6 +37,9 @@ public class iri
         boolean first = true ;
         for ( String iriStr : args )
         {
+            if ( iriStr.startsWith("<") && iriStr.endsWith(">") )
+                iriStr = iriStr.substring(1, iriStr.length()-1) ;
+            
             if ( ! first )
                 System.out.println() ;
             first = false ;

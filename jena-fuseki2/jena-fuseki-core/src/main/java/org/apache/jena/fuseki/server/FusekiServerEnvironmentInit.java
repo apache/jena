@@ -39,5 +39,14 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {}
+    public void contextDestroyed(ServletContextEvent sce) {
+        // Stop handling requests.
+        
+        // ActionSPARQL uses DataAccessPointRegistry to map URI to services (DataAccessPoint)
+        
+        // DataService -> DataService
+//        DataAccessPointRegistry.shutdown() ;
+//        DatasetDescriptionRegistry.reset() ;
+        JenaSystem.shutdown(); 
+    }
 }

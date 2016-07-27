@@ -18,6 +18,9 @@
 
 package org.apache.jena.tdb.transaction;
 
+import static org.apache.jena.query.ReadWrite.READ ;
+import static org.apache.jena.query.ReadWrite.WRITE ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
@@ -27,20 +30,12 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.update.* ;
 import org.junit.* ;
-import static org.apache.jena.query.ReadWrite.* ;
 
-/** Tests of transactions and the TDG union graph */
+/** Tests of transactions and the TDB union graph */
 public class TestTransactionUnionGraph extends BaseTest
 {
     private Dataset ds ;
     
-//    @BeforeClass public static void beforeClass()
-//    { 
-//        ds = TDBFactory.createDataset() ;
-//        ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 1)")) ;
-//    }
-//    @AfterClass public static void afterClass() { ds = null ; }
-
     @Before
     public void before()
     {
@@ -48,7 +43,7 @@ public class TestTransactionUnionGraph extends BaseTest
         ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 1)")) ;
     }
     
-    @After public void after() {} 
+    @After public void after() { } 
     
     @Test public void uniontxn_global_r()
     {

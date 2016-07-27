@@ -20,7 +20,8 @@
 
 <!--
 Example Jetty - you will need to configure a certificate.
-You wil need to conigure this example.
+
+** You will need to configure this example. **
 
 See "sslContextFactory" below.
 
@@ -34,7 +35,7 @@ Use:
 External references:
 
 Jetty documentation on SSL:
-   https://wiki.eclipse.org/Jetty/Howto/Configure_SSL
+   http://www.eclipse.org/jetty/documentation/current/configuring-ssl.html
 
 Oracle Java keytool
    http://docs.oracle.com/javase/8/docs/technotes/tools/windows/keytool.html

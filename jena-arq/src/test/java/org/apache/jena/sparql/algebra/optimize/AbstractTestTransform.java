@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.algebra.optimize ;
 
+import java.util.Objects ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Query ;
@@ -73,6 +75,19 @@ public abstract class AbstractTestTransform extends BaseTest {
     private static void check(Op opToOptimize, String opExpectedString) {
         Op opOptimize = Algebra.optimize(opToOptimize) ;
         Op opExpected = SSE.parseOp(opExpectedString) ;
+        if ( false ) {
+            // Hook for more detail during development. 
+            boolean b = Objects.equals(opExpected, opOptimize) ;
+            if ( ! b ) {
+                System.err.println("** Input:");
+                System.err.print(opToOptimize) ;
+                System.err.println("** Expected:");
+                System.err.print(opExpected) ;
+                System.err.println("** Actual:");
+                System.err.print(opOptimize) ;
+                System.err.println("-------------------") ;
+            }
+        }
         assertEquals(opExpected, opOptimize) ;
     }
 

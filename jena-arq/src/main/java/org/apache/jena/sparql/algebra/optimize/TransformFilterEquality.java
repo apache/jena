@@ -76,13 +76,12 @@ import org.apache.jena.sparql.expr.* ;
  * </p>
  */
 public class TransformFilterEquality extends TransformCopy {
-    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ... and
-    // better?
-    // Still need to be careful of double-nested OPTIONALS as intermediates of a
-    // different
-    // value can block overall results so don't mask immediately.
-    public TransformFilterEquality() {
-    }
+    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ...
+    // and better? Still need to be careful of double-nested OPTIONALS as
+    // intermediates of a different value can block overall results so
+    // don't mask immediately.
+    
+    public TransformFilterEquality() { }
 
     @Override
     public Op transform(OpFilter opFilter, Op subOp) {
@@ -113,23 +112,29 @@ public class TransformFilterEquality extends TransformCopy {
             return null;
 
         // ---- Check if the subOp is the right shape to transform.
-        Op op = subOp;
 
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, equalities, remaining))
-            return OpTable.empty();
+            // JENA-1184
+            // If this is run after join-strategy, then scope is not a simple matter
+            // of looking at the subOp.  But running before join-strategy
+            // causes other code to not optimize (presumablty because it was developed
+            // to run after join-strategy probably by conincidence)
+            // @Test TestTransformFilters.equality04
+            //return OpTable.empty();
+            // JENA-1184 woraround. Return unchanged.
+            return null ;
 
-        // Special case: the deep left op of a OpConditional/OpLeftJoin is unit
-        // table.
-        // This is
+        // Special case: the deep left op of a OpConditional/OpLeftJoin is the unit table.
+        // This is the case of:
         // { OPTIONAL{P1} OPTIONAL{P2} ... FILTER(?x = :x) }
         if (testSpecialCase1(subOp, equalities, remaining)) {
             // Find backbone of ops
             List<Op> ops = extractOptionals(subOp);
             ops = processSpecialCase1(ops, equalities);
             // Put back together
-            op = rebuild((Op2) subOp, ops);
+            Op op = rebuild((Op2) subOp, ops);
             // Put all filters - either we optimized, or we left alone.
             // Either way, the complete set of filter expressions.
             op = OpFilter.filter(exprs, op);
@@ -137,6 +142,7 @@ public class TransformFilterEquality extends TransformCopy {
         }
 
         // ---- Transform
+        Op op = subOp;
 
         if (!safeToTransform(varsMentioned, op))
             return null;
@@ -205,9 +211,10 @@ public class TransformFilterEquality extends TransformCopy {
             return Pair.create(var, constant);
         }
 
-        // At this point, ( e instanceof E_Equals)
+        // At this point, (e instanceof E_Equals)
         
-        Node n = constant.getNode() ;
+        // 'constant' can be a folded expression - no node yet - so use asNode. 
+        Node n = constant.asNode() ; 
         if ( JenaRuntime.isRDF11 ) {
             // RDF 1.1 : simple literals are xsd:strings.  
             if ( Util.isSimpleString(n) )
@@ -232,6 +239,9 @@ public class TransformFilterEquality extends TransformCopy {
         if (op instanceof OpBGP || op instanceof OpQuadPattern)
             return true;
 
+        if (op instanceof OpPath )
+            return true;
+        
         if (op instanceof OpFilter) {
             OpFilter opf = (OpFilter) op;
             // Expressions are always safe transform by substitution.

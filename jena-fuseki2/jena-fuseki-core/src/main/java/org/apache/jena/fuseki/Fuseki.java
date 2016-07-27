@@ -42,7 +42,7 @@ public class Fuseki {
     // General fixed constants.
     // See also FusekiServer for the naming on the filesystem
 
-    /** Path to ??? */
+    /** Path as package name */
     static public String    PATH                         = "org.apache.jena.fuseki" ;
 
     /** a unique IRI for the Fuseki namespace */
@@ -109,19 +109,22 @@ public class Fuseki {
      */
     static public final boolean       GSP_DIRECT_NAMING = false ;
 
-    /** An identifier for the HTTP Fuseki server instance */
-    static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;
-
-    /** An additional identifier for the HTTP Fuseki server instance in a development build */
-    static public final String        serverHttpNameDev   ;
+    /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
+     * because maven has not filtered the fuseki-properties.xml file.
+     */
+    public static boolean   developmentMode ;
     static {
         // See ServletBase.setCommonheaders
-        // If it look like a SNAPSHOT, print build date. Not perfect, but better.
-        if ( VERSION.contains("SNAPSHOT") && ! BUILD_DATE.startsWith("\\${") )
-            serverHttpNameDev = NAME + " (" + VERSION + " / " + BUILD_DATE +")" ;
-        else
-            serverHttpNameDev = null ;
+        // If it look like a SNAPSHOT, or it's not set, we are in development mode.
+        developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") ) ;
     }
+
+    public static boolean   outputJettyServerHeader     = developmentMode ;
+    public static boolean   outputFusekiServerHeader    = developmentMode ;
+    
+    /** An identifier for the HTTP Fuseki server instance */
+    static public final String  serverHttpName          = NAME + " (" + VERSION + ")" ;
+    
     /** Logger name for operations */
     public static final String        actionLogName     = PATH + ".Fuseki" ;
 
@@ -218,6 +221,10 @@ public class Fuseki {
 
     /**
      * Initialize an instance of the Fuseki server stack.
+     * This is not done via Jena's initialization mechanism
+     * but done explicitly to give more control.
+     * Touching this class causes this to happen 
+     * (see static block at the end of this class). 
      */
     public synchronized static void init() {
         if ( initialized )

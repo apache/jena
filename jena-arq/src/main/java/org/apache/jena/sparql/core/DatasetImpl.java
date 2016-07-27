@@ -32,42 +32,32 @@ import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeUtils ;
 
-/** A implementation of a Dataset.
+/** An implementation of a Dataset.
  * This is the "usual" implementation based on wrapping a DatasetGraph
  * and providing an adapter layer from Model/Resource to Graph/Node
- * The characteristics of this adapter depend on the characteristics of
+ * The characteristics of this class depend on the characteristics of
  * DatasetGraph.   
  */
 
-public class DatasetImpl implements Dataset
+public class DatasetImpl implements Dataset 
 {
     protected DatasetGraph dsg = null ;
+    // Allow for an external transactional. 
     private Transactional transactional = null ;
-    // Preserve ancient behaviour.
-    private Graph seenDftGraph = null ;
     private Model dftModel = null ;
 
     /** Wrap an existing DatasetGraph */
-    public static Dataset wrap(DatasetGraph datasetGraph)
-    {
-        DatasetImpl ds = new DatasetImpl(datasetGraph) ;
-        return ds ;
+    public static Dataset wrap(DatasetGraph datasetGraph) {
+        return new DatasetImpl(datasetGraph) ;
     }
     
-    /** Clone the structure of a DatasetGraph.
-     * The current graph themselves are shared but new naming and new graphs are
-     * only in the cloned    
-     */
-    public static Dataset cloneStructure(DatasetGraph datasetGraph)
-    { 
-        return new DatasetImpl(new DatasetGraphMap(datasetGraph)) ;
+    protected DatasetImpl(DatasetGraph dsg) {
+        this(dsg,  (dsg.supportsTransactions() ? dsg : null)) ; 
     }
 
-    protected DatasetImpl(DatasetGraph dsg)
-    {
-        this.dsg = dsg ;
-        if ( dsg instanceof Transactional )
-            this.transactional = (Transactional)dsg ; 
+    protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
+        this.dsg = dsg;
+        this.transactional = transactional ; 
     }
     
     /** Create a Dataset with the model as default model.
@@ -75,92 +65,77 @@ public class DatasetImpl implements Dataset
      */
     public DatasetImpl(Model model)
     {
-        seenDftGraph = model.getGraph() ;
-        dftModel = model ;
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
-        if ( dsg instanceof Transactional )
-            this.transactional = (Transactional)dsg ; 
+        this.transactional = dsg ;
+        dftModel = model ;
     }
 
     /** Create a Dataset with a copy of the structure of another one,
      * while sharing the graphs themselves.  
      */
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public DatasetImpl(Dataset ds)
     {
-        this(DatasetGraphFactory.create(ds.asDatasetGraph())) ;
+        this(DatasetGraphFactory.cloneStructure(ds.asDatasetGraph())) ;
     }
 
     @Override
-    public Model getDefaultModel() 
-    { 
-        setDefaultModelSlots() ;
+    public Model getDefaultModel() { 
+        if ( dftModel == null )
+            dftModel = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
         return dftModel ;
     }
 
-    private synchronized void setDefaultModelSlots() {
-        Graph g = dsg.getDefaultGraph() ;
-        if ( g != seenDftGraph ) {
-            seenDftGraph = g ;
-            dftModel = ModelFactory.createModelForGraph(g) ;
-        }
-    }
-    
-    private synchronized void clearDefaultModelSlots() {
-        seenDftGraph = null ;
-        dftModel = null ;
-    }
-    
     @Override
     public Lock getLock() { return dsg.getLock() ; }
+
+    @Override
+    public Context getContext() {
+        return dsg.getContext();
+    }
     
     @Override
-    public Context getContext()
-    {
-        return dsg.getContext() ;
-    }
-    @Override
-    public boolean supportsTransactions()
-    {
-        return (transactional != null) ;
+    public boolean supportsTransactions() {
+        return dsg.supportsTransactions() ;
     }
 
-    @Override public void begin(ReadWrite mode)     
-    {
-        checkTransactional() ;
-        transactional.begin(mode) ;
+    @Override
+    public boolean supportsTransactionAbort() {
+        return dsg.supportsTransactionAbort() ;
+    }
+
+    @Override
+    public void begin(ReadWrite mode) {
+        checkTransactional();
+        transactional.begin(mode);
     }
     
     /** Say whether a transaction is active */ 
     @Override
-    public boolean isInTransaction()
-    {
-        checkTransactional() ;
-        return transactional.isInTransaction() ;
+    public boolean isInTransaction() {
+        checkTransactional();
+        return transactional != null && transactional.isInTransaction();
     }
 
     @Override
-    public void commit()
-    {
-        checkTransactional() ;
-        transactional.commit() ;
+    public void commit() {
+        checkTransactional();
+        transactional.commit();
+        dftModel = null;
     }
 
     @Override
-    public void abort()
-    {
-        checkTransactional() ;
-        transactional.abort() ;
+    public void abort() {
+        checkTransactional();
+        transactional.abort();
+        dftModel = null;
     }
 
     @Override
-    public void end()
-    {
-        checkTransactional() ;
-        transactional.end() ;
-        
-        seenDftGraph = null ;
-        dftModel = null ;
+    public void end() {
+        checkTransactional();
+        transactional.end();
+        dftModel = null;
     }
 
     private void checkTransactional() {
@@ -172,32 +147,28 @@ public class DatasetImpl implements Dataset
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     @Override
-    public Model getNamedModel(String uri)
-    { 
+    public Model getNamedModel(String uri) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         return graph2model(dsg.getGraph(n)) ;
     }
 
     @Override
-    public void addNamedModel(String uri, Model model)
-    { 
+    public void addNamedModel(String uri, Model model) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
     }
 
     @Override
-    public void removeNamedModel(String uri)
-    { 
+    public void removeNamedModel(String uri) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.removeGraph(n) ;
     }
 
     @Override
-    public void replaceNamedModel(String uri, Model model)
-    {
+    public void replaceNamedModel(String uri, Model model) {
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
@@ -206,17 +177,14 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public void setDefaultModel(Model model)
-    { 
+    public void setDefaultModel(Model model) {
         if ( model == null )
             model = ModelFactory.createDefaultModel() ;
         dsg.setDefaultGraph(model.getGraph()) ;
-        clearDefaultModelSlots();
     }
 
     @Override
-    public boolean containsNamedModel(String uri)
-    { 
+    public boolean containsNamedModel(String uri) {
         // Does not touch the cache.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
@@ -224,27 +192,22 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public Iterator<String> listNames()
-    { 
+    public Iterator<String> listNames() {
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         dsg.close() ;
-        seenDftGraph = null ;
         dftModel = null ;
     }
     
-    protected Model graph2model(final Graph graph)
-    { 
-        return ModelFactory.createModelForGraph(graph) ;
+    protected Model graph2model(final Graph graph) {
+        return ModelFactory.createModelForGraph(graph);
     }
-    
-    protected static void checkGraphName(String uri)
-    {
+
+    protected static void checkGraphName(String uri) {
         if ( uri == null )
-            throw new ARQException("null for graph name") ; 
+            throw new ARQException("null for graph name");
     }
 }

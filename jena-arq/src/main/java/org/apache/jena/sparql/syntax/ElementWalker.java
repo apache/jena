@@ -19,10 +19,11 @@
 package org.apache.jena.sparql.syntax;
 
 
-/** An element visitor that walks the graph pattern tree, 
- *  applying a visitor at each Element traversed.
- *  Does not (NOT)EXISTS in filters.
- *    These will need to call down themselves if it is meaningful for the visitor.  
+/** An element visitor that walks the graph pattern tree for one query level. 
+ *  applying a visitor at each Element traversed.<br/>
+ *  Does not process subqueries.<br/>      
+ *  Does not process (NOT)EXISTS in filters.<br/>
+ *  These will need to call down themselves if it is meaningful for the visitor.
  *  Bottom-up walk - apply to subelements before applying to current element.
  */
 
@@ -35,22 +36,22 @@ public class ElementWalker
     
     public static void walk(Element el, ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
     {
-        Walker w = new Walker(visitor, beforeVisitor, afterVisitor) ;
+        EltWalker w = new EltWalker(visitor, beforeVisitor, afterVisitor) ;
         el.visit(w) ;
     }
 
-    protected static void walk$(Element el, Walker walker)
+    protected static void walk$(Element el, EltWalker walker)
     {
         el.visit(walker) ;
     }
 
-    static public class Walker implements ElementVisitor
+    static class EltWalker implements ElementVisitor
     {
         protected final ElementVisitor proc ;
         protected final ElementVisitor beforeVisitor ;
         protected final ElementVisitor afterVisitor ;
         
-        protected Walker(ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
+        protected EltWalker(ElementVisitor visitor, ElementVisitor beforeVisitor, ElementVisitor afterVisitor)
         { 
             proc = visitor ;
             this.beforeVisitor= beforeVisitor ; 
@@ -201,6 +202,7 @@ public class ElementWalker
         public void visit(ElementSubQuery el)
         {
             before(el) ;
+            // This does not automatically walk into the subquery.
             proc.visit(el) ;
             after(el) ;
         }

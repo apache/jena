@@ -18,108 +18,152 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
+import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
+import org.apache.jena.sparql.graph.GraphUnionRead ;
 
-/** Implementation of a DatasetGraph as an extensible set of graphs.
+/** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
+ *  <p>
+ *  This implementation provides copy-in, copy-out for {@link #addGraph}.
+ *  <p>See {@link DatasetGraphMapLink} for a {@code DatasetGraph}
+ *  that holds graphs as provided.
+ *  
+ *  @see DatasetGraphMapLink  
  */
-public class DatasetGraphMap extends DatasetGraphCollection
+public class DatasetGraphMap extends DatasetGraphTriplesQuads
 {
-    private Map<Node, Graph> graphs = new HashMap<>() ;
-
+    private final GraphMaker graphMaker ;
+    private final Map<Node, Graph> graphs = new HashMap<>() ;
     private Graph defaultGraph ;
-
-    public DatasetGraphMap(Graph defaultGraph)
-    { this.defaultGraph = defaultGraph ; }
     
-    /** Create a new DatasetGraph that initially shares the graphs of the
-     * givem DatasetGraph.  Adding/removing graphs will only affect this
-     * object, not the argument DatasetGraph but changed to shared
-     * graphs are seenby both objects.
+    /**  DatasetGraphMap defaulting to storage in memory.
      */
-     
-    public DatasetGraphMap(DatasetGraph dsg)
-    {
-        this(dsg.getDefaultGraph()) ;
-        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; )
-        {
-            Node gn = names.next() ;
-            addGraph(gn, dsg.getGraph(gn)) ;
+    public DatasetGraphMap() {
+        this(DatasetGraphFactory.graphMakerMem) ; 
+    }
+    
+    /**  DatasetGraphMap with a specific policy for graph creation.
+     *   This allows control over the storage. 
+     */
+    public DatasetGraphMap(GraphMaker graphMaker) {
+        this(graphMaker.create(), graphMaker) ;
+    }
+    
+    public DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
+        this.defaultGraph = defaultGraph ;
+        this.graphMaker = graphMaker ;
+    }
+    
+    // ----
+    private final Transactional txn                     = TransactionalLock.createMRSW() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return true ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
+    // ----
+    
+    @Override
+    public Iterator<Node> listGraphNodes() {
+        return graphs.keySet().iterator();
+    }
+
+    @Override
+    protected void addToDftGraph(Node s, Node p, Node o) {
+        getDefaultGraph().add(Triple.create(s, p, o)) ;
+    }
+
+    @Override
+    protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
+        getGraph(g).add(Triple.create(s, p, o)) ;
+    }
+
+    @Override
+    protected void deleteFromDftGraph(Node s, Node p, Node o) {
+        getDefaultGraph().delete(Triple.create(s, p, o)) ;
+    }
+
+    @Override
+    protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
+        getGraph(g).delete(Triple.create(s, p, o)) ;
+    }
+
+    @Override
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
+        Iterator<Triple> iter = getDefaultGraph().find(s, p, o) ;
+        return triples2quadsDftGraph(iter)  ;
+    }
+
+    @Override
+    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        Iterator<Triple> iter = getGraph(g).find(s, p, o) ;
+        return triples2quads(g, iter) ;
+    }
+
+    @Override
+    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
+        Iterator<Node> gnames = listGraphNodes() ;
+        IteratorConcat<Quad> iter = new IteratorConcat<>() ;
+
+        // Named graphs
+        for ( ; gnames.hasNext() ; ) {
+            Node gn = gnames.next();
+            Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
+            if ( qIter != null )
+                iter.add(qIter) ;
         }
+        return iter ;
     }
 
     @Override
-    public boolean containsGraph(Node graphNode)
-    {
-        return graphs.containsKey(graphNode) ;
+    public Graph getDefaultGraph() {
+        return defaultGraph;
     }
 
     @Override
-    public Graph getDefaultGraph()
-    {
-        return defaultGraph ;
-    }
-
-    @Override
-    public Graph getGraph(Node graphNode)
-    {
-        Graph g = graphs.get(graphNode) ;
-        if ( g == null )
-        {
-            g = getGraphCreate() ;
+    public Graph getGraph(Node graphNode) {
+        if ( Quad.isUnionGraph(graphNode) ) 
+            return new GraphUnionRead(this) ;
+        if ( Quad.isDefaultGraph(graphNode))
+            return getDefaultGraph() ;
+        // Not a special case.
+        Graph g = graphs.get(graphNode);
+        if ( g == null ) {
+            g = getGraphCreate();
             if ( g != null )
-                addGraph(graphNode, g) ;
+                graphs.put(graphNode, g);
         }
-        return g ;
+        return g;
     }
 
     /** Called from getGraph when a nonexistent graph is asked for.
-     * Return null for "nothing created as a graph"
+     * Return null for "nothing created as a graph".
+     * Sub classes can reimplement this.  
      */
-    protected Graph getGraphCreate() { return null ; }
+    protected Graph getGraphCreate() { 
+        Graph g = graphMaker.create() ;
+        if ( g == null )
+            throw new ARQException("Can't make new graphs") ;
+        return g ;
+    }
     
-
     @Override
-    public void addGraph(Node graphName, Graph graph)
-    { 
-        graphs.put(graphName, graph) ;
-    }
-
-    @Override
-    public void removeGraph(Node graphName)
-    {
-        graphs.remove(graphName) ;
-    }
-
-    @Override
-    public void setDefaultGraph(Graph g)
-    {
-        defaultGraph = g ;
-    }
-
-    @Override
-    public Iterator<Node> listGraphNodes()
-    {
-        return graphs.keySet().iterator() ;
-    }
-
-    @Override
-    public long size()
-    {
-        return graphs.size() ;
-    }
-
-    @Override
-    public void close()
-    { 
-        defaultGraph.close();
-        for ( Graph graph : graphs.values() )
-            graph.close();
-        super.close() ;
+    public long size() {
+        return graphs.size();
     }
 }

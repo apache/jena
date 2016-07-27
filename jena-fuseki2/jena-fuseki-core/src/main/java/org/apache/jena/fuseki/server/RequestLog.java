@@ -65,10 +65,13 @@ NCSA extended/combined log format
      * XXX.XXX.XXX.XXX - - [01/Feb/2014:03:19:09 +0000] "GET / HTTP/1.1" 200 6190  "-" "check_http/v1.4.16 (nagios-plugins 1.4.16)"
      */
     public static String combinedNCSA(HttpAction action) {
-        StringBuilder builder = new StringBuilder() ;
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
-        
+        return combinedNCSA(request, response) ;
+    }
+    
+    public static String combinedNCSA(HttpServletRequest request, HttpServletResponse response) {
+        StringBuilder builder = new StringBuilder() ;
         // Remote
         String remote = get(request, "X-Forwarded-For", request.getRemoteAddr()) ;
         builder.append(remote) ;

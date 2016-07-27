@@ -243,7 +243,6 @@ public class TestTurtleTerms extends BaseTest
 	    
 	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
 	    StreamRDF sink = StreamRDFLib.sinkNull() ;
-	    @SuppressWarnings("deprecation")
         LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, "http://base/", sink) ;
 	    PrefixMap prefixMap = parser.getProfile().getPrologue().getPrefixMap() ;
 

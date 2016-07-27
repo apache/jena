@@ -32,6 +32,7 @@ import org.apache.jena.sparql.expr.aggregate.AggregatorFactory ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.util.NodeUtils ;
 
 public class BuilderExpr
 {
@@ -1374,7 +1375,7 @@ public class BuilderExpr
                 ItemList y = x.get(0).getList() ;
                 BuilderLib.checkLength(2, y, "Broken syntax: "+list) ;
                 Node n = y.get(1).getNode() ;
-                if ( ! n.isLiteral() || n.getLiteralDatatype() != null )
+                if ( ! NodeUtils.isSimpleString(n) )
                     BuilderLib.broken(y, "Need string for separator: "+y) ;
                 separator = n.getLiteralLexicalForm() ;
                 x = x.cdr();
@@ -1402,7 +1403,7 @@ public class BuilderExpr
             if ( distinct )
                 x = x.cdr();
             ExprList e = buildExprListUntagged(x, 0) ;
-            Aggregator agg = AggregatorFactory.createCustom(false, distinct, z.getNode().getURI(), e) ;
+            Aggregator agg = AggregatorFactory.createCustom(z.getNode().getURI(), distinct, e) ;
             return new ExprAggregator(null, agg) ; 
         }
     } ;

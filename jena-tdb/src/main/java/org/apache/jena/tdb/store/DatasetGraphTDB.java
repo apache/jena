@@ -19,6 +19,8 @@
 package org.apache.jena.tdb.store;
 
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -27,20 +29,22 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNotSupported ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.lib.NodeLib ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
-import org.apache.jena.tdb.sys.Session ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 
-/** This is the class that creates a dataset over the storage via
- *  TripleTable, QuadTable and prefixes. These may be transactional.
- *  
+/** This is the class that creates a dataset over the storage. 
+ *  The name is historical. "{@code TDBStorage}" might be better nowadays. 
+ * <p> This class is not {@code Transactional}. It is used within the TDB transaction system. 
+ * <p> 
  *  See also:
  *  <ul>
  *  <li>{@link DatasetGraphTxn} &ndash; the sublcass that provides a single tranasaction</li>
@@ -49,7 +53,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
-                             implements /*DatasetGraph,*/ Sync, Closeable, Session
+                             implements /*DatasetGraph,*/ Sync, Closeable
 {
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
@@ -85,9 +89,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
     { return getQuadTable().find(Node.ANY, s, p, o) ; }
 
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    { return triples2quads(Quad.defaultGraphIRI, iter) ; }
- 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
     { getTripleTable().add(s,p,o) ; }
@@ -128,7 +129,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     // Empty graphs don't "exist" 
     public boolean containsGraph(Node graphNode) { 
-        if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
+        if ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
@@ -154,7 +155,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     //public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
 
-    public GraphTDB getEffectiveDefaultGraph()             { return effectiveDefaultGraph ; }
+    public GraphTDB getEffectiveDefaultGraph()              { return effectiveDefaultGraph ; }
 
     public StorageConfig getConfig()                        { return config ; }
     
@@ -202,7 +203,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // from the indexes happens.
 
         NodeTupleTable t = chooseNodeTupleTable(g) ;
-        startUpdate() ;
         @SuppressWarnings("unchecked")
         Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
 
@@ -235,8 +235,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             if ( len < sliceSize )
                 break ;
         }
-
-        finishUpdate() ;
     }
     
     public Location getLocation()       { return config.location ; }
@@ -254,19 +252,12 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 
-    @Override
-    public void startUpdate()
-    {}
-
-    @Override
-    public void finishUpdate()
-    {}
-
-    @Override
-    public void startRead()
-    {}
-
-    @Override
-    public void finishRead()
-    {}
+    private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public void commit()                      { txn.commit() ; }
+    @Override public void abort()                       { txn.abort() ; }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void end()                         { txn.end(); }
+    @Override public boolean supportsTransactions()     { return true ; }
+    @Override public boolean supportsTransactionAbort() { return false ; }
 }

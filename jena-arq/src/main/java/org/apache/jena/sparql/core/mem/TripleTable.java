@@ -25,7 +25,6 @@ import org.apache.jena.graph.Triple;
 
 /**
  * A simplex or multiplex table of {@link Triple}s.
- *
  */
 public interface TripleTable extends TupleTable<Triple> {
 
@@ -37,7 +36,7 @@ public interface TripleTable extends TupleTable<Triple> {
      * @param o the object node of the pattern
      * @return an {@link Stream} of matched triples
      */
-    Stream<Triple> find(Node s, Node p, Node o);
+    Stream<Triple> find(final Node s, final Node p, final Node o);
 
     @Override
     default void clear() {

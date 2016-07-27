@@ -42,13 +42,16 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.WriterSSE ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.system.JenaSystem ;
 
 /** A program to execute expressions from the command line. */
 
 public class qexpr
 {
-    // TODO Convert to extends CmdArgModule 
-    static { LogCtl.setCmdLogging(); }
+    static {
+        LogCtl.setCmdLogging() ;
+        JenaSystem.init() ;
+    }
 
     public static void main (String... argv)
     {

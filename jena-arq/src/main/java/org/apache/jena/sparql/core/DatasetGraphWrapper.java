@@ -23,14 +23,14 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.util.Context ;
 
 public class DatasetGraphWrapper implements DatasetGraph, Sync 
 {
-    // Associated query engine factory - QueryEngineFactoryWrapper
-    // which executes on the unwraped DSG. 
+    // The wrapped DatasetGraph but all calls go via get() so this can be null.
     private final DatasetGraph dsg ;
     
     /** Return the DatasetGraph being wrapped. */
@@ -164,6 +164,36 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     public void sync() {
         // Pass down sync.
         SystemARQ.sync(get()) ; 
+    }
+
+    @Override
+    public void begin(ReadWrite readWrite) 
+    { get().begin(readWrite) ; }
+
+    @Override
+    public void commit() 
+    { get().commit() ; }
+
+    @Override
+    public void abort() 
+    { get().abort() ; }
+
+    @Override
+    public void end()
+    { get().end() ; }
+
+    @Override
+    public boolean isInTransaction() 
+    { return get().isInTransaction() ; }    
+
+    @Override
+    public boolean supportsTransactions() {
+        return get().supportsTransactions() ;
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return get().supportsTransactionAbort() ;
     }
     
 }

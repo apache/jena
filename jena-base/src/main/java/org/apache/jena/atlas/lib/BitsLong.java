@@ -32,7 +32,7 @@ public final class BitsLong
     private static int LongLen = Long.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
-     *  the value is returned the low part of the returned long.
+     *  the value is returned shifted into the low part of the returned long.
      *  The low bit is bit zero.
      * @param bits
      * @param start
@@ -73,6 +73,7 @@ public final class BitsLong
      * @param startChar     Index of first character (counted from the left, string style). 
      * @param finishChar    Index after the last character (counted from the left, string style).
      * @return long
+     * @see #access(long, int, int)
      */
     
     public static final

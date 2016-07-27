@@ -24,22 +24,23 @@ import org.apache.jena.query.QueryBuildException ;
 
 class FunctionFactoryAuto implements FunctionFactory
 {
-    Class<?> extClass ;
+    private final Class<?> extClass ;
     
-    FunctionFactoryAuto(Class<?> xClass)
-    {
-        extClass = xClass ;
+    FunctionFactoryAuto(Class<? > xClass) {
+        extClass = xClass;
     }
     
     @Override
-    public Function create(String uri)
-    {
-        try
-        {
-            return (Function)extClass.newInstance() ;
-        } catch (Exception e)
-        {
-            throw new QueryBuildException("Can't instantiate function for "+uri, e) ;
-        } 
+    public Function create(String uri) {
+        try {
+            return (Function)extClass.newInstance();
+        }
+        catch (Exception e) {
+            throw new QueryBuildException("Can't instantiate function for " + uri, e);
+        }
+    }
+
+    public Class<?> getAutoClass() {
+        return extClass;
     }
 }

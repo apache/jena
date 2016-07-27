@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import static java.lang.ThreadLocal.withInitial ;
+
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
@@ -27,7 +29,6 @@ import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import static java.lang.ThreadLocal.withInitial ;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
@@ -169,6 +170,12 @@ import static java.lang.ThreadLocal.withInitial ;
     }
 
     @Override
+    public boolean supportsTransactions()       { return true ; }
+    
+    @Override
+    public boolean supportsTransactionAbort()   { return true ; }
+    
+    @Override
     public String toString() {
         try {
             if ( isInTransaction() )
@@ -186,25 +193,32 @@ import static java.lang.ThreadLocal.withInitial ;
     protected void _close() {
         if ( isClosed )
             return ;
-
-        if ( !sConn.haveUsedInTransaction() && get() != null ) {
-            // Non-transactional behaviour.
-            DatasetGraphTDB dsg = get() ;
-            dsg.sync() ;
-            dsg.close() ;
-            StoreConnection.release(dsg.getLocation()) ;
-            isClosed = true ;
-            return ;
+        
+        if ( !sConn.haveUsedInTransaction() ) {
+            synchronized(this) {
+                if ( isClosed ) return ;
+                isClosed = true ;
+                if ( ! sConn.isValid() ) {
+                    // There may be another DatasetGraphTransaction using this location
+                    // and that DatasetGraphTransaction has been closed, invalidating
+                    // the StoreConnection.
+                    return ;
+                }
+                DatasetGraphTDB dsg = sConn.getBaseDataset() ;
+                dsg.sync() ;
+                dsg.close() ;
+                StoreConnection.release(getLocation()) ;
+                return ;
+            }
         }
 
         if ( isInTransaction() ) {
-            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation()
-                             + ")") ;
+            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
             return ;
         }
-        isClosed = true ;
         txn.remove() ;
         inTransaction.remove() ;
+        isClosed = true ;
     }
 
     @Override
@@ -213,12 +227,8 @@ import static java.lang.ThreadLocal.withInitial ;
         return getBaseDatasetGraph().getContext() ;
     }
 
-    /**
-     * Return some information about the store connection and transaction
-     * manager for this dataset.
-     */
-    public SysTxnState getTransMgrState() {
-        return sConn.getTransMgrState() ;
+    public StoreConnection getStoreConnection() {
+        return sConn ;
     }
 
     @Override

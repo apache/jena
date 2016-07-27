@@ -43,6 +43,8 @@ public class ServerInitialConfig {
     // Additional information.
     public Map<String,String> params  = new HashMap<>() ;
     
+    public ServerInitialConfig() {}
+    
     public void reset() {
         argTemplateFile  = null ;
         datasetPath = null ;

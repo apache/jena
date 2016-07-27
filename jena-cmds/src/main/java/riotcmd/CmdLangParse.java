@@ -191,7 +191,6 @@ public abstract class CmdLangParse extends CmdGeneral
             }
             parseFile(null, filename, in) ;
             IO.close(in) ;
-            
         }
     }
 
@@ -213,9 +212,8 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;
         
-        ErrorHandler errHandler = null ;
-        if ( checking )
-        {
+        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
+        if ( checking ) {
             if ( modLangParse.stopOnBadTerm() )
                 errHandler = ErrorHandlerFactory.errorHandlerStd  ;
             else
@@ -223,8 +221,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         }
         
-        if ( modLangParse.skipOnBadTerm() )
-        {
+        if ( modLangParse.skipOnBadTerm() ) {
             // TODO skipOnBadterm
         }
         
@@ -240,10 +237,8 @@ public abstract class CmdLangParse extends CmdGeneral
         // If multiple files, choose the overall labels. 
         if ( langHandlerOverall == null )
             langHandlerOverall = handler ;
-        else
-        {
-            if ( langHandlerOverall != langHandlerAny )
-            {
+        else {
+            if ( langHandlerOverall != langHandlerAny ) {
                 if ( langHandlerOverall != handler )
                     langHandlerOverall = langHandlerAny ;
             }
@@ -276,8 +271,11 @@ public abstract class CmdLangParse extends CmdGeneral
             } else
                 reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
 
-            if ( labelsAsGiven )
-                reader.getParserProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+            if ( labelsAsGiven ) {
+                FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
+                reader.getParserProfile().setFactoryRDF(f);
+            }
+
             modTime.startTimer() ;
             sink.start() ;
             reader.read(in, baseURI, ct, sink, null) ;

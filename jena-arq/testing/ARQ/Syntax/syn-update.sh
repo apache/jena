@@ -318,3 +318,27 @@ N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
 # BNode in DELETE DATA
 DELETE DATA { _:a <p> <o> }
 EOF
+
+## Scope
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+DELETE { } 
+WHERE {  
+    {SELECT * #?sub ?obj
+    WHERE {
+        ?sub ?pred ?obj .
+    } GROUP BY ?sub }
+}
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+INSERT { } WHERE { BIND(1 AS ?X)  BIND(1 AS ?X) }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+INSERT { } WHERE { ?s ?p ?X BIND(1 AS ?X) }
+EOF
+
+N=$((N+1)) ; testBad $SPARQL11U $(fname "syntax-update-bad-" $N) <<EOF
+INSERT { } WHERE { {SELECT (?X+1 AS ?X) {}} }
+EOF
+

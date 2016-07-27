@@ -30,12 +30,15 @@ import org.apache.jena.sparql.graph.NodeTransform;
 
 public interface Expr
 {
+    public static final Expr NONE = ExprNone.NONE0 ;
+    
     public static final int CMP_GREATER  =  DatatypeConstants.GREATER ;
     public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL ;
     public static final int CMP_LESS     =  DatatypeConstants.LESSER ;
     
     public static final int CMP_UNEQUAL  = -9 ;
     public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE ;
+    
     
     /** Test whether a Constraint is satisfied, given a set of bindings
      *  Includes error propagtion and Effective Boolean Value rules.

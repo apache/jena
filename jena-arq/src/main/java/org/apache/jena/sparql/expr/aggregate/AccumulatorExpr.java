@@ -18,49 +18,68 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
+import java.util.HashSet ;
+import java.util.Set ;
+
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprLib ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 
 /** Accumulator that passes down every value of an expression */
-abstract class AccumulatorExpr implements Accumulator
+public abstract class AccumulatorExpr implements Accumulator
 {
-    private long count = 0 ;
+    private final Set<NodeValue> values ;
+    private long accCount = 0 ;
     protected long errorCount = 0 ; 
     private final Expr expr ;
+    private final boolean makeDistinct;
     
-    protected AccumulatorExpr(Expr expr)
-    {
-        this.expr = expr ;
+    protected AccumulatorExpr(Expr expr, boolean makeDistinct) {
+        this.expr = expr;
+        // Not all subclsses  use th wmachinary here to handled  DISTINCT.
+        // SAMPLE(DISTINCT) and COUNT(DISTINCT *) are different.
+        this.makeDistinct = makeDistinct ;
+        this.values  = makeDistinct ? new HashSet<>() : null ;
     }
     
     @Override
-    final public void accumulate(Binding binding, FunctionEnv functionEnv)
-    {
-        try { 
-            NodeValue nv = expr.eval(binding, functionEnv) ;
-            accumulate(nv, binding, functionEnv) ;
-            count++ ;
-        } catch (ExprEvalException ex)
-        {
-            errorCount++ ;
-            accumulateError(binding, functionEnv) ;
+    final public void accumulate(Binding binding, FunctionEnv functionEnv) {
+        NodeValue nv = ExprLib.evalOrNull(expr, binding, functionEnv);
+        if ( nv != null ) {
+            if ( makeDistinct ) {
+                if ( values.contains(nv) )
+                    return ;
+                values.add(nv) ;
+            }
+            try {
+                accumulate(nv, binding, functionEnv);
+                accCount++;
+                return;
+            }
+            catch (ExprEvalException ex) {}
+            // Drop to error case.
         }
+        accumulateError(binding, functionEnv);
+        errorCount++;
     }
     
-    
-    // Count(?v) is different
+    // COUNT(?v) and COUNT(DISTINCT ?v) are different
+    //     errors of the expression/variable do not cause an aggregate eval error. 
+    // SAMPLE, SAMPLE(DISTINCT) are different
+    //     treat errors as "just another value" and tries to return a defined value if any have been seen. 
+
     @Override
-    public NodeValue getValue()
-    {
+    public NodeValue getValue() {
         if ( errorCount == 0 )
-            return getAccValue() ;  
-        return null ;
+            return getAccValue();
+        return null;
     }
 
-    protected long getErrorCount() { return errorCount ; }
+    /** Get the count of accumulated values */ 
+    protected long getAccCount() { return accCount ; }
     
     /** Called if no errors to get the accumulated result */
     protected abstract NodeValue getAccValue() ; 
@@ -68,6 +87,7 @@ abstract class AccumulatorExpr implements Accumulator
     /** Called when the expression beeing aggregated evaluates OK.
      * Can throw ExprEvalException - in which case the accumulateError is called */
     protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
+    
     /** Called when an evaluation of the expression causes an error
      * or when the accumulation step throws ExprEvalException  
      */

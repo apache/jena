@@ -452,9 +452,9 @@ public abstract class IRIResolver
         @Override
         public IRI resolveSilent(String uriStr) {
             if ( resolvedIRIs == null )
-                return resolveSilentCache(uriStr) ;
-            else
                 return resolveSilentNoCache(uriStr) ;
+            else
+                return resolveSilentCache(uriStr) ;
         }
         
         private IRI resolveSilentNoCache(String uriStr) {

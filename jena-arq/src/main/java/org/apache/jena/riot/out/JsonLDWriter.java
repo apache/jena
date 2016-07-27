@@ -26,6 +26,13 @@ import java.util.* ;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.JsonGenerationException ;
+import com.fasterxml.jackson.databind.JsonMappingException ;
+import com.github.jsonldjava.core.JsonLdError ;
+import com.github.jsonldjava.core.JsonLdOptions ;
+import com.github.jsonldjava.core.JsonLdProcessor ;
+import com.github.jsonldjava.utils.JsonUtils ;
+
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
@@ -33,6 +40,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import static org.apache.jena.rdf.model.impl.Util.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
@@ -41,13 +49,6 @@ import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.vocabulary.RDF ;
-
-import com.fasterxml.jackson.core.JsonGenerationException ;
-import com.fasterxml.jackson.databind.JsonMappingException ;
-import com.github.jsonldjava.core.JsonLdError ;
-import com.github.jsonldjava.core.JsonLdOptions ;
-import com.github.jsonldjava.core.JsonLdProcessor ;
-import com.github.jsonldjava.utils.JsonUtils ;
 
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
@@ -154,7 +155,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         // typed literal)
                         Map<String, Object> x2 = new LinkedHashMap<>() ;
                         x2.put("@id", p.getURI()) ;
-                        x2.put("@type", literalDatatypeURI) ;
+                        x2.put("@id", p.getURI()) ;
+                        if (! isLangString(o) && ! isSimpleString(o) ) 
+                            // RDF 1.1 : Skip if rdf:langString or xsd:string.
+                            x2.put("@type", literalDatatypeURI) ; 
                         ctx.put(x, x2) ;
                     } else {
                         // add property as an untyped attribute (the object is

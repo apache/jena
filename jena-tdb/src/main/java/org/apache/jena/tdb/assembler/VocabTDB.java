@@ -18,9 +18,6 @@
 
 package org.apache.jena.tdb.assembler;
 
-
-import org.apache.jena.assembler.ConstAssembler ;
-import org.apache.jena.assembler.JA ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
@@ -35,7 +32,7 @@ public class VocabTDB
     // Types
     public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
     public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB") ;
-    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
+//    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
@@ -71,6 +68,6 @@ public class VocabTDB
             return;
         initialized = true;
         AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
+        AssemblerUtils.registerModel(tGraphTDB, new TDBGraphAssembler());
     }
 }

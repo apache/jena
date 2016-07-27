@@ -29,4 +29,5 @@ public class TestDatasetGraphMemTriplesQuads extends AbstractDatasetGraphTests
     {
         return new DatasetGraphSimpleMem() ;
     }
-}
+}    
+

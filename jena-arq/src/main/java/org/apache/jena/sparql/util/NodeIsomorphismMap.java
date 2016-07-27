@@ -23,24 +23,20 @@ import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
 
-/** Map nodes to nodes. */ 
-
-public class NodeIsomorphismMap //extends HashMap
+/** Map nodes to nodes. */
+public class NodeIsomorphismMap
 {
     private Map<Node, Node> map = new HashMap<>() ;
     
     public NodeIsomorphismMap() {}
     
-    private Node get(Node key) { return map.get(key) ; }
-    private void put(Node key, Node value) { map.put(key, value) ; }
+    private Node get(Node key)                { return map.get(key) ; }
+    private void put(Node key, Node value)    { map.put(key, value) ; }
     
-    public boolean makeIsomorphic(Node n1, Node n2)
-    {
-        if ( n1.isBlank() && n2.isBlank() )
-        {
+    public boolean makeIsomorphic(Node n1, Node n2) {
+        if ( n1.isBlank() && n2.isBlank() ) {
             Node other = get(n1) ;
-            if ( other == null )
-            {
+            if ( other == null ) {
                 put(n1, n2) ;
                 return true ;
             }

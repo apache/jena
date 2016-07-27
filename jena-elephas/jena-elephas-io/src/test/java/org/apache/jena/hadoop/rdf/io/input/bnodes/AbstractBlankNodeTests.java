@@ -177,7 +177,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // Prepare the input data
             // Two mentions of the same blank node in the same file
             List<T> tuples = new ArrayList<>();
-            Node bnode = NodeFactory.createAnon();
+            Node bnode = NodeFactory.createBlankNode();
             Node pred = NodeFactory.createURI("http://example.org/predicate");
             tuples.add(createTuple(bnode, pred, NodeFactory.createLiteral("first")));
             tuples.add(createTuple(bnode, pred, NodeFactory.createLiteral("second")));
@@ -286,7 +286,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // Prepare the input data
             // Two mentions of the same blank node in the same file
             List<T> tuples = new ArrayList<>();
-            Node bnode = NodeFactory.createAnon();
+            Node bnode = NodeFactory.createBlankNode();
             Node pred = NodeFactory.createURI("http://example.org/predicate");
             tuples.add(createTuple(bnode, pred, NodeFactory.createLiteral("first")));
             tuples.add(createTuple(bnode, pred, NodeFactory.createLiteral("second")));
@@ -397,8 +397,8 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // Prepare the input data
             // Different blank nodes in different files
             List<T> tuples = new ArrayList<>();
-            Node bnode1 = NodeFactory.createAnon();
-            Node bnode2 = NodeFactory.createAnon();
+            Node bnode1 = NodeFactory.createBlankNode();
+            Node bnode2 = NodeFactory.createBlankNode();
             Node pred = NodeFactory.createURI("http://example.org/predicate");
 
             tuples.add(createTuple(bnode1, pred, NodeFactory.createLiteral("first")));
@@ -507,7 +507,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // Same blank node but in different files so must be treated as
             // different blank nodes and not converge
             List<T> tuples = new ArrayList<>();
-            Node bnode = NodeFactory.createAnon();
+            Node bnode = NodeFactory.createBlankNode();
             Node pred = NodeFactory.createURI("http://example.org/predicate");
 
             tuples.add(createTuple(bnode, pred, NodeFactory.createLiteral("first")));

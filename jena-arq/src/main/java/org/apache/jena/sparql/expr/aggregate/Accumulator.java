@@ -30,5 +30,4 @@ public interface Accumulator
 {
     public void accumulate(Binding binding, FunctionEnv functionEnv) ;
     public NodeValue getValue() ;
-    //public QueryIterator results() ;
 }

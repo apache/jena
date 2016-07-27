@@ -143,13 +143,13 @@ public class TestExpressions2 extends BaseTest
     
     // ---- Workers
     
-    private static void eval(String string)
+    /*package*/ static void eval(String string)
     { 
         eval(string, true) ;
     }
     
-    // It's easier to write tests that simple are expected to return true/false 
-    private static void eval(String string, boolean result)
+    // It's easier to write tests that simply are expected to return true/false 
+    /*package*/ static void eval(String string, boolean result)
     {
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(null, FunctionEnvBase.createTest()) ;

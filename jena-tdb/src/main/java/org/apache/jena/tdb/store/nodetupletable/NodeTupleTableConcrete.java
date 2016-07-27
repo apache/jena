@@ -230,7 +230,6 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         return tupleTable.size() ;
     }
 
-    // @Override
     @Override
     public final void close()
     {
@@ -243,7 +242,6 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         finally { finishWrite() ; }
     }
 
-    // @Override
     @Override
     public final void sync()
     {

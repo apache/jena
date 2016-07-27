@@ -20,6 +20,7 @@ package org.apache.jena.sparql.path;
 
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
+/** One or more - all results */
 public class P_OneOrMoreN extends P_Path1
 {
     public P_OneOrMoreN(Path path)

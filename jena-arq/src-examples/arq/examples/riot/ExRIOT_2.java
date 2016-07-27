@@ -32,7 +32,7 @@ import org.apache.jena.riot.system.* ;
  * RDFDataMgr is the general place to read data.
  * 
  * The parsers produce a stream of triples and quads so processing does not need
- * to hold everything in memory at the same time. See also {@link ExRIOT_4}
+ * to hold everything in memory at the same time. See also {@code ExRIOT_4}
  */
 public class ExRIOT_2
 {

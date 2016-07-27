@@ -27,6 +27,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.mem.connections.MemConnection;
 import org.apache.jena.jdbc.metadata.results.AbstractDatabaseMetadataTests;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 
 /**
@@ -35,16 +36,27 @@ import org.apache.jena.query.DatasetFactory ;
  */
 public class TestDatasetConnectionMetadata extends AbstractDatabaseMetadataTests {
 
+    // Some datasets in memory don't provide perfect transactions but do report
+    // "supportsTransactions".
+    // createTxnMem is fully transactional. 
+    // "false" does not pass the tests because "supportsTransactions" is still true.
+    
+    boolean supportsSerializable = true ;
+    
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new MemConnection(DatasetFactory.createMem(), JenaConnection.DEFAULT_HOLDABILITY,
-                JenaConnection.DEFAULT_AUTO_COMMIT, JenaConnection.DEFAULT_ISOLATION_LEVEL, JdbcCompatibility.DEFAULT);
+        Dataset ds = supportsSerializable ? DatasetFactory.createTxnMem() : DatasetFactory.create() ;
+        int transactionLevelSupported = supportsSerializable ?  JenaConnection.TRANSACTION_SERIALIZABLE :  JenaConnection.TRANSACTION_NONE ;
+        return new MemConnection(ds, JenaConnection.DEFAULT_HOLDABILITY,
+                JenaConnection.DEFAULT_AUTO_COMMIT, transactionLevelSupported, JdbcCompatibility.DEFAULT);
     }
 
     @Override
     protected List<Integer> getSupportedTransactionLevels() {
         List<Integer> levels = new ArrayList<Integer>();
         levels.add(Connection.TRANSACTION_NONE);
+        if ( supportsSerializable )
+            levels.add(Connection.TRANSACTION_SERIALIZABLE);
         return levels;
     }
 

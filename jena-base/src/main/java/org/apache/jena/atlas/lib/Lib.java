@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.List ;
+import java.util.Set ;
 import java.util.zip.Adler32 ;
 import java.util.zip.CRC32 ;
 import java.util.zip.Checksum ;
@@ -30,35 +31,35 @@ public class Lib
 {
     private Lib() {}
     
-    public static final void sync(Object object)
-    {
+    /** "ConcurrentHashSet" */
+    public static final <X> Set<X> concurrentHashSet() {
+        return SetUtils.concurrentHashSet() ;
+    }
+    
+    public static final void sync(Object object) {
         if ( object instanceof Sync )
             ((Sync)object).sync() ;
     }
-    
+
     /** Return true if obj1 and obj are both null or are .equals, else return false 
      * @deprecated
      * Prefer {@link Objects#equal(Object, Object)}
      */
     @Deprecated
-    public static final <T> boolean equal(T obj1, T obj2)
-    {
-    		return Objects.equal(obj1, obj2);
+    public static final <T> boolean equal(T obj1, T obj2) {
+        return Objects.equal(obj1, obj2) ;
     }
     
     /** Return true if obj1 and obj are both null or are .equals, else return false */
-    public static final boolean equalsIgnoreCase(String str1, String str2)
-    {
+    public static final boolean equalsIgnoreCase(String str1, String str2) {
         if ( str1 == null )
             return str2 == null ;
         return str1.equalsIgnoreCase(str2) ;
-    }
-    
+    }    
 
     /** Return true if obj1 and obj are ! equal */
-    public static final <T> boolean notEqual(T obj1, T obj2)
-    {
-        return ! equal(obj1, obj2) ;
+    public static final <T> boolean notEqual(T obj1, T obj2) {
+        return !Objects.equal(obj1, obj2) ;
     }
 
     /** Safely return the class short name for an object -- obj.getClass().getSimpleName() */
@@ -88,15 +89,13 @@ public class Lib
     public static final int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
     
     /** HashCode - allow nulls */
-    public static final int hashCodeObject(Object obj, int nullHashCode)
-    {
+    public static final int hashCodeObject(Object obj, int nullHashCode) {
         if ( obj == null )
-            return nullHashCode ; 
+            return nullHashCode ;
         return obj.hashCode() ;
     }
     
-    public static final void sleep(int milliSeconds)
-    {
+    public static final void sleep(int milliSeconds) {
         try  { Thread.sleep(milliSeconds) ; }
         catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
     }
@@ -112,13 +111,11 @@ public class Lib
     /** Faster than CRC32, nearly as good.
      * @see Adler32
      */
-    public static long adler32(byte[] bytes)
-    {
+    public static long adler32(byte[] bytes) {
         return crc(new Adler32(), bytes) ;
     }
 
-    private static long crc(Checksum alg, byte[] bytes)
-    {
+    private static long crc(Checksum alg, byte[] bytes) {
         alg.reset() ;
         alg.update(bytes, 0, bytes.length) ;
         return alg.getValue() ;

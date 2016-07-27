@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.cmd ;
 
+import java.nio.file.Files ;
+import java.nio.file.Path ;
 import java.util.List ;
 
 import arq.cmdline.CmdARQ ;
@@ -31,6 +33,7 @@ import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
@@ -40,7 +43,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
@@ -217,6 +219,14 @@ public class FusekiCmd {
             if ( cmdlineConfigPresent && getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
             
+            if ( ! cmdlineConfigPresent ) {
+                // In place config file. 
+                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
+                if ( Files.exists(cfg) )
+                    cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
+            }
+                
+            
             cmdLineConfig.allowUpdate = contains(argUpdate) ; 
 
             if ( contains(argMem) ) {
@@ -238,18 +248,17 @@ public class FusekiCmd {
                 // Directly populate the dataset.
                 cmdLineConfig.reset();
                 cmdLineConfig.dsg = DatasetGraphFactory.createTxnMem() ;
-                Transactional t = (Transactional)(cmdLineConfig.dsg) ;
                 
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
                 // XXX Replace by Txn.
-                t.begin(ReadWrite.WRITE) ;
+                cmdLineConfig.dsg.begin(ReadWrite.WRITE) ;
                 try {
                     RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
-                    t.commit() ;
-                } finally { t.end() ; }
+                    cmdLineConfig.dsg.commit() ;
+                } finally { cmdLineConfig.dsg.end() ; }
             }
 
             if ( contains(argMemTDB) ) {

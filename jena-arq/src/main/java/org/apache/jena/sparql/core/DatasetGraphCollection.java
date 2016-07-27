@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects ;
@@ -27,6 +29,7 @@ import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.JenaException ;
+import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
  * This can be a fixed collection or a changeable collection depending

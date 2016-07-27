@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.graph;
+package org.apache.jena.sparql.graph ;
 
 import java.util.Collection ;
+import java.util.function.Consumer ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
@@ -26,51 +27,87 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.shared.AddDeniedException ;
+import org.apache.jena.shared.DeleteDeniedException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphMap ;
+import org.apache.jena.sparql.core.GraphView ;
+import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
-/** Immutable graph that is the view of a union of graphs in a dataset. */ 
-public class GraphUnionRead extends GraphBase
-{
-    // This exists for the property path evaulator to have a graph to call.
-    private final DatasetGraph dataset ;
+/** Immutable graph that is the view of a union of graphs in a dataset.
+ *  This union can be a fixed set of graph or all named graph.
+ *  This union iterates over graphs.
+ * <p>
+ *  {@link GraphView} provides a view over a dataset and does support union graph but
+ *  assumes quad access is efficient and does not end up looping.
+ *  
+ * @see GraphView
+ * @see DatasetGraphMap
+ */
+public class GraphUnionRead extends GraphBase {
+    private final DatasetGraph     dataset ;
     private final Collection<Node> graphs ;
 
-    public GraphUnionRead(DatasetGraph dsg, Collection<Node> graphs)
-    {
-        this.dataset = dsg ;
-        this.graphs = graphs ; 
+    /** Read-only graph view of all named graphs in the dataset.
+     * If graphs are added after this view if created, then this is reflected in
+     * the {@code find} call.
+     */
+    public GraphUnionRead(DatasetGraph dsg) {
+        this(dsg, null) ;
     }
     
+    /** Read-only graph view of a set of graphs from the dataset */ 
+    public GraphUnionRead(DatasetGraph dsg, Collection<Node> graphs) {
+        this.dataset = dsg ;
+        this.graphs = graphs ;
+    }
+
     @Override
-    protected PrefixMapping createPrefixMapping()
-    {
+    protected PrefixMapping createPrefixMapping() {
         PrefixMapping pmap = new PrefixMappingImpl() ;
-        for ( Node gn : graphs )
-        {
-            if ( ! gn.isURI() ) continue ;
-            Graph g = dataset.getGraph(gn) ;
+        forEachGraph((g) -> {
             PrefixMapping pmapNamedGraph = g.getPrefixMapping() ;
             pmap.setNsPrefixes(pmapNamedGraph) ;
-        }
+        }) ;
         return pmap ;
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
-    {
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
         IteratorConcat<Triple> iter = new IteratorConcat<>() ;
-        for ( Node gn : graphs )
-        {
-            if ( ! GraphOps.containsGraph(dataset, gn) )
-                continue ;
-            
-            ExtendedIterator<Triple> eIter = GraphOps.getGraph(dataset, gn).find(m) ;
-            iter.add(eIter) ;
-        }
+        forEachGraph((g) -> iter.add(g.find(m))) ;
         return WrappedIterator.create(Iter.distinct(iter)) ;
+    }
+    
+    /** Execute action for each graph that exists */
+    private void forEachGraph(Consumer<Graph> action) {
+        if ( graphs == null ) {
+            // Fast-path the dynamic union of all named graphs.
+            dataset.listGraphNodes().forEachRemaining((gn) -> action.accept(dataset.getGraph(gn)));
+            return ; 
+        }
+        
+        graphs.stream()
+          // Need to check to avoid auto-creation.
+          .filter(gn -> dataset.containsGraph(gn))
+          // For the explicit name of the default graph.
+          .map(gn -> Quad.isDefaultGraph(gn) ? dataset.getDefaultGraph() : dataset.getGraph(gn))
+          .forEach(action);
+    }
+    
+    // Override to give more specific message.
+    
+    @Override
+    public void performAdd(Triple t) {
+        throw new AddDeniedException("GraphUnionRead::performAdd - read-only graph") ;
+    }
+
+    @Override
+    public void performDelete(Triple t) {
+        throw new DeleteDeniedException("GraphUnionRead::performDelete - Read-only graph") ;
     }
 }

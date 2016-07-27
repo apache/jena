@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.TransactionalComponent ;
-
 /**
  * A mutable table of tuples. The expectation is that some kind of query functionality will be provided by subtypes.
  *

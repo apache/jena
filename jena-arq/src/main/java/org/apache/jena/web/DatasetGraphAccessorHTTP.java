@@ -55,7 +55,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
 
     /**
      * Accept header for fetching graphs - prefer N-triples.
-     * @See WebContent.defaultGraphAcceptHeader
+     * @see WebContent.defaultGraphAcceptHeader
      */
     private String                           graphAcceptHeader = WebContent.defaultGraphAcceptHeader ;  
 

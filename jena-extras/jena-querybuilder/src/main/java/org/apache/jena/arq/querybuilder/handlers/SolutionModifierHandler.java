@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.rewriters.ExprRewriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
@@ -38,13 +39,6 @@ import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
  *
  */
 public class SolutionModifierHandler implements Handler {
-	/**
-	 * The order for the ORDER BY modifiers.
-	 */
-	public enum Order {
-		ASCENDING, DESCENDING
-	}
-
 	// the query to modify
 	private final Query query;
 
@@ -74,25 +68,6 @@ public class SolutionModifierHandler implements Handler {
 	}
 
 	/**
-	 * Add an order by variable.
-	 * @param varName The variable name.
-	 */
-	public void addOrderBy(String varName) {
-		query.addOrderBy(varName, Query.ORDER_DEFAULT);
-	}
-
-	/**
-	 * Add an order by variable.
-	 * @param varName The variable name.
-	 * @param order The direction for the ordering.
-	 */
-	public void addOrderBy(String varName, Order order) {
-		query.addOrderBy(varName,
-				order == Order.ASCENDING ? Query.ORDER_ASCENDING
-						: Query.ORDER_DESCENDING);
-	}
-
-	/**
 	 * Add an order by clause
 	 * @param condition The SortCondition to add to the order by.
 	 */
@@ -114,29 +89,21 @@ public class SolutionModifierHandler implements Handler {
 	}
 
 	/**
-	 * Add a node to the order by clause.
-	 * @param node
+	 * Add a var to the order by clause.
+	 * @param var
 	 */
-	public void addOrderBy(Node node) {
-		query.addOrderBy(node, Query.ORDER_DEFAULT);
+	public void addOrderBy(Var var) {
+		query.addOrderBy(var, Query.ORDER_DEFAULT);
 	}
 
 	/**
-	 * Add a node to add to the order by clause.
-	 * @param node The node to add
+	 * Add a var to the order by clause.
+	 * @param var The var to add
 	 * @param order The direction of the ordering. 
 	 */
-	public void addOrderBy(Node node, Order order) {
-		query.addOrderBy(node, order == Order.ASCENDING ? Query.ORDER_ASCENDING
+	public void addOrderBy(Var var, Order order) {
+		query.addOrderBy(var, order == Order.ASCENDING ? Query.ORDER_ASCENDING
 				: Query.ORDER_DESCENDING);
-	}
-
-	/**
-	 * Add a variable to the group by clause. 
-	 * @param varName The variable name to add.
-	 */
-	public void addGroupBy(String varName) {
-		query.addGroupBy(varName);
 	}
 
 	/**
@@ -149,10 +116,10 @@ public class SolutionModifierHandler implements Handler {
 
 	/**
 	 * Add a node to the group by clause. 
-	 * @param node The node to add.
+	 * @param var The variable to add.
 	 */
-	public void addGroupBy(Node node) {
-		query.addGroupBy(node);
+	public void addGroupBy(Var var) {
+		query.addGroupBy(var);
 	}
 
 	/**
@@ -175,14 +142,6 @@ public class SolutionModifierHandler implements Handler {
 				havingClause.getBytes()));
 		parser.setQuery(query);
 		parser.HavingClause();
-	}
-
-	/**
-	 * Add a node to the having clause.
-	 * @param exprNode The node to add.
-	 */
-	public void addHaving(Node exprNode) {
-		query.addHavingCondition(new ExprVar(exprNode));
 	}
 
 	/**

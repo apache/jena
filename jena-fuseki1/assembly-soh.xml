@@ -34,7 +34,7 @@ The SOH distribution.
   <fileSets>
     <fileSet>
       <includes>
-	<include>s-*</include>
+        <include>s-*</include>
       </includes>
     </fileSet>
   </fileSets>

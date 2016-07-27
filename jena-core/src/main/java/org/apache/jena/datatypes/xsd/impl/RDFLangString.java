@@ -45,13 +45,7 @@ public class RDFLangString extends BaseDatatype implements RDFDatatype {
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        if ( value2 == null )
-            return false ;
-        if ( ! rdfLangString.equals(value2.getDatatype()) )
-            return false ;
-        
-        return value1.getLexicalForm().equals(value2.getLexicalForm()) && 
-            value1.language().equalsIgnoreCase(value2.language()) ;
+        return isEqualByTerm(value1, value2) ;
     }
     
     // This covers the unusual case of "foo"^^"rdf:langString"

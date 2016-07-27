@@ -17,7 +17,6 @@
  */
 
 package org.apache.jena.sparql.core.mem;
-
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -26,6 +25,9 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.persistent.PMap;
 import org.apache.jena.atlas.lib.persistent.PersistentSet;
+import org.apache.jena.atlas.lib.tuple.TConsumer4;
+import org.apache.jena.atlas.lib.tuple.TFunction4;
+import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.mem.FourTupleMap.ThreeTupleMap;
@@ -37,13 +39,29 @@ import org.slf4j.Logger;
  * use.
  *
  */
-public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>implements QuadTable {
+public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, TConsumer4<Node>>implements QuadTable {
+
+    /**
+     * @param order an internal order for this table
+     */
+    public PMapQuadTable(final String order) {
+        this("GSPO", order);
+    }
+
+    /**
+     * @param canonical the canonical order outside this table
+     * @param order the internal order for this table
+     */
+    public PMapQuadTable(final String canonical, final String order) {
+        this(canonical + "->" + order, TupleMap.create(canonical, order));
+    }
 
     /**
      * @param tableName a name for this table
+     * @param order the order of elements in this table
      */
-    public PMapQuadTable(final String tableName) {
-        super(tableName);
+    public PMapQuadTable(final String tableName, final TupleMap order) {
+        super(tableName, order);
     }
 
     private static final Logger log = getLogger(PMapQuadTable.class);
@@ -57,31 +75,29 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
     protected FourTupleMap initial() {
         return new FourTupleMap();
     }
+    
+    
+    @Override
+    public void add(final Quad q) {
+        map(add()).accept(q);
+    }
 
-    /**
-     * Constructs a {@link Quad} from the nodes given, using the appropriate order for this table. E.g. a OPSG table
-     * should return a {@code Quad} using ({@code fourth}, {@code third}, {@code second}, {@code first}).
-     *
-     * @param first
-     * @param second
-     * @param third
-     * @param fourth
-     * @return a {@code Quad}
-     */
-    protected abstract Quad quad(final Node first, final Node second, final Node third, final Node fourth);
+    @Override
+    public void delete(final Quad q) {
+        map(delete()).accept(q);
+    }
 
+    @Override
+    public Stream<Quad> find(Node g, Node s, Node p, Node o) {
+        return map(find).apply(g, s, p, o);
+    }
+    
     /**
      * We descend through the nested {@link PMap}s building up {@link Stream}s of partial tuples from which we develop a
      * {@link Stream} of full tuples which is our result. Use {@link Node#ANY} or <code>null</code> for a wildcard.
-     *
-     * @param first the value in the first slot of the tuple
-     * @param second the value in the second slot of the tuple
-     * @param third the value in the third slot of the tuple
-     * @param fourth the value in the fourth slot of the tuple
-     * @return a <code>Stream</code> of tuples matching the pattern
      */
     @SuppressWarnings("unchecked") // Because of (Stream<Quad>) -- but why is that needed?
-    protected Stream<Quad> _find(final Node first, final Node second, final Node third, final Node fourth) {
+    private TFunction4<Node, Stream<Quad>> find = (first, second, third, fourth) -> {
         debug("Querying on four-tuple pattern: {} {} {} {} .", first, second, third, fourth);
         final FourTupleMap fourTuples = local().get();
         if (isConcrete(first)) {
@@ -95,55 +111,61 @@ public abstract class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad>im
                             return twoTuples.get(third).map(oneTuples -> {
                                 if (isConcrete(fourth)) {
                                     debug("Using a specific fourth slot value.");
-                                    return oneTuples
-                                        .contains(fourth) ? of(quad(first, second, third, fourth)) : empty();
+                                    return oneTuples.contains(fourth) ? of(unmap(first, second, third, fourth))
+                                            : empty();
                                 }
                                 debug("Using a wildcard fourth slot value.");
-                                return oneTuples.stream().map(slot4 -> quad(first, second, third, slot4));
+                                return oneTuples.stream().map(slot4 -> unmap(first, second, third, slot4));
                             }).orElse(empty());
 
                         }
                         debug("Using wildcard third and fourth slot values.");
                         return twoTuples.flatten((slot3, oneTuples) -> oneTuples.stream()
-                                                 .map(slot4 -> quad(first, second, slot3, slot4)));
+                                .map(slot4 -> unmap(first, second, slot3, slot4)));
                     }).orElse(empty());
                 }
                 debug("Using wildcard second, third and fourth slot values.");
                 return threeTuples.flatten((slot2, twoTuples) -> twoTuples.flatten(
-                                                                                   (slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(first, slot2, slot3, slot4))));
+                        (slot3, oneTuples) -> oneTuples.stream().map(slot4 -> unmap(first, slot2, slot3, slot4))));
             }).orElse(empty());
         }
         debug("Using a wildcard for all slot values.");
         return fourTuples.flatten((slot1, threeTuples) -> threeTuples.flatten((slot2, twoTuples) -> twoTuples
-                                                                              .flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> quad(slot1, slot2, slot3, slot4)))));
+                .flatten((slot3, oneTuples) -> oneTuples.stream().map(slot4 -> unmap(slot1, slot2, slot3, slot4)))));
+    };
+    
+    @Override
+    protected TConsumer4<Node> add() {
+        return (first, second, third, fourth) -> {
+            debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
+            final FourTupleMap fourTuples = local().get();
+            ThreeTupleMap threeTuples = fourTuples.get(first).orElse(new ThreeTupleMap());
+            TwoTupleMap twoTuples = threeTuples.get(second).orElse(new TwoTupleMap());
+            PersistentSet<Node> oneTuples = twoTuples.get(third).orElse(PersistentSet.empty());
+
+            if (!oneTuples.contains(fourth)) oneTuples = oneTuples.plus(fourth);
+            twoTuples = twoTuples.minus(third).plus(third, oneTuples);
+            threeTuples = threeTuples.minus(second).plus(second, twoTuples);
+            debug("Setting transactional index to new value.");
+            local().set(fourTuples.minus(first).plus(first, threeTuples));
+        };
     }
 
-    protected void _add(final Node first, final Node second, final Node third, final Node fourth) {
-        debug("Adding four-tuple: {} {} {} {} .", first, second, third, fourth);
-        final FourTupleMap fourTuples = local().get();
-        ThreeTupleMap threeTuples = fourTuples.get(first).orElse(new ThreeTupleMap());
-        TwoTupleMap twoTuples = threeTuples.get(second).orElse(new TwoTupleMap());
-        PersistentSet<Node> oneTuples = twoTuples.get(third).orElse(PersistentSet.empty());
-
-        if (!oneTuples.contains(fourth)) oneTuples = oneTuples.plus(fourth);
-        twoTuples = twoTuples.minus(third).plus(third, oneTuples);
-        threeTuples = threeTuples.minus(second).plus(second, twoTuples);
-        debug("Setting transactional index to new value.");
-        local().set(fourTuples.minus(first).plus(first, threeTuples));
-    }
-
-    protected void _delete(final Node first, final Node second, final Node third, final Node fourth) {
-        debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
-        final FourTupleMap fourTuples = local().get();
-        fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
-                                        .ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
-                                            if (oneTuples.contains(fourth)) {
-                                                oneTuples = oneTuples.minus(fourth);
-                                                final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
-                                                final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
-                                                debug("Setting transactional index to new value.");
-                                                local().set(fourTuples.minus(first).plus(first, newThreeTuples));
-                                            }
-                                        })));
+    @Override
+    protected TConsumer4<Node> delete() {
+        return (first, second, third, fourth) -> {
+            debug("Removing four-tuple: {} {} {} {} .", first, second, third, fourth);
+            final FourTupleMap fourTuples = local().get();
+            fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
+                    .ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
+                if (oneTuples.contains(fourth)) {
+                    oneTuples = oneTuples.minus(fourth);
+                    final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
+                    final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
+                    debug("Setting transactional index to new value.");
+                    local().set(fourTuples.minus(first).plus(first, newThreeTuples));
+                }
+            })));
+        };
     }
 }

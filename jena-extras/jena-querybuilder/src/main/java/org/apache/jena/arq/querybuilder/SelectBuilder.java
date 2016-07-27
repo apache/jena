@@ -25,30 +25,27 @@ import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
+import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
-import org.apache.jena.graph.FrontsNode ;
-import org.apache.jena.graph.FrontsTriple ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.FrontsTriple;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException ;
+import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Build a select query.
  *
  */
-public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
-		implements DatasetClause<SelectBuilder>, WhereClause<SelectBuilder>,
-		SolutionModifierClause<SelectBuilder>, SelectClause<SelectBuilder> {
+public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implements DatasetClause<SelectBuilder>,
+		WhereClause<SelectBuilder>, SolutionModifierClause<SelectBuilder>, SelectClause<SelectBuilder> {
 
-	// the handlers.
-	private DatasetHandler datasetHandler;
-	private WhereHandler whereHandler;
-	private SolutionModifierHandler solutionModifier;
-	private SelectHandler selectHandler;
+	private final HandlerBlock handlerBlock;
 
 	/**
 	 * Constructor.
@@ -56,139 +53,194 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	public SelectBuilder() {
 		super();
 		query.setQuerySelectType();
-		datasetHandler = new DatasetHandler(query);
-		whereHandler = new WhereHandler(query);
-		solutionModifier = new SolutionModifierHandler(query);
-		selectHandler = new SelectHandler(query);
+		handlerBlock = new HandlerBlock(query);
 	}
 
 	@Override
 	public DatasetHandler getDatasetHandler() {
-		return datasetHandler;
+		return handlerBlock.getDatasetHandler();
+	}
+
+	@Override
+	public HandlerBlock getHandlerBlock() {
+		return handlerBlock;
 	}
 
 	@Override
 	public WhereHandler getWhereHandler() {
-		return whereHandler;
+		return handlerBlock.getWhereHandler();
 	}
 
 	@Override
 	public SelectBuilder clone() {
 		SelectBuilder qb = new SelectBuilder();
-		qb.prologHandler.addAll(prologHandler);
-		qb.datasetHandler.addAll(datasetHandler);
-		qb.whereHandler.addAll(whereHandler);
-		qb.solutionModifier.addAll(solutionModifier);
-		qb.selectHandler.addAll(selectHandler);
-
+		qb.handlerBlock.addAll(handlerBlock);
 		return qb;
 	}
 
 	@Override
 	public SelectBuilder setDistinct(boolean state) {
-		selectHandler.setDistinct(state);
+		getSelectHandler().setDistinct(state);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder setReduced(boolean state) {
-		selectHandler.setReduced(state);
+		getSelectHandler().setReduced(state);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addVar(Object var) {
-		selectHandler.addVar(makeVar(var));
+		getSelectHandler().addVar(makeVar(var));
 		return this;
 	}
 
 	/**
 	 * Add an expression string as a filter.
-	 * @param expression The expression string to add.
-	 * @throws ParseException If the expression can not be parsed.
+	 * 
+	 * @param expression
+	 *            The expression string to add.
+	 * @throws ParseException
+	 *             If the expression can not be parsed.
 	 */
 	@Override
 	public SelectBuilder addVar(String expression, Object var) throws ParseException {
-		selectHandler.addVar( expression, makeVar(var) );
+		getSelectHandler().addVar(expression, makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addVar(Expr expr, Object var) {
-		selectHandler.addVar(expr, makeVar(var));
+		getSelectHandler().addVar(expr, makeVar(var));
 		return this;
 	}
-	
+
 	@Override
 	public List<Var> getVars() {
-		return selectHandler.getVars();
+		return getSelectHandler().getVars();
 	}
 
 	@Override
 	public SelectBuilder fromNamed(String graphName) {
-		datasetHandler.fromNamed(graphName);
+		getDatasetHandler().fromNamed(graphName);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder fromNamed(Collection<String> graphNames) {
-		datasetHandler.fromNamed(graphNames);
+		getDatasetHandler().fromNamed(graphNames);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder from(String graphName) {
-		datasetHandler.from(graphName);
+		getDatasetHandler().from(graphName);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder from(Collection<String> graphName) {
-		datasetHandler.from(graphName);
+		getDatasetHandler().from(graphName);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addOrderBy(String orderBy) {
-		solutionModifier.addOrderBy(orderBy);
+	public SelectBuilder addOrderBy(Expr orderBy) {
+		getSolutionModifierHandler().addOrderBy(orderBy);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addGroupBy(String groupBy) {
-		solutionModifier.addGroupBy(groupBy);
+	public SelectBuilder addOrderBy(Object orderBy) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy));
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(SortCondition orderBy) {
+		getSolutionModifierHandler().addOrderBy(orderBy);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(Expr orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(orderBy, order);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addOrderBy(Object orderBy, Order order) {
+		getSolutionModifierHandler().addOrderBy(makeVar(orderBy), order);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Object groupBy) {
+		getSolutionModifierHandler().addGroupBy(makeVar(groupBy));
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Expr groupBy) {
+		getSolutionModifierHandler().addGroupBy(groupBy);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Object var, Expr expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), expr);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addGroupBy(Object var, String expr) {
+		getSolutionModifierHandler().addGroupBy(makeVar(var), makeExpr(expr));
 		return this;
 	}
 
 	@Override
 	public SolutionModifierHandler getSolutionModifierHandler() {
-		return solutionModifier;
+		return handlerBlock.getModifierHandler();
 	}
 
 	@Override
 	public SelectBuilder addHaving(String having) throws ParseException {
-		solutionModifier.addHaving(having);
+		getSolutionModifierHandler().addHaving(having);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addHaving(Expr expression) throws ParseException {
+		getSolutionModifierHandler().addHaving(expression);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addHaving(Object var) throws ParseException {
+		getSolutionModifierHandler().addHaving(makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder setLimit(int limit) {
-		solutionModifier.setLimit(limit);
+		getSolutionModifierHandler().setLimit(limit);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder setOffset(int offset) {
-		solutionModifier.setOffset(offset);
+		getSolutionModifierHandler().setOffset(offset);
 		return this;
 	}
 
 	/**
-	 * Convert a node to a string.
-	 * If the node is a literal return the literal value.
-	 * If the node is a URI return the URI enclosed with &lt; and &gt;
-	 * If the node is a variable return the name preceeded by '?'
-	 * @param node The node to convert.
+	 * Convert a node to a string. If the node is a literal return the literal
+	 * value. If the node is a URI return the URI enclosed with &lt; and &gt; If
+	 * the node is a variable return the name preceeded by '?'
+	 * 
+	 * @param node
+	 *            The node to convert.
 	 * @return A string representation of the node.
 	 */
 	private static String toString(Node node) {
@@ -208,15 +260,17 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	/**
-	 * Convert the object to a string.
-	 * If the object is a node or fronts a node then 
+	 * Convert the object to a string. If the object is a node or fronts a node
+	 * then
 	 * <ul>
 	 * <li>If the node is a literal return the literal value.</li>
 	 * <li>If the node is a URI return the URI enclosed with &lt; and &gt;</li>
 	 * <li>If the node is a variable return the name preceeded by '?'</li>
 	 * </ul>
 	 * otherwise return the toString() method of the object.
-	 * @param o the Object to convert.
+	 * 
+	 * @param o
+	 *            the Object to convert.
 	 * @return The string representation of the object.
 	 */
 	public static String makeString(Object o) {
@@ -231,13 +285,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 
 	@Override
 	public SelectBuilder addWhere(Triple t) {
-		whereHandler.addWhere(t);
+		getWhereHandler().addWhere(t);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addWhere(FrontsTriple t) {
-		whereHandler.addWhere(t.asTriple());
+		getWhereHandler().addWhere(t.asTriple());
 		return this;
 	}
 
@@ -249,13 +303,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 
 	@Override
 	public SelectBuilder addOptional(Triple t) {
-		whereHandler.addOptional(t);
+		getWhereHandler().addOptional(t);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addOptional(FrontsTriple t) {
-		whereHandler.addOptional(t.asTriple());
+		getWhereHandler().addOptional(t.asTriple());
 		return this;
 	}
 
@@ -266,57 +320,56 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder>
 	}
 
 	@Override
-	public SelectBuilder addOptional(SelectBuilder t)
-	{
-		whereHandler.addOptional(t.getWhereHandler());
+	public SelectBuilder addOptional(SelectBuilder t) {
+		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
-	
+
 	@Override
 	public SelectBuilder addFilter(String s) throws ParseException {
-		whereHandler.addFilter(s);
+		getWhereHandler().addFilter(s);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addSubQuery(SelectBuilder subQuery) {
-		prologHandler.addAll(subQuery.prologHandler);
-		whereHandler.addSubQuery(subQuery);
+		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addUnion(SelectBuilder subQuery) {
-		whereHandler.addUnion(subQuery);
+		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addGraph(Object graph, SelectBuilder subQuery) {
-		prologHandler.addAll(subQuery.prologHandler);
-		whereHandler.addGraph(makeNode(graph), subQuery.whereHandler);
+		getPrologHandler().addAll(subQuery.getPrologHandler());
+		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addBind(Expr expression, Object var) {
-		whereHandler.addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectBuilder addBind(String expression, Object var) throws ParseException {
-		whereHandler.addBind( expression, makeVar(var) );
+		getWhereHandler().addBind(expression, makeVar(var));
 		return this;
 	}
 
 	@Override
 	public SelectHandler getSelectHandler() {
-		return selectHandler;
+		return handlerBlock.getSelectHandler();
 	}
 
 	@Override
 	public Node list(Object... objs) {
-		return whereHandler.list(objs);
+		return getWhereHandler().list(objs);
 	}
+
 }

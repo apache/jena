@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+  
+	<feature name="jena" version="3">
+		<bundle>mvn:org.apache.jena/jena-osgi/3.1.0-SNAPSHOT</bundle>
+		<feature version="3">jena_osgi_dependencies</feature>
+		<!-- This is normally exposed by Apache Karaf via root classloader -->
+		<!--<feature version="2.11.0">xerces</feature>-->
+	</feature>
+
+	<feature name="jena_osgi_dependencies" version="3">
+		<bundle>mvn:com.github.andrewoma.dexx/collection/0.6</bundle>
+		<bundle>mvn:com.github.jsonld-java/jsonld-java/0.8.2</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.7.3</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.7.3</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.7.3</bundle>
+		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.4</bundle>
+		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.2</bundle>
+		<bundle>mvn:org.apache.commons/commons-csv/1.2</bundle>
+		<bundle>mvn:org.apache.commons/commons-lang3/3.4</bundle>
+		<bundle>mvn:org.apache.thrift/libthrift/0.9.3</bundle>	
+	</feature>
+
+	<feature name="xerces" version="2.11.0">
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/2.11.0_1</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/1.2_5</bundle>
+	</feature>
+
+</features>

@@ -36,7 +36,7 @@ public class TestSetUtils extends BaseTest
         test(x,1,2,3) ;
     }
 
-    @Test public void set02() 
+    @Test public void set_intersection_1() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(1,2,3) ;
@@ -46,7 +46,7 @@ public class TestSetUtils extends BaseTest
         test(x3, 1,2,3) ;
     }
 
-    @Test public void set03() 
+    @Test public void set_intersection_2() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(2,9) ;
@@ -56,7 +56,7 @@ public class TestSetUtils extends BaseTest
         test(x3, 2) ;
     }
 
-    @Test public void set04() 
+    @Test public void set_intersection_3() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(6,7,8) ;
@@ -66,7 +66,7 @@ public class TestSetUtils extends BaseTest
         test(x3) ;
     }
 
-    @Test public void set05() 
+    @Test public void set_union_1() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(1,2,3) ;
@@ -76,7 +76,7 @@ public class TestSetUtils extends BaseTest
         test(x3, 1,2,3) ;
     }
 
-    @Test public void set06() 
+    @Test public void set_union_2() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(2,9) ;
@@ -86,7 +86,7 @@ public class TestSetUtils extends BaseTest
         test(x3, 1,2,3,9) ;
     }
 
-    @Test public void set07() 
+    @Test public void set_union_3() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set() ;
@@ -96,7 +96,7 @@ public class TestSetUtils extends BaseTest
         test(x3,1,2,3) ;
     }
 
-    @Test public void set08() 
+    @Test public void set_difference_1() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set() ;
@@ -106,7 +106,7 @@ public class TestSetUtils extends BaseTest
         test(x3) ;
     }
 
-    @Test public void set09() 
+    @Test public void set_difference_2() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(3) ;
@@ -116,7 +116,7 @@ public class TestSetUtils extends BaseTest
         test(x3) ;
     }
 
-    @Test public void set10() 
+    @Test public void set_difference_3() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(4,5,6) ;
@@ -126,7 +126,7 @@ public class TestSetUtils extends BaseTest
         test(x3,4,5,6) ;
     }
     
-    @Test public void set11() 
+    @Test public void set_disjoint_1() 
     {
         Set<Integer> x1 = set(1,2,3) ;
         Set<Integer> x2 = set(5,6) ;
@@ -136,6 +136,34 @@ public class TestSetUtils extends BaseTest
         assertFalse(SetUtils.disjoint(x1, x1)) ;
     }
 
+    @Test public void set_symmetric_differnce_1() {
+        Set<Integer> x1 = set(1,2,3) ;
+        Set<Integer> x2 = set(4,3) ;
+        Set<Integer> expected = set(4,1,2) ;
+        assertEquals(expected, SetUtils.symmetricDifference(x1, x2)) ;
+    }
+    
+    @Test public void set_symmetric_differnce_2() {
+        Set<Integer> x1 = set(1,2,3) ;
+        Set<Integer> x2 = set(9,8) ;
+        Set<Integer> expected = SetUtils.union(x1, x2) ;
+        assertEquals(expected, SetUtils.symmetricDifference(x1, x2)) ;
+    }
+
+    @Test public void set_symmetric_differnce_3() {
+        Set<Integer> x1 = set(1,2,3) ;
+        Set<Integer> x2 = set(2,3,1) ;
+        Set<Integer> expected = set() ;
+        assertEquals(expected, SetUtils.symmetricDifference(x1, x2)) ;
+    }
+    
+    @Test public void set_symmetric_differnce_4() {
+        Set<Integer> x1 = set(1,2,3) ;
+        Set<Integer> x2 = set() ;
+        Set<Integer> expected = set(1,2,3) ;
+        assertEquals(expected, SetUtils.symmetricDifference(x1, x2)) ;
+        assertEquals(expected, SetUtils.symmetricDifference(x2, x1)) ;
+    }
     // --------
     
     private static Set<Integer> set(int... values)

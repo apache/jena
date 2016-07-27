@@ -21,9 +21,9 @@
   <formats>
     <format>tar.gz</format>
     <!--
-    <format>tar.bz2</format>
-    -->
-    <format>zip</format>
+        <format>tar.bz2</format>
+        -->
+        <format>zip</format>
   </formats>
 
   <dependencySets>
@@ -31,11 +31,11 @@
       <unpack>false</unpack>
       <outputDirectory>lib</outputDirectory>
       <!-- scoped to test -> no need to exclude.
-      <excludes>
-	<exclude>org.apache.derby:derby</exclude>
-	<exclude>org.hsqldb:hsqldb</exclude>
-      </excludes>
-      -->
+           <excludes>
+             <exclude>org.apache.derby:derby</exclude>
+             <exclude>org.hsqldb:hsqldb</exclude>
+           </excludes>
+           -->
     </dependencySet>
   </dependencySets>
 
@@ -57,7 +57,7 @@
         <include>README*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-	<include>sdb.ttl</include>
+        <include>sdb.ttl</include>
       </includes>
     </fileSet>
 

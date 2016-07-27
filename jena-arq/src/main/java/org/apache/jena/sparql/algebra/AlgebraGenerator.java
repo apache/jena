@@ -39,8 +39,8 @@ import org.apache.jena.sparql.syntax.* ;
 import org.apache.jena.sparql.util.Context ;
 
 /**
- * Class used to compile SPARQL queries into SPARQL algebra
- *
+ * Class used to compile SPARQL queries into SPARQL algebra.
+ * This is the SPARQL standard defined process of abstract syntax to algebra.
  */
 public class AlgebraGenerator 
 {

@@ -21,6 +21,7 @@ package org.apache.jena.mem;
 import java.util.*;
 
 import org.apache.jena.shared.BrokenException ;
+import org.apache.jena.shared.JenaException ;
 import org.apache.jena.util.iterator.* ;
 
 /**
@@ -193,24 +194,33 @@ public abstract class HashCommon<Key>
         threshold = (int) (capacity * loadFactor);
         }
      
+    // Hash tables are 0.25 to 0.5 full so these numbers
+    // are for storing about 1/3 of that number of items. 
+    // The larger sizes are added so that the system has "soft failure"
+    // rather implying guaranteed performance. 
     static final int [] primes =
         {
         7, 19, 37, 79, 149, 307, 617, 1237, 2477, 4957, 9923,
-        19853, 39709, 79423, 158849, 317701, 635413,
-        1270849, 2541701, 5083423
+        19_853, 39_709, 79_423, 158_849, 317_701, 635_413,
+        1_270_849, 2_541_701, 5_083_423
+        , 10_166_857
+        , 20_333_759   
+        , 40_667_527
+        // Impractical?
+        , 81_335_047
+        , 162_670_111
+        , 325_340_233
         };
     
-    protected static int nextSize( int atLeast )
-        {
-            for ( int prime : primes )
-            {
-                if ( prime > atLeast )
-                {
-                    return prime;
-                }
-            }
-        return atLeast;
+    protected static int nextSize(int atLeast) {
+        for ( int prime : primes ) {
+            if ( prime > atLeast )
+                return prime;
         }
+        //return atLeast ;        // Input is 2*current capacity.
+        // There are some very large numbers in the primes table. 
+        throw new JenaException("Failed to find a 'next size': atleast = "+atLeast) ; 
+    }
     
     /**
         Remove the triple at element <code>i</code> of <code>contents</code>.

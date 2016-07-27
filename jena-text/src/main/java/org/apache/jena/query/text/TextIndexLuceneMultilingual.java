@@ -64,12 +64,12 @@ public class TextIndexLuceneMultilingual extends TextIndexLucene {
     }
 
     @Override
-    protected Query preParseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
+    protected Query preParseQuery(String queryString, Analyzer analyzer) throws ParseException {
         if (queryString.contains(getDocDef().getLangField() + ":")) {
             String lang = queryString.substring(queryString.lastIndexOf(":") + 1);
             if (!"*".equals(lang))
                 analyzer = Util.getLocalizedAnalyzer(lang);
         }
-        return super.preParseQuery(queryString, primaryField, analyzer);
+        return super.preParseQuery(queryString, analyzer);
     }
 }

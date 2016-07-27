@@ -50,7 +50,6 @@ public class ParserARQ extends SPARQLParser
         } ;
 
         perform(query, queryString, action) ;
-        validateParsedQuery(query) ;
         return query ;
     }
     

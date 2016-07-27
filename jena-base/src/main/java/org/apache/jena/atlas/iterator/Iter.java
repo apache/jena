@@ -53,11 +53,6 @@ import org.apache.jena.atlas.lib.Sink ;
  * @param <T> the type of element over which an instance of Iter iterates,
  */
 public class Iter<T> implements Iterator<T> {
-    // Remove any remianign Collection/Stream operations left for migration. 
-    
-    // Add:
-    //   .takeWhile, takeUntil, dropWhile, dropUntil
-    //   IteratorTruncate to use IteratorSlotted.
     // IteratorSlotted needed? IteratorPeek
     //   IteratorSlotted.inspect
     
@@ -85,56 +80,23 @@ public class Iter<T> implements Iterator<T> {
     
     // ---- Collectors.
     
+    /** Collect an iterator into a set. */
     public static <T> Set<T> toSet(Iterator<? extends T> stream) {
-        Accumulate<T, Set<T>> action = new Accumulate<T, Set<T>>() {
-            private Set<T> acc = null ;
-
-            @Override
-            public void accumulate(T item) {
-                acc.add(item) ;
-            }
-
-            @Override
-            public Set<T> get() {
-                return acc ;
-            }
-
-            @Override
-            public void start() {
-                acc = new HashSet<>() ;
-            }
-
-            @Override
-            public void finish() {}
-        } ;
-        return reduce(stream, action) ;
+        Set<T> acc = new HashSet<>() ;
+        collect(acc, stream) ;
+        return acc ;
+    }
+    
+    /** Collect an iterator into a list. */
+    public static <T> List<T> toList(Iterator<? extends T> stream) {
+        List<T> acc = new ArrayList<>() ;
+        collect(acc, stream) ;
+        return acc ;
     }
 
-    
-    
-    public static <T> List<T> toList(Iterator<? extends T> stream) {
-        Accumulate<T, List<T>> action = new Accumulate<T, List<T>>() {
-            private List<T> acc = null ;
-
-            @Override
-            public void accumulate(T item) {
-                acc.add(item) ;
-            }
-
-            @Override
-            public List<T> get() {
-                return acc ;
-            }
-
-            @Override
-            public void start() {
-                acc = new ArrayList<>() ;
-            }
-
-            @Override
-            public void finish() {}
-        } ;
-        return reduce(stream, action) ;
+    /** Collect an iterator. */
+    private static <T> void collect(Collection<T> acc, Iterator<? extends T> stream) {
+        stream.forEachRemaining((x)->acc.add(x)) ;
     }
 
     /**

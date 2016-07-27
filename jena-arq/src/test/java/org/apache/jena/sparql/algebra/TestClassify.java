@@ -39,8 +39,12 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_03() 
 	{ classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
 
+    // JENA-1167
+    // This actually safe in thsi case but as general component.
+    // the JoinClassifier is not clever enough to know that ?o is completely
+    // unbound. It may be boudn bu whatever feeds into the potential sequence.
     @Test public void testClassify_Join_04() 
-	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ; }
+	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", false) ; }
 
     @Test public void testClassify_Join_05() 
 	{ classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ; }
@@ -61,6 +65,9 @@ public class TestClassify extends BaseTest
 	@Test public void testClassify_Join_10() 
 	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
+	
+    // OPTIONAL nested inside {} so it is a join of the LHS and the {}-RHS. 
+
     // Not safe: ?s
     // Other parts of RHS may restrict ?s to things that can't match the LHS.
 	@Test public void testClassify_Join_11() 
@@ -74,9 +81,15 @@ public class TestClassify extends BaseTest
 	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
 
 	@Test public void testClassify_Join_14() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
+	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", false) ; }
 
-	@Test public void testClassify_Join_15() 
+    @Test public void testClassify_Join_14a() 
+    { classifyJ("{?s :p :o . { OPTIONAL { :s :p ?o FILTER(?o) } } }", true) ; }
+
+    @Test public void testClassify_Join_14b() 
+    { classifyJ("{?s :p ?o . { OPTIONAL { :s :p :o FILTER(?o) } } }", false) ; }
+    
+    @Test public void testClassify_Join_15() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ; }
 
     @Test public void testClassify_Join_20() 
@@ -89,9 +102,9 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", true) ; }
 
-    // Use of a filter variable not in from the LHS
+    // JENA-1167 : Use of a filter variable not in from the LHS
     @Test public void testClassify_Join_32() 
-    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", true) ; }
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", false) ; }
 
     // Use of a filter variable from the LHS
     @Test public void testClassify_Join_33() 
@@ -104,9 +117,10 @@ public class TestClassify extends BaseTest
     // Use of a filter variable from the LHS but optional in RHS
     @Test public void testClassify_Join_35() 
     { classifyJ("{ GRAPH ?g { ?x ?y ?z } { OPTIONAL{?a ?b ?z} FILTER (?z) } }", false) ; }
-    
-    @Test public void testClassify_Join_40() 
-    { classifyJ("{ ?x ?y ?z { ?x ?y ?z } UNION { ?x1 ?y1 ?z1 }}", true) ; }
+
+    // The fix for JENA-1187 invalidates this test.
+//    @Test public void testClassify_Join_40()
+//    { classifyJ("{ ?x ?y ?z { ?x ?y ?z } UNION { ?x1 ?y1 ?z1 }}", true) ; }
 
     @Test public void testClassify_Join_41() 
     { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 BIND(?z+2 AS ?A) } UNION { ?x1 ?y1 ?z1 }}", false) ; }
@@ -118,6 +132,9 @@ public class TestClassify extends BaseTest
     { classifyJ("{ ?x ?y ?z { LET(?A := ?z+2) } UNION { }}", false) ; }
     
     @Test public void testClassify_Join_44() 
+    { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) } }", false) ; }
+
+    @Test public void testClassify_Join_45() 
     { classifyJ("{ BIND(<x> AS ?typeX) { BIND(?typeX AS ?type) ?s ?p ?o FILTER(?o=?type) } }", false) ; }
     
     // Unsafe - deep MINUS
@@ -125,7 +142,7 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_50() 
     { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 MINUS { ?a ?b ?c } } UNION {} }", false) ; }
     
-    private void classifyJ(String pattern, boolean expected)
+    public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;

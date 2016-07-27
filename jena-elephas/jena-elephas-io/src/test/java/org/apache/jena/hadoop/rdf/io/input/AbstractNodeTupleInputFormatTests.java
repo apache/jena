@@ -358,7 +358,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -370,7 +369,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -382,7 +380,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -394,7 +391,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * Basic tuples input test
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -496,7 +492,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * tuples test with multiple inputs
      * 
      * @throws IOException
-     * @throws ClassNotFoundException
      * @throws InterruptedException
      */
     @Test
@@ -569,7 +564,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_01() throws IOException, InterruptedException {
@@ -586,7 +580,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_02() throws IOException, InterruptedException {
@@ -604,7 +597,6 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * 
      * @throws IOException
      * @throws InterruptedException
-     * @throws ClassNotFoundException
      */
     @Test
     public final void split_input_03() throws IOException, InterruptedException {

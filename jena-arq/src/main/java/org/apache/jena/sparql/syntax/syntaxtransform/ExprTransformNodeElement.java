@@ -19,13 +19,13 @@
 package org.apache.jena.sparql.syntax.syntaxtransform ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.syntax.Element ;
+import org.apache.jena.sparql.syntax.ElementVisitor ;
 
 /**
  * Special version of ExprTransform for applying a node transform on syntax
@@ -34,10 +34,19 @@ import org.apache.jena.sparql.syntax.Element ;
 public class ExprTransformNodeElement extends ExprTransformCopy {
     private final NodeTransform    nodeTransform ;
     private final ElementTransform elementTransform ;
+    private final ElementVisitor beforeVisitor;
+    private final ElementVisitor afterVisitor;
 
     public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans) {
+        this(nodeTransform, eltrans, null, null) ;
+    }
+    
+    public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans, 
+                                    ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
         this.nodeTransform = nodeTransform ;
         this.elementTransform = eltrans ;
+        this.beforeVisitor = beforeVisitor ;
+        this.afterVisitor = afterVisitor ;
     }
 
     @Override
@@ -64,7 +73,7 @@ public class ExprTransformNodeElement extends ExprTransformCopy {
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
         // Syntax phased only - ignore args and opArg
         Element elt = funcOp.getElement() ;
-        Element elt1 = ElementTransformer.transform(elt, elementTransform) ;
+        Element elt1 = ElementTransformer.transform(elt, elementTransform, this, beforeVisitor, afterVisitor) ;
         if ( elt == elt1 )
             return funcOp ;
         else {

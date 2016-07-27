@@ -220,7 +220,7 @@ public class CrossOriginFilter implements Filter
         exposedHeaders.addAll(Arrays.asList(exposedHeadersConfig.split(",")));
 
         String chainPreflightConfig = config.getInitParameter(OLD_CHAIN_PREFLIGHT_PARAM);
-        if (chainPreflightConfig!=null) // TODO remove this
+        if (chainPreflightConfig!=null)
             LOG.warn("DEPRECATED CONFIGURATION: Use "+CHAIN_PREFLIGHT_PARAM+ " instead of "+OLD_CHAIN_PREFLIGHT_PARAM);
         else
             chainPreflightConfig = config.getInitParameter(CHAIN_PREFLIGHT_PARAM);

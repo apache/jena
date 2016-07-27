@@ -20,13 +20,22 @@ package org.apache.jena.atlas.lib ;
 
 import java.util.concurrent.* ;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory ;
+
 /**
  * An AlarmClock is an object that will make a callback (with a value) at a
  * preset time. Simple abstraction of add/reset/cancel of a Runnable. Currently,
  * backed by {@link ScheduledThreadPoolExecutor}
  */
 public class AlarmClock {
-    private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1) ;
+    // A ThreadFactory that creates daemons
+    private static ThreadFactory threadFactory = new BasicThreadFactory.Builder()
+        .daemon(true)
+        .namingPattern("alarm-clock-")
+        //.uncaughtExceptionHandler(null)
+        .build() ;
+    
+    private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1, threadFactory) ;
 
     /* package */AlarmClock() {}
 

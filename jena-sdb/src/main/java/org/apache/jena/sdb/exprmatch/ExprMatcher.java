@@ -95,10 +95,6 @@ public class ExprMatcher
             this.target = target ;
         }
 
-        @Override
-        public void startVisit()
-        {}
-
         /* ExprFunction in the pattern:
          * 1/ If in the call out map, do that : return 
          * 2/ Check that the thing to be matched is a function as well
@@ -186,9 +182,5 @@ public class ExprMatcher
         @Override
         public void visit(ExprAggregator eAgg)
         { throw new NoExprMatch("ExprAggregate") ; }
-
-        @Override
-        public void finishVisit()
-        {}
     }
 }

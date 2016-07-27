@@ -82,7 +82,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
 
     protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar) {
         Node n2 = resolve(b, graphVar) ;
-        if ( n2 != null && ! n2.isURI() )
+        if ( n2 != null && n2.isLiteral() ) 
             // Blank node or literal possible after resolving
             return Iter.nullIterator() ;
         

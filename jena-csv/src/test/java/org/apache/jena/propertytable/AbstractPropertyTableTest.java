@@ -33,9 +33,9 @@ public abstract class AbstractPropertyTableTest extends AbstractRowTest{
 	@Test
 	public void testGetMatchingColumns() {
 		Column something = table.createColumn(URI("something") );
-		final Row row1 = table.createRow(NodeFactory.createAnon());
+		final Row row1 = table.createRow(NodeFactory.createBlankNode());
 		row1.setValue(something, URI("apple"));
-		final Row row2 = table.createRow(NodeFactory.createAnon());
+		final Row row2 = table.createRow(NodeFactory.createBlankNode());
 		row2.setValue(something, URI("orange"));
 		Collection<Row> matchingRows = table.getMatchingRows(something, URI("apple"));
 		Assert.assertTrue(matchingRows.size() == 1);
@@ -46,9 +46,9 @@ public abstract class AbstractPropertyTableTest extends AbstractRowTest{
 	@Test
 	public void testGetAllRows() {
 		Assert.assertTrue(table.getAllRows().size() == 1);
-		table.createRow(NodeFactory.createAnon());
+		table.createRow(NodeFactory.createBlankNode());
 		Assert.assertTrue(table.getAllRows().size() == 2);
-		table.createRow(NodeFactory.createAnon());
+		table.createRow(NodeFactory.createBlankNode());
 		Assert.assertTrue(table.getAllRows().size() == 3);
 	}
 

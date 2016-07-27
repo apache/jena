@@ -53,9 +53,9 @@ public abstract class AbstractColumnTest extends BaseTest{
 	@Test
 	public void testGetColumnValues() {
 		Column something = table.createColumn(URI("something"));
-		final Row row1 = table.createRow(NodeFactory.createAnon());
+		final Row row1 = table.createRow(NodeFactory.createBlankNode());
 		row1.setValue(something, URI("apple"));
-		final Row row2 = table.createRow(NodeFactory.createAnon());
+		final Row row2 = table.createRow(NodeFactory.createBlankNode());
 		row2.setValue(something, URI("orange"));
 		final List<Node> values = something.getValues();
 		Assert.assertTrue(values.size() == 2);

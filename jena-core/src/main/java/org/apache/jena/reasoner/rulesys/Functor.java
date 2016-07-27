@@ -54,17 +54,7 @@ public class Functor implements ClauseEntry {
             };
     
     protected static Logger logger = LoggerFactory.getLogger(Functor.class);
-    
-    /**
-     * Constructor. 
-     * @param name the name of the functor
-     * @param args a list of nodes defining the arguments
-     */
-    public Functor(String name, List<Node> args) {
-        this.name = name;
-        this.args = args.toArray(new Node[]{});
-    }
-    
+
     /**
      * Constructor. 
      * @param name the name of the functor
@@ -80,13 +70,48 @@ public class Functor implements ClauseEntry {
      * Constructor
      * @param name the name of the functor
      * @param args a list of nodes defining the arguments
-     * @param registry a table of builtins to consult to check for 
+     * @param registry a table of builtins to consult to check for
      * implementations of this functor when used as a rule clause
      */
     public Functor(String name, List<Node> args, BuiltinRegistry registry) {
+        this(name, args,registry.getImplementation(name));
+    }
+
+    /**
+     * Constructor
+     * @param name the name of the functor
+     * @param args an array of nodes defining the arguments
+     * @param registry a table of builtins to consult to check for
+     * implementations of this functor when used as a rule clause
+     */
+    public Functor(String name,Node[] args, BuiltinRegistry registry) {
+        this(name, args,registry.getImplementation(name));
+    }
+
+    /**
+     * Constructor
+     * @param name the name of the functor
+     * @param args a list of nodes defining the arguments
+     * @param impl a specific builtin implementation of this functor
+     *
+     */
+    public Functor(String name, List<Node> args, Builtin impl) {
         this.name = name;
         this.args = args.toArray(new Node[]{});
-        this.implementor = registry.getImplementation(name);
+        this.implementor = impl;
+    }
+
+    /**
+     * Constructor
+     * @param name the name of the functor
+     * @param args a list of nodes defining the arguments
+     * @param impl a specific builtin implementation of this functor
+     *
+     */
+    public Functor(String name, Node[] args, Builtin impl) {
+        this.name = name;
+        this.args = args;
+        this.implementor = impl;
     }
     
     /**
@@ -262,7 +287,7 @@ public class Functor implements ClauseEntry {
         }
         return false;
     }
-    
+
     /**
      * Create a functor and wrap it up as a Literal node
      * @param name the name of the functor
@@ -270,9 +295,9 @@ public class Functor implements ClauseEntry {
      * accidental structure sharing
      */
     public static Node makeFunctorNode(String name, Node[] args) {
-        return makeFunctorNode( new Functor( name, args ) );
+        return makeFunctorNode( new Functor( name, args, BuiltinRegistry.theRegistry ) );
     }
-    
+
     /**
      * Wrap  a functor as a Literal node
      * @param f the functor data structure to be wrapped in a node.

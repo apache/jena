@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.graph;
 
 import java.util.Iterator ;
-import java.util.List ;
+import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
@@ -28,61 +28,65 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
-// Combine with Jena GraphUtils.
-public class GraphOps
-{
+/** Some operations on graphs */ 
+public class GraphOps {
+    // Combine with Jena GraphUtils?
     
-    public static boolean containsGraph(DatasetGraph dsg, Node gn)
-    {
-        // [[DynDS]]
-        if ( Quad.isDefaultGraph(gn))
-            return true ;
-        if ( Quad.isUnionGraph(gn))
+    /** Check whether a dataset contains a named graph of the given name.
+     * Graph with special names (union and default) return true.
+     */
+    public static boolean containsGraph(DatasetGraph dsg, Node gn) {
+        if ( Quad.isDefaultGraph(gn) || Quad.isUnionGraph(gn)  )
             return true ;
         return dsg.containsGraph(gn) ;
     }
-    
-    public static Graph getGraph(DatasetGraph dsg, Node gn)
-    {
-        // [[DynDS]]
+
+    /** Get a graph from the dataset - the graph name may be special
+     * - the union graph (which is immutable) or a special name for
+     * the default graph. 
+     * <p>
+     * A graph name of "null" is interpreted as the default graph.
+     */
+    public static Graph getGraph(DatasetGraph dsg, Node gn) {
         if ( gn == null )
             return dsg.getDefaultGraph() ;
         if ( Quad.isDefaultGraph(gn) )
             // Explicit or generated.
             return dsg.getDefaultGraph() ;
-        if ( Quad.isUnionGraph(gn))
+        if ( Quad.isUnionGraph(gn) )
             return unionGraph(dsg) ;
         return dsg.getGraph(gn) ;
     }
-    
-    public static Graph unionGraph(DatasetGraph dsg)
-    {
-        List<Node> x = Iter.toList(dsg.listGraphNodes()) ;
-        return new GraphUnionRead(dsg, x) ;
+
+    /** Create an immutable union graph comprised of a set of named graphs. */
+    public static Graph unionGraph(DatasetGraph dsg, Set<Node> graphNames) {
+        return new GraphUnionRead(dsg, graphNames) ;
     }
 
-    public static void addAll(Graph g, Iterator<Triple> iter)
-    {
-        while(iter.hasNext())
+    /** Create an immutable union graph of all the named graphs in the dataset.
+     * Future changes to the set of graphs in the dataset will be seen.
+     */   
+    public static Graph unionGraph(DatasetGraph dsg) {
+        return new GraphUnionRead(dsg) ;
+    }
+
+    public static void addAll(Graph g, Iterator<Triple> iter) {
+        while (iter.hasNext())
             g.add(iter.next()) ;
         Iter.close(iter) ;
     }
 
-    public static void addAll(Graph g, Iterable<Triple> iter)
-    {
+    public static void addAll(Graph g, Iterable<Triple> iter) {
         addAll(g, iter.iterator()) ;
     }
 
-    public static void deleteAll(Graph g, Iterator<Triple> iter)
-    {
-        while(iter.hasNext())
+    public static void deleteAll(Graph g, Iterator<Triple> iter) {
+        while (iter.hasNext())
             g.delete(iter.next()) ;
         Iter.close(iter) ;
     }
 
-    public static void deleteAll(Graph g, Iterable<Triple> iter)
-    {
+    public static void deleteAll(Graph g, Iterable<Triple> iter) {
         deleteAll(g, iter.iterator()) ;
     }
-
 }

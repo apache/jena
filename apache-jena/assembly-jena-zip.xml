@@ -34,11 +34,11 @@
       <outputDirectory>lib</outputDirectory>
       <unpack>false</unpack>
       <includes>
-	<include>*:*:jar</include>
+        <include>*:*:jar</include>
       </includes>
       <excludes>
-	<exclude>org.apache.jena:jena-*:*:sources</exclude>
-	<exclude>org.apache.jena:jena-*:*:javadoc</exclude>
+        <exclude>org.apache.jena:jena-*:*:sources</exclude>
+        <exclude>org.apache.jena:jena-*:*:javadoc</exclude>
       </excludes>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
@@ -49,20 +49,23 @@
       <outputDirectory>lib-src</outputDirectory>
       <unpack>false</unpack>
       <includes>
-	<include>org.apache.jena:jena-*:*:sources</include>
+        <include>org.apache.jena:jena-*:*:sources</include>
       </includes>
       <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
+    <!-- All the javadoc is quite large yet one use of the binary download
+         is for people with limited or unreliable connectivity.
+         **javadoc**
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>javadoc-core</outputDirectory>
       <unpack>true</unpack>
       <includes>
-	    <include>org.apache.jena:jena-core:*:javadoc</include>
+        <include>org.apache.jena:jena-core:*:javadoc</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
@@ -71,9 +74,9 @@
       <outputDirectory>javadoc-arq</outputDirectory>
       <unpack>true</unpack>
       <includes>
-	    <include>org.apache.jena:jena-arq:*:javadoc</include>
+        <include>org.apache.jena:jena-arq:*:javadoc</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
@@ -82,11 +85,12 @@
       <outputDirectory>javadoc-tdb</outputDirectory>
       <unpack>true</unpack>
       <includes>
-	    <include>org.apache.jena:jena-tdb:*:javadoc</include>
+        <include>org.apache.jena:jena-tdb:*:javadoc</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
+    **javadoc** -->
 
   </dependencySets>
 
@@ -95,17 +99,17 @@
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
-	    <include>NOTICE</include>
-	    <include>LICENSE</include>
-	    <include>README</include>
+        <include>NOTICE</include>
+        <include>LICENSE</include>
+        <include>README</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
     </fileSet>
 
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
-	    <include>bin/*</include>
+        <include>bin/*</include>
       </includes>
       <lineEnding>unix</lineEnding>
       <fileMode>0755</fileMode>
@@ -114,15 +118,15 @@
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
-	    <include>jena-log4j.properties</include>
+        <include>jena-log4j.properties</include>
       </includes> 
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
     </fileSet>
     
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
-	    <include>bat/*</include>
+        <include>bat/*</include>
       </includes>
       <lineEnding>dos</lineEnding>
       <fileMode>0755</fileMode>
@@ -133,12 +137,12 @@
       <outputDirectory>src-examples/jena-examples</outputDirectory>
       <directory>../jena-examples</directory>
       <includes>
-	    <include>**</include>
+        <include>**</include>
       </includes>
       <excludes>
-	    <exclude>**/target/**</exclude>
+        <exclude>**/target/**</exclude>
       </excludes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <filtered>false</filtered>
     </fileSet>
@@ -147,9 +151,9 @@
       <outputDirectory>src-examples</outputDirectory>
       <directory>../jena-core/src-examples</directory>
       <includes>
-	    <include>**</include>
+        <include>**</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <filtered>false</filtered>
     </fileSet>
@@ -158,19 +162,20 @@
       <outputDirectory>src-examples</outputDirectory>
       <directory>../jena-arq/src-examples</directory>
       <includes>
-	    <include>**</include>
+        <include>**</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <filtered>false</filtered>
     </fileSet>
+
     <fileSet>
       <outputDirectory>src-examples</outputDirectory>
       <directory>../jena-tdb/src-examples</directory>
       <includes>
-	    <include>**</include>
+        <include>**</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
       <filtered>false</filtered>
     </fileSet>

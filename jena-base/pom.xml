@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
   <artifactId>jena-base</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <name>Apache Jena - Base Common Environment</name>
   <description>
     This module contains non-RDF library code and the common system runtime.
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -53,7 +53,7 @@
     <!-- supports persistent data structures -->
     <dependency>
       <groupId>com.github.andrewoma.dexx</groupId>
-      <artifactId>dexx-collections</artifactId>
+      <artifactId>collection</artifactId>
     </dependency>
     
     <dependency>
@@ -126,10 +126,10 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
           <execution>
-	    <id>attach-javadocs</id>
+            <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
-	    </goals>
+            </goals>
           </execution>
         </executions>
         <configuration>

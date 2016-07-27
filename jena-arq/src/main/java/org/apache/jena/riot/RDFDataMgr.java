@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory ;
  *  </p>
  *  <p>Operations fall into the following categories:</p>
  *  <ul>
- *  <li>{@code read}    -- Read data from a location into a Model/Dataset etc</li>
+ *  <li>{@code read}    -- Read data from a location into a Model, Dataset, etc. The methods in this class treat all types of Model in the same way. For behavior specific to a subtype of Model, use the methods of that specific class.</li>
  *  <li>{@code loadXXX} -- Read data and return an in-memory object holding the data.</li>
  *  <li>{@code parse}   -- Read data and send to an {@link StreamRDF}</li>
  *  <li>{@code open}    -- Open a typed input stream to the location, using any alternative locations</li>
@@ -810,8 +810,7 @@ public class RDFDataMgr
      */
     public static TypedInputStream open(String filenameOrURI, Context context) {
         StreamManager sMgr = StreamManager.get() ;
-        if ( context != null )
-        {
+        if ( context != null ) {
             try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
             catch (ClassCastException ex) 
             { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Lib.classShortName(StreamManager.class)) ; }
@@ -848,8 +847,7 @@ public class RDFDataMgr
     // different threads. The Context Reader object gives the per-run
     // configuration.
 
-    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context)
-    {
+    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context) {
         Objects.requireNonNull(in, "TypedInputStream is null") ;
         ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
         if ( ct == null )
@@ -1234,13 +1232,10 @@ public class RDFDataMgr
      * @param baseIRI Base IRI
      * @return Iterator over the triples
      */
-    @SuppressWarnings("deprecation")
-    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
-    {
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            // Should be only use. Migrate the necessary code here when removing deprecated code.
-            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createParserNTriples(input, null), input);
+            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNTriples(input, null), input);
         // Otherwise, we have to spin up a thread to deal with it
         PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         PipedTriplesStream out = new PipedTriplesStream(it);
@@ -1256,13 +1251,10 @@ public class RDFDataMgr
      * @param baseIRI Base IRI
      * @return Iterator over the quads
      */
-    @SuppressWarnings("deprecation")
-    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
-    {
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
-            // Should be only use. Migrate the necessary code here when removing deprecated code.
-            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createParserNQuads(input, null), input);
+            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNQuads(input, null), input);
         // Otherwise, we have to spin up a thread to deal with it
         final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();
         final PipedQuadsStream out = new PipedQuadsStream(it);

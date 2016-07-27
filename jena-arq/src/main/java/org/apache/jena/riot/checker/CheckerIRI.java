@@ -37,13 +37,11 @@ public class CheckerIRI implements NodeChecker
     private ErrorHandler handler ;
     private IRIFactory iriFactory ;
 
-    public CheckerIRI()
-    {
+    public CheckerIRI() {
         this(ErrorHandlerFactory.getDefaultErrorHandler(), IRIResolver.iriFactory) ;
     }
-    
-    public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory)
-    {
+
+    public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory) {
         this.handler = handler ;
         this.iriFactory = iriFactory ;
     }
@@ -57,12 +55,11 @@ public class CheckerIRI implements NodeChecker
     private final Cache<Node, IRI> cache = CacheFactory.createSimpleCache(5000) ;
 
     // abstract
-    public final boolean checkURI(Node node, long line, long col)
-    {
+    public final boolean checkURI(Node node, long line, long col) {
         if ( cache != null && cache.containsKey(node) )
             return true ;
-        
-        IRI iri = iriFactory.create(node.getURI()); // always works - no exceptions.
+
+        IRI iri = iriFactory.create(node.getURI()) ; // always works - no exceptions.
         boolean b = checkIRI(iri, line, col) ;
         // If OK, put in cache.
         if ( cache != null && b )
@@ -70,10 +67,9 @@ public class CheckerIRI implements NodeChecker
         return b ;
     }
 
-    final public boolean checkIRI(IRI iri, long line, long col)
-    {
+    final public boolean checkIRI(IRI iri, long line, long col) {
         iriViolations(iri, handler, allowRelativeIRIs, true, line, col) ;
-        return ! iri.hasViolation(true) ;
+        return !iri.hasViolation(true) ;
     }
 
     /** Process violations on an IRI
@@ -83,8 +79,7 @@ public class CheckerIRI implements NodeChecker
      *  @param errorHandler The error handler to call on each warning or error.
      *   
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler)
-    {
+    public static void iriViolations(IRI iri, ErrorHandler errorHandler) {
         iriViolations(iri, errorHandler, -1L, -1L) ;
     }
     
@@ -95,8 +90,7 @@ public class CheckerIRI implements NodeChecker
      *  @param errorHandler The error handler to call on each warning or error.
      *   
      */
-    public static void iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col)
-    {
+    public static void iriViolations(IRI iri, ErrorHandler errorHandler, long line, long col) {
         iriViolations(iri, errorHandler, false, true, line, col) ;
     }
     
@@ -107,8 +101,7 @@ public class CheckerIRI implements NodeChecker
      *  @param errorHandler The error handler to call on each warning or error.
      *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
      */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs)
-    {
+    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs) {
         iriViolations(iri, errorHandler, allowRelativeIRIs, -1, -1) ;
     }
 
@@ -119,11 +112,9 @@ public class CheckerIRI implements NodeChecker
      *  @param errorHandler The error handler to call on each warning or error.
      *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
      */
-    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs, long line, long col)
-    {
+    private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs, long line, long col) {
         iriViolations(iri, errorHandler, allowRelativeIRIs, true, line, col) ;
     }
-
 
     /** Process violations on an IRI
      *  Calls the errorhandler on all errors and warnings (as warning).
@@ -132,58 +123,49 @@ public class CheckerIRI implements NodeChecker
     public static void iriViolations(IRI iri, ErrorHandler errorHandler, 
                                      boolean allowRelativeIRIs, 
                                      boolean includeIRIwarnings,
-                                     long line, long col)
-    {
-        if ( ! allowRelativeIRIs && iri.isRelative() )
-            errorHandler.error("Relative IRI: "+iri, line, col) ;
+                                     long line, long col) {
+        if ( !allowRelativeIRIs && iri.isRelative() )
+            errorHandler.error("Relative IRI: " + iri, line, col) ;
 
-        if ( iri.hasViolation(includeIRIwarnings) )
-        {
-            Iterator<Violation> iter = iri.violations(includeIRIwarnings) ; 
-            
+        if ( iri.hasViolation(includeIRIwarnings) ) {
+            Iterator<Violation> iter = iri.violations(includeIRIwarnings) ;
+
             boolean errorSeen = false ;
             boolean warningSeen = false ;
-            
+
             // What to finally report.
             Violation vError = null ;
             Violation vWarning = null ;
             Violation xvSub = null ;
-            
-            for ( ; iter.hasNext() ; )
-            {
-                Violation v = iter.next();
+
+            for ( ; iter.hasNext() ; ) {
+                Violation v = iter.next() ;
                 int code = v.getViolationCode() ;
                 boolean isError = v.isError() ;
-                
+
                 // Ignore these.
-                if ( code == Violation.LOWERCASE_PREFERRED 
-                    ||
-                    code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE 
-                    ||
-                    code == Violation.SCHEME_PATTERN_MATCH_FAILED 
-                    )
+                if ( code == Violation.LOWERCASE_PREFERRED
+                     || code == Violation.PERCENT_ENCODING_SHOULD_BE_UPPERCASE
+                     || code == Violation.SCHEME_PATTERN_MATCH_FAILED )
                     continue ;
 
                 // Anything we want to reprioritise?
                 // [nothing at present]
-                
+
                 // Remember first error and first warning.
-                if ( isError )
-                {
+                if ( isError ) {
                     errorSeen = true ;
                     if ( vError == null )
-                        // Remember first error
-                        vError = v ;
-                }
-                else
-                {
+                                         // Remember first error
+                                         vError = v ;
+                } else {
                     warningSeen = true ;
                     if ( vWarning == null )
                         vWarning = v ;
                 }
-                
-                String msg = v.getShortMessage();
-                String iriStr = iri.toString();
+
+                String msg = v.getShortMessage() ;
+                String iriStr = iri.toString() ;
 
                 // Ideally, we might want to output all messages relating to this IRI
                 // then cause the error or continue.

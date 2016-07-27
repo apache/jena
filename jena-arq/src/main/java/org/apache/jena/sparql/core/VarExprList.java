@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Objects;
+import java.util.* ;
+import java.util.function.BiConsumer ;
+import java.util.function.Consumer ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -35,24 +33,24 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 public class VarExprList
 {
     private List<Var> vars  ;
-    private Map<Var, Expr> exprs  ;
+    private LinkedHashMap<Var, Expr> exprs  ;   // Preserve order.
     
     public VarExprList(List<Var> vars)
     {
         this.vars = new ArrayList<>(vars) ;
-        this.exprs = new HashMap<>() ;
+        this.exprs = new LinkedHashMap<>() ;
     }
     
     public VarExprList(VarExprList other)
     {
         this.vars = new ArrayList<>(other.vars) ;
-        this.exprs = new HashMap<>(other.exprs) ;
+        this.exprs = new LinkedHashMap<>(other.exprs) ;
     }
 
     public VarExprList()
     {
         this.vars = new ArrayList<>() ;
-        this.exprs = new HashMap<>() ;
+        this.exprs = new LinkedHashMap<>() ;
     }
     
     public VarExprList(Var var, Expr expr)
@@ -61,9 +59,37 @@ public class VarExprList
         add(var, expr) ;
     }
 
-    public List<Var> getVars() { return vars ; }
-    public Map<Var, Expr> getExprs() { return exprs ; }
+    public List<Var> getVars()          { return vars ; }
+    public Map<Var, Expr> getExprs()    { return exprs ; }
     
+    /** Call the action for each (variable, expression) defined.
+     *  Not called when there is no expression, just a variable.
+     *  Not order preserving.
+     */
+    public void forEachExpr(BiConsumer<Var, Expr> action) {
+        exprs.forEach(action);
+    }
+    
+    /** Call the action for each variable, in order.
+     *  The expression may be null.
+     *  Not called when there is no expression, just a variable.
+     */
+    public void forEachVarExpr(BiConsumer<Var, Expr> action) {
+        //*  See {@link #forEach}    
+        getVars().forEach((v) -> {
+            // Maybe null.
+            Expr e = exprs.get(v) ;
+            action.accept(v, e);
+        }) ;
+    }
+
+    /** Call the action for each variable, in order. */
+    public void forEachVar(Consumer<Var> action) {
+        getVars().forEach((v) -> {
+            action.accept(v);
+        }) ;
+    }
+
     public boolean contains(Var var) { return vars.contains(var) ; }
     public boolean hasExpr(Var var) { return exprs.containsKey(var) ; }
     

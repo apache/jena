@@ -36,9 +36,9 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithLuceneTextIndexDeletionSupport.class
     , TestDatasetWithLuceneStoredLiterals.class
 
-    // Embedded solr not supported 
+    // Embedded solr not supported
     //, TestDatasetWithEmbeddedSolrTextIndex.class
-    
+
     , TestEntityMapAssembler.class
     , TestTextDatasetAssembler.class
     , TestTextIndexLuceneAssembler.class
@@ -51,6 +51,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestLuceneWithMultipleThreads.class
     , TestDatasetWithLocalizedAnalyzer.class
     , TestDatasetWithConfigurableAnalyzer.class
+    , TestDatasetWithAnalyzingQueryParser.class
+    , TestDatasetWithComplexPhraseQueryParser.class
 })
 
 public class TS_Text

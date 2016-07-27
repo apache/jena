@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>17-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
   <artifactId>jena-shaded-guava</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.1-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
   <description>
     This module shades Google's Guava.
@@ -50,7 +50,7 @@
     </dependency>
   </dependencies>
 
- <build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -64,7 +64,7 @@
           </execution>
         </executions>
         <configuration>
-	  <createSourcesJar>true</createSourcesJar>
+          <createSourcesJar>true</createSourcesJar>
           <artifactSet>
             <includes>
               <artifact>com.google.guava:guava</artifact>
@@ -74,8 +74,8 @@
           <filters>
             <filter>
               <!-- Modify the below patterns if a later guava 
-		   contains other packages 
-	      -->
+                   contains other packages 
+              -->
               <artifact>com.google.guava:guava</artifact>
               <includes>
                 <include>com/google/common/**</include>
@@ -85,13 +85,13 @@
           </filters>
 
           <!-- 
-            Shade to a different package, so the JAR we produce will not be
-            in conflict with any newer/older guava present in client code
-            depending on Jena.
+               Shade to a different package, so the JAR we produce will not be
+               in conflict with any newer/older guava present in client code
+               depending on Jena.
           -->
           <relocations>
-              <!-- Modify the below patterns if a later guava contains other
-                   packages -->
+            <!-- Modify the below patterns if a later guava contains other
+                 packages -->
             <relocation>
               <pattern>com.google.common</pattern>
               <shadedPattern>org.apache.jena.ext.com.google.common</shadedPattern>

@@ -33,9 +33,8 @@ public class AggSampleDistinct extends AggregatorBase
     public Aggregator copy(ExprList exprs) { return new AggSampleDistinct(exprs.get(0)) ; }
 
     @Override
-    public Accumulator createAccumulator()
-    { 
-        return new AccSampleDistict(getExpr()) ;
+    public Accumulator createAccumulator() {
+        return new AccSampleDistict(getExpr());
     }
 
     @Override
@@ -56,18 +55,17 @@ public class AggSampleDistinct extends AggregatorBase
     // ---- Accumulator
     private static class AccSampleDistict extends AccumulatorExpr
     {
-        // NOT AccumulatorDistinctExpr - avoid "distinct" overheads. 
-        // Sample: first evaluation of the expression that is not an error.
-        // For sample, DISTINCT is a no-op - this code is picks the last element. 
+        // For sample, DISTINCT is a no-op - this code is picks the last element.
+        // it does not need the group to made made distinct.
         private NodeValue sampleSoFar = null ;
 
-        public AccSampleDistict(Expr expr) { super(expr)  ; }
+        public AccSampleDistict(Expr expr) { super(expr, false)  ; }
 
         @Override
-        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        {
-            // Last value seen.
-            sampleSoFar = nv ;
+        public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
+            if ( nv != null )
+                // Last value seen.
+                sampleSoFar = nv;
         }
 
         @Override
@@ -77,5 +75,11 @@ public class AggSampleDistinct extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         { return sampleSoFar ; }
+        
+        @Override
+        public NodeValue getValue() { 
+            // Return any seen value and null only if none.
+            return getAccValue();
+        }
     }
 }

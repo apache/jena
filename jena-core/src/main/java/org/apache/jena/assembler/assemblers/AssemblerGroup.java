@@ -109,8 +109,21 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         @Override public Object open( Assembler a, Resource root, Mode mode )
             {
             Set <Resource>types = AssemblerHelp.findSpecificTypes( root, JA.Object );
-            if (types.size() == 0)
+            if (types.size() == 0) {
+                // Does it exist as a subject in the model? Mistyped?
+                boolean noSuchSubject = ! root.listProperties().hasNext() ;
+                if ( noSuchSubject ) {
+                    String s ;
+                    if ( root.isURIResource() )
+                        s = "<"+root.getURI()+">" ;
+                    else if ( root.isAnon() )
+                        s = "_:"+root.getId() ;
+                    else
+                        s = String.valueOf(root) ;
+                    throw new AssemblerException(root, "Can't find "+s+" as a subject") ;
+                }
                 throw new NoSpecificTypeException( root );
+            }
             else if (types.size() > 1)
                 throw new AmbiguousSpecificTypeException( root, new ArrayList<>( types ) );
             else

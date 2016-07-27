@@ -144,7 +144,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
-	public void addSubQuery() {
+	public void testAddSubQuery() {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "urn:uri").addVar("?x")
 				.addWhere("pfx:one", "pfx:two", "pfx:three");
@@ -168,11 +168,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		whereClause.getWhereHandler().addWhere(Triple.ANY);
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 
-		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + ".+"
-				+ UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
+		String str = builder.buildString();
+		assertContainsRegex(PREFIX + "pfx:" + SPACE + uri("uri") + SPACE, str );
+		assertContainsRegex( WHERE + OPEN_CURLY + OPEN_CURLY+"ANY"+SPACE+"ANY"+SPACE+"ANY"+CLOSE_CURLY
+				+ SPACE+UNION + OPEN_CURLY + SELECT + var("x") + SPACE + WHERE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
 				+ quote("three") + presentStringType() + OPT_SPACE
-				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
+				+ CLOSE_CURLY + CLOSE_CURLY, str);
 
 	}
 
@@ -251,13 +253,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
-				+ uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + CLOSE_CURLY,
 				builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+"
-				+ uri("two") + ".+" + uri("three") + ".+" + CLOSE_CURLY,
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + CLOSE_CURLY,
 				builder.buildString());
 	}
 
@@ -269,13 +271,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+"
+				+ uri("one") + SPACE + uri("two") + SPACE + var("v") 
 				+ CLOSE_CURLY, builder.buildString());
 
 		builder.setVar(v, NodeFactory.createURI("three"));
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY
-				+ uri("one") + ".+" + uri("two") + ".+" + uri("three")
-				+ ".+" + CLOSE_CURLY, builder.buildString());
+				+ uri("one") + SPACE + uri("two") + SPACE + uri("three")
+				+ SPACE + CLOSE_CURLY, builder.buildString());
 	}
 
 	@ContractTest

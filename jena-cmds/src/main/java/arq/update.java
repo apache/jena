@@ -20,9 +20,9 @@ package arq;
 
 import java.util.List ;
 
+import arq.cmdline.CmdUpdate ;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
@@ -35,8 +35,6 @@ import org.apache.jena.sparql.core.TransactionalNull ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
-
-import arq.cmdline.CmdUpdate ;
 
 public class update extends CmdUpdate
 {
@@ -74,7 +72,7 @@ public class update extends CmdUpdate
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do") ;
 
-        Transactional transactional = (graphStore instanceof Transactional) ? (Transactional)graphStore : new TransactionalNull() ;
+        Transactional transactional = (graphStore.supportsTransactionAbort()) ? graphStore : new TransactionalNull() ;
 
         for ( String filename : requestFiles ) {
             try {
@@ -104,7 +102,7 @@ public class update extends CmdUpdate
             finally { transactional.end() ; }
         }
         
-        if ( ! (graphStore instanceof Transactional) )
+        if ( ! ( transactional instanceof DatasetGraph ) )
             SystemARQ.sync(graphStore) ;
 
         if ( dump )

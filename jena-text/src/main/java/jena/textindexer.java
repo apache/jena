@@ -119,6 +119,11 @@ public class textindexer extends CmdARQ {
             for (; quadIter.hasNext(); )
             {
                 Quad quad = quadIter.next();
+                if ( Quad.isDefaultGraph(quad.getGraph()) ) {
+                    // Need to use urn:x-arq:DefaultGraphNode for text indexing (JENA-1133)
+                    quad = Quad.create(Quad.defaultGraphNodeGenerated,
+                        quad.getSubject(), quad.getPredicate(), quad.getObject());
+                }
                 Entity entity = TextQueryFuncs.entityFromQuad( entityDefinition, quad );
                 if ( entity != null )
                 {
@@ -129,6 +134,8 @@ public class textindexer extends CmdARQ {
         }
         
         textIndex.commit();
+        textIndex.close();
+        dataset.close();
         progressMonitor.close() ;
     }
 

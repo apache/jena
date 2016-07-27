@@ -38,6 +38,7 @@ import org.apache.http.entity.ContentType ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.AbstractHttpClient ;
+import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.impl.conn.PoolingClientConnectionManager ;
 import org.apache.http.impl.conn.SchemeRegistryFactory ;
@@ -268,10 +269,26 @@ public class HttpOp {
         useDefaultClientWithAuthentication = useWithAuth;
     }
 
+    public static HttpClient createPoolingHttpClient() {
+        String s = System.getProperty("http.maxConnections", "5");
+        int max = Integer.parseInt(s);
+        return HttpClientBuilder.create()
+            .setMaxConnPerRoute(max)
+            .setMaxConnTotal(2*max)
+            .build() ;
+    }
+    
+//    /** @deprecated Use {@link #createPoolingHttpClient()} */
+//    @Deprecated
+//    public static HttpClient createCachingHttpClient() {
+//        return createPoolingHttpClient() ; 
+//    }
+    
     /**
      * Create an HttpClient that performs connection pooling. This can be used
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
+    @SuppressWarnings("deprecation")
     public static HttpClient createCachingHttpClient() {
         return new SystemDefaultHttpClient() {
             /**
@@ -280,8 +297,8 @@ public class HttpOp {
              */
             @Override
             protected ClientConnectionManager createClientConnectionManager() {
-                PoolingClientConnectionManager connmgr = new PoolingClientConnectionManager(
-                        SchemeRegistryFactory.createSystemDefault());
+                PoolingClientConnectionManager connmgr = 
+                    new PoolingClientConnectionManager(SchemeRegistryFactory.createSystemDefault());
                 String s = System.getProperty("http.maxConnections", "5");
                 int max = Integer.parseInt(s);
                 connmgr.setDefaultMaxPerRoute(max);
@@ -497,6 +514,22 @@ public class HttpOp {
     }
 
     /**
+     * Execute a HTTP POST and return the typed return stream.
+     * 
+     * @param url
+     *            URL
+     * @param contentType
+     *            Content Type to POST
+     * @param content
+     *            Content to POST
+     * @param acceptType
+     *            Accept Type
+     */
+    public static TypedInputStream execHttpPostStream(String url, String contentType, String content, String acceptType) {
+        return execHttpPostStream(url, contentType, content, acceptType, null, null, null) ;
+    }
+
+    /**
      * Executes a HTTP POST with a string as the request body and response
      * handling
      * 
@@ -514,10 +547,24 @@ public class HttpOp {
      *            HTTP Authenticator
      */
     public static void execHttpPost(String url, String contentType, String content, HttpClient httpClient,
-            HttpContext httpContext, HttpAuthenticator authenticator) {
+                                    HttpContext httpContext, HttpAuthenticator authenticator) {
         execHttpPost(url, contentType, content, null, nullHandler, httpClient, httpContext, authenticator);
     }
 
+    public static TypedInputStream execHttpPostStream(String url, String contentType, String content, String acceptType,
+                                                      HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        CaptureInput handler = new CaptureInput();
+        try {
+            execHttpPost(url, contentType, content, acceptType, handler, httpClient, httpContext, authenticator);
+        } catch (HttpException ex) {
+            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+                return null;
+            throw ex;
+        }
+        return handler.get();
+    }
+
+    
     /**
      * Executes a HTTP POST with a string as the request body and response
      * handling
@@ -551,6 +598,19 @@ public class HttpOp {
             closeEntity(e);
         }
     }
+
+    //    
+//        
+//        StringEntity e = null;
+//        try {
+//            e = new StringEntity(content, StandardCharsets.UTF_8);
+//            e.setContentType(contentType);
+//            return execHttpPostStream(url, e, acceptType, null, null, null) ;
+//        }
+//        finally {
+//            closeEntity(e);
+//        }
+//    }
 
     /**
      * Executes a HTTP POST with a request body from an input stream without
@@ -646,6 +706,20 @@ public class HttpOp {
     }
 
     /**
+     * Execute a HTTP POST and return the typed return stream.
+     * 
+     * @param url
+     *            URL
+     * @param entity
+     *            Entity to POST
+     */
+    public static TypedInputStream execHttpPostStream(String url, HttpEntity entity, String acceptHeader) {
+        CaptureInput handler = new CaptureInput();
+        execHttpPost(url, entity, acceptHeader, handler);
+        return handler.get() ;
+    }
+
+    /**
      * Executes a HTTP Post
      * 
      * @param url
@@ -700,6 +774,34 @@ public class HttpOp {
      *            Entity to POST
      * @param acceptHeader
      *            Accept Header
+     * @param httpClient
+     *            HTTP Client
+     * @param httpContext
+     *            HTTP Context
+     * @param authenticator
+     *            HTTP Authenticator
+     */
+    public static TypedInputStream execHttpPostStream(String url, HttpEntity entity, String acceptHeader,
+                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        CaptureInput handler = new CaptureInput();
+        execHttpPost(url, entity, acceptHeader, handler, httpClient, httpContext, authenticator) ;
+        return handler.get() ;
+    }
+
+    /**
+     * POST with response body.
+     * <p>
+     * The content for the POST body comes from the HttpEntity.
+     * <p>
+     * Additional headers e.g. for authentication can be injected through an
+     * {@link HttpContext}
+     * 
+     * @param url
+     *            URL
+     * @param entity
+     *            Entity to POST
+     * @param acceptHeader
+     *            Accept Header
      * @param handler
      *            Response handler called to process the response
      * @param httpClient
@@ -717,8 +819,22 @@ public class HttpOp {
             httppost.setEntity(entity);
         exec(url, httppost, acceptHeader, handler, httpClient, httpContext, authenticator);
     }
-
+    
+    
+    
     // ---- HTTP POST as a form.
+
+    /**
+     * Executes a HTTP POST.
+     * 
+     * @param url
+     *            URL
+     * @param params
+     *            Parameters to POST
+     */
+    public static void execHttpPostForm(String url, Params params) {
+        execHttpPostForm(url, params, null, nullHandler);
+    }
 
     /**
      * Executes a HTTP POST and returns a TypedInputStream, The TypedInputStream
@@ -734,17 +850,7 @@ public class HttpOp {
         return execHttpPostFormStream(url, params, acceptHeader, null, null, null);
     }
 
-    /**
-     * Executes a HTTP POST.
-     * 
-     * @param url
-     *            URL
-     * @param params
-     *            Parameters to POST
-     */
-    public static void execHttpPostForm(String url, Params params) {
-        execHttpPostForm(url, params, null, nullHandler);
-    }
+    
 
     // @formatter:off
 //    /**
@@ -1070,10 +1176,17 @@ public class HttpOp {
     }
 
     // ---- Perform the operation!
-    // With logging.
 
     private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler,
-            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+                             HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        // Prepare authentication, if any.
+        httpClient = ensureClient(httpClient, authenticator);
+        httpContext = ensureContext(httpContext);
+        applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
+        exec(url, request, acceptHeader, handler, httpClient, httpContext); 
+    }
+    
+    private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         try {
             if (handler == null)
                 // This cleans up.
@@ -1090,10 +1203,6 @@ public class HttpOp {
             // User-Agent
             applyUserAgent(request);
 
-            // Prepare and execute
-            httpClient = ensureClient(httpClient, authenticator);
-            httpContext = ensureContext(httpContext);
-            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
             HttpResponse response = httpClient.execute(request, httpContext);
 
             // Response

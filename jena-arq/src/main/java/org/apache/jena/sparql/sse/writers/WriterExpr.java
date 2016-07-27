@@ -29,83 +29,69 @@ import org.apache.jena.sparql.sse.Tags ;
 
 public class WriterExpr
 {
-    
-    public static String asString(Expr expr)
-    {
+    public static String asString(Expr expr) {
         IndentedLineBuffer b = new IndentedLineBuffer() ;
-        output(b, expr, null) ;
+        output(b, expr, new SerializationContext()) ;
         return b.asString() ;
     }
     
-    public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
-    {
+    public static void output(IndentedWriter out, ExprList exprs, SerializationContext sCxt) {
         output(out, exprs, true, true, sCxt) ;
     }
-    
-    public static void output(IndentedWriter out, ExprList exprs, boolean withTag, boolean unlist, SerializationContext sCxt)
-    {
-        if ( exprs.size() == 0 )
-        {
+
+    public static void output(IndentedWriter out, ExprList exprs, boolean withTag, boolean unlist, SerializationContext sCxt) {
+        if ( exprs.size() == 0 ) {
             out.print("()") ;
             return ;
         }
-        
-        if ( exprs.size() == 1 && unlist )
-        {
+
+        if ( exprs.size() == 1 && unlist ) {
             output(out, exprs.get(0), sCxt) ;
             return ;
         }
-        
+
         out.print("(") ;
-        if ( withTag )
-        {
+        if ( withTag ) {
             out.print(Tags.tagExprList) ;
             out.print(" ") ;
         }
-        
-        for ( int i = 0 ; i < exprs.size() ;  i++ )
-        {
-            if ( i != 0 ) out.print(" ") ;
+
+        for ( int i = 0 ; i < exprs.size() ; i++ ) {
+            if ( i != 0 )
+                out.print(" ") ;
             output(out, exprs.get(i), sCxt) ;
         }
         out.print(")") ;
+        out.flush() ;
     }
-    
-    private static void outputTail(IndentedWriter out, ExprList exprs, SerializationContext sCxt)
-    {
-        for ( int i = 0 ; i < exprs.size() ;  i++ )
-        {
+
+    private static void outputTail(IndentedWriter out, ExprList exprs, SerializationContext sCxt) {
+        for ( int i = 0 ; i < exprs.size() ; i++ ) {
             out.print(" ") ;
             output(out, exprs.get(i), sCxt) ;
         }
         out.print(")") ;
     }
-    
-    public static void output(IndentedWriter out, Expr expr, SerializationContext sCxt)
-    {
+
+    public static void output(IndentedWriter out, Expr expr, SerializationContext sCxt) {
         FmtExprPrefixVisitor fmt = new FmtExprPrefixVisitor(out, sCxt) ;
         expr.visit(fmt) ;
+        out.flush() ;
     }
 
     // ----
     static final boolean ONELINE = true ;
-    static class FmtExprPrefixVisitor extends ExprVisitorFunction
-    {
-        IndentedWriter out ;
+    static class FmtExprPrefixVisitor extends ExprVisitorFunction {
+        IndentedWriter       out ;
         SerializationContext context ;
-        
-        public FmtExprPrefixVisitor(IndentedWriter writer, SerializationContext cxt)
-        {
+
+        public FmtExprPrefixVisitor(IndentedWriter writer, SerializationContext cxt) {
             out = writer ;
             context = cxt ;
         }
 
         @Override
-        public void startVisit() {}
-
-        @Override
-        protected void visitExprFunction(ExprFunction func)
-        {
+        protected void visitExprFunction(ExprFunction func) {
             out.print("(") ;
 
             String n = null ;
@@ -119,11 +105,10 @@ public class WriterExpr
             out.print(n) ;
 
             out.incIndent() ;
-            for ( int i = 1 ; ; i++ )
-            {
+            for ( int i = 1 ;; i++ ) {
                 Expr expr = func.getArg(i) ;
                 if ( expr == null )
-                    break ; 
+                    break ;
                 // endLine() ;
                 out.print(' ') ;
                 expr.visit(this) ;
@@ -133,70 +118,58 @@ public class WriterExpr
         }
 
         @Override
-        public void visit(ExprFunctionOp funcOp)
-        {
+        public void visit(ExprFunctionOp funcOp) {
             out.print("(") ;
-            
+
             // How far we are from current indent to current location
             // (beginning of operator name)
             int x = out.getCurrentOffset() ;
             // Indent to "("
             out.incIndent(x) ;
-            
+
             out.print(funcOp.getFunctionName(context)) ;
             out.incIndent() ;
-            
+
             Op op = funcOp.getGraphPattern() ;
             if ( oneLine(op) )
                 out.print(" ") ;
             else
                 out.ensureStartOfLine() ;
             
-            //Ensures we are unit indent under the (operator ...)
-            
-            //Without trappings.
+            // Ensures we are unit indent under the (operator ...)
+            // Without trappings.
             WriterOp.outputNoPrologue(out, funcOp.getGraphPattern(), context) ;
             out.decIndent() ;
             out.decIndent(x) ;
             out.print(")") ;
             return ;
         }
-        
-        private static boolean oneLine(Op op)
-        {
-            if ( OpBGP.isBGP(op) )
-            {
+
+        private static boolean oneLine(Op op) {
+            if ( OpBGP.isBGP(op) ) {
                 BasicPattern bgp = ((OpBGP)op).getPattern() ;
                 if ( bgp.getList().size() <= 1 )
                     return true ;
             }
             return false ;
         }
-                               
-        
+
         @Override
-        public void visit(NodeValue nv)
-        {
+        public void visit(NodeValue nv) {
             out.print(nv.asQuotedString(context)) ;
         }
 
         @Override
-        public void visit(ExprVar nv)
-        {
+        public void visit(ExprVar nv) {
             out.print(nv.toPrefixString()) ;
         }
 
         @Override
-        public void visit(ExprAggregator eAgg)
-        { 
+        public void visit(ExprAggregator eAgg) {
             out.print(eAgg.getAggregator().toPrefixString()) ;
         }
 
-        @Override
-        public void finishVisit() { out.flush() ; }
-
-        private void endLine()
-        {
+        private void endLine() {
             if ( ONELINE )
                 out.print(' ') ;
             else

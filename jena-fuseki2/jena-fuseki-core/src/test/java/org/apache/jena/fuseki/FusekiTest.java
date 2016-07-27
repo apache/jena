@@ -23,10 +23,10 @@ import java.util.Objects ;
 
 import org.apache.http.HttpResponse ;
 import org.apache.http.StatusLine ;
-import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpOptions ;
 import org.apache.http.client.methods.HttpUriRequest ;
-import org.apache.http.impl.client.SystemDefaultHttpClient ;
+import org.apache.http.impl.client.CloseableHttpClient ;
+import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.web.HttpException ;
@@ -62,13 +62,13 @@ public class FusekiTest {
 
     /** Do an HTTP Options. */
     public static String execOptions(String url) {
-        try {
-            // Prepare and execute
-            HttpResponseHandler handler = HttpResponseLib.nullResponse ;
-            HttpClient httpClient = new SystemDefaultHttpClient() ;
+        // Prepare and execute
+        HttpResponseHandler handler = HttpResponseLib.nullResponse ;
+
+        try ( CloseableHttpClient httpClient = HttpClientBuilder.create().build() ) {
             HttpUriRequest request = new HttpOptions(url) ;
             HttpResponse response = httpClient.execute(request, (HttpContext)null);
-            
+
             // Response
             StatusLine statusLine = response.getStatusLine();
             int statusCode = statusLine.getStatusCode();
@@ -82,7 +82,7 @@ public class FusekiTest {
             if (handler != null)
                 handler.handle(url, response);
             return response.getFirstHeader(HttpNames.hAllow).getValue() ;
-        } catch (IOException ex) {
+        } catch (IOException ex) { 
             throw new HttpException(ex);
         }
     }

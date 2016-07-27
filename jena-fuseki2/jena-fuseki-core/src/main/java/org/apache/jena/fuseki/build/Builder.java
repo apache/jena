@@ -45,8 +45,7 @@ public class Builder
     private static Logger log = Fuseki.builderLog ;
     
     /** Build a DataAccessPoint, including DataService at Resource svc */ 
-    public static DataAccessPoint buildDataAccessPoint(Resource svc) {
-        // XXX
+    public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
@@ -57,22 +56,17 @@ public class Builder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = Builder.buildDataService(svc) ;
-        DataAccessPoint dataAccess = new DataAccessPoint(name) ;
-        dataAccess.setDataService(dataService) ;
+        DataService dataService = Builder.buildDataService(svc, dsDescMap) ;
+        DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
     /** Build a DatasetRef starting at Resource svc */
-    private static DataService buildDataService(Resource svc) {
-        //log.debug("Service: " + nodeLabel(svc)) ;
-        // DO REAL WORK
+    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
+        if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-        
-        // Check if it is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
+        Dataset ds = getDataset(datasetDesc, dsDescMap);
+ 
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
         addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
@@ -96,6 +90,21 @@ public class Builder
 //        }
 
         return dataService ;
+    }
+    
+    static Dataset getDataset(Resource datasetDesc, DatasetDescriptionRegistry dsDescMap) {
+    	// check if this one already built
+    	Dataset ds = dsDescMap.get(datasetDesc);
+    	if (ds == null) {
+    	    // Check if the description is in the model.
+            if ( !datasetDesc.hasProperty(RDF.type) )
+                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+            ds = (Dataset)Assembler.general.open(datasetDesc) ;
+    	}
+    	// Some kind of check that it is "the same" dataset.  
+    	// It can be different if two descriptions in different files have the same URI.
+    	dsDescMap.register(datasetDesc, ds);
+    	return ds;
     }
     
     /** Build a DataService starting at Resource svc */

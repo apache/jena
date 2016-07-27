@@ -28,17 +28,14 @@ public class Quad
 {
     // Create QuadNames? GraphNames?
     
+    /** Name of the default for explict use in GRAPH */
+    public static final Node defaultGraphIRI        =  NodeFactory.createURI("urn:x-arq:DefaultGraph") ;
+
     /** Name of the default graph as used by parsers and in quad form of algebra. 
      *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */ 
     public static final Node defaultGraphNodeGenerated     =  NodeFactory.createURI("urn:x-arq:DefaultGraphNode") ;
     
-    // These are convenience constants for other systems to give special
-    // interpretation to these "named" graphs.  
-    
-    /** Name of the default for explict use in GRAPH */
-    public static final Node defaultGraphIRI        =  NodeFactory.createURI("urn:x-arq:DefaultGraph") ;
-
     /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
     public static final Node unionGraph           =  NodeFactory.createURI("urn:x-arq:UnionGraph") ;
 
@@ -95,7 +92,7 @@ public class Quad
         return defaultGraphNodeGenerated.equals(node) ;
     }
     
-    /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
+    /** Default, explicitly named concrete graph */
     public static boolean isDefaultGraphExplicit(Node node)
     {
         return defaultGraphIRI.equals(node) ; 

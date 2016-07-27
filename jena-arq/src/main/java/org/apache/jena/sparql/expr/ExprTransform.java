@@ -29,6 +29,8 @@ public interface ExprTransform
     public Expr transform(ExprFunctionN func, ExprList args) ;
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) ;
     public Expr transform(NodeValue nv) ;
+    //default public Expr transform(ExprNone exprNone) { return exprNone ; }
+    public Expr transform(ExprNone exprNone) ;
     public Expr transform(ExprVar nv) ;
     public Expr transform(ExprAggregator eAgg) ;
 }

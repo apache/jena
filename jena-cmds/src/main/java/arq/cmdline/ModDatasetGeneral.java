@@ -27,6 +27,7 @@ import jena.cmd.CmdGeneral;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
@@ -87,16 +88,30 @@ public class ModDatasetGeneral extends ModDataset
         return dataset ;
     }
         
+    static <X> boolean hasEntries(List<X> list) {
+        if ( list == null )
+            return false ;
+        return ! list.isEmpty() ;
+    }
+    
     protected void addGraphs(Dataset ds)
     {
         try {
-            if ( dataURLs != null ) 
+            if ( hasEntries(dataURLs) ) 
             {
+                if ( ds.supportsTransactions() )
+                    ds.begin(ReadWrite.WRITE) ;
+                
                 for ( String url : dataURLs )
                     RDFDataMgr.read(ds, url) ;
+                
+                if ( ds.supportsTransactions() ) {
+                    ds.commit() ;
+                    ds.end() ;
+                }
             }
             
-            if ( (graphURLs != null) || (namedGraphURLs != null) )
+            if ( hasEntries(graphURLs) ||  hasEntries(namedGraphURLs) )
                 ds = DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, null) ;
         } 
         catch (LabelExistsException ex)

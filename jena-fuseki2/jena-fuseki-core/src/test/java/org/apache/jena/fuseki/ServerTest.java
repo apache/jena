@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki ;
 
+import java.io.IOException ;
+import java.net.ServerSocket ;
 import java.nio.file.Paths ;
+import java.util.Arrays ;
 import java.util.Collection ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -52,8 +55,7 @@ import org.apache.jena.update.UpdateProcessor ;
  */
 public class ServerTest {
     // Abstraction that runs a SPARQL server for tests.
-
-    public static final int     port          = 3535 ;
+    public static final int     port          = choosePort(3535, 3534, 3735, 9035, 9135, 10035) ;
     public static final String  urlRoot       = "http://localhost:" + port + "/" ;
     public static final String  datasetPath   = "/dataset" ;
     public static final String  urlDataset    = "http://localhost:" + port + datasetPath ;
@@ -159,5 +161,21 @@ public class ServerTest {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
+    }
+    
+    // Imperfect probing for a port.
+    // There is a race condition on finding a free port and using it in the tests. 
+    private static int choosePort(int... ports) {
+        for (int port : ports) {
+            try {
+                @SuppressWarnings("resource")
+                ServerSocket s = new ServerSocket(port) ;
+                s.close();
+                return s.getLocalPort() ; // OK to call after close.
+            } catch (IOException ex) { 
+                continue;
+            }
+        }
+        throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }
 }

@@ -31,7 +31,6 @@ import org.apache.jena.sdb.Store ;
 public class ModGraph extends ModBase
 {
     private static ArgDecl argDeclGraphName = new ArgDecl(true, "graph") ;
-    private static ArgDecl argDeclGraphDeafult = new ArgDecl(false, "default") ;
 
     private Graph graph = null ;
     private String graphName = null ;
@@ -51,9 +50,11 @@ public class ModGraph extends ModBase
         graphName = cmdLine.getValue(argDeclGraphName) ;
     }
 
+    public String getGraphName() { return graphName ; }
+    
     public Graph getGraph(Store store)
     { 
-        if ( graphName == null )
+        if ( graphName == null || graphName.equals("default") )
             return SDBFactory.connectDefaultGraph(store) ;
         else
             return SDBFactory.connectNamedGraph(store, graphName) ;
@@ -61,7 +62,7 @@ public class ModGraph extends ModBase
     
     public Model getModel(Store store)
     { 
-        if ( graphName == null )
+        if ( graphName == null || graphName.equals("default") )
             return SDBFactory.connectDefaultModel(store) ;
         else
             return SDBFactory.connectNamedModel(store, graphName) ;
