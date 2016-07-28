@@ -23,7 +23,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
 import org.seaborne.dboe.base.file.Location ;
-import org.apache.jena.system.Txn ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.loader.Loader ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
