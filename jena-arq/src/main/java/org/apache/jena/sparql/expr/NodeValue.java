@@ -1054,7 +1054,9 @@ public abstract class NodeValue extends ExprNode
                 // XSD integer and derived types 
                 if ( XSDinteger.isValidLiteral(lit) )
                 {
-                    String s = node.getLiteralLexicalForm() ;
+                    // .trim() implements the facet of whitespace collapse.
+                    // BigInteger does not accept such whitespace. 
+                    String s = node.getLiteralLexicalForm().trim() ;
                     if ( s.startsWith("+") )
                         // BigInteger does not accept leading "+"
                         s = s.substring(1) ;
