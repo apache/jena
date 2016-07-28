@@ -15,8 +15,9 @@ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
 
 Continuous integration: [TravisCI](https://travis-ci.org/afs/mantis)
 
-Status: currently snashot builds only.
-It depedns on [Apache Jena](https://jena.apache.org/) snapshots.
+Status: currently snapshot builds only.
+
+It depends on [Apache Jena](https://jena.apache.org/) snapshots.
 
 Maven repositories setup:
 
