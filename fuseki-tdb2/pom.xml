@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Fuseki+TDB2 Server Standalone Jar</name>
+  <name>Mantis :: Fuseki+TDB2 Server</name>
   <artifactId>fuseki-tdb2-server</artifactId>
 
   <parent>
