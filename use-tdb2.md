@@ -1,10 +1,22 @@
 TDB2 example:
 
+Set the repositories (see below) and use:
+```
+   <dependency>
+     <groupId>org.seaborne.mantis</groupId>
+     <artifactId>tdb2</artifactId>
+     <version>0.0.0-SNAPSHOT</version>
+   </dependency>
+```
+
+Example code: **`TDB2Factory`**
+
 ```
      public static void main(String[] args) {
         Quad q1 = SSE.parseQuad("(_ <s> <p> 1 )") ; 
-        
+        # In-memory dataset.
         DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
+        # Transactions are required.
         Txn.execWrite(dsg, ()->{
             dsg.add(q1) ;        
         }) ;
@@ -32,4 +44,38 @@ TDB2 example:
             RDFDataMgr.write(System.out, dsg, Lang.TRIG) ;
         }) ;
     }        
+```
+
+Maven repositories setup:
+
+```
+  <repositories>
+    <!-- Apache Snapshot Repository -->
+    <repository>
+      <id>apache-repository-snapshots</id>
+      <url>https://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+    </repository>
+
+    <!-- Sonatype snapshot repository -->
+    <repository>
+      <id>sonatype.public</id>
+      <name>Sonatype Snapshots Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
 ```

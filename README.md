@@ -15,9 +15,9 @@ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
 
 Continuous integration: [TravisCI](https://travis-ci.org/afs/mantis)
 
-[Use of TDB2](use-tdb2.md)
+Notes on using [TDB2 in a Java application](use-tdb2.md).
 
-[Use with Apache Jena Fuseki](use-fuseki.md)
+Notes on useing [TDB2 with Apache Jena Fuseki](use-fuseki-tdb2.md).
 
 Status: currently snapshot builds only.
 
