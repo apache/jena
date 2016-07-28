@@ -55,9 +55,9 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <ver.jena>3.1.0</ver.jena>
+    <ver.jena>3.1.1-SNAPSHOT</ver.jena>
     <ver.tdb>${ver.jena}</ver.tdb>
-    <ver.fuseki>2.4.0</ver.fuseki>
+    <ver.fuseki>2.4.1-SNAPSHOT</ver.fuseki>
     <ver.junit>4.12</ver.junit>
     <ver.slf4j>1.7.21</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
@@ -382,7 +382,6 @@
     <!-- Apache Snapshot Repository -->
     <repository>
       <id>apache-repository-snapshots</id>
-      <!-- <name>Mantis (${project.artifactId})</name> -->
       <url>https://repository.apache.org/snapshots</url>
       <releases>
         <enabled>false</enabled>

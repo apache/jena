@@ -89,10 +89,11 @@ public class TestTDBAssembler extends BaseTest
 
     @Test
     public void createGraphEmbed() {
-        if ( true ) {
-            System.err.println("TestTDBAssembler.createGraphEmbed disabled for Jena 3.1.0") ;
-            return ;
-        }
+        // Jena 3.1.0 needs ... remove for Jena 3.1.1 or later. 
+//        if ( true ) {
+//            System.err.println("TestTDBAssembler.createGraphEmbed disabled for Jena 3.1.0") ;
+//            return ;
+//        }
         String f = dirAssem + "/tdb-graph-embed.ttl" ;
         Object thing = null ;
         try {
