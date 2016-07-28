@@ -18,6 +18,8 @@
 package dev;
 
 public class NOTES_Mantis {
+    // Txn copied in local org.apache.jena.system.Txn
+    
     // B+Trees - use a random access, zero copy encoding like Cap'n Proto, FlatBuffers, SBE (via real-logic) or messagebuffers
     // Definitely from files: flatmessage
     
