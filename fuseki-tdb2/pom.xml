@@ -47,7 +47,6 @@
       <version>${ver.fuseki}</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
@@ -111,11 +110,19 @@
         </executions>
       </plugin>
 
+      <!-- skip these -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <skipSource>true</skipSource>
         </configuration>
       </plugin>
 
