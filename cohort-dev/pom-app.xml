@@ -32,46 +32,13 @@
     <ver.mantis>0.0.0-SNAPSHOT</ver.mantis>
 
     <!-- Same as Mantis -->
-    <ver.jena>3.1.0</ver.jena>
-    <ver.fuseki>2.4.0</ver.fuseki>
-    <ver.junit>4.12</ver.junit>
+    <ver.jena>3.1.1-SNAPSHOT</ver.jena>
     <ver.slf4j>1.7.21</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
   </properties>
 
-
   <dependencies>
 
-    <dependency>
-      <groupId>org.seaborne.mantis</groupId>
-      <artifactId>dboe-base</artifactId>
-      <version>${ver.mantis}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.seaborne.mantis</groupId>
-      <artifactId>dboe-transaction</artifactId>
-      <version>${ver.mantis}</version>
-   </dependency>
-
-   <dependency>
-     <groupId>org.seaborne.mantis</groupId>
-     <artifactId>dboe-index</artifactId>
-     <version>${ver.mantis}</version>
-   </dependency>
-   
-   <dependency>
-     <groupId>org.seaborne.mantis</groupId>
-     <artifactId>dboe-index-test</artifactId>
-     <version>${ver.mantis}</version>
-   </dependency>
-   
-   <dependency>
-     <groupId>org.seaborne.mantis</groupId>
-     <artifactId>dboe-trans-data</artifactId>
-     <version>${ver.mantis}</version>
-   </dependency>
-   
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>tdb2</artifactId>
@@ -97,14 +64,6 @@
      <version>${ver.jena}</version>
    </dependency>
    
-   <dependency>
-     <!-- Development - not in test scope -->
-     <groupId>junit</groupId>
-     <artifactId>junit</artifactId>
-     <scope>compile</scope>
-     <version>${ver.junit}</version>
-   </dependency>
-
   </dependencies>
 
   <build>
