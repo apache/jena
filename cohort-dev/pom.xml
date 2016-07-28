@@ -32,6 +32,7 @@
 
   <dependencies>
 
+    <!-- Everything -->
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-base</artifactId>
@@ -61,7 +62,7 @@
      <artifactId>dboe-trans-data</artifactId>
      <version>0.0.0-SNAPSHOT</version>
    </dependency>
-   
+
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>tdb2</artifactId>
