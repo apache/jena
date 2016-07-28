@@ -21,11 +21,11 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail ;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.dboe.transaction.txn.* ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 

@@ -22,10 +22,10 @@ import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.index.test.IndexTestLib ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.dboe.test.RecordLib ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
-import org.apache.jena.system.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 
 /** Tests of B+Tree and transactions */ 

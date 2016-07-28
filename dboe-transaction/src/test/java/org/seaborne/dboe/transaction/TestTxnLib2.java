@@ -18,12 +18,12 @@
 package org.seaborne.dboe.transaction;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 
 /** Unusual ways to do things.

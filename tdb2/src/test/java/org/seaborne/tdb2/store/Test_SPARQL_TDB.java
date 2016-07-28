@@ -29,7 +29,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.update.* ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.apache.jena.system.Txn ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.TDB2Factory ;
 

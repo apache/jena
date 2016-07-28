@@ -37,7 +37,7 @@ import org.junit.runners.MethodSorters ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 import org.seaborne.dboe.engine.Quack2 ;
-import org.apache.jena.system.Txn ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
 import org.seaborne.tdb2.sys.SystemTDB ;

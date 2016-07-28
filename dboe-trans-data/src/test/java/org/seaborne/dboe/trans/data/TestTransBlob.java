@@ -20,7 +20,6 @@ package org.seaborne.dboe.trans.data;
 import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.system.Txn ;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
@@ -28,6 +27,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelMem ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.dboe.transaction.ThreadTxn ;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;

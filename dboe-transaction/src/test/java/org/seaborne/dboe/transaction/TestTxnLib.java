@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.fail ;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.system.Txn ;
 import org.junit.Test ;
+import org.seaborne.dboe.jenax.Txn ;
 
 public class TestTxnLib extends AbstractTestTxn {
 
