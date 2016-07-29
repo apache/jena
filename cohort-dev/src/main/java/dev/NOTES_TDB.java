@@ -23,6 +23,8 @@ import org.seaborne.tdb2.store.QuadTable ;
 import org.seaborne.tdb2.store.TripleTable ;
 
 public class NOTES_TDB {
+    // arq.query : needs Txn wrapper
+    
     // ** Reaper.
     // ** Or time-based, commit keeping.  benefit!
     // Autocommit (if we must!)

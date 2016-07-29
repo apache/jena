@@ -1,3 +1,9 @@
+*TDB2 is not compatible with Apache Jena TDB (TDB1).*
+
+
+
+
+
 TDB2 example:
 
 Set the repositories (see below) and use:

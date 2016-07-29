@@ -9,6 +9,9 @@ Mantis is a set of database-related components. It includes:
 * Query algebra evaluation library
 * Abstraction of basic file operations
 
+TDB2 is a reworking for TDB that provides scalable transactions as well
+as refining the machinary for reliability.
+
 License: Apache License 
 
 See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
@@ -17,7 +20,7 @@ Continuous integration: [TravisCI](https://travis-ci.org/afs/mantis)
 
 Notes on using [TDB2 in a Java application](use-tdb2.md).
 
-Notes on useing [TDB2 with Apache Jena Fuseki](use-fuseki-tdb2.md).
+Notes on using [TDB2 with Apache Jena Fuseki](use-fuseki-tdb2.md).
 
 Status: currently snapshot builds only.
 
