@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package dev;
+package app;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
@@ -40,6 +40,8 @@ public class App {
 
     public static void main(String[] args) {
         Quad q1 = SSE.parseQuad("(_ <s> <p> 1 )") ; 
+        System.out.println() ;
+        System.out.println("-----------") ;
         
         DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
         Txn.execWrite(dsg, ()->{
@@ -69,6 +71,7 @@ public class App {
             RDFDataMgr.write(System.out, dsg, Lang.TRIG) ;
         }) ;
         
-        System.out.println("DONE") ;
+        System.out.println("-----------") ;
+        System.out.println() ;
     }
 }

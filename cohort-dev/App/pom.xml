@@ -130,7 +130,7 @@
             <!-- automatically creates the classpath using all project dependencies,
                  also adding the project build directory -->
             <classpath/>
-            <argument>dev.App</argument>
+            <argument>app.App</argument>
           </arguments>
         </configuration>
       </plugin>

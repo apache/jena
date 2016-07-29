@@ -8,6 +8,11 @@
 hs_err_pid*
 target/
 tmp/
+# Gradle
+**/build/
+**/buildSrc/build
+.gradle
+
 
 # Eclipse
 .classpath
