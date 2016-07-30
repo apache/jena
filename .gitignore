@@ -22,7 +22,7 @@ buildNumber.properties
 .mvn/timing.properties
 
 ### Gradle ###
-.gradle/
+**/.gradle/
 build/
 # Ignore Gradle GUI config
 gradle-app.setting
