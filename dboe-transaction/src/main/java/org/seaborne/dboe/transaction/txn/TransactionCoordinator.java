@@ -504,33 +504,40 @@ public class TransactionCoordinator {
         return cg ;
     }
 
+    /** Control of whether a transaction promotion can see any commits that
+     *  happened between thistrasnaction startign and it promoting.
+     *  A form of "ReadCommitted".   
+     */
+    private static boolean promoteReadCommitted = false ; 
+    
     /** Attempt to promote a tranasaction from READ to WRITE.
      * No-op for a transaction already a writer.
      * Throws {@link TransactionException} if the promotion
      * can not be done.
-     * Current policy is to not support promotion.
      */
-    
-     // Later ...
-//    * Current policy if a READ transaction can be promoted if intervening
-//    * writer has started or an existing one committed.  
-    
     /*package*/ boolean promoteTxn(Transaction transaction) {
         if ( transaction.getMode() == WRITE )
             return true ;
         // We're a reader. Try to be a writer.
         synchronized(lock) {
-            // Is there a writer active?
-            // Was there one since we started?
-            long dataEpoch = transaction.getDataEpoch() ;
-            long currentEpoch = writerEpoch.get() ;  // Advanced as a writer starts 
-            if ( dataEpoch != currentEpoch )
-                return false ;
-            // Should not block - we checked the read/write epochs
-            // and they said "no writer" all inside 'lock' 
-            boolean b = acquireWriterLock(false) ;
-            if ( !b )
-                throw new TransactionException("Promote: Inconistent: Failed to get the writer lock");
+            // Get the writer lock ...
+            if ( promoteReadCommitted ) {
+                // Get the writer lock - don't check epochs - wait for any writer to finish.
+                acquireWriterLock(true) ;
+            } else {
+                // Has there been an writer active since the transaction started?
+                long dataEpoch = transaction.getDataEpoch() ;   // Our epoch.
+                long currentEpoch = writerEpoch.get() ;         // Advances as a writer starts
+
+                if ( dataEpoch != currentEpoch )
+                    return false ;
+                // Should not block if dataEpoch == currentEpoch.
+                // We ca inside "synchronized(lock)" so there are no writers.
+                boolean b = acquireWriterLock(false) ;
+                if ( !b )
+                    throw new TransactionException("Promote: Inconistent: Failed to get the writer lock");
+            }
+            // ... we have now got the writer lock ...
             try { transaction.promoteComponents() ; }
             catch (TransactionException ex) {
                 transaction.abort();
@@ -541,10 +548,8 @@ public class TransactionCoordinator {
         return true ;
     }
 
-    // Called by Transaction once at the end of first
-    // commit()/abort() or end(), if no commit()/abort()
-
-    // Called by Transaction after the action of commit()/abort() or end() 
+    // Called once by Transaction after the action of commit()/abort() or end()
+    /** Signal that the transaction has finished. */  
     /*package*/ void completed(Transaction transaction) {
         finishActiveTransaction(transaction);
         journal.reset() ;
