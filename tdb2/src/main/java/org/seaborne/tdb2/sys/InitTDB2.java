@@ -21,7 +21,7 @@ package org.seaborne.tdb2.sys;
 import org.apache.jena.system.JenaSubsystemLifecycle ;
 import org.seaborne.tdb2.TDB2 ;
 
-public class InitTDB implements JenaSubsystemLifecycle {
+public class InitTDB2 implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
