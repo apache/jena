@@ -192,14 +192,6 @@ public class LogCtl {
           , "log4j.additivity.org.apache.jena.riot=false"
           , "log4j.logger.org.apache.jena.riot=INFO, jena.plainlevel"
          ) ;
-    // ---- java.util.logging - because that's always present.
-    static String defaultProperties = StrUtils.strjoinNL
-        ("handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStdout"
-        ,"org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO"
-        ,"org.apache.jena.atlas.logging.java.ConsoleHandlerStdout.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
-        //,"java.util.logging.ConsoleHandler.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
-        ) ;
-
     /**
      * Set logging
      * <ol>
@@ -255,12 +247,21 @@ public class LogCtl {
         System.setProperty("log4j.configuration", "set") ;
     }
 
+    // ---- java.util.logging - because that's always present.
+    // Need:  org.slf4j:slf4j-jdk14
+    private static String defaultProperties = StrUtils.strjoinNL
+        ("handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStream"
+        // These are the defaults.
+        //,"org.apache.atlas.jena.logging.java.ConsoleHandlerStream.level=INFO"
+        //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
+        //,"org.apache.jena.atlas.logging.java.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
+        ) ;
     private static String JUL_LOGGING = "logging.properties" ;
     
     public static void setJavaLogging() {
         Path p = Paths.get(JUL_LOGGING) ;
         if ( Files.exists(p) )
-            setJavaLogging("logging.properties") ;
+            setJavaLogging(JUL_LOGGING) ;
         else
             setJavaLoggingDft();
     }
