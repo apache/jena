@@ -21,7 +21,6 @@ import java.util.Objects ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
-import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
 
 /**
  * Framework for implementing a Transactional.
@@ -169,6 +168,12 @@ public class TransactionalBase implements TransactionalSystem {
     
     @Override
     final
+    public TransactionInfo getTransactionInfo() {
+        return getThreadTransaction() ;
+    }
+    
+    @Override
+    final
     public Transaction getThreadTransaction() {
         Transaction txn = theTxn.get() ;
         // Touched the thread local so it is defined now.
@@ -176,7 +181,7 @@ public class TransactionalBase implements TransactionalSystem {
 //            theTxn.remove() ;
         return txn ;
     }
-    
+
     /** Get the transaction, checking there is one */  
     private Transaction getValidTransaction() {
         Transaction txn = theTxn.get() ;

@@ -68,8 +68,14 @@ public interface TransactionalSystem extends Transactional {
     @Override
     public default boolean isInTransaction() { return getState() != null ; }  
     
-    /** Return the tarsnaction objhect for this thread.  Low-level use only
-     *  Do not drive the transaction lifecycle by calling methods on this object. 
+    /** Return an information view of the transaction for this thread, if any.
+     *  Returns null when there is no active transaction for this tread. 
+     */
+    public TransactionInfo getTransactionInfo() ;
+    
+    /** Return the transaction object for this thread.  
+     *  Low-level use only.
+     *  To get information about the current transaction, call {@link #getTransactionInfo}.
      */
     public Transaction getThreadTransaction() ;
 }

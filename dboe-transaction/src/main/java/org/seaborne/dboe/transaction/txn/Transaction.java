@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
+import static org.seaborne.dboe.transaction.txn.TxnState.* ;
 
 import java.util.List ;
 import java.util.Objects ;
@@ -33,7 +33,7 @@ import org.apache.jena.query.ReadWrite ;
  * @see TransactionalComponent
  */
 final
-public class Transaction {
+public class Transaction implements TransactionInfo {
     // Using an AtomicReference<TxnState> requires that 
     // TransactionalComponentLifecycle.internalComplete
     // frees the thread local for the threadTxn, otherwise memory
@@ -51,8 +51,6 @@ public class Transaction {
     //private TxnState state ;
     private final long dataEpoch ;
     private ReadWrite mode ;
-    
-    public enum TxnState { INACTIVE, ACTIVE, DETACHED, PREPARE, COMMIT, COMMITTED, ABORTED, END_COMMITTED, END_ABORTED }
     
     public Transaction(TransactionCoordinator txnMgr, TxnId txnId, ReadWrite readWrite, long dataEpoch, List<SysTrans> components) {
         Objects.requireNonNull(txnMgr) ;
@@ -74,6 +72,7 @@ public class Transaction {
         state.set(newState) ;
     }
 
+    @Override
     public TxnState getState() {
         return state.get() ;
     }
@@ -84,6 +83,7 @@ public class Transaction {
      * over time as the data changes. Two readers can have the same
      * serialization point - they are working with the same view of the data.
      */
+    @Override
     public long getDataEpoch() {
         return dataEpoch ;
     }
@@ -206,32 +206,41 @@ public class Transaction {
             throw new TransactionException("Not a write transaction") ;
     }
 
+    @Override
     public boolean hasStarted()   { 
         TxnState x = getState() ;
         return x == INACTIVE ;
     }
     
+    @Override
     public boolean hasFinished() { 
         TxnState x = getState() ;
         return x == COMMITTED || x == ABORTED || x == END_COMMITTED || x == END_ABORTED ;
     }
 
+    @Override
     public boolean hasFinalised() { 
         TxnState x = getState() ;
         return x == END_COMMITTED || x == END_ABORTED ;
     }
 
+    @Override
     public TxnId getTxnId()     { return txnId ; } 
+
+    @Override
     public ReadWrite getMode()  { return mode ; }
     
     /** Is this a READ transaction?
      * Convenience operation equivalent to {@code (getMode() == READ)}
      */
-    public boolean isRead()  { return mode == ReadWrite.READ ; }
+    @Override
+    public boolean isReadTxn()  { return mode == ReadWrite.READ ; }
+
     /** Is this a WRITE transaction?
      * Convenience operation equivalent to {@code (getMode() == WRITE)}
      */
-    public boolean isWrite()  { return mode ==ReadWrite.WRITE ; }
+    @Override
+    public boolean isWriteTxn()  { return mode == ReadWrite.WRITE ; }
     
     // hashCode/equality
     // These must be object equality.  No two transactions objects are .equals unless they are ==   
@@ -261,13 +270,9 @@ public class Transaction {
             throw new TransactionException("Transaction is in state "+s+": expected state "+expected1+", "+expected2+" or "+expected3) ;
     }
     
+    @Override
     public boolean isActiveTxn() {
         return getState() != INACTIVE ;
     }
-    
-    public boolean isWriteTxn() {
-        return mode == ReadWrite.WRITE ;
-    }
-
 }
 

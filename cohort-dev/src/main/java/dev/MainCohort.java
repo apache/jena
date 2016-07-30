@@ -41,7 +41,6 @@ public class MainCohort {
         if ( ! b )
             System.out.println("Did not promote");
         else {
-            txn.promote() ;
             Quad q = SSE.parseQuad("(_ <s> <p> <o> )") ; 
             dsg.add(q) ;
             dsg.commit() ;

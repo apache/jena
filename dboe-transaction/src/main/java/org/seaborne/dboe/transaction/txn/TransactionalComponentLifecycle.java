@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.Transaction.TxnState.* ;
+import static org.seaborne.dboe.transaction.txn.TxnState.* ;
 
 import java.nio.ByteBuffer ;
 import java.util.Objects ;
@@ -25,7 +25,6 @@ import java.util.Objects ;
 import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.seaborne.dboe.transaction.txn.Transaction.TxnState ;
 
 /** Base implementation of the component interface for {@link TransactionalComponent}.
  */
