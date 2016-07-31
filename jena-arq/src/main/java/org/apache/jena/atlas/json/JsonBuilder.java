@@ -45,7 +45,7 @@ public class JsonBuilder {
     // The depth of this stack is the object depth. key: { key: ... } 
     private Deque<String> keys  = new ArrayDeque<>() ;
 
-    static JsonBuilder create() { return new JsonBuilder() ; }
+    public static JsonBuilder create() { return new JsonBuilder() ; }
     
     public JsonBuilder() {
 
@@ -81,7 +81,7 @@ public class JsonBuilder {
 
     public JsonBuilder finishObject(String finishMarker) {
         if ( stack.isEmpty() )
-            throw new JsonException("Alignment error : already built outer most object or array") ; 
+            throw new JsonException("Alignment error : already built outer-most object or array") ; 
         State state = stack.pop() ;
         if ( state != State.OBJECT )
             throw new JsonException("JSON build error : not in an object") ;
@@ -103,7 +103,7 @@ public class JsonBuilder {
 
     public JsonBuilder finishArray() {
         if ( stack.isEmpty() )
-            throw new JsonException("Alignment error : already built outer most object or array") ; 
+            throw new JsonException("Alignment error : already built outer-most object or array") ; 
 
         State state = stack.pop() ;
         if ( state != State.ARRAY )

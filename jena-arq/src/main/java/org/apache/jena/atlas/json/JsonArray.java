@@ -52,151 +52,129 @@ public class JsonArray extends JsonValue implements List<JsonValue>
     { visitor.visit(this) ; }
 
     @Override
-    public boolean add(JsonValue e)
-    {
+    public boolean add(JsonValue e) {
         return array.add(e) ;
     }
 
-    public boolean add(String e)
-    {
+    public boolean add(String e) {
         return array.add(new JsonString(e)) ;
     }
 
-    public boolean add(long val)
-    {
+    public boolean add(long val) {
         return array.add(JsonNumber.value(val)) ;
     }
 
-    public boolean add(boolean b)
-    {
+    public boolean add(boolean b) {
         return array.add(new JsonBoolean(b)) ;
     }
 
     @Override
-    public void add(int index, JsonValue element)
-    { array.add(index, element) ; } 
+    public void add(int index, JsonValue element) {
+        array.add(index, element) ;
+    }
 
     @Override
-    public boolean addAll(Collection< ? extends JsonValue> c)
-    {
+    public boolean addAll(Collection<? extends JsonValue> c) {
         return array.addAll(c) ;
     }
 
     @Override
-    public boolean addAll(int index, Collection< ? extends JsonValue> c)
-    {
+    public boolean addAll(int index, Collection<? extends JsonValue> c) {
         return array.addAll(index, c) ;
     }
 
     @Override
-    public void clear()
-    { array.clear() ; }
+    public void clear() {
+        array.clear() ;
+    }
 
     @Override
-    public boolean contains(Object object)
-    {
+    public boolean contains(Object object) {
         return array.contains(object) ;
     }
 
     @Override
-    public boolean containsAll(Collection< ? > c)
-    {
+    public boolean containsAll(Collection<? > c) {
         return array.containsAll(c) ;
     }
 
     @Override
-    public JsonValue get(int index)
-    {
+    public JsonValue get(int index) {
         return array.get(index) ;
     }
 
     @Override
-    public int indexOf(Object o)
-    {
+    public int indexOf(Object o) {
         return array.indexOf(o) ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return array.isEmpty() ;
     }
 
     @Override
-    public Iterator<JsonValue> iterator()
-    {
+    public Iterator<JsonValue> iterator() {
         return array.iterator() ;
     }
 
     @Override
-    public int lastIndexOf(Object o)
-    {
+    public int lastIndexOf(Object o) {
         return array.lastIndexOf(o) ;
     }
 
     @Override
-    public ListIterator<JsonValue> listIterator()
-    {
+    public ListIterator<JsonValue> listIterator() {
         return array.listIterator() ;
     }
 
     @Override
-    public ListIterator<JsonValue> listIterator(int index)
-    {
+    public ListIterator<JsonValue> listIterator(int index) {
         return array.listIterator(index) ;
     }
 
     @Override
-    public boolean remove(Object o)
-    {
+    public boolean remove(Object o) {
         return array.remove(o) ;
     }
 
     @Override
-    public JsonValue remove(int index)
-    {
+    public JsonValue remove(int index) {
         return array.remove(index) ;
     }
 
     @Override
-    public boolean removeAll(Collection< ? > c)
-    {
+    public boolean removeAll(Collection<? > c) {
         return array.removeAll(c) ;
     }
 
     @Override
-    public boolean retainAll(Collection< ? > c)
-    {
-        return  array.retainAll(c) ;
+    public boolean retainAll(Collection<? > c) {
+        return array.retainAll(c) ;
     }
 
     @Override
-    public JsonValue set(int index, JsonValue element)
-    {
+    public JsonValue set(int index, JsonValue element) {
         return array.set(index, element) ;
     }
 
     @Override
-    public int size()
-    {
+    public int size() {
         return array.size() ;
     }
 
     @Override
-    public List<JsonValue> subList(int fromIndex, int toIndex)
-    {
-        return array.subList(fromIndex, toIndex) ; 
+    public List<JsonValue> subList(int fromIndex, int toIndex) {
+        return array.subList(fromIndex, toIndex) ;
     }
 
     @Override
-    public Object[] toArray()
-    {
+    public Object[] toArray() {
         return array.toArray() ;
     }
 
     @Override
-    public <T> T[] toArray(T[] a)
-    {
+    public <T> T[] toArray(T[] a) {
         return array.toArray(a) ;
     }
 }
