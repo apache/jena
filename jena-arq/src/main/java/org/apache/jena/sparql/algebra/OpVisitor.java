@@ -57,7 +57,9 @@ public interface OpVisitor
     public void visit(OpDisjunction opDisjunction) ;
 
     public default void visit(OpExt opExt) {
-        opExt.effectiveOp().visit(this);
+        Op effective = opExt.effectiveOp();
+        if (effective != null)
+            effective.visit(this);
     }
     
     // OpModifier
