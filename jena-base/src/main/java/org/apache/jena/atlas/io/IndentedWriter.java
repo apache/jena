@@ -56,6 +56,8 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     private char padChar = ' ' ;
     private String endOfLineMarker = null ;     // Null means none.
     private String padString = null ;
+    private String linePrefix = null ;
+
     
     protected boolean flatMode = false ;
     private boolean flushOnNewline = false ;
@@ -309,6 +311,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public void setPadChar(char ch)         { this.padChar  = ch ; }
     public String getPadString()            { return padString ; }
     public void setPadString(String str)    { this.padString = str ; unitIndent = str.length(); }
+    /** */
+    public String getLinePrefix()           { return linePrefix  ; }
+    public void setLinePrefix(String str)   { this.linePrefix = str ; }
 
     public void incIndent()      { incIndent(unitIndent) ; }
     public void incIndent(int x)
@@ -326,6 +331,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public int  getUnitIndent()         { return unitIndent ; }
     public boolean atLineStart()        { return startingNewLine ; }
     
+    // A line is prefix?number?content.
     private void lineStart()
     {
         if ( flatMode )
@@ -338,9 +344,12 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         }
         
         // Need to do its just before we append anything, not after a NL,
-        // so that a final blank does not cause a line number  
-        if ( startingNewLine )
+        // so that a final blank does not cause a prefix or line number.  
+        if ( startingNewLine ) {
+            if ( linePrefix != null )
+                write$(linePrefix) ;
             insertLineNumber() ;
+        }
         padInternal() ;
         startingNewLine = false ;
     }
