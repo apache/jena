@@ -60,9 +60,10 @@ public class TestIndentedWriter {
     public void write04() {
         try (IndentedLineBuffer b = new IndentedLineBuffer()) {
             b.setLineNumbers(true);
+            b.setNumberWidth(5);
             b.println("ABCD") ;
             b.print("XYZ") ;
-            assertEquals("  1 ABCD\n  2 XYZ", b.asString()) ;
+            assertEquals("    1 ABCD\n    2 XYZ", b.asString()) ;
         }
     }
     
