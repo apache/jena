@@ -35,6 +35,10 @@ import org.eclipse.jetty.server.Request ;
 import org.eclipse.jetty.server.Response ;
 import org.eclipse.jetty.server.handler.ErrorHandler ;
 
+/** The usual Fuseki error handler.
+ *  Outputs a plain text message.
+ */
+
 public class FusekiErrorHandler extends ErrorHandler
 {
     public FusekiErrorHandler() {}
@@ -58,7 +62,7 @@ public class FusekiErrorHandler extends ErrorHandler
             handleErrorPage(request, writer, response.getStatus(), reason) ;
 
             if ( ! Fuseki.VERSION.equalsIgnoreCase("development") &&
-                ! Fuseki.VERSION.equals("${project.version}") )
+                 ! Fuseki.VERSION.equals("${project.version}") )
             {
                 writer.write("\n") ;
                 writer.write("\n") ;
