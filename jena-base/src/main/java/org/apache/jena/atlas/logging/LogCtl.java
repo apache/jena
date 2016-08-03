@@ -269,6 +269,7 @@ public class LogCtl {
     public static void setJavaLogging(String file) {
         try {
             InputStream details = new FileInputStream(file) ;
+            details = new BufferedInputStream(details) ;
             java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
         } catch (Exception ex) {
             throw new AtlasException(ex) ;
