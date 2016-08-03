@@ -67,7 +67,7 @@ public class FusekiLogging
             // log4j will initialize in the usual way. This includes a value of
             // "set", which indicates that logging was set before by some other Jena code.
             if ( x.equals("set") )
-                Fuseki.serverLog.warn("Fuseki logging: Unexpected: Log4j was setup by someother part of Jena") ;
+                Fuseki.serverLog.warn("Fuseki logging: Unexpected: Log4j was setup by some other part of Jena") ;
             return ;
         }
         logLogging("Fuseki logging - setup") ;
