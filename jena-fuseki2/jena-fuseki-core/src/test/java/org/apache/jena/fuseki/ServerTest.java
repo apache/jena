@@ -139,7 +139,6 @@ public class ServerTest {
         config.contextPath = "/" ;
         config.loopback = listenLocal ;
         config.jettyConfigFile = null ;
-        config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
         config.verboseLogging = false ;
         return config ;
