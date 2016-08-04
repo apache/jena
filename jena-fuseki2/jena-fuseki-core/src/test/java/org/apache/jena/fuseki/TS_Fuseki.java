@@ -56,14 +56,14 @@ public class TS_Fuseki extends ServerTest
         FileOps.ensureDir(FusekiTestHome);
         FileOps.clearDirectory(FusekiTestHome);
         System.setProperty("FUSEKI_HOME", FusekiTestHome) ;
-        FusekiEnv.setEnvironment() ;
         FusekiLogging.setLogging();
+        FusekiEnv.setEnvironment() ;
         
         org.apache.log4j.Level WARN1 = org.apache.log4j.Level.WARN ; 
         java.util.logging.Level WARN2 = java.util.logging.Level.WARNING ;
 
         // Occasionally log4j.properties gets out of step.
-        LogCtl.logLevel("org.apache.shiro",    WARN1, WARN2);
+        LogCtl.logLevel("org.apache.shiro",     WARN1, WARN2);
         LogCtl.logLevel("org.eclipse.jetty",    WARN1, WARN2);
         
         LogCtl.logLevel(Fuseki.serverLogName,   WARN1, WARN2);

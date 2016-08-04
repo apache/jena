@@ -69,7 +69,7 @@ public class FusekiEnv {
     public enum INIT {
         // Default values of FUSEKI_HOME, and FUSEKI_BASE. 
         WAR         (null, "/etc/fuseki") , 
-        EMBEDDED    (".", "run") ,
+        EMBEDDED    (null, null) ,
         STANDALONE  (".", "run") ,
         TEST        ("src/main/webapp", "target/run") ,
         UNSET       (null, null) ;

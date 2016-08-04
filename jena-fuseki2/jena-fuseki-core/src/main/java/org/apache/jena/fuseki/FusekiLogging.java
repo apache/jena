@@ -30,9 +30,9 @@ import org.apache.log4j.helpers.Loader ;
 
 public class FusekiLogging
 {
-    // This class must not have static constants, or otherwise not use "Fuseki.*"
+    // This class must not have static constants, or otherwise not "Fuseki.*"
     // or any class else where that might kick off logging.  Otherwise, the 
-    // setLogging is poiintless (it's already set).
+    // setLogging is pointless (it's already set).
     // PlanB - reinitialize logging regardless on first call. 
     
     // Set logging.
@@ -51,8 +51,23 @@ public class FusekiLogging
     
     private static final boolean LogLogging     = false ;
     private static boolean loggingInitialized   = false ;
+    private static boolean allowLoggingReset    = true ;
     
+    /**
+     * Switch off logging setting. 
+     * Used by the embedded server so that the application's
+     * logging setup is not overwritten.
+     */
+    public static synchronized void allowLoggingReset(boolean value) {
+        allowLoggingReset = value ;
+    }
+    
+    /** Set up logging.
+     * This is mainly for the standalone server.
+     */
     public static synchronized void setLogging() {
+        if ( ! allowLoggingReset )
+            return ;
         if ( loggingInitialized )
             return ;
         loggingInitialized = true ;
