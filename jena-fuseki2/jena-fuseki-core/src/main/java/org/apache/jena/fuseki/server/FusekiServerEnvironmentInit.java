@@ -33,9 +33,9 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        FusekiLogging.setLogging();
         JenaSystem.init() ;
         FusekiEnv.setEnvironment() ;
-        FusekiLogging.setLogging() ;
     }
 
     @Override
