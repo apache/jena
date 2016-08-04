@@ -34,12 +34,14 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         System.out.flush() ;
         if ( string == null )
             string = "DataAccessPointRegistry" ;
-        System.err.println("== "+string) ;
-        DataAccessPointRegistry.get().keys().iterator().forEachRemaining((k) -> {
-            System.err.print("  (key="+k) ;
-            DataAccessPoint ref = DataAccessPointRegistry.get().get(k) ;
-            System.err.print(", ref="+ref.getName()) ;
-            System.err.println(")") ; 
+        System.out.println("== "+string) ;
+        DataAccessPointRegistry.get().forEach((k,ref)->{
+            System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName()) ;
+            ref.getDataService().getOperations().forEach((opName)->{
+                ref.getDataService().getOperation(opName).forEach(ep->{
+                    System.out.printf("     %s : %s\n", opName, ep.getEndpoint()) ;
+                });
+            });
         }) ;
     }
     

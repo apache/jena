@@ -34,10 +34,7 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.web.HttpNames ;
 
 /** This servlet can be attached to a dataset location
@@ -154,8 +151,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected void executeAction(HttpAction action) {
         
-        //SPARQL Update direct
-        //SPARQL Query POST
+        // DEBUG: DataAccessPointRegistry.print("UberServlet ");
         
         long id = action.id ;
         HttpServletRequest request = action.request ;
@@ -245,7 +241,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
             // Check enabled.
             if ( isGET || isHEAD ) {
-                if ( allowREST_R(action) )
+                if ( allowREST_R(action) || allowQuadsR(action) )
                     restQuads_R.executeLifecycle(action) ;
                 else
                     ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
@@ -279,6 +275,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
                 if ( serviceDispatch(action, OperationName.GSP_RW, restQuads_RW) ) return ;
             }
+            if ( serviceDispatch(action, OperationName.Quads_RW, restQuads_RW) ) return ;
+            if ( serviceDispatch(action, OperationName.Quads_R, restQuads_R) ) return ;
         }
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
