@@ -21,6 +21,7 @@ package org.apache.jena.atlas.logging.java;
 import java.text.MessageFormat ;
 import java.util.Date ;
 import java.util.logging.Formatter ;
+import java.util.logging.Level ;
 import java.util.logging.LogManager ;
 import java.util.logging.LogRecord ;
 
@@ -29,6 +30,8 @@ import java.util.logging.LogRecord ;
  * Set a different output pattern with {@code .format}.
  * <p>
  * The default format is {@code "%5$tT %3$-5s %2$-20s :: %6$s\n"}.
+ * <p>
+ * Examples:
  * <ul>
  * <li>"%5$tT.%5$tL %3$-5s %2$-20s :: %6$s\n" for milliseconds.
  * <li>"%tF %5$tT.%5$tL %3$-5s %2$-20s :: %6$s\n" for date
@@ -39,7 +42,7 @@ import java.util.logging.LogRecord ;
  *     String.format(format, 
  *                   loggerName,                        // 1
  *                   loggerNameShort,                   // 2
- *                   record.getLevel(),                 // 3
+ *                   levelOutputName,                   // 3
  *                   Thread.currentThread().getName(),  // 4
  *                   new Date(record.getMillis()),      // 5
  *                   formatted$) ;                      // 6
@@ -78,12 +81,44 @@ public class TextFormatter extends Formatter
         if ( record.getParameters() != null )
             formatted$ = MessageFormat.format(formatted$, record.getParameters()) ;
         
+        Level level = record.getLevel() ;
+        String levelOutputName = levelOutputName(level) ;
+        
         return String.format(format, 
                              loggerName,                        // 1
                              loggerNameShort,                   // 2
-                             record.getLevel(),                 // 3
+                             levelOutputName,                   // 3
                              Thread.currentThread().getName(),  // 4
                              new Date(record.getMillis()),      // 5
                              formatted$) ;                      // 6
+    }
+
+    /** By default use slf4j name.
+     *  When used with slf4j, this reconstructs the slf4j name.
+     */
+    
+    protected String levelOutputName(Level level) {
+        //    FINEST  -> TRACE
+        //    FINER   -> DEBUG
+        //    FINE    -> DEBUG
+        //    CONFIG  -> INFO
+        //    INFO    -> INFO
+        //    WARNING -> WARN
+        //    SEVERE  -> ERROR
+        if ( Level.WARNING.equals(level) )
+            return "WARN" ;
+        if ( Level.SEVERE.equals(level) )
+            return "ERROR" ;
+        if ( Level.INFO.equals(level) )
+            return "INFO" ;
+        if ( Level.CONFIG.equals(level) )   // Keep name.
+            return "CONFIG" ;
+        if ( Level.FINE.equals(level) )
+            return "DEBUG" ;
+        if ( Level.FINER.equals(level) )
+            return "DEBUG" ;
+        if ( Level.FINEST.equals(level) )
+            return "TRACE" ;
+        return level.getName() ;
     }
 }
