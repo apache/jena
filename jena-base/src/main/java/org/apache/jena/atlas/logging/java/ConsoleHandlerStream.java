@@ -57,6 +57,7 @@ public class ConsoleHandlerStream extends ConsoleHandler {
                 // Ignore and try to carry on.
             }
         }
-        setOutputStream(outputStream);
+        // Temporary fix : setOutputStream closes the old setting which is backed by System.err.  
+        //setOutputStream(outputStream);
     }
 }
