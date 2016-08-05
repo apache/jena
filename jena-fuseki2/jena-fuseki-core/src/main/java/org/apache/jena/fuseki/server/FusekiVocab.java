@@ -35,11 +35,13 @@ public class FusekiVocab
     public static final Property pServices = property("services") ;
     public static final Property pServiceName = property("name") ;
     
-    public static final Property pServiceQueryEP = property("serviceQuery") ;
-    public static final Property pServiceUpdateEP = property("serviceUpdate") ;
-    public static final Property pServiceUploadEP = property("serviceUpload") ;
+    public static final Property pServiceQueryEP               = property("serviceQuery") ;
+    public static final Property pServiceUpdateEP              = property("serviceUpdate") ;
+    public static final Property pServiceUploadEP              = property("serviceUpload") ;
     public static final Property pServiceReadWriteGraphStoreEP = property("serviceReadWriteGraphStore") ;
-    public static final Property pServiceReadgraphStoreEP = property("serviceReadGraphStore") ;
+    public static final Property pServiceReadGraphStoreEP      = property("serviceReadGraphStore") ;
+    public static final Property pServiceReadWriteQuadsEP      = property("serviceReadWriteQuads") ;
+    public static final Property pServiceReadQuadsEP           = property("serviceReadQuads") ;
 
     public static final Property pAllowTimeoutOverride = property("allowTimeoutOverride");
     public static final Property pMaximumTimeoutOverride = property("maximumTimeoutOverride");
