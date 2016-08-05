@@ -62,9 +62,7 @@ public class FusekiLogging
         allowLoggingReset = value ;
     }
     
-    /** Set up logging.
-     * This is mainly for the standalone server.
-     */
+    /** Set up logging - standalone and war packaging */
     public static synchronized void setLogging() {
         if ( ! allowLoggingReset )
             return ;

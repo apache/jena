@@ -234,11 +234,11 @@ public class FusekiServer
             return datasets ;
 
         if ( params.fusekiCmdLineConfigFile != null ) {
-            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiCmdLineConfigFile) ;
+            List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiCmdLineConfigFile) ;
             datasets.addAll(confDatasets) ;
         }
         else if ( params.fusekiServerConfigFile != null ) {
-            List<DataAccessPoint> confDatasets = processConfigFile(params.fusekiServerConfigFile) ;
+            List<DataAccessPoint> confDatasets = processServerConfigFile(params.fusekiServerConfigFile) ;
             datasets.addAll(confDatasets) ;
         }
         else if ( params.dsg != null ) {
@@ -252,13 +252,13 @@ public class FusekiServer
         return datasets ;
     }
     
-    private static List<DataAccessPoint> processConfigFile(String configFilename) {
+    private static List<DataAccessPoint> processServerConfigFile(String configFilename) {
         if ( ! FileOps.exists(configFilename) ) {
             Fuseki.configLog.warn("Configuration file '" + configFilename+"' does not exist") ;
             return Collections.emptyList(); 
         }
         Fuseki.configLog.info("Configuration file: " + configFilename) ;
-        return FusekiConfig.readConfigFile(configFilename) ;
+        return FusekiConfig.readServerConfigFile(configFilename) ;
     }
     
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
