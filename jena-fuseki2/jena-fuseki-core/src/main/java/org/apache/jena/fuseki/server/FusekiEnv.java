@@ -106,7 +106,7 @@ public class FusekiEnv {
     public static final String   ENV_runArea     = "run" ;
     private static boolean       initialized     = false ;
     
-    /** Initialize the server */
+    /** Initialize the server : standalone and WAR versions : not embedded */
     public static synchronized void setEnvironment() {
         if ( initialized )
             return ;

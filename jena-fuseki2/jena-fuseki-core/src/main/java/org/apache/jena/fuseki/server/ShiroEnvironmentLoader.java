@@ -36,7 +36,7 @@ import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
 import org.apache.shiro.web.env.WebEnvironment ;
 
 /** A place to perform Fuseki-specific initialization of Apache Shiro.
- *  Runs after listener FusekiServerEnvironmentInit and before FusekiServerListener
+ *  Runs after listener {@link FusekiServerEnvironmentInit} and before {@link FusekiServerListener}.
  *  This means finding shiro.ini in multiple possible places, based on
  *  different deployment setups.
  */
@@ -47,7 +47,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiServer.init() ; 
+        FusekiServer.formatBaseArea() ; 
         this.servletContext = sce.getServletContext() ;
         try { 
             // Shiro.

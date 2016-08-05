@@ -23,19 +23,20 @@ import org.apache.jena.fuseki.FusekiException ;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
-    public static void register(String name, DataAccessPoint accessPt) {
-        if ( get().isRegistered(name) )
+    // Add error checking.
+    public void register(String name, DataAccessPoint accessPt) {
+        if ( isRegistered(name) )
             throw new FusekiException("Already registered: "+name) ;
-        get().put(name, accessPt);
+        super.put(name, accessPt);
     }
     
     // Debugging
-    public static void print(String string) {
+    public void print(String string) {
         System.out.flush() ;
         if ( string == null )
             string = "DataAccessPointRegistry" ;
         System.out.println("== "+string) ;
-        DataAccessPointRegistry.get().forEach((k,ref)->{
+        this.forEach((k,ref)->{
             System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName()) ;
             ref.getDataService().getOperations().forEach((opName)->{
                 ref.getDataService().getOperation(opName).forEach(ep->{

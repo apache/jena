@@ -98,15 +98,10 @@ public class FusekiServer
     public static Path        dirTemplates       = null ;
 
     private static boolean    initialized        = false ;
-    public static boolean     serverInitialized  = false ;
+    // Marks the end of successful initialization.
+    /*package*/static boolean serverInitialized  = false ;
 
-    /** For testing - reset the places which initialize once */
-    public synchronized static void reset() {
-        initialized = false ;
-        FusekiServer.initialized = false ;
-    }
-    
-    public synchronized static void init() {
+    /*package*/ synchronized static void formatBaseArea() {
         if ( initialized )
             return ;
         initialized = true ;
@@ -225,7 +220,7 @@ public class FusekiServer
     private static void enable(List<DataAccessPoint> datapoints) {
         for ( DataAccessPoint dap : datapoints ) {
             Fuseki.configLog.info("Register: "+dap.getName()) ;
-            DataAccessPointRegistry.register(dap.getName(), dap); 
+            DataAccessPointRegistry.get().register(dap.getName(), dap); 
         }
     }
 
@@ -321,7 +316,7 @@ public class FusekiServer
             //  1 - clean model, remove "fu:serviceUpdate", "fu:serviceUpload", "fu:serviceReadGraphStore", "fu:serviceReadWriteGraphStore"
             //  2 - set a flag on DataAccessPoint
         }
-        DataAccessPoint dap = Builder.buildDataAccessPoint(subject, registry) ;
+        DataAccessPoint dap = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
         return dap ;
     }
     
@@ -356,7 +351,7 @@ public class FusekiServer
     
     private static DataAccessPoint datasetDefaultConfiguration( String name, DatasetGraph dsg, boolean allowUpdate) {
         name = DataAccessPoint.canonical(name) ;
-        DataService ds = Builder.buildDataService(dsg, allowUpdate) ;
+        DataService ds = FusekiBuilder.buildDataService(dsg, allowUpdate) ;
         DataAccessPoint dap = new DataAccessPoint(name, ds) ;
         return dap ;
     }
