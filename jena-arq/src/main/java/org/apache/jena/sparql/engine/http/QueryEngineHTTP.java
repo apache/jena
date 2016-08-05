@@ -35,7 +35,10 @@ import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
@@ -523,7 +526,10 @@ public class QueryEngineHTTP implements QueryExecution {
                 return CSVInput.booleanFromCSV(in);
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType
                     + " which is not currently supported for ASK queries");
-        } catch (java.io.IOException e) {
+        } catch (QueryExceptionHTTP e) { 
+            throw e ;
+        }
+        catch (java.io.IOException e) {
             log.warn("Failed to close connection", e);
             return false ;
         }
@@ -692,6 +698,7 @@ public class QueryEngineHTTP implements QueryExecution {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void close() {
         closed = true ;
