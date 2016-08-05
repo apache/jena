@@ -136,7 +136,7 @@ public class FusekiConfig {
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("service") ;
-            DataAccessPoint acc = Builder.buildDataAccessPoint(svc, dsDescMap) ;
+            DataAccessPoint acc = FusekiBuilder.buildDataAccessPoint(svc, dsDescMap) ;
             accessPoints.add(acc) ;
         }
         
@@ -218,7 +218,7 @@ public class FusekiConfig {
         }
 
         for ( Resource service : services ) {
-            DataAccessPoint acc = Builder.buildDataAccessPoint(service, dsDescMap) ; 
+            DataAccessPoint acc = FusekiBuilder.buildDataAccessPoint(service, dsDescMap) ; 
             dataServiceRef.add(acc) ;
         }
     }
@@ -257,7 +257,7 @@ public class FusekiConfig {
                 Model m = ds.getNamedModel(g.getURI()) ;
                 // Rebase the resource of the service description to the containing graph.
                 Resource svc = m.wrapAsResource(s.asNode()) ;
-                DataAccessPoint ref = Builder.buildDataAccessPoint(svc, dsDescMap) ;
+                DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(svc, dsDescMap) ;
                 refs.add(ref) ;
             }
             ds.commit(); 

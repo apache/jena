@@ -42,7 +42,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
-public class Builder
+public class FusekiBuilder
 {
     private static Logger log = Fuseki.builderLog ;
     
@@ -58,7 +58,7 @@ public class Builder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = Builder.buildDataService(svc, dsDescMap) ;
+        DataService dataService = FusekiBuilder.buildDataService(svc, dsDescMap) ;
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }

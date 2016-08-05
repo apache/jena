@@ -205,8 +205,8 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = Builder.buildDataAccessPoint(subject, registry) ;
-            DataAccessPointRegistry.register(datasetPath, ref) ;
+            DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+            action.getDataAccessPointRegistry().register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             ServletOps.success(action) ;
