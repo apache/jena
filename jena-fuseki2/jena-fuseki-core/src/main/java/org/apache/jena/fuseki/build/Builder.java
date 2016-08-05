@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.build;
 
+import static org.apache.jena.fuseki.server.FusekiVocab.* ;
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.FusekiLib.nodeLabel ;
 import static org.apache.jena.fuseki.FusekiLib.query ;
@@ -34,6 +35,7 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -69,16 +71,23 @@ public class Builder
  
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
-        addServiceEP(dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
-        addServiceEP(dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
-        addServiceEP(dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
-        addServiceEP(dataService, OperationName.GSP_R,  svc,    "fu:serviceReadGraphStore") ;
-        addServiceEP(dataService, OperationName.GSP_RW, svc,    "fu:serviceReadWriteGraphStore") ;
+
+        addServiceEP(dataService, OperationName.Query,  svc,    pServiceQueryEP) ;
+        addServiceEP(dataService, OperationName.Update, svc,    pServiceUpdateEP) ;
+        addServiceEP(dataService, OperationName.Upload, svc,    pServiceUpdateEP) ;
+        addServiceEP(dataService, OperationName.GSP_R,  svc,    pServiceReadGraphStoreEP) ;
+        addServiceEP(dataService, OperationName.GSP_RW, svc,    pServiceReadWriteGraphStoreEP) ;
+
+        addServiceEP(dataService, OperationName.Quads_R, svc,   pServiceReadQuadsEP) ;
+        addServiceEP(dataService, OperationName.Quads_RW, svc,  pServiceReadWriteQuadsEP) ;
         
-        if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() )
+        // Quads - actions directly on the dataset URL are different.
+        // In the config file they are also implicit when using GSP.
+        if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() || ! dataService.getOperation(OperationName.Quads_RW).isEmpty() ) {
             dataService.addEndpoint(OperationName.Quads_RW, "") ;
-        else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() )
+        } else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() || ! dataService.getOperation(OperationName.Quads_R).isEmpty() ) {
             dataService.addEndpoint(OperationName.Quads_R, "") ;
+        }
         
         // XXX 
 //        // Extract timeout overriding configuration if present.
@@ -113,15 +122,15 @@ public class Builder
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
-            addServiceEP(dataService, OperationName.GSP_R, "data") ;
-            addServiceEP(dataService, OperationName.Quads_R, "") ;
+            addServiceEP(dataService, OperationName.GSP_R,      "data") ;
+            addServiceEP(dataService, OperationName.Quads_R,    "") ;
             return dataService ;
         }
-        addServiceEP(dataService, OperationName.GSP_RW,    "data") ;
-        addServiceEP(dataService, OperationName.GSP_R,  "get") ;
-        addServiceEP(dataService, OperationName.Update, "update") ;
-        addServiceEP(dataService, OperationName.Upload, "upload") ;
-        addServiceEP(dataService, OperationName.Quads_RW,  "") ;
+        addServiceEP(dataService, OperationName.GSP_RW,     "data") ;
+        addServiceEP(dataService, OperationName.GSP_R,      "get") ;
+        addServiceEP(dataService, OperationName.Update,     "update") ;
+        addServiceEP(dataService, OperationName.Upload,     "upload") ;
+        addServiceEP(dataService, OperationName.Quads_RW,   "") ;
         return dataService ;
     }
 
@@ -139,10 +148,10 @@ public class Builder
             throw new FusekiConfigException("Multiple " + ln + " for service " + FusekiLib.nodeLabel(svc)) ;
         return x ;
     }
-    
 
-    private static void addServiceEP(DataService dataService, OperationName opName, Resource svc, String property) {
-        ResultSet rs = query("SELECT * { ?svc " + property + " ?ep}", svc.getModel(), "svc", svc) ;
+    private static void addServiceEP(DataService dataService, OperationName opName, Resource svc, Property property) {
+        String p = "<"+property.getURI()+">" ;
+        ResultSet rs = query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
