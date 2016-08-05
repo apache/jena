@@ -30,10 +30,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.RequestLog ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -94,6 +91,8 @@ public class HttpAction
     public HttpServletResponseTracker response ;
     private final String actionURI ;
     private final String contextPath ;
+    // Currently, global.
+    private final DataAccessPointRegistry dataAccessPointRegistry ;
     
     /**
      * Creates a new HTTP Action, using the HTTP request and response, and a given ID.
@@ -114,6 +113,7 @@ public class HttpAction
         this.verbose = verbose ;
         this.contextPath = request.getServletContext().getContextPath() ;
         this.actionURI = ActionLib.actionURI(request) ;
+        this.dataAccessPointRegistry = DataAccessPointRegistry.get() ;
     }
 
     /** Initialization after action creation during lifecycle setup.
@@ -226,6 +226,12 @@ public class HttpAction
         return contextPath ;
     }
     
+    /**
+     * Get the DataAccessPointRegistry for this action
+     */
+    public DataAccessPointRegistry getDataAccessPointRegistry() {
+        return dataAccessPointRegistry ;
+    }
     
     /** Set the endpoint and endpoint name that this is an action for. 
      * @param srvRef {@link Endpoint}

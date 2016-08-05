@@ -141,7 +141,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected String mapRequestToDataset(HttpAction action) {
         String uri = ActionLib.removeContextPath(action) ;
-        return ActionLib.mapRequestToDatasetLongest$(uri) ;
+        return ActionLib.mapRequestToDatasetLongest$(uri, action.getDataAccessPointRegistry()) ;
     }
 
     /** Intercept the processing cycle at the point where the action has been set up,

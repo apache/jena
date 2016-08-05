@@ -78,7 +78,7 @@ public class ActionLib {
      * the longest match in the registry.
      * This includes use in direct naming GSP. 
      */
-    public static String mapRequestToDatasetLongest$(String uri) 
+    public static String mapRequestToDatasetLongest$(String uri, DataAccessPointRegistry registry) 
     {
         if ( uri == null )
             return null ;
@@ -88,7 +88,7 @@ public class ActionLib {
         // forms.
 
         String ds = null ;
-        for ( String ds2 : DataAccessPointRegistry.get().keys() ) {
+        for ( String ds2 : registry.keys() ) {
             if ( ! uri.startsWith(ds2) )
                 continue ;
 

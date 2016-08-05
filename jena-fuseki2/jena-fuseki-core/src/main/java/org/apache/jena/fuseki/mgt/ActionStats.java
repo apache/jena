@@ -49,8 +49,10 @@ public class ActionStats extends ActionContainerItem
         
         builder.key(JsonConst.datasets) ;
         builder.startObject("datasets") ;
-        for ( String ds : DataAccessPointRegistry.get().keys() )
-            statsDataset(builder, ds) ; 
+        for ( String ds : action.getDataAccessPointRegistry().keys() ) {
+            DataAccessPoint access = action.getDataAccessPointRegistry().get(ds) ;
+            statsDataset(builder, access) ; 
+        }
         builder.finishObject("datasets") ;
         
         builder.finishObject("top") ;
@@ -67,18 +69,21 @@ public class ActionStats extends ActionContainerItem
         
         builder.key(JsonConst.datasets) ;
         builder.startObject("datasets") ;
-        statsDataset(builder, datasetPath) ;
+        statsDataset(builder, datasetPath, action.getDataAccessPointRegistry()) ;
         builder.finishObject("datasets") ;
         
         builder.finishObject("TOP") ;
         return builder.build() ;
     }
 
-    private void statsDataset(JsonBuilder builder, String ds) {
+    private void statsDataset(JsonBuilder builder, String name, DataAccessPointRegistry registry) {
+        DataAccessPoint access = registry.get(name) ;
+        statsDataset(builder, access);
+    }
+    
+    private void statsDataset(JsonBuilder builder, DataAccessPoint access) {
         // Object started
-        builder.key(ds) ;
-        
-        DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
+        builder.key(access.getName()) ;
         DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
@@ -131,17 +136,17 @@ public class ActionStats extends ActionContainerItem
         }
     }
 
-    private void statsTxt(HttpServletResponse resp) throws IOException
+    private void statsTxt(HttpServletResponse resp, DataAccessPointRegistry registry) throws IOException
     {
         ServletOutputStream out = resp.getOutputStream() ;
         resp.setContentType(contentTypeTextPlain);
         resp.setCharacterEncoding(charsetUTF8) ;
 
-        Iterator<String> iter = DataAccessPointRegistry.get().keys().iterator() ;
+        Iterator<String> iter = registry.keys().iterator() ;
         while(iter.hasNext())
         {
             String ds = iter.next() ;
-            DataAccessPoint desc = DataAccessPointRegistry.get().get(ds) ;
+            DataAccessPoint desc = registry.get(ds) ;
             statsTxt(out, desc) ;
             if ( iter.hasNext() )
                 out.println() ;

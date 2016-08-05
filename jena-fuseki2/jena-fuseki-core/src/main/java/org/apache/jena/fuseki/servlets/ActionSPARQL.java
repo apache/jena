@@ -59,7 +59,7 @@ public abstract class ActionSPARQL extends ActionBase
         
         String datasetUri = mapRequestToDataset(action) ;
         if ( datasetUri != null ) {
-            dataAccessPoint = DataAccessPointRegistry.get().get(datasetUri) ;
+            dataAccessPoint = action.getDataAccessPointRegistry().get(datasetUri) ;
             if ( dataAccessPoint == null ) {
                 ServletOps.errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;

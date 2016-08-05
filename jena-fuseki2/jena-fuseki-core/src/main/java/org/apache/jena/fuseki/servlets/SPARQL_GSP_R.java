@@ -40,7 +40,9 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     { super() ; }
     
     @Override
-    protected String mapRequestToDataset(HttpAction action) { return ActionLib.mapRequestToDatasetLongest$(action.request.getRequestURI()) ; } 
+    protected String mapRequestToDataset(HttpAction action) {
+        return ActionLib.mapRequestToDatasetLongest$(action.request.getRequestURI(), action.getDataAccessPointRegistry()) ;
+    }
 
     @Override
     protected void doGet(HttpAction action) {
