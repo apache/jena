@@ -219,7 +219,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 // SPARQL Update
                 if ( !allowUpdate(action) )
                     ServletOps.errorMethodNotAllowed("SPARQL update : "+method) ;
-                // This wil dela with using GET.
+                // This will deal with using GET.
                 executeRequest(action, updateServlet) ;
                 return ;
             }
@@ -241,16 +241,14 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
             // Check enabled.
             if ( isGET || isHEAD ) {
-                if ( allowREST_R(action) || allowQuadsR(action) )
+                if ( allowQuadsR(action) )
                     restQuads_R.executeLifecycle(action) ;
                 else
-                    ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
+                    ServletOps.errorMethodNotAllowed(method) ;
                 return ;
             }
-            // If the read-only server has the same name as the writable server,
-            // and the default for a read-only server is "/data", like a writable dataset,
-            // this test is insufficient.
-            if ( allowREST_W(action) )
+            
+            if ( allowQuadsW(action) )
                 restQuads_RW.executeLifecycle(action) ;
             else
                 ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
