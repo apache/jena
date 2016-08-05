@@ -55,7 +55,7 @@ public class FusekiServerListener implements ServletContextListener {
         
         // Set the server wide state.
         //servletContext.setAttribute(, DataAccessPointRegistry.get()) ;
-        serverInitialization() ;
+        serverInitialization(servletContext) ;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FusekiServerListener implements ServletContextListener {
         StoreConnection.reset();
     }
 
-    private synchronized void serverInitialization() {
+    private synchronized void serverInitialization(ServletContext servletContext) {
         if ( initialized )
             return ;
         initialized = true ;
@@ -88,7 +88,8 @@ public class FusekiServerListener implements ServletContextListener {
             }
 
             if ( initialSetup != null ) {
-                FusekiServer.initializeDataAccessPoints(initialSetup, FusekiServer.dirConfiguration.toString()) ;
+                FusekiServer.initializeDataAccessPoints(DataAccessPointRegistry.get(servletContext),
+                                                        initialSetup, FusekiServer.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;
                 System.exit(0) ;

@@ -18,11 +18,15 @@
 
 package org.apache.jena.fuseki.server;
 
+import javax.servlet.ServletContext ;
+
 import org.apache.jena.atlas.lib.Registry ;
 import org.apache.jena.fuseki.FusekiException ;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
+    public DataAccessPointRegistry() {}
+    
     // Add error checking.
     public void register(String name, DataAccessPoint accessPt) {
         if ( isRegistered(name) )
@@ -46,9 +50,18 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         }) ;
     }
     
+    // To be removed ...
     private static DataAccessPointRegistry singleton = new DataAccessPointRegistry() ;
-
     public static DataAccessPointRegistry get() { return singleton ; }
+
+    private static final String attrNameRegistry = "jena.apache.org/fuseki/dataAccessPointRegistry" ;
+    // Policy for the location of the server-wide DataAccessPointRegistry 
+    public static DataAccessPointRegistry get(ServletContext cxt) {
+        //return (DataAccessPointRegistry)cxt.getAttribute(attrName) ;
+        return singleton ;
+    }
     
-    private DataAccessPointRegistry() {}
+    public static void set(ServletContext cxt, DataAccessPointRegistry registry) { 
+        cxt.setAttribute(attrNameRegistry, registry) ;
+    }
 }

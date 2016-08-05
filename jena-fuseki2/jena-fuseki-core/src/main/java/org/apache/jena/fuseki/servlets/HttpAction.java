@@ -113,7 +113,7 @@ public class HttpAction
         this.verbose = verbose ;
         this.contextPath = request.getServletContext().getContextPath() ;
         this.actionURI = ActionLib.actionURI(request) ;
-        this.dataAccessPointRegistry = DataAccessPointRegistry.get() ;
+        this.dataAccessPointRegistry = DataAccessPointRegistry.get(request.getServletContext()) ;
     }
 
     /** Initialization after action creation during lifecycle setup.

@@ -203,7 +203,7 @@ public class FusekiServer
         }
     }
 
-    public static void initializeDataAccessPoints(ServerInitialConfig initialSetup, String configDir) {
+    public static void initializeDataAccessPoints(DataAccessPointRegistry registry, ServerInitialConfig initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup) ;
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
@@ -214,13 +214,13 @@ public class FusekiServer
         datapoints.addAll(systemDBs) ;
         
         // Having found them, set them all running.
-        enable(datapoints);
+        enable(registry, datapoints);
     }
 
-    private static void enable(List<DataAccessPoint> datapoints) {
+    private static void enable(DataAccessPointRegistry registry, List<DataAccessPoint> datapoints) {
         for ( DataAccessPoint dap : datapoints ) {
             Fuseki.configLog.info("Register: "+dap.getName()) ;
-            DataAccessPointRegistry.get().register(dap.getName(), dap); 
+            registry.register(dap.getName(), dap); 
         }
     }
 
