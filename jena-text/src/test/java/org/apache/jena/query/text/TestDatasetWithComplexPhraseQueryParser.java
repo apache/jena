@@ -18,17 +18,9 @@
 
 package org.apache.jena.query.text;
 
-import java.io.Reader ;
-import java.io.StringReader ;
 import java.util.Set ;
 
-import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.text.assembler.TextAssembler ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.ext.com.google.common.collect.Sets ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -37,6 +29,7 @@ import org.junit.Test ;
  * This class defines a setup configuration for a dataset that uses a standard analyzer with a Lucene index.
  */
 public class TestDatasetWithComplexPhraseQueryParser extends AbstractTestDatasetWithAnalyzer {
+    @Override
     @Before
     public void before() {
         init("text:StandardAnalyzer", "text:ComplexPhraseQueryParser");

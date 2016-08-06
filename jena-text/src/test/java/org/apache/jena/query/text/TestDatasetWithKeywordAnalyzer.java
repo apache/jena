@@ -30,6 +30,7 @@ import org.junit.Test ;
  * This class defines a setup configuration for a dataset that uses a keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithAnalyzer {
+    @Override
     @Before
     public void before() {
         init("text:KeywordAnalyzer");
