@@ -18,18 +18,23 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.util.*;
+import static org.apache.jena.reasoner.rulesys.Rule.parseRule;
+
+import java.util.ArrayList ;
+import java.util.HashSet ;
+import java.util.List ;
+import java.util.Set ;
 
 import org.apache.jena.assembler.test.AssemblerTestBase ;
 import org.apache.jena.graph.Node;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.rdf.model.InfModel ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
-
-import static org.apache.jena.reasoner.rulesys.Rule.parseRule;
 
 
 /**
