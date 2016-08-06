@@ -53,7 +53,8 @@ public class TextFormatter extends Formatter
 {
     // %tT (%5$tT) is %5$tH:%5$tM:%5$tS
     // %tF is 2008-11-22 "%tY-%tm-%td"
-    private String format = "%5$tT %3$-5s %2$-20s :: %6$s\n" ;
+    private static final String dftformat = "%5$tT %3$-5s %2$-20s :: %6$s\n" ;
+    private String format = dftformat ;
     
     public TextFormatter() {
         LogManager manager = LogManager.getLogManager() ;
@@ -65,6 +66,13 @@ public class TextFormatter extends Formatter
                 fmt = fmt + "\n" ;
             format = fmt ;
         }
+    }
+    
+    /** programmatic setup - provide the format */
+    public TextFormatter(String fmt) {
+        if ( ! fmt.endsWith("\n") )
+            fmt = fmt + "\n" ;
+        format = fmt ;
     }
     
     @Override
