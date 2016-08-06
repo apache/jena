@@ -396,7 +396,10 @@ start() {
 ##       then
 ## 	  log_daemon_msg "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
 ##       fi
+      ## su with login, passing over environment variables.
       su - "$FUSEKI_USER" -c "
+        export FUSEKI_BASE='${FUSEKI_BASE}'
+        export FUSEKI_HOME='${FUSEKI_HOME}'
         exec ${RUN_CMD[*]} &> '$FUSEKI_LOGS_STDERROUT' &
         disown \$!
         echo \$! > '$FUSEKI_PID'"
