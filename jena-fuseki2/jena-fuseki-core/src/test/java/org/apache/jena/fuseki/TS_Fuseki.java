@@ -59,19 +59,16 @@ public class TS_Fuseki extends ServerTest
         FusekiLogging.setLogging();
         FusekiEnv.setEnvironment() ;
         
-        org.apache.log4j.Level WARN1 = org.apache.log4j.Level.WARN ; 
-        java.util.logging.Level WARN2 = java.util.logging.Level.WARNING ;
-
         // Occasionally log4j.properties gets out of step.
-        LogCtl.logLevel("org.apache.shiro",     WARN1, WARN2);
-        LogCtl.logLevel("org.eclipse.jetty",    WARN1, WARN2);
+        LogCtl.setLevel("org.apache.shiro",          "WARN") ;
+        LogCtl.setLevel("org.eclipse.jetty",         "WARN");
         
-        LogCtl.logLevel(Fuseki.serverLogName,   WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.configLogName,   WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.adminLogName,    WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.builderLogName,  WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.actionLogName,   WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.requestLogName,  WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.servletRequestLogName,   WARN1, WARN2);
+        LogCtl.setLevel(Fuseki.serverLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.configLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.adminLogName,         "WARN");
+        LogCtl.setLevel(Fuseki.builderLogName,       "WARN");
+        LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
+        LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
+        LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
     }
 }

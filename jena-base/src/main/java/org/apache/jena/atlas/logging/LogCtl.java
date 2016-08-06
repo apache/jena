@@ -33,6 +33,76 @@ import org.slf4j.Logger ;
 /** Setup and control of logging - needs access to log4j binaries */ 
 public class LogCtl {
 
+    static public void set(Logger logger, String level) {
+        setLevel(logger.getName(), level) ;
+    }
+
+    /** @deprecated Use {@link #setLevel(String, String)} */
+    @Deprecated
+    static public void set(Class<? > logger, String level) {
+        setLevel(logger.getName(), level) ;
+    }
+
+    /** @deprecated Use {@link #setLevel(String, String)} */
+    @Deprecated
+    static public void set(String logger, String level) {
+        setLevel(logger,level) ;
+    }
+
+    static public void setLevel(Class<? > logger, String level) {
+        setLevel(logger.getName(), level) ;
+    }
+    
+    static public void setLevel(String logger, String level) {
+        setLevelLog4j(logger,level) ;
+        setLevelJUL(logger,level) ;
+    }
+
+    private static void setLevelJUL(String logger, String levelName) {
+        java.util.logging.Level level = java.util.logging.Level.ALL ;
+        if ( levelName.equalsIgnoreCase("info") )
+            level = java.util.logging.Level.INFO ;
+        else if ( levelName.equalsIgnoreCase("debug") )
+            level = java.util.logging.Level.FINE ;
+        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") ) 
+            level = java.util.logging.Level.WARNING ;
+        else if ( levelName.equalsIgnoreCase("error") )
+            level = java.util.logging.Level.SEVERE ;
+        else if ( levelName.equalsIgnoreCase("OFF") )
+            level = java.util.logging.Level.OFF ;
+        if ( level != null )
+            java.util.logging.Logger.getLogger(logger).setLevel(level) ;
+    }
+
+    private static void setLevelLog4j(String logger, String levelName) {
+        try {
+            org.apache.log4j.Level level = org.apache.log4j.Level.ALL ;
+            if ( levelName.equalsIgnoreCase("info") )
+                level = org.apache.log4j.Level.INFO ;
+            else if ( levelName.equalsIgnoreCase("debug") )
+                level = org.apache.log4j.Level.DEBUG ;
+            else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
+                level = org.apache.log4j.Level.WARN ;
+            else if ( levelName.equalsIgnoreCase("error") )
+                level = org.apache.log4j.Level.ERROR ;
+            else if ( levelName.equalsIgnoreCase("OFF") )
+                level = org.apache.log4j.Level.OFF ;
+            if ( level != null )   
+                org.apache.log4j.LogManager.getLogger(logger).setLevel(level) ;            
+        } catch (NoClassDefFoundError ex) {
+            // For when it is not on the class path 
+        }
+    }
+
+    /** @deprecated Do not use - to be removed - use {@link #setLevel(String, String)} */
+    @Deprecated
+    static public void logLevel(String logger, org.apache.log4j.Level level1, java.util.logging.Level level2) {
+        if ( level1 != null )
+            org.apache.log4j.LogManager.getLogger(logger).setLevel(level1) ;
+        if ( level2 != null )
+            java.util.logging.Logger.getLogger(logger).setLevel(level2) ;
+    }
+
     /**
      * Turn on a logger (all levels). Works for Log4j and Java logging as the
      * logging provider to Apache common logging or slf4j.
@@ -43,47 +113,7 @@ public class LogCtl {
     }
 
     static public void enable(String logger) {
-        set(logger, "all") ;
-    }
-
-    static public void set(Logger logger, String level) {
-        set(logger.getName(), level) ;
-    }
-
-    /** Turn on a logger (specific level levels) */
-    static public void set(Class<? > logger, String level) {
-        set(logger.getName(), level) ;
-    }
-
-    static public void set(String logger, String level) {
-        org.apache.log4j.Level level1 = org.apache.log4j.Level.ALL ;
-        java.util.logging.Level level2 = java.util.logging.Level.ALL ;
-        if ( level.equalsIgnoreCase("info") ) {
-            level1 = org.apache.log4j.Level.INFO ;
-            level2 = java.util.logging.Level.INFO ;
-        }
-    
-        if ( level.equalsIgnoreCase("debug") ) {
-            level1 = org.apache.log4j.Level.DEBUG ;
-            level2 = java.util.logging.Level.FINE ;
-        }
-    
-        if ( level.equalsIgnoreCase("warn") ) {
-            level1 = org.apache.log4j.Level.WARN ;
-            level2 = java.util.logging.Level.WARNING ;
-        }
-        if ( level.equalsIgnoreCase("error") ) {
-            level1 = org.apache.log4j.Level.ERROR ;
-            level2 = java.util.logging.Level.SEVERE ;
-        }
-        logLevel(logger, level1, level2) ;
-    }
-
-    static public void logLevel(String logger, org.apache.log4j.Level level1, java.util.logging.Level level2) {
-        if ( level1 != null )
-            org.apache.log4j.LogManager.getLogger(logger).setLevel(level1) ;
-        if ( level2 != null )
-            java.util.logging.Logger.getLogger(logger).setLevel(level2) ;
+        setLevel(logger, "all") ;
     }
 
     /**
@@ -100,8 +130,7 @@ public class LogCtl {
      * logging provider to Apache common logging or slf4j.
      */
     static public void disable(String logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
-        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.OFF) ;
+        setLevel(logger, "OFF") ;
     }
 
     /**
@@ -109,8 +138,7 @@ public class LogCtl {
      * logging provider to Apache common logging or slf4j.
      */
     static public void disable(Class<? > logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.OFF) ;
-        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.OFF) ;
+        setLevel(logger.getName(), "OFF") ;
     }
 
     /**
@@ -118,8 +146,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setInfo(String logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.INFO) ;
-        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.INFO) ;
+        setLevel(logger, "info") ;
     }
 
     /**
@@ -127,8 +154,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setInfo(Class<? > logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.INFO) ;
-        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.INFO) ;
+        setLevel(logger.getName(), "info") ;
     }
 
     /**
@@ -136,8 +162,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setWarn(String logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.WARN) ;
-        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.WARNING) ;
+        setLevel(logger, "warn") ;
     }
 
     /**
@@ -145,8 +170,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setWarn(Class<? > logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.WARN) ;
-        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.WARNING) ;
+        setLevel(logger.getName(), "warn") ;
     }
 
     /**
@@ -154,8 +178,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setError(String logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ERROR) ;
-        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.SEVERE) ;
+        setLevel(logger, "error") ;
     }
 
     /**
@@ -163,8 +186,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setError(Class<? > logger) {
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ERROR) ;
-        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.SEVERE) ;
+        setLevel(logger.getName(), "error") ;
     }
 
     private static String log4Jsetup = StrUtils.strjoinNL
