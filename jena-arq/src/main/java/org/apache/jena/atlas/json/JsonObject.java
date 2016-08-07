@@ -54,11 +54,6 @@ public class JsonObject extends JsonValue
         return map.containsKey(key) ;
     }
     
-//    @Override
-//    public boolean containsValue(Object value) {
-//        return map.containsValue(value) ;
-//    }
-    
     public Set<String> keys() {
         return map.keySet() ;
     }
@@ -69,6 +64,11 @@ public class JsonObject extends JsonValue
 
     public JsonValue get(String key) {
         return map.get(key) ;
+    }
+
+    /** For walking structures */
+    public JsonObject getObj(String key) {
+        return get(key).getAsObject() ;
     }
 
     public boolean isEmpty() {
