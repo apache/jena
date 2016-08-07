@@ -50,18 +50,21 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         }) ;
     }
     
-    // To be removed ...
+    // TODO To be removed ...
     private static DataAccessPointRegistry singleton = new DataAccessPointRegistry() ;
+    // Still used by ServerTest and FusekiEmbeddedServer (but nowhere else)
     public static DataAccessPointRegistry get() { return singleton ; }
 
-    private static final String attrNameRegistry = "jena.apache.org/fuseki/dataAccessPointRegistry" ;
+    private static final String attrNameRegistry = "jena-fuseki:dataAccessPointRegistry" ;
     // Policy for the location of the server-wide DataAccessPointRegistry 
     public static DataAccessPointRegistry get(ServletContext cxt) {
         //return (DataAccessPointRegistry)cxt.getAttribute(attrName) ;
         return singleton ;
     }
     
-    public static void set(ServletContext cxt, DataAccessPointRegistry registry) { 
+    public static void set(ServletContext cxt, DataAccessPointRegistry registry) {
+        // Temporary until get() removed completely.
+        singleton = registry ;
         cxt.setAttribute(attrNameRegistry, registry) ;
     }
 }

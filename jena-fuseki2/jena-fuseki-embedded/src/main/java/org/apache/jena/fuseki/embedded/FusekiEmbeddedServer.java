@@ -22,6 +22,8 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
+import javax.servlet.ServletContext ;
+
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -29,7 +31,11 @@ import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.FusekiBuilder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1 ;
-import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.mgt.ActionStats ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
@@ -94,14 +100,19 @@ public class FusekiEmbeddedServer {
         port = ((ServerConnector)server.getConnectors()[0]).getPort() ;
     }
     
-    /** Get the underlying Jetty server which has also been set up.
-     * Adding new servlets is posisble with care.
-     */ 
+    /** Get the underlying Jetty server which has also been set up. */ 
     public Server getJettyServer() {
         return server ; 
     }
     
-    /** Start the server - the server continues to run afetr thsi call returns.
+    /** Get the {@link ServletContext}.
+     * Adding new servlets is possible with care.
+     */ 
+    public ServletContext getServletContext() {
+        return ((ServletContextHandler)server.getHandler()).getServletContext() ;
+    }
+
+    /** Start the server - the server continues to run after this call returns.
      *  To synchronise with the server stopping, call {@link #join}.  
      */
     public void start() { 
@@ -131,7 +142,8 @@ public class FusekiEmbeddedServer {
         private Map<String, DataService> map = new HashMap<>() ;
         private int port = 3333 ;
         private boolean loopback = false ;
-        private String path = "/" ;
+        private boolean withStats = false ;
+        private String contextPath = "/" ;
         
         /* Set the port to run on */ 
         public Builder setPort(int port) {
@@ -143,13 +155,21 @@ public class FusekiEmbeddedServer {
          * "http://host:port/dataset/query" else "http://host:port/path/dataset/query" 
          */
         public Builder setContextPath(String path) {
-            this.path = path ;
+            this.contextPath = path ;
             return this ;
         }
         
         /** Restrict the server to only respoding to the localhost interface. */ 
         public Builder setLoopback(boolean loopback) {
             this.loopback = loopback;
+            return this ;
+        }
+
+        /** Add the "/$/stats" servlet that responds with stats about the server,
+         * including counts of all calls made.
+         */ 
+        public Builder enableStats(boolean withStats) {
+            this.withStats = withStats;
             return this ;
         }
 
@@ -183,6 +203,7 @@ public class FusekiEmbeddedServer {
         }
 
         private Builder add$(String name, DataService dataService) {
+            name = DataAccessPoint.canonical(name) ;
             DataService dSrv = map.get(name) ;
             if ( dSrv != null ) {
                 DatasetGraph dsg1 = dSrv.getDataset() ;
@@ -210,33 +231,37 @@ public class FusekiEmbeddedServer {
 
         /** Build a server according to the current description */ 
         public FusekiEmbeddedServer build() {
+            DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
             map.forEach((name, dSrv) -> {
                 DataAccessPoint dap = new DataAccessPoint(name, dSrv) ;
-                DataAccessPointRegistry.get().put(name, dap) ;
+                registry.put(name, dap) ;
             }) ;
-            Server server = fusekiServer(port, path, loopback) ;
+            ServletContextHandler handler = buildServletContext(contextPath, registry) ;
+            if ( withStats )
+                handler.addServlet(ActionStats.class, "/$/stats") ;
+            DataAccessPointRegistry.set(handler.getServletContext(), registry) ;
+            Server server = jettyServer(port, loopback) ;
+            server.setHandler(handler);
             return new FusekiEmbeddedServer(server) ;
         }
 
-        /** build process */
-        private static Server fusekiServer(int port, String contextPath, boolean loopback) {
+        /** Build a ServletContextHandler with the Fuseki router : {@link FusekiFilter} */
+        private static ServletContextHandler buildServletContext(String contextPath, DataAccessPointRegistry registry) {
             if ( contextPath == null || contextPath.isEmpty() )
                 contextPath = "/" ;
+            else if ( !contextPath.startsWith("/") )
+                contextPath = "/" + contextPath ;
             ServletContextHandler context = new ServletContextHandler() ;
-            // The Fuseki server-wide setup.
-            DataAccessPointRegistry.set(context.getServletContext(), new DataAccessPointRegistry()); 
             FusekiFilter ff = new FusekiFilter() ;
             FilterHolder h = new FilterHolder(ff) ;
-            context.setContextPath(contextPath); 
-            context.addFilter(h, "/*", null);
-            context.setDisplayName(Fuseki.servletRequestLogName);  
-            context.setErrorHandler(new FusekiErrorHandler1());
-            Server server = jettyServer(port, loopback) ;
-            server.setHandler(context);
-            return server ;
+            context.setContextPath(contextPath) ;
+            context.addFilter(h, "/*", null) ;
+            context.setDisplayName(Fuseki.servletRequestLogName) ;
+            context.setErrorHandler(new FusekiErrorHandler1()) ;
+            return context ;
         }
-
-        /** Jetty build process */
+        
+        /** Jetty server */
         private static Server jettyServer(int port, boolean loopback) {
             Server server = new Server() ;
             HttpConnectionFactory f1 = new HttpConnectionFactory() ;
