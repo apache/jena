@@ -59,7 +59,6 @@ public class TS_Fuseki extends ServerTest
         FusekiLogging.setLogging();
         FusekiEnv.setEnvironment() ;
         
-        // Occasionally log4j.properties gets out of step.
         LogCtl.setLevel("org.apache.shiro",          "WARN") ;
         LogCtl.setLevel("org.eclipse.jetty",         "WARN");
         
