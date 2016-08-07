@@ -63,7 +63,7 @@ public class TestEmbeddedFuseki {
 
     @Test public void embedded_01() {
         DatasetGraph dsg = dataset() ;
-        FusekiEmbeddedServer server = FusekiEmbeddedServer.make(3330, "/ds", dsg) ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.create().add("/ds", dsg).build() ;
         assertTrue(DataAccessPointRegistry.get().isRegistered("/ds")) ;
         server.start() ;
         query("http://localhost:3330/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {

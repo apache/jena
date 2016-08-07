@@ -139,7 +139,7 @@ public class FusekiEmbeddedServer {
     public static class Builder {
         // Keeping this allows accumulation of data access points for one name.  
         private Map<String, DataService> map = new HashMap<>() ;
-        private int port = 3333 ;
+        private int port = 3330 ;
         private boolean loopback = false ;
         private boolean withStats = false ;
         private String contextPath = "/" ;
