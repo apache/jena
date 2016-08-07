@@ -36,6 +36,7 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
+import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
 import org.eclipse.jetty.server.Server ;
@@ -173,10 +174,21 @@ public class FusekiEmbeddedServer {
         }
 
         /* Add the dataset with given name and a default set of services including update */  
+        public Builder add(String name, Dataset ds) {
+            return add(name, ds.asDatasetGraph()) ;
+        }
+
+        /* Add the dataset with given name and a default set of services including update */  
         public Builder add(String name, DatasetGraph dsg) {
             return add(name, dsg, true) ;
         }
 
+        /* Add the dataset with given name and a default set of services. */  
+        public Builder add(String name, Dataset ds, boolean allowUpdate) {
+            return add(name, ds.asDatasetGraph(), allowUpdate) ;
+        }
+            
+        
         /* Add the dataset with given name and a default set of services. */  
         public Builder add(String name, DatasetGraph dsg, boolean allowUpdate) {
             DataService dSrv = FusekiBuilder.buildDataService(dsg, allowUpdate) ; 
@@ -191,6 +203,13 @@ public class FusekiEmbeddedServer {
         /* Add an operation, specifing it's endpoint name.
          * This adds endpoints to any existing data service already setup by the builder.   
          */
+        public Builder add(String name, Dataset ds, OperationName opName, String epName) {
+            return add(name, ds.asDatasetGraph(), opName, epName) ; 
+        }
+
+            /* Add an operation, specifing it's endpoint name.
+         * This adds endpoints to any existing data service already setup by the builder.   
+         */
         public Builder add(String name, DatasetGraph dsg, OperationName opName, String epName) {
             DataService dSrv = map.get(name) ;
             if ( dSrv == null ) {
@@ -203,15 +222,20 @@ public class FusekiEmbeddedServer {
 
         private Builder add$(String name, DataService dataService) {
             name = DataAccessPoint.canonical(name) ;
-            DataService dSrv = map.get(name) ;
-            if ( dSrv != null ) {
-                DatasetGraph dsg1 = dSrv.getDataset() ;
-                DatasetGraph dsg2 = dataService.getDataset() ;
-                if ( dsg1 != dsg2 ) // Object identity
-                    throw new FusekiConfigException("Attempt to add a DataService for a different dataset: "+name) ;
-                dSrv.getOperations() ;
-            } else
-                map.put(name, dataService) ;
+            if ( map.containsKey(name) )
+                throw new FusekiConfigException("Attempt to add a DataService for a different dataset: "+name) ;
+            map.put(name, dataService) ;
+            
+            // Merge endpoints : too complicated 
+//            DataService dSrv = map.get(name) ;
+//            if ( dSrv != null ) {
+//                DatasetGraph dsg1 = dSrv.getDataset() ;
+//                DatasetGraph dsg2 = dataService.getDataset() ;
+//                if ( dsg1 != dsg2 ) // Object identity
+//                    throw new FusekiConfigException("Attempt to add a DataService for a different dataset: "+name) ;
+//                dSrv.getOperations() ;
+//            } else
+//                map.put(name, dataService) ;
             return this ;
         }
         

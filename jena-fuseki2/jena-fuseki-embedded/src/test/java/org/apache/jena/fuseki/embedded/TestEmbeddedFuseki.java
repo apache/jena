@@ -37,10 +37,7 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFormatter ;
+import org.apache.jena.query.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -73,6 +70,18 @@ public class TestEmbeddedFuseki {
         server.stop() ;
     }
     
+    @Test public void embedded_01a() {
+        Dataset ds = DatasetFactory.createTxnMem() ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.create().add("/ds", ds).build() ;
+        assertTrue(DataAccessPointRegistry.get().isRegistered("/ds")) ;
+        server.start() ;
+        query("http://localhost:3330/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
+            ResultSet rs = qExec.execSelect() ; 
+            assertFalse(rs.hasNext()) ;
+        }) ;
+        server.stop() ;
+    }
+
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.make(3330, "/ds2", dsg) ;
