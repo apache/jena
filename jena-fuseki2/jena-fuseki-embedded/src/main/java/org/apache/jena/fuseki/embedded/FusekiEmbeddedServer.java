@@ -27,7 +27,6 @@ import javax.servlet.ServletContext ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.FusekiBuilder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1 ;
@@ -74,7 +73,7 @@ public class FusekiEmbeddedServer {
     static { 
         //FusekiEnv.mode = FusekiEnv.INIT.EMBEDDED ;
         // Stop anything accidently resetting Fuseki server logging. 
-        FusekiLogging.allowLoggingReset(false) ;
+        //FusekiLogging.allowLoggingReset(false) ;
     }
     
     /** Construct a Fuseki server for one dataset.
