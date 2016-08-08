@@ -61,7 +61,7 @@ public class TxnCounter implements Transactional {
     }
     
     // Global state - the exterally visible value and the starting point for any
-    // transaction. This is set to a new value when a write trasnaction commits.
+    // transaction. This is set to a new value when a write transaction commits.
     
     private final AtomicLong value = new AtomicLong(-1712) ; 
 
