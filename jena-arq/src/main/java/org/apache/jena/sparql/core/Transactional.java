@@ -39,9 +39,9 @@ public interface Transactional
     /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
     public void abort() ;
 
-    /** Say whether inside a transaction. */ 
-    public boolean isInTransaction() ;
-    
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
     public void end() ;
+
+    /** Say whether inside a transaction. */ 
+    public boolean isInTransaction() ;
 }
