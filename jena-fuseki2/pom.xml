@@ -70,6 +70,7 @@
 
   <modules>
     <module>jena-fuseki-core</module>
+    <module>jena-fuseki-embedded</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-server</module>
     <module>apache-jena-fuseki</module>
