@@ -86,7 +86,8 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn.getBaseDataset() ;
     }
 
-    /*private*/public/*for development*/ static boolean promotion = false ; 
+    /*private*/public/*for development*/ static boolean promotion               = false ; 
+    /*private*/public/*for development*/ static boolean readCommittedPromotion   = true ;
     
     @Override public DatasetGraph getW() {
         if ( isInTransaction() ) {
@@ -94,7 +95,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
                 DatasetGraphTxn dsgTxn = txn.get() ;
                 if ( dsgTxn.getTransaction().isRead() ) {
                     TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
-                    DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, true) ;
+                    DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, readCommittedPromotion) ;
                     txn.set(dsgTxn2); 
                 }
             }
