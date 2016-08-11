@@ -41,6 +41,7 @@ import org.junit.runners.Suite ;
     , TestTransactionUnionGraph.class
     , TestMiscTDB.class
     , TestTDBInternal.class
+    , TestTransPromote.class
 })
 public class TS_TransactionTDB
 {
