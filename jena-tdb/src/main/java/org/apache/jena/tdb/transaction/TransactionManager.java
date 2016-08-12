@@ -93,6 +93,11 @@ public class TransactionManager
     List<Transaction> commitedAwaitingFlush = new ArrayList<>() ;
     
     static AtomicLong transactionId = new AtomicLong(1) ;
+    // The version of the data starting at 1. The contract is that this is
+    // never the same for two version (it may not be monotonic increasing).
+    // Currently, it is sequentially increasing.
+    // Set on each commit.
+    private AtomicLong version = new AtomicLong(0) ;
     
     // Accessed by SysTxnState
     // These must be AtomicLong
@@ -342,13 +347,18 @@ public class TransactionManager
 //            // Would this block corrctly? ... drops the sync lock?
 //            acquireWriterLock(true) ;
 
-        // 2/ Check the database view has not moved on.
-        DatasetGraphTDB current  = determineBaseDataset() ;
-        DatasetGraphTDB starting = txn.getBaseDataset() ;
-        // Compare by object identity.
-        if ( current != starting )
-            throw new TDBTransactionException("Dataset changed - can't promote") ;
+        // 2/ Check the database view has not moved on. No active writers at the moment.
         
+        if ( txn.getVersion() != version.get() )
+            throw new TDBTransactionException("Dataset changed - can't promote") ;
+
+        // This is an equivalent test.
+//        // Compare by object identity.
+//        DatasetGraphTDB current  = determineBaseDataset() ;
+//        DatasetGraphTDB starting = txn.getBaseDataset() ;
+//        if ( current != starting )
+//            throw new TDBTransactionException("Dataset changed - can't promote") ;
+
         // Need to go through begin for the writers lock. 
         DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
         return dsgtxn2 ;
@@ -409,7 +419,7 @@ public class TransactionManager
           return dsg ;
       }
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label) {
-        Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
+        Transaction txn = new Transaction(dsg, version.get(), mode, transactionId.getAndIncrement(), label, this) ;
         return txn ;
     }
 
@@ -452,6 +462,7 @@ public class TransactionManager
         switch ( transaction.getMode() ) {
             case READ: break ;
             case WRITE:
+                version.incrementAndGet() ;
                 currentReaderView.set(null) ;       // Clear the READ transaction cache.
                 releaseWriterLock();
         }

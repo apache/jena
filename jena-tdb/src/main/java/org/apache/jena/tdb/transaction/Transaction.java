@@ -41,6 +41,7 @@ public class Transaction
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
+    private final long version ;
 
     private final List<Iterator<?>> iterators ;     // Tracking iterators 
     private DatasetGraphTxn         activedsg ;
@@ -52,7 +53,7 @@ public class Transaction
     
     private boolean changesPending ;
     
-    public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
+    public Transaction(DatasetGraphTDB dsg, long version, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
         this.id = id ;
         if (label == null )
             label = "Txn" ;
@@ -65,6 +66,7 @@ public class Transaction
         this.label = label ;
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
+        this.version = version ;
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
@@ -268,6 +270,7 @@ public class Transaction
     public TransactionManager getTxnMgr()           { return txnMgr ; }
     
     public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
+    public long getVersion()                        { return version ; }
 
     /*package*/ void setActiveDataset(DatasetGraphTxn activedsg) { 
         this.activedsg = activedsg ;

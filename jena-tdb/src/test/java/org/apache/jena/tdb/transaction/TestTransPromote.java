@@ -259,7 +259,8 @@ public class TestTransPromote {
         }) ;
     }
 
-    // Tests for XXX Read-committed yes/no, and whether the other transaction commits or aborts.
+    // Tests for XXX Read-committed yes/no (false = snapshot isolation, true = read committed),
+    // and whether the other transaction commits (true) or aborts (false).
     
     @Test
     public void promote_10() { promote_readCommit_txnCommit(true, true) ; }
@@ -297,8 +298,9 @@ public class TestTransPromote {
         logger2.setLevel(level2);
     }
     
-    // Test whether a writer casuses a snapshot isolation
-    // promotion to fail like it should
+    // Test whether an active writer causes a snapshot isolation
+    // promotion to fail like it should.
+    // No equivalent read commiter version - it would block. 
     @Test(expected=TDBTransactionException.class)
     public void promote_clash_1() { 
         DatasetGraphTransaction.readCommittedPromotion = false ;
@@ -318,8 +320,9 @@ public class TestTransPromote {
         sema1.acquireUninterruptibly(); 
         // The thread is in the write.
         dsg.begin(ReadWrite.READ) ;
-        // If read commited this will block.
-        // If snapshot, this will though an exception due to the active writer.
+        // ++ If read commited, the promotion will block. ++
+        // because the other-thread writer is blocked. 
+        // If snapshot, this will cause an exception due to the active writer.
         dsg.add(q1) ;
         fail("Should not be here") ;
         dsg.commit() ;
