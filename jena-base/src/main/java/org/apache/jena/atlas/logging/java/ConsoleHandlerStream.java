@@ -20,8 +20,9 @@ package org.apache.jena.atlas.logging.java;
 
 import java.io.OutputStream ;
 import java.nio.charset.StandardCharsets ;
-import java.util.logging.ConsoleHandler ;
-import java.util.logging.LogManager ;
+import java.util.logging.* ;
+
+import org.apache.jena.atlas.logging.java.TextFormatter ;
 
 /** Console handler that modifies {@link java.util.logging.ConsoleHandler}.
  * Supports the configuration parameters of {@link ConsoleHandler} -- {@code .level},
@@ -29,35 +30,88 @@ import java.util.logging.LogManager ;
  * <p>
  * Defaults:
  * <ul>
- * <li>Stdout, rather than stderr</li>
+ * <li>Stdout, rather than stderr, by default.</li>
  * <li>{@link TextFormatter} rather than {@link java.util.logging.SimpleFormatter}</li>
  * <li>UTF-8, rather than platform charset</li>
  * </ul>
+ * Example:
+ * <pre>
+ * handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStream</pre>
+ * or to configure the formatter as well:
+ * <pre>
+ * handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStream
+ * org.apache.jena.atlas.logging.java.TextFormatter.format = %5$tT %3$-5s %2$-20s -- %6$s</pre>
  */
-public class ConsoleHandlerStream extends ConsoleHandler {
-
+public class ConsoleHandlerStream extends StreamHandler {
+    // We can't use ConsoleHandler.  
+    // The setOutputStream() operation closes the previous stream but when the only
+    // constructor ConsoleHandler() runs, it sets output to System.err.
+    // So System.err is then closed in the app!
+    // We need to chose the output in the constructor and ConsoleHandler does not allow that,
+    // hence going straight to StreamHandler and having to provide the functionality here. 
+    
     public ConsoleHandlerStream() {
         this(System.out) ;
     }
     
     public ConsoleHandlerStream(OutputStream outputStream) {
-        super() ;
+        super(outputStream, new TextFormatter()) ;
+        
         LogManager manager = LogManager.getLogManager();
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
         String cname = getClass().getName();
-        // Change the formatter default from SimpleFormatter to TextFormatter.
-        String pNameFormatter = cname +".formatter" ;
-        if ( manager.getProperty(pNameFormatter) == null )
-            setFormatter(new TextFormatter()) ;
-        String pNameEncoding = cname +".encoding" ;
-        if ( manager.getProperty(pNameEncoding) == null ) {
-            try { setEncoding(StandardCharsets.UTF_8.name()) ; }
-            catch (Exception e) { 
-                // That should work as it is a required charset. 
-                System.err.print("Failed to set encoding: "+e.getMessage()) ;
-                // Ignore and try to carry on.
+        
+        // -- Level
+        Level level = Level.INFO ;
+        String pLevel = getProperty(manager, cname, "level") ;
+        if ( pLevel != null )
+            level = Level.parse(pLevel) ;
+        setLevel(level);
+        
+        // -- Formatter
+        // The default is TextFormatter above
+        // (we had to pass a Formatter of some kind to super(,)).
+        String pFormatter = getProperty(manager, cname, "formatter") ;
+        if ( pFormatter != null ) {
+            try {
+                Class<?> cls = classLoader.loadClass(pFormatter);
+                setFormatter((Formatter) cls.newInstance());
+            } catch (Exception ex) {
+                System.err.println("Problems setting the logging formatter") ;
+                ex.printStackTrace(System.err);
             }
         }
-        // Temporary fix : setOutputStream closes the old setting which is backed by System.err.  
-        //setOutputStream(outputStream);
+        
+        // -- Filter
+        String pFilter = getProperty(manager, cname, "filter") ;
+        if ( pFilter != null ) {
+            try {
+                Class<?> cls = classLoader.loadClass(pFilter);
+                setFilter((Filter) cls.newInstance());
+            } catch (Exception ex) {
+                System.err.println("Problems setting the logging filter") ;
+                ex.printStackTrace(System.err);
+            }
+        }
+        
+        // -- Encoding : Default UTF-8
+        String pEncoding = getProperty(manager, cname, "encoding") ;
+        if ( pEncoding == null )
+            pEncoding = StandardCharsets.UTF_8.name() ;
+        try { setEncoding(pEncoding) ; }
+        catch (Exception e) { 
+            // That should work for UTF-8 as it is a required charset. 
+            System.err.print("Failed to set encoding: "+e.getMessage()) ;
+        }
+    }
+    
+    private String getProperty(LogManager manager, String cname, String pname) {
+        return manager.getProperty(cname+"."+pname);
+    }
+    
+    @Override
+    public void publish(LogRecord record) {
+        super.publish(record);
+        flush();
     }
 }
