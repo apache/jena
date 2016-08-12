@@ -326,19 +326,34 @@ public class TransactionManager
         if ( txn.getState() != TxnState.ACTIVE )
             throw new TDBTransactionException("promote: transaction is not active") ;
         
-        DatasetGraphTDB basedsg = txn.getBaseDataset() ;
-        // if read commiter - pick up any currentReaderView (last commited transaction)
-        if ( ! readCommited ) {
-            // Compare by object identity.
-            if ( currentReaderView.get() != basedsg )
-                throw new TDBTransactionException("Dataset changed - can't promote") ;
-        }
+        if ( readCommited ) {
+            // Read commit - pick up whatever is current at the point setup.  
+            // Need to go through begin for the writers lock. 
+            DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
+            return dsgtxn2 ;
+        }           
+        
+        // Don't promote if the database has moved on.
+        // 1/ No active writers.
+        //    Ideally, wiait to see if it aborts but abort is uncommon. 
+        // Easy implementation -- if any active writers, don't promote.
+        if ( activeWriters.get() > 0 )
+            throw new TDBTransactionException("Dataset may be changing - active writer - can't promote") ;
+//            // Would this block corrctly? ... drops the sync lock?
+//            acquireWriterLock(true) ;
+
+        // 2/ Check the database view has not moved on.
+        DatasetGraphTDB current  = determineBaseDataset() ;
+        DatasetGraphTDB starting = txn.getBaseDataset() ;
+        // Compare by object identity.
+        if ( current != starting )
+            throw new TDBTransactionException("Dataset changed - can't promote") ;
         
         // Need to go through begin for the writers lock. 
         DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
         return dsgtxn2 ;
     }
-
+    
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
     // of the low level object directly so we'll play safe.  
@@ -355,16 +370,7 @@ public class TransactionManager
                 case WRITE : System.out.print("w") ; break ;
             }
         
-        DatasetGraphTDB dsg = baseDataset ;
-        // *** But, if there are pending, committed transactions, use latest.
-        if ( !commitedAwaitingFlush.isEmpty() ) {
-            if ( DEBUG )
-                System.out.print(commitedAwaitingFlush.size()) ;
-            dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size() - 1).getActiveDataset().getView() ;
-        } else {
-            if ( DEBUG )
-                System.out.print('_') ;
-        }
+        DatasetGraphTDB dsg = determineBaseDataset() ;
         Transaction txn = createTransaction(dsg, mode, label) ;
         
         log("begin$", txn) ;
@@ -389,6 +395,19 @@ public class TransactionManager
         return dsgTxn ;
     }
     
+    private DatasetGraphTDB determineBaseDataset() {
+    //      if ( DEBUG ) {
+    //          if ( !commitedAwaitingFlush.isEmpty() )
+    //              System.out.print(commitedAwaitingFlush.size()) ;
+    //      } else {
+    //          System.out.print('_') ;
+    //      }
+          DatasetGraphTDB dsg = baseDataset ;
+          // But, if there are pending, committed transactions, use latest.
+          if ( !commitedAwaitingFlush.isEmpty() )
+              dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size() - 1).getActiveDataset().getView() ;
+          return dsg ;
+      }
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label) {
         Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
         return txn ;
