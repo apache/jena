@@ -29,6 +29,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.ThreadAction ;
 import org.apache.jena.system.ThreadTxn ;
 import org.apache.jena.system.Txn ;
 import org.apache.jena.tdb.TDB ;
@@ -225,7 +226,7 @@ public class TestTransPromote {
         DatasetGraphTransaction.readCommittedPromotion = b ;
         DatasetGraph dsg = create() ;
         // Start long running reader.
-        ThreadTxn tt = ThreadTxn.threadTxnRead(dsg, () -> {
+        ThreadAction tt = ThreadTxn.threadTxnRead(dsg, () -> {
             long x = Iter.count(dsg.find()) ;
             if ( x != 0 )
                 throw new RuntimeException() ;
@@ -279,7 +280,7 @@ public class TestTransPromote {
         DatasetGraphTransaction.readCommittedPromotion = allowReadCommitted ;
         DatasetGraph dsg = create() ;
         
-        ThreadTxn tt = asyncCommit?
+        ThreadAction tt = asyncCommit?
             ThreadTxn.threadTxnWrite(dsg, () -> dsg.add(q3) ) :
             ThreadTxn.threadTxnWriteAbort(dsg, () -> dsg.add(q3)) ;
 

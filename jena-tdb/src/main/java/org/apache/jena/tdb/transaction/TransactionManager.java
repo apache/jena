@@ -339,16 +339,17 @@ public class TransactionManager
         }           
         
         // Don't promote if the database has moved on.
+
         // 1/ No active writers.
-        //    Ideally, wiait to see if it aborts but abort is uncommon. 
+        //    Ideally, wait to see if it aborts but abort is uncommon.
+        //    We can not grab the write lock here - we have the TM sync lock
+        //    so an active writer can not commit.s
+        
         // Easy implementation -- if any active writers, don't promote.
         if ( activeWriters.get() > 0 )
-            throw new TDBTransactionException("Dataset may be changing - active writer - can't promote") ;
-//            // Would this block corrctly? ... drops the sync lock?
-//            acquireWriterLock(true) ;
+             throw new TDBTransactionException("Dataset may be changing - active writer - can't promote") ;
 
         // 2/ Check the database view has not moved on. No active writers at the moment.
-        
         if ( txn.getVersion() != version.get() )
             throw new TDBTransactionException("Dataset changed - can't promote") ;
 
