@@ -119,8 +119,8 @@ public class TransactionManager
     // particular state creates the view datasetgraph and sets the  lastreader.
     private AtomicReference<DatasetGraphTDB> currentReaderView = new AtomicReference<>(null) ;
     
-    // Ensure single writer.
-    private Semaphore writersWaiting = new Semaphore(1, true) ;
+    // Ensure single writer. A writer calling begin(WRITE) blocks.  
+    private Semaphore writerPermits = new Semaphore(1, true) ;
     
     // All transactions need a "read" lock throughout their lifetime. 
     // Do not confuse with read/write transactions.  We need a 
@@ -485,23 +485,23 @@ public class TransactionManager
     }
     
     private void releaseWriterLock() {
-        int x = writersWaiting.availablePermits() ;
+        int x = writerPermits.availablePermits() ;
         if ( x != 0 )
-            throw new TDBTransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls") ;
-        writersWaiting.release() ;
+            throw new TDBTransactionException("TransactionCoordinator: Probably mismatch of enableWriters/blockWriters calls") ;
+        writerPermits.release() ;
     }
     
     private boolean acquireWriterLock(boolean canBlock) {
         if ( ! canBlock )
-            return writersWaiting.tryAcquire() ;
+            return writerPermits.tryAcquire() ;
         try { 
-            writersWaiting.acquire() ; 
+            writerPermits.acquire() ; 
             return true;
         } catch (InterruptedException e) { throw new TDBTransactionException(e) ; }
     }
     
     /** Block until no writers are active.
-     *  When this returns, yhis guarantees that the database is not changing
+     *  When this returns, it guarantees that the database is not changing
      *  and the jounral is flush to disk.
      * <p> 
      * The application must call {@link #enableWriters} later.
