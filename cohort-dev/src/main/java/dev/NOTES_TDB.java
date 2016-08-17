@@ -23,7 +23,22 @@ import org.seaborne.tdb2.store.QuadTable ;
 import org.seaborne.tdb2.store.TripleTable ;
 
 public class NOTES_TDB {
+    // Hash functions http://aras-p.info/blog/2016/08/09/More-Hash-Function-Tests/
+    // Guava Hashing
+    
     // arq.query : needs Txn wrapper
+    
+    // DatasetGraphTDB.requireWriteTransaction() and in GraphTDB.
+    // c.f. getW() ;
+    
+    // ReadWrite => TxnMode(WRITE, READ(=READ_ISOLATED), READ_COMMITED, READ_ONLY, READ_ISOLATED , ISOLATED)
+    //  begin() == begin(READ_ISOLATED) ;
+    
+    // Counting begin-end for nested transactions.
+    //   TransactionalBase??
+    
+    // proper non-transactional.
+    //SystemTDB.setNonTransactional
     
     // ** Reaper.
     // ** Or time-based, commit keeping.  benefit!

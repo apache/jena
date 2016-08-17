@@ -22,6 +22,8 @@ public class NOTES_Mantis {
     // "Get state - restore state"
     // Components have names,
     //   SysTransState
+    
+    // NestedTransactions by counting (only).
 
     // B+Trees - use a random access, zero copy encoding like Cap'n Proto, FlatBuffers,
     // SBE (via real-logic) or messagebuffers

@@ -31,20 +31,34 @@ public class MainCohort {
     static { LogCtl.setLog4j() ; }
     
     public static void main(String... args) {
-        DatasetGraph dsg = TDB2Factory.connectDatasetGraph("DB") ;
+        //DatasetGraph dsg = TDB2Factory.connectDatasetGraph("DB") ;
+        DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
         TransactionalSystem txnSystem = ((DatasetGraphTDB)dsg).getTxnSystem() ;
+        Quad q = SSE.parseQuad("(_ <s> <p> <o> )") ;
+        
         
         dsg.begin(ReadWrite.READ);
+        dsg.begin(ReadWrite.READ);
+        
         Transaction txn = txnSystem.getThreadTransaction() ;
+        
         
         boolean b = txn.promote() ;
         if ( ! b )
             System.out.println("Did not promote");
         else {
-            Quad q = SSE.parseQuad("(_ <s> <p> <o> )") ; 
+             
             dsg.add(q) ;
             dsg.commit() ;
         }
+        dsg.end() ;
+        
+        System.out.println("read") ;
+        
+        dsg.begin(ReadWrite.READ);
+        // Auto promote
+        dsg.add(q) ;
+        dsg.commit();
         dsg.end() ;
         
         System.out.println("DONE") ;
