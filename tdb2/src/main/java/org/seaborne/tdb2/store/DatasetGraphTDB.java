@@ -18,6 +18,8 @@
 
 package org.seaborne.tdb2.store;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads ;
+
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -32,9 +34,10 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import static org.apache.jena.sparql.util.graph.GraphUtils.* ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.transaction.TransactionalMonitor ;
+import org.seaborne.dboe.transaction.txn.Transaction ;
+import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
@@ -112,6 +115,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) { 
         checkNotClosed() ;
+        requireWriteTxn() ;
         notifyAdd(null, s, p, o) ;
         getTripleTable().add(s,p,o) ;
     }
@@ -119,6 +123,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed() ;
+        requireWriteTxn() ;
         notifyAdd(g, s, p, o) ;
         getQuadTable().add(g, s, p, o) ; 
     }
@@ -126,6 +131,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
         checkNotClosed() ;
+        requireWriteTxn() ;
         notifyDelete(null, s, p, o) ;
         getTripleTable().delete(s, p, o) ;
     }
@@ -133,10 +139,22 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed() ;
+        requireWriteTxn() ;
         notifyDelete(g, s, p, o) ;
         getQuadTable().delete(g, s, p, o) ;
     }
-    
+
+    // Promotion
+    private void requireWriteTxn() {
+        Transaction txn = txnSystem.getThreadTransaction() ;
+        if ( txn.isWriteTxn() )
+            return ;
+        // Transaction.promoteOrException
+        boolean b = txn.promote() ;
+        if ( !b )
+            throw new TransactionException("Can't write") ;
+    }
+
     // XXX Optimize by integrating with add/delete operations.
     private final void notifyAdd(Node g, Node s, Node p, Node o) {
         if ( monitor == null )
