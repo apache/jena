@@ -308,63 +308,72 @@ public class TransactionManager
     
     /** Ensure a DatasetGraphTxn is for a write transaction.
      * <p>
-     * If the transaction is already a write transaction, this is an efficient
-     * no-op.
+     * If the transaction is already a write transaction, this is an efficient no-op.
      * <p>
      * If the transaction is a read transaction then promotion can either respect the transactions current
      * view of the data where no changes from other writers that started after this transaction are visible
-     * ("serialized") or the promotion can include changes by other such writers ("read committed").
+     * ("serialized" or "fully isolated") or the promotion can include changes by other such writers ("read committed").
      * <p>
      * However, "serialized" can fail, in which case an exception {@link TDBTransactionException}
      * is thrown. The transactions can continue as a read transaction.
      * There is no point retrying - later committed changes have been made and will remain.
+     * <p>
+     * "read committed" will always succeed but the app needs to be aware that data access before the promotion
+     * is no longer valid. It may need to check it.   
      */
     /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, boolean readCommited) throws TDBTransactionException {
-        if ( dsgtxn.getTransaction().getMode() == ReadWrite.WRITE )
-            return dsgtxn ;
-        return promote$(dsgtxn.getTransaction(), readCommited) ;
-    }
-        
-    synchronized
-    private DatasetGraphTxn promote$(Transaction txn, boolean readCommited) {
-        // check state
+        Transaction txn = dsgtxn.getTransaction() ;
         if ( txn.getState() != TxnState.ACTIVE )
             throw new TDBTransactionException("promote: transaction is not active") ;
+        if ( txn.getMode() == ReadWrite.WRITE )
+            return dsgtxn ;
         
+        // Read commit - pick up whatever is current at the point setup.
+        // Can also promote - may need to wait for active writers. 
+        // Go through begin for the writers lock. 
         if ( readCommited ) {
-            // Read commit - pick up whatever is current at the point setup.  
-            // Need to go through begin for the writers lock. 
-            DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
+            DatasetGraphTxn dsgtxn2 = begin(ReadWrite.WRITE, txn.getLabel()) ;
+            // Junk the old one.
             return dsgtxn2 ;
-        }           
+        }
         
-        // Don't promote if the database has moved on.
-
-        // 1/ No active writers.
-        //    Ideally, wait to see if it aborts but abort is uncommon.
-        //    We can not grab the write lock here - we have the TM sync lock
-        //    so an active writer can not commit.s
+        // First check, without the writer lock. Fast fail.
+        // Have any finished writers run and commited since this transaction began?
+        // This is a "fast fail" test of whether we can promote. Passing it does not gauarantee 
+        // we can promote but failing it does mean we can't.
+        // There are active writers running at this moment, (or any time up to
+        // acquireWriterLock returning. It catches many cases without needing
+        // to acquire the writer lock.
         
-        // Easy implementation -- if any active writers, don't promote.
-        if ( activeWriters.get() > 0 )
-             throw new TDBTransactionException("Dataset may be changing - active writer - can't promote") ;
-
-        // 2/ Check the database view has not moved on. No active writers at the moment.
-        if ( txn.getVersion() != version.get() )
+        if ( txn.getVersion() != version.get() ) {
             throw new TDBTransactionException("Dataset changed - can't promote") ;
+        }
 
-        // This is an equivalent test.
-//        // Compare by object identity.
-//        DatasetGraphTDB current  = determineBaseDataset() ;
-//        DatasetGraphTDB starting = txn.getBaseDataset() ;
-//        if ( current != starting )
-//            throw new TDBTransactionException("Dataset changed - can't promote") ;
+        // Put ourselves in the serialization timeline of the dataset - that, is grab a writer
+        // lock as a step toward promotion. We can then test properly because no other writer
+        // can start; readers can between acquireWriterLock and the synchronized in promote2$
+        // but they don't matter.
+        // Potentially blocking - must be outside 'synchronized' so that any active writer
+        // can commit/abort.  Otherwise, we have deadlock.
+        acquireWriterLock(true) ;
 
-        // Need to go through begin for the writers lock. 
-        DatasetGraphTxn dsgtxn2 = begin( ReadWrite.WRITE, txn.getLabel()) ;
-        return dsgtxn2 ;
+        // Do the synchronized stuff.
+        return promote2$(dsgtxn, readCommited) ; 
     }
     
+    synchronized
+    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn, boolean readCommited) {
+        Transaction txn = dsgtxn.getTransaction() ;
+        // Writers may have happened between the first check of  of the active writers may have committed.  
+        if ( txn.getVersion() != version.get() ) {
+            releaseWriterLock();
+            throw new TDBTransactionException("Active writer changed the dataset - can't promote") ;
+        }
+        // Use begin$ - we have the writers lock.
+        DatasetGraphTxn dsgtxn2 = begin$(ReadWrite.WRITE, txn.getLabel()) ;
+        return dsgtxn2 ;
+    }
+
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
     // of the low level object directly so we'll play safe.  

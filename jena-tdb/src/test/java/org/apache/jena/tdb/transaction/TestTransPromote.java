@@ -300,57 +300,26 @@ public class TestTransPromote {
         logger2.setLevel(level2);
     }
     
-    // Test whether an active writer causes a snapshot isolation
-    // promotion to fail like it should.
-    // The promtion is on the test's thread.
-    // No equivalent "read commited" version - it would block. 
-    @Test(expected=TDBTransactionException.class)
-    public void promote_active_writer_0() { 
-        DatasetGraphTransaction.readCommittedPromotion = false ;
-        DatasetGraph dsg = create() ;
-        Semaphore sema1 = new Semaphore(0) ;
-        Semaphore sema2 = new Semaphore(0) ;
-        Runnable r = ()->{
-            dsg.begin(ReadWrite.WRITE) ; 
-            sema1.release(1); 
-            sema2.acquireUninterruptibly(1) ;
-            dsg.commit() ; 
-            dsg.end() ; 
-        } ;
-        
-        // Create a writer that waits.
-        new Thread(r).start(); 
-        sema1.acquireUninterruptibly(); 
-        // The thread is in the write.
-        dsg.begin(ReadWrite.READ) ;
-        // ++ If read commited, the promotion will block. ++
-        // because the other-thread writer is blocked. 
-        // If snapshot, this will cause an exception due to the active writer.
-        dsg.add(q1) ;
-        fail("Should not be here") ;
-        sema2.release(1);
-        dsg.commit() ;
-        dsg.end() ;
-    }
-    
+    // Active writer commits -> no promotion.
     @Test(expected=TDBTransactionException.class)
     public void promote_active_writer_1() throws InterruptedException, ExecutionException {
-        // Active writer commits -> no promotion.
         promote_active_writer(true) ;
     }
     
-    // Current implementation in TDB - the active writer causes "no promotion" even though it will abort.   
-    @Test(expected=TDBTransactionException.class)
+    // Active writer aborts -> promotion.
+    @Test
     public void promote_active_writer_2() throws InterruptedException, ExecutionException {
-        // Active writer aborts -> promotion possible (but not ipleemtned that way).
+        // Active writer aborts -> promotion possible (but not implemented that way).
         promote_active_writer(false) ;
     }
+    
     private void promote_active_writer(boolean activeWriterCommit) {
         ExecutorService executor = Executors.newFixedThreadPool(2) ;
         try {
-            promote_clash_active_writer(executor, false) ;
-        } finally {
-            executor.shutdown();
+            promote_clash_active_writer(executor, activeWriterCommit) ;
+        }
+        finally {
+            executor.shutdown() ;
         }
     }
     
