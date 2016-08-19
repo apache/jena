@@ -18,11 +18,13 @@
 
 package org.apache.jena.shared.impl;
 
-import java.util.*;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Map ;
 import java.util.Map.Entry;
 
 import org.apache.jena.rdf.model.impl.Util ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.xerces.util.XMLChar;
 
@@ -82,6 +84,17 @@ public class PrefixMappingImpl implements PrefixMapping
         regenerateReverseMapping() ;
         return this;
         }
+    
+    @Override
+    public PrefixMapping clearNsPrefixMap() {
+        checkUnlocked();
+        // Do by calling down via the interception point remove(prefix).
+        // Copy prefixes to avoid possible concurrent modification exceptions
+        List<String> prefixes = new ArrayList<>(prefixToURI.keySet()) ;
+        prefixes.forEach(p->remove(p));
+        regenerateReverseMapping() ;
+        return this ;
+    }
     
     protected void regenerateReverseMapping()
         {

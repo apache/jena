@@ -76,6 +76,12 @@ public interface PrefixMapping
 
     PrefixMapping removeNsPrefix( String prefix );
 
+    /** 
+     * Clear this prefix mapping of all mappings
+     */
+    PrefixMapping clearNsPrefixMap();
+
+    
     /**
         Copies the prefixes from other into this. Any existing binding of the
         same prefix is lost.  The result is this same prefixMapping.
