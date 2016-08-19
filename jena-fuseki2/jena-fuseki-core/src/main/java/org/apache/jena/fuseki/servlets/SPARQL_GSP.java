@@ -27,6 +27,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
@@ -73,8 +74,12 @@ public abstract class SPARQL_GSP extends ActionREST
         // Make sure it ends in "/", ie. dataset as container.
         if ( action.request.getQueryString() != null && ! base.endsWith("/") )
             base = base + "/" ;
-        
-        String absUri = IRIResolver.resolveString(uri, base) ;
+        String absUri = null ;
+        try { absUri = IRIResolver.resolveString(uri, base) ; }
+        catch (RiotException ex) {
+            // Bad IRI
+            ServletOps.errorBadRequest("Bad IRI: "+ex.getMessage()) ;
+        }
         return namedTarget(action, absUri) ;
     }
     
