@@ -408,10 +408,12 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefix( "hr", hURI );
         A.setNsPrefix( "br", bURI );
         A.clearNsPrefixMap() ;
-        assertEquals( null, A.getNsURIPrefix( "hr" ) );
-        assertEquals( null, A.getNsURIPrefix( "br" ) );
-        assertEquals( null, A.getNsURIPrefix(bURI) ) ;
+        
+        assertEquals( null, A.getNsPrefixURI( "hr" ) );
+        assertEquals( null, A.getNsPrefixURI( "br" ) );
+        
         assertEquals( null, A.getNsURIPrefix(hURI) ) ;
+        assertEquals( null, A.getNsURIPrefix(bURI) ) ;
     }
 
     
