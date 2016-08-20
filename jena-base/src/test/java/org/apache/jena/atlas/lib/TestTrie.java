@@ -214,6 +214,22 @@ public class TestTrie {
         Assert.assertFalse(trie.contains(""));
     }
     
+    @Test
+    public void trie_clear_01() {
+        Trie<Integer> trie = new Trie<>();
+        trie.clear() ;
+        Assert.assertTrue(trie.isEmpty()) ;
+    }
+
+    @Test
+    public void trie_clear_02() {
+        Trie<Integer> trie = new Trie<>();
+        trie.add("", 123);
+        trie.clear() ;
+        Assert.assertFalse(trie.contains(""));
+        Assert.assertTrue(trie.isEmpty()) ;
+    }
+
     /**
      * Test prefix search
      */
