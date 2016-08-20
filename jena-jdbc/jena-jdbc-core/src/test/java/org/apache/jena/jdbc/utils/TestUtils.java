@@ -20,7 +20,7 @@ package org.apache.jena.jdbc.utils;
 
 import java.util.Iterator;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetAccessor ;
@@ -144,8 +144,8 @@ public class TestUtils {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void copyToRemoteDataset(Dataset source, String service, HttpAuthenticator authenticator) {
-        DatasetAccessor target = DatasetAccessorFactory.createHTTP(service, authenticator);
+    public static void copyToRemoteDataset(Dataset source, String service, HttpClient client) {
+        DatasetAccessor target = DatasetAccessorFactory.createHTTP(service, client);
         target.putModel(source.getDefaultModel());
         Iterator<String> uris = source.listNames();
         while (uris.hasNext()) {

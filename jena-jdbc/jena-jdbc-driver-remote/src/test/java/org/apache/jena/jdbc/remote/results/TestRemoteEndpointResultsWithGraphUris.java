@@ -21,15 +21,16 @@ package org.apache.jena.jdbc.remote.results;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,9 +55,8 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     @BeforeClass
     public static void setup() throws SQLException {
         ServerTest.allocServer();
-        
-        List<String> defaultGraphUris = new ArrayList<String>();
-        defaultGraphUris.add(DEFAULT_GRAPH_URI);
+        HttpOp.setDefaultHttpClient(null);
+        List<String> defaultGraphUris = Lists.newArrayList(DEFAULT_GRAPH_URI);
         connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, defaultGraphUris, null, defaultGraphUris, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
@@ -91,6 +91,4 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }
-    
-
 }

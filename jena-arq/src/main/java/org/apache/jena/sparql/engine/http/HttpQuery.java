@@ -70,7 +70,7 @@ public class HttpQuery extends Params {
     private HttpClient client;
     private boolean requireClientShutdown = true;
 
-    private HttpClientContext context = new HttpClientContext();
+    private HttpClientContext context;
 
     /**
      * Create a execution object for a whole model GET
@@ -175,6 +175,14 @@ public class HttpQuery extends Params {
     }
     
     /**
+     * Sets the context to use
+     * @param context HTTP context
+     */
+    public void setContext(HttpClientContext context) {
+        this.context = context;
+    }
+    
+    /**
      * Gets the HTTP client that is being used, may be null if no request has yet been made
      * @return HTTP Client or null
      */
@@ -189,6 +197,15 @@ public class HttpQuery extends Params {
             }
         }
         return client;
+    }
+    
+    /**
+     * Gets the HTTP context that is being used, or sets and returns a default
+     * @return the {@code HttpClientContext} in scope
+     */
+    public HttpClientContext getContext() {
+        if (context == null) context = new HttpClientContext();
+        return context;
     }
     
     /**
@@ -283,7 +300,7 @@ public class HttpQuery extends Params {
     }
     
     private void contextualizeCompressionSettings() {
-        final RequestConfig.Builder builder = RequestConfig.copy(context.getRequestConfig());
+        final RequestConfig.Builder builder = RequestConfig.copy(getContext().getRequestConfig());
         builder.setContentCompressionEnabled(allowCompression);
         context.setRequestConfig(builder.build());
     }
@@ -313,7 +330,7 @@ public class HttpQuery extends Params {
         try {
             try {
                 // Get the actual response stream
-                TypedInputStream stream = HttpOp.execHttpGet(target.toString(), contentTypeResult, client, context);
+                TypedInputStream stream = HttpOp.execHttpGet(target.toString(), contentTypeResult, client, getContext());
                 if (stream == null)
                     throw new QueryExceptionHTTP(404);
                 return execCommon(stream);
@@ -341,7 +358,7 @@ public class HttpQuery extends Params {
 
         try {
             // Get the actual response stream
-            TypedInputStream stream = HttpOp.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, context);
+            TypedInputStream stream = HttpOp.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, getContext());
             if (stream == null)
                 throw new QueryExceptionHTTP(404);
             return execCommon(stream);

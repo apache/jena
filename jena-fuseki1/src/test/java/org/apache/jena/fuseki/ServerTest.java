@@ -20,7 +20,7 @@ package org.apache.jena.fuseki;
 
 import java.io.IOException ;
 import java.net.ServerSocket ;
-import java.util.Arrays ;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.graph.Graph ;
@@ -48,9 +48,8 @@ import org.apache.jena.update.UpdateProcessor ;
 public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
-    
     // Different to the Fuseki2 test ports.
-    public static final int port             = choosePort(3635, 3634, 3653, 3652, 103635, 103634, 103653, 103652) ;
+    public static final int port             = choosePort() ;   // Different to the Fuseki2 test ports.
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
@@ -75,20 +74,18 @@ public class ServerTest
     private static EmbeddedFusekiServer1 server = null ;
     
     // reference count of start/stop server
-    private static int countServer = 0 ; 
+    private static AtomicInteger countServer = new AtomicInteger() ; 
     
+    // This will cause there to be one server over all tests.
+    // Must be after initialization of counters 
+    static { allocServer(); }
+
     static public void allocServer() {
-        if ( countServer == 0 )
-            setupServer() ;
-        countServer++ ;
+        if (countServer.getAndIncrement() == 0) setupServer();
     }
     
     static public void freeServer() {
-        if ( countServer >= 0 ) {
-            countServer -- ;
-            if ( countServer == 0 )
-                teardownServer() ;
-        }
+        if (countServer.decrementAndGet() == 0) teardownServer();
     }
     
     @SuppressWarnings("deprecation")
@@ -105,25 +102,21 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-    public static void resetServer() {
+
+    public static void resetServer()
+    {
+        if (countServer.get() == 0)  throw new RuntimeException("No server started!");
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
-        proc.execute() ;
+        try {proc.execute() ; }
+        catch (Throwable e) {e.printStackTrace(); throw e;}
     }
     
-    // Imperfect probing for a port.
-    // There is a race condition on finding a free port and using it in the tests. 
-    private static int choosePort(int... ports) {
-        for (int port : ports) {
-            try {
-                @SuppressWarnings("resource")
-                ServerSocket s = new ServerSocket(port) ;
-                s.close();
-                return s.getLocalPort() ; // OK to call after close.
-            } catch (IOException ex) { 
-                continue;
-            }
+    static int choosePort() {
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException ex) {
+            throw new FusekiException("Failed to find a port for tests!");
         }
-        throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }
 }

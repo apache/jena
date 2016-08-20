@@ -27,6 +27,7 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -70,6 +71,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private List<String> defaultGraphURIs = new ArrayList<>();
     private List<String> namedGraphURIs = new ArrayList<>();
     private HttpClient client;
+    private HttpClientContext httpContext;
 
     private boolean closed = false;
 
@@ -300,11 +302,28 @@ public class QueryEngineHTTP implements QueryExecution {
     /**
      * Get the HTTP client in use, if none is set then null.
      * 
-     * @param client
-     *            HTTP client
+     * @param client HTTP client
      */
     public HttpClient getClient() {
         return client;
+    }
+    
+    /**
+     * Sets the HTTP context to use, if none is set then the default context is used.
+     * 
+     * @param context HTTP context
+     */
+    public void setHttpContext(HttpClientContext context) {
+        this.httpContext = context;
+    }
+    
+    /**
+     * Get the HTTP context in use, if none is set then null.
+     * 
+     * @return the {@code HttpClientContext} in scope
+     */
+    public HttpClientContext getHttpContext() {
+        return httpContext;
     }
 
     /** The Content-Type response header received (null before the remote operation is attempted). */
@@ -591,21 +610,16 @@ public class QueryEngineHTTP implements QueryExecution {
             httpQuery.addParam( HttpParams.pNamedGraph, name );
         }
 
-        if (params != null)
-            httpQuery.merge(params);
+        if (params != null) httpQuery.merge(params);
 
         httpQuery.setAllowCompression(allowCompression);
-
-
         httpQuery.setClient(client);
-
+        httpQuery.setContext(getHttpContext());
+        
         // Apply timeouts
-        if (connectTimeout > 0) {
-            httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
-        }
-        if (readTimeout > 0) {
-            httpQuery.setReadTimeout((int) readTimeoutUnit.toMillis(readTimeout));
-        }
+        if (connectTimeout > 0) httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
+
+        if (readTimeout > 0) httpQuery.setReadTimeout((int) readTimeoutUnit.toMillis(readTimeout));
 
         return httpQuery;
     }

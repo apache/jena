@@ -23,8 +23,11 @@ import java.io.FileWriter ;
 import java.io.IOException ;
 import java.sql.SQLException ;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
@@ -57,7 +60,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     private static String PASSWORD = "letmein";
     private static File realmFile;
     private static SPARQLServer server;
-    private static HttpAuthenticator authenticator;
+    private static HttpClient client;
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
@@ -65,8 +68,10 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
      */
     @BeforeClass
     public static void setup() throws IOException {
-        authenticator = new SimpleAuthenticator(USER, PASSWORD.toCharArray());
-        
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USER, PASSWORD));
+        client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+
         realmFile = File.createTempFile("realm", ".properties");
 
         try(FileWriter writer = new FileWriter(realmFile)) {
@@ -74,6 +79,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
         }
 
         DatasetGraph dsg = DatasetGraphFactory.create();
+
         // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, false);
         conf.port = ServerTest.port;
@@ -90,7 +96,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @After
     public void cleanupTest() {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate, authenticator) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate, client) ;
         proc.execute() ;
     }
 
@@ -113,16 +119,16 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @Override
     protected JenaConnection getConnection() throws SQLException {
         return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, null, null, null, null,
-                authenticator, JenaConnection.DEFAULT_HOLDABILITY,
+                client, JenaConnection.DEFAULT_HOLDABILITY,
                 JdbcCompatibility.DEFAULT, null, null);
     }
 
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST, authenticator);
+        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST, client);
         return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, null, null, null, null,
-                authenticator, JenaConnection.DEFAULT_HOLDABILITY,
+                client, JenaConnection.DEFAULT_HOLDABILITY,
                 JdbcCompatibility.DEFAULT, null, null);
     }
 }

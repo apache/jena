@@ -26,12 +26,18 @@ import java.net.URISyntaxException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
-import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
-import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -40,6 +46,7 @@ import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
@@ -61,9 +68,9 @@ import org.junit.Test ;
 public class TestAuth {
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
-    public static final int authPort             = ServerTest.port+10 ;
+    public static final int authPort             = ServerTest.choosePort() ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
-    public static final String authDatasetPath   = "/dataset" ;
+    public static final String authDatasetPath   = "/authDataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 
     public static final String authServiceQuery  = "http://localhost:"+authPort+authDatasetPath+"/query" ; 
     public static final String authServiceREST   = "http://localhost:"+authPort+authDatasetPath+"/data" ;
@@ -78,6 +85,7 @@ public class TestAuth {
      */
     @BeforeClass
     public static void setup() throws IOException {
+        HttpOp.setDefaultHttpClient(null);
         realmFile = File.createTempFile("realm", ".properties");
 
         try(FileWriter writer = new FileWriter(realmFile)) {
@@ -106,22 +114,34 @@ public class TestAuth {
     @AfterClass
     public static void teardown() {
         server.stop();
-
         realmFile.delete();
     }
-
+    
+    private static HttpClient withCreds(String uname, String password) {
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(uname, password));
+        return HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+    }
+    
+    private static HttpClient withCreds(URI scope, String uname, String password) {
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        credsProv.setCredentials(new AuthScope(scope.getHost(), scope.getPort()),
+                new UsernamePasswordCredentials(uname, password));
+        return HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+    }
+    
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_01() {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
         // No auth credentials should result in an error
-        qe.execAsk();
+        qe.execAsk();   
     }
 
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_02() {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
         // Auth credentials for valid user with bad password
-        qe.setBasicAuthentication("allowed", "incorrect".toCharArray());
+        qe.setClient(withCreds("allowed", "incorrect"));
         qe.execAsk();
     }
 
@@ -129,16 +149,15 @@ public class TestAuth {
     public void query_with_auth_03() {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
         // Auth credentials for valid user with correct password
-        qe.setBasicAuthentication("allowed", "password".toCharArray());
+        qe.setClient(withCreds("allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
 
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_04() {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-        // Auth credentials for valid user with correct password BUT not in
-        // correct role
-        qe.setBasicAuthentication("forbidden", "password".toCharArray());
+        // Auth credentials for valid user with correct password BUT not in correct role
+        qe.setClient(withCreds("forbidden", "password"));
         qe.execAsk();
     }
 
@@ -146,11 +165,9 @@ public class TestAuth {
     public void query_with_auth_05() {
         // Uses auth and enables compression
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-        qe.setAllowDeflate(true);
-        qe.setAllowGZip(true);
-
+        qe.setAllowCompression(true);
         // Auth credentials for valid user with correct password
-        qe.setBasicAuthentication("allowed", "password".toCharArray());
+        qe.setClient(withCreds("allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
 
@@ -158,45 +175,50 @@ public class TestAuth {
     public void query_with_auth_06() {
         // Uses auth and enables compression
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-        qe.setAllowDeflate(true);
-        qe.setAllowGZip(true);
-
+        qe.setAllowCompression(true);
         // Auth credentials for valid user with bad password
-        qe.setBasicAuthentication("allowed", "incorrect".toCharArray());
+        qe.setClient(withCreds("allowed", "incorrect"));
         qe.execAsk();
     }
 
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_07() throws URISyntaxException {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-
-        // Auth credentials for valid user with correct password but scoped to
-        // wrong URI
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://example"), "allowed",
-                "password".toCharArray());
-        qe.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password but scoped to wrong URI
+        qe.setClient(withCreds(new URI("http://example"), "allowed", "password"));
         qe.execAsk();
     }
 
     @Test
     public void query_with_auth_08() throws URISyntaxException {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-
-        // Auth credentials for valid user with correct password and scoped to
-        // correct URI
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(authServiceQuery), "allowed", "password".toCharArray());
-        qe.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password and scoped to correct URI
+        qe.setClient(withCreds(new URI(authServiceQuery), "allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
 
     @Test
-    public void query_with_auth_09() throws URISyntaxException {
+    public void query_with_auth_09() {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
+        // Auth credentials for valid user with correct password using pre-emptive auth
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        URI scope = URI.create(authServiceUpdate);
+        credsProv.setCredentials(new AuthScope(scope.getHost(), scope.getPort()),
+                new UsernamePasswordCredentials("allowed", "password"));
+        // Create AuthCache instance
+        AuthCache authCache = new BasicAuthCache();
+        // Generate BASIC scheme object and add it to the local auth cache
+        BasicScheme basicAuth = new BasicScheme();
+        authCache.put(new HttpHost(scope.getHost()), basicAuth);
 
-        // Auth credentials for valid user with correct password using
-        // pre-emptive auth
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(authServiceQuery), "allowed", "password".toCharArray());
-        qe.setAuthenticator(new PreemptiveBasicAuthenticator(authenticator));
+        // Add AuthCache to the execution context
+        HttpClientContext context = HttpClientContext.create();
+        context.setCredentialsProvider(credsProv);
+        context.setAuthCache(authCache);
+        HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+        qe.setClient(client);
+        qe.setHttpContext(context);
+        qe.setClient(withCreds(URI.create(authServiceQuery), "allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
 
@@ -206,17 +228,13 @@ public class TestAuth {
         try {
             QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped
-            // to correct URI
-            // Provided via Service Context and its associated authenticator
-            Map<String, Context> serviceContext = new HashMap<String, Context>();
+            // Auth credentials for valid user with correct password and scoped to correct URI
+            // Provided via Service Context
+            Map<String, Context> serviceContext = new HashMap<>();
             Context authContext = new Context();
-            authContext.put(Service.queryAuthUser, "allowed");
-            authContext.put(Service.queryAuthPwd, "password");
+            authContext.put(Service.queryClient, withCreds("allowed", "password"));
             serviceContext.put(authServiceQuery, authContext);
             ctx.put(Service.serviceContext, serviceContext);
-
-            qe.setAuthenticator(new ServiceAuthenticator());
             Assert.assertTrue(qe.execAsk());
         } finally {
             ctx.remove(Service.serviceContext);
@@ -229,17 +247,13 @@ public class TestAuth {
         try {
             QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped
-            // to base URI of the actual service URL
-            // Provided via Service Context and its associated authenticator
-            Map<String, Context> serviceContext = new HashMap<String, Context>();
+            // Auth credentials for valid user with correct password and scoped to base URI of the actual service URL
+            // Provided via Service Context
+            Map<String, Context> serviceContext = new HashMap<>();
             Context authContext = new Context();
-            authContext.put(Service.queryAuthUser, "allowed");
-            authContext.put(Service.queryAuthPwd, "password");
-            serviceContext.put(authUrlRoot, authContext);
+            authContext.put(Service.queryClient, withCreds(URI.create(authUrlRoot), "allowed", "password"));
+            serviceContext.put(authServiceQuery, authContext);
             ctx.put(Service.serviceContext, serviceContext);
-
-            qe.setAuthenticator(new ServiceAuthenticator());
             Assert.assertTrue(qe.execAsk());
         } finally {
             ctx.remove(Service.serviceContext);
@@ -249,12 +263,9 @@ public class TestAuth {
     @Test
     public void query_with_auth_12() {
         ARQ.getContext().remove(Service.serviceContext);
-
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
-
         // Auth credentials for valid user with correct password
-        // Use service authenticator with fallback credentials.
-        qe.setAuthenticator(new ServiceAuthenticator("allowed", "password".toCharArray()));
+        qe.setClient(withCreds("allowed", "password"));
         Assert.assertTrue(qe.execAsk());
      }
     
@@ -262,10 +273,8 @@ public class TestAuth {
     public void query_with_auth_13() throws URISyntaxException {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-        // Auth credentials for valid user with correct password and scoped to
-        // base URI of the actual service URL
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(authUrlRoot), "allowed", "password".toCharArray());
-        qe.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password and scoped to base URI of the actual service URL
+        qe.setClient(withCreds(new URI(authUrlRoot), "allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
     
@@ -273,10 +282,8 @@ public class TestAuth {
     public void query_with_auth_14() throws URISyntaxException {
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-        // Auth credentials for valid user with correct password and scoped to
-        // base URI of the actual service URL
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://localhost:" + authPort), "allowed", "password".toCharArray());
-        qe.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password and scoped to base URI of the actual service URL
+        qe.setClient(withCreds(new URI("http://localhost:" + authPort), "allowed", "password"));
         Assert.assertTrue(qe.execAsk());
     }
 
@@ -293,7 +300,7 @@ public class TestAuth {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
         // Auth credentials for valid user with bad password
-        ue.setAuthentication("allowed", "incorrect".toCharArray());
+        ue.setClient(withCreds("allowed", "incorrect"));
         ue.execute();
     }
 
@@ -302,7 +309,7 @@ public class TestAuth {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
         // Auth credentials for valid user with correct password
-        ue.setAuthentication("allowed", "password".toCharArray());
+        ue.setClient(withCreds("allowed", "password"));
         ue.execute();
     }
 
@@ -310,9 +317,8 @@ public class TestAuth {
     public void update_with_auth_04() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
-        // Auth credentials for valid user with correct password BUT not in
-        // correct role
-        ue.setAuthentication("forbidden", "password".toCharArray());
+        // Auth credentials for valid user with correct password BUT not in correct role
+        ue.setClient(withCreds("forbidden", "password"));
         ue.execute();
     }
 
@@ -329,7 +335,7 @@ public class TestAuth {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, authServiceUpdate);
         // Auth credentials for valid user with bad password
-        ue.setAuthentication("allowed", "incorrect".toCharArray());
+        ue.setClient(withCreds("allowed", "incorrect"));
         ue.execute();
     }
 
@@ -338,7 +344,7 @@ public class TestAuth {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, authServiceUpdate);
         // Auth credentials for valid user with correct password
-        ue.setAuthentication("allowed", "password".toCharArray());
+        ue.setClient(withCreds("allowed", "password"));
         ue.execute();
     }
 
@@ -346,22 +352,17 @@ public class TestAuth {
     public void update_with_auth_08() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, authServiceUpdate);
-        // Auth credentials for valid user with correct password BUT not in
-        // correct role
-        ue.setAuthentication("forbidden", "password".toCharArray());
+        // Auth credentials for valid user with correct password BUT not in correct role
+        ue.setClient(withCreds("forbidden", "password"));
         ue.execute();
     }
 
     @Test(expected = HttpException.class)
-    public void update_with_auth_09() throws URISyntaxException {
+    public void update_with_auth_09() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
-
-        // Auth credentials for valid user with correct password but scoped to
-        // wrong URI
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://example"), "allowed",
-                "password".toCharArray());
-        ue.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password but scoped to wrong URI
+        ue.setClient(withCreds(URI.create("http://example"), "allowed", "password"));
         ue.execute();
     }
 
@@ -370,23 +371,36 @@ public class TestAuth {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
 
-        // Auth credentials for valid user with correct password scoped to
-        // correct URI
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(authServiceUpdate), "allowed", "password".toCharArray());
-        ue.setAuthenticator(authenticator);
+        // Auth credentials for valid user with correct password scoped to correct URI
+        ue.setClient(withCreds(URI.create(authServiceUpdate), "allowed", "password"));
         ue.execute();
     }
 
     @Test
-    public void update_with_auth_11() throws URISyntaxException {
+    public void update_with_auth_11() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates,
+                authServiceUpdate);
 
-        // Auth credentials for valid user with correct password scoped to
-        // correct URI
+        // Auth credentials for valid user with correct password scoped to correct URI
         // Also using pre-emptive auth
-        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(authServiceUpdate), "allowed", "password".toCharArray());
-        ue.setAuthenticator(new PreemptiveBasicAuthenticator(authenticator));
+        BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+        URI scope = URI.create(authServiceUpdate);
+        credsProv.setCredentials(new AuthScope(scope.getHost(), scope.getPort()),
+                new UsernamePasswordCredentials("allowed", "password"));
+        // Create AuthCache instance
+        AuthCache authCache = new BasicAuthCache();
+        // Generate BASIC scheme object and add it to the local auth cache
+        BasicScheme basicAuth = new BasicScheme();
+        authCache.put(new HttpHost(scope.getHost()), basicAuth);
+
+        // Add AuthCache to the execution context
+        HttpClientContext context = HttpClientContext.create();
+        context.setCredentialsProvider(credsProv);
+        context.setAuthCache(authCache);
+        HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
+        ue.setClient(client);
+        ue.setHttpContext(context);
         ue.execute();
     }
     
@@ -400,14 +414,14 @@ public class TestAuth {
     @Test(expected = HttpException.class)
     public void graphstore_with_auth_02() {
         // Incorrect auth credentials
-        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, new SimpleAuthenticator("allowed", "incorrect".toCharArray()));
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, withCreds("allowed", "incorrect"));
         accessor.getModel();
     }
     
     @Test
     public void graphstore_with_auth_03() {
         // Correct auth credentials
-        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, new SimpleAuthenticator("allowed", "password".toCharArray()));
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, withCreds("allowed", "password"));
         Model m = accessor.getModel();
         Assert.assertTrue(m.isEmpty());
     }
@@ -415,14 +429,14 @@ public class TestAuth {
     @Test(expected = HttpException.class)
     public void graphstore_with_auth_04() throws URISyntaxException {
         // Correct auth credentials scoped to wrong URI
-        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, new ScopedAuthenticator(new URI("http://example.org/"), "allowed", "password".toCharArray()));
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, withCreds(new URI("http://example.org/"), "allowed", "password"));
         accessor.getModel();
     }
     
     @Test
     public void graphstore_with_auth_05() throws URISyntaxException {
         // Correct auth credentials scoped to correct URI
-        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, new ScopedAuthenticator(new URI(authServiceREST), "allowed", "password".toCharArray()));
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(authServiceREST, withCreds(new URI(authServiceREST), "allowed", "password"));
         accessor.getModel();
     }
 }

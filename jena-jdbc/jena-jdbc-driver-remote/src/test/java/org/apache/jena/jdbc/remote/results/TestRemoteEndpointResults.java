@@ -28,6 +28,7 @@ import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,8 +47,8 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
      */
     @BeforeClass
     public static void setup() throws SQLException {
-    	ServerTest.allocServer();
-        
+        ServerTest.allocServer();
+    	    HttpOp.setDefaultHttpClient(null);
         connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }

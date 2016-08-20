@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.statements.JenaStatement;
 import org.apache.jena.query.Query ;
@@ -42,7 +42,7 @@ import org.apache.jena.update.UpdateRequest ;
 public class RemoteEndpointStatement extends JenaStatement {
 
     private RemoteEndpointConnection remoteConn;
-    private HttpAuthenticator authenticator;
+    private HttpClient client;
 
     /**
      * Creates a new statement
@@ -74,11 +74,11 @@ public class RemoteEndpointStatement extends JenaStatement {
      *             Thrown if there is an error with the statement parameters
      * 
      */
-    public RemoteEndpointStatement(RemoteEndpointConnection connection, HttpAuthenticator authenticator, int type, int fetchDir,
+    public RemoteEndpointStatement(RemoteEndpointConnection connection, HttpClient client, int type, int fetchDir,
             int fetchSize, int holdability) throws SQLException {
         super(connection, type, fetchDir, fetchSize, holdability, false, Connection.TRANSACTION_NONE);
         this.remoteConn = connection;
-        this.authenticator = authenticator;
+        this.client = client;
     }
 
     @Override
@@ -89,9 +89,9 @@ public class RemoteEndpointStatement extends JenaStatement {
         // Create basic execution
         QueryEngineHTTP exec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(this.remoteConn.getQueryEndpoint(), q);
 
-        // Apply authentication settings
-        if (this.authenticator != null) {
-            exec.setAuthenticator(authenticator);
+        // Apply HTTP settings
+        if (this.client != null) {
+            exec.setClient(client);
         }
 
         // Apply default and named graphs if appropriate
@@ -119,9 +119,9 @@ public class RemoteEndpointStatement extends JenaStatement {
         UpdateProcessRemoteBase proc = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(u,
                 this.remoteConn.getUpdateEndpoint());
 
-        // Apply authentication settings
-        if (this.authenticator != null) {
-            proc.setAuthenticator(this.authenticator);
+        // Apply HTTP settings
+        if (this.client != null) {
+            proc.setClient(this.client);
         }
 
         // Apply default and named graphs if appropriate

@@ -37,6 +37,8 @@ import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.http.util.EntityUtils ;
@@ -1068,15 +1070,13 @@ public class HttpOp {
      * Ensures that a HTTP Client is non-null
      * <p>
      * Prefers the {@link HttpClient} provided for the request if available.
-     * Then it tries to use a Jena-wide user configurable
-     * {@link HttpClient} if available.
+     * Then it tries to use a Jena-wide user configurable {@link HttpClient} if available.
      * </p>
      * <p>
      * In all other cases it creates a fresh instance of a client each time.
      * </p>
      * 
-     * @param client
-     *            HTTP Client
+     * @param client HTTP Client
      * @return HTTP Client
      */
     public static HttpClient ensureClient(HttpClient client) {
