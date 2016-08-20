@@ -21,9 +21,6 @@ package org.apache.jena.fuseki.servlets;
 import static org.apache.jena.riot.WebContent.ctMultipartMixed ;
 import static org.apache.jena.riot.WebContent.matchContentType ;
 
-import java.util.Map ;
-import java.util.Map.Entry ;
-
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -64,7 +61,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             boolean existedBefore = target.exists() ; 
             if ( ! existedBefore)
             {
-                // commit, not abort, because locking "transactions" don't support abort. 
+                // Commit, not abort, because locking "transactions" don't support abort. 
                 action.commit() ;
                 ServletOps.errorNotFound("No such graph: "+target.name) ;
             } 
@@ -191,19 +188,21 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
         } finally { action.endWrite() ; }
     }
     
+    /** Delete a graph. This removes the storage choice and looses the setup.
+     * The default graph is cleared, not removed.
+     */
     protected static void deleteGraph(HttpAction action) {
         Target target = determineTarget(action) ;
         if ( target.isDefault )
-            target.graph().clear() ;
+            clearGraph(target) ;
         else
             action.getActiveDSG().removeGraph(target.graphName) ;
     }
 
+    /** Clear a graph - this leaves the storage choice and setup in-place */ 
     protected static void clearGraph(Target target) {
         Graph g = target.graph() ;
+        g.getPrefixMapping().clearNsPrefixMap() ;
         g.clear() ;
-        Map<String, String> pm = g.getPrefixMapping().getNsPrefixMap() ;
-        for ( Entry<String, String> e : pm.entrySet() ) 
-            g.getPrefixMapping().removeNsPrefix(e.getKey()) ;
     }
 }
