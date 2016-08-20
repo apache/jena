@@ -70,6 +70,13 @@ public class PrefixMapExtended extends PrefixMapBase {
     }
 
     @Override
+    public void clear() {
+        local.clear();
+//        if (!parent.isEmpty() ) 
+//            Log.warn(this, "clear() : Parent not empty") ;
+    }
+
+    @Override
     public String expand(String prefix, String localName) {
         prefix = canonicalPrefix(prefix);
         String x = local.expand(prefix, localName);
