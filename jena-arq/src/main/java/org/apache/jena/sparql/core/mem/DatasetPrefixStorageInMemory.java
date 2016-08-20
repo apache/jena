@@ -88,6 +88,11 @@ public class DatasetPrefixStorageInMemory implements DatasetPrefixStorage {
     }
 
     @Override
+    public void removeAllFromPrefixMap(String graphName) {
+        getPrefixMapping(graphName).clearNsPrefixMap() ;
+    }
+
+    @Override
     public PrefixMapping getPrefixMapping() {
         return getPrefixMapping(defaultGraphIRI.getURI());
     }

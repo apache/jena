@@ -142,14 +142,25 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized void removeFromPrefixMap(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ; 
-        Node p = NodeFactory.createLiteral(prefix) ; 
-        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
+        Node p = NodeFactory.createLiteral(prefix) ;
+        removeAll(g, p, null) ;
+    }
+
+    @Override
+    public void removeAllFromPrefixMap(String graphName) {
+        Node g = NodeFactory.createURI(graphName) ; 
+        removeAll(g, null, null) ;
+    }
+
+    /** Remove by pattern */
+    private void removeAll(Node g, Node p, Node uri) {
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, uri) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;
         for ( Tuple<Node> tuple : list )
-            nodeTupleTable.deleteRow(g, p, tuple.get(2)) ;
+            nodeTupleTable.deleteRow(tuple.get(0), tuple.get(1), tuple.get(2)) ; 
     }
-
+    
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */
