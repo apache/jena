@@ -69,6 +69,14 @@ public class PrefixMappingCache implements PrefixMapping {
     }
 
     @Override
+    public PrefixMapping clearNsPrefixMap() {
+        prefixToUri.clear() ;
+        uriToPrefix.clear();
+        other.clearNsPrefixMap() ;
+        return this ;
+    }
+
+    @Override
     public PrefixMapping setNsPrefixes(PrefixMapping pmap) {
         setNsPrefixes(pmap.getNsPrefixMap()) ;
         return this ;

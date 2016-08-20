@@ -53,6 +53,17 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
     
     @Override
+    public void loadPrefixMapping(String graphName, PrefixMapping pmap) {
+        Node g = NodeFactory.createURI(graphName) ; 
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
+        iter.forEachRemaining(tuple->{
+            Node prefix = tuple.get(1)  ;
+            Node uri = tuple.get(2) ;
+            pmap.setNsPrefix(prefix.getLiteralLexicalForm(), uri.getURI()) ;
+        }) ;
+    }
+
+    @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri) {
         Node g = NodeFactory.createURI(graphName) ; 
         Node p = NodeFactory.createLiteral(prefix) ; 
@@ -119,30 +130,27 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
     
     @Override
-    public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap) {
-        Node g = NodeFactory.createURI(graphName) ;
-        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Tuple<Node> t = iter.next();
-            String prefix = t.get(1).getLiteralLexicalForm() ;
-            String uri = t.get(2).getURI() ;
-            pmap.setNsPrefix(prefix, uri) ;
-        }
-        Iter.close(iter) ;
-    }
-    
-    @Override
-    public synchronized void removeFromPrefixMap(String graphName, String prefix) {
+    public void removeFromPrefixMap(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ; 
-        Node p = NodeFactory.createLiteral(prefix) ; 
-        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
+        Node p = NodeFactory.createLiteral(prefix) ;
+        removeAll(g, p, null) ;
+    }
+
+    @Override
+    public void removeAllFromPrefixMap(String graphName) {
+        Node g = NodeFactory.createURI(graphName) ; 
+        removeAll(g, null, null) ;
+    }
+
+    /** Remove by pattern */
+    private synchronized void removeAll(Node g, Node p, Node uri) {
+        Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, uri) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;
         for ( Tuple<Node> tuple : list )
-            nodeTupleTable.deleteRow(g, p, tuple.get(2)) ;
+            nodeTupleTable.deleteRow(tuple.get(0), tuple.get(1), tuple.get(2)) ; 
     }
-
+    
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */

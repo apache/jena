@@ -50,6 +50,12 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
     }
 
     @Override
+    public PrefixMapping clearNsPrefixMap() {
+        prefixes.removeAllFromPrefixMap(graphName);
+        return this ;
+    }
+
+    @Override
     public PrefixMapping setNsPrefixes(PrefixMapping other) {
         setNsPrefixes(other.getNsPrefixMap()) ;
         return this ;

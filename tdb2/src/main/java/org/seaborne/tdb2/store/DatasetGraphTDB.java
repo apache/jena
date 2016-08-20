@@ -51,8 +51,7 @@ import org.seaborne.tdb2.sys.StoreConnection ;
  */
 final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
-                             implements DatasetGraphTxn,
-                             /*Old world*//*DatasetGraph,*/ Sync, Closeable
+                             implements DatasetGraphTxn, Sync, Closeable
 {
     // SWITCHING.
     private TripleTable tripleTable ;
