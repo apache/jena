@@ -153,6 +153,13 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     public Graph getGraph(Node graphNode)
     { return new GraphNonTxnTDB(this, graphNode) ; }
 
+    @Override
+    public void removeGraph(Node graphNode) {
+        deleteAny(graphNode, Node.ANY, Node.ANY, Node.ANY) ;
+        if ( graphNode.isURI() )
+            getPrefixes().removeAllFromPrefixMap(graphNode.getURI());
+    }
+
     public StorageConfig getConfig()                        { return config ; }
     
     public ReorderTransformation getReorderTransform()      { return transform ; }

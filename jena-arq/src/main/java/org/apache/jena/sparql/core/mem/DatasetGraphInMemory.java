@@ -288,7 +288,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void removeGraph(final Node graphName) {
         mutate(removeGraph, getGraph(graphName));
-        prefixes().getPrefixMapping(graphName.getURI()).clearNsPrefixMap();
+        prefixes().removeAllFromPrefixMap(graphName.getURI()) ;
     }
 
     /**
