@@ -140,7 +140,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
     
     @Override
-    public synchronized void removeFromPrefixMap(String graphName, String prefix) {
+    public void removeFromPrefixMap(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ; 
         Node p = NodeFactory.createLiteral(prefix) ;
         removeAll(g, p, null) ;
@@ -153,7 +153,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
 
     /** Remove by pattern */
-    private void removeAll(Node g, Node p, Node uri) {
+    private synchronized void removeAll(Node g, Node p, Node uri) {
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, uri) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;
