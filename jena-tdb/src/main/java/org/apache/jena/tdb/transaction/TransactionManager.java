@@ -67,6 +67,20 @@ public class TransactionManager
     // When improved, rename to chase down any systems directly setting it. 
     public static /*final*/ int QueueBatchSize = setQueueBatchSize() ; 
     
+    // JENA-1222
+    /** This controls how large to let the journal get in size 
+     * before deciding to flush even if below the queue batch size.
+     * -1 means "off".   
+     */
+    public static /*final*/ int JournalThresholdSize = -1 ;  
+    
+    // JENA-1224
+    /** This controls how large to let the journal in comitted transactions
+     * before deciding to pause and flush as soon as possible.
+     * -1 means "off".   
+     */
+    public static /*final*/ int MaxQueueThreshold = -1 ;
+    
     private static int setQueueBatchSize() {
         if ( SystemTDB.is64bitSystem )
             return 10 ;
@@ -206,7 +220,7 @@ public class TransactionManager
     
     // Policy for writing back journal'ed data to the base datasetgraph
     // Writes if no reader at end of writer, else queues.
-    // Queue cleared at en dof any transaction finding itself the only transaction.
+    // Queue cleared at end of any transaction finding itself the only transaction.
     class TSM_WriteBackEndTxn extends TSM_Base {
         // Safe mode.
         // Take a READ lock over the base dataset.
@@ -463,23 +477,34 @@ public class TransactionManager
      *  together with general recording of transaction details and status. 
      */ 
     synchronized
-    public void notifyCommit(Transaction transaction) {
-        if ( ! activeTransactions.contains(transaction) )
-            SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
-        
-        noteTxnCommit(transaction) ;
+    /*package*/ void notifyCommit(Transaction transaction) {
+        boolean excessiveQueue = false ;
+        synchronized(this) {
+            if ( ! activeTransactions.contains(transaction) )
+                SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
 
-        switch ( transaction.getMode() ) {
-            case READ: break ;
-            case WRITE:
-                version.incrementAndGet() ;
-                currentReaderView.set(null) ;       // Clear the READ transaction cache.
-                releaseWriterLock();
+            noteTxnCommit(transaction) ;
+
+            switch ( transaction.getMode() ) {
+                case READ: break ;
+                case WRITE:
+                    version.incrementAndGet() ;
+                    currentReaderView.set(null) ;       // Clear the READ transaction cache.
+                    // JENA-1224
+                    excessiveQueue = ( MaxQueueThreshold >= 0 && queue.size() > MaxQueueThreshold ) ;
+                    releaseWriterLock();
+            }
         }
+        //TODO
+//        // Imperfect in that writers may happen between releaseWriterLock and startExclusiveMode.
+//        if ( excessiveQueue ) {
+//            startExclusiveMode(true) ;
+//            finishExclusiveMode(); 
+//        }
     }
 
     synchronized
-    public void notifyAbort(Transaction transaction) {
+    /*package*/ void notifyAbort(Transaction transaction) {
         // Transaction has done the abort on all the transactional elements.
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
@@ -493,6 +518,20 @@ public class TransactionManager
         }
     }
     
+    synchronized
+    /*package*/ void notifyClose(Transaction txn) {
+        if ( txn.getState() == TxnState.ACTIVE )
+        {
+            String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
+            syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
+            // Force abort then close
+            txn.abort() ;
+            txn.close() ;
+            return ;
+        }
+        noteTxnClose(txn) ;
+    }
+        
     private void releaseWriterLock() {
         int x = writerPermits.availablePermits() ;
         if ( x != 0 )
@@ -613,21 +652,43 @@ public class TransactionManager
     }
     
     // -- The main operations to undertake when a transaction finishes.
-    // Called from TSM_WriteBackEndTxn but the worker code is shere so all
+    // Called from TSM_WriteBackEndTxn but the worker code is here so all
     // related code, including queue flushing is close together.
     
     private void readerFinishesWorker(Transaction txn) {
-        if ( queue.size() >= QueueBatchSize )
-            processDelayedReplayQueue(txn) ;
-    }
-
-    private void writerAbortsWorker(Transaction txn) {
-        if ( queue.size() >= QueueBatchSize )
+        if ( checkForJournalFlush() )
             processDelayedReplayQueue(txn) ;
     }
     
+    private void writerAbortsWorker(Transaction txn) {
+        if ( checkForJournalFlush() )
+            processDelayedReplayQueue(txn) ;
+    }
+    
+    // Whether to try to flush the journal. We may stil find that we are blocked
+    // from doing so by another transaction.
+    private boolean checkForJournalFlush() {
+//        System.err.printf("checkForJournalFlush: queue size=%d; journal size = %d\n", queue.size(), journal.size()) ;
+//        System.err.printf("checkForJournalFlush: QueueBatchSize=%d; MaxQueueThreshold=%d; JournalThresholdSize=%d\n",
+//                          QueueBatchSize, MaxQueueThreshold, JournalThresholdSize) ;
+        if ( QueueBatchSize == 0 )
+            return true ;
+        if ( queue.size() >= QueueBatchSize )
+            // Based on number of queued commits
+            //   The MaxQueueThreshold is handled in processDelayedReplayQueue. 
+            return true ;
+        boolean journalSizeFlush = (JournalThresholdSize > 0 && journal.size() > JournalThresholdSize ) ;
+        if ( journalSizeFlush )
+            // JENA-1222
+            // Based on Journal file growing large in terms of bytes
+            return true ;
+        // No test for excessive queue length (MaxQueueThreshold).
+        // That happens in notifyCommit (writer exit).
+        return false ;
+    }
+    
     private void writerCommitsWorker(Transaction txn) {
-        if ( activeReaders.get() == 0 && queue.size() >= QueueBatchSize ) {
+        if ( activeReaders.get() == 0 && checkForJournalFlush() ) {
             // Can commit immediately.
             // Ensure the queue is empty though.
             // Could simply add txn to the commit queue and do it that way.
@@ -638,7 +699,6 @@ public class TransactionManager
             // because that plays queued transactions.
             // But for long term generallity, at the cost of one check of the journal size
             // we do this sequence.
-
             processDelayedReplayQueue(txn) ;
             enactTransaction(txn) ;
             JournalControl.replay(txn) ;
@@ -649,19 +709,19 @@ public class TransactionManager
             if ( log() ) log("Add to pending queue", txn) ;
             queue.add(txn) ;
         }
-
     }
     
     private void processDelayedReplayQueue(Transaction txn)
     {
-        // Can we do work?
+        // JENA-1224: Are there too many wrapper layers?
+        // This is handled in notifyCommit.
         
+        // Can we do work?
         if ( activeReaders.get() != 0 || activeWriters.get() != 0 ) {
             if ( queue.size() > 0 && log() )
                 log(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters), txn) ;
             return ;
         }
-
         if ( DEBUG ) {
             if ( queue.size() > 0 ) 
                 System.out.print("!"+queue.size()+"!") ;
@@ -727,20 +787,6 @@ public class TransactionManager
             log.error("There are now active transactions") ;
     }
     
-    synchronized
-    public void notifyClose(Transaction txn) {
-        if ( txn.getState() == TxnState.ACTIVE )
-        {
-            String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
-            syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
-            // Force abort then close
-            txn.abort() ;
-            txn.close() ;
-            return ;
-        }
-        noteTxnClose(txn) ;
-    }
-        
     private void noteStartTxn(Transaction transaction) {
         switch (transaction.getMode())
         {

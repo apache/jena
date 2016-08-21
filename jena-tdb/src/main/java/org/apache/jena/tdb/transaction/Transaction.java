@@ -264,6 +264,8 @@ public class Transaction
 
     public ReadWrite getMode()                      { return mode ; }
     public boolean   isRead()                       { return mode == ReadWrite.READ ; }
+    public boolean   isWrite()                      { return mode == ReadWrite.WRITE ; }
+
     public TxnState  getState()                     { return state ; }
     
     public long getTxnId()                          { return id ; }
@@ -296,7 +298,7 @@ public class Transaction
         if ( iterators != null )
             iterators.remove(iter) ;
         if ( count == 0 ) {
-            peekCount= 0 ;
+            peekCount = 0 ;
         }
     }
     
@@ -328,4 +330,5 @@ public class Transaction
     public String getLabel() {
         return label ;
     }
+
 }
