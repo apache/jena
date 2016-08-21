@@ -141,8 +141,9 @@ public class TransactionManager
     // "one exclusive, or many other" lock which happens to be called a ReadWriteLock
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
     
-    // Delayes enacting transactions.
+    // Delays enacting transactions.
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<>() ;
+    public long getQueueLength() { return queue.size() ; }
 
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
@@ -495,12 +496,11 @@ public class TransactionManager
                     releaseWriterLock();
             }
         }
-        //TODO
-//        // Imperfect in that writers may happen between releaseWriterLock and startExclusiveMode.
-//        if ( excessiveQueue ) {
-//            startExclusiveMode(true) ;
-//            finishExclusiveMode(); 
-//        }
+        // Imperfect in that writers may happen between releaseWriterLock and startExclusiveMode.
+        if ( excessiveQueue ) {
+            startExclusiveMode(true) ;
+            finishExclusiveMode(); 
+        }
     }
 
     synchronized
