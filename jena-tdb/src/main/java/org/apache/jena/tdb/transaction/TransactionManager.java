@@ -138,8 +138,11 @@ public class TransactionManager
     
     // All transactions need a "read" lock throughout their lifetime. 
     // Do not confuse with read/write transactions.  We need a 
-    // "one exclusive, or many other" lock which happens to be called a ReadWriteLock
-    private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
+    // "one exclusive, or many other" lock which happens to be called a ReadWriteLock.
+    // Fair lock - approximately arrival order. 
+    // Stops "readers" (normal transactions, READ or WRITE) from locking
+    // out a "writer" (exclusive mode).  
+    private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock(true) ;
     
     // Delays enacting transactions.
     private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<>() ;
