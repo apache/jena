@@ -499,7 +499,8 @@ public class TransactionManager
                     releaseWriterLock();
             }
         }
-        // Imperfect in that writers may happen between releaseWriterLock and startExclusiveMode.
+        // Force the queue to flush because it is getting excessively long.
+        // Note that writers may happen between releaseWriterLock above and and startExclusiveMode.
         if ( excessiveQueue ) {
             startExclusiveMode(true) ;
             finishExclusiveMode(); 
@@ -608,7 +609,7 @@ public class TransactionManager
      *  Return to normal (release waiting transactions, allow new transactions)
      *  with {@link #finishExclusiveMode}.
      *  <p>
-     *  The call must not itself be in a transaction (this call wil return false).    
+     *  The call must not itself be in a transaction (this call will return false).    
      */
     public boolean tryExclusiveMode() {
         return startExclusiveMode(false);
@@ -668,25 +669,18 @@ public class TransactionManager
             processDelayedReplayQueue(txn) ;
     }
     
-    // Whether to try to flush the journal. We may stil find that we are blocked
-    // from doing so by another transaction.
+    // Whether to try to flush the journal. We may still find that we are blocked
+    // from doing so by another transaction (checked in processDelayedReplayQueue).
+    // MaxQueueThreshold is handled in notifyCommit (writer exit).
     private boolean checkForJournalFlush() {
-//        System.err.printf("checkForJournalFlush: queue size=%d; journal size = %d\n", queue.size(), journal.size()) ;
-//        System.err.printf("checkForJournalFlush: QueueBatchSize=%d; MaxQueueThreshold=%d; JournalThresholdSize=%d\n",
-//                          QueueBatchSize, MaxQueueThreshold, JournalThresholdSize) ;
-        if ( QueueBatchSize == 0 )
-            return true ;
         if ( queue.size() >= QueueBatchSize )
-            // Based on number of queued commits
-            //   The MaxQueueThreshold is handled in processDelayedReplayQueue. 
             return true ;
         boolean journalSizeFlush = (JournalThresholdSize > 0 && journal.size() > JournalThresholdSize ) ;
         if ( journalSizeFlush )
             // JENA-1222
             // Based on Journal file growing large in terms of bytes
             return true ;
-        // No test for excessive queue length (MaxQueueThreshold).
-        // That happens in notifyCommit (writer exit).
+        // No test here for excessive queue length (MaxQueueThreshold).
         return false ;
     }
     
@@ -714,8 +708,7 @@ public class TransactionManager
         }
     }
     
-    private void processDelayedReplayQueue(Transaction txn)
-    {
+    private void processDelayedReplayQueue(Transaction txn) {
         // JENA-1224: Are there too many wrapper layers?
         // This is handled in notifyCommit.
         
