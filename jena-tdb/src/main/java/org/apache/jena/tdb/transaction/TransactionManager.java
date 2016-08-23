@@ -61,10 +61,8 @@ public class TransactionManager
     private boolean recordHistory = false ;
     
     /** This controls how many write transactions we batch up before 
-     *  deciding to flush the journal to the main database.  
+     *  deciding to try to flush the journal to the main database.  
      */
-    // Temporarily public ....
-    // When improved, rename to chase down any systems directly setting it. 
     public static /*final*/ int QueueBatchSize = setQueueBatchSize() ; 
     
     // JENA-1222
