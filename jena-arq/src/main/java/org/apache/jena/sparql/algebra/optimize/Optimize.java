@@ -122,6 +122,9 @@ public class Optimize implements Rewrite
     @Override
     public Op rewrite(Op op)
     {
+        // For debugging, keep the original input around.
+        Op originalOp = op ;
+        
         // Record optimizer
         if ( context.get(ARQConstants.sysOptimizer) == null )
             context.set(ARQConstants.sysOptimizer, this) ;
