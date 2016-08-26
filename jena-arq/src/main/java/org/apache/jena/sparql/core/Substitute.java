@@ -222,7 +222,7 @@ public class Substitute {
             ExprList exprs = filter.getExprs().copySubstitute(binding);
             if ( exprs == filter.getExprs() )
                 return filter;
-            return OpFilter.filter(exprs, op);
+            return OpFilter.filterBy(exprs, op);
         }
 
         @Override

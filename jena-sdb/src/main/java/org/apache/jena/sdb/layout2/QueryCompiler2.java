@@ -119,7 +119,7 @@ public abstract class QueryCompiler2 extends QueryCompilerMain
                     exprs2.add(expr2) ;
             }
 
-            return OpFilter.filter(exprs2, op) ; 
+            return OpFilter.filterBy(exprs2, op) ; 
         }
 
         // return null for don't need an expr anymore.

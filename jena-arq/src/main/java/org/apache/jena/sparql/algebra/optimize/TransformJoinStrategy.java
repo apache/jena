@@ -76,7 +76,7 @@ public class TransformJoinStrategy extends TransformCopy
           // a filter over the RHS pattern. 
           
           if (opLeftJoin.getExprs() != null )
-              opRight = OpFilter.filter(opLeftJoin.getExprs(), opRight) ;
+              opRight = OpFilter.filterBy(opLeftJoin.getExprs(), opRight) ;
           return new OpConditional(opLeft, opRight) ;
       }
 

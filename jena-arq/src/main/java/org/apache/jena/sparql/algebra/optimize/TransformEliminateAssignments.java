@@ -190,7 +190,7 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         // Create a new filter if we've substituted any expressions
         if (modified) {
-            return OpFilter.filter(exprs, subOp);
+            return OpFilter.filterBy(exprs, subOp);
         }
 
         return super.transform(opFilter, subOp);
