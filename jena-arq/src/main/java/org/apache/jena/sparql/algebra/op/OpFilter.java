@@ -48,6 +48,12 @@ public class OpFilter extends Op1
             return new OpFilter(op) ;
     }
 
+    /** @deprecated Renamed as {#link filterBy} */ 
+    @Deprecated
+    public static Op filter(ExprList exprs, Op op) {
+        return filterBy(exprs, op) ;
+    }
+    
     /** Combine an ExprList with an Op so that the expressions filter the Op.
      * If the exprs are empty, return the Op.  
      * If the op is already a OpFilter, merge the expressions into the filters existintg expressions.  
