@@ -41,7 +41,7 @@ public class OpFilter extends Op1
      * Ensure that the algebra op is a filter. If the input is a filter, just return that,
      * else create a filter with no expressions and this as the subOp
      */
-    private static OpFilter filter(Op op) {
+    public static OpFilter filter(Op op) {
         if ( op instanceof OpFilter )
             return (OpFilter)op ;
         else
