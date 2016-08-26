@@ -41,7 +41,7 @@ public class ExprList implements Iterable<Expr>
     } 
     
     /** Empty, immutable ExprList */
-    public static final ExprList emptyList = new ExprList(Collections.<Expr> emptyList()) ;
+    public static final ExprList emptyList = new ExprList(Collections.emptyList()) ;
     
     public ExprList() { expressions = new ArrayList<Expr>() ; }
     
