@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform ;
 
+import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
@@ -31,7 +32,10 @@ import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprTransform ;
+import org.apache.jena.sparql.expr.ExprTransformer ;
+import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementGroup ;
@@ -49,8 +53,12 @@ public class QueryTransformOps {
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query) ;
 
+        // "Shallow copy with transform."
         transformVarExprList(q2.getProject(), exprTransform) ;
         transformVarExprList(q2.getGroupBy(), exprTransform) ;
+        transformExprList(q2.getHavingExprs(), exprTransform) ;
+        //?? DOES NOT WORK: transformExprListAgg(q2.getAggregators(), exprTransform) ;
+        // ?? 
         // Nothing to do about ORDER BY - leave to sort by that variable.
         
 //        if ( q2.hasHaving() ) {}
@@ -73,10 +81,19 @@ public class QueryTransformOps {
         return transform(query, transform, noop) ;
     }
 
-    // Mutates the VarExprList
-    private static void transformVarExprList(VarExprList varExprList, ExprTransform exprTransform)
-    // , final Map<Var, Node> substitutions)
-    {
+    // ** Mutates the List
+    private static void transformExprList(List<Expr> exprList, ExprTransform exprTransform) {
+        for ( int i = 0 ; i < exprList.size() ; i++ ) {
+            Expr e1 = exprList.get(0) ;
+            Expr e2 = ExprTransformer.transform(exprTransform, e1) ;
+            if ( e2 == null || e2 == e1 )
+                continue ;
+            exprList.set(i, e2) ;
+        }
+    }
+
+    // ** Mutates the VarExprList
+    private static void transformVarExprList(VarExprList varExprList, ExprTransform exprTransform) {
         Map<Var, Expr> map = varExprList.getExprs() ;
 
         for (Var v : varExprList.getVars()) {
