@@ -242,7 +242,6 @@ public class Optimize implements Rewrite
         if ( context.isTrue(ARQ.optFilterInequality) )
             op = apply("Filter Inequality", new TransformFilterInequality(), op);
         
-        
         // Promote table empty as late as possible since this will only be produced by other 
         // optimizations and never directly from algebra generation
         if ( context.isTrueOrUndef(ARQ.optPromoteTableEmpty) )
