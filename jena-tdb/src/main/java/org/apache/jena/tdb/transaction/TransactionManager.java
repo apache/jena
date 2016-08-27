@@ -77,7 +77,7 @@ public class TransactionManager
      * before deciding to pause and flush as soon as possible.
      * -1 means "off".   
      */
-    public static /*final*/ int MaxQueueThreshold = 250 ;
+    public static /*final*/ int MaxQueueThreshold = 100 ;
     
     private static int setQueueBatchSize() {
         if ( SystemTDB.is64bitSystem )
