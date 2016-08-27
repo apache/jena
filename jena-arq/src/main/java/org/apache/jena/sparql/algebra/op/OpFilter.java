@@ -32,16 +32,20 @@ public class OpFilter extends Op1
     
     /** Add expression - mutates an existing filter */  
     public static Op filter(Expr expr, Op op) {
-        OpFilter f = filter(op) ;
+        OpFilter f = ensureFilter(op) ;
         f.getExprs().add(expr) ;
         return f ;
     }
 
     /**
      * Ensure that the algebra op is a filter. If the input is a filter, just return that,
-     * else create a filter with no expressions and this as the subOp
+     * else create a filter with no expressions and "this" as the subOp.
+     * @apiNote
+     * This operation assumes the caller is going to add expressions. 
+     * Filters without any expressions are discouraged.
+     * Consider collecting the expressions together first and using {@link #filterBy}. 
      */
-    public static OpFilter filter(Op op) {
+    public static OpFilter ensureFilter(Op op) {
         if ( op instanceof OpFilter )
             return (OpFilter)op ;
         else
@@ -54,6 +58,10 @@ public class OpFilter extends Op1
         return filterBy(exprs, op) ;
     }
     
+    /** @deprecated Use {@link #ensureFilter} */
+    @Deprecated
+    public static OpFilter filter(Op op) { return ensureFilter(op) ; }
+    
     /** Combine an ExprList with an Op so that the expressions filter the Op.
      * If the exprs are empty, return the Op.  
      * If the op is already a OpFilter, merge the expressions into the filters existintg expressions.  
@@ -62,7 +70,7 @@ public class OpFilter extends Op1
     public static Op filterBy(ExprList exprs, Op op) {
         if ( exprs == null || exprs.isEmpty() )
             return op ;
-        OpFilter f = filter(op) ;
+        OpFilter f = ensureFilter(op) ;
         f.getExprs().addAll(exprs) ;
         return f ;
     }
@@ -71,7 +79,7 @@ public class OpFilter extends Op1
      * If subOp is a filter, combine expressions (de-layer).  
      */
     public static OpFilter filterAlways(ExprList exprs, Op subOp) {
-        OpFilter f = filter(subOp) ;
+        OpFilter f = ensureFilter(subOp) ;
         f.getExprs().addAll(exprs) ;
         return f ;
     }
