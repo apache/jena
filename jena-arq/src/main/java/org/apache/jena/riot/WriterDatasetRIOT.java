@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot;
 
-import java.io.OutputStream ;
+import java.io.OutputStream;
 import java.io.Writer ;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -47,6 +48,10 @@ public interface WriterDatasetRIOT
      * @param context       Context (see specific implementation for details) 
      */
     public void  write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) ;
+    
+    default public void write(OutputStream out, DatasetGraph datasetGraph, String baseURI, Context context) {
+        write(out, datasetGraph, RiotLib.prefixMap(datasetGraph), baseURI, context);
+    }
 
 //    /** Use of Writer is discouraged - let the serializer manage character sets in accordance with the format */
 //    public void  write(Writer out, DatasetGraph datasetGraph) ;
