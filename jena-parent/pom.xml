@@ -52,7 +52,7 @@
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.8.2</ver.jsonldjava>
+    <ver.jsonldjava>0.8.3</ver.jsonldjava>
     <!-- Used by jena-osgi and must be in-step with jsonldjava -->
     <ver.jackson>2.6.3</ver.jackson>
 
