@@ -225,7 +225,13 @@ public class TestJsonLDWriter extends BaseTest {
             jenaContext.set(JsonLDWriter.JSONLD_CONTEXT, "\"http://schema.org/\"");
             String jsonld = toString(m, RDFFormat.JSONLD, jenaContext);
         } catch (Throwable e) {
-            Logger.getLogger(getClass()).info("Sorry to get this exception",e);
+            // maybe test run in a setting wo external connectivity - not a real problem
+            String mess = e.getMessage();
+            if ((mess != null) && (mess.indexOf("loading remote context failed") > -1)) {
+                Logger.getLogger(getClass()).info("Attempt to load remote context failed - no drama");
+            } else {
+                throw e;
+            }
         }
 
         // But anyway, that's not what we want to do:
@@ -267,7 +273,7 @@ public class TestJsonLDWriter extends BaseTest {
         Object ctx = JsonLDWriter.createJsonldContext(m.getGraph());
 
         // remove the prefix from m
-        m.removeNsPrefix("ex");    // RDFDataMgr.write(System.out, m, RDFFormat.JSONLD) ;
+        m.removeNsPrefix("ex");
         String s2 = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
         // model wo prefix -> no more prefix string in result:
         assertTrue(s2.indexOf(prefixStringInResult) < 0);
@@ -377,6 +383,41 @@ public class TestJsonLDWriter extends BaseTest {
         // if (! isLangString(o) && ! isSimpleString(o) )
         String vv = "\"plangstring\":{\"@language\":\"fr\",\"@value\":\"a langstring\"}";
         assertTrue(jsonld.indexOf(vv) > -1);
+    }
+
+    /**
+     * Check there are no problems when 2 properties have the same localname
+     */
+    @Test public final void clashOfPropLocalnames() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource s = m.createResource();
+        String ns1 = "http://schema.org/";
+        String ns2 = "http://ex.com/";
+ 
+        m.add(s, m.createProperty(ns1 + "name"), "schema.org name");
+        m.add(s, m.createProperty(ns2 + "name"), "ex.com name");
+       
+        String jsonld = toString(m, RDFFormat.JSONLD, null);
+        
+        // in one case, we have "name" : "xxx", and the other "http://.../name" : "yyy"
+        assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
+        assertTrue(jsonld.indexOf("/name\" : \"") > -1);
+ 
+        m.setNsPrefix("ns1", ns1);
+        m.setNsPrefix("ns2", "http://ex.com/");
+        jsonld = toString(m, RDFFormat.JSONLD, null);
+        // we get either:
+        /*
+        "name" : "ex.com name",
+        "ns1:name" : "schema.org name",
+        */
+        // or
+        /*
+        "name" : "schema.org name",
+        "ns2:name" : "ex.com name",
+        */
+        assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
+        assertTrue((jsonld.indexOf("\"ns1:name\" : \"") > -1) || (jsonld.indexOf("\"ns2:name\" : \"") > -1));
     }
 
     //
