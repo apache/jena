@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.utils.JsonUtils;
 
 public class TestJsonLDWriter extends BaseTest {
@@ -237,7 +238,7 @@ public class TestJsonLDWriter extends BaseTest {
         // But anyway, that's not what we want to do:
         // there's no point in passing the uri of a context to have it dereferenced by jsonld-java
         // (this is for a situation where one would want to parse a jsonld file containing a context defined by a uri)
-        // What we want is to pass a context to jsonld-java (in order for json-ld java to produce the correct jsonls output
+        // What we want is to pass a context to jsonld-java (in order for json-ld java to produce the correct jsonld output)
         // and then we want to replace the @context in the output by "@context":"ourUri"
 
         // How would we do that? see testSubstitutingContext()
@@ -420,6 +421,39 @@ public class TestJsonLDWriter extends BaseTest {
         assertTrue((jsonld.indexOf("\"ns1:name\" : \"") > -1) || (jsonld.indexOf("\"ns2:name\" : \"") > -1));
     }
 
+    /** Test passing a JsonLdOptions through Context */
+    @Test public final void jsonldOptions() {
+        Model m = ModelFactory.createDefaultModel();
+        String ns = "http://schema.org/";
+        Resource s = m.createResource();
+        m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+        m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
+        m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
+
+        // our default uses true for compactArrays
+        
+        String jsonld = toString(m, RDFFormat.JSONLD, null);
+        
+        // compactArrays is true -> no "@graph"
+        assertTrue(jsonld.indexOf("@graph") < 0);
+        // compactArrays is true -> string, not an array for props with one value
+        assertTrue(jsonld.indexOf("\"jobTitle\" : \"Professor\"") > -1);
+        
+        // now output using a value for JsonLdOptions in Context that set compactArrays to false
+        
+        JsonLdOptions opts = new JsonLdOptions(null);
+        opts.setCompactArrays(false);       
+        Context jenaCtx = new Context();
+        jenaCtx.set(JsonLDWriter.JSONLD_OPTIONS, opts);
+
+        jsonld = toString(m, RDFFormat.JSONLD, jenaCtx);
+
+        // compactArrays is false -> a "@graph" node
+        assertTrue(jsonld.indexOf("@graph") > -1);
+        // compactArrays is false -> an array for all props, when when there's only one value
+        assertTrue(jsonld.indexOf("\"jobTitle\" : [ \"Professor\" ]") > -1);
+    }
+    
     //
     // some utilities
     //
