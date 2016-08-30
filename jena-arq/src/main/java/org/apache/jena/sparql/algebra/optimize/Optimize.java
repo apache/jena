@@ -20,6 +20,8 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Transform ;
+import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -79,4 +81,12 @@ public class Optimize
     /** Get the global factory for making optimizers */ 
     public static RewriteFactory getFactory()
     { return factory ; }
+
+    /** Apply a {@link Transform} to an {@link Op} */
+    public static Op apply(Transform transform, Op op) {
+        Op op2 = Transformer.transformSkipService(transform, op) ;
+        if ( op2 != op )
+            return op2 ;
+        return op ;
+    }
 }
