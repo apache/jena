@@ -23,7 +23,6 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.* ;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.slf4j.Logger ;
@@ -34,10 +33,6 @@ public class OptimizeStd implements Rewrite
 {
     static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
     private final Context context ;
-
-    public OptimizeStd(ExecutionContext execCxt) {
-        this(execCxt.getContext()) ;
-    }
 
     public OptimizeStd(Context context) {
         this.context = context ;
