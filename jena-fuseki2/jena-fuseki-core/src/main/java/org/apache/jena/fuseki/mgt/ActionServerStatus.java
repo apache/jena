@@ -70,7 +70,7 @@ public class ActionServerStatus extends ActionCtl
         JsonBuilder builder = new JsonBuilder() ; 
         builder.startObject() ;
         describeServer(builder, action.request.getLocalPort()) ;
-        describeDatasets(builder) ;
+        describeDatasets(builder, action.getDataAccessPointRegistry()) ;
         builder.finishObject() ;
         
         JsonValue v = builder.build() ;
@@ -107,9 +107,9 @@ public class ActionServerStatus extends ActionCtl
             
     }
 
-    private void describeDatasets(JsonBuilder builder) {
+    private void describeDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {
         builder.key(JsonConst.datasets) ;
-        JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
+        JsonDescription.arrayDatasets(builder, registry);
     }
 
 }

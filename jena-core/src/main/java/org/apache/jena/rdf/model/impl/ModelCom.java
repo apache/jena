@@ -1000,6 +1000,13 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
+    public PrefixMapping clearNsPrefixMap()
+    {
+        getPrefixMapping().clearNsPrefixMap();
+        return this ;
+    }
+
+    @Override
     public PrefixMapping setNsPrefixes( PrefixMapping pm )
     { 
         getPrefixMapping().setNsPrefixes( pm );

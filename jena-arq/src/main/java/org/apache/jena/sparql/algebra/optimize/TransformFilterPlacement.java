@@ -167,7 +167,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op op = buildFilter(placement) ;
         if ( exprs2 != null )
             // Add back the non-deterministic expressions
-            op = OpFilter.filter(exprs2, op );
+            op = OpFilter.filterBy(exprs2, op );
         return op ;
     }
 
@@ -258,7 +258,7 @@ public class TransformFilterPlacement extends TransformCopy {
         // If op is also a filter, a single filter is created with
         // exprsInner now after placed filters.
         // ("after" means later in the exprList of the filter).
-        Op f = OpFilter.filter(exprsInner, op) ;
+        Op f = OpFilter.filterBy(exprsInner, op) ;
         return new Placement(f, exprsOuter) ;
     }
 
@@ -323,7 +323,7 @@ public class TransformFilterPlacement extends TransformCopy {
         if (pushed.size() == 0) 
             return noChangePlacement ;
         // Safe to place some conditions around the BGP
-        Op opx = OpFilter.filter(pushed, new OpBGP(pattern)) ;
+        Op opx = OpFilter.filterBy(pushed, new OpBGP(pattern)) ;
         return result(opx, unpushed);
 
     }
@@ -408,7 +408,7 @@ public class TransformFilterPlacement extends TransformCopy {
         if (pushed.size() == 0) return null;
 
         // Safe to place some conditions around the quadpattern
-        return new Placement(OpFilter.filter(pushed, new OpQuadPattern(graphNode, pattern)), unpushed);
+        return new Placement(OpFilter.filterBy(pushed, new OpQuadPattern(graphNode, pattern)), unpushed);
     }
 
     /** Find the current OpQuadPattern, or return null. */
@@ -709,7 +709,7 @@ public class TransformFilterPlacement extends TransformCopy {
         
         Op result = input.copy(subOp) ;
         if ( ! wrapping.isEmpty() )
-            result = OpFilter.filter(wrapping, result) ;
+            result = OpFilter.filterBy(wrapping, result) ;
         return result(result, unplaced) ; 
     }
 
@@ -752,13 +752,13 @@ public class TransformFilterPlacement extends TransformCopy {
             // return a placement for the unpushed. 
             Op op1 = input.getSubOp() ;
             if ( pushed != null &&! pushed.isEmpty() )
-                op1 = OpFilter.filter(pushed, op1) ;
+                op1 = OpFilter.filterBy(pushed, op1) ;
             Op op2 = input.copy(op1) ;
             return result(op2, unpushed) ;
         }
         // We did make changes below.  Add filter for these (which includes the 
         // "pushed" at this level, now in the p.op or left in p.unplaced.
-        Op op_a = OpFilter.filter(subPlacement.unplaced, subPlacement.op) ;
+        Op op_a = OpFilter.filterBy(subPlacement.unplaced, subPlacement.op) ;
         op_a =  input.copy(op_a) ;
         return result(op_a, unpushed) ;
     }

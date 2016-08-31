@@ -331,7 +331,7 @@ public class OpRewriter implements OpVisitor {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Starting visiting OpFilter");
 		}
-		addOp(OpFilter.filter(opFilter.getExprs(), rewriteOp1(opFilter)));
+		addOp(OpFilter.filterBy(opFilter.getExprs(), rewriteOp1(opFilter)));
 	}
 
 	/**

@@ -98,6 +98,12 @@ public class DatasetPrefixStorageLogger implements DatasetPrefixStorage
 
     
     @Override
+    public void removeAllFromPrefixMap(String graphName) {
+        info("removeAllFromPrefixMap("+graphName+")") ;
+        other.removeAllFromPrefixMap(graphName) ;
+    }
+
+    @Override
     public PrefixMapping getPrefixMapping()
     {
         PrefixMapping x = other.getPrefixMapping() ;

@@ -19,7 +19,10 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
+import org.apache.jena.sparql.algebra.TransformCopy ;
+import org.apache.jena.sparql.algebra.op.OpTable ;
 import org.junit.Test ;
 
 /** Tests of transforms related to filters */
@@ -31,6 +34,30 @@ public class TestTransformFilters extends AbstractTestTransform
     private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
     private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin() ;
 
+    @Test public void nested_01() {
+        testOp(
+               "(filter (?A) (filter (?B) (table unit)))", 
+               new TransformCopy(),
+               (String[])null) ;
+    }
+
+
+    @Test public void nested_02() {
+        Transform tableChanger = new TransformCopy() {
+            @Override
+            public Op transform(OpTable opTable) {
+                // Always a new object
+                return OpTable.create(opTable.getTable()) ;
+            }
+        };
+        
+        testOp(
+               "(filter (?A) (filter (?B) (table unit)))", 
+               tableChanger,
+               "(filter (exprlist ?B ?A) (table unit))") ;
+    }
+    
+    
 //    // JENA-1184 workaround - this optimization is current not active. 
 //    @Test public void equality04() {
 //        // Eliminate unused

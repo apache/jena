@@ -67,6 +67,10 @@ public class PrefixMapWrapper implements PrefixMap
     { other.delete(prefix) ; }
 
     @Override
+    public void clear()
+    { other.clear(); }
+
+    @Override
     public boolean contains(String prefix)
     { return other.contains(prefix) ; }
 

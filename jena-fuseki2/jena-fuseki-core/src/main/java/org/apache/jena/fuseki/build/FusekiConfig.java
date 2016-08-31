@@ -71,7 +71,7 @@ public class FusekiConfig {
     } ;
     
     /** Has side effects in server setup */
-    public static List<DataAccessPoint> readConfigFile(String filename) {
+    public static List<DataAccessPoint> readServerConfigFile(String filename) {
         // Old-style config file.
         Model model = readAssemblerFile(filename) ;
         if ( model.size() == 0 )
@@ -136,7 +136,7 @@ public class FusekiConfig {
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("service") ;
-            DataAccessPoint acc = Builder.buildDataAccessPoint(svc, dsDescMap) ;
+            DataAccessPoint acc = FusekiBuilder.buildDataAccessPoint(svc, dsDescMap) ;
             accessPoints.add(acc) ;
         }
         
@@ -209,6 +209,19 @@ public class FusekiConfig {
         return dataServiceRef ;
     }
 
+    /** Read and process one file */ 
+    public static  List<DataAccessPoint> readConfigurationFile(String fn) {
+        List<DataAccessPoint> acc = new ArrayList<>() ;
+        Model m = readAssemblerFile(fn) ;
+        DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
+        readConfiguration(m, dsDescMap, acc) ;
+        return acc ;
+    }
+    
+    /** Read a configuration in a model.
+     * Allow dataset descriptions to be carried over from anothe rplace.
+     * Add to a list. 
+     */
     private static void readConfiguration(Model m, DatasetDescriptionRegistry dsDescMap, List<DataAccessPoint> dataServiceRef) {
         List<Resource> services = getByType(FusekiVocab.fusekiService, m) ; 
 
@@ -218,7 +231,7 @@ public class FusekiConfig {
         }
 
         for ( Resource service : services ) {
-            DataAccessPoint acc = Builder.buildDataAccessPoint(service, dsDescMap) ; 
+            DataAccessPoint acc = FusekiBuilder.buildDataAccessPoint(service, dsDescMap) ; 
             dataServiceRef.add(acc) ;
         }
     }
@@ -257,7 +270,7 @@ public class FusekiConfig {
                 Model m = ds.getNamedModel(g.getURI()) ;
                 // Rebase the resource of the service description to the containing graph.
                 Resource svc = m.wrapAsResource(s.asNode()) ;
-                DataAccessPoint ref = Builder.buildDataAccessPoint(svc, dsDescMap) ;
+                DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(svc, dsDescMap) ;
                 refs.add(ref) ;
             }
             ds.commit(); 

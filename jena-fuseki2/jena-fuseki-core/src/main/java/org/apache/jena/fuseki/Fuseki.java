@@ -231,8 +231,6 @@ public class Fuseki {
             return ;
         initialized = true ;
         JenaSystem.init() ;
-        // Do explicitly so it happens after subsystem initialization.
-        FusekiLogging.setLogging() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;

@@ -96,7 +96,7 @@ public abstract class IRIResolver
 
     // ---- Initialization support
     
-    /** Set the error/warnign state of a violation code.
+    /** Set the error/warning state of a violation code.
      * @param factory   IRIFactory
      * @param code      ViolationCodes constant
      * @param isError   Whether it is to be treated an error.

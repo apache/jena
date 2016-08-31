@@ -117,6 +117,21 @@ public final class Trie<T> {
             n.setValue(null);
         }
     }
+    
+    /**
+     * Clear the Trie completely. 
+     */
+    public void clear() {
+        root = new TrieNode<>(null);
+    }
+
+    /**
+     * Clear the Trie completely. 
+     */
+    public boolean isEmpty() {
+        return ! root.hasValue() ;
+    }
+
 
     /**
      * Gets whether a key exists in the trie and has a non-null value mapped to

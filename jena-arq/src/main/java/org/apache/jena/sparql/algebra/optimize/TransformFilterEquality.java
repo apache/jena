@@ -137,7 +137,7 @@ public class TransformFilterEquality extends TransformCopy {
             Op op = rebuild((Op2) subOp, ops);
             // Put all filters - either we optimized, or we left alone.
             // Either way, the complete set of filter expressions.
-            op = OpFilter.filter(exprs, op);
+            op = OpFilter.filterBy(exprs, op);
             return op;
         }
 
@@ -151,7 +151,7 @@ public class TransformFilterEquality extends TransformCopy {
 
         // ---- Place any filter expressions around the processed sub op.
         if (remaining.size() > 0)
-            op = OpFilter.filter(remaining, op);
+            op = OpFilter.filterBy(remaining, op);
         return op;
     }
 

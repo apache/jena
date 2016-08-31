@@ -314,37 +314,34 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ResultSet rs = queryExecution.execSelect() ;
 
             // Force some query execution now.
-            //
             // If the timeout-first-row goes off, the output stream has not
             // been started so the HTTP error code is sent.
 
             rs.hasNext() ;
 
             // If we wanted perfect query time cancellation, we could consume
-            // the result now
-            // to see if the timeout-end-of-query goes off.
-
+            // the result now to see if the timeout-end-of-query goes off.
             // rs = ResultSetFactory.copyResults(rs) ;
 
-            action.log.info(format("[%d] exec/select", action.id)) ;
+            //action.log.info(format("[%d] exec/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }
 
         if ( query.isConstructType() ) {
             Dataset dataset = queryExecution.execConstructDataset();
-            action.log.info(format("[%d] exec/construct", action.id));
+            //action.log.info(format("[%d] exec/construct", action.id));
             return new SPARQLResult(dataset);
         }
 
         if ( query.isDescribeType() ) {
             Model model = queryExecution.execDescribe() ;
-            action.log.info(format("[%d] exec/describe", action.id)) ;
+            //action.log.info(format("[%d] exec/describe", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() ) {
             boolean b = queryExecution.execAsk() ;
-            action.log.info(format("[%d] exec/ask", action.id)) ;
+            //action.log.info(format("[%d] exec/ask", action.id)) ;
             return new SPARQLResult(b) ;
         }
 

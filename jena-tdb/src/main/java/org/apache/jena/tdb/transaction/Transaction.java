@@ -41,6 +41,7 @@ public class Transaction
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
+    private final long version ;
 
     private final List<Iterator<?>> iterators ;     // Tracking iterators 
     private DatasetGraphTxn         activedsg ;
@@ -52,7 +53,7 @@ public class Transaction
     
     private boolean changesPending ;
     
-    public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
+    public Transaction(DatasetGraphTDB dsg, long version, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
         this.id = id ;
         if (label == null )
             label = "Txn" ;
@@ -65,6 +66,7 @@ public class Transaction
         this.label = label ;
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
+        this.version = version ;
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
@@ -262,23 +264,24 @@ public class Transaction
 
     public ReadWrite getMode()                      { return mode ; }
     public boolean   isRead()                       { return mode == ReadWrite.READ ; }
+    public boolean   isWrite()                      { return mode == ReadWrite.WRITE ; }
+
     public TxnState  getState()                     { return state ; }
     
     public long getTxnId()                          { return id ; }
     public TransactionManager getTxnMgr()           { return txnMgr ; }
     
     public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
+    public long getVersion()                        { return version ; }
 
-    public void setActiveDataset(DatasetGraphTxn activedsg) { 
+    /*package*/ void setActiveDataset(DatasetGraphTxn activedsg) { 
         this.activedsg = activedsg ;
         if ( activedsg.getTransaction() != this )
             Log.warn(this, "Active DSG does not point to this transaction; "+this) ;
     }
 
-    public Journal getJournal()                     { return journal ; }
+    /*package*/ Journal getJournal()                     { return journal ; }
 
-//    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
-//    
     private int count = 0 ;
     private int peekCount = 0 ;
 
@@ -295,7 +298,7 @@ public class Transaction
         if ( iterators != null )
             iterators.remove(iter) ;
         if ( count == 0 ) {
-            peekCount= 0 ;
+            peekCount = 0 ;
         }
     }
     
@@ -307,11 +310,11 @@ public class Transaction
         return x ;
     }
     
-    public void addComponent(NodeTableTrans ntt) {
+    /*package*/ void addComponent(NodeTableTrans ntt) {
         nodeTableTrans.add(ntt) ;
     }
 
-    public void addComponent(BlockMgrJournal blkMgr) {
+    /*package*/ void addComponent(BlockMgrJournal blkMgr) {
         blkMgrs.add(blkMgr) ;
     }
 
@@ -327,4 +330,5 @@ public class Transaction
     public String getLabel() {
         return label ;
     }
+
 }

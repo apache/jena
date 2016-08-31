@@ -119,6 +119,13 @@ public class FastAbbreviatingPrefixMap extends PrefixMapBase {
     }
 
     @Override
+    public void clear() {
+        prefixes.clear(); 
+        // prefixesView
+        abbrevs.clear() ;
+    }
+
+    @Override
     public boolean contains(String prefix) {
         prefix = canonicalPrefix(prefix);
         return this.prefixes.containsKey(prefix);

@@ -34,10 +34,7 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.web.HttpNames ;
 
 /** This servlet can be attached to a dataset location
@@ -144,7 +141,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected String mapRequestToDataset(HttpAction action) {
         String uri = ActionLib.removeContextPath(action) ;
-        return ActionLib.mapRequestToDatasetLongest$(uri) ;
+        return ActionLib.mapRequestToDatasetLongest$(uri, action.getDataAccessPointRegistry()) ;
     }
 
     /** Intercept the processing cycle at the point where the action has been set up,
@@ -154,8 +151,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected void executeAction(HttpAction action) {
         
-        //SPARQL Update direct
-        //SPARQL Query POST
+        // DEBUG: DataAccessPointRegistry.print("UberServlet ");
         
         long id = action.id ;
         HttpServletRequest request = action.request ;
@@ -223,7 +219,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 // SPARQL Update
                 if ( !allowUpdate(action) )
                     ServletOps.errorMethodNotAllowed("SPARQL update : "+method) ;
-                // This wil dela with using GET.
+                // This will deal with using GET.
                 executeRequest(action, updateServlet) ;
                 return ;
             }
@@ -245,16 +241,14 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 
             // Check enabled.
             if ( isGET || isHEAD ) {
-                if ( allowREST_R(action) )
+                if ( allowQuadsR(action) )
                     restQuads_R.executeLifecycle(action) ;
                 else
-                    ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
+                    ServletOps.errorMethodNotAllowed(method) ;
                 return ;
             }
-            // If the read-only server has the same name as the writable server,
-            // and the default for a read-only server is "/data", like a writable dataset,
-            // this test is insufficient.
-            if ( allowREST_W(action) )
+            
+            if ( allowQuadsW(action) )
                 restQuads_RW.executeLifecycle(action) ;
             else
                 ServletOps.errorMethodNotAllowed("Read-only dataset : "+method) ;
@@ -279,6 +273,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
                 if ( serviceDispatch(action, OperationName.GSP_RW, restQuads_RW) ) return ;
             }
+            if ( serviceDispatch(action, OperationName.Quads_RW, restQuads_RW) ) return ;
+            if ( serviceDispatch(action, OperationName.Quads_R, restQuads_R) ) return ;
         }
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )

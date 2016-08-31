@@ -39,16 +39,16 @@ public class TestBuilder {
 	@Test
 	public void testVerifySameDatasetObjectForSameDescription() {
 		
-		Dataset ds1 = Builder.getDataset(dsDesc1, registry);
-		Dataset ds2 = Builder.getDataset(dsDesc1, registry);
+		Dataset ds1 = FusekiBuilder.getDataset(dsDesc1, registry);
+		Dataset ds2 = FusekiBuilder.getDataset(dsDesc1, registry);
 		assertEquals(ds1, ds2);
 	}
 	
 	@Test
 	public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
 		
-		Dataset ds1 = Builder.getDataset(dsDesc1, registry);
-		Dataset ds2 = Builder.getDataset(dsDesc2, registry);
+		Dataset ds1 = FusekiBuilder.getDataset(dsDesc1, registry);
+		Dataset ds2 = FusekiBuilder.getDataset(dsDesc2, registry);
 		assertNotEquals(ds1, ds2);		
 	}
 	

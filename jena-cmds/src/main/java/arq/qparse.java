@@ -180,7 +180,7 @@ public class qparse extends CmdARQ
                 if ( ex.getCause() != null )
                     ex.getCause().printStackTrace(System.err) ;
             }
-            finally { LogCtl.set(ParserBase.ParserLoggerName, "INFO") ; }
+            finally { LogCtl.setLevel(ParserBase.ParserLoggerName, "INFO") ; }
 
             
             // Print the query out in some syntax

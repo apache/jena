@@ -69,7 +69,7 @@ public class FusekiEnv {
     public enum INIT {
         // Default values of FUSEKI_HOME, and FUSEKI_BASE. 
         WAR         (null, "/etc/fuseki") , 
-        EMBEDDED    (".", "run") ,
+        EMBEDDED    (null, null) ,
         STANDALONE  (".", "run") ,
         TEST        ("src/main/webapp", "target/run") ,
         UNSET       (null, null) ;
@@ -106,7 +106,7 @@ public class FusekiEnv {
     public static final String   ENV_runArea     = "run" ;
     private static boolean       initialized     = false ;
     
-    /** Initialize the server */
+    /** Initialize the server : standalone and WAR versions : not embedded */
     public static synchronized void setEnvironment() {
         if ( initialized )
             return ;

@@ -85,6 +85,11 @@ public class PrefixMapStd extends PrefixMapBase {
     }
 
     @Override
+    public void clear() {
+        prefixes.clear() ; 
+    }
+
+    @Override
     public boolean contains(String prefix) {
         prefix = canonicalPrefix(prefix);
         return prefixes.containsKey(prefix);

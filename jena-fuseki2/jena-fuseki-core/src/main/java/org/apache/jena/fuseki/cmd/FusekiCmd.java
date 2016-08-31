@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.cmd ;
 
 import java.nio.file.Files ;
 import java.nio.file.Path ;
-import java.util.List ;
 
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
@@ -74,6 +73,7 @@ public class FusekiCmd {
         
         // --home :: Legacy - do not use.
         private static ArgDecl  argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
+        // --pages :: Legacy - do not use.
         private static ArgDecl  argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
 
         private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem") ;
@@ -107,7 +107,6 @@ public class FusekiCmd {
             jettyServerConfig.port = 3030 ;
             jettyServerConfig.contextPath = "/" ;
             jettyServerConfig.jettyConfigFile = null ;
-            jettyServerConfig.pages = Fuseki.PagesStatic ;
             jettyServerConfig.enableCompression = true ;
             jettyServerConfig.verboseLogging = false ;
         }
@@ -133,8 +132,6 @@ public class FusekiCmd {
                 "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
             add(argPort, "--port",
                 "Listen on this port number") ;
-            add(argPages, "--pages=DIR",
-                "Set of pages to serve as static content") ;
             // Set via jetty config file.
             add(argLocalhost, "--localhost",
                 "Listen only on the localhost interface") ;
@@ -147,6 +144,7 @@ public class FusekiCmd {
             add(argJettyConfig, "--jetty-config=FILE",
                 "Set up the server (not services) with a Jetty XML file") ;
             add(argBasicAuth) ;
+            add(argPages) ;
             add(argMgt) ;           // Legacy
             add(argMgtPort) ;       // Legacy
 //            add(argMgt, "--mgt",
@@ -340,22 +338,14 @@ public class FusekiCmd {
                     throw new CmdException("No such file: " + jettyServerConfig.jettyConfigFile) ;
             }
 
-            if ( contains(argBasicAuth) ) {
-                jettyServerConfig.authConfigFile = getValue(argBasicAuth) ;
-                if ( !FileOps.exists(jettyServerConfig.authConfigFile) )
-                    throw new CmdException("No such file: " + jettyServerConfig.authConfigFile) ;
-            }
+            if ( contains(argBasicAuth) )
+                Fuseki.configLog.warn("--basic-auth ignored (use Shiro setup instead)") ;
 
-            if ( contains(argHome) ) {
+            if ( contains(argHome) )
                 Fuseki.configLog.warn("--home ignored (use enviroment variables $FUSEKI_HOME and $FUSEKI_BASE)") ;
-//                List<String> args = super.getValues(argHome) ;
-//                homeDir = args.get(args.size() - 1) ;
-            }
 
-            if ( contains(argPages) ) {
-                List<String> args = super.getValues(argPages) ;
-                jettyServerConfig.pages = args.get(args.size() - 1) ;
-            }
+            if ( contains(argPages) )
+                Fuseki.configLog.warn("--pages ignored (enviroment variables $FUSEKI_HOME to provide the webapp)") ;
 
             if ( contains(argGZip) ) {
                 if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )

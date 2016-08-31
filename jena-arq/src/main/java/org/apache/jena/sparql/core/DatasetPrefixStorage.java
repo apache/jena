@@ -52,7 +52,10 @@ public interface DatasetPrefixStorage extends Closeable, Sync
     /** Remove the association of a prefix for a specific graph */ 
     public void removeFromPrefixMap(String graphName, String prefix) ;
 
-    /** Return a PrefixMapping for the default (unnamed) graph */ 
+    /** Remove all associations for a specific graph. */ 
+    public void removeAllFromPrefixMap(String graphName) ;
+
+    /** Return a PrefixMapping for the default (unnamed) graph. */ 
     public PrefixMapping getPrefixMapping() ;
 
     /** Return a PrefixMapping for a named graph */ 

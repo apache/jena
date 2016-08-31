@@ -28,10 +28,10 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Break expression testing suite into parts
@@ -42,6 +42,16 @@ import org.junit.Test ;
 public class TestNodeValue extends BaseTest
 {
     static final double doubleAccuracy = 0.00000001d ;
+    static boolean warningSetting ; 
+    
+    @BeforeClass public static void beforeClass() {
+        warningSetting = NodeValue.VerboseWarnings ;
+        NodeValue.VerboseWarnings = false ;
+    }
+    
+    @AfterClass public static void afterClass() {
+        NodeValue.VerboseWarnings = warningSetting ;
+    }
 
     @Test
     public void testInt1() {
@@ -335,6 +345,34 @@ public class TestNodeValue extends BaseTest
     }
 
     @Test
+    public void testNodeInt6() {
+        // Leading/trail whitespace.
+        NodeValue v = NodeValue.makeNodeInteger(" 18");
+        assertTrue("Not a number: " + v, v.isNumber());
+        assertTrue("Not an integer: " + v, v.isInteger());
+        assertTrue("Not a node: " + v, v.hasNode());
+    }
+
+    @Test
+    public void testNodeInt7() {
+        // Leading/trail whitespace.
+        NodeValue v = NodeValue.makeNodeInteger(" 18 ");
+        assertTrue("Not a number: " + v, v.isNumber());
+        assertTrue("Not an integer: " + v, v.isInteger());
+        assertTrue("Not a node: " + v, v.hasNode());
+    }
+
+    @Test
+    public void testNodeInt8() {
+        // Internal whitespace. Not a number.
+        NodeValue v = NodeValue.makeNodeInteger("1 8");
+        assertFalse("A number!: " + v, v.isNumber());
+        assertFalse("An integer!: " + v, v.isInteger());
+        assertTrue("Not a node: " + v, v.hasNode());
+    }
+
+    
+    @Test
     public void testNodeFloat1() {
         // Theer is no SPARQL representation in short form of a float.
         NodeValue v = NodeValue.makeNode("57.0", XSDDatatype.XSDfloat);
@@ -384,6 +422,16 @@ public class TestNodeValue extends BaseTest
 
         assertEquals("Print form mismatch", "057.0e0", actualStr);
     }
+    
+    @Test
+    public void testNodeDouble4() {
+        // Leading/trail whitespace.
+        NodeValue v = NodeValue.makeNode(" 057.0e0 ", XSDDatatype.XSDdouble);
+        assertTrue("Not a number: " + v, v.isNumber());
+        assertTrue("Not a double: " + v, v.isDouble());
+        assertTrue("Not a node: " + v, v.hasNode());
+    }
+
 
     @Test
     public void testNodeBool1() {

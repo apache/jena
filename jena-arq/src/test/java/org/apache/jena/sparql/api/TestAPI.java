@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.api;
 
 import java.util.Iterator;
+import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest;
@@ -95,13 +96,18 @@ public class TestAPI extends BaseTest
         }
     }
 
-    // This test is slightly dubious. It is testing that the model for the
-    // resource in the result is the same object as the model supplied ot the
-    // query.
+    // The original test (see commented out "assertSame) is test is now bogus.
+    // DatasetImpl no longer caches the default model as that caused problems.
     //
-    // It happens to be true for DatasetImpl and the default model but that's
-    // about it. It is not part of the contract of query/datasets.
-    //
+    // This is testing that the model for the resource in the result is the
+    // same object as the model supplied to the query.
+    // "Same" here means "same contents" includign blank nodes.
+    // 
+    // it used to be that this tested whether they were the same object. 
+    // That is dubious and no longer true even for DatasetImpl (teh default mode
+    // is not cached but recreated on demand so theer are no problems with
+    // transaction boundaries).    
+    // 
     // Left as an active test so the assumption is tested (it has been true for
     // many years). 
     //
@@ -115,7 +121,10 @@ public class TestAPI extends BaseTest
             assertTrue("No results", rs.hasNext()) ;
             QuerySolution qs = rs.nextSolution() ;
             Resource qr = qs.getResource("s") ;
-            assertSame("Not the same model as queried", qr.getModel(), m) ;
+            //assertSame("Not the same model as queried", qr.getModel(), m) ;
+            Set<Statement> s1 = qr.getModel().listStatements().toSet() ;
+            Set<Statement> s2 = m.listStatements().toSet() ;
+            assertEquals(s1,s2) ;
         }
     }
     

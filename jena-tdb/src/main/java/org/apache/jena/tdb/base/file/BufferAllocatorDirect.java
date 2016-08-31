@@ -25,22 +25,20 @@ import java.nio.ByteBuffer ;
  */
 public class BufferAllocatorDirect implements BufferAllocator
 {
-    @Override
-    public ByteBuffer allocate(int capacity)
-    {
-        return ByteBuffer.allocateDirect(capacity);
-    }
-
-    @Override
-    public void clear()
-    {
-        // Do nothing
-    }
+    public BufferAllocatorDirect() {}
     
     @Override
-    public void close()
-    {
+    public ByteBuffer allocate(int capacity) {
+        return ByteBuffer.allocateDirect(capacity) ;
+    }
+
+    @Override
+    public void clear() {
         // Do nothing
     }
 
+    @Override
+    public void close() {
+        // Do nothing
+    }
 }

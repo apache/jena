@@ -90,7 +90,7 @@ public class ActionDatasets extends ActionContainerItem {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("D") ;
         builder.key(JsonConst.datasets) ;
-        JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
+        JsonDescription.arrayDatasets(builder, action.getDataAccessPointRegistry());
         builder.finishObject("D") ;
         return builder.build() ;
     }
@@ -99,7 +99,7 @@ public class ActionDatasets extends ActionContainerItem {
     protected JsonValue execGetItem(HttpAction action) {
         action.log.info(format("[%d] GET dataset %s", action.id, action.getDatasetName())) ;
         JsonBuilder builder = new JsonBuilder() ;
-        DataAccessPoint dsDesc = DataAccessPointRegistry.get().get(action.getDatasetName()) ;
+        DataAccessPoint dsDesc = action.getDataAccessPointRegistry().get(action.getDatasetName()) ;
         if ( dsDesc == null )
             ServletOps.errorNotFound("Not found: dataset "+action.getDatasetName());
         JsonDescription.describe(builder, dsDesc) ;
@@ -184,7 +184,7 @@ public class ActionDatasets extends ActionContainerItem {
 //            System.err.println("'"+datasetPath+"'") ;
 //            DataAccessPointRegistry.get().forEach((s,dap)->System.err.println("'"+s+"'")); 
             // ---- Check whether it already exists 
-            if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
+            if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             
@@ -205,8 +205,8 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = Builder.buildDataAccessPoint(subject, registry) ;
-            DataAccessPointRegistry.register(datasetPath, ref) ;
+            DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+            action.getDataAccessPointRegistry().register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             ServletOps.success(action) ;
@@ -319,7 +319,7 @@ public class ActionDatasets extends ActionContainerItem {
             name = "" ;
         action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
 
-        if ( ! DataAccessPointRegistry.get().isRegistered(name) )
+        if ( ! action.getDataAccessPointRegistry().isRegistered(name) )
             ServletOps.errorNotFound("No such dataset registered: "+name);
 
         systemDSG.begin(ReadWrite.WRITE) ;
@@ -329,13 +329,13 @@ public class ActionDatasets extends ActionContainerItem {
             // Need to reference count operations when they drop to zero
             // or a timer goes off, we delete the dataset.
             
-            DataAccessPoint ref = DataAccessPointRegistry.get().get(name) ;
+            DataAccessPoint ref = action.getDataAccessPointRegistry().get(name) ;
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
 
             // Make it invisible to the outside.
-            DataAccessPointRegistry.get().remove(name) ;
+            action.getDataAccessPointRegistry().remove(name) ;
             // Delete configuration file.
             // Should be only one, undo damage if multiple.
             FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
@@ -361,7 +361,7 @@ public class ActionDatasets extends ActionContainerItem {
         }
         
         // Remove the configuration file (if any).
-        DataAccessPointRegistry.get().remove(name) ;
+        action.getDataAccessPointRegistry().remove(name) ;
     }
 
     // Persistent state change.

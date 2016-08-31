@@ -26,95 +26,82 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.Capabilities ;
+import org.apache.jena.graph.GraphEvents ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.AllCapabilities ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb.TDBException ;
-import org.apache.jena.tdb.graph.TransactionHandlerTDB ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
- * General operations for TDB graphs (free-standing graph, default graph and
- * named graphs)
+ * General operations for TDB graphs
+ * (free-standing graph, default graph and named graphs)
  */
-public class GraphTDB extends GraphView implements Closeable, Sync {
-    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
-
-    // Switch this to DatasetGraphTransaction
-    private final DatasetGraphTDB    dataset ;
-
-    public GraphTDB(DatasetGraphTDB dataset, Node graphName) {
+public abstract class GraphTDB extends GraphView implements Closeable, Sync {
+    public GraphTDB(DatasetGraph dataset, Node graphName) {
         super(dataset, graphName) ;
-        this.dataset = dataset ;
     }
 
-    /** get the current TDB dataset graph - changes for transactions */
-    public DatasetGraphTDB getDSG() {
-        return dataset ;
+    /** Return the associated DatasetGraphTDB.
+     * For non-transactional, that's the base storage.
+     * For transactional, it is the transactional view.
+     * <p>
+     * Immediate validity only.
+     * Not valid actoss transacion boundaries, nor non-transactional to transactional. 
+     */
+    public abstract DatasetGraphTDB getDatasetGraphTDB() ;
+    
+    /** Return the associated base DatasetGraphTDB storage.
+     * Use with great care.
+     * <p>
+     * Immediate validity only.
+     */
+    protected abstract DatasetGraphTDB getBaseDatasetGraphTDB() ;
+    
+    protected DatasetPrefixStorage getPrefixStorage() {
+        return getDatasetGraphTDB().getPrefixes() ;
     }
 
-    /** The NodeTupleTable for this graph */
+    /** The NodeTupleTable for this graph - valid only inside the transaction or non-transactional. */
     public NodeTupleTable getNodeTupleTable() {
-        return getDSG().chooseNodeTupleTable(getGraphName()) ;
+        return getDatasetGraphTDB().chooseNodeTupleTable(getGraphName()) ;
     }
 
     @Override
     protected PrefixMapping createPrefixMapping() {
+        // [TXN] Make transactional.
+        DatasetPrefixStorage dsgPrefixes = getDatasetGraphTDB().getPrefixes() ;
         if ( isDefaultGraph() )
-            return getDSG().getPrefixes().getPrefixMapping() ;
+            return dsgPrefixes.getPrefixMapping() ;
         if ( isUnionGraph() )
-            return getDSG().getPrefixes().getPrefixMapping() ;
-        return getDSG().getPrefixes().getPrefixMapping(getGraphName().getURI()) ;
+            return dsgPrefixes.getPrefixMapping() ;
+        return dsgPrefixes.getPrefixMapping(getGraphName().getURI()) ;
     }
 
     @Override
     public final void sync() {
-        dataset.sync() ;
+        getDatasetGraphTDB().sync();
     }
 
     @Override
     final public void close() {
         sync() ;
-        // Ignore - graphs are projections of the overlying database.
-        // "Close graph" is messy in this projection world. 
+        // Don't close the dataset.
         super.close() ;
-    }
-
-    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, Triple triple) {
-        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-        if ( iterQuads == null )
-            return org.apache.jena.util.iterator.NullIterator.instance() ;
-        // Can't be duplicates - fixed graph node..
-        Iterator<Triple> iterTriples = new ProjectQuadsToTriples(Quad.defaultGraphIRI, iterQuads) ;
-        return WrappedIterator.createNoRemove(iterTriples) ;
-    }
-
-    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, Triple m) {
-        Node gn = graphNode ;
-        // Explicitly named union graph.
-        if ( isUnionGraph(gn) )
-            gn = Node.ANY ;
-
-        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(),
-                                                          m.getMatchObject()) ;
-        if ( iter == null )
-            return org.apache.jena.util.iterator.NullIterator.instance() ;
-
-        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn), iter) ;
-
-        if ( gn == Node.ANY )
-            iterTriples = Iter.distinct(iterTriples) ;
-        return WrappedIterator.createNoRemove(iterTriples) ;
     }
 
     @Override
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
-        Node g = Quad.unionGraph ;
-        Iterator<Quad> iterQuads = getDSG().find(g, s, p, o) ;
+        Iterator<Quad> iterQuads = getDatasetGraphTDB().find(Quad.unionGraph, s, p, o) ;
         Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
         // TDB guarantees that duplicates are adjacent.
@@ -131,7 +118,8 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         Node gn = getGraphName() ;
         boolean unionGraph = isUnionGraph(gn) ;
         gn = unionGraph ? Node.ANY : gn ;
-        Iterator<Tuple<NodeId>> iter = getDSG().getQuadTable().getNodeTupleTable().findAsNodeIds(gn, null, null, null) ;
+        QuadTable quadTable = getDatasetGraphTDB().getQuadTable() ;
+        Iterator<Tuple<NodeId>> iter = quadTable.getNodeTupleTable().findAsNodeIds(gn, null, null, null) ;
         if ( unionGraph ) {
             iter = Iter.map(iter, project4TupleTo3Tuple) ;
             iter = Iter.distinctAdjacent(iter) ;
@@ -145,101 +133,19 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
 		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
 	};
 
-    // Convert from Iterator<Quad> to Iterator<Triple>
-    static class ProjectQuadsToTriples implements Iterator<Triple> {
-        private final Iterator<Quad> iter ;
-        private final Node           graphNode ;
-
-        /**
-         * Project quads to triples - check the graphNode is as expected if not
-         * null
-         */
-        ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) {
-            this.graphNode = graphNode ;
-            this.iter = iter ;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return iter.hasNext() ;
-        }
-
-        @Override
-        public Triple next() {
-            Quad q = iter.next() ;
-            if ( graphNode != null && !q.getGraph().equals(graphNode) )
-                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode
-                                        + ", got=" + q.getGraph() + ")") ;
-            return q.asTriple() ;
-        }
-
-        @Override
-        public void remove() {
-            iter.remove() ;
-        }
-    }
-
     @Override
     public Capabilities getCapabilities() {
         if ( capabilities == null )
-            capabilities = new Capabilities() {
-                @Override
-                public boolean sizeAccurate() {
-                    return true ;
-                }
-
-                @Override
-                public boolean addAllowed() {
-                    return true ;
-                }
-
-                @Override
-                public boolean addAllowed(boolean every) {
-                    return true ;
-                }
-
-                @Override
-                public boolean deleteAllowed() {
-                    return true ;
-                }
-
-                @Override
-                public boolean deleteAllowed(boolean every) {
-                    return true ;
-                }
-
-                @Override
-                public boolean canBeEmpty() {
-                    return true ;
-                }
-
-                @Override
-                public boolean iteratorRemoveAllowed() {
-                    return false ;
-                } /* ** */
-
-                @Override
-                public boolean findContractSafe() {
-                    return true ;
-                }
-
-                @Override
-                public boolean handlesLiteralTyping() {
-                    return false ;
-                } /* ** */
+            capabilities = new AllCapabilities() {
+                @Override public boolean iteratorRemoveAllowed() { return false ; } 
+                @Override public boolean handlesLiteralTyping() { return false ; }
             } ;
-
         return super.getCapabilities() ;
     }
-
-    @Override
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler ;
-    }
-
+    
     @Override
     public void clear() {
-        dataset.deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
+        getDatasetGraphTDB().deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll) ;
     }
 
@@ -251,7 +157,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
             return ;
         }
 
-        dataset.deleteAny(getGraphName(), s, p, o) ;
+        getDatasetGraphTDB().deleteAny(getGraphName(), s, p, o) ;
         // We know no one is listening ...
         // getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
     }

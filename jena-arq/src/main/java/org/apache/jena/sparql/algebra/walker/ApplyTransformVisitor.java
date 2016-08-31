@@ -204,7 +204,17 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     private ExprList collect(ExprList exprList) {
         if ( exprList == null )
             return null ;
-        return new ExprList(collect(exprList.size())) ;
+        List<Expr> x = collect(exprList.size()) ;
+        boolean changed = false ;
+        for ( int i = 0 ; i < x.size() ; i++ ) {
+            if ( x.get(i) != exprList.get(i) ) {
+                changed = true ;
+                break ;
+            }
+        }
+        if ( ! changed )
+            return exprList ;
+        return new ExprList(x) ;
     }
     
     private ExprList collect(List<Expr> exprList) {
@@ -324,14 +334,22 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
         Op subOp = null ;
         if ( opFilter.getSubOp() != null )
             subOp = pop(opStack) ;
-        boolean changed = (opFilter.getSubOp() != subOp) ;
-
         ExprList ex = opFilter.getExprs() ;
+        if ( ex == null || ex.isEmpty() ) {
+            // No expressions.
+            // Doesn't normally happen but this code is safe in these cases.
+            push(opStack, opFilter.apply(opTransform, subOp)) ;
+            return ;
+        }
+        // ex2 is the same length as ex. 
         ExprList ex2 = collect(ex) ;
-        
         OpFilter f = opFilter ;
-        if ( ex != ex2 )
-            f = (OpFilter)OpFilter.filter(ex2, subOp) ;
+        if ( ex != ex2 || opFilter.getSubOp() != subOp ) {
+            f = OpFilter.filterAlways(ex2, subOp) ;
+            // If we removed a layer of filter, then subOp needs changing
+            // else f-subOp is subOp anyway.    
+            subOp = f.getSubOp() ; 
+        }
         push(opStack, f.apply(opTransform, subOp)) ;
     }
 

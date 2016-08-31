@@ -155,7 +155,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         // typed literal)
                         Map<String, Object> x2 = new LinkedHashMap<>() ;
                         x2.put("@id", p.getURI()) ;
-                        x2.put("@id", p.getURI()) ;
                         if (! isLangString(o) && ! isSimpleString(o) ) 
                             // RDF 1.1 : Skip if rdf:langString or xsd:string.
                             x2.put("@type", literalDatatypeURI) ; 

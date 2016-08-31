@@ -307,7 +307,7 @@ public class BuilderOp
 
             Op op = build(itemOp.getList()) ;
             ExprList exprList = BuilderExpr.buildExprOrExprList(itemExpr) ;
-            return OpFilter.filter(exprList, op) ;
+            return OpFilter.filterDirect(exprList, op) ;
         }
     } ;
 

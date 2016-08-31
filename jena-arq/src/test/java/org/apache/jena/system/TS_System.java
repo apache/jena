@@ -24,6 +24,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestCounter.class
+    , TestThreadAction.class
     , TestTxnLifecycle.class
     , TestTxn.class
     , TestTxnThread.class

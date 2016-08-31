@@ -123,6 +123,11 @@ public interface PrefixMap {
     public abstract void delete(String prefix);
 
     /**
+     * Clear all prefixes.
+     */
+    public abstract void clear();
+
+    /**
      * Gets whether the map contains a given prefix
      * 
      * @param prefix

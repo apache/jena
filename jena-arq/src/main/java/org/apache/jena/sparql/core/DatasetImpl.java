@@ -44,7 +44,6 @@ public class DatasetImpl implements Dataset
     protected DatasetGraph dsg = null ;
     // Allow for an external transactional. 
     private Transactional transactional = null ;
-    private Model dftModel = null ;
 
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph) {
@@ -67,7 +66,6 @@ public class DatasetImpl implements Dataset
     {
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
         this.transactional = dsg ;
-        dftModel = model ;
     }
 
     /** Create a Dataset with a copy of the structure of another one,
@@ -81,9 +79,7 @@ public class DatasetImpl implements Dataset
 
     @Override
     public Model getDefaultModel() { 
-        if ( dftModel == null )
-            dftModel = ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
-        return dftModel ;
+        return ModelFactory.createModelForGraph(dsg.getDefaultGraph()) ; 
     }
 
     @Override
@@ -121,21 +117,18 @@ public class DatasetImpl implements Dataset
     public void commit() {
         checkTransactional();
         transactional.commit();
-        dftModel = null;
     }
 
     @Override
     public void abort() {
         checkTransactional();
         transactional.abort();
-        dftModel = null;
     }
 
     @Override
     public void end() {
         checkTransactional();
         transactional.end();
-        dftModel = null;
     }
 
     private void checkTransactional() {
@@ -199,7 +192,6 @@ public class DatasetImpl implements Dataset
     @Override
     public void close() {
         dsg.close() ;
-        dftModel = null ;
     }
     
     protected Model graph2model(final Graph graph) {

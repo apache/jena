@@ -68,6 +68,13 @@ public class PrefixMapping2 implements PrefixMapping
         return this ;
     }
 
+    /** Clear the local prefix map, but leave the immutable global one alone */
+    @Override
+    public PrefixMapping clearNsPrefixMap() {
+        getLocalPrefixMapping().clearNsPrefixMap() ;
+        return this ;
+    }
+
     /** @see org.apache.jena.shared.PrefixMapping#setNsPrefixes(org.apache.jena.shared.PrefixMapping) */
     @Override
     public PrefixMapping setNsPrefixes(PrefixMapping other)

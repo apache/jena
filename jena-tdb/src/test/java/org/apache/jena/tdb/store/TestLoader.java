@@ -34,8 +34,6 @@ import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.sys.TDBMaker ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -148,7 +146,7 @@ public class TestLoader extends BaseTest {
     @Test
     public void load_graph_05() {
         DatasetGraphTDB dsg = fresh() ;
-        GraphTDB graph = dsg.getDefaultGraphTDB() ;
+        GraphNonTxnTDB graph = dsg.getDefaultGraphTDB() ;
         TDBLoader.load(graph, DIR + "data-4.ttl", false) ;
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
@@ -157,7 +155,7 @@ public class TestLoader extends BaseTest {
     @Test
     public void load_graph_06() {
         DatasetGraphTDB dsg = fresh() ;
-        GraphTDB graph = dsg.getGraphTDB(g) ;
+        GraphNonTxnTDB graph = dsg.getGraphTDB(g) ;
         TDBLoader.load(graph, DIR + "data-4.ttl", false) ;
         String uri1 = dsg.getGraph(g).getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri1) ;

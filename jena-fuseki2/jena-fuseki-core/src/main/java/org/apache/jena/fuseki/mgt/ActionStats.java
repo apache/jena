@@ -30,6 +30,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
@@ -44,19 +45,20 @@ public class ActionStats extends ActionContainerItem
     @Override
     protected JsonValue execGetContainer(HttpAction action) { 
         action.log.info(format("[%d] GET stats all", action.id)) ;
-        JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject("top") ;
-        
-        builder.key(JsonConst.datasets) ;
-        builder.startObject("datasets") ;
-        for ( String ds : DataAccessPointRegistry.get().keys() )
-            statsDataset(builder, ds) ; 
-        builder.finishObject("datasets") ;
-        
-        builder.finishObject("top") ;
-        return builder.build() ;
+        return generateStats(action.getDataAccessPointRegistry()) ;
     }
 
+    public static JsonObject generateStats(DataAccessPointRegistry registry) {
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject("top") ;
+        builder.key(JsonConst.datasets) ;
+        builder.startObject("datasets") ;
+        registry.forEach((name, access)->statsDataset(builder, access));
+        builder.finishObject("datasets") ;
+        builder.finishObject("top") ;
+        return builder.build().getAsObject() ;
+    }
+    
     @Override
     protected JsonValue execGetItem(HttpAction action) {
         action.log.info(format("[%d] GET stats dataset %s", action.id, action.getDatasetName())) ;
@@ -67,18 +69,27 @@ public class ActionStats extends ActionContainerItem
         
         builder.key(JsonConst.datasets) ;
         builder.startObject("datasets") ;
-        statsDataset(builder, datasetPath) ;
+        statsDataset(builder, datasetPath, action.getDataAccessPointRegistry()) ;
         builder.finishObject("datasets") ;
         
         builder.finishObject("TOP") ;
         return builder.build() ;
     }
-
-    private void statsDataset(JsonBuilder builder, String ds) {
+    
+    public static JsonObject generateStats(DataAccessPoint access) {
+        JsonBuilder builder = new JsonBuilder() ;
+        statsDataset(builder, access) ;
+        return builder.build().getAsObject() ;
+    }
+    
+    private void statsDataset(JsonBuilder builder, String name, DataAccessPointRegistry registry) {
+        DataAccessPoint access = registry.get(name) ;
+        statsDataset(builder, access);
+    }
+    
+    private static void statsDataset(JsonBuilder builder, DataAccessPoint access) {
         // Object started
-        builder.key(ds) ;
-        
-        DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
+        builder.key(access.getName()) ;
         DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
@@ -86,29 +97,13 @@ public class ActionStats extends ActionContainerItem
         builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
         builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
         
-        
-        // Build the operation -> endpoint list map.
-        
-//      MultiMap<OperationName, Endpoint> map = MultiMap.createMapList() ;
-//      for ( OperationName operName : dSrv.getOperations() ) {
-//          List<Endpoint> endpoints = access.getDataService().getOperation(operName) ;
-//          for ( Endpoint endpoint : endpoints )
-//              map.put(operName, endpoint) ; 
-//      }
-        
-        
         builder.key(JsonConst.endpoints).startObject("endpoints") ;
         
         for ( OperationName operName : dSrv.getOperations() ) {
             List<Endpoint> endpoints = access.getDataService().getOperation(operName) ;
-//            System.err.println(operName+" : "+endpoints.size()) ;
-//            for ( Endpoint endpoint : endpoints )
-//                System.err.println("  "+endpoint.getEndpoint()) ;
             
             for ( Endpoint endpoint : endpoints ) {
-                
-                // Endpoint names are unique but not services.
-                
+                // Endpoint names are unique for a given service.
                 builder.key(endpoint.getEndpoint()) ;
                 builder.startObject() ;
                 
@@ -121,27 +116,26 @@ public class ActionStats extends ActionContainerItem
         }
         builder.finishObject("endpoints") ;
         builder.finishObject("counters") ;
-
     }
 
-    private void operationCounters(JsonBuilder builder, Endpoint operation) {
+    private static void operationCounters(JsonBuilder builder, Endpoint operation) {
         for (CounterName cn : operation.getCounters().counters()) {
             Counter c = operation.getCounters().get(cn) ;
             builder.key(cn.name()).value(c.value()) ;
         }
     }
 
-    private void statsTxt(HttpServletResponse resp) throws IOException
+    private void statsTxt(HttpServletResponse resp, DataAccessPointRegistry registry) throws IOException
     {
         ServletOutputStream out = resp.getOutputStream() ;
         resp.setContentType(contentTypeTextPlain);
         resp.setCharacterEncoding(charsetUTF8) ;
 
-        Iterator<String> iter = DataAccessPointRegistry.get().keys().iterator() ;
+        Iterator<String> iter = registry.keys().iterator() ;
         while(iter.hasNext())
         {
             String ds = iter.next() ;
-            DataAccessPoint desc = DataAccessPointRegistry.get().get(ds) ;
+            DataAccessPoint desc = registry.get(ds) ;
             statsTxt(out, desc) ;
             if ( iter.hasNext() )
                 out.println() ;

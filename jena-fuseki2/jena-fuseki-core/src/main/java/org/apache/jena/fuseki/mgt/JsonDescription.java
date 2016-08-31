@@ -32,7 +32,7 @@ public class JsonDescription {
     public static void arrayDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {
         builder.startArray() ;
         for ( String ds : registry.keys() ) {
-            DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
+            DataAccessPoint access = registry.get(ds) ;
             JsonDescription.describe(builder, access) ;
         }
         builder.finishArray() ;

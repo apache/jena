@@ -400,6 +400,23 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
         }
     
+    public void testClear()
+    {
+        String hURI = "http://test.remove.prefixes/prefix#";
+        String bURI = "http://other.test.remove.prefixes/prefix#";
+        PrefixMapping A = getMapping();
+        A.setNsPrefix( "hr", hURI );
+        A.setNsPrefix( "br", bURI );
+        A.clearNsPrefixMap() ;
+        
+        assertEquals( null, A.getNsPrefixURI( "hr" ) );
+        assertEquals( null, A.getNsPrefixURI( "br" ) );
+        
+        assertEquals( null, A.getNsURIPrefix(hURI) ) ;
+        assertEquals( null, A.getNsURIPrefix(bURI) ) ;
+    }
+
+    
     public void testEquality()
         {
         testEquals( "" );

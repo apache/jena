@@ -29,7 +29,7 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
     protected DatasetGraphTrackActive() { super(null) ; }
 
     /** Check the transaction state from the point of view of the caller
-     *  (usuually, for the current thread).
+     *  (usually, for the current thread).
      */
     protected abstract void checkActive() ;
     protected abstract void checkNotActive() ;

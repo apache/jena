@@ -25,6 +25,15 @@ import javax.servlet.ServletContextListener ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.tdb.StoreConnection ;
 
+/** Setup configurtation.
+ * The order is controled by {@code web.xml}:
+ * <ul>
+ * <li>{@link FusekiServerEnvironmentInit}
+ * <li>{@link ShiroEnvironmentLoader}
+ * <li>{@link FusekiServerListener}, the main configuration
+ * </ul>
+ */
+
 public class FusekiServerListener implements ServletContextListener {
 
     public FusekiServerListener() { }
@@ -43,7 +52,10 @@ public class FusekiServerListener implements ServletContextListener {
 //        Path currentRelativePath = Paths.get("");
 //        String s = currentRelativePath.toAbsolutePath().toString();
 //        confLog.info("dir1 = "+x+" : dir2 = "+s) ;
-        init() ;
+        
+        // Set the server wide state.
+        //servletContext.setAttribute(, DataAccessPointRegistry.get()) ;
+        serverInitialization(servletContext) ;
     }
 
     @Override
@@ -55,13 +67,13 @@ public class FusekiServerListener implements ServletContextListener {
         StoreConnection.reset();
     }
 
-    public synchronized void init() {
+    private synchronized void serverInitialization(ServletContext servletContext) {
         if ( initialized )
             return ;
         initialized = true ;
 
         try {
-            FusekiServer.init() ; 
+            FusekiServer.formatBaseArea() ; 
             if ( ! FusekiServer.serverInitialized ) {
                 Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
@@ -76,7 +88,8 @@ public class FusekiServerListener implements ServletContextListener {
             }
 
             if ( initialSetup != null ) {
-                FusekiServer.initializeDataAccessPoints(initialSetup, FusekiServer.dirConfiguration.toString()) ;
+                FusekiServer.initializeDataAccessPoints(DataAccessPointRegistry.get(servletContext),
+                                                        initialSetup, FusekiServer.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;
                 System.exit(0) ;

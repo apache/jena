@@ -29,29 +29,27 @@ import org.junit.Test ;
 public class TestTxnThread {
 
     TxnCounter counter = new TxnCounter(0) ; 
-
-    
     
     // Tests for thread transactions.
     
     @Test public void txnThread_1() {
-        ThreadTxn t = ThreadTxn.threadTxnRead(counter, ()->{}) ;
+        ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{}) ;
         t.run();
     }
     
     @Test public void txnThread_2() {
-        ThreadTxn t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
     }
 
     @Test(expected=AssertionError.class)
     public void txnThread_3() {
-        ThreadTxn t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
         t.run() ;
     }
 
     @Test public void txnThread_10() {
         long x1 = counter.get() ;  
-        ThreadTxn t = ThreadTxn.threadTxnWrite(counter, ()->{ counter.inc() ;}) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()->{ counter.inc() ;}) ;
         long x2 = counter.get() ;
         assertEquals("x2", x1, x2) ;
         t.run() ;
@@ -64,7 +62,7 @@ public class TestTxnThread {
         Txn.execWrite(counter, ()->{
             counter.inc();
             // Read the "before" state
-            ThreadTxn t = ThreadTxn.threadTxnRead(counter, ()->{ 
+            ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{ 
                 long z1 = counter.get() ; 
                 assertEquals("Thread read", x1, z1) ;
             }) ;
@@ -77,7 +75,7 @@ public class TestTxnThread {
 
     @Test public void txnThread_12() {
         long x1 = counter.get() ;  
-        ThreadTxn t = ThreadTxn.threadTxnRead(counter, () -> {
+        ThreadAction t = ThreadTxn.threadTxnRead(counter, () -> {
             long z1 = counter.get() ;
             assertEquals("Thread", x1, z1) ;
         }) ;

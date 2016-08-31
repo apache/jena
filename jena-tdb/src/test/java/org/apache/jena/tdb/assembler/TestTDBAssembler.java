@@ -103,7 +103,7 @@ public class TestTDBAssembler extends BaseTest
         Graph graph = ((Model)thing).getGraph() ;
         assertTrue(graph instanceof GraphTDB) ; 
 
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDSG() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB() ;
         if ( ds != null )
             ds.close();
     }
@@ -138,7 +138,7 @@ public class TestTDBAssembler extends BaseTest
         
         assertTrue(graph instanceof GraphTDB) ; 
         
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDSG() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB() ;
         if ( ds != null )
             ds.close();
     }

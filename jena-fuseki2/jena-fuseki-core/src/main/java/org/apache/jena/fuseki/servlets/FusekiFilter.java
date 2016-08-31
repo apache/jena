@@ -55,7 +55,8 @@ public class FusekiFilter implements Filter {
             // Handle context path
             String uri = ActionLib.actionURI(req) ;
             String datasetUri = ActionLib.mapActionRequestToDataset(uri) ;
-
+            DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext()) ;
+            
             // is it a long running operation?
             // (this could be a separate filter)
             
@@ -66,7 +67,7 @@ public class FusekiFilter implements Filter {
             }
             
             if ( datasetUri != null ) {        
-                if ( DataAccessPointRegistry.get().isRegistered(datasetUri) ) {
+                if ( registry.isRegistered(datasetUri) ) {
                     if ( LogFilter )
                         log.info("Filter: dispatch") ;
                     überServlet.doCommon(req, resp) ;
@@ -78,8 +79,8 @@ public class FusekiFilter implements Filter {
                 // not rely on the überServlet. 
                 if ( Fuseki.GSP_DIRECT_NAMING ) {
                     // Not a dataset name ; may be a direct GSP direct name that does not look like a service name.
-                    for ( String dsKey : DataAccessPointRegistry.get().keys() ) {
-                        DataAccessPoint dap = DataAccessPointRegistry.get().get(dsKey) ;
+                    for ( String dsKey : registry.keys() ) {
+                        DataAccessPoint dap = registry.get(dsKey) ;
                         String dsName = dap.getName() ;
                         if ( datasetUri.startsWith(dsName) ) {
                             if ( LogFilter )

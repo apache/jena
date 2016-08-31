@@ -69,7 +69,7 @@ class NodeTransformOp extends TransformCopy
         ExprList exprList2 = NodeTransformLib.transform(transform, exprList) ;
         if ( exprList2 == exprList )
             return super.transform(opFilter, subOp) ;
-        return OpFilter.filter(exprList2, subOp) ;
+        return OpFilter.filterBy(exprList2, subOp) ;
     }        
     
     @Override public Op transform(OpBGP opBGP)

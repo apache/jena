@@ -72,7 +72,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     Transaction createTxn(long id) 
     {
-        return new Transaction(null, ReadWrite.WRITE, id, null, null) ; 
+        return new Transaction(null, 99, ReadWrite.WRITE, id, null, null) ; 
     }
     
     @Test public void nodetrans_01()

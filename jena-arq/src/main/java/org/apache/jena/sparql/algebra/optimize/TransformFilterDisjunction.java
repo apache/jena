@@ -102,7 +102,7 @@ public class TransformFilterDisjunction extends TransformCopy
         
         
         // Put the non-disjunctions outside the disjunction and the pattern rewrite. 
-        Op opOther = OpFilter.filter(exprList2, newOp) ;
+        Op opOther = OpFilter.filterBy(exprList2, newOp) ;
         if ( opOther instanceof OpFilter) {
             return opOther ;
         }

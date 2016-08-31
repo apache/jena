@@ -1907,15 +1907,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	public SecuredModel read(final String url, final String base,
 			final String lang) throws ReadDeniedException,
 			AuthenticationRequiredException {
-		try {
-			final InputStream is = new URL(url).openStream();
-			try {
-				read(is, base, lang);
-			} finally {
-				if (null != is) {
-					is.close();
-				}
-			}
+		try (InputStream is = new URL(url).openStream()) {
+		    read(is, base, lang);
 		} catch (final IOException e) {
 			throw new WrappedIOException(e);
 		}
@@ -2106,6 +2099,13 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		holder.getBaseItem().removeNsPrefix(prefix);
 		return holder.getSecuredItem();
 	}
+	
+	@Override
+    public SecuredPrefixMapping clearNsPrefixMap() {
+	    checkUpdate();
+        holder.getBaseItem().clearNsPrefixMap() ;
+        return holder.getSecuredItem();
+    }
 
 	@Override
 	public void removeReification(final ReifiedStatement rs)

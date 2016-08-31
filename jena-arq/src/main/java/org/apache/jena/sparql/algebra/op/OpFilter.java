@@ -31,65 +31,94 @@ public class OpFilter extends Op1
     protected ExprList expressions ;
     
     /** Add expression - mutates an existing filter */  
-    public static Op filter(Expr expr, Op op)
-    {
-        OpFilter f = filter(op) ;
+    public static Op filter(Expr expr, Op op) {
+        OpFilter f = ensureFilter(op) ;
         f.getExprs().add(expr) ;
         return f ;
     }
-    
-    public static OpFilter filter(Op op)
-    {
+
+    /**
+     * Ensure that the algebra op is a filter. If the input is a filter, just return that,
+     * else create a filter with no expressions and "this" as the subOp.
+     * @apiNote
+     * This operation assumes the caller is going to add expressions. 
+     * Filters without any expressions are discouraged.
+     * Consider collecting the expressions together first and using {@link #filterBy}. 
+     */
+    public static OpFilter ensureFilter(Op op) {
         if ( op instanceof OpFilter )
-           return (OpFilter)op ;
+            return (OpFilter)op ;
         else
-           return new OpFilter(op) ;  
+            return new OpFilter(op) ;
+    }
+
+    /** @deprecated Renamed as {#link filterBy} */ 
+    @Deprecated
+    public static Op filter(ExprList exprs, Op op) {
+        return filterBy(exprs, op) ;
     }
     
-    /** Add expressions - mutates an existing filter */  
-    public static Op filter(ExprList exprs, Op op)
-    {
-        if ( exprs.isEmpty() )
+    /** @deprecated Use {@link #ensureFilter} */
+    @Deprecated
+    public static OpFilter filter(Op op) { return ensureFilter(op) ; }
+    
+    /** Combine an ExprList with an Op so that the expressions filter the Op.
+     * If the exprs are empty, return the Op.  
+     * If the op is already a OpFilter, merge the expressions into the filters existintg expressions.  
+     * Else create a new OpFilter with the expressions and subOp. 
+     */ 
+    public static Op filterBy(ExprList exprs, Op op) {
+        if ( exprs == null || exprs.isEmpty() )
             return op ;
-        OpFilter f = filter(op) ;
+        OpFilter f = ensureFilter(op) ;
         f.getExprs().addAll(exprs) ;
         return f ;
     }
     
-    /** Make a OpFilter - guaranteed to return an OpFilter */
-    public static OpFilter filterDirect(ExprList exprs, Op op)
-    {
+    /** Create a OpFilter with the expressions and subOp.
+     * If subOp is a filter, combine expressions (de-layer).  
+     */
+    public static OpFilter filterAlways(ExprList exprs, Op subOp) {
+        OpFilter f = ensureFilter(subOp) ;
+        f.getExprs().addAll(exprs) ;
+        return f ;
+    }
+
+    /** Make a OpFilter - guaranteed to return an fresh OpFilter */
+    public static OpFilter filterDirect(ExprList exprs, Op op) {
         return new OpFilter(exprs, op) ;
     }
 
-    
-    private OpFilter(Op sub)
-    { 
+    /** Make a OpFilter - guaranteed to return an fresh OpFilter */
+    public static OpFilter filterDirect(Expr expr, Op op) {
+        OpFilter f = new OpFilter(op) ;
+        f.getExprs().add(expr); 
+        return f ;
+    }
+
+    private OpFilter(Op sub) {
         super(sub) ;
         expressions = new ExprList() ;
     }
-    
-    private OpFilter(ExprList exprs , Op sub)
-    { 
+
+    private OpFilter(ExprList exprs, Op sub) {
         super(sub) ;
         expressions = exprs ;
     }
-    
-    /** Compress multiple filters:  (filter (filter (filter op)))) into one (filter op) */ 
-    public static OpFilter tidy(OpFilter base)
-    {
+
+    /** Compress multiple filters: (filter (filter (filter op)))) into one (filter op) */
+    public static OpFilter tidy(OpFilter base) {
         ExprList exprs = new ExprList() ;
-        
-        Op op = base ; 
-        while ( op instanceof OpFilter )
-        {
+
+        Op op = base ;
+        while (op instanceof OpFilter) {
             OpFilter f = (OpFilter)op ;
             exprs.addAll(f.getExprs()) ;
             op = f.getSubOp() ;
         }
         return new OpFilter(exprs, op) ;
     }
-    
+
     public ExprList getExprs() { return expressions ; }
     
     @Override
@@ -106,19 +135,16 @@ public class OpFilter extends Op1
     public Op1 copy(Op subOp)                { return new OpFilter(expressions, subOp) ; }
     
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return expressions.hashCode() ;
     }
-    
+
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
         if ( ! (other instanceof OpFilter) ) return false ;
         OpFilter opFilter = (OpFilter)other ;
         if ( ! expressions.equals(opFilter.expressions) )
             return false ;
-        
         return getSubOp().equalTo(opFilter.getSubOp(), labelMap) ;
     }
 }

@@ -161,7 +161,7 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
 	@Override
 	public void visit(OpFilter opFilter) {
 		opFilter.getSubOp().visit(this);
-		push(OpFilter.filter(
+		push(OpFilter.filterBy(
 				new ExprRewriter(values).rewrite(opFilter.getExprs()), pop()));
 	}
 

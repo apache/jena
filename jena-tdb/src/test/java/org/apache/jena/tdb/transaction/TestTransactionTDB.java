@@ -20,10 +20,13 @@ package org.apache.jena.tdb.transaction;
 
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
+
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle ;
 import org.apache.jena.tdb.ConfigTest ;
@@ -78,6 +81,13 @@ public class TestTransactionTDB extends AbstractTestTransactionLifecycle
 
         ds2.begin(READ) ;
         // See ds1 updates
+        Graph g = ds2.getDefaultModel().getGraph() ;
+        DatasetGraph dsg = ds2.asDatasetGraph() ; 
+        g = dsg.getDefaultGraph() ;
+        
+        boolean b0 = g.isEmpty() ;
+        boolean b1 = ds2.getDefaultModel().isEmpty() ;
+        
         assertFalse(ds2.getDefaultModel().isEmpty()) ;
         assertEquals(1, ds2.getDefaultModel().size()) ;
         ds2.commit() ;

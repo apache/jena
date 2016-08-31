@@ -73,7 +73,9 @@ public interface DatasetGraph extends Transactional, Closeable
      */
     public void addGraph(Node graphName, Graph graph) ;
 
-    /** Remove all data associated with the named graph */
+    /** Remove all data associated with the named graph.
+     * This will include prefixes associated with the graph.
+     */
     public void removeGraph(Node graphName) ;
 
     /** Iterate over all names of named graphs */

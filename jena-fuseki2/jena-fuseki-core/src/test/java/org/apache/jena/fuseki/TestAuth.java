@@ -78,9 +78,9 @@ public class TestAuth {
             writer.write("forbidden: password, other");
         }
 
-        LogCtl.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        LogCtl.logLevel(Fuseki.actionLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        LogCtl.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        LogCtl.setLevel(Fuseki.serverLogName, "warn");
+        LogCtl.setLevel(Fuseki.actionLogName, "warn") ;
+        LogCtl.setLevel("org.eclipse.jetty",  "warn") ;
 
         ServerTest.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath, true);
     }

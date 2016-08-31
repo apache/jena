@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.system ;
 
 import java.util.Collections ;
 import java.util.Map ;
@@ -26,106 +26,93 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
 /** Always empty prefix map */
-public class PrefixMapNull implements PrefixMap
-{
+public class PrefixMapNull implements PrefixMap {
     public static PrefixMap empty = new PrefixMapNull() ;
 
-    private PrefixMapNull()
-    {}
+    private PrefixMapNull() {}
 
     @Override
-    public Map<String, IRI> getMapping()
-    {
+    public Map<String, IRI> getMapping() {
         return Collections.emptyMap() ;
     }
 
     @Override
-    public Map<String, IRI> getMappingCopy()
-    {
+    public Map<String, IRI> getMappingCopy() {
         return Collections.emptyMap() ;
     }
 
     @Override
-    public Map<String, String> getMappingCopyStr()
-    {
+    public Map<String, String> getMappingCopyStr() {
         return Collections.emptyMap() ;
     }
 
     @Override
-    public void add(String prefix, String iriString)
-    {
+    public void add(String prefix, String iriString) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public void add(String prefix, IRI iri)
-    {
+    public void add(String prefix, IRI iri) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public void putAll(PrefixMap pmap)
-    {
+    public void putAll(PrefixMap pmap) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public void putAll(PrefixMapping pmap)
-    {
+    public void putAll(PrefixMapping pmap) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public void putAll(Map<String, String> mapping)
-    {
+    public void putAll(Map<String, String> mapping) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public void delete(String prefix)
-    {
+    public void delete(String prefix) {
         throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
     }
 
     @Override
-    public boolean contains(String prefix)
-    {
+    public void clear() {
+        throw new UnsupportedOperationException("Unmodifiable PrefixMap") ;
+    }
+
+    @Override
+    public boolean contains(String prefix) {
         return false ;
     }
 
     @Override
-    public String abbreviate(String uriStr)
-    {
+    public String abbreviate(String uriStr) {
         return null ;
     }
 
     @Override
-    public Pair<String, String> abbrev(String uriStr)
-    {
+    public Pair<String, String> abbrev(String uriStr) {
         return null ;
     }
 
     @Override
-    public String expand(String prefixedName)
-    {
+    public String expand(String prefixedName) {
         return null ;
     }
 
     @Override
-    public String expand(String prefix, String localName)
-    {
+    public String expand(String prefix, String localName) {
         return null ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return true ;
     }
 
     @Override
-    public int size()
-    {
+    public int size() {
         return 0 ;
     }
 }
