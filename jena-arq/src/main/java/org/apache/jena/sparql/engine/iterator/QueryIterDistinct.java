@@ -143,6 +143,6 @@ public class QueryIterDistinct extends QueryIter1
 
     @Override
     protected void requestSubCancel()
-    { super.close(); }
+    { }
 
 }
