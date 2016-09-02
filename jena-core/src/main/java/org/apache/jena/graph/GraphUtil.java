@@ -226,10 +226,12 @@ public class GraphUtil
     }
 
     private static final int sliceSize = 1000 ;
-    /** A safe and cautious remve() function.
+    /** A safe and cautious remove() function that converts the remove to
+     *  a number of {@link Graph#delete(Triple)} operations. 
+     *  <p>
      *  To avoid any possible ConcurrentModificationExceptions,
      *  it finds batches of triples, deletes them and tries again until
-     *  no change occurs. 
+     *  no more triples matching the input can be found. 
      */
     public static void remove(Graph g, Node s, Node p, Node o) {
         // Beware of ConcurrentModificationExceptions.
