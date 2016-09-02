@@ -110,8 +110,12 @@ public class FusekiEnv {
     public static synchronized void setEnvironment() {
         if ( initialized )
             return ;
+        resetEnvironment();
+    }
+    
+    /** Reset environment - use with care and bfore server start up */ 
+    public static synchronized void resetEnvironment() {
         initialized = true ;
-        
         logInit("FusekiEnv:Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s : MODE = %s", FUSEKI_HOME, FUSEKI_BASE, mode) ;
         
         if ( mode == null || mode == INIT.UNSET )

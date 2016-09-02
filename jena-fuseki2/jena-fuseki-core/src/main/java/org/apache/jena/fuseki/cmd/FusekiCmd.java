@@ -158,13 +158,14 @@ public class FusekiCmd {
 
         @Override
         protected void processModulesAndArgs() {
-            int x = 0 ;
-
             if ( super.isVerbose() || super.isDebug() ) {
                 jettyServerConfig.verboseLogging = true ;
                 // Output is still at level INFO (currently) 
             }
             
+            // Any final tinkering with FUSEKI_HOME and FUSEKI_BASE, e.g. arguments like --home, --base, then .... 
+            FusekiEnv.resetEnvironment() ;
+
             Logger log = Fuseki.serverLog ;
 
             if ( contains(argFusekiConfig) )
@@ -174,6 +175,7 @@ public class FusekiCmd {
 
             // ---- Datasets
             // Check one and only way is defined. 
+            int x = 0 ;
 
             if ( contains(argMem) )             
                 x++ ;
@@ -209,8 +211,9 @@ public class FusekiCmd {
             if ( cmdlineConfigPresent && getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
             
-            if ( ! cmdlineConfigPresent ) {
-                // In place config file. 
+            if ( ! cmdlineConfigPresent && cmdLineConfig.fusekiCmdLineConfigFile == null ) {
+                // Turn command line argument into an absolute file name.
+                FusekiEnv.setEnvironment();
                 Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
                 if ( Files.exists(cfg) )
                     cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;

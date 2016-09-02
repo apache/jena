@@ -242,6 +242,7 @@ public class JettyFuseki {
             security(webapp, serverConfig.authConfigFile) ;
     }
     
+    // This is now provided by Shiro.
     private static void security(ServletContextHandler context, String authfile) {
         Constraint constraint = new Constraint() ;
         constraint.setName(Constraint.__BASIC_AUTH) ;
