@@ -24,19 +24,15 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.RDFNode ;
 
 /**
-   TODO: remove the polymorphic aspect of EnhGraphs.
 <p>
-    A specialisation of Polymorphic that models an extended graph - that is, one that 
-    contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
-    capabilities beyond the graph API.
- <p>   
-    <span style="color:red">WARNING</span>. The polymorphic aspects of EnhGraph 
-    are <span style="color:red">not supported</span> and are not expected to be
-    supported in this way for the indefinite future.
+    An extended graph - that is, one that wraps a plain Graph
+    and contains {@link EnhNode Enhanced nodes} that wrap the
+    plain nodes of the plain graph. All the enhanced nodes in
+    the enhanced graph share the same polymorphic personality.
+ </p>
 */
 
 public class EnhGraph 
-//    extends Polymorphic 
 {
     // Instance variables
     /** The graph that this enhanced graph is wrapping */
@@ -49,9 +45,6 @@ public class EnhGraph
     
     /** The unique personality that is bound to this polymorphic instace */
     private Personality<RDFNode> personality;
-
-//    @Override public boolean isValid()
-//        { return true; }
     
     // Constructors
     /**
@@ -149,24 +142,6 @@ public class EnhGraph
     public void setNodeCache(Cache<Node, RDFNode> cc) {
          enhNodes = cc;
     }
-     
-//     
-//    /** 
-//     * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
-//     * t.  This is a stub method that has not yet been implemented.
-//     @param t A type
-//     @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
-//     */
-//    @Override protected Polymorphic convertTo(Class t) {
-//        throw new PersonalityConfigException
-//            ( "Alternative perspectives on graphs has not been implemented yet" );
-//    }
-//    
-//    /**
-//        we can't convert to anything. 
-//    */
-//    @Override protected boolean canSupport( Class t )
-//        { return false; }
         
     /**
      * Answer the personality object bound to this polymorphic instance
