@@ -39,6 +39,22 @@
       <version>2.4.1-SNAPSHOT</version>
       <!-- No specific logging - leave to the application -->
       <exclusions>
+
+        <!-- Parts of Jena not needed but picked up via jena-fuseki-core -->
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-cmds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-text</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-spatial</artifactId>
+        </exclusion>
+        
+        <!-- Exclude choice of logging. Application responsibility. -->
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -47,15 +63,7 @@
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
         </exclusion>
-        <!-- -->
-         <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-text</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.jena</groupId>
-          <artifactId>jena-spatial</artifactId>
-        </exclusion>
+
       </exclusions>
     </dependency>
 
@@ -68,7 +76,7 @@
     </dependency>
     -->
 
-    <!-- Log4j
+    <!-- Log4j : need 2 dependencies.
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>

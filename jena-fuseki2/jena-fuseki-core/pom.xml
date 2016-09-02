@@ -50,6 +50,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>3.1.1-SNAPSHOT</version>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <exclusions>
