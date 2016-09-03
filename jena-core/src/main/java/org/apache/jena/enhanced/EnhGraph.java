@@ -24,35 +24,25 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.RDFNode ;
 
 /**
-   TODO: remove the polymorphic aspect of EnhGraphs.
-<p>
-    A specialisation of Polymorphic that models an extended graph - that is, one that 
-    contains{@link EnhNode Enhanced nodes} or one that itself exposes additional 
-    capabilities beyond the graph API.
- <p>   
-    <span style="color:red">WARNING</span>. The polymorphic aspects of EnhGraph 
-    are <span style="color:red">not supported</span> and are not expected to be
-    supported in this way for the indefinite future.
-*/
+ *  {@code EnhGraph} wraps a {@link Graph plain graph} 
+ *  and contains {@link EnhNode enhanced nodes} that wrap the
+ *  plain nodes of the plain graph. All the enhanced nodes in
+ *  the enhanced graph share the same polymorphic personality.
+ */
 
 public class EnhGraph 
-//    extends Polymorphic 
 {
     // Instance variables
     /** The graph that this enhanced graph is wrapping */
     protected Graph graph;
     
     /** Cache of enhanced nodes that have been created */
-    // TODO The cache size of 1000 seems to be a "magic number". Perhaps this could be explained
-    // or parameterized?
+    // 1000 seems to be a "about the right size" by experimentation.
     protected Cache<Node, RDFNode> enhNodes = CacheFactory.createCache(1000);
     
     /** The unique personality that is bound to this polymorphic instace */
     private Personality<RDFNode> personality;
 
-//    @Override public boolean isValid()
-//        { return true; }
-    
     // Constructors
     /**
      * Construct an enhanced graph from the given underlying graph, and
@@ -68,8 +58,6 @@ public class EnhGraph
         personality = p;
     }
    
-    // External methods
-    
     /**
      * Answer the normal graph that this enhanced graph is wrapping.
      * @return A graph
@@ -85,7 +73,6 @@ public class EnhGraph
     @Override final public int hashCode() {
      	return graph.hashCode();
     }
-
      
     /**
      * An enhanced graph is equal to another graph g iff the underlying graphs
@@ -106,7 +93,6 @@ public class EnhGraph
             || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
     }
     
-    
     /**
      * Answer true if the given enhanced graph contains the same nodes and 
      * edges as this graph.  The default implementation delegates this to the
@@ -115,7 +101,7 @@ public class EnhGraph
      * @param eg A graph to test
      * @return True if eg is a graph with the same structure as this.
      */
-    final public boolean isIsomorphicWith(EnhGraph eg){
+    final public boolean isIsomorphicWith(EnhGraph eg) {
         return graph.isIsomorphicWith(eg.graph);
     }
 
@@ -127,17 +113,15 @@ public class EnhGraph
      * @param interf A type denoting the enhanced facet desired
      * @return An enhanced node
      */
-    public <X extends RDFNode> X getNodeAs( Node n, Class<X> interf ) 
-        {
+    public <X extends RDFNode> X getNodeAs( Node n, Class<X> interf ) {
          // We use a cache to avoid reconstructing the same Node too many times.
         EnhNode eh = (EnhNode) enhNodes.getIfPresent( n );
-        if (eh == null)
-            {           
+        if ( eh == null ) {
             // not in the cache, so build a new one
-            X constructed = personality.newInstance( interf, n, this );
-            enhNodes.put( n, constructed );        
-            return constructed;
-            }
+            X constructed = personality.newInstance(interf, n, this) ;
+            enhNodes.put(n, constructed) ;
+            return constructed ;
+        }
         else
             return eh.viewAs( interf );
         }
@@ -150,24 +134,6 @@ public class EnhGraph
          enhNodes = cc;
     }
      
-//     
-//    /** 
-//     * Answer an enhanced graph that presents <i>this</i> in a way which satisfies type
-//     * t.  This is a stub method that has not yet been implemented.
-//     @param t A type
-//     @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
-//     */
-//    @Override protected Polymorphic convertTo(Class t) {
-//        throw new PersonalityConfigException
-//            ( "Alternative perspectives on graphs has not been implemented yet" );
-//    }
-//    
-//    /**
-//        we can't convert to anything. 
-//    */
-//    @Override protected boolean canSupport( Class t )
-//        { return false; }
-        
     /**
      * Answer the personality object bound to this polymorphic instance
      * 
@@ -176,5 +142,4 @@ public class EnhGraph
     protected Personality<RDFNode> getPersonality() {
         return personality;
     }
-    
 }
