@@ -39,8 +39,10 @@
       <version>2.4.1-SNAPSHOT</version>
       <!-- No specific logging - leave to the application -->
       <exclusions>
-
-        <!-- Parts of Jena not needed but picked up via jena-fuseki-core -->
+        <!-- Parts of Jena not needed but picked up via jena-fuseki-core.
+             The application can put back any of these if it wants to use
+             them, e.g. a text-indexed dataset, providing the version is compatible.
+	    -->
         <exclusion>
           <groupId>org.apache.jena</groupId>
           <artifactId>jena-cmds</artifactId>
@@ -53,8 +55,11 @@
           <groupId>org.apache.jena</groupId>
           <artifactId>jena-spatial</artifactId>
         </exclusion>
-        
-        <!-- Exclude choice of logging. Application responsibility. -->
+        <!-- Jena use SLF4J as its API. Exclude any logging bindings picked up via Jena.
+          For example, jena-fuseki-core has logging output and so some logging provider.
+          For embedded use, it is the enclosing application that chooses the kind of
+          logging system.    
+        --> 
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-log4j12</artifactId>
@@ -63,32 +68,12 @@
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
         </exclusion>
-
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
-
-    <!-- Logging examples -->
-    <!-- java.util.logging.
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.21</version>
-    </dependency>
-    -->
-
-    <!-- Log4j : need 2 dependencies.
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.21</version>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency> 
-    -->
 
   </dependencies>
 
