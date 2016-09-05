@@ -23,7 +23,7 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 
 /**
  * This class supports a QueryIter that uses a single sub iterator.
- * Unlike QueryIter1, it's assumes the subiterator will be reset and manipulated.
+ * Unlike QueryIter1, it assumes the subiterator will be reset and manipulated.
  */
 public abstract class QueryIterSub extends QueryIter
 {

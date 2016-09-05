@@ -57,6 +57,7 @@ public abstract class QueryIter2 extends QueryIter
     protected final
     void requestCancel()
     {
+        requestSubCancel() ;
         performRequestCancel(leftInput) ;
         performRequestCancel(rightInput) ;
     }
