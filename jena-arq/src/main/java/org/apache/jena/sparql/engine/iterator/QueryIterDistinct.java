@@ -43,7 +43,7 @@ import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
 public class QueryIterDistinct extends QueryIter1
 {
     private long memThreshold = Long.MAX_VALUE ;    // Default "off" value.
-    private DistinctDataBag<Binding> db = null ;
+    protected DistinctDataBag<Binding> db = null ;
     private Iterator<Binding> iterator = null ;
     private Set<Binding> seen = new HashSet<>() ;
     private Binding slot = null ;
@@ -141,8 +141,11 @@ public class QueryIterDistinct extends QueryIter1
         db = null ;
     }
 
+    // We don't need to do anything. We're a QueryIter1
+    // and that handles the cancellation of the wrapped
+    // iterator.
     @Override
     protected void requestSubCancel()
-    { super.close(); }
+    { }
 
 }

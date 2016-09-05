@@ -103,6 +103,14 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
     public boolean isCancelled() {
         return comparator.cancelled;
     }
+    
+    /**
+     * isClosed returns true iff this bag has been closed.
+     * (Used in testing.)
+     */
+    public boolean isClosed() {
+        return closed;
+    }
 
     protected void checkClosed() {
         if (closed)

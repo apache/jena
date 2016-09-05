@@ -52,8 +52,11 @@ public abstract class QueryIteratorBase
     // ONLY the requestingCancel variable needs to be volatile. The abortIterator is guaranteed to 
     // be visible because it is written to before requestingCancel, and read from after.
 
-    /** In the process of requesting a cancel, or one has been done */  
-    private volatile boolean requestingCancel = false;
+    /** 
+        In the process of requesting a cancel, or one has been done.
+        `protected` to allow tests to read it.
+    */  
+    protected volatile boolean requestingCancel = false;
 
     /* If set, any hasNext/next throws QueryAbortedException
      * In normal operation, this is the same setting as requestingCancel.
