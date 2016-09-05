@@ -37,10 +37,9 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     protected void closeSubIterator()
     { slot = null ; }
 
-    // Subclasses may want to implement this as well. 
     @Override
     protected void requestSubCancel()
-    { closeSubIterator() ; }
+    { }
     
     @Override
     final

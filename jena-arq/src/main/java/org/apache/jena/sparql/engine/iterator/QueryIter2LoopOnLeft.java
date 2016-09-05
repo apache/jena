@@ -46,7 +46,7 @@ public abstract class QueryIter2LoopOnLeft extends QueryIter2
     
     @Override
     protected void requestSubCancel()
-    { tableRight.close() ; }
+    { }
    
     @Override
     protected final boolean hasNextBinding()

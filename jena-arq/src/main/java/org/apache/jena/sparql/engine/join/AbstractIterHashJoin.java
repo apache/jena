@@ -233,10 +233,8 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     }
 
     @Override
-    protected void requestSubCancel() {
-        iterStream.close() ;
-        hashTable.clear(); 
-    }
+    protected void requestSubCancel() 
+    { }
 }
 
 
