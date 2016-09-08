@@ -907,9 +907,17 @@ public class RDFDataMgr
         return uri ;
     }
     
-    /** Default lang - usually left as unknow so that extended content negotation happens */ 
+    /** Default lang - usually left as unknown so that extended content negotation happens */ 
     private static Lang defaultLang(String uri) {
         return null;
+    }
+
+    /** Map {@link Lang} to {@link RDFFormat}, or throw an exception. */  
+    private static RDFFormat langToFormatOrException(Lang lang) {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        if ( serialization == null )
+            throw new RiotException("No output format for "+lang) ;
+        return serialization ; 
     }
 
     /** Determine the Lang, given the URI target, any content type header string and a hint */ 
@@ -989,10 +997,10 @@ public class RDFDataMgr
      * @param lang      Language for the seralization.
      */
     public static void write(OutputStream out, Graph graph, Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         write(out, graph, serialization);
     }
-
+    
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out           OutputStream
      * @param graph         Graph to write
@@ -1009,7 +1017,7 @@ public class RDFDataMgr
      */
     public static void write(StringWriter out, Graph graph, Lang lang) {
         // Only known reasonable use of a Writer
-        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang));
+        write$(out, graph, langToFormatOrException(lang));
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1020,7 +1028,7 @@ public class RDFDataMgr
      */
     @Deprecated
     public static void write(Writer out, Graph graph, Lang lang) {
-        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang));
+        write$(out, graph, langToFormatOrException(lang));
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
@@ -1077,7 +1085,7 @@ public class RDFDataMgr
      * @param lang      Language for the seralization.
      */
     public static void write(StringWriter out, Dataset dataset, Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         write$(out, dataset.asDatasetGraph(), serialization);
     }
 
@@ -1098,7 +1106,7 @@ public class RDFDataMgr
      * @param lang      Language for the seralization.
      */
     public static void write(OutputStream out, DatasetGraph dataset, Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         write(out, dataset, serialization);
     }
 
@@ -1117,7 +1125,7 @@ public class RDFDataMgr
      * @param lang      Language for the seralization.
      */
     public static void write(StringWriter out, DatasetGraph dataset, Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         write(out, dataset, serialization);
     }
 
@@ -1162,7 +1170,7 @@ public class RDFDataMgr
      * @return WriterGraphRIOT
      */
     public static WriterGraphRIOT createGraphWriter(Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         return createGraphWriter$(serialization);
     }
 
@@ -1179,7 +1187,7 @@ public class RDFDataMgr
      * @return WriterGraphRIOT
      */
     public static WriterDatasetRIOT createDatasetWriter(Lang lang) {
-        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang);
+        RDFFormat serialization = langToFormatOrException(lang);
         return createDatasetWriter$(serialization);
     }
     
