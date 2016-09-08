@@ -243,7 +243,7 @@ public class FusekiCmd {
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
-                Txn.execWrite(cmdLineConfig.dsg, ()->RDFDataMgr.read(cmdLineConfig.dsg, filename)) ;
+                Txn.executeWrite(cmdLineConfig.dsg, ()->RDFDataMgr.read(cmdLineConfig.dsg, filename)) ;
             }
 
             if ( contains(argMemTDB) ) {

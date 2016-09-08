@@ -21,22 +21,19 @@ package org.apache.jena.sdb.graph;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.jena.graph.TransactionHandler ;
+import org.apache.jena.graph.impl.TransactionHandlerBase ;
 import org.apache.jena.sdb.SDBException ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.sql.SDBExceptionSQL ;
-import org.apache.jena.shared.Command ;
-import org.apache.jena.shared.JenaException ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class TransactionHandlerSDB implements TransactionHandler
+public class TransactionHandlerSDB extends TransactionHandlerBase
 {
     static private Logger log = LoggerFactory.getLogger(TransactionHandlerSDB.class) ;
 
-    Connection sqlConnection ;
-    boolean inTransaction ;
+    protected Connection sqlConnection ;
+    protected volatile boolean inTransaction ;
     
     public TransactionHandlerSDB(SDBConnection connection)
     { 
@@ -103,19 +100,4 @@ public class TransactionHandlerSDB implements TransactionHandler
 
     public void abortSilent()
     { try { abortFinally() ; } catch (SDBExceptionSQL ex) {} } 
-
-    
-    @Override
-    public Object executeInTransaction(Command c)
-    {
-        try {
-            begin() ;
-            Object result = c.execute();
-            commit();
-            return result;
-        } 
-        catch (SDBExceptionSQL e) { abortFinally() ; throw e ; } 
-        catch (JenaException e)   { abortFinally() ; throw e ; }
-        catch (Throwable e) { abortFinally() ; throw new SDBException(e) ; } // Pass Graph tests.
-    }
 }

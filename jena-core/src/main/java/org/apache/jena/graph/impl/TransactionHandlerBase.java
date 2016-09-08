@@ -18,12 +18,16 @@
 
 package org.apache.jena.graph.impl;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.shared.* ;
+import java.util.function.Supplier ;
+
+import org.apache.jena.graph.TransactionHandler ;
+import org.apache.jena.shared.Command ;
+import org.apache.jena.shared.JenaException ;
 
 /**
- * A base for transaction handlers - all it does is provide the
- * canonical implementation of executeInTransaction.
+ * A base for transaction handlers; provide implementations of execute* operations
+ * using the fundamental begin-commit-abort. 
+ * (This class predates java8 default methods.) 
  */
 public abstract class TransactionHandlerBase implements TransactionHandler {
     public TransactionHandlerBase() {
@@ -36,21 +40,44 @@ public abstract class TransactionHandlerBase implements TransactionHandler {
      */
     @Override
     public Object executeInTransaction(Command c) {
-        begin() ;
-        Object result ;
-        try {
-            result = c.execute() ;
-            commit() ;
-            return result ;
-        }
-        catch (JenaException e) { abort(e) ; throw e ; }
-        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+        return calculate( () -> c.execute() ) ;
     }
 
     /* Abort but don't let problems with the transaction system itself cause loss of the exception */ 
     private void abort(Throwable e) {
         try { abort() ; }
         catch (Throwable th) { e.addSuppressed(th); }
+    }
+    
+    /**
+     * Execute the runnable <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction, otherwise abort the transaction.
+     */
+    @Override
+    public void execute( Runnable action ) {
+        begin() ;
+        try {
+            action.run();
+            commit() ;
+        }
+        catch (JenaException e) { abort(e) ; throw e ; }
+        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+    }
+    
+    /**
+     * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction and return the result, otherwise abort the transaction.
+     */
+    @Override
+    public <T> T calculate( Supplier<T> action ) {
+        begin() ;
+        try {
+            T result = action.get() ;
+            commit() ;
+            return result ;
+        }
+        catch (JenaException e) { abort(e) ; throw e ; }
+        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
     }
 }
 

@@ -103,7 +103,7 @@ public class TestEmbeddedFuseki {
         server.start() ;
         try {
             // Add while live.
-            Txn.execWrite(dsg,  ()->{
+            Txn.executeWrite(dsg,  ()->{
                 Quad q = SSE.parseQuad("(_ :s :p _:b)") ;
                 dsg.add(q); 
             }) ;
@@ -118,7 +118,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_04() {
         DatasetGraph dsg = dataset() ;
-        Txn.execWrite(dsg,  ()->{
+        Txn.executeWrite(dsg,  ()->{
             Quad q = SSE.parseQuad("(_ :s :p _:b)") ;
             dsg.add(q); 
         }) ;

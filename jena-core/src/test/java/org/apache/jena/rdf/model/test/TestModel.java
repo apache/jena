@@ -25,7 +25,6 @@ import org.apache.jena.graph.test.NodeCreateUtils ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.Command ;
 import org.apache.jena.test.JenaTestBase ;
 import org.junit.Assert;
 
@@ -229,20 +228,10 @@ public class TestModel extends AbstractModelTestBase
 		Assert.assertEquals(GraphTestBase.node("b"), s.getObject().asNode());
 	}
 
-	public void testTransactions()
-	{
-		final Command cmd = new Command() {
-			@Override
-			public Object execute()
-			{
-				return null;
-			}
-		};
-		if (model.supportsTransactions())
-		{
-			model.executeInTransaction(cmd);
-		}
-	}
+    public void testTransactions() {
+        if ( model.supportsTransactions() )
+            model.executeInTxn(() -> {}) ;
+    }
 
 	public void testURINodeAsResource()
 	{

@@ -199,7 +199,7 @@ public class TestTransPromote {
         Semaphore sema = new Semaphore(0) ;
         Thread t = new Thread(() -> {
             sema.release() ;
-            Txn.execWrite(dsg, () -> dsg.add(q3)) ;
+            Txn.executeWrite(dsg, () -> dsg.add(q3)) ;
             sema.release() ;
         }) ;
 
@@ -255,7 +255,7 @@ public class TestTransPromote {
         dsg.add(q2) ;
         dsg.commit() ;
         dsg.end() ;
-        Txn.execRead(dsg, () -> {
+        Txn.executeRead(dsg, () -> {
             long x = Iter.count(dsg.find()) ;
             assertEquals(2, x) ;
         }) ;
