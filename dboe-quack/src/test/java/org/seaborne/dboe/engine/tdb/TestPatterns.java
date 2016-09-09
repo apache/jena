@@ -25,7 +25,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.algebra.optimize.Optimize ;
-import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
+import org.apache.jena.sparql.algebra.optimize.RewriteFactory ;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -58,7 +58,7 @@ public class TestPatterns extends Assert
         }) ;                                        
     }
 
-    private RewriterFactory rewriterFactory = null ;
+    private RewriteFactory rewriterFactory = null ;
     private ReorderTransformation  reorder = null ;
 
     @BeforeClass static public void beforeClass() {
@@ -147,7 +147,7 @@ public class TestPatterns extends Assert
     
     private void test(String fn) {
         Dataset dataset2 = TDB2Factory.createDataset() ;
-        Txn.execWrite(dataset2, ()->{
+        Txn.executeWrite(dataset2, ()->{
             RDFDataMgr.read(dataset2, DIR+"/data-bgp.ttl") ;
             if ( factory != null )
                 QC.setFactory(dataset2.getContext(), factory) ;

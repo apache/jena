@@ -49,7 +49,7 @@ public class TestBPlusTreeTxn extends Assert {
         assertNotNull(bpt.getComponentId()) ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 1, 2, 3, 4) ;
         } ); 
         int outerRootIdx2 = bpt.getRootId() ;
@@ -61,7 +61,7 @@ public class TestBPlusTreeTxn extends Assert {
         BPlusTree bpt = createBPTree() ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             int rootIdx1 = bpt.getRootId() ;
             assertEquals("Inside txn (1)", outerRootIdx1, rootIdx1);
             IndexTestLib.add(bpt, 1) ;
@@ -93,12 +93,12 @@ public class TestBPlusTreeTxn extends Assert {
         BPlusTree bpt = createBPTree() ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 1, 2, 3, 4) ;
         } ); 
         int outerRootIdx2 = bpt.getRootId() ;
         assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2); 
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 5, 6) ;
         } ); 
         int outerRootIdx3 = bpt.getRootId() ;
@@ -113,12 +113,12 @@ public class TestBPlusTreeTxn extends Assert {
         BPlusTree bpt = createBPTree() ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 1, 2, 3) ;
         } ); 
         int outerRootIdx2 = bpt.getRootId() ;
         assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2); 
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 1, 2) ;
         } ); 
         int outerRootIdx3 = bpt.getRootId() ;
@@ -132,12 +132,12 @@ public class TestBPlusTreeTxn extends Assert {
         BPlusTree bpt = createBPTree() ;
         int outerRootIdx1 = bpt.getRootId() ;
         Transactional thing = transactional(bpt) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt, 1, 2, 3) ;
         } ); 
         int outerRootIdx2 = bpt.getRootId() ;
         assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2); 
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.delete(bpt, 5, 6) ;
         } ); 
         int outerRootIdx3 = bpt.getRootId() ;
@@ -152,11 +152,11 @@ public class TestBPlusTreeTxn extends Assert {
         assertNotEquals(bpt1.getComponentId(), bpt2.getComponentId()) ;
         
         Transactional thing = transactional(bpt1, bpt2) ;
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt1, 1, 2, 3) ;
             IndexTestLib.add(bpt2, 4, 5) ;
         } );
-        Txn.execRead(thing, ()->{
+        Txn.executeRead(thing, ()->{
             IndexTestLib.testIndexContents(bpt2, 4, 5);
             IndexTestLib.testIndexContents(bpt1, 1, 2, 3);
         } );
@@ -170,11 +170,11 @@ public class TestBPlusTreeTxn extends Assert {
         Transactional thing = transactional(bpt1, bpt2) ;
         
         // Commit 1
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.add(bpt1, 2, 1) ;
             IndexTestLib.add(bpt2, 3, 4, 5) ;
         }) ;
-        Txn.execRead(thing, ()->{
+        Txn.executeRead(thing, ()->{
             IndexTestLib.testIndexContents(bpt2, 3, 4, 5);
             IndexTestLib.testIndexContents(bpt1, 1, 2);
         } );
@@ -184,18 +184,18 @@ public class TestBPlusTreeTxn extends Assert {
         IndexTestLib.add(bpt1, 9, 10) ;
         IndexTestLib.delete(bpt2, 3, 11) ;
         thing.abort() ;
-        Txn.execRead(thing, ()->{
+        Txn.executeRead(thing, ()->{
             IndexTestLib.testIndexContents(bpt2, 3, 4, 5);
             IndexTestLib.testIndexContents(bpt1, 1, 2);
         } );
         
         // Commit 2
-        Txn.execWrite(thing, () -> { 
+        Txn.executeWrite(thing, () -> { 
             IndexTestLib.delete(bpt1, 1,3) ;
             IndexTestLib.add(bpt1, 4) ;
             IndexTestLib.add(bpt2, 11, 12, 13) ;
         }) ;
-        Txn.execRead(thing, ()->{
+        Txn.executeRead(thing, ()->{
             IndexTestLib.testIndexContents(bpt2, 3, 4, 5, 11, 12, 13);
             IndexTestLib.testIndexContents(bpt1, 2, 4);
         } );

@@ -131,7 +131,7 @@ public class TestTransactionCoordinatorControl {
         assertEquals(0, counter1.get()) ;
         ttxn.run(); // Now run thread
         assertEquals(1, counter1.get()) ;
-        Txn.execWrite(unit, ()->{});
+        Txn.executeWrite(unit, ()->{});
         b = txnMgr.tryExclusiveMode(false);
         assertTrue(b) ;
     }

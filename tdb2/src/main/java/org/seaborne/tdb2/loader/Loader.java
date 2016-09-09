@@ -44,7 +44,7 @@ public class Loader {
         StreamRDF s3 = sMonitor ;
 
         plog.start(); 
-        Txn.execWrite(ds, () -> {
+        Txn.executeWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
                     FmtLog.info(LOG, "File: %s",fn);
@@ -64,7 +64,7 @@ public class Loader {
         StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
 
         plog.start(); 
-        Txn.execWrite(ds, () -> {
+        Txn.executeWrite(ds, () -> {
             for ( String fn : files ) {
                 if ( files.length > 1 )
                     FmtLog.info(LOG, "File: %s",fn);

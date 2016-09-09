@@ -53,10 +53,10 @@ public class TestTDBFactory extends BaseTest
         StoreConnection.reset() ;
         DatasetGraph dg1 = TDB2Factory.connectDatasetGraph(Location.mem("FOO")) ;
         DatasetGraph dg2 = TDB2Factory.connectDatasetGraph(Location.mem("FOO")) ;
-        Txn.execWrite(dg1, ()->{
+        Txn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
-        Txn.execRead(dg2, ()->{
+        Txn.executeRead(dg2, ()->{
             assertTrue(dg2.contains(quad1)) ;
         }) ;
     }
@@ -67,10 +67,10 @@ public class TestTDBFactory extends BaseTest
         // The unnamed location is unique each time.
         DatasetGraph dg1 = TDB2Factory.connectDatasetGraph(Location.mem()) ;
         DatasetGraph dg2 = TDB2Factory.connectDatasetGraph(Location.mem()) ;
-        Txn.execWrite(dg1, ()->{
+        Txn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
-        Txn.execRead(dg2, ()->{
+        Txn.executeRead(dg2, ()->{
             assertFalse(dg2.contains(quad1)) ;
         }) ;
     }

@@ -24,7 +24,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.algebra.optimize.Optimize ;
-import org.apache.jena.sparql.algebra.optimize.Optimize.RewriterFactory ;
+import org.apache.jena.sparql.algebra.optimize.RewriteFactory;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -155,7 +155,7 @@ public class MainQuack {
 //    }
 
     // Unset any optimization.
-    private static RewriterFactory rewriterFactory = null ;
+    private static RewriteFactory rewriterFactory = null ;
     private static ReorderTransformation  reorder = null ;
     
     public static void optimizerOff() {

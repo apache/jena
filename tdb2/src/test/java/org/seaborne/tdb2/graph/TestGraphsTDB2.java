@@ -40,7 +40,7 @@ public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 
     @Override
     protected void fillDataset(Dataset dataset) {
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             super.fillDataset(dataset) ;
         });
     }

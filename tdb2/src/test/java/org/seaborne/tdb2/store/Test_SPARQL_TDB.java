@@ -55,7 +55,7 @@ public class Test_SPARQL_TDB extends BaseTest
         // Test OpExecutor.execute(OpBGP) for a named graph used as a standalone model
         Dataset ds = create() ;
         add(ds, graphName, triple) ;
-        Txn.execRead(ds, ()->{
+        Txn.executeRead(ds, ()->{
             Model m = ds.getNamedModel(graphName) ;
             String qs = "SELECT * { ?s ?p ?o . }" ;
             Query query = QueryFactory.create(qs) ;
@@ -72,7 +72,7 @@ public class Test_SPARQL_TDB extends BaseTest
         Dataset ds = create() ;
         add(ds, graphName, triple) ;
         
-        Txn.execRead(ds, ()->{
+        Txn.executeRead(ds, ()->{
             Model m = ds.getNamedModel(graphName) ;
             String qs = "SELECT * { ?s ?p ?o . FILTER ( ?o < 456 ) }" ;
             Query query = QueryFactory.create(qs) ;
@@ -88,7 +88,7 @@ public class Test_SPARQL_TDB extends BaseTest
     {
         Dataset dataset = create() ;
         // No triple added
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
             QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
             ResultSet rs = qExec.execSelect() ;
@@ -101,7 +101,7 @@ public class Test_SPARQL_TDB extends BaseTest
     {
         Dataset dataset = create() ;
         add(dataset, graphName, triple) ;
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
             QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
             ResultSet rs = qExec.execSelect() ;
@@ -114,7 +114,7 @@ public class Test_SPARQL_TDB extends BaseTest
     {
         Dataset dataset = create() ;
         add(dataset, graphName, triple);
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             Query query = QueryFactory.create("ASK { GRAPH <"+graphName+"> {} }") ;
             boolean b = QueryExecutionFactory.create(query, dataset).execAsk() ;
             assertEquals(true, b) ;
@@ -125,7 +125,7 @@ public class Test_SPARQL_TDB extends BaseTest
     {
         Dataset dataset = create() ;
         add(dataset, graphName, triple);
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             Query query = QueryFactory.create("ASK { GRAPH <http://example/x> {} }") ;
             boolean b = QueryExecutionFactory.create(query, dataset).execAsk() ;
             assertEquals(false, b) ;
@@ -133,7 +133,7 @@ public class Test_SPARQL_TDB extends BaseTest
     }
 
     private static void add(Dataset dataset, String graphName, Triple triple) {
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             Graph g2 = dataset.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
             g2.add(triple) ;
         });
@@ -144,7 +144,7 @@ public class Test_SPARQL_TDB extends BaseTest
     @Test public void sparql_txn_1()
     {
         Dataset dataset = create() ;
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             update(dataset, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
         }) ;
         // Explicit trasnaction steps.
@@ -162,16 +162,16 @@ public class Test_SPARQL_TDB extends BaseTest
         Dataset dataset1 = create(Location.mem("foo")) ;
         Dataset dataset2 = create(Location.mem("foo")) ;
         
-        Txn.execWrite(dataset1, ()->{
+        Txn.executeWrite(dataset1, ()->{
             update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
         }) ;
         
-        Txn.execRead(dataset1, ()->{
+        Txn.executeRead(dataset1, ()->{
             assertEquals(1, count(dataset1)) ;
         }) ;
         
         // Same location.
-        Txn.execRead(dataset2, ()->{
+        Txn.executeRead(dataset2, ()->{
             assertEquals(1, count(dataset2)) ;
         }) ;
     }
@@ -180,12 +180,12 @@ public class Test_SPARQL_TDB extends BaseTest
     {
         Dataset ds = TDB2Factory.createDataset() ;
         // Update concrete default graph
-        Txn.execWrite(ds, ()->{
+        Txn.executeWrite(ds, ()->{
             ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
         }) ;
         ds.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
             
-        Txn.execWrite(ds, ()->{
+        Txn.executeWrite(ds, ()->{
             // Update by looking in union graph
             String us = StrUtils.strjoinNL(
                 "INSERT { GRAPH <http://example/g2> { ?s ?p 'NEW' } }",
@@ -196,7 +196,7 @@ public class Test_SPARQL_TDB extends BaseTest
             UpdateAction.execute(req, ds) ;
         }) ;
                 
-        Txn.execRead(ds, ()->{
+        Txn.executeRead(ds, ()->{
             Model m = ds.getNamedModel("http://example/g2") ;
             assertEquals("Did not find 1 statement in named graph", 1, m.size()) ;
         }) ;

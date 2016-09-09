@@ -58,7 +58,7 @@ public class TestTransBinaryDataFile extends Assert {
     
     private static long writeOne(Transactional transactional, TransBinaryDataFile transBinaryFile, String data) {
         return 
-            Txn.execWriteRtn(transactional, ()->{
+            Txn.calculateWrite(transactional, ()->{
                 byte[] bytes = StrUtils.asUTF8bytes(data) ;
                 int len = bytes.length ;
                 byte[] lenBytes = new byte[4] ;
@@ -71,7 +71,7 @@ public class TestTransBinaryDataFile extends Assert {
     }
     
     private static String readOne(Transactional transactional, TransBinaryDataFile transBinaryFile, long posn) {
-        return Txn.execReadRtn(transactional, ()->{
+        return Txn.calculateRead(transactional, ()->{
             byte[] lenBytes = new byte[4] ;
             long x = posn ;
             int got = transBinaryFile.read(x, lenBytes) ;
@@ -116,7 +116,7 @@ public class TestTransBinaryDataFile extends Assert {
 
 
     @Test public void transObjectFile_1() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x = transBinData.write(bytes1) ;
             assertEquals(0L, x) ;
             assertEquals(len1, transBinData.length()) ;
@@ -124,7 +124,7 @@ public class TestTransBinaryDataFile extends Assert {
     }
     
     @Test public void transObjectFile_2() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x = transBinData.write(bytes1) ;
             assertEquals(0L, x) ;
             assertEquals(len1, transBinData.length()) ;
@@ -136,7 +136,7 @@ public class TestTransBinaryDataFile extends Assert {
     }
 
     @Test public void transObjectFile_3() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x1 = transBinData.write(bytes1) ;
             long x2 = transBinData.write(bytes2) ;
             byte[] bytes1a = new byte[len1] ;  
@@ -151,11 +151,11 @@ public class TestTransBinaryDataFile extends Assert {
     }
 
     @Test public void transObjectFile_4() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x1 = transBinData.write(bytes1) ;
             long x2 = transBinData.write(bytes2) ;
         }) ;
-        Txn.execRead(transactional, ()->{
+        Txn.executeRead(transactional, ()->{
             byte[] bytes1a = new byte[len1] ;  
             byte[] bytes2a = new byte[len2] ;
             int len1a = transBinData.read(0, bytes1a) ;
@@ -169,11 +169,11 @@ public class TestTransBinaryDataFile extends Assert {
     
     // As above but reverse the read order
     @Test public void transObjectFile_5() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x1 = transBinData.write(bytes1) ;
             long x2 = transBinData.write(bytes2) ;
         }) ;
-        Txn.execRead(transactional, ()->{
+        Txn.executeRead(transactional, ()->{
             byte[] bytes1a = new byte[len1] ;  
             byte[] bytes2a = new byte[len2] ;
             
@@ -189,11 +189,11 @@ public class TestTransBinaryDataFile extends Assert {
 
 
     @Test public void transObjectFile_6() {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             long x1 = transBinData.write(bytes1) ;
             long x2 = transBinData.write(bytes2) ;
         }) ;
-        Txn.execRead(transactional, ()->{
+        Txn.executeRead(transactional, ()->{
             byte[] bytes2a = new byte[len2] ;
             int len2a = transBinData.read(len1, bytes2a) ;
             assertEquals(len2, len2a) ;
@@ -206,7 +206,7 @@ public class TestTransBinaryDataFile extends Assert {
             long x1 = transBinData.write(bytes1) ;
         }) ;
         
-        Txn.execRead(transactional, ()->{
+        Txn.executeRead(transactional, ()->{
             assertEquals(0L, transBinData.length()) ;
         }) ;
     }

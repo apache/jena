@@ -85,11 +85,11 @@ public class TestTransactions extends BaseTest
     // Models across transactions
     @Test public void trans_01() {
         Model named = dataset.getNamedModel(ns+"g") ;
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             RDFDataMgr.read(dataset, new StringReader(data1), null, Lang.TRIG) ;
         }) ;
 
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             long x1 = Iter.count(dataset.getDefaultModel().listStatements()) ;
             assertEquals(2, x1) ;
             long x2 = Iter.count(named.listStatements()) ;
@@ -100,10 +100,10 @@ public class TestTransactions extends BaseTest
     
     @Test public void trans_02() {
         Model model = dataset.getDefaultModel() ;
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             RDFDataMgr.read(model, new StringReader(data2), null, Lang.TURTLE) ;
         }) ;
-        Txn.execRead(dataset, ()->{
+        Txn.executeRead(dataset, ()->{
             assertEquals(4, model.size()) ;
         }) ;        
     }

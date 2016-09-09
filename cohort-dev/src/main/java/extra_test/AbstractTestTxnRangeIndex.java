@@ -56,11 +56,11 @@ public abstract class AbstractTestTxnRangeIndex {
     
     @Test public void add_01() { 
         Record r1 = r(1) ;
-        Txn.execWrite(transactional, ()->rangeIndex.insert(r1)) ;
+        Txn.executeWrite(transactional, ()->rangeIndex.insert(r1)) ;
         Record r2 = r(2) ;
-        Txn.execWrite(transactional, ()->rangeIndex.insert(r2)) ;
+        Txn.executeWrite(transactional, ()->rangeIndex.insert(r2)) ;
         
-        List<Record> x = Txn.execReadRtn(transactional, ()->Iter.toList(rangeIndex.iterator())); 
+        List<Record> x = Txn.calculateRead(transactional, ()->Iter.toList(rangeIndex.iterator())); 
         assertEquals(2, x.size()) ;
         assertEquals(r1, x.get(0)) ;
         assertEquals(r2, x.get(1)) ;

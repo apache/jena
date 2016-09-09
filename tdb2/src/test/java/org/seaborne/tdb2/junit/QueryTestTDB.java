@@ -84,7 +84,7 @@ public class QueryTestTDB extends EarlTestCase
     
     @Override public void setUpTest() {
         dataset = TDB2Factory.createDataset() ;
-        Txn.execWrite(dataset, ()->{
+        Txn.executeWrite(dataset, ()->{
             setupData() ;
         }) ;
         // Make sure a plain, no sameValueAs graph is used.
@@ -156,7 +156,7 @@ public class QueryTestTDB extends EarlTestCase
         // ---- Second, execute in persistent graph
 
         Dataset ds2 = dataset ; //DatasetFactory.create(model) ;
-        Txn.execRead(ds2, ()->{
+        Txn.executeRead(ds2, ()->{
             try(QueryExecution qExec2 = QueryExecutionFactory.create(query, ds2)) {
                 ResultSet rs = qExec2.execSelect() ;
                 ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(rs) ;

@@ -46,13 +46,13 @@ public class TestTxnLib2 extends Assert {
     }
 
     @Test public void libTxn_10() {
-        Txn.execWrite(integer, integer::inc) ;
-        long x = Txn.execReadRtn(integer, integer::get) ;
+        Txn.executeWrite(integer, integer::inc) ;
+        long x = Txn.calculateRead(integer, integer::get) ;
         assertEquals(InitValue+1, x) ;
     }
     
     @Test public void libTxn_11() {
-        Pair<Long, Long> p = Txn.execWriteRtn(integer, () -> {
+        Pair<Long, Long> p = Txn.calculateWrite(integer, () -> {
             integer.inc() ;
             return Pair.create(integer.value(), integer.get()) ;
         }) ;

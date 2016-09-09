@@ -62,7 +62,7 @@ public class TDB_Dev_Main {
     }
     
     public static void count(Dataset ds) {
-        long x = Txn.execReadRtn(ds, () -> {
+        long x = Txn.calculateRead(ds, () -> {
             return Iter.count(ds.asDatasetGraph().find()) ;
         }) ;
         System.out.printf("Count = %,d\n", x) ;
@@ -70,7 +70,7 @@ public class TDB_Dev_Main {
     
     public static void query(Dataset ds, String queryString) {
         Query q = QueryFactory.create(queryString) ;
-        Txn.execRead(ds, ()->{
+        Txn.executeRead(ds, ()->{
             try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
                 QueryExecUtils.executeQuery(qExec);
             }

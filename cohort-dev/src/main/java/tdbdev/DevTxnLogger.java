@@ -205,11 +205,11 @@ public class DevTxnLogger {
         TransactionalMonitorLogging tml = new TransactionalMonitorLogging(dsgBase, Location.mem()) ;
         dsgBase.setTransactionalMonitor(tml); 
         // Build into TDB
-        Txn.execWrite(dsgBase, () -> {
+        Txn.executeWrite(dsgBase, () -> {
                 Quad q1 = SSE.parseQuad("(<g1> <s> :p :o)") ;
                 dsgBase.add(q1);
             }) ;
-        Txn.execWrite(dsgBase, () -> {
+        Txn.executeWrite(dsgBase, () -> {
             Quad q1 = SSE.parseQuad("(<g2> <s> :p 123)") ;
             dsgBase.add(q1);
         }) ;

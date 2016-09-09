@@ -51,13 +51,13 @@ public class TestTransBlob extends Assert {
     @After public void after() { }
     
     public static void write(Transactional transactional, TransBlob transBlob, String data) {
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             transBlob.setString(data);
         }) ;
     }
     
     public static String read(Transactional transactional, TransBlob transBlob) {
-        return Txn.execReadRtn(transactional, ()->{
+        return Txn.calculateRead(transactional, ()->{
             return transBlob.getString() ;
         }) ;
     }
@@ -117,7 +117,7 @@ public class TestTransBlob extends Assert {
         
         write(transactional, transBlob, str2) ;
         
-        Txn.execWrite(transactional, ()->{
+        Txn.executeWrite(transactional, ()->{
             transBlob.setString(str2) ; 
             String s = transBlob.getString() ;
             assertEquals(str2, s) ;

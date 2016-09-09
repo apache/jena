@@ -22,21 +22,21 @@ import java.util.function.Supplier ;
 
 import org.apache.jena.sparql.core.Transactional ;
 
-/** Indirection to allow for modifcation for TDB2 capabilities */
+/** Indirection to allow for modification for TDB2 capabilities */
 public class Txn {
-    public static <T extends Transactional> void execRead(T txn, Runnable r) {
-        org.apache.jena.system.Txn.execRead(txn, r);
+    public static <T extends Transactional> void executeRead(T txn, Runnable r) {
+        org.apache.jena.system.Txn.executeRead(txn, r);
     }
 
-    public static <T extends Transactional, X> X execReadRtn(T txn, Supplier<X> r) {
-        return org.apache.jena.system.Txn.execReadRtn(txn, r);
+    public static <T extends Transactional, X> X calculateRead(T txn, Supplier<X> r) {
+        return org.apache.jena.system.Txn.calculateRead(txn, r);
     }
 
-    public static <T extends Transactional> void execWrite(T txn, Runnable r) {
-        org.apache.jena.system.Txn.execWrite(txn, r);
+    public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
+        org.apache.jena.system.Txn.executeWrite(txn, r);
     }
 
-    public static <T extends Transactional, X> X execWriteRtn(Transactional txn, Supplier<X> r) {
-        return org.apache.jena.system.Txn.execWriteRtn(txn, r);
+    public static <T extends Transactional, X> X calculateWrite(Transactional txn, Supplier<X> r) {
+        return org.apache.jena.system.Txn.calculateWrite(txn, r);
     }
 }

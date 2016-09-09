@@ -33,7 +33,7 @@ public class TestTxnLib extends AbstractTestTxn {
         assertEquals(0, v1) ;
         assertEquals(0, v2) ;
         
-        Txn.execRead(unit, () -> {
+        Txn.executeRead(unit, () -> {
             assertEquals(0, counter1.get()) ;
             assertEquals(0, counter2.get()) ;
         }) ;
@@ -42,7 +42,7 @@ public class TestTxnLib extends AbstractTestTxn {
     @Test public void libTxn_2() {
         assertEquals(0, counter1.value()) ;
         
-        Txn.execWrite(unit, () -> {
+        Txn.executeWrite(unit, () -> {
             counter1.inc() ;
             assertEquals("In W, value()", 0, counter1.value()) ;
             assertEquals("In W, get()",1, counter1.get()) ;
@@ -51,19 +51,19 @@ public class TestTxnLib extends AbstractTestTxn {
         assertEquals("Direct value()", 1, counter1.value()) ;
         assertEquals("Direct get()", 1, counter1.get()) ;
 
-        Txn.execRead(unit, () -> {
+        Txn.executeRead(unit, () -> {
             assertEquals("In R, value()", 1, counter1.get()) ;
             assertEquals("In R, get()", 1, counter1.value()) ;
         }) ;
     }
     
     @Test public void libTxn_3() {
-        Txn.execRead(unit, () -> {
+        Txn.executeRead(unit, () -> {
             assertEquals("In R, value()", 0, counter2.get()) ;
             assertEquals("In R, get()", 0, counter2.value()) ;
         }) ;
 
-        Txn.execWrite(unit, () -> {
+        Txn.executeWrite(unit, () -> {
             counter2.inc() ;
             assertEquals("In W, value()", 0, counter2.value()) ;
             assertEquals("In W, get()",1, counter2.get()) ;
@@ -72,7 +72,7 @@ public class TestTxnLib extends AbstractTestTxn {
         assertEquals("Direct value()", 1, counter2.value()) ;
         assertEquals("Direct get()", 1, counter2.get()) ;
 
-        Txn.execRead(unit, () -> {
+        Txn.executeRead(unit, () -> {
             assertEquals("In R, value()", 1, counter2.get()) ;
             assertEquals("In R, get()", 1, counter2.value()) ;
         }) ;
@@ -100,7 +100,7 @@ public class TestTxnLib extends AbstractTestTxn {
         assertEquals("Component 1 inconsistent", 1, counter1.value()) ;
         assertEquals("Component 2 inconsistent", 2, counter2.value()) ;
         
-        Txn.execRead(unit, () -> {
+        Txn.executeRead(unit, () -> {
             assertEquals("Component 1 inconsistent (R)", 1, counter1.get()) ;
             assertEquals("Component 2 inconsistent (R)", 2, counter2.get()) ;
         }) ;
@@ -108,7 +108,7 @@ public class TestTxnLib extends AbstractTestTxn {
     
     @Test public void libTxn_5() {
         long x = 
-            Txn.execReadRtn(unit, () -> {
+            Txn.calculateRead(unit, () -> {
                 assertEquals("In R, value()", 0, counter2.get()) ;
                 assertEquals("In R, get()", 0, counter2.value()) ;
                 return counter2.get() ;
@@ -118,7 +118,7 @@ public class TestTxnLib extends AbstractTestTxn {
     
     @Test public void libTxn_6() {
         long x = 
-            Txn.execWriteRtn(unit, () -> {
+            Txn.calculateWrite(unit, () -> {
                 counter2.inc() ;
                 assertEquals("In W, value()", 0, counter2.value()) ;
                 assertEquals("In W, get()",1, counter2.get()) ;
@@ -129,12 +129,12 @@ public class TestTxnLib extends AbstractTestTxn {
 
     @Test public void libTxn_7() {
         long x1 = 
-            Txn.execWriteRtn(unit, () -> {
+            Txn.calculateWrite(unit, () -> {
                 counter2.inc() ;
                 counter2.inc() ;
                 return counter2.get() ;
             }) ;
-        long x2 = Txn.execReadRtn(unit, () -> {
+        long x2 = Txn.calculateRead(unit, () -> {
             return counter2.get() ;
         }) ;
         assertEquals("After W and R",x1 , x2) ;
@@ -169,7 +169,7 @@ public class TestTxnLib extends AbstractTestTxn {
     
     @Test public void libTxnThread_11() {
         long x1 = counter1.get() ;  
-        Txn.execWrite(unit, ()->{
+        Txn.executeWrite(unit, ()->{
             counter1.inc();
             // Read the "before" state
             ThreadTxn t = ThreadTxn.threadTxnRead(unit, ()->{ long z1 = counter1.get() ; assertEquals("Thread read", x1, z1) ; }) ;
@@ -186,7 +186,7 @@ public class TestTxnLib extends AbstractTestTxn {
             long z1 = counter1.get() ;
             assertEquals("Thread", x1, z1) ;
         }) ;
-        Txn.execWrite(unit, ()->counter1.inc()) ;
+        Txn.executeWrite(unit, ()->counter1.inc()) ;
         t.run() ;
         long x2 = counter1.get() ;
         assertEquals("after", x1+1, x2) ;

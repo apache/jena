@@ -31,9 +31,9 @@ public class TDBSimpleRun {
         Query query = QueryFactory.create(qs) ;
         Dataset ds = TDB2Factory.createDataset() ;
         
-        Txn.execWrite(ds,()->RDFDataMgr.read(ds, "D.ttl")) ;
+        Txn.executeWrite(ds,()->RDFDataMgr.read(ds, "D.ttl")) ;
         
-        Txn.execRead(ds, ()->{
+        Txn.executeRead(ds, ()->{
             try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)){
                 QueryExecUtils.executeQuery(query, qExec);
             }}) ;
