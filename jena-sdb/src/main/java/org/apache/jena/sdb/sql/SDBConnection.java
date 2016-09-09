@@ -137,6 +137,7 @@ public class SDBConnection
         { throw ex ; }
     }
 
+    @Deprecated
     public Object executeInTransaction(Command c) {
         return getTransactionHandler().executeInTransaction(c) ;
     }
@@ -145,7 +146,7 @@ public class SDBConnection
         getTransactionHandler().execute(action) ;
     }
 
-    public <T> T executeRtn(Supplier<T> action) {
+    public <T> T calculate(Supplier<T> action) {
         return getTransactionHandler().calculate(action) ;
     }
     

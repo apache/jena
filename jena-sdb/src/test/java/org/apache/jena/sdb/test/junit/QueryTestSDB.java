@@ -28,7 +28,6 @@ import org.apache.jena.sdb.engine.QueryEngineSDB ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 import org.apache.jena.sdb.store.DatasetStore ;
 import org.apache.jena.sdb.util.StoreUtils ;
-import org.apache.jena.shared.Command ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryExecutionBase ;
@@ -95,18 +94,15 @@ public class QueryTestSDB extends EarlTestCase
 
         // Truncate outside a transaction.
         store.getTableFormatter().truncate() ;
-        store.getConnection().executeInTransaction(new Command(){
-            @Override
-            public Object execute()
-            {
-                // Default graph
-                for ( String fn : filenamesDft )
-                    StoreUtils.load(store, fn) ;    
-                // Named graphs
-                for ( String fn : filenamesNamed )
-                    StoreUtils.load(store, fn, fn) ;    
-                return null ;
-            }}) ;
+        store.getConnection().execute(()->{
+            // Default graph
+            for ( String fn : filenamesDft )
+                StoreUtils.load(store, fn) ;    
+            // Named graphs
+            for ( String fn : filenamesNamed )
+                StoreUtils.load(store, fn, fn) ;    
+
+        }) ;
         lastDftLoaded = filenamesDft ;
         lastNamedLoaded = filenamesNamed ;
         
