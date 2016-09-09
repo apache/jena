@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier ;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
@@ -1143,10 +1144,21 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		holder.getBaseItem().enterCriticalSection(readLockRequested);
 	}
 
+	@Deprecated
 	@Override
 	public Object executeInTransaction(final Command cmd) {
 		return holder.getBaseItem().executeInTransaction(cmd);
 	}
+
+	@Override
+	public void executeInTxn(Runnable action) {
+	    holder.getBaseItem().executeInTxn(action);
+	}
+
+    @Override
+    public <T> T calculateInTxn(Supplier<T> action) {
+        return holder.getBaseItem().calculateInTxn(action);
+    }
 
 	@Override
 	public String expandPrefix(final String prefixed)
