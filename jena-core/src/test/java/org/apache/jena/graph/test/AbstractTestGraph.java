@@ -275,21 +275,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Command cmd = new Command() 
         { @Override
             public Object execute() { return null; } };
-            try { th.executeInTransaction( cmd ); } 
+            try { th.execute( ()->{} ); } 
             catch (UnsupportedOperationException x) {}
     }
 
-    public void testExecuteInTransactionCatchesThrowable()
-    {Graph g = getGraph();
-    TransactionHandler th = g.getTransactionHandler();
-    if (th.transactionsSupported())
-    {
-        Command cmd = new Command() 
-        { @Override
-            public Object execute() throws Error { throw new Error(); } };
-            try { th.executeInTransaction( cmd ); } 
+    public void testExecuteInTransactionCatchesThrowable() {
+        Graph g = getGraph();
+        TransactionHandler th = g.getTransactionHandler();
+        if (th.transactionsSupported()) {
+            try { th.execute( ()-> { throw new Error() ; } ); } 
             catch (JenaException x) {}
-    }
+        }
     }
 
     static final Triple [] tripleArray = tripleArray( "S P O; A R B; X Q Y" );

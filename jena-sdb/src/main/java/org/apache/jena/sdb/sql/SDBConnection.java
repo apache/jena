@@ -27,6 +27,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.function.Supplier ;
 
 import javax.sql.DataSource;
 
@@ -136,7 +137,17 @@ public class SDBConnection
         { throw ex ; }
     }
 
-    public Object executeInTransaction(Command c) { return getTransactionHandler().executeInTransaction(c) ; }
+    public Object executeInTransaction(Command c) {
+        return getTransactionHandler().executeInTransaction(c) ;
+    }
+
+    public void execute(Runnable action) {
+        getTransactionHandler().execute(action) ;
+    }
+
+    public <T> T executeRtn(Supplier<T> action) {
+        return getTransactionHandler().calculate(action) ;
+    }
     
     public Object executeSQL(final SQLCommand c)
     {

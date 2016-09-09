@@ -31,14 +31,14 @@ public class TestTxn {
     @Test public void txn_basic_01() {
         long v1 = counter.get() ;
         assertEquals(0, v1) ;
-        Txn.execRead(counter, () -> {
+        Txn.executeRead(counter, () -> {
             assertEquals(0, counter.get()) ;
         }) ;
     }
 
     @Test public void txn_basic_02() {
         long x = 
-            Txn.execReadRtn(counter, () -> {
+            Txn.calculateRead(counter, () -> {
                 assertEquals("In R, value()", 0, counter.value()) ;
                 assertEquals("In R, get()", 0, counter.get()) ;
                 return counter.get() ;
@@ -47,9 +47,9 @@ public class TestTxn {
     }
 
     @Test public void txn_basic_03() {
-        Txn.execWrite(counter, counter::inc) ;
+        Txn.executeWrite(counter, counter::inc) ;
         long x = 
-            Txn.execReadRtn(counter, () -> {
+            Txn.calculateRead(counter, () -> {
                 assertEquals("In R, value()", 1, counter.value()) ;
                 assertEquals("In R, get()", 1, counter.get()) ;
                 return counter.get() ;
@@ -59,7 +59,7 @@ public class TestTxn {
 
     @Test public void txn_basic_05() {
         long x = 
-            Txn.execWriteRtn(counter, () -> {
+            Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
                 assertEquals("In W, get()",1, counter.get()) ;
@@ -70,7 +70,7 @@ public class TestTxn {
 
     @Test public void txn_write_01() {
         long x = 
-            Txn.execWriteRtn(counter, () -> {
+            Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
                 assertEquals("In W, get()",1, counter.get()) ;
@@ -83,7 +83,7 @@ public class TestTxn {
 
     @Test public void txn_write_02() {
         long x = 
-            Txn.execWriteRtn(counter, () -> {
+            Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
                 assertEquals("In W, get()",1, counter.get()) ;
@@ -95,7 +95,7 @@ public class TestTxn {
     }
     
     @Test public void txn_write_03() {
-        Txn.execWrite(counter, () -> {
+        Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
@@ -105,7 +105,7 @@ public class TestTxn {
     }
 
     @Test public void txn_write_04() {
-        Txn.execWrite(counter, () -> {
+        Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
@@ -117,7 +117,7 @@ public class TestTxn {
     @Test public void txn_rw_1() {
         assertEquals(0, counter.get()) ;
         
-        Txn.execWrite(counter, () -> {
+        Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
@@ -126,19 +126,19 @@ public class TestTxn {
         assertEquals("Direct value()", 1, counter.value()) ;
         assertEquals("Direct get()", 1, counter.get()) ;
 
-        Txn.execRead(counter, () -> {
+        Txn.executeRead(counter, () -> {
             assertEquals("In R, value()", 1, counter.value()) ;
             assertEquals("In R, get()", 1, counter.get()) ;
         }) ;
     }
     
     @Test public void txn_rw_2() {
-        Txn.execRead(counter, () -> {
+        Txn.executeRead(counter, () -> {
             assertEquals("In R, value()", 0, counter.value()) ;
             assertEquals("In R, get()", 0, counter.get()) ;
         }) ;
 
-        Txn.execWrite(counter, () -> {
+        Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
@@ -147,20 +147,20 @@ public class TestTxn {
         assertEquals("Direct value()", 1, counter.get()) ;
         assertEquals("Direct get()", 1, counter.get()) ;
 
-        Txn.execRead(counter, () -> {
+        Txn.executeRead(counter, () -> {
             assertEquals("In R, value()", 1, counter.value()) ;
             assertEquals("In R, get()", 1, counter.get()) ;
         }) ;
     }
     
     @Test public void txn_continue_1() {
-        Txn.execWrite(counter, ()->counter.set(91)) ;
+        Txn.executeWrite(counter, ()->counter.set(91)) ;
         
-        Txn.execWrite(counter, ()-> {
+        Txn.executeWrite(counter, ()-> {
             assertEquals("In txn, value()", 91, counter.value()) ;
             assertEquals("In txn, read()", 91, counter.read()) ;
             counter.inc(); 
-            Txn.execWrite(counter, ()->{
+            Txn.executeWrite(counter, ()->{
                 assertEquals("In txn, value()", 91, counter.value()) ;
                 assertEquals("In txn, get()", 92, counter.read()) ;
                 }) ;
@@ -169,13 +169,13 @@ public class TestTxn {
     }
     
     @Test public void txn_continue_2() {
-        Txn.execWrite(counter, ()->counter.set(91)) ;
+        Txn.executeWrite(counter, ()->counter.set(91)) ;
         
-        Txn.execWrite(counter, ()-> {
+        Txn.executeWrite(counter, ()-> {
             assertEquals("In txn, value()", 91, counter.value()) ;
             assertEquals("In txn, read()", 91, counter.read()) ;
             counter.inc(); 
-            Txn.execWrite(counter, ()->{
+            Txn.executeWrite(counter, ()->{
                 assertEquals("In txn, value()", 91, counter.value()) ;
                 assertEquals("In txn, get()", 92, counter.read()) ;
                 counter.inc();
@@ -189,9 +189,9 @@ public class TestTxn {
     
     @Test(expected=ExceptionFromTest.class)
     public void txn_exception_01() {
-        Txn.execWrite(counter, counter::inc) ;
+        Txn.executeWrite(counter, counter::inc) ;
         
-        Txn.execWrite(counter, () -> {
+        Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 1, counter.value()) ;
             assertEquals("In W, get()",2, counter.get()) ;
@@ -201,10 +201,10 @@ public class TestTxn {
     
     @Test
     public void txn_exception_02() {
-        Txn.execWrite(counter, ()->counter.set(8)) ;
+        Txn.executeWrite(counter, ()->counter.set(8)) ;
     
         try {
-            Txn.execWrite(counter, () -> {
+            Txn.executeWrite(counter, () -> {
                 counter.inc();
                 assertEquals("In W, value()", 8, counter.value());
                 assertEquals("In W, get()", 9, counter.get());
@@ -217,10 +217,10 @@ public class TestTxn {
 
     @Test
     public void txn_exception_03() {
-        Txn.execWrite(counter, ()->counter.set(9)) ;
+        Txn.executeWrite(counter, ()->counter.set(9)) ;
     
         try {
-            Txn.execRead(counter, () -> {
+            Txn.executeRead(counter, () -> {
                 assertEquals("In W, value()", 9, counter.value());
                 assertEquals("In W, get()", 9, counter.get());
                 throw new ExceptionFromTest();

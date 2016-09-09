@@ -20,6 +20,7 @@ package org.apache.jena.rdf.model;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier ;
 
 import org.apache.jena.datatypes.* ;
 import org.apache.jena.shared.* ;
@@ -897,13 +898,26 @@ public interface Model
 	 */
 	Model commit() ;
 
-    /**
-        Execute the command <code>cmd</code> inside a transaction. If it
-        completes, commit the transaction and return the result; if it fails
-        (by throwing an exception), abort the transaction and throw an
-        exception.
-    */
+	 /**
+        If transactions are supported, execute the command c within a transaction
+        and return its result. If not, throw an UnsupportedOperationException.
+        @deprecated use {@link #calculateInTxn(Supplier)} or migrate to {@link #executeInTxn(Runnable)}.  
+	  */
+	@Deprecated
     Object executeInTransaction( Command cmd );
+    
+    
+    /**
+     * Execute the runnable <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction, otherwise abort the transaction.
+     */
+    void executeInTxn( Runnable action );
+
+    /**
+     * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction and return the result, otherwise abort the transaction.
+     */
+    <T> T calculateInTxn( Supplier<T> action ) ;
 
 	/** Determine whether this model is independent.
 	 *

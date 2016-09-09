@@ -21,6 +21,8 @@ package org.apache.jena.rdf.model.impl;
 import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
+import java.util.function.Supplier ;
+
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -1329,6 +1331,7 @@ implements Model, PrefixMapping, Lock
      public Model commit() 
      { getTransactionHandler().commit(); return this; }
 
+     @SuppressWarnings("deprecation")
      @Override
      public Object executeInTransaction( Command cmd )
      { return getTransactionHandler().executeInTransaction( cmd ); }
@@ -1336,6 +1339,20 @@ implements Model, PrefixMapping, Lock
      private TransactionHandler getTransactionHandler()
      { return getGraph().getTransactionHandler(); }
 
+     @Override
+     public void executeInTxn( Runnable action ) {
+         getTransactionHandler().execute( action );
+     }
+
+     /**
+      * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+      * commit the transaction and return the result, otherwise abort the transaction.
+      */
+     @Override
+     public <T> T calculateInTxn( Supplier<T> action ) {
+         return getTransactionHandler().calculate( action );
+     }
+     
      @Override
      public boolean independent() 
      { return true; }

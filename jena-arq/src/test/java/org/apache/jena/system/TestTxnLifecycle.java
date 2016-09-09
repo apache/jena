@@ -37,53 +37,53 @@ public class TestTxnLifecycle {
     private Transactional trans = TransactionalLock.createMRSW() ;
  
     @Test public void txn_lifecycle_01() {
-        Txn.execRead(trans, ()->{}) ;
+        Txn.executeRead(trans, ()->{}) ;
     }
     
     @Test public void txn_lifecycle_02() {
-        Txn.execWrite(trans, ()->{}) ;
+        Txn.executeWrite(trans, ()->{}) ;
     }
 
     @Test public void txn_lifecycle_03() {
-        int x = Txn.execReadRtn(trans, ()->4) ;
+        int x = Txn.calculateRead(trans, ()->4) ;
         assertEquals(4,x) ;
     }
 
     @Test public void txn_lifecycle_04() {
-        int x = Txn.execWriteRtn(trans, ()->5) ;
+        int x = Txn.calculateWrite(trans, ()->5) ;
         assertEquals(5,x) ;
     }
     
     @Test public void txn_lifecycle_05() {
-        int x = Txn.execWriteRtn(trans, ()-> {
+        int x = Txn.calculateWrite(trans, ()-> {
             // Continues outer transaction.
-            return Txn.execWriteRtn(trans, ()->56) ;
+            return Txn.calculateWrite(trans, ()->56) ;
         });
         assertEquals(56,x) ;
     }
     
     @Test(expected=ExceptionFromTest.class)
     public void txn_lifecycle_06() {
-        int x = Txn.execWriteRtn(trans, ()-> {
-            Txn.execWriteRtn(trans, ()-> {throw new ExceptionFromTest() ; }) ;
+        int x = Txn.calculateWrite(trans, ()-> {
+            Txn.calculateWrite(trans, ()-> {throw new ExceptionFromTest() ; }) ;
             return 45 ;
         });
         fail("Should not be here!") ;
     }
     
     @Test public void txn_lifecycle_07() {
-        Txn.execWrite(trans, ()->trans.commit()) ; 
+        Txn.executeWrite(trans, ()->trans.commit()) ; 
     }
     
     @Test public void txn_lifecycle_08() {
-        Txn.execWrite(trans, ()->trans.abort()) ; 
+        Txn.executeWrite(trans, ()->trans.abort()) ; 
     }
     
     @Test public void txn_lifecycle_09() {
-        Txn.execRead(trans, ()->trans.commit()) ; 
+        Txn.executeRead(trans, ()->trans.commit()) ; 
     }
     @Test public void txn_lifecycle_10() {
-        Txn.execRead(trans, ()->trans.abort()) ; 
+        Txn.executeRead(trans, ()->trans.abort()) ; 
     }
 
     static void async(Runnable runnable) {

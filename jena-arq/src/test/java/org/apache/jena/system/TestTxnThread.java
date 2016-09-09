@@ -59,7 +59,7 @@ public class TestTxnThread {
     
     @Test public void txnThread_11() {
         long x1 = counter.get() ;  
-        Txn.execWrite(counter, ()->{
+        Txn.executeWrite(counter, ()->{
             counter.inc();
             // Read the "before" state
             ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{ 
@@ -79,7 +79,7 @@ public class TestTxnThread {
             long z1 = counter.get() ;
             assertEquals("Thread", x1, z1) ;
         }) ;
-        Txn.execWrite(counter, ()->counter.inc()) ;
+        Txn.executeWrite(counter, ()->counter.inc()) ;
         t.run() ;
         long x2 = counter.get() ;
         assertEquals("after", x1+1, x2) ;
