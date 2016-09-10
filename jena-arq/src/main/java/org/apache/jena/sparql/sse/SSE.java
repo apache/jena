@@ -19,8 +19,10 @@
 package org.apache.jena.sparql.sse;
 
 import java.io.* ;
+import java.util.function.Consumer ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -49,6 +51,7 @@ import org.apache.jena.sparql.sse.lang.ParseHandler ;
 import org.apache.jena.sparql.sse.lang.ParseHandlerPlain ;
 import org.apache.jena.sparql.sse.lang.ParseHandlerResolver ;
 import org.apache.jena.sparql.sse.lang.SSE_Parser ;
+import org.apache.jena.sparql.sse.writers.WriterExpr ;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.sse.writers.WriterNode ;
 import org.apache.jena.sparql.sse.writers.WriterOp ;
@@ -56,40 +59,78 @@ import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.FileUtils ;
 
+/**
+ * <a href="https://jena.apache.org/documentation/notes/sse.html"
+ * >SPARQL S-Expressions</a> is a unstandardized format for SPARQL-related and now
+ * RDF-related objects. This includes use for writing down the SPARQL algebra in Apache
+ * Jena ARQ.
+ * <p>
+ * It has regular syntax, inspired by schema (lisp), making it easy to create and maintain
+ * builders and writers and to compose structures.
+ * <p>
+ * "()" and "[]" are interchangeable and used for visual effect. Expressions are parsed
+ * and printed in prefix notation e.g. {@code (+ 1 ?x)}.
+ * <p>
+ * The oeprations are grouped into:
+ * <ul>
+ * <li>{@code parseTYPE} &ndash; parse a string to object of a specific kind.
+ * <li>{@code readTYPE} &ndash; Read a file and produce an object of a specific kind.
+ * <li>{@code write} &ndash; Write to a stream, default {@code System.out}
+ * <li>{@code str} &ndash; Create human readable strings.
+ * </ul>
+ * <p>
+ * {@code parse(...)}, which produces a {@link Item}, is direct access to the syntax parser.
+ * Builders take parser {@code Item} and create the in-memory objects (package
+ * {@code org.apache.jena.sparql.sse.builders}) and writers output in-memory objects
+ * to an {@link IndentedWriter} (package {@code org.apache.jena.sparql.sse.writers}.
+ * <p> 
+ * {@code SSE} should not be considered part of the public, stable Jena APIs.
+ * <p>
+ * If you don't like lots of "()" and indentation, look away now.
+ * <p>
+ * Efficiency at scale is not a primary design goal, though the core parser is streaming
+ * and would scale.
+ */
 public class SSE
 {
     static { JenaSystem.init(); }
     
     private SSE() {}
     
-    // Short prefix map for convenience (used in parsing, not in writing).
-    protected static PrefixMapping defaultDefaultPrefixMapRead = new PrefixMappingImpl() ;
+    // Short prefix map for convenience (used in parsing and str(), not for writing).
+    private static PrefixMapping defaultPrefixMapPretty = new PrefixMappingImpl() ;
     static {
-        defaultDefaultPrefixMapRead.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("ex" ,  "http://example.org/") ;
-        defaultDefaultPrefixMapRead.setNsPrefix("ns" ,  "http://example.org/ns#") ;
-        defaultDefaultPrefixMapRead.setNsPrefix("" ,    "http://example/") ;
+        defaultPrefixMapPretty.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        defaultPrefixMapPretty.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        defaultPrefixMapPretty.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        defaultPrefixMapPretty.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+        defaultPrefixMapPretty.setNsPrefix("ex" ,  "http://example.org/") ;
+        defaultPrefixMapPretty.setNsPrefix("ns" ,  "http://example.org/ns#") ;
+        defaultPrefixMapPretty.setNsPrefix("" ,    "http://example/") ;
     }
     
-    public static PrefixMapping defaultPrefixMapRead = defaultDefaultPrefixMapRead ;
-    public static PrefixMapping getDefaultPrefixMapRead() { return defaultPrefixMapRead ; }
-    public static void setDefaultPrefixMapRead(PrefixMapping pmap) { defaultPrefixMapRead =  pmap ; }
+    protected static PrefixMapping prefixMapRead   = defaultPrefixMapPretty ;
+    public static PrefixMapping getPrefixMapRead() { return prefixMapRead ; }
+    public static void setPrefixMapRead(PrefixMapping pmap) { prefixMapRead =  pmap ; }
+
+    protected static PrefixMapping prefixMapString = new PrefixMappingImpl() ;
+    static {
+        prefixMapString.setNsPrefixes(defaultPrefixMapPretty) ;
+    }
+    public static PrefixMapping getPrefixMapString() { return prefixMapString ; }
+    public static void setPrefixMapString(PrefixMapping pmap) { prefixMapString =  pmap ; }
     
     // Short prefix map for convenience used in writing.
-    protected static PrefixMapping defaultDefaultPrefixMapWrite = new PrefixMappingImpl() ;
+    private static PrefixMapping defaultPrefixMapWrite = new PrefixMappingImpl() ;
     static {
-        defaultDefaultPrefixMapWrite.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        defaultDefaultPrefixMapWrite.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        defaultDefaultPrefixMapWrite.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        defaultPrefixMapWrite.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        defaultPrefixMapWrite.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        defaultPrefixMapWrite.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
     }
     
-    public static PrefixMapping defaultPrefixMapWrite = defaultDefaultPrefixMapWrite ;
-    public static PrefixMapping getDefaultPrefixMapWrite() { return defaultPrefixMapWrite ; }
-    public static void setDefaultPrefixMapWrite(PrefixMapping pmap) { defaultPrefixMapWrite =  pmap ; }
+    protected static PrefixMapping prefixMapWrite = defaultPrefixMapWrite ;
+    public static PrefixMapping getPrefixMapWrite() { return prefixMapWrite ; }
+    public static void setPrefixMapWrite(PrefixMapping pmap) { prefixMapWrite =  pmap ; }
     
     /** Parse a string to obtain a Node (see NodeFactory.parse() */
     public static Node parseNode(String str) { return parseNode(str, null) ; }
@@ -234,7 +275,7 @@ public class SSE
     
     /** Parse a string and obtain a SPARQL algebra basic graph pattern */
     public static BasicPattern parseBGP(String s)
-    { return parseBGP(s, getDefaultPrefixMapRead()) ; }
+    { return parseBGP(s, getPrefixMapRead()) ; }
     
     /** Parse a string and obtain a SPARQL algebra basic graph pattern, given a prefix mapping */
     public static BasicPattern parseBGP(String s, PrefixMapping pmap)
@@ -363,7 +404,7 @@ public class SSE
     private static Item parseTerm(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
-            pmap = getDefaultPrefixMapRead() ;
+            pmap = getPrefixMapRead() ;
         ParseHandler handler = createParseHandler(pmap) ;
         SSE_Parser.term(reader, handler) ; 
         return handler.getItem() ;
@@ -375,14 +416,99 @@ public class SSE
     public static Item parse(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
-            pmap = getDefaultPrefixMapRead() ;
+            pmap = getPrefixMapRead() ;
         ParseHandler handler = createParseHandler(pmap) ;
         SSE_Parser.parse(reader, handler) ; 
         return handler.getItem() ;
     }
     
+    
+    
     // ---- To String
+    public static String str(Node node) {
+        return str(node, getPrefixMapString()) ;
+    }
+    
+    public static String str(Node node, PrefixMapping pmap) {
+        return string((out)->WriterNode.output(out, node, sCxt(pmap))) ;
+    }
+
+    public static String str(Triple triple) {
+        return str(triple, getPrefixMapString()) ;
+    }
+
+    public static String str(Triple triple, PrefixMapping pmap) {
+        return string((out)->WriterNode.output(out, triple, sCxt(pmap))) ;
+    }
+
+    public static String str(Quad quad) {
+        return str(quad, getPrefixMapString()) ;
+    }
+    
+    public static String str(Quad quad, PrefixMapping pmap) {
+        return string((out)->WriterNode.output(out, quad, sCxt(pmap))) ;
+    }
+    
+    public static String str(Graph graph) {
+        return str(graph, getPrefixMapString()) ;
+    }
+    
+    public static String str(Graph graph, PrefixMapping pmap) {
+        return string((out)->WriterGraph.output(out, graph, sCxt(pmap))) ;
+    }
+    
+    public static String str(DatasetGraph dsg) {
+        return str(dsg, getPrefixMapString()) ;
+    }
+    
+    public static String str(DatasetGraph dsg,  PrefixMapping pmap) {
+        return string((out)->WriterGraph.output(out, dsg, sCxt(pmap))) ;
+    }
+    
+    public static String str(Expr expr) {
+        return str(expr, getPrefixMapString()) ;
+    }
+    
+    public static String str(Expr expr, PrefixMapping pmap) {
+        return string((out)->WriterExpr.output(out, expr, sCxt(pmap))) ;
+    }
+
+    public static String str(BasicPattern bgp) {
+        return str(bgp, getPrefixMapString()) ;
+    }
+    
+    public static String str(BasicPattern bgp, PrefixMapping pmap) {
+        return string((out)->WriterGraph.output(out, bgp, sCxt(pmap))) ;
+    }
+
+    public static String str(Op op) {
+        return str(op, getPrefixMapString()) ;
+    }
+    
+    public static String str(Op op, PrefixMapping pmap) {
+        return string((out)->WriterOp.output(out, op, sCxt(pmap))) ;
+    }
+
+//    public static String str(ResultSet rs) {
+//        return str(rs, getPrefixMapString()) ;
+//    }
+//    
+//    public static String str(ResultSet rs, PrefixMapping pmap) {
+//        return string((out)->Writer???.output(out, rs, sCxt(pmap))) ;
+//    }
+
+    
+    private static String string(Consumer<IndentedLineBuffer> action) {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        action.accept(x); 
+        return x.asString() ;
+    }
+
+    /** @deprecated Use {@link #str(Node)} */ 
+    @Deprecated
     public static String format(Node node)                      { return FmtUtils.stringForNode(node) ; }
+    /** @deprecated  Use {@link #str(Node, PrefixMapping)} */ 
+    @Deprecated
     public static String format(Node node, PrefixMapping pmap)  { return FmtUtils.stringForNode(node, pmap) ; }
     
     // ----
@@ -466,7 +592,7 @@ public class SSE
     }
     public static void write(IndentedWriter out, Triple triple)                         
     { 
-        WriterNode.output(out, triple, sCxt(defaultDefaultPrefixMapWrite)) ; 
+        WriterNode.output(out, triple, sCxt(getPrefixMapWrite())) ; 
         out.flush() ;
     }
     
@@ -479,7 +605,7 @@ public class SSE
     }
     public static void write(IndentedWriter out, Quad quad)                         
     { 
-        WriterNode.output(out, quad, sCxt(defaultDefaultPrefixMapWrite)) ; 
+        WriterNode.output(out, quad, sCxt(getPrefixMapWrite())) ; 
         out.flush() ;
     }
 
@@ -493,7 +619,7 @@ public class SSE
     }
     public static void write(IndentedWriter out, Node node)                         
     { 
-        WriterNode.output(IndentedWriter.stdout, node, sCxt(defaultDefaultPrefixMapWrite)) ;
+        WriterNode.output(IndentedWriter.stdout, node, sCxt(getPrefixMapWrite())) ;
         IndentedWriter.stdout.flush() ;
     }
     
@@ -505,7 +631,7 @@ public class SSE
         return new SerializationContext() ;
     }  
     
-    /** Return a SerializationContext appropriate for the prfix mapping */
+    /** Return a SerializationContext appropriate for the prefix mapping */
     public static SerializationContext sCxt(PrefixMapping pmap)
     {
         if ( pmap != null )

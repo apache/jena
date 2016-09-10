@@ -39,16 +39,19 @@ public class TestSSE_Forms extends TestCase
         pmap.setNsPrefix("ex", "http://example/") ;
     }
 
-    @BeforeClass public static void beforeClass()
-    {
-        SSE.getDefaultPrefixMapRead().removeNsPrefix("") ;
-        SSE.getDefaultPrefixMapRead().removeNsPrefix("ex") ;
+    private static PrefixMapping original ; 
+    @BeforeClass
+    public static void beforeClass() {
+        original = SSE.getPrefixMapRead() ;
+        PrefixMapping pmaptest = new PrefixMappingImpl()
+            .setNsPrefixes(original)
+            .removeNsPrefix("")
+            .removeNsPrefix("ex") ;
     }
 
-    @AfterClass public static void afterClass()
-    {
-        SSE.getDefaultPrefixMapRead().setNsPrefix("" ,    "http://example/") ;
-        SSE.getDefaultPrefixMapRead().setNsPrefix("ex" ,  "http://example/ns#") ;
+    @AfterClass
+    public static void afterClass() {
+        SSE.setPrefixMapRead(original) ;
     }
 
     // ---- Assume ParseHandlerResolver from here on

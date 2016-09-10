@@ -82,8 +82,7 @@ public class QuadPattern implements Iterable<Quad>
     @Override
     public String toString() {
         IndentedLineBuffer out = new IndentedLineBuffer() ;
-
-        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+        SerializationContext sCxt = SSE.sCxt((SSE.getPrefixMapWrite())) ;
 
         boolean first = true ;
         for (Quad quad : quads) {
@@ -91,7 +90,7 @@ public class QuadPattern implements Iterable<Quad>
                 out.print(" ") ;
             else
                 first = false ;
-            // Adds (triple ...)
+            // Adds (quad ...)
             // SSE.write(buff.getIndentedWriter(), t) ;
             out.print("(") ;
             WriterNode.outputPlain(out, quad, sCxt) ;
