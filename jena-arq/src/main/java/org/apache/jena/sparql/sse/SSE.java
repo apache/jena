@@ -56,8 +56,11 @@ import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.sse.writers.WriterNode ;
 import org.apache.jena.sparql.sse.writers.WriterOp ;
 import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.vocabulary.FOAF ;
+import org.apache.jena.sparql.vocabulary.ListPFunction ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.util.FileUtils ;
+import org.apache.jena.vocabulary.* ;
 
 /**
  * <a href="https://jena.apache.org/documentation/notes/sse.html"
@@ -97,16 +100,36 @@ public class SSE
     
     private SSE() {}
     
-    // Short prefix map for convenience (used in parsing and str(), not for writing).
+    // Prefix map for convenience (used in parsing and str(), not for writing).
     private static PrefixMapping defaultPrefixMapPretty = new PrefixMappingImpl() ;
+    private static void readMap(String prefix, String uri) { defaultPrefixMapPretty.setNsPrefix(prefix, uri) ; }
     static {
-        defaultPrefixMapPretty.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        defaultPrefixMapPretty.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        defaultPrefixMapPretty.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
-        defaultPrefixMapPretty.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        defaultPrefixMapPretty.setNsPrefix("ex" ,  "http://example.org/") ;
-        defaultPrefixMapPretty.setNsPrefix("ns" ,  "http://example.org/ns#") ;
-        defaultPrefixMapPretty.setNsPrefix("" ,    "http://example/") ;
+        readMap("rdf",      ARQConstants.rdfPrefix) ;
+        readMap("rdfs",     ARQConstants.rdfsPrefix) ;
+        readMap("xsd",      ARQConstants.xsdPrefix) ;
+        readMap("owl",      ARQConstants.owlPrefix) ;
+        readMap("foaf",     FOAF.getURI()) ;
+        readMap("skos",     SKOS.getURI()) ;
+        readMap("skosxl",   SKOSXL.getURI()) ;
+
+        readMap("dc",       DC.getURI()) ;
+        readMap("dcterms",  DCTerms.getURI()) ;
+        readMap("dctypes",  DCTypes.getURI()) ;
+
+        readMap("fn",       ARQConstants.fnPrefix) ;
+        readMap("op",       ARQConstants.fnPrefix) ;
+        readMap("math",     ARQConstants.mathPrefix) ;
+        readMap("fns",      ARQConstants.fnSparql) ;
+
+        // ARQ
+        readMap("afn",      ARQConstants.ARQFunctionLibraryURI) ;
+        readMap("apf",      ARQConstants.ARQProcedureLibraryURI) ;
+        readMap("agg",      ARQConstants.ARQAggregateLibraryURI) ;
+        readMap("list",     ListPFunction.getURI()) ;
+
+        readMap("ex",       "http://example.org/") ;
+        readMap("ns",       "http://example.org/ns#") ;
+        readMap("",         "http://example/") ;
     }
     
     protected static PrefixMapping prefixMapRead   = defaultPrefixMapPretty ;
