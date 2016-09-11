@@ -445,14 +445,16 @@ public class SSE
         return handler.getItem() ;
     }
     
-    
-    
     // ---- To String
+    private static String strForNull = "<<null>>" ; 
+    
     public static String str(Node node) {
         return str(node, getPrefixMapString()) ;
     }
     
     public static String str(Node node, PrefixMapping pmap) {
+        if ( node == null )
+            return strForNull ;
         return string((out)->WriterNode.output(out, node, sCxt(pmap))) ;
     }
 
@@ -461,7 +463,21 @@ public class SSE
     }
 
     public static String str(Triple triple, PrefixMapping pmap) {
-        return string((out)->WriterNode.output(out, triple, sCxt(pmap))) ;
+        if ( triple == null )
+            return strForNull ;
+        return string((out)->WriterNode.outputNoTag(out, triple, sCxt(pmap))) ;
+    }
+
+    /** Plain - with (), not (triple ...) */
+    public static String strPlain(Triple triple) {
+        return strPlain(triple, getPrefixMapString()) ;
+    }
+
+    /** Plain - with (), not (triple ...) */
+    public static String strPlain(Triple triple, PrefixMapping pmap) {
+        if ( triple == null )
+            return strForNull ;
+        return string((out)->WriterNode.outputPlain(out, triple, sCxt(pmap))) ;
     }
 
     public static String str(Quad quad) {
@@ -469,7 +485,21 @@ public class SSE
     }
     
     public static String str(Quad quad, PrefixMapping pmap) {
-        return string((out)->WriterNode.output(out, quad, sCxt(pmap))) ;
+        if ( quad == null )
+            return strForNull ;
+        return string((out)->WriterNode.outputNoTag(out, quad, sCxt(pmap))) ;
+    }
+    
+    /** Plain - with (), not (quad ...) */
+    public static String strPlain(Quad quad) {
+        return strPlain(quad, getPrefixMapString()) ;
+    }
+    
+    /** Plain - with (), not (quad ...) */
+    public static String strPlain(Quad quad, PrefixMapping pmap) {
+        if ( quad == null )
+            return strForNull ;
+        return string((out)->WriterNode.outputPlain(out, quad, sCxt(pmap))) ;
     }
     
     public static String str(Graph graph) {
@@ -477,6 +507,8 @@ public class SSE
     }
     
     public static String str(Graph graph, PrefixMapping pmap) {
+        if ( graph == null )
+            return strForNull ;
         return string((out)->WriterGraph.output(out, graph, sCxt(pmap))) ;
     }
     
@@ -485,6 +517,8 @@ public class SSE
     }
     
     public static String str(DatasetGraph dsg,  PrefixMapping pmap) {
+        if ( dsg == null )
+            return strForNull ;
         return string((out)->WriterGraph.output(out, dsg, sCxt(pmap))) ;
     }
     
@@ -493,6 +527,8 @@ public class SSE
     }
     
     public static String str(Expr expr, PrefixMapping pmap) {
+        if ( expr == null )
+            return strForNull ;
         return string((out)->WriterExpr.output(out, expr, sCxt(pmap))) ;
     }
 
@@ -501,6 +537,8 @@ public class SSE
     }
     
     public static String str(BasicPattern bgp, PrefixMapping pmap) {
+        if ( bgp == null )
+            return strForNull ;
         return string((out)->WriterGraph.output(out, bgp, sCxt(pmap))) ;
     }
 
@@ -509,6 +547,8 @@ public class SSE
     }
     
     public static String str(Op op, PrefixMapping pmap) {
+        if ( op == null )
+            return strForNull ;
         return string((out)->WriterOp.output(out, op, sCxt(pmap))) ;
     }
 
