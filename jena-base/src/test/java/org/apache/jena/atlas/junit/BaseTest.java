@@ -18,10 +18,10 @@
 
 package org.apache.jena.atlas.junit ;
 
-import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Locale ;
 
+import org.apache.jena.atlas.lib.ListUtils ;
 import org.junit.Assert ;
 
 public class BaseTest extends Assert {
@@ -42,12 +42,7 @@ public class BaseTest extends Assert {
     }
     
     public static <T> void assertEqualsUnordered(String msg, List<T> list1, List<T> list2) {
-        if ( list1.size() != list2.size() )
-            fail(msg(msg, list1, list2)) ;
-        List<T> list2a = new ArrayList<>(list2) ;
-        for ( T elt : list1 )
-            list2a.remove(elt) ;
-        if ( list2a.size() != 0 )
+        if ( ! ListUtils.equalsUnordered(list1, list2) )
             fail(msg(msg, list1, list2)) ;
     }
     

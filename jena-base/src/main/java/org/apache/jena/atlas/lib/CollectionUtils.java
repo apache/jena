@@ -27,7 +27,7 @@ public class CollectionUtils
 		return c1.stream().noneMatch(c2::contains);
     }
     
-    /** Test for same elements, regarless of carinality */ 
+    /** Test for same elements, regarless of cardinality */ 
     public static <T> boolean sameElts(Collection<T> left, Collection<T> right) {
         return right.containsAll(left) && left.containsAll(right) ;
     }

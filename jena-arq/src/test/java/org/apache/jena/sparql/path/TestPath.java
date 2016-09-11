@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.path;
 
-import java.util.ArrayList ;
+import static org.apache.jena.atlas.lib.ListUtils.equalsUnordered ;
+
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -40,9 +41,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.path.Path ;
-import org.apache.jena.sparql.path.PathLib ;
-import org.apache.jena.sparql.path.PathParser ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -321,37 +319,20 @@ public class TestPath extends BaseTest
     
 
     // ----
-    private static void test(Graph graph, Node start, String string, Node... expectedNodes)
-    {
-       test(graph, start, string, expectedNodes, true) ;
-    }
-    
-    private static void testReverse(Graph graph, Node start, String string, Node... expectedNodes)
-    {
-       test(graph, start, string, expectedNodes, false) ;
+    private static void test(Graph graph, Node start, String string, Node... expectedNodes) {
+        test(graph, start, string, expectedNodes, true) ;
     }
 
-    private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward)
-    {
+    private static void testReverse(Graph graph, Node start, String string, Node... expectedNodes) {
+        test(graph, start, string, expectedNodes, false) ;
+    }
+
+    private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward) {
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
             directionForward ? PathEval.eval(graph, start, p, ARQ.getContext()) : PathEval.evalReverse(graph, start, p, ARQ.getContext()) ; 
         List<Node> results = Iter.toList(resultsIter) ;
         List<Node> expected = Arrays.asList(expectedNodes) ;
-        // Unordered by counting equality.
-        Assert.assertTrue("expected:"+expected+", got:"+results, sameUnorder(expected, results)) ;
-    }
-    
-    static boolean sameUnorder(List<Node> expected, List<Node> results)
-    {
-        // Copy - this is modified.
-        List<Node> x = new ArrayList<>(results) ;
-        for ( Node n : expected )
-        {
-            if ( ! x.contains(n) )
-                return false ;
-            x.remove(n) ;
-        }
-        return x.isEmpty() ;
+        Assert.assertTrue("expected:"+expected+", got:"+results, equalsUnordered(expected, results)) ;
     }
 }
