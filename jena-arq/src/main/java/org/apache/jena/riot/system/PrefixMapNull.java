@@ -20,6 +20,7 @@ package org.apache.jena.riot.system ;
 
 import java.util.Collections ;
 import java.util.Map ;
+import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
@@ -45,6 +46,9 @@ public class PrefixMapNull implements PrefixMap {
     public Map<String, String> getMappingCopyStr() {
         return Collections.emptyMap() ;
     }
+
+    @Override
+    public void forEach(BiConsumer<String, IRI> action) {}
 
     @Override
     public void add(String prefix, String iriString) {

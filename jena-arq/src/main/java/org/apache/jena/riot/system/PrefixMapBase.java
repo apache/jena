@@ -23,6 +23,8 @@ import static java.util.stream.Collectors.toMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer ;
+
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
@@ -54,6 +56,11 @@ public abstract class PrefixMapBase implements PrefixMap {
     public Map<String, String> getMappingCopyStr() {
 		return getMapping().entrySet().stream()
 				.collect(toMap(Map.Entry::getKey, v -> v.getValue().toString()));
+    }
+    
+    @Override
+    public void forEach(BiConsumer<String, IRI> action) {
+        getMapping().forEach(action);
     }
     
     @Override
