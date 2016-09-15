@@ -25,6 +25,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Polyadic ;
+import org.apache.jena.graph.impl.WrappedGraph ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
@@ -94,9 +95,8 @@ public class SystemARQ
             syncGraph(((Polyadic)graph).getBaseGraph()) ;
         else if ( graph instanceof GraphWrapper )
             syncGraph(((GraphWrapper)graph).get()) ;
-//        else if ( graph instanceof WrappedGraph )   
-//            // Does not expose the WrappedGraph : checking, no subclass needs a sync().
-//            syncGraph(((WrappedGraph)graph).get()) ;
+        else if ( graph instanceof WrappedGraph )   
+            syncGraph(((WrappedGraph)graph).getWrapped()) ;
         else
             syncObject(graph) ;
     }
@@ -113,7 +113,6 @@ public class SystemARQ
             return ;
         } else {
             Graph gDft = dataset.getDefaultGraph() ;
-            // GraphView sync the DatasetGraph leading to possible recursion.
             syncIfNotView(gDft) ;
             // Go through each graph.
             dataset.listGraphNodes().forEachRemaining( gn->syncIfNotView(dataset.getGraph(gn) )) ;
@@ -122,7 +121,7 @@ public class SystemARQ
     
     private static void syncIfNotView(Graph g) {
         // GraphView sync calls the DatasetGraph lead to possible recursion.
-        if ( !( g instanceof GraphView) ) 
+        if ( !( g instanceof GraphView) )
             sync(g) ;
     }
 
