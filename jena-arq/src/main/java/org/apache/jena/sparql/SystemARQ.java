@@ -121,9 +121,9 @@ public class SystemARQ
     }
     
     private static void syncIfNotView(Graph g) {
-        // GraphView sync calls the DatasetGraph leading to possible recursion.
+        // GraphView sync calls the DatasetGraph lead to possible recursion.
         if ( !( g instanceof GraphView) ) 
-            syncIfNotView(g) ;
+            sync(g) ;
     }
 
     /** Sync an object if synchronizable (model, graph, dataset). */
