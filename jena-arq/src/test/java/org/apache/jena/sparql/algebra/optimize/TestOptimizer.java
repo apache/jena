@@ -227,6 +227,34 @@ public class TestOptimizer extends AbstractTestTransform
         check(queryString, opExpectedString) ; 
     }
     
+    // JENA-1235
+    @Test public void optimize_02() {
+        String in = StrUtils.strjoinNL
+            (
+             "(filter (exprlist (|| (= ?var3 'ABC') (= ?var3 'XYZ')) (&& (regex ?var4 'pat1') (!= ?VAR 123)))"
+             ,"    (bgp"
+             ,"      (triple ?var2 :p1 ?var4)"
+             ,"      (triple ?var2 :p2 ?var3)"
+             ,"    ))") ;
+
+        String out = StrUtils.strjoinNL
+            ("(filter (!= ?VAR 123)"
+             ," (disjunction"
+             ,"  (assign ((?var3 'ABC'))"
+             ,"    (sequence"
+             ,"      (filter (regex ?var4 'pat1')"
+             ,"        (bgp (triple ?var2 :p1 ?var4)))"
+             ,"      (bgp (triple ?var2 :p2 'ABC'))))"
+             ,"  (assign ((?var3 'XYZ'))"
+             ,"    (sequence"
+             ,"      (filter (regex ?var4 'pat1')"
+             ,"        (bgp (triple ?var2 :p1 ?var4)))"
+             ,"      (bgp (triple ?var2 :p2 'XYZ'))))))"
+             ) ;
+        checkAlgebra(in, out) ;
+    }
+
+    
     @Test public void combine_extend_01()
     {
         Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
