@@ -252,8 +252,6 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test 
     public void transaction_err_12()    { testAbortCommit(WRITE) ; }
 
-    
-    
     private void read1(Dataset ds) {
         ds.begin(ReadWrite.READ) ;
         assertTrue(ds.isInTransaction()) ;

@@ -43,6 +43,7 @@ import org.junit.runners.Suite ;
     , TestTDBInternal.class
     , TestTransPromote.class
     , TestTransControl.class
+    , TestTransIsolation.class
 })
 public class TS_TransactionTDB
 {

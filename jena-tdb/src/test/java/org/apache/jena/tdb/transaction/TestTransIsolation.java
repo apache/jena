@@ -16,30 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.mem;
+package org.apache.jena.tdb.transaction;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionIsolation ;
+import org.apache.jena.tdb.TDBFactory ;
 
-/**
- * Tests for in-memory Dataset and its default implementation.
- *
- */
-@RunWith(Suite.class)
-@SuiteClasses({
-    TestQuadTableForms.class,
-    TestTripleTableForms.class,
-    TestHexTable.class,
-    TestTriTable.class,
-    TestDatasetGraphInMemoryBasic.class,
-    TestDatasetGraphInMemoryViews.class,
-    TestDatasetGraphInMemoryLock.class, 
-    TestDatasetGraphInMemoryThreading.class,
-    TestDatasetGraphInMemoryTransactions.class,
-    
-    TestDatasetGraphInMemoryFind.class,
-    TestDatasetGraphInMemoryFindPattern.class,
-    TestDatasetGraphInMemoryIsolation.class
- })
-public class TS_DatasetTxnMem {}
+public class TestTransIsolation extends AbstractTestTransactionIsolation {
+
+    @Override
+    protected DatasetGraph create() {
+        return TDBFactory.createDatasetGraph() ;
+    }
+
+}

@@ -45,7 +45,7 @@ public class TestTransPromote {
 
     // Currently,
     // this feature is off and needs enabling via DatasetGraphTransaction.promotion
-    // promotiion is implicit whe a write happens.
+    // promotion is implicit when a write happens.
 
     // See beforeClass / afterClass.
 
@@ -62,9 +62,6 @@ public class TestTransPromote {
         stdReadCommitted = DatasetGraphTransaction.readCommittedPromotion ;
         level1 = logger1.getLevel() ;
         level2 = logger2.getLevel() ;
-        
-        // logger1.setLevel(Level.ERROR) ;
-        // logger2.setLevel(Level.ERROR) ;
     }
 
     @AfterClass
