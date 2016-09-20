@@ -20,8 +20,13 @@ package org.apache.jena.riot.writer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.json.JsonString;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
@@ -29,6 +34,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.WriterDatasetRIOT;
@@ -42,7 +48,9 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 
 public class TestJsonLDWriter extends BaseTest {
@@ -129,22 +137,21 @@ public class TestJsonLDWriter extends BaseTest {
         }
     }
 
-    //@Test public final void supportEmptyNs() {
-    //    Model m = ModelFactory.createDefaultModel();
-    //    String ns = "http://www.a.com/foo/";
-    //    Resource s = m.createResource(ns + "s");
-    //    Property p = m.createProperty(ns + "p");
-    //    Resource o = m.createResource(ns + "o");
-    //    m.add(s,p,o);
-    //    m.add(m.createResource(ns + "s2"),p,m.createResource(ns + "o2"));
-    //    m.setNsPrefix("ns", ns);
-    //    Model m2 = parse(toJsonLDString(m));
-    //    assertTrue(m2.isIsomorphicWith(m));
-    //    
-    //    // RDFDataMgr.write(DevNull.out, m, RDFFormat.JSONLD) ;
-    //    RDFDataMgr.write(System.out, m2, RDFFormat.TURTLE);
-    //    RDFDataMgr.write(System.out, m, RDFFormat.JSONLD);
-    //}
+    /**
+     * an output with something like:<pre>
+     *  "@context" : {
+     *      "" : "http://www.a.com/foo/",
+     * <pre> is incorrect
+     */
+    @Test public final void noEmptyPrefixInContext() {
+        Model m = simpleModel();
+        m.setNsPrefix("", "http://www.a.com/foo/");
+        String jsonld = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
+        assertTrue(jsonld.indexOf("\"\"") < 0);
+        Model m2 = parse(jsonld);
+        assertTrue(m2.isIsomorphicWith(m));
+        System.out.println(jsonld);
+    }
 
     /** verify that one may pass a context as a JSON string, and that it is actually used in the output */
     @Test public void testSettingContextAsJsonString() {
@@ -165,13 +172,8 @@ public class TestJsonLDWriter extends BaseTest {
         String s1 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
         // there's a prefix in m, and we find it in the output
         String prefixStringInResult = "\"ex\":\"" + url + "\"";
-        assertTrue(s1.indexOf(prefixStringInResult) > 0);
+        assertTrue(s1.indexOf(prefixStringInResult) > -1);
         Model m1 = parse(s1);
-
-        // must we pass the json object associated to "@context",
-        // or its parent node (that is, with the "@context") ?
-        // Actually, we can do both (JSONLD-java's code ensure it)
-        // We check it for here
 
         // this is json object associated to "@context" in s1
         // it includes the "ex" prefix
@@ -179,14 +181,16 @@ public class TestJsonLDWriter extends BaseTest {
         String js = "{\"p\":{\"@id\":\"http://www.semanlink.net/test/p\",\"@type\":\"@id\"},\"ex\":\"http://www.semanlink.net/test/\"}";
 
         // remove the prefix from m
-        m.removeNsPrefix("ex");    // RDFDataMgr.write(System.out, m, RDFFormat.JSONLD) ;
+        m.removeNsPrefix("ex");
         String s2 = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
         // model wo prefix -> no more prefix string in result:
         assertTrue(s2.indexOf(prefixStringInResult) < 0);
 
-        // the model wo prefix, outputed as jsonld using a context that defines the prefix    
-        Context jenaCtx = new Context();
-        jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, js);
+        // the model wo prefix, output as jsonld using a context that defines the prefix    
+        JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
+        jenaCtx.setJsonLdContext(js);
+        
+        
         String s3 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s3.length() == s1.length());
@@ -197,7 +201,8 @@ public class TestJsonLDWriter extends BaseTest {
 
         // same thing, but passing also the "@context"
         js = "{\"@context\":" + js + "}";
-        jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT, js);
+        jenaCtx.setJsonLdContext(js);
+        
         String s4 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s4.length() == s1.length());
@@ -205,8 +210,30 @@ public class TestJsonLDWriter extends BaseTest {
         Model m4 = parse(s4);
         assertTrue(m4.isIsomorphicWith(m));
         assertTrue(m4.isIsomorphicWith(m1));
+        
+        // same thing, but passing a JsonObject //////////////////////////////////////////////////////
+        JsonObject obj = new JsonObject();  
+        obj.put("@id", "http://www.semanlink.net/test/p");
+        obj.put("@type", "@id");
+        JsonObject json = new JsonObject();
+        json.put("p", obj);
+        json.put("ex", "http://www.semanlink.net/test/");
+        
+        jenaCtx.setJsonLdContext(json.toString());
+        String s5 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
+
+        assertTrue(s5.length() == s1.length());
+        assertTrue(s5.indexOf(prefixStringInResult) > 0);
+        Model m5 = parse(s5);
+        assertTrue(m5.isIsomorphicWith(m));
+        assertTrue(m5.isIsomorphicWith(m1));
+      
     }
 
+    
+// KO
+    
+    
     /**
      * Checks that one can pass a context defined by its URI
      */
@@ -217,19 +244,27 @@ public class TestJsonLDWriter extends BaseTest {
         m.add(s, m.createProperty(ns + "name"), "Jane Doe");
         m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
         m.add(s, RDF.type, "Person");
-
-        // we can pass a uri in the context, as a quoted string (it is a JSON string)
+        
+        // we can pass an uri in the context, as a quoted string (it is a JSON string)
         Context jenaContext = new Context();
         try {
-            // jenaContext.set(JsonLDWriter.JSONLD_CONTEXT, "http://schema.org/");
-            // beware, it must be quoted, as it is supposed to be a json string
-            jenaContext.set(JsonLDWriter.JSONLD_CONTEXT, "\"http://schema.org/\"");
+            jenaContext.set(JsonLDWriter.JSONLD_CONTEXT, "{\"@context\" : \"http://schema.org/\"}");
             String jsonld = toString(m, RDFFormat.JSONLD, jenaContext);
+            System.out.println("----------");
+            System.out.println(jsonld);
+            // check it parses ok
+            Model m2 = parse(jsonld);
+            
+            System.out.println("----------");
+            m2.write(System.out, "TURTLE");
+            assertTrue(m2.isIsomorphicWith(m));
+            
         } catch (Throwable e) {
             // maybe test run in a setting wo external connectivity - not a real problem
             String mess = e.getMessage();
             if ((mess != null) && (mess.indexOf("loading remote context failed") > -1)) {
-                Logger.getLogger(getClass()).info("Attempt to load remote context failed - no drama");
+                Logger.getLogger(getClass()).info(mess);
+                e.printStackTrace();
             } else {
                 throw e;
             }
@@ -305,15 +340,110 @@ public class TestJsonLDWriter extends BaseTest {
         m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
         m.add(s, RDF.type, person);
 
-        Context jenaCtx = new Context();
-        jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT_SUBSTITUTION, "\"" + ns + "\"");
-
-        String jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
+        // change @context to a URI
+        
+        JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
+        jenaCtx.setJsonLdContextSubstitution((new JsonString(ns)).toString());
+        String jsonld;
+        jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
         String c = "\"@context\":\"http://schema.org/\"";
         assertTrue(jsonld.indexOf(c) > -1);
+
+         // change @context to a given ctx
+
+        String ctx = "{\"jobTitle\":{\"@id\":\"http://ex.com/jobTitle\"},\"url\":{\"@id\":\"http://ex.com/url\"},\"name\":{\"@id\":\"http://ex.com/name\"}}";
+        jenaCtx.setJsonLdContextSubstitution(ctx);
+        jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
+        assertTrue(jsonld.indexOf("http://ex.com/name") > -1);
+    }
+    
+    @Test public void readingContextDefinedByUri() {
+        String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"http://schema.org/Person\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"url\":\"http://www.janedoe.com\",\"@context\":\"http://schema.org/\"}";
+        Model m = parse(jsonld);
+        
+        System.out.println("-- TURTLE -------------");
+        m.write(System.out, "TURTLE");
+        
+        jsonld = toString(m, RDFFormat.JSONLD_EXPAND_PRETTY, null);
+        System.out.println("-- JSONLD_EXPAND_PRETTY -------------");
+        System.out.println(jsonld);
+        
+        jsonld = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
+        System.out.println("-- JSONLD_COMPACT_PRETTY -------------");
+        System.out.println(jsonld);
+        
+        JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
+        Map mapCtx = new HashMap();
+        mapCtx.put("@context", "http://schema.org/");
+        jenaCtx.set(JsonLDWriter.JSONLD_CONTEXT,mapCtx);
+        jsonld = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, jenaCtx);
+        System.out.println("-- JSONLD_COMPACT_PRETTY WITH URI BASED CONTEXT (?) -------------");
+        System.out.println(jsonld);
+        
+    }
+ 
+    @Test public void foo1() throws JsonParseException, IOException, JsonLdError {
+        // String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"http://schema.org/Person\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"url\":\"http://www.janedoe.com\",\"@context\":\"http://schema.org/\"}";
+        String jsonld = "{\"@id\":\"_:b0\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"@context\":{\"jobTitle\":{\"@id\":\"http://schema.org/jobTitle\"},\"name\":{\"@id\":\"http://schema.org/name\"}}}";
+        Model m = parse(jsonld);
+        m.write(System.out, "TURTLE");
+        
+    }
+    
+    private String simpleContextJsonld() {
+        return "{\"@id\":\"_:b0\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"@context\":{\"jobTitle\":{\"@id\":\"http://schema.org/jobTitle\"},\"name\":{\"@id\":\"http://schema.org/name\"}}}";
+    }
+    
+    @Test public void test1() throws JsonParseException, IOException, JsonLdError {
+        String jsonld = simpleContextJsonld();
+        
+        Object jsonObject = JsonUtils.fromString(jsonld);
+        
+        JsonLdOptions options = new JsonLdOptions();
+
+        Object expand = JsonLdProcessor.expand(jsonObject, options);
+        //Print out the result (or don't, it's your call!)
+        
+        System.out.println("-- expand: ");
+        System.out.println(JsonUtils.toPrettyString(expand));
     }
 
-
+    
+    @Test public void foo() throws JsonParseException, IOException, JsonLdError {
+        // String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"http://schema.org/Person\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"url\":\"http://www.janedoe.com\",\"@context\":\"http://schema.org/\"}";
+        String jsonld = "{\"@id\":\"_:b0\",\"jobTitle\":\"Professor\",\"name\":\"Jane Doe\",\"@context\":{\"jobTitle\":{\"@id\":\"http://schema.org/jobTitle\"},\"name\":{\"@id\":\"http://schema.org/name\"}}}";
+        System.out.println(jsonld);
+        
+        Map jsonObject = (Map) JsonUtils.fromString(jsonld);
+        Map context = new HashMap();
+        // context.put("@context", "http://schema.org/");
+//        context.put("@context", jsonObject.get("@context"));
+        JsonLdOptions options = new JsonLdOptions();
+        // options.setExpandContext(context);
+     // Customise options...
+     // Call whichever JSONLD function you want! (e.g. compact)
+Object expand = JsonLdProcessor.expand(jsonObject, options);
+System.out.println(JsonUtils.toPrettyString(expand));
+     Object compact = JsonLdProcessor.compact(jsonObject, context, options);
+     // Print out the result (or don't, it's your call!)
+     System.out.println(JsonUtils.toPrettyString(compact));
+     
+     
+//         Model m = ModelFactory.createDefaultModel();
+//         String ns = "http://schema.org/";
+//         // Resource person = m.createResource(ns + "Person");
+//         Resource s = m.createResource();
+//         m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+//         m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
+//         // m.add(s, RDF.type, person);
+//         s = m.createResource();
+//         // m.setNsPrefix("sh", ns);
+//         jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
+//         System.out.println(jsonld);
+    }
+    
+    
+        
     /**
      * Checking frames
      */
@@ -342,6 +472,7 @@ public class TestJsonLDWriter extends BaseTest {
         frame.put("@type", ns +"Person");
         jenaCtx.set(JsonLDWriter.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
         String jsonld = toString(m, RDFFormat.JSONLD_FRAME_PRETTY, jenaCtx);
+
         Model m2 = parse(jsonld);
         // 2 subjects with a type in m2
         assertTrue(m2.listStatements((Resource) null, RDF.type, (RDFNode) null).toList().size() == 2);
@@ -439,18 +570,20 @@ public class TestJsonLDWriter extends BaseTest {
         // compactArrays is true -> string, not an array for props with one value
         assertTrue(jsonld.indexOf("\"jobTitle\" : \"Professor\"") > -1);
         
-        // now output using a value for JsonLdOptions in Context that set compactArrays to false
+        // now output using a value for JsonLdOptions in Context that sets compactArrays to false
+        
+        JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
         
         JsonLdOptions opts = new JsonLdOptions(null);
         opts.setCompactArrays(false);       
-        Context jenaCtx = new Context();
-        jenaCtx.set(JsonLDWriter.JSONLD_OPTIONS, opts);
+ 
+        jenaCtx.setOptions(opts);
 
         jsonld = toString(m, RDFFormat.JSONLD, jenaCtx);
 
         // compactArrays is false -> a "@graph" node
         assertTrue(jsonld.indexOf("@graph") > -1);
-        // compactArrays is false -> an array for all props, when when there's only one value
+        // compactArrays is false -> an array for all props, even when there's only one value
         assertTrue(jsonld.indexOf("\"jobTitle\" : [ \"Professor\" ]") > -1);
     }
     
@@ -461,15 +594,12 @@ public class TestJsonLDWriter extends BaseTest {
     private String toString(Model m, RDFFormat f, Context jenaContext) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            // RDFDataMgr.write(out, m, f, jenaContext) ;
-
 
             WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
             DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
             PrefixMap pm = RiotLib.prefixMap(g);
             String base = null;
-            w.write(out,  g, pm, base, jenaContext) ;
-
+            w.write(out, g, pm, base, jenaContext) ;
 
             out.flush();
             String x = out.toString("UTF-8");

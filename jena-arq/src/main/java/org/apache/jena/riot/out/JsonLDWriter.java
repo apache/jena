@@ -33,11 +33,11 @@ import java.util.function.Consumer;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
@@ -69,7 +69,6 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * For formats using a context ("@context" node), (compact and expand), this automatically generates a default one.
  * One can pass a jsonld context using the (jena) Context mechanism, defining a (jena) Context
  * (sorry for this clash of contexts), (cf. last argument in
- * {@link org.apache.jena.riot.RDFDataMgr#write(OutputStream out, Model model, RDFFormat serialization, Context ctx)})
  * {@link java.io.OutputStream.WriterDatasetRIOT.write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)})
  * with:
  * <pre>
@@ -113,6 +112,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     public static final Symbol JSONLD_FRAME = createSymbol("JSONLD_FRAME");
     /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
     public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
+    /** 
+     * if creating a (jsonld) context from dataset, should we include all the prefixes defined in graph's prefix mappings
+     * value: a Boolean (default : true) */
+    public static final Symbol JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT = createSymbol("JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT");
 
     private final RDFFormat format ;
 
@@ -140,34 +143,43 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private RDFFormat.JSONLDVariant getVariant() {
         return (RDFFormat.JSONLDVariant) format.getVariant();
     }
-
+    
     private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
         JsonLdOptions opts = null;
         if (jenaContext != null) {
             opts = (JsonLdOptions) jenaContext.get(JSONLD_OPTIONS);
         }
         if (opts == null) {
-            opts = new JsonLdOptions(baseURI);
-            // maybe we should have used the same defaults as jsonld-java. Too late now
-            opts.useNamespaces = true ;
-            //opts.setUseRdfType(true); // false -> use "@type"
-            opts.setUseNativeTypes(true);
-            opts.setCompactArrays(true);	  			
+            opts = defaultJsonLdOptions(baseURI);
         } 
         return opts;
     }
+    
+    // jena is not using same default as JSONLD-java
+    // maybe we should have, but it's too late now:
+    // changing now would imply some unexpected changes in current users' outputs
+    static private JsonLdOptions defaultJsonLdOptions(String baseURI) {
+        JsonLdOptions opts = new JsonLdOptions(baseURI);
+        // maybe we should have used the same defaults as jsonld-java. Too late now
+        opts.useNamespaces = true ; // this is NOT jsonld-java's default
+        // opts.setUseRdfType(true); // false -> use "@type"
+        opts.setUseNativeTypes(true); // this is NOT jsonld-java's default
+        opts.setCompactArrays(true); // this is jsonld-java's default           
+        return opts;
+    }
 
-    @SuppressWarnings("deprecation") // JsonLdApi.fromRDF(RDFDataset, boolean) is "experimental" rather than "deprecated", cf. https://github.com/jsonld-java/jsonld-java/pull/173
     private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) {
         try {
             JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
 
             // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
-            // cf. cf. https://github.com/jsonld-java/jsonld-java/pull/173
+            // (optimization in jsonld-java 0.8.3)
+            // see https://github.com/jsonld-java/jsonld-java/pull/173
             
             // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset
             // Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
             final RDFDataset jsonldDataset = (new JenaRDF2JSONLD()).parse(dataset);
+            @SuppressWarnings("deprecation") // JsonLdApi.fromRDF(RDFDataset, boolean) is "experimental" rather than "deprecated"
             Object obj = (new JsonLdApi(opts)).fromRDF(jsonldDataset, true); // true because we know that we don't have any duplicate in jsonldDataset
 
             RDFFormat.JSONLDVariant variant = getVariant();
@@ -184,7 +196,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 obj = JsonLdProcessor.frame(obj, frame, opts);
 
             } else { // compact or flatten
-                // we need a (jsonld) context. Get it from jenaContext, or make one:
+                // we need a (jsonld) context. Get it from jenaContext, or create one:
                 Object ctx = getJsonldContext(dataset, prefixMap, jenaContext);
 
                 if (variant.isCompact()) {
@@ -204,7 +216,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         if (obj instanceof Map) {
                             Map map = (Map) obj;
                             if (map.containsKey("@context")) {
-                                map.put("@context", JsonUtils.fromString((String) ctxReplacement));
+                                map.put("@context", JsonUtils.fromString(ctxReplacement.toString()));
                             }
                         }
                     }
@@ -244,9 +256,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                     // (should not be useful)
                     if (o instanceof String) {
                         String jsonString = (String) o;
-                        if (jsonString != null) ctx = JsonUtils.fromString(jsonString);     	  						
+                        if (jsonString != null) ctx = JsonUtils.fromString(jsonString);
                     } else {
-                        Logger.getLogger(JsonLDWriter.class).warn("JSONLD_CONTEXT value is not a String. Assuming a context object expected by JSON-LD JsonLdProcessor.compact or flatten");
+                        Logger.getLogger(JsonLDWriter.class).warn("JSONLD_CONTEXT value is not a String. Assuming the context object expected by JSON-LD JsonLdProcessor.compact or flatten");
                         ctx = o;
                     }
                 }
@@ -255,56 +267,46 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
         if (!isCtxDefined) {
             // if no ctx passed via jenaContext, create one in order to have localnames as keys for properties
-            ctx = createJsonldContext(dataset.getDefaultGraph(), prefixMap) ;
+            ctx = createJsonldContext(dataset.getDefaultGraph(), prefixMap, addAllPrefixesToContextFlag(jenaContext)) ;
 
             // I don't think this should be done: the JsonLdProcessor begins
             // by looking whether the argument passed is a map with key "@context" and if so, takes corresponding value
             // Then, better not to do this: we create a map for nothing, and worse,
             // if the context object has been created by a user and passed through the (jena) context
-            // in case he got the same idea, we would end up with 2 levels of maps an it would not work
+            // in case he got the same idea, we would end up with 2 levels of maps and it would not work
             //        Map<String, Object> localCtx = new HashMap<>() ;
             //        localCtx.put("@context", ctx) ;
         }
         return ctx;
     }
-
+    
     // useful to help people who want to create their own context?
     // It is used in TestJsonLDWriter (marginally) (TestJsonLDWriter which happens to be in another package,
     // so either I remove the test in question, or this has to be public)
     public static Object createJsonldContext(Graph g) {
-        return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()));
+        return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()), true);
     }
 
-    private static Object createJsonldContext(Graph g, PrefixMap prefixMap) {
+    private static Object createJsonldContext(Graph g, PrefixMap prefixMap, boolean addAllPrefixesToContext) {
         final Map<String, Object> ctx = new LinkedHashMap<>() ;
-        addProperties(ctx, g) ;
-        addPrefixes(ctx, prefixMap) ;	
+        
+        // Add properties (in order to get: "localname": ....)
+        addProperties(ctx, g);
+
+        // Add prefixes
+        addPrefixes(ctx, g, prefixMap, addAllPrefixesToContext);
+
         return ctx ;
     }
 
-    private static void addPrefixes(Map<String, Object> ctx, PrefixMap prefixMap) {
-        if (prefixMap != null) {
-            Map<String, IRI> pmap = prefixMap.getMapping() ;
-            for ( Entry<String, IRI> e : pmap.entrySet() ) {
-                String key = e.getKey() ;
-                if ( key.isEmpty() ) {
-                    // Prefix "" is not allowed in JSON-LD
-                    // we could replace "" with "@vocab"
-                    // key = "@vocab" ;
-                    continue;
-                }
-                ctx.put(key, e.getValue().toString()) ;
-            }
-        }
-    }
-
-    private static void addProperties(final Map<String, Object> ctx, Graph graph) {
-        // Add some properties directly so it becomes "localname": ....
+    /** Add properties to jsonld context. */
+    static void addProperties(Map<String, Object> ctx, Graph g) {
         Consumer<Triple> x = new Consumer<Triple>() {
             @Override
             public void accept(Triple item) {
                 Node p = item.getPredicate() ;
                 Node o = item.getObject() ;
+                
                 if ( p.equals(RDF.type.asNode()) )
                     return ;
                 String x = p.getLocalName() ;
@@ -335,7 +337,66 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 }
             }
         } ;
-
-        Iter.iter(graph.find(null, null, null)).apply(x) ;
+        Iter.iter(g.find(null, null, null)).apply(x) ;
     }
+    /** Add prefixes to jsonld context */
+    // if adding all the prefixes in PrefixMap to ctx
+    // one pb is, many of the prefixes may be actually unused in the graph.
+    // This happens for instance when downloading schema.org: a very long list of prefixes
+    // hence the addAllPrefixesToContext param
+    private static void addPrefixes(Map<String, Object> ctx, Graph g, PrefixMap prefixMap, boolean addAllPrefixesToContext) {
+        if (prefixMap != null) {
+            Map<String, IRI> mapping = prefixMap.getMapping();
+            if (addAllPrefixesToContext) {
+                for ( Entry<String, IRI> e : mapping.entrySet() ) {
+                    addOnePrefix(ctx, e.getKey(), e.getValue().toString());
+                 }
+            } else {
+                // only add those that are actually used
+                Consumer<Triple> x = new Consumer<Triple>() {
+                    @Override
+                    public void accept(Triple item) {
+                        Node node = item.getSubject();
+                        if (node.isURI()) addPrefix2Ctx(node.getURI());
+                        node = item.getPredicate() ;
+                        addPrefix2Ctx(node.getURI());
+                        node = item.getObject() ;
+                        if (node.isURI()) addPrefix2Ctx(node.getURI());
+                    }
+
+                    private void addPrefix2Ctx(String resUri) {
+                        Pair<String, String> pair = prefixMap.abbrev(resUri);
+                        if (pair != null) {
+                            String prefix = pair.getLeft();
+                            addOnePrefix(ctx, prefix, mapping.get(prefix).toString());
+                        }        
+                    }
+                } ;
+                Iter.iter(g.find(null, null, null)).apply(x) ;
+            }
+        }
+    }
+    
+    /** Add one prefix to jsonld context */
+    static void addOnePrefix(Map<String, Object> ctx, String prefix, String value) {
+        if (!prefix.isEmpty()) { // Prefix "" is not allowed in JSON-LD -- could probably be replaced by "@vocab"
+            ctx.put(prefix, value);
+        }        
+    }
+    
+    private static boolean addAllPrefixesToContextFlag(Context jenaContext) {
+        if (jenaContext != null) {
+            Object o = jenaContext.get(JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT);
+            if (o != null) {
+                if (o instanceof Boolean) {
+                    return ((Boolean) o).booleanValue();
+                } else {
+                    throw new IllegalArgumentException("Value attached to JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT shoud be a Boolean");
+                }
+            }
+        }
+        // default
+        return true;
+    }
+
 }
