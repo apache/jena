@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.writer;
 
 import java.util.Iterator ;
 
@@ -24,6 +24,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;

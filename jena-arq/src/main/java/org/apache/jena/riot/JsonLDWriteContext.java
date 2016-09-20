@@ -1,7 +1,7 @@
 /* Created on 31 août 2016 */
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.out.JsonLDWriter;
+import org.apache.jena.riot.writer.JsonLDWriter;
 import org.apache.jena.sparql.util.Context;
 
 import com.github.jsonldjava.core.JsonLdOptions;

@@ -22,7 +22,6 @@ import java.util.* ;
 
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.n3.N3JenaWriter ;
-import org.apache.jena.riot.out.JsonLDWriter ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.thrift.WriterDatasetThrift ;
 import org.apache.jena.riot.thrift.WriterGraphThrift ;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out ;
+package org.apache.jena.riot.writer ;
 
 import static org.apache.jena.rdf.model.impl.Util.isLangString;
 import static org.apache.jena.rdf.model.impl.Util.isSimpleString;
@@ -43,7 +43,6 @@ import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
@@ -280,10 +279,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         return ctx;
     }
     
-    // useful to help people who want to create their own context?
-    // It is used in TestJsonLDWriter (marginally) (TestJsonLDWriter which happens to be in another package,
-    // so either I remove the test in question, or this has to be public)
-    public static Object createJsonldContext(Graph g) {
+    static Object createJsonldContext(Graph g) {
         return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()), true);
     }
 
