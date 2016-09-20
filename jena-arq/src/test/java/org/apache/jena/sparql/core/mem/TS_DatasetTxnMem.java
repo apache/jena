@@ -40,6 +40,7 @@ import org.junit.runners.Suite.SuiteClasses;
     
     TestDatasetGraphInMemoryFind.class,
     TestDatasetGraphInMemoryFindPattern.class,
-    TestDatasetGraphInMemoryIsolation.class
+    TestDatasetGraphInMemoryIsolation.class,
+    TestDatasetGraphInMemoryPromote.class
  })
 public class TS_DatasetTxnMem {}
