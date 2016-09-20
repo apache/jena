@@ -21,7 +21,7 @@
   <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - ARQ (SPARQL 1.1 Query Engine)</name>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.2-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -50,7 +50,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
@@ -85,8 +84,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.github.jsonld-java</groupId>
-      <artifactId>jsonld-java</artifactId>
+       <groupId>com.github.jsonld-java</groupId>
+        <artifactId>jsonld-java</artifactId>
+        <version>0.8.3</version>
     </dependency>
 
     <!-- replace that used via jsonld-java -->
