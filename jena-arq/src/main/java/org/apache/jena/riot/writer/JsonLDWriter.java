@@ -47,7 +47,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.vocabulary.RDF ;
-import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -65,10 +64,12 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * By default, the output is "compact" (in JSON-LD terminology), and the JSON is "pretty" (using line breaks).
  * One can choose another form using one of the dedicated RDFFormats (JSONLD_EXPAND_PRETTY, etc.).
  * 
- * For formats using a context ("@context" node), (compact and expand), this automatically generates a default one.
+ * For formats using a context (that is, which have an "@context" node), (compact and expand),
+ * this automatically generates a default one.
+ * 
  * One can pass a jsonld context using the (jena) Context mechanism, defining a (jena) Context
- * (sorry for this clash of contexts), (cf. last argument in
- * {@link java.io.OutputStream.WriterDatasetRIOT.write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)})
+ * (sorry for this clash of "contexts"), (cf. last argument in
+ * {@link java.io.OutputStream.WriterDatasetRIOT#write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)})
  * with:
  * <pre>
  * Context jenaContext = new Context()
@@ -83,7 +84,8 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * It is also possible to define the different options supported
  * by JSONLD-java using the {@link #JSONLD_OPTIONS} Symbol 
  * 
- * 
+ * The {@link org.apache.jena.riot.JsonLDWriteContext} is a convenience class that extends Context and
+ * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
@@ -91,7 +93,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private static Symbol createSymbol(String localName) {
         return Symbol.create(SYMBOLS_NS + localName);
     }
-
     /** Expected value: the value of the "@context" (a JSON String) */
     public static final Symbol JSONLD_CONTEXT = createSymbol("JSONLD_CONTEXT");
     /**
@@ -142,7 +143,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private RDFFormat.JSONLDVariant getVariant() {
         return (RDFFormat.JSONLDVariant) format.getVariant();
     }
-    
+
     private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
         JsonLdOptions opts = null;
         if (jenaContext != null) {
@@ -153,13 +154,12 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         } 
         return opts;
     }
-    
+
     // jena is not using same default as JSONLD-java
     // maybe we should have, but it's too late now:
-    // changing now would imply some unexpected changes in current users' outputs
+    // changing it now would imply some unexpected changes in current users' outputs
     static private JsonLdOptions defaultJsonLdOptions(String baseURI) {
         JsonLdOptions opts = new JsonLdOptions(baseURI);
-        // maybe we should have used the same defaults as jsonld-java. Too late now
         opts.useNamespaces = true ; // this is NOT jsonld-java's default
         // opts.setUseRdfType(true); // false -> use "@type"
         opts.setUseNativeTypes(true); // this is NOT jsonld-java's default
@@ -174,7 +174,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
             // (optimization in jsonld-java 0.8.3)
             // see https://github.com/jsonld-java/jsonld-java/pull/173
-            
+
             // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset
             // Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
             final RDFDataset jsonldDataset = (new JenaRDF2JSONLD()).parse(dataset);
@@ -187,11 +187,13 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
             } else if (variant.isFrame()) {
                 Object frame = null;
-                if (jenaContext != null) frame = jenaContext.get(JSONLD_FRAME);
-
+                if (jenaContext != null) {
+                    frame = jenaContext.get(JSONLD_FRAME);
+                }
                 if (frame == null) {
                     throw new IllegalArgumentException("No frame object found in jena Context");
                 }
+
                 obj = JsonLdProcessor.frame(obj, frame, opts);
 
             } else { // compact or flatten
@@ -222,16 +224,16 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 }
             }
 
-            if ( variant.isPretty() )
+            if (variant.isPretty()) {
                 JsonUtils.writePrettyPrint(writer, obj) ;
-            else
+            } else {
                 JsonUtils.write(writer, obj) ;
+            }
             writer.write("\n") ;
-        }
-        catch (JsonLdError | JsonMappingException | JsonGenerationException e) {
+
+        } catch (JsonLdError | JsonMappingException | JsonGenerationException e) {
             throw new RiotException(e) ;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             IO.exception(e) ;
         }
     }
@@ -250,14 +252,10 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 isCtxDefined = true;
                 Object o = jenaContext.get(JSONLD_CONTEXT);
                 if (o != null) {
-                    // I won't assume it is a string, to leave the possibility to pass
-                    // the context object expected by JSON-LD JsonLdProcessor.compact and flatten
-                    // (should not be useful)
-                    if (o instanceof String) {
+                    if (o instanceof String) { // supposed to be a json string
                         String jsonString = (String) o;
-                        if (jsonString != null) ctx = JsonUtils.fromString(jsonString);
+                        ctx = JsonUtils.fromString(jsonString);
                     } else {
-                        Logger.getLogger(JsonLDWriter.class).warn("JSONLD_CONTEXT value is not a String. Assuming the context object expected by JSON-LD JsonLdProcessor.compact or flatten");
                         ctx = o;
                     }
                 }
@@ -278,14 +276,14 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         }
         return ctx;
     }
-    
+
     static Object createJsonldContext(Graph g) {
         return createJsonldContext(g, PrefixMapFactory.create(g.getPrefixMapping()), true);
     }
 
     private static Object createJsonldContext(Graph g, PrefixMap prefixMap, boolean addAllPrefixesToContext) {
         final Map<String, Object> ctx = new LinkedHashMap<>() ;
-        
+
         // Add properties (in order to get: "localname": ....)
         addProperties(ctx, g);
 
@@ -302,7 +300,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             public void accept(Triple item) {
                 Node p = item.getPredicate() ;
                 Node o = item.getObject() ;
-                
+
                 if ( p.equals(RDF.type.asNode()) )
                     return ;
                 String x = p.getLocalName() ;
@@ -335,7 +333,17 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         } ;
         Iter.iter(g.find(null, null, null)).apply(x) ;
     }
-    /** Add prefixes to jsonld context */
+    
+    /**
+     * Add the prefixes to jsonld context.
+     *
+     * @param ctx
+     * @param g
+     * @param prefixMap
+     * @param addAllPrefixesToContext true to add all prefixes in prefixMap to the jsonld context,
+     * false to only add those which are actually used in g (false is useful for instance
+     * when downloading schema.org: we get a very long list of prefixes.
+     */
     // if adding all the prefixes in PrefixMap to ctx
     // one pb is, many of the prefixes may be actually unused in the graph.
     // This happens for instance when downloading schema.org: a very long list of prefixes
@@ -346,7 +354,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             if (addAllPrefixesToContext) {
                 for ( Entry<String, IRI> e : mapping.entrySet() ) {
                     addOnePrefix(ctx, e.getKey(), e.getValue().toString());
-                 }
+                }
             } else {
                 // only add those that are actually used
                 Consumer<Triple> x = new Consumer<Triple>() {
@@ -372,14 +380,14 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             }
         }
     }
-    
+
     /** Add one prefix to jsonld context */
     static void addOnePrefix(Map<String, Object> ctx, String prefix, String value) {
         if (!prefix.isEmpty()) { // Prefix "" is not allowed in JSON-LD -- could probably be replaced by "@vocab"
             ctx.put(prefix, value);
         }        
     }
-    
+
     private static boolean addAllPrefixesToContextFlag(Context jenaContext) {
         if (jenaContext != null) {
             Object o = jenaContext.get(JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT);
