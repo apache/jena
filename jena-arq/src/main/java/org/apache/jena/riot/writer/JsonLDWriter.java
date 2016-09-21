@@ -93,10 +93,12 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     private static Symbol createSymbol(String localName) {
         return Symbol.create(SYMBOLS_NS + localName);
     }
-    /** Expected value: the value of the "@context" (a JSON String) */
+    /**
+     * Expected value: the value of the "@context" 
+     * (a JSON String, or the object expected by the JSONLD-java API) */
     public static final Symbol JSONLD_CONTEXT = createSymbol("JSONLD_CONTEXT");
     /**
-     * Expected value: the value of the "@context" to be put in final output (a JSON String) 
+     * Expected value: the value of the "@context" to be put in final output (a JSON String)
      * This is NOT the context used to produce the output (given by JSONLD_CONTEXT,
      * or computed from the input RDF. It is something that will replace the @context content.
      * This is useful<ol><li>for the cases you want to have a URI as value of @context,
@@ -114,7 +116,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
     /** 
      * if creating a (jsonld) context from dataset, should we include all the prefixes defined in graph's prefix mappings
-     * value: a Boolean (default : true) */
+     * value: a Boolean (default: true) */
     public static final Symbol JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT = createSymbol("JSONLD_ADD_ALL_PREFIXES_TO_CONTEXT");
 
     private final RDFFormat format ;
