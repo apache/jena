@@ -21,8 +21,10 @@ package org.apache.jena.sparql.core;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.graph.GraphReadOnly ;
 
 /** Read-only view of a DatasetGraph.  Assumes the dataset underneath isn't changing.
@@ -41,23 +43,28 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
         return dftGraph ;
     }
 
-    private Map<Node, Graph> namedGraphs = new HashMap<>() ;
+    @Override public void begin(ReadWrite mode)         {
+        if ( mode == ReadWrite.WRITE )
+            //throw new JenaTransactionException("read-only dataset : no write transactions") ;
+            Log.warn(this,  "Write transaction on a read-only dataset") ;
+        get().begin(mode) ; 
+    }
     
+    private Map<Node, Graph> namedGraphs = new HashMap<>() ;
+
     @Override
-    public Graph getGraph(Node graphNode)
-    {
-        if ( namedGraphs.containsKey(graphNode) )
-        {
-            if ( ! super.containsGraph(graphNode) )
-            {
+    public Graph getGraph(Node graphNode) {
+        if ( namedGraphs.containsKey(graphNode) ) {
+            if ( !super.containsGraph(graphNode) ) {
                 namedGraphs.remove(graphNode) ;
                 return null ;
             }
             return namedGraphs.get(graphNode) ;
         }
-        
+
         Graph g = super.getGraph(graphNode) ;
-        if ( g == null ) return null ;
+        if ( g == null )
+            return null ;
         g = new GraphReadOnly(g) ;
         namedGraphs.put(graphNode, g) ;
         return g ;
@@ -75,15 +82,12 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
     public void removeGraph(Node graphName)
     { throw new UnsupportedOperationException("read-only dataset") ; }
 
+    /** For operations that write the DatasetGraph. */
     @Override
-    public void add(Quad quad)
+    protected DatasetGraph getW()
     { throw new UnsupportedOperationException("read-only dataset") ; }
-
+    
     @Override
-    public void delete(Quad quad)
-    { throw new UnsupportedOperationException("read-only dataset") ; }
-
-    @Override
-    public void deleteAny(Node g, Node s, Node p, Node o)
-    { throw new UnsupportedOperationException("read-only dataset") ; }
+    public void close()
+    { get().close() ; }
 }
