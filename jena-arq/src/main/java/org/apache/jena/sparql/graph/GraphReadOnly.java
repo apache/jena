@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.graph;
 
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.TransactionHandler ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.SimpleTransactionHandler ;
@@ -47,8 +48,15 @@ public class GraphReadOnly extends WrappedGraph
     { throw new DeleteDeniedException("read-only graph") ; }
     
     @Override
-    public TransactionHandler getTransactionHandler()
-    {
+    public void remove(Node s, Node p, Node o) 
+    { throw new DeleteDeniedException("read-only graph") ; }
+    
+    @Override
+    public void clear() 
+    { throw new DeleteDeniedException("read-only graph") ; }
+
+    @Override
+    public TransactionHandler getTransactionHandler() {
         // AKA "no".  
         return new SimpleTransactionHandler() ;
     }
