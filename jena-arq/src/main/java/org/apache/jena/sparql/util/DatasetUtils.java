@@ -27,15 +27,14 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.system.Txn ;
 
 /** Internal Dataset factory + graph equivalents. */
 public class DatasetUtils
@@ -101,9 +100,9 @@ public class DatasetUtils
         return addInGraphs(ds, uriList, namedSourceList, baseURI);
     }
 
-    /** Add graphs into an existing DataSource */
+    /** Add graphs into an existing Dataset */
     public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList) {
-        return addInGraphs(ds, uriList, namedSourceList, null);
+        return addInGraphs(ds, uriList, namedSourceList, null) ;
     }
     
     /** Add graphs into a Dataset
@@ -115,62 +114,10 @@ public class DatasetUtils
      * @return Dataset, as passed in.
      */
     public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
-        boolean transactionWrapper = ds.supportsTransactionAbort() && !ds.isInTransaction();
-        if ( !transactionWrapper ) {
-            addInGraphsWorker(ds, uriList, namedSourceList, baseURI);
-            return ds ;
-        }
-
-        // TODO Replace with Txn.executeWrite when Txn code ready.
-        ds.begin(ReadWrite.WRITE);
-        try {
-             addInGraphsWorker(ds, uriList, namedSourceList, baseURI);
-             ds.commit() ;
-             return ds ;
-        }
-        catch (JenaException ex) {
-            ds.abort();
-            throw ex;
-        }
-        finally {
-            if ( ds.isInTransaction() )
-                ds.commit();
-            ds.end();
-        }
+        addInGraphs(ds.asDatasetGraph(), uriList, namedSourceList, baseURI) ;
+        return ds ;
     }
 
-    private static void addInGraphsWorker(Dataset ds, List<String> uriList, List<String> namedSourceList, String baseURI) {
-        if ( ds.getDefaultModel() == null )
-            // Not that it should be null ...
-            ds.setDefaultModel(GraphFactory.makeDefaultModel());
-
-        if ( uriList != null ) {
-            for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
-                String sourceURI = iter.next();
-                String absURI = null;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
-                else
-                    absURI = IRIResolver.resolveString(sourceURI);
-                RDFDataMgr.read(ds.getDefaultModel(), sourceURI, absURI, null);
-            }
-        }
-
-        if ( namedSourceList != null ) {
-            for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
-                String sourceURI = iter.next();
-                String absURI = null;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
-                else
-                    absURI = IRIResolver.resolveString(sourceURI);
-                Model m = GraphFactory.makeDefaultModel();
-                RDFDataMgr.read(m, sourceURI, absURI, null);
-                ds.addNamedModel(absURI, m);
-            }
-        }
-    }
-    
     // ---- DatasetGraph level.
     
     /** Create a general purpose, in-memory dataset, and load data.
@@ -209,28 +156,26 @@ public class DatasetUtils
      * @param dsg
      * @param uriList           Default graph
      * @param namedSourceList   Named graphs
+     */
+    public static void addInGraphs(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList) {
+        addInGraphs(dsg, uriList, namedSourceList, null) ;
+    }
+
+    /** Add graphs into a DatasetGraph
+     * 
+     * @param dsg
+     * @param uriList           Default graph
+     * @param namedSourceList   Named graphs
      * @param baseURI
      */
-    private static void addInGraphs(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
+    public static void addInGraphs(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
         if ( ! dsg.supportsTransactions() )
             addInGraphsWorker(dsg, uriList, namedSourceList, baseURI) ;
         
         if ( dsg.isInTransaction() )
             addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
 
-        // TODO Replace with Txn.executeWrite when Txn code ready.
-        dsg.begin(ReadWrite.WRITE);
-        try {
-            addInGraphsWorker(dsg, uriList, namedSourceList, baseURI);
-            dsg.commit() ;
-        }
-        catch (JenaException ex) {
-            dsg.abort();
-            throw ex;
-        }
-        finally {
-            dsg.end();
-        }
+        Txn.executeWrite(dsg, ()->addInGraphsWorker(dsg, uriList, namedSourceList, baseURI)) ;
     }
 
     private static void addInGraphsWorker(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
