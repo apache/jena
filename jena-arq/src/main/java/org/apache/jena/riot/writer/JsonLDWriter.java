@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.writer ;
 
+import static org.apache.jena.graph.Triple.ANY;
 import static org.apache.jena.rdf.model.impl.Util.isLangString;
 import static org.apache.jena.rdf.model.impl.Util.isSimpleString;
 
@@ -31,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph ;
@@ -338,7 +338,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 }
             }
         } ;
-        Iter.iter(g.find(null, null, null)).apply(x) ;
+        g.find(ANY).forEachRemaining(x);
     }
     
     /**
@@ -383,7 +383,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                         }        
                     }
                 } ;
-                Iter.iter(g.find(null, null, null)).apply(x) ;
+                g.find(ANY).forEachRemaining(x);
             }
         }
     }

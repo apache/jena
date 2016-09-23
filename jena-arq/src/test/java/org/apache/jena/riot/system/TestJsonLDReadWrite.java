@@ -64,8 +64,8 @@ public class TestJsonLDReadWrite extends BaseTest
     {
         inFile = DIR+inFile ;
         outFile = DIR+outFile ;
-        Dataset ds1 = RDFDataMgr.loadDataset(inFile) ;
-        Dataset ds2 = RDFDataMgr.loadDataset(outFile) ;
+        RDFDataMgr.loadDataset(inFile) ;
+        RDFDataMgr.loadDataset(outFile) ;
     }
 
 
