@@ -30,7 +30,7 @@ import org.apache.jena.sparql.algebra.op.OpQuadPattern ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 
-/** Convert query in algrebra form so that the default graph of the query is the union of named graphs */  
+/** Convert query in algebra form so that the default graph of the query is the union of named graphs */  
 public class TransformUnionQuery extends TransformCopy
 {
     public static Op transform(Op op)
