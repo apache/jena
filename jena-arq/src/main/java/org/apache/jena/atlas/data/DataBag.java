@@ -82,11 +82,15 @@ public interface DataBag<T> extends Sink<T>, Iterable<T>, Closeable
      * Add contents of an Iterable to the bag.
      * @param it iterable to add contents of.
      */
-    void addAll(Iterable<? extends T> it);
+    default void addAll(Iterable<? extends T> it) {
+        addAll(it.iterator());
+    }
     
     /**
      * Add contents of an Iterator to the bag.
      * @param it iterator to add contents of.
      */
-    void addAll(Iterator<? extends T> it);
+    default void addAll(Iterator<? extends T> it) {
+        it.forEachRemaining(this::add);
+    }
 }

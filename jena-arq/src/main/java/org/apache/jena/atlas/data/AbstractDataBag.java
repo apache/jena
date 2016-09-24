@@ -30,8 +30,8 @@ import java.io.OutputStream ;
 import java.lang.ref.WeakReference ;
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects;
 import java.util.UUID ;
 
 import org.apache.jena.atlas.lib.Closeable ;
@@ -60,22 +60,6 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
     public long size()
     {
         return size;
-    }
-
-    @Override
-    public void addAll(Iterable<? extends E> c)
-    {
-        addAll(c.iterator());
-    }
-
-    @Override
-    public void addAll(Iterator<? extends E> it)
-    {
-        while (it.hasNext())
-        {
-            E item = it.next();
-            add(item);
-        }
     }
 
     @Override
@@ -145,14 +129,7 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
      */
     protected void closeIterators()
     {
-        for (WeakReference<Closeable> wr : closeableIterators)
-        {
-            Closeable c = wr.get();
-            if (null != c)
-            {
-                c.close();
-            }
-        }
+        closeableIterators.stream().map(WeakReference::get).filter(Objects::nonNull).forEach(Closeable::close);
     }
     
     protected List<File> getSpillFiles()
