@@ -185,7 +185,7 @@ public class TestJsonLDWriter extends BaseTest {
         // the model wo prefix, output as jsonld using a context that defines the prefix    
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
         jenaCtx.setJsonLDContext(js);
-                
+
         String s3 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s3.length() == s1.length());
@@ -197,7 +197,7 @@ public class TestJsonLDWriter extends BaseTest {
         // to be noted: things also work if passing the "@context"
         js = "{\"@context\":" + js + "}";
         jenaCtx.setJsonLDContext(js);
-        
+
         String s4 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s4.length() == s1.length());
@@ -243,10 +243,7 @@ public class TestJsonLDWriter extends BaseTest {
         assertTrue(m3.isIsomorphicWith(m));
         assertTrue(m3.isIsomorphicWith(m1));
     }
-    
-// KO
-    
-    
+
     /**
      * Checks that one can pass a context defined by its URI
      * 
@@ -259,7 +256,7 @@ public class TestJsonLDWriter extends BaseTest {
         m.add(s, m.createProperty(ns + "name"), "Jane Doe");
         m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
         m.add(s, RDF.type, "Person");
-        
+
         // we can pass an uri in the context, as a quoted string (it is a JSON string)
         JsonLDWriteContext jenaContext = new JsonLDWriteContext();
         try {
@@ -269,7 +266,7 @@ public class TestJsonLDWriter extends BaseTest {
             Model m2 = parse(jsonld);
 
             // assertTrue(m2.isIsomorphicWith(m)); // It should be the case, but no.
-            
+
         } catch (Throwable e) {
             // maybe test run in a setting wo external connectivity - not a real problem
             String mess = e.getMessage();
@@ -305,7 +302,7 @@ public class TestJsonLDWriter extends BaseTest {
         m.add(s, RDF.type, person);
 
         // change @context to a URI
-        
+
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
         jenaCtx.setJsonLDContextSubstitution((new JsonString(ns)).toString());
         String jsonld;
@@ -313,14 +310,14 @@ public class TestJsonLDWriter extends BaseTest {
         String c = "\"@context\":\"http://schema.org/\"";
         assertTrue(jsonld.indexOf(c) > -1);
 
-         // change @context to a given ctx
+        // change @context to a given ctx
 
         String ctx = "{\"jobTitle\":{\"@id\":\"http://ex.com/jobTitle\"},\"url\":{\"@id\":\"http://ex.com/url\"},\"name\":{\"@id\":\"http://ex.com/name\"}}";
         jenaCtx.setJsonLDContextSubstitution(ctx);
         jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
         assertTrue(jsonld.indexOf("http://ex.com/name") > -1);
     }
-    
+
     /**
      * Checking frames
      */
@@ -347,7 +344,7 @@ public class TestJsonLDWriter extends BaseTest {
         // only output the persons using a frame
 
         frame.put("@type", ns +"Person");
-        jenaCtx.set(JsonLDWriter.JSONLD_FRAME, JsonUtils.fromString(frame.toString()));
+        jenaCtx.set(JsonLDWriter.JSONLD_FRAME, frame.toString());
         String jsonld = toString(m, RDFFormat.JSONLD_FRAME_PRETTY, jenaCtx);
 
         Model m2 = parse(jsonld);
@@ -402,16 +399,16 @@ public class TestJsonLDWriter extends BaseTest {
         Resource s = m.createResource();
         String ns1 = "http://schema.org/";
         String ns2 = "http://ex.com/";
- 
+
         m.add(s, m.createProperty(ns1 + "name"), "schema.org name");
         m.add(s, m.createProperty(ns2 + "name"), "ex.com name");
-       
+
         String jsonld = toString(m, RDFFormat.JSONLD, null);
-        
+
         // in one case, we have "name" : "xxx", and the other "http://.../name" : "yyy"
         assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
         assertTrue(jsonld.indexOf("/name\" : \"") > -1);
- 
+
         m.setNsPrefix("ns1", ns1);
         m.setNsPrefix("ns2", "http://ex.com/");
         jsonld = toString(m, RDFFormat.JSONLD, null);
@@ -419,12 +416,12 @@ public class TestJsonLDWriter extends BaseTest {
         /*
         "name" : "ex.com name",
         "ns1:name" : "schema.org name",
-        */
+         */
         // or
         /*
         "name" : "schema.org name",
         "ns2:name" : "ex.com name",
-        */
+         */
         assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
         assertTrue((jsonld.indexOf("\"ns1:name\" : \"") > -1) || (jsonld.indexOf("\"ns2:name\" : \"") > -1));
     }
@@ -439,21 +436,21 @@ public class TestJsonLDWriter extends BaseTest {
         m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
 
         // our default uses true for compactArrays
-        
+
         String jsonld = toString(m, RDFFormat.JSONLD, null);
-        
+
         // compactArrays is true -> no "@graph"
         assertTrue(jsonld.indexOf("@graph") < 0);
         // compactArrays is true -> string, not an array for props with one value
         assertTrue(jsonld.indexOf("\"jobTitle\" : \"Professor\"") > -1);
-        
+
         // now output using a value for JsonLdOptions in Context that sets compactArrays to false
-        
+
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
-        
+
         JsonLdOptions opts = new JsonLdOptions(null);
         opts.setCompactArrays(false);       
- 
+
         jenaCtx.setOptions(opts);
 
         jsonld = toString(m, RDFFormat.JSONLD, jenaCtx);
@@ -463,7 +460,7 @@ public class TestJsonLDWriter extends BaseTest {
         // compactArrays is false -> an array for all props, even when there's only one value
         assertTrue(jsonld.indexOf("\"jobTitle\" : [ \"Professor\" ]") > -1);
     }
-    
+
     //
     // some utilities
     //

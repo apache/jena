@@ -110,7 +110,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
      * Note that it is supposed to be a JSON String: to set the value of @context to a URI,
      * the String must be quoted.*/
     public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = createSymbol("JSONLD_CONTEXT_SUBSTITUTION");		
-    /** value: the frame object expected by JsonLdProcessor.frame */
+    /** value: a JSON String, or the frame object expected by JsonLdProcessor.frame */
     public static final Symbol JSONLD_FRAME = createSymbol("JSONLD_FRAME");
     /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
     public static final Symbol JSONLD_OPTIONS = createSymbol("JSONLD_OPTIONS");
@@ -196,6 +196,9 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                     throw new IllegalArgumentException("No frame object found in jena Context");
                 }
 
+                if (frame instanceof String) {
+                    frame = JsonUtils.fromString((String) frame);
+                }
                 obj = JsonLdProcessor.frame(obj, frame, opts);
 
             } else { // compact or flatten
