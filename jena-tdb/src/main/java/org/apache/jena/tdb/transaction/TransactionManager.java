@@ -380,7 +380,7 @@ public class TransactionManager
     synchronized
     private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn, boolean readCommited) {
         Transaction txn = dsgtxn.getTransaction() ;
-        // Writers may have happened between the first check of  of the active writers may have committed.  
+        // Writers may have happened between the first check of the active writers may have committed.  
         if ( txn.getVersion() != version.get() ) {
             releaseWriterLock();
             throw new TDBTransactionException("Active writer changed the dataset - can't promote") ;
