@@ -39,7 +39,7 @@ public class Gen
     }
     
     /**
-     * Generate a random sequence between low (inclusive) and high (exclusive) - with duplicates or no
+     * Generate a random sequence between low (inclusive) and high (exclusive) - with duplicates or not
      */
     public static int[] rand(int numRand, int low, int high, boolean allDifferent) {
         Set<Integer> used = new HashSet<>();
@@ -74,17 +74,6 @@ public class Gen
             x2[a] = x2[b] ;
             x2[b] = t ;
         }
-        // Checking.
-        /*for ( int k : x ) {
-            boolean found = false ;
-            for ( int k2 : x2 )
-                if ( k == k2 ) {
-                    found = true ;
-                    break ;
-                }
-            if ( !found )
-                System.err.printf("Corrupted permute: [%s] [%s]\n", strings(x), strings(x2)) ;
-        }*/
         return x2 ;
     }
 
