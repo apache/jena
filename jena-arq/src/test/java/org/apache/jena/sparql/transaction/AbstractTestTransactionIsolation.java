@@ -18,9 +18,8 @@
 
 package org.apache.jena.sparql.transaction;
 
-import static org.apache.jena.query.ReadWrite.* ;
+import static org.apache.jena.query.ReadWrite.WRITE ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -42,10 +41,7 @@ public abstract class AbstractTestTransactionIsolation {
         // returns but the action of the ThreadTxn is not triggered
         // until other.run() is called.
         DatasetGraph dsg = create() ;
-        ThreadAction other = ThreadTxn.threadTxnRead(dsg, ()-> {
-            long x = Iter.count(dsg.find()) ;
-            Assert.assertEquals(0, x) ;
-        }) ;
+        ThreadAction other = ThreadTxn.threadTxnRead(dsg, ()-> Assert.assertTrue(dsg.isEmpty()) ) ;
         dsg.begin(WRITE) ;
         dsg.add(q1) ;
         dsg.commit() ;

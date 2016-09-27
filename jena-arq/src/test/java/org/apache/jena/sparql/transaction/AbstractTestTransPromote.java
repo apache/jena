@@ -81,7 +81,7 @@ public abstract class AbstractTestTransPromote {
     // The exact class used by exceptions of the system under test.
     // TDB transctions are in the TDBException hierarchy
     // so can't be JenaTransactionException.
-    protected abstract Class<?> getTransactionExceptionClass() ;
+    protected abstract Class<? extends Exception> getTransactionExceptionClass() ;
     
     @Before
     public void before() {
@@ -287,7 +287,8 @@ public abstract class AbstractTestTransPromote {
                getTransactionExceptionClass()) ;
     }
     
-    private void expect(Runnable runnable, Class<?>...classes) {
+    @SafeVarargs
+    private final void expect(Runnable runnable, Class<? extends Exception>...classes) {
         try {
             runnable.run(); 
             fail("Exception expected") ;

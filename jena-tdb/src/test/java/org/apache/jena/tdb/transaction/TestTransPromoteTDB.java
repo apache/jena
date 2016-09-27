@@ -66,7 +66,7 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     @Override
-    protected Class<?> getTransactionExceptionClass() {
+    protected Class<TDBTransactionException> getTransactionExceptionClass() {
         return TDBTransactionException.class ;
     }
 }

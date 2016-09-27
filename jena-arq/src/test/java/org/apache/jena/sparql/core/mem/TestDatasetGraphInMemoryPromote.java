@@ -59,7 +59,7 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
     }
 
     @Override
-    protected Class<?> getTransactionExceptionClass() {
+    protected Class<JenaTransactionException> getTransactionExceptionClass() {
         return JenaTransactionException.class ;
     }
 }
