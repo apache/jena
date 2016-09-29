@@ -98,6 +98,43 @@ public class TestLPBRuleEngine extends TestCase {
 	}
 
 	@Test
+	public void testTabledGoalsLeak() throws Exception {
+		Graph data = Factory.createGraphMem();
+		data.add(new Triple(a, ty, C1));
+		List<Rule> rules = Rule
+				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
+						+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
+
+		FBRuleInfGraph infgraph = (FBRuleInfGraph) createReasoner(rules).bind(
+				data);
+
+		LPBRuleEngine engine = getEngineForGraph(infgraph);
+		assertEquals(0, engine.activeInterpreters.size());
+		assertEquals(0, engine.tabledGoals.size());
+
+		ExtendedIterator<Triple> it = infgraph.find(a, ty, C1);
+		it.close();
+		// how many were cached
+		assertEquals(1, engine.tabledGoals.size());
+		// and no leaks of activeInterpreters
+		assertEquals(0, engine.activeInterpreters.size());
+
+		// Now ask again:
+		it = infgraph.find(a, ty, C1);
+		it.close();
+
+		// if it was a cache hit, no change here:
+		assertEquals(1, engine.tabledGoals.size());
+		assertEquals(0, engine.activeInterpreters.size());
+
+		//the cached generator should not have any consumingCP left
+		for(Generator generator : engine.tabledGoals.asMap().values()){
+			assertEquals(0, generator.consumingCPs.size());
+		}
+
+	}
+
+	@Test
 	public void testSaturateTabledGoals() throws Exception {
 		final int MAX = 1024;
 		// Set the cache size very small just for this test
