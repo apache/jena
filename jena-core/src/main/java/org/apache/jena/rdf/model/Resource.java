@@ -128,6 +128,19 @@ public interface Resource extends RDFNode {
      */
     public Statement getRequiredProperty( Property p );
 
+    /** Get a property value of this resource in a specified language.
+    *
+    * <p>The model associated with the resource instance is searched for statements
+    * whose subject is this resource and whose predicate is p.  If such a statement
+    * is found, it is returned.  If several such statements are found, any one may
+    * be returned.  If no such statements are found, an exception is thrown.</p>
+    * @param p The property sought.
+    * @param lang The language of the statement with the property sought.
+    * @return some (this, p, ?O) statement if one exists
+    * @throws PropertyNotFoundException if no such statement found
+    */
+    public Statement getRequiredProperty( Property p, String lang );
+
     /**
      Answer some statement (this, p, O) in the associated model. If there are several
      such statements, any one of them may be returned. If no such statements exist,
@@ -136,6 +149,18 @@ public interface Resource extends RDFNode {
      @return a statement (this, p, O), or null if no such statements exist here
      */
     public Statement getProperty( Property p );
+
+    /** Answer some statement (this, p, O), in language <code>lang</code>, in the
+     * associated model. If there are several such statements, any one of them may be
+     * returned. If no such statements exist, null is returned - in this is differs
+     * from getRequiredProperty.
+     * @param p The property sought.
+     * @param o The value of the property sought.
+     * @param l The language of the property sought.
+     * @return true if and only if this resource has property p with
+     * value o.
+     */
+    public Statement getProperty( Property p, String lang );
 
     /** List all the values of the property p.
      *

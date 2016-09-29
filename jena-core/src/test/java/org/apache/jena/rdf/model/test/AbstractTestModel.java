@@ -21,8 +21,16 @@ package org.apache.jena.rdf.model.test;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.test.NodeCreateUtils ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ModelCom ;
+import org.apache.jena.shared.PropertyNotFoundException;
 
 public abstract class AbstractTestModel extends ModelTestBase
     {
@@ -108,7 +116,42 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertTrue( ob.equals( resource( model, "a" ) ) || ob.equals( resource( model, "b" ) ) );
         assertNull( x.getProperty( property( model, "noSuchPropertyHere" ) ) );
         }
-    
+
+    /**
+     * Tests {@link Resource#getProperty(Property, String)} and
+     * {@link Resource#getRequiredProperty(Property, String)}.
+     */
+    public void testGetPropertyWithLanguage()
+        {
+        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "a", "pt");
+        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "b", "en");
+        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "P"), "c", "es");
+        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "d", "fr");
+        model.createStatement(ModelTestBase.resource(model, "x"), ModelTestBase.property(model, "R"), "e", "de");
+
+        {//Tests {@link Resource#getProperty(Property, String)}
+        final Resource x = resource( model, "x" );
+        assertEquals("a", x.getProperty( property( model, "P" ), "pt") );
+        assertEquals("b", x.getProperty( property( model, "P" ), "en") );
+        assertNull(x.getProperty( property( model, "P" ), "ja") );
+        final Literal l = x.getProperty( property(model, "R") ).getLiteral();
+        assertTrue( "d".equals( l.getString() ) || "e".equals( l.getString() ) );
+        }
+
+        {//Tests {@link Resource#getRequiredProperty(Property, String)}
+        final Resource x = resource( model, "x" );
+        assertEquals("a", x.getRequiredProperty( property( model, "P" ), "pt") );
+        assertEquals("b", x.getRequiredProperty( property( model, "P" ), "en") );
+        try {
+            x.getRequiredProperty( property( model, "P" ), "ja");
+            fail("Must thrown PropertyNotFoundException.");
+        } catch (PropertyNotFoundException e) {}
+        final Literal l = x.getRequiredProperty( property(model, "R") ).getLiteral();
+        assertTrue( "d".equals( l.getString() ) || "e".equals( l.getString() ) );
+        assertTrue("de".equals( l.getLanguage() ) || "fr".equals( l.getLanguage() ) );
+        }
+        }
+
     public void testToStatement()
         {
         Triple t = triple( "a P b" );

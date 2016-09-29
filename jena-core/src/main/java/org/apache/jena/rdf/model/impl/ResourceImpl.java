@@ -25,6 +25,7 @@ import org.apache.jena.enhanced.Implementation ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.PropertyNotFoundException;
 
 /** An implementation of Resource.
  */
@@ -170,10 +171,25 @@ public class ResourceImpl extends EnhNode implements Resource {
     @Override
     public Statement getRequiredProperty(Property p) 
     	{ return mustHaveModel().getRequiredProperty( this, p ); }
-        
+
+    @Override
+    public Statement getRequiredProperty( final Property p, final String lang )
+        {
+        final StmtIterator it = mustHaveModel().listStatements(this, p, null, lang);
+        if (!it.hasNext()) throw new PropertyNotFoundException( p );
+        return it.next();
+        }
+
     @Override
     public Statement getProperty( Property p )
         { return mustHaveModel().getProperty( this, p ); }
+
+    @Override
+    public Statement getProperty( final Property p, final String lang )
+        {
+        final StmtIterator it = mustHaveModel().listStatements(this, p, null, lang);
+        return it.hasNext() ? it.next() : null;
+        }
 
     @Override
     public StmtIterator listProperties(Property p) 
