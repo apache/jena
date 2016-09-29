@@ -164,8 +164,11 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     @Override
     public void close() {    	
     	super.close();
-    	if (generator != null && generator.interpreter != null) {
-    		generator.interpreter.close();
+    	if (generator != null) {
+            if(generator.interpreter != null) {
+                generator.interpreter.close();
+            }
+            generator.removeConsumer(this);
     		// .. but NOT 
     		//generator.setComplete();
     		// as it seems to cause other tests to fail
