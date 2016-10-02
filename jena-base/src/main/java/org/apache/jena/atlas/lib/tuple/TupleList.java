@@ -23,11 +23,11 @@ import java.util.List ;
 import java.util.RandomAccess ;
 
 /** Wrap a {@link Tuple} as an immutable Java collection {@link List} */
-public class TupleList<X> extends AbstractList<X> implements RandomAccess {
+/*package*/ class TupleList<X> extends AbstractList<X> implements RandomAccess {
 
     private final Tuple<X> tuple;
 
-    public TupleList(Tuple<X> tuple) {
+    /*package*/ TupleList(Tuple<X> tuple) {
         this.tuple = tuple ;
     }
 
