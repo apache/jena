@@ -501,7 +501,7 @@ public final class Token
             case CH_LBRACKET:   return new Token(TokenType.LBRACKET) ;
             case CH_RBRACKET:   return new Token(TokenType.RBRACKET) ;
             default:
-                throw new RuntimeException("Token error: unrecognized charcater: "+character) ;
+                throw new RuntimeException("Token error: unrecognized character: "+character) ;
         }
     }
     
