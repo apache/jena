@@ -68,7 +68,7 @@ https://jena.apache.org/getting_involved/reviewing_contributions.html
 
 An alternative is to upload a patch/diff to JIRA.
 
-### Code style
+### Code
 
 Code style is about making the code clear for the next person
 who looks at the code.
@@ -94,17 +94,21 @@ The code should have no warnings, in particular, use `@Override` and types
 for generics, and don't declared checked exceptions that are not used.
 Use `@SuppressWarnings("unused")` as necessary.
 
+Please don't mix reformatting and functional changes; it makes it harder
+to review.
+
 ### Legal
 
 All contributions are understood to be made as contributions to the
-Apache Software Foundation. These are then incorporated into the project
-ocdebase and licneses under the Apache License 2.0.
+Apache Software Foundation by the person makign the pull request. These
+are then incorporated into the project codebase and licnesed under the
+Apache License 2.0.
 
 You, as an individual, must be entitled to make the contribution to the
 project. If the contrbution is part of your employment, please arrange
 this before making the contribution.
 
-For a large contribution, the Project may ask for a specific Software
+For a large contribution, the project may ask for a specific Software
 Grant from the contributor.
 
 If in doubt, or you have any questions, ask on the dev@jena.apache.org
