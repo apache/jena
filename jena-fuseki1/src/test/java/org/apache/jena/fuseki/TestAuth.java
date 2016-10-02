@@ -85,9 +85,9 @@ public class TestAuth {
             writer.write("forbidden: password, other");
         }
 
-        LogCtl.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        LogCtl.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        LogCtl.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        LogCtl.setLevel(Fuseki.serverLog.getName(), "WARN");
+        LogCtl.setLevel(Fuseki.requestLog.getName(), "WARN");
+        LogCtl.setLevel("org.eclipse.jetty", "WARN");
 
         DatasetGraph dsg = DatasetGraphFactory.create();
         // This must agree with ServerTest
