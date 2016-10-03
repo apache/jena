@@ -73,7 +73,7 @@ public interface PrefixMap {
     public abstract Map<String, String> getMappingCopyStr();
 
     /**
-     * Apply a {@link BiConsumer}{@code<String, IRI>} to each entry in the Prefixmap.
+     * Apply a {@link BiConsumer}{@code <String, IRI>} to each entry in the Prefixmap.
      */
     public abstract void forEach(BiConsumer<String, IRI> action) ;
 
