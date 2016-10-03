@@ -257,5 +257,39 @@ public class Chars
     public static final byte B_RSLASH        = '\\' ;
     public static final byte B_PERCENT       = '%' ;
     
+    // String versions - a few compound "chars" as well.
+    public static final String S_LBRACKET     = "[" ;
+    public static final String S_RBRACKET     = "]" ;
+    
+    public static final String S_LBRACE       = "{" ;
+    public static final String S_RBRACE       = "}" ;
 
+    public static final String S_LPAREN       = "(" ;
+    public static final String S_RPAREN       = ")" ;
+
+    public static final String S_LT           = "<" ;
+    public static final String S_LE           = "<=" ;
+    public static final String S_GT           = ">" ;
+    public static final String S_GE           = ">=" ;
+    public static final String S_UNDERSCORE   = "_" ;
+
+    public static final String S_QUOTE1       = "'" ;
+    public static final String S_QUOTE2       = "\"" ;
+
+    public static final String S_EQUALS       = "=" ;
+    public static final String S_STAR         = "*" ;
+    public static final String S_DOT          = "." ;
+    public static final String S_COMMA        = "," ;
+    public static final String S_SEMICOLON    = ";" ;
+    public static final String S_COLON        = ":" ;
+    public static final String S_AMPHERSAND   = "&" ;
+    public static final String S_AT           = "@" ;
+    public static final String S_QMARK        = "?" ;
+    public static final String S_HASH         = "#" ;
+    public static final String S_PLUS         = "+" ;
+    public static final String S_MINUS        = "-" ;
+    public static final String S_DASH         = "-" ; // Alt name
+    public static final String S_SLASH        = "/" ;
+    public static final String S_RSLASH       = "\\" ;
+    public static final String S_PERCENT      = "%" ;
 }
