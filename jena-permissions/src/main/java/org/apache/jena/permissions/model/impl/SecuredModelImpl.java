@@ -1270,6 +1270,23 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 			}
 		}
 	}
+	
+    @Override
+    public Statement getProperty(Resource s, Property p, String lang)
+        throws ReadDeniedException, AuthenticationRequiredException {
+        final StmtIterator stmt = listStatements(s, p, null, lang);
+        try {
+            if (stmt.hasNext()) {
+                return SecuredStatementImpl.getInstance(
+                                                        holder.getSecuredItem(), stmt.next());
+            }
+            return null;
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+    }
 
 	@Override
 	public SecuredProperty getProperty(final String uri)
@@ -1280,8 +1297,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredProperty getProperty(final String nameSpace,
-			final String localName) throws ReadDeniedException,
+	public SecuredProperty getProperty(final String nameSpace, final String localName) throws ReadDeniedException,
 			AuthenticationRequiredException {
 		checkRead();
 		return SecuredPropertyImpl.getInstance(holder.getSecuredItem(), holder
@@ -1342,9 +1358,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredStatement getRequiredProperty(final Resource s,
-			final Property p) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public SecuredStatement getRequiredProperty(final Resource s, final Property p)
+	    throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (canRead(Triple.ANY)) {
 			return SecuredStatementImpl.getInstance(holder.getSecuredItem(),
@@ -1364,6 +1379,29 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		}
 	}
 
+	@Override
+	public SecuredStatement getRequiredProperty(final Resource s, final Property p, String lang) 
+	    throws ReadDeniedException, AuthenticationRequiredException {
+	    checkRead();
+	    if (canRead(Triple.ANY)) {
+	        return SecuredStatementImpl.getInstance(holder.getSecuredItem(),
+	                                                holder.getBaseItem().getRequiredProperty(s, p, lang));
+	    } else {
+	        final SecuredStatementIterator si = listStatements(s, p,
+	                                                           (RDFNode) null);
+	        try {
+	            if (si.hasNext()) {
+	                return (SecuredStatement) si.next();
+	            } else {
+	                throw new PropertyNotFoundException(p);
+	            }
+	        } finally {
+	            si.close();
+	        }
+	    }
+	}
+
+	
 	@Override
 	public SecuredResource getResource(final String uri) {
 		return createResource(uri);
@@ -2386,5 +2424,4 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 			}
 		}
 	}
-
 }

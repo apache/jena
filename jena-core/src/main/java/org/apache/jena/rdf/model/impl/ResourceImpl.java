@@ -175,7 +175,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     @Override
     public Statement getRequiredProperty( final Property p, final String lang )
         {
-        final StmtIterator it = mustHaveModel().listStatements(this, p, null, lang);
+        final StmtIterator it = listProperties(p, lang) ; 
         if (!it.hasNext()) throw new PropertyNotFoundException( p );
         return it.next();
         }
@@ -187,7 +187,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     @Override
     public Statement getProperty( final Property p, final String lang )
         {
-        final StmtIterator it = mustHaveModel().listStatements(this, p, null, lang);
+        final StmtIterator it = listProperties(p, lang) ; 
         return it.hasNext() ? it.next() : null;
         }
 
@@ -195,6 +195,10 @@ public class ResourceImpl extends EnhNode implements Resource {
     public StmtIterator listProperties(Property p) 
 		{ return mustHaveModel().listStatements( this, p, (RDFNode) null ); }
 
+    @Override
+    public StmtIterator listProperties(Property p, String lang) 
+        { return mustHaveModel().listStatements( this, p, null, lang); }
+    
     @Override
     public StmtIterator listProperties() 
     	{ return mustHaveModel().listStatements( this, null, (RDFNode) null ); }	

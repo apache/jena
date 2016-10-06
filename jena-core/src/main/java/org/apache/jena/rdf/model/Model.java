@@ -605,6 +605,18 @@ public interface Model
 	 */
 	Statement getRequiredProperty(Resource s, Property p) ;
 
+    /** Return a statement with given subject and property.
+     *  <p>If more than one statement witht the given subject and property
+     *  exists in the model, it is undefined which will be returned. If none
+     * exist, an exception is thrown.
+     * @return A statement from the model with the given subject and property.
+     * @param s The subject of the statement to be returned.
+     * @param p The property of the statement to be returned.
+     * @param lang The language
+     * @throws PropertyNotFoundException
+     */
+    Statement getRequiredProperty(Resource s, Property p, String lang) ;
+
     /**
         Answer a statement (s, p, ?O) from this model. If none exist, return null;
         if several exist, pick one arbitrarily.
@@ -614,6 +626,16 @@ public interface Model
     */
     Statement getProperty( Resource s, Property p );
 
+    /**
+    Answer a statement (s, p, ?O) from this model. If none exist, return null;
+    if several exist, pick one arbitrarily.
+    @param s the subject of the statement to return
+    @param p the predicate of the statement to return
+    @param lang language of the object
+    @return some statement (s, p, ?O@lang) or null if none can be found
+*/
+    Statement getProperty(Resource s, Property p, String lang) ;
+    
 	/** 
 	    An alias for <code>listResourcesWithProperty(Property)</code>,
 	    retained for backward compatability. It may be deprecated in later
@@ -1029,5 +1051,4 @@ public interface Model
         Answer true iff .close() has been called on this Model.
     */
     public boolean isClosed();
-
 }

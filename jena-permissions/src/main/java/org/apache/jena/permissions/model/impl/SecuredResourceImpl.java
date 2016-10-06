@@ -507,7 +507,25 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 		}
 	}
 
-	/**
+	@Override
+    public Statement getProperty(Property p, String lang) throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        final ExtendedIterator<Statement> iter = holder.getBaseItem()
+                .listProperties(p, lang)
+                .filterKeep(new PermStatementFilter(Action.Read, this));
+        try {
+            if (iter.hasNext()) {
+                return org.apache.jena.permissions.model.impl.SecuredStatementImpl
+                        .getInstance(getModel(), iter.next());
+            } else {
+                return null;
+            }
+        } finally {
+            iter.close();
+        }
+    }
+
+    /**
 	 * Answer some resource R for which this.hasProperty( p, R ), or null if no
 	 * such R exists.
 	 * 
@@ -570,7 +588,26 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 		}
 	}
 
-	/**
+	@Override
+    public Statement getRequiredProperty(Property p, String lang)
+        throws PropertyNotFoundException, ReadDeniedException, AuthenticationRequiredException {
+	    checkRead();
+	    final ExtendedIterator<Statement> iter = holder.getBaseItem()
+	        .listProperties(p, lang)
+	        .filterKeep(new PermStatementFilter(Action.Read, this));
+	    try {
+	        if (iter.hasNext()) {
+	            return org.apache.jena.permissions.model.impl.SecuredStatementImpl
+	                .getInstance(getModel(), iter.next());
+	        } else {
+	            throw new PropertyNotFoundException(p);
+	        }
+	    } finally {
+	        iter.close();
+	    }
+	}
+
+    /**
 	 * Return the URI of the resource, or null if it's a bnode.
 	 * 
 	 * @return The URI of the resource, or null if it's a bnode.
@@ -851,7 +888,14 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 
 	}
 
-	/**
+	@Override
+    public StmtIterator listProperties(Property p, String lang)throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        return new SecuredStatementIterator(getModel(), holder.getBaseItem()
+                .listProperties(p, lang));
+    }
+
+    /**
 	 * Delete all the statements with predicate <code>p</code> for this resource
 	 * from its associated securedModel.
 	 * 
