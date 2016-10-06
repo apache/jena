@@ -136,7 +136,7 @@ public interface Resource extends RDFNode {
     * be returned.  If no such statements are found, an exception is thrown.</p>
     * @param p The property sought.
     * @param lang The language of the statement with the property sought.
-    * @return some (this, p, ?O) statement if one exists
+    * @return some (this, p@lang, ?O) statement if one exists
     * @throws PropertyNotFoundException if no such statement found
     */
     public Statement getRequiredProperty( Property p, String lang );
@@ -155,10 +155,8 @@ public interface Resource extends RDFNode {
      * returned. If no such statements exist, null is returned - in this is differs
      * from getRequiredProperty.
      * @param p The property sought.
-     * @param o The value of the property sought.
-     * @param l The language of the property sought.
-     * @return true if and only if this resource has property p with
-     * value o.
+     * @param lang The language of the property sought.
+     * @return some (this, p@lang, ?O) statement if one exists
      */
     public Statement getProperty( Property p, String lang );
 
