@@ -31,27 +31,27 @@ Documentation is kept and published with Apache's svnpubsub system:
 
 ### JIRA
 
-The project uses a JIRA instance to track work.  Please create a JITA so
+The project uses a JIRA instance to track work.  Please create a JIRA so
 that we can track a contribution.
 
    https://issues.apache.org/jira/browse/JENA
 
 ### Github
 
-It is useful to create a JIRA then use teh JIRA number (e.g. JENA-9999)
+It is useful to create a JIRA then use the JIRA number (e.g. JENA-9999)
 in the Pull Request title. This activates the automated mirroring of
 discussions onto the project developers mailing list.
 
 To make a contribution:
 
 * On github, fork http://github.com/apache/jena into you github account.
-* Create a branch in your fork for hthe contribution.
+* Create a branch in your fork for the contribution.
 * Make your changes. Include the Apache source header at the top of each file.
 * Generate a pull request via github. Further changes to your branch will automatically
   show up in the pull request
 
 The project development mailing list is automatically notified of new pull
-requests and JIRA ia also automatically updated if the JIRA id is in the pull request
+requests and JIRA is also automatically updated if the JIRA id is in the pull request
 title.
 
 ### Discussion and Merging
@@ -100,18 +100,18 @@ to review.
 ### Legal
 
 All contributions are understood to be made as contributions to the
-Apache Software Foundation by the person makign the pull request. These
-are then incorporated into the project codebase and licnesed under the
+Apache Software Foundation by the person making the pull request. These
+are then incorporated into the project codebase and licensed under the
 Apache License 2.0.
 
 You, as an individual, must be entitled to make the contribution to the
-project. If the contrbution is part of your employment, please arrange
+project. If the contribution is part of your employment, please arrange
 this before making the contribution.
 
 For a large contribution, the project may ask for a specific Software
 Grant from the contributor.
 
-If in doubt, or you have any questions, ask on the dev@jena.apache.org
+If in doubt, or if you have any questions, ask on the dev@jena.apache.org
 mailing list. Legal issues are easier to deal with if done before
 contributing, rather than after.
 
