@@ -1235,24 +1235,37 @@ implements Model, PrefixMapping, Lock
     { return graph.contains( asNode( s ), asNode( p ), asNode( o ) ); }
 
     @Override
-    public Statement getRequiredProperty( Resource s, Property p )  
-    { Statement st = getProperty( s, p );
-    if (st == null) throw new PropertyNotFoundException( p );
-    return st; }
+    public Statement getRequiredProperty(Resource s, Property p) {
+        Statement st = getProperty( s, p );
+        if (st == null) throw new PropertyNotFoundException( p );
+        return st;
+    }
 
     @Override
-    public Statement getProperty( Resource s, Property p )
-    {
+    public Statement getRequiredProperty(Resource s, Property p, String lang) {
+        Statement st = getProperty( s, p , lang );
+        if (st == null) throw new PropertyNotFoundException( p );
+        return st;
+    }
+    
+    @Override
+    public Statement getProperty( Resource s, Property p ) {
         StmtIterator iter = listStatements( s, p, (RDFNode) null );
         try { return iter.hasNext() ? iter.nextStatement() : null; }
         finally { iter.close(); }
     }
 
+    @Override
+    public Statement getProperty( Resource s, Property p, String lang) {
+        StmtIterator iter = listStatements( s, p, null, lang );
+        try { return iter.hasNext() ? iter.nextStatement() : null; }
+        finally { iter.close(); }
+    }
+    
     public static Node asNode( RDFNode x )
     { return x == null ? Node.ANY : x.asNode(); }
 
-    private NodeIterator listObjectsFor( RDFNode s, RDFNode p )
-    {
+    private NodeIterator listObjectsFor( RDFNode s, RDFNode p ) {
         ClosableIterator<Node> xit = GraphUtil.listObjects(graph, asNode( s ), asNode( p ) ) ;
         return IteratorFactory.asRDFNodeIterator( xit, this );
     }

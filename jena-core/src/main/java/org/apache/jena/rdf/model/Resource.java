@@ -136,7 +136,7 @@ public interface Resource extends RDFNode {
     * be returned.  If no such statements are found, an exception is thrown.</p>
     * @param p The property sought.
     * @param lang The language of the statement with the property sought.
-    * @return some (this, p@lang, ?O) statement if one exists
+    * @return some (this, p, ?O@lang) statement if one exists
     * @throws PropertyNotFoundException if no such statement found
     */
     public Statement getRequiredProperty( Property p, String lang );
@@ -156,7 +156,7 @@ public interface Resource extends RDFNode {
      * from getRequiredProperty.
      * @param p The property sought.
      * @param lang The language of the property sought.
-     * @return some (this, p@lang, ?O) statement if one exists
+     * @return some (this, p, ?O@lang) statement if one exists
      */
     public Statement getProperty( Property p, String lang );
 
@@ -168,6 +168,16 @@ public interface Resource extends RDFNode {
      * @return An iterator over the statements.
      */
     public StmtIterator listProperties( Property p );
+    
+    /** Return an iterator over all the properties of this resource with a specific langauge.
+    *
+    * <p>The model associated with this resource is searched and an iterator is
+    * returned which iterates over all the statements which have this resource
+    * as a subject.</p>
+    * @return An iterator over all the statements about this object.
+    */
+    public StmtIterator listProperties( Property p, String lang );
+
 
     /** Return an iterator over all the properties of this resource.
      *
