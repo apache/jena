@@ -19,6 +19,7 @@
 package org.apache.jena.rdf.model.test ;
 
 import org.apache.jena.iri.IRIException ;
+import org.apache.jena.n3.IRIResolver;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
@@ -69,7 +70,7 @@ public class TestModelRead extends AbstractModelTestBase
     @SuppressWarnings("deprecation")
     public void testSimpleLoadImplictBase() throws IRIException {
         final Model mBasedImplicit = createModel() ;
-        final String fn = org.apache.jena.n3.IRIResolver.resolveFileURL(getFileName("modelReading/based.n3")) ;
+        String fn=IRIResolver.resolveGlobal(getFileName("modelReading/based.n3"));
         final Model wanted = createModel().add(ModelHelper.resource(fn), ModelHelper.property("ja:predicate"),
                                                ModelHelper.resource("ja:object")) ;
         mBasedImplicit.read(fn, "N3") ;
