@@ -68,9 +68,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -81,9 +80,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -94,9 +92,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -107,9 +104,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -124,9 +120,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -141,9 +136,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -158,9 +152,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -175,9 +168,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -192,9 +184,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -209,9 +200,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -226,9 +216,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -239,9 +228,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -258,17 +246,15 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testGetDefaultResource() {
-		alt.setDefault(ResourceFactory
-				.createResource("http://example.com/exampleResourec"));
+		alt.setDefault(ResourceFactory.createResource("http://example.com/exampleResourec"));
 		try {
 			getSecuredAlt().getDefaultResource();
 			if (!securityEvaluator.evaluate(Action.Read)) {
@@ -276,9 +262,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -304,9 +289,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}
@@ -321,9 +305,8 @@ public class SecuredAltTest extends SecuredContainerTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 
@@ -331,183 +314,145 @@ public class SecuredAltTest extends SecuredContainerTest {
 
 	@Test
 	public void testSetDefaultBoolean() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault(true);
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultChar() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault('c');
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultDouble() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault(3.14d);
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultFloat() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault(3.14f);
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultLong() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault(2L);
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultObject() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			final Object o = 2;
 			getSecuredAlt().setDefault(o);
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultResource() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
-			getSecuredAlt().setDefault(
-					ResourceFactory
-							.createResource("http://example.com/resource"));
+			getSecuredAlt().setDefault(ResourceFactory.createResource("http://example.com/resource"));
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultString() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault("test");
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}
 
 	@Test
 	public void testSetDefaultStringAndLang() {
-		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
-				Action.Update, Action.Create });
+		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 		try {
 			getSecuredAlt().setDefault("dos", "es");
 			if (!securityEvaluator.evaluate(Action.Update)
-					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt()
-							.iterator().hasNext())) {
+					|| (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext())) {
 				Assert.fail("Should have thrown AccessDeniedException");
 			}
 		} catch (final AccessDeniedException e) {
 			if (securityEvaluator.evaluate(perms)) {
-				Assert.fail(String
-						.format("Should not have thrown AccessDeniedException: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown AccessDeniedException: %s - %s", e, e.getTriple()));
 			}
 		}
 	}

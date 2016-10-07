@@ -62,8 +62,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel add(final List<Statement> statements)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -74,8 +73,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final Model m) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel add(final Model m)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -87,8 +86,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel add(final Resource s, final Property p, final RDFNode o)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -100,8 +98,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel add(final Resource s, final Property p, final String o)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -112,9 +109,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final Resource s, final Property p, final String o,
-			final boolean wellFormed) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel add(final Resource s, final Property p, final String o, final boolean wellFormed)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -125,10 +121,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final Resource s, final Property p,
-			final String lex, final RDFDatatype datatype)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel add(final Resource s, final Property p, final String lex, final RDFDatatype datatype)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -139,9 +133,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final Resource s, final Property p, final String o,
-			final String l) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel add(final Resource s, final Property p, final String o, final String l)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -152,8 +145,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final Statement s) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel add(final Statement s)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -165,8 +158,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel add(final Statement[] statements)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -177,8 +169,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel add(final StmtIterator iter) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel add(final StmtIterator iter)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -189,9 +181,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final boolean o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final boolean o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -202,9 +193,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final char o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final char o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -215,9 +205,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final double o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final double o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -228,9 +217,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final float o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final float o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -241,9 +229,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final int o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final int o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -254,9 +241,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final Literal o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final Literal o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -267,9 +253,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final long o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final long o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -281,9 +266,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	@Deprecated
-	public SecuredModel addLiteral(final Resource s, final Property p,
-			final Object o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel addLiteral(final Resource s, final Property p, final Object o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredRDFNode asRDFNode(final Node n);
@@ -301,8 +285,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	public SecuredStatement asStatement(final Triple t)
-			throws UpdateDeniedException, AddDeniedException,
-			ReadDeniedException, AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredModel begin();
@@ -351,9 +334,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains(final Resource s, final Property p, final String o,
-			final String l) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean contains(final Resource s, final Property p, final String o, final String l)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -363,8 +345,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean contains(final Statement s) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean contains(final Statement s) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -374,8 +355,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsAll(final Model model) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsAll(final Model model) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -385,8 +365,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsAll(final StmtIterator iter)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public boolean containsAll(final StmtIterator iter) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -398,8 +377,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsAny(final Model model) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsAny(final Model model) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -410,7 +388,17 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsAny(final StmtIterator iter)
+	public boolean containsAny(final StmtIterator iter) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * @sec.graph Read
+	 * @sec.triple Read Triple( s, p, literal(o) )
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public boolean containsLiteral(final Resource s, final Property p, final boolean o)
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
@@ -421,9 +409,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final boolean o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final char o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -433,9 +420,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final char o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final double o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -445,9 +431,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final double o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final float o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -457,9 +442,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final float o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final int o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -469,21 +453,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final int o) throws ReadDeniedException,
-			AuthenticationRequiredException;
-
-	/**
-	 * @sec.graph Read
-	 * @sec.triple Read Triple( s, p, literal(o) )
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final long o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final long o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -493,9 +464,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsLiteral(final Resource s, final Property p,
-			final Object o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean containsLiteral(final Resource s, final Property p, final Object o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -506,8 +476,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean containsResource(final RDFNode r)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public boolean containsResource(final RDFNode r) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -518,8 +487,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredAlt createAlt() throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredAlt createAlt() throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -530,8 +498,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredAlt createAlt(final String uri) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredAlt createAlt(final String uri)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -542,8 +510,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredBag createBag() throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredBag createBag() throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -554,8 +521,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredBag createBag(final String uri) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredBag createBag(final String uri)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -564,8 +531,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredRDFList createList() throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredRDFList createList()
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -580,8 +547,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredRDFList createList(final Iterator<? extends RDFNode> members)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -596,8 +562,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredRDFList createList(final RDFNode[] members)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -608,9 +573,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final boolean o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final boolean o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -621,9 +585,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final char o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final char o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -634,9 +597,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final double o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final double o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -647,9 +609,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final float o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final float o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -660,9 +621,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final int o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final int o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -673,9 +633,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final long o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final long o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -686,16 +645,14 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createLiteralStatement(final Resource s,
-			final Property p, final Object o) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createLiteralStatement(final Resource s, final Property p, final Object o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredProperty createProperty(final String uri);
 
 	@Override
-	public SecuredProperty createProperty(final String nameSpace,
-			final String localName);
+	public SecuredProperty createProperty(final String nameSpace, final String localName);
 
 	/**
 	 * @sec.graph Update
@@ -712,8 +669,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public ReifiedStatement createReifiedStatement(final Statement s)
-			throws AddDeniedException, UpdateDeniedException,
-			ReadDeniedException, AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -728,10 +684,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public ReifiedStatement createReifiedStatement(final String uri,
-			final Statement s) throws AddDeniedException,
-			UpdateDeniedException, ReadDeniedException,
-			AuthenticationRequiredException;
+	public ReifiedStatement createReifiedStatement(final String uri, final Statement s)
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -745,9 +699,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResource createResource() throws AddDeniedException,
-			UpdateDeniedException, ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResource createResource()
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -762,8 +715,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredResource createResource(final AnonId id)
-			throws AddDeniedException, UpdateDeniedException,
-			ReadDeniedException, AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -775,8 +727,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredResource createResource(final Resource type)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	@Override
 	@Deprecated
@@ -798,8 +749,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredResource createResource(final String uri, final Resource type)
-			throws AddDeniedException, UpdateDeniedException,
-			ReadDeniedException, AuthenticationRequiredException;
+			throws AddDeniedException, UpdateDeniedException, ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	@Deprecated
@@ -814,8 +764,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredSeq createSeq() throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredSeq createSeq() throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -826,8 +775,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredSeq createSeq(final String uri) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredSeq createSeq(final String uri)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -838,9 +787,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createStatement(final Resource s, final Property p,
-			final RDFNode o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatement createStatement(final Resource s, final Property p, final RDFNode o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -851,9 +799,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o) throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatement createStatement(final Resource s, final Property p, final String o)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -864,10 +811,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final boolean wellFormed)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatement createStatement(final Resource s, final Property p, final String o,
+			final boolean wellFormed) throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -878,9 +823,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final String l) throws AddDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredStatement createStatement(final Resource s, final Property p, final String o, final String l)
+			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -891,10 +835,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement createStatement(final Resource s, final Property p,
-			final String o, final String l, final boolean wellFormed)
-			throws AddDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatement createStatement(final Resource s, final Property p, final String o, final String l,
+			final boolean wellFormed) throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredLiteral createTypedLiteral(final boolean v);
@@ -921,23 +863,19 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	public SecuredLiteral createTypedLiteral(final Object value);
 
 	@Override
-	public SecuredLiteral createTypedLiteral(final Object value,
-			final RDFDatatype dtype);
+	public SecuredLiteral createTypedLiteral(final Object value, final RDFDatatype dtype);
 
 	@Override
-	public SecuredLiteral createTypedLiteral(final Object value,
-			final String typeURI);
+	public SecuredLiteral createTypedLiteral(final Object value, final String typeURI);
 
 	@Override
 	public SecuredLiteral createTypedLiteral(final String v);
 
 	@Override
-	public SecuredLiteral createTypedLiteral(final String lex,
-			final RDFDatatype dtype);
+	public SecuredLiteral createTypedLiteral(final String lex, final RDFDatatype dtype);
 
 	@Override
-	public SecuredLiteral createTypedLiteral(final String lex,
-			final String typeURI);
+	public SecuredLiteral createTypedLiteral(final String lex, final String typeURI);
 
 	/**
 	 * @sec.graph Read
@@ -947,8 +885,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Model difference(final Model model) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public Model difference(final Model model) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read if read lock is requested
@@ -960,8 +897,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public void enterCriticalSection(final boolean readLockRequested)
-			throws ReadDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws ReadDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -970,8 +906,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String expandPrefix(final String prefixed)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public String expandPrefix(final String prefixed) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -981,8 +916,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredAlt getAlt(final Resource r) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredAlt getAlt(final Resource r) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -992,8 +926,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredAlt getAlt(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredAlt getAlt(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read if statement exists
@@ -1019,8 +952,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredResource getAnyReifiedStatement(final Statement s)
-			throws AddDeniedException, ReadDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+			throws AddDeniedException, ReadDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -1030,8 +962,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredBag getBag(final Resource r) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredBag getBag(final Resource r) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -1041,8 +972,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredBag getBag(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredBag getBag(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredGraph getGraph();
@@ -1065,8 +995,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Property getProperty(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public Property getProperty(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -1079,6 +1008,16 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
+	 * @sec.graph Read
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatement getProperty(final Resource s, final Property p, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
 	 * @sec.graph Read if the node exists
 	 * @sec.graph Update if the node does not exist
 	 * @throws ReadDeniedException
@@ -1086,8 +1025,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public RDFNode getRDFNode(final Node n) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public RDFNode getRDFNode(final Node n) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * . If the PropertyNotFoundException was thrown by the enclosed
@@ -1105,9 +1043,27 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement getRequiredProperty(final Resource s,
-			final Property p) throws PropertyNotFoundException,
-			ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatement getRequiredProperty(final Resource s, final Property p)
+			throws PropertyNotFoundException, ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * . If the PropertyNotFoundException was thrown by the enclosed
+	 * securedModel and the user can not read Triple(s, p, SecNode.ANY)
+	 * AccessDeniedExcepiton is thrown, otherwise the PropertyNotFoundException
+	 * will be thrown.
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read on the returned statement
+	 * @sec.triple Read on Triple(s, p, SecNode.ANY) if
+	 *             PropertyNotFoundException was thrown
+	 * @throws ReadDeniedException
+	 * @throws PropertyNotFoundException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatement getRequiredProperty(final Resource s, final Property p, String lang)
+			throws ReadDeniedException, PropertyNotFoundException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredResource getResource(final String uri);
@@ -1125,8 +1081,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredSeq getSeq(final Resource r) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredSeq getSeq(final Resource r) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1137,8 +1092,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredSeq getSeq(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredSeq getSeq(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1149,8 +1103,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Model intersection(final Model model) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public Model intersection(final Model model) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1160,8 +1113,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isEmpty() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean isEmpty() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1173,8 +1125,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isIsomorphicWith(final Model g) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean isIsomorphicWith(final Model g) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1186,8 +1137,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean isReified(final Statement s) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean isReified(final Statement s) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1198,24 +1148,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate,
-			final boolean object) throws ReadDeniedException,
-			AuthenticationRequiredException;
-
-	/**
-	 * 
-	 * @sec.graph Read
-	 * @sec.triple Read on all triples returned.
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-
-	@Override
-	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final char object)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatementIterator listLiteralStatements(final Resource subject, final Property predicate,
+			final boolean object) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1227,23 +1161,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 
 	@Override
-	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate,
-			final double object) throws ReadDeniedException,
-			AuthenticationRequiredException;
-
-	/**
-	 * 
-	 * @sec.graph Read
-	 * @sec.triple Read on all triples returned.
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final float object)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatementIterator listLiteralStatements(final Resource subject, final Property predicate,
+			final char object) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1255,9 +1174,33 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 
 	@Override
-	public SecuredStatementIterator listLiteralStatements(
-			final Resource subject, final Property predicate, final long object)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatementIterator listLiteralStatements(final Resource subject, final Property predicate,
+			final double object) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read on all triples returned.
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatementIterator listLiteralStatements(final Resource subject, final Property predicate,
+			final float object) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read on all triples returned.
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+
+	@Override
+	public SecuredStatementIterator listLiteralStatements(final Resource subject, final Property predicate,
+			final long object) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1267,8 +1210,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public NsIterator listNameSpaces() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public NsIterator listNameSpaces() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1279,8 +1221,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjects()
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredNodeIterator<RDFNode> listObjects() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1303,9 +1244,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Resource s,
-			final Property p) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty(final Resource s, final Property p)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1316,8 +1256,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredRSIterator listReifiedStatements()
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredRSIterator listReifiedStatements() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1354,9 +1293,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final boolean o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final boolean o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1368,9 +1306,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final char o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final char o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1382,9 +1319,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final double o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final double o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1396,9 +1332,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final float o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final float o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1410,9 +1345,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final long o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final long o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1424,9 +1358,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final Object o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listResourcesWithProperty(final Property p, final Object o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1438,20 +1371,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listResourcesWithProperty(final Property p,
-			final RDFNode o) throws ReadDeniedException,
-			AuthenticationRequiredException;
-
-	/**
-	 * 
-	 * @sec.graph Read
-	 * @sec.triple Read on all triples returned
-	 * @throws ReadDeniedException
-	 * @throws AuthenticationRequiredException
-	 *             if user is not authenticated and is required to be.
-	 */
-	@Override
-	public SecuredStatementIterator listStatements()
+	public SecuredResIterator listResourcesWithProperty(final Property p, final RDFNode o)
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
@@ -1463,9 +1383,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatementIterator listStatements(final Resource s,
-			final Property p, final RDFNode o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatementIterator listStatements() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1476,8 +1394,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatementIterator listStatements(final Resource subject,
-			final Property predicate, final String object)
+	public SecuredStatementIterator listStatements(final Resource s, final Property p, final RDFNode o)
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
@@ -1489,9 +1406,20 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatementIterator listStatements(final Resource subject,
-			final Property predicate, final String object, final String lang)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatementIterator listStatements(final Resource subject, final Property predicate,
+			final String object) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * 
+	 * @sec.graph Read
+	 * @sec.triple Read on all triples returned
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatementIterator listStatements(final Resource subject, final Property predicate,
+			final String object, final String lang) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1515,8 +1443,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listSubjects() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listSubjects() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1541,9 +1468,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final RDFNode o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listSubjectsWithProperty(final Property p, final RDFNode o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1555,9 +1481,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final String o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listSubjectsWithProperty(final Property p, final String o)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1569,9 +1494,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResIterator listSubjectsWithProperty(final Property p,
-			final String o, final String l) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredResIterator listSubjectsWithProperty(final Property p, final String o, final String l)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1581,8 +1505,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredPrefixMapping lock() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredPrefixMapping lock() throws ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredModel notifyEvent(final Object e);
@@ -1595,8 +1518,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String qnameFor(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public String qnameFor(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1606,8 +1528,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel query(final Selector s) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel query(final Selector s) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1628,9 +1549,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel read(final InputStream in, final String base,
-			final String lang) throws UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel read(final InputStream in, final String base, final String lang)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1651,9 +1571,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel read(final Reader reader, final String base,
-			final String lang) throws UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel read(final Reader reader, final String base, final String lang)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1663,8 +1582,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel read(final String url) throws UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel read(final String url) throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1685,9 +1603,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel read(final String url, final String base,
-			final String lang) throws UpdateDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel read(final String url, final String base, final String lang)
+			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1713,8 +1630,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel remove(final List<Statement> statements)
-			throws DeleteDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1726,8 +1642,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel remove(final Model m) throws DeleteDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel remove(final Model m)
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1739,9 +1655,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel remove(final Resource s, final Property p,
-			final RDFNode o) throws DeleteDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel remove(final Resource s, final Property p, final RDFNode o)
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1753,8 +1668,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel remove(final Statement s) throws DeleteDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel remove(final Statement s)
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1767,8 +1682,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel remove(final Statement[] statements)
-			throws DeleteDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1781,8 +1695,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public SecuredModel remove(final StmtIterator iter)
-			throws DeleteDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1794,8 +1707,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel removeAll() throws DeleteDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel removeAll()
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1807,9 +1720,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel removeAll(final Resource s, final Property p,
-			final RDFNode r) throws DeleteDeniedException,
-			UpdateDeniedException, AuthenticationRequiredException;
+	public SecuredModel removeAll(final Resource s, final Property p, final RDFNode r)
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1823,8 +1735,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public void removeAllReifications(final Statement s)
-			throws DeleteDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1849,8 +1760,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 */
 	@Override
 	public void removeReification(final ReifiedStatement rs)
-			throws DeleteDeniedException, UpdateDeniedException,
-			AuthenticationRequiredException;
+			throws DeleteDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1882,8 +1792,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String shortForm(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public String shortForm(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1893,8 +1802,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public long size() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public long size() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1905,8 +1813,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Model union(final Model model) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public Model union(final Model model) throws ReadDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredModel unregister(final ModelChangedListener listener);
@@ -1923,8 +1830,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel write(final OutputStream out)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredModel write(final OutputStream out) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1947,9 +1853,8 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel write(final OutputStream out, final String lang,
-			final String base) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel write(final OutputStream out, final String lang, final String base)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1960,8 +1865,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel write(final Writer writer) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel write(final Writer writer) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * 
@@ -1984,8 +1888,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredModel write(final Writer writer, final String lang,
-			final String base) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredModel write(final Writer writer, final String lang, final String base)
+			throws ReadDeniedException, AuthenticationRequiredException;
 
 }
