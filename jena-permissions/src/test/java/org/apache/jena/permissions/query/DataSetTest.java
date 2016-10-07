@@ -19,7 +19,6 @@ package org.apache.jena.permissions.query;
 
 import org.apache.jena.permissions.Factory;
 import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.query.SecuredQueryEngineFactory;
 
@@ -131,7 +130,7 @@ public class DataSetTest {
 				int count = 0;
 				for (; results.hasNext();) {
 					count++;
-					QuerySolution qs = results.nextSolution();
+					results.nextSolution();
 				}
 				Assert.assertEquals(4, count);
 			} finally {
