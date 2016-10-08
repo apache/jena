@@ -331,13 +331,6 @@ public class FusekiCmd {
             }
         }
 
-        private static String sort_out_dir(String path) {
-            path.replace('\\', '/') ;
-            if ( !path.endsWith("/") )
-                path = path + "/" ;
-            return path ;
-        }
-
         @Override
         protected void exec() {
             try {

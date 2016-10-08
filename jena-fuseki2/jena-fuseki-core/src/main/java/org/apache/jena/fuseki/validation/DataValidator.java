@@ -18,17 +18,11 @@
 
 package org.apache.jena.fuseki.validation;
 
-import static org.apache.jena.riot.SysRIOT.fmtMessage ;
-
 import java.io.StringReader ;
-import java.util.ArrayList ;
-import java.util.List ;
-
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
@@ -100,33 +94,6 @@ public class DataValidator extends ValidatorBaseJson {
     @Override
     protected String validatorName() {
         return "RDF Data" ;
-    }
-    
-    // Error handler that records messages
-    private static class ErrorHandlerMsg implements ErrorHandler
-    {
-        private List<String> messages = new ArrayList<>() ;
-
-        ErrorHandlerMsg(List<String> messages) { this.messages = messages; }
-        
-        @Override
-        public void warning(String message, long line, long col)
-        { output(message, line, col, "Warning", "warning") ; }
-    
-        // Attempt to continue.
-        @Override
-        public void error(String message, long line, long col)
-        { output(message, line, col, "Error", "error") ; }
-    
-        @Override
-        public void fatal(String message, long line, long col)
-        { output(message, line, col, "Fatal", "error") ; throw new RiotException(fmtMessage(message, line, col)) ; }
-        
-        private void output(String message, long line, long col, String typeName, String className)
-        {
-            String str = fmtMessage(message, line, col) ;
-            messages.add(str) ;
-        }
     }
 
 }

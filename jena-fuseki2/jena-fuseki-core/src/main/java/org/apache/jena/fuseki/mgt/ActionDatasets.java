@@ -29,7 +29,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang3.StringUtils;
@@ -111,8 +110,6 @@ public class ActionDatasets extends ActionContainerItem {
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
-        String newURI = uuid.asURI() ;
-        Node gn = NodeFactory.createURI(newURI) ;
         DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
@@ -208,7 +205,6 @@ public class ActionDatasets extends ActionContainerItem {
             DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
             action.getDataAccessPointRegistry().register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
-            ServletOutputStream out = action.getResponse().getOutputStream() ;
             ServletOps.success(action) ;
             system.commit();
             committed = true ;
@@ -430,7 +426,7 @@ public class ActionDatasets extends ActionContainerItem {
         try { input = request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
 
-        int len = request.getContentLength() ;
+//        int len = request.getContentLength() ;
 //        if ( verbose ) {
 //            if ( len >= 0 )
 //                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,

@@ -22,7 +22,6 @@ import static org.apache.jena.riot.RDFLanguages.filenameToLang;
 import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
 
 import java.io.File ;
-import java.io.FilenameFilter ;
 import java.io.IOException ;
 import java.lang.reflect.Method ;
 import java.nio.file.DirectoryStream ;
@@ -48,9 +47,6 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.update.UpdateAction ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 
@@ -58,17 +54,6 @@ public class FusekiConfig {
     static { Fuseki.init() ; }
     
     private static Logger log = Fuseki.configLog ;
-    
-    private static FilenameFilter visibleFiles = 
-        new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            if ( name.startsWith(".") )
-                return false ;
-            File f = new File(dir, name) ;
-            return f.isFile() ;
-        }
-    } ;
     
     /** Has side effects in server setup */
     public static List<DataAccessPoint> readServerConfigFile(String filename) {
@@ -162,11 +147,6 @@ public class FusekiConfig {
         return AssemblerUtils.readAssemblerFile(filename) ;
     }
     
-    private static void execute(Model m, String x) {
-        UpdateRequest req = UpdateFactory.create(x) ;
-        UpdateAction.execute(req, m);
-    }
-
     // XXX Move to a library
     private static List<Resource> getByType(Resource type, Model m) {
         ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
