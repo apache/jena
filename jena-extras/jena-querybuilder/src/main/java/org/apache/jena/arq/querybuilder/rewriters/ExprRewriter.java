@@ -81,7 +81,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		push(retval);
 	}
 
-	private void setExprList(ExprFunctionN n, ExprList exprList) {
+	private static void setExprList(ExprFunctionN n, ExprList exprList) {
 		try {
 			Field f = ExprFunctionN.class.getDeclaredField("args");
 			f.setAccessible(true);

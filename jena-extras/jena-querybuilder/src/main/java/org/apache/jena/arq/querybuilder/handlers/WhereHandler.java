@@ -138,7 +138,7 @@ public class WhereHandler implements Handler {
 	 * @param t
 	 *            The trip to test.
 	 */
-	private void testTriple(Triple t) {
+	private static void testTriple(Triple t) {
 		// verify Triple is valid
 		boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
 				|| t.getSubject().equals(Node.ANY);

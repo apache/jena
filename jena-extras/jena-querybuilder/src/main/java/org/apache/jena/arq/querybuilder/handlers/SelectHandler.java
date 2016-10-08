@@ -120,7 +120,7 @@ public class SelectHandler implements Handler {
 	 * @throws QueryParseException
 	 *             on error
 	 */
-	private Expr parseExpr(String s) throws QueryParseException {
+	private static Expr parseExpr(String s) throws QueryParseException {
 		try {
 			ARQParser parser = new ARQParser(new StringReader("SELECT " + s));
 			parser.setQuery(new Query());
