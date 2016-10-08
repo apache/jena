@@ -105,7 +105,7 @@ public class ConsoleHandlerStream extends StreamHandler {
         }
     }
     
-    private String getProperty(LogManager manager, String cname, String pname) {
+    private static String getProperty(LogManager manager, String cname, String pname) {
         return manager.getProperty(cname+"."+pname);
     }
     
