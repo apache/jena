@@ -34,11 +34,10 @@ import org.apache.http.client.methods.* ;
 import org.apache.http.entity.ContentType ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder ;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.http.util.EntityUtils ;
@@ -140,13 +139,38 @@ public class HttpOp {
      */
     public static class CaptureInput implements HttpCaptureResponse<TypedInputStream> {
         private TypedInputStream stream;
+        
+        private boolean closeClient = false;
+        
+        private CloseableHttpClient client;
+        
+        public void setClient(CloseableHttpClient client) {
+            this.client = client;
+        }
+
+        private static class ClientRetainingTypedInputStream extends TypedInputStream {
+
+            private final CloseableHttpClient retainedClient;
+            
+            public ClientRetainingTypedInputStream(InputStream in, String contentType, CloseableHttpClient client) {
+                super(in, contentType);
+                this.retainedClient = client;
+            }
+
+            @Override
+            public void close() {
+                IO.close(retainedClient);
+                super.close();
+            }
+            
+        }
 
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
-
             HttpEntity entity = response.getEntity();
             String ct = (entity.getContentType() == null) ? null : entity.getContentType().getValue();
-            stream = new TypedInputStream(entity.getContent(), ct);
+            stream = closeClient ? new ClientRetainingTypedInputStream(entity.getContent(), ct, client)
+                    : new TypedInputStream(entity.getContent(), ct);
         }
 
         @Override
@@ -200,7 +224,7 @@ public class HttpOp {
             .build() ;
     }
     
-    public static HttpClient createCachingHttpClient() {
+    public static CloseableHttpClient createCachingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return CachingHttpClientBuilder.create()
@@ -1026,7 +1050,18 @@ public class HttpOp {
 
     // ---- Perform the operation!
     private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
-        httpClient = ensureClient(httpClient);
+        // whether we should close the client after request execution
+        // only true if we built the client right here
+        boolean closeClient = false;
+        if (httpClient == null) {
+            if (getDefaultHttpClient() == null ) {
+                httpClient = HttpClients.createMinimal();
+                closeClient = true;
+            }
+            else httpClient = getDefaultHttpClient();
+        }
+        // and also only true if the handler won't close the client for us
+        closeClient = closeClient && !(handler instanceof CaptureInput);
         try {
             if (handler == null)
                 // This cleans up.
@@ -1057,6 +1092,8 @@ public class HttpOp {
             // Redirects are followed by HttpClient.
             if (handler != null)
                 handler.handle(baseURI, response);
+            // the cast below is safe because if closeClient then we built the client in this method 
+            if (closeClient) IO.close((CloseableHttpClient) httpClient);
         } catch (IOException ex) {
             throw new HttpException(ex);
         }
@@ -1065,25 +1102,6 @@ public class HttpOp {
 	public static String readPayload(HttpEntity entity) throws IOException {
         return entity == null ? null : EntityUtils.toString(entity, ContentType.getOrDefault(entity).getCharset());
 	}
-
-    /**
-     * Ensures that a HTTP Client is non-null
-     * <p>
-     * Prefers the {@link HttpClient} provided for the request if available.
-     * Then it tries to use a Jena-wide user configurable {@link HttpClient} if available.
-     * </p>
-     * <p>
-     * In all other cases it creates a fresh instance of a client each time.
-     * </p>
-     * 
-     * @param client HTTP Client
-     * @return HTTP Client
-     */
-    public static HttpClient ensureClient(HttpClient client) {
-        return client != null ? client
-                : getDefaultHttpClient() != null ? getDefaultHttpClient()
-                        : HttpClients.createSystem();
-    }
 
     /**
      * Applies the configured User-Agent string to the HTTP request

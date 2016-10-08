@@ -135,8 +135,7 @@ public class QueryEngineHTTP implements QueryExecution {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
-        // Copy the global context to freeze it.
-        this.context = new Context(ARQ.getContext());
+        this.context = ARQ.getContext();
 
         // Apply service configuration if relevant
         applyServiceConfig(serviceURI, this);
@@ -613,6 +612,15 @@ public class QueryEngineHTTP implements QueryExecution {
         if (params != null) httpQuery.merge(params);
 
         httpQuery.setAllowCompression(allowCompression);
+        
+        // check for service context overrides
+        if (context.isDefined(Service.serviceContext)) {
+            Map<String, Context> servicesContext = context.get(Service.serviceContext);
+            if (servicesContext.containsKey(service)) {
+                Context serviceContext = servicesContext.get(service);
+                if (serviceContext.isDefined(Service.queryClient)) client = serviceContext.get(Service.queryClient);
+            }
+        }
         httpQuery.setClient(client);
         httpQuery.setContext(getHttpContext());
         

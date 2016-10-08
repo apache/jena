@@ -21,7 +21,6 @@ package org.apache.jena.jdbc.remote.results;
 import org.apache.http.client.HttpClient;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.jdbc.results.AbstractResultSetTests;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.system.JenaSystem ;
 import org.junit.AfterClass;

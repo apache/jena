@@ -260,9 +260,12 @@ public class RemoteEndpointDriver extends JenaDriver {
         }
         // else use a supplied or default client
         Object client = props.get(PARAM_CLIENT);
-        if (client != null && !(client instanceof HttpClient)) { throw new SQLException("The " + PARAM_CLIENT
-                + " parameter is specified but the value is not an object implementing the required HttpClient interface"); }
-        return HttpOp.ensureClient((HttpClient) client);
+        if (client != null) {
+            if (!(client instanceof HttpClient)) throw new SQLException("The " + PARAM_CLIENT
+                    + " parameter is specified but the value is not an object implementing the required HttpClient interface");
+            return (HttpClient) client;
+        }
+        return null;
     }
 
 

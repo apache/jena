@@ -283,7 +283,6 @@ public class HttpQuery extends Params {
      */
     public InputStream exec() throws QueryExceptionHTTP {
         // Select the appropriate HttpClient to use
-        client = HttpOp.ensureClient(getClient());
         contextualizeCompressionSettings();
         contextualizeTimeoutSettings();
         try {
