@@ -45,12 +45,8 @@ public class ResultSetCheckCondition implements ResultSet
         this.condition = condition ;
     }
 
-    // Feel free to replace with a lambda expression for Java8!
     private static Condition checkQExec(final QueryExecution qExec) {
-        return new Condition() {
-            @Override
-            public boolean check() { return ! qExec.isClosed() ; }  
-        } ;
+        return ()-> ! qExec.isClosed() ;  
     }
 
     @Override
