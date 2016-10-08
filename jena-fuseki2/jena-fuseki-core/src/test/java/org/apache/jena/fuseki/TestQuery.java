@@ -39,7 +39,11 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+<<<<<<< HEAD
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
+=======
+import org.apache.jena.sparql.sse.Item ;
+>>>>>>> Removing dead code
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Convert ;
 import org.junit.Assert ;

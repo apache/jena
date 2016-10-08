@@ -79,8 +79,8 @@ public class FileSender {
                 }
                 ps.print("--" + boundary + "--"+WNL);
             } 
-            connection.connect(); 
-            int responseCode = connection.getResponseCode();
+            connection.connect();
+            connection.getResponseCode();
         } catch (IOException ex) { IO.exception(ex); }
     }
 }

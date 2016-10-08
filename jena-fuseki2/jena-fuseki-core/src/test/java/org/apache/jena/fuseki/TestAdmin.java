@@ -235,9 +235,7 @@ public class TestAdmin extends AbstractFusekiTest {
 
     @Test public void stats_3() {
         addTestDataset() ;
-        FusekiTest.exec404(()->{
-            JsonValue v = execGetJSON(ServerCtl.urlRoot()+"$/"+opStats+"/DoesNotExist") ;
-        }) ;
+        FusekiTest.exec404(()-> execGetJSON(ServerCtl.urlRoot()+"$/"+opStats+"/DoesNotExist")) ;
         deleteDataset(dsTest) ;
     }
 
@@ -307,7 +305,7 @@ public class TestAdmin extends AbstractFusekiTest {
         }
     }
 
-    private JsonValue getTask(String taskId) {
+    private static JsonValue getTask(String taskId) {
         String url = ServerCtl.urlRoot()+"$/tasks/"+taskId ;
         return httpGetJson(url) ;
     }
@@ -353,8 +351,8 @@ public class TestAdmin extends AbstractFusekiTest {
         }
         
     }
-    
-    private String execSleepTask(String name, int millis) {
+
+    private static String execSleepTask(String name, int millis) {
         String url = ServerCtl.urlRoot()+"$/sleep" ;
         if ( name != null ) {
             if ( name.startsWith("/") )
@@ -369,19 +367,19 @@ public class TestAdmin extends AbstractFusekiTest {
         return id ;
     }
 
-    private JsonValue httpGetJson(String url) {
+    private static JsonValue httpGetJson(String url) {
         JsonResponseHandler x = new JsonResponseHandler() ; 
         HttpOp.execHttpGet(url, WebContent.contentTypeJSON, x) ;
         return x.getJSON() ;
     }
-    
-    private void checkTask(String x) {
+
+    private static void checkTask(String x) {
         String url = ServerCtl.urlRoot()+"$/tasks/"+x ;
         JsonValue v = httpGetJson(url) ;
         checkTask(v) ;
     }    
     
-    private void checkTask(JsonValue v) {
+    private static void checkTask(JsonValue v) {
         assertNotNull(v) ;
         assertTrue(v.isObject()) ;
         //System.out.println(v) ;
@@ -395,8 +393,8 @@ public class TestAdmin extends AbstractFusekiTest {
             throw ex ; 
         }
     }
-        
-   private void checkInTasks(String x) {
+
+   private static void checkInTasks(String x) {
        String url = ServerCtl.urlRoot()+"$/tasks" ;
        JsonValue v = httpGetJson(url) ;
        assertTrue(v.isArray()) ;
