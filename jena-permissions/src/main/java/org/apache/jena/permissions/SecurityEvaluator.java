@@ -144,7 +144,7 @@ public interface SecurityEvaluator {
 			if (actions instanceof Set) {
 				return (Set<Action>) actions;
 			} else {
-				return new LinkedHashSet<Action>(actions);
+				return new LinkedHashSet<>(actions);
 			}
 		}
 	}

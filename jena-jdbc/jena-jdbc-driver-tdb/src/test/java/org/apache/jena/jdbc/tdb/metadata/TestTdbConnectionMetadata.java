@@ -54,7 +54,7 @@ public class TestTdbConnectionMetadata extends AbstractDatabaseMetadataTests {
 
     @Override
     protected List<Integer> getSupportedTransactionLevels() {
-        List<Integer> levels = new ArrayList<Integer>();
+        List<Integer> levels = new ArrayList<>();
         levels.add(Connection.TRANSACTION_SERIALIZABLE);
         return levels;
     }

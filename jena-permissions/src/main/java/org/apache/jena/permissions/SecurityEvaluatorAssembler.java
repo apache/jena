@@ -126,7 +126,7 @@ public class SecurityEvaluatorAssembler extends AssemblerBase implements Assembl
 		}
 		
 		// get the arguments as specified.
-		List<Object> args = new ArrayList<Object>();
+		List<Object> args = new ArrayList<>();
 		Resource argRes = getUniqueResource( root, ARGUMENT_LIST );
 		if (argRes != null)
 		{

@@ -62,7 +62,7 @@ public class TestTDBDatasetWithLuceneSpatialIndex extends
 						"WHERE {",
 						" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .",
 						"}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs
 				.addAll(Arrays
 						.asList((new String[] { "http://example.org/data/resource/testOneSimpleResult" })));
@@ -86,7 +86,7 @@ public class TestTDBDatasetWithLuceneSpatialIndex extends
 						"WHERE {",
 						" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .",
 						"}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs.addAll(Arrays.asList((new String[] {
 				"http://example.org/data/resource/" + label + "1",
 				"http://example.org/data/resource/" + label + "2" })));

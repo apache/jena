@@ -214,7 +214,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	 */
 	public static SecuredModel getInstance(final SecurityEvaluator securityEvaluator, final String modelIRI,
 			final Model model) {
-		final ItemHolder<Model, SecuredModel> holder = new ItemHolder<Model, SecuredModel>(model);
+		final ItemHolder<Model, SecuredModel> holder = new ItemHolder<>(model);
 
 		final SecuredModelImpl checker = new SecuredModelImpl(securityEvaluator, modelIRI, holder);
 		// if we are going to create a duplicate proxy, just return this
@@ -233,7 +233,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	// The secured graph that this securedModel contains.
 	private final SecuredGraph graph;
 
-	Map<ModelChangedListener, SecuredModelChangedListener> listeners = new HashMap<ModelChangedListener, SecuredModelChangedListener>();
+	Map<ModelChangedListener, SecuredModelChangedListener> listeners = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -353,7 +353,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canCreate(Triple.ANY)) {
-			final List<Triple> lst = new ArrayList<Triple>();
+			final List<Triple> lst = new ArrayList<>();
 			try {
 				while (iter.hasNext()) {
 					final Statement s = iter.next();
@@ -696,7 +696,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		if (!canCreateAny) {
 			// have to check each of the possible entries in the list for
 			// creation.
-			final List<RDFNode> nodes = new ArrayList<RDFNode>();
+			final List<RDFNode> nodes = new ArrayList<>();
 			while (members.hasNext()) {
 
 				final RDFNode n = members.next();
@@ -1406,7 +1406,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		if (!canRead(Triple.ANY)) {
 			nIter = nIter.filterKeep(new ObjectFilter());
 		}
-		return new SecuredNodeIterator<RDFNode>(holder.getSecuredItem(), nIter);
+		return new SecuredNodeIterator<>(holder.getSecuredItem(), nIter);
 	}
 
 	@Override
@@ -1417,7 +1417,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		if (!canRead(Triple.ANY)) {
 			nIter = nIter.filterKeep(new ObjectFilter(p));
 		}
-		return new SecuredNodeIterator<RDFNode>(holder.getSecuredItem(), nIter);
+		return new SecuredNodeIterator<>(holder.getSecuredItem(), nIter);
 	}
 
 	@Override
@@ -1428,7 +1428,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		if (!canRead(Triple.ANY)) {
 			nIter = nIter.filterKeep(new ObjectFilter(p));
 		}
-		return new SecuredNodeIterator<RDFNode>(holder.getSecuredItem(), nIter);
+		return new SecuredNodeIterator<>(holder.getSecuredItem(), nIter);
 	}
 
 	@Override
@@ -1789,7 +1789,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 			throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		if (!canDelete(Triple.ANY)) {
-			final List<Triple> lst = new ArrayList<Triple>();
+			final List<Triple> lst = new ArrayList<>();
 			try {
 				while (iter.hasNext()) {
 					final Statement s = iter.next();

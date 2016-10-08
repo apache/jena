@@ -333,7 +333,7 @@ public abstract class JenaDriver implements Driver {
             if (ppObj != null) {
                 if (ppObj instanceof String) {
                     // Single instance to try and register
-                    preProcessors = new ArrayList<String>();
+                    preProcessors = new ArrayList<>();
                     preProcessors.add(ppObj.toString());
                 } else if (ppObj instanceof List<?>) {
                     // Multiple instances to try and register
@@ -438,7 +438,7 @@ public abstract class JenaDriver implements Driver {
 
                 if (ppObj instanceof String) {
                     // Single instance to try and register
-                    postProcessors = new ArrayList<String>();
+                    postProcessors = new ArrayList<>();
                     postProcessors.add(ppObj.toString());
                 } else if (ppObj instanceof List<?>) {
                     // Multiple instances to try and register
@@ -608,7 +608,7 @@ public abstract class JenaDriver implements Driver {
                 // Doesn't yet exist, add a string/list as appropriate
                 if ( this.allowsMultipleValues( key ) )
                 {
-                    List<String> values = new ArrayList<String>();
+                    List<String> values = new ArrayList<>();
                     if ( value.contains( "," ) )
                     {
                         // Comma separated lists are usable for multiple value
@@ -655,7 +655,7 @@ public abstract class JenaDriver implements Driver {
                 else
                 {
                     // Convert to list
-                    List<String> values = new ArrayList<String>();
+                    List<String> values = new ArrayList<>();
                     values.add( currValue.toString() );
                     if ( value.contains( "," ) )
                     {
@@ -732,7 +732,7 @@ public abstract class JenaDriver implements Driver {
                             ((List<Object>) currValue).add(value);
                         } else {
                             // Convert to list
-                            List<String> values = new ArrayList<String>();
+                            List<String> values = new ArrayList<>();
                             values.add(currValue.toString());
                             values.add(value.toString());
                             target.put(key, values);
@@ -872,7 +872,7 @@ public abstract class JenaDriver implements Driver {
         Properties ps = this.getEffectiveProperties(url, props);
 
         // Create base driver properties
-        List<DriverPropertyInfo> baseProps = new ArrayList<DriverPropertyInfo>();
+        List<DriverPropertyInfo> baseProps = new ArrayList<>();
 
         // JDBC compatibility level
         DriverPropertyInfo jdbcCompatLevel = new DriverPropertyInfo(PARAM_JDBC_COMPATIBILITY, ps.getProperty(
@@ -958,11 +958,11 @@ public abstract class JenaDriver implements Driver {
     protected List<String> getValues(Properties props, String key) throws SQLException {
         Object obj = props.get(key);
         if (obj == null)
-            return new ArrayList<String>();
+            return new ArrayList<>();
         if (obj instanceof List<?>)
             return (List<String>) obj;
         if (obj instanceof String) {
-            List<String> values = new ArrayList<String>();
+            List<String> values = new ArrayList<>();
             values.add(obj.toString());
             return values;
         } else {

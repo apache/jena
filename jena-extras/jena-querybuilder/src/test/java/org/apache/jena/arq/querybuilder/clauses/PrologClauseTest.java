@@ -92,7 +92,7 @@ public class PrologClauseTest<T extends PrologClause<?>> extends
 
 	@ContractTest
 	public void testAddPrefixes() {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		map.put("pfx", "uri");
 		map.put("pfx2", "uri2");
 		PrologClause<?> prologClause = getProducer().newInstance();

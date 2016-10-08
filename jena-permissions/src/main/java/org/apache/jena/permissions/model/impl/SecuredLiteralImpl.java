@@ -62,7 +62,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 					literal.getLexicalForm(), literal.getDatatype());
 		}
 
-		final ItemHolder<Literal, SecuredLiteral> holder = new ItemHolder<Literal, SecuredLiteral>(
+		final ItemHolder<Literal, SecuredLiteral> holder = new ItemHolder<>(
 				goodLiteral);
 		final SecuredLiteralImpl checker = new SecuredLiteralImpl(securedModel,
 				holder);

@@ -109,7 +109,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			goodList = securedModel.createList(rdfList.asJavaList().iterator());
 		}
 
-		final ItemHolder<RDFList, SecuredRDFList> holder = new ItemHolder<RDFList, SecuredRDFList>(
+		final ItemHolder<RDFList, SecuredRDFList> holder = new ItemHolder<>(
 				goodList);
 		final SecuredRDFListImpl checker = new SecuredRDFListImpl(securedModel,
 				holder);
@@ -266,10 +266,10 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	}
 
 	private Set<Statement> collectStatements(final Set<Action> actions) {
-		final Set<Statement> stmts = new HashSet<Statement>();
+		final Set<Statement> stmts = new HashSet<>();
 		final ExtendedIterator<RDFList> iter = WrappedIterator.create(
 				new RDFListIterator(holder.getBaseItem())).filterKeep(
-				new RDFListSecFilter<RDFList>(this, actions));
+				new RDFListSecFilter<>(this, actions));
 		try {
 			while (iter.hasNext()) {
 				stmts.addAll(iter.next().listProperties().toSet());
@@ -294,7 +294,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			Triple t = new Triple(SecurityEvaluator.FUTURE, listFirst()
 					.asNode(), Node.ANY);
 			if (!canCreate(t)) {
-				final List<RDFNode> list = new ArrayList<RDFNode>();
+				final List<RDFNode> list = new ArrayList<>();
 				while (nodes.hasNext()) {
 					final RDFNode n = nodes.next();
 					t = new Triple(SecurityEvaluator.FUTURE, listFirst()
@@ -419,14 +419,14 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			final Action perm) {
 		return WrappedIterator
 				.create(new RDFListIterator(holder.getBaseItem())).filterKeep(
-						new RDFListSecFilter<RDFList>(this, perm));
+						new RDFListSecFilter<>(this, perm));
 	}
 
 	private ExtendedIterator<RDFList> getSecuredRDFListIterator(
 			final Set<Action> perm) {
 		return WrappedIterator
 				.create(new RDFListIterator(holder.getBaseItem())).filterKeep(
-						new RDFListSecFilter<RDFList>(this, perm));
+						new RDFListSecFilter<>(this, perm));
 	}
 
 	@Override
@@ -529,7 +529,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 	public ExtendedIterator<RDFNode> iterator(final Set<Action> constraints)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final Set<Action> req = new HashSet<Action>(constraints);
+		final Set<Action> req = new HashSet<>(constraints);
 		req.add(Action.Read);
 		return getSecuredRDFListIterator(req).mapWith(new PlainNodeMap());
 
@@ -579,7 +579,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 			ListIndexException, InvalidListException, ReadDeniedException,
 			AuthenticationRequiredException {
 		Object acc = initial;
-		final Set<Action> perms = new HashSet<Action>(requiredActions);
+		final Set<Action> perms = new HashSet<>(requiredActions);
 		perms.add(Action.Read);
 		for (final Iterator<RDFNode> i = iterator(perms); i.hasNext();) {
 			acc = fn.reduce(i.next(), acc);

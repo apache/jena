@@ -48,7 +48,7 @@ final class PathEngineN extends PathEngine
     }
     
     protected Set<Node> visitedAcc() {
-        return new HashSet<Node>() ;
+        return new HashSet<>() ;
     }
     
     @Override

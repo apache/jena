@@ -324,7 +324,7 @@ public class TextIndexLucene implements TextIndex {
         Query query = preParseQuery(qs, queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
-        List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
+        List<Map<String, Node>> records = new ArrayList<>() ;
 
         // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {

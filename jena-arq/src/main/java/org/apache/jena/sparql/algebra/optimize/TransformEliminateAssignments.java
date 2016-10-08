@@ -226,7 +226,7 @@ public class TransformEliminateAssignments extends TransformCopy {
             Expr currExpr = opExtend.getVarExprList().getExpr(assignVar);
 
             // See what vars are used in the current expression
-            Set<Var> vars = new HashSet<Var>();
+            Set<Var> vars = new HashSet<>();
             ExprVars.nonOpVarsMentioned(vars, currExpr);
 
             // See if we can inline anything
@@ -433,7 +433,7 @@ public class TransformEliminateAssignments extends TransformCopy {
     }
 
     private List<ExprAggregator> processAggregators(List<ExprAggregator> aggs, ExprTransform transform) {
-        List<ExprAggregator> newAggs = new ArrayList<ExprAggregator>();
+        List<ExprAggregator> newAggs = new ArrayList<>();
         for (ExprAggregator agg : aggs) {
             ExprAggregator e2 = (ExprAggregator) ExprTransformer.transform(transform, agg);
             newAggs.add(e2);

@@ -129,7 +129,7 @@ public class TestSyntaxTransform extends BaseTest
         Query q1 = QueryFactory.create(PREFIX+input) ;
         Query qExpected = QueryFactory.create(PREFIX+output) ;
         
-        Map<Var, Node> map = new HashMap<Var, Node>() ;
+        Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
         
         Query qTrans = QueryTransformOps.transform(q1, map) ;
@@ -141,7 +141,7 @@ public class TestSyntaxTransform extends BaseTest
         UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
         UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
         
-        Map<Var, Node> map = new HashMap<Var, Node>() ;
+        Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
         
         UpdateRequest reqTrans = UpdateTransformOps.transform(req1, map) ;

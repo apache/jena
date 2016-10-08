@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory ;
 public class CounterSet {
     private static Logger             log      = LoggerFactory.getLogger(CounterSet.class) ;
 
-    private Map<CounterName, Counter> counters = new HashMap<CounterName, Counter>() ;
+    private Map<CounterName, Counter> counters = new HashMap<>() ;
 
     public CounterSet() {}
 

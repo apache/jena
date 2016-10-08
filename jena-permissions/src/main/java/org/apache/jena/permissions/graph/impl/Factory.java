@@ -41,8 +41,7 @@ public class Factory
 			final PrefixMapping prefixMapping )
 	{
 
-		final ItemHolder<PrefixMapping, SecuredPrefixMapping> holder = new ItemHolder<PrefixMapping, SecuredPrefixMapping>(
-				prefixMapping);
+		final ItemHolder<PrefixMapping, SecuredPrefixMapping> holder = new ItemHolder<>(prefixMapping);
 		final SecuredPrefixMappingImpl checker = new SecuredPrefixMappingImpl(
 				graph, holder);
 		// if we are going to create a duplicate proxy just return this one.
@@ -74,8 +73,7 @@ public class Factory
 			final Graph graph )
 	{
 
-		final ItemHolder<Graph, SecuredGraphImpl> holder = new ItemHolder<Graph, SecuredGraphImpl>(
-				graph);
+		final ItemHolder<Graph, SecuredGraphImpl> holder = new ItemHolder<>(graph);
 		final SecuredGraphImpl checker = new SecuredGraphImpl(
 				securityEvaluator, graphIRI, holder) {
 		};

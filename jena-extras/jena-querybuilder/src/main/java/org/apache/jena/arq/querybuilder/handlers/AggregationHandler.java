@@ -43,7 +43,7 @@ public class AggregationHandler implements Handler {
 	public AggregationHandler( Query query )
 	{
 		this.query = query;
-		aggMap = new HashMap<Var,ExprAggregator>();
+		aggMap = new HashMap<>();
 	}
 	
 	/**

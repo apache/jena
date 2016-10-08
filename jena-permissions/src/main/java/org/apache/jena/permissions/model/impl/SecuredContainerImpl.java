@@ -74,7 +74,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 			goodContainer = securedModel.createBag();
 		}
 
-		final ItemHolder<Container, SecuredContainer> holder = new ItemHolder<Container, SecuredContainer>(
+		final ItemHolder<Container, SecuredContainer> holder = new ItemHolder<>(
 				goodContainer);
 
 		final SecuredContainerImpl checker = new SecuredContainerImpl(
@@ -313,7 +313,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 		// listProperties calls checkRead();
 		SecuredStatementIterator iter = listProperties();
 		try {
-			SortedSet<Statement> result = new TreeSet<Statement>(
+			SortedSet<Statement> result = new TreeSet<>(
 					new ContainerComparator());
 			while (iter.hasNext()) {
 				Statement stmt = iter.next();
@@ -321,7 +321,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 					result.add(stmt);
 				}
 			}
-			return new SecuredNodeIterator<RDFNode>(getModel(),
+			return new SecuredNodeIterator<>(getModel(),
 					new StatementRemovingIterator(result.iterator())
 							.mapWith(s -> s.getObject()));
 		} finally {
@@ -332,11 +332,11 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	@Override
 	public SecuredNodeIterator<RDFNode> iterator(final Set<Action> perms) {
 		checkRead();
-		final Set<Action> permsCopy = new HashSet<Action>(perms);
+		final Set<Action> permsCopy = new HashSet<>(perms);
 		permsCopy.add(Action.Read);
 		final ExtendedIterator<RDFNode> ni = getStatementIterator(perms)
 				.mapWith(o -> o.getObject());
-		return new SecuredNodeIterator<RDFNode>(getModel(), ni);
+		return new SecuredNodeIterator<>(getModel(), ni);
 
 	}
 

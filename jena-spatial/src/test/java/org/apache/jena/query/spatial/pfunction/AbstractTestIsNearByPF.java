@@ -37,7 +37,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		String queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .", "}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs
 				.addAll(Arrays
 						.asList((new String[] { "http://example.org/data/resource/testOneSimpleResult" })));
@@ -58,7 +58,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		String queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .", "}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs.addAll(Arrays.asList((new String[] {
 				"http://example.org/data/resource/" + label + "1",
 				"http://example.org/data/resource/" + label + "2" })));
@@ -95,7 +95,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		String queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 1) .", "}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -109,7 +109,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 -1) .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -122,7 +122,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 3) .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -135,7 +135,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'something not an integer') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
   
@@ -155,7 +155,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		String queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles') .", "}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -169,7 +169,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'mi') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -183,7 +183,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'kilometres') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -196,7 +196,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'km') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -209,7 +209,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 10000.0 'metres') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -220,7 +220,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 10000.0 'm') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -232,7 +232,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 1000000.0 'centimetres') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -243,7 +243,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 1000000.0 'cm') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -255,7 +255,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 10000000.0 'millimetres') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -266,7 +266,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 10000000.0 'mm') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -278,7 +278,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 0.09 'degrees') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -289,7 +289,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 0.09 'de') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
 				{
@@ -302,13 +302,13 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 1 'mi') .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		doTestSearch(turtle, queryString, expectedURIs);
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
 				" ?s spatial:nearby (51.3000 -2.71000 100.0 'other unsupported unit' -1) .", "}");
-		expectedURIs = (new HashSet<String>());
+		expectedURIs = (new HashSet<>());
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
   
@@ -326,7 +326,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 				" :center geo:lat ?lat .",
 				" :center geo:long ?long .",
 				" ?s spatial:nearby (?lat ?long 100.0 'miles' -1) .", "}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs
 				.addAll(Arrays
 						.asList((new String[] { "http://example.org/data/resource/testLatLongBound", "http://example.org/data/resource/center" })));

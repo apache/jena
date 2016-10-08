@@ -145,9 +145,9 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	// the maximum size of the cache
 	public static int MAX_CACHE = 100;
 	// the cache for this thread.
-	public static final ThreadLocal<LRUMap<CacheKey, Boolean>> CACHE = new ThreadLocal<LRUMap<CacheKey, Boolean>>();
+	public static final ThreadLocal<LRUMap<CacheKey, Boolean>> CACHE = new ThreadLocal<>();
 	// the number of times this thread has recursively called the constructor.
-	public static final ThreadLocal<Integer> COUNT = new ThreadLocal<Integer>();
+	public static final ThreadLocal<Integer> COUNT = new ThreadLocal<>();
 
 	/**
 	 * May Convert a Jena Node object into the SecurityEvaluator.VARIABLE
@@ -300,7 +300,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	 * @return the value of the security check or <code>null</code> if the value
 	 *         has not been cached.
 	 */
-	private Boolean cacheGet(final CacheKey key) {
+	private static Boolean cacheGet(final CacheKey key) {
 		final LRUMap<CacheKey, Boolean> cache = SecuredItemImpl.CACHE.get();
 		return (cache == null) ? null : (Boolean) cache.get(key);
 	}
@@ -313,7 +313,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	 * @param value
 	 *            The value to set.
 	 */
-	private void cachePut(final CacheKey key, final boolean value) {
+	private static void cachePut(final CacheKey key, final boolean value) {
 		final LRUMap<CacheKey, Boolean> cache = SecuredItemImpl.CACHE.get();
 		if (cache != null) {
 			cache.put(key, value);

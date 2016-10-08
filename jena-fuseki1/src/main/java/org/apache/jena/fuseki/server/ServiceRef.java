@@ -32,7 +32,7 @@ public class ServiceRef implements ServiceMXBean, Counters
     public  CounterSet getCounters() { return counters ; }
 
     /** Endpoints (as absolute path URLs) */
-    public List<String> endpoints               = new ArrayList<String>() ;
+    public List<String> endpoints               = new ArrayList<>() ;
     
     // Attach counters to services or datasets 
     // Can we have a counter of the same name on different services?

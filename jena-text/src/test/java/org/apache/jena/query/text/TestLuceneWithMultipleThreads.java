@@ -179,7 +179,7 @@ public class TestLuceneWithMultipleThreads
         final DatasetGraphText dsg = (DatasetGraphText)TextDatasetFactory.createLucene(DatasetGraphFactory.create(), new RAMDirectory(), new TextIndexConfig(entDef));
         
         final int numReaders = 2;
-        final List<Future<?>> futures = new ArrayList<Future<?>>(numReaders);
+        final List<Future<?>> futures = new ArrayList<>(numReaders);
         final ExecutorService execService = Executors.newFixedThreadPool(numReaders);
         final Dataset ds = DatasetFactory.wrap(dsg);
         

@@ -71,7 +71,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 			}
 		}
 
-		final ItemHolder<Resource, SecuredResource> holder = new ItemHolder<Resource, SecuredResource>(goodResource);
+		final ItemHolder<Resource, SecuredResource> holder = new ItemHolder<>(goodResource);
 
 		final SecuredResourceImpl checker = new SecuredResourceImpl(securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this

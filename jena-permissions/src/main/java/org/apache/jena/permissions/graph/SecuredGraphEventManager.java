@@ -373,14 +373,14 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	// the security evaluator in use
 	private final SecuredGraph securedGraph;
 	private final Graph baseGraph;
-	private final Map<GraphListener, Stack<SecuredGraphListener>> listenerMap = new HashMap<GraphListener, Stack<SecuredGraphListener>>();
+	private final Map<GraphListener, Stack<SecuredGraphListener>> listenerMap = new HashMap<>();
 	private static Set<Action> DELETE;
 	private static Set<Action> ADD;
 
 	static {
-		SecuredGraphEventManager.ADD = new HashSet<Action>(
+		SecuredGraphEventManager.ADD = new HashSet<>(
 				Arrays.asList(new Action[] { Action.Create, Action.Read }));
-		SecuredGraphEventManager.DELETE = new HashSet<Action>(
+		SecuredGraphEventManager.DELETE = new HashSet<>(
 				Arrays.asList(new Action[] { Action.Delete, Action.Read }));
 	}
 
@@ -581,7 +581,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	public synchronized GraphEventManager register(final GraphListener listener) {
 		Stack<SecuredGraphListener> sgl = listenerMap.get(listener);
 		if (sgl == null) {
-			sgl = new Stack<SecuredGraphListener>();
+			sgl = new Stack<>();
 		}
 		sgl.push(new SecuredGraphListener(listener));
 		listenerMap.put(listener, sgl);

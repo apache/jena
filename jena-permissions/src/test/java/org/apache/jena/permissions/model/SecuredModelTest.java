@@ -387,7 +387,7 @@ public class SecuredModelTest {
 	public void testCreateList() throws Exception {
 		final Set<Action> CU = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 
-		final List<RDFNode> nodeList = new ArrayList<RDFNode>();
+		final List<RDFNode> nodeList = new ArrayList<>();
 		try {
 			securedModel.createList();
 			if (!securityEvaluator.evaluate(CU)) {

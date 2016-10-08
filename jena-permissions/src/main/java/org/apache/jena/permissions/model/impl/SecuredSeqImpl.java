@@ -73,7 +73,7 @@ public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq {
 		if (seq == null) {
 			throw new IllegalArgumentException("Seq may not be null");
 		}
-		final ItemHolder<Seq, SecuredSeq> holder = new ItemHolder<Seq, SecuredSeq>(
+		final ItemHolder<Seq, SecuredSeq> holder = new ItemHolder<>(
 				seq);
 		final SecuredSeqImpl checker = new SecuredSeqImpl(securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this

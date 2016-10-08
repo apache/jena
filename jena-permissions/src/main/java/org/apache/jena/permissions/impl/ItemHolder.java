@@ -97,7 +97,7 @@ public class ItemHolder<Base, Secured extends SecuredItem>
 	@SuppressWarnings( "unchecked" )
 	public final Secured setSecuredItem( final SecuredItemInvoker handler )
 	{
-		final Set<Class<?>> ifac = new LinkedHashSet<Class<?>>();
+		final Set<Class<?>> ifac = new LinkedHashSet<>();
 		if (baseItem.getClass().isInterface())
 		{
 			ifac.add(baseItem.getClass());

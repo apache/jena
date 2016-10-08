@@ -204,7 +204,7 @@ public class FusekiServer
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
         
-        List<DataAccessPoint> datapoints = new ArrayList<DataAccessPoint>() ;
+        List<DataAccessPoint> datapoints = new ArrayList<>() ;
         datapoints.addAll(configFileDBs) ;
         datapoints.addAll(directoryDBs) ;
         datapoints.addAll(systemDBs) ;

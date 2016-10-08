@@ -31,7 +31,7 @@ public class DistanceUnitsUtils {
 	static {
 	 // International spelling "metres" 
 	 // As used by http://en.wikipedia.org/wiki/International_Bureau_of_Weights_and_Measures
-		SUPPORTED_UNITS = new ArrayList<String>();
+		SUPPORTED_UNITS = new ArrayList<>();
 		SUPPORTED_UNITS.add("kilometres");           
         SUPPORTED_UNITS.add("kilometers");           // America spelling
 		SUPPORTED_UNITS.add("km");

@@ -45,7 +45,7 @@ public class ModelTestSuite extends ParentRunner<Test>
 	@Override
 	protected List<Test> getChildren()
 	{
-		List<Test> lst = new ArrayList<Test>();
+		List<Test> lst = new ArrayList<>();
 		Enumeration<Test> enm = pkg.tests();
 		while (enm.hasMoreElements())
 		{

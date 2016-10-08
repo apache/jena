@@ -55,7 +55,7 @@ public class ResponseDataset
     private static final String contentOutputTriG          = "trig" ;
     private static final String contentOutputNQuads        = "n-quads" ;
 
-    public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
+    public static Map<String,String> shortNamesModel = new HashMap<>() ;
     static {
         // Some short names.  keys are lowercase.
         ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD) ;

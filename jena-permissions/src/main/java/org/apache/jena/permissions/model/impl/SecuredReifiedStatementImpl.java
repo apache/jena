@@ -50,7 +50,7 @@ public class SecuredReifiedStatementImpl extends SecuredResourceImpl implements
 		if (stmt == null) {
 			throw new IllegalArgumentException("Statement may not be null");
 		}
-		final ItemHolder<ReifiedStatement, SecuredReifiedStatement> holder = new ItemHolder<ReifiedStatement, SecuredReifiedStatement>(
+		final ItemHolder<ReifiedStatement, SecuredReifiedStatement> holder = new ItemHolder<>(
 				stmt);
 		final SecuredReifiedStatementImpl checker = new SecuredReifiedStatementImpl(
 				securedModel, holder);

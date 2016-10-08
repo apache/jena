@@ -43,7 +43,7 @@ public class ExprList implements Iterable<Expr>
     /** Empty, immutable ExprList */
     public static final ExprList emptyList = new ExprList(Collections.emptyList()) ;
     
-    public ExprList() { expressions = new ArrayList<Expr>() ; }
+    public ExprList() { expressions = new ArrayList<>() ; }
     
     private ExprList(ExprList other) {
         this() ;
@@ -72,7 +72,7 @@ public class ExprList implements Iterable<Expr>
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
     public Set<Var> getVarsMentioned() {
-        Set<Var> x = new HashSet<Var>() ;
+        Set<Var> x = new HashSet<>() ;
         varsMentioned(x) ;
         return x ;
     }

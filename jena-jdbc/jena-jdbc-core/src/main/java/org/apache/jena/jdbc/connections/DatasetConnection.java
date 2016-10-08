@@ -40,8 +40,8 @@ public abstract class DatasetConnection extends JenaConnection {
     protected Dataset ds;
     private boolean readonly = false;
 
-    private ThreadLocal<ReadWrite> transactionType = new ThreadLocal<ReadWrite>();
-    private ThreadLocal<Integer> transactionParticipants = new ThreadLocal<Integer>();
+    private ThreadLocal<ReadWrite> transactionType = new ThreadLocal<>();
+    private ThreadLocal<Integer> transactionParticipants = new ThreadLocal<>();
 
     /**
      * Creates a new dataset connection

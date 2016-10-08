@@ -52,13 +52,13 @@ public class SecuredRDFListTest extends SecuredResourceTest {
 
 	private int count(final Action action) {
 		final Iterator<RDFList> iter = new RDFListIterator((RDFList) getBaseRDFNode());
-		return WrappedIterator.create(iter).filterKeep(new RDFListSecFilter<RDFList>(getSecuredRDFList(), action))
+		return WrappedIterator.create(iter).filterKeep(new RDFListSecFilter<>(getSecuredRDFList(), action))
 				.toList().size();
 	}
 
 	private int count(final Set<Action> action) {
 		final Iterator<RDFList> iter = new RDFListIterator((RDFList) getBaseRDFNode());
-		return WrappedIterator.create(iter).filterKeep(new RDFListSecFilter<RDFList>(getSecuredRDFList(), action))
+		return WrappedIterator.create(iter).filterKeep(new RDFListSecFilter<>(getSecuredRDFList(), action))
 				.toList().size();
 	}
 
@@ -212,7 +212,7 @@ public class SecuredRDFListTest extends SecuredResourceTest {
 		}
 
 		try {
-			final List<Resource> lst = new ArrayList<Resource>();
+			final List<Resource> lst = new ArrayList<>();
 			lst.add(ResourceFactory.createResource("http://example.com/dummyList"));
 			getSecuredRDFList().concatenate(baseModel.createList(lst.iterator()));
 			if (!securityEvaluator.evaluate(perms)) {

@@ -55,7 +55,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 			throw new IllegalArgumentException("Statement may not be null");
 		}
 
-		final ItemHolder<Statement, SecuredStatement> holder = new ItemHolder<Statement, SecuredStatement>(
+		final ItemHolder<Statement, SecuredStatement> holder = new ItemHolder<>(
 				stmt);
 
 		final SecuredStatementImpl checker = new SecuredStatementImpl(

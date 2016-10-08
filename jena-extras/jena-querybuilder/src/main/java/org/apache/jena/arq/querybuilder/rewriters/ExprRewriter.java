@@ -153,7 +153,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		if (lst == null) {
 			return null;
 		}
-		List<SortCondition> retval = new ArrayList<SortCondition>();
+		List<SortCondition> retval = new ArrayList<>();
 		for (SortCondition sc : lst) {
 			retval.add(rewrite(sc));
 		}

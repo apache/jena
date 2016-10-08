@@ -83,7 +83,7 @@ public class TestSortedDataBagCancellation extends TestCase {
 
     final DatasetGraph dataset = DatasetGraphFactory.create();
 
-    final List<SortCondition> conditions = new ArrayList<SortCondition>();
+    final List<SortCondition> conditions = new ArrayList<>();
 
     final ExecutionContext ec = new ExecutionContext(params, activeGraph, dataset, factory);
 
@@ -110,7 +110,7 @@ public class TestSortedDataBagCancellation extends TestCase {
     public void testIteratesToCompletion() {
         int count = 0;
         assertEquals(0, count = bc.count);
-        Set<Binding> results = new HashSet<Binding>();
+        Set<Binding> results = new HashSet<>();
 
         assertTrue(qs.hasNext());
         assertTrue(bc.count >= count);
@@ -134,7 +134,7 @@ public class TestSortedDataBagCancellation extends TestCase {
 
         assertFalse(qs.hasNext());
 
-        Set<Binding> expected = new HashSet<Binding>();
+        Set<Binding> expected = new HashSet<>();
         expected.add(b1);
         expected.add(b2);
         expected.add(b3);
@@ -152,7 +152,7 @@ public class TestSortedDataBagCancellation extends TestCase {
     public void testIteratesWithCancellation() {
         int count = 0;
         assertEquals(0, count = bc.count);
-        Set<Binding> results = new HashSet<Binding>();
+        Set<Binding> results = new HashSet<>();
 
         assertTrue(qs.hasNext());
         assertTrue(bc.count >= count);
@@ -175,7 +175,7 @@ public class TestSortedDataBagCancellation extends TestCase {
      * A QueryIterator that delivers the elements of a list of bindings.
      */
     private static final class QueryIteratorItems extends QueryIteratorBase {
-        List<Binding> bindings = new ArrayList<Binding>();
+        List<Binding> bindings = new ArrayList<>();
         int index = 0;
 
         @Override

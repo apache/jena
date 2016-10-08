@@ -80,7 +80,7 @@ public class ConstructHandlerTest extends AbstractHandlerTest {
 		assertEquals(1, lst.size());
 		assertEquals(t, lst.get(0));
 
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 

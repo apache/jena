@@ -97,7 +97,7 @@ public class ElementTransformer {
         protected final ElementTransform transform ;
         private final ExprTransform      exprTransform ;
 
-        private final Deque<Element>     stack = new ArrayDeque<Element>() ;
+        private final Deque<Element>     stack = new ArrayDeque<>() ;
 
         protected final Element pop() {
             return stack.pop() ;

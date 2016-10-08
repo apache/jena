@@ -283,7 +283,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + var("v") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(
@@ -296,7 +296,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addFilter("?one < ?v");
 		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE + OPEN_PAREN + var("one") + OPT_SPACE + LT
 				+ OPT_SPACE + var("v") + CLOSE_PAREN + CLOSE_CURLY, query.toString());
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 
 		values.put(Var.alloc("v"), NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10)));
 		handler.setVars(values);
@@ -312,7 +312,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addOptional(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
@@ -327,7 +327,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addSubQuery(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+" + var("v") + ".+" + CLOSE_CURLY,
 				query.toString());
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(
@@ -343,7 +343,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.addUnion(sb);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+" + var("v")
 				+ ".+" + CLOSE_CURLY, query.toString());
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, NodeFactory.createURI("three"));
 		handler.setVars(values);
 		assertContainsRegex(WHERE + OPEN_CURLY + UNION + OPEN_CURLY + uri("one") + ".+" + uri("two") + ".+"

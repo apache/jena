@@ -244,7 +244,7 @@ public class SPARQLServer {
                  if ( ! FileOps.exists(serverConfig.pages) )
                      serverLog.warn("No pages directory - "+serverConfig.pages) ;
                 String base = serverConfig.pages ;
-                Map<String, Object> data = new HashMap<String, Object>() ;
+                Map<String, Object> data = new HashMap<>() ;
                 data.put("mgt", new MgtFunctions()) ;
                 SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
                 addServlet(context, templateEngine, "*.tpl", false) ;

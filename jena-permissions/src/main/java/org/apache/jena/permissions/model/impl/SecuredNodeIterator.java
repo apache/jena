@@ -64,7 +64,7 @@ public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 	SecuredNodeIterator( final SecuredModel securedModel,
 			final ExtendedIterator<T> wrapped )
 	{
-		final PermNodeMap<T> map1 = new PermNodeMap<T>(securedModel);
+		final PermNodeMap<T> map1 = new PermNodeMap<>(securedModel);
 		iter = wrapped.mapWith(map1);
 	}
 

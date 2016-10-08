@@ -206,7 +206,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 		TopDocs docs = indexSearcher.search(new MatchAllDocsQuery(), filter,
 				limit, distSort);
 
-		List<Node> results = new ArrayList<Node>();
+		List<Node> results = new ArrayList<>();
 
 		// Align and DRY with Solr.
 		for (ScoreDoc sd : docs.scoreDocs) {

@@ -33,7 +33,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper {
     // Time to have DatasetGraph.getQueryDataset
     private final DatasetGraph dsg1 ;
     private final DatasetGraph dsg2 ;
-    private final AtomicReference<DatasetGraph> current = new AtomicReference<DatasetGraph>() ;
+    private final AtomicReference<DatasetGraph> current = new AtomicReference<>() ;
     
     // Change DatasetGraphWrapper to use protected get() 
 

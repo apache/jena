@@ -125,7 +125,7 @@ public class SpatialIndexSolr implements SpatialIndex {
 	public List<Node> query(Shape shape, int limit, SpatialOperation operation) {
 
 		SolrDocumentList solrResults = solrQuery(shape, limit, operation);
-		List<Node> results = new ArrayList<Node>();
+		List<Node> results = new ArrayList<>();
 
 		for (SolrDocument sd : solrResults) {
 			String str = (String) sd.getFieldValue(docDef.getEntityField());

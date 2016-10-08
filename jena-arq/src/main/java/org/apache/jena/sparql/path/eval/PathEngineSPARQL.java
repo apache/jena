@@ -44,11 +44,11 @@ public class PathEngineSPARQL extends PathEngine
     }
 
     protected Collection<Node> collector() {
-        return new HashSet<Node>() ;
+        return new HashSet<>() ;
     }
 
     protected Set<Node> visitedAcc() {
-        return new HashSet<Node>() ;
+        return new HashSet<>() ;
     }
     
     @Override

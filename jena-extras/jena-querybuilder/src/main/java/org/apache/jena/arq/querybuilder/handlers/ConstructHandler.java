@@ -43,7 +43,7 @@ public class ConstructHandler implements Handler {
 	 */
 	public ConstructHandler(Query query) {
 		this.query = query;
-		constructs = new ArrayList<Triple>();
+		constructs = new ArrayList<>();
 		if (query.getConstructTemplate() != null) {
 			for (Triple t : query.getConstructTemplate().getTriples()) {
 				constructs.add(t);

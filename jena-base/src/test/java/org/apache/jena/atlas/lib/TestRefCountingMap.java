@@ -28,7 +28,7 @@ public class TestRefCountingMap {
     private static final String value1   = "value1";
     private static final String value1_1 = "value1_1";
 	
-	private final RefCountingMap<String,String> map = new RefCountingMap<String, String>();
+	private final RefCountingMap<String,String> map = new RefCountingMap<>();
 	public TestRefCountingMap() {} 
 	
 	@Test

@@ -333,7 +333,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      *            URI
      * @return Reduced URI or null if no further reduction is possible
      */
-    private String stripLastComponent(String input) {
+    private static String stripLastComponent(String input) {
         try {
             URI uri = new URI(input);
             if (uri.getFragment() != null) {
@@ -382,7 +382,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      * @return URI with irrelevant components stripped off or null if stripping
      *         is impossible
      */
-    private String stripIrrelevantComponents(String input) {
+    private static String stripIrrelevantComponents(String input) {
         try {
             URI orig = new URI(input);
             return new URI(orig.getScheme(), orig.getUserInfo(), orig.getHost(), orig.getPort(), orig.getPath(), null, null)

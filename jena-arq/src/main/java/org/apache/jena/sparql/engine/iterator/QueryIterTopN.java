@@ -74,7 +74,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         }
 
         // Keep heap with maximum accessible.
-        this.heap = new PriorityQueue<Binding>((int)numItems, new ReverseComparator<Binding>(comparator)) ;
+        this.heap = new PriorityQueue<>((int)numItems, new ReverseComparator<>(comparator)) ;
         this.setIterator(sortTopN(qIter, comparator)) ;
     }
 

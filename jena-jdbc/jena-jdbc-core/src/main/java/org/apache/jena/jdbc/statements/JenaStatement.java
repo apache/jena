@@ -63,12 +63,12 @@ public abstract class JenaStatement implements Statement {
     protected static final int DEFAULT_TYPE = ResultSet.TYPE_FORWARD_ONLY;
     protected static final int USE_CONNECTION_COMPATIBILITY = Integer.MIN_VALUE;
 
-    private List<String> commands = new ArrayList<String>();
+    private List<String> commands = new ArrayList<>();
     private SQLWarning warnings = null;
     private JenaConnection connection;
     private ResultSet currResults = null;
-    private Queue<ResultSet> results = new LinkedList<ResultSet>();
-    private List<ResultSet> openResults = new ArrayList<ResultSet>();
+    private Queue<ResultSet> results = new LinkedList<>();
+    private List<ResultSet> openResults = new ArrayList<>();
     private boolean closed = false;
     private int type = DEFAULT_TYPE;
     private int fetchDirection = DEFAULT_FETCH_DIRECTION;

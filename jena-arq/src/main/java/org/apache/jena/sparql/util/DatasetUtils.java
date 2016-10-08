@@ -140,7 +140,7 @@ public class DatasetUtils
     }
         
     public static DatasetGraph createDatasetGraph(String uri, List<String> namedSourceList, String baseURI) {
-        List<String> uriList = new ArrayList<String>();
+        List<String> uriList = new ArrayList<>();
         uriList.add(uri);
         return createDatasetGraph(uriList, namedSourceList, baseURI);
     }

@@ -83,7 +83,7 @@ public class DatasetHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void setVarsFromNamed() {
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		handler.fromNamed("?foo");
 		handler.from("?bar");
 		values.put(Var.alloc("foo"),
@@ -96,7 +96,7 @@ public class DatasetHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void setVarsFrom() {
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		handler.fromNamed("?foo");
 		handler.from("?bar");
 		values.put(Var.alloc("bar"),
@@ -109,7 +109,7 @@ public class DatasetHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void setVarsBoth() {
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		handler.fromNamed("?foo");
 		handler.from("?bar");
 		values.put(Var.alloc("bar"),

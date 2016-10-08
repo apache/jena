@@ -45,7 +45,7 @@ public class FileSender {
         String contentType ;
     }
     
-    private List<Entry> items = new ArrayList<Entry>() ;
+    private List<Entry> items = new ArrayList<>() ;
     
     private String url ;  
     

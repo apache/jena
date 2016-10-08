@@ -57,7 +57,7 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        List<String> defaultGraphs = new ArrayList<String>();
+        List<String> defaultGraphs = new ArrayList<>();
         defaultGraphs.add(DEFAULT_GRAPH_URI);
         return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), defaultGraphs, null,
                 defaultGraphs, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
@@ -65,9 +65,9 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
 
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
-        List<String> defaultGraphs = new ArrayList<String>();
+        List<String> defaultGraphs = new ArrayList<>();
         defaultGraphs.add(DEFAULT_GRAPH_URI);
-        List<String> namedGraphs = new ArrayList<String>();
+        List<String> namedGraphs = new ArrayList<>();
         Iterator<String> names = ds.listNames();
         while (names.hasNext()) {
             String name = names.next();

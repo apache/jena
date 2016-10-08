@@ -39,7 +39,7 @@ public class SpatialIndexContext {
 		super();
 		this.defn = indexer.getDocDef();
 		this.indexer = indexer;
-		this.spatialPredicatePairValues = new HashMap<String, Set<SpatialPredicatePairValue>>();
+		this.spatialPredicatePairValues = new HashMap<>();
 	}
 
 	public void index(Node g, Node s, Node p, Node o) {
@@ -59,7 +59,7 @@ public class SpatialIndexContext {
 			Set<SpatialPredicatePairValue> pairValues = spatialPredicatePairValues
 					.get(x);
 			if (pairValues == null) {
-				pairValues = new HashSet<SpatialPredicatePairValue>();
+				pairValues = new HashSet<>();
 				spatialPredicatePairValues.put(x, pairValues);
 			}
 

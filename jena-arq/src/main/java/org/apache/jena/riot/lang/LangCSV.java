@@ -87,7 +87,7 @@ public class LangCSV implements LangRIOT {
 		sink.start();
 		CSVParser parser = (input != null) ? CSVParser.create(input)
 				: CSVParser.create(reader);
-		ArrayList<Node> predicates = new ArrayList<Node>();
+		ArrayList<Node> predicates = new ArrayList<>();
 		int rowNum = 0;
 		for (List<String> row : parser) {
 			
