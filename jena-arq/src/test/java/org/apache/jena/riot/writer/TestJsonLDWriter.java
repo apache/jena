@@ -466,19 +466,14 @@ public class TestJsonLDWriter extends BaseTest {
     //
 
     private String toString(Model m, RDFFormat f, Context jenaContext) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+        try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
             DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
             PrefixMap pm = RiotLib.prefixMap(g);
             String base = null;
             w.write(out, g, pm, base, jenaContext) ;
-
             out.flush();
-            String x = out.toString("UTF-8");
-            out.close();
-            return x;
+            return out.toString("UTF-8");
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
