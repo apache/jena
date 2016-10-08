@@ -41,18 +41,19 @@ public class JenaSpatialExample1 {
         LogCtl.setLog4j();
     }
     static Logger log = LoggerFactory.getLogger("JenaSpatialExample");
-    
+
+    // Spatial index can be either Apache Lucene
     private static final String LUCENE_INDEX_PATH = "target/test/TDBDatasetWithLuceneSpatialIndex";
     private static final File LUCENE_INDEX_DIR = new File(LUCENE_INDEX_PATH);
     private static final String LUCENE_TDB_PATH = "target/test/TDB";
     private static final File LUCENE_TDB_DIR = new File(LUCENE_TDB_PATH);
-    
+    // or Apache Solr for a large scale enterprise search application
     private static final String  SOLR_DATA_PATH      = "src/test/resources/SolrHome/SolrARQCollection/data";
     private static final File    SOLR_DATA_DIR       = new File(SOLR_DATA_PATH);
 
     public static void main(String... argv) throws IOException {
-        Dataset spatialDataset = initInMemoryDatasetWithLuceneSpatitalIndex(LUCENE_INDEX_DIR);
-        //Dataset spatialDataset = initTDBDatasetWithLuceneSpatitalIndex(indexDir, TDBDir);
+        Dataset spatialDataset = initInMemoryDatasetWithLuceneSpatialIndex(LUCENE_INDEX_DIR);
+        //Dataset spatialDataset = initTDBDatasetWithLuceneSpatialIndex(indexDir, TDBDir);
         //Dataset spatialDataset = createLuceneAssembler() ;
         //Dataset spatialDataset = createSolrAssembler() ;
         
@@ -94,13 +95,13 @@ public class JenaSpatialExample1 {
         dir.delete() ;
     }
     
-    private static Dataset initInMemoryDatasetWithLuceneSpatitalIndex(File indexDir) throws IOException{
+    private static Dataset initInMemoryDatasetWithLuceneSpatialIndex(File indexDir) throws IOException{
         deleteOldFiles(indexDir);
         indexDir.mkdirs();
         return createDatasetByCode(indexDir);
     }
     
-    private static Dataset initTDBDatasetWithLuceneSpatitalIndex(File indexDir, File TDBDir) throws IOException{
+    private static Dataset initTDBDatasetWithLuceneSpatialIndex(File indexDir, File TDBDir) throws IOException{
         deleteOldFiles(indexDir);
         deleteOldFiles(TDBDir);
         indexDir.mkdirs();
