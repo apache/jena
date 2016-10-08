@@ -113,7 +113,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = 0xF0F0 ;
         v = BitsLong.clear(v, 4, 8) ;
-        String s = Long.toHexString(v) ;
         check(0xF000L, v ) ;
     }
 
@@ -121,7 +120,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = 0x8000000000000000L;
         v = BitsLong.clear(v, 63, 64) ;
-        String s = Long.toHexString(v) ;
         check(0x0L, v ) ;
     }
 
@@ -129,7 +127,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = 0xC000000000000000L;
         v = BitsLong.clear(v, 63, 64) ;
-        String s = Long.toHexString(v) ;
         check(0x4000000000000000L, v ) ;
     }
 
@@ -137,7 +134,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = -1 ;
         v = BitsLong.clear(v, 63, 64) ;
-        String s = Long.toHexString(v) ;
         check(0x7FFFFFFFFFFFFFFFL, v ) ;
     }
     
@@ -145,7 +141,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = -1 ;
         v = BitsLong.clear(v, 32, 64) ;
-        String s = Long.toHexString(v) ;
         check(0x00000000FFFFFFFFL, v ) ;
     }
 
@@ -153,7 +148,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = -1 ;
         v = BitsLong.clear(v, 0, 32) ;
-        String s = Long.toHexString(v) ;
         check(0xFFFFFFFF00000000L, v ) ;
     }
 
@@ -161,7 +155,6 @@ public class TestBitsLong extends BaseTest
     {
         long v = -1L ;
         v = BitsLong.clear(v, 0, 0) ;
-        String s = Long.toHexString(v) ;
         check(-1L, v ) ;
     }
 
@@ -452,12 +445,12 @@ public class TestBitsLong extends BaseTest
         check(0xABL, v ) ;
     }
     
-    private void check(long expected, long actual)
+    private static void check(long expected, long actual)
     {
         check(null, expected, actual) ;
     }
     
-    private void check(String msg, long expected, long actual)
+    private static void check(String msg, long expected, long actual)
     {
         if ( expected == actual ) return ;
         String s = "Expected: "+Long.toHexString(expected)+" : Got: "+Long.toHexString(actual) ;

@@ -69,10 +69,9 @@ public class TestListUtils extends BaseTest
         test(x, 1,2,3) ;
     }
 
-    private void test(List<Integer> x, int... args)
+    private static void test(List<Integer> x, int... args)
     {
         assertEquals(args.length, x.size()) ;
-        
         for ( int i = 0; i < args.length ; i++ )
             assertEquals(args[i], x.get(i).intValue()) ;
     }

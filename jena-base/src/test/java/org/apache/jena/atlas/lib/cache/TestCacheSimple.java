@@ -43,7 +43,6 @@ public class TestCacheSimple extends BaseTest {
 	
 	@Test
 	public void testReplace() {
-	    final Integer key = 1 ;
 	    final String value1 = "A" ;
         final String value2 = "B" ;
 	    

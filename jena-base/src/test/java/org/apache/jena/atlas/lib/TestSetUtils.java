@@ -171,7 +171,7 @@ public class TestSetUtils extends BaseTest
         return new HashSet<>(asList(values)) ;
     }
 
-    private void test(Set<Integer> x, int...values)
+    private static void test(Set<Integer> x, int...values)
     {
         List<Integer> y = asList(values) ;
         assertEquals(y.size(), x.size()) ;

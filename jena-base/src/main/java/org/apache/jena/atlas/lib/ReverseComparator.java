@@ -20,7 +20,13 @@ package org.apache.jena.atlas.lib;
 
 import java.util.Comparator ;
 
-/** Comparator that compares the other way round to it's sub-comparator */  
+/**
+ *Comparator that compares the other way round to its sub-comparator
+ * @param <T>
+ * 
+ * @deprecated Prefer {@link Comparator#reversed()}
+ */
+@Deprecated
 public class ReverseComparator<T> implements Comparator<T>
 {
     private final Comparator<T> comparator ;

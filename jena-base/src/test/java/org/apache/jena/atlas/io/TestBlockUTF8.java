@@ -185,7 +185,6 @@ public class TestBlockUTF8 extends BaseTest
         cb.flip() ;
         bytes.flip() ;
 
-        String str = cb.toString() ;
         ByteBuffer bytes2 = allocBB.allocate(bytes.capacity()) ;
         BlockUTF8.fromChars(cb, bytes2) ;
         bytes2.flip() ;

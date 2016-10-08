@@ -147,15 +147,13 @@ public class TestTupleMap {
 
         List<Integer> listPut = x.transformGet() ;
         List<Integer> listPutExpected = Arrays.asList(1, 2, 0) ;
-        assertEquals(listGetExpected, listGet) ;
+        assertEquals(listPutExpected, listPut) ;
         
     }
     
     @Test
     public void map_array_1() {
         TupleMap x = TupleMap.create("SPO","POS"); 
-        Tuple<Integer> t = TupleFactory.tuple(2, 0, 1);
-        Tuple<Integer> t1 = x.map(t);
 
         String[] array = {"X", "Y", "Z"};
         
