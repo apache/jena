@@ -69,11 +69,11 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
         
         realmFile = File.createTempFile("realm", ".properties");
 
-        FileWriter writer = new FileWriter(realmFile);
-        writer.write(USER + ": " + PASSWORD + ", fuseki\n");
-        writer.close();
+        try(FileWriter writer = new FileWriter(realmFile)) {
+            writer.write(USER + ": " + PASSWORD + ", fuseki\n");
+        }
 
-        DatasetGraph dsg = DatasetGraphFactory.createMem();
+        DatasetGraph dsg = DatasetGraphFactory.create();
         // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, false);
         conf.port = ServerTest.port;

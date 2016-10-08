@@ -58,10 +58,9 @@ public class TestRemoteEndpointDriver extends AbstractJenaDriverTests {
         // May specify key=value pairs multiple times
         String url = JenaDriver.DRIVER_PREFIX + RemoteEndpointDriver.REMOTE_DRIVER_PREFIX + RemoteEndpointDriver.PARAM_QUERY_ENDPOINT + "=http://example.org/query&" + RemoteEndpointDriver.PARAM_DEFAULT_GRAPH_URI + "=http://graph/1&" + RemoteEndpointDriver.PARAM_DEFAULT_GRAPH_URI + "=http://graph/2";
         RemoteEndpointDriver driver = (RemoteEndpointDriver)this.getDriver();
-        RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties());
-        
-        Assert.assertEquals(2, conn.getDefaultGraphURIs().size());
-        conn.close();
+        try(RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties())) {
+            Assert.assertEquals(2, conn.getDefaultGraphURIs().size());
+        }
     }
     
     /**
@@ -73,10 +72,9 @@ public class TestRemoteEndpointDriver extends AbstractJenaDriverTests {
         // May specify key=value,value as comma separated list
         String url = JenaDriver.DRIVER_PREFIX + RemoteEndpointDriver.REMOTE_DRIVER_PREFIX + RemoteEndpointDriver.PARAM_QUERY_ENDPOINT + "=http://example.org/query&" + RemoteEndpointDriver.PARAM_DEFAULT_GRAPH_URI + "=http://graph/1,http://graph/2";
         RemoteEndpointDriver driver = (RemoteEndpointDriver)this.getDriver();
-        RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties());
-        
-        Assert.assertEquals(2, conn.getDefaultGraphURIs().size());
-        conn.close();
+       try(RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties())){
+           Assert.assertEquals(2, conn.getDefaultGraphURIs().size());
+       }
     }
     
     /**
@@ -88,9 +86,8 @@ public class TestRemoteEndpointDriver extends AbstractJenaDriverTests {
         // May specify combination of multiple key=value pairs and key=value,value comma separated list(s)
         String url = JenaDriver.DRIVER_PREFIX + RemoteEndpointDriver.REMOTE_DRIVER_PREFIX + RemoteEndpointDriver.PARAM_QUERY_ENDPOINT + "=http://example.org/query&" + RemoteEndpointDriver.PARAM_DEFAULT_GRAPH_URI + "=http://graph/1,http://graph/2&" + RemoteEndpointDriver.PARAM_DEFAULT_GRAPH_URI + "=http://graph/3";
         RemoteEndpointDriver driver = (RemoteEndpointDriver)this.getDriver();
-        RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties());
-        
-        Assert.assertEquals(3, conn.getDefaultGraphURIs().size());
-        conn.close();
+        try(RemoteEndpointConnection conn = (RemoteEndpointConnection) driver.connect(url, new Properties())) {
+            Assert.assertEquals(3, conn.getDefaultGraphURIs().size());
+        }
     }
 }
