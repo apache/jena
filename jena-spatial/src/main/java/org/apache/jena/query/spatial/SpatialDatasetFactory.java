@@ -23,7 +23,6 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.spatial.assembler.SpatialVocab;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.store.Directory;
 import org.apache.solr.client.solrj.SolrServer;
@@ -53,8 +52,6 @@ public class SpatialDatasetFactory
         SpatialDocProducer producer = new SpatialDocProducerTriples(spatialIndex) ;
         DatasetGraph dsgt = new DatasetGraphSpatial(dsg, spatialIndex, producer) ;
         // Also set on dsg
-        Context c = dsgt.getContext() ;
-        
         dsgt.getContext().set(SpatialQuery.spatialIndex, spatialIndex) ;
         return dsgt ;
 

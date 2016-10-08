@@ -103,7 +103,7 @@ public class TestEntityDefinitionAssembler {
 		}
 
 		EntityDefinitionAssembler emAssembler = new EntityDefinitionAssembler();
-		EntityDefinition entityDef = emAssembler.open(null, spec3, null);
+		emAssembler.open(null, spec3, null);
 		if (jts_lib_ready) {
 			assertEquals("com.spatial4j.core.context.jts.JtsSpatialContext",
 					SpatialQuery.ctx.getClass().getName());
