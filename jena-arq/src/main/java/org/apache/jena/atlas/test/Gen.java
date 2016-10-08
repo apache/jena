@@ -20,13 +20,7 @@ package org.apache.jena.atlas.test;
 
 import static org.apache.jena.atlas.lib.RandomLib.random ;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List ;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.* ;
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
