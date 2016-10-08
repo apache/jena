@@ -224,40 +224,30 @@ public class TestAuth {
 
     @Test
     public void query_with_auth_10() {
-        Context ctx = ARQ.getContext();
-        try {
-            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped to correct URI
-            // Provided via Service Context
-            Map<String, Context> serviceContext = new HashMap<>();
-            Context authContext = new Context();
-            authContext.put(Service.queryClient, withCreds("allowed", "password"));
-            serviceContext.put(authServiceQuery, authContext);
-            ctx.put(Service.serviceContext, serviceContext);
-            Assert.assertTrue(qe.execAsk());
-        } finally {
-            ctx.remove(Service.serviceContext);
-        }
+        // Auth credentials for valid user with correct password and scoped to correct URI
+        // Provided via Service Context
+        Map<String, Context> serviceContext = new HashMap<>();
+        Context authContext = new Context();
+        authContext.put(Service.queryClient, withCreds("allowed", "password"));
+        serviceContext.put(authServiceQuery, authContext);
+        qe.getContext().put(Service.serviceContext, serviceContext);
+        Assert.assertTrue(qe.execAsk());
     }
     
     @Test
     public void query_with_auth_11() {
-        Context ctx = ARQ.getContext();
-        try {
-            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped to base URI of the actual service URL
-            // Provided via Service Context
-            Map<String, Context> serviceContext = new HashMap<>();
-            Context authContext = new Context();
-            authContext.put(Service.queryClient, withCreds(URI.create(authUrlRoot), "allowed", "password"));
-            serviceContext.put(authServiceQuery, authContext);
-            ctx.put(Service.serviceContext, serviceContext);
-            Assert.assertTrue(qe.execAsk());
-        } finally {
-            ctx.remove(Service.serviceContext);
-        }
+        // Auth credentials for valid user with correct password and scoped to base URI of the actual service URL
+        // Provided via Service Context
+        Map<String, Context> serviceContext = new HashMap<>();
+        Context authContext = new Context();
+        authContext.put(Service.queryClient, withCreds(URI.create(authUrlRoot), "allowed", "password"));
+        serviceContext.put(authServiceQuery, authContext);
+        qe.getContext().put(Service.serviceContext, serviceContext);
+        Assert.assertTrue(qe.execAsk());
     }
     
     @Test
@@ -367,7 +357,7 @@ public class TestAuth {
     }
 
     @Test
-    public void update_with_auth_10() throws URISyntaxException {
+    public void update_with_auth_10() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
         UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, authServiceUpdate);
 

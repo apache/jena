@@ -135,7 +135,7 @@ public class QueryEngineHTTP implements QueryExecution {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
-        this.context = ARQ.getContext();
+        this.context = ARQ.getContext().copy();
 
         // Apply service configuration if relevant
         applyServiceConfig(serviceURI, this);

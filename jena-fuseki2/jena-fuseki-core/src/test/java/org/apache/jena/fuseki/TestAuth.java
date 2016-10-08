@@ -34,7 +34,6 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.query.QueryExecutionFactory ;
@@ -189,46 +188,36 @@ public class TestAuth {
 
     @Test
     public void query_with_auth_10() {
-        Context ctx = ARQ.getContext();
-        try {
-            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped
-            // to correct URI
-            // Provided via Service Context and its associated authenticator
-            Map<String, Context> serviceContext = new HashMap<>();
-            Context authContext = new Context();
+        // Auth credentials for valid user with correct password and scoped
+        // to correct URI
+        // Provided via Service Context and its associated authenticator
+        Map<String, Context> serviceContext = new HashMap<>();
+        Context authContext = new Context();
 
-            HttpClient client = withBasicAuth(ANY, "allowed", "password");
-            authContext.put(Service.queryClient, client );
-            serviceContext.put(authServiceQuery, authContext);
-            ctx.put(Service.serviceContext, serviceContext);
-            Assert.assertTrue(qe.execAsk());
-        } finally {
-            ctx.remove(Service.serviceContext);
-        }
+        HttpClient client = withBasicAuth(ANY, "allowed", "password");
+        authContext.put(Service.queryClient, client);
+        serviceContext.put(authServiceQuery, authContext);
+        qe.getContext().put(Service.serviceContext, serviceContext);
+        Assert.assertTrue(qe.execAsk());
     }
     
     @Test
     public void query_with_auth_11() {
-        Context ctx = ARQ.getContext();
-        try {
-            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(authServiceQuery, "ASK { }");
 
-            // Auth credentials for valid user with correct password and scoped
-            // to base URI of the actual service URL
-            // Provided via Service Context and its associated authenticator
-            Map<String, Context> serviceContext = new HashMap<>();
-            Context authContext = new Context();
+        // Auth credentials for valid user with correct password and scoped
+        // to base URI of the actual service URL
+        // Provided via Service Context and its associated authenticator
+        Map<String, Context> serviceContext = new HashMap<>();
+        Context authContext = new Context();
 
-            HttpClient client = withBasicAuth(ANY, "allowed", "password");
-            authContext.put(Service.queryClient, client );
-            serviceContext.put(authServiceQuery, authContext);
-            ctx.put(Service.serviceContext, serviceContext);
-            Assert.assertTrue(qe.execAsk());
-        } finally {
-            ctx.remove(Service.serviceContext);
-        }
+        HttpClient client = withBasicAuth(ANY, "allowed", "password");
+        authContext.put(Service.queryClient, client);
+        serviceContext.put(authServiceQuery, authContext);
+        qe.getContext().put(Service.serviceContext, serviceContext);
+        Assert.assertTrue(qe.execAsk());
     }
     
     @Test
