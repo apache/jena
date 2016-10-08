@@ -65,7 +65,7 @@ public class TestBuildTextDataset extends BaseTest
         queryData(ds) ;
     }
 
-    private void loadData(Dataset dataset) {
+    private static void loadData(Dataset dataset) {
         dataset.begin(ReadWrite.WRITE) ;
         try {
             Model m = dataset.getDefaultModel() ;

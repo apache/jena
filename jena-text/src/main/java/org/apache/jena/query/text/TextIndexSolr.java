@@ -166,11 +166,8 @@ public class TextIndexSolr implements TextIndex
                     continue ;
                 // Multivalued -> array.
                 // Null means "not stored" or "not present"
-                if ( obj instanceof List<? > ) {
-                    @SuppressWarnings("unchecked")
-                    List<String> vals = (List<String>)obj ;
+                if ( obj instanceof List<? > ) 
                     continue ;
-                }
 
                 String v = (String)obj ;
                 Node n = entryToNode(v) ;

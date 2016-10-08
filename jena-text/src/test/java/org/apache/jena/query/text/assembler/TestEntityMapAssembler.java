@@ -81,7 +81,7 @@ public class TestEntityMapAssembler {
         assertEquals(SPEC1_PREDICATE.asNode(), getOne(entityDef,SPEC1_DEFAULT_FIELD));
     }
     
-    private Object getOne(EntityDefinition entityDef, String field) {
+    private static Object getOne(EntityDefinition entityDef, String field) {
         Collection<Node> x = entityDef.getPredicates(field) ;
         if ( x == null || x.size() == 0 )
             return null ;
