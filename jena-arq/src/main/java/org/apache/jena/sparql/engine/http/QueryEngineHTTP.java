@@ -109,8 +109,6 @@ public class QueryEngineHTTP implements QueryExecution {
     // and will close when the engine is closed
     private InputStream retainedConnection = null;
 
-    private HttpClient retainedClient;
-
     public QueryEngineHTTP(String serviceURI, Query query) {
         this(serviceURI, query, query.toString());
     }
@@ -351,7 +349,6 @@ public class QueryEngineHTTP implements QueryExecution {
         }
 
         retainedConnection = in; // This will be closed on close()
-        retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
 
         // Don't assume the endpoint actually gives back the
         // content type we asked for
@@ -671,30 +668,9 @@ public class QueryEngineHTTP implements QueryExecution {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void close() {
         closed = true ;
-
-        // JENA-1063
-        // If we are going to shut down the HTTP client do this first as otherwise
-        // HTTP Client will by default try to re-use the connection and it will
-        // consume any outstanding response data in order to do this which can cause 
-        // the close() on the InputStream to hang for an extremely long time
-        // This also causes resources to continue to be consumed on the server regardless
-        // of the fact that the client has called our close() method and so clearly
-        // does not care about any remaining response
-        // i.e. if we don't do this we are badly behaved towards both the caller and 
-        // the remote server we're interacting with
-        if (retainedClient != null) {
-            try {
-                retainedClient.getConnectionManager().shutdown();
-            } catch (RuntimeException e) {
-                log.debug("Failed to shutdown HTTP client", e);
-            } finally {
-                retainedClient = null;
-            }
-        }
         
         if (retainedConnection != null) {
             try {
@@ -706,7 +682,6 @@ public class QueryEngineHTTP implements QueryExecution {
                 // warning to the logs
                 if (retainedConnection.read() != -1)
                     log.warn("HTTP response not fully consumed, if HTTP Client is reusing connections (its default behaviour) then it will consume the remaining response data which may take a long time and cause this application to become unresponsive");
-                
                 retainedConnection.close();
             } catch (RuntimeIOException e) {
                 // If we are closing early and the underlying stream is chunk encoded

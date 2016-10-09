@@ -68,7 +68,6 @@ public class HttpQuery extends Params {
     private int connectTimeout = 0, readTimeout = 0;
     private boolean allowCompression = false;
     private HttpClient client;
-    private boolean requireClientShutdown = true;
 
     private HttpClientContext context;
 
@@ -206,14 +205,6 @@ public class HttpQuery extends Params {
     public HttpClientContext getContext() {
         if (context == null) context = new HttpClientContext();
         return context;
-    }
-    
-    /**
-     * Gets whether the HTTP client used should be shutdown
-     * @return True if the client should be shutdown, false otherwise
-     */
-    public boolean shouldShutdownClient() {
-        return this.requireClientShutdown;
     }
 
     /**
