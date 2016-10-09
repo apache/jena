@@ -74,7 +74,7 @@ public class FusekiBuilder
 
         addServiceEP(dataService, OperationName.Query,  svc,    pServiceQueryEP) ;
         addServiceEP(dataService, OperationName.Update, svc,    pServiceUpdateEP) ;
-        addServiceEP(dataService, OperationName.Upload, svc,    pServiceUpdateEP) ;
+        addServiceEP(dataService, OperationName.Upload, svc,    pServiceUploadEP);
         addServiceEP(dataService, OperationName.GSP_R,  svc,    pServiceReadGraphStoreEP) ;
         addServiceEP(dataService, OperationName.GSP_RW, svc,    pServiceReadWriteGraphStoreEP) ;
 
