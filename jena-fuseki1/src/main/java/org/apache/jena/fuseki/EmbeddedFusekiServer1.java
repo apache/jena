@@ -37,41 +37,44 @@ import org.apache.jena.tdb.TDBFactory ;
         server.stop() ;
     }
     </pre>
+    
+    @deprecated Use the Embedded Fusek2 server.
  */
-public class EmbeddedFusekiServer
+@Deprecated
+public class EmbeddedFusekiServer1
 {
     
-    public static EmbeddedFusekiServer mem(int port, String datasetPath) {
+    public static EmbeddedFusekiServer1 mem(int port, String datasetPath) {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
-        return EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
+        return EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
     }
     
-    public static EmbeddedFusekiServer memTDB(int port, String datasetPath) {
+    public static EmbeddedFusekiServer1 memTDB(int port, String datasetPath) {
         DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
-        return EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
+        return EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
     }
 
-    public static EmbeddedFusekiServer create(int port, DatasetGraph dsg, String datasetPath) {
+    public static EmbeddedFusekiServer1 create(int port, DatasetGraph dsg, String datasetPath) {
         ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true, true) ;
         conf.port = port ;
         conf.pagesPort = port ;
         if ( ! FileOps.exists(conf.pages) )
             conf.pages = null ;
-        return new EmbeddedFusekiServer(conf) ;
+        return new EmbeddedFusekiServer1(conf) ;
     }
         
-    public static EmbeddedFusekiServer configure(int port, String fileConfig) {
+    public static EmbeddedFusekiServer1 configure(int port, String fileConfig) {
         ServerConfig conf = FusekiConfig.configure(fileConfig) ;
         conf.port = port ;
         conf.pagesPort = port ;
         if ( ! FileOps.exists(conf.pages) )
             conf.pages = null ;
-        return new EmbeddedFusekiServer(conf) ;
+        return new EmbeddedFusekiServer1(conf) ;
     }
     
     private SPARQLServer server = null ;
     
-    public EmbeddedFusekiServer(ServerConfig conf) {
+    public EmbeddedFusekiServer1(ServerConfig conf) {
         server = new SPARQLServer(conf) ;
     }
     

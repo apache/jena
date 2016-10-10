@@ -70,7 +70,7 @@ public class ServerTest
     public static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
     public static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
     
-    private static EmbeddedFusekiServer server = null ;
+    private static EmbeddedFusekiServer1 server = null ;
     
     // reference count of start/stop server
     private static int countServer = 0 ; 
@@ -98,7 +98,7 @@ public class ServerTest
     protected static void setupServer()
     {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
-        server = EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
+        server = EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
         server.start() ;
     }
     
