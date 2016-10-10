@@ -29,7 +29,7 @@ import org.apache.jena.util.FileUtils ;
  */
 
 @Deprecated
-public class IRIResolver {
+public class N3IRIResolver {
 	/**
 	 * The current working directory, as a string.
 	 */
@@ -126,7 +126,7 @@ public class IRIResolver {
 	 * current working directory.
 	 *
 	 */
-	public IRIResolver() {
+	public N3IRIResolver() {
 		this(null);
 	}
 
@@ -139,7 +139,7 @@ public class IRIResolver {
 	 * @throws JenaURIException
 	 *             If resulting base would not be legal, absolute IRI
 	 */
-	public IRIResolver(String baseS) {
+	public N3IRIResolver(String baseS) {
 		if (baseS == null)
 			baseS = chooseBaseURI();
 		// IRI aaa = RelURI.factory.construct(baseS);

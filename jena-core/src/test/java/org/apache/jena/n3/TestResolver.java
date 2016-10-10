@@ -20,7 +20,7 @@ package org.apache.jena.n3;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.n3.IRIResolver ;
+import org.apache.jena.n3.N3IRIResolver ;
 import org.apache.jena.n3.JenaURIException ;
 @SuppressWarnings("deprecation")
 public class TestResolver extends TestCase
@@ -34,7 +34,7 @@ public class TestResolver extends TestCase
     
     public void testBase1()
     {
-        IRIResolver resolver = new IRIResolver() ;
+        N3IRIResolver resolver = new N3IRIResolver() ;
         assertNotNull(resolver.getBaseIRI()) ;
         String base = resolver.getBaseIRI() ;
         assertTrue(base.indexOf(':') > 0 ) ; 
@@ -42,7 +42,7 @@ public class TestResolver extends TestCase
     
     public void testBase2()
     {
-        IRIResolver resolver = new IRIResolver("x") ;
+        N3IRIResolver resolver = new N3IRIResolver("x") ;
         assertNotNull(resolver.getBaseIRI()) ;
         // Active when IRI library integrated - currently the resolver takes a raw base string.
 //        String base = resolver.getBaseIRI() ;
@@ -51,8 +51,8 @@ public class TestResolver extends TestCase
 
     public void testBase3()
     {
-        String b = IRIResolver.resolveGlobal("x") ;
-        IRIResolver resolver = new IRIResolver(b) ;
+        String b = N3IRIResolver.resolveGlobal("x") ;
+        N3IRIResolver resolver = new N3IRIResolver(b) ;
         assertNotNull(resolver.getBaseIRI()) ;
         String base = resolver.getBaseIRI() ;
         assertTrue(base.indexOf(':') > 0 ) ; 
@@ -238,7 +238,7 @@ public class TestResolver extends TestCase
 
     private void execTest(String u, String base, String result)
     {
-        IRIResolver resolver = new IRIResolver(base) ;
+        N3IRIResolver resolver = new N3IRIResolver(base) ;
         String res = resolver.resolve(u) ;
 
         if (result == null )
@@ -254,7 +254,7 @@ public class TestResolver extends TestCase
     // A test for resolved names that depend on where the tests are run.
     private void execTestMatch(String u, String base, String resultPattern)
     {
-        IRIResolver resolver = new IRIResolver(base) ;
+        N3IRIResolver resolver = new N3IRIResolver(base) ;
         String res = resolver.resolve(u) ;
 
         if (resultPattern == null )
@@ -269,14 +269,14 @@ public class TestResolver extends TestCase
     
     private void execFileTest(String fn1, String fn2)
     {
-        String s = IRIResolver.resolveFileURL(fn1) ;
+        String s = N3IRIResolver.resolveFileURL(fn1) ;
         assertEquals(s,fn2) ;
     }
     
     private void execTestFileRelURI(String fn)
     {
         String relName = fn.substring("file:".length()) ;
-        String s = IRIResolver.resolveFileURL(fn) ;
+        String s = N3IRIResolver.resolveFileURL(fn) ;
         assertTrue("Lost relative name: ("+fn+"=>"+s+")", s.endsWith(relName) ) ;
         assertTrue("Not absolute: ("+fn+"=>"+s+")", s.startsWith("file:///") ) ;
     }
@@ -285,7 +285,7 @@ public class TestResolver extends TestCase
     {
         String s = ex.getSimpleName() ;
         try {
-            IRIResolver resolver = new IRIResolver(base) ;
+            N3IRIResolver resolver = new N3IRIResolver(base) ;
             String res = resolver.resolve(u) ;
             if ( res == null )
                 fail("("+u+","+base+") => <null> :: Expected exception: " +s) ;
@@ -301,7 +301,7 @@ public class TestResolver extends TestCase
     {
         String s = ex.getSimpleName() ;
         try {
-            new IRIResolver(base) ;
+            new N3IRIResolver(base) ;
                  fail("("+base+") => OK :: Expected exception: " +s) ;
         } catch (Exception ex2)
         {
@@ -312,14 +312,14 @@ public class TestResolver extends TestCase
     private void choose(String base)
     {
         
-            IRIResolver.chooseBaseURI(base) ;
+            N3IRIResolver.chooseBaseURI(base) ;
         
     }
     private void chooseException(String base, Class<?> ex)
     {
         String s = ex.getSimpleName() ;
         try {
-            IRIResolver.chooseBaseURI(base) ;
+            N3IRIResolver.chooseBaseURI(base) ;
                  fail("("+base+") => OK :: Expected exception: " +s) ;
         } catch (Exception ex2)
         {

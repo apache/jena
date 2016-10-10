@@ -50,7 +50,7 @@ public class Manifest
     public Manifest(String fn)
     {
         log.debug("Manifest = "+fn ) ;
-        filename = org.apache.jena.n3.IRIResolver.resolveGlobal(fn) ;
+        filename = org.apache.jena.n3.N3IRIResolver.resolveGlobal(fn) ;
         log.debug("         = "+filename ) ;
         manifest = FileManager.get().loadModel(filename) ;
         parseIncludes() ;
