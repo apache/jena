@@ -3,6 +3,4 @@ sudo: false
 script: mvn -Pdev verify
 jdk:
   - oraclejdk8
-env:
-  global:
-    - JAVA_OPTS="-Xmx1024M -Xms512M"
+
