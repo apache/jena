@@ -3,16 +3,6 @@ sudo: false
 script: mvn -Pdev verify
 jdk:
   - oraclejdk8
-  - openjdk8
 env:
   global:
     - JAVA_OPTS="-Xmx1024M -Xms512M"
-notifications:
-  irc:
-    channels:
-      - "irc.freenode.org#jena"
-    on_success: change
-    on_failure: always
-    template:
-      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
-    skip_join: true
