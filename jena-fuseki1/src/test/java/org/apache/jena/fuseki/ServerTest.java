@@ -70,15 +70,12 @@ public class ServerTest
     public static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
     public static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
     
+    @SuppressWarnings("deprecation")
     private static EmbeddedFusekiServer1 server = null ;
     
     // reference count of start/stop server
     private static int countServer = 0 ; 
     
-    // This will cause there to be one server over all tests.
-    // Must be after initialization of counters 
-    //static { allocServer() ; }
-
     static public void allocServer()
     {
         if ( countServer == 0 )
@@ -95,6 +92,7 @@ public class ServerTest
         }
     }
     
+    @SuppressWarnings("deprecation")
     protected static void setupServer()
     {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
@@ -102,6 +100,7 @@ public class ServerTest
         server.start() ;
     }
     
+    @SuppressWarnings("deprecation")
     protected static void teardownServer() {
         DatasetRegistry.get().clear() ;
         if ( server != null )
