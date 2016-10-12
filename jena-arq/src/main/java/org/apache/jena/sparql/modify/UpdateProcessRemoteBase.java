@@ -136,7 +136,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     }
 
     /**
-     * Gets the generated query string portion of the endpoint URL if applicable
+     * Gets the generated HTTP query string portion of the endpoint URL if applicable
      * <p>
      * Generated string will not include leading ? so that consuming code can
      * decide whether to add this themselves since the generated query string
