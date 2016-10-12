@@ -122,13 +122,13 @@ public final class Token
         return line ;
     }
 
-    Token(String string) { this(STRING, string) ; } 
+    public Token(String string) { this(STRING, string) ; } 
 
-    Token(TokenType type) { this(type, null, null) ; }
+    public Token(TokenType type) { this(type, null, null) ; }
 
-    Token(TokenType type, String image1) { this(type, image1, null) ; }
+    public Token(TokenType type, String image1) { this(type, image1, null) ; }
 
-    Token(TokenType type, String image1, String image2) { 
+    public Token(TokenType type, String image1, String image2) { 
         this() ;
         setType(type) ;
         setImage(image1) ;
