@@ -29,11 +29,8 @@ import org.junit.BeforeClass ;
 public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccessor
 {
     @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    @AfterClass public static void afterClass() { ServerTest.freeServer() ; }
-    @Before public void before() { 
-        ServerTest.resetServer() ; 
-    }
-
+    @AfterClass public static void afterClass()   { ServerTest.freeServer() ; }
+    @Before public void before()                  { ServerTest.resetServer() ; } 
     
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()

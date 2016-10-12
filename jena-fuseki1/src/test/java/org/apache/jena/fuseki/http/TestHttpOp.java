@@ -36,7 +36,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
-// especially error cases abnd unusual usage that the higher level APIs don't use.
+// especially error cases and unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends BaseTest {
     
     static String pingURL = ServerTest.urlRoot+"ping.txt" ;

@@ -36,8 +36,6 @@ import org.junit.Test ;
 
 public class TestDatasetAccessorHTTP extends BaseTest 
 {
-    //Model level testing.
-    
     static final String datasetURI_not_1    = "http://localhost:"+port+"/junk" ;
     static final String datasetURI_not_2    = serviceREST+"/not" ;
     static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;

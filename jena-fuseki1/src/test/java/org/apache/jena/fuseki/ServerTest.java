@@ -49,12 +49,13 @@ public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
     
-    public static final int port             = choosePort(3635, 3634, 3653, 3652, 103635, 103634, 103653, 103652) ;   // Different to the Fuseki2 test ports.
+    // Different to the Fuseki2 test ports.
+    public static final int port             = choosePort(3635, 3634, 3653, 3652, 103635, 103634, 103653, 103652) ;
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
     public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ; // ??????
+    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ; 
     
     public static final String gn1       = "http://graph/1" ;
     public static final String gn2       = "http://graph/2" ;
@@ -76,15 +77,13 @@ public class ServerTest
     // reference count of start/stop server
     private static int countServer = 0 ; 
     
-    static public void allocServer()
-    {
+    static public void allocServer() {
         if ( countServer == 0 )
             setupServer() ;
         countServer++ ;
     }
     
-    static public void freeServer() 
-    {
+    static public void freeServer() {
         if ( countServer >= 0 ) {
             countServer -- ;
             if ( countServer == 0 )
@@ -93,8 +92,7 @@ public class ServerTest
     }
     
     @SuppressWarnings("deprecation")
-    protected static void setupServer()
-    {
+    protected static void setupServer() {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         server = EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
         server.start() ;
@@ -107,8 +105,7 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-    public static void resetServer()
-    {
+    public static void resetServer() {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
