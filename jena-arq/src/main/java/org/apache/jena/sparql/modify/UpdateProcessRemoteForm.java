@@ -60,8 +60,8 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
      *            Update endpoint
      * @param context
      *            Context
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP Client
      */
     public UpdateProcessRemoteForm(UpdateRequest request, String endpoint, Context context, HttpClient client) {
         this(request, endpoint, context);

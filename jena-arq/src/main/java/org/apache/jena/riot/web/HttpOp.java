@@ -224,6 +224,10 @@ public class HttpOp {
             .build() ;
     }
     
+    /**
+     * Create an HttpClient that performs client-side caching and conection pooling. This can be used
+     * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     */
     public static CloseableHttpClient createCachingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);

@@ -45,17 +45,14 @@ public class TestQuery extends BaseTest
     }
     
     // DRY - test protocol?
-    @BeforeClass public static void beforeClass()
-    {
+    @BeforeClass public static void beforeClass() {
         ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
     
-    @AfterClass public static void afterClass()
-    {
+    @AfterClass public static void afterClass() {
         ServerTest.freeServer() ;
     }
     

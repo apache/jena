@@ -46,14 +46,17 @@ public class TS_Fuseki extends ServerTest
     // Used for all tests except auth tests.
     static final HttpClient globalPoolingClient = HttpOp.createPoolingHttpClient();
     
-    @BeforeClass public static void beforeClassAbstract1() {
+    @BeforeClass
+    static public void beforeClass() {
         HttpOp.setDefaultHttpClient(globalPoolingClient) ;
+        LogCtl.disable(Fuseki.requestLogName) ;
+        // Suppress pooling client retry messages.
+        LogCtl.setLevel("org.apache.http.impl.execchain.RetryExec", "WARN") ;
     }
-    
-    @AfterClass public static void afterClassAbstract1() {
+
+    @AfterClass
+    static public void afterClass() {
         HttpOp.setDefaultHttpClient(defaultHttpClient) ;
+        LogCtl.setInfo(Fuseki.requestLogName) ;
     }
-    
-    @BeforeClass static public void beforeClass() { LogCtl.disable(Fuseki.requestLogName) ; }
-    @AfterClass static public void afterClass()   { LogCtl.setInfo(Fuseki.requestLogName) ;}
 }

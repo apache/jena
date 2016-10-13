@@ -18,7 +18,15 @@
 
 package org.apache.jena.fuseki.http;
 
-import static org.apache.jena.fuseki.ServerTest.* ;
+import static org.apache.jena.fuseki.ServerTest.datasetPath ;
+import static org.apache.jena.fuseki.ServerTest.gn1 ;
+import static org.apache.jena.fuseki.ServerTest.gn2 ;
+import static org.apache.jena.fuseki.ServerTest.gn99 ;
+import static org.apache.jena.fuseki.ServerTest.model1 ;
+import static org.apache.jena.fuseki.ServerTest.model2 ;
+import static org.apache.jena.fuseki.ServerTest.port ;
+import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.fuseki.ServerTest ;
@@ -28,8 +36,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
+import org.junit.After ;
 import org.junit.AfterClass ;
-import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
@@ -40,9 +48,9 @@ public class TestDatasetAccessorHTTP extends BaseTest
     static final String datasetURI_not_2    = serviceREST+"/not" ;
     static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;
     
-    @BeforeClass public static void beforeClass()   { ServerTest.allocServer() ; }
-    @AfterClass public static void afterClass()     { ServerTest.freeServer() ; }
-    @Before public void before()                    { ServerTest.resetServer() ; }
+    @BeforeClass public static void beforeClass()  { ServerTest.allocServer() ; }
+    @AfterClass  public static void afterClass()   { ServerTest.freeServer() ; }
+    @After       public void after()               { ServerTest.resetServer() ; }
     
     @Test(expected=HttpException.class)
     public void test_ds_1()

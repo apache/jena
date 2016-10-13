@@ -299,7 +299,7 @@ public class QueryEngineHTTP implements QueryExecution {
     /**
      * Get the HTTP client in use, if none is set then null.
      * 
-     * @param client HTTP client
+     * @return client HTTP client
      */
     public HttpClient getClient() {
         return client;
