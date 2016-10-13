@@ -48,8 +48,8 @@ import org.apache.jena.update.UpdateProcessor ;
 public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
-    // Different to the Fuseki2 test ports.
     public static final int port             = choosePort() ;   // Different to the Fuseki2 test ports.
+
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
@@ -102,7 +102,6 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-
     public static void resetServer()
     {
         if (countServer.get() == 0)  throw new RuntimeException("No server started!");
