@@ -34,12 +34,12 @@ public abstract class AbstractRemoteEndpointResultSetTests extends AbstractResul
 
 	static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient() ;
 	// Used for all tests except auth tests.
-	static HttpClient globalCachingClient = HttpOp.createCachingHttpClient() ;
+	static HttpClient globalPoolingClient = HttpOp.createPoolingHttpClient() ;
 	
 	@BeforeClass public static void beforeClassAbstract1() {
         JenaSystem.init() ;
         Fuseki.init();
-		HttpOp.setDefaultHttpClient(globalCachingClient) ;
+		HttpOp.setDefaultHttpClient(globalPoolingClient) ;
     }
 	
 	@AfterClass public static void afterClassAbstract1() {

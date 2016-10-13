@@ -17,7 +17,6 @@
  */
 package org.apache.jena.jdbc.remote;
 
-import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnection;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithAuth;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithGraphUris;
@@ -28,7 +27,6 @@ import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithAuth;
 import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithGraphUris;
 import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithResultSetTypes;
 import org.apache.jena.jdbc.remote.statements.TestRemoteEndpointStatements;
-import org.apache.jena.riot.web.HttpOp;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -41,12 +39,15 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestRemoteEndpointDriver.class,
+    
     TestRemoteEndpointConnection.class,
     TestRemoteEndpointConnectionWithAuth.class,
     TestRemoteEndpointConnectionWithGraphUris.class,
-    TestRemoteEndpointConnectionWithResultSetTypes.class,
+    TestRemoteEndpointConnectionWithResultSetTypes.class
+    ,
     TestRemoteConnectionMetadata.class,
-    TestRemoteEndpointStatements.class,
+    TestRemoteEndpointStatements.class
+    ,
     TestRemoteEndpointResults.class,
     TestRemoteEndpointResultsWithAuth.class,
     TestRemoteEndpointResultsWithGraphUris.class,
@@ -56,20 +57,13 @@ import org.junit.runners.Suite;
 
 public class TS_JdbcDriverRemote {
 
-    // Use HttpOp caching of connections during testing to avoid
-    // swamping kernel socket management
-    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient();
-    // Used for all tests except auth tests.
-    static final HttpClient globalPoolingClient = HttpOp.createPoolingHttpClient();
-
     @BeforeClass
     public static void beforeClassAbstract1() {
-        HttpOp.setDefaultHttpClient(globalPoolingClient);
+        ServerCtl.ctlBeforeTestSuite() ;
     }
 
     @AfterClass
     public static void afterClassAbstract1() {
-        HttpOp.setDefaultHttpClient(defaultHttpClient);
+        ServerCtl.ctlAfterTestSuite() ;
     }
-
 }

@@ -85,8 +85,8 @@ public class RemoteEndpointConnection extends JenaConnection {
      *            Default Graph URIs for SPARQL updates
      * @param usingNamedGraphUris
      *            Named Graph URIs for SPARQL updates
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP client
      * @param holdability
      *            Result Set holdability
      * @param compatibilityLevel

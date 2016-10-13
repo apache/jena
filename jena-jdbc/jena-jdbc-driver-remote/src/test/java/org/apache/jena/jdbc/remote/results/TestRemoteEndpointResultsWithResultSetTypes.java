@@ -25,13 +25,14 @@ import java.sql.Statement;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
+import org.apache.jena.jdbc.remote.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before ;
 import org.junit.BeforeClass;
 
 /**
@@ -39,7 +40,12 @@ import org.junit.BeforeClass;
  *
  */
 public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteEndpointResultSetTests {
-    
+
+    //@BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    //@AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()  { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()   { ServerCtl.ctlAfterTest(); } 
+
     private static RemoteEndpointConnection connection;
     
     /**
@@ -48,18 +54,9 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
      */
     @BeforeClass
     public static void setup() throws SQLException {
-        ServerTest.allocServer();
-        HttpOp.setDefaultHttpClient(null);
+        ServerCtl.ctlBeforeClass();
         connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRdfJson);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
-    }
-    
-    /**
-     * Clean up after each test by resetting the Fuseki instance
-     */
-    @After
-    public void cleanupTest() {
-        ServerTest.resetServer();
     }
     
     /**
@@ -68,11 +65,8 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
      */
     @AfterClass
     public static void cleanup() throws SQLException {
-        
-        // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
-        
         connection.close();
-        ServerTest.freeServer();
+        ServerCtl.ctlAfterClass();
     }
 
     @Override

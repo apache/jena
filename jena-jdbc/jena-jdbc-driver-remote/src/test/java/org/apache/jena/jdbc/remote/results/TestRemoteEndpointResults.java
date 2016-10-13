@@ -25,12 +25,14 @@ import java.sql.Statement;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
+import org.apache.jena.jdbc.remote.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before ;
 import org.junit.BeforeClass;
 
 /**
@@ -41,25 +43,22 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     
     private static RemoteEndpointConnection connection;
     
+    //@BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    //@AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()  { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()   { ServerCtl.ctlAfterTest(); } 
+
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
      * @throws SQLException 
      */
     @BeforeClass
     public static void setup() throws SQLException {
-        ServerTest.allocServer();
-    	    HttpOp.setDefaultHttpClient(null);
+        ServerCtl.ctlBeforeClass();
         connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
-    /**
-     * Clean up after each test by resetting the Fuseki instance
-     */
-    @After
-    public void cleanupTest() {
-        ServerTest.resetServer();
-    }
     /**
      * Clean up after tests by de-allocating the Fuseki instance
      * @throws SQLException 
@@ -67,7 +66,7 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     @AfterClass
     public static void cleanup() throws SQLException {
         connection.close();
-        ServerTest.freeServer();
+        ServerCtl.ctlAfterClass();
     }
 
     @Override

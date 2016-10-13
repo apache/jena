@@ -63,7 +63,8 @@ public class RemoteEndpointStatement extends JenaStatement {
      *            Connection
      * @param type
      *            Result Set type for result sets produced by this statement
-     * @param authenticator HTTP Authenticator
+     * @param client
+     *            HTTP client
      * @param fetchDir
      *            Fetch Direction
      * @param fetchSize

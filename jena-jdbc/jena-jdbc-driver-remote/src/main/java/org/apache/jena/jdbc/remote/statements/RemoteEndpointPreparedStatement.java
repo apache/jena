@@ -65,8 +65,8 @@ public class RemoteEndpointPreparedStatement extends JenaPreparedStatement {
      *            SPARQL command
      * @param connection
      *            Connection
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP client
      * @param type
      *            Result Set type for result sets produced by this statement
      * @param fetchDir
