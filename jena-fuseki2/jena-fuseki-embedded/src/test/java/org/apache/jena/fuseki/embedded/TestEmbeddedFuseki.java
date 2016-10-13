@@ -70,18 +70,6 @@ public class TestEmbeddedFuseki {
         server.stop() ;
     }
     
-    @Test public void embedded_01a() {
-        Dataset ds = DatasetFactory.createTxnMem() ;
-        FusekiEmbeddedServer server = FusekiEmbeddedServer.create().add("/ds", ds).build() ;
-        assertTrue(DataAccessPointRegistry.get().isRegistered("/ds")) ;
-        server.start() ;
-        query("http://localhost:3330/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
-            ResultSet rs = qExec.execSelect() ; 
-            assertFalse(rs.hasNext()) ;
-        }) ;
-        server.stop() ;
-    }
-
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.make(3330, "/ds2", dsg) ;
@@ -242,6 +230,22 @@ public class TestEmbeddedFuseki {
         } finally { server.stop() ; } 
     }
 
+    @Test public void embedded_20() {
+        DatasetGraph dsg = dataset() ;
+        DataService dSrv = new DataService(dsg) ;
+        dSrv.addEndpoint(OperationName.Query, "q") ;
+        dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
+            .add("/dsrv1", dSrv)
+            .build() ;
+        server.start() ;
+        try {
+            query("http://localhost:3330/dsrv1/q","ASK{}",x->{}) ;
+            String x1 = HttpOp.execHttpGetString("http://localhost:3330/dsrv1/gsp") ;
+            assertNotNull(x1) ;
+        } finally { server.stop() ; } 
+    }
+    
     /** Create an HttpEntity for the graph */  
     protected static HttpEntity graphToHttpEntity(final Graph graph) {
         final RDFFormat syntax = RDFFormat.TURTLE_BLOCKS ;
