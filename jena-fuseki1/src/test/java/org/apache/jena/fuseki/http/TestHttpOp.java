@@ -25,28 +25,28 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.* ;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
 // especially error cases and unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends BaseTest {
     
-    static String pingURL = ServerTest.urlRoot+"ping.txt" ;
-    @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    @AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
-    static String graphURL = ServerTest.serviceREST+"?default" ;
-    static String queryURL = ServerTest.serviceQuery ;
-    static String updateURL = ServerTest.serviceUpdate ;
-    
+    static String pingURL     = ServerTest.urlRoot + "ping.txt" ;
+    static String graphURL    = ServerTest.serviceREST + "?default" ;
+    static String queryURL    = ServerTest.serviceQuery ;
+    static String updateURL   = ServerTest.serviceUpdate ;
     static String simpleQuery = queryURL+"?query="+IRILib.encodeUriComponent("ASK{}") ;
     
     // Basic operations

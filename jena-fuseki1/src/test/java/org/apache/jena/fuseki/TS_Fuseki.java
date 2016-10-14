@@ -18,12 +18,9 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.http.client.HttpClient;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
-import org.apache.jena.riot.web.HttpOp ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -38,25 +35,16 @@ import org.junit.runners.Suite ;
     , TestQuery.class
     , TestAuth.class
 })
+
 public class TS_Fuseki extends ServerTest
 {
-    // Use HttpOp caching of connections during testing to avoid
-    // swamping  kernel socket management
-    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient() ;
-    // Used for all tests except auth tests.
-    static final HttpClient globalPoolingClient = HttpOp.createPoolingHttpClient();
-    
     @BeforeClass
     static public void beforeClass() {
-        HttpOp.setDefaultHttpClient(globalPoolingClient) ;
-        LogCtl.disable(Fuseki.requestLogName) ;
-        // Suppress pooling client retry messages.
-        LogCtl.setLevel("org.apache.http.impl.execchain.RetryExec", "WARN") ;
+        ServerCtl.ctlBeforeTestSuite(); 
     }
 
     @AfterClass
     static public void afterClass() {
-        HttpOp.setDefaultHttpClient(defaultHttpClient) ;
-        LogCtl.setInfo(Fuseki.requestLogName) ;
+        ServerCtl.ctlAfterTestSuite(); 
     }
 }

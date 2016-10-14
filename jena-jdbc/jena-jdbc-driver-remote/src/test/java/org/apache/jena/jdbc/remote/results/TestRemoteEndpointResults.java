@@ -22,14 +22,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before ;
@@ -45,8 +44,8 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     
     //@BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
     //@AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()  { ServerCtl.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()   { ServerCtl.ctlAfterTest(); } 
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with

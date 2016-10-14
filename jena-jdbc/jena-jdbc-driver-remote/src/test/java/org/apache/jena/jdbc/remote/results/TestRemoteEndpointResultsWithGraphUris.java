@@ -24,14 +24,13 @@ import java.sql.Statement;
 import java.util.List;
 
 import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.web.HttpOp;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before ;

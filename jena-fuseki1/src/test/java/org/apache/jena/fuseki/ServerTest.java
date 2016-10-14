@@ -48,11 +48,6 @@ import org.apache.jena.update.UpdateProcessor ;
  */
 public class ServerTest
 {
-    // Note:
-    // @Before  public void before()              { ServerTest.resetServer() ; }
-    // If using SPARQL Update to reset the server. 
-    // It can hit the server before it has started properly. 
-    
     static { Fuseki.init(); }
     
     // Abstraction that runs a SPARQL server for tests.
@@ -83,12 +78,12 @@ public class ServerTest
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
     
-    static public void allocServer() {
+    /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
             setupServer() ;
     }
     
-    static public void freeServer() {
+    /*package*/ static void freeServer() {
         if ( countServer.decrementAndGet() == 0 )
             teardownServer() ;
     }
@@ -112,7 +107,7 @@ public class ServerTest
         server = null ;
     }
 
-    public static void resetServer() {
+    /*package*/ static void resetServer() {
         if (countServer.get() == 0)  
             throw new RuntimeException("No server started!");
         if ( CLEAR_DSG_DIRECTLY ) {

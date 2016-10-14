@@ -20,11 +20,10 @@ package org.apache.jena.jdbc.remote.statements;
 
 import java.sql.SQLException;
 
-import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.statements.AbstractJenaStatementTests;
 import org.junit.After;
@@ -40,8 +39,8 @@ public class TestRemoteEndpointStatements extends AbstractJenaStatementTests {
 
     @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
     @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()  { ServerCtl.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()   { ServerCtl.ctlAfterTest(); } 
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
 
     @Override
     protected JenaConnection getConnection() throws SQLException {

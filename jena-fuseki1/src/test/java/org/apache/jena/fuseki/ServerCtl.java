@@ -16,13 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.jdbc.remote;
+package org.apache.jena.fuseki;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.web.HttpOp ;
 
 public class ServerCtl {
@@ -31,45 +29,50 @@ public class ServerCtl {
     /* Put this in each test class using the Fuseki server:
     @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
     @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest() { ServerCtl.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()  { ServerCtl.ctlAfterTest(); } 
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     */
     
-    // One server, all tests.
-    //static { ServerTest.allocServer(); }
-    
-    // Use HttpOp caching of connections during testing to avoid
-    // swamping kernel socket management
     static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient();
-    
-    // Used for all tests except auth tests.
-    //static final HttpClient globalPoolingClient = HttpOp.createPoolingHttpClient();
 
+    // 2 choices: server over whole test suite or server over each test class.
+    // Preferred "true" - stop-start server between test classes.
+    // Note: it is import to cleanly close a PoolingHttpClient across server restarts
+    // otherwise the pooled connections remian for the old server. 
+    
+    static final boolean SERVER_PER_CLASS = true ;  
     public static void ctlBeforeTestSuite() {
-        // Does not work to have pool across server free/alloc.
-        // This may be to do with timing when using localhost
-        // and a high frequence connection churn.
-        //setPoolingHttpClient() ;
+        if ( ! SERVER_PER_CLASS ) {
+            setPoolingHttpClient() ;
+            ServerTest.allocServer();
+        }
     }
     
     public static void ctlAfterTestSuite()  {
-        //resetDefaultHttpClient();
+        if ( ! SERVER_PER_CLASS ) {
+            ServerTest.freeServer();
+            resetDefaultHttpClient() ;
+        }
     }
     
     /**
      * Setup for the tests by allocating a Fuseki instance to work with
      */
     public static void ctlBeforeClass() {
-        setPoolingHttpClient() ;
-        ServerTest.allocServer();
+        if ( SERVER_PER_CLASS ) {
+            setPoolingHttpClient() ;
+            ServerTest.allocServer();
+        }
     }
     
     /**
      * Clean up after tests by de-allocating the Fuseki instance
      */
     public static void ctlAfterClass() {
-        ServerTest.freeServer();
-        resetDefaultHttpClient() ;
+        if ( SERVER_PER_CLASS ) {
+            ServerTest.freeServer();
+            resetDefaultHttpClient() ;
+        }
     }
 
     /**
@@ -102,5 +105,4 @@ public class ServerCtl {
             IO.close((CloseableHttpClient)hc) ;
         HttpOp.setDefaultHttpClient(newHttpClient) ;
     }
-
 }

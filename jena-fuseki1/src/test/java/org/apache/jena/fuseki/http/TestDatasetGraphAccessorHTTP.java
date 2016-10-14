@@ -18,19 +18,22 @@
 
 package org.apache.jena.fuseki.http;
 
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessorHTTP ;
 import org.junit.After ;
 import org.junit.AfterClass ;
+import org.junit.Before ;
 import org.junit.BeforeClass ;
 
 public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccessor
 {
-    @BeforeClass public static void beforeClass()  { ServerTest.allocServer() ; }
-    @AfterClass  public static void afterClass()   { ServerTest.freeServer() ; }
-    @After       public void after()               { ServerTest.resetServer() ; }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()

@@ -18,17 +18,11 @@
 
 package org.apache.jena.fuseki.http;
 
-import static org.apache.jena.fuseki.ServerTest.datasetPath ;
-import static org.apache.jena.fuseki.ServerTest.gn1 ;
-import static org.apache.jena.fuseki.ServerTest.gn2 ;
-import static org.apache.jena.fuseki.ServerTest.gn99 ;
-import static org.apache.jena.fuseki.ServerTest.model1 ;
-import static org.apache.jena.fuseki.ServerTest.model2 ;
-import static org.apache.jena.fuseki.ServerTest.port ;
-import static org.apache.jena.fuseki.ServerTest.serviceREST ;
+import static org.apache.jena.fuseki.ServerTest.* ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
@@ -36,10 +30,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.* ;
 
 
 public class TestDatasetAccessorHTTP extends BaseTest 
@@ -48,9 +39,10 @@ public class TestDatasetAccessorHTTP extends BaseTest
     static final String datasetURI_not_2    = serviceREST+"/not" ;
     static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;
     
-    @BeforeClass public static void beforeClass()  { ServerTest.allocServer() ; }
-    @AfterClass  public static void afterClass()   { ServerTest.freeServer() ; }
-    @After       public void after()               { ServerTest.resetServer() ; }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
     @Test(expected=HttpException.class)
     public void test_ds_1()
