@@ -22,7 +22,9 @@ import java.net.SocketException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException ;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -152,9 +154,8 @@ public class TestService {
         // Check that no settings were changed
         Assert.assertEquals(-1, engine.getTimeout1());
         Assert.assertEquals(-1, engine.getTimeout2());
-        Assert.assertTrue(engine.getAllowGZip());
-        Assert.assertTrue(engine.getAllowDeflate());
-        Assert.assertFalse(engine.isUsingBasicAuthentication());
+        Assert.assertTrue(engine.getAllowCompression());
+        Assert.assertNull(engine.getClient());
     }
 
     @SuppressWarnings("unchecked")
@@ -172,8 +173,8 @@ public class TestService {
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryAuthUser, "user");
-            serviceContext.put(Service.queryAuthPwd, "password");
+            HttpClient testClient = HttpClients.custom().build();
+            serviceContext.put(Service.queryClient, testClient);
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -182,13 +183,11 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(-1, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
-            Assert.assertTrue(engine.isUsingBasicAuthentication());
+            Assert.assertTrue(engine.getAllowCompression());
+            Assert.assertEquals(testClient, engine.getClient());
 
         } finally {
-            serviceContext.remove(Service.queryAuthUser);
-            serviceContext.remove(Service.queryAuthPwd);
+            serviceContext.remove(Service.queryClient);
         }
     }
 
@@ -215,9 +214,8 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(10, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
-            Assert.assertFalse(engine.isUsingBasicAuthentication());
+            Assert.assertTrue(engine.getAllowCompression());
+            Assert.assertNull(engine.getClient());
         } finally {
             serviceContext.remove(Service.queryTimeout);
         }
@@ -246,9 +244,8 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(20, engine.getTimeout1());
             Assert.assertEquals(10, engine.getTimeout2());
-            Assert.assertTrue(engine.getAllowGZip());
-            Assert.assertTrue(engine.getAllowDeflate());
-            Assert.assertFalse(engine.isUsingBasicAuthentication());
+            Assert.assertTrue(engine.getAllowCompression());
+            Assert.assertNull(engine.getClient());
         } finally {
             serviceContext.remove(Service.queryTimeout);
         }
@@ -268,8 +265,7 @@ public class TestService {
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryGzip, false);
-            serviceContext.put(Service.queryDeflate, false);
+            serviceContext.put(Service.queryCompression, false);
 
             Query q = QueryFactory.create("ASK { }");
             QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(SERVICE, q);
@@ -278,12 +274,10 @@ public class TestService {
             // Check that no settings were changed
             Assert.assertEquals(-1, engine.getTimeout1());
             Assert.assertEquals(-1, engine.getTimeout2());
-            Assert.assertFalse(engine.getAllowGZip());
-            Assert.assertFalse(engine.getAllowDeflate());
-            Assert.assertFalse(engine.isUsingBasicAuthentication());
+            Assert.assertFalse(engine.getAllowCompression());
+            Assert.assertNull(engine.getClient());
         } finally {
-            serviceContext.remove(Service.queryGzip);
-            serviceContext.remove(Service.queryDeflate);
+            serviceContext.remove(Service.queryCompression);
         }
     }
 
@@ -301,7 +295,7 @@ public class TestService {
         Assert.assertNotNull(engine);
 
         // Check that no settings were changed
-        Assert.assertFalse(engine.isUsingAuthentication());
+        Assert.assertNull(engine.getClient());
     }
 
     @SuppressWarnings("unchecked")
@@ -318,19 +312,18 @@ public class TestService {
         }
         Context serviceContext = serviceContextMap.get(SERVICE);
         try {
-            serviceContext.put(Service.queryAuthUser, "user");
-            serviceContext.put(Service.queryAuthPwd, "password");
+            HttpClient testClient = HttpClients.custom().build();
+            serviceContext.put(Service.queryClient, testClient);
 
             UpdateRequest updates = UpdateFactory.create("CREATE GRAPH <http://example>");
             UpdateProcessRemoteBase engine = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, SERVICE);
             Assert.assertNotNull(engine);
 
-            // Check that auth settings were changed
-            Assert.assertTrue(engine.isUsingAuthentication());
+            // Check that client settings were changed
+            Assert.assertEquals(testClient, engine.getClient());
 
         } finally {
-            serviceContext.remove(Service.queryAuthUser);
-            serviceContext.remove(Service.queryAuthPwd);
+            serviceContext.remove(Service.queryClient);
         }
     }
 }

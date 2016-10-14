@@ -18,7 +18,7 @@
 
 package org.apache.jena.query;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.web.DatasetAdapter ;
 import org.apache.jena.web.DatasetGraphAccessor ;
@@ -42,14 +42,14 @@ public class DatasetAccessorFactory
     }
     
     /**
-     * Create an accessor for a remote HTTP service that requires authentication
+     * Create an accessor for a remote HTTP service that requires a custom client (e.g. for authentication)
      * @param serviceURI Service URI
-     * @param authenticator HTTP authenticator
+     * @param client HTTP client
      * @return Accessor
      */
-    public static DatasetAccessor createHTTP(String serviceURI, HttpAuthenticator authenticator)
+    public static DatasetAccessor createHTTP(String serviceURI, HttpClient client)
     {
-        return adapt(new DatasetGraphAccessorHTTP(serviceURI, authenticator));
+        return adapt(new DatasetGraphAccessorHTTP(serviceURI, client));
     }
 
     /**

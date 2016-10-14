@@ -15,20 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.jdbc.remote.connections;
 
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.jdbc.connections.AbstractJenaConnectionTests;
 
 /**
  * Abstract tests for remote endpoint driver connections
- *
  */
 public abstract class AbstractRemoteEndpointConnectionTests extends AbstractJenaConnectionTests {
-    
-    static {
-        Fuseki.init();
-    }
-
 }

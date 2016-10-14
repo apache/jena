@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
@@ -49,24 +50,14 @@ public class Service {
     public static final String base = "http://jena.hpl.hp.com/Service#";
 
     /**
-     * Use to set the HttpQuery.allowDeflate flag.
+     * Use to set the HttpQuery.allowCompression flag.
      */
-    public static final Symbol queryDeflate = SystemARQ.allocSymbol(base, "queryDeflate");
+    public static final Symbol queryCompression = SystemARQ.allocSymbol(base, "queryCompression");
 
     /**
-     * Use to set the HttpQuery.allowGZip flag.
+     * Use to set the HTTP client for a service.
      */
-    public static final Symbol queryGzip = SystemARQ.allocSymbol(base, "queryGzip");
-
-    /**
-     * Use to set the user id for basic auth.
-     */
-    public static final Symbol queryAuthUser = SystemARQ.allocSymbol(base, "queryAuthUser");
-
-    /**
-     * Use to set the user password for basic auth.
-     */
-    public static final Symbol queryAuthPwd = SystemARQ.allocSymbol(base, "queryAuthPwd");
+    public static final Symbol queryClient = SystemARQ.allocSymbol(base, "queryClient");
 
     /**
      * Use this Symbol to allow passing additional service context variables
@@ -231,17 +222,10 @@ public class Service {
         // configure the query object.
         httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
         httpQuery.addParam(HttpParams.pQuery, query.toString());
-        httpQuery.setAllowGZip(context.isTrueOrUndef(queryGzip));
-        httpQuery.setAllowDeflate(context.isTrueOrUndef(queryDeflate));
+        httpQuery.setAllowCompression(context.isTrueOrUndef(queryCompression));
 
-        String user = context.getAsString(queryAuthUser);
-        String pwd = context.getAsString(queryAuthPwd);
-
-        if (user != null || pwd != null) {
-            user = user == null ? "" : user;
-            pwd = pwd == null ? "" : pwd;
-            httpQuery.setBasicAuthentication(user, pwd.toCharArray());
-        }
+        HttpClient client = context.get(queryClient);
+        if (client != null) httpQuery.setClient(client);    
 
         setAnyTimeouts(httpQuery, context);
 

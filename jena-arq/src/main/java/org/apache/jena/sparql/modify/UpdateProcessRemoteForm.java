@@ -18,8 +18,9 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.riot.web.HttpOp;
+import static org.apache.jena.riot.web.HttpOp.execHttpPostForm;
+
+import org.apache.http.client.HttpClient;
 import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
@@ -59,16 +60,15 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
      *            Update endpoint
      * @param context
      *            Context
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP Client
      */
-    public UpdateProcessRemoteForm(UpdateRequest request, String endpoint, Context context, HttpAuthenticator authenticator) {
+    public UpdateProcessRemoteForm(UpdateRequest request, String endpoint, Context context, HttpClient client) {
         this(request, endpoint, context);
-        // Don't want to overwrite credentials we may have picked up from
+        // Don't want to overwrite config we may have picked up from
         // service context in the parent constructor if the specified
-        // authenticator is null
-        if (authenticator != null)
-            this.setAuthenticator(authenticator);
+        // client is null
+        if (client != null) this.setClient(client);
     }
 
     @Override
@@ -83,7 +83,6 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
         String reqStr = this.getUpdateRequest().toString();
         Params ps = new Params(this.getParams());
         ps.addParam(HttpParams.pUpdate, reqStr);
-        HttpOp.execHttpPostForm(this.getEndpoint(), ps, null, HttpResponseLib.nullResponse, null, getHttpContext(),
-                getAuthenticator());
+        execHttpPostForm(this.getEndpoint(), ps, null, HttpResponseLib.nullResponse, getClient(), getHttpContext());
     }
 }

@@ -21,29 +21,17 @@ package org.apache.jena.fuseki ;
 import static org.apache.jena.fuseki.ServerTest.* ;
 import static org.apache.jena.fuseki.ServerTest.serviceUpdate ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.sparql.util.Convert ;
-import org.junit.AfterClass ;
 import org.junit.Assert ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Operation by HTTP - test dispatch - lower level than TestSPARQLProtocol */
-public class TestHttpOperations extends BaseTest {
-    @BeforeClass
-    public static void beforeClass() {
-        ServerTest.allocServer() ;
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        ServerTest.freeServer() ;
-    }
+public class TestHttpOperations extends AbstractFusekiTest {
     
     // XXX and directly on dataset
     
@@ -75,10 +63,8 @@ public class TestHttpOperations extends BaseTest {
 
     @Test 
     public void query_by_form_1() {
-        String qs = Convert.encWWWForm("ASK{}") ;
         String u = serviceQuery ;
-        Params params = new Params();
-        params.addParam("query", "ASK{}") ;
+        Params params = new Params().addParam("query", "ASK{}") ;
         try (TypedInputStream in = HttpOp.execHttpPostFormStream(u, params, "*") ) { 
             Assert.assertNotNull(in);
         }
@@ -87,8 +73,7 @@ public class TestHttpOperations extends BaseTest {
     @Test(expected=HttpException.class) 
     public void query_by_form_2() {
         String u = serviceQuery ;
-        Params params = new Params();
-        params.addParam("foobar", "ASK{}") ;    // Wrong.
+        Params params = new Params().addParam("foobar", "ASK{}") ;    // Wrong.
         try (TypedInputStream in = HttpOp.execHttpPostFormStream(u, params, "*") ) { 
             Assert.assertNotNull(in);
         }
@@ -113,8 +98,7 @@ public class TestHttpOperations extends BaseTest {
     @Test
     public void update_by_form_1() {
         String u = serviceUpdate ;
-        Params params = new Params();
-        params.addParam("update", "INSERT DATA{}") ;
+        Params params = new Params().addParam("update", "INSERT DATA{}") ;
         try (TypedInputStream in = HttpOp.execHttpPostFormStream(u, params, "*") ) { 
             Assert.assertNotNull(in);
         }
@@ -123,8 +107,7 @@ public class TestHttpOperations extends BaseTest {
     @Test(expected=HttpException.class)
     public void update_by_form_2() {
         String u = serviceUpdate ;
-        Params params = new Params();
-        params.addParam("query", "INSERT DATA{}") ;  // Wrong paramater
+        Params params = new Params().addParam("query", "INSERT DATA{}") ;  // Wrong paramater
         try (TypedInputStream in = HttpOp.execHttpPostFormStream(u, params, "*") ) { 
             Assert.assertNotNull(in);
         }
@@ -134,7 +117,6 @@ public class TestHttpOperations extends BaseTest {
     
     @Test 
     public void ds_query_by_get_1() {
-        String qs = Convert.encWWWForm("ASK{}") ;
         String u = urlDataset ;
         try (TypedInputStream in = HttpOp.execHttpGet(u)) {
             Assert.assertNotNull(in);

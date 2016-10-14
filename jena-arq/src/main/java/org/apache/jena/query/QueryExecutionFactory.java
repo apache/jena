@@ -19,8 +19,8 @@
 package org.apache.jena.query;
 import java.util.List ;
 
+import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.Plan ;
@@ -278,19 +278,19 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, String query) {
-        return sparqlService(service, query, (HttpAuthenticator)null) ;
+        return sparqlService(service, query, (HttpClient)null) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service   URL of the remote service 
      * @param query     Query string to execute 
-     * @param authenticator HTTP Authenticator
+     * @param client    HTTP client
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, String query, HttpAuthenticator authenticator) {
+    static public QueryExecution sparqlService(String service, String query, HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
-        return sparqlService(service, QueryFactory.create(query), authenticator) ;
+        return sparqlService(service, QueryFactory.create(query), client) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -307,14 +307,14 @@ public class QueryExecutionFactory
      * @param service       URL of the remote service 
      * @param query         Query string to execute
      * @param defaultGraph  URI of the default graph
-     * @param authenticator HTTP Authenticator
+     * @param client        HTTP client
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpAuthenticator authenticator) {
+    static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        return sparqlService(service, QueryFactory.create(query), defaultGraph, authenticator) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraph, client) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -333,16 +333,16 @@ public class QueryExecutionFactory
      * @param query             Query string to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param authenticator     HTTP Authenticator
+     * @param client            HTTP client
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpAuthenticator authenticator) {
+                                               HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         // checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
-        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, authenticator) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, client) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -351,19 +351,19 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, Query query) {
-        return sparqlService(service, query, (HttpAuthenticator)null) ;
+        return sparqlService(service, query, (HttpClient)null) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service   URL of the remote service 
      * @param query     Query to execute 
-     * @param authenticator HTTP Authenticator
+     * @param client    HTTP client
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, Query query, HttpAuthenticator authenticator) {
+    static public QueryExecution sparqlService(String service, Query query, HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
-        return createServiceRequest(service, query, authenticator) ;
+        return createServiceRequest(service, query, client) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -382,16 +382,16 @@ public class QueryExecutionFactory
      * @param query             Query to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
      * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @param authenticator     HTTP Authenticator
+     * @param client            HTTP client
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpAuthenticator authenticator) {
+                                               HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         // checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = createServiceRequest(service, query, authenticator) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query, client) ;
         if ( defaultGraphURIs != null )
             qe.setDefaultGraphURIs(defaultGraphURIs) ;
         if ( namedGraphURIs != null )
@@ -413,14 +413,14 @@ public class QueryExecutionFactory
      * @param service       URL of the remote service 
      * @param query         Query to execute
      * @param defaultGraph  URI of the default graph
-     * @param authenticator HTTP Authenticator
+     * @param client        HTTP client
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpAuthenticator authenticator) {
+    static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = createServiceRequest(service, query, authenticator) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query, client) ;
         qe.addDefaultGraph(defaultGraph) ;
         return qe ;
     }
@@ -441,11 +441,11 @@ public class QueryExecutionFactory
      * allows various HTTP specific parameters to be set. 
      * @param service Endpoint URL
      * @param query Query
-     * @param authenticator HTTP Authenticator 
+     * @param client HTTP client 
      * @return Remote Query Engine
      */
-    static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpAuthenticator authenticator) {
-        QueryEngineHTTP qe = new QueryEngineHTTP(service, query, authenticator) ;
+    static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client) {
+        QueryEngineHTTP qe = new QueryEngineHTTP(service, query, client) ;
         return qe ;
     }
 

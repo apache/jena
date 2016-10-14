@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.metadata.RemoteEndpointMetadata;
@@ -47,7 +47,7 @@ public class RemoteEndpointConnection extends JenaConnection {
     private List<String> namedGraphUris;
     private List<String> usingGraphUris;
     private List<String> usingNamedGraphUris;
-    private HttpAuthenticator authenticator;
+    private HttpClient client;
     private DatabaseMetaData metadata;
     private String selectResultsType, modelResultsType;
 
@@ -85,8 +85,8 @@ public class RemoteEndpointConnection extends JenaConnection {
      *            Default Graph URIs for SPARQL updates
      * @param usingNamedGraphUris
      *            Named Graph URIs for SPARQL updates
-     * @param authenticator
-     *            HTTP Authenticator
+     * @param client
+     *            HTTP client
      * @param holdability
      *            Result Set holdability
      * @param compatibilityLevel
@@ -102,7 +102,7 @@ public class RemoteEndpointConnection extends JenaConnection {
      */
     public RemoteEndpointConnection(String queryEndpoint, String updateEndpoint, List<String> defaultGraphUris,
             List<String> namedGraphUris, List<String> usingGraphUris, List<String> usingNamedGraphUris,
-            HttpAuthenticator authenticator, int holdability, int compatibilityLevel, String selectResultsType,
+            HttpClient client, int holdability, int compatibilityLevel, String selectResultsType,
             String modelResultsType) throws SQLException {
         super(holdability, true, Connection.TRANSACTION_NONE, compatibilityLevel);
         if (queryEndpoint == null && updateEndpoint == null)
@@ -114,7 +114,7 @@ public class RemoteEndpointConnection extends JenaConnection {
         this.namedGraphUris = namedGraphUris;
         this.usingGraphUris = usingGraphUris;
         this.usingNamedGraphUris = usingNamedGraphUris;
-        this.authenticator = authenticator;
+        this.client = client;
         this.metadata = new RemoteEndpointMetadata(this);
         this.selectResultsType = selectResultsType;
         this.modelResultsType = modelResultsType;
@@ -211,7 +211,7 @@ public class RemoteEndpointConnection extends JenaConnection {
                     "Remote endpoint backed connection do not support scroll sensitive result sets");
         if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY)
             throw new SQLFeatureNotSupportedException("Remote endpoint backed connections only support read-only result sets");
-        return new RemoteEndpointStatement(this, this.authenticator, resultSetType, ResultSet.FETCH_FORWARD, 0,
+        return new RemoteEndpointStatement(this, this.client, resultSetType, ResultSet.FETCH_FORWARD, 0,
                 resultSetHoldability);
     }
 
@@ -225,7 +225,7 @@ public class RemoteEndpointConnection extends JenaConnection {
                     "Remote endpoint backed connection do not support scroll sensitive result sets");
         if (resultSetConcurrency != ResultSet.CONCUR_READ_ONLY)
             throw new SQLFeatureNotSupportedException("Remote endpoint backed connections only support read-only result sets");
-        return new RemoteEndpointPreparedStatement(sparql, this, this.authenticator, resultSetType, ResultSet.FETCH_FORWARD, 0,
+        return new RemoteEndpointPreparedStatement(sparql, this, this.client, resultSetType, ResultSet.FETCH_FORWARD, 0,
                 resultSetHoldability);
     }
 
@@ -280,16 +280,5 @@ public class RemoteEndpointConnection extends JenaConnection {
         default:
             throw new SQLFeatureNotSupportedException("Transactions are not supported for remote endpoint backed connections");
         }
-    }
-
-    /**
-     * Gets whether any HTTP authenticator has been provided. Note that the
-     * provision of an authenticator does not guarantee authentication since
-     * that will be down to the configuration of the given authenticator.
-     * 
-     * @return True if an authenticator is provided, false otherwise
-     */
-    public boolean isUsingAuthentication() {
-        return this.authenticator != null;
     }
 }

@@ -20,7 +20,7 @@ package org.apache.jena.fuseki;
 
 import java.io.IOException ;
 import java.net.ServerSocket ;
-import java.util.Arrays ;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.graph.Graph ;
@@ -33,6 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.Txn ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
@@ -42,15 +43,15 @@ import org.apache.jena.update.UpdateProcessor ;
  * <pre>
     \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
     \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
-    \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
+    \@After       public void after()              { ServerTest.resetServer() ; }
     </pre>
  */
 public class ServerTest
 {
-    // Abstraction that runs a SPARQL server for tests.
+    static { Fuseki.init(); }
     
-    // Different to the Fuseki2 test ports.
-    public static final int port             = choosePort(3635, 3634, 3653, 3652, 103635, 103634, 103653, 103652) ;
+    // Abstraction that runs a SPARQL server for tests.
+    public static final int port             = choosePort() ;   // Different to the Fuseki2 test ports.
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
@@ -75,26 +76,26 @@ public class ServerTest
     private static EmbeddedFusekiServer1 server = null ;
     
     // reference count of start/stop server
-    private static int countServer = 0 ; 
+    private static AtomicInteger countServer = new AtomicInteger() ; 
     
-    static public void allocServer() {
-        if ( countServer == 0 )
+    /*package*/ static void allocServer() {
+        if ( countServer.getAndIncrement() == 0 )
             setupServer() ;
-        countServer++ ;
     }
     
-    static public void freeServer() {
-        if ( countServer >= 0 ) {
-            countServer -- ;
-            if ( countServer == 0 )
-                teardownServer() ;
-        }
+    /*package*/ static void freeServer() {
+        if ( countServer.decrementAndGet() == 0 )
+            teardownServer() ;
     }
+    
+    // Whether to use a transaction on the dataset or to use SPARQL Update. 
+    static boolean CLEAR_DSG_DIRECTLY = true ;
+    static private DatasetGraph dsgTesting ;
     
     @SuppressWarnings("deprecation")
     protected static void setupServer() {
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        server = EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
+        dsgTesting = DatasetGraphFactory.createTxnMem() ;
+        server = EmbeddedFusekiServer1.create(port, dsgTesting, datasetPath) ;
         server.start() ;
     }
     
@@ -105,25 +106,25 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-    public static void resetServer() {
-        Update clearRequest = new UpdateDrop(Target.ALL) ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
-        proc.execute() ;
+
+    /*package*/ static void resetServer() {
+        if (countServer.get() == 0)  
+            throw new RuntimeException("No server started!");
+        if ( CLEAR_DSG_DIRECTLY ) {
+            Txn.executeWrite(dsgTesting, ()->dsgTesting.clear()) ;   
+        } else {
+            Update clearRequest = new UpdateDrop(Target.ALL) ;
+            UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
+            try {proc.execute() ; }
+            catch (Throwable e) {e.printStackTrace(); throw e;}
+        }
     }
     
-    // Imperfect probing for a port.
-    // There is a race condition on finding a free port and using it in the tests. 
-    private static int choosePort(int... ports) {
-        for (int port : ports) {
-            try {
-                @SuppressWarnings("resource")
-                ServerSocket s = new ServerSocket(port) ;
-                s.close();
-                return s.getLocalPort() ; // OK to call after close.
-            } catch (IOException ex) { 
-                continue;
-            }
+    static int choosePort() {
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException ex) {
+            throw new FusekiException("Failed to find a port for tests!");
         }
-        throw new FusekiException("Failed to find a port in :"+Arrays.asList(ports)) ;
     }
 }

@@ -31,7 +31,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
@@ -46,19 +45,14 @@ public class TestQuery extends BaseTest
     }
     
     // DRY - test protocol?
-    @BeforeClass public static void beforeClass()
-    {
+    @BeforeClass public static void beforeClass() {
         ServerTest.allocServer() ;
-        ServerTest.resetServer() ;
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
     
-    @AfterClass public static void afterClass()
-    {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
-        du.deleteDefault() ;
+    @AfterClass public static void afterClass() {
         ServerTest.freeServer() ;
     }
     
@@ -104,13 +98,5 @@ public class TestQuery extends BaseTest
         ResultSet rs = qExec.execSelect() ;
         int x = ResultSetFormatter.consume(rs) ;
         assertEquals(exceptedRowCount, x) ;
-    }
-    
-    private void execQuery(String queryString, ResultSet expectedResultSet)
-    {
-        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, queryString) ;
-        ResultSet rs = qExec.execSelect() ;
-        boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet) ;
-        assertTrue("Result sets different", b) ;
     }
 }
