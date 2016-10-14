@@ -33,6 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.Txn ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
@@ -42,14 +43,20 @@ import org.apache.jena.update.UpdateProcessor ;
  * <pre>
     \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
     \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
-    \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
+    \@After       public void after()              { ServerTest.resetServer() ; }
     </pre>
  */
 public class ServerTest
 {
+    // Note:
+    // @Before  public void before()              { ServerTest.resetServer() ; }
+    // If using SPARQL Update to reset the server. 
+    // It can hit the server before it has started properly. 
+    
+    static { Fuseki.init(); }
+    
     // Abstraction that runs a SPARQL server for tests.
     public static final int port             = choosePort() ;   // Different to the Fuseki2 test ports.
-
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
@@ -76,22 +83,24 @@ public class ServerTest
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
     
-    // This will cause there to be one server over all tests.
-    // Must be after initialization of counters 
-    static { allocServer(); }
-
     static public void allocServer() {
-        if (countServer.getAndIncrement() == 0) setupServer();
+        if ( countServer.getAndIncrement() == 0 )
+            setupServer() ;
     }
     
     static public void freeServer() {
-        if (countServer.decrementAndGet() == 0) teardownServer();
+        if ( countServer.decrementAndGet() == 0 )
+            teardownServer() ;
     }
+    
+    // Whether to use a transaction on the dataset or to use SPARQL Update. 
+    static boolean CLEAR_DSG_DIRECTLY = true ;
+    static private DatasetGraph dsgTesting ;
     
     @SuppressWarnings("deprecation")
     protected static void setupServer() {
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        server = EmbeddedFusekiServer1.create(port, dsg, datasetPath) ;
+        dsgTesting = DatasetGraphFactory.createTxnMem() ;
+        server = EmbeddedFusekiServer1.create(port, dsgTesting, datasetPath) ;
         server.start() ;
     }
     
@@ -102,13 +111,18 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-    public static void resetServer()
-    {
-        if (countServer.get() == 0)  throw new RuntimeException("No server started!");
-        Update clearRequest = new UpdateDrop(Target.ALL) ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
-        try {proc.execute() ; }
-        catch (Throwable e) {e.printStackTrace(); throw e;}
+
+    public static void resetServer() {
+        if (countServer.get() == 0)  
+            throw new RuntimeException("No server started!");
+        if ( CLEAR_DSG_DIRECTLY ) {
+            Txn.executeWrite(dsgTesting, ()->dsgTesting.clear()) ;   
+        } else {
+            Update clearRequest = new UpdateDrop(Target.ALL) ;
+            UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
+            try {proc.execute() ; }
+            catch (Throwable e) {e.printStackTrace(); throw e;}
+        }
     }
     
     static int choosePort() {
