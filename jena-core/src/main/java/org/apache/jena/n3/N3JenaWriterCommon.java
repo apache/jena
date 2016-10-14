@@ -370,9 +370,10 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writePrefixes(Model model)
     {
-        for ( String p : prefixMap.keySet() )
+        for ( Entry<String, String> entry : prefixMap.entrySet() )
         {
-            String u = prefixMap.get( p );
+            String u = entry.getKey();
+            String p = entry.getValue();
 
 // BaseURI - <#>            
 //            // Special cases: N3 handling of base names.
