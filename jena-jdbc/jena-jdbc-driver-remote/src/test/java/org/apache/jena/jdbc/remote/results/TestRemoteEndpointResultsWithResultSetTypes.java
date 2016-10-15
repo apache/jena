@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.jena.fuseki.ServerCtl ;
-import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
@@ -55,7 +54,7 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     @BeforeClass
     public static void setup() throws SQLException {
         ServerCtl.ctlBeforeClass();
-        connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRdfJson);
+        connection = new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRdfJson);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
@@ -76,7 +75,7 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST);
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

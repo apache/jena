@@ -21,7 +21,6 @@ package org.apache.jena.jdbc.remote.connections;
 import java.sql.SQLException;
 
 import org.apache.jena.fuseki.ServerCtl ;
-import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
@@ -50,14 +49,14 @@ public class TestRemoteEndpointConnection extends AbstractRemoteEndpointConnecti
     
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
+        return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
     }
 
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST);
-        return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
     }
 
 

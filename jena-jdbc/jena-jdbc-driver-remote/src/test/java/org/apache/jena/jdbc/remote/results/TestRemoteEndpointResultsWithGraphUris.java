@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.apache.jena.fuseki.ServerCtl ;
-import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
@@ -63,7 +62,7 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     public static void setup() throws SQLException {
         ServerCtl.ctlBeforeClass();
         List<String> defaultGraphUris = Lists.newArrayList(DEFAULT_GRAPH_URI);
-        connection = new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, defaultGraphUris, null, defaultGraphUris, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
+        connection = new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), defaultGraphUris, null, defaultGraphUris, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
@@ -85,7 +84,7 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
         ds = TestUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
-        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST);
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

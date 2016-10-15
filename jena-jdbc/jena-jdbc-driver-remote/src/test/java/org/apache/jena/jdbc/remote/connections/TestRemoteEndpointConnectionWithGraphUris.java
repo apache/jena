@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.fuseki.ServerCtl ;
-import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
@@ -60,7 +59,7 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
     protected JenaConnection getConnection() throws SQLException {
         List<String> defaultGraphs = new ArrayList<String>();
         defaultGraphs.add(DEFAULT_GRAPH_URI);
-        return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, defaultGraphs, null,
+        return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), defaultGraphs, null,
                 defaultGraphs, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }
 
@@ -80,8 +79,8 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
         // Set up the dataset
         ds = TestUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
         Assert.assertEquals(0, ds.getDefaultModel().size());
-        TestUtils.copyToRemoteDataset(ds, ServerTest.serviceREST);
-        return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, defaultGraphs, namedGraphs,
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), defaultGraphs, namedGraphs,
                 defaultGraphs, namedGraphs, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }
 
