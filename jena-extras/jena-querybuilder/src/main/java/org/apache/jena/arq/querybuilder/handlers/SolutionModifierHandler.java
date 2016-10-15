@@ -74,15 +74,21 @@ public class SolutionModifierHandler implements Handler {
 	public void addOrderBy(SortCondition condition) {
 		query.addOrderBy(condition);
 	}
-
+	
 	/**
 	 * Add an expression to the order by clause.
+	 * Sorts in Default order.
 	 * @param expr The expression to add.
 	 */
 	public void addOrderBy(Expr expr) {
 		query.addOrderBy(expr, Query.ORDER_DEFAULT);
 	}
 
+	/**
+	 * Add an expression to the order by clause.
+	 * @param expr The expression to add.
+	 * @param order The direction of the ordering. 
+	 */
 	public void addOrderBy(Expr expr, Order order) {
 		query.addOrderBy(expr, order == Order.ASCENDING ? Query.ORDER_ASCENDING
 				: Query.ORDER_DESCENDING);
@@ -90,7 +96,8 @@ public class SolutionModifierHandler implements Handler {
 
 	/**
 	 * Add a var to the order by clause.
-	 * @param var
+	 * Sorts in default order
+	 * @param var The var to use for sorting
 	 */
 	public void addOrderBy(Var var) {
 		query.addOrderBy(var, Query.ORDER_DEFAULT);
@@ -98,7 +105,7 @@ public class SolutionModifierHandler implements Handler {
 
 	/**
 	 * Add a var to the order by clause.
-	 * @param var The var to add
+	 * @param var The var to sort by.
 	 * @param order The direction of the ordering. 
 	 */
 	public void addOrderBy(Var var, Order order) {
