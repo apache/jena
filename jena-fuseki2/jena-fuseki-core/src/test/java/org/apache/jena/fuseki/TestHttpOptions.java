@@ -18,30 +18,25 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
-import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceUpdate ;
-import static org.apache.jena.fuseki.ServerTest.urlDataset ;
-
 import org.junit.Test ;
 
 public class TestHttpOptions extends AbstractFusekiTest
 {
     @Test
     public void options_query() {
-        String v = FusekiTest.execOptions(serviceQuery) ;
+        String v = FusekiTest.execOptions(ServerCtl.serviceQuery()) ;
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "POST") ;
     }
     
     @Test
     public void options_update() {
-        String v = FusekiTest.execOptions(serviceUpdate) ;
+        String v = FusekiTest.execOptions(ServerCtl.serviceUpdate()) ;
         FusekiTest.assertStringList(v, "OPTIONS", "POST") ;
     }
     
     @Test
     public void options_dataset_01() {
-        String v = FusekiTest.execOptions(urlDataset) ;
+        String v = FusekiTest.execOptions(ServerCtl.urlDataset()) ;
         // Not DELETE
         FusekiTest.assertStringList(v, "HEAD", "GET", "OPTIONS", "POST", "PUT") ;
     }
@@ -53,7 +48,7 @@ public class TestHttpOptions extends AbstractFusekiTest
     
     @Test
     public void options_gsp_rw() {
-        String v = FusekiTest.execOptions(serviceGSP+"?default") ;
+        String v = FusekiTest.execOptions(ServerCtl.serviceGSP()+"?default") ;
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT", "DELETE") ;
     }
 

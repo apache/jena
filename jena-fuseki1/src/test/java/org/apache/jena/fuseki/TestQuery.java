@@ -43,7 +43,7 @@ public class TestQuery extends BaseTest
     @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
     
     @Before public void beforeClass() {
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceREST()) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP()) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }

@@ -56,7 +56,7 @@ public class TestRemoteEndpointConnectionWithResultSetTypes extends AbstractRemo
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceGSP());
         return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRdfJson);
     }
 }

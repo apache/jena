@@ -45,7 +45,7 @@ public class TestSPARQLProtocol extends BaseTest
     @Before
     public void before() {
         // Load some data.
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST()) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP()) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }

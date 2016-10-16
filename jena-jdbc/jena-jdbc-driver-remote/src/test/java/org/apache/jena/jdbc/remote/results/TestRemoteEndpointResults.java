@@ -74,7 +74,7 @@ public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTe
     
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
-        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceGSP());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }

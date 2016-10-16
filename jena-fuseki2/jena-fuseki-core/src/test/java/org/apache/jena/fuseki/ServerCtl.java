@@ -24,24 +24,31 @@ import static org.apache.jena.fuseki.ServerCtl.ServerScope.TEST ;
 
 import java.io.IOException ;
 import java.net.ServerSocket ;
+import java.nio.file.Paths ;
+import java.util.Collection ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.fuseki.jetty.JettyFuseki ;
+import org.apache.jena.fuseki.jetty.JettyServerConfig ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.system.Txn ;
+import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 
 /**
- * Manage a single server for use wth tests. It supports three modes:
+ * Manage a single server for use with tests. It supports three modes:
  * <ul>
  * <li>One server for a whole test suite
  * <li>One server per test class
@@ -110,6 +117,8 @@ public class ServerCtl {
     // Abstraction that runs a SPARQL server for tests.
     public static final String urlRoot()        { return "http://localhost:"+port()+"/" ; }
     public static final String datasetPath()    { return "/dataset" ; }
+    public static final String urlDataset()     { return "http://localhost:"+port()+datasetPath() ; }
+    
     public static final String serviceUpdate()  { return "http://localhost:"+port()+datasetPath()+"/update" ; } 
     public static final String serviceQuery()   { return "http://localhost:"+port()+datasetPath()+"/query" ; }
     public static final String serviceGSP()     { return "http://localhost:"+port()+datasetPath()+"/data" ; }
@@ -181,22 +190,20 @@ public class ServerCtl {
     }
     
     /** Set the HttpClient - close the old one if appropriate */
-    private static void setHttpClient(HttpClient newHttpClient) {
+    /*package*/ static void setHttpClient(HttpClient newHttpClient) {
         HttpClient hc = HttpOp.getDefaultHttpClient() ;
         if ( hc instanceof CloseableHttpClient )
             IO.close((CloseableHttpClient)hc) ;
         HttpOp.setDefaultHttpClient(newHttpClient) ;
     }
     
-    @SuppressWarnings("deprecation")
-    private static EmbeddedFusekiServer1 server = null ;
-    
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
+    private static JettyFuseki server        = null ;
     
     /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
-            setupServer() ;
+            setupServer(true) ;
     }
     
     /*package*/ static void freeServer() {
@@ -204,19 +211,56 @@ public class ServerCtl {
             teardownServer() ;
     }
     
-    @SuppressWarnings("deprecation")
-    protected static void setupServer() {
-        dsgTesting = DatasetGraphFactory.createTxnMem() ;
-        server = EmbeddedFusekiServer1.create(currentPort, dsgTesting, datasetPath()) ;
-        server.start() ;
+    protected static void setupServer(boolean updateable) {
+        FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
+        FileOps.ensureDir("target");
+        FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
+        FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
+        FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
+        setupServer(port(), null, datasetPath(), updateable) ;
     }
     
-    @SuppressWarnings("deprecation")
-    protected static void teardownServer() {
-        DatasetRegistry.get().clear() ;
+    public static void setupServer(int port, String authConfigFile, String datasetPath, boolean updateable) {
+        SystemState.location = Location.mem() ;
+        SystemState.init$() ;
+        
+        ServerInitialConfig params = new ServerInitialConfig() ;
+        dsgTesting = DatasetGraphFactory.createTxnMem() ;
+        params.dsg = dsgTesting ;
+        params.datasetPath = datasetPath ;
+        params.allowUpdate = updateable ;
+        
+        FusekiServerListener.initialSetup = params ;
+        
+        JettyServerConfig config = make(port, true, true) ;
+        config.authConfigFile = authConfigFile ;
+        JettyFuseki.initializeServer(config);
+        JettyFuseki.instance.start() ;
+        server = JettyFuseki.instance ;
+    }
+    
+    /*package*/ static void teardownServer() {
         if ( server != null )
             server.stop() ;
         server = null ;
+        // Clear out the registry.
+        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys().iterator()) ;
+        for (String k : keys)
+            DataAccessPointRegistry.get().remove(k) ;
+        // Clear configuration directory.
+        FileOps.clearAll(FusekiServer.dirConfiguration.toFile()) ;
+    }
+
+    /*package*/ static JettyServerConfig make(int port, boolean allowUpdate, boolean listenLocal) {
+        JettyServerConfig config = new JettyServerConfig() ;
+        // Avoid any persistent record.
+        config.port = port ;
+        config.contextPath = "/" ;
+        config.loopback = listenLocal ;
+        config.jettyConfigFile = null ;
+        config.enableCompression = true ;
+        config.verboseLogging = false ;
+        return config ;
     }
 
     /*package*/ static void resetServer() {

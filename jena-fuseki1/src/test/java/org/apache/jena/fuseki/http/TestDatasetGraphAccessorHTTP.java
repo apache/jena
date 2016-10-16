@@ -36,6 +36,6 @@ public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccess
     
     @Override
     protected DatasetGraphAccessor getDatasetUpdater() {
-        return new DatasetGraphAccessorHTTP(ServerCtl.serviceREST()) ;
+        return new DatasetGraphAccessorHTTP(ServerCtl.serviceGSP()) ;
     }
 }

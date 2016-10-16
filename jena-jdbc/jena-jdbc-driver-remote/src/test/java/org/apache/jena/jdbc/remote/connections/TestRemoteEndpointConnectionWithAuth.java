@@ -126,7 +126,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
         // Set up the dataset
-        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST(), client);
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceGSP(), client);
         return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), null, null, null, null,
                 client, JenaConnection.DEFAULT_HOLDABILITY,
                 JdbcCompatibility.DEFAULT, null, null);

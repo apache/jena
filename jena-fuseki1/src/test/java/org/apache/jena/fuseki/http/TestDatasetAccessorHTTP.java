@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.http;
 
 import static org.apache.jena.fuseki.ServerCtl.datasetPath ;
 import static org.apache.jena.fuseki.ServerCtl.port ;
-import static org.apache.jena.fuseki.ServerCtl.serviceREST ;
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
 import static org.apache.jena.fuseki.ServerTestData.gn1 ;
 import static org.apache.jena.fuseki.ServerTestData.gn2 ;
 import static org.apache.jena.fuseki.ServerTestData.gn99 ;
@@ -46,14 +46,14 @@ public class TestDatasetAccessorHTTP extends BaseTest
     @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
     final String datasetURI_not_1    = "http://localhost:"+port()+"/junk" ;
-    final String datasetURI_not_2    = serviceREST()+"/not" ;
+    final String datasetURI_not_2    = serviceGSP()+"/not" ;
     final String datasetURI_not_3    = "http://localhost:"+port()+datasetPath()+"/not/data" ;
     
     @Test(expected = HttpException.class)
     public void test_ds_1() {
         // Can't GET the dataset service.
         try {
-            HttpOp.execHttpGet(serviceREST()) ;
+            HttpOp.execHttpGet(serviceGSP()) ;
         }
         catch (HttpException ex) {
             assertTrue(HttpSC.isClientError(ex.getResponseCode())) ;
@@ -101,7 +101,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
     @Test
     public void test_404_3() {
         // Right service, wrong graph
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST()) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP()) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ;
     }
@@ -254,6 +254,6 @@ public class TestDatasetAccessorHTTP extends BaseTest
     }
 
     static DatasetAccessor create() {
-        return DatasetAccessorFactory.createHTTP(serviceREST()) ;
+        return DatasetAccessorFactory.createHTTP(serviceGSP()) ;
     }
 }

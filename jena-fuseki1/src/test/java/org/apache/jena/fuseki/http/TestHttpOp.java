@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.http;
 
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
-import static org.apache.jena.fuseki.ServerCtl.serviceREST ;
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
 import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
 import static org.apache.jena.fuseki.ServerCtl.urlRoot ;
 
@@ -48,7 +48,7 @@ public class TestHttpOp extends BaseTest {
     @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
     static String pingURL     = urlRoot() + "ping.txt" ;
-    static String graphURL    = serviceREST() + "?default" ;
+    static String graphURL    = serviceGSP() + "?default" ;
     static String queryURL    = serviceQuery() ;
     static String updateURL   = serviceUpdate() ;
     static String simpleQuery = queryURL+"?query="+IRILib.encodeUriComponent("ASK{}") ;

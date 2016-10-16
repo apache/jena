@@ -79,7 +79,7 @@ public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEnd
         // Set up the dataset
         ds = TestUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
         Assert.assertEquals(0, ds.getDefaultModel().size());
-        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceGSP());
         return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), defaultGraphs, namedGraphs,
                 defaultGraphs, namedGraphs, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, null, null);
     }

@@ -56,10 +56,9 @@ import org.junit.Test ;
  */
 public class TestAuth {
     
-
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
-    public static final int authPort             = ServerTest.port+10 ;
+    public static final int authPort             = ServerCtl.port()+10 ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
     public static final String authDatasetPath   = "/dataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 
@@ -84,7 +83,7 @@ public class TestAuth {
         LogCtl.setLevel(Fuseki.actionLogName, "warn") ;
         LogCtl.setLevel("org.eclipse.jetty",  "warn") ;
 
-        ServerTest.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath, true);
+        ServerCtl.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath, true);
     }
 
     /**
@@ -92,7 +91,7 @@ public class TestAuth {
      */
     @AfterClass
     public static void teardown() {
-        ServerTest.teardownServer(); 
+        ServerCtl.teardownServer(); 
         realmFile.delete();
     }
 

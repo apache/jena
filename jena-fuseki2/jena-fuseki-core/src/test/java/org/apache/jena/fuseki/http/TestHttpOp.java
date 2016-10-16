@@ -20,11 +20,14 @@ package org.apache.jena.fuseki.http;
 
 import static org.apache.jena.fuseki.FusekiTest.exec404;
 import static org.apache.jena.fuseki.FusekiTest.execWithHttpException;
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
+import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
+import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
+import static org.apache.jena.fuseki.ServerCtl.urlRoot ;
 
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.AbstractFusekiTest ;
-import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
@@ -35,12 +38,12 @@ import org.junit.Test ;
 // especially error cases abnd unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends AbstractFusekiTest {
     
-    static String pingURL           = ServerTest.urlRoot+"$/ping" ;
-    static String gspServiceURL     = ServerTest.serviceGSP ;
-    static String defaultGraphURL   = ServerTest.serviceGSP+"?default" ;
-    static String namedGraphURL     = ServerTest.serviceGSP+"?graph=http://example/g" ;
-    static String queryURL          = ServerTest.serviceQuery ;
-    static String updateURL         = ServerTest.serviceUpdate ;
+    static String pingURL           = urlRoot()+"$/ping" ;
+    static String gspServiceURL     = serviceGSP() ;
+    static String defaultGraphURL   = serviceGSP()+"?default" ;
+    static String namedGraphURL     = serviceGSP()+"?graph=http://example/g" ;
+    static String queryURL          = serviceQuery() ;
+    static String updateURL         = serviceUpdate() ;
     
     static String simpleQuery = queryURL+"?query="+IRILib.encodeUriComponent("ASK{}") ;
     
@@ -52,7 +55,7 @@ public class TestHttpOp extends AbstractFusekiTest {
     
     @Test
     public void httpGet_02() {
-        exec404(() -> HttpOp.execHttpGet(ServerTest.urlRoot + "does-not-exist"));
+        exec404(() -> HttpOp.execHttpGet(urlRoot() + "does-not-exist"));
     }
 
     @Test public void httpGet_03() {
@@ -60,7 +63,7 @@ public class TestHttpOp extends AbstractFusekiTest {
     }   
     
     @Test public void httpGet_04() {
-        String x = HttpOp.execHttpGetString(ServerTest.urlRoot+"does-not-exist") ;
+        String x = HttpOp.execHttpGetString(urlRoot()+"does-not-exist") ;
         assertNull(x) ;
     }
     

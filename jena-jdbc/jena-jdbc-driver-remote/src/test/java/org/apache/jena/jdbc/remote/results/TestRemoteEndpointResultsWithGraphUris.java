@@ -84,7 +84,7 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpoi
     @Override
     protected ResultSet createResults(Dataset ds, String query, int resultSetType) throws SQLException {
         ds = TestUtils.renameGraph(ds, null, DEFAULT_GRAPH_URI);
-        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceREST());
+        TestUtils.copyToRemoteDataset(ds, ServerCtl.serviceGSP());
         Statement stmt = connection.createStatement(resultSetType, ResultSet.CONCUR_READ_ONLY);
         return stmt.executeQuery(query);
     }
