@@ -99,7 +99,7 @@ public class ServerCtl {
     
     static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient();
 
-    // Note: it is import to cleanly close a PoolingHttpClient across server restarts
+    // Note: it is important to cleanly close a PoolingHttpClient across server restarts
     // otherwise the pooled connections remain for the old server. 
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
