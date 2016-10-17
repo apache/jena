@@ -90,6 +90,11 @@ public class TestSyntaxTransform extends BaseTest
         testQuery("SELECT * { ?s ?p ?srv SERVICE ?srv { ?s ?p ?srv}}",
                   "SELECT * { ?s ?p <urn:service> SERVICE <urn:service> { ?s ?p <urn:service>}}",
                   "srv", "<urn:service>") ; }
+    
+    @Test public void subst_query_30() {
+        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
+                "s", "<urn:x>");
+    }
 
     
     @Test public void subst_update_01() { 
