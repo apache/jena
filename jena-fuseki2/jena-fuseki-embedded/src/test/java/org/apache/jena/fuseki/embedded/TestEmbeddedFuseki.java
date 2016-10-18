@@ -61,7 +61,7 @@ public class TestEmbeddedFuseki {
     @Test public void embedded_01() {
         DatasetGraph dsg = dataset() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create().add("/ds", dsg).build() ;
-        assertTrue(DataAccessPointRegistry.get().isRegistered("/ds")) ;
+        assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds")) ;
         server.start() ;
         query("http://localhost:3330/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
             ResultSet rs = qExec.execSelect() ; 
@@ -73,10 +73,11 @@ public class TestEmbeddedFuseki {
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.make(3330, "/ds2", dsg) ;
+        DataAccessPointRegistry registry = server.getDataAccessPointRegistry() ;
         // But no /ds
-        assertEquals(1,  DataAccessPointRegistry.get().size()) ;
-        assertTrue(DataAccessPointRegistry.get().isRegistered("/ds2")) ;
-        assertFalse(DataAccessPointRegistry.get().isRegistered("/ds")) ;
+        assertEquals(1, registry.size()) ;
+        assertTrue(registry.isRegistered("/ds2")) ;
+        assertFalse(registry.isRegistered("/ds")) ;
         try {
             server.start() ;
         } finally { server.stop() ; }
@@ -261,11 +262,11 @@ public class TestEmbeddedFuseki {
         return entity ;
     }
 
-    private DatasetGraph dataset() {
+    /*package*/ static DatasetGraph dataset() {
         return DatasetGraphFactory.createTxnMem() ;
     }
 
-    private static void query(String URL, String query, Consumer<QueryExecution> body) {
+    /*package*/ static void query(String URL, String query, Consumer<QueryExecution> body) {
         try (QueryExecution qExec = QueryExecutionFactory.sparqlService(URL, query) ) {
             body.accept(qExec);
         }
