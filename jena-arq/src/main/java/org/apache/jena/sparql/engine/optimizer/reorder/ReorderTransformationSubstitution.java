@@ -42,7 +42,9 @@ import org.slf4j.LoggerFactory ;
 public abstract class ReorderTransformationSubstitution implements ReorderTransformation
 {
     static public final Logger log = LoggerFactory.getLogger(ReorderTransformationSubstitution.class) ;
-    private final boolean DEBUG = log.isDebugEnabled() ;  
+    static private final boolean DEBUG = false ;  
+    
+    public ReorderTransformationSubstitution() {}
     
     @Override
     public BasicPattern reorder(BasicPattern pattern)
@@ -75,6 +77,15 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         return components ;
     }
 
+    private AccString<PatternTriple> formatter() { 
+        return new AccString<PatternTriple>() { 
+            @Override
+            protected String toString(PatternTriple pt) {
+                return "(" + printAbbrev(pt.toString()) + ")" ;
+            }
+        } ;
+    }
+    
     protected ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)
     {
         int N = components.size() ;
@@ -82,7 +93,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         int indexes[] = new int[N] ;
 
         if ( DEBUG )
-            log.debug("Reorder: "+Iter.asString(components, formatter)) ;
+            log.debug("Reorder: "+Iter.asString(components, formatter())) ;
         
         int idx = 0 ;
         for ( ; idx < numReorder ; idx++ )
@@ -289,12 +300,4 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         if ( var.equals(elt.object.getNode()) )
             elt.object = Item.createNode(value) ;
     }
-    
-    private AccString<PatternTriple> formatter = 
-        new AccString<PatternTriple>() { 
-            @Override
-            protected String toString(PatternTriple pt) {
-                return "(" + printAbbrev(pt.toString()) + ")" ;
-        }
-    } ;
 }
