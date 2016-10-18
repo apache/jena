@@ -113,15 +113,23 @@ public class FusekiEmbeddedServer {
         return ((ServletContextHandler)server.getHandler()).getServletContext() ;
     }
 
+    /** Get the {@link DataAccessPointRegistry}.
+     * This method is intended for inspecting the registry.
+     */ 
+    public DataAccessPointRegistry getDataAccessPointRegistry() {
+        return DataAccessPointRegistry.get(getServletContext()) ;
+    }
+
     /** Start the server - the server continues to run after this call returns.
      *  To synchronise with the server stopping, call {@link #join}.  
      */
-    public void start() { 
+    public FusekiEmbeddedServer start() { 
         try { server.start(); }
         catch (Exception e) { throw new FusekiException(e) ; }
         if ( port == 0 )
             port = ((ServerConnector)server.getConnectors()[0]).getLocalPort() ;
         Fuseki.serverLog.info("Start Fuseki (port="+port+")");
+        return this ;
     }
 
     /** Stop the server. */
