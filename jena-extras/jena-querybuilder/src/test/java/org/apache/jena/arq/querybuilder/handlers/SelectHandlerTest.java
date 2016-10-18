@@ -26,6 +26,7 @@ import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.expr.aggregate.AggCount;
+import org.apache.jena.sparql.expr.aggregate.AggSum;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +69,19 @@ public class SelectHandlerTest extends AbstractHandlerTest {
 		Expr e = expr.getExpr( Var.alloc( "foo" ));
 		assertNotNull( "expression should not be null", e );
 		assertTrue( "Should be an E_Random", e instanceof E_Random);
+	}
+	
+	@Test
+	public void testAddStringWithPrefixVar() {
+		query.setPrefix( "xsd","http://www.w3.org/2001/XMLSchema#" );
+		Var v = Var.alloc("foo");
+		handler.addVar("sum(xsd:integer(?V3))", v);
+		VarExprList expr = query.getProject();
+		assertEquals(1, expr.size());
+		Expr e = expr.getExpr( Var.alloc( "foo" ));
+		assertNotNull( "expression should not be null", e );
+		assertTrue( "Should be an ExprAggregator", e instanceof ExprAggregator);
+		assertTrue( "Should contain an AggSum", ((ExprAggregator)e).getAggregator() instanceof AggSum);
 	}
 	
 	@Test

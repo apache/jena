@@ -124,6 +124,7 @@ public class SelectHandler implements Handler {
 		try {
 			ARQParser parser = new ARQParser(new StringReader("SELECT " + s));
 			parser.setQuery(new Query());
+			parser.getQuery().setPrefixMapping( query.getPrefixMapping());
 			parser.SelectClause();
 			Query q = parser.getQuery();
 			VarExprList vel = q.getProject();
