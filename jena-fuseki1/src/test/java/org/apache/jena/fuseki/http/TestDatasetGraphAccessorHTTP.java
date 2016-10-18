@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.http;
 
 import org.apache.jena.fuseki.ServerCtl ;
-import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessorHTTP ;
@@ -36,8 +35,7 @@ public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccess
     @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
     @Override
-    protected DatasetGraphAccessor getDatasetUpdater()
-    {
-        return new DatasetGraphAccessorHTTP(ServerTest.serviceREST) ;
+    protected DatasetGraphAccessor getDatasetUpdater() {
+        return new DatasetGraphAccessorHTTP(ServerCtl.serviceGSP()) ;
     }
 }

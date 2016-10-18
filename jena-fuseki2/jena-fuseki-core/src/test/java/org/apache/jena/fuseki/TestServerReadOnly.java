@@ -18,15 +18,13 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
-import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceUpdate ;
+import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
+import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
 
 import java.nio.charset.StandardCharsets ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.entity.StringEntity ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.QueryExecutionFactory ;
@@ -42,23 +40,25 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 /** Tests on a read only server. */
-public class TestServerReadOnly extends BaseTest
+public class TestServerReadOnly
 {
     // readonly server.
     @BeforeClass
     public static void allocServerForSuite() {
-        ServerTest.allocServer(false) ;
+        ServerCtl.freeServer();
+        //Manage ourselves.
+        ServerCtl.setupServer(false) ;
     }
 
     @AfterClass
     public static void freeServerForSuite() {
-        ServerTest.freeServer() ;
+        ServerCtl.freeServer() ;
     }
     
     @Test
     public void query_readonly() {
         Query query = QueryFactory.create("ASK{}");
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery, query);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery(), query);
         qexec.execAsk() ;
     }
     
@@ -66,7 +66,7 @@ public class TestServerReadOnly extends BaseTest
     public void update_readonly() {
         FusekiTest.exec404( () -> {
             UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
-            UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate);
+            UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate());
             proc.execute();
         });
     }
@@ -77,7 +77,7 @@ public class TestServerReadOnly extends BaseTest
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             HttpEntity e = new StringEntity("", StandardCharsets.UTF_8) ;
-            HttpOp.execHttpPost(serviceGSP+"?default", e);
+            HttpOp.execHttpPost(ServerCtl.serviceGSP()+"?default", e);
         }) ;
     }
     
@@ -86,7 +86,7 @@ public class TestServerReadOnly extends BaseTest
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             HttpEntity e = new StringEntity("", StandardCharsets.UTF_8) ;
-            HttpOp.execHttpPut(serviceGSP+"?default", e);
+            HttpOp.execHttpPut(ServerCtl.serviceGSP()+"?default", e);
         }) ;
     }
 
@@ -94,7 +94,7 @@ public class TestServerReadOnly extends BaseTest
     public void gsp_w_readonly_DELETE() {
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp.execHttpDelete(serviceGSP+"?default");
+            HttpOp.execHttpDelete(ServerCtl.serviceGSP()+"?default");
         }) ;
     }
     
@@ -103,7 +103,7 @@ public class TestServerReadOnly extends BaseTest
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             HttpEntity e = new StringEntity("", StandardCharsets.UTF_8) ;
-            HttpOp.execHttpPost(ServerTest.urlDataset, e) ;
+            HttpOp.execHttpPost(ServerCtl.urlDataset(), e) ;
         }) ;
     }
 
@@ -112,7 +112,7 @@ public class TestServerReadOnly extends BaseTest
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
             HttpEntity e = new StringEntity("", StandardCharsets.UTF_8) ;
-            HttpOp.execHttpPut(ServerTest.urlDataset, e) ;
+            HttpOp.execHttpPut(ServerCtl.urlDataset(), e) ;
         }) ;
     }
 
@@ -120,13 +120,13 @@ public class TestServerReadOnly extends BaseTest
     public void dataset_w_readonly_DELETE() {
         // Try to write
         FusekiTest.execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, ()->{
-            HttpOp.execHttpDelete(ServerTest.urlDataset) ;
+            HttpOp.execHttpDelete(ServerCtl.urlDataset()) ;
         }) ;
     }
 
     @Test
     public void options_gsp_readonly() {
-        String v = FusekiTest.execOptions(serviceGSP+"?default") ;
+        String v = FusekiTest.execOptions(ServerCtl.serviceGSP()+"?default") ;
         FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD") ;
     }
 

@@ -18,83 +18,74 @@
 
 package org.apache.jena.fuseki;
 
+import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
+import static org.apache.jena.fuseki.ServerTestData.gn1 ;
+import static org.apache.jena.fuseki.ServerTestData.model1 ;
+import static org.apache.jena.fuseki.ServerTestData.model2 ;
+
 import java.io.IOException ;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 
-import static org.apache.jena.fuseki.ServerTest.* ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.apache.jena.sparql.util.Convert ;
+import org.junit.* ;
+import org.junit.Test ;
 
 public class TestQuery extends BaseTest 
 {
-    protected static ResultSet rs1 = null ; 
-    static {
-        Item item = SSE.parseItem("(resultset (?s ?p ?o) (row (?s <x>)(?p <p>)(?o 1)))") ;
-        rs1 = BuilderResultSet.build(item) ;
-    }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
     
-    // DRY - test protocol?
-    @BeforeClass public static void beforeClass() {
-        ServerTest.allocServer() ;
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+    @Before public void beforeClass() {
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(ServerCtl.serviceGSP()) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
     
-    @AfterClass public static void afterClass() {
-        ServerTest.freeServer() ;
-    }
-    
-    @Test public void query_01()
-    {
+    @Test
+    public void query_01() {
         execQuery("SELECT * {?s ?p ?o}", 1) ;
     }
-    
-    @Test public void query_recursive_01()
-    {
-        String query = "SELECT * WHERE { SERVICE <" + serviceQuery + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
-        try(QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query)) {
-            ResultSet rs = qExec.execSelect();
-            
-            Var x = Var.alloc("x");
+
+    @Test
+    public void query_recursive_01() {
+        String query = "SELECT * WHERE { SERVICE <" + serviceQuery() + "> { ?s ?p ?o . BIND(?o AS ?x) } }" ;
+        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), query)) {
+            ResultSet rs = qExec.execSelect() ;
+
+            Var x = Var.alloc("x") ;
             while (rs.hasNext()) {
-                Binding b = rs.nextBinding();
-                Assert.assertNotNull(b.get(x));
+                Binding b = rs.nextBinding() ;
+                Assert.assertNotNull(b.get(x)) ;
             }
         }
     }
-    
-    @Test public void query_with_params_01()
-    {
-        String query = "ASK { }";
-        try(QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
-            boolean result = qExec.execAsk();
-            Assert.assertTrue(result);
+
+    @Test
+    public void query_with_params_01() {
+        String query = "ASK { }" ;
+        try (QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery() + "?output=json", query)) {
+            boolean result = qExec.execAsk() ;
+            Assert.assertTrue(result) ;
         }
     }
-    
-    @Test public void request_id_header_01() throws IOException
-    {
+
+    @Test
+    public void request_id_header_01() throws IOException {
         String qs = Convert.encWWWForm("ASK{}") ;
-        URL u = new URL(serviceQuery+"?query="+qs);
-        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null);
+        URL u = new URL(serviceQuery() + "?query=" + qs) ;
+        HttpURLConnection conn = (HttpURLConnection)u.openConnection() ;
+        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null) ;
     }
 
-    private void execQuery(String queryString, int exceptedRowCount)
-    {
-        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, queryString) ;
+    private void execQuery(String queryString, int exceptedRowCount) {
+        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), queryString) ;
         ResultSet rs = qExec.execSelect() ;
         int x = ResultSetFormatter.consume(rs) ;
         assertEquals(exceptedRowCount, x) ;

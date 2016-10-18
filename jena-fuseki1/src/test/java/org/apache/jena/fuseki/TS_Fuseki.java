@@ -36,7 +36,7 @@ import org.junit.runners.Suite ;
     , TestAuth.class
 })
 
-public class TS_Fuseki extends ServerTest
+public class TS_Fuseki
 {
     @BeforeClass
     static public void beforeClass() {

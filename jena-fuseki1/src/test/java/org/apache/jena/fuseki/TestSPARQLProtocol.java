@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerTest.* ;
+import static org.apache.jena.fuseki.ServerTestData.* ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.* ;
 import org.apache.jena.riot.WebContent ;
@@ -28,61 +28,62 @@ import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
+import org.junit.After ;
 import org.junit.AfterClass ;
+import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
+import static org.apache.jena.fuseki.ServerCtl.* ;
 
 public class TestSPARQLProtocol extends BaseTest
 {
-    @BeforeClass public static void beforeClass()
-    {
-        ServerTest.allocServer() ;
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
+    
+    @Before
+    public void before() {
         // Load some data.
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP()) ;
         du.putModel(model1) ;
         du.putModel(gn1, model2) ;
     }
-    
-    @AfterClass public static void afterClass()
-    {
-        ServerTest.freeServer() ;
-    }
-    
-    static String query(String base, String queryString)
-    {
-        return base+"?query="+Convert.encWWWForm(queryString) ;
-    }
-    
-    @Test public void query_01()
-    {
-        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery, query) ;
-        ResultSet rs = qexec.execSelect() ;
-        int x = ResultSetFormatter.consume(rs) ;
-        assertTrue( x != 0 ) ;
+
+    static String query(String base, String queryString) {
+        return base + "?query=" + Convert.encWWWForm(queryString) ;
     }
 
-    @Test public void query_02()
-    {
+    @Test
+    public void query_01() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
-        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery, query) ;
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(serviceQuery(), query) ;
+        ResultSet rs = qexec.execSelect() ;
+        int x = ResultSetFormatter.consume(rs) ;
+        assertTrue(x != 0) ;
+    }
+
+    @Test
+    public void query_02() {
+        Query query = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
+        QueryEngineHTTP engine = QueryExecutionFactory.createServiceRequest(serviceQuery(), query) ;
         engine.setSelectContentType(WebContent.contentTypeResultsJSON) ;
         ResultSet rs = engine.execSelect() ;
         int x = ResultSetFormatter.consume(rs) ;
-        assertTrue( x != 0 ) ;
+        assertTrue(x != 0) ;
     }
 
-    @Test public void update_01()
-    {
+    @Test
+    public void update_01() {
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}") ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, serviceUpdate()) ;
         proc.execute() ;
     }
-    
-    @Test public void update_02()
-    {
+
+    @Test
+    public void update_02() {
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}") ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate()) ;
         proc.execute() ;
     }
 }

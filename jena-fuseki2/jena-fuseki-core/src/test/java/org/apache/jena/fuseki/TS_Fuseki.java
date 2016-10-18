@@ -25,6 +25,7 @@ import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
@@ -69,5 +70,12 @@ public class TS_Fuseki extends ServerTest
         LogCtl.setLevel(Fuseki.actionLogName,        "WARN");
         LogCtl.setLevel(Fuseki.requestLogName,       "WARN");
         LogCtl.setLevel(Fuseki.servletRequestLogName,"WARN");
+        
+        ServerCtl.ctlBeforeTestSuite();
+    }
+    
+    @AfterClass
+    static public void afterSuiteClass() {
+        ServerCtl.ctlAfterTestSuite() ;
     }
 }

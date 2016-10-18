@@ -68,7 +68,7 @@ import org.junit.Test ;
 public class TestAuth {
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
-    public static final int authPort             = ServerTest.choosePort() ;
+    public static final int authPort             = ServerCtl.choosePort() ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
     public static final String authDatasetPath   = "/authDataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 
@@ -98,7 +98,6 @@ public class TestAuth {
         LogCtl.setLevel("org.eclipse.jetty", "WARN");
 
         DatasetGraph dsg = DatasetGraphFactory.create();
-        // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(authDatasetPath, dsg, true, true);
         conf.port = authPort ;
         conf.pagesPort = authPort ;

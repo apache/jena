@@ -18,9 +18,7 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.ServerTest.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.serviceGSP ;
-import static org.apache.jena.fuseki.ServerTest.urlDataset ;
+import static org.apache.jena.fuseki.ServerCtl.* ; 
 import org.apache.http.HttpEntity ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -61,19 +59,19 @@ public class TestDatasetOps extends AbstractFusekiTest
     }
     
     @Test public void gsp_x_01() {
-        gsp_x(urlDataset, urlDataset) ;
+        gsp_x(urlDataset(), urlDataset()) ;
     }
 
     @Test public void gsp_x_02() {
-        gsp_x(urlDataset, serviceGSP) ;
+        gsp_x(urlDataset(), serviceGSP()) ;
     }
 
     @Test public void gsp_x_03() {
-        gsp_x(serviceGSP, urlDataset) ;
+        gsp_x(serviceGSP(), urlDataset()) ;
     }
 
     @Test public void gsp_x_04() {
-        gsp_x(serviceGSP, urlDataset) ;
+        gsp_x(serviceGSP(), urlDataset()) ;
     }
 
     private void gsp_x(String outward, String inward) {
@@ -89,38 +87,38 @@ public class TestDatasetOps extends AbstractFusekiTest
     // Get dataset.  Tests conneg.
     @Test 
     public void gsp_x_10() {
-        gsp_x_ct(urlDataset, WebContent.contentTypeNQuads, WebContent.contentTypeNQuads) ;
+        gsp_x_ct(urlDataset(), WebContent.contentTypeNQuads, WebContent.contentTypeNQuads) ;
     }
 
     @Test 
     public void gsp_x_11() {
-        gsp_x_ct(urlDataset, WebContent.contentTypeNQuadsAlt1, WebContent.contentTypeNQuads) ;
+        gsp_x_ct(urlDataset(), WebContent.contentTypeNQuadsAlt1, WebContent.contentTypeNQuads) ;
     }
 
     @Test 
     public void gsp_x_12() {
-        gsp_x_ct(urlDataset, WebContent.contentTypeTriG, WebContent.contentTypeTriG) ;
+        gsp_x_ct(urlDataset(), WebContent.contentTypeTriG, WebContent.contentTypeTriG) ;
     }
 
     @Test 
     public void gsp_x_13() {
-        gsp_x_ct(urlDataset, WebContent.contentTypeTriGAlt1, WebContent.contentTypeTriG) ;
+        gsp_x_ct(urlDataset(), WebContent.contentTypeTriGAlt1, WebContent.contentTypeTriG) ;
     }
 
     @Test 
     public void gsp_x_14() {
-        gsp_x_ct(urlDataset, WebContent.defaultDatasetAcceptHeader, WebContent.contentTypeTriG) ;
+        gsp_x_ct(urlDataset(), WebContent.defaultDatasetAcceptHeader, WebContent.contentTypeTriG) ;
     }
 
     @Test 
     public void gsp_x_15() {
         // Anything!
-        gsp_x_ct(urlDataset, WebContent.defaultRDFAcceptHeader, WebContent.contentTypeTriG) ;
+        gsp_x_ct(urlDataset(), WebContent.defaultRDFAcceptHeader, WebContent.contentTypeTriG) ;
     }
     
-    private void gsp_x_ct(String urldataset, String acceptheader, String contentTypeResponse) {
+    private void gsp_x_ct(String urlDataset, String acceptheader, String contentTypeResponse) {
         HttpEntity e = datasetToHttpEntity(data) ;
-        HttpOp.execHttpPut(urlDataset, e);
+        HttpOp.execHttpPut(urlDataset(), e);
         TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ;
         assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
         DatasetGraph dsg = DatasetGraphFactory.create() ;
@@ -133,7 +131,7 @@ public class TestDatasetOps extends AbstractFusekiTest
     {
         HttpEntity e = datasetToHttpEntity(data) ;
         try { 
-            HttpOp.execHttpPost(serviceQuery, e);
+            HttpOp.execHttpPost(serviceQuery(), e);
         } catch (HttpException ex) {
             assertTrue(HttpSC.isClientError(ex.getResponseCode())) ;
         }

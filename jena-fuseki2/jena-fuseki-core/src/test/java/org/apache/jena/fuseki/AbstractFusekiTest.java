@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
@@ -30,18 +31,9 @@ import org.junit.BeforeClass ;
 
 public class AbstractFusekiTest extends BaseTest
 {
-    @BeforeClass
-    public static void allocServerForSuite() {
-        ServerTest.allocServer() ;
-    }
-
-    @AfterClass
-    public static void freeServerForSuite() {
-        ServerTest.freeServer() ;
-    }
-    
-    @Before public void resetServer() {
-        ServerTest.resetServer() ;
-    }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
 }
 
