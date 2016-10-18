@@ -60,7 +60,7 @@ import org.apache.jena.update.UpdateProcessor ;
  * <p> The data in the server is always reseet between tests.
  * <p>
  * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is important,
- * both for test performance and for reducing the TCP connection load on the operarting system.  
+ * both for test performance and for reducing the TCP connection load on the operating system.  
  * <p>
  * Usage:
  * </p>
