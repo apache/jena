@@ -48,13 +48,6 @@ public class FusekiServerListener implements ServletContextListener {
         String x = servletContext.getContextPath() ;
         if ( ! x.isEmpty() ) 
             Fuseki.configLog.info("Context path = "+x) ;
-//        String x = System.getProperty("user.dir") ;
-//        Path currentRelativePath = Paths.get("");
-//        String s = currentRelativePath.toAbsolutePath().toString();
-//        confLog.info("dir1 = "+x+" : dir2 = "+s) ;
-        
-        // Set the server wide state.
-        //servletContext.setAttribute(, DataAccessPointRegistry.get()) ;
         serverInitialization(servletContext) ;
     }
 
@@ -72,6 +65,9 @@ public class FusekiServerListener implements ServletContextListener {
             return ;
         initialized = true ;
 
+        DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
+        DataAccessPointRegistry.set(servletContext, registry);
+        
         try {
             FusekiServer.formatBaseArea() ; 
             if ( ! FusekiServer.serverInitialized ) {
@@ -88,7 +84,7 @@ public class FusekiServerListener implements ServletContextListener {
             }
 
             if ( initialSetup != null ) {
-                FusekiServer.initializeDataAccessPoints(DataAccessPointRegistry.get(servletContext),
+                FusekiServer.initializeDataAccessPoints(registry,
                                                         initialSetup, FusekiServer.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;

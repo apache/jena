@@ -23,11 +23,14 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
 
+import javax.servlet.ServletContext ;
+
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -66,7 +69,9 @@ public class JettyFuseki {
     private JettyServerConfig serverConfig ;
 
     // The jetty server.
+    
     private Server              server         = null ;
+    private ServletContext      servletContext = null ;
     
     // webapp setup - standard maven layout
     public static       String contextpath     = "/" ;
@@ -218,6 +223,10 @@ public class JettyFuseki {
             x = System.getProperty(name) ;
         return x ;
     }
+    
+    public DataAccessPointRegistry getDataAccessPointRegistry() {
+        return DataAccessPointRegistry.get(servletContext) ;
+    }
 
     private static String tryResourceBase(String maybeResourceBase, String currentResourceBase) {
         if ( currentResourceBase != null )
@@ -236,6 +245,7 @@ public class JettyFuseki {
             defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
 
         WebAppContext webapp = createWebApp(contextPath) ;
+        servletContext = webapp.getServletContext() ;
         server.setHandler(webapp) ;
         // Replaced by Shiro.
         if ( jettyConfig == null && serverConfig.authConfigFile != null )

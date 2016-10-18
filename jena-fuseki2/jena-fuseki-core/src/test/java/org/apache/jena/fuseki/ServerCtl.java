@@ -25,13 +25,11 @@ import static org.apache.jena.fuseki.ServerCtl.ServerScope.TEST ;
 import java.io.IOException ;
 import java.net.ServerSocket ;
 import java.nio.file.Paths ;
-import java.util.Collection ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
@@ -240,15 +238,13 @@ public class ServerCtl {
     }
     
     /*package*/ static void teardownServer() {
-        if ( server != null )
+        if ( server != null ) {
+            // Clear out the registry.
+            server.getDataAccessPointRegistry().clear() ;
+            FileOps.clearAll(FusekiServer.dirConfiguration.toFile()) ;
             server.stop() ;
+        }
         server = null ;
-        // Clear out the registry.
-        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys().iterator()) ;
-        for (String k : keys)
-            DataAccessPointRegistry.get().remove(k) ;
-        // Clear configuration directory.
-        FileOps.clearAll(FusekiServer.dirConfiguration.toFile()) ;
     }
 
     /*package*/ static JettyServerConfig make(int port, boolean allowUpdate, boolean listenLocal) {

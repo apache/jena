@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.server;
 import javax.servlet.ServletContext ;
 
 import org.apache.jena.atlas.lib.Registry ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
@@ -49,22 +50,19 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
             });
         }) ;
     }
-    
-    // TODO To be removed ...
-    private static DataAccessPointRegistry singleton = new DataAccessPointRegistry() ;
-    // Still used by ServerTest and FusekiEmbeddedServer (but nowhere else)
-    public static DataAccessPointRegistry get() { return singleton ; }
 
+    // The server DataAccessPointRegistry is held in the ServletContext for the server.
+    
     private static final String attrNameRegistry = "jena-fuseki:dataAccessPointRegistry" ;
     // Policy for the location of the server-wide DataAccessPointRegistry 
     public static DataAccessPointRegistry get(ServletContext cxt) {
-        //return (DataAccessPointRegistry)cxt.getAttribute(attrName) ;
-        return singleton ;
+        DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(attrNameRegistry) ;
+        if ( registry == null )
+            Log.warn(DataAccessPointRegistry.class, "No registry for ServletContext") ;
+        return registry ;
     }
     
     public static void set(ServletContext cxt, DataAccessPointRegistry registry) {
-        // Temporary until get() removed completely.
-        singleton = registry ;
         cxt.setAttribute(attrNameRegistry, registry) ;
     }
 }
