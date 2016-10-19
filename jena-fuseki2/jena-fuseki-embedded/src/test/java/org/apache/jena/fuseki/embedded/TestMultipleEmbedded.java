@@ -46,13 +46,15 @@ public class TestMultipleEmbedded {
     static Quad q1 = SSE.parseQuad("(_ :s :p 1)") ;
     static Quad q2 = SSE.parseQuad("(_ :s :p 2)") ;
     
+    // Two servers, same port -> bad.
     @Test(expected=FusekiException.class)
     public void multiple_01() {
         DatasetGraph dsg = dataset() ;
 
-        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(9900).add("/ds1", dsg).build() ;
-        // Bad.
-        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(9900).add("/ds2", dsg).build() ;
+        int port = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port).add("/ds1", dsg).build() ;
+        // Same port - Bbad.
+        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port).add("/ds2", dsg).build() ;
     
         server1.start();
         
@@ -67,12 +69,16 @@ public class TestMultipleEmbedded {
         }
     }
 
+    // Two servers, different ports -> good.
     @Test
     public void multiple_02() {
         DatasetGraph dsg = dataset() ;
-        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(9900).add("/ds1", dsg).build() ;
-        // Good
-        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(9901).add("/ds2", dsg).build() ;
+        int port1 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds1", dsg).build() ;
+
+        // Different port - good
+        int port2 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds2", dsg).build() ;
 
         try {
             server1.start();
@@ -83,28 +89,33 @@ public class TestMultipleEmbedded {
         }
     }
     
+    // Two servers, two datasets.
     @Test
     public void multiple_03() {
         DatasetGraph dsg1 = dataset() ;
         DatasetGraph dsg2 = dataset() ;
         // Same name.
-        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(9900).add("/ds", dsg1).build().start() ;
+        int port1 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds", dsg1).build().start() ;
         Txn.executeWrite(dsg1, ()->dsg1.add(q1));
-        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(9901).add("/ds", dsg2).build().start() ;
+        
+        int port2 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds", dsg2).build().start() ;
         Txn.executeWrite(dsg2, ()->dsg2.add(q2));
-        query("http://localhost:9900/ds/", "SELECT * {?s ?p 1}", qExec->{
+        
+        query("http://localhost:"+port1+"/ds/", "SELECT * {?s ?p 1}", qExec->{
             ResultSet rs = qExec.execSelect() ; 
             int x = ResultSetFormatter.consume(rs) ;
             assertEquals(1, x) ;
         }) ;
-        query("http://localhost:9901/ds/", "SELECT * {?s ?p 1}", qExec->{
+        query("http://localhost:"+port2+"/ds/", "SELECT * {?s ?p 1}", qExec->{
             ResultSet rs = qExec.execSelect() ; 
             int x = ResultSetFormatter.consume(rs) ;
             assertEquals(0, x) ;
         }) ;
         server1.stop();
-        
-        query("http://localhost:9901/ds/", "SELECT * {?s ?p 2}", qExec->{
+        // server2 still running
+        query("http://localhost:"+port2+"/ds/", "SELECT * {?s ?p 2}", qExec->{
             ResultSet rs = qExec.execSelect() ; 
             int x = ResultSetFormatter.consume(rs) ;
             assertEquals(1, x) ;
@@ -112,20 +123,30 @@ public class TestMultipleEmbedded {
         server2.stop();
     }
     
+    // Two servers, one dataset under two names.
     @Test
     public void multiple_04() {
         DatasetGraph dsg = dataset() ;
-        // Same name.
-        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(9900).add("/ds", dsg).build().start() ;
+        
+        int port1 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds1", dsg).build().start() ;
         Txn.executeWrite(dsg, ()->dsg.add(q1));
-        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(9901).add("/ds", dsg).build().start() ;
+        
+        int port2 = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds2", dsg).build().start() ;
         Txn.executeWrite(dsg, ()->dsg.add(q2));
         
-        query("http://localhost:9900/ds/", "SELECT * {?s ?p ?o}", qExec->{
+        query("http://localhost:"+port1+"/ds1", "SELECT * {?s ?p ?o}", qExec->{
             ResultSet rs = qExec.execSelect() ; 
             int x = ResultSetFormatter.consume(rs) ;
             assertEquals(2, x) ;
         }) ;
+        query("http://localhost:"+port2+"/ds2", "SELECT * {?s ?p ?o}", qExec->{
+            ResultSet rs = qExec.execSelect() ; 
+            int x = ResultSetFormatter.consume(rs) ;
+            assertEquals(2, x) ;
+        }) ;
+
         server1.stop();
         server2.stop();
     }

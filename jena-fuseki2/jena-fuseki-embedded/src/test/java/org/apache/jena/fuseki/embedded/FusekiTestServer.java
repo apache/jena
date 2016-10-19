@@ -231,7 +231,7 @@ public class FusekiTestServer {
     }
     
     /** Choose an unused port for a server to listen on */
-    private static int choosePort() {
+    public static int choosePort() {
         try (ServerSocket s = new ServerSocket(0)) {
             return s.getLocalPort();
         } catch (IOException ex) {
