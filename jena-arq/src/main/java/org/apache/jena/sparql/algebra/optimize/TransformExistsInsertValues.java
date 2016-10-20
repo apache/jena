@@ -30,6 +30,9 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 
 public class TransformExistsInsertValues extends TransformCopy {
     
+    // ** Scoping issues.  Does it "work" from the renaming? 
+    // (introduces suprious out of scope values)
+    
     private Binding binding ;
     private OpTable values ;
 
@@ -40,7 +43,7 @@ public class TransformExistsInsertValues extends TransformCopy {
     
     /*package*/ static OpTable bindingToValues(Binding binding) {
         Table table = TableFactory.create() ;
-        table.addBinding(binding); 
+        table.addBinding(binding);
         OpTable x = OpTable.create(table) ;
         return x ;
     }
