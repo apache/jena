@@ -102,7 +102,9 @@ public class DataValidator extends ValidatorBaseJson {
         return "RDF Data" ;
     }
     
- // Error handler that records messages
+    /**
+     * Error handler that records messages.
+     */
     @SuppressWarnings("unused")
     private static class ErrorHandlerMsg implements ErrorHandler
     {

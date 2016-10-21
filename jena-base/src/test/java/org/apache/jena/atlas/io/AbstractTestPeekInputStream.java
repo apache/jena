@@ -152,7 +152,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     @Test public void unread3()
     {
         PeekInputStream in = make("") ;
-        in.readByte() ;
+        /* int ch = */ in.readByte() ;
         assertEquals(-1, in.peekByte()) ;
         in.pushbackByte('a') ;
         contains(in, "a") ;
@@ -161,7 +161,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     @Test public void unread4()
     {
         PeekInputStream in = make("") ;
-        in.readByte() ;
+        /* int ch = */ in.readByte() ;
         assertEquals(-1, in.peekByte()) ;
         in.pushbackByte('0') ;
         in.pushbackByte('1') ;
