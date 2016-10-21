@@ -150,7 +150,9 @@ LOC=
 KEEP_WORK=0
 DEBUG=0
 JVM_ARGS=
-SORT_ARGS=
+if [ -n $SORT_ARGS ]; then
+  echo "Using SORT_ARGS: $SORT_ARGS"
+fi
 
 while [ $# -gt 0 ]
 do
@@ -241,15 +243,16 @@ debug "Data text files are $DATA_TRIPLES and $DATA_QUADS"
 # Prepare sort arguments
 if [ -z "$SORT_ARGS" ]; then
     SORT_ARGS="--buffer-size=50%"
-
-    # --parallel is not always available.
-    # Temporarily disable exit on error while we check for --parallel support
-    set +e
-    sort --parallel=3 < /dev/null 2>/dev/null
-    if [ $? = 0 ]; then
-      SORT_ARGS="$SORT_ARGS --parallel=3"
+    if [[ "$SORT_ARGS" != *"--parallel="* ]]; then
+        # --parallel is not always available.
+        # Temporarily disable exit on error while we check for --parallel support
+        set +e
+        sort --parallel=3 < /dev/null 2>/dev/null
+        if [ $? = 0 ]; then
+          SORT_ARGS="$SORT_ARGS --parallel=3"
+        fi
+        set -e
     fi
-    set -e
 fi
 
 # Prepare JVM arguments
