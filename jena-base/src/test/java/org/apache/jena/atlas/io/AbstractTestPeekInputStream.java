@@ -139,7 +139,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     {
         PeekInputStream in = make("abc") ;
         checkLineCol(in, INIT_LINE, INIT_COL) ;
-        in.readByte() ;
+        /* int ch = */ in.readByte() ;
         // Pushback does not move line/col backwards.
         checkLineCol(in, INIT_LINE, INIT_COL+1) ;
         assertEquals('b', in.peekByte()) ;

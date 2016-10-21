@@ -153,6 +153,10 @@ public class BlockUTF8
         }
     }
     
+    private static void toCharsArray(byte[] bytes, char[] chars) {
+        toCharsBuffer(ByteBuffer.wrap(bytes), CharBuffer.wrap(chars));
+    }
+    
     private static void fromCharsBuffer(CharBuffer cb, ByteBuffer bb)
     {
         // CharBuffers are CharSequences but charAt(i) adds a layer of work.
@@ -224,6 +228,10 @@ public class BlockUTF8
     public static void fromChars(CharSequence cs, ByteBuffer bb)
     {
         fromChars(CharBuffer.wrap(cs), bb) ;
+    }
+    
+    private static void fromCharsArray(char[] chars, byte[] bytes) {
+        fromCharsBuffer(CharBuffer.wrap(chars), ByteBuffer.wrap(bytes));
     }
 
     private static int readMultiBytes(ByteBuffer input, int start, int len)

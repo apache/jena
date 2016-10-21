@@ -39,11 +39,7 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
-<<<<<<< HEAD
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
-=======
-import org.apache.jena.sparql.sse.Item ;
->>>>>>> Removing dead code
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Convert ;
 import org.junit.Assert ;
@@ -260,7 +256,7 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
-    private void execQuery(String queryString, int exceptedRowCount) {
+    private static void execQuery(String queryString, int exceptedRowCount) {
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect() ;
             int x = ResultSetFormatter.consume(rs) ;
@@ -268,11 +264,12 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
-    private void execQuery(String queryString, ResultSet expectedResultSet) {
+    private static void execQuery(String queryString, ResultSet expectedResultSet) {
         try ( QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect() ;
             boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet) ;
             assertTrue("Result sets different", b) ;
         }
     }
+
 }

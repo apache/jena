@@ -367,6 +367,23 @@ public class FusekiServer
             throw new FusekiConfigException("Not a directory: "+directory) ;
     }
 
+    private static void mustExist(Path directory) {
+        File dir = directory.toFile() ;
+        if ( ! dir.exists() )
+            throw new FusekiConfigException("Does not exist: "+directory) ; 
+        if ( ! dir.isDirectory())
+            throw new FusekiConfigException("Not a directory: "+directory) ;
+    }
+    
+    private static boolean emptyDir(Path dir) {
+        return dir.toFile().list().length <= 2 ;
+    }
+    
+    private static boolean exists(Path directory) {
+        File dir = directory.toFile() ;
+        return dir.exists() ;
+    }
+
     private static Path writeableDirectory(Path root , String relName ) {
         Path p = makePath(root, relName) ;
         ensureDir(p);

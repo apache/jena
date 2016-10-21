@@ -300,7 +300,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	 * @return the value of the security check or <code>null</code> if the value
 	 *         has not been cached.
 	 */
-	private static Boolean cacheGet(final CacheKey key) {
+	private Boolean cacheGet(final CacheKey key) {
 		final LRUMap<CacheKey, Boolean> cache = SecuredItemImpl.CACHE.get();
 		return (cache == null) ? null : (Boolean) cache.get(key);
 	}
@@ -313,7 +313,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	 * @param value
 	 *            The value to set.
 	 */
-	private static void cachePut(final CacheKey key, final boolean value) {
+	private void cachePut(final CacheKey key, final boolean value) {
 		final LRUMap<CacheKey, Boolean> cache = SecuredItemImpl.CACHE.get();
 		if (cache != null) {
 			cache.put(key, value);

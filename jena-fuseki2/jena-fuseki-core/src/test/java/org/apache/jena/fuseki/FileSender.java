@@ -80,7 +80,7 @@ public class FileSender {
                 ps.print("--" + boundary + "--"+WNL);
             } 
             connection.connect();
-            connection.getResponseCode();
+            int responseCode = connection.getResponseCode();
         } catch (IOException ex) { IO.exception(ex); }
     }
 }
