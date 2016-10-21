@@ -53,7 +53,7 @@ public class AsyncPool
             Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName)) ;
             Callable<Object> c = Executors.callable(task) ;
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId) ;
-            executor.submit(asyncTask) ;
+            /* Future<Object> future = */ executor.submit(asyncTask);
             runningTasks.put(taskId, asyncTask) ;
             return asyncTask ;
         }
