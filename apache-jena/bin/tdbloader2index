@@ -150,7 +150,8 @@ LOC=
 KEEP_WORK=0
 DEBUG=0
 JVM_ARGS=
-if [ -n $SORT_ARGS ]; then
+SORT_ARGS="${SORT_ARGS:-}"
+if [ -n "$SORT_ARGS" ]; then
   echo "Using SORT_ARGS: $SORT_ARGS"
 fi
 
