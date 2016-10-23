@@ -199,7 +199,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 */
 	protected AbstractQueryBuilder() {
 		query = new Query();
-		values = new HashMap<>();
+		values = new HashMap<Var, Node>();
 	}
 	
 	/**

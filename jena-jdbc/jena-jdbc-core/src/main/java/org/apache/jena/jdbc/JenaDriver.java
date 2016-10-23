@@ -333,7 +333,7 @@ public abstract class JenaDriver implements Driver {
             if (ppObj != null) {
                 if (ppObj instanceof String) {
                     // Single instance to try and register
-                    preProcessors = new ArrayList<>();
+                    preProcessors = new ArrayList<String>();
                     preProcessors.add(ppObj.toString());
                 } else if (ppObj instanceof List<?>) {
                     // Multiple instances to try and register
@@ -438,7 +438,7 @@ public abstract class JenaDriver implements Driver {
 
                 if (ppObj instanceof String) {
                     // Single instance to try and register
-                    postProcessors = new ArrayList<>();
+                    postProcessors = new ArrayList<String>();
                     postProcessors.add(ppObj.toString());
                 } else if (ppObj instanceof List<?>) {
                     // Multiple instances to try and register

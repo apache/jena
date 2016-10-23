@@ -64,7 +64,7 @@ public class SelectResults extends StreamedResults<Binding> {
         if (results == null)
             throw new SQLException("SPARQL Results cannot be null");
         this.innerResults = results;
-        this.columns = new ArrayList<>(this.innerResults.getResultVars());
+        this.columns = new ArrayList<String>(this.innerResults.getResultVars());
         this.metadata = statement.getJenaConnection().applyPostProcessors(new SelectResultsMetadata(this, this.innerResults));
     }
 
