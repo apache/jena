@@ -44,7 +44,6 @@ import org.junit.runners.Suite ;
     , TestXMLLib.class
     , TestAlarmClock.class
     , TestRefLong.class
-    , TestReverseComparator.class
     , TestTrie.class
     , TestFilenameProcessing.class
     , TestNumberUtils.class

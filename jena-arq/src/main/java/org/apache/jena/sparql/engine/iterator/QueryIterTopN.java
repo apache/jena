@@ -28,7 +28,6 @@ import java.util.PriorityQueue ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
-import org.apache.jena.atlas.lib.ReverseComparator ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.SortCondition ;
