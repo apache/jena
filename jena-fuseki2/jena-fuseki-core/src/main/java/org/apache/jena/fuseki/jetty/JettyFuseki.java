@@ -37,6 +37,8 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.ServerConnector ;
+import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker ;
+import org.eclipse.jetty.server.handler.ContextHandler ;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
@@ -245,6 +247,14 @@ public class JettyFuseki {
             defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
 
         WebAppContext webapp = createWebApp(contextPath) ;
+        if ( false /*enable symbolic links */ ) {
+            // See http://www.eclipse.org/jetty/documentation/current/serving-aliased-files.html
+            // Record what would be needed:
+            // 1 - Allow all symbolic links without checking
+            webapp.addAliasCheck(new ContextHandler.ApproveAliases());
+            // 2 - Check links are to valid resources. But default for Unix?
+            webapp.addAliasCheck(new AllowSymLinkAliasChecker()) ;
+        }
         servletContext = webapp.getServletContext() ;
         server.setHandler(webapp) ;
         // Replaced by Shiro.
