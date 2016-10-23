@@ -586,9 +586,8 @@ public abstract class TurtleShell {
                     out.println() ;
                 first = false ;
                 if ( freeBnodes.contains(subj) ) {
-                    // Write in "[....]" form.
-                    writeNestedObject(subj) ;
-                    out.println(" .") ;
+                    // Top level: write in "[....]" on "[] :p" form.
+                    writeNestedObjectTopLevel(subj) ;
                     continue ;
                 }
 
@@ -598,18 +597,22 @@ public abstract class TurtleShell {
             return !first ;
         }
 
-        // Common subject
-        // Used by the blocks writer as well.
+        // A Cluster is a collection of triples with the same subject.
         private void writeCluster(Node subject, Collection<Triple> cluster) {
             if ( cluster.isEmpty() )
                 return ;
             writeNode(subject) ;
+            writeClusterPredicateObjectList(INDENT_PREDICATE, cluster) ;
+        }
+
+        // Write the PredicateObjectList fora subject already output.
+        // The subject may have been a "[]" or a URI - the indentation is passed in.
+        private void writeClusterPredicateObjectList(int indent, Collection<Triple> cluster) {
             write_S_P_Gap() ;
-            out.incIndent(INDENT_PREDICATE) ;
+            out.incIndent(indent) ;
             out.pad() ;
             writePredicateObjectList(cluster) ;
-            out.decIndent(INDENT_PREDICATE) ;
-            // End of cluster.
+            out.decIndent(indent) ;
             print(" .") ;
             println() ;
         }
@@ -753,6 +756,19 @@ public abstract class TurtleShell {
             return x.size() ;
         }
 
+        // [ :p "abc" ] .  or    [] : "abc" .
+        private void writeNestedObjectTopLevel(Node subject) {
+            if ( true ) {
+                writeNestedObject(subject) ;
+                out.println(" .") ;
+            } else {
+                // Alternative.
+                Collection<Triple> cluster = triplesOfSubject(subject) ;
+                print("[]") ;
+                writeClusterPredicateObjectList(0, cluster) ;
+            }
+        }
+        
         private void writeNestedObject(Node node) {
             Collection<Triple> x = triplesOfSubject(node) ;
 
