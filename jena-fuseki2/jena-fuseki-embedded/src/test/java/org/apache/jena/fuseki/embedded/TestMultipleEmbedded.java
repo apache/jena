@@ -30,6 +30,7 @@ import org.apache.http.entity.ContentProducer ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.server.FusekiEnv;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
@@ -51,7 +52,7 @@ public class TestMultipleEmbedded {
     public void multiple_01() {
         DatasetGraph dsg = dataset() ;
 
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port).add("/ds1", dsg).build() ;
         // Same port - Bbad.
         FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port).add("/ds2", dsg).build() ;
@@ -73,11 +74,11 @@ public class TestMultipleEmbedded {
     @Test
     public void multiple_02() {
         DatasetGraph dsg = dataset() ;
-        int port1 = FusekiTestServer.choosePort() ;
+        int port1 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds1", dsg).build() ;
 
         // Different port - good
-        int port2 = FusekiTestServer.choosePort() ;
+        int port2 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds2", dsg).build() ;
 
         try {
@@ -95,11 +96,11 @@ public class TestMultipleEmbedded {
         DatasetGraph dsg1 = dataset() ;
         DatasetGraph dsg2 = dataset() ;
         // Same name.
-        int port1 = FusekiTestServer.choosePort() ;
+        int port1 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds", dsg1).build().start() ;
         Txn.executeWrite(dsg1, ()->dsg1.add(q1));
         
-        int port2 = FusekiTestServer.choosePort() ;
+        int port2 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds", dsg2).build().start() ;
         Txn.executeWrite(dsg2, ()->dsg2.add(q2));
         
@@ -128,11 +129,11 @@ public class TestMultipleEmbedded {
     public void multiple_04() {
         DatasetGraph dsg = dataset() ;
         
-        int port1 = FusekiTestServer.choosePort() ;
+        int port1 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server1 = FusekiEmbeddedServer.create().setPort(port1).add("/ds1", dsg).build().start() ;
         Txn.executeWrite(dsg, ()->dsg.add(q1));
         
-        int port2 = FusekiTestServer.choosePort() ;
+        int port2 = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server2 = FusekiEmbeddedServer.create().setPort(port2).add("/ds2", dsg).build().start() ;
         Txn.executeWrite(dsg, ()->dsg.add(q2));
         

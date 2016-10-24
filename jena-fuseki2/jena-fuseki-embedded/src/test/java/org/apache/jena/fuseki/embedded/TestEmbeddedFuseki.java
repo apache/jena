@@ -35,9 +35,13 @@ import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.server.FusekiEnv;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.* ;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -75,7 +79,7 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = 0 ;//FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.make(port, "/ds2", dsg) ;
         DataAccessPointRegistry registry = server.getDataAccessPointRegistry() ;
         // But no /ds
@@ -90,7 +94,7 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_03() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds1", dsg) 
@@ -124,7 +128,7 @@ public class TestEmbeddedFuseki {
         dataService.addEndpoint(OperationName.Quads_RW, "");
         dataService.addEndpoint(OperationName.Query, "");
         dataService.addEndpoint(OperationName.Update, "");
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -164,7 +168,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_05() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds0", dsg) 
@@ -179,7 +183,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_06() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds0", dsg)
@@ -195,7 +199,7 @@ public class TestEmbeddedFuseki {
     // Context path.
     @Test public void embedded_07() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
         
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -213,7 +217,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_08() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
 
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -227,7 +231,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_09() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
 
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -248,7 +252,7 @@ public class TestEmbeddedFuseki {
 
     @Test public void embedded_20() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiTestServer.choosePort() ;
+        int port = FusekiEnv.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
         dSrv.addEndpoint(OperationName.Query, "q") ;

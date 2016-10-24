@@ -101,6 +101,15 @@ public class FusekiEmbeddedServer {
         this.port = port ;
     }
     
+    /** 
+     * Return the port begin used.  
+     * This will be the give port, which defauls to 3330, or
+     * the one actually allocated if the port was 0 ("choose a free port").
+     */
+    public int getPort() {
+        return port ; 
+    }
+
     /** Get the underlying Jetty server which has also been set up. */ 
     public Server getJettyServer() {
         return server ; 
@@ -156,8 +165,8 @@ public class FusekiEmbeddedServer {
 
         /** Set the port to run on. */ 
         public Builder setPort(int port) {
-            if ( port <= 0 )
-                throw new IllegalArgumentException("port="+port+" : Port must be greater than zero.") ;
+            if ( port < 0 )
+                throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.") ;
             this.port = port ;
             return this ;
         }

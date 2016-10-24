@@ -22,14 +22,12 @@ import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.CLASS
 import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.SUITE ;
 import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.TEST ;
 
-import java.io.IOException ;
-import java.net.ServerSocket ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.server.FusekiEnv;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -96,7 +94,7 @@ public class FusekiTestServer {
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS ;
-    private static int currentPort = choosePort() ;
+    private static int currentPort = FusekiEnv.choosePort() ;
     
     public static int port() {
         return currentPort ;
@@ -227,15 +225,6 @@ public class FusekiTestServer {
             UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, serviceUpdate()) ;
             try {proc.execute() ; }
             catch (Throwable e) {e.printStackTrace(); throw e;}
-        }
-    }
-    
-    /** Choose an unused port for a server to listen on */
-    public static int choosePort() {
-        try (ServerSocket s = new ServerSocket(0)) {
-            return s.getLocalPort();
-        } catch (IOException ex) {
-            throw new FusekiException("Failed to find a port for tests!");
         }
     }
 }

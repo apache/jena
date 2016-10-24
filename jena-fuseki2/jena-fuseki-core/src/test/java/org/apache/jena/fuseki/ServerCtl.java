@@ -22,8 +22,6 @@ import static org.apache.jena.fuseki.ServerCtl.ServerScope.CLASS ;
 import static org.apache.jena.fuseki.ServerCtl.ServerScope.SUITE ;
 import static org.apache.jena.fuseki.ServerCtl.ServerScope.TEST ;
 
-import java.io.IOException ;
-import java.net.ServerSocket ;
 import java.nio.file.Paths ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
@@ -102,7 +100,7 @@ public class ServerCtl {
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS ;
-    private static int currentPort = choosePort() ;
+    private static int currentPort = FusekiEnv.choosePort() ;
     
     public static int port() {
         return currentPort ;
@@ -269,15 +267,6 @@ public class ServerCtl {
             UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, serviceUpdate()) ;
             try {proc.execute() ; }
             catch (Throwable e) {e.printStackTrace(); throw e;}
-        }
-    }
-    
-    /** Choose an unused port for a server to listen on */
-    public static int choosePort() {
-        try (ServerSocket s = new ServerSocket(0)) {
-            return s.getLocalPort();
-        } catch (IOException ex) {
-            throw new FusekiException("Failed to find a port for tests!");
         }
     }
 }
