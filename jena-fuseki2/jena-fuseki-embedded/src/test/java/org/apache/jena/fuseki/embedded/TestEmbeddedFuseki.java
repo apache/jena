@@ -58,21 +58,25 @@ public class TestEmbeddedFuseki {
     
     private static final String DIR = "testing/FusekiEmbedded/" ;
 
+    // Test - build on default port. 
     @Test public void embedded_01() {
         DatasetGraph dsg = dataset() ;
+        int port = 3330 ;   // Default port.
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create().add("/ds", dsg).build() ;
         assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds")) ;
         server.start() ;
-        query("http://localhost:3330/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
+        query("http://localhost:"+port+"/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
             ResultSet rs = qExec.execSelect() ; 
             assertFalse(rs.hasNext()) ;
         }) ;
         server.stop() ;
     }
     
+    // Different dataset name.
     @Test public void embedded_02() {
         DatasetGraph dsg = dataset() ;
-        FusekiEmbeddedServer server = FusekiEmbeddedServer.make(3330, "/ds2", dsg) ;
+        int port = FusekiTestServer.choosePort() ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.make(port, "/ds2", dsg) ;
         DataAccessPointRegistry registry = server.getDataAccessPointRegistry() ;
         // But no /ds
         assertEquals(1, registry.size()) ;
@@ -83,10 +87,12 @@ public class TestEmbeddedFuseki {
         } finally { server.stop() ; }
     }
     
+    // Different dataset name.
     @Test public void embedded_03() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3331)
+            .setPort(port)
             .add("/ds1", dsg) 
             .build() ;
         server.start() ;
@@ -96,7 +102,7 @@ public class TestEmbeddedFuseki {
                 Quad q = SSE.parseQuad("(_ :s :p _:b)") ;
                 dsg.add(q); 
             }) ;
-            query("http://localhost:3331/ds1/query", "SELECT * { ?s ?p ?o}", qExec->{
+            query("http://localhost:"+port+"/ds1/query", "SELECT * { ?s ?p ?o}", qExec->{
                 ResultSet rs = qExec.execSelect() ; 
                 int x = ResultSetFormatter.consume(rs) ;
                 assertEquals(1, x) ;
@@ -118,9 +124,10 @@ public class TestEmbeddedFuseki {
         dataService.addEndpoint(OperationName.Quads_RW, "");
         dataService.addEndpoint(OperationName.Query, "");
         dataService.addEndpoint(OperationName.Update, "");
+        int port = FusekiTestServer.choosePort() ;
         
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3332)
+            .setPort(port)
             .add("/data", dataService)
             .build() ;
         server.start() ;
@@ -129,25 +136,25 @@ public class TestEmbeddedFuseki {
             String data = "(graph (:s :p 1) (:s :p 2) (:s :p 3))" ;
             Graph g = SSE.parseGraph(data) ;
             HttpEntity e = graphToHttpEntity(g) ;
-            HttpOp.execHttpPut("http://localhost:3332/data", e) ;
+            HttpOp.execHttpPut("http://localhost:"+port+"/data", e) ;
     
             // Get data out.
-            try ( TypedInputStream in = HttpOp.execHttpGet("http://localhost:3332/data") ) { 
+            try ( TypedInputStream in = HttpOp.execHttpGet("http://localhost:"+port+"/data") ) { 
                 Graph g2 = GraphFactory.createDefaultGraph() ;
                 RDFDataMgr.read(g2, in, RDFLanguages.contentTypeToLang(in.getContentType())) ;
                 assertTrue(g.isIsomorphicWith(g2)) ;
             }
             // Query.
-            query("http://localhost:3332/data", "SELECT * { ?s ?p ?o}", qExec->{
+            query("http://localhost:"+port+"/data", "SELECT * { ?s ?p ?o}", qExec->{
                 ResultSet rs = qExec.execSelect() ; 
                 int x = ResultSetFormatter.consume(rs) ;
                 assertEquals(3, x) ;
             }) ;
             // Update
             UpdateRequest req = UpdateFactory.create("CLEAR DEFAULT") ;
-            UpdateExecutionFactory.createRemote(req, "http://localhost:3332/data").execute(); 
+            UpdateExecutionFactory.createRemote(req, "http://localhost:"+port+"/data").execute(); 
             // Query again.
-            query("http://localhost:3332/data", "SELECT * { ?s ?p ?o}", qExec-> {
+            query("http://localhost:"+port+"/data", "SELECT * { ?s ?p ?o}", qExec-> {
                 ResultSet rs = qExec.execSelect() ; 
                 int x = ResultSetFormatter.consume(rs) ;
                 assertEquals(0, x) ;
@@ -157,28 +164,30 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_05() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3330)
+            .setPort(port)
             .add("/ds0", dsg) 
             .build() ;
         server.start() ;
         try {
             // No stats
-            String x = HttpOp.execHttpGetString("http://localhost:3330/$/stats") ;
+            String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats") ;
             assertNull(x) ;  
         } finally { server.stop() ; }
     }
     
     @Test public void embedded_06() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3330)
+            .setPort(port)
             .add("/ds0", dsg)
             .enableStats(true)
             .build() ;
         server.start() ;
         // No stats
-        String x = HttpOp.execHttpGetString("http://localhost:3330/$/stats") ;
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats") ;
         assertNotNull(x) ;
         server.stop() ;
     }
@@ -186,63 +195,72 @@ public class TestEmbeddedFuseki {
     // Context path.
     @Test public void embedded_07() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
+        
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3330)
+            .setPort(port)
             .setContextPath("/ABC")
             .add("/ds", dsg) 
             .build() ;
         server.start() ;
         try {
-            String x1 = HttpOp.execHttpGetString("http://localhost:3330/ds") ;
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/ds") ;
             assertNull(x1) ;
-            String x2 = HttpOp.execHttpGetString("http://localhost:3330/ABC/ds") ;
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/ABC/ds") ;
             assertNotNull(x2) ;
         } finally { server.stop() ; }
     }
     
     @Test public void embedded_08() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
+
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3330)
+            .setPort(port)
             .parseConfigFile(DIR+"config.ttl") 
             .build() ;
         server.start() ;
         try {
-            query("http://localhost:3330/FuTest", "SELECT * {}", x->{}) ;
+            query("http://localhost:"+port+"/FuTest", "SELECT * {}", x->{}) ;
         } finally { server.stop() ; } 
     }
     
     @Test public void embedded_09() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
+
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
-            .setPort(3330)
+            .setPort(port)
             .setContextPath("/ABC")
             .parseConfigFile(DIR+"config.ttl") 
             .build() ;
         server.start() ;
         try {
             try {
-                query("http://localhost:3330/FuTest", "ASK{}", x->{}) ;
+                query("http://localhost:"+port+"/FuTest", "ASK{}", x->{}) ;
             } catch (HttpException ex) {
                 assertEquals(HttpSC.METHOD_NOT_ALLOWED_405, ex.getResponseCode()) ;
             }
 
-            query("http://localhost:3330/ABC/FuTest","ASK{}",x->{}) ;
+            query("http://localhost:"+port+"/ABC/FuTest","ASK{}",x->{}) ;
         } finally { server.stop() ; } 
     }
 
     @Test public void embedded_20() {
         DatasetGraph dsg = dataset() ;
+        int port = FusekiTestServer.choosePort() ;
+
         DataService dSrv = new DataService(dsg) ;
         dSrv.addEndpoint(OperationName.Query, "q") ;
         dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .add("/dsrv1", dSrv)
+            .setPort(port)
             .build() ;
         server.start() ;
         try {
-            query("http://localhost:3330/dsrv1/q","ASK{}",x->{}) ;
-            String x1 = HttpOp.execHttpGetString("http://localhost:3330/dsrv1/gsp") ;
+            query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{}) ;
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/dsrv1/gsp") ;
             assertNotNull(x1) ;
         } finally { server.stop() ; } 
     }
