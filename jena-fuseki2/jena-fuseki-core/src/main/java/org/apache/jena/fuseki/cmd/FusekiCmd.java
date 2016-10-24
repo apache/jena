@@ -25,8 +25,10 @@ import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
+import jena.cmd.TerminationException;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
@@ -338,7 +340,11 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            runFuseki(cmdLineConfig, jettyServerConfig) ;
+            try {
+                runFuseki(cmdLineConfig, jettyServerConfig) ;
+            } catch (FusekiException ex) {
+                throw new TerminationException(1) ;
+            }
         }
 
         @Override
@@ -347,12 +353,11 @@ public class FusekiCmd {
         }
     }
     
-    /** Configure and run a Fuseki server - this function does not return */  
+    /** Configure and run a Fuseki server - this function does not return except for error starting up*/  
     public static void runFuseki(ServerInitialConfig serverConfig, JettyServerConfig jettyConfig) {
         FusekiServerListener.initialSetup = serverConfig ;
         JettyFuseki.initializeServer(jettyConfig) ;
         JettyFuseki.instance.start() ;
         JettyFuseki.instance.join() ;
-        System.exit(0) ;
     }
 }

@@ -139,10 +139,10 @@ public class JettyFuseki {
             server.start() ;
         } catch (java.net.BindException ex) {
             serverLog.error("SPARQLServer (port="+serverConnector.getPort()+"): Failed to start server: " + ex.getMessage()) ;
-            System.exit(1) ;
+            throw new FusekiException("BindException: port="+serverConnector.getPort()+": Failed to start server: " + ex.getMessage(), ex) ;
         } catch (Exception ex) {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
-            System.exit(1) ;
+            throw new FusekiException("Failed to start server: " + ex.getMessage(), ex) ;
         }
         String now = DateTimeUtils.nowAsString() ;
         serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;

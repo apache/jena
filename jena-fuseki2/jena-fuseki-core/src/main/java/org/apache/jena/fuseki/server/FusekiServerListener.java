@@ -23,6 +23,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.tdb.StoreConnection ;
 
 /** Setup configurtation.
@@ -88,7 +89,7 @@ public class FusekiServerListener implements ServletContextListener {
                                                         initialSetup, FusekiServer.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;
-                System.exit(0) ;
+                throw new FusekiException("No configuration") ;
             }
         } catch (Throwable th) { 
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;

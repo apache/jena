@@ -119,10 +119,10 @@ public class SPARQLServer {
             server.start() ;
         } catch (java.net.BindException ex) {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ;
-            System.exit(1) ;
+            throw new FusekiException("BindException: port="+server.getConnectors()[0].getPort()+": Failed to start server: " + ex.getMessage(), ex) ;
         } catch (Exception ex) {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
-            System.exit(1) ;
+            throw new FusekiException("Failed to start server: " + ex.getMessage(), ex) ;
         }
 
         ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
