@@ -52,10 +52,12 @@ import org.apache.jena.vocabulary.RDF ;
 public class ModelCom extends EnhGraph
 implements Model, PrefixMapping, Lock
 {
-    private static final RDFReaderF readerFactory = new RDFReaderFImpl();
-    private static final RDFWriterF writerFactory = new RDFWriterFImpl();
+    private static RDFReaderF readerFactory = new RDFReaderFImpl();
+    private static RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
-    private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
+    /** @deprecated Remove when setDefaultModelPrefixes etc removed. */
+    @Deprecated
+    private static PrefixMapping defaultPrefixMapping = null; // Should be the default value in Java.
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
@@ -64,19 +66,39 @@ implements Model, PrefixMapping, Lock
         JenaSystem.init() ;
     }
     
+    /* Internal.
+     * During intialization, all sorts of class loading orders can happen.
+     * Many places create Models, calling into a ModelCom constructor.
+     * so this helps the runtime ensure that ModelCom is
+     * initialized before a ModelCom is created.   
+     */
+    
+    static {
+        if ( defaultPrefixMapping == null )
+            defaultPrefixMapping = PrefixMapping.Factory.create();
+    }
+    
     /**
     	make a model based on the specified graph
      */
     public ModelCom( Graph base ) 
     { this( base, BuiltinPersonalities.model ); }
 
-    public ModelCom( Graph base, Personality<RDFNode> personality )
-    { super( base, personality ); 
-    withDefaultMappings( defaultPrefixMapping ); }
+    public ModelCom( Graph base, Personality<RDFNode> personality ) { 
+        super( base, personality );
+        // JENA-1249. Touching the prefix mappings can incur initialization costs.
+        // Also, must protect against defaultPrefixMapping being null due to initialization effects.
+        if ( defaultPrefixMapping != null && ! defaultPrefixMapping.hasNoMappings() )
+            withDefaultMappings( defaultPrefixMapping );
+    }  
 
+    /** @deprecated This feature will be removed */
+    @Deprecated
     public static PrefixMapping getDefaultModelPrefixes()
     { return defaultPrefixMapping; }
 
+    /** @deprecated This feature will be removed */
+    @Deprecated
     public static PrefixMapping setDefaultModelPrefixes(PrefixMapping pm)
     {
         PrefixMapping result = defaultPrefixMapping ;
@@ -1052,7 +1074,15 @@ implements Model, PrefixMapping, Lock
     @Override
     public String shortForm( String uri )
     { return getPrefixMapping().shortForm( uri ); }
+    
+    @Override
+    public boolean hasNoMappings()
+    { return getPrefixMapping().hasNoMappings(); }
 
+    @Override
+    public int numPrefixes()
+    { return getPrefixMapping().numPrefixes() ; }
+    
     /**
         Service method to update the namespaces of  a Model given the
         mappings from prefix names to sets of URIs.

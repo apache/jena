@@ -98,12 +98,14 @@ public class TestModelFactory extends TestCase
 		// TODO Set ModelFactory.findAssemblerRoots( Model model )
 	}
 
-	public void testGetDefaultPrefixMapping()
+	@SuppressWarnings("deprecation")
+    public void testGetDefaultPrefixMapping()
 	{
 		Assert.assertSame(ModelCom.getDefaultModelPrefixes(),
 				ModelFactory.getDefaultModelPrefixes());
 	}
 
+    @SuppressWarnings("deprecation")
 	public void testSetDefaultPrefixMapping()
 	{
 		final PrefixMapping original = ModelCom.getDefaultModelPrefixes();
