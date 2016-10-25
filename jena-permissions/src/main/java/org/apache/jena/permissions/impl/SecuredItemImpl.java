@@ -52,7 +52,8 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	// a key for the secured item.
 	private class CacheKey implements Comparable<CacheKey> {
 		private final Action action;
-		private final Node modelNode;
+		@SuppressWarnings("hiding")
+        private final Node modelNode;
 		private final Triple from;
 		private final Triple to;
 		private Integer hashCode;

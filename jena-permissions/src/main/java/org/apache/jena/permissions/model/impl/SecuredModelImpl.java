@@ -1952,6 +1952,18 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 		checkRead();
 		return holder.getBaseItem().shortForm(uri);
 	}
+	
+    @Override
+    public boolean noMappings() {
+        checkRead();
+        return holder.getBaseItem().noMappings();
+    }
+
+    @Override
+    public int numPrefixes() {
+        checkRead();
+        return holder.getBaseItem().numPrefixes();
+    }
 
 	@Override
 	public long size() throws ReadDeniedException, AuthenticationRequiredException {
