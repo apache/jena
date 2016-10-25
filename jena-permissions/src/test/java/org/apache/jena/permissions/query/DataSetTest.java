@@ -77,8 +77,7 @@ public class DataSetTest {
 		try {
 			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  " + " SELECT ?foo ?bar WHERE "
 					+ " { ?foo a <http://example.com/class> ; " + "?bar [] ." + "  } ";
-			final QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-			try {
+			try( QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -86,8 +85,6 @@ public class DataSetTest {
 					results.nextSolution();
 				}
 				Assert.assertEquals(8, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			dataset.close();
@@ -124,8 +121,7 @@ public class DataSetTest {
 		try {
 			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  " + " SELECT ?foo ?bar WHERE "
 					+ " { ?foo a <http://example.com/class> ; " + "?bar [] ." + "  } ";
-			final QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-			try {
+			try( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -133,8 +129,6 @@ public class DataSetTest {
 					results.nextSolution();
 				}
 				Assert.assertEquals(4, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			dataset.close();
@@ -170,8 +164,7 @@ public class DataSetTest {
 
 		try {
 			String query = "SELECT ?s ?p ?o WHERE " + " { ?s ?p ?o } ";
-			QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -180,13 +173,10 @@ public class DataSetTest {
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
-			} finally {
-				qexec.close();
 			}
 
 			query = "SELECT ?g ?s ?p ?o WHERE " + " { GRAPH ?g {?s ?p ?o } }";
-			qexec = QueryExecutionFactory.create(query, dataset);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -196,8 +186,6 @@ public class DataSetTest {
 				// 2x 3 values + type triple
 				// all are in the base graph so no named graphs
 				Assert.assertEquals(0, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			dataset.close();
