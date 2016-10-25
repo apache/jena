@@ -1954,9 +1954,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 	
     @Override
-    public boolean noMappings() {
+    public boolean hasNoMappings() {
         checkRead();
-        return holder.getBaseItem().noMappings();
+        return holder.getBaseItem().hasNoMappings();
     }
 
     @Override
