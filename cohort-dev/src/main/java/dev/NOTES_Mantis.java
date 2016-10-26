@@ -24,6 +24,8 @@ public class NOTES_Mantis {
     //   SysTransState
     
     // NestedTransactions by counting (only).
+    
+    // Transactions: per txn object to hang caches off. 
 
     // B+Trees - use a random access, zero copy encoding like Cap'n Proto, FlatBuffers,
     // SBE (via real-logic) or messagebuffers
