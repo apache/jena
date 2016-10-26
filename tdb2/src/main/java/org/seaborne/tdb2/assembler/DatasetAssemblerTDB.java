@@ -68,7 +68,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
         }
 
         /*
-        <r> rdf:type tdb:DatasetTDB ;
+        <r> rdf:type tdb:DatasetTDB2 ;
             tdb:location "dir" ;
             //ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
             tdb:unionGraph true ; # or "true"

@@ -35,9 +35,8 @@ public class VocabTDB2
     public static String getURI() { return NS ; } 
 
     // Types
-    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB") ;
-    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB") ;
-    public static final Resource tGraphBDB          = Vocab.type(NS, "GraphBDB") ;
+    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB2") ;
+    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB2") ;
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
