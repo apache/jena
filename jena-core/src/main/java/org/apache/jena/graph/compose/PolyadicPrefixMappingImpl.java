@@ -193,6 +193,16 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         return s;
         }
     
+    
+    @Override
+    public boolean hasNoMappings()
+        { return getBaseMapping().hasNoMappings(); }
+
+    @Override
+    public int numPrefixes()
+        { return getBaseMapping().numPrefixes(); }
+    
+    
     @Override public String qnameFor( String uri )
         {
         String result = getBaseMapping().qnameFor( uri );

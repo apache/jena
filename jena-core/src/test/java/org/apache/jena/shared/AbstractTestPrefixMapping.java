@@ -416,7 +416,22 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( null, A.getNsURIPrefix(bURI) ) ;
     }
 
+    public void testNoMapping() {
+        String hURI = "http://test.prefixes/prefix#";
+        PrefixMapping A = getMapping();
+        assertTrue(A.hasNoMappings()) ;
+        A.setNsPrefix( "hr", hURI );
+        assertFalse(A.hasNoMappings()) ;
+    }
     
+    public void testNumPrefixes() {
+        String hURI = "http://test.prefixes/prefix#";
+        PrefixMapping A = getMapping();
+        assertEquals(0, A.numPrefixes()) ;
+        A.setNsPrefix( "hr", hURI );
+        assertEquals(1, A.numPrefixes()) ;
+    }
+
     public void testEquality()
         {
         testEquals( "" );

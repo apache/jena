@@ -78,11 +78,13 @@ public class TestModelPrefixMapping extends AbstractTestPrefixMapping
 		return modelFactory.getPrefixMapping();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void restorePrefixes()
 	{
 		ModelCom.setDefaultModelPrefixes(prevMap);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setPrefixes()
 	{
 		prevMap = ModelCom.setDefaultModelPrefixes(baseMap);
@@ -100,6 +102,7 @@ public class TestModelPrefixMapping extends AbstractTestPrefixMapping
 		restorePrefixes();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void testGetDefault()
 	{
 		setPrefixes();

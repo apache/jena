@@ -148,6 +148,18 @@ public class SecuredPrefixMappingImpl extends SecuredItemImpl implements
 		checkRead();
 		return holder.getBaseItem().shortForm(uri);
 	}
+	
+    @Override
+    public boolean hasNoMappings() {
+        checkRead();
+        return holder.getBaseItem().hasNoMappings();
+    }
+
+    @Override
+    public int numPrefixes() {
+        checkRead();
+        return holder.getBaseItem().numPrefixes();
+    }
 
 	@Override
 	public SecuredPrefixMapping withDefaultMappings(final PrefixMapping map)

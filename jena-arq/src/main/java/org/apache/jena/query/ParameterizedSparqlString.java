@@ -1508,6 +1508,16 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     @Override
+    public boolean hasNoMappings() {
+        return this.prefixes.hasNoMappings();
+    }
+    
+    @Override
+    public int numPrefixes() {
+        return this.prefixes.numPrefixes();
+    }    
+    
+    @Override
     public PrefixMapping lock() {
         return this.prefixes.lock();
     }

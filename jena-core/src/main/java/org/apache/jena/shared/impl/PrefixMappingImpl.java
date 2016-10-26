@@ -253,6 +253,14 @@ public class PrefixMappingImpl implements PrefixMapping
             ;
         }
     
+    @Override
+    public boolean hasNoMappings()
+        { return prefixToURI.isEmpty(); }
+
+    @Override
+    public int numPrefixes()
+        { return prefixToURI.size(); }
+    
     protected boolean equals( PrefixMappingImpl other )
         { return other.sameAs( this ); }
     

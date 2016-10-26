@@ -275,9 +275,11 @@ public class SecuredModelDetailTest {
 		private Model model;
 		private RDFNode msgType = ResourceFactory
 				.createResource("http://example.com/msg");
-		private Property pTo = ResourceFactory
+		@SuppressWarnings("hiding")
+        private Property pTo = ResourceFactory
 				.createProperty("http://example.com/to");
-		private Property pFrom = ResourceFactory
+		@SuppressWarnings("hiding")
+        private Property pFrom = ResourceFactory
 				.createProperty("http://example.com/from");
 
 		/**

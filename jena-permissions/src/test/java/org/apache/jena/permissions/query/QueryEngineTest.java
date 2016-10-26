@@ -122,9 +122,7 @@ public class QueryEngineTest {
 					+ " { ?foo a <http://example.com/class> ; "
 					+ "?bar [] ."
 					+ "  } ";
-			final QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -132,8 +130,6 @@ public class QueryEngineTest {
 					results.nextSolution();
 				}
 				Assert.assertEquals(8, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			model.close();
@@ -164,9 +160,7 @@ public class QueryEngineTest {
 					+ " { ?foo a <http://example.com/class> ; "
 					+ "?bar [] ."
 					+ "  } ";
-			final QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -174,8 +168,6 @@ public class QueryEngineTest {
 					results.nextSolution();
 				}
 				Assert.assertEquals(4, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			model.close();
@@ -201,8 +193,7 @@ public class QueryEngineTest {
 				"http://example.com/securedModel", baseModel);
 		try {
 			String query = "SELECT ?s ?p ?o WHERE " + " { ?s ?p ?o } ";
-			QueryExecution qexec = QueryExecutionFactory.create(query, model);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -211,13 +202,10 @@ public class QueryEngineTest {
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
-			} finally {
-				qexec.close();
 			}
 
 			query = "SELECT ?s ?p ?o WHERE " + " { GRAPH ?g {?s ?p ?o } }";
-			qexec = QueryExecutionFactory.create(query, model);
-			try {
+			try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
 				final ResultSet results = qexec.execSelect();
 				int count = 0;
 				for (; results.hasNext();) {
@@ -227,8 +215,6 @@ public class QueryEngineTest {
 				// 2x 3 values + type triple
 				// no named graphs so no results.
 				Assert.assertEquals(0, count);
-			} finally {
-				qexec.close();
 			}
 		} finally {
 			model.close();

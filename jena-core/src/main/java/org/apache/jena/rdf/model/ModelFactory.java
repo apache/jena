@@ -66,13 +66,17 @@ public class ModelFactory extends ModelFactoryBase
 
          @param pm the default prefixes to use
          @return the previous default prefix mapping
+         @deprecated This feature wil be removed from ModelFactory
     */
+    @Deprecated
     public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
         { return ModelCom.setDefaultModelPrefixes( pm ); }
 
     /**
         Answer the current default model prefixes PrefixMapping object.
+        @deprecated This feature wil be removed from ModelFactory
     */
+    @Deprecated
     public static PrefixMapping getDefaultModelPrefixes()
         { return ModelCom.getDefaultModelPrefixes(); }
 
