@@ -198,12 +198,12 @@ public class TDB2 {
         synchronized(initLock) {
             if ( initialized ) {
                 if ( JenaSystem.DEBUG_INIT )
-                    System.err.println("TDB.init - return") ;
+                    System.err.println("TDB2.init - return") ;
                 return ;
             }
             initialized = true ;
             if ( JenaSystem.DEBUG_INIT )
-                System.err.println("TDB.init - start") ;
+                System.err.println("TDB2.init - start") ;
 
             SystemTDB.init() ;
             ARQ.init() ;
