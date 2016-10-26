@@ -177,5 +177,15 @@ public class PrefixMappingCache implements PrefixMapping {
         return this ;
     }
 
+    @Override 
+    public boolean hasNoMappings() {
+        return other.hasNoMappings() ;
+    }
+    
+    @Override
+    public int numPrefixes() {
+        return other.numPrefixes() ;
+    }
+
 }
 

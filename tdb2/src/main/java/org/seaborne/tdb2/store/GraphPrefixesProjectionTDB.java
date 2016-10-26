@@ -128,6 +128,16 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
         return e.get().getKey() + ":" + uri.substring((e.get().getValue()).length()) ;
     }
 
+    // Do better?
+    
+    @Override
+    public boolean hasNoMappings() { return getNsPrefixMap().isEmpty() ; }
+    
+    @Override
+    public int numPrefixes() {
+        return getNsPrefixMap().size() ;
+    }
+
     private Optional<Entry<String, String>> findMapping( String uri, boolean partial )
     {
         return getNsPrefixMap().entrySet().stream().sequential().filter(e->{
