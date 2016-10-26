@@ -61,6 +61,12 @@ public class ParserProfileChecker extends ParserProfileBase // implements Parser
     public IRI makeIRI(String uriStr, long line, long col) {
         // resolves, but we handle the errors and warnings.
         IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
+        if ( uriStr.contains(" ") ) {
+            // Specific check for spaces.
+            errorHandler.warning("Bad IRI: <"+uriStr+"> Spaces are not legal in URIs/IRIs.", line, col);
+            return iri ; 
+        } 
+        // At this point, IRI "errors" are warnings. 
         CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;
     }

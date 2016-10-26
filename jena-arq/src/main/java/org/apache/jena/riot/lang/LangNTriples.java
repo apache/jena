@@ -84,10 +84,6 @@ public final class LangNTriples extends LangNTuple<Triple>
         
         if ( x.getType() != TokenType.DOT )
             exception(x, "Triple not terminated by DOT: %s", x) ;
-//        Node s = X ;
-//        Node p = X ;
-//        Node o = X ;
-//        return T ;
         
         Node s = tokenAsNode(sToken) ;
         Node p = tokenAsNode(pToken) ;
