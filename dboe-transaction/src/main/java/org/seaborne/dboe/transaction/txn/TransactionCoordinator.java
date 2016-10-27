@@ -516,12 +516,32 @@ public class TransactionCoordinator {
      * can not be done.
      */
     /*package*/ boolean promoteTxn(Transaction transaction) {
+        // **** Checkout with TDB1 TransactionManager
+        //   Pretests
+        //   If read-committed, don't need synchronized?
+        // 
+        //   writerEpoch on commit only (not ported yet)
+        
         if ( transaction.getMode() == WRITE )
             return true ;
+        
+        // Has there been an writer active since the transaction started?
+        // Do a test outside the lock - only writerEpoch can change and that increases
+        // from the data epoch so if this test fail outside the lock it will fail inside.
+        // if it passes, we have to test again. 
+        long dataEpoch1 = transaction.getDataEpoch() ;   // Our epoch.
+        long currentEpoch1 = writerEpoch.get() ;         // Advances as a writer starts
+        if ( dataEpoch1 != currentEpoch1 )
+            return false ;
+        
+        // XXX writeEpose adavnce only on writer commits.
+        // Once we have acquireWriterLock, we are single writer. 
+        
         // We're a reader. Try to be a writer.
         synchronized(lock) {
             // Get the writer lock ...
             if ( promoteReadCommitted ) {
+                // **** Can this be moved outside the synchronized? 
                 // Get the writer lock - don't check epochs - wait for any writer to finish.
                 acquireWriterLock(true) ;
             } else {
@@ -532,10 +552,10 @@ public class TransactionCoordinator {
                 if ( dataEpoch != currentEpoch )
                     return false ;
                 // Should not block if dataEpoch == currentEpoch.
-                // We ca inside "synchronized(lock)" so there are no writers.
+                // We are inside "synchronized(lock)" so there are no writers.
                 boolean b = acquireWriterLock(false) ;
                 if ( !b )
-                    throw new TransactionException("Promote: Inconistent: Failed to get the writer lock");
+                    throw new TransactionException("Promote: Inconsistent: Failed to get the writer lock");
             }
             // ... we have now got the writer lock ...
             try { transaction.promoteComponents() ; }

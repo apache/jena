@@ -57,11 +57,11 @@ import org.seaborne.dboe.jenax.Txn ;
  */
 public interface Transactional extends org.apache.jena.sparql.core.Transactional
 {
-   /** Start either a READ or WRITE transaction */ 
+   /** Start either a READ or WRITE transaction */
    @Override
    public void begin(ReadWrite readWrite) ;
    
-   /** Attempt to prmote a read transaction to a write transaction.
+   /** Attempt to promote a read transaction to a write transaction.
     * This is not guaranteed to succeed - any changes by another write transaction
     * may restrict promotion.  
     * <p>
