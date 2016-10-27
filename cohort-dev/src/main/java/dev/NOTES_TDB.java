@@ -26,6 +26,7 @@ public class NOTES_TDB {
     // Hash functions http://aras-p.info/blog/2016/08/09/More-Hash-Function-Tests/
     // Guava Hashing
     
+    // Promote - roll back TDB1 improvements.
     // arq.query : needs Txn wrapper
     
     // DatasetGraphTDB.requireWriteTransaction() and in GraphTDB.
@@ -36,6 +37,8 @@ public class NOTES_TDB {
     
     // Counting begin-end for nested transactions.
     //   TransactionalBase??
+
+    // Cachign graphs/model in the transaction object
     
     // proper non-transactional.
     //SystemTDB.setNonTransactional
@@ -60,7 +63,8 @@ public class NOTES_TDB {
     // Consider a pair of plain locks or a semaphore (?)
     // http://stackoverflow.com/questions/10711447/is-there-a-non-reentrant-readwritelock-i-can-use
     // http://codereview.stackexchange.com/questions/17913/java-non-reentrant-lock-implementation
-    
+
+    // Reaper::
     // Needs to work with the switching DatasetGraphTDB.
     //   Abstract DatasetGraphTDB as an interface!
     //     Storage unit to have indexes and node table.

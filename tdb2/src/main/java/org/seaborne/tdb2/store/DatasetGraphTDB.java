@@ -396,7 +396,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     @Override
     public boolean promote() {
-        
         if ( txnMonitor != null ) txnMonitor.startPromote();
         try { 
             return txnSystem.promote() ;
