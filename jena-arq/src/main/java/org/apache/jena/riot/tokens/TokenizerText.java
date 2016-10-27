@@ -61,31 +61,30 @@ public final class TokenizerText implements Tokenizer
     private boolean finished = false ;
     private TokenChecker checker = null ;
 
-    // The code assumes that errors throw exception and so stop parsing.
-    private ErrorHandler errorHandler = new ErrorHandler() {
-        @Override
-        public void warning(String message, long line, long col) {
+    private static class ErrorHandlerTokenizer implements ErrorHandler {
+        @Override public void warning(String message, long line, long col) {
             // Warning/continue.
             //ErrorHandlerFactory.errorHandlerStd.warning(message, line, col);
             throw new RiotParseException(message, line, col) ;
         }
 
-        @Override
-        public void error(String message, long line, long col) {
+        @Override public void error(String message, long line, long col) {
             throw new RiotParseException(message, line, col) ;
         }
 
-        @Override
-        public void fatal(String message, long line, long col) {
+        @Override public void fatal(String message, long line, long col) {
             throw new RiotParseException(message, line, col) ;
         }
     } ;
+    // The code assumes that errors throw exception and so stop parsing.
+    private static final ErrorHandler defaultErrorHandler = new ErrorHandlerTokenizer() ;
+    private ErrorHandler errorHandler = defaultErrorHandler ;
 
     /*package*/ TokenizerText(PeekReader reader) {
         this(reader, false) ;
     }
     
-    /* package */TokenizerText(PeekReader reader, boolean lineMode) {
+    /*package*/ TokenizerText(PeekReader reader, boolean lineMode) {
         this.reader = reader ;
         this.lineMode = lineMode ;
     }
