@@ -22,7 +22,7 @@
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb2:GraphTDB ;
+<#graph> rdf:type tdb2:GraphTDB2 ;
     tdb2:location "--mem--" ;
     tdb2:graphName "http://example.com/graph" ;
     .

@@ -15,13 +15,13 @@
 
 @prefix tdb2:    <http://jena.apache.org/2016/tdb#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdfs:	 <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 <#dataset> rdf:type      ja:RDFDataset ;
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb2:GraphTDB ;
+<#graph> rdf:type tdb2:GraphTDB2 ;
     tdb2:location "--mem--" ;
     .

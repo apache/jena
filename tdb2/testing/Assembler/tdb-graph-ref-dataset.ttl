@@ -22,10 +22,10 @@
     ja:defaultGraph <#graph> ;
     . 
 
-<#graph> rdf:type tdb2:GraphTDB ;
+<#graph> rdf:type tdb2:GraphTDB2 ;
     tdb2:dataset <#dataset> ;
     .
 
-<#dataset> rdf:type tdb2:DatasetTDB ;
+<#dataset> rdf:type tdb2:DatasetTDB2 ;
     tdb2:location "--mem--" ;
     .
