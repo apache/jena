@@ -39,10 +39,7 @@ public final class LangNTriples extends LangNTuple<Triple>
 {
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
     
-    public LangNTriples(Tokenizer tokens,
-                        ParserProfile profile,
-                        StreamRDF dest)
-    {
+    public LangNTriples(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
     }
     
@@ -51,19 +48,16 @@ public final class LangNTriples extends LangNTuple<Triple>
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
     @Override
-    protected final void runParser()
-    {
-        while(hasNext())
-        {
-            Triple x = parseOne() ;
+    protected final void runParser() {
+        while (hasNext()) {
+            Triple x = parseOne();
             if ( x != null )
-                dest.triple(x) ;
+                dest.triple(x);
         }
     }
     
     @Override
-    protected final Triple parseOne() 
-    { 
+    protected final Triple parseOne() { 
         Token sToken = nextToken() ;
         if ( sToken.isEOF() )
             exception(sToken, "Premature end of file: %s", sToken) ;
@@ -92,8 +86,7 @@ public final class LangNTriples extends LangNTuple<Triple>
     }
     
     @Override
-    protected final Node tokenAsNode(Token token)
-    {
+    protected final Node tokenAsNode(Token token) {
         return profile.create(null, token) ;
     }
 }
