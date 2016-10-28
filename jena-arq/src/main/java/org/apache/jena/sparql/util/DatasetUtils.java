@@ -179,9 +179,8 @@ public class DatasetUtils
     }
 
     private static void addInGraphsWorker(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
-        // Merge into background graph
+        // "uriList" may contains quads formats as well. 
         if ( uriList != null ) {
-            Model m = GraphFactory.makeDefaultModel();
             for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
                 String absURI = null;
@@ -190,9 +189,9 @@ public class DatasetUtils
                 else
                     absURI = IRIResolver.resolveString(sourceURI);
                 // FileManager.readGraph?
-                RDFDataMgr.read(m, sourceURI, absURI, null);
+                RDFDataMgr.read(dsg, sourceURI, absURI, null);
             }
-            dsg.setDefaultGraph(m.getGraph());
+
         } else {
             dsg.setDefaultGraph(GraphFactory.createDefaultGraph());
         }

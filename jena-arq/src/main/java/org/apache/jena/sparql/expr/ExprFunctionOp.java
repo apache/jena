@@ -18,16 +18,18 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.List;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.algebra.optimize.TransformExistsInsertFilters ;
 import org.apache.jena.sparql.algebra.optimize.TransformExistsInsertValues ;
 import org.apache.jena.sparql.algebra.optimize.TransformPropertyFunction ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck ;
 import org.apache.jena.sparql.engine.main.QC ;
@@ -80,9 +82,8 @@ public abstract class ExprFunctionOp extends ExprFunction
 //                opRun = Optimize.apply("Property Functions", new TransformPropertyFunction(env.getContext()), opRun) ;
 //        }
         
+        boolean DEBUG = false ;
         if ( true ) {
-            System.out.println("----") ;
-            System.out.println(op) ;
             
             
             Transform t1 = new TransformExistsInsertValues(binding, env) ;
@@ -92,7 +93,6 @@ public abstract class ExprFunctionOp extends ExprFunction
             Op op2 = Transformer.transform(t, op) ;
             Op op3 = Transformer.transform(new TransformPropertyFunction(env.getContext()), op2) ; 
             Op opExec = op3 ;
-            System.out.println(opExec);
             
             ExecutionContext execCxt = new ExecutionContext(env.getContext(),
                                                             env.getActiveGraph(),
@@ -101,11 +101,19 @@ public abstract class ExprFunctionOp extends ExprFunction
                 ) ;
             //** Property functions need this:  EXISTS { ?list list:member "a" }
             //** Why? -> no BGP.
-            QueryIterator qIter1a = QueryIterSingleton.create(binding, execCxt) ;
-            QueryIterator qIter1 = QueryIterRoot.create(execCxt) ;
-            
+            QueryIterator qIter1 = QueryIterSingleton.create(binding, execCxt) ;
             
             QueryIterator qIter = QC.execute(opExec, qIter1, execCxt) ;
+            
+            if ( DEBUG ) {
+                List<Binding> x = Iter.toList(qIter) ;
+                System.out.println(binding) ;
+                System.out.println(opExec);
+                System.out.println(x);
+                System.out.println("----") ;
+                qIter = new QueryIterPlainWrapper(x.iterator()) ; 
+            }            
+            
             // Wrap with something to check for closed iterators.
             qIter = QueryIteratorCheck.check(qIter, execCxt) ;
             // Call the per-operation functionality.
