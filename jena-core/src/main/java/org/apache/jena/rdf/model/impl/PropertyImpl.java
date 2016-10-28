@@ -52,52 +52,36 @@ public class PropertyImpl extends ResourceImpl implements Property
     public PropertyImpl( String uri )
         {
         super( uri );
-        checkLocalName();
-        checkOrdinal();
         }
 
     @Override public Property inModel( Model m )
         { return getModel() == m ? this : m.createProperty( getURI() ); }
 
-    private void checkLocalName()
-        {
-        String localName = getLocalName();
-        if (localName == null || localName.equals( "" )) 
-            throw new InvalidPropertyURIException( getURI() );
-        }
-
     public PropertyImpl( String nameSpace, String localName )
         {
         super( nameSpace, localName );
-        checkLocalName();
-        checkOrdinal();
         }
 
     public PropertyImpl( String uri, ModelCom m )
         {
         super( uri, m );
-        checkOrdinal();
         }
 
     public PropertyImpl( String nameSpace, String localName, ModelCom m )
         {
         super( nameSpace, localName, m );
-        checkOrdinal();
         }
 
     public PropertyImpl( Node n, EnhGraph m )
         {
         super( n, m );
-        checkOrdinal();
         }
 
     public PropertyImpl( String nameSpace, String localName, int ordinal, ModelCom m )
         {
         super( nameSpace, localName, m );
-        checkLocalName();
-        this.ordinal = ordinal;
         }
-
+    
     @Override
     public boolean isProperty()
         { return true; }
@@ -105,7 +89,8 @@ public class PropertyImpl extends ResourceImpl implements Property
     @Override
     public int getOrdinal()
         {
-        if (ordinal < 0) ordinal = computeOrdinal();
+        if (ordinal < 0) 
+            ordinal = computeOrdinal();
         return ordinal;
         }
 
@@ -122,33 +107,4 @@ public class PropertyImpl extends ResourceImpl implements Property
         try { return Integer.parseInt( digits );}
         catch (NumberFormatException e) { throw new JenaException( "checkOrdinal fails on " + digits, e ); }
         }
-
-    // Remove shortly.
-
-    protected void checkOrdinal()
-        {
-        // char c;
-        // String nameSpace = getNameSpace();
-        // String localName = getLocalName();
-        // // check for an rdf:_xxx property
-        // if (localName.length() > 0)
-        // {
-        // if (localName.charAt(0) == '_' && nameSpace.equals(RDF.getURI())
-        // && nameSpace.equals(RDF.getURI())
-        // && localName.length() > 1
-        // )
-        // {
-        // for (int i=1; i<localName.length(); i++) {
-        // c = localName.charAt(i);
-        // if (c < '0' || c > '9') return;
-        // }
-        //                try {
-        //                  ordinal = Integer.parseInt(localName.substring(1));
-        //                } catch (NumberFormatException e) {
-        //                    logger.error( "checkOrdinal fails on " + localName, e );
-        //                }
-        //            }
-        //        }
-        }
-
     }
