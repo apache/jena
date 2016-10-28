@@ -506,7 +506,7 @@ public final class TokenizerText implements Tokenizer
                     break ;
                 default:
                     if ( ch <= 0x19 )
-                        warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString()) ;
+                        warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch) ;
             }
             insertCodepoint(stringBuilder, ch) ;
         }
