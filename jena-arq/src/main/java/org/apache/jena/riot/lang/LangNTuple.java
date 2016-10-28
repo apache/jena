@@ -53,24 +53,19 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     
     protected boolean skipOnBadTerm = false ;
     
-    protected LangNTuple(Tokenizer tokens,
-                         ParserProfile profile,
-                         StreamRDF dest)
-    { 
-        super(tokens, profile, dest) ;
+    protected LangNTuple(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
+        super(tokens, profile, dest);
     }
 
     // Assumes no syntax errors.
     @Override
-    public final boolean hasNext()
-    {
-        return super.moreTokens() ;
+    public final boolean hasNext() {
+        return super.moreTokens();
     }
     
     @Override
-    public final X next()
-    {
-        return parseOne() ;
+    public final X next() {
+        return parseOne();
     }
     
     @Override
@@ -81,30 +76,28 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     protected abstract X parseOne() ;
     
     /** Note a tuple not being output */
-    protected void skipOne(X object, String printForm, long line, long col)
-    {
-        profile.getHandler().warning("Skip: "+printForm, line, col) ;
+    protected void skipOne(X object, String printForm, long line, long col) {
+        profile.getHandler().warning("Skip: " + printForm, line, col);
     }
 
     protected abstract Node tokenAsNode(Token token) ;
 
-    protected final void checkIRIOrBNode(Token token)
-    {
-        if ( token.hasType(TokenType.IRI) ) return ;
-        if ( token.hasType(TokenType.BNODE) ) return ; 
-        exception(token, "Expected BNode or IRI: Got: %s", token) ;
+    protected final void checkIRIOrBNode(Token token) {
+        if ( token.hasType(TokenType.IRI) )
+            return;
+        if ( token.hasType(TokenType.BNODE) )
+            return;
+        exception(token, "Expected BNode or IRI: Got: %s", token);
     }
 
-    protected final void checkIRI(Token token)
-    {
-        if ( token.hasType(TokenType.IRI) ) return ;
-        exception(token, "Expected IRI: Got: %s", token) ;
+    protected final void checkIRI(Token token) {
+        if ( token.hasType(TokenType.IRI) )
+            return;
+        exception(token, "Expected IRI: Got: %s", token);
     }
 
-    protected final void checkRDFTerm(Token token)
-    {
-        switch(token.getType())
-        {
+    protected final void checkRDFTerm(Token token) {
+        switch (token.getType()) {
             case IRI:
             case BNODE:
             case STRING2:
