@@ -93,7 +93,7 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) {
         Set<Node> visited = visitedAcc() ;
-        ALP_1(forwardMode, 0, -1, node, pathStep, visited) ;
+        ALP_1(0, -1, node, pathStep, visited) ;
         output.addAll(visited) ;
     }
 
@@ -104,7 +104,7 @@ public class PathEngineSPARQL extends PathEngine
         Iter<Node> iter1 = eval(pathStep, node) ;
         for (; iter1.hasNext();) {
             Node n1 = iter1.next() ;
-            ALP_1(forwardMode, 0, -1, n1, pathStep, visited) ;
+            ALP_1(0, -1, n1, pathStep, visited) ;
         }
         output.addAll(visited) ;
     }
@@ -115,7 +115,7 @@ public class PathEngineSPARQL extends PathEngine
         output.add(node) ;
     }
 
-    private void ALP_1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited) {
+    private void ALP_1(int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited) {
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
             return ;
         if ( !visited.add(node) )
@@ -124,7 +124,7 @@ public class PathEngineSPARQL extends PathEngine
         // For each step, add to results and recurse.
         for (; iter1.hasNext();) {
             Node n1 = iter1.next() ;
-            ALP_1(forwardMode, stepCount + 1, maxStepCount, n1, path, visited) ;
+            ALP_1(stepCount + 1, maxStepCount, n1, path, visited) ;
         }
     }
 
