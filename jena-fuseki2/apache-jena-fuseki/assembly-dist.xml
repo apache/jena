@@ -24,7 +24,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-
+  
   <id>distribution</id>
 
   <formats>
@@ -64,6 +64,10 @@
     <file>
       <source>dist/NOTICE</source>
       <destName>NOTICE</destName>
+    </file>
+    <file>
+      <source>dist/README</source>
+      <destName>README</destName>
     </file>
   </files>
 

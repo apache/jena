@@ -47,6 +47,10 @@ Assumes jar made and onejar has been assembled.
     </file>
     -->
     <file>
+      <source>dist/README</source>
+      <destName>README</destName>
+    </file>
+    <file>
       <source>dist/LICENSE</source>
       <destName>LICENSE</destName>
     </file>
@@ -57,14 +61,6 @@ Assumes jar made and onejar has been assembled.
   </files>
 
   <fileSets>
-    <fileSet>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>README*</include>
-        <include>ReleaseNotes.txt</include>
-      </includes>
-    </fileSet>
-
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
