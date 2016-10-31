@@ -125,6 +125,8 @@ public class ExprList implements Iterable<Expr>
 
     public boolean equals(ExprList other, boolean bySyntax) {
         if ( this == other ) return true ;
+        if (expressions.size() != other.expressions.size()) return false;
+        
         for ( int i = 0 ; i < expressions.size() ; i++ ) {
             Expr e1 = expressions.get(i) ;
             Expr e2 = other.expressions.get(i) ;
