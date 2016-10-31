@@ -65,6 +65,10 @@
       <source>dist/NOTICE</source>
       <destName>NOTICE</destName>
     </file>
+    <file>
+      <source>../README</source>
+      <destName>README</destName>
+    </file>
   </files>
 
   <fileSets>
@@ -72,7 +76,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>templates/*</include>
-        <include>README*</include>
+        <!--<include>README*</include>   see above -->
         <include>DEPENDENCIES*</include>
       </includes>
     </fileSet>
