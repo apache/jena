@@ -1,3 +1,0 @@
-org.apache.jena.jdbc.mem.MemDriver
-org.apache.jena.jdbc.tdb.TDBDriver
-org.apache.jena.jdbc.remote.RemoteEndpointDriver
