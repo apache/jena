@@ -94,17 +94,25 @@
 
   </dependencySets>
 
-  <fileSets>
-
-    <fileSet>
-      <outputDirectory>/</outputDirectory>
-      <includes>
-        <include>NOTICE</include>
-        <include>LICENSE</include>
-        <include>README</include>
-      </includes>
+  <files>
+    <file>
+      <source>dist/README</source>
+      <destName>README</destName>
       <fileMode>0644</fileMode>
-    </fileSet>
+    </file>
+    <file>
+      <source>dist/LICENSE</source>
+      <destName>LICENSE</destName>
+      <fileMode>0644</fileMode>
+    </file>
+    <file>
+      <source>dist/NOTICE</source>
+      <destName>NOTICE</destName>
+      <fileMode>0644</fileMode>
+    </file>
+  </files>
+
+  <fileSets>
 
     <fileSet>
       <outputDirectory>/</outputDirectory>
