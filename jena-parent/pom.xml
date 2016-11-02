@@ -23,7 +23,7 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>17</version>
+  <version>18-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -828,8 +828,4 @@
     </plugins>
 
   </reporting>
-
-  <scm>
-    <tag>jena-3.1.1-rc1</tag>
-  </scm>
 </project>
