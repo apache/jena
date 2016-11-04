@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-permissions</artifactId>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.1.1</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -34,7 +34,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>17-SNAPSHOT</version>
+    <version>17</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 	<organization>
@@ -173,7 +173,7 @@
 		                </goals>
 		              </pluginExecutionFilter>
 		              <action>
-		                <ignore></ignore>
+		                <ignore />
 		              </action>
 		            </pluginExecution>
 		          </pluginExecutions>
