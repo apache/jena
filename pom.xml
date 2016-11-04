@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.1.2-SNAPSHOT</version>
+  <version>3.1.1</version>
 
   <!-- Needed for -Papache-release -->
   <!-- The org.apache:apache version is also in jena-parent pom.xml -->
@@ -49,7 +49,7 @@
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf/jena.git</url>
-    <tag>HEAD</tag>
+    <tag>jena-3.1.1-rc1</tag>
   </scm>
 
   <profiles>
