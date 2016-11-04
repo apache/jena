@@ -88,8 +88,8 @@ public class ARQ
 
     /** Symbol to enable logging of execution.  
      * Must also set log4j, or other logging system,
-     * for logger "com.hp.hpl.jena.sparql.exec"
-     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.sparql.exec=INFO
+     * for logger "org.apache.jena.jena.sparql.exec"
+     * e.g. log4j.properties -- log4j.logger.org.apache.jena.sparql.exec=INFO
      * See the <a href="http://jena.apache.org/documentation/query/logging.html">ARQ Logging Documentation</a>.
      */
     public static final Symbol symLogExec           = SystemARQ.allocSymbol("logExec") ;
