@@ -53,9 +53,7 @@
     <ver.xerces>2.11.0</ver.xerces>
 
     <ver.jsonldjava>0.8.3</ver.jsonldjava>
-    <!-- Used by jena-osgi and must be in-step with jsonldjava -->
-    <ver.jackson>2.6.3</ver.jackson>
-
+ 
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.5.2</ver.httpclient>
     <ver.httpcore>4.4.4</ver.httpcore>
