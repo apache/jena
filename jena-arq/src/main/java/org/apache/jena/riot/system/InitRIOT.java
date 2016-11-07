@@ -27,6 +27,7 @@ public class InitRIOT implements JenaSubsystemLifecycle {
     @Override
     public void start() {
         RIOT.init();
+        SerializerRDF.init();
     }
 
     @Override

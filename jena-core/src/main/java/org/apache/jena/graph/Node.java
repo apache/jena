@@ -18,11 +18,17 @@
 
 package org.apache.jena.graph;
 
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.util.function.Function;
+
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.system.JenaSystem;
+import org.apache.jena.system.Serializer;
 
 /**
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
@@ -32,7 +38,7 @@ import org.apache.jena.system.JenaSystem;
     enough.    
 */
 
-public abstract class Node {
+public abstract class Node implements Serializable {
 
     static { JenaSystem.init(); }
 
@@ -258,6 +264,23 @@ public abstract class Node {
     public boolean matches( Node other )
         { return equals( other ); }
 
+    // ---- Serializable
+    // Must be "protected", not "private".
+    protected Object writeReplace() throws ObjectStreamException {
+        Function<Node, Object> function =  Serializer.getNodeSerializer() ;
+        if ( function == null )
+            throw new IllegalStateException("Function for Node.writeReplace not set") ;
+        return function.apply(this);
+    }
+    // Any attempt to serialize without replacement is an error.
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        throw new IllegalStateException(); 
+    }
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        throw new IllegalStateException();
+    }
+    // ---- Serializable
+    
     /** 
         Answer a human-readable representation of this Node. It will not compress URIs, 
         nor quote literals (because at the moment too many places use toString() for 

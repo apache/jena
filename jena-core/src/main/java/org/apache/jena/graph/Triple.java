@@ -18,9 +18,14 @@
 
 package org.apache.jena.graph;
 
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.system.Serializer;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
@@ -29,8 +34,9 @@ import org.apache.jena.util.iterator.NullIterator ;
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
  */
-public class Triple 
-    {    
+public class Triple implements Serializable 
+{    
+
 	private final Node subj, pred, obj;
  
 	public Triple( Node s, Node p, Node o ) 
@@ -135,7 +141,23 @@ public class Triple
         
     public boolean objectMatches( Node o )
         { return obj.matches( o ); }
-        
+
+    // ---- Serializable
+    protected Object writeReplace() throws ObjectStreamException {
+        Function<Triple, Object> function =  Serializer.getTripleSerializer() ;
+        if ( function == null )
+            throw new IllegalStateException("Function for Triple.writeReplace not set") ;
+        return function.apply(this);
+    }
+    // Any attempt to serialize without replacement is an error.
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        throw new IllegalStateException(); 
+    }
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        throw new IllegalStateException();
+    }
+    // ---- Serializable
+
     /**
         The hash-code of a triple is the hash-codes of its components munged
         together: see hashCode(S, P, O).
