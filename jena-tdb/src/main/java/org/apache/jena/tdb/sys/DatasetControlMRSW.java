@@ -32,130 +32,118 @@ import org.apache.jena.atlas.lib.Closeable ;
 public class DatasetControlMRSW implements DatasetControl
 {
     private final boolean concurrencyChecking = true ;
-    private final AtomicLong epoch = new AtomicLong(5) ;                // Update counters, used to check iterators. No need to start at 0.
+    // Update counters, used to check iterators. No need to start at 0.
+    private final AtomicLong epoch = new AtomicLong(5) ;                
     private final AtomicLong readCounter = new AtomicLong(0) ;
     private final AtomicLong writeCounter = new AtomicLong(0) ;
     
-    public DatasetControlMRSW()
-    { }
+    public DatasetControlMRSW() {}
 
     @Override
-    public void startRead()
-    {
-        readCounter.getAndIncrement() ;
-        checkConcurrency() ;
+    public void startRead() {
+        readCounter.getAndIncrement();
+        checkConcurrency();
     }
 
     @Override
-    public void finishRead()
-    {
-        readCounter.decrementAndGet() ;
+    public void finishRead() {
+        readCounter.decrementAndGet();
     }
 
     @Override
-    public void startUpdate()
-    {
-        epoch.getAndIncrement() ;
-        writeCounter.getAndIncrement() ;
-        checkConcurrency() ;
+    public void startUpdate() {
+        epoch.getAndIncrement();
+        writeCounter.getAndIncrement();
+        checkConcurrency();
     }
 
     @Override
-    public void finishUpdate()
-    {
-        writeCounter.decrementAndGet() ;
+    public void finishUpdate() {
+        writeCounter.decrementAndGet();
     }
 
-    private void checkConcurrency()
-    {
-        long R, W ;
-        synchronized (this)
-        {
-            R = readCounter.get() ;
-            W = writeCounter.get() ;
+    private void checkConcurrency() {
+        long R, W;
+        synchronized (this) {
+            R = readCounter.get();
+            W = writeCounter.get();
         }
 
         if ( R > 0 && W > 0 )
-            policyError(R, W) ;
+            policyError(R, W);
         if ( W > 1 )
-            policyError(R, W) ;
+            policyError(R, W);
     }
     
     @Override
-    public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return new IteratorCheckNotConcurrent<>(iter, epoch) ; }
-    
-    private static class IteratorCheckNotConcurrent<T> implements Iterator<T>, Closeable
-    {
-        private Iterator<T> iter ;
-        private AtomicLong eCount ;
-        private boolean finished = false ;
-        private long startEpoch ; 
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter) {
+        return new IteratorCheckNotConcurrent<>(iter, epoch);
+    }
 
-        IteratorCheckNotConcurrent(Iterator<T> iter, AtomicLong eCount )
-        {
-            // Assumes correct locking to set up, i.e. eCount not changing (writer on separate thread).
-            this.iter = iter ;
-            this.eCount = eCount ;
+    private static class IteratorCheckNotConcurrent<T> implements Iterator<T>, Closeable {
+        private Iterator<T> iter;
+        private AtomicLong  eCount;
+        private boolean     finished = false;
+        private long        startEpoch;
+
+        IteratorCheckNotConcurrent(Iterator<T> iter, AtomicLong eCount) {
+            // Assumes correct locking to set up, i.e. eCount not changing (writer on
+            // separate thread).
+            this.iter = iter;
+            this.eCount = eCount;
             this.startEpoch = eCount.get();
         }
 
-        private void checkCourrentModification()
-        {
+        private void checkIterConcurrentModification() {
             if ( finished )
-                return ;
-            
-            long now = eCount.get() ;
-            if ( now != startEpoch )
-            {
-                policyError(format("Iterator: started at %d, now %d", startEpoch, now)) ;
+                return;
+
+            long now = eCount.get();
+            if ( now != startEpoch ) {
+                policyError(format("Iterator: started at %d, now %d", startEpoch, now));
 
             }
         }
-        
+
         @Override
-        public boolean hasNext()
-        {
-            checkCourrentModification() ;
-            boolean b = iter.hasNext() ;
-            if ( ! b )
-                close() ;
-            return b ;
+        public boolean hasNext() {
+            checkIterConcurrentModification();
+            boolean b = iter.hasNext();
+            if ( !b )
+                close();
+            return b;
         }
 
         @Override
-        public T next()
-        {
-            checkCourrentModification() ;
-            try { 
+        public T next() {
+            checkIterConcurrentModification();
+            try {
                 return iter.next();
-            } catch (NoSuchElementException ex) { close() ; throw ex ; }
+            }
+            catch (NoSuchElementException ex) {
+                close();
+                throw ex;
+            }
         }
 
         @Override
-        public void remove()
-        {
-            checkCourrentModification() ;
-            iter.remove() ;
+        public void remove() {
+            checkIterConcurrentModification();
+            iter.remove();
         }
 
         @Override
-        public void close()
-        {
-            finished = true ;
-            Iter.close(iter) ;
+        public void close() {
+            finished = true;
+            Iter.close(iter);
         }
     }
 
-    
-    private static void policyError(long R, long W)
-    {
-        policyError(format("Reader = %d, Writer = %d", R, W)) ;
+    private static void policyError(long R, long W) {
+        policyError(format("Reader = %d, Writer = %d", R, W));
     }
-    
-    private static void policyError(String message)
-    {
-        throw new ConcurrentModificationException(message) ;
-    }
-    
 
+    private static void policyError(String message) {
+        throw new ConcurrentModificationException(message);
+    }
 }
