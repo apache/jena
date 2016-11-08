@@ -548,26 +548,45 @@ public class TestAPI extends BaseTest
         fail("Short form of construct quad MUST be simple graph patterns!");
     }
     
+    @Test public void testResultSetCloseableGood() {
+        String queryString = "SELECT * { ?s ?p ?o. }";
+        Query q = QueryFactory.create(queryString);
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        try (ResultSetCloseable rs = ResultSetFactory.closeableResultSet(qExec) ) {
+            int x = ResultSetFormatter.consume(rs);
+            assertEquals(1,x);
+        }
+    }
     
-    private QueryExecution makeQExec(String queryString)
-    {
-        Query q = QueryFactory.create(queryString) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-        return qExec ;
+    @Test(expected=IllegalArgumentException.class) 
+    public void testResultSetCloseableBad() {
+        String queryString = "ASK { ?s ?p ?o. }";
+        Query q = QueryFactory.create(queryString);
+        QueryExecution qExec = QueryExecutionFactory.create(q, d);
+        try (ResultSetCloseable rs = ResultSetFactory.closeableResultSet(qExec) ) {
+            int x = ResultSetFormatter.consume(rs);
+            assertEquals(1,x);
+        }
     }
 
-    private int queryAndCount(String queryString)
-    {
-        QueryExecution qExec = makeQExec(queryString) ;
-        return queryAndCount(qExec) ;
+    private QueryExecution makeQExec(String queryString) {
+        Query q = QueryFactory.create(queryString);
+        QueryExecution qExec = QueryExecutionFactory.create(q, m);
+        return qExec;
     }
 
-    
-    private int queryAndCount(QueryExecution qExec)
-    {
+    private int queryAndCount(String queryString) {
+        QueryExecution qExec = makeQExec(queryString);
+        return queryAndCount(qExec);
+    }
+
+    private int queryAndCount(QueryExecution qExec) {
         try {
-            ResultSet rs = qExec.execSelect() ;
-            return ResultSetFormatter.consume(rs) ;
-        } finally { qExec.close() ; }
+            ResultSet rs = qExec.execSelect();
+            return ResultSetFormatter.consume(rs);
+        }
+        finally {
+            qExec.close();
+        }
     }
 }
