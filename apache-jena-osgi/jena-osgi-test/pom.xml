@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>18-SNAPSHOT</version>
   </parent>
 
   <artifactId>jena-osgi-test</artifactId>
   <!-- Same as jena-osgi -->
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.2-SNAPSHOT</version>
   <name>Apache Jena - OSGi integration tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>
