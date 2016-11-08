@@ -143,13 +143,14 @@ public class SystemARQ
     }
 
     public static Symbol allocSymbol(String shortName) {
+        // This must work even if initialization is happening.
+        // Touching final constant explicit strings in ARQ is fine (compile time constants).
         if ( shortName.startsWith(ARQ.arqSymbolPrefix) )
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace prefix: " + shortName) ;
         if ( shortName.startsWith("http:") )
             throw new ARQInternalErrorException("Symbol short name begins with http: " + shortName) ;
         return SystemARQ.allocSymbol(ARQ.arqParamNS, shortName) ;
     }
-
     public static Symbol allocSymbol(String base, String shortName) {
         return Symbol.create(base + shortName) ;
     }
