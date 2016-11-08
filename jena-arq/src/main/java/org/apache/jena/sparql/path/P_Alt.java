@@ -18,26 +18,27 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class P_Alt extends P_Path2
-{
-    public P_Alt(Path p1, Path p2)
-    {
-        super(p1, p2) ;
+public class P_Alt extends P_Path2 {
+    public P_Alt(Path p1, Path p2) {
+        super(p1, p2);
     }
 
     @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Alt ) ) return false ;
-        return equalsIso((P_Path2)path2, isoMap) ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public int hashSeed() { return hashAlt ; }
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Alt) )
+            return false;
+        return equalsIso((P_Path2)path2, isoMap);
+    }
+
+    @Override
+    public int hashSeed() {
+        return hashAlt;
+    }
 }

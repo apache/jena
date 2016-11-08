@@ -18,35 +18,35 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.util.Iso ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class P_Link extends P_Path0
-{
-    public P_Link(Node n)
-    {
-        super(n) ;
-    }
-    
-    @Override
-    public boolean isForward()  { return true ; }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Link ) ) return false ;
-        P_Link other = (P_Link)path2 ;
-        return Iso.nodeIso(node, other.node, isoMap) ;
+public class P_Link extends P_Path0 {
+    public P_Link(Node n) {
+        super(n);
     }
 
     @Override
-    public int hashCode()
-    {
-        return node.hashCode() ^ hashLink ;
+    public boolean isForward() {
+        return true;
+    }
+
+    @Override
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Link) )
+            return false;
+        P_Link other = (P_Link)path2;
+        return Iso.nodeIso(node, other.node, isoMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return node.hashCode() ^ hashLink;
     }
 }

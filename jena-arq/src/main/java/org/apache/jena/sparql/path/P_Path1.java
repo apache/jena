@@ -16,19 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
-public abstract class P_Path1 extends PathBase
-{
+public abstract class P_Path1 extends PathBase {
     private Path path ;
-    
-    protected P_Path1(Path p)
-    {
+
+    protected P_Path1(Path p) {
         this.path = p ;
     }
-    
-    public Path getSubPath()
-    {
+
+    public Path getSubPath() {
         return path ;
     }
 }

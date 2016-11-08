@@ -18,33 +18,29 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class P_Inverse extends P_Path1
-{
-    public P_Inverse(Path p)
-    {
-         super(p) ;
-    }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-    
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Inverse ) ) return false ;
-        P_Inverse other = (P_Inverse)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+public class P_Inverse extends P_Path1 {
+    public P_Inverse(Path p) {
+        super(p);
     }
 
     @Override
-    public int hashCode()
-    {
-        return getSubPath().hashCode() ^ hashInverse ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
     }
 
-   
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Inverse) )
+            return false;
+        P_Inverse other = (P_Inverse)path2;
+        return getSubPath().equalTo(other.getSubPath(), isoMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return getSubPath().hashCode() ^ hashInverse;
+    }
 
 }

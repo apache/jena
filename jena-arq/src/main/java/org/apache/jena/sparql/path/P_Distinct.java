@@ -18,33 +18,29 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class P_Distinct extends P_Path1
-{
-    public P_Distinct(Path p)
-    {
-         super(p) ;
-    }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-    
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Distinct ) ) return false ;
-        P_Distinct other = (P_Distinct)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+public class P_Distinct extends P_Path1 {
+    public P_Distinct(Path p) {
+        super(p);
     }
 
     @Override
-    public int hashCode()
-    {
-        return getSubPath().hashCode() ^ hashDistinct ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
     }
 
-   
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Distinct) )
+            return false;
+        P_Distinct other = (P_Distinct)path2;
+        return getSubPath().equalTo(other.getSubPath(), isoMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return getSubPath().hashCode() ^ hashDistinct;
+    }
 
 }

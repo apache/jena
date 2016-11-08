@@ -16,41 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-public abstract class P_Path2 extends PathBase
-{
+public abstract class P_Path2 extends PathBase {
     private Path path1 ;
     private Path path2 ;
-    
-    protected P_Path2(Path p1, Path p2)
-    {
+
+    protected P_Path2(Path p1, Path p2) {
         this.path1 = p1 ;
         this.path2 = p2 ;
     }
 
-    public Path getLeft()
-    {
+    public Path getLeft() {
         return path1 ;
     }
 
-    public Path getRight()
-    {
+    public Path getRight() {
         return path2 ;
     }
 
     public abstract int hashSeed() ;
-    
+
     @Override
-    final public int hashCode() 
-    {
+    final public int hashCode() {
         return hashSeed() ^ path1.hashCode() ^ path2.hashCode() ;
     }
 
-    protected final boolean equalsIso(P_Path2 other, NodeIsomorphismMap isoMap)
-    {
+    protected final boolean equalsIso(P_Path2 other, NodeIsomorphismMap isoMap) {
         return getLeft().equalTo(other.getLeft(), isoMap) && getRight().equalTo(other.getRight(), isoMap) ;
     }
 

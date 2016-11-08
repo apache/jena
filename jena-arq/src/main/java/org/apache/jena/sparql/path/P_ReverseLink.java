@@ -16,37 +16,37 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.Iso ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_ReverseLink extends P_Path0
-{
-    public P_ReverseLink(Node n)
-    {
+public class P_ReverseLink extends P_Path0 {
+    public P_ReverseLink(Node n) {
         super(n) ;
     }
-    
-    @Override
-    public boolean isForward()  { return false ; }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
 
     @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_ReverseLink ) ) return false ;
+    public boolean isForward() {
+        return false ;
+    }
+
+    @Override
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this) ;
+    }
+
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_ReverseLink) )
+            return false ;
         P_ReverseLink other = (P_ReverseLink)path2 ;
         return Iso.nodeIso(node, other.node, isoMap) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return node.hashCode() ^ hashRevLink ;
     }
 }

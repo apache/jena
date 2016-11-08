@@ -18,34 +18,30 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** A path element that, on evalution, switches to multi-cardinality semantics. */  
-public class P_Multi extends P_Path1
-{
-    public P_Multi(Path p)
-    {
-         super(p) ;
-    }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-    
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Multi ) ) return false ;
-        P_Multi other = (P_Multi)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+/** A path element that, on evalution, switches to multi-cardinality semantics. */
+public class P_Multi extends P_Path1 {
+    public P_Multi(Path p) {
+        super(p);
     }
 
     @Override
-    public int hashCode()
-    {
-        return getSubPath().hashCode() ^ hashMulti ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
     }
 
-   
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Multi) )
+            return false;
+        P_Multi other = (P_Multi)path2;
+        return getSubPath().equalTo(other.getSubPath(), isoMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return getSubPath().hashCode() ^ hashMulti;
+    }
 
 }

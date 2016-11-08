@@ -16,15 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.graph.Node ;
 
-public abstract class P_Path0 extends PathBase
-{
+public abstract class P_Path0 extends PathBase {
     protected Node node ;
-    protected P_Path0(Node n) { this.node = n ; } 
-    
+
+    protected P_Path0(Node n) {
+        this.node = n ;
+    }
+
     public abstract boolean isForward() ;
-    public  Node getNode() { return node ; }
+
+    public Node getNode() {
+        return node ;
+    }
 }

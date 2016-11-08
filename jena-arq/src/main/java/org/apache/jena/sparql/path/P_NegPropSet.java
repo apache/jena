@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -24,22 +24,19 @@ import java.util.List ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_NegPropSet extends PathBase
-{
+public class P_NegPropSet extends PathBase {
     List<P_Path0> nodes ;
-    List<Node> forwardNodes ;
-    List<Node> backwardNodes ;
-    
-    public P_NegPropSet()
-    {
+    List<Node>    forwardNodes ;
+    List<Node>    backwardNodes ;
+
+    public P_NegPropSet() {
         nodes = new ArrayList<>() ;
         forwardNodes = new ArrayList<>() ;
         backwardNodes = new ArrayList<>() ;
     }
-    
+
     // addFwd, addBkwd?
-    public void add(P_Path0 p)
-    {
+    public void add(P_Path0 p) {
         nodes.add(p) ;
         if ( p.isForward() )
             forwardNodes.add(p.getNode()) ;
@@ -47,27 +44,33 @@ public class P_NegPropSet extends PathBase
             backwardNodes.add(p.getNode()) ;
     }
 
-    //public List<Node> getExcludedNodes() { return forwardNodes ; }
+    public List<P_Path0> getNodes() {
+        return nodes ;
+    }
 
-    public List<P_Path0> getNodes() { return nodes ; }
-    public List<Node> getFwdNodes() { return forwardNodes ; }
-    public List<Node> getBwdNodes() { return backwardNodes ; }
+    public List<Node> getFwdNodes() {
+        return forwardNodes ;
+    }
+
+    public List<Node> getBwdNodes() {
+        return backwardNodes ;
+    }
 
     @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this) ;
+    }
 
     @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_NegPropSet ) ) return false ;
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_NegPropSet) )
+            return false ;
         P_NegPropSet other = (P_NegPropSet)path2 ;
         return nodes.equals(other.nodes) ;
     }
 
     @Override
-    public int hashCode()
-    {
-        return nodes.hashCode() ^ hashNegPropClass  ;
+    public int hashCode() {
+        return nodes.hashCode() ^ hashNegPropClass ;
     }
 }
