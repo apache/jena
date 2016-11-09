@@ -28,7 +28,7 @@
 
   <artifactId>jena-osgi-test</artifactId>
   <!-- Same as jena-osgi -->
-  <version>3.1.2-SNAPSHOT</version>
+  <version>3.2.0-SNAPSHOT</version>
   <name>Apache Jena - OSGi integration tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi-features</artifactId>  
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi</artifactId>
-      <version>3.1.0-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>

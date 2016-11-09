@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>3.1.2-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>  
   <packaging>bundle</packaging>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <!-- These are all embedded within httpclient-osgi -->
@@ -106,7 +106,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
    <!-- xerces is needed - but this is marked as optional as some
@@ -126,14 +126,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!--
@@ -146,7 +146,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.2.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
