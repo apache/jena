@@ -424,6 +424,24 @@ public class ResultSetFactory {
     static public ResultSetPeekable makePeekable(ResultSet resultSet) {
         return new ResultSetPeeking(resultSet);
     }
+    
+    /** Return a closable resultset for a {@link QueryExecution}.
+     * The {@link QueryExecution} must be for a {@code SELECT} query.
+     * <p>
+     * Example:
+     * <pre>
+     *   QueryExecution qExec = QueryExecutionFactory.create(...);
+     *   try (ResultSetCloseable rs = ResultSetFactory.closableResultSet(qExec) ) {
+     *       ...
+     * }
+     * </pre>
+     * 
+     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
+     * @return ResultSetCloseable
+     */
+    public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
+        return ResultSetCloseable.closeableResultSet(queryExecution);
+    }
 
     /**
      * Take a copy of a result set - the result set returns is an in-memory
