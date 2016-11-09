@@ -18,39 +18,42 @@
 
 package org.apache.jena.sparql;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
 
 /**
  * Internal constants - configuration is in class ARQ
  */
 public class ARQConstants
 {
-    static { JenaSystem.init() ; }
-    
     /** The prefix of XQuery/Xpath functions and operator */
     public static final String fnPrefix = "http://www.w3.org/2005/xpath-functions#" ;
     
     /** The prefix of XQuery/Xpath functions and operator math: */
     public static final String mathPrefix = "http://www.w3.org/2005/xpath-functions/math#" ;
+
+    // Using explicit constants here makes ARQConstants safe to use during initialization.
+    // Otherwise it needs JenaSystem.init but the constants may be used during initialization
+    // which leads to problems depending in the order of initialization. 
+    //
+    // In
+    //   static final x = someFunctionCall();
+    // x is null until the class is initialized but class initialization can be cyclic 
+    // and is not always complete while another class is initializing and using this class.
+    // See also SystemARQ.allocSymbol
     
     /** RDF namespace prefix */
-    public static final String rdfPrefix = RDF.getURI() ;
+    public static final String rdfPrefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"; // RDF.getURI()
 
     /** RDFS namespace prefix */
-    public static final String rdfsPrefix = RDFS.getURI() ;
+    public static final String rdfsPrefix = "http://www.w3.org/2000/01/rdf-schema#"; //RDFS.getURI() ;
 
     /** OWL namespace prefix */
-    public static final String owlPrefix = OWL.getURI() ;
+    public static final String owlPrefix = "http://www.w3.org/2002/07/owl#"; //OWL.getURI() ;
     
     /** XSD namespace prefix */
-    public static final String xsdPrefix = XSDDatatype.XSD+"#" ;
+    public static final String xsdPrefix = "http://www.w3.org/2001/XMLSchema#" ; //XSDDatatype.XSD+"#" ;
     
     /** The prefix of SPARQL functions and operator */
     public static final String fnSparql = "http://www.w3.org/ns/sparql#" ;

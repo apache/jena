@@ -25,8 +25,11 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import org.apache.jena.system.JenaSystem;
 
 public class NodeFactory {
+    
+    static { JenaSystem.init(); }
 
     public static RDFDatatype getType(String s) {
         if ( s == null )
