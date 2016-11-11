@@ -31,6 +31,9 @@ public class IO
 {
     public static final int EOF = -1 ;
     public static final int UNSET = -2 ;
+    
+    // Buffer size.  Larger than Java's default.
+    private static final int BUFFER_SIZE = 128*1024 ;
        
     private static Charset utf8  = StandardCharsets.UTF_8 ;
     private static Charset ascii = StandardCharsets.US_ASCII ;
@@ -42,6 +45,20 @@ public class IO
     static public InputStream openFile(String filename) {
         try { return openFileEx(filename) ; }
         catch (IOException ex) { IO.exception(ex); return null ; }
+    }
+    
+    /**
+     * Open an input stream to a file and buffer it. If the filename is null or "-",
+     * return System.in If the filename ends in .gz, wrap in GZIPInputStream.
+     * If using this {@code InputStream} with an {@code InputStreamReader}
+     * (e.g. to get UTF-8), there is no need to buffer the {@code InputStream}.
+     * Instead, buffer the {@code Reader}. 
+     */
+    static public InputStream openFileBuffered(String filename) {
+        try {
+            InputStream in = openFileEx(filename) ;
+            return new BufferedInputStream(in, BUFFER_SIZE) ;
+        } catch (IOException ex) { IO.exception(ex); return null ; }
     }
     
     /** Open an input stream to a file; do not mask IOExceptions. 
@@ -239,11 +256,10 @@ public class IO
         out.flush(); 
     }
 
-    private static final int BUFFER_SIZE = 32*1024 ; 
-    
     public static byte[] readWholeFile(InputStream in) {
-        try(ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE)) {
-            byte buff[] = new byte[BUFFER_SIZE] ;
+        final int WHOLE_FILE_BUFFER_SIZE = 32*1024 ; 
+        try(ByteArrayOutputStream out = new ByteArrayOutputStream(WHOLE_FILE_BUFFER_SIZE)) {
+            byte buff[] = new byte[WHOLE_FILE_BUFFER_SIZE] ;
             while (true) {
                 int l = in.read(buff) ;
                 if ( l <= 0 )
@@ -292,8 +308,9 @@ public class IO
     
     // Private worker as we are trying to force UTF-8. 
     private static String readWholeFileAsUTF8(Reader r) throws IOException {
-        try(StringWriter sw = new StringWriter(BUFFER_SIZE)) {
-            char buff[] = new char[BUFFER_SIZE];
+        final int WHOLE_FILE_BUFFER_SIZE = 32*1024 ; 
+        try(StringWriter sw = new StringWriter(WHOLE_FILE_BUFFER_SIZE)) {
+            char buff[] = new char[WHOLE_FILE_BUFFER_SIZE];
             for (;;)
             {
                 int l = r.read(buff);
