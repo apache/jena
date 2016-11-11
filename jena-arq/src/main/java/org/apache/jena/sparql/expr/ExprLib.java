@@ -58,7 +58,8 @@ public class ExprLib
         // being the important one.
         // 
         // BOUND(?x) is a important case where the expression is often an exception
-        // in general evaluation.
+        // in general evaluation.  See E_Bound - different exception handling 
+        // (it handles VariableNotBoundException not a general ExprEvalException).
 
         if ( expr.isConstant() )
             // Easy case.
