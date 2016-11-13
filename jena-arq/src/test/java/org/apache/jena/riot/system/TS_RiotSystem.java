@@ -45,7 +45,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestIO_JenaWriters.class
     , TestLangRegistration.class
     , TestFormatRegistration.class
-    , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine. 
+    , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
+    , TestSerializable.class
     
     // May be subject to performance vagaries, with the improvements made
     // to the fast implementation this should be fairly safe
