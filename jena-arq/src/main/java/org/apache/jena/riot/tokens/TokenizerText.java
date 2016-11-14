@@ -36,7 +36,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 
 public final class TokenizerText implements Tokenizer
 {
-    // TODO Remove CNTL and make SYMBOLS
+    // TODO Remove CNTRL and make SYMBOLS
     // Drop through to final general symbol/keyword reader, including <=, != 
     // Care with <=
     // STRING, not STRING1/2, LONG_STRING1/2
@@ -294,11 +294,18 @@ public final class TokenizerText implements Tokenizer
         }
 
         if ( ch == CH_UNDERSCORE ) {
-            // Blank node :label must be at least one char
-            expect("_:") ;
-            token.setImage(readBlankNodeLabel()) ;
-            token.setType(TokenType.BNODE) ;
-            if ( Checking ) checkBlankNode(token.getImage()) ;
+            reader.readChar();
+            int ch2 = reader.peekChar();
+            if ( ch2 == CH_COLON ) {
+                reader.readChar();
+                // Blank node :label must be at least one char
+                token.setImage(readBlankNodeLabel()) ;
+                token.setType(TokenType.BNODE) ;
+                if ( Checking ) checkBlankNode(token.getImage()) ;
+                return token ;
+            }
+            token.setType(TokenType.UNDERSCORE) ;
+            /*token.setImage(CH_UNDERSCORE) ;*/
             return token ;
         }
 
@@ -370,9 +377,12 @@ public final class TokenizerText implements Tokenizer
 
             // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
-            case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; /*token.setImage(CH_UNDERSCORE) ;*/ return token ;
+
+            // Done above with blank nodes.
+            //case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; /*token.setImage(CH_UNDERSCORE) ;*/ return token ;
             case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; /*token.setImage(CH_LT) ;*/ return token ;
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; /*token.setImage(CH_GT) ;*/ return token ;
+            // Above: CNTRL
             case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; /*token.setImage(CH_STAR) ;*/ return token ;
             
             // Multi character symbols
@@ -668,13 +678,13 @@ public final class TokenizerText implements Tokenizer
 
             ch = reader.peekChar() ;
             if ( ! isHexChar(ch) )
-                error("Not a hex charcater: '%c'",ch) ;
+                error("Not a hex character: '%c'",ch) ;
             stringBuilder.append((char)ch) ;
             reader.readChar() ;
 
             ch = reader.peekChar() ;
             if ( ! isHexChar(ch) )
-                error("Not a hex charcater: '%c'",ch) ;
+                error("Not a hex character: '%c'",ch) ;
             stringBuilder.append((char)ch) ;
             reader.readChar() ;
         }
