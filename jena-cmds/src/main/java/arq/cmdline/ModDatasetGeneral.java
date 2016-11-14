@@ -27,10 +27,10 @@ import jena.cmd.CmdGeneral;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
+import org.apache.jena.system.Txn;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset
@@ -40,10 +40,8 @@ public class ModDatasetGeneral extends ModDataset
 {
     // See also ModDatasetAssembler
     protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph") ;
-    protected final ArgDecl dataDecl      = new ArgDecl(ArgDecl.HasValue, "data") ;
+    protected final ArgDecl dataDecl       = new ArgDecl(ArgDecl.HasValue, "data") ;
     protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
-    //protected final ArgDecl dataFmtDecl    = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
-    //protected final ArgDecl dirDecl        = new ArgDecl(ArgDecl.HasValue, "dir") ;
     
     private List<String> dataURLs                = null ;
     private List<String> graphURLs               = null ;
@@ -51,8 +49,7 @@ public class ModDatasetGeneral extends ModDataset
     protected ModDatasetGeneral() {}
     
     @Override
-    public void registerWith(CmdGeneral cl)
-    {
+    public void registerWith(CmdGeneral cl) {
         cl.getUsage().startCategory("Dataset") ;
         cl.add(dataDecl,
                "--data=FILE",
@@ -62,24 +59,22 @@ public class ModDatasetGeneral extends ModDataset
                "Graph for default graph of the datset") ;
         cl.add(namedGraphDecl,
                "--namedGraph=FILE",
-               "Add a graph into the dataset as a named graph") ;
+               "Add a graph into the dataset as a named graph");
+    }
+
+    @Override
+    public void processArgs(CmdArgModule cmdLine) {
+        dataURLs = cmdLine.getValues(dataDecl);
+        graphURLs = cmdLine.getValues(graphDecl);
+        namedGraphURLs = cmdLine.getValues(namedGraphDecl);
     }
     
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        dataURLs = cmdLine.getValues(dataDecl) ;
-        graphURLs = cmdLine.getValues(graphDecl) ;
-        namedGraphURLs = cmdLine.getValues(namedGraphDecl) ;
-    }
-    
-    @Override
-    public Dataset createDataset()
-    {
-        // If nothing specified to the module.  Leave alone and hope the query has FROM/FROM NAMED
-        if (  ( dataURLs == null || dataURLs.size() == 0) &&
-              (graphURLs == null || graphURLs.size() == 0) &&
-              (namedGraphURLs == null || namedGraphURLs.size() == 0 ) )
+    public Dataset createDataset() {
+        // If nothing specified for this module, Leave alone and hope the query has FROM/FROM NAMED
+        if ( (dataURLs == null || dataURLs.size() == 0) &&
+             (graphURLs == null || graphURLs.size() == 0) &&
+             (namedGraphURLs == null || namedGraphURLs.size() == 0) )
             return null ;
         
         Dataset ds = DatasetFactory.createTxnMem() ;
@@ -94,25 +89,21 @@ public class ModDatasetGeneral extends ModDataset
         return ! list.isEmpty() ;
     }
     
-    protected void addGraphs(Dataset ds)
-    {
+    protected void addGraphs(Dataset ds) {
         try {
-            if ( hasEntries(dataURLs) ) 
-            {
-                if ( ds.supportsTransactions() )
-                    ds.begin(ReadWrite.WRITE) ;
-                
-                for ( String url : dataURLs )
-                    RDFDataMgr.read(ds, url) ;
-                
+            if ( hasEntries(dataURLs) ) {
                 if ( ds.supportsTransactions() ) {
-                    ds.commit() ;
-                    ds.end() ;
+                    Txn.executeWrite(ds, () -> {
+                        for ( String url : dataURLs )
+                            RDFDataMgr.read(ds, url);
+                    });
+                } else {
+                    for ( String url : dataURLs )
+                        RDFDataMgr.read(ds, url);
                 }
             }
-            
             if ( hasEntries(graphURLs) ||  hasEntries(namedGraphURLs) )
-                ds = DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, null) ;
+                DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, null) ;
         } 
         catch (LabelExistsException ex)
         { throw new CmdException(ex.getMessage()) ; }
@@ -122,13 +113,11 @@ public class ModDatasetGeneral extends ModDataset
         { throw new CmdException("Error creating dataset", ex) ; }
     }
 
-    public List<String> getGraphURLs()
-    {
-        return graphURLs ;
+    public List<String> getGraphURLs() {
+        return graphURLs;
     }
 
-    public List<String> getNamedGraphURLs()
-    {
-        return namedGraphURLs ;
+    public List<String> getNamedGraphURLs() {
+        return namedGraphURLs;
     }
 }

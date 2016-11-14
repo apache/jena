@@ -34,8 +34,7 @@ public class ModDatasetAssembler extends ModDataset
     private ModAssembler modAssembler = new ModAssembler() ;
 
     @Override
-    public Dataset createDataset()
-    {
+    public Dataset createDataset() {
         if ( modAssembler.getAssemblerFile() == null )
             return null ;
         
@@ -52,19 +51,15 @@ public class ModDatasetAssembler extends ModDataset
         catch (Exception ex)
         { throw new CmdException("Error creating dataset", ex) ; }
         return dataset ;
-        
     }
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        modAssembler.registerWith(cmdLine) ;
+    public void registerWith(CmdGeneral cmdLine) {
+        modAssembler.registerWith(cmdLine);
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        modAssembler.processArgs(cmdLine) ;
+    public void processArgs(CmdArgModule cmdLine) {
+        modAssembler.processArgs(cmdLine);
     }
-
 }
