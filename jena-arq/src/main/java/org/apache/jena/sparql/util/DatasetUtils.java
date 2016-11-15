@@ -23,11 +23,12 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.sparql.core.DatasetDescription ;
@@ -39,6 +40,8 @@ import org.apache.jena.system.Txn ;
 /** Internal Dataset factory + graph equivalents. */
 public class DatasetUtils
 {
+    private DatasetUtils() {}
+    
     /** Create a general purpose, in-memory dataset, and load data into the default graph and
      * also some named graphs.
      * @param uri               Default graph
@@ -178,37 +181,37 @@ public class DatasetUtils
         Txn.executeWrite(dsg, ()->addInGraphsWorker(dsg, uriList, namedSourceList, baseURI)) ;
     }
 
+    // For the transactional case, could read straight in, not via buffering graphs that catch syntax errors.
+    
     private static void addInGraphsWorker(DatasetGraph dsg, List<String> uriList, List<String> namedSourceList, String baseURI) {
+        String absBaseURI = null;
+        // Sort out base URI, if any.
+        if ( baseURI != null )
+            absBaseURI = IRIResolver.resolveString(baseURI);
+        
         // Merge into background graph
-        if ( uriList != null ) {
-            Model m = GraphFactory.makeDefaultModel();
+        if ( uriList != null && ! uriList.isEmpty() ) {
+            // Isolate from syntax errors
+            Graph gTmp = GraphFactory.createJenaDefaultGraph();
             for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
-                String absURI = null;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(sourceURI, baseURI);
-                else
-                    absURI = IRIResolver.resolveString(sourceURI);
-                // FileManager.readGraph?
-                RDFDataMgr.read(m, sourceURI, absURI, null);
+                String absURI = IRIResolver.resolveString(sourceURI, baseURI);
+                RDFDataMgr.read(gTmp, sourceURI, absURI, null);
             }
-            dsg.setDefaultGraph(m.getGraph());
-        } else {
-            dsg.setDefaultGraph(GraphFactory.createDefaultGraph());
+            GraphUtil.addInto(dsg.getDefaultGraph(), gTmp);
         }
 
-        if ( namedSourceList != null ) {
+        if ( namedSourceList != null && ! namedSourceList.isEmpty() ) {
             for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
-                String absURI = null;
-                if ( baseURI != null )
-                    absURI = IRIResolver.resolveString(baseURI, sourceURI);
-                else
-                    absURI = IRIResolver.resolveString(sourceURI);
-                Model m = GraphFactory.makeDefaultModel();
-                RDFDataMgr.read(m, sourceURI, absURI, null);
+                if ( absBaseURI == null )
+                    sourceURI = IRIResolver.resolveString(sourceURI);
+                else    
+                    sourceURI = IRIResolver.resolveString(sourceURI, absBaseURI);
+                Graph gTmp = GraphFactory.createJenaDefaultGraph();
+                RDFDataMgr.read(gTmp, sourceURI, absBaseURI, null);
                 Node gn = NodeFactory.createURI(sourceURI);
-                dsg.addGraph(gn, m.getGraph());
+                dsg.addGraph(gn, gTmp);
             }
         }
     }
