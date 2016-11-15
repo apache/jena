@@ -24,7 +24,7 @@ import org.apache.jena.query.Syntax ;
 
 public class sparql extends query
 {
-    public static void main (String... argv) {
+    public static void main(String... argv) {
         new sparql(argv).mainRun() ;
     }
     
