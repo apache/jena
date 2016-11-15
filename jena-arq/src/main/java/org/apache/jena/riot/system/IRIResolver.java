@@ -220,9 +220,9 @@ public abstract class IRIResolver
     }
 
     /**
-     * Resolve a URI against a base. If baseStr is a relative file IRI
-     * then it is first resolved against the current working directory.
-     * If it is an absolute URI, it is normalized.
+     * Resolve a URI against the base for this process. If baseStr is a
+     * relative file IRI then it is first resolved against the current
+     * working directory. If it is an absolute URI, it is normalized.
      * 
      * @param uriStr
      * @return String An absolute URI
@@ -264,9 +264,6 @@ public abstract class IRIResolver
             return globalResolver.getBaseIRI().create(i) ;
 
         IRI base = iriFactory.create(baseStr) ;
-
-        if ("file".equalsIgnoreCase(base.getScheme()))
-            return globalResolver.getBaseIRI().create(i) ;
         return base.create(i) ;
     }
 
