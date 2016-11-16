@@ -38,4 +38,6 @@ public class ExprVisitorBase implements ExprVisitor
     public void visit(ExprVar nv)           {}
     @Override
     public void visit(ExprAggregator eAgg)    {}
+    @Override
+    public void visit(ExprNone exprNone)   { }
 }

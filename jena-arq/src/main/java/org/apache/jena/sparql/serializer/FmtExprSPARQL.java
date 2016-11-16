@@ -204,6 +204,11 @@ public class FmtExprSPARQL
         }
 
         @Override
+        public void visit(ExprNone none) {
+            out.print("NONE");
+        }
+
+        @Override
         public void visit(ExprVar nv)
         {
             String s = nv.getVarName() ;

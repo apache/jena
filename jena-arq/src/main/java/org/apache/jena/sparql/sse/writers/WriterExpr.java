@@ -160,6 +160,11 @@ public class WriterExpr
         }
 
         @Override
+        public void visit(ExprNone none) {
+            out.print("NONE");
+        }
+
+        @Override
         public void visit(ExprVar nv) {
             out.print(nv.toPrefixString()) ;
         }
