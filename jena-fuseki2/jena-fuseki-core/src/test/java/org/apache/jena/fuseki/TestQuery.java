@@ -29,12 +29,14 @@ import java.net.HttpURLConnection ;
 import java.net.URL ;
 import java.util.Iterator ;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -198,60 +200,66 @@ public class TestQuery extends AbstractFusekiTest {
     }
 
     // Conneg tests:
-    // These avoid pooling connection pooling.
-    // It leads to lock up if the list is long (contentTypeTriXxml seems signiifcant)
-    // Hence: ServerCtl.setHttpClient(null) ;
+    // These use independent connection pooling.
+    // Sharing pooling too much leads to lock up if the list is long (contentTypeTriXxml seems significant)
+    // Hence: try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) { ... qExec.setClient(client); ... } 
     
     
     @Test
-    public void query_construct_conneg() {
-        ServerCtl.setHttpClient(null) ;
-        
-        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}" ;
-        for (MediaType type: rdfOfferTest.entries()){
-            
-            String contentType = type.toHeaderString();
-            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
-                qExec.setModelContentType( contentType );
-                Iterator<Triple> iter = qExec.execConstructTriples();
-                assertTrue(iter.hasNext()) ;
-                String x = qExec.getHttpResponseContentType() ;
-                assertEquals( contentType , x ) ;
+    public void query_construct_conneg() throws IOException {
+        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
+            String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+            for (MediaType type : rdfOfferTest.entries()) {
+
+                String contentType = type.toHeaderString();
+                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
+                        query)) {
+                    qExec.setModelContentType(contentType);
+                    qExec.setClient(client);
+                    Iterator<Triple> iter = qExec.execConstructTriples();
+                    assertTrue(iter.hasNext());
+                    String x = qExec.getHttpResponseContentType();
+                    assertEquals(contentType, x);
+                }
             }
         }
     }
 
     @Test
-    public void query_construct_quad_conneg() {
-        ServerCtl.setHttpClient(null) ;
-
-        String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}" ;
-        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        for (MediaType type: quadsOfferTest.entries()){
-            String contentType = type.toHeaderString();
-            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
-                qExec.setDatasetContentType( contentType );
-                Iterator<Quad> iter = qExec.execConstructQuads();
-                assertTrue(iter.hasNext()) ;
-                String x = qExec.getHttpResponseContentType() ;
-                assertEquals( contentType , x ) ;
+    public void query_construct_quad_conneg() throws IOException {
+        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
+            String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}";
+            Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+            for (MediaType type : quadsOfferTest.entries()) {
+                String contentType = type.toHeaderString();
+                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
+                        query)) {
+                    qExec.setDatasetContentType(contentType);
+                    qExec.setClient(client);
+                    Iterator<Quad> iter = qExec.execConstructQuads();
+                    assertTrue(iter.hasNext());
+                    String x = qExec.getHttpResponseContentType();
+                    assertEquals(contentType, x);
+                }
             }
         }
     }
 
     @Test
-    public void query_describe_conneg() {
-        ServerCtl.setHttpClient(null) ;
-
-        String query = "DESCRIBE ?s WHERE {?s ?p ?o}" ;
-        for (MediaType type: rdfOfferTest.entries()){
-            String contentType = type.toHeaderString();
-            try ( QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(), query) ) {
-                qExec.setModelContentType( contentType );
-                Model m = qExec.execDescribe() ;
-                String x = qExec.getHttpResponseContentType() ;
-                assertEquals( contentType , x ) ;
-                assertFalse(m.isEmpty()) ;
+    public void query_describe_conneg() throws IOException {
+        try (CloseableHttpClient client = HttpOp.createPoolingHttpClient()) {
+            String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
+            for (MediaType type : rdfOfferTest.entries()) {
+                String contentType = type.toHeaderString();
+                try (QueryEngineHTTP qExec = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery(),
+                        query)) {
+                    qExec.setModelContentType(contentType);
+                    qExec.setClient(client);
+                    Model m = qExec.execDescribe();
+                    String x = qExec.getHttpResponseContentType();
+                    assertEquals(contentType, x);
+                    assertFalse(m.isEmpty());
+                }
             }
         }
     }

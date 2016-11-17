@@ -92,8 +92,6 @@ public class ServerCtl {
     @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
      
     */
-    
-    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient();
 
     // Note: it is important to cleanly close a PoolingHttpClient across server restarts
     // otherwise the pooled connections remain for the old server. 
@@ -182,7 +180,7 @@ public class ServerCtl {
 
     /** Restore the original setup */
     private static void resetDefaultHttpClient() {
-        setHttpClient(defaultHttpClient);
+        setHttpClient(HttpOp.createDefaultHttpClient());
     }
     
     /** Set the HttpClient - close the old one if appropriate */

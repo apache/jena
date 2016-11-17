@@ -19,6 +19,7 @@
 package org.apache.jena.riot.web;
 
 import static java.lang.String.format ;
+import static org.apache.jena.ext.com.google.common.base.MoreObjects.firstNonNull;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -95,11 +96,17 @@ public class HttpOp {
     /** System wide HTTP operation counter for log messages */
     static private AtomicLong counter = new AtomicLong(0);
 
+    private static final LaxRedirectStrategy laxRedirectStrategy = new LaxRedirectStrategy();
+
     /**
      * Default HttpClient.
      */
-    static private HttpClient defaultHttpClient = null;
+    static private HttpClient defaultHttpClient = createDefaultHttpClient();
 
+    public static HttpClient createDefaultHttpClient() {
+        return createCachingHttpClient();
+    }
+    
     /**
      * Constant for the default User-Agent header that ARQ will use
      */
@@ -114,8 +121,6 @@ public class HttpOp {
      * "Do nothing" response handler.
      */
     static private HttpResponseHandler nullHandler = HttpResponseLib.nullResponse;
-
-    private static final LaxRedirectStrategy laxRedirectStrategy = new LaxRedirectStrategy();
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
@@ -141,38 +146,12 @@ public class HttpOp {
      */
     public static class CaptureInput implements HttpCaptureResponse<TypedInputStream> {
         private TypedInputStream stream;
-        
-        private boolean closeClient = false;
-        
-        private CloseableHttpClient client;
-        
-        public void setClient(CloseableHttpClient client) {
-            this.client = client;
-        }
-
-        private static class ClientRetainingTypedInputStream extends TypedInputStream {
-
-            private final CloseableHttpClient retainedClient;
-            
-            public ClientRetainingTypedInputStream(InputStream in, String contentType, CloseableHttpClient client) {
-                super(in, contentType);
-                this.retainedClient = client;
-            }
-
-            @Override
-            public void close() {
-                IO.close(retainedClient);
-                super.close();
-            }
-            
-        }
 
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
             String ct = (entity.getContentType() == null) ? null : entity.getContentType().getValue();
-            stream = closeClient ? new ClientRetainingTypedInputStream(entity.getContent(), ct, client)
-                    : new TypedInputStream(entity.getContent(), ct);
+            stream = new TypedInputStream(entity.getContent(), ct);
         }
 
         @Override
@@ -193,21 +172,13 @@ public class HttpOp {
     }
 
     /**
-     * <p>
      * Performance can be improved by using a shared HttpClient that uses
      * connection pooling. However, pool management is complicated and can lead
      * to starvation (the system locks-up, especially on Java6; it's JVM
      * sensitive).
-     * </p>
-     * <p>
-     * Set to "null" to create a new HttpClient for each call (default
-     * behaviour, more reliable, but slower when many HTTP operation are
-     * attempted).
-     * <p>
      * See the Apache Http Client documentation for more details.
      * 
-     * @param httpClient
-     *            HTTP Client
+     * @param httpClient HTTP Client
      */
     public static void setDefaultHttpClient(HttpClient httpClient) {
         defaultHttpClient = httpClient;
@@ -217,10 +188,11 @@ public class HttpOp {
      * Create an HttpClient that performs connection pooling. This can be used
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
-    public static HttpClient createPoolingHttpClient() {
+    public static CloseableHttpClient createPoolingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
+            .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
             .build() ;
@@ -234,6 +206,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return CachingHttpClientBuilder.create()
+            .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
             .build() ;
@@ -1058,19 +1031,11 @@ public class HttpOp {
     private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         // whether we should close the client after request execution
         // only true if we built the client right here
-        boolean closeClient = false;
-        if (httpClient == null) {
-            if (getDefaultHttpClient() == null ) {
-                httpClient = makeOneUseClient();
-                closeClient = true;
-            }
-            else httpClient = getDefaultHttpClient();
-        }
+        httpClient = firstNonNull(httpClient, getDefaultHttpClient());
         // and also only true if the handler won't close the client for us
-        closeClient = closeClient && !(handler instanceof CaptureInput);
         try {
             if (handler == null)
-                // This cleans up.
+                // This cleans up left-behind streams
                 handler = nullHandler;
 
             long id = counter.incrementAndGet();
@@ -1095,21 +1060,10 @@ public class HttpOp {
 				final String contentPayload = readPayload(response.getEntity());
 				throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase(), contentPayload);
             }
-            // Redirects are followed by HttpClient.
-            if (handler != null)
-                handler.handle(baseURI, response);
-            // the cast below is safe because if closeClient then we built the client in this method 
-            if (closeClient) IO.close((CloseableHttpClient) httpClient);
+            if (handler != null) handler.handle(baseURI, response);
         } catch (IOException ex) {
             throw new HttpException(ex);
         }
-    }
-
-    /**
-     * @return a "default" HttpClient for use with one request
-     */
-    private static CloseableHttpClient makeOneUseClient() {
-        return HttpClientBuilder.create().setRedirectStrategy(laxRedirectStrategy).build();
     }
 
 	public static String readPayload(HttpEntity entity) throws IOException {
