@@ -36,7 +36,7 @@ import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder ;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
@@ -114,6 +114,8 @@ public class HttpOp {
      * "Do nothing" response handler.
      */
     static private HttpResponseHandler nullHandler = HttpResponseLib.nullResponse;
+
+    private static final LaxRedirectStrategy laxRedirectStrategy = new LaxRedirectStrategy();
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
@@ -1059,7 +1061,7 @@ public class HttpOp {
         boolean closeClient = false;
         if (httpClient == null) {
             if (getDefaultHttpClient() == null ) {
-                httpClient = HttpClients.createMinimal();
+                httpClient = makeOneUseClient();
                 closeClient = true;
             }
             else httpClient = getDefaultHttpClient();
@@ -1101,6 +1103,13 @@ public class HttpOp {
         } catch (IOException ex) {
             throw new HttpException(ex);
         }
+    }
+
+    /**
+     * @return a "default" HttpClient for use with one request
+     */
+    private static CloseableHttpClient makeOneUseClient() {
+        return HttpClientBuilder.create().setRedirectStrategy(laxRedirectStrategy).build();
     }
 
 	public static String readPayload(HttpEntity entity) throws IOException {
