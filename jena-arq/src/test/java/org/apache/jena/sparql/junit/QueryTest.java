@@ -30,6 +30,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryExecution;
@@ -48,6 +49,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.checker.CheckerLiterals;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Var;
@@ -61,7 +63,6 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.resultset.RDFOutput;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.resultset.SPARQLResult;
-import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
 import org.apache.jena.util.FileUtils;
@@ -157,7 +158,21 @@ public class QueryTest extends EarlTestCase
     
     private static Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
-        return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null) ;
+        // Allow "qt:data" to be quads in defaultGraphURIs.
+        Dataset ds = DatasetFactory.createGeneral();
+        if ( defaultGraphURIs != null ) {
+            for ( String sourceURI : defaultGraphURIs) {
+                RDFDataMgr.read(ds, sourceURI);
+            }
+        }
+        if ( namedGraphURIs != null ) {
+            for ( String sourceURI : namedGraphURIs ) {
+                String absSourceURI = IRIResolver.resolveString(sourceURI) ;
+                Model m = ds.getNamedModel(absSourceURI);
+                RDFDataMgr.read(m, sourceURI);
+            }
+        }
+        return ds;
     }
     
     @Override
@@ -260,7 +275,7 @@ public class QueryTest extends EarlTestCase
             boolean b2 = resultSetEquivalent(query, resultsExpected, resultsActual) ;
             printFailedResultSetTest(query, qe, resultsExpected, resultsActual) ;
         }
-        assertTrue("Results do not match: "+testItem.getName(), b) ;
+        assertTrue("Results do not match", b) ;
 
         return ;
     }
