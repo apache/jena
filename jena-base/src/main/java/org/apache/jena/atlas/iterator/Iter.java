@@ -50,7 +50,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * iter(iterator).map(...).filter(...)}
  * </pre>
  *
- * @param <T> the type of element over which an instance of Iter iterates,
+ * @param <T> the type of element over which an instance of {@code Iter} iterates,
  */
 public class Iter<T> implements Iterator<T> {
     // IteratorSlotted needed? IteratorPeek
@@ -69,7 +69,7 @@ public class Iter<T> implements Iterator<T> {
     // ---- Special iterators. 
     
     public static <T> Iterator<T> singleton(T item) {
-        // Theer is a single iterator in Co0llections but it is not public.
+        // There is a singleton iterator in Collections but it is not public.
         return new SingletonIterator<>(item) ;
     }
     
