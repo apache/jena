@@ -285,6 +285,9 @@ public abstract class CmdLangParse extends CmdGeneral
             // System.err.println("++++"+ex.getMessage());
             if ( modLangParse.stopOnBadTerm() )
                 return ;
+            if ( modLangParse.validate() )
+                // The error handler will print the exception. Here we throw it so that the command exit with 1
+                throw new CmdException();
         } finally {
             // Not close the output - we may write again to the underlying output stream in another call to parse a file.  
             IO.close(in) ;
