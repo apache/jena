@@ -33,6 +33,10 @@
     <version>18</version>
   </parent>
 
+  <prerequisites>
+    <maven>3.3.5</maven>
+  </prerequisites>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
