@@ -27,7 +27,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.tdb.StoreConnection ;
 
 /** Setup configurtation.
- * The order is controled by {@code web.xml}:
+ * The order is controlled by {@code web.xml}:
  * <ul>
  * <li>{@link FusekiServerEnvironmentInit}
  * <li>{@link ShiroEnvironmentLoader}
