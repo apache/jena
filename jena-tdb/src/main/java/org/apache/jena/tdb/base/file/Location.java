@@ -188,7 +188,7 @@ public class Location {
         return filename ;
     }
 
-    /** Does the location exist (and it a directory, and is accessible) */
+    /** Does the location exist (and is a directory, and is accessible) */
     public boolean exists() {
         File f = new File(getDirectoryPath()) ;
         return f.exists() && f.isDirectory() && f.canRead() ;
