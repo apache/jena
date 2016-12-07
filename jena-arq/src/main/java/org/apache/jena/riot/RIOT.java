@@ -19,6 +19,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
@@ -73,6 +74,7 @@ public class RIOT {
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
+            ResultSetLang.init();
 
             IO_Jena.wireIntoJena() ;
 
