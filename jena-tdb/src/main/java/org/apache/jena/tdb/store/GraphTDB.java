@@ -26,11 +26,9 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.AllCapabilities ;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -133,16 +131,6 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
 		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
 	};
 
-    @Override
-    public Capabilities getCapabilities() {
-        if ( capabilities == null )
-            capabilities = new AllCapabilities() {
-                @Override public boolean iteratorRemoveAllowed() { return false ; } 
-                @Override public boolean handlesLiteralTyping() { return false ; }
-            } ;
-        return super.getCapabilities() ;
-    }
-    
     @Override
     public void clear() {
         getDatasetGraphTDB().deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
