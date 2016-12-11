@@ -274,7 +274,7 @@ public class LogCtl {
     private static String defaultProperties = StrUtils.strjoinNL
         ("handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStream"
         // These are the defaults.
-        //,"org.apache.atlas.jena.logging.java.ConsoleHandlerStream.level=INFO"
+        //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.level=INFO"
         //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
         //,"org.apache.jena.atlas.logging.java.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
         ) ;
