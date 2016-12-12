@@ -69,7 +69,6 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     static { init() ; }
     
     private static void init() {
-        //ype = Item.createNode(NodeConst.nodeRDFType) ;
         // rdf:type can be a bad choice e.g rdf:type rdf:Resource
         // with inference enabled.
         // Weight use of rdf:type worse then the general pattern
@@ -87,7 +86,7 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
 
         matcher.addPattern(new Pattern(2, TERM, TERM, VAR)) ;                   // SP?
         matcher.addPattern(new Pattern(3, VAR, TERM, TERM)) ;                   // ?PO
-        matcher.addPattern(new Pattern(2, TERM, TERM, TERM)) ;                  // S?O
+        matcher.addPattern(new Pattern(2, TERM, VAR, TERM)) ;                   // S?O
 
         matcher.addPattern(new Pattern(10, TERM, VAR, VAR)) ;                   // S??
         matcher.addPattern(new Pattern(20, VAR, VAR, TERM)) ;                   // ??O
