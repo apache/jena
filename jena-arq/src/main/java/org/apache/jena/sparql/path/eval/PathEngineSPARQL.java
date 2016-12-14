@@ -43,10 +43,6 @@ public class PathEngineSPARQL extends PathEngine
         this.forwardMode = forward ;
     }
 
-    protected Collection<Node> collector() {
-        return new HashSet<>() ;
-    }
-
     protected Set<Node> visitedAcc() {
         return new HashSet<>() ;
     }

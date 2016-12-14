@@ -43,10 +43,6 @@ final class PathEngineN extends PathEngine
         this.forwardMode = forward ;
     }
 
-    protected Collection<Node> collector() {
-        return new ArrayList<>() ;
-    }
-    
     protected Set<Node> visitedAcc() {
         return new HashSet<>() ;
     }
