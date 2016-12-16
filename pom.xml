@@ -25,7 +25,6 @@
   <url>http://jena.apache.org/</url>
   <version>3.2.0-SNAPSHOT</version>
 
-  <!-- Needed for -Papache-release -->
   <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
@@ -73,7 +72,8 @@
         
         <module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module> 
+        <module>jena-tdb</module>
+        <module>jena-rdfconnection</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         
@@ -81,6 +81,8 @@
         <!--<module>jena-spatial</module>-->
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
+
+        <module>jena-integration-tests</module>
 
         <module>jena-permissions</module>
 
@@ -95,10 +97,11 @@
     </profile>
 
     <profile>
-      <!-- From the start, up until profile "dev"
-           Use this is building lcoally and there are no SNAPSHOTs
-           in the "snapshots" repository.
-           This profile does a more complete "dev" build
+      <!-- From the start, up until profile "dev".
+           Use this (or a full build) when building locally
+           and there are no SNAPSHOTs in the "snapshots" repository.
+           This profile does a more complete "dev" build,
+           does not assume anything is already built,
            and does not include the longer running modules.
       -->
       
@@ -142,6 +145,7 @@
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-tdb</module>
+        <module>jena-rdfconnection</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
 
@@ -154,6 +158,12 @@
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
         <module>jena-permissions</module>
+
+        <!-- Tests of artifacts that require 
+             For example, use Fuseki as a test server
+             to test remote client APIs.
+        -->
+        <module>jena-integration-tests</module>
 
         <module>jena-jdbc</module>
         <!-- Removed because this breaks the build after the 

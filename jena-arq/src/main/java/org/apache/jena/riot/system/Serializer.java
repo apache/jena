@@ -27,7 +27,7 @@ import org.apache.jena.sparql.core.Quad;
  * This class is public to allow system initialization to inject
  * handler functions for {@link Quad}.
  * 
- * See also {@code Node} and {@ocde Triple}.  
+ * See also {@code Node} and {@code Triple}.  
  */
 public class Serializer {
     /*package*/ static Function<Quad, Object> quadWriteReplaceFunction = null;
