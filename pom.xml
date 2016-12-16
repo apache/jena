@@ -159,9 +159,11 @@
         <module>jena-fuseki2</module>
         <module>jena-permissions</module>
 
-        <!-- Tests of artifacts that require 
-             For example, use Fuseki as a test server
-             to test remote client APIs.
+        <!--
+            Tests of artifacts that require additional 
+            modules built later in the build process.
+            For example, use Fuseki as a test server to
+            test remote client APIs.
         -->
         <module>jena-integration-tests</module>
 

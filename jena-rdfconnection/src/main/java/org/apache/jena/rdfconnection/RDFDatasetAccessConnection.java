@@ -18,9 +18,9 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Transactional;
 
 /**
  * SPARQL Graph Store Protocol (read operations) and whole dataset access.
@@ -38,20 +38,20 @@ public interface RDFDatasetAccessConnection extends Transactional, AutoCloseable
      * @param graphName URI string for the graph name (null or "default" for the default graph)
      * @return Model
      */
-    public Model fetch(String graphName) ;
+    public Model fetch(String graphName);
     
     /** Fetch the default graph.
      * This is SPARQL Graph Store Protocol HTTP GET or equivalent. 
      * @return Model
      */
-    public Model fetch() ;
+    public Model fetch();
     
     /** Fetch the contents of the dataset */ 
-    public Dataset fetchDataset() ;
+    public Dataset fetchDataset();
     
     /** Test whether this connection is closed or not */
-    public boolean isClosed() ;
+    public boolean isClosed();
     
     /** Close this connection.  Use with try-resource. */ 
-    @Override public void close() ;
+    @Override public void close();
 }

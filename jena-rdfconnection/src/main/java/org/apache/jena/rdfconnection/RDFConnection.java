@@ -53,21 +53,26 @@ import org.apache.jena.update.UpdateRequest ;
  * the remote server, multiple operations are not combined into a single
  * transaction.
  * 
- * Not all implementations may implement all operations. See the implementation
- * notes for details.
+ * Not all implementations may implement all operations. 
+ * See the implementation notes for details.
  * 
  * @see RDFConnectionFactory
  * @see RDFConnectionLocal
  * @see RDFConnectionRemote
+ * @see SparqlQueryConnection
+ * @see SparqlUpdateConnection
+ * @see RDFDatasetConnection
+ * 
  */  
-public interface RDFConnection
-    // Default implementations could be pushed up but then they can't be mentioned here.  
-    extends
+public interface RDFConnection extends
         SparqlQueryConnection, SparqlUpdateConnection, RDFDatasetConnection,
         Transactional, AutoCloseable 
  {
-    // Inherits interfaces : re-mentioned to get the javadoc in one place.
+    // Default implementations could be pushed up but then they can't be mentioned here
+    // so that the Javadoc for RDFConnection is not in one place.
+    // Inheriting interfaces and re-mentioning gets the javadoc in one place.
     
+
     // ---- SparqlQueryConnection
 
     /**

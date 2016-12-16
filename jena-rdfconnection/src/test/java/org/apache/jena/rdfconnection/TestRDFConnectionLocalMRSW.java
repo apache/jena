@@ -18,21 +18,21 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
 public class TestRDFConnectionLocalMRSW extends AbstractTestRDFConnection {
 
     @Override
-    protected boolean supportsAbort() { return false ; }
+    protected boolean supportsAbort() { return false; }
     
     @Override
     protected RDFConnection connection() {
         // General purpose, mixed storage, MRSW dataset.  
-        Dataset ds = DatasetFactory.create() ;
-        return RDFConnectionFactory.connect(ds) ;
+        Dataset ds = DatasetFactory.create();
+        return RDFConnectionFactory.connect(ds);
     }
 }
 

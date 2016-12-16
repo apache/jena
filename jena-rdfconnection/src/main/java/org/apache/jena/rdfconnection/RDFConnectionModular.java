@@ -18,23 +18,24 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryExecution ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.update.UpdateRequest;
 
-/** 
- * 
+/**
+ * Implementation of {@link RDFConnection} where the query, update and graph store
+ * operations are given by specific implementations of the respective interfaces.
  */
 public class RDFConnectionModular implements RDFConnection {
     
-    private final SparqlQueryConnection queryConnection ;
-    private final SparqlUpdateConnection updateConnection ;
-    private final RDFDatasetConnection datasetConnection ;
-    private final Transactional transactional ;
+    private final SparqlQueryConnection queryConnection;
+    private final SparqlUpdateConnection updateConnection;
+    private final RDFDatasetConnection datasetConnection;
+    private final Transactional transactional;
     
     @Override
     public void begin(ReadWrite readWrite) { transactional.begin(readWrite); }
@@ -46,144 +47,139 @@ public class RDFConnectionModular implements RDFConnection {
     public void end() { transactional.end(); }
     @Override
     public boolean isInTransaction() { 
-        return transactional.isInTransaction() ;
+        return transactional.isInTransaction();
     }
     
     public RDFConnectionModular(SparqlQueryConnection queryConnection ,
                                 SparqlUpdateConnection updateConnection ,
                                 RDFDatasetConnection datasetConnection ) {
-        this.queryConnection = queryConnection ;
-        this.updateConnection = updateConnection ;
-        this.datasetConnection = datasetConnection ;
+        this.queryConnection = queryConnection;
+        this.updateConnection = updateConnection;
+        this.datasetConnection = datasetConnection;
         this.transactional = 
             updateConnection  != null ? updateConnection :
             datasetConnection != null ? datasetConnection :
             queryConnection   != null ? queryConnection :
-            null ;
+            null;
     }
     
-    public RDFConnectionModular(RDFConnection connection ) {
-        this.queryConnection = connection ;
-        this.updateConnection = connection ;
-        this.datasetConnection = connection ;
-        this.transactional = connection ;
+    public RDFConnectionModular(RDFConnection connection) {
+        this.queryConnection = connection;
+        this.updateConnection = connection;
+        this.datasetConnection = connection;
+        this.transactional = connection;
     }
 
     private SparqlQueryConnection queryConnection() {
         if ( queryConnection == null )
-            throw new UnsupportedOperationException("No SparqlQueryConnection") ;
-        return queryConnection ;
+            throw new UnsupportedOperationException("No SparqlQueryConnection");
+        return queryConnection;
     }
     
     private SparqlUpdateConnection updateConnection() {
         if ( updateConnection == null )
-            throw new UnsupportedOperationException("No SparqlUpdateConnection") ;
-        return updateConnection ;
+            throw new UnsupportedOperationException("No SparqlUpdateConnection");
+        return updateConnection;
     }
 
     private RDFDatasetConnection datasetConnection() {
         if ( datasetConnection == null )
-            throw new UnsupportedOperationException("No RDFDatasetConnection") ;
-        return datasetConnection ;
+            throw new UnsupportedOperationException("No RDFDatasetConnection");
+        return datasetConnection;
     }
-    
-    
 
     @Override
-    public QueryExecution query(Query query) { return queryConnection().query(query) ; }
+    public QueryExecution query(Query query) { return queryConnection().query(query); }
 
     @Override
     public void update(UpdateRequest update) {
-        updateConnection().update(update) ;
+        updateConnection().update(update);
     }
 
     @Override
     public void load(String graphName, String file) {
-        datasetConnection().load(graphName, file) ;
+        datasetConnection().load(graphName, file);
     }
 
     @Override
     public void load(String file) {
-        datasetConnection().load(file) ;
+        datasetConnection().load(file);
     }
 
     @Override
     public void load(String graphName, Model model) {
-        datasetConnection().load(graphName, model) ;
+        datasetConnection().load(graphName, model);
     }
 
     @Override
     public void load(Model model) {
-        datasetConnection().load(model) ;
+        datasetConnection().load(model);
     }
 
     @Override
     public void put(String graphName, String file) {
-        datasetConnection().put(graphName, file) ;
+        datasetConnection().put(graphName, file);
     }
 
     @Override
     public void put(String file) {
-        datasetConnection().put(file) ;
+        datasetConnection().put(file);
     }
 
     @Override
     public void put(String graphName, Model model) {
-        datasetConnection().put(graphName, model) ;
+        datasetConnection().put(graphName, model);
     }
 
     @Override
     public void put(Model model) {
-        datasetConnection().put(model) ;
+        datasetConnection().put(model);
     }
 
     @Override
     public void delete(String graphName) {
-        datasetConnection().delete(graphName) ;
+        datasetConnection().delete(graphName);
     }
 
     @Override
     public void delete() {
-        datasetConnection().delete() ;
+        datasetConnection().delete();
     }
 
     @Override
     public void loadDataset(String file) {
-        datasetConnection().loadDataset(file) ;
+        datasetConnection().loadDataset(file);
     }
 
     @Override
     public void loadDataset(Dataset dataset) {
-        datasetConnection().loadDataset(dataset) ;
+        datasetConnection().loadDataset(dataset);
     }
 
     @Override
     public void putDataset(String file) {
-        datasetConnection().putDataset(file) ;
+        datasetConnection().putDataset(file);
     }
 
     @Override
     public void putDataset(Dataset dataset) {
-        datasetConnection().putDataset(dataset) ;
+        datasetConnection().putDataset(dataset);
     }
 
-    //    /** Clear the dataset - remove all named graphs, clear the default graph. */
-    //    public void clearDataset() ;
-    
     @Override
     public Model fetch(String graphName) {
-        return datasetConnection.fetch(graphName) ;
+        return datasetConnection.fetch(graphName);
     }
     @Override
     public Model fetch() {
-        return datasetConnection().fetch() ;
+        return datasetConnection().fetch();
     }
     @Override
     public Dataset fetchDataset() {
-        return datasetConnection().fetchDataset() ;
+        return datasetConnection().fetchDataset();
     }
     @Override
-    public boolean isClosed() { return false ; }
+    public boolean isClosed() { return false; }
     
     /** Close this connection.  Use with try-resource. */ 
     @Override 
@@ -193,7 +189,7 @@ public class RDFConnectionModular implements RDFConnection {
         if ( updateConnection != null )
             updateConnection.close();
         if ( datasetConnection != null )
-            datasetConnection.close() ;
+            datasetConnection.close();
     }
 }
 

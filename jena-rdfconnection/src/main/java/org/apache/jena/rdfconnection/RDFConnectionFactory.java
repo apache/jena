@@ -18,10 +18,9 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.system.JenaSystem;
 
-// Pool stuff
 public class RDFConnectionFactory {
     static { JenaSystem.init(); }
     
@@ -42,32 +41,38 @@ public class RDFConnectionFactory {
      * @see #connect(String, String, String, String)
      */
     public static RDFConnection connect(String destination) {
-        return new RDFConnectionRemote(destination) ;
+        return new RDFConnectionRemote(destination);
     }
 
-    /** Create a connection to a remote location by URL.
-     * This is the URL for the dataset.
+    /** Create a connection specifying the URLs of the service.
      * 
-     *  This call requires specifying the names of the service.
-     */ 
+     * @param queryServiceEndpoint
+     * @param updateServiceEndpoint
+     * @param graphStoreProtocolEndpoint
+     * @return RDFConnection
+     */
     public static RDFConnection connect(String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return new RDFConnectionRemote(queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint) ;
+        return new RDFConnectionRemote(queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint);
    }
 
     
     /** Create a connection to a remote location by URL.
      * This is the URL for the dataset.
+     * Each service is then specified by a URL which is relative to the {@code datasetURL}.
      * 
-     *  This call requires specifying the names of the servicerelative to the dataset URL.
-     *  
-     */ 
+     * @param datasetURL
+     * @param queryServiceEndpoint
+     * @param updateServiceEndpoint
+     * @param graphStoreProtocolEndpoint
+     * @return RDFConnection
+     */
     public static RDFConnection connect(String datasetURL,
                                         String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return new RDFConnectionRemote(datasetURL, queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint) ;
+        return new RDFConnectionRemote(datasetURL, queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint);
     }
 
     /**
@@ -76,9 +81,7 @@ public class RDFConnectionFactory {
      * @return RDFConnection
      */
     public static RDFConnection connect(Dataset dataset) {
-        return new RDFConnectionLocal(dataset) ;
+        return new RDFConnectionLocal(dataset);
     }
 
-    //public RDFConnection getFromPool() ;
 }
-

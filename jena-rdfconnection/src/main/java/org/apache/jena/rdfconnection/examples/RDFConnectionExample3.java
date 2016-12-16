@@ -18,9 +18,9 @@
 
 package org.apache.jena.rdfconnection.examples;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.ResultSetFormatter ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
@@ -30,8 +30,8 @@ import org.apache.jena.rdfconnection.RDFConnectionFactory;
  */
 public class RDFConnectionExample3 {
     public static void main(String ...args) {
-        Query query = QueryFactory.create("SELECT * { <http://example.org/book/book1> ?p ?o }") ;
-        String queryService = "http://sparql.org/books/query" ;
+        Query query = QueryFactory.create("SELECT * { <http://example.org/book/book1> ?p ?o }");
+        String queryService = "http://sparql.org/books/query";
 
         // Query service, no update, no graph store protocol.
         try ( RDFConnection conn = RDFConnectionFactory.connect(queryService, null, null) ) {

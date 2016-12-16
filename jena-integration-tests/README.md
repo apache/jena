@@ -1,4 +1,4 @@
-Jena Intrgration Tests
+Jena Integration Tests
 ======================
 
 This module provides testing of components where testing depends on

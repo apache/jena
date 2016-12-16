@@ -106,8 +106,8 @@ SPARQL does not define a remote transaction standard protocol. Each remote
 operation shuld be atomic (all happens or nothing happens) - this is the
 responsibility of the remote server.
 
-An `RDFConenction` will at least provide the client-side locking features.
-This means that overlapping operations that chnage data are naturally
+An `RDFConnection` will at least provide the client-side locking features.
+This means that overlapping operations that change data are naturally
 handled by the transaction pattern within a single JVM.
 
 ## Graph Store Protocol
@@ -150,7 +150,7 @@ provided).
 When creating an `QueryExecution` explicitly, care shoud be taken to close
 it. If the application wishes to capture the result set from a SELECT query and
 retain it across the lifetime of the transaction or `QueryExecution`, then
-the application create a copy which is not attached to any external system
+the application should create a copy which is not attached to any external system
 with `ResultSetFactory.copyResults`.
 
 ```
@@ -184,7 +184,7 @@ SPARQL Update opertions can be performed and mixed with other operations.
 
 In addition to the SPARQL Graph Store Protocol, operations on whole
 datasets are provided for fetching (HTTP GET), adding data (HTTP POST) and
-settign the data (HTTP PUT) on a dataset URL.  This assumes the remote
+setting the data (HTTP PUT) on a dataset URL.  This assumes the remote
 server supported these REST-style operations.  Apache Jena Fuseki does
 provide these.
 
@@ -202,4 +202,4 @@ operations are visible to the called code.
 
 ## Examples
 
-https://github.com/afs/jena-rdfconnection/tree/master/src/main/java/rdfconnection/examples
+https://github.com/apache/jena/jena-rdfconnection/tree/master/src/main/java/rdfconnection/examples

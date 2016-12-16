@@ -18,9 +18,9 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.update.Update ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateRequest;
 
 /** SPARQL Update Operations on a connection.
  * 
@@ -33,21 +33,21 @@ public interface SparqlUpdateConnection extends Transactional, AutoCloseable
      * 
      * @param update
      */
-    public void update(Update update) ;
+    public void update(Update update);
 
     /** Execute a SPARQL Update.
      * 
      * @param update
      */
-    public void update(UpdateRequest update) ; 
+    public void update(UpdateRequest update); 
     
     /** Execute a SPARQL Update.
      * 
      * @param updateString
      */
-    public void update(String updateString) ;
+    public void update(String updateString);
     
     /** Close this connection. */ 
-    @Override public void close() ;
+    @Override public void close();
 }
 
