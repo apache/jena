@@ -20,6 +20,7 @@ package org.apache.jena.rdfconnection;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -36,21 +37,36 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateRequest;
 
-/** 
+/**
  * Implement of {@link RDFConnection} over a {@link Dataset} in the same JVM.
+ * <p>
+ * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
+ * {@link RDFConnection} behave like a remote conenction. This should be the normal use in
+ * testing.
+ * <ul>
+ * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied. 
+ *     This is most like a remote connection.
+ * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
+ *     the underlying model or dataset will be seen.
+ * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
+ * </ul>
  */
 
 public class RDFConnectionLocal implements RDFConnection {
-    // XXX Expose copy-mode?
-    
     private ThreadLocal<Boolean> transactionActive = ThreadLocal.withInitial(()->false);
-    private static boolean isolateByCopy = true; 
+    
     private Dataset dataset;
+    private final Isolation isolation;
     
     public RDFConnectionLocal(Dataset dataset) {
-        this.dataset = dataset;
+        this(dataset, Isolation.NONE);
     }
     
+    public RDFConnectionLocal(Dataset dataset, Isolation isolation) {
+        this.dataset = dataset;
+        this.isolation = isolation;
+    }
+
     @Override
     public QueryExecution query(Query query) {
         checkOpen();
@@ -176,35 +192,46 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     /**
-     * Called to isolate a model from it's storage. Must be inside a
-     * transaction.
+     * Called to isolate a model from it's storage.
+     * Must be inside a transaction.
      */
     private Model isolate(Model model) {
-        if ( ! isolateByCopy ) {
-            // Half-way - read-only but dataset changes can be seen. 
-            Graph g = new GraphReadOnly(model.getGraph());
-            return ModelFactory.createModelForGraph(g);
+        switch(isolation) {
+            case COPY: {
+                // Copy - the model is completely isolated from the original. 
+                Model m2 = ModelFactory.createDefaultModel();
+                m2.add(model);
+                return m2;
+            }
+            case READONLY : {
+                Graph g = new GraphReadOnly(model.getGraph());
+                return ModelFactory.createModelForGraph(g);
+            }
+            case NONE :
+                return model;
         }
-        // Copy.
-        Model m2 = ModelFactory.createDefaultModel();
-        m2.add(model);
-        return m2;
+        throw new InternalErrorException();
     }
 
     /**
-     * Called to isolate a dataset from it's storage. Must be inside a
-     * transaction.
+     * Called to isolate a dataset from it's storage.
+     * Must be inside a transaction.
      */
     private Dataset isolate(Dataset dataset) {
-        if ( ! isolateByCopy ) {
-            DatasetGraph dsg = new DatasetGraphReadOnly(dataset.asDatasetGraph());
-            return DatasetFactory.wrap(dsg);
+        switch(isolation) {
+            case COPY: {
+                DatasetGraph dsg2 = DatasetGraphFactory.create();
+                dataset.asDatasetGraph().find().forEachRemaining(q -> dsg2.add(q) );
+                return DatasetFactory.wrap(dsg2);
+            }
+            case READONLY : {
+                DatasetGraph dsg = new DatasetGraphReadOnly(dataset.asDatasetGraph());
+                return DatasetFactory.wrap(dsg);
+            }
+            case NONE :
+                return dataset;
         }
-
-        // Copy.
-        DatasetGraph dsg2 = DatasetGraphFactory.create();
-        dataset.asDatasetGraph().find().forEachRemaining(q -> dsg2.add(q) );
-        return DatasetFactory.wrap(dsg2);
+        throw new InternalErrorException();
     }
 
     private Model modelFor(String graph) {

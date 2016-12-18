@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
     // Other tests are in jena-integration-tests
     TestRDFConnectionLocalTxnMem.class
     , TestRDFConnectionLocalMRSW.class
+    , TestLocalIsolation.class
 })
 
 public class TS_RDFConnection {}

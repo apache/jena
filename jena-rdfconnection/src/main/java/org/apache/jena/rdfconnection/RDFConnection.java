@@ -18,15 +18,15 @@
 
 package org.apache.jena.rdfconnection;
 
-import java.util.function.Consumer ;
+import java.util.function.Consumer;
 
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.system.Txn ;
-import org.apache.jena.update.Update ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.system.Txn;
+import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 /**
  * Interface for SPARQL operations on a datasets, whether local or remote.
@@ -82,7 +82,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void queryResultSet(String query, Consumer<ResultSet> resultSetAction) {
-        queryResultSet(QueryFactory.create(query), resultSetAction) ;
+        queryResultSet(QueryFactory.create(query), resultSetAction);
     }
     
     /**
@@ -93,14 +93,14 @@ public interface RDFConnection extends
     @Override
     public default void queryResultSet(Query query, Consumer<ResultSet> resultSetAction) {
         if ( ! query.isSelectType() )
-            throw new JenaConnectionException("Query is not a SELECT query") ;
+            throw new JenaConnectionException("Query is not a SELECT query");
 
         Txn.executeRead(this, ()->{ 
             try ( QueryExecution qExec = query(query) ) {
-                ResultSet rs = qExec.execSelect() ;
+                ResultSet rs = qExec.execSelect();
                 resultSetAction.accept(rs);
             }
-        } ) ; 
+        } ); 
     }
 
     /**
@@ -110,7 +110,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void querySelect(String query, Consumer<QuerySolution> rowAction) {
-        querySelect(QueryFactory.create(query), rowAction) ;
+        querySelect(QueryFactory.create(query), rowAction);
     }
     
     /**
@@ -121,18 +121,18 @@ public interface RDFConnection extends
     @Override
     public default void querySelect(Query query, Consumer<QuerySolution> rowAction) {
         if ( ! query.isSelectType() )
-            throw new JenaConnectionException("Query is not a SELECT query") ;
+            throw new JenaConnectionException("Query is not a SELECT query");
         Txn.executeRead(this, ()->{ 
             try ( QueryExecution qExec = query(query) ) {
                 qExec.execSelect().forEachRemaining(rowAction);
             }
-        } ) ; 
+        } ); 
     }
 
     /** Execute a CONSTRUCT query and return as a Model */
     @Override
     public default Model queryConstruct(String query) {
-        return queryConstruct(QueryFactory.create(query)) ;
+        return queryConstruct(QueryFactory.create(query));
     }
     
     /** Execute a CONSTRUCT query and return as a Model */
@@ -141,15 +141,15 @@ public interface RDFConnection extends
         return 
             Txn.calculateRead(this, ()->{ 
                 try ( QueryExecution qExec = query(query) ) {
-                    return qExec.execConstruct() ;
+                    return qExec.execConstruct();
                 }
-            } ) ; 
+            } ); 
     }
 
     /** Execute a DESCRIBE query and return as a Model */
     @Override
     public default Model queryDescribe(String query) {
-        return queryDescribe(QueryFactory.create(query)) ;
+        return queryDescribe(QueryFactory.create(query));
     }
     
     /** Execute a DESCRIBE query and return as a Model */
@@ -158,15 +158,15 @@ public interface RDFConnection extends
         return 
             Txn.calculateRead(this, ()->{ 
                 try ( QueryExecution qExec = query(query) ) {
-                    return qExec.execDescribe() ;
+                    return qExec.execDescribe();
                 }
-            } ) ; 
+            } ); 
     }
     
     /** Execute a ASK query and return a boolean */
     @Override
     public default boolean queryAsk(String query) {
-        return queryAsk(QueryFactory.create(query)) ;
+        return queryAsk(QueryFactory.create(query));
     }
 
     /** Execute a ASK query and return a boolean */
@@ -175,9 +175,9 @@ public interface RDFConnection extends
         return 
             Txn.calculateRead(this, ()->{ 
                 try ( QueryExecution qExec = query(query) ) {
-                    return qExec.execAsk() ;
+                    return qExec.execAsk();
                 }
-            } ) ; 
+            } ); 
     }
 
     /** Setup a SPARQL query execution.
@@ -190,7 +190,7 @@ public interface RDFConnection extends
      * @return QueryExecution
      */
     @Override
-    public QueryExecution query(Query query) ;
+    public QueryExecution query(Query query);
 
     /** Setup a SPARQL query execution.
      * 
@@ -203,7 +203,7 @@ public interface RDFConnection extends
      */
     @Override
     public default QueryExecution query(String queryString) {
-        return query(QueryFactory.create(queryString)) ;
+        return query(QueryFactory.create(queryString));
     }
     
     // ---- SparqlUpdateConnection
@@ -214,7 +214,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void update(Update update) {
-        update(new UpdateRequest(update)) ;
+        update(new UpdateRequest(update));
     }
 
     /** Execute a SPARQL Update.
@@ -222,7 +222,7 @@ public interface RDFConnection extends
      * @param update
      */
     @Override
-    public void update(UpdateRequest update) ; 
+    public void update(UpdateRequest update); 
     
     /** Execute a SPARQL Update.
      * 
@@ -230,7 +230,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void update(String updateString) {
-        update(UpdateFactory.create(updateString)) ;
+        update(UpdateFactory.create(updateString));
     }
     
     // ---- RDFDatasetConnection
@@ -242,7 +242,7 @@ public interface RDFConnection extends
      * @param file File of the data.
      */
     @Override
-    public void load(String graphName, String file) ;
+    public void load(String graphName, String file);
     
     /** Load (add, append) RDF into the default graph of a dataset.
      * This is SPARQL Graph Store Protocol HTTP POST or equivalent. 
@@ -250,7 +250,7 @@ public interface RDFConnection extends
      * @param file File of the data.
      */
     @Override
-    public void load(String file) ;
+    public void load(String file);
 
     /** Load (add, append) RDF into a named graph in a dataset.
      * This is SPARQL Graph Store Protocol HTTP POST or equivalent. 
@@ -259,7 +259,7 @@ public interface RDFConnection extends
      * @param model Data.
      */
     @Override
-    public void load(String graphName, Model model) ;
+    public void load(String graphName, Model model);
     
     /** Load (add, append) RDF into the default graph of a dataset.
      * This is SPARQL Graph Store Protocol HTTP POST or equivalent. 
@@ -267,7 +267,7 @@ public interface RDFConnection extends
      * @param model Data.
      */
     @Override
-    public void load(Model model) ;
+    public void load(Model model);
 
     /** Set the contents of a named graph of a dataset.
      * Any existing data is lost. 
@@ -277,7 +277,7 @@ public interface RDFConnection extends
      * @param file File of the data.
      */
     @Override
-    public void put(String graphName, String file) ;
+    public void put(String graphName, String file);
     
     /** Set the contents of the default graph of a dataset.
      * Any existing data is lost. 
@@ -286,7 +286,7 @@ public interface RDFConnection extends
      * @param file File of the data.
      */
     @Override
-    public void put(String file) ;
+    public void put(String file);
         
     /** Set the contents of a named graph of a dataset.
      * Any existing data is lost. 
@@ -296,7 +296,7 @@ public interface RDFConnection extends
      * @param model Data.
      */
     @Override
-    public void put(String graphName, Model model) ;
+    public void put(String graphName, Model model);
     
     /** Set the contents of the default graph of a dataset.
      * Any existing data is lost. 
@@ -305,7 +305,7 @@ public interface RDFConnection extends
      * @param model Data.
      */
     @Override
-    public void put( Model model) ;
+    public void put( Model model);
         
     /**
      * Delete a graph from the dataset.
@@ -314,27 +314,27 @@ public interface RDFConnection extends
      * @param graphName
      */
     @Override
-    public void delete(String graphName) ;
+    public void delete(String graphName);
 
     /**
      * Remove all data from the default graph.
      */ 
     @Override
-    public void delete() ;
+    public void delete();
     
     /* Load (add, append) RDF triple or quad data into a dataset. Triples wil go into the default graph.
      * This is not a SPARQL Graph Store Protocol operation.
      * It is an HTTP POST equivalent to the dataset.
      */
     @Override
-    public void loadDataset(String file) ;
+    public void loadDataset(String file);
 
     /* Load (add, append) RDF triple or quad data into a dataset. Triples wil go into the default graph.
      * This is not a SPARQL Graph Store Protocol operation.
      * It is an HTTP POST equivalent to the dataset.
      */
     @Override
-    public void loadDataset(Dataset dataset) ;
+    public void loadDataset(Dataset dataset);
 
     /* Set RDF triple or quad data as the dataset contents.
      * Triples will go into the default graph, quads in named graphs.
@@ -342,7 +342,7 @@ public interface RDFConnection extends
      * It is an HTTP PUT equivalent to the dataset.
      */
     @Override
-    public void putDataset(String file) ;
+    public void putDataset(String file);
     
     /* Set RDF triple or quad data as the dataset contents.
      * Triples will go into the default graph, quads in named graphs.
@@ -350,18 +350,18 @@ public interface RDFConnection extends
      * It is an HTTP PUT equivalent to the dataset.
      */
     @Override
-    public void putDataset(Dataset dataset) ;
+    public void putDataset(Dataset dataset);
 
     //    /** Clear the dataset - remove all named graphs, clear the default graph. */
-    //    public void clearDataset() ;
+    //    public void clearDataset();
     
     
     /** Test whether this connection is closed or not */
     @Override
-    public boolean isClosed() ;
+    public boolean isClosed();
     
     /** Close this connection.  Use with try-resource. */ 
     @Override 
-    public void close() ;
+    public void close();
 }
 

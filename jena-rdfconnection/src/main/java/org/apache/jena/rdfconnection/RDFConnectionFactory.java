@@ -77,11 +77,36 @@ public class RDFConnectionFactory {
 
     /**
      * Connect to a local (same JVM) dataset.
+     * The default isolation is {@code NONE}. 
+     * See {@link #connect(Dataset, Isolation)} to select an isolation mode.
+     * 
      * @param dataset
      * @return RDFConnection
+     * @see RDFConnectionLocal
      */
     public static RDFConnection connect(Dataset dataset) {
         return new RDFConnectionLocal(dataset);
     }
-
+    
+    /**
+     * Connect to a local (same JVM) dataset.
+     * <p>
+     * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
+     * {@link RDFConnection} behave like a remote conenction.
+     * See <a href="https://jena.apache.org/documentation/rdfconnection/">the documentation for more details.</a>
+     * <ul>
+     * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied. 
+     *     This is most like a remote connection.
+     * <li>{@code READONLY} &ndash; Read-only wrappers are added but changes to
+     *     the underlying model or dataset will be seen.
+     * <li>{@code NONE} (default) &ndash; Changes to the returned {@code Model}s or {@code Dataset}s act on the original object.
+     * </ul>
+     * 
+     * @param dataset
+     * @param isolation
+     * @return RDFConnection
+     */
+    public static RDFConnection connect(Dataset dataset, Isolation isolation) {
+        return new RDFConnectionLocal(dataset, isolation);
+    }
 }

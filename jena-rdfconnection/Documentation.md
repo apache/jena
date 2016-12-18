@@ -18,8 +18,8 @@ Protocol</a>).
 data in Java.  It provides support for try-resource and functional code
 passing styles, as well the more basic sequence of methods calls.
 
-`try-resources` to manage the connection, and two operations, one to load
-some data, and one to make a query:
+For example: using `try-resources` to manage the connection, and perform two operations, one to load
+some data, and one to make a query can be written as:
 
 ```
 try ( RDFConnection conn = RDFConnectionFactory.connect(...) ) {
@@ -113,7 +113,7 @@ handled by the transaction pattern within a single JVM.
 ## Graph Store Protocol
 
 The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Graph
-Store Protocol</a> is a set of operations to work on whole graphs in a
+Store Protocol</a> (GSP) is a set of operations to work on whole graphs in a
 dataset.  It provides a standardised way to manage the data in a dataset.
 
 The operations are to fetch a graph, set the RDF data in a graph,
@@ -140,6 +140,23 @@ provided).
 ```
     conn.loadDataset("data-complete.trig") ;
 ```
+
+### Local vs Remote
+
+GSP operations work on while models and datasets. When used on a remote connection, 
+the result of a GSP operation is a separate copy of the remote RDF data.  When working
+with local connections, 3 isolations modes are available:
+
+* Copy &ndash; the models and datasets returned are independent copies.
+Updates are made to the return copy only. This is most like
+a remote connectionand is useful for testing.
+* Read-only &ndash; the models and datasets are made read-only but any changes
+to the underlying RDF data by changes by another route will be visible.
+This provides a form of checking for large datasets when "copy" is impractical.
+* None &ndash; the models and datasets are passed back with no additional wrappers
+and they can be updated with the changes being made the underlying dataset.
+
+The default for a local `RDFConnection` is "none".  
 
 ## Query Usage
 
