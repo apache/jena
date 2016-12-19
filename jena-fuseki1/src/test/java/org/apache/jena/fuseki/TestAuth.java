@@ -35,7 +35,9 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
@@ -46,7 +48,7 @@ import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
@@ -57,9 +59,7 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
+import org.junit.* ;
 import org.junit.Test ;
 
 /**
@@ -68,13 +68,14 @@ import org.junit.Test ;
 public class TestAuth {
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
+    
+    private static HttpClient defaultHttpClient;
     public static final int authPort             = ServerCtl.choosePort() ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
     public static final String authDatasetPath   = "/authDataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 
     public static final String authServiceQuery  = "http://localhost:"+authPort+authDatasetPath+"/query" ; 
     public static final String authServiceREST   = "http://localhost:"+authPort+authDatasetPath+"/data" ;
-
     
     private static File realmFile;
     private static SPARQLServer server;
@@ -85,7 +86,10 @@ public class TestAuth {
      */
     @BeforeClass
     public static void setup() throws IOException {
-        HttpOp.setDefaultHttpClient(null);
+        // Preserve the HttpClient setup.  
+        defaultHttpClient = HttpOp.getDefaultHttpClient();
+        HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient()) ;
+        
         realmFile = File.createTempFile("realm", ".properties");
 
         try(FileWriter writer = new FileWriter(realmFile)) {
@@ -114,6 +118,9 @@ public class TestAuth {
     public static void teardown() {
         server.stop();
         realmFile.delete();
+        // Restore the HttpClient setup.  
+        IO.close((CloseableHttpClient) HttpOp.getDefaultHttpClient()) ;
+        HttpOp.setDefaultHttpClient(defaultHttpClient);
     }
     
     private static HttpClient withCreds(String uname, String password) {
