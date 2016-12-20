@@ -24,7 +24,9 @@ import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
 import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
 import static org.apache.jena.fuseki.ServerCtl.urlRoot ;
+import static org.apache.jena.riot.web.HttpOp.initialDefaultHttpClient;
 
+import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.AbstractFusekiTest ;
@@ -46,6 +48,13 @@ public class TestHttpOp extends AbstractFusekiTest {
     static String updateURL         = serviceUpdate() ;
     
     static String simpleQuery = queryURL+"?query="+IRILib.encodeUriComponent("ASK{}") ;
+    
+    @Test public void correctDefaultResetBehavior() {
+        HttpClient defaultClient = HttpOp.getDefaultHttpClient();
+        HttpOp.setDefaultHttpClient(null);
+        assertSame("Failed to reset to initial client!", initialDefaultHttpClient, HttpOp.getDefaultHttpClient());
+        HttpOp.setDefaultHttpClient(defaultClient);
+    }
     
     // Basic operations
     

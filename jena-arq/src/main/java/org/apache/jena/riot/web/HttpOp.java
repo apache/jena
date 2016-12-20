@@ -101,8 +101,13 @@ public class HttpOp {
     /**
      * Default HttpClient.
      */
-    static private HttpClient defaultHttpClient = createDefaultHttpClient();
+    private static HttpClient defaultHttpClient = createDefaultHttpClient();
 
+    /**
+     * Used to reset {@link #defaultHttpClient} when needed
+     */
+    public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
+    
     public static HttpClient createDefaultHttpClient() {
         return createCachingHttpClient();
     }
@@ -172,16 +177,14 @@ public class HttpOp {
     }
 
     /**
-     * Performance can be improved by using a shared HttpClient that uses
-     * connection pooling. However, pool management is complicated and can lead
-     * to starvation (the system locks-up, especially on Java6; it's JVM
-     * sensitive).
-     * See the Apache Http Client documentation for more details.
+     * Performance can be improved by using a shared HttpClient that uses connection pooling. However, pool management
+     * is complicated and can lead to starvation (the system locks-up, especially on Java6; it's JVM sensitive). See the
+     * Apache HTTP Commons Client documentation for more details.
      * 
-     * @param httpClient HTTP Client
+     * @param client HTTP client to use, if this is null, reset to original default instead
      */
-    public static void setDefaultHttpClient(HttpClient httpClient) {
-        defaultHttpClient = httpClient;
+    public static void setDefaultHttpClient(HttpClient client) {
+        defaultHttpClient = firstNonNull(client, initialDefaultHttpClient);
     }
     
     /**
