@@ -18,13 +18,15 @@
 
 package org.apache.jena.atlas.lib;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream ;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /** Some functions that act on strings */
 public class StrUtils //extends StringUtils
@@ -33,32 +35,34 @@ public class StrUtils //extends StringUtils
     
     /** strjoin with a newline as the separator */
     public static String strjoinNL(String... args) {
-        return join("\n", args);
+        return String.join("\n", args);
     }
 
     /** strjoin with a newline as the separator */
     public static String strjoinNL(List<String> args) {
-        return join("\n", args);
+        return String.join("\n", args);
     }
 
-    /** Concatentate strings, using a separator */
+    /** 
+     * Concatentate strings, using a separator
+     * 
+     * @deprecated Prefer String.join(sep, args)
+     */
+    @Deprecated
     public static String strjoin(String sep, String... args) {
-        return join(sep, args);
+        return String.join(sep, args);
     }
 
-    /** Concatentate strings, using a separator */
+    /**
+     * Concatentate strings, using a separator
+     * 
+     * @deprecated Prefer String.join(sep, args)
+     */
+    @Deprecated
     public static String strjoin(String sep, List<String> args) {
-        return join(sep, args);
+        return String.join(sep, args);
     }
 
-    private static String join(String sep, List<String> a) {
-        return a.stream().collect(joining(sep));
-    }
-
-    private static String join(String sep, String... a) {
-        return stream(a).collect(joining(sep));
-    }
-    
     public static final int CMP_GREATER  = +1 ;
     public static final int CMP_EQUAL    =  0 ;
     public static final int CMP_LESS     = -1 ;
@@ -76,7 +80,7 @@ public class StrUtils //extends StringUtils
     }
     
     public static int strCompareIgnoreCase(String s1, String s2) {
-        // Value is the difference of the first differing chars
+        // x is the difference of the first differing chars
         int x = s1.compareToIgnoreCase(s2) ;
         if ( x < 0 ) return CMP_LESS ;
         if ( x > 0 ) return CMP_GREATER ;
@@ -85,17 +89,20 @@ public class StrUtils //extends StringUtils
     }
 
     public static byte[] asUTF8bytes(String s) {
-        try { return s.getBytes("UTF-8") ; }
-        catch (UnsupportedEncodingException ex)
-        { throw new InternalErrorException("UTF-8 not supported!") ; } 
+        return s.getBytes(UTF_8) ; 
     }
 
     public static String fromUTF8bytes(byte[] bytes) {
-        try { return new String(bytes, "UTF-8") ; }
-        catch (UnsupportedEncodingException ex)
-        { throw new InternalErrorException("UTF-8 not supported!") ; } 
+        return new String(bytes, UTF_8) ; 
     }
     
+    /**
+     * @param x
+     * @return &lt;null&gt; if x == null, otherwise, x.toString()
+     * 
+     * @deprecated prefer {@link Objects#toString(Object, String)} with "&lt;null&gt;" or just {@link Objects#toString(Object)} 
+     */
+    @Deprecated
     public static String str(Object x) {
         if ( x == null ) return "<null>" ;
         return x.toString() ;
@@ -135,9 +142,7 @@ public class StrUtils //extends StringUtils
     }
 
     public static String chop(String x) {
-        if ( x.length() == 0 )
-            return x ;
-        return x.substring(0, x.length() - 1) ;
+        return x.isEmpty() ? x : x.substring(0, x.length() - 1) ;
     }
 
     public static String noNewlineEnding(String x) {
