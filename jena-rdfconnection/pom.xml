@@ -48,9 +48,8 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
+      <artifactId>jena-arq</artifactId>
       <version>3.2.0-SNAPSHOT</version>
-      <type>pom</type>
     </dependency>
 
     <dependency>
@@ -147,16 +146,6 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>Documentation.md</exclude>
-            <exclude>README.*</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
     </plugins>
 
   </build>

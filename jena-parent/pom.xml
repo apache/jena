@@ -433,6 +433,7 @@
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/README.*</exclude>
             <exclude>**/META-INF/services/*</exclude>
             <!--
                 jena-core exclusions

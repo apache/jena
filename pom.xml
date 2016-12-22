@@ -72,8 +72,8 @@
         
         <module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module>
         <module>jena-rdfconnection</module>
+        <module>jena-tdb</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         
@@ -144,8 +144,8 @@
 
         <module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module>
         <module>jena-rdfconnection</module>
+        <module>jena-tdb</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
 
@@ -157,7 +157,6 @@
 
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
-        <module>jena-permissions</module>
 
         <!--
             Tests of artifacts that require additional 
@@ -166,6 +165,8 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
+
+        <module>jena-permissions</module>
 
         <module>jena-jdbc</module>
         <!-- Removed because this breaks the build after the 
