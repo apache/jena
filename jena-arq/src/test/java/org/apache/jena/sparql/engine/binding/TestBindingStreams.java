@@ -33,6 +33,7 @@ import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -84,6 +85,14 @@ public class TestBindingStreams extends BaseTest
     
     @Test public void bindingStream_10()        { testRead("VARS ?a ?b . 1 2 . * 9 .", b12, b19) ; }
     @Test public void bindingStream_11()        { testRead("VARS ?a ?b ?c . 1 2 - . * 9 - .", b12, b19) ; }
+    
+    @Test
+    public void bindingStream_12() {
+        BindingMap b = BindingFactory.create();
+        b.add(Var.alloc("a"), NodeConst.nodeTrue);
+        b.add(Var.alloc("c"), NodeConst.nodeFalse);
+        testRead("VARS ?a ?b ?c . true - false . ", b);
+    }
     
     @Test public void bindingStream_20()        { testRead("PREFIX : <http://example/> . VARS ?x .\n:abc  .\n- .", x10, b0) ; }
     
