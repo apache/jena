@@ -20,7 +20,6 @@ package org.apache.jena.riot.lang;
 
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.Lang ;
@@ -55,7 +54,7 @@ class ParserTestBaseLib {
 
     /** Parse strings to destination (checking on, URI resolution off) - convert errors and warning to ErrorHandlerEx */ 
     static void parse(Lang lang, StreamRDF dest, String... strings) {
-        String string = StrUtils.strjoin("\n", strings) ;
+        String string = String.join("\n", strings) ;
         StringReader reader = new StringReader(string) ;
         String baseIRI = "http://base/" ;
         ReaderRIOT r = RDFDataMgr.createReader(lang) ;

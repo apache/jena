@@ -19,7 +19,6 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.iri.IRIFactory ;
 import org.junit.Test ;
 
@@ -306,7 +305,7 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
             if (possible.equals(x))
                 return;
         }
-        fail("Expected one of " + StrUtils.strjoin(" , ", expected) + " but got " + x);
+        fail("Expected one of " + String.join(" , ", expected) + " but got " + x);
     }
 
     /**

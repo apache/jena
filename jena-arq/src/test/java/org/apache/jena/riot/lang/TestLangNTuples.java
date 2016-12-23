@@ -191,7 +191,7 @@ abstract public class TestLangNTuples extends BaseTest
 
     final protected void parseCheck(String... strings)
     {
-        String string = StrUtils.strjoin("\n", strings) ;
+        String string = String.join("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
         LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink) ;

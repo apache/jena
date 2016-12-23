@@ -36,7 +36,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor;
@@ -887,7 +886,7 @@ public abstract class JenaDriver implements Driver {
         baseProps.add(jdbcCompatLevel);
 
         // Pre-processors
-        DriverPropertyInfo preProcessor = new DriverPropertyInfo(PARAM_PRE_PROCESSOR, StrUtils.strjoin(",",
+        DriverPropertyInfo preProcessor = new DriverPropertyInfo(PARAM_PRE_PROCESSOR, String.join(",",
                 this.getValues(ps, PARAM_PRE_PROCESSOR)));
         preProcessor.description = "Configures pre-processors which are used to amend SPARQL text, queries or updates before these are passed to the underlying SPARQL engine, multiple fully qualified class names may be specified";
         preProcessor.required = false;

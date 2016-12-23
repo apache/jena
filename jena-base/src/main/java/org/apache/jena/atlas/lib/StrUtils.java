@@ -22,8 +22,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream ;
 import static java.util.stream.Collectors.toList;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,6 +44,8 @@ public class StrUtils //extends StringUtils
     /** 
      * Concatentate strings, using a separator
      * 
+     * This function will be removed - do not use.
+     * 
      * @deprecated Prefer String.join(sep, args)
      */
     @Deprecated
@@ -55,6 +55,8 @@ public class StrUtils //extends StringUtils
 
     /**
      * Concatentate strings, using a separator
+     * 
+     * This function will be removed - do not use.
      * 
      * @deprecated Prefer String.join(sep, args)
      */
@@ -99,13 +101,9 @@ public class StrUtils //extends StringUtils
     /**
      * @param x
      * @return &lt;null&gt; if x == null, otherwise, x.toString()
-     * 
-     * @deprecated prefer {@link Objects#toString(Object, String)} with "&lt;null&gt;" or just {@link Objects#toString(Object)} 
      */
-    @Deprecated
     public static String str(Object x) {
-        if ( x == null ) return "<null>" ;
-        return x.toString() ;
+        return Objects.toString(x, "<null>");
     }
 
     /** Split but also trim whiespace. */
