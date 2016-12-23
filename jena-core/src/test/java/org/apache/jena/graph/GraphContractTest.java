@@ -832,24 +832,9 @@ public class GraphContractTest<T extends Graph>  {
 			fail("addAllowed() threw Exception: " + e.toString());
 		}
 		try {
-			c.addAllowed(true);
-		} catch (Exception e) {
-			fail("addAllowed( boolean ) threw Exception: " + e.toString());
-		}
-		try {
 			c.deleteAllowed();
 		} catch (Exception e) {
 			fail("deleteAllowed() threw Exception: " + e.toString());
-		}
-		try {
-			c.deleteAllowed(true);
-		} catch (Exception e) {
-			fail("deleteAllowed( boolean ) threw Exception: " + e.toString());
-		}
-		try {
-			c.canBeEmpty();
-		} catch (Exception e) {
-			fail("canBeEmpty() threw Exception: " + e.toString());
 		}
 	}
 
@@ -1042,9 +1027,6 @@ public class GraphContractTest<T extends Graph>  {
 			assertFalse(g.contains(NodeCreateUtils.createTriple(findCheck)));
 		} catch (UnsupportedOperationException e) {
 			it.close();
-			assertFalse(
-					"delete failed but capailities indicates it should work", g
-							.getCapabilities().iteratorRemoveAllowed());
 		}
 	}
 
@@ -1103,59 +1085,6 @@ public class GraphContractTest<T extends Graph>  {
 		it.close();
 	}
 
-	// public void testStuff()
-	// {
-	// // testAGraph( "StoreMem", new GraphMem() );
-	// // testAGraph( "StoreMemBySubject", new GraphMem() );
-	// // String [] empty = new String [] {};
-	// // Graph g = graphWith( "x R y; p S q; a T b" );
-	// // /* */
-	// // assertContainsAll( "simple graph", g, "x R y; p S q; a T b" );
-	// // graphAdd( g,
-	// "spindizzies lift cities; Diracs communicate instantaneously" );
-	// // g.delete( triple( "x R y" ) );
-	// // g.delete( triple( "a T b" ) );
-	// // assertContainsAll( "modified simple graph", g,
-	// "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
-	// // assertOmitsAll( "modified simple graph", g, "x R y; a T b" );
-	// }
-
-	// /**
-	// Test that Graphs have transaction support methods, and that if they fail
-	// on some g they fail because they do not support the operation.
-	// */
-	// @ContractTest
-	// public void testHasTransactions()
-	// {
-	// Graph g = producer.newInstance();
-	// TransactionHandler th = g.getTransactionHandler();
-	// th.transactionsSupported();
-	// try { th.begin(); } catch (UnsupportedOperationException x) {}
-	// try { th.abort(); } catch (UnsupportedOperationException x) {}
-	// try { th.begin(); th.commit(); } catch (UnsupportedOperationException x)
-	// {}
-	// /* */
-	// Command cmd = new Command()
-	// { @Override
-	// public Object execute() { return null; } };
-	// try { th.executeInTransaction( cmd ); }
-	// catch (UnsupportedOperationException x) {}
-	// }
-	//
-	// @ContractTest
-	// public void testExecuteInTransactionCatchesThrowable()
-	// {Graph g = producer.newInstance();
-	// TransactionHandler th = g.getTransactionHandler();
-	// if (th.transactionsSupported())
-	// {
-	// Command cmd = new Command()
-	// { @Override
-	// public Object execute() throws Error { throw new Error(); } };
-	// try { th.executeInTransaction( cmd ); }
-	// catch (JenaException x) {}
-	// }
-	// }
-
 	@ContractTest
 	public void testAddWithReificationPreamble() {
 		Graph g = producer.newInstance();
@@ -1183,28 +1112,26 @@ public class GraphContractTest<T extends Graph>  {
 
 	@ContractTest
 	public void failingTestDoubleRemoveAll() {
-		final Graph g = producer.newInstance();
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				graphAddTxn(g, "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'");
-				Iterator<Triple> it = new TrackingTripleIterator(
-						g.find(Triple.ANY)) {
-					@Override
-					public void remove() {
-						super.remove(); // removes current
-						g.delete(current); // no-op.
-					}
-				};
-				while (it.hasNext()) {
-					it.next();
-					it.remove();
-				}
-				assertTrue(g.isEmpty());
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
-		}
+	    final Graph g = producer.newInstance();
+	    try {
+	        graphAddTxn(g, "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'");
+	        Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)) {
+	            @Override
+	            public void remove() {
+	                super.remove(); // removes current
+	                g.delete(current); // no-op.
+	            }
+	        };
+	        while (it.hasNext()) {
+	            it.next();
+	            it.remove();
+	        }
+	        assertTrue(g.isEmpty());
+	    } catch (UnsupportedOperationException e) {
+	        // No Iterator.remove
+	    }
 	}
+
 
 	/**
 	 * Test cases for RemoveSPO(); each entry is a triple (add, remove, result).
@@ -1374,25 +1301,23 @@ public class GraphContractTest<T extends Graph>  {
 	 */
 	@ContractTest
 	public void testIterator_Remove() {
-		Graph graph = graphWith(producer.newInstance(), "a R b; b S e");
-		if (graph.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				graph.getEventManager().register(GL);
-				txnBegin(graph);
+	    Graph graph = graphWith(producer.newInstance(), "a R b; b S e");
+	    try {
+	        graph.getEventManager().register(GL);
+	        txnBegin(graph);
 
-				Triple toRemove = triple("a R b");
-				ExtendedIterator<Triple> rtr = graph.find(toRemove);
-				assertTrue("ensure a(t least) one triple", rtr.hasNext());
-				rtr.next();
-				rtr.remove();
-				rtr.close();
-				GL.assertHas("delete", graph, toRemove);
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
-
-		}
+	        Triple toRemove = triple("a R b");
+	        ExtendedIterator<Triple> rtr = graph.find(toRemove);
+	        assertTrue("ensure a(t least) one triple", rtr.hasNext());
+	        rtr.next();
+	        rtr.remove();
+	        rtr.close();
+	        GL.assertHas("delete", graph, toRemove);
+	    } catch (UnsupportedOperationException e) {
+	        // No Iterator.remove
+	    }
 	}
+
 
 	@ContractTest
 	public void testTransactionHandler_Commit() {
@@ -1563,16 +1488,14 @@ public class GraphContractTest<T extends Graph>  {
 
 	@ContractTest
 	public void testSizeAfterRemove() {
-		Graph g = graphWith(producer.newInstance(), "x p y");
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				ExtendedIterator<Triple> it = g.find(triple("x ?? ??"));
-				it.removeNext();
-				assertEquals(0, g.size());
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
-		}
+	    Graph g = graphWith(producer.newInstance(), "x p y");
+	    try {
+	        ExtendedIterator<Triple> it = g.find(triple("x ?? ??"));
+	        it.removeNext();
+	        assertEquals(0, g.size());
+	    } catch (UnsupportedOperationException e) {
+	        // No Iterator.remove
+	    }
 	}
 
 	@ContractTest
@@ -1664,66 +1587,57 @@ public class GraphContractTest<T extends Graph>  {
 
 	@ContractTest
 	public void testBrokenIndexes() {
-		Graph g = graphWith(producer.newInstance(), "x R y; x S z");
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
-						Node.ANY);
-				it.removeNext();
-				it.removeNext();
-				assertFalse(g.find(node("x"), Node.ANY, Node.ANY).hasNext());
-				assertFalse(g.find(Node.ANY, node("R"), Node.ANY).hasNext());
-				assertFalse(g.find(Node.ANY, Node.ANY, node("y")).hasNext());
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
-		}
+	    Graph g = graphWith(producer.newInstance(), "x R y; x S z");
+	    try {
+	        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
+	                                             Node.ANY);
+	        it.removeNext();
+	        it.removeNext();
+	        assertFalse(g.find(node("x"), Node.ANY, Node.ANY).hasNext());
+	        assertFalse(g.find(Node.ANY, node("R"), Node.ANY).hasNext());
+	        assertFalse(g.find(Node.ANY, Node.ANY, node("y")).hasNext());
+	    } catch (UnsupportedOperationException e) {
+	        // No Iterator.remove
+	    }
 	}
 
 	@ContractTest
 	public void testBrokenSubject() {
 		Graph g = graphWith(producer.newInstance(), "x brokenSubject y");
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY,
-						Node.ANY);
-				it.removeNext();
-				assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
+		try {
+		    ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY, Node.ANY);
+		    it.removeNext();
+		    assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+		} catch (UnsupportedOperationException e) {
+		    // No Iterator.remove
 		}
 	}
 
 	@ContractTest
 	public void testBrokenPredicate() {
 		Graph g = graphWith(producer.newInstance(), "x brokenPredicate y");
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				ExtendedIterator<Triple> it = g.find(Node.ANY,
-						node("brokenPredicate"), Node.ANY);
-				it.removeNext();
-				assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
+		try {
+		    ExtendedIterator<Triple> it = g.find(Node.ANY, node("brokenPredicate"), Node.ANY);
+		    it.removeNext();
+		    assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+		} catch (UnsupportedOperationException e) {
+		    // No Iterator.remove
 		}
 	}
 
 	@ContractTest
 	public void testBrokenObject() {
-		Graph g = graphWith(producer.newInstance(), "x brokenObject y");
-		if (g.getCapabilities().iteratorRemoveAllowed()) {
-			try {
-				ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
-						node("y"));
-				it.removeNext();
-				assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+	    Graph g = graphWith(producer.newInstance(), "x brokenObject y");
 
-			} catch (UnsupportedOperationException e) {
-				fail("Error attempting to remove nodes " + e.getMessage());
-			}
-		}
+	    try {
+	        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, node("y"));
+	        it.removeNext();
+	        assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+
+	    } catch (UnsupportedOperationException e) {
+	        // No Iterator.remove
+	    }
+
 	}
 
 }

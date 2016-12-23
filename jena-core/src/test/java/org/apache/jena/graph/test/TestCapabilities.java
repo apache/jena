@@ -90,13 +90,7 @@ public class TestCapabilities extends GraphTestBase
         Capabilities c = new AllFalse();
         boolean b = false;
         b = c.addAllowed();
-        b = c.addAllowed( true );
-        b = c.canBeEmpty();
         b = c.deleteAllowed();
-        b = c.deleteAllowed( false );
         b = c.sizeAccurate();
-        b = c.iteratorRemoveAllowed();
-        b = c.findContractSafe();
-        b = c.handlesLiteralTyping();
         }
     }

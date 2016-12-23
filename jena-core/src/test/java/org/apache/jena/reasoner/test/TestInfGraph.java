@@ -52,13 +52,4 @@ public class TestInfGraph extends AbstractTestGraph
         InfGraph ig = getInfGraph();
         assertSame( ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
         }
-    
-    /**
-         Placeholder. Will need revision later.
-    */
-    public void testInfCapabilities()
-        {
-        // The default Ontology inference model is RDFS which is safe
-        assertTrue( getInfGraph().getCapabilities().findContractSafe() );
-        }
     }

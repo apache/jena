@@ -43,10 +43,8 @@ public class SecuredModelDetailTest {
 	private Model baseModel;
 	private SecuredModel securedModel;
 	private DetailEvaluator secEval;
-	private Property pTo = ResourceFactory
-			.createProperty("http://example.com/to");
-	private Property pFrom = ResourceFactory
-			.createProperty("http://example.com/from");
+	private static Property pTo = ResourceFactory.createProperty("http://example.com/to");
+	private static Property pFrom = ResourceFactory.createProperty("http://example.com/from");
 
 	@Before
 	public void setup() {
@@ -273,12 +271,7 @@ public class SecuredModelDetailTest {
 
 		private Principal principal;
 		private Model model;
-		private RDFNode msgType = ResourceFactory
-				.createResource("http://example.com/msg");
-        private Property pTo = ResourceFactory
-				.createProperty("http://example.com/to");
-        private Property pFrom = ResourceFactory
-				.createProperty("http://example.com/from");
+		private RDFNode msgType = ResourceFactory.createResource("http://example.com/msg");
 
 		/**
 		 * 

@@ -81,26 +81,30 @@ public class RandomOrderGraph extends WrappedGraph {
 			return parentCapabilities.addAllowed();
 		}
 
-		@Override
+        @Override
+        public boolean deleteAllowed() {
+            return parentCapabilities.deleteAllowed();
+        }
+
+		@SuppressWarnings("deprecation")
+        @Override
         public boolean addAllowed(boolean everyTriple) {
 			return parentCapabilities.addAllowed(everyTriple);
 		}
 
-		@Override
-        public boolean deleteAllowed() {
-			return parentCapabilities.deleteAllowed();
-		}
-
+        @SuppressWarnings("deprecation")
 		@Override
         public boolean deleteAllowed(boolean everyTriple) {
 			return parentCapabilities.deleteAllowed(everyTriple);
 		}
 
+        @SuppressWarnings("deprecation")
 		@Override
         public boolean canBeEmpty() {
 			return parentCapabilities.canBeEmpty();
 		}
 
+        @SuppressWarnings("deprecation")
 		@Override
         public boolean findContractSafe() {
 			return parentCapabilities.findContractSafe();
