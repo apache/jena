@@ -53,7 +53,7 @@ public class NodeIdFactory
         NodeIdTypes type = NodeIdTypes.intToEnum(t);
         if ( type == NodeIdTypes.SPECIAL )
             throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
-        return new NodeId(type, 0, v2);
+        return NodeId.createRaw(type, v2);
     }
     
     // Long create.
@@ -91,7 +91,7 @@ public class NodeIdFactory
     }
     
     private static NodeId createNew(NodeIdTypes type, int v1, long v2) {
-        return new NodeId(type, v1, v2);
+        return NodeId.createRaw(type, v1, v2);
     }
 
     public static NodeId createPtr(long lo) {

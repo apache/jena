@@ -35,6 +35,7 @@ public enum NodeIdTypes {
     XSD_FLOAT(T_FLOAT, "Float"),
     XSD_DOUBLE(T_DOUBLE, "Double"),
     XSD_DATETIME(T_DATETIME, "DateTime"),
+    XSD_DATETIMESTAMP(T_DATETIMESTAMP, "DateTimeStamp"),
     XSD_DATE(T_DATE, "Date"),
     XSD_BOOLEAN(T_BOOLEAN, "Boolean"),
     XSD_SHORTSTRING(T_SHORTSTRING, "ShortString"),
@@ -45,7 +46,7 @@ public enum NodeIdTypes {
     // postive and zero
     XSD_NON_NEGATIVE_INTEGER(T_NON_NEGATIVE_INTEGER, "Non-negative Integer"),
     // negative or zero
-    XSD_NON_POSTIVE_INTEGER(T_NON_POSTIVE_INTEGER, "Non-positive Integer"),
+    XSD_NON_POSITIVE_INTEGER(T_NON_POSITIVE_INTEGER, "Non-positive Integer"),
     XSD_LONG(T_LONG, "Long"),
     XSD_INT(T_INT, "Int"),
     XSD_SHORT(T_SHORT, "Short"),
@@ -77,22 +78,23 @@ public enum NodeIdTypes {
         public static final int T_DOUBLE = enc(4);
         
         public static final int T_DATETIME = enc(5);
-        public static final int T_DATE = enc(6);
-        public static final int T_BOOLEAN = enc(7);
-        public static final int T_SHORTSTRING = enc(8);
+        public static final int T_DATETIMESTAMP = enc(6);
+        public static final int T_DATE = enc(7);
+        public static final int T_BOOLEAN = enc(8);
+        public static final int T_SHORTSTRING = enc(9);
         
-        public static final int T_POSITIVE_INTEGER = enc(9);
-        public static final int T_NEGATIVE_INTEGER = enc(10);
-        public static final int T_NON_NEGATIVE_INTEGER = enc(11);
-        public static final int T_NON_POSTIVE_INTEGER = enc(12);
-        public static final int T_LONG = enc(13);
-        public static final int T_INT = enc(14);
-        public static final int T_SHORT = enc(15);
-        public static final int T_BYTE = enc(16);
-        public static final int T_UNSIGNEDLONG = enc(17);
-        public static final int T_UNSIGNEDINT = enc(18);
-        public static final int T_UNSIGNEDSHORT = enc(19);
-        public static final int T_UNSIGNEDBYTE = enc(20);
+        public static final int T_POSITIVE_INTEGER = enc(10);
+        public static final int T_NEGATIVE_INTEGER = enc(11);
+        public static final int T_NON_NEGATIVE_INTEGER = enc(12);
+        public static final int T_NON_POSITIVE_INTEGER = enc(13);
+        public static final int T_LONG = enc(14);
+        public static final int T_INT = enc(15);
+        public static final int T_SHORT = enc(16);
+        public static final int T_BYTE = enc(17);
+        public static final int T_UNSIGNEDLONG = enc(18);
+        public static final int T_UNSIGNEDINT = enc(19);
+        public static final int T_UNSIGNEDSHORT = enc(20);
+        public static final int T_UNSIGNEDBYTE = enc(21);
         
         // Never stored : >= 0xF0 == enc(0x70)
         public static final int T_SPECIAL = enc(0x70);
@@ -114,7 +116,7 @@ public enum NodeIdTypes {
             case XSD_POSITIVE_INTEGER:
             case XSD_NEGATIVE_INTEGER:
             case XSD_NON_NEGATIVE_INTEGER:
-            case XSD_NON_POSTIVE_INTEGER:
+            case XSD_NON_POSITIVE_INTEGER:
             case XSD_LONG:
             case XSD_INT:
             case XSD_SHORT:
@@ -141,6 +143,7 @@ public enum NodeIdTypes {
             case XSD_FLOAT:
                 
             case XSD_DATETIME:
+            case XSD_DATETIMESTAMP:
             case XSD_DATE:
             case XSD_BOOLEAN:
             case XSD_SHORTSTRING:
@@ -148,7 +151,7 @@ public enum NodeIdTypes {
             case XSD_POSITIVE_INTEGER:
             case XSD_NEGATIVE_INTEGER:
             case XSD_NON_NEGATIVE_INTEGER:
-            case XSD_NON_POSTIVE_INTEGER:
+            case XSD_NON_POSITIVE_INTEGER:
             case XSD_LONG:
             case XSD_INT:
             case XSD_SHORT:
@@ -214,14 +217,19 @@ public enum NodeIdTypes {
         if (x == XSD_DECIMAL.value )                return XSD_DECIMAL ;
         if (x == XSD_FLOAT.value )                  return XSD_FLOAT ;
         if (x == XSD_DOUBLE.value )                 return XSD_DOUBLE ;
+        
         if (x == XSD_DATETIME.value )               return XSD_DATETIME ;
+        if (x == XSD_DATETIMESTAMP.value )          return XSD_DATETIMESTAMP ;
         if (x == XSD_DATE.value )                   return XSD_DATE ;
+
         if (x == XSD_BOOLEAN.value )                return XSD_BOOLEAN ;
         if (x == XSD_SHORTSTRING.value )            return XSD_SHORTSTRING ;
+        
         if (x == XSD_POSITIVE_INTEGER.value )       return XSD_POSITIVE_INTEGER;
         if (x == XSD_NEGATIVE_INTEGER.value )       return XSD_NEGATIVE_INTEGER ;
         if (x == XSD_NON_NEGATIVE_INTEGER.value )   return XSD_NON_NEGATIVE_INTEGER ;
-        if (x == XSD_NON_POSTIVE_INTEGER.value )    return XSD_NON_POSTIVE_INTEGER ;
+        if (x == XSD_NON_POSITIVE_INTEGER.value )   return XSD_NON_POSITIVE_INTEGER ;
+        
         if (x == XSD_LONG.value )                   return XSD_LONG ;
         if (x == XSD_INT.value )                    return XSD_INT ;
         if (x == XSD_SHORT.value )                  return XSD_SHORT ;

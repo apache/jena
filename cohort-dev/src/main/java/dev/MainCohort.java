@@ -18,15 +18,21 @@
 package dev;
 
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.sse.SSE;
 import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.NodeIdFactory;
+import org.seaborne.tdb2.store.NodeIdInline;
 import org.seaborne.tdb2.store.NodeIdTypes;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
     
     public static void main(String... args) {
-        NodeId nid = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, 1);
+        Node n = SSE.parseNode("'15'^^xsd:byte");
+        
+        
+        NodeId nid = NodeIdInline.inline(n);
         System.out.println("Node id = "+nid);
         
         byte[] b = new byte[8];

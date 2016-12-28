@@ -75,10 +75,10 @@ public class TestNodeId
     
     @Test public void nodeId_codec_01() { testCodecArray(NodeIdFactory.createPtr(37)); }
     
-    @Test public void nodeId_codec_02() { testCodecArray(NodeId.createValue(NodeIdTypes.XSD_INTEGER, 1)); }
+    @Test public void nodeId_codec_02() { testCodecArray(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, 1)); }
     
     // 56 bit -1.
-    @Test public void nodeId_codec_03() { testCodecArray(NodeId.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
+    @Test public void nodeId_codec_03() { testCodecArray(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_04() { testCodecArray("12.34"); }
     
@@ -103,9 +103,9 @@ public class TestNodeId
     
     @Test public void nodeId_codec_11() { testCodecBuffer(NodeIdFactory.createPtr(37)); }
     
-    @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createValue(NodeIdTypes.XSD_INTEGER, 1)); }
+    @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, 1)); }
     
-    @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
+    @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_14() { testCodecBuffer("12.34"); }
     

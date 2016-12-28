@@ -18,26 +18,32 @@
 package org.seaborne.tdb2.store;
 
 import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_BOOLEAN;
+import static org.seaborne.tdb2.store.NodeIdTypes.*;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATE;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATETIME;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DECIMAL;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_FLOAT;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_INTEGER;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.ext.com.google.common.collect.BiMap;
+import org.apache.jena.ext.com.google.common.collect.HashBiMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.seaborne.tdb2.TDBException;
-import org.seaborne.tdb2.store.value.*;
+import org.seaborne.tdb2.store.value.DateTimeNode;
+import org.seaborne.tdb2.store.value.DecimalNode56;
+import org.seaborne.tdb2.store.value.FloatNode;
+import org.seaborne.tdb2.store.value.IntegerNode;
 
 public class NodeIdInline {
 //    public static NodeId_Long inlineInteger(long v) { return null; }
@@ -49,27 +55,52 @@ public class NodeIdInline {
 //    public static NodeId_Long inlineBoolean(boolean bool) { return null; }
     
     /** Datatypes that are candidates for inlining */ 
-    private static RDFDatatype[] datatypes = { 
-        XSDDatatype.XSDdecimal,
-        XSDDatatype.XSDinteger,
-        
+    private static Set<RDFDatatype> datatypes = new HashSet<>();
+    static { 
+        datatypes.add(XSDDatatype.XSDdecimal);
+        datatypes.add(XSDDatatype.XSDinteger);
+        // 64 bit
 //        XSDDatatype.XSDdouble,
-        XSDDatatype.XSDfloat,
+        datatypes.add(XSDDatatype.XSDfloat);
+
+        datatypes.add(XSDDatatype.XSDlong);
+        datatypes.add(XSDDatatype.XSDint);
+        datatypes.add(XSDDatatype.XSDshort);
+        datatypes.add(XSDDatatype.XSDbyte);
         
-        XSDDatatype.XSDlong,
-        XSDDatatype.XSDint,
-        XSDDatatype.XSDshort,
-        XSDDatatype.XSDbyte,
-        
-        XSDDatatype.XSDunsignedLong,
-        XSDDatatype.XSDunsignedInt,
-        XSDDatatype.XSDunsignedShort,
-        XSDDatatype.XSDunsignedByte,
-        
-        XSDDatatype.XSDdateTime,
-        XSDDatatype.XSDdate,
-        XSDDatatype.XSDboolean
+        datatypes.add(XSDDatatype.XSDpositiveInteger);
+        datatypes.add(XSDDatatype.XSDnonPositiveInteger);
+        datatypes.add(XSDDatatype.XSDnegativeInteger);
+        datatypes.add(XSDDatatype.XSDnonNegativeInteger);
+
+        datatypes.add(XSDDatatype.XSDunsignedLong);
+        datatypes.add(XSDDatatype.XSDunsignedInt);
+        datatypes.add(XSDDatatype.XSDunsignedShort);
+        datatypes.add(XSDDatatype.XSDunsignedByte);
+        datatypes.add(XSDDatatype.XSDdateTimeStamp);
+        datatypes.add(XSDDatatype.XSDdateTime);
+        datatypes.add(XSDDatatype.XSDdate);
+        datatypes.add(XSDDatatype.XSDboolean);
     };
+    
+    // Integer derived types. 
+    private static BiMap<RDFDatatype, NodeIdTypes> derivedTypeMap = HashBiMap.create();
+    static {
+        derivedTypeMap.put(XSDDatatype.XSDlong, NodeIdTypes.XSD_LONG);
+        derivedTypeMap.put(XSDDatatype.XSDint, NodeIdTypes.XSD_INT);
+        derivedTypeMap.put(XSDDatatype.XSDshort, NodeIdTypes.XSD_SHORT);
+        derivedTypeMap.put(XSDDatatype.XSDbyte, NodeIdTypes.XSD_BYTE);
+        
+        derivedTypeMap.put(XSDDatatype.XSDpositiveInteger, NodeIdTypes.XSD_POSITIVE_INTEGER);
+        derivedTypeMap.put(XSDDatatype.XSDnonPositiveInteger, NodeIdTypes.XSD_NON_POSITIVE_INTEGER);
+        derivedTypeMap.put(XSDDatatype.XSDnegativeInteger, NodeIdTypes.XSD_NEGATIVE_INTEGER);
+        derivedTypeMap.put(XSDDatatype.XSDnonNegativeInteger, NodeIdTypes.XSD_NON_NEGATIVE_INTEGER);
+        
+        derivedTypeMap.put(XSDDatatype.XSDunsignedLong, NodeIdTypes.XSD_UNSIGNEDLONG);
+        derivedTypeMap.put(XSDDatatype.XSDunsignedInt, NodeIdTypes.XSD_UNSIGNEDINT);
+        derivedTypeMap.put(XSDDatatype.XSDunsignedShort, NodeIdTypes.XSD_UNSIGNEDSHORT);     
+        derivedTypeMap.put(XSDDatatype.XSDunsignedByte, NodeIdTypes.XSD_UNSIGNEDBYTE);
+    }
     
     // ---- Encoding special - inlines.
     /* TDB1 encoding:
@@ -77,8 +108,9 @@ public class NodeIdInline {
      * 8 bits of type
      * 56 bits of value
      * 
-     *  Type 0 means the node is in the object table.
-     *  Types 1+ store the value of the node in the 56 bits remaining.
+     * TDB2 encoding
+     *  High bit 0 means the node is in the object table (PTR).
+     *  High bit 1, 7 bit type, means store the value of the node in the remaining 56 or 88 bits remaining.
      *  
      *  If a value would not fit, it will be stored externally so there is no
      *  guarantee that all integers, say, are store inline. 
@@ -153,28 +185,31 @@ public class NodeIdInline {
             // null is "does not fit"
             if ( dn != null )
                 // setType
-                return NodeId.createValue(XSD_DECIMAL, dn.pack());
+                return NodeId.createRaw(XSD_DECIMAL, dn.pack());
             else
                 return null;
         } else { 
             // Not decimal.
             if ( XSDDatatype.XSDinteger.isValidLiteral(lit) ) {
-                // XXX
                 // Check length of lexical form to see if it's in range of a long.
                 // Long.MAX_VALUE =  9223372036854775807
                 // Long.MIN_VALUE = -9223372036854775808
                 // 9,223,372,036,854,775,807 is 19 digits.
                 
+                // Quick check.
                 if ( lit.getLexicalForm().length() > 19 )
                     return null;
     
+                // Derived types.
+                NodeIdTypes type = derivedTypeMap.getOrDefault(lit.getDatatype(), NodeIdTypes.XSD_INTEGER);
+                
                 try {
                     long v = ((Number)lit.getValue()).longValue();
                     v = IntegerNode.pack56(v);
                     // Value -1 is "does not fit"
                     if ( v == -1 )
                         return null;
-                    return NodeId.createValue(XSD_INTEGER, v);
+                    return NodeId.createRaw(type, v);
                 }
                 // Out of range for the type, not a long etc etc.
                 catch (Throwable ex) { return null; }
@@ -190,23 +225,29 @@ public class NodeIdInline {
         if ( XSDDatatype.XSDfloat.isValidLiteral(lit) ) {
             float f =  ((Number)lit.getValue()).floatValue();
             long v = FloatNode.pack(f);
-            return NodeId.createValue(XSD_FLOAT, v);
+            return NodeId.createRaw(XSD_FLOAT, v);
         }
         
+        if ( lit.getDatatype().equals(XSDDatatype.XSDdateTimeStamp) && XSDDatatype.XSDdateTimeStamp.isValidLiteral(lit) ) {
+            long v = DateTimeNode.packDateTime(lit.getLexicalForm());
+            if ( v == -1 )
+                return null; 
+            return NodeId.createRaw(XSD_DATETIMESTAMP, v);
+        }
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) {
             // Could use the Jena/XSDDateTime object here rather than reparse the lexical form.
             // But this works and it's close to a release ... 
             long v = DateTimeNode.packDateTime(lit.getLexicalForm());
             if ( v == -1 )
                 return null; 
-            return NodeId.createValue(XSD_DATETIME, v);
+            return NodeId.createRaw(XSD_DATETIME, v);
         }
         
         if ( XSDDatatype.XSDdate.isValidLiteral(lit) ) {
             long v = DateTimeNode.packDate(lit.getLexicalForm());
             if ( v == -1 )
                 return null;
-            return NodeId.createValue(XSD_DATE, v);
+            return NodeId.createRaw(XSD_DATE, v);
         }
     
         if ( XSDDatatype.XSDboolean.isValidLiteral(lit) ) {
@@ -215,7 +256,7 @@ public class NodeIdInline {
             // return new NodeValueBoolean(b, node);
             if ( b )
                 v = v | 0x01;
-            return NodeId.createValue(XSD_BOOLEAN, v);
+            return NodeId.createRaw(XSD_BOOLEAN, v);
         }
         
         return null;
@@ -232,17 +273,12 @@ public class NodeIdInline {
         switch (type) {
 //            case PTR:       return null;
 //            case SPECIAL:   return null;
-                
-            // Double
-            // Float
-            // Derived
-            
             case XSD_INTEGER :
-                // Derived types.
+                // Derived from integer
             case XSD_POSITIVE_INTEGER:
             case XSD_NEGATIVE_INTEGER:
             case XSD_NON_NEGATIVE_INTEGER:
-            case XSD_NON_POSTIVE_INTEGER:
+            case XSD_NON_POSITIVE_INTEGER:
             case XSD_LONG:
             case XSD_INT:
             case XSD_SHORT:
@@ -253,7 +289,8 @@ public class NodeIdInline {
             case XSD_UNSIGNEDBYTE:
             {
                 long val = IntegerNode.unpack56(nodeId.value2);
-                Node n = NodeFactory.createLiteral(Long.toString(val), XSDDatatype.XSDinteger);
+                RDFDatatype dt = derivedTypeMap.inverse().getOrDefault(type, XSDDatatype.XSDinteger);
+                Node n = NodeFactory.createLiteral(Long.toString(val), dt);
                 return n;
             }
             case XSD_DECIMAL : {
@@ -272,10 +309,12 @@ public class NodeIdInline {
                 Node n = NodeFactory.createLiteral(Float.toString(f), XSDDatatype.XSDfloat);
                 return n ;
             }
-            case XSD_DATETIME : {
+            case XSD_DATETIMESTAMP:
+            case XSD_DATETIME: {
+                RDFDatatype dt = (type==XSD_DATETIMESTAMP) ? XSDDatatype.XSDdateTimeStamp : XSDDatatype.XSDdateTime; 
                 long val = nodeId.getValue2();
                 String lex = DateTimeNode.unpackDateTime(val);
-                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime);
+                return NodeFactory.createLiteral(lex, dt);
             }
             case XSD_DATE : {
                 long val = nodeId.getValue2();

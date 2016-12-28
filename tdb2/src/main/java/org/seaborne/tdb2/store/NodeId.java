@@ -74,7 +74,7 @@ public class NodeId implements Comparable<NodeId>
     final int  value1;
     final long value2;
     
-    /* package */ NodeId(NodeIdTypes type, int v1, long v2) {
+    private NodeId(NodeIdTypes type, int v1, long v2) {
         if ( CHECKING ) check(type, v1, v2);
         this.type = type;
         value1 = v1;    // Zero for 64 bit.
@@ -82,15 +82,15 @@ public class NodeId implements Comparable<NodeId>
     }
 
     private final void check(NodeIdTypes type, int v1, long v2) {
-            if ( type == SPECIAL )
-                return;
-            // Long
-            //    int x = BitsInt.unpack(v1, 24, 32); // Hibyte
-            // 64 bit.
-            int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
-            if ( x != 0 )
-                FmtLog.warn(getClass(), "Type byte set in long: type=%s value=%016X", type, v2);
-        }
+        if ( type == SPECIAL )
+            return;
+        // Long
+        //    int x = BitsInt.unpack(v1, 24, 32); // Hibyte
+        // 64 bit.
+        int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
+        if ( x != 0 )
+            FmtLog.warn(getClass(), "Type byte set in long: type=%s value=%016X", type, v2);
+    }
 
     public boolean isPtr() { return type == PTR; }
     
@@ -162,33 +162,14 @@ public class NodeId implements Comparable<NodeId>
 //        NodeIdTypes type = NodeIdTypes.intToEnum(t);
 //        return create(type, v1, v2);
 //    }
-//    
-//    // XXX Chance for a cache?
-//    private static NodeId create(NodeIdTypes type, int v1, long v2) {
-//        if ( isSpecial(type) ) {
-//            if ( equals(NodeDoesNotExist, v1, v2) )
-//                return NodeDoesNotExist;
-//            if ( equals(NodeIdAny, v1, v2) )
-//                return NodeIdAny;
-//            if ( equals(NodeIdDefined, v1, v2) )
-//                return NodeIdDefined;
-//            if ( equals(NodeIdDefined, v1, v2) )
-//                return NodeIdDefined;
-//            if ( equals(NodeIdUndefined, v1, v2) )
-//                return NodeIdUndefined;
-//
-//            throw new IllegalArgumentException("Special not recognized");
-//        }
-//        return new NodeId(type, v1, v2);
-//    }
-//    
+
     /** Create from a long-encoded value */
-    /*package*/ static NodeId createValue(NodeIdTypes type, long value) {
+    /*package*/ static NodeId createRaw(NodeIdTypes type, long value) {
         return new NodeId(type, 0, value);
     }
 
     /** Create from a (int,long)-encoded value */
-    private static NodeId createValue(NodeIdTypes type, int value1, long value2) {
+    /*package*/ static NodeId createRaw(NodeIdTypes type, int value1, long value2) {
         return new NodeId(type, value1, value2);
     }
 

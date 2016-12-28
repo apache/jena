@@ -35,7 +35,7 @@ public class TestNodeIdInline
     { test("2") ; }
 
     @Test public void nodeId_int_03()
-    { test("'3'^^xsd:int", "3") ; }
+    { test("'3'^^xsd:int") ; }
 
     @Test public void nodeId_int_04()
     { testNoInline("'3'") ; }
@@ -80,8 +80,10 @@ public class TestNodeIdInline
     }
 
     @Test public void nodeId_int_20()
-    { testNoInline("'300'^^xsd:byte") ; }
+    { test("'30'^^xsd:positiveInteger") ; }
     
+    @Test public void nodeId_int_21()
+    { testNoInline("'300'^^xsd:byte") ; }
 
     @Test public void nodeId_decimal_1()
     { test("3.14", "3.14") ; }
@@ -171,6 +173,10 @@ public class TestNodeIdInline
     @Test public void nodeId_dateTime_18()
     { test("'2012-07-29T20:39:11.100Z'^^xsd:dateTime", "'2012-07-29T20:39:11.1Z'^^xsd:dateTime") ; }
 
+    @Test public void nodeId_dateTimeStamp_01()
+    { test("'2012-07-29T20:39:11.100Z'^^xsd:dateTimeStamp", "'2012-07-29T20:39:11.1Z'^^xsd:dateTimeStamp") ; }
+
+    
     @Test public void nodeId_date_1()
     { test("'2008-04-28Z'^^xsd:date", "'2008-04-28Z'^^xsd:date") ; }
 
