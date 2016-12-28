@@ -17,50 +17,24 @@
 
 package dev;
 
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
-import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
-import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.store.NodeId;
+import org.seaborne.tdb2.store.NodeIdFactory;
+import org.seaborne.tdb2.store.NodeIdTypes;
 
 public class MainCohort {
     static { LogCtl.setLog4j() ; }
     
     public static void main(String... args) {
-        //DatasetGraph dsg = TDB2Factory.connectDatasetGraph("DB") ;
-        DatasetGraph dsg = TDB2Factory.createDatasetGraph() ;
-        TransactionalSystem txnSystem = ((DatasetGraphTDB)dsg).getTxnSystem() ;
-        Quad q = SSE.parseQuad("(_ <s> <p> <o> )") ;
+        NodeId nid = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, 1);
+        System.out.println("Node id = "+nid);
         
+        byte[] b = new byte[8];
         
-        dsg.begin(ReadWrite.READ);
-        
-        Transaction txn = txnSystem.getThreadTransaction() ;
-        
-        
-        boolean b = txn.promote() ;
-        if ( ! b )
-            System.out.println("Did not promote");
-        else {
-             
-            dsg.add(q) ;
-            dsg.commit() ;
-        }
-        dsg.end() ;
-        
-        System.out.println("read") ;
-        
-        dsg.begin(ReadWrite.READ);
-        // Auto promote
-        dsg.add(q) ;
-        dsg.commit();
-        dsg.end() ;
-        
-        System.out.println("DONE") ;
+        NodeIdFactory.set(nid, b);
+        NodeId nid1 = NodeIdFactory.get(b);
+        System.out.println("Node id = "+nid1);
     }
 }
 
