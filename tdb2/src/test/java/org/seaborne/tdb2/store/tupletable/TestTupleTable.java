@@ -30,17 +30,11 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.sys.SystemTDB ;
-
+import static org.seaborne.tdb2.store.tupletable.NData.*;
 
 public class TestTupleTable extends BaseTest
 {
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
-    static NodeId n1 = new NodeId(1) ;
-    static NodeId n2 = new NodeId(2) ;
-    static NodeId n3 = new NodeId(3) ;
-    static NodeId n4 = new NodeId(0x4040404040404040L) ;
-    static NodeId n5 = new NodeId(0x5555555555555555L) ;
-    static NodeId n6 = new NodeId(0x6666666666666666L) ; 
     
     static private TupleTable create()
     {

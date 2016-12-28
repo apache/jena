@@ -72,7 +72,7 @@ public class CloneTDB {
         return dsg2 ;
     }
 
-    /** Attemnp to copy indexes and nodes raw */ 
+    /** Attempt to copy indexes and nodes raw */ 
     // Does not work for in-memory datasets
     public static DatasetGraphTDB cloneDataset(DatasetGraphTDB dsgBase, Location newLocation) {
             if ( dsgBase.getLocation().equals(newLocation) )

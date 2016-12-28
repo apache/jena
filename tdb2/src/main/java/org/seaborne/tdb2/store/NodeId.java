@@ -18,349 +18,255 @@
 
 package org.seaborne.tdb2.store;
 
-import java.math.BigDecimal ;
-import java.nio.ByteBuffer ;
+import static org.apache.jena.sparql.expr.Expr.CMP_EQUAL;
+import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
+import static org.seaborne.tdb2.store.NodeIdTypes.SPECIAL;
+import static org.seaborne.tdb2.store.NodeIdTypes.isSpecial;
 
-import org.apache.jena.atlas.lib.BitsLong ;
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.util.NodeUtils ;
-import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.store.value.DateTimeNode ;
-import org.seaborne.tdb2.store.value.DecimalNode ;
-import org.seaborne.tdb2.store.value.IntegerNode ;
-import org.seaborne.tdb2.sys.SystemTDB ;
+import org.apache.jena.atlas.lib.BitsInt;
+import org.apache.jena.atlas.lib.BitsLong;
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.graph.Node;
+import org.seaborne.tdb2.sys.SystemTDB;
 
 final
-public class NodeId
+public class NodeId implements Comparable<NodeId>
 {
-    // SPECIALs - never stored.
-    public static final NodeId NodeDoesNotExist = new NodeId(-8) ;
-    public static final NodeId NodeIdAny = new NodeId(-9) ;
-    
-    private static final boolean enableInlineLiterals = SystemTDB.enableInlineLiterals ;
-    
     public static final int SIZE = SystemTDB.SizeOfLong ;
-    final long value ;
     
-    public static NodeId create(long value) {
-        // All creation of NodeIds must go through this.
-        if ( value == NodeDoesNotExist.value )
-            return NodeDoesNotExist;
-        if ( value == NodeIdAny.value )
-            return NodeIdAny;
-        return new NodeId(value);
+    public static final NodeId NodeIdInvalid        = makeSpecial(0xA1);
+    public static final NodeId NodeDoesNotExist     = makeSpecial(0xA3);
+    public static final NodeId NodeIdAny            = makeSpecial(0xA4);
+    public static final NodeId NodeIdDefined        = makeSpecial(0xA5);
+    public static final NodeId NodeIdUndefined      = makeSpecial(0xA6);
+    
+    private static NodeId makeSpecial(long v) {
+        // Careful of an initialzer loop (create(type, v1, v2) looks at specials).
+        return NodeIdFactory.createValue(SPECIAL, v);
     }
     
-    public static NodeId create(byte[] b)       { return create(b, 0) ; } 
-    public static NodeId create(ByteBuffer b)   { return create(b, 0) ; } 
+    /*package*/ static final boolean enableInlineLiterals = SystemTDB.enableInlineLiterals;
     
-    // Chance for a cache? (Small Java objects are really not that expensive these days.)
-    public static NodeId create(byte[] b, int idx) {
-        long value = Bytes.getLong(b, idx);
-        return create(value);
+    // Internal consistency checks.
+    private static final boolean CHECKING = true;
+    
+    // Encoding:
+    //   8 bits type
+    //   24 bits int
+    //   64 bit value
+    // The high byte of value1==type as integer value
+    // In-memory:
+    // Long: 
+    //   value1 is 24 bits
+    //   value2 is 64 bits
+    //   type is a type and is OR'ed into value 1 to store.
+    // 64 bit: 
+    //   value1 is 0
+    //   value2 is 56 bits
+    //   type is a type and is OR'ed into value2  to store.
+    
+    // XXX CHECK!!!
+    // XXX TESTS!!!
+    
+    final NodeIdTypes type;
+    final int  value1;
+    final long value2;
+    
+    public boolean isPtr() { return type == PTR; }
+    
+//    public long getPtrLocation() { return value2; }
+//    public long getPtrLo() { return value2; }
+//    public int  getPtrHi() { return value1 & 0x00FFFFFF; }
+
+    // 64 bit
+    public long getPtrLocation()    { return getValueNoType(); }
+    public long getPtrLo()          { return getValueNoType(); }
+    public int  getPtrHi()          { return value1 & 0x00FFFFFF; }
+    
+    public long getValueNoType() { return value2 & 0x00FFFFFFFFFFFFFFL; }
+    
+    public int getTypeValue() { return type.type(); }
+    
+    public boolean isInline() {
+        return isInline(this);
+    }
+    
+    public static boolean isInline(NodeId nodeId) {
+        return NodeIdTypes.isInline(nodeId.type);
+    }
+        
+    public boolean isValue() {
+        return type != PTR && NodeIdTypes.isStorable(type); 
     }
 
-    public static NodeId create(ByteBuffer b, int idx) {
-        long value = b.getLong(idx);
-        return create(value);
+    // Migration
+    public static NodeId inline(Node node) { return NodeIdInline.inline(node); }
+    public static boolean hasInlineDatatype(Node node) { return NodeIdInline.hasInlineDatatype(node); }
+    public static Node extract(NodeId nodeId) { return NodeIdInline.extract(nodeId); }
+    
+    // XXX Later.
+//    //Static forms only?
+//    public boolean isAny()          { return isAny(this); }
+//    public boolean isDoesNotExist() { return isDoesNotExist(this); }
+//    public boolean isDefined()      { return isDefined(this); }
+//    public boolean isUndefined()    { return isDefined(this); }
+//
+    public static final boolean isAny(NodeId nodeId)           { return nodeId == NodeIdAny || nodeId == null; }
+    public static final boolean isDoesNotExist(NodeId nodeId)  { return nodeId == NodeDoesNotExist; }
+//    public static boolean isDefined(NodeId nodeId)             { return nodeId == NodeIdDefined; }
+//    public static boolean isUndefined(NodeId nodeId)           { return nodeId == NodeIdUndefined; }
+//    
+//    public static boolean isInteger(NodeId nodeId) {
+//        return NodeIdTypes.isInteger(nodeId.type());
+//    }
+//
+//    public static boolean isDecimal(NodeId nodeId) {
+//        return NodeIdTypes.isDecimal(nodeId.type());
+//    }
+//    
+//    public static boolean isDouble(NodeId nodeId) {
+//        return NodeIdTypes.isDouble(nodeId.type());
+//    }
+//    
+//    public static boolean isFloat(NodeId nodeId) {
+//        return NodeIdTypes.isFloat(nodeId.type());
+//    }
+//
+//    public static boolean isNumber(NodeId nodeId) {
+//        return NodeIdTypes.isDecimal(nodeId.type());
+//    }
+    
+    // XXX Chance for a cache?
+    private static NodeId create(int v1, long v2) {
+        int t = v1 >> 24;
+        NodeIdTypes type = NodeIdTypes.intToEnum(t);
+        return create(type, v1, v2);
+    }
+    
+    // XXX Chance for a cache?
+    private static NodeId create(NodeIdTypes type, int v1, long v2) {
+        if ( isSpecial(type) ) {
+            if ( equals(NodeDoesNotExist, v1, v2) )
+                return NodeDoesNotExist;
+            if ( equals(NodeIdAny, v1, v2) )
+                return NodeIdAny;
+            if ( equals(NodeIdDefined, v1, v2) )
+                return NodeIdDefined;
+            if ( equals(NodeIdDefined, v1, v2) )
+                return NodeIdDefined;
+            if ( equals(NodeIdUndefined, v1, v2) )
+                return NodeIdUndefined;
+
+            throw new IllegalArgumentException("Special not recognized");
+        }
+        return new NodeId(type, v1, v2);
+    }
+    
+    /** Create from a long-encoded value */
+    /*package*/ static NodeId createValue(NodeIdTypes type, long value) {
+        // XXX Incorrect long id version: pass type, 24 bit int and long
+        //create(type, type.type()<<24, value);
+        // 64 bits
+        long v2 = BitsLong.pack(value, type.type(), 56, 64);
+        return create(type, 0, v2);
+    }
+    
+    /** Create from a (int,long)-encoded value */
+    private static NodeId createValue(NodeIdTypes type, int value1, long value2) {
+        value1 = BitsInt.clear(value1, 24, 32);                 // XXX CONST
+        value1 = BitsInt.pack(value1, type.type(), 24, 32);     // XXX CONST
+        return create(type, value1, value2);
     }
 
-    public NodeId(long v) { value = v ;}
-    
-    public void toByteBuffer(ByteBuffer b, int idx) { b.putLong(idx, value) ; }
-    
-    public void toBytes(byte[] b, int idx) { Bytes.setLong(value, b, idx) ; }
- 
-    public boolean isDirect() { return type() != NONE && type() != SPECIAL ; }
-                                                       
-    public int type() {
-        return (int)BitsLong.unpack(value, 56, 64);
+    public static NodeId createPtr(int hi, long lo) {
+        return create(PTR, hi, lo);
     }
+    
+    /* package */ NodeId(NodeIdTypes type, int v1, long v2) {
+        this.type = type;
+        value1 = v1;
+        if ( CHECKING ) check(type, v1, v2);
+        value2 = v2;
+    } 
 
-    static long setType(long value, int type) {
-        return BitsLong.pack(value, type, 56, 64);
+    private final void check(NodeIdTypes type, int v1, long v2) {
+        if ( type == SPECIAL )
+            return;
+        // Long
+//        int x = BitsInt.unpack(v1, 24, 32); // Hibyte
+//        if ( x != type.type() )
+//            FmtLog.warn(getClass(), "Mismatch type=0x%02X : hi=0x%02X", type.type(), x);
+        // 64 bit.
+        int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
+        if ( x != type.type() )
+            FmtLog.warn(getClass(), "Mismatch type=0x%02X : hi=0x%02X", type.type(), x);
     }
     
-    // Masked?
-    public long getId()     { return value ; }
+    public NodeIdTypes type() { return type; } 
+
+    /*package*/ int  getValue1() { return value1; }
+    /*package*/ long getValue2() { return value2; }
     
     @Override
     public int hashCode() {
-        // Ensure the type byte has an effect on the bottom 32 bits.
-        return ((int)value) ^ ((int)(value >> 32));
+        // Ensure all parts have an effect on the 32 bit hash value.
+        return value1 ^ ((int)value2) ^ ((int)(value2 >> 32));
     }
 
     @Override
     public boolean equals(Object other) {
         if ( this == other ) return true;
+        if ( other == null ) return false;
         if ( !(other instanceof NodeId) ) return false;
-        return value == ((NodeId)other).value;
+        NodeId nOther = ((NodeId)other);
+        return equals(nOther, value1, value2);  
     }
     
+    public boolean equals(NodeId nodeIdOther) {
+        if ( nodeIdOther == null ) return false;
+        if ( this == nodeIdOther ) return true;
+        return equals(nodeIdOther, value1, value2);  
+    }
+    
+    /*package*/ static boolean equals(NodeId nodeId, int v1, long v2) {
+        return v2 == nodeId.value2 && v1 == nodeId.value1;  
+    }
     @Override
-    public String toString()
-    { 
-        if ( this == NodeDoesNotExist ) return "[DoesNotExist]" ;
-        if ( this == NodeIdAny ) return "[Any]" ;
-        return String.format("[%016X]", value) ; 
+    public String toString() { 
+        if ( this == NodeDoesNotExist ) return "[DoesNotExist]";
+        if ( this == NodeIdAny ) return "[Any]";
+        if ( this == NodeIdInvalid ) return "[Invalid]";
+        if ( this == NodeIdDefined ) return "[Defined]";
+        if ( this == NodeIdUndefined ) return "[Undefined]";
+        
+        if ( this.isInline() ) {
+            String displayName = this.type().toString();
+            return String.format("[%s 0x%014X]", displayName, BitsLong.clear(value2,56,64));
+        }
+        // XXX 64 bits
+        //return String.format("[%08X-%016X]", value1, value2);
+        return String.format("[0x%16X]", value2);
     }
     
     // ---- Encoding special - inlines.
-    /* The long is formated as:
-     * 8 bits of type
-     * 56 bits of value
-     * 
-     * (potential change
-     *   1 bit: 0 => reference, 1 => inline
-     *   7 bits of inline type.
-     *   56 bits fo value)  
-     *  
-     *  Type 0 means the node is in the object table.
-     *  Types 1+ store the value of the node in the 56 bits remaining.
-     *  
-     *  If a value would not fit, it will be stored externally so there is no
-     *  guarantee that all integers, say, are store inline. 
-     *  
-     *  Integer format: signed 56 bit number.
-     *  Decimal format: 8 bits scale, 48bits of signed valued.
 
-     *  Date format:
-     *  DateTime format:
-     *  Boolean format:
-     */
-    
-    // Type codes.
-    // Better would be high bit 1 => encoded value.
-    // enums.
-    public static final int NONE               = 0 ;
-    public static final int INTEGER            = 1 ;
-    public static final int DECIMAL            = 2 ;
-    public static final int DATE               = 3 ;
-    public static final int DATETIME           = 4 ;
-    public static final int BOOLEAN            = 5 ;
-    public static final int SHORT_STRING       = 6 ;
-    public static final int SPECIAL            = 0xFF ;
-    
-    /** Encode a node as an inline literal.  Return null if it can't be done */
-    public static NodeId inline(Node node) {
-        if ( node == null ) {
-            Log.warn(NodeId.class, "Null node: " + node);
-            return null;
-        }
-
-        if ( !enableInlineLiterals )
-            return null;
-
-        if ( !node.isLiteral() )
-            return null;
-
-        if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
-            return null;
-        
-        try { return inline$(node) ; }
-        catch (Throwable th) {
-            Log.warn(NodeId.class, "Failed to process "+node) ;
-            return null ; 
-        }
+   /** Compare - provides an ordering of {@code NodeIds}. */ 
+    @Override
+    public int compareTo(NodeId other) {
+        return compare(this, other);
     }
     
-    /** Datatypes that are candidates for inlining */ 
-    private static RDFDatatype[] datatypes = { 
-        XSDDatatype.XSDdecimal,
-        XSDDatatype.XSDinteger,
-        
-        XSDDatatype.XSDlong,
-        XSDDatatype.XSDint,
-        XSDDatatype.XSDshort,
-        XSDDatatype.XSDbyte,
-        
-        XSDDatatype.XSDunsignedLong,
-        XSDDatatype.XSDunsignedInt,
-        XSDDatatype.XSDunsignedShort,
-        XSDDatatype.XSDunsignedByte,
-        
-        XSDDatatype.XSDdateTime,
-        XSDDatatype.XSDdate,
-        XSDDatatype.XSDboolean
-    } ;
-
-    /** Return true if this node has a datatype that look like it is inlineable.
-     * The node may still be out of range (e.g. very large integer).
-     * Only inline(Node)->NodeId can determine that. 
-     */
-    public static boolean hasInlineDatatype(Node node) {
-        if ( ! node.isLiteral() )
-            return false ;
-        RDFDatatype dtn = node.getLiteralDatatype() ;
-        for ( RDFDatatype dt : datatypes )
-            if ( dt.equals(dtn) ) return true ;
-        return false ;
-    }
-     
-    private static NodeId inline$(Node node) {
-        LiteralLabel lit = node.getLiteral();
-        // Decimal is a valid supertype of integer but we handle integers and decimals
-        // differently.
-
-        if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) ) {
-            // Check lexical form.
-            if ( !XSDDatatype.XSDdecimal.isValidLiteral(lit) )
-                return null;
-            
-            // Not lit.getValue() because that may be a narrower type e.g. Integer.
-            // .trim is how Jena does it but it rather savage. spc, \n \r \t.
-            // But at this point we know it's a valid literal so the excessive
-            // chopping by .trim is safe.
-            BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim()) ;
-            // Does range checking.
-            DecimalNode dn = DecimalNode.valueOf(decimal) ;
-            // null is "does not fit"
-            if ( dn != null )
-                // setType
-                return new NodeId(dn.pack()) ;
-            else
-                return null ;
-        } else { 
-            // Not decimal.
-            if ( XSDDatatype.XSDinteger.isValidLiteral(lit) ) {
-                // Check length of lexical form to see if it's in range of a long.
-                // Long.MAX_VALUE =  9223372036854775807
-                // Long.MIN_VALUE = -9223372036854775808
-                // 9,223,372,036,854,775,807 is 19 digits.
-                
-                if ( lit.getLexicalForm().length() > 19 )
-                    return null ;
-
-                try {
-                    long v = ((Number)lit.getValue()).longValue() ;
-                    v = IntegerNode.pack(v) ;
-                    // Value -1 is "does not fit"
-                    if ( v == -1 )
-                        return null ;
-                    v = NodeId.setType(v, NodeId.INTEGER) ;
-                    return new NodeId(v) ;
-                }
-                // Out of range for the type, not a long etc etc.
-                catch (Throwable ex) { return null ; }
-            }
-        }
-        
-        if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) {
-            // Could use the Jena/XSDDateTime object here rather than reparse the lexical form.
-            // But this works and it's close to a release ... 
-            long v = DateTimeNode.packDateTime(lit.getLexicalForm()) ;
-            if ( v == -1 )
-                return null ; 
-            v = setType(v, DATETIME) ; 
-            return new NodeId(v) ;
-        }
-        
-        if ( XSDDatatype.XSDdate.isValidLiteral(lit) ) {
-            long v = DateTimeNode.packDate(lit.getLexicalForm());
-            if ( v == -1 )
-                return null;
-            v = setType(v, DATE);
-            return new NodeId(v);
-        }
-
-        if ( XSDDatatype.XSDboolean.isValidLiteral(lit) ) {
-            long v = 0;
-            boolean b = (Boolean)lit.getValue();
-            // return new NodeValueBoolean(b, node) ;
-            v = setType(v, BOOLEAN);
-            if ( b )
-                v = v | 0x01;
-            return new NodeId(v);
-        }
-        
-        return null ;
+    /** Compare - provides an ordering of {@code NodeIds}. */ 
+    public static int compare(NodeId n1, NodeId n2) {
+        int x = Integer.compare(n1.value1, n2.value1);
+        if ( x == 0 )
+            return CMP_EQUAL;
+        return Long.compare(n1.value2, n2.value2);
     }
     
-    public static boolean isInline(NodeId nodeId) {
-        if ( nodeId == NodeId.NodeDoesNotExist )
-            return false ;
-        
-        long v = nodeId.value ;
-        int type = nodeId.type() ;
-        
-        switch (type) {
-            case NONE:      return false ;
-            case SPECIAL:   return false ;
-                
-            case INTEGER:
-            case DECIMAL:
-            case DATETIME:
-            case DATE:
-            case BOOLEAN:
-                return true ;
-            default:
-                throw new TDBException("Unrecognized node id type: "+type) ;
-        }
-    }
-    
-    /** Decode an inline nodeID, return null if not an inline node */
-    public static Node extract(NodeId nodeId) {
-        if ( nodeId == NodeId.NodeDoesNotExist )
-            return null ;
-        
-        long v = nodeId.value ;
-        int type = nodeId.type() ;
-
-        switch (type) {
-            case NONE:      return null ;
-            case SPECIAL:   return null ;
-                
-            case INTEGER : {
-                long val = IntegerNode.unpack(v) ;
-                Node n = NodeFactory.createLiteral(Long.toString(val), XSDDatatype.XSDinteger) ;
-                return n ;
-            }
-            case DECIMAL : {
-                BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
-                String x = d.toPlainString() ;
-                return NodeFactory.createLiteral(x, XSDDatatype.XSDdecimal) ;
-            }
-            case DATETIME : {
-                long val = BitsLong.clear(v, 56, 64) ;
-                String lex = DateTimeNode.unpackDateTime(val) ;
-                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
-            }
-            case DATE : {
-                long val = BitsLong.clear(v, 56, 64) ;
-                String lex = DateTimeNode.unpackDate(val) ;
-                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
-            }
-            case BOOLEAN : {
-                long val = BitsLong.clear(v, 56, 64) ;
-                if ( val == 0 )
-                    return NodeConst.nodeFalse ;
-                if ( val == 1 )
-                    return NodeConst.nodeTrue ;
-                throw new TDBException("Unrecognized boolean node id : " + val) ;
-            }
-            default :
-                throw new TDBException("Unrecognized node id type: " + type) ;
-        }
-    }
-    
-    public final boolean isConcrete() { return !isAny(this) && !isDoesNotExist(this) ; }
+    public final boolean isConcrete() { return isConcrete(this); }
     
     public static final boolean isConcrete(NodeId nodeId) { 
-        if ( nodeId == null ) return false ;
-        if ( nodeId == NodeIdAny ) return false ;
-        if ( nodeId == NodeDoesNotExist ) return false ;
-        return true ;
+        return ! NodeIdTypes.isSpecial(nodeId.type);
     }
-    
-    public static final boolean isAny(NodeId nodeId) { return nodeId == NodeIdAny || nodeId == null ; }
-    public static final boolean isDoesNotExist(NodeId nodeId) { return nodeId == NodeDoesNotExist ; }
-    
-    //public reset(long value) { this.value = value ; }
 }

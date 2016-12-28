@@ -73,7 +73,7 @@ class StepMergeJoin implements Step<NodeId>
                     throw new InternalErrorException("comparator: "+v+" : x1 is null") ;
                 if ( x2 == null ) 
                     throw new InternalErrorException("comparator: "+v+" : x2 is null") ;
-                int z = Long.compare(x1.getId(), x2.getId()) ;
+                int z = NodeId.compare(x1, x2) ;
                 if ( z != 0 )
                     return z ;
             }

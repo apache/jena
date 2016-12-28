@@ -38,7 +38,6 @@ public class MainCohort {
         
         
         dsg.begin(ReadWrite.READ);
-        dsg.begin(ReadWrite.READ);
         
         Transaction txn = txnSystem.getThreadTransaction() ;
         

@@ -29,10 +29,6 @@ import org.seaborne.tdb2.store.NodeId ;
 /** Sort operations specific to TDB */
 public class SortTDB
 {
-    static int compare(NodeId nodeId1, NodeId nodeId2) {
-        return Long.compare(nodeId1.getId(), nodeId2.getId()) ;
-    }
-    
     public static Iterator<Tuple<NodeId>> sort(Iterator<Tuple<NodeId>> input, final int...order) {
         Comparator<Tuple<NodeId>> comparator = new Comparator<Tuple<NodeId>>() {
             @Override
@@ -40,7 +36,8 @@ public class SortTDB
                 for ( int x : order ) {
                     NodeId nodeId1 = tuple1.get(x) ;
                     NodeId nodeId2 = tuple2.get(x) ;
-                    int cmp = SortTDB.compare(nodeId1, nodeId2) ;
+                    // XXX Values!
+                    int cmp = NodeId.compare(nodeId1, nodeId2) ;
                     if ( cmp != 0 )
                         return cmp ;
                 }

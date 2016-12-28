@@ -93,24 +93,31 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         checkNotClosed() ;
-        return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
+        return isolate(triples2quadsDftGraph(getTripleTable().find(s, p, o))) ;
     }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         checkNotClosed();
-        return getQuadTable().find(g, s, p, o);
+        return isolate(getQuadTable().find(g, s, p, o));
     }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
         checkNotClosed();
-        return getQuadTable().find(Node.ANY, s, p, o);
+        return isolate(getQuadTable().find(Node.ANY, s, p, o));
     }
 
-    protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    { return triples2quads(Quad.defaultGraphIRI, iter) ; }
+    protected Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
+    { return isolate(triples2quads(Quad.defaultGraphIRI, iter)); }
  
+    private <T> Iterator<T> isolate(Iterator<T> iterator) {
+        if ( txnSystem.isInTransaction() ) 
+            return iterator;
+        // Risk the hidden arraylist is copied on growth.
+        return Iter.iterator(iterator);
+    }
+
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) { 
         checkNotClosed() ;
@@ -154,7 +161,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             throw new TransactionException("Can't write") ;
     }
 
-    // XXX Optimize by integrating with add/delete operations.
+    // ?? XXX Optimize by integrating with add/delete operations.
     private final void notifyAdd(Node g, Node s, Node p, Node o) {
         if ( monitor == null )
             return ;
@@ -344,7 +351,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             else
                 iter = t.findAsNodeIds(g, s, p, o) ;
 
-            if ( iter == null )
+            if ( iter == null || ! iter.hasNext() )
                 return ;
 
             // Get a slice

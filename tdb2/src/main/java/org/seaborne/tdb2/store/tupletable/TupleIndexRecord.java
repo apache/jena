@@ -28,7 +28,6 @@ import java.util.function.Predicate ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
-import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.dboe.base.record.Record ;
@@ -37,6 +36,7 @@ import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.TupleLib ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 
 public class TupleIndexRecord extends TupleIndexBase
 {
@@ -132,12 +132,14 @@ public class TupleIndexRecord extends TupleIndexBase
                 leading = false ;
                 continue ;
             }
+//            if ( NodeId.isDoesNotExist(X) )
+//                return Iter.nullIterator();
 
             numSlots++ ;
             if ( leading ) {
                 leadingIdx = i ;
-                Bytes.setLong(X.getId(), minRec.getKey(), i*SizeOfNodeId) ;
-                Bytes.setLong(X.getId(), maxRec.getKey(), i*SizeOfNodeId) ;
+                NodeIdFactory.set(X, minRec.getKey(), i*SizeOfNodeId) ;
+                NodeIdFactory.set(X, maxRec.getKey(), i*SizeOfNodeId) ;
             }
         }
         
@@ -162,7 +164,7 @@ public class TupleIndexRecord extends TupleIndexBase
             NodeId X = pattern.get(leadingIdx) ;
             // Set the max Record to the leading NodeIds, +1.
             // Example, SP? inclusive to S(P+1)? exclusive where ? is zero. 
-            Bytes.setLong(X.getId()+1, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
+            NodeIdFactory.setNext(X, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
             iter = index.iterator(minRec, maxRec) ;
         }
         

@@ -36,16 +36,19 @@ public class TestNodeId extends BaseTest
     
     @Test public void nodeId_01()
     {
-        NodeId nodeId = NodeId.create(37) ;
-        assertEquals(37L, nodeId.getId()) ;
+        NodeId nodeId = NodeIdFactory.createPtr(17, 37) ;
+        assertEquals(NodeIdTypes.PTR, nodeId.type());
+        assertEquals(37L, nodeId.getPtrLo()) ;
+        assertEquals(17, nodeId.getPtrHi()) ;
     }
-    
-    @Test public void nodeId_02()
-    {
-        NodeId nodeId = NodeId.create(-1L) ;
-        assertEquals(-1L, nodeId.getId()) ;
-    }
-    
+
+    // XXX More tests
+    //   Double
+    //   Float
+    // Full range values
+    // ByteBuffer and byte[]
+    // xsd:int vs xsd:integer
+    // NodeIdTypes    
     // Inlines
     
     @Test public void nodeId_int_01()

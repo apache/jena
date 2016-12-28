@@ -31,8 +31,11 @@ import org.seaborne.tdb3.storage.StorageTDB;
 import projects.dsg2.DatasetGraphStorage;
 
 public class DevTDB3 {
-    static { LogCtl.setLog4j() ; }
-    //static { LogCtl.setJavaLogging();}
+    //static { LogCtl.setLog4j() ; }
+    static { LogCtl.setJavaLogging();}
+    
+    // Prefixes
+    // Updates to DatasetGraphStorage etc. 
     
     public static void main(String[] args) {
         StorageTDB storage = TDB3Builder.build(Location.mem());

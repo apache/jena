@@ -18,6 +18,7 @@
 
 package org.seaborne.tdb2.store.tupletable;
 
+import static org.seaborne.tdb2.store.tupletable.NData.*;
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple ;
 
 import java.util.Iterator ;
@@ -40,12 +41,6 @@ import org.seaborne.tdb2.sys.SystemTDB ;
 public class TestTupleIndexRecordDirect extends BaseTest
 {
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
-    static NodeId n1 = new NodeId(1) ;
-    static NodeId n2 = new NodeId(2) ;
-    static NodeId n3 = new NodeId(3) ;
-    static NodeId n4 = new NodeId(0x4040404040404040L) ;
-    static NodeId n5 = new NodeId(0x5555555555555555L) ;
-    static NodeId n6 = new NodeId(0x6666666666666666L) ; 
     
     static TupleIndexRecord create(String description)
     {

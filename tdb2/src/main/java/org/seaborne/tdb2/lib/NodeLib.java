@@ -38,7 +38,7 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.Hash ;
 import org.seaborne.tdb2.store.NodeId ;
-import org.seaborne.tdb2.store.NodeType ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public class NodeLib
@@ -50,18 +50,17 @@ public class NodeLib
         return h ;
     }
     
+    private static String BNODE = "bnode";
+    private static String URI = "uri";
+    private static String LITERAL = "literal";
+    
     public static void setHash(Hash h, Node n) 
     {
-        NodeType nt = NodeType.lookup(n) ;
-        switch(nt) 
-        {
-            case URI:
-                hash(h, n.getURI(), null, null, nt) ;
-                return ;
-            case BNODE:
-                hash(h, n.getBlankNodeLabel(), null, null, nt) ;
-                return ;
-            case LITERAL:
+        if ( n.isURI() ) 
+                hash(h, n.getURI(), null, null, URI) ;
+        else if ( n.isBlank() )
+                hash(h, n.getBlankNodeLabel(), null, null, BNODE) ;
+        else if ( n.isLiteral() ) { 
                 String dt = n.getLiteralDatatypeURI() ;
                 if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) ) {
                     // RDF 1.1 : No datatype for:
@@ -69,12 +68,9 @@ public class NodeLib
                     //   rdf:langString and @ 
                     dt = null ;
                 }
-                hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, nt) ;
-                return  ;
-            case OTHER:
-                throw new TDBException("Attempt to hash something strange: "+n) ; 
-        }
-        throw new TDBException("NodeType broken: "+n) ; 
+                hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, LITERAL) ;
+        } else 
+            throw new TDBException("Attempt to hash something strange: "+n) ; 
     }
     
     /** This pattern is common - abstract */ 
@@ -103,14 +99,14 @@ public class NodeLib
 
     private static void deallocDigest(MessageDigest digest) { digest.reset() ; digesters.put(digest) ; }
     
-    
-    private static void hash(Hash h, String lex, String lang, String datatype, NodeType nodeType)
+    // XXX Revisit!
+    private static void hash(Hash h, String lex, String lang, String datatype, String nodeName)
     {
         if ( datatype == null )
             datatype = "" ;
         if ( lang == null )
             lang = "" ;
-        String toHash = lex + "|" + lang + "|" + datatype+"|"+nodeType.getName() ;
+        String toHash = lex + "|" + lang + "|" + datatype+"|"+nodeName ;
         MessageDigest digest;
         try
         {
@@ -133,7 +129,7 @@ public class NodeLib
     
     public static NodeId getNodeId(Record r, int idx)
     {
-        return NodeId.create(Bytes.getLong(r.getKey(), idx)) ;
+        return NodeIdFactory.get(r.getKey(), idx);
     }
     
     public static Node termOrAny(Node node)

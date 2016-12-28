@@ -23,6 +23,7 @@ import static java.lang.String.format ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
@@ -128,7 +129,7 @@ public class TupleTable implements Sync, Closeable
         }
     }
 
-    /** Find all matching tuples - a slot of NodeId.NodeIdAny (or null) means match any */
+    /** Find all matching tuples - a slot of NodeId.NodeIdAny means match any */
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> pattern) {
         if ( tupleLen != pattern.len() )
             throw new TDBException(format("Mismatch: finding tuple of length %d in a table of tuples of length %d", pattern.len(), tupleLen)) ;
@@ -139,6 +140,8 @@ public class TupleTable implements Sync, Closeable
             NodeId x = pattern.get(i) ;
             if ( ! NodeId.isAny(x) )
                 numSlots++ ;
+            if ( NodeId.isDoesNotExist(x))
+                return Iter.nullIterator();
         }
 
         if ( numSlots == 0 )

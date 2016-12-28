@@ -30,6 +30,7 @@ import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.store.Hash ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 
 /** A framework for a NodeTable based on native storage (string file and an index).
  *  This class manages the index, and delegates the node storage.
@@ -133,7 +134,7 @@ public abstract class NodeTableNative implements NodeTable
             if ( r2 != null )
             {
                 // Found.  Get the NodeId.
-                NodeId id = NodeId.create(r2.getValue(), 0) ;
+                NodeId id = NodeIdFactory.get(r2.getValue(), 0) ;
                 return id ;
             }
 
@@ -145,8 +146,8 @@ public abstract class NodeTableNative implements NodeTable
             NodeId id = writeNodeToTable(node) ;
 
             // Update the r record with the new id.
-            // r.value := id bytes ; 
-            id.toBytes(r.getValue(), 0) ;
+            // r.value := id bytes ;
+            NodeIdFactory.set(id, r.getValue(), 0) ;
 
             // Put in index - may appear because of concurrency
             if ( ! nodeHashToId.insert(r) )

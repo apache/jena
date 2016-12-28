@@ -28,7 +28,6 @@ import java.util.function.Predicate ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
-import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.seaborne.dboe.base.record.Record ;
@@ -39,6 +38,7 @@ import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.Async ;
 import org.seaborne.tdb2.lib.TupleLib ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 
 // Async addAll 
 public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
@@ -149,7 +149,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             NodeId X = pattern.get(i) ;
             if ( NodeId.isAny(X) ) {
                 X = null ;
-                // No longer seting leading key slots.
+                // No longer setting leading key slots.
                 leading = false ;
                 continue ;
             }
@@ -157,8 +157,8 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             numSlots++ ;
             if ( leading ) {
                 leadingIdx = i ;
-                Bytes.setLong(X.getId(), minRec.getKey(), i*SizeOfNodeId) ;
-                Bytes.setLong(X.getId(), maxRec.getKey(), i*SizeOfNodeId) ;
+                NodeIdFactory.set(X, minRec.getKey(), i*SizeOfNodeId) ;
+                NodeIdFactory.set(X, maxRec.getKey(), i*SizeOfNodeId) ;
             }
         }
         
@@ -183,7 +183,7 @@ public class TupleIndexRecordAsyncBulkAdd extends TupleIndexBase
             NodeId X = pattern.get(leadingIdx) ;
             // Set the max Record to the leading NodeIds, +1.
             // Example, SP? inclusive to S(P+1)? exclusive where ? is zero. 
-            Bytes.setLong(X.getId()+1, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
+            NodeIdFactory.setNext(X, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
             iter = index.iterator(minRec, maxRec) ;
         }
         

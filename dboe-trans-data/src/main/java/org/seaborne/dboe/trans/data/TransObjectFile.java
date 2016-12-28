@@ -33,7 +33,7 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
 
 /** Transactional {@link ObjectFile}.
  *  An object file is append-only and allows only one writer at a time.
- *  As a result, all reader, see the file up to the last commit point at the time 
+ *  As a result, all readers see the file up to the last commit point at the time 
  *  they started.  The sole writer sees more of the file.
  */
 

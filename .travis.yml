@@ -8,3 +8,10 @@ notifications:
     # [always|never|change]
     on_success: change
     on_failure: change
+
+## sudo: false
+## install: mvn dependency:go-offline
+## script: mvn verify
+## env:
+##   global:
+##     - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"

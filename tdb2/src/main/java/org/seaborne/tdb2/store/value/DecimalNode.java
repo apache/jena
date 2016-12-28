@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.jena.atlas.lib.BitsLong ;
-import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeId_v1;
 
 
 
@@ -98,7 +98,7 @@ public class DecimalNode
     public static long pack(long value, int scale)
     {
         // pack : DECIMAL , sign, scale, value
-        long v = BitsLong.pack(0, NodeId.DECIMAL, ENC_LEN, Long.SIZE) ;
+        long v = BitsLong.pack(0, NodeId_v1.DECIMAL, ENC_LEN, Long.SIZE) ;
         v = BitsLong.pack(v, scale, SCALE_LO, SCALE_HI) ;
         v = BitsLong.pack(v, value, VALUE_LO, VALUE_HI) ;
         // No need to do something about negative numbers
@@ -148,6 +148,4 @@ public class DecimalNode
     {
         return value ;
     }
-    
-    
 }

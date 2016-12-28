@@ -58,7 +58,8 @@
     <!-- Require a logging implementation -->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
+      <artifactId>slf4j-jdk14</artifactId> 
+      <version>${ver.slf4j}</version>
     </dependency>
 
     <!--

@@ -29,17 +29,11 @@ import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
+import static org.seaborne.tdb2.store.tupletable.NData.*;
 
 /** Test TupleIndexes (general) */
 public abstract class AbstractTestTupleIndex extends BaseTest
 {
-    protected static NodeId n1 = new NodeId(1) ;
-    protected static NodeId n2 = new NodeId(2) ;
-    protected static NodeId n3 = new NodeId(3) ;
-    protected static NodeId n4 = new NodeId(0x4040404040404040L) ;
-    protected static NodeId n5 = new NodeId(0x5555555555555555L) ;
-    protected static NodeId n6 = new NodeId(0x6666666666666666L) ; 
-    
     protected abstract TupleIndex create(String description) ;
     
     protected static void add(TupleIndex index, NodeId x1, NodeId x2, NodeId x3)

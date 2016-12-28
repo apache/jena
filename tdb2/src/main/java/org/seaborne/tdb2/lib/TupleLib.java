@@ -23,7 +23,6 @@ import static org.seaborne.tdb2.sys.SystemTDB.SizeOfLong ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
@@ -35,6 +34,7 @@ import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 
 public class TupleLib
@@ -135,7 +135,7 @@ public class TupleLib
             int j = i ;
             if ( tMap != null )
                 j = tMap.unmapIdx(i) ;
-            NodeId id = NodeId.create(r.getKey(), j*SizeOfLong) ;
+            NodeId id = NodeIdFactory.get(r.getKey(), j*SizeOfLong) ;
             nodeIds[i] = id ;
         }
         return TupleFactory.create(nodeIds) ;
@@ -149,7 +149,8 @@ public class TupleLib
         {
             int j = tMap.getSlotIdx(i) ;
             // i'th Nodeid goes to j'th bytes slot.
-            Bytes.setLong(tuple.get(j).getId(), b, i*SizeOfLong) ;
+            NodeIdFactory.set(tuple.get(j), b, i*SizeOfLong) ;
+            //XXX Remove Bytes.setLong(tuple.get(j).getId(), b, i*SizeOfLong) ;
         }
             
         return factory.create(b) ;

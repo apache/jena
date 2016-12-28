@@ -26,16 +26,16 @@ import org.apache.jena.query.ReadWrite ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 
-/** Base implementation of the component interface for {@link TransactionalComponent}.
+/** 
+ * Base implementation of the component interface for {@link TransactionalComponent}.
  */
 public abstract class TransactionalComponentLifecycle<X> implements TransactionalComponent {
     
     // Pass down recovery operations.
-//    @Override public void startRecovery() {}
-//    @Override public void recover(ByteBuffer ref)
-//    @Override public void finishRecovery()
-//    @Override public void noRecovery()
-//    @Override public void shutdown()
+    // This class has no transaction-recorded state.
+    @Override public abstract void startRecovery();
+    @Override public abstract void recover(ByteBuffer ref);
+    @Override public abstract void finishRecovery();
     
     // ---- Normal operation
     
@@ -69,7 +69,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     public void begin(Transaction transaction) {
         Objects.requireNonNull(transaction) ;
         setTransaction(transaction); 
-        // XXX add transaction to checkState?
         checkState(INACTIVE, COMMITTED, ABORTED) ;
         setTrackTxn(ACTIVE);
         X x = _begin(transaction.getMode(), transaction.getTxnId()) ;

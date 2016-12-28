@@ -41,6 +41,7 @@ import org.seaborne.dboe.base.objectfile.ObjectFileStorage ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 
 // For reference only.
 public class NodeTableSSE extends NodeTableNative {
@@ -61,15 +62,18 @@ public class NodeTableSSE extends NodeTableNative {
     {
         // Synchronized in accessIndex
         long x = encodeStore(node, objects) ;
-        return NodeId.create(x);
+        // Paired : [*]
+        return NodeIdFactory.createPtr(0, x);
     }
 
     @Override
     protected final Node readNodeFromTable(NodeId id)
     {
-        if ( id.getId() >= objects.length() )
+        // Paired : [*]
+        long x = id.getPtrLo();
+        if ( x >= objects.length() )
             return null ;
-        return fetchDecode(id.getId(), objects) ;
+        return fetchDecode(x, objects) ;
     }
     
     private static Nodec nodec = new NodecSSE() ;

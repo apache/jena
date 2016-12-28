@@ -21,7 +21,6 @@ import java.io.File ;
 import java.io.FileFilter ;
 import java.util.UUID ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -42,7 +41,9 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.setup.*;
 import org.seaborne.tdb2.solver.OpExecutorTDB1 ;
-import org.seaborne.tdb2.store.* ;
+import org.seaborne.tdb2.store.DatasetPrefixesTDB;
+import org.seaborne.tdb2.store.QuadTable;
+import org.seaborne.tdb2.store.TripleTable;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetable.NodeTableCache ;
 import org.seaborne.tdb2.store.nodetable.NodeTableInline ;
@@ -198,8 +199,8 @@ public class TDB3Builder {
 
         // Validation checks - common index forms.  
         if ( indexes.length != 3 && indexes.length != 2 )
-            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+            error(log, "Wrong number of triple table indexes: "+String.join(",", indexes)) ;
+        log.debug("Triple table: "+primary+" :: "+String.join(",", indexes)) ;
 
         TupleIndex tripleIndexes[] = makeTupleIndexes(primary, indexes) ;
 
@@ -215,8 +216,8 @@ public class TDB3Builder {
 
         // Validation checks - common index forms.  
         if ( indexes.length != 6 && indexes.length != 4 )
-            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+            error(log, "Wrong number of quad table indexes: "+String.join(",", indexes)) ;
+        log.debug("Quad table: "+primary+" :: "+String.join(",", indexes)) ;
 
         TupleIndex tripleIndexes[] = makeTupleIndexes(primary, indexes) ;
 
@@ -240,7 +241,7 @@ public class TDB3Builder {
                                                                 prefixIndexes,
                                                                 prefixNodes, createPolicy()) ;
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
-        log.debug("Prefixes: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+        log.debug("Prefixes: "+primary+" :: "+String.join(",", indexes)) ;
         return prefixes ;
     }
 

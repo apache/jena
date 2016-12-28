@@ -29,6 +29,7 @@ import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 
 /** NodeTable using Thrift for the I/O and storage. */
 
@@ -57,7 +58,8 @@ public class NodeTableTRDF extends NodeTableNative {
         RDF_Term term = ThriftConvert.convert(node, true) ;
         try {
             long x = diskFile.length() ;
-            NodeId nid = NodeId.create(x) ;
+            // Paired : [*]
+            NodeId nid = NodeIdFactory.createPtr(0, x);
             term.write(protocol) ;
             //transport.flush() ;
             return nid ;
@@ -71,7 +73,8 @@ public class NodeTableTRDF extends NodeTableNative {
     protected Node readNodeFromTable(NodeId id) {
         // XXX Synchronized needed?
         try {
-            long x = id.getId() ;
+            // Paired : [*]
+            long x = id.getPtrLo();
             transport.readPosition(x) ;
             RDF_Term term = new RDF_Term() ;
             term.read(protocol) ;

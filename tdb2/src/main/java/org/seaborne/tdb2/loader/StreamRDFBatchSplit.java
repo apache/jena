@@ -32,6 +32,7 @@ import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.setup.TDBDatasetDetails ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.NodeId ;
+import org.seaborne.tdb2.store.NodeIdFactory;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleTable ;
 import org.slf4j.Logger ;
@@ -45,7 +46,7 @@ public class StreamRDFBatchSplit implements StreamRDF {
     // Lizard des (TxnClient) 
     
     private static Logger log = LoggerFactory.getLogger(StreamRDFBatchSplit.class) ;
-    protected static NodeId placeholder = NodeId.create(-7) ;
+    protected static NodeId placeholder = NodeIdFactory.genUnique();
     protected final List<Triple> triples ;
     protected final List<Tuple<NodeId>> tuples ;
     protected final Map<Node, NodeId> mapping ;

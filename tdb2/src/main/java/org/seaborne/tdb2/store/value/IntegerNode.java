@@ -18,33 +18,47 @@
 
 package org.seaborne.tdb2.store.value;
 
-import org.apache.jena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.BitsLong;
 
-public class IntegerNode
-{
+public class IntegerNode {
     // 56 bits of value, including sign bit.
-    public static int LEN = 56 ;
-    public static int LBITS = Long.SIZE ;
-    public static long MAX = (1L<< (LEN-1) )-1;
-    public static long MIN = -(1L<< (LEN-1) ) ;
+    public static int  LEN   = 56;
+    public static int  LBITS = Long.SIZE;
+    public static long MAX   = (1L << (LEN - 1)) - 1;
+    public static long MIN   = -(1L << (LEN - 1));
 
-    public static long pack(long v) 
-    {
-        if ( v >= MIN && v <= MAX )
-        {
-            v = BitsLong.clear(v, LEN, LBITS) ;
-            return v ;
-        }
-        else
-            return -1 ;
+    public static long pack(long v) {
+        if ( v >= MIN && v <= MAX ) {
+            v = BitsLong.clear(v, LEN, LBITS);
+            return v;
+        } else
+            return -1;
     }
 
-    public static long unpack(long v) 
-    {
-        long val = BitsLong.clear(v, LEN, LBITS) ;
+    public static long unpack(long v) {
+        long val = BitsLong.clear(v, LEN, LBITS);
         // Sign extends to 64 bits.
-        if ( BitsLong.isSet(val, LEN-1) )
-            val = BitsLong.set(v, LEN, LBITS) ;
-        return val ;
+        if ( BitsLong.isSet(val, LEN - 1) )
+            val = BitsLong.set(v, LEN, LBITS);
+        return val;
     }
+    
+    // Same - renamed.
+    
+    public static long pack56(long v) {
+        if ( v >= MIN && v <= MAX ) {
+            v = BitsLong.clear(v, LEN, LBITS);
+            return v;
+        } else
+            return -1;
+    }
+
+    public static long unpack56(long v) {
+        long val = BitsLong.clear(v, LEN, LBITS);
+        // Sign extends to 64 bits.
+        if ( BitsLong.isSet(val, LEN - 1) )
+            val = BitsLong.set(v, LEN, LBITS);
+        return val;
+    }
+
 }

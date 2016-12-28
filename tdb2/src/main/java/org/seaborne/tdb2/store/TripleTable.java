@@ -20,7 +20,7 @@ package org.seaborne.tdb2.store ;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.iterator.NullIterator ;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -66,7 +66,7 @@ public class TripleTable extends TableBase {
     public Iterator<Triple> find(Node s, Node p, Node o) {
         Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o) ;
         if ( iter == null )
-            return new NullIterator<>() ;
+            return Iter.nullIterator() ;
         Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter) ;
         return iter2 ;
     }
