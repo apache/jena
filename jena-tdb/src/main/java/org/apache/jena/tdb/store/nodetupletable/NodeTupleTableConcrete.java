@@ -102,7 +102,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
-                if (NodeId.isDoesNotExist(id)) return false ;
+                if (NodeId.isDoesNotExist(id)) 
+                    return false ;
                 n[i] = id ;
             }
 
@@ -141,7 +142,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             for (int i = 0; i < nodes.length; i++)
             {
                 NodeId id = idForNode(nodes[i]) ;
-                if (NodeId.isDoesNotExist(id)) return Iter.nullIterator() ;
+                if (NodeId.isDoesNotExist(id)) 
+                    return Iter.nullIterator() ;
                 n[i] = id ;
             }
             return find(n) ; // **public call
