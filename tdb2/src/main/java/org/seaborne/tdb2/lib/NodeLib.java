@@ -98,7 +98,7 @@ public class NodeLib
 
     private static void deallocDigest(MessageDigest digest) { digest.reset() ; digesters.put(digest) ; }
     
-    // XXX Revisit!
+    // TODO Revisit!
     private static void hash(Hash h, String lex, String lang, String datatype, String nodeName)
     {
         if ( datatype == null )

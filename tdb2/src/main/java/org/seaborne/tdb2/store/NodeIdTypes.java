@@ -199,7 +199,6 @@ public enum NodeIdTypes {
     }
 
     public static NodeIdTypes intToEnum(int x) {
-        // XXX Convert when enums are 7 bits.
         if ( x >= 0x80 )
             throw new IllegalArgumentException("Value '"+x+"' not legal: too large");
         if ( x != 0 )

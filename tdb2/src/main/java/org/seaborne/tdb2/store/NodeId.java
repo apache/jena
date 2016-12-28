@@ -47,6 +47,10 @@ public class NodeId implements Comparable<NodeId>
     // Internal consistency checks.
     private static final boolean CHECKING = true;
     
+    // Code search:
+    // [64 bits]
+
+    
     // Encoding:
     //   8 bits type, except PTR which is 0 high bit.
     //   24 bits int
@@ -66,9 +70,6 @@ public class NodeId implements Comparable<NodeId>
     //   value1 is not used.
     //   value2 is 56 bits
     // type is a type and is OR'ed into value2 to store.
-    
-    // XXX CHECK!!!
-    // XXX TESTS!!!
     
     final NodeIdTypes type;
     final int  value1;
@@ -99,11 +100,10 @@ public class NodeId implements Comparable<NodeId>
 //    public int  getPtrHi() { return value1 & 0x00FFFFFF; }
 
     // 64 bit
-    public long getPtrLocation()    { return getValueNoType(); }
-    public long getPtrLo()          { return getValueNoType(); }
-    public int  getPtrHi()          { return value1 & 0x00FFFFFF; }
-    
-    public long getValueNoType()    { return value2 & 0x00FFFFFFFFFFFFFFL; }
+    public long getPtrLocation()    { return value2; }
+    // Long.
+//    public long getPtrLo()          { return value2; }
+//    public int  getPtrHi()          { return value1; }
     
     public int getTypeValue()       { return type.type(); }
     
@@ -156,12 +156,6 @@ public class NodeId implements Comparable<NodeId>
 //        return NodeIdTypes.isDecimal(nodeId.type());
 //    }
 //    
-//    // XXX Chance for a cache?
-//    private static NodeId create(int v1, long v2) {
-//        int t = v1 >> 24;
-//        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-//        return create(type, v1, v2);
-//    }
 
     /** Create from a long-encoded value */
     /*package*/ static NodeId createRaw(NodeIdTypes type, long value) {
@@ -212,9 +206,9 @@ public class NodeId implements Comparable<NodeId>
         
         if ( this.isInline() ) {
             String displayName = this.type().toString();
-            return String.format("[%s 0x%014X]", displayName, BitsLong.clear(value2,56,64));
+            return String.format("[%s 0x%014X]", displayName, value2);
         }
-        // XXX 64 bits
+        // [64 bits]
         //return String.format("[%08X-%016X]", value1, value2);
         return String.format("[0x%16X]", value2);
     }

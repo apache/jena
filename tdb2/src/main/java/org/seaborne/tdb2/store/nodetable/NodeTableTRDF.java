@@ -71,10 +71,9 @@ public class NodeTableTRDF extends NodeTableNative {
 
     @Override
     protected Node readNodeFromTable(NodeId id) {
-        // XXX Synchronized needed?
         try {
             // Paired : [*]
-            long x = id.getPtrLo();
+            long x = id.getPtrLocation();
             transport.readPosition(x) ;
             RDF_Term term = new RDF_Term() ;
             term.read(protocol) ;

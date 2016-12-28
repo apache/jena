@@ -18,7 +18,7 @@
 package org.seaborne.tdb2.store.value;
 
 public class DoubleNode {
-    // 64 bits of value; collapses NaNs to a singl2 value.
+    // 64 bits of value; collapses NaNs to a single value.
 
     public static long pack(double v) {
         return Double.doubleToLongBits(v);

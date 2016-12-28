@@ -30,25 +30,22 @@ import org.junit.Test ;
 public class TestNodeId
 {
     
-    // XXX More tests
-    // ByteBuffer and byte[]
-    // xsd:int vs xsd:integer
-    // NodeIdTypes    
-    // Inlines
-    
     // Pointers.
     @Test public void nodeId_ptr_01() {
         NodeId nodeId = NodeIdFactory.createPtrLong(17, 37);
         assertEquals(NodeIdTypes.PTR, nodeId.type());
-        assertEquals(37L, nodeId.getPtrLo());
-        assertEquals(17, nodeId.getPtrHi());
+//        assertEquals(37L, nodeId.getPtrLo());
+//        assertEquals(17, nodeId.getPtrHi());
+        assertEquals(37L, nodeId.getValue2());
+        assertEquals(17, nodeId.getValue1());
     }
     
     @Test public void nodeId_ptr_02() {
         NodeId nodeId = NodeIdFactory.createPtr(37);
         assertEquals(NodeIdTypes.PTR, nodeId.type());
-        assertEquals(37L, nodeId.getPtrLo());
-        assertEquals(0, nodeId.getPtrHi());
+//        assertEquals(37L, nodeId.getPtrLo());
+//        assertEquals(0, nodeId.getPtrHi());
+        assertEquals(37L, nodeId.getPtrLocation());
     }
 
     @Test public void nodeId_ptr_03() {

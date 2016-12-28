@@ -21,6 +21,9 @@ public class NOTES {
     // Check TestTxn* from Jena.
     // **** Logging to JUL by default. fu-t2.
 
+    // Next of -1 ((O+1),S,P)
+
+    
     // Longer NodeIds
     //   And a mode to record datatype?
     //   Hash version
@@ -41,7 +44,7 @@ public class NOTES {
     //    R_commit, R_abort, R_end, W_Prepare, W_Commit, W_Abort, W_End
     // Open mode: 
     //TxnMode(WRITE, READ(=READ_ISOLATED), READ_COMMITED, READ_ONLY, READ_ISOLATED , ISOLATED)
-    //  begin() == begin(READ_ISOLATED) ;
+    //  begin() == begn(READ_ISOLATED) ;
     // Autocommit via DatasetBuffered+on-disk patch.
     
     // *** Components:

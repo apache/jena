@@ -160,7 +160,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             throw new TransactionException("Can't write") ;
     }
 
-    // ?? XXX Optimize by integrating with add/delete operations.
+    // TODO ?? Optimize by integrating with add/delete operations.
     private final void notifyAdd(Node g, Node s, Node p, Node o) {
         if ( monitor == null )
             return ;

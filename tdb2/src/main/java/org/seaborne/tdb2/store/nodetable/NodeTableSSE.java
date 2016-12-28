@@ -70,7 +70,7 @@ public class NodeTableSSE extends NodeTableNative {
     protected final Node readNodeFromTable(NodeId id)
     {
         // Paired : [*]
-        long x = id.getPtrLo();
+        long x = id.getPtrLocation();
         if ( x >= objects.length() )
             return null ;
         return fetchDecode(x, objects) ;

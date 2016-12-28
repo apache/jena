@@ -35,11 +35,6 @@ public class NodeIdFactory
     // On-disk: may be shorter (controlled by get/set ByteBuffer and byte[]).
     // In-emmeory - always int-long
     
-    // XXX Adjustable length:
-    // 1+3+8
-    // 1+7
-    // Hashing switch.
-    
     // XXX Chance for a cache?
 
     // 64 bit create
@@ -67,7 +62,6 @@ public class NodeIdFactory
         return createNew(type, 0, v2);
     }
     
-    // XXX Chance for a small cache?
     private static NodeId create(NodeIdTypes type, int v1, long v2) {
         if ( isSpecial(type) ) {
             if ( NodeId.equals(NodeId.NodeDoesNotExist, v1, v2) )

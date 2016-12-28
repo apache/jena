@@ -167,7 +167,6 @@ public class NodeTableCache implements NodeTable {
 
     @Override
     public List<Node> bulkNodeIdToNode(List<NodeId> nodeIds) {
-        // XXX
         return NodeTableOps.bulkNodeIdToNodeImpl(this, nodeIds) ;
     }
 

@@ -149,7 +149,6 @@ public class TupleLib
             int j = tMap.getSlotIdx(i) ;
             // i'th Nodeid goes to j'th bytes slot.
             NodeIdFactory.set(tuple.get(j), b, i*SizeOfLong) ;
-            //XXX Remove Bytes.setLong(tuple.get(j).getId(), b, i*SizeOfLong) ;
         }
             
         return factory.create(b) ;

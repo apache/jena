@@ -25,7 +25,9 @@ import org.seaborne.tdb2.store.TripleTable ;
 public class NOTES_TDB3 {
 
     // Check index find code for efficences
+    // Revisit NodeLib.hash
 
+    // Pros and cons of hash ids.
     
     // NodeID changes. Adjustable NodeId length
     // Reaper::

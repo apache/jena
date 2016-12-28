@@ -215,7 +215,6 @@ public class DateTimeNode
             // Formatting needed : int->any
             if ( fractionSec != 0 ) {
                 sb.append(".");
-                // TODO Do better
                 if ( fractionSec % 100 == 0 )
                     NumberUtils.formatInt(sb, fractionSec / 100, 1);
                 else if ( fractionSec % 10 == 0 )

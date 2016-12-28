@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -158,13 +157,12 @@ public class NodeIdInline {
         if ( ! node.isLiteral() )
             return false;
         RDFDatatype dtn = node.getLiteralDatatype();
-        // XXX Non-loop
-        for ( RDFDatatype dt : datatypes )
-            if ( dt.equals(dtn) ) return true;
-        return false;
+        return datatypes.contains(dtn);
     }
 
     private static NodeId inline$(Node node) {
+        if ( ! hasInlineDatatype(node) )
+            return null;
         LiteralLabel lit = node.getLiteral();
         // Decimal is a valid supertype of integer but we handle integers and decimals
         // differently.
@@ -323,8 +321,6 @@ public class NodeIdInline {
             }
             case XSD_BOOLEAN : {
                 long val = nodeId.getValue2();
-                // XXX 64 bits.
-                val = BitsLong.clear(val, 56, 64);
                 if ( val == 0 )
                     return NodeConst.nodeFalse;
                 if ( val == 1 )
