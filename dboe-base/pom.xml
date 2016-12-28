@@ -16,20 +16,17 @@
    information regarding copyright ownership.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation= "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>dboe-base</artifactId>
   <packaging>jar</packaging>
   <name>Mantis (${project.artifactId})</name>
-  <version>0.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>

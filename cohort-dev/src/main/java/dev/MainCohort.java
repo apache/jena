@@ -17,7 +17,6 @@
 
 package dev;
 
-import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.NodeIdFactory;

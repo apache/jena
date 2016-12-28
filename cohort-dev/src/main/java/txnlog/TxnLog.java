@@ -15,7 +15,6 @@
  *  information regarding copyright ownership.
  */
 
-
 package txnlog;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;

@@ -15,7 +15,6 @@
  *  information regarding copyright ownership.
  */
 
-
 package txnlog;
 
 import java.io.BufferedOutputStream ;

@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
@@ -38,28 +38,27 @@
         <dependency>
         <groupId>org.seaborne.mantis</groupId>
         <artifactId>dboe-quack</artifactId>
-        <version>0.0.0-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
         </dependency>
     -->
     
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-trans-data</artifactId>
-      <version>0.0.0-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Temp -->
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>tdb2</artifactId>
-      <version>0.0.0-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Require a logging implementation -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId> 
-      <version>${ver.slf4j}</version>
     </dependency>
 
     <!--

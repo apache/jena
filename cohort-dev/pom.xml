@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
@@ -36,37 +36,37 @@
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-base</artifactId>
-      <version>0.0.0-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-transaction</artifactId>
-      <version>0.0.0-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
    </dependency>
 
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>dboe-index</artifactId>
-     <version>0.0.0-SNAPSHOT</version>
+     <version>0.2.0-SNAPSHOT</version>
    </dependency>
    
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>dboe-index-test</artifactId>
-     <version>0.0.0-SNAPSHOT</version>
+     <version>0.2.0-SNAPSHOT</version>
    </dependency>
    
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>dboe-trans-data</artifactId>
-     <version>0.0.0-SNAPSHOT</version>
+     <version>0.2.0-SNAPSHOT</version>
    </dependency>
 
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>tdb2</artifactId>
-     <version>0.0.0-SNAPSHOT</version>
+     <version>0.2.0-SNAPSHOT</version>
    </dependency>
 
    <!-- Require a logging implementation -->

@@ -14,7 +14,7 @@
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
  */
- 
+
 package org.seaborne.dboe.transaction.txn;
 
 import org.apache.jena.query.ReadWrite ;

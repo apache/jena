@@ -14,7 +14,7 @@
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
  */
- 
+
 package parallel;
 
 import java.util.ArrayList ;
