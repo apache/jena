@@ -33,7 +33,7 @@ import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.value.DateTimeNode ;
-import org.seaborne.tdb2.store.value.DecimalNode ;
+import org.seaborne.tdb2.store.value.DecimalNode56;
 import org.seaborne.tdb2.store.value.IntegerNode ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
@@ -249,12 +249,14 @@ public class NodeId_v1 implements Comparable<NodeId_v1>
             // chopping by .trim is safe.
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim()) ;
             // Does range checking.
-            DecimalNode dn = DecimalNode.valueOf(decimal) ;
+            DecimalNode56 dn = DecimalNode56.valueOf(decimal) ;
             // null is "does not fit"
-            if ( dn != null )
-                // setType
-                return new NodeId_v1(dn.pack()) ;
-            else
+            if ( dn != null ) {
+                long x = dn.pack();
+                // Set type.
+                long v = NodeId_v1.setType(x, NodeId_v1.DECIMAL);
+                return new NodeId_v1(v) ;
+            } else
                 return null ;
         } else { 
             // Not decimal.
@@ -352,7 +354,7 @@ public class NodeId_v1 implements Comparable<NodeId_v1>
                 return n ;
             }
             case DECIMAL : {
-                BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
+                BigDecimal d = DecimalNode56.unpackAsBigDecimal(v) ;
                 String x = d.toPlainString() ;
                 return NodeFactory.createLiteral(x, XSDDatatype.XSDdecimal) ;
             }

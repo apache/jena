@@ -23,7 +23,7 @@ import static org.seaborne.tdb2.store.NodeIdTypes.XSD_BOOLEAN;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATE;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATETIME;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DECIMAL;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DOUBLE;
+import static org.seaborne.tdb2.store.NodeIdTypes.XSD_FLOAT;
 import static org.seaborne.tdb2.store.NodeIdTypes.XSD_INTEGER;
 
 import java.math.BigDecimal;
@@ -150,7 +150,7 @@ public class NodeIdInline {
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim());
             
             // Does range checking.
-            DecimalNode dn = DecimalNode.valueOf(decimal);
+            DecimalNode56 dn = DecimalNode56.valueOf(decimal);
             // null is "does not fit"
             if ( dn != null )
                 // setType
@@ -191,7 +191,7 @@ public class NodeIdInline {
         if ( XSDDatatype.XSDfloat.isValidLiteral(lit) ) {
             float f =  ((Number)lit.getValue()).floatValue();
             long v = FloatNode.pack(f);
-            return NodeId.createValue(XSD_DOUBLE, v);
+            return NodeId.createValue(XSD_FLOAT, v);
         }
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) {

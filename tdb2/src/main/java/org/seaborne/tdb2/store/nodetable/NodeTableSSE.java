@@ -63,7 +63,7 @@ public class NodeTableSSE extends NodeTableNative {
         // Synchronized in accessIndex
         long x = encodeStore(node, objects) ;
         // Paired : [*]
-        return NodeIdFactory.createPtr(0, x);
+        return NodeIdFactory.createPtr(x);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class NodeTableTRDF extends NodeTableNative {
         try {
             long x = diskFile.length() ;
             // Paired : [*]
-            NodeId nid = NodeIdFactory.createPtr(0, x);
+            NodeId nid = NodeIdFactory.createPtr(x);
             term.write(protocol) ;
             //transport.flush() ;
             return nid ;

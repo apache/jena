@@ -24,8 +24,10 @@ import static org.seaborne.tdb2.store.NodeIdTypes.isSpecial;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.jena.atlas.lib.BitsInt;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.lib.Bytes;
+import org.seaborne.tdb2.TDBException;
 
 /** Factory for NodeIds, including to/from disk forms via ByteBuffers and byte[].*/
 final
@@ -40,11 +42,30 @@ public class NodeIdFactory
     // Hashing switch.
     
     // XXX Chance for a cache?
-    private static NodeId xcreate(int v1, long v2) {
-        // XXX 64bit
+
+    // 64 bit create
+    private static NodeId create(long value2) {
+        if ( !BitsLong.isSet(value2, 63) )
+            return createPtr(value2);
+        // Inline.
+        long v2 = value2;
+        int t = (int)BitsLong.unpack(v2, 56, 63);   // 7 bits
+        v2 = BitsLong.clear(v2, 56, 64);
+        NodeIdTypes type = NodeIdTypes.intToEnum(t);
+        if ( type == NodeIdTypes.SPECIAL )
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+        return new NodeId(type, 0, v2);
+    }
+    
+    // Long create.
+    private static NodeId create(int v1, long v2) {
+        if ( BitsInt.isSet(v1, 32) )
+            return createPtrLong(v1, v2);
         int t = v1 >> 24;
         NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        return create(type, v1, v2);
+        if ( type == NodeIdTypes.SPECIAL )
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+        return createNew(type, 0, v2);
     }
     
     // XXX Chance for a small cache?
@@ -62,16 +83,23 @@ public class NodeIdFactory
                 return NodeId.NodeIdUndefined;
             //throw new IllegalArgumentException("Special not recognized");
         }
+        return createNew(type, v1, v2);
+    }
+    
+    public static NodeId createValue(NodeIdTypes type, long value) {
+        // 64 bit.
+        return createNew(type, 0, value);
+    }
+    
+    private static NodeId createNew(NodeIdTypes type, int v1, long v2) {
         return new NodeId(type, v1, v2);
     }
 
-    public static NodeId createValue(NodeIdTypes type, long value) {
-        // 64 bit.
-        value = BitsLong.pack(value, type.type(), 56, 64);
-        return new NodeId(type, 0, value);
+    public static NodeId createPtr(long lo) {
+        return createNew(PTR, 0, lo);
     }
-    
-    public static NodeId createPtr(int hi, long lo) {
+
+    /*package*/ /*long*/ static NodeId createPtrLong(int hi, long lo) {
         return create(PTR, hi, lo);
     }
     
@@ -85,95 +113,114 @@ public class NodeIdFactory
     /** Relative {@code ByteBuffer} {@code get} */
     public static NodeId get(ByteBuffer b)   { 
         long value2 = b.getLong();
-        return make(value2);
+        return decode(value2);
     }
 
     public static NodeId get(byte[] b, int idx) {
         long value2 = Bytes.getLong(b, idx);
-        return make(value2);
+        return decode(value2);
     }
 
     public static NodeId get(ByteBuffer b, int idx) {
         long value2 = b.getLong(idx);
-        return make(value2);
+        return decode(value2);
     }
 
-    // Make : 64 bit version,
-    private static NodeId make(long value2) {
-        int x = (int)BitsLong.unpack(value2, 56, 64);
-        NodeIdTypes t = NodeIdTypes.intToEnum(x);
-        return new NodeId(t, 0, value2);
+    // 64 bit version
+    private static NodeId decode(long value2) {
+        return NodeIdFactory.create(value2);
     }
 
     /** Not relative - set at position zero */
     public static void set(NodeId nodeId, byte[] b) {
-        Bytes.setLong(nodeId.value2, b, 0);
+        long v2 = encode(nodeId);
+        Bytes.setLong(v2, b, 0);
+    }
+
+    private static long encode(NodeId nodeId) {
+        long x = nodeId.value2;
+        if ( nodeId.isPtr() )
+            return x;
+        x = BitsLong.pack(x, nodeId.getTypeValue(), 56, 63);
+        // Set high it.
+        x = BitsLong.set(x, 63);
+        return x; 
     }
 
     /** Relative {@code set} */
     public static void set(NodeId nodeId, ByteBuffer b) {
-        b.putLong(nodeId.value2);
+        long v2 = encode(nodeId);
+        b.putLong(v2);
     }
 
     public static void set(NodeId nodeId, byte[] b, int idx) {
-        Bytes.setLong(nodeId.value2, b, idx);
+        long v2 = encode(nodeId);
+        Bytes.setLong(v2, b, idx);
     }
 
     public static void set(NodeId nodeId, ByteBuffer b, int idx) {
-        b.putLong(idx, nodeId.value2);
+        long v2 = encode(nodeId);
+        b.putLong(idx, v2);
     }
-    
     
     public static void setNext(NodeId nodeId, byte[] b, int idx) {
-        Bytes.setLong(nodeId.value2+1, b, idx);
+        long v2 = encode(nodeId);
+        Bytes.setLong(v2+1, b, idx);
     }
 
-
 //    /** Relative {@code ByteBuffer} {@code get} */
-//    public static NodeId get(ByteBuffer b)   { 
+//    public static NodeId get(ByteBuffer b)   {
 //        int value1 = b.getInt();
 //        long value2 = b.getLong();
-//        return create(value1,value2);
+//        return decode(value1,value2);
 //    }
 //    
 //    public static NodeId get(byte[] b, int idx) {
 //        int value1 = Bytes.getInt(b, idx);
 //        long value2 = Bytes.getLong(b, idx+SystemTDB.SizeOfInt);
-//        return create(value1, value2);
+//        return decode(value1, value2);
 //    }
 //
 //    public static NodeId get(ByteBuffer b, int idx) {
 //        int value1 = b.getInt(idx);
 //        long value2 = b.getLong(idx+SystemTDB.SizeOfInt);
-//        return create(value1,value2);
+//        return decode(value1,value2);
+//    }
+//    
+//    private static NodeId decode(int value1, long value2) {
+//        return NodeIdFactory.create(value1, value2);
 //    }
 //    
 //    /** Not relative - set at position zero */
 //    public static void set(NodeId nodeId, byte[] b) {
-//        Bytes.setInt(nodeId.value1, b, 0);
+//        int v1 = encode(nodeId.value1);    
+//        Bytes.setInt(v1, b, 0);
 //        Bytes.setLong(nodeId.value2, b, SystemTDB.SizeOfInt);
 //    }
 //
 //    /** Relative {@code set} */
 //    public static void set(NodeId nodeId, ByteBuffer b) {
-//        b.putInt(nodeId.value1);
+//        int v1 = encode(nodeId.value1);    
+//        b.putInt(v1);
 //        b.putLong(nodeId.value2);
 //    }
 //
 //    public static void set(NodeId nodeId, byte[] b, int idx) {
-//        Bytes.setInt(nodeId.value1, b, idx);
+//        int v1 = encode(nodeId.value1);    
+//        Bytes.setInt(v1, b, idx);
 //        Bytes.setLong(nodeId.value2, b, idx+SystemTDB.SizeOfInt);
 //    }
 //
 //    public static void set(NodeId nodeId, ByteBuffer b, int idx) {
-//        b.putInt(idx, nodeId.value1);
+//        int v1 = encode(nodeId.value1);    
+//        b.putInt(idx, v1);
 //        b.putLong(idx+SystemTDB.SizeOfInt, nodeId.value2);
 //    }
 //    
 //    public static void setNext(NodeId nodeId, byte[] b, int idx) {
-//        int v1 = nodeId.value1;
+//        int v1 = encode(nodeId.value1);
 //        long v2 = nodeId.value2;
-//        // Unsigned 96 big add! 
+//        // Unsigned 96 bit add! 
 //        if ( v2 < 0 ) {
 //            if ( v2 == Long.MIN_VALUE )
 //                v1++ ;
@@ -184,6 +231,15 @@ public class NodeIdFactory
 //        Bytes.setInt(v1, b, idx);
 //        Bytes.setLong(v2, b, idx+Integer.SIZE);
 //    }
+//    private int encode(NodeId nodeId) {
+//        long x = nodeId.value1;
+//        if ( nodeId.isPtr() )
+//            return x;
+//        x = BitsInt.pack(x, nodeId.getTypeValue(), 24, 32);
+//        return x; 
+//    }
+
+
 
 
     private static AtomicInteger counter = new AtomicInteger(0xB0);

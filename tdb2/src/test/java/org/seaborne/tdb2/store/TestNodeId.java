@@ -18,246 +18,115 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.nio.ByteBuffer;
+
+import org.apache.jena.atlas.lib.BitsLong;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.junit.Test ;
-import org.seaborne.tdb2.store.NodeId ;
 
-public class TestNodeId extends BaseTest
+public class TestNodeId
 {
-//    @BeforeClass public static void beforeClass() {
-//        // If running just this test suite, then this happenes before SystemTDB initialization.    
-//        System.getProperties().setProperty("tdb:store.enableInlineLiterals", "true") ;
-//    }
     
-    @Test public void nodeId_01()
-    {
-        NodeId nodeId = NodeIdFactory.createPtr(17, 37) ;
-        assertEquals(NodeIdTypes.PTR, nodeId.type());
-        assertEquals(37L, nodeId.getPtrLo()) ;
-        assertEquals(17, nodeId.getPtrHi()) ;
-    }
-
     // XXX More tests
-    //   Double
-    //   Float
-    // Full range values
     // ByteBuffer and byte[]
     // xsd:int vs xsd:integer
     // NodeIdTypes    
     // Inlines
     
-    @Test public void nodeId_int_01()
-    { test("1", NodeFactoryExtra.parseNode("1")) ; }
-
-    @Test public void nodeId_int_02()
-    { test("2", NodeFactoryExtra.parseNode("2")) ; }
-
-    @Test public void nodeId_int_03()
-    { test("'3'^^xsd:int", NodeFactoryExtra.parseNode("3")) ; }
-
-    @Test public void nodeId_int_04()
-    { test("'3'", (Node)null) ; }
-
-    @Test public void nodeId_int_05()
-    { test("-1",  NodeFactoryExtra.parseNode("-1")) ; }
+    // Pointers.
+    @Test public void nodeId_ptr_01() {
+        NodeId nodeId = NodeIdFactory.createPtrLong(17, 37);
+        assertEquals(NodeIdTypes.PTR, nodeId.type());
+        assertEquals(37L, nodeId.getPtrLo());
+        assertEquals(17, nodeId.getPtrHi());
+    }
     
-    @Test public void nodeId_int_06()
-    { test("-180",  NodeFactoryExtra.parseNode("-180")) ; }
-
-    @Test public void nodeId_int_07()
-    { test("01",  NodeFactoryExtra.parseNode("1")) ; }
-    
-    @Test public void nodeId_int_08()
-    { test("+01",  NodeFactoryExtra.parseNode("1")) ; }
-    
-    @Test public void nodeId_int_09()
-    // More than Long.MAX_VALUE
-    { test("92233720368547758070",  (Node)null) ; }
-
-    // On the edge.
-    
-    static long X = 1L<<55 ;        // Just too large 
-    static long Y = -((1L<<55) +1) ;   // Just too small 
-    
-    @Test public void nodeId_int_10()
-    { test("\""+Long.toString(X)+"\"^^xsd:integer",  (Node)null) ; }
-
-    @Test public void nodeId_int_11()
-    { 
-        Node n = NodeValue.makeInteger(X-1).asNode() ;
-        test("\""+Long.toString(X-1)+"\"^^xsd:integer",  n) ; 
+    @Test public void nodeId_ptr_02() {
+        NodeId nodeId = NodeIdFactory.createPtr(37);
+        assertEquals(NodeIdTypes.PTR, nodeId.type());
+        assertEquals(37L, nodeId.getPtrLo());
+        assertEquals(0, nodeId.getPtrHi());
     }
 
-    @Test public void nodeId_int_12()
-    { test("\""+Long.toString(Y)+"\"^^xsd:integer",  (Node)null) ; }
+    @Test public void nodeId_ptr_03() {
+        NodeId nodeId = NodeIdFactory.createPtr(39);
+        // 64 bit
+        long x = nodeId.getValue2();
+        long t = BitsLong.unpack(x, 56, 64);
+        assertEquals(0, t);
+        assertEquals(NodeIdTypes.PTR.type(), t);
+    }
+    
+    // Specials.
+    @Test public void nodeId_special_01() {
+        assertFalse(NodeId.isConcrete(NodeId.NodeDoesNotExist));
+        assertEquals(NodeIdTypes.SPECIAL, NodeId.NodeDoesNotExist.type());
+    }
+    
+    @Test public void nodeId_special_02() {
+        assertFalse(NodeId.isConcrete(NodeId.NodeIdAny));
+        assertEquals(NodeIdTypes.SPECIAL, NodeId.NodeIdAny.type());
+    }
+    
+    // Storage
+    
+    @Test public void nodeId_codec_01() { testCodecArray(NodeIdFactory.createPtr(37)); }
+    
+    @Test public void nodeId_codec_02() { testCodecArray(NodeId.createValue(NodeIdTypes.XSD_INTEGER, 1)); }
+    
+    // 56 bit -1.
+    @Test public void nodeId_codec_03() { testCodecArray(NodeId.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
-    @Test public void nodeId_int_13()
-    { 
-        Node n = NodeValue.makeInteger(Y+1).asNode() ;
-        test("\""+Long.toString(Y+1)+"\"^^xsd:integer",  n) ; 
+    @Test public void nodeId_codec_04() { testCodecArray("12.34"); }
+    
+    @Test public void nodeId_codec_05() { testCodecArray("'2.2'^^xsd:float"); }
+
+    private static void testCodecArray(String str) {
+        Node n = NodeFactoryExtra.parseNode(str);
+        NodeId nid = NodeIdInline.inline(n);
+        testCodecArray(nid);
     }
 
-    @Test public void nodeId_int_20()
-    { test("'300'^^xsd:byte",  (Node)null) ; }
+    private static void testCodecArray(NodeId nid) {
+        testCodecArray(nid, nid);
+    }
     
-
-    @Test public void nodeId_decimal_1()
-    { test("3.14", NodeFactoryExtra.parseNode("3.14")) ; }
-
-    @Test public void nodeId_decimal_2()
-    { test("123456789.123456789", (Node)null) ; }
+    private static void testCodecArray(NodeId testNid,NodeId expected) {
+        byte[] b = new byte[8];
+        NodeIdFactory.set(testNid, b);
+        NodeId nid1 = NodeIdFactory.get(b);
+        assertEquals(expected, nid1);
+    }
     
-    // Just this once, directly create the Node.
-    @Test public void nodeId_decimal_3()
-    { test("12.89", NodeFactory.createLiteral("12.89", XSDDatatype.XSDdecimal)) ; }
-
-    @Test public void nodeId_decimal_4()
-    { test("-1.0",  NodeFactoryExtra.parseNode("-1.0")) ; }
+    @Test public void nodeId_codec_11() { testCodecBuffer(NodeIdFactory.createPtr(37)); }
     
-    // This number has > 47 bits of value : 2412.80478192688
-    @Test public void nodeId_decimal_5()
-    { test("2412.80478192688",  (Node)null) ; }
+    @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createValue(NodeIdTypes.XSD_INTEGER, 1)); }
     
-    // This number has > 47 bits of value : -2412.80478192688
-    @Test public void nodeId_decimal_6()
-    { test("-2412.80478192688",  (Node)null) ; }
+    @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
-    @Test public void nodeId_decimal_7()
-    { test("'0.00000001'^^xsd:decimal",  
-           NodeFactory.createLiteral("0.00000001", XSDDatatype.XSDdecimal)) ; 
+    @Test public void nodeId_codec_14() { testCodecBuffer("12.34"); }
+    
+    @Test public void nodeId_codec_15() { testCodecBuffer("'2.2'^^xsd:float"); }
+
+    private static void testCodecBuffer(String str) {
+        Node n = NodeFactoryExtra.parseNode(str);
+        NodeId nid = NodeIdInline.inline(n);
+        testCodecArray(nid);
     }
 
-    @Test public void nodeId_decimal_8()
-    { test("0.00000001", NodeFactory.createLiteral("0.00000001", XSDDatatype.XSDdecimal)) ; }
-
-    @Test public void nodeId_dateTime_01()
-    { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_02()
-    { test("'2008-04-28T15:36:15Z'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_03()
-    { test("'2008-04-28T15:36:15+00:00'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_04()
-    { test("'2008-04-28T15:36:15-05:00'^^xsd:dateTime") ; }
-
-    // No timezone.
-    @Test public void nodeId_dateTime_05()
-    { test("'2008-04-28T15:36:15'^^xsd:dateTime") ; }
-
-    // Note the trailing zero - system does not preserve perfect lexical forms. 
-    @Test public void nodeId_dateTime_06()
-    { test("'2008-04-28T15:36:05.450'^^xsd:dateTime", "'2008-04-28T15:36:05.45'^^xsd:dateTime") ; }
-
-    // Java bug: T24:00:00 not accepted by DatatypeFactory.newXMLGregorianCalendar(lex)
-//    @Test public void nodeId_dateTime_07()
-//    { test("'2008-04-28T24:00:00'^^xsd:dateTime", NodeFactory.parseNode("'2008-04-29T00:00:00'^^xsd:dateTime")) ; }
+    private static void testCodecBuffer(NodeId nid) {
+        testCodecArray(nid, nid);
+    }
     
-    // Out of range.
-    @Test public void nodeId_dateTime_08()
-    { test("'8008-04-28T15:36:05.45'^^xsd:dateTime", (Node)null) ; }
-
-    @Test public void nodeId_dateTime_09()
-    { test("'2008-04-28T15:36:05.001'^^xsd:dateTime") ; }
-    
-    @Test public void nodeId_dateTime_10()
-    { test("'2008-04-28T15:36:05.01'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_11()
-    { test("'2008-04-28T15:36:05.1'^^xsd:dateTime") ; }
-
-    // Canonicalization test - fractional seconds.
-    @Test public void nodeId_dateTime_12()
-    { test("'2008-04-28T15:36:05.010'^^xsd:dateTime", "'2008-04-28T15:36:05.01'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_13()
-    { test("'2008-04-28T15:36:05.100'^^xsd:dateTime", "'2008-04-28T15:36:05.1'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_14()
-    { test("'2012-07-29T20:39:11.100+01:15'^^xsd:dateTime", "'2012-07-29T20:39:11.1+01:15'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_15()
-    { test("'2012-07-29T20:39:11.100-01:15'^^xsd:dateTime", "'2012-07-29T20:39:11.1-01:15'^^xsd:dateTime") ; }
-
-
-    @Test public void nodeId_dateTime_16()
-    { test("'2012-07-29T20:39:11.100+01:30'^^xsd:dateTime", "'2012-07-29T20:39:11.1+01:30'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_17()
-    { test("'2012-07-29T20:39:11.100-01:45'^^xsd:dateTime", "'2012-07-29T20:39:11.1-01:45'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_dateTime_18()
-    { test("'2012-07-29T20:39:11.100Z'^^xsd:dateTime", "'2012-07-29T20:39:11.1Z'^^xsd:dateTime") ; }
-
-    @Test public void nodeId_date_1()
-    { test("'2008-04-28Z'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28Z'^^xsd:date")) ; }
-
-    @Test public void nodeId_date_2()
-    { test("'2008-04-28+00:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28+00:00'^^xsd:date")) ; }
-
-    @Test public void nodeId_date_3()
-    { test("'2008-04-28-05:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28-05:00'^^xsd:date")) ; }
-
-    @Test public void nodeId_date_4()
-    { test("'2008-04-28+02:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
-
-    @Test public void nodeId_date_5()
-    { test("'8008-04-28'^^xsd:date", (Node)null) ; }
-
-    @Test public void nodeId_date_6()
-    { test("'2012-07-29+06:15'^^xsd:date", "'2012-07-29+06:15'^^xsd:date") ; }
-
-    @Test public void nodeId_date_7()
-    { test("'2012-07-29-06:30'^^xsd:date", "'2012-07-29-06:30'^^xsd:date") ; }
-
-    @Test public void nodeId_boolean_1()
-    { test("'true'^^xsd:boolean", NodeFactoryExtra.parseNode("'true'^^xsd:boolean")) ; }
-
-    @Test public void nodeId_boolean_2()
-    { test("'false'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
-
-    @Test public void nodeId_boolean_3()
-    { test("'1'^^xsd:boolean", NodeFactoryExtra.parseNode("'true'^^xsd:boolean")) ; }
-
-    @Test public void nodeId_boolean_4()
-    { test("'0'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
-
-    private void test(String x) { test(x, x) ; }
-    
-    private void test(String x, String expected)
-    {
-        test(x, NodeFactoryExtra.parseNode(expected)) ;
+    private static void testCodecBuffer(NodeId testNid,NodeId expected) {
+        ByteBuffer b = ByteBuffer.allocate(8);
+        NodeIdFactory.set(testNid, b);
+        NodeId nid1 = NodeIdFactory.get(b);
+        assertEquals(expected, nid1);
     }
 
-    private void test(String x, Node correct)
-    {
-        Node n = NodeFactoryExtra.parseNode(x) ;
-        NodeId nodeId = NodeId.inline(n) ;
-        boolean b = NodeId.hasInlineDatatype(n) ;
-
-        if ( nodeId != null )
-            assertTrue("Converted NodeId but datatype test was false", b) ;
-        
-        if ( correct == null )
-        {
-            assertNull("Expected no encoding: got: "+nodeId, nodeId) ;
-            return ;
-        }
-        assertNotNull("Expected inlining: "+n, nodeId) ;
-        Node n2 = NodeId.extract(nodeId) ;
-        assertNotNull("Expected recovery", n2) ;
-        
-        String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")" ;
-        
-        assertTrue("Not same value: "+s, correct.sameValueAs(n2)) ;
-        
-        // Term equality.
-        assertEquals("Not same term", correct, n2) ;
-    }
 }

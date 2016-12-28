@@ -21,9 +21,7 @@ package org.seaborne.tdb2.store;
 import static org.apache.jena.sparql.expr.Expr.CMP_EQUAL;
 import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
 import static org.seaborne.tdb2.store.NodeIdTypes.SPECIAL;
-import static org.seaborne.tdb2.store.NodeIdTypes.isSpecial;
 
-import org.apache.jena.atlas.lib.BitsInt;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
@@ -51,19 +49,24 @@ public class NodeId implements Comparable<NodeId>
     private static final boolean CHECKING = true;
     
     // Encoding:
-    //   8 bits type
+    //   8 bits type, except PTR which is 0 high bit.
     //   24 bits int
     //   64 bit value
     // The high byte of value1==type as integer value
     // In-memory:
     // Long: 
+    //   type PTR high bit zero, then 31+64 bits of value.
+    //  Inlines:
+    //   type   is 8 bits
     //   value1 is 24 bits
     //   value2 is 64 bits
-    //   type is a type and is OR'ed into value 1 to store.
-    // 64 bit: 
-    //   value1 is 0
+    //   type is a type and is OR'ed into value1 to store.
+    // Short: 64 bit:
+    //   type PTR high bit zero, then 63 bits of value.
+    //  Inlines:
+    //   value1 is not used.
     //   value2 is 56 bits
-    //   type is a type and is OR'ed into value2  to store.
+    // type is a type and is OR'ed into value2 to store.
     
     // XXX CHECK!!!
     // XXX TESTS!!!
@@ -72,6 +75,24 @@ public class NodeId implements Comparable<NodeId>
     final int  value1;
     final long value2;
     
+    /* package */ NodeId(NodeIdTypes type, int v1, long v2) {
+        if ( CHECKING ) check(type, v1, v2);
+        this.type = type;
+        value1 = v1;    // Zero for 64 bit.
+        value2 = v2;
+    }
+
+    private final void check(NodeIdTypes type, int v1, long v2) {
+            if ( type == SPECIAL )
+                return;
+            // Long
+            //    int x = BitsInt.unpack(v1, 24, 32); // Hibyte
+            // 64 bit.
+            int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
+            if ( x != 0 )
+                FmtLog.warn(getClass(), "Type byte set in long: type=%s value=%016X", type, v2);
+        }
+
     public boolean isPtr() { return type == PTR; }
     
 //    public long getPtrLocation() { return value2; }
@@ -83,9 +104,9 @@ public class NodeId implements Comparable<NodeId>
     public long getPtrLo()          { return getValueNoType(); }
     public int  getPtrHi()          { return value1 & 0x00FFFFFF; }
     
-    public long getValueNoType() { return value2 & 0x00FFFFFFFFFFFFFFL; }
+    public long getValueNoType()    { return value2 & 0x00FFFFFFFFFFFFFFL; }
     
-    public int getTypeValue() { return type.type(); }
+    public int getTypeValue()       { return type.type(); }
     
     public boolean isInline() {
         return isInline(this);
@@ -135,73 +156,43 @@ public class NodeId implements Comparable<NodeId>
 //    public static boolean isNumber(NodeId nodeId) {
 //        return NodeIdTypes.isDecimal(nodeId.type());
 //    }
-    
-    // XXX Chance for a cache?
-    private static NodeId create(int v1, long v2) {
-        int t = v1 >> 24;
-        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        return create(type, v1, v2);
-    }
-    
-    // XXX Chance for a cache?
-    private static NodeId create(NodeIdTypes type, int v1, long v2) {
-        if ( isSpecial(type) ) {
-            if ( equals(NodeDoesNotExist, v1, v2) )
-                return NodeDoesNotExist;
-            if ( equals(NodeIdAny, v1, v2) )
-                return NodeIdAny;
-            if ( equals(NodeIdDefined, v1, v2) )
-                return NodeIdDefined;
-            if ( equals(NodeIdDefined, v1, v2) )
-                return NodeIdDefined;
-            if ( equals(NodeIdUndefined, v1, v2) )
-                return NodeIdUndefined;
-
-            throw new IllegalArgumentException("Special not recognized");
-        }
-        return new NodeId(type, v1, v2);
-    }
-    
+//    
+//    // XXX Chance for a cache?
+//    private static NodeId create(int v1, long v2) {
+//        int t = v1 >> 24;
+//        NodeIdTypes type = NodeIdTypes.intToEnum(t);
+//        return create(type, v1, v2);
+//    }
+//    
+//    // XXX Chance for a cache?
+//    private static NodeId create(NodeIdTypes type, int v1, long v2) {
+//        if ( isSpecial(type) ) {
+//            if ( equals(NodeDoesNotExist, v1, v2) )
+//                return NodeDoesNotExist;
+//            if ( equals(NodeIdAny, v1, v2) )
+//                return NodeIdAny;
+//            if ( equals(NodeIdDefined, v1, v2) )
+//                return NodeIdDefined;
+//            if ( equals(NodeIdDefined, v1, v2) )
+//                return NodeIdDefined;
+//            if ( equals(NodeIdUndefined, v1, v2) )
+//                return NodeIdUndefined;
+//
+//            throw new IllegalArgumentException("Special not recognized");
+//        }
+//        return new NodeId(type, v1, v2);
+//    }
+//    
     /** Create from a long-encoded value */
     /*package*/ static NodeId createValue(NodeIdTypes type, long value) {
-        // XXX Incorrect long id version: pass type, 24 bit int and long
-        //create(type, type.type()<<24, value);
-        // 64 bits
-        long v2 = BitsLong.pack(value, type.type(), 56, 64);
-        return create(type, 0, v2);
+        return new NodeId(type, 0, value);
     }
-    
+
     /** Create from a (int,long)-encoded value */
     private static NodeId createValue(NodeIdTypes type, int value1, long value2) {
-        value1 = BitsInt.clear(value1, 24, 32);                 // XXX CONST
-        value1 = BitsInt.pack(value1, type.type(), 24, 32);     // XXX CONST
-        return create(type, value1, value2);
+        return new NodeId(type, value1, value2);
     }
 
-    public static NodeId createPtr(int hi, long lo) {
-        return create(PTR, hi, lo);
-    }
-    
-    /* package */ NodeId(NodeIdTypes type, int v1, long v2) {
-        this.type = type;
-        value1 = v1;
-        if ( CHECKING ) check(type, v1, v2);
-        value2 = v2;
-    } 
-
-    private final void check(NodeIdTypes type, int v1, long v2) {
-        if ( type == SPECIAL )
-            return;
-        // Long
-//        int x = BitsInt.unpack(v1, 24, 32); // Hibyte
-//        if ( x != type.type() )
-//            FmtLog.warn(getClass(), "Mismatch type=0x%02X : hi=0x%02X", type.type(), x);
-        // 64 bit.
-        int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
-        if ( x != type.type() )
-            FmtLog.warn(getClass(), "Mismatch type=0x%02X : hi=0x%02X", type.type(), x);
-    }
-    
     public NodeIdTypes type() { return type; } 
 
     /*package*/ int  getValue1() { return value1; }

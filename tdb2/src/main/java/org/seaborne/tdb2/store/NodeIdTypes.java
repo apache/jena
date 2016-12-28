@@ -65,11 +65,10 @@ public enum NodeIdTypes {
     ;
     public static class TYPES {
         // The type values - must be stable as many of these go on disk.
-        // enum oridinals arte not enough.
+        // enum ordinals are not enough.
         // Encode as:
         //   PTR : high bit zero, everythigj esle high bit one.
         //   7 bits of type value : 1 to 100
-        //   Some temporary types used in-memory only as marker objects.
         // Low byte of ...
         public static final int T_PTR = 0 ;
         // Value types : 1 to 100  
@@ -101,8 +100,9 @@ public enum NodeIdTypes {
         public static final int T_INVALID = enc(0x71);
         public static final int T_EXTENSION = enc(0x7F);
         
-        static int enc(int v) { return 0x80 | v; }
-        static int dec(int v) { return 0x7F & v; }
+        // Encode/decode of the type value.
+        static int enc(int v) { return v; }
+        static int dec(int v) { return v; }
     }
     
     static boolean isStorable(NodeIdTypes type) {
@@ -179,7 +179,6 @@ public enum NodeIdTypes {
     static boolean isNumber(NodeIdTypes type) {
         return isInteger(type) || isDecimal(type) || isDouble(type) || isFloat(type);
     }
-    
     
     private final int value;
     private final String displayName;

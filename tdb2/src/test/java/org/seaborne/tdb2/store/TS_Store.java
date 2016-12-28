@@ -29,6 +29,7 @@ import org.seaborne.tdb2.sys.TestOps ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestNodeId.class
+    , TestNodeIdInline.class
     , TestTripleTable.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class

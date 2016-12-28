@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.apache.jena.atlas.lib.BitsLong ;
-import org.seaborne.tdb2.store.NodeIdTypes;
 
 
 // Decimal packed into 56 bits.
@@ -96,25 +95,25 @@ public class DecimalNode56
         return pack(value, scale);
     }
 
+    /** Create the long value */
     public static long pack(long value, int scale) {
         // pack : DECIMAL , sign, scale, value
-        long v = BitsLong.pack(0, NodeIdTypes.TYPES.T_DECIMAL, ENC_LEN, Long.SIZE);
-        v = BitsLong.pack(v, scale, SCALE_LO, SCALE_HI);
+        //long v = BitsLong.pack(0, NodeIdTypes.TYPES.T_DECIMAL, ENC_LEN, Long.SIZE);
+        // pack : scale, value
+        long v = 0;
+        v = BitsLong.pack(0L, scale, SCALE_LO, SCALE_HI);
         v = BitsLong.pack(v, value, VALUE_LO, VALUE_HI);
         // No need to do something about negative numbers
         return v;
     }
 
     public static DecimalNode56 unpack(long v) {
-        // assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
         int scale = (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI);
         long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI);
         return new DecimalNode56(value, scale);
     }
 
     public static BigDecimal unpackAsBigDecimal(long v) {
-        // Can I say tuples-in-java? Or "Multiple return values"?
-        // assert BitsLong.unpack(v, 56, 64) == NodeId.DECIMAL ;
         int scale = (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI);
         long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI);
         // Sign extend value.

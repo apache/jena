@@ -32,10 +32,8 @@ public class NData {
     // -2 as inlined.
     public static NodeId n6 = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-2L, 56, 64));
     
-    // XXX Sanitize
     private static NodeId create(long v) {
-        //return NodeIdFactory.createValue(NodeIdTypes.SPECIAL, v);
-        return NodeIdFactory.createPtr(0, v);
+        return NodeIdFactory.createPtr(v);
     }
     
 
