@@ -1,10 +1,15 @@
 There is a combined Fuseki server jar:
 
-[](https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/fuseki-tdb2/)
+Release builds are available from the central maven repository:
 
-Make sure you get the latest (highest increment number).
+https://central.maven.org/maven2/org/seaborne/mantis/fuseki-tdb2/)
 
-In additon, you will need a copy of Apache Jena Fuseki to get the web pages.
+and development builds at:
+
+https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/fuseki-tdb2/)
+
+
+In addition, you will need a copy of Apache Jena Fuseki to get the web pages.
 
 ```
 ## Set the environment variable FUSEKI_HOME to the location of a
@@ -50,3 +55,6 @@ in `DB2` is:
     tdb2:location "DB2" ;
     ## This works: tdb2:unionDefaultGraph true ;
      .
+```
+
+The key difference is the declared `rdf:type` of the dataset.
