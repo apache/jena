@@ -13,7 +13,7 @@ In addition, you will need a copy of Apache Jena Fuseki to get the web pages.
 
 ```
 ## Set the environment variable FUSEKI_HOME to the location of a
-## Fuseki2 distribution topick up the admin UI web pages.
+## Fuseki2 distribution to pick up the admin UI web pages.
 export FUSEKI_HOME=???? 
 # Alternatively, copy or link "webapp" in this directory
 # to the webapp of a distribution.
@@ -58,3 +58,5 @@ in `DB2` is:
 ```
 
 The key difference is the declared `rdf:type` of the dataset.
+
+Note that the Fuseki UI does not provide a way to create TDB2 databases; a configuration file must be used. Once setup, upload, query and graph editting will be routed to the TDB2 database.
