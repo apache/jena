@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.query.ReadWrite ;
 
-import org.seaborne.dboe.sys.SystemBase ;
+import org.seaborne.dboe.sys.Sys ;
 import org.apache.jena.sparql.core.Transactional ;
 
 /**
@@ -90,7 +90,7 @@ public class ThreadTxn {
     }
     
     // System-shared executor.
-    private static Executor executor = SystemBase.executor ;
+    private static Executor executor = Sys.executor ;
     
     /*package*/ static ThreadTxn create(Transactional trans, ReadWrite mode, Runnable action, boolean isCommit) {
         Objects.requireNonNull(trans) ;

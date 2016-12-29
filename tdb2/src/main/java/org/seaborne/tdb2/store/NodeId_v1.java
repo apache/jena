@@ -30,6 +30,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import org.seaborne.dboe.sys.Sys;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.value.DateTimeNode ;
 import org.seaborne.tdb2.store.value.DecimalNode56;
@@ -45,7 +46,7 @@ public class NodeId_v1 implements Comparable<NodeId_v1>
     
     private static final boolean enableInlineLiterals = SystemTDB.enableInlineLiterals ;
     
-    public static final int SIZE = SystemTDB.SizeOfLong ;
+    public static final int SIZE = Sys.SizeOfLong ;
     final long value ;
     
     public static NodeId_v1 create(long value) {

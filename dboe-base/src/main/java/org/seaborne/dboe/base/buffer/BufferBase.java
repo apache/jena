@@ -19,7 +19,7 @@ package org.seaborne.dboe.base.buffer;
 
 import static java.lang.String.format ;
 import static org.seaborne.dboe.sys.SystemIndex.FillByte ;
-import static org.seaborne.dboe.sys.SystemIndex.NetworkOrder ;
+import static org.seaborne.dboe.sys.Sys.NetworkOrder ;
 import static org.seaborne.dboe.sys.SystemIndex.NullOut ;
 
 import java.nio.ByteBuffer ;

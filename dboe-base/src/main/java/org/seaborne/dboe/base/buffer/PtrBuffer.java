@@ -23,6 +23,7 @@ import java.nio.ByteBuffer ;
 import java.nio.IntBuffer ;
 
 import org.seaborne.dboe.base.record.RecordException ;
+import org.seaborne.dboe.sys.Sys;
 import org.seaborne.dboe.sys.SystemIndex ;
 
 /** An IntBuffer with extra operations */
@@ -40,7 +41,7 @@ final public class PtrBuffer extends BufferBase {
 
         if ( CheckBuffer ) {
             // It is a IntBuffer with associated ByteBuffer
-            if ( iBuff.position() != 0 || bb.order() != SystemIndex.NetworkOrder )
+            if ( iBuff.position() != 0 || bb.order() != Sys.NetworkOrder )
                 throw new RecordException("Duff pointer buffer") ;
         }
     }

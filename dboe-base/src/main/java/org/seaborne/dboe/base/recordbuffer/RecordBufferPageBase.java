@@ -24,7 +24,7 @@ import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
 import org.seaborne.dboe.base.page.PageBase ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.sys.SystemBase ;
+import org.seaborne.dboe.sys.Sys ;
 
 /**
  * The on-disk form of a block of a single RecordBuffer
@@ -37,7 +37,7 @@ public abstract class RecordBufferPageBase extends PageBase // implements Page
     // Field offsets
     final public static int     COUNT        = 0 ;
     // Length due to this class - subclasses may use more overhead.
-    final private static int    FIELD_LENGTH = SystemBase.SizeOfInt ;
+    final private static int    FIELD_LENGTH = Sys.SizeOfInt ;
 
     protected final int         headerLength ;
 

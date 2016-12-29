@@ -24,12 +24,13 @@ import static org.seaborne.tdb2.store.NodeIdTypes.SPECIAL;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
+import org.seaborne.dboe.sys.Sys;
 import org.seaborne.tdb2.sys.SystemTDB;
 
 final
 public class NodeId implements Comparable<NodeId>
 {
-    public static final int SIZE = SystemTDB.SizeOfLong ;
+    public static final int SIZE = Sys.SizeOfLong ;
     
     public static final NodeId NodeIdInvalid        = makeSpecial(0xA1);
     public static final NodeId NodeDoesNotExist     = makeSpecial(0xA3);

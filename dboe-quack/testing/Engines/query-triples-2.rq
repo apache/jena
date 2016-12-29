@@ -1,7 +1,0 @@
-PREFIX : <http://example/>
-SELECT * {
-    ?s :p ?v .
-    ?s :k ?o .
-    FILTER(?o > 1 )
-}
-

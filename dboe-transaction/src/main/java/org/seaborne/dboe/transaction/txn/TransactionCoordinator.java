@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.sys.SystemBase ;
+import org.seaborne.dboe.sys.Sys ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
 import org.slf4j.Logger ;
@@ -55,7 +55,7 @@ import org.slf4j.Logger ;
  */
 final
 public class TransactionCoordinator {
-    private static Logger log = SystemBase.syslog ;
+    private static Logger log = Sys.syslog ;
     
     private final Journal journal ;
     private boolean coordinatorStarted = false ;

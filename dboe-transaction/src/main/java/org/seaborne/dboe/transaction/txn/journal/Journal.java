@@ -17,7 +17,7 @@
 
 package org.seaborne.dboe.transaction.txn.journal;
 
-import static org.seaborne.dboe.sys.SystemBase.SizeOfInt ;
+import static org.seaborne.dboe.sys.Sys.SizeOfInt ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;

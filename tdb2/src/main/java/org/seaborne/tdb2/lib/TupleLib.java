@@ -17,8 +17,6 @@
 
 package org.seaborne.tdb2.lib;
 
-import static org.seaborne.tdb2.sys.SystemTDB.SizeOfLong ;
-
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -127,14 +125,14 @@ public class TupleLib
     // ---- Tuples and Records
     public static Tuple<NodeId> tuple(Record r, TupleMap tMap) {
         // Unmapping.
-        int N = r.getKey().length/SizeOfLong ;
+        int N = r.getKey().length/NodeId.SIZE;
         NodeId[] nodeIds = new NodeId[N] ;
         for ( int i = 0 ; i < N ; i++ )
         {
             int j = i ;
             if ( tMap != null )
                 j = tMap.unmapIdx(i) ;
-            NodeId id = NodeIdFactory.get(r.getKey(), j*SizeOfLong) ;
+            NodeId id = NodeIdFactory.get(r.getKey(), j*NodeId.SIZE) ;
             nodeIds[i] = id ;
         }
         return TupleFactory.create(nodeIds) ;
@@ -148,7 +146,7 @@ public class TupleLib
         {
             int j = tMap.getSlotIdx(i) ;
             // i'th Nodeid goes to j'th bytes slot.
-            NodeIdFactory.set(tuple.get(j), b, i*SizeOfLong) ;
+            NodeIdFactory.set(tuple.get(j), b, i*NodeId.SIZE) ;
         }
             
         return factory.create(b) ;

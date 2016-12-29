@@ -26,7 +26,7 @@ import java.io.IOException ;
 import org.apache.jena.atlas.io.IO ;
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.sys.ProcessUtils ;
-import org.seaborne.dboe.sys.SystemBase ;
+import org.seaborne.dboe.sys.Sys ;
 
 /**
  * Represents a lock on a TDB location
@@ -163,7 +163,7 @@ public class LocationLock {
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
-                SystemBase.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
+                Sys.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 

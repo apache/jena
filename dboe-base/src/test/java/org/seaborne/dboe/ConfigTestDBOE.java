@@ -18,14 +18,14 @@
 package org.seaborne.dboe;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.seaborne.dboe.sys.SystemBase ;
+import org.seaborne.dboe.sys.Sys ;
 
 public class ConfigTestDBOE
 {
     private static String testingDataRoot = "testing" ;
     // Place under target
     private static final String testingDir = "target/dboe-testing" ;
-    static boolean nonDeleteableMMapFiles = SystemBase.isWindows ;
+    static boolean nonDeleteableMMapFiles = Sys.isWindows ;
     
     static boolean initialized = false ; 
     

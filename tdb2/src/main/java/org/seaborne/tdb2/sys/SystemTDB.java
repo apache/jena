@@ -19,7 +19,6 @@ package org.seaborne.tdb2.sys;
 
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
-import java.nio.ByteOrder ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -35,6 +34,7 @@ import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.sys.Sys;
 import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.store.DatasetGraphTxn ;
@@ -62,17 +62,17 @@ public class SystemTDB
     
     // ---- Constants that can't be changed without invalidating on-disk data.  
     
-    /** Size, in bytes, of a Java long */
-    public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
-    
-    /** Size, in bytes, of a Java int */
-    public static final int SizeOfInt               = Integer.SIZE/Byte.SIZE ;
+//    /** Size, in bytes, of a Java long */
+//    public static final int SizeOfLong              = Long.SIZE/Byte.SIZE ;
+//    
+//    /** Size, in bytes, of a Java int */
+//    public static final int SizeOfInt               = Integer.SIZE/Byte.SIZE ;
     
     /** Size, in bytes, of the persistent representation of a node id */
     public static final int SizeOfNodeId            = NodeId.SIZE ;
 
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = SizeOfInt ;
+    public static final int SizeOfPointer           = Sys.SizeOfInt ;
     
     // ---- Node table related
     
@@ -191,8 +191,6 @@ public class SystemTDB
     /** Default BGP optimizer */
     public static ReorderTransformation defaultReorderTransform = ReorderLib.fixed() ;
 
-    public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
-    
     /** Unsupported (for non-standard setups) 
      * @see #enableInlineLiterals
      */

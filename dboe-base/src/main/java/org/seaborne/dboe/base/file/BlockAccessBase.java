@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockException ;
 import org.seaborne.dboe.sys.FileLib ;
-import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.sys.Sys;
 import org.slf4j.Logger ;
 
 /** Support for a disk file backed FileAccess */
@@ -142,7 +142,7 @@ public abstract class BlockAccessBase implements BlockAccess {
         ByteBuffer bb = block.getByteBuffer() ;
         if ( bb.capacity() != blockSize )
             throw new BlockException(format("BlockMgrFile: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
-        if ( bb.order() != SystemIndex.NetworkOrder )
+        if ( bb.order() != Sys.NetworkOrder )
             throw new BlockException("BlockMgrFile: Wrong byte order") ;
     }
 

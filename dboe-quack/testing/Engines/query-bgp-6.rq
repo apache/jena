@@ -1,6 +1,0 @@
-PREFIX : <http://example/>
-SELECT * {
-      # Different var
-    ?s :p ?v1 .
-    ?s :p ?v2 .
-}
