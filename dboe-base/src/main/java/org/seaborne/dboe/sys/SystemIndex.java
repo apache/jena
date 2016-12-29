@@ -17,17 +17,15 @@
 
 package org.seaborne.dboe.sys;
 
-import java.nio.ByteOrder ;
-
 import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.FileMode ;
 
 public class SystemIndex
 {
     /** Size, in bytes, of a pointer between blocks */
-    public static final int SizeOfPointer           = SystemBase.SizeOfInt ;
+    public static final int SizeOfPointer           = Sys.SizeOfInt ;
     
-    public static final boolean is64bitSystem       = SystemBase.is64bitSystem ;
+    public static final boolean is64bitSystem       = Sys.is64bitSystem ;
 
     // To make the class initialize
     static public void init() {}
@@ -75,15 +73,6 @@ public class SystemIndex
     
     private static int intValue(String name, int dft) { return dft ; }
     
-    // ---- Misc
-    
-//    /** Number of adds/deletes between calls to sync (-ve to disable) */
-//    public static final int SyncTick                = intValue("SyncTick", -1) ;
-
-//    /** Default BGP optimizer */
-//    public static ReorderTransformation defaultReorderTransform = ReorderLib.fixed() ;
-
-    public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
     public static void setNullOut(boolean nullOut)
     { NullOut = nullOut ; }
@@ -114,7 +103,7 @@ public class SystemIndex
     {
         if ( fileMode != null )
         {
-            SystemBase.log.warn("System file mode already determined - setting it has no effect") ;
+            Sys.log.warn("System file mode already determined - setting it has no effect") ;
             return ;
         }
         fileMode = newFileMode ;
@@ -136,12 +125,12 @@ public class SystemIndex
         
         if ( x.equalsIgnoreCase("direct") )
         {
-            SystemBase.syslog.info("File mode: direct (forced)") ;
+            Sys.syslog.info("File mode: direct (forced)") ;
             return FileMode.direct ;
         }
         if ( x.equalsIgnoreCase("mapped") )
         {
-            SystemBase.syslog.info("File mode: mapped (forced)") ;
+            Sys.syslog.info("File mode: mapped (forced)") ;
             return FileMode.mapped ;
         }
         
@@ -149,10 +138,10 @@ public class SystemIndex
         {
             if ( is64bitSystem )
             {
-                SystemBase.syslog.debug("File mode: Mapped") ;
+                Sys.syslog.debug("File mode: Mapped") ;
                 return FileMode.mapped ;
             }
-            SystemBase.syslog.debug("File mode: Direct") ;
+            Sys.syslog.debug("File mode: Direct") ;
             return FileMode.direct ;
         }
         throw new DBOpEnvException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;

@@ -166,22 +166,22 @@ public class SystemTDB
      *  Used to map from Node to NodeId spaces.
      *  Used for loading and for query preparation.
      */
-    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", ( is64bitSystem ? 100*1000 : 50*1000 )) ;
+    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", ( is64bitSystem ? 200*1000 : 20*1000 )) ;
 
     /** Size of NodeId to Node cache.
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
      */
-    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 50*1000 ) ) ;
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 750*1000 : 20*1000 ) ) ;
     
     /** Size of Node lookup miss cache. */
-    public static final int NodeMissCacheSize       = 100 ;
+    public static final int NodeMissCacheSize       = 1000 ;
     
-    /** Size of the delayed-write block cache (32 bit systems only) (per file) */
-    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
+    /** Size of the delayed-write block cache (32 bit systems only). Per file. */
+    public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 1000) ;
 
-    /** Size of read block cache (32 bit systems only).  Increase JVM size as necessary. Per file. */
-    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 10*1000) ;
+    /** Size of read block cache (32 bit systems only). Per file. */
+    public static final int BlockReadCacheSize      = intValue("BlockReadCacheSize", 5*1000) ;
     
     // ---- Misc
     
@@ -196,11 +196,11 @@ public class SystemTDB
     /** Unsupported (for non-standard setups) 
      * @see #enableInlineLiterals
      */
-    public static String propertyEnableInlineLiterals1 = "org.apache.jena.tdb.store.enableInlineLiterals" ;
+    private static String propertyEnableInlineLiterals1 = "org.apache.jena.tdb.store.enableInlineLiterals" ;
     /** Unsupported (for non-standard setups) 
      * @see #enableInlineLiterals
      */
-    public static String propertyEnableInlineLiterals2 = "tdb:store.enableInlineLiterals" ;
+    private static String propertyEnableInlineLiterals2 = "tdb:store.enableInlineLiterals" ;
     /** <b>Unsupported</b> (for non-standard setups).
      * This controls whether literal values are inlined into NodeIds.
      * This is a major efficiency boost and is the default setting.

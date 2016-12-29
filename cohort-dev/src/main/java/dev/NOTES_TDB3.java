@@ -26,7 +26,8 @@ public class NOTES_TDB3 {
 
     // Check index find code for efficences
     // Revisit NodeLib.hash
-
+    // StoreParamns - split into static and dynamic.
+    
     // Pros and cons of hash ids.
     
     // NodeID changes. Adjustable NodeId length

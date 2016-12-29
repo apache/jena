@@ -17,6 +17,7 @@
 
 package org.seaborne.dboe.sys;
 
+import java.nio.ByteOrder;
 import java.util.concurrent.Executor ;
 import java.util.concurrent.Executors ;
 
@@ -26,9 +27,9 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** Low level environment */ 
-public class SystemBase
+public class Sys
 {
-    static final Logger log = LoggerFactory.getLogger("Base") ;
+    static final Logger log = LoggerFactory.getLogger("Sys") ;
     
     /** System log - use for general messages (a few) and warnings.
      *  Generally, do not log events unless you want every user to see them every time.
@@ -48,6 +49,8 @@ public class SystemBase
     public static final int SizeOfInt               = Integer.BYTES ; //Integer.SIZE/Byte.SIZE ;
     
     public static final boolean is64bitSystem = determineIf64Bit() ;
+    
+    public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
 
     // To make the class initialize
     static public void init() {}
@@ -71,7 +74,6 @@ public class SystemBase
     
     /** A general thread pool */
     public static Executor executor = Executors.newCachedThreadPool() ;
-
 
     private static boolean determineIf64Bit() {
         String s = System.getProperty("sun.arch.data.model") ;
