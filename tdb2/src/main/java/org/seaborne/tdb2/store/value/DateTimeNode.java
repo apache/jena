@@ -31,7 +31,6 @@ import org.seaborne.tdb2.TDBException ;
 
 public class DateTimeNode
 {
-    // XXX ToDo 00:00:00 vs 24:00:00
     // ---- Layout
     // Epoch base: 0000-01-01T00:00:00
 
@@ -44,6 +43,7 @@ public class DateTimeNode
 
     // Layout:
     // Hi: TZ YYYY MM DD HH MM SS.sss Lo:
+    // Looses the distinction between 00:00:00 vs 24:00:00 (of the day before).
 
     // Const-ize
     // 13 bits year, 4 bits month, 5 bits day => 22 bits
