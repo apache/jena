@@ -17,142 +17,125 @@
 
 package org.seaborne.tdb2.lib;
 
-import static org.seaborne.tdb2.sys.SystemTDB.LenNodeHash ;
+import static org.seaborne.tdb2.sys.SystemTDB.LenNodeHash;
 
-import java.security.DigestException ;
-import java.security.MessageDigest ;
-import java.security.NoSuchAlgorithmException ;
-import java.util.Iterator ;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.Pool ;
-import org.apache.jena.atlas.lib.PoolBase ;
-import org.apache.jena.atlas.lib.PoolSync ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.NodeFmtLib ;
-import org.apache.jena.sparql.util.NodeUtils ;
-import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.store.Hash ;
-import org.seaborne.tdb2.store.NodeId ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Bytes;
+import org.apache.jena.atlas.lib.Pool;
+import org.apache.jena.atlas.lib.PoolBase;
+import org.apache.jena.atlas.lib.PoolSync;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.util.NodeUtils;
+import org.seaborne.dboe.base.record.Record;
+import org.seaborne.tdb2.TDBException;
+import org.seaborne.tdb2.store.Hash;
+import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.NodeIdFactory;
-import org.seaborne.tdb2.store.nodetable.NodeTable ;
+import org.seaborne.tdb2.store.nodetable.NodeTable;
 
-public class NodeLib
-{
-    public static Hash hash(Node n)
-    { 
-        Hash h = new Hash(LenNodeHash) ;
-        setHash(h, n) ;
-        return h ;
+public class NodeLib {
+    public static Hash hash(Node n) {
+        Hash h = new Hash(LenNodeHash);
+        setHash(h, n);
+        return h;
     }
-    
-    private static String BNODE = "bnode";
-    private static String URI = "uri";
+
+    private static String BNODE   = "bnode";
+    private static String URI     = "uri";
     private static String LITERAL = "literal";
-    
-    public static void setHash(Hash h, Node n) 
-    {
-        if ( n.isURI() ) 
-                hash(h, n.getURI(), null, null, URI) ;
+
+    public static void setHash(Hash h, Node n) {
+        if ( n.isURI() )
+            hash(h, n.getURI(), null, null, URI);
         else if ( n.isBlank() )
-                hash(h, n.getBlankNodeLabel(), null, null, BNODE) ;
-        else if ( n.isLiteral() ) { 
-                String dt = n.getLiteralDatatypeURI() ;
-                if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) ) {
-                    // RDF 1.1 : No datatype for:
-                    //   xsd:String as simple literals
-                    //   rdf:langString and @ 
-                    dt = null ;
-                }
-                hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, LITERAL) ;
-        } else 
-            throw new TDBException("Attempt to hash something strange: "+n) ; 
+            hash(h, n.getBlankNodeLabel(), null, null, BNODE);
+        else if ( n.isLiteral() ) {
+            String dt = n.getLiteralDatatypeURI();
+            if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) ) {
+                // RDF 1.1 : No datatype for:
+                // xsd:String as simple literals
+                // rdf:langString and @
+                dt = null;
+            }
+            hash(h, n.getLiteralLexicalForm(), n.getLiteralLanguage(), dt, LITERAL);
+        } else
+            throw new TDBException("Attempt to hash something strange: " + n);
     }
-    
-    /** This pattern is common - abstract */ 
-    private static int InitialPoolSize = 5 ;
-    private static Pool<MessageDigest> digesters = PoolSync.create(new PoolBase<MessageDigest>()) ;
+
+    private static int                 InitialPoolSize = 5;
+    private static Pool<MessageDigest> digesters       = PoolSync.create(new PoolBase<MessageDigest>());
     static {
         try {
             for ( int i = 0 ; i < InitialPoolSize ; i++ )
                 digesters.put(MessageDigest.getInstance("MD5"));
         }
-        catch (NoSuchAlgorithmException e)
-        { e.printStackTrace(); }
-    }
-    
-    private static MessageDigest allocDigest()
-    {
-        try {
-            MessageDigest disgest = digesters.get() ;
-            if ( disgest == null ) 
-                disgest = MessageDigest.getInstance("MD5");
-            return disgest ;
+        catch (NoSuchAlgorithmException e) {
+            Log.warn(NodeLib.class, "NoSuchAlgorithmException", e);
+            throw new RuntimeException(e);  
         }
-        catch (NoSuchAlgorithmException e)
-        { e.printStackTrace(); return null ; }
     }
 
-    private static void deallocDigest(MessageDigest digest) { digest.reset() ; digesters.put(digest) ; }
-    
-    // TODO Revisit!
-    private static void hash(Hash h, String lex, String lang, String datatype, String nodeName)
-    {
-        if ( datatype == null )
-            datatype = "" ;
-        if ( lang == null )
-            lang = "" ;
-        String toHash = lex + "|" + lang + "|" + datatype+"|"+nodeName ;
-        MessageDigest digest;
-        try
-        {
-            digest = allocDigest() ; //MessageDigest.getInstance("MD5");
-            digest.update(Bytes.string2bytes(toHash)); //digest.update(toHash.getBytes("UTF8"));
-            if ( h.getLen() == 16 )
-                // MD5 is 16 bytes.
-                digest.digest(h.getBytes(), 0, 16) ;
-            else
-            {
-                byte b[] = digest.digest(); // 16 bytes.
-                // Avoid the copy? If length is 16.  digest.digest(bytes, 0, length) needs 16 bytes
-                System.arraycopy(b, 0, h.getBytes(), 0, h.getLen()) ;
-            }
-            deallocDigest(digest) ;
-            return ;
+    private static MessageDigest allocDigest() {
+        try {
+            MessageDigest disgest = digesters.get();
+            if ( disgest == null )
+                disgest = MessageDigest.getInstance("MD5");
+            return disgest;
         }
-        catch (DigestException ex) { Log.fatal(NodeLib.class, "DigestException", ex); } 
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-    
-    public static NodeId getNodeId(Record r, int idx)
-    {
+
+    private static void deallocDigest(MessageDigest digest) {
+        digest.reset();
+        digesters.put(digest);
+    }
+
+    private static void hash(Hash h, String lex, String lang, String datatype, String nodeName) {
+        if ( datatype == null )
+            datatype = "";
+        if ( lang == null )
+            lang = "";
+        String toHash = lex + "|" + lang + "|" + datatype + "|" + nodeName;
+        MessageDigest digest;
+        try {
+            // MessageDigest.getInstance("MD5");
+            digest = allocDigest();
+            digest.update(Bytes.string2bytes(toHash));
+            if ( h.getLen() == 16 ) {
+                // MD5 is 16 bytes.
+                digest.digest(h.getBytes(), 0, 16);
+            } else {
+                byte b[] = digest.digest(); // 16 bytes.
+                System.arraycopy(b, 0, h.getBytes(), 0, h.getLen());
+            }
+            deallocDigest(digest);
+            return;
+        }
+        catch (DigestException ex) {
+            Log.fatal(NodeLib.class, "DigestException", ex);
+        }
+    }
+
+    public static NodeId getNodeId(Record r, int idx) {
         return NodeIdFactory.get(r.getKey(), idx);
     }
-    
-    public static Node termOrAny(Node node)
-    {
+
+    public static Node termOrAny(Node node) {
         if ( node == null || node.isVariable() )
-            return Node.ANY ;
-        return node ;
+            return Node.ANY;
+        return node;
     }
-    
-    public static String format(String sep, Node[] nodes)
-    {
-        // Sigh ...
-        StringBuilder b = new StringBuilder() ;
-        for ( int i = 0 ; i < nodes.length ; i++ )
-        {
-            if ( i != 0 ) 
-                b.append(sep) ;
-            b.append(NodeFmtLib.str(nodes[i])) ;
-        }
-        return b.toString() ;
-    }
-    
-    public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter)
-    {
-        return Iter.map(iter, nodeTable::getNodeForNodeId) ;
+
+    public static Iterator<Node> nodes(final NodeTable nodeTable, Iterator<NodeId> iter) {
+        return Iter.map(iter, nodeTable::getNodeForNodeId);
     }
 }
