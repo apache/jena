@@ -71,6 +71,7 @@
     <module>dboe-index-test</module>
     <module>dboe-trans-data</module>
     <module>tdb2</module>
+    <module>tdb2-cmds</module>
     <module>fuseki-tdb2</module>
   </modules>
 

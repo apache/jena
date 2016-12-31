@@ -1,0 +1,5 @@
+SELECT *
+{ 
+    ?s ?p ?o . 
+    FILTER(?o = 1)
+}

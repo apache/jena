@@ -1,0 +1,11 @@
+TDB2
+Mantis Database Operating Environment
+
+Copyright 2013, 2014, 2015, 2016 Andy Seaborne
+Copyright 2014, 2015 Epimorphics Ltd.
+
+Portions of this software derive from software from Apache Jena:
+  - Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+  - Copyright 2010, 2011 Epimorphics Ltd.
+  - Copyright 2010, 2011 Talis Systems Ltd.
+These have been licensed to the Apache Software Foundation under a software grant.
