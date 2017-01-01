@@ -31,10 +31,13 @@ import org.apache.jena.riot.RiotNotFoundException ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.sparql.core.TransactionalNull;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.system.Txn ;
 
 public class query extends CmdARQ
 {
@@ -51,18 +54,18 @@ public class query extends CmdARQ
     protected ModDataset    modDataset =  null ;
     protected ModResultsOut modResults =  new ModResultsOut() ;
     protected ModEngine     modEngine =   new ModEngine() ;
-    
+
     public static void main (String... argv)
     {
         new query(argv).mainRun() ;
     }
-    
+
     public query(String[] argv)
     {
         super(argv) ;
         modQuery = new ModQueryIn(getDefaultSyntax()) ; 
         modDataset = setModDataset() ;
-       
+
         super.addModule(modQuery) ;
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
@@ -94,23 +97,20 @@ public class query extends CmdARQ
         if ( contains(argRepeat) )
         {
             String[] x = getValue(argRepeat).split(",") ;
-            if ( x.length == 1 )
+            if ( x.length == 1 ) 
             {
                 try { repeatCount = Integer.parseInt(x[0]) ; }
                 catch (NumberFormatException ex)
                 { throw new CmdException("Can't parse "+x[0]+" in arg "+getValue(argRepeat)+" as an integer") ; }
-                
             }
-            else if ( x.length == 2 )
-            {
+            else if ( x.length == 2 ) {
                 try { warmupCount = Integer.parseInt(x[0]) ; }
                 catch (NumberFormatException ex)
                 { throw new CmdException("Can't parse "+x[0]+" in arg "+getValue(argRepeat)+" as an integer") ; }
                 try { repeatCount = Integer.parseInt(x[1]) ; }
                 catch (NumberFormatException ex)
                 { throw new CmdException("Can't parse "+x[1]+" in arg "+getValue(argRepeat)+" as an integer") ; }
-            }
-            else
+            } else
                 throw new CmdException("Wrong format for repeat count: "+getValue(argRepeat)) ;
         }
         if ( isVerbose() )
@@ -191,44 +191,50 @@ public class query extends CmdARQ
     protected long totalTime = 0 ;
     protected void queryExec(boolean timed, ResultsFormat fmt)
     {
-        try{
+        try {
             Query query = modQuery.getQuery() ;
-            if ( isVerbose() )
-            {
-                IndentedWriter out = new IndentedWriter(System.out, true) ;
-                query.serialize(out) ;
-                out.flush() ;
+            if ( isVerbose() ) {
+                IndentedWriter out = new IndentedWriter(System.out, true);
+                query.serialize(out);
+                out.flush();
                 System.out.println();
             }
             
             if ( isQuiet() )
                 LogCtl.setError(SysRIOT.riotLoggerName) ;
             Dataset dataset = getDataset() ;
-            modTime.startTimer() ;
-            QueryExecution qe = QueryExecutionFactory.create(query, dataset) ;
             // Check there is a dataset
-            
-            if ( dataset == null && ! query.hasDatasetDescription() )
-            {
+            if ( dataset == null && !query.hasDatasetDescription() ) {
                 System.err.println("Dataset not specified in query nor provided on command line.");
-                throw new TerminationException(1) ;
+                throw new TerminationException(1);
             }
-            try { QueryExecUtils.executeQuery(query, qe, fmt) ; } 
-            catch (QueryCancelledException ex) { 
-                System.out.flush() ;
-                System.err.println("Query timed out") ;
-            }
-            
-            long time = modTime.endTimer() ;
-            if ( timed )
-            {
-                totalTime += time ;
-                System.err.println("Time: "+modTime.timeStr(time)+" sec") ;
-            }
-            qe.close() ;
+            Transactional transactional = (dataset.supportsTransactionAbort()) ? dataset : new TransactionalNull() ;
+            Txn.executeRead(transactional, ()->{
+                modTime.startTimer() ;
+                try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
+                    try { QueryExecUtils.executeQuery(query, qe, fmt); }
+                    catch (QueryCancelledException ex) {
+                        System.out.flush();
+                        System.err.println("Query timed out");
+                    }
+
+                    long time = modTime.endTimer();
+                    if ( timed ) {
+                        totalTime += time;
+                        System.err.println("Time: " + modTime.timeStr(time) + " sec");
+                    }
+                }
+                catch (ResultSetException ex) {
+                    System.err.println(ex.getMessage());
+                    ex.printStackTrace(System.err);
+                }
+                catch (QueryException qEx) {
+                    // System.err.println(qEx.getMessage()) ;
+                    throw new CmdException("Query Exeception", qEx);
+                }
+            });
         }
-        catch (ARQInternalErrorException intEx)
-        {
+        catch (ARQInternalErrorException intEx) {
             System.err.println(intEx.getMessage()) ;
             if ( intEx.getCause() != null )
             {
@@ -238,20 +244,9 @@ public class query extends CmdARQ
             }
             intEx.printStackTrace(System.err) ;
         }
-        catch (ResultSetException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
-        }
-        catch (QueryException qEx)
-        {
-            //System.err.println(qEx.getMessage()) ;
-            throw new CmdException("Query Exeception", qEx) ;
-        }
         catch (JenaException | CmdException ex) { throw ex ; }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             throw new CmdException("Exception", ex) ;
         }
-    }    
+    }
 }

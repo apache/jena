@@ -18,109 +18,100 @@
 
 package arq;
 
-import java.util.List ;
+import java.util.List;
 
-import arq.cmdline.CmdUpdate ;
+import arq.cmdline.CmdUpdate;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.Transactional ;
-import org.apache.jena.sparql.core.TransactionalNull ;
-import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.TransactionalNull;
+import org.apache.jena.system.Txn;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 public class update extends CmdUpdate
 {
-    static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file") ;
-    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump") ;       // Write the result to stdout.
+    static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
+    static final ArgDecl dumpArg = new ArgDecl(ArgDecl.NoValue, "dump");       // Write the result to stdout.
     
-    List<String> requestFiles = null ;
-    boolean dump = false ;
+    List<String> requestFiles = null;
+    boolean dump = false;
     
     public static void main (String... argv)
-    { new update(argv).mainRun() ; }
+    { new update(argv).mainRun(); }
     
     protected update(String[] argv) {
-        super(argv) ;
-        super.add(updateArg, "--update=FILE", "Update commands to execute") ;
-        super.add(dumpArg, "--dump", "Dump the resulting graph store") ;
+        super(argv);
+        super.add(updateArg, "--update=FILE", "Update commands to execute");
+        super.add(dumpArg, "--dump", "Dump the resulting graph store");
     }
 
     @Override
     protected void processModulesAndArgs() {
-        requestFiles = getValues(updateArg) ; // ????
-        dump = contains(dumpArg) ;
-        super.processModulesAndArgs() ;
+        requestFiles = getValues(updateArg); // ????
+        dump = contains(dumpArg);
+        super.processModulesAndArgs();
     }
 
     @Override
-    protected String getCommandName() { return Lib.className(this) ; }
+    protected String getCommandName() { return Lib.className(this); }
     
     @Override
-    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>" ; }
+    protected String getSummary() { return getCommandName()+" --desc=assembler [--dump] --update=<request file>"; }
 
     // Subclass for specialised commands making common updates more convenient
     @Override
     protected void execUpdate(DatasetGraph graphStore) {
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
-            throw new CmdException("Nothing to do") ;
+            throw new CmdException("Nothing to do");
 
-        Transactional transactional = (graphStore.supportsTransactionAbort()) ? graphStore : new TransactionalNull() ;
+        Transactional transactional = (graphStore.supportsTransactionAbort()) ? graphStore : new TransactionalNull();
 
         for ( String filename : requestFiles ) {
             try {
-                transactional.begin(ReadWrite.WRITE) ;
-                execOneFile(filename, graphStore) ;
-                transactional.commit() ;
+                transactional.begin(ReadWrite.WRITE);
+                execOneFile(filename, graphStore);
+                transactional.commit();
             }
             catch (Throwable ex) { 
-                try { transactional.abort() ; } catch (Exception ex2) {}
-                throw ex ;
+                try { transactional.abort(); } catch (Exception ex2) {}
+                throw ex;
             }
-            finally { transactional.end() ; }
+            finally { transactional.end(); }
         }
 
         for ( String requestString : super.getPositional() ) {
-            requestString = indirect(requestString) ;
-
-            try {
-                transactional.begin(ReadWrite.WRITE) ;
-                execOne(requestString, graphStore) ;
-                transactional.commit() ;
-            }
-            catch (Throwable ex) { 
-                try { transactional.abort() ; } catch (Exception ex2) {}
-                throw ex ;
-            }
-            finally { transactional.end() ; }
+            String requestString2 = indirect(requestString);
+            Txn.executeWrite(transactional, ()->execOne(requestString2, graphStore));
         }
         
         if ( ! ( transactional instanceof DatasetGraph ) )
-            SystemARQ.sync(graphStore) ;
+            SystemARQ.sync(graphStore);
 
         if ( dump )
-            RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
+            RDFDataMgr.write(System.out, graphStore, Lang.NQUADS);
     }
 
     private void execOneFile(String filename, DatasetGraph store) {
-        UpdateRequest req = UpdateFactory.read(filename, updateSyntax) ;
-        UpdateExecutionFactory.create(req, store).execute() ;
+        UpdateRequest req = UpdateFactory.read(filename, updateSyntax);
+        UpdateExecutionFactory.create(req, store).execute();
     }
 
     private void execOne(String requestString, DatasetGraph store) {
-        UpdateRequest req = UpdateFactory.create(requestString, updateSyntax) ;
-        UpdateExecutionFactory.create(req, store).execute() ;
+        UpdateRequest req = UpdateFactory.create(requestString, updateSyntax);
+        UpdateExecutionFactory.create(req, store).execute();
     }
 
     @Override
     protected DatasetGraph dealWithNoDataset() {
-        return DatasetGraphFactory.create() ;
+        return DatasetGraphFactory.create();
     }
 }
