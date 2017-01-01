@@ -788,32 +788,24 @@ public class GraphContractTest<T extends Graph>  {
 	@ContractTest
 	public void testFind_Triple_MatchLanguagedLiteralCaseInsensitive() {
 		Graph m = graphWith(producer.newInstance(), "a p 'chat'en");
-		//if (m.getCapabilities().handlesLiteralTyping()) {
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten))
-					.toList().size());
-			assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN))
-					.toList().size());
-		//}
+		Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+		assertDiffer(chaten, chatEN);
+		assertTrue(chaten.sameValueAs(chatEN));
+		assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
+		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
+		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
 	}
 
 	@ContractTest
 	public void testFind_Triple_NoMatchAgainstUnlanguagesLiteral() {
 		Graph m = graphWith(producer.newInstance(),
 				"a p 'chat'en; a p 'chat'");
-		//if (m.getCapabilities().handlesLiteralTyping()) {
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten))
-					.toList().size());
-			assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN))
-					.toList().size());
-		//}
+		Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+		assertDiffer(chaten, chatEN);
+		assertTrue(chaten.sameValueAs(chatEN));
+		assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
+		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
+		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
 	}
 
 	@ContractTest
