@@ -388,10 +388,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
             assertFalse( g.contains( NodeCreateUtils.createTriple( findCheck ) ) );
         }
         catch (UnsupportedOperationException e) {
+            // No iterator remove.
             it.close();
-            assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); 
         }
-        it.close();
     }
 
     public void testHasCapabilities()
@@ -400,10 +399,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Capabilities c = g.getCapabilities();
         boolean sa = c.sizeAccurate();
         boolean aaSome = c.addAllowed();
-        boolean aaAll = c.addAllowed( true );
         boolean daSome = c.deleteAllowed();
-        boolean daAll = c.deleteAllowed( true );
-        boolean cbe = c.canBeEmpty();
     }
 
     public void testFind()
@@ -522,15 +518,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testEventDeleteByFind()
     {
         Graph g = getAndRegister( L );
-        if (g.getCapabilities().iteratorRemoveAllowed())
-        {
-            Triple toRemove = triple( "remove this triple" );
-            g.add( toRemove );
+        Triple toRemove = triple( "remove this triple" );
+        g.add( toRemove );
+        try {
             ExtendedIterator<Triple> rtr = g.find( toRemove );
             assertTrue( "ensure a(t least) one triple", rtr.hasNext() );
             rtr.next(); rtr.remove(); rtr.close();
             L.assertHas( new Object[] { "add", g, toRemove, "delete", g, toRemove} );
+        } catch (UnsupportedOperationException ex) {
+            // No iterator remove
         }
+
     }
 
     public void testTwoListeners()
@@ -823,8 +821,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void failingTestDoubleRemoveAll() {
         final Graph g = getGraph();
-        if (g.getCapabilities().iteratorRemoveAllowed() ) {
-            graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
+        graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
+        try {
             Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)){
                 @Override
                 public void remove() {
@@ -837,6 +835,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
                 it.remove();
             }
             assertTrue( g.isEmpty() );
+        } catch (UnsupportedOperationException ex) {
+            // Iterator.remove not supported.
         }
     }
 

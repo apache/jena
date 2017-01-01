@@ -20,20 +20,12 @@
 ///////////////
 package org.apache.jena.rdfxml.xmloutput;
 
-// Imports
-///////////////
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.regex.Pattern;
 
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -115,58 +107,5 @@ public class PrettyWriterTest extends ModelTestBase {
 		check(
 			"file:testing/abbreviated/container.rdf",
 			"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");
-	}
-	public void test803804() {
-		String sourceT =
-			"<rdf:RDF "
-				+ " xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'"
-				+ " xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'"
-				+ " xmlns:owl=\"http://www.w3.org/2002/07/owl#\">"
-				+ " <owl:ObjectProperty rdf:about="
-				+ "'http://example.org/foo#p'>"
-				+ " </owl:ObjectProperty>"
-				+ "</rdf:RDF>";
-
-		OntModel m =
-			ModelFactory.createOntologyModel(
-				OntModelSpec.OWL_MEM_RULE_INF,
-				null);
-		m.read(
-			new ByteArrayInputStream(sourceT.getBytes()),
-			"http://example.org/foo");
-
-		Model m0 = ModelFactory.createModelForGraph(m.getGraph());
-		/*
-			  Set copyOfm0 = new HashSet();
-			  Set blankNodes = new HashSet();
-			  Iterator it = m0.listStatements();
-			  while (it.hasNext()) {
-			  	Statement st = (Statement)it.next(); 
-				  copyOfm0.add(st);
-				  Resource subj = st.getSubject();
-				  if (subj.isAnon())
-				    blankNodes.add(subj);
-			  }
-			  
-			  it = blankNodes.iterator();
-			  while (it.hasNext()) {
-			  	Resource b = (Resource)it.next();
-			  	Statement st = m0.createStatement(b,OWL.sameAs,b);
-			//  	assertEquals(m0.contains(st),copyOfm0.contains(st));
-			  }
-		*/
-		XMLOutputTestBase.blockLogger();
-		try {
-			m0.write(new OutputStream() {
-				@Override
-                public void write(int b) {
-				}
-			}, "RDF/XML-ABBREV");
-
-		} finally {
-			// This will need to change when the bug is finally fixed.
-			
-			assertTrue(XMLOutputTestBase.unblockLogger());
-		}
 	}
 }

@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmloutput.impl;
 
 import java.io.PrintWriter;
-import java.io.Writer;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
@@ -113,18 +112,6 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 		return rslt;
 	}
 
-	@Override
-    synchronized public void write(Model baseModel, Writer out, String base)
-	    { 
-		if (baseModel.getGraph().getCapabilities().findContractSafe() == false) 
-            {
-			logger.warn( "Workaround for bugs 803804 and 858163: using RDF/XML (not RDF/XML-ABBREV) writer  for unsafe graph " + baseModel.getGraph().getClass() );
-			baseModel.write( out, "RDF/XML", base );
-            } 
-        else
-            super.write( baseModel, out, base );
-		}
-		
 	@Override
     protected void writeBody(
 		Model model,
