@@ -1,9 +1,6 @@
 *TDB2 is not compatible with Apache Jena TDB (TDB1).*
 
 
-
-
-
 TDB2 example:
 
 Set the repositories (see below) and use:
@@ -11,11 +8,14 @@ Set the repositories (see below) and use:
    <dependency>
      <groupId>org.seaborne.mantis</groupId>
      <artifactId>tdb2</artifactId>
-     <version>0.0.0-SNAPSHOT</version>
+     <version>X.Y.Z</version>
    </dependency>
 ```
 
+
 Example code: **`TDB2Factory`**
+
+For disk laocation 
 
 ```
      public static void main(String[] args) {
@@ -54,22 +54,10 @@ Example code: **`TDB2Factory`**
 
 Maven repositories setup:
 
+For development builds:
+
 ```
   <repositories>
-    <!-- Apache Snapshot Repository -->
-    <repository>
-      <id>apache-repository-snapshots</id>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-
     <!-- Sonatype snapshot repository -->
     <repository>
       <id>sonatype.public</id>
@@ -82,6 +70,5 @@ Maven repositories setup:
         <enabled>true</enabled>
       </snapshots>
     </repository>
-
   </repositories>
 ```

@@ -19,7 +19,7 @@ export FUSEKI_HOME=????
 # to the webapp of a distribution.
 
 # Run:
-java -jar target/fuseki-tdb2-server-0.0.0-SNAPSHOT.jar --conf config.ttl 
+java -jar target/fuseki-tdb2-server-X.Y.Z.jar --conf config.ttl 
 ```
 
 where a sample `config.ttl` for a service `/data` storing the database

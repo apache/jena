@@ -20,6 +20,8 @@ Continuous integration: [TravisCI](https://travis-ci.org/afs/mantis)
 
 Notes on using [TDB2 in a Java application](use-tdb2.md).
 
+Notes on using [TDB2 from the command line](use-tdb2-cmds.md).
+
 Notes on using [TDB2 with Apache Jena Fuseki](use-fuseki-tdb2.md).
 
 Status: currently snapshot builds only.
