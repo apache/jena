@@ -51,7 +51,7 @@ in `DB2` is:
     fuseki:dataset           <#tdb_dataset_readwrite> ;
     .
 
-<#tdb_dataset_readwrite> rdf:type      tdb2:DatasetTDB ;
+<#tdb_dataset_readwrite> rdf:type      tdb2:DatasetTDB2 ;
     tdb2:location "DB2" ;
     ## This works: tdb2:unionDefaultGraph true ;
      .

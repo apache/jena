@@ -35,7 +35,9 @@ public class VocabTDB2
 
     // Types
     public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB2") ;
+    public static final Resource tDatasetTDB_alt    = Vocab.type(NS, "DatasetTDB") ;
     public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB2") ;
+    public static final Resource tGraphTDB_alt      = Vocab.type(NS, "GraphTDB") ;
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex") ;
     public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable") ;
 
@@ -80,6 +82,9 @@ public class VocabTDB2
         // Domain and range for properties.
         // Separated and use ja:imports
         AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB());
+        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB());
         AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDBGraphAssembler(), JA.Model);
+        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDBGraphAssembler(), JA.Model);
+
     }
 }
