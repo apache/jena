@@ -21,7 +21,6 @@ package org.apache.jena.propertytable.lang;
 import java.io.StringReader;
 
 import org.apache.jena.atlas.junit.BaseTest;
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang;
@@ -96,7 +95,7 @@ public class TestLangCSV extends BaseTest {
 	}
 
 	private Model parseToModel(String[] strings, Lang lang) {
-		String string = StrUtils.strjoin("\n", strings);
+		String string = String.join("\n", strings);
 		StringReader r = new StringReader(string);
 		Model model = ModelFactory.createDefaultModel();
 		RDFDataMgr.read(model, r, FILE_NAME, lang);

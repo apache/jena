@@ -43,7 +43,6 @@ import org.junit.runners.Suite ;
     , TestStrUtils.class
     , TestXMLLib.class
     , TestAlarmClock.class
-    , TestRefLong.class
     , TestTrie.class
     , TestFilenameProcessing.class
     , TestNumberUtils.class

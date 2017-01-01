@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamException ;
 import javax.xml.stream.XMLStreamReader ;
 
 import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -350,11 +349,11 @@ class XMLInputStAX extends SPARQLResult {
             if ( !found ) {
                 String s1 = "" ;
                 if ( startElementNames != null )
-                    s1 = StrUtils.strjoin(", ", startElementNames) ;
+                    s1 = String.join(", ", startElementNames) ;
 
                 String s2 = "" ;
                 if ( stopElementNames != null )
-                    s2 = StrUtils.strjoin(", ", stopElementNames) ;
+                    s2 = String.join(", ", stopElementNames) ;
                 Log.warn(this, "Failed to find start and stop of specified elements: " + s1 + " :: " + s2) ;
             }
         }

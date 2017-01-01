@@ -23,7 +23,6 @@ import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -212,7 +211,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         // error(log,
         // "Wrong number of triple table indexes: "+StrUtils.strjoin(",",
         // indexes)) ;
-        log.debug("Triple table: " + primary + " :: " + StrUtils.strjoin(",", indexes)) ;
+        log.debug("Triple table: " + primary + " :: " + String.join(",", indexes)) ;
 
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, params) ;
 
@@ -232,7 +231,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         // "Wrong number of quad table indexes: "+StrUtils.strjoin(",",
         // indexes)) ;
 
-        log.debug("Quad table: " + primary + " :: " + StrUtils.strjoin(",", indexes)) ;
+        log.debug("Quad table: " + primary + " :: " + String.join(",", indexes)) ;
 
         TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, params) ;
         if ( quadIndexes.length != indexes.length )
@@ -261,7 +260,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
                                                                 prefixNodes, policy) ;
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ;
 
-        log.debug("Prefixes: " + primary + " :: " + StrUtils.strjoin(",", indexes)) ;
+        log.debug("Prefixes: " + primary + " :: " + String.join(",", indexes)) ;
 
         return prefixes ;
     }

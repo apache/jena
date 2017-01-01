@@ -26,12 +26,11 @@ import java.io.OutputStream ;
 import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.BitsInt ;
 import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.atlas.lib.Ref ;
 
 /**
  * A low level streaming JSON writer - assumes correct sequence of calls (e.g.
@@ -69,7 +68,7 @@ public class JSWriter {
 
     // Remember whether we are in the first element of a compound 
     // (object or array).
-    Deque<Ref<Boolean>> stack = new ArrayDeque<>() ;
+    Deque<AtomicBoolean> stack = new ArrayDeque<>() ;
 
     public void startObject() {
         startCompound() ;
@@ -277,7 +276,7 @@ public class JSWriter {
     }
 
     private void startCompound() {
-        stack.push(new Ref<>(true)) ;
+        stack.push(new AtomicBoolean(true)) ;
     }
 
     private void finishCompound() {
@@ -285,11 +284,11 @@ public class JSWriter {
     }
 
     private boolean isFirst() {
-        return stack.peek().getValue() ;
+        return stack.peek().get() ;
     }
 
     private void setNotFirst() {
-        stack.peek().setValue(false) ;
+        stack.peek().set(false) ;
     }
 
     private void value(String x) {

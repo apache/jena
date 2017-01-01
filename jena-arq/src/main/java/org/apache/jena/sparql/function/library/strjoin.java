@@ -25,7 +25,6 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.QueryBuildException ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.expr.ExprList ;
@@ -51,13 +50,9 @@ public class strjoin extends FunctionBase
         String sep = iter.next().asString() ;
 
         List<String> x = new ArrayList<>() ;
-        for ( ; iter.hasNext() ; )
-        {
-            NodeValue arg = iter.next();
-            x.add( arg.asString() ) ;
-        }
+        iter.forEachRemaining(arg->x.add(arg.asString()));
         
-        return NodeValue.makeString(StrUtils.strjoin(sep, x)) ;
+        return NodeValue.makeString(String.join(sep, x)) ;
     }
 
     @Override

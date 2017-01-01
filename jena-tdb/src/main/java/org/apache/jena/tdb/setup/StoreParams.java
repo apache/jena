@@ -20,7 +20,6 @@ package org.apache.jena.tdb.setup;
 
 import java.util.Objects ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.index.IndexParams ;
 import org.apache.jena.tdb.setup.StoreParamsBuilder.Item ;
@@ -275,7 +274,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         String dftStr = "" ;
         if ( ! isSet )
             dftStr = "dft:" ;
-        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, StrUtils.strjoin(", ", strings))) ;
+        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, String.join(", ", strings))) ;
     }
 
     private void fmt(StringBuilder buff, String name, String value, boolean isSet) {

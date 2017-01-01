@@ -25,7 +25,6 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -173,7 +172,7 @@ public class GraphUtils {
     }
 
     public static Resource findRootByType(Model model, Resource atype) {
-        String s = StrUtils.strjoin("\n", 
+        String s = String.join("\n", 
                                     "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
                                     "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
                                     "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
