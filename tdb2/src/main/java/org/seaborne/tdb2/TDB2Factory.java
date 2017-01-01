@@ -21,72 +21,72 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.store.DatasetGraphTDB;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
-/** Public factory for creating objects datasets backed by TDB storage */
+/** Public factory for connecting to and creating datasets backed by TDB2 storage */
 public class TDB2Factory
 {
     private TDB2Factory() {} 
+
+    /** @deprecated Use {@link #connectDatasetGraph(Location)} */
+    @Deprecated
+    public static DatasetGraph createDatasetGraph(Location location) {
+        return connectDatasetGraph(location);
+    }
     
+    /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(Location location) {
         StoreConnection sConn = StoreConnection.connectCreate(location) ;
         return sConn.getDatasetGraph() ; 
     }
 
+    /** @deprecated Use {@link #connectDataset(Location)} */
+    @Deprecated
+    public static Dataset createDataset(Location location) {
+        return connectDataset(location);
+    }
+    
+    /** Create or connect to a TDB2-backed dataset */
     public static Dataset connectDataset(Location location) {
         DatasetGraph dsg = connectDatasetGraph(location) ;
         return DatasetFactory.wrap(dsg) ;
     }
 
+    /** @deprecated Use {@link #connectDatasetGraph(String)} */
+    @Deprecated
+    public static DatasetGraph createDatasetGraph(String location) {
+        return connectDatasetGraph(location);
+    }
+    
+    /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(String location) {
         return connectDatasetGraph(Location.create(location)) ;
     }
 
+    /** @deprecated Use {@link #connectDataset(String)} */
+    @Deprecated
+    public static Dataset createDataset(String location) {
+        return connectDataset(location);
+    }
+    
+    /** Create or connect to a TDB2-backed dataset */
     public static Dataset connectDataset(String location) {
         return connectDataset(Location.create(location)) ;    }
 
+    /** Create an in-memory TDB2-backed dataset (for testing) */
     public static DatasetGraph createDatasetGraph() {
         return connectDatasetGraph(Location.mem()) ;
     }
 
+    /** Create an in-memory TDB2-backed dataset (for testing) */
     public static Dataset createDataset() {
         return connectDataset(Location.mem()) ;
     }
 
-}
-//    
 //    /** Read the file and assembler a dataset */
 //    public static Dataset assembleDataset(String assemblerFile) {
 //        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
-//    }
-//    
-//    /** Create or connect to a TDB-backed dataset */ 
-//    public static Dataset createDataset(String dir)
-//    { return createDataset(Location.create(dir)) ; }
-//
-//    /** Create or connect to a TDB-backed dataset */ 
-//    public static Dataset createDataset(Location location)
-//    { return createDataset(createDatasetGraph(location)) ; }
-//
-//    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
-//    public static Dataset createDataset()
-//    { return createDataset(createDatasetGraph()) ; }
-//
-//    /** Create a dataset around a DatasetGraphTDB */ 
-//    private static Dataset createDataset(DatasetGraph datasetGraph)
-//    { return DatasetFactory.create(datasetGraph) ; }
-//    
-//    /** Create or connect to a TDB-backed dataset (graph-level) */
-//    public static DatasetGraph createDatasetGraph(String directory)
-//    { return createDatasetGraph(Location.create(directory)) ; }
-//
-//    /** Create or connect to a TDB-backed dataset (graph-level) */
-//    public static DatasetGraph createDatasetGraph(Location location)
-//    { return _createDatasetGraph(location) ; }
-//
-//    /** Create a TDB-backed dataset (graph-level) in memory (for testing) */
-//    public static DatasetGraph createDatasetGraph() {
-//        return _createDatasetGraph() ;
 //    }
 //    
 //    /** Release from the JVM. All caching is lost. */
@@ -98,53 +98,34 @@ public class TDB2Factory
 //    public static void release(DatasetGraph dataset) {
 //        _release(location(dataset)) ;
 //    }
-//    
-//    private static DatasetGraph _createDatasetGraph(Location location) {
-//        return TDBMaker.createDatasetGraphTransaction(location) ;
-//    }
-//
-//    private static DatasetGraph _createDatasetGraph() {
-//        return TDBMaker.createDatasetGraphTransaction() ;
-//    }
-//    
-//    private static void _release(Location location) {
-//        if ( location == null )
-//            return ;
-//        TDBMaker.releaseLocation(location) ;
-//    }
-//
-//    /** Return the location of a dataset if it is backed by TDB, else null */ 
-//    public static boolean isBackedByTDB(Dataset dataset) {
-//        DatasetGraph dsg = dataset.asDatasetGraph() ;
-//        return isBackedByTDB(dsg) ;
-//    }
-//    
-//    /** Return the location of a dataset if it is backed by TDB, else null */ 
-//    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-//        if ( datasetGraph instanceof DatasetGraphTransaction )
-//            // The swicthing "connection" for TDB 
-//            return true ;
-//        if ( datasetGraph instanceof DatasetGraphTDB )
-//            // A transaction or the base storage.
-//            return true ;
-//        return false ;
-//    }
-//
-//    /** Return the location of a dataset if it is backed by TDB, else null */
-//    public static Location location(Dataset dataset) {
-//        DatasetGraph dsg = dataset.asDatasetGraph() ;
-//        return location(dsg) ;
-//    }
-//
-//    /** Return the location of a DatasetGraph if it is backed by TDB, else null */
-//    public static Location location(DatasetGraph datasetGraph) {
-//        if ( datasetGraph instanceof DatasetGraphTDB )
-//            return ((DatasetGraphTDB)datasetGraph).getLocation() ;
-//        if ( datasetGraph instanceof DatasetGraphTransaction )
-//            return ((DatasetGraphTransaction)datasetGraph).getLocation() ;
-//        return null ;
-//    }
-//
+
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static boolean isBackedByTDB(Dataset dataset) {
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return isBackedByTDB(dsg) ;
+    }
+    
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            // A transaction or the base storage.
+            return true ;
+        return false ;
+    }
+
+    /** Return the location of a dataset if it is backed by TDB, else null */
+    public static Location location(Dataset dataset) {
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return location(dsg) ;
+    }
+
+    /** Return the location of a DatasetGraph if it is backed by TDB, else null */
+    public static Location location(DatasetGraph datasetGraph) {
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            return ((DatasetGraphTDB)datasetGraph).getLocation() ;
+        return null ;
+    }
+
 //    /** Set the {@link StoreParams} for specific Location.
 //     *  This call must only be called before a dataset from Location
 //     *  is created. This operation should be used with care; bad choices
@@ -163,3 +144,5 @@ public class TDB2Factory
 //            throw new IllegalStateException("Location is already active") ;
 //        StoreConnection.make(location, params) ;
 //    }
+    
+}
