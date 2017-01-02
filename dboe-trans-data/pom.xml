@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
   </parent> 
 
   <dependencies>
@@ -33,26 +33,26 @@
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-transaction</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-index</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-index-test</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-base</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

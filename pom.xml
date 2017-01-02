@@ -23,7 +23,7 @@
   <artifactId>mantis</artifactId>
   <packaging>pom</packaging>
   <url>https://github.com/afs/mantis</url>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0</version>
   <name>Mantis :: Database Operation Environment</name>
   <description>Mantis :: Database Operation Environment</description>
 
@@ -56,7 +56,7 @@
     <url>https://github.com/afs/mantis</url>
     <connection>scm:git:https://github.com/afs/mantis</connection>
     <developerConnection>scm:git:git@github.com:afs/mantis.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>mantis-0.2.0</tag>
   </scm>
   
   <properties>
