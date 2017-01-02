@@ -24,11 +24,7 @@ import static org.seaborne.tdb2.store.NodeIdTypes.TYPES.*;
  * The rest of the bytes are the node reference. 
  */
 public enum NodeIdTypes {
-    // For PTR, only the top bit is used.
     PTR(T_PTR, null),
-
-    // We provide lots of natural questions to ask of an NodeId type.
-    // All are efficient. There is redundancy butliited to this file. 
 
     XSD_INTEGER(T_INTEGER, "Integer"),
     XSD_DECIMAL(T_DECIMAL, "Decimal"),
@@ -63,19 +59,28 @@ public enum NodeIdTypes {
     
     //, EXTENSION(T_EXTENSION, "Extension")
     ;
+    /** The type values - must be stable as many of these go on disk.
+     * enum ordinals are not enough.
+     *
+     * Encode as:
+     * <ul>
+     * <li>PTR : high bit zero, everything else written with a high bit one (done in {@link NodeIdFactory#encode}
+     * <li>T_DOUBLE : Special case: next bit one.  01?? ???? i.e. 11?? on disk (value bit, double bit).
+     *    This leaves 62 bits for encoding doubles in the future.
+     * <li>Otherwise, a number in the low byte of the constant, high bits "10".
+     * </ul>
+     * The {@code T_*} constants do not include the high bit.
+     */
     public static class TYPES {
-        // The type values - must be stable as many of these go on disk.
-        // enum ordinals are not enough.
-        // Encode as:
-        //   PTR : high bit zero, everythigj esle high bit one.
-        //   7 bits of type value : 1 to 100
-        // Low byte of ...
         public static final int T_PTR = 0 ;
+
+        public static final int T_DOUBLE = enc(0x40);
+
         // Value types : 1 to 100  
         public static final int T_INTEGER = enc(1);
         public static final int T_DECIMAL = enc(2);
         public static final int T_FLOAT = enc(3);
-        public static final int T_DOUBLE = enc(4);
+        //private static final int T_DOUBLE_X = enc(4);
         
         public static final int T_DATETIME = enc(5);
         public static final int T_DATETIMESTAMP = enc(6);
@@ -94,60 +99,31 @@ public enum NodeIdTypes {
         public static final int T_UNSIGNEDLONG = enc(18);
         public static final int T_UNSIGNEDINT = enc(19);
         public static final int T_UNSIGNEDSHORT = enc(20);
-        public static final int T_UNSIGNEDBYTE = enc(21);
+        public static final int T_UNSIGNEDBYTE = enc(21); 
+        // 21 is 00010101
         
-        // Never stored : >= 0xF0 == enc(0x70)
-        public static final int T_SPECIAL = enc(0x70);
-        public static final int T_INVALID = enc(0x71);
-        public static final int T_EXTENSION = enc(0x7F);
+        // Never stored : bits 1011 0000 so as not to look like a double.
+        public static final int T_SPECIAL = enc(0x30);
+        public static final int T_INVALID = enc(0x31);
+        public static final int T_EXTENSION = enc(0x3F);
         
         // Encode/decode of the type value.
         static int enc(int v) { return v; }
         static int dec(int v) { return v; }
     }
     
+    // We provide lots of natural questions to ask of an NodeId type.
+    // All are efficient. There is redundancy but limited to this file. 
+
     static boolean isStorable(NodeIdTypes type) {
         return !isSpecial(type); 
     }
     
+    // For numbers, an out-of-range number maybe stored a PTR.
+    
     static boolean isInteger(NodeIdTypes type) {
         switch(type) {
             case XSD_INTEGER:
-            case XSD_POSITIVE_INTEGER:
-            case XSD_NEGATIVE_INTEGER:
-            case XSD_NON_NEGATIVE_INTEGER:
-            case XSD_NON_POSITIVE_INTEGER:
-            case XSD_LONG:
-            case XSD_INT:
-            case XSD_SHORT:
-            case XSD_BYTE:
-            case XSD_UNSIGNEDLONG:
-            case XSD_UNSIGNEDINT:
-            case XSD_UNSIGNEDSHORT:
-            case XSD_UNSIGNEDBYTE:
-                return true;
-            default:
-                return false;
-        }
-    }
-    
-    static boolean isSpecial(NodeIdTypes type) {
-        return type == SPECIAL;
-    }
-    
-    static boolean isInline(NodeIdTypes type) {
-        switch(type) {
-            case XSD_INTEGER:
-            case XSD_DECIMAL:
-            case XSD_DOUBLE:
-            case XSD_FLOAT:
-                
-            case XSD_DATETIME:
-            case XSD_DATETIMESTAMP:
-            case XSD_DATE:
-            case XSD_BOOLEAN:
-            case XSD_SHORTSTRING:
-                
             case XSD_POSITIVE_INTEGER:
             case XSD_NEGATIVE_INTEGER:
             case XSD_NON_NEGATIVE_INTEGER:
@@ -182,6 +158,41 @@ public enum NodeIdTypes {
         return isInteger(type) || isDecimal(type) || isDouble(type) || isFloat(type);
     }
     
+    static boolean isSpecial(NodeIdTypes type) {
+        return type == SPECIAL;
+    }
+
+    static boolean isInline(NodeIdTypes type) {
+        switch(type) {
+            case XSD_INTEGER:
+            case XSD_DECIMAL:
+            case XSD_DOUBLE:
+            case XSD_FLOAT:
+                
+            case XSD_DATETIME:
+            case XSD_DATETIMESTAMP:
+            case XSD_DATE:
+            case XSD_BOOLEAN:
+            case XSD_SHORTSTRING:
+                
+            case XSD_POSITIVE_INTEGER:
+            case XSD_NEGATIVE_INTEGER:
+            case XSD_NON_NEGATIVE_INTEGER:
+            case XSD_NON_POSITIVE_INTEGER:
+            case XSD_LONG:
+            case XSD_INT:
+            case XSD_SHORT:
+            case XSD_BYTE:
+            case XSD_UNSIGNEDLONG:
+            case XSD_UNSIGNEDINT:
+            case XSD_UNSIGNEDSHORT:
+            case XSD_UNSIGNEDBYTE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     private final int value;
     private final String displayName;
     
