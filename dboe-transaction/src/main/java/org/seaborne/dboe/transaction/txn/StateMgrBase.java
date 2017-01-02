@@ -83,8 +83,6 @@ public abstract class StateMgrBase implements Sync, Closeable {
     
     /** Note that the in-memory state is not known to be the same
      * as the on-disk state.  
-     * @see {@link #sync}.  
-     * @see {@link #writeState}.  
      */
     protected void setDirtyFlag() {
         dirty = true ;

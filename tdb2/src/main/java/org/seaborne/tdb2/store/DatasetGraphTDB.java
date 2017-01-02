@@ -152,6 +152,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     // Promotion
     private void requireWriteTxn() {
         Transaction txn = txnSystem.getThreadTransaction() ;
+        if ( txn == null )
+            throw new TransactionException("Not in a transaction") ;
+            
         if ( txn.isWriteTxn() )
             return ;
         // Transaction.promoteOrException

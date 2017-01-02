@@ -29,13 +29,13 @@ import org.seaborne.dboe.transaction.txn.journal.Journal ;
  */
 public class TransactionalFactory {
 
-    /** Create, and start, management of a number of {@linkTransactionalComponent}s */ 
+    /** Create, and start, management of a number of {@link TransactionalComponent}s */ 
     public static Transactional createTransactional(Location location, TransactionalComponent ... elements) {
         TransactionCoordinator coord = new TransactionCoordinator(location) ;
         return createTransactional(coord, elements) ;
     }
 
-    /** Create, and start, management of a number of {@linkTransactionalComponent}s */ 
+    /** Create, and start, management of a number of {@link TransactionalComponent}s */ 
     public static Transactional createTransactional(Journal journal, TransactionalComponent ... elements) {
         TransactionCoordinator coord = new TransactionCoordinator(journal) ;
         return createTransactional(coord, elements) ;

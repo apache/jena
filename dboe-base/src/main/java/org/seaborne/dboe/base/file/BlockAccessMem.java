@@ -32,7 +32,7 @@ import org.seaborne.dboe.sys.Sys;
  * There is a safe mode, whereby blocks are copied in and out to guarantee no writing to an unallocated block.
  * This is very inefficient but a better simulation of a disk.
  * 
- * @See BlockAccessByteArray
+ * @see BlockAccessByteArray
  */
 
 public class BlockAccessMem implements BlockAccess
