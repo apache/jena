@@ -72,7 +72,6 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <configuration>
-          <createSourcesJar>true</createSourcesJar>
           <shadedArtifactAttached>false</shadedArtifactAttached>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -110,20 +109,17 @@
         </executions>
       </plugin>
 
-      <!-- skip these -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <configuration>
-          <skipSource>true</skipSource>
-        </configuration>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
