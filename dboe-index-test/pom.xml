@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-index</artifactId>
-      <version>0.2.1-SNAPSHOT</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

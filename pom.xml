@@ -23,8 +23,9 @@
   <artifactId>mantis</artifactId>
   <packaging>pom</packaging>
   <url>https://github.com/afs/mantis</url>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>Mantis :: Database Operation Environment</name>
+  <description>Mantis :: Database Operation Environment</description>
 
   <licenses>
     <license>
@@ -33,8 +34,12 @@
     </license>
   </licenses>
 
+  <developers>
+     <developer>
+      <name>Andy Seaborne</name>
+    </developer>
+  </developers>
   <!--
-      <developers></developers>
       <contributors></contributors>
       <mailingLists></mailingLists>
   -->
