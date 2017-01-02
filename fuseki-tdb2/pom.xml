@@ -72,11 +72,12 @@
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.3</version>
         <configuration>
-          <createSourcesJar>treu</createSourcesJar>
+          <createSourcesJar>true</createSourcesJar>
           <shadedArtifactAttached>false</shadedArtifactAttached>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>
+              <!--<mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>-->
+              <mainClass>org.seaborne.fuseki.cmd.FusekiTDB2Cmd</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
