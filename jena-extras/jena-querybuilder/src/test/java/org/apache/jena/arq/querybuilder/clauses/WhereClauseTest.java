@@ -27,9 +27,14 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
@@ -87,6 +92,18 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@ContractTest
+	public void testAddOptionalStringWithPath() {
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addOptional("<one>",
+				"<two>/<dos>", "three");
+		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
+				+ OPEN_CURLY + uri("one") + SPACE + uri("two")+"/"+uri("dos") + SPACE
+				+ quote("three") + presentStringType() + OPT_SPACE
+				+ CLOSE_CURLY + CLOSE_CURLY, builder.buildString());
+
+	}
+	
+	@ContractTest
 	public void testAddOptionalObjects() {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addOptional(
@@ -101,9 +118,9 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	@ContractTest
 	public void testAddOptionalTriple() {
 		WhereClause<?> whereClause = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(
+		AbstractQueryBuilder<?> builder = whereClause.addOptional(
 				NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-				NodeFactory.createURI("three")));
+				NodeFactory.createURI("three"));
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
 				+ OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE
@@ -111,6 +128,38 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				builder.buildString());
 	}
 	
+	@ContractTest
+	public void testAddOptionalTriplePath() {
+		WhereClause<?> whereClause = getProducer().newInstance();
+		PrefixMapping pmap = new PrefixMappingImpl();
+		pmap.setNsPrefix("ts", "urn:test:");
+		Path path = PathParser.parse( "ts:two/ts:dos", pmap);
+		AbstractQueryBuilder<?> builder = whereClause.addOptional(new TriplePath(
+				NodeFactory.createURI("one"), path,
+				NodeFactory.createURI("three")));
+
+		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
+				+ OPEN_CURLY + uri("one") + SPACE + uri("urn:test:two")+"/"+uri("urn:test:dos") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
+				builder.buildString());
+	}
+	
+	@ContractTest
+	public void testAddOptionalObjectsWithPath() {
+		WhereClause<?> whereClause = getProducer().newInstance();
+		PrefixMapping pmap = new PrefixMappingImpl();
+		pmap.setNsPrefix("ts", "urn:test:");
+		Path path = PathParser.parse( "ts:two/ts:dos", pmap);
+		AbstractQueryBuilder<?> builder = whereClause.addOptional(
+				NodeFactory.createURI("one"), path,
+				NodeFactory.createURI("three"));
+
+		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE
+				+ OPEN_CURLY + uri("one") + SPACE + uri("urn:test:two")+"/"+uri("urn:test:dos") + SPACE
+				+ uri("three") + OPT_SPACE + CLOSE_CURLY,
+				builder.buildString());
+	}
+
 	@ContractTest
 	public void testAddOptionalGroupPattern() throws ParseException {
 		
@@ -165,7 +214,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		sb.addPrefix("pfx", "uri").addVar("?x")
 				.addWhere("<one>", "<two>", "three");
 		WhereClause<?> whereClause = getProducer().newInstance();
-		whereClause.getWhereHandler().addWhere(Triple.ANY);
+		whereClause.getWhereHandler().addWhere( new TriplePath(Triple.ANY));
 		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb);
 
 		String str = builder.buildString();

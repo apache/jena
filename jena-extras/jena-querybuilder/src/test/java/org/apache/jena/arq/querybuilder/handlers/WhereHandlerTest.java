@@ -31,9 +31,14 @@ import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,8 +59,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testAddAllOnEmpty() {
 		Query query2 = new Query();
 		WhereHandler handler2 = new WhereHandler(query2);
-		handler2.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-				NodeFactory.createLiteral("three")));
+		handler2.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+				NodeFactory.createLiteral("three"))));
 		handler.addAll(handler2);
 
 		assertContainsRegex(
@@ -65,11 +70,11 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddAllPopulatedEmpty() {
-		handler.addWhere(Triple.ANY);
+		handler.addWhere(new TriplePath(Triple.ANY));
 		Query query2 = new Query();
 		WhereHandler handler2 = new WhereHandler(query2);
-		handler2.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-				NodeFactory.createLiteral("three")));
+		handler2.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+				NodeFactory.createLiteral("three"))));
 		handler.addAll(handler2);
 
 		assertContainsRegex(WHERE + OPEN_CURLY + "ANY" + SPACE + "ANY" + SPACE + "ANY" + DOT + SPACE + uri("one")
@@ -78,8 +83,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void addWhereTriple() {
-		handler.addWhere(
-				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+		handler.addWhere( new TriplePath(
+				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"))));
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -87,15 +92,26 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddWhereObjects() {
-		handler.addWhere(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
-				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
+		handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
+				ResourceFactory.createLangLiteral("three", "en-US").asNode())));
 		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + "@en-US"
 				+ OPT_SPACE + CLOSE_CURLY, query.toString());
 	}
 
 	@Test
+	public void testAddWhereObjectsWithPath() {
+		PrefixMapping pmap = new PrefixMappingImpl();
+		pmap.setNsPrefix("ts", "urn:test:");
+		Path path = PathParser.parse( "ts:two/ts:dos", pmap);
+		handler.addWhere(new TriplePath(NodeFactory.createURI("one"), path,
+				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE + 
+				uri("urn:test:two")+"/"+uri("urn:test:dos") + SPACE + quote("three") + "@en-US"
+				+ OPT_SPACE + CLOSE_CURLY, query.toString());
+	}
+	@Test
 	public void testAddWhereAnonymous() {
-		handler.addWhere(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
+		handler.addWhere(new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY)));
 		assertContainsRegex(WHERE + OPEN_CURLY + "ANY" + SPACE
 				+ uri("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first") + SPACE + "ANY" + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -103,15 +119,15 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddOptionalStrings() {
-		handler.addOptional(
-				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+		handler.addOptional( new TriplePath(
+				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"))));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 	}
 
 	@Test
 	public void testAddOptionalAnonymous() {
-		handler.addOptional(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY));
+		handler.addOptional(new TriplePath(new Triple(Node.ANY, RDF.first.asNode(), Node.ANY)));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + "ANY" + SPACE
 				+ uri("http://www\\.w3\\.org/1999/02/22-rdf-syntax-ns#first") + SPACE + "ANY" + OPT_SPACE + CLOSE_CURLY
 				+ CLOSE_CURLY, query.toString());
@@ -127,8 +143,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		Var x = Var.alloc("x");
 		Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
 
-		pattern.addWhere(new Triple(s, q, n123));
-		pattern.addWhere(new Triple(s, v, x));
+		pattern.addWhere(new TriplePath(new Triple(s, q, n123)));
+		pattern.addWhere(new TriplePath(new Triple(s, v, x)));
 		pattern.addFilter("?x>56");
 
 		handler.addOptional(pattern);
@@ -142,16 +158,29 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddOptionalObjects() {
-		handler.addOptional(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
-				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
+		handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
+				ResourceFactory.createLangLiteral("three", "en-US").asNode())));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + quote("three") + "@en-US" + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 	}
+	
+	@Test
+	public void testAddOptionalObjectsWithPath() {
+		PrefixMapping pmap = new PrefixMappingImpl();
+		pmap.setNsPrefix("ts", "urn:test:");
+		Path path = PathParser.parse( "ts:two/ts:dos", pmap);
 
+		handler.addOptional(new TriplePath(NodeFactory.createURI("one"), path,
+				ResourceFactory.createLangLiteral("three", "en-US").asNode()));
+		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") 
+		+ SPACE + uri("urn:test:two")+"/"+uri("urn:test:dos")
+				+ SPACE + quote("three") + "@en-US" + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
+	}
+	
 	@Test
 	public void testAddWhereStrings() {
-		handler.addWhere(
-				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+		handler.addWhere(new TriplePath(
+				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"))));
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + uri("three") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -228,8 +257,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddUnionToExisting() {
-		handler.addWhere(
-				new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
+		handler.addWhere( new TriplePath(
+				new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
 		SelectBuilder sb = new SelectBuilder();
 		sb.addWhere(
 				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
@@ -252,8 +281,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddUnionToExistingWithVar() {
-		handler.addWhere(
-				new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o")));
+		handler.addWhere( new TriplePath(
+				new Triple(NodeFactory.createURI("s"), NodeFactory.createURI("p"), NodeFactory.createURI("o"))));
 		SelectBuilder sb = new SelectBuilder().addVar("x").addWhere(
 				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
 
@@ -267,8 +296,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void addGraph() {
 
 		WhereHandler handler2 = new WhereHandler(new Query());
-		handler2.addWhere(
-				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+		handler2.addWhere(new TriplePath(
+				new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"))));
 
 		handler.addGraph(NodeFactory.createURI("graph"), handler2);
 		assertContainsRegex(WHERE + OPEN_CURLY + "GRAPH" + SPACE + uri("graph") + SPACE + OPEN_CURLY + uri("one")
@@ -279,7 +308,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testSetVarsInTriple() {
 		Var v = Var.alloc("v");
-		handler.addWhere(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+		handler.addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
 		assertContainsRegex(
 				WHERE + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + var("v") + OPT_SPACE + CLOSE_CURLY,
 				query.toString());
@@ -309,7 +338,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testSetVarsInOptional() {
 		Var v = Var.alloc("v");
-		handler.addOptional(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+		handler.addOptional(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v)));
 		assertContainsRegex(WHERE + OPEN_CURLY + "OPTIONAL" + SPACE + OPEN_CURLY + uri("one") + SPACE + uri("two")
 				+ SPACE + var("v") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query.toString());
 		Map<Var, Node> values = new HashMap<>();
@@ -386,8 +415,8 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testListInTriple() {
-		handler.addWhere(new Triple(handler.list("<one>", "?var", "'three'"),
-				ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode()));
+		handler.addWhere(new TriplePath(new Triple(handler.list("<one>", "?var", "'three'"),
+				ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode())));
 
 		assertContainsRegex("_:b0" + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE
 				+ uri("one") + SEMI + SPACE + uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE + "_:b1"

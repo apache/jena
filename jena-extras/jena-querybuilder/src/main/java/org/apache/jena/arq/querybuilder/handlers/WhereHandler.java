@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
@@ -138,12 +139,19 @@ public class WhereHandler implements Handler {
 	 * @param t
 	 *            The trip to test.
 	 */
-	private static void testTriple(Triple t) {
+	private static void testTriple(TriplePath t) {
 		// verify Triple is valid
 		boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
 				|| t.getSubject().equals(Node.ANY);
-		boolean validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
-				|| t.getPredicate().equals(Node.ANY);
+		boolean validPredicate;
+		
+		if (t.isTriple()) {
+			validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
+					|| t.getPredicate().equals(Node.ANY);
+		} else {
+			validPredicate = t.getPath() != null;
+		}
+				
 		boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
 				|| t.getObject().isVariable() || t.getObject().equals(Node.ANY);
 
@@ -155,7 +163,7 @@ public class WhereHandler implements Handler {
 			}
 			if (!validPredicate) {
 				sb.append(
-						String.format("Predicate (%s) must be a URI , variable, or a wildcard. %n", t.getPredicate()));
+						String.format("Predicate (%s) must be a Path, URI , variable, or a wildcard. %n", t.getPredicate()));
 			}
 			if (!validObject) {
 				sb.append(String.format("Object (%s) must be a URI, literal, blank, , variable, or a wildcard. %n",
@@ -169,14 +177,14 @@ public class WhereHandler implements Handler {
 	}
 
 	/**
-	 * Add the triple to the where clause
+	 * Add the triple path to the where clause
 	 * 
 	 * @param t
-	 *            The triple to add.
+	 *            The triple path to add.
 	 * @throws IllegalArgumentException
-	 *             If the triple is not a valid triple for a where clause.
+	 *             If the triple path is not a valid triple path for a where clause.
 	 */
-	public void addWhere(Triple t) throws IllegalArgumentException {
+	public void addWhere(TriplePath t) throws IllegalArgumentException {
 		testTriple(t);
 		ElementGroup eg = getClause();
 		List<Element> lst = eg.getElements();
@@ -186,9 +194,9 @@ public class WhereHandler implements Handler {
 			eg.addElement(epb);
 		} else {
 			Element e = lst.get(lst.size() - 1);
-			if (e instanceof ElementTriplesBlock) {
+			if (e instanceof ElementTriplesBlock && t.isTriple()) {
 				ElementTriplesBlock etb = (ElementTriplesBlock) e;
-				etb.addTriple(t);
+				etb.addTriple(t.asTriple());
 			} else if (e instanceof ElementPathBlock) {
 				ElementPathBlock epb = (ElementPathBlock) e;
 				epb.addTriple(t);
@@ -205,11 +213,11 @@ public class WhereHandler implements Handler {
 	 * Add an optional triple to the where clause
 	 * 
 	 * @param t
-	 *            The triple to add.
+	 *            The triple path to add.
 	 * @throws IllegalArgumentException
 	 *             If the triple is not a valid triple for a where clause.
 	 */
-	public void addOptional(Triple t) throws IllegalArgumentException {
+	public void addOptional(TriplePath t) throws IllegalArgumentException {
 		testTriple(t);
 		ElementPathBlock epb = new ElementPathBlock();
 		epb.addTriple(t);
@@ -398,13 +406,13 @@ public class WhereHandler implements Handler {
 		Node lastObject = retval;
 		for (int i = 0; i < objs.length; i++) {
 			Node n = AbstractQueryBuilder.makeNode(objs[i], query.getPrefixMapping());
-			addWhere(new Triple(lastObject, RDF.first.asNode(), n));
+			addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
 			if (i + 1 < objs.length) {
 				Node nextObject = NodeFactory.createBlankNode();
-				addWhere(new Triple(lastObject, RDF.rest.asNode(), nextObject));
+				addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), nextObject)));
 				lastObject = nextObject;
 			} else {
-				addWhere(new Triple(lastObject, RDF.rest.asNode(), RDF.nil.asNode()));
+				addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
 			}
 
 		}

@@ -25,17 +25,26 @@ import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.tokens.Token;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.riot.tokens.TokenizerFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -75,6 +84,85 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public Node makeNode(Object o) {
 		return makeNode( o, query.getPrefixMapping() );
 	}
+	
+	private Object makeNodeOrPath(Object o)
+	{
+		return makeNodeOrPath(o, query.getPrefixMapping() );
+	}
+	
+	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
+	{
+		if (o == null) {
+			return Node.ANY;
+		}
+		if (o instanceof Path)
+		{
+			return (Path)o;
+		}
+		if (o instanceof FrontsNode) {
+			return ((FrontsNode) o).asNode();
+		}
+
+		if (o instanceof Node) {
+			return (Node) o;
+		}
+		if (o instanceof String) {
+			try {			
+				Path p = PathParser.parse((String) o, pMapping);
+				if (p instanceof P_Link)
+				{
+					return ((P_Link)p).getNode();
+				}
+				return p;
+			}
+			catch (QueryParseException e)
+			{	// try to parse vars
+				return makeNode( o, pMapping );		
+			}
+			catch (Exception e)
+			{
+				// expected in some cases -- do nothing
+			}
+
+		}
+		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
+	}
+		
+	/**
+	 * Make a triple path from the objects.
+	 * 
+	 * For subject, predicate and objects nodes
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>If the object is a String
+	 * 	<ul>
+	 * <li>For <code>predicate</code> only will attempt to parse as a path</li>
+	 * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode() 
+	 * using the currently defined prefixes if the object is a String</li>
+	 * </ul></li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * 
+	 * @param s The subject object
+	 * @param p the predicate object
+	 * @param o the object object.
+	 * @return a TriplePath
+	 */
+	public TriplePath makeTriplePath(Object s, Object p, Object o) {
+		Object po = makeNodeOrPath( p );
+		if (po instanceof Path)
+		{
+			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
+		} else
+		{
+			return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
+		}
+		
+	}
+
 	
 	/**
 	 * A convenience method to make an expression from a string.  Evaluates the 
