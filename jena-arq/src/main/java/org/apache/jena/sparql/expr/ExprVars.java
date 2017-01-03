@@ -48,28 +48,14 @@ public class ExprVars
 
     public static void varsMentioned(Collection<Var> acc, Expr expr)
     {
-        ExprVars.Action<Var> action =
-            new ExprVars.Action<Var>(){
-                @Override
-                public void var(Collection<Var> acc, Var var)
-                {
-                    acc.add(var) ;
-                }
-            } ;
+        ExprVars.Action<Var> action = (a, var) -> a.add(var) ;
         ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, action) ;
         Walker.walk(expr, vv) ;
     }
     
     public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr)
     {
-        ExprVars.Action<Var> action =
-                new ExprVars.Action<Var>(){
-                    @Override
-                    public void var(Collection<Var> acc, Var var)
-                    {
-                        acc.add(var) ;
-                    }
-                } ;
+        ExprVars.Action<Var> action = (a, var) -> a.add(var) ;
         ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, action) ;
         Walker.walk(expr, vv) ;
     }
@@ -83,14 +69,7 @@ public class ExprVars
     
     public static void varNamesMentioned(Collection<String> acc, Expr expr)
     {
-        ExprVars.Action<String> action =
-            new ExprVars.Action<String>(){
-                @Override
-                public void var(Collection<String> acc, Var var)
-                {
-                    acc.add(var.getVarName()) ;
-                }
-            } ;
+        ExprVars.Action<String> action = (a, var) -> a.add(var.getVarName()) ;
         ExprVarsWorker<String> vv = new ExprVarsWorker<>(acc, action) ;
         Walker.walk(expr, vv) ;
     }
