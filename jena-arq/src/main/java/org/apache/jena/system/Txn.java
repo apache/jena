@@ -82,7 +82,7 @@ public class Txn {
     }
 
     /** Execute and return a value in a write transaction. */
-    public static <T extends Transactional, X> X calculateWrite(Transactional txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
         if ( !b )
             txn.begin(ReadWrite.WRITE) ;
