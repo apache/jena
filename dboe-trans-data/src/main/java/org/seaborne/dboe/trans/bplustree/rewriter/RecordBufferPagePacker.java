@@ -28,7 +28,7 @@ import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 /**
  * Iterate over a stream of records, packing them into RecordBufferPage -- the
  * leaf of a B+Tree This class does not write the blocks back to the block
- * manager. This cleass does allocate block ids and blocks.
+ * manager. This class does allocate block ids and blocks.
  * 
  * @see RecordBufferPageLinker
  */

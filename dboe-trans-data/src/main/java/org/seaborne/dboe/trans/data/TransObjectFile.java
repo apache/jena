@@ -43,7 +43,7 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
     /*
      * The file is written to as we go along so abort requires some action. We
      * can't recover from just the file, without any redo or undo recovery
-     * action. The length/position of the file may be duff, there is a possble
+     * action. The length/position of the file may be duff, there is a possible
      * abandoned section of the file.
      * 
      * But even if a partial entry, we don't corrupt data. Assumes no references

@@ -101,10 +101,10 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     @Override
     public void finishRecovery() {
         if ( recoveryAction ) {
-            long x = committedLength.get() ;
-            binFile.truncate(x) ;
+            long length = committedLength.get() ;
+            binFile.truncate(length) ;
             binFile.sync();
-            committedLength.set(x) ; 
+            committedLength.set(length) ; 
         }
     }
     

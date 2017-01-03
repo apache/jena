@@ -21,10 +21,10 @@ import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.jenax.Txn ;
 
 /** Interface that encapsulates the  begin/abort|commit/end operations.
- * <p>The read lifcycle is:
+ * <p>The read lifecycle is:
  * <pre> begin(READ) ... end()</pre>
  * <p>{@code commit} and {@code abort} are allowed. 
- * <p>The write lifcycle is:
+ * <p>The write lifecycle is:
  * <pre> begin(WRITE) ... abort() or commit()</pre>
  * <p>{@code end()} is optional but preferred.
  * <p>
@@ -72,11 +72,11 @@ public interface Transactional extends org.apache.jena.sparql.core.Transactional
     * Consider also:
     *  <pre>
     *    .end() ;
-    *    .being(WRITE) ;
+    *    .begin(WRITE) ;
     *  </pre>
     *  to see any intermediate commits from another writer.
     * 
-    * @return boolean indicating whether the tranaction is now a write transaction or not.
+    * @return boolean indicating whether the transaction is now a write transaction or not.
     */
    public boolean promote() ;
 

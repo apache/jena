@@ -131,7 +131,7 @@ public class ThreadTxn {
                 }
             } 
             catch (Throwable ex) { 
-                       // Surpress now it has trigger transaction mechanism in
+                       // Suppress now it has trigger transaction mechanism in
                        // the presence of an unchecked exception.
                        // Passed to the main thread via ThreadTxn
             }

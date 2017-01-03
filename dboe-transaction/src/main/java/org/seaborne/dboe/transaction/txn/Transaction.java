@@ -47,7 +47,7 @@ public class Transaction implements TransactionInfo {
     
     // Using an AtomicReference makes this observable from the outside.
     // It also allow for multithreaded transactions (later). 
-    private final AtomicReference<TxnState> state = new AtomicReference<TxnState>() ;
+    private final AtomicReference<TxnState> state = new AtomicReference<>() ;
     //private TxnState state ;
     private final long dataEpoch ;
     private ReadWrite mode ;

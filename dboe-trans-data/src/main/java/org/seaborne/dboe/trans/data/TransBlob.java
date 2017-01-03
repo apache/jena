@@ -31,7 +31,7 @@ import org.seaborne.dboe.transaction.txn.TxnId ;
 /** Manage a single binary (not too large) object.
  * It is written and read from a file in one action, 
  * so changes completely replace the original contents.
- * The whole object is writtern to the journal during prepare.  
+ * The whole object is written to the journal during prepare.  
  */
 public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobState> {
 

@@ -51,7 +51,7 @@ public class BPlusTreeRewriter {
     // Emit the RecordBufferPage (B+Tree leaves).
     // 2/ Take a stream of RecordBufferPage and create the first level of
     // branches.
-    // 3/ Take each branch level and create upper braches until root hit.
+    // 3/ Take each branch level and create upper branches until root hit.
     // 4/ Copy root block to root real location.
 
     // --------------------------------
@@ -295,8 +295,8 @@ public class BPlusTreeRewriter {
 
             // rebalence
             // ** Need rebalance of data leaf layer.
-            int x = node2.getCount() ;
-            if ( node2.getCount() >= bpt.getParams().getMinRec() )
+            int count = node2.getCount() ;
+            if ( count >= bpt.getParams().getMinRec() )
                 return null ;
 
             Record splitPoint = r1 ;
@@ -304,7 +304,7 @@ public class BPlusTreeRewriter {
             // Shift up all in one go and use .set.
             // Convert to block move ; should be code in BPTreeNode to do this
             // (insert).
-            for ( int i = node2.getCount() ; i < bpt.getParams().getMinRec() ; i++ ) {
+            for ( int i = count ; i < bpt.getParams().getMinRec() ; i++ ) {
 
                 Record r = splitPoint ;
 

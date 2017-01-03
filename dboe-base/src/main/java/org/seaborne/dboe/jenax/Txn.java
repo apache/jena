@@ -35,7 +35,7 @@ public class Txn {
         org.apache.jena.system.Txn.executeWrite(txn, r);
     }
 
-    public static <T extends Transactional, X> X calculateWrite(Transactional txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
         return org.apache.jena.system.Txn.calculateWrite(txn, r);
     }
 }

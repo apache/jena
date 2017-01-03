@@ -77,21 +77,7 @@ public class TransIndexMap extends TransactionalMRSW implements Index
 
     @Override
     public Iterator<Record> iterator() {
-        return new Iterator<Record>() {
-            Iterator<Map.Entry<ByteArray, ByteArray>> iter = index.entrySet().iterator() ;
-            
-            @Override
-            public boolean hasNext() {
-                return iter.hasNext() ;
-            }
-
-            @Override
-            public Record next() {
-                Map.Entry<ByteArray, ByteArray> e = iter.next() ;
-                return record(e.getKey(), e.getValue()) ;
-            }
-        } ; 
-        
+        return index.entrySet().stream().map(e -> record(e.getKey(), e.getValue())).iterator();
     }
 
     @Override
