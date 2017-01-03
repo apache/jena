@@ -31,7 +31,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.path.Path;
 
 /**
  * Build an Construct query.

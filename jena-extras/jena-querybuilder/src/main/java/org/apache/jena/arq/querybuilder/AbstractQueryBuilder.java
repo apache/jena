@@ -31,11 +31,7 @@ import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.tokens.Token;
-import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.TriplePath;
@@ -97,14 +93,14 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		}
 		if (o instanceof Path)
 		{
-			return (Path)o;
+			return o;
 		}
 		if (o instanceof FrontsNode) {
 			return ((FrontsNode) o).asNode();
 		}
 
 		if (o instanceof Node) {
-			return (Node) o;
+			return o;
 		}
 		if (o instanceof String) {
 			try {			
