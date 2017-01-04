@@ -219,6 +219,7 @@ public class Chars
     public static final char CH_SLASH        = '/' ;
     public static final char CH_RSLASH       = '\\' ;
     public static final char CH_PERCENT      = '%' ;
+    public static final char CH_VBAR         = '|' ;
     
     // Byte versions of the above
     public static final byte B_NL            = NL ;
@@ -256,6 +257,7 @@ public class Chars
     public static final byte B_SLASH         = '/' ;
     public static final byte B_RSLASH        = '\\' ;
     public static final byte B_PERCENT       = '%' ;
+    public static final byte B_VBAR          = '|' ;
     
     // String versions - a few compound "chars" as well.
     public static final String S_LBRACKET     = "[" ;
@@ -292,4 +294,6 @@ public class Chars
     public static final String S_SLASH        = "/" ;
     public static final String S_RSLASH       = "\\" ;
     public static final String S_PERCENT      = "%" ;
+    public static final String S_VBAR         = "|" ;
+
 }

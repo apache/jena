@@ -279,8 +279,6 @@ public final class Token
     
     public boolean isEOF() { return tokenType == TokenType.EOF ; }
     
-    public boolean isCtlCode() { return tokenType == TokenType.CNTRL ; }
-
     public boolean isWord() { return tokenType == TokenType.KEYWORD ; }
 
     public boolean isString()

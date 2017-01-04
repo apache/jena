@@ -28,7 +28,7 @@ public enum TokenType {
     LITERAL_LANG, LITERAL_DT, INTEGER, DECIMAL, DOUBLE,
 
     // Not RDF
-    KEYWORD, VAR, HEX, CNTRL,   // Starts with *
+    KEYWORD, VAR, HEX,   // Starts with *
     UNDERSCORE,                 // In RDF, UNDERSCORE is only visible if BNode processing is not enabled.
 
 

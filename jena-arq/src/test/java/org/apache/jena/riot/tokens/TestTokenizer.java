@@ -78,12 +78,15 @@ public class TestTokenizer extends BaseTest {
         return token ;
     }
 
+    private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType) {
+        return tokenizeAndTestFirst(input, tokenType, null, null) ;
+    }
+
     private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage) {
         return tokenizeAndTestFirst(input, tokenType, tokenImage, null) ;
     }
 
-    private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage1,
-                                                  String tokenImage2) {
+    private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage1, String tokenImage2) {
         Tokenizer tokenizer = tokenizer(input) ;
         testNextToken(tokenizer, tokenType, tokenImage1, tokenImage2) ;
         return tokenizer ;
@@ -102,13 +105,15 @@ public class TestTokenizer extends BaseTest {
         Token token = tokenizer.next() ;
         assertNotNull(token) ;
         assertEquals(tokenType, token.getType()) ;
-        assertEquals(tokenImage1, token.getImage()) ;
+        if ( tokenImage1 != null )
+            assertEquals(tokenImage1, token.getImage()) ;
+        if ( tokenImage2 != null )
+            assertEquals(tokenImage1, token.getImage()) ;
         assertEquals(tokenImage2, token.getImage2()) ;
         return token ;
     }
 
-    private static Token tokenizeAndTest(String input, TokenType tokenType, String tokenImage1, String tokenImage2,
-                                         Token subToken1, Token subToken2) {
+    private static Token tokenizeAndTest(String input, TokenType tokenType, String tokenImage1, String tokenImage2, Token subToken1, Token subToken2) {
         Token token = tokenFor(input) ;
         assertNotNull(token) ;
         assertEquals(tokenType, token.getType()) ;
@@ -917,7 +922,8 @@ public class TestTokenizer extends BaseTest {
 
     // First symbol from the stream.
     private static void testSymbol(String string, TokenType expected) {
-        tokenizeAndTestFirst(string, expected, null) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst(string, expected, null) ;
+        assertFalse(tokenizer.hasNext());
     }
 
     // -- Symbols
@@ -946,22 +952,40 @@ public class TestTokenizer extends BaseTest {
         testSymbol("=", TokenType.EQUALS) ;
     }
 
-    // @Test public void tokenizer_symbol_07() { testSymbol(">=", TokenType.LE)
-    // ; }
-    // @Test public void tokenizer_symbol_08() { testSymbol("<=", TokenType.GE)
-    // ; }
-    // @Test public void tokenizer_symbol_09() { testSymbol("&&",
-    // TokenType.LOGICAL_AND) ; }
-    // @Test public void tokenizer_symbol_10() { testSymbol("||",
-    // TokenType.LOGICAL_OR) ; }
-    // @Test public void tokenizer_symbol_11() { testSymbol("&  &",
-    // TokenType.AMPHERSAND) ; }
-    // @Test public void tokenizer_symbol_12() { testSymbol("| |",
-    // TokenType.VBAR) ; }
+//    @Test
+//    public void tokenizer_symbol_07() {
+//        testSymbol(">=", TokenType.LE);
+//    }
+//
+//    @Test
+//    public void tokenizer_symbol_08() {
+//        testSymbol("<=", TokenType.GE);
+//    }
+//
+//    @Test
+//    public void tokenizer_symbol_09() {
+//        testSymbol("&&", TokenType.LOGICAL_AND);
+//    }
+//
+//    @Test
+//    public void tokenizer_symbol_10() {
+//        testSymbol("||", TokenType.LOGICAL_OR);
+//    }
+
+    @Test
+    public void tokenizer_symbol_11() {
+        testSymbol(" & ", TokenType.AMPHERSAND);
+    }
+
+    @Test
+    public void tokenizer_symbol_12() {
+        testSymbol(" | ", TokenType.VBAR);
+    }
 
     @Test
     public void tokenUnit_symbol_11() {
-        testSymbol("+A", TokenType.PLUS) ;
+        Tokenizer tokenizer = tokenizeAndTestFirst("+A", TokenType.PLUS, null) ;
+        
     }
 
     @Test
@@ -979,6 +1003,32 @@ public class TestTokenizer extends BaseTest {
     public void tokenUnit_symbol_14() {
         Tokenizer tokenizer = tokenizeAndTestFirst(".a", TokenType.DOT, null) ;
         testNextToken(tokenizer, TokenType.KEYWORD, "a") ;
+    }
+
+    @Test
+    public void tokenUnit_symbol_15() {
+        Tokenizer tokenizer = tokenizer("| |");
+        testNextToken(tokenizer, TokenType.VBAR);
+        testNextToken(tokenizer, TokenType.VBAR);
+    }
+
+    @Test
+    public void tokenUnit_symbol_16() {
+        Tokenizer tokenizer = tokenizer("|&/");
+        testNextToken(tokenizer, TokenType.VBAR);
+        testNextToken(tokenizer, TokenType.AMPHERSAND);
+        testNextToken(tokenizer, TokenType.SLASH);
+        assertFalse(tokenizer.hasNext());
+    }
+
+    @Test
+    public void tokenUnit_symbol_17() {
+        testSymbol("*", TokenType.STAR) ;
+    }
+
+    @Test
+    public void tokenUnit_symbol_18() {
+        testSymbol("\\", TokenType.RSLASH) ;
     }
 
     @Test

@@ -151,7 +151,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 break;
             }
         }
-
         
         protected final static String  KW_TRUE        = "true" ;
         protected final static String  KW_FALSE       = "false" ;
@@ -177,7 +176,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 {
                     Node n ;
                     // One case; VARS line then *
-                    if ( token.hasType(TokenType.STAR ) || ( token.isCtlCode() && token.getCntrlCode() == -1 ) )
+                    if ( token.hasType(TokenType.STAR ) )
                         n = lastLine.get(v) ;
                     else if ( token.hasType(TokenType.BNODE) )
                         n = NodeFactory.createBlankNode(NodeFmtLib.decodeBNodeLabel(token.getImage())) ;

@@ -309,23 +309,6 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
 
-        // TODO remove and make a symbol/keyword.
-        // Control
-        if ( ch == CTRL_CHAR ) {
-            reader.readChar() ;
-            token.setType(TokenType.CNTRL) ;
-            ch = reader.readChar() ;
-            if ( ch == EOF )
-                error("EOF found after " + CTRL_CHAR) ;
-            if ( RiotChars.isWhitespace(ch) )
-                token.cntrlCode = -1 ;
-            else
-                token.cntrlCode = (char)ch ;
-            if ( Checking )
-                checkControl(token.cntrlCode) ;
-            return token ;
-        }
-
         // A directive (not part of a literal as lang tag)
         if ( ch == CH_AT ) {
             reader.readChar() ;
@@ -347,7 +330,6 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
         
-        // Symbol?
         switch(ch)
         { 
             // DOT can start a decimal.  Check for digit.
@@ -374,7 +356,10 @@ public final class TokenizerText implements Tokenizer
             case CH_LBRACKET:   reader.readChar() ; token.setType(TokenType.LBRACKET) ;  /*token.setImage(CH_LBRACKET) ;*/ return token ;
             case CH_RBRACKET:   reader.readChar() ; token.setType(TokenType.RBRACKET) ;  /*token.setImage(CH_RBRACKET) ;*/ return token ;
             case CH_EQUALS:     reader.readChar() ; token.setType(TokenType.EQUALS) ;    /*token.setImage(CH_EQUALS) ;*/ return token ;
-
+            case CH_SLASH:      reader.readChar() ; token.setType(TokenType.SLASH) ;     /*token.setImage(CH_SLASH) ;*/ return token ;
+            case CH_RSLASH:     reader.readChar() ; token.setType(TokenType.RSLASH) ;    /*token.setImage(CH_RSLASH) ;*/ return token ;
+            case CH_VBAR:       reader.readChar() ; token.setType(TokenType.VBAR) ;      /*token.setImage(CH_VBAR) ;*/ return token ;
+            case CH_AMPHERSAND: reader.readChar() ; token.setType(TokenType.AMPHERSAND) ;/*token.setImage(CH_AMPHERSAND) ;*/ return token ;
             // Specials (if blank node processing off)
             //case CH_COLON:      reader.readChar() ; token.setType(TokenType.COLON) ; return token ;
 
@@ -382,19 +367,18 @@ public final class TokenizerText implements Tokenizer
             //case CH_UNDERSCORE: reader.readChar() ; token.setType(TokenType.UNDERSCORE) ; /*token.setImage(CH_UNDERSCORE) ;*/ return token ;
             case CH_LT:         reader.readChar() ; token.setType(TokenType.LT) ; /*token.setImage(CH_LT) ;*/ return token ;
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; /*token.setImage(CH_GT) ;*/ return token ;
-            // Above: CNTRL
             case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; /*token.setImage(CH_STAR) ;*/ return token ;
-            
+
             // Multi character symbols
             // Two character tokens && || GE >= , LE <=
-            // Single character symbols for * /
+            //TokenType.LE
+            //TokenType.GE
+            //TokenType.LOGICAL_AND
+            //TokenType.LOGICAL_OR
+            
             // +/- may start numbers.
-
 //            case CH_PLUS:
 //            case CH_MINUS:
-//            case CH_STAR:
-//            case CH_SLASH:
-//            case CH_RSLASH:
                 
         }
         
