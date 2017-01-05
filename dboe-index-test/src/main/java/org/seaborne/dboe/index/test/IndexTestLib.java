@@ -32,6 +32,7 @@ import static org.seaborne.dboe.test.RecordLib.toIntList ;
 import java.util.* ;
 
 import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.ext.com.google.common.primitives.Ints;
 import org.junit.Assert ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.index.Index ;
@@ -124,16 +125,10 @@ public class IndexTestLib {
     
     /** Pull items out of the list in a random order */ 
     private static int[] permute2(int[] x) {
-        int[] x2 = new int[x.length] ;
-        List<Integer> list = new ArrayList<>() ;
-        
-        for ( int i : x )
-            list.add(i) ;
-        for ( int i = 0 ; i<x.length ; i++ ) {
-            int idx = random.nextInt(list.size()) ;
-            x2[i] = list.remove(idx) ;
-        }
-        return x2 ; 
+        int[] ints = Arrays.copyOf(x, x.length);
+        List<Integer> list = Ints.asList(ints);
+        Collections.shuffle(list, random);
+        return ints; 
     }
     
     private static Random randInit()

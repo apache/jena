@@ -78,7 +78,7 @@ class Journal implements Sync, Closeable
     private static final int posnCRC        = posnLength + SizeOfInt ;
     private static final int posnEntry      = posnCRC    + SizeOfInt ;
     private static final int posnComponent  = posnEntry  + SizeOfInt ;
-    // Start of the compoent data area.
+    // Start of the component data area.
     private static final int posnData       = posnComponent  + ComponentId.SIZE ;
     
     // Currently, the header is fixed size so this is the size.
@@ -128,7 +128,7 @@ class Journal implements Sync, Closeable
         return posn ;
     }
 
-//    /** Write an entry and return it's location in the journal */
+//    /** Write an entry and return its location in the journal */
 //    synchronized public void write(List<PrepareState> prepareStates) {
 //        prepareStates.forEach(this::write) ;
 //    }
@@ -141,7 +141,7 @@ class Journal implements Sync, Closeable
     synchronized public long write(JournalEntryType type, ComponentId componentId, ByteBuffer buffer) {
         // Check buffer set right.
         if ( LOGGING ) {
-            log("write@%-3d >> %s %s %s", position, type.name(),  
+            log("write@%-3d >> %s %s %s", position, type.name(),
                 componentId == null ? "<null>" : componentId.label(),
                 buffer == null ? "<null>" : ByteBufferLib.details(buffer)) ;
         }

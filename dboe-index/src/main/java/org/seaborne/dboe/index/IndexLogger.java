@@ -35,21 +35,21 @@ public final class IndexLogger extends IndexWrapper
     @Override
     public boolean insert(Record record)
     { 
-        log.info("Add: "+record) ;
+        log.info("Add: {}", record) ;
         return super.insert(record) ; 
     }
 
     @Override
     public boolean delete(Record record)
     { 
-        log.info("Delete: "+record) ;
+        log.info("Delete: {}", record) ;
         return super.delete(record) ; 
     }
 
     @Override
     public Record find(Record record)
     {
-        log.info("Find: "+record) ;
+        log.info("Find: {}", record) ;
         Record r2 = super.find(record) ;
         log.info("Find: "+record+" ==> "+r2) ;
         return r2 ;

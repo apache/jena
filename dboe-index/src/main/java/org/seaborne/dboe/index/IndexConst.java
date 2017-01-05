@@ -25,7 +25,7 @@ public class IndexConst {
     private static IndexParams stdParams = new IndexParamsStd() ;
     public static IndexParams getDftParams() { return stdParams ; }
     
-    static class IndexParamsStd implements IndexParams {
+    private static class IndexParamsStd implements IndexParams {
 
         @Override
         public FileMode getFileMode() {

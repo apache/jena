@@ -33,7 +33,7 @@ public class TransactionalBase implements TransactionalSystem {
     protected final TransactionCoordinator txnMgr ;
     
     // Per thread transaction.
-    private final ThreadLocal<Transaction> theTxn = new ThreadLocal<Transaction>() ;
+    private final ThreadLocal<Transaction> theTxn = new ThreadLocal<>() ;
     
     public TransactionalBase(String label, TransactionCoordinator txnMgr) {
         this.label = label ;

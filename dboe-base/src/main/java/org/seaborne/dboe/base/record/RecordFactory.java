@@ -39,7 +39,8 @@ public class RecordFactory
 
         this.keyLength = keyLength ;
         this.valueLength = valueLength ;
-        this.slotLen = keyLength + (valueLength>0 ? valueLength : 0 ) ;
+        // by here valueLength >= 0 
+        this.slotLen = keyLength + valueLength ;
     }
     
     /** Return a RecordFactory that makes key-only records of the same key size */ 
