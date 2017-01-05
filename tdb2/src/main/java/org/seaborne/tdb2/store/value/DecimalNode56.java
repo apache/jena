@@ -96,8 +96,6 @@ public class DecimalNode56
 
     /** Create the long value */
     public static long pack(long value, int scale) {
-        // pack : DECIMAL , sign, scale, value
-        //long v = BitsLong.pack(0, NodeIdTypes.TYPES.T_DECIMAL, ENC_LEN, Long.SIZE);
         // pack : scale, value
         long v = 0;
         v = BitsLong.pack(0L, scale, SCALE_LO, SCALE_HI);

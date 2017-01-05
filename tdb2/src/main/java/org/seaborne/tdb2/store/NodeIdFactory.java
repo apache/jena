@@ -37,31 +37,6 @@ public class NodeIdFactory
     
     // XXX Chance for a cache?
 
-    // 64 bit create
-    private static NodeId create(long value2) {
-        if ( !BitsLong.isSet(value2, 63) )
-            return createPtr(value2);
-        // Inline.
-        long v2 = value2;
-        int t = (int)BitsLong.unpack(v2, 56, 63);   // 7 bits
-        v2 = BitsLong.clear(v2, 56, 64);
-        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        if ( type == NodeIdTypes.SPECIAL )
-            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
-        return NodeId.createRaw(type, v2);
-    }
-    
-    // Long create.
-    private static NodeId create(int v1, long v2) {
-        if ( BitsInt.isSet(v1, 32) )
-            return createPtrLong(v1, v2);
-        int t = v1 >> 24;
-        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        if ( type == NodeIdTypes.SPECIAL )
-            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
-        return createNew(type, 0, v2);
-    }
-    
     private static NodeId create(NodeIdTypes type, int v1, long v2) {
         if ( isSpecial(type) ) {
             if ( NodeId.equals(NodeId.NodeDoesNotExist, v1, v2) )
@@ -96,6 +71,38 @@ public class NodeIdFactory
         return create(PTR, hi, lo);
     }
     
+    // ---- Create from binary.
+    
+    // 64 bit create
+    private static NodeId create(long value2) {
+        if ( !BitsLong.isSet(value2, 63) )
+            return createPtr(value2);
+        // Inline.
+        long v2 = value2;
+        if ( BitsLong.isSet(v2, 62) ) {
+            // XSD_DOUBLE
+            v2 = BitsLong.clear(v2, 62, 64); 
+            return NodeId.createRaw(NodeIdTypes.XSD_DOUBLE, v2);
+        }
+        int t = (int)BitsLong.unpack(v2, 56, 63);   // 7 bits
+        v2 = BitsLong.clear(v2, 56, 64);
+        NodeIdTypes type = NodeIdTypes.intToEnum(t);
+        if ( type == NodeIdTypes.SPECIAL )
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+        return NodeId.createRaw(type, v2);
+    }
+    
+    // Long create.
+    private static NodeId create(int v1, long v2) {
+        if ( !BitsInt.isSet(v1, 32) )
+            return createPtrLong(v1, v2);
+        int t = v1 >> 24;
+        NodeIdTypes type = NodeIdTypes.intToEnum(t);
+        if ( type == NodeIdTypes.SPECIAL )
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+        return createNew(type, 0, v2);
+    }
+
     // ------- On-disk forms.
     // 
     
@@ -132,12 +139,21 @@ public class NodeIdFactory
 
     private static long encode(NodeId nodeId) {
         long x = nodeId.value2;
-        if ( nodeId.isPtr() )
-            return x;
-        x = BitsLong.pack(x, nodeId.getTypeValue(), 56, 63);
-        // Set high it.
-        x = BitsLong.set(x, 63);
-        return x; 
+        switch(nodeId.type()) {
+            case PTR:
+                return x;
+            case XSD_DOUBLE:
+                // XSD_DOUBLE is special.
+                // Set value bit (63) and bit 62 
+                x = BitsLong.set(x, 62, 64);
+                return x ;
+            default:
+                // Bit 62 is zero - tagt is for doubles.
+                x = BitsLong.pack(x, nodeId.getTypeValue(), 56, 62);
+                // Set the high, value bit.
+                x = BitsLong.set(x, 63);
+                return x;
+        }
     }
 
     /** Relative {@code set} */

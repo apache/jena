@@ -21,7 +21,8 @@ import static org.seaborne.tdb2.store.NodeIdTypes.TYPES.*;
 
 /** Constants for NodeIds.
  * Note that "PTR" is special - it uses the high bit only set to zero.
- * The rest of the bytes are the node reference. 
+ * Note that "XSD_DOUBLE" is special - it sets the high bit (avleu) and the next bit only, leaving 62 bits of value.
+ * Otherwise a tyope is encoded as the high byte. 
  */
 public enum NodeIdTypes {
     PTR(T_PTR, null),
@@ -223,10 +224,11 @@ public enum NodeIdTypes {
     private static NodeIdTypes intToEnum$(int x) {
         //x = TYPES.enc(x);
         if (x == PTR.value )                        return PTR;
+        // XSD_DOUBL is special encoded - handled elsewhere.
+        if (x == XSD_DOUBLE.value )                 return XSD_DOUBLE ;
         if (x == XSD_INTEGER.value )                return XSD_INTEGER ;
         if (x == XSD_DECIMAL.value )                return XSD_DECIMAL ;
         if (x == XSD_FLOAT.value )                  return XSD_FLOAT ;
-        if (x == XSD_DOUBLE.value )                 return XSD_DOUBLE ;
         
         if (x == XSD_DATETIME.value )               return XSD_DATETIME ;
         if (x == XSD_DATETIMESTAMP.value )          return XSD_DATETIMESTAMP ;

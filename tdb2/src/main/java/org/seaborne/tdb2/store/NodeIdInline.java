@@ -39,10 +39,7 @@ import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.seaborne.tdb2.TDBException;
-import org.seaborne.tdb2.store.value.DateTimeNode;
-import org.seaborne.tdb2.store.value.DecimalNode56;
-import org.seaborne.tdb2.store.value.FloatNode;
-import org.seaborne.tdb2.store.value.IntegerNode;
+import org.seaborne.tdb2.store.value.*;
 
 public class NodeIdInline {
 //    public static NodeId_Long inlineInteger(long v) { return null; }
@@ -214,12 +211,14 @@ public class NodeIdInline {
             }
         }
         
-        // Not 56 bits
-//        if ( XSDDatatype.XSDdouble.isValidLiteral(lit) ) {
-//            double d =  ((Number)lit.getValue()).doubleValue();
-//            long v = DoubleNode.pack(d);
-//            return createValue(XSD_DOUBLE, v);
-//        }
+        if ( false && XSDDatatype.XSDdouble.isValidLiteral(lit) ) {
+            // Not ready yet.
+            double d =  ((Number)lit.getValue()).doubleValue();
+            long v = DoubleNode62.pack(d);
+            // The special encoding of XSD_DOUBLE is handling in the "toBytes" and "toByteBuffer" operations.  
+            return NodeId.createRaw(XSD_DOUBLE, v);
+        }
+        
         if ( XSDDatatype.XSDfloat.isValidLiteral(lit) ) {
             float f =  ((Number)lit.getValue()).floatValue();
             long v = FloatNode.pack(f);
