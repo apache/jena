@@ -97,7 +97,7 @@ public class TestPath extends BaseTest
         graph4.add(new Triple(n2, q, n5)) ;
         graph4.add(new Triple(n4, q, n6)) ;
         
-        //
+        // Tree, fan out at top.
         graph5.add(new Triple(n1, p, n2)) ;
         graph5.add(new Triple(n1, p, n3)) ;
         graph5.add(new Triple(n2, q, n4)) ;
@@ -209,33 +209,35 @@ public class TestPath extends BaseTest
         assertEquals(p1, p2) ;
     }
 
-    @Test public void path_01()   { test(graph1, n1,   ":p",          n2) ; }
-    @Test public void path_02()   { test(graph1, n1,   ":p{0}",       n1) ; }
-    @Test public void path_03()   { test(graph1, n1,   ":p{1}",       n2) ; }
-    @Test public void path_04()   { test(graph1, n1,   ":p{2}",       n3) ; }
-    @Test public void path_05()   { test(graph1, n1,   ":p{0,1}",     n1, n2) ; }
-    @Test public void path_06()   { test(graph1, n1,   ":p{0,2}",     n1,n2,n3) ; }
-    @Test public void path_07()   { test(graph1, n1,   ":p{1,2}",     n2, n3) ; }
-    @Test public void path_08()   { test(graph1, n1,   ":p{9,9}"      ) ; }
-    @Test public void path_09()   { test(graph1, n1,   ":p{0,9}",     n1,n2,n3,n4) ; }
-    @Test public void path_10()   { test(graph1, n1,   ":p*",         n1,n2,n3,n4) ; }
-    @Test public void path_11()   { test(graph1, n1,   ":p+",         n2,n3,n4) ; }
-    @Test public void path_12()   { test(graph1, n1,   ":p?",         n1,n2) ; }
-    @Test public void path_13()   { test(graph1, n1,   ":p/:p",       n3) ; }
-    @Test public void path_14()   { test(graph1, n2,   "^:p",         n1) ; }
-    @Test public void path_15()   { test(graph1, n2,   "^:p^:p"       ) ; }
-    @Test public void path_16()   { test(graph1, n4,   "^:p^:p",      n2) ; }
-    @Test public void path_17()   { test(graph1, n4,   "^(:p/:p)",    n2) ; }
+    // graphs 1 is linear so order is preserved (ARQ convenience for RDF paths), otherwise not.
     
-    @Test public void path_18()   { test(graph1, n2,   "^:p/:p",      n2) ; }
+    @Test public void path_01()   { testOrdered(graph1, n1,   ":p",          n2) ; }
+    @Test public void path_02()   { testOrdered(graph1, n1,   ":p{0}",       n1) ; }
+    @Test public void path_03()   { testOrdered(graph1, n1,   ":p{1}",       n2) ; }
+    @Test public void path_04()   { testOrdered(graph1, n1,   ":p{2}",       n3) ; }
+    @Test public void path_05()   { testOrdered(graph1, n1,   ":p{0,1}",     n1, n2) ; }
+    @Test public void path_06()   { testOrdered(graph1, n1,   ":p{0,2}",     n1,n2,n3) ; }
+    @Test public void path_07()   { testOrdered(graph1, n1,   ":p{1,2}",     n2, n3) ; }
+    @Test public void path_08()   { testOrdered(graph1, n1,   ":p{9,9}"      ) ; }
+    @Test public void path_09()   { testOrdered(graph1, n1,   ":p{0,9}",     n1,n2,n3,n4) ; }
+    @Test public void path_10()   { testOrdered(graph1, n1,   ":p*",         n1,n2,n3,n4) ; }
+    @Test public void path_11()   { testOrdered(graph1, n1,   ":p+",         n2,n3,n4) ; }
+    @Test public void path_12()   { testOrdered(graph1, n1,   ":p?",         n1,n2) ; }
+    @Test public void path_13()   { testOrdered(graph1, n1,   ":p/:p",       n3) ; }
+    @Test public void path_14()   { testOrdered(graph1, n2,   "^:p",         n1) ; }
+    @Test public void path_15()   { testOrdered(graph1, n2,   "^:p^:p"       ) ; }
+    @Test public void path_16()   { testOrdered(graph1, n4,   "^:p^:p",      n2) ; }
+    @Test public void path_17()   { testOrdered(graph1, n4,   "^(:p/:p)",    n2) ; }
+    
+    @Test public void path_18()   { testOrdered(graph1, n2,   "^:p/:p",      n2) ; }
 
     @Test public void path_20()   { test(graph2, n1,   ":p",          n2,n3) ; }
     @Test public void path_21()   { test(graph2, n1,   ":p/:q",       n4, n4) ; }
     @Test public void path_22()   { test(graph2, n2,   "^:p|:q",      n1,n4) ; }
     @Test public void path_23()   { test(graph2, n2,   "^(:p|^:q)*",  n1,n2,n4) ; }
 
-    @Test public void path_24()   { testReverse(graph1, n2,   ":p",          n1) ; }
-    @Test public void path_25()   { testReverse(graph1, n3,   ":p/:p",       n1) ; }
+    @Test public void path_24()   { testReverseOrdered(graph1, n2,   ":p",          n1) ; }
+    @Test public void path_25()   { testReverseOrdered(graph1, n3,   ":p/:p",       n1) ; }
 
     @Test public void path_30()   { test(graph1, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_31()   { test(graph2, n1,   ":p*",       n1,n2,n3) ; }
@@ -315,24 +317,29 @@ public class TestPath extends BaseTest
 //    @Ignore @Test public void path_44()   { test(graph4, n1,   "shortest(:p*/:q)",    n5) ; }
 //    @Ignore @Test public void path_45()   { test(graph4, n1,   "shortest(:p{2,}/:q)", n6) ; }
 //    @Ignore @Test public void path_46()   { test(graph5, n1,   "shortest(:p*/:q)",    n4, n5) ; }
-    
-    
 
     // ----
+    private static void testOrdered(Graph graph, Node start, String string, Node... expectedNodes) {
+        test(graph, start, string, expectedNodes, true, true) ;
+    }
+    
     private static void test(Graph graph, Node start, String string, Node... expectedNodes) {
-        test(graph, start, string, expectedNodes, true) ;
+        test(graph, start, string, expectedNodes, true, false) ;
     }
 
-    private static void testReverse(Graph graph, Node start, String string, Node... expectedNodes) {
-        test(graph, start, string, expectedNodes, false) ;
+    private static void testReverseOrdered(Graph graph, Node start, String string, Node... expectedNodes) {
+        test(graph, start, string, expectedNodes, false, true) ;
     }
 
-    private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward) {
+    private static void test(Graph graph, Node start, String string, Node[] expectedNodes,
+                             boolean directionForward, boolean ordered) {
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
             directionForward ? PathEval.eval(graph, start, p, ARQ.getContext()) : PathEval.evalReverse(graph, start, p, ARQ.getContext()) ; 
         List<Node> results = Iter.toList(resultsIter) ;
         List<Node> expected = Arrays.asList(expectedNodes) ;
         Assert.assertTrue("expected:"+expected+", got:"+results, equalsUnordered(expected, results)) ;
+        if ( ordered )
+            Assert.assertEquals("expected(ordered)", expected, results) ;
     }
 }
