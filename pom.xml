@@ -66,7 +66,7 @@
       <!-- The maven artifacts of the basic modules -->
       <modules>
         <module>jena-parent</module>
-        <!-- <module>jena-shared-guava</module> -->
+        <!-- <module>jena-shaded-guava</module> -->
         <!-- <module>jena-iri</module> -->
         <module>jena-base</module>
         
