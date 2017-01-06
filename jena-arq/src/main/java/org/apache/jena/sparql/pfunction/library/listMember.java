@@ -67,16 +67,13 @@ public class listMember extends ListBase1
     }
 
     @Override
-    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object,
-                                            ExecutionContext execCxt)
+    protected QueryIterator execObjectBound(Binding binding, Var listVar, Node predicate, Node object, ExecutionContext execCxt)
     {
         // Given a concrete node, find lists it's in
         GNode gnode = new GNode(execCxt.getActiveGraph(), object) ;
         List<Node> lists = GraphList.listFromMember(gnode) ;
         return new QueryIterExtendByVar(binding, listVar, lists.iterator(), execCxt) ;
     }
-
-
 
     private QueryIterator members(Binding binding, Node listNode, Var itemVar, ExecutionContext execCxt)
     {
