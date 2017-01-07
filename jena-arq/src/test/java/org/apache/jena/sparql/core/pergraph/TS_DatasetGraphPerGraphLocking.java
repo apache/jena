@@ -16,9 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.core.pergraph;
 
-import org.apache.jena.sparql.core.pergraph.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

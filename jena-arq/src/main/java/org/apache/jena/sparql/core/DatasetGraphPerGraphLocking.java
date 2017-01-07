@@ -1,19 +1,14 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package org.apache.jena.sparql.core;
@@ -124,7 +119,8 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
     public Graph getGraph(final Node graphName) {
         if (isInTransaction()) {
             // are we using the current graph?
-            if (graphInTransaction()!= null && graphName.equals(graphInTransaction().graphName())) return graphInTransaction();
+            if (graphInTransaction() != null && graphName.equals(graphInTransaction().graphName()))
+                return graphInTransaction();
             // are we starting work with a graph?
             if (graphInTransaction() == null) {
                 LockableGraph graph = graphs.computeIfAbsent(graphName, LockableGraph::new);
@@ -277,9 +273,13 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
         @Override
         public void begin(ReadWrite readWrite) {
             if (currentTransactionType() != null) throw new JenaTransactionException("Cannot nest transactions!");
-            if (WRITE.equals(readWrite)) writeLock.lock();
-            currentTransactionType.set(readWrite);
-            table.begin(readWrite);
+            switch (readWrite) {
+            case WRITE:
+                writeLock.lock();
+            default:
+                currentTransactionType.set(readWrite);
+                table.begin(readWrite);
+            }
         }
 
         public void beginWrite() {
