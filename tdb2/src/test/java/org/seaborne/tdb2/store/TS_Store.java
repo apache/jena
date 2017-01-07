@@ -22,6 +22,8 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.base.block.FileMode ;
+import org.seaborne.tdb2.store.value.TestDoubleNode62;
+import org.seaborne.tdb2.store.value.TestNodeIdInline;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.seaborne.tdb2.sys.TestOps ;
 
@@ -29,6 +31,7 @@ import org.seaborne.tdb2.sys.TestOps ;
 @Suite.SuiteClasses( {
     TestNodeId.class
     , TestNodeIdInline.class
+    , TestDoubleNode62.class
     , TestTripleTable.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class

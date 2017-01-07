@@ -20,20 +20,18 @@ package org.seaborne.tdb2.store.tupletable;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.NodeIdFactory;
-import org.seaborne.tdb2.store.NodeIdTypes;
+import org.seaborne.tdb2.store.NodeIdType;
 
 public class NData {
     public static NodeId n1 = create(1) ;
     public static NodeId n2 = create(2) ;
     public static NodeId n3 = create(3) ;
-    public static NodeId n4 = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, 1);
-    public static NodeId n5 = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, 2);
+    public static NodeId n4 = NodeIdFactory.createValue(NodeIdType.XSD_INTEGER, 1);
+    public static NodeId n5 = NodeIdFactory.createValue(NodeIdType.XSD_INTEGER, 2);
     // -2 as inlined.
-    public static NodeId n6 = NodeIdFactory.createValue(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-2L, 56, 64));
+    public static NodeId n6 = NodeIdFactory.createValue(NodeIdType.XSD_INTEGER, BitsLong.clear(-2L, 56, 64));
     
     private static NodeId create(long v) {
         return NodeIdFactory.createPtr(v);
     }
-    
-
 }

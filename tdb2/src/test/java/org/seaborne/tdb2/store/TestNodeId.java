@@ -33,7 +33,7 @@ public class TestNodeId
     // Pointers.
     @Test public void nodeId_ptr_01() {
         NodeId nodeId = NodeIdFactory.createPtrLong(17, 37);
-        assertEquals(NodeIdTypes.PTR, nodeId.type());
+        assertEquals(NodeIdType.PTR, nodeId.type());
 //        assertEquals(37L, nodeId.getPtrLo());
 //        assertEquals(17, nodeId.getPtrHi());
         assertEquals(37L, nodeId.getValue2());
@@ -42,7 +42,7 @@ public class TestNodeId
     
     @Test public void nodeId_ptr_02() {
         NodeId nodeId = NodeIdFactory.createPtr(37);
-        assertEquals(NodeIdTypes.PTR, nodeId.type());
+        assertEquals(NodeIdType.PTR, nodeId.type());
 //        assertEquals(37L, nodeId.getPtrLo());
 //        assertEquals(0, nodeId.getPtrHi());
         assertEquals(37L, nodeId.getPtrLocation());
@@ -54,28 +54,28 @@ public class TestNodeId
         long x = nodeId.getValue2();
         long t = BitsLong.unpack(x, 56, 64);
         assertEquals(0, t);
-        assertEquals(NodeIdTypes.PTR.type(), t);
+        assertEquals(NodeIdType.PTR.type(), t);
     }
     
     // Specials.
     @Test public void nodeId_special_01() {
         assertFalse(NodeId.isConcrete(NodeId.NodeDoesNotExist));
-        assertEquals(NodeIdTypes.SPECIAL, NodeId.NodeDoesNotExist.type());
+        assertEquals(NodeIdType.SPECIAL, NodeId.NodeDoesNotExist.type());
     }
     
     @Test public void nodeId_special_02() {
         assertFalse(NodeId.isConcrete(NodeId.NodeIdAny));
-        assertEquals(NodeIdTypes.SPECIAL, NodeId.NodeIdAny.type());
+        assertEquals(NodeIdType.SPECIAL, NodeId.NodeIdAny.type());
     }
     
     // Storage
     
     @Test public void nodeId_codec_01() { testCodecArray(NodeIdFactory.createPtr(37)); }
     
-    @Test public void nodeId_codec_02() { testCodecArray(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, 1)); }
+    @Test public void nodeId_codec_02() { testCodecArray(NodeId.createRaw(NodeIdType.XSD_INTEGER, 1)); }
     
     // 56 bit -1.
-    @Test public void nodeId_codec_03() { testCodecArray(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
+    @Test public void nodeId_codec_03() { testCodecArray(NodeId.createRaw(NodeIdType.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_04() { testCodecArray("12.34"); }
     
@@ -100,9 +100,9 @@ public class TestNodeId
     
     @Test public void nodeId_codec_11() { testCodecBuffer(NodeIdFactory.createPtr(37)); }
     
-    @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, 1)); }
+    @Test public void nodeId_codec_12() { testCodecBuffer(NodeId.createRaw(NodeIdType.XSD_INTEGER, 1)); }
     
-    @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createRaw(NodeIdTypes.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
+    @Test public void nodeId_codec_13() { testCodecBuffer(NodeId.createRaw(NodeIdType.XSD_INTEGER, BitsLong.clear(-1L, 56,64))); }
 
     @Test public void nodeId_codec_14() { testCodecBuffer("12.34"); }
     

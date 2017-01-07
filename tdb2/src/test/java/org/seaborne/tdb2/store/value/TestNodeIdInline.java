@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.store;
+package org.seaborne.tdb2.store.value;
 
 import static org.junit.Assert.*;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -210,6 +210,36 @@ public class TestNodeIdInline
     @Test public void nodeId_boolean_4()
     { test("'0'^^xsd:boolean", "'false'^^xsd:boolean") ; }
 
+    // Many tests in TestDoubleNode62
+    
+    @Test public void nodeId_double_1()
+    { test("1.0e0", NodeFactory.createLiteral("1.0e0", XSDDatatype.XSDdouble)) ; }
+
+    // Becomes the RDF/SPARQL preferred form - with expooent - for pretty printing.
+    @Test public void nodeId_double_2()
+    { test("'-0001.0'^^xsd:double", NodeFactory.createLiteral("-1.0e0", XSDDatatype.XSDdouble)) ; }
+
+    @Test public void nodeId_double_3()
+    { test("'NaN'^^xsd:double", NodeFactory.createLiteral("NaN", XSDDatatype.XSDdouble)) ; }
+
+    @Test public void nodeId_double_4()
+    { test("'INF'^^xsd:double", NodeFactory.createLiteral("INF", XSDDatatype.XSDdouble)) ; }
+
+    @Test public void nodeId_double_5()
+    { test("'-INF'^^xsd:double", NodeFactory.createLiteral("-INF", XSDDatatype.XSDdouble)) ; }
+
+    @Test public void nodeId_double_6()
+    { test("'1.1E9'^^xsd:double") ; }
+  
+    @Test public void nodeId_double_7()
+    { test("1.1E9") ; }
+    
+    @Test public void nodeId_double_8()
+    { testNoInline("1.1E80") ; }
+    
+    @Test public void nodeId_double_9()
+    { testNoInline("1.1E-80") ; }
+
     @Test public void nodeId_float_1()
     { test("'0.0'^^xsd:float") ; }
 
@@ -225,39 +255,19 @@ public class TestNodeIdInline
     @Test public void nodeId_float_5()
     { test("'1.1E9'^^xsd:float") ; }
 
-//    @Test public void nodeId_double_1()
-//    { test("'0.0'^^xsd:double") ; }
-//
-//    @Test public void nodeId_double_2()
-//    { test("'0'^^xsd:double", "'0.0'^^xsd:double") ; }
-//    
-//    @Test public void nodeId_double_3()
-//    { testNoInline("'x'^^xsd:double") ; }
-//    
-//    @Test public void nodeId_double_4()
-//    { test("'1.1e1'^^xsd:double", "'11.0'^^xsd:double") ; }
-//
-//    @Test public void nodeId_double_5()
-//    { test("'1.1E9'^^xsd:double") ; }
-//    
-//    @Test public void nodeId_double_6()
-//    { test("1.1E9") ; }
-
     private void test(String x) { test(x, x) ; }
     
-    private void test(String x, String expected)
-    {
+    private void test(String x, String expected) {
         test(x, NodeFactoryExtra.parseNode(expected)) ;
     }
 
     private void testNoInline(String x) {
         Node n = NodeFactoryExtra.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
-        assertNull("Converted NodeId but datatype test was false: "+x, nodeId) ;
+        assertNull("Converted NodeId but expected no inline form: "+x, nodeId) ;
     }
     
-    private void test(String x, Node correct)
-    {
+    private void test(String x, Node correct) {
         Node n = NodeFactoryExtra.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
         assertNotNull("Expected inlining: "+x, nodeId);

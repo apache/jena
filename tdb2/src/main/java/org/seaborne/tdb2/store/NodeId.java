@@ -18,8 +18,8 @@
 package org.seaborne.tdb2.store;
 
 import static org.apache.jena.sparql.expr.Expr.CMP_EQUAL;
-import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
-import static org.seaborne.tdb2.store.NodeIdTypes.SPECIAL;
+import static org.seaborne.tdb2.store.NodeIdType.PTR;
+import static org.seaborne.tdb2.store.NodeIdType.*;
 
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -72,26 +72,28 @@ public class NodeId implements Comparable<NodeId>
     //   value2 is 56 bits
     // type is a type and is OR'ed into value2 to store.
     
-    final NodeIdTypes type;
+    final NodeIdType type;
     final int  value1;
     final long value2;
     
-    private NodeId(NodeIdTypes type, int v1, long v2) {
+    private NodeId(NodeIdType type, int v1, long v2) {
         if ( CHECKING ) check(type, v1, v2);
         this.type = type;
         value1 = v1;    // Zero for 64 bit.
         value2 = v2;
     }
 
-    private final void check(NodeIdTypes type, int v1, long v2) {
+    private final void check(NodeIdType type, int v1, long v2) {
+        if ( type == PTR )
+            return;
         if ( type == SPECIAL )
             return;
-        // Long
-        //    int x = BitsInt.unpack(v1, 24, 32); // Hibyte
-        // 64 bit.
-        int x = (int)BitsLong.unpack(v2, 56, 64); // Hibyte
+        // 64 bit NodeId.
+        int x = ( type == XSD_DOUBLE )
+            ? (int)BitsLong.unpack(v2, 62, 64)   // High two bits
+            : (int)BitsLong.unpack(v2, 56, 64);  // else 
         if ( x != 0 )
-            FmtLog.warn(getClass(), "Type byte set in long: type=%s value=%016X", type, v2);
+            FmtLog.warn(getClass(), "Type set in long: type=%s value=%016X", type, v2);
     }
 
     public boolean isPtr() { return type == PTR; }
@@ -113,11 +115,11 @@ public class NodeId implements Comparable<NodeId>
     }
     
     public static boolean isInline(NodeId nodeId) {
-        return NodeIdTypes.isInline(nodeId.type);
+        return NodeIdType.isInline(nodeId.type);
     }
         
     public boolean isValue() {
-        return type != PTR && NodeIdTypes.isStorable(type); 
+        return type != PTR && NodeIdType.isStorable(type); 
     }
 
     // Migration
@@ -136,39 +138,18 @@ public class NodeId implements Comparable<NodeId>
     public static final boolean isDoesNotExist(NodeId nodeId)  { return nodeId == NodeDoesNotExist; }
 //    public static boolean isDefined(NodeId nodeId)             { return nodeId == NodeIdDefined; }
 //    public static boolean isUndefined(NodeId nodeId)           { return nodeId == NodeIdUndefined; }
-//    
-//    public static boolean isInteger(NodeId nodeId) {
-//        return NodeIdTypes.isInteger(nodeId.type());
-//    }
-//
-//    public static boolean isDecimal(NodeId nodeId) {
-//        return NodeIdTypes.isDecimal(nodeId.type());
-//    }
-//    
-//    public static boolean isDouble(NodeId nodeId) {
-//        return NodeIdTypes.isDouble(nodeId.type());
-//    }
-//    
-//    public static boolean isFloat(NodeId nodeId) {
-//        return NodeIdTypes.isFloat(nodeId.type());
-//    }
-//
-//    public static boolean isNumber(NodeId nodeId) {
-//        return NodeIdTypes.isDecimal(nodeId.type());
-//    }
-//    
-
+    
     /** Create from a long-encoded value */
-    /*package*/ static NodeId createRaw(NodeIdTypes type, long value) {
+    /*package*/ static NodeId createRaw(NodeIdType type, long value) {
         return new NodeId(type, 0, value);
     }
 
     /** Create from a (int,long)-encoded value */
-    /*package*/ static NodeId createRaw(NodeIdTypes type, int value1, long value2) {
+    /*package*/ static NodeId createRaw(NodeIdType type, int value1, long value2) {
         return new NodeId(type, value1, value2);
     }
 
-    public NodeIdTypes type() { return type; } 
+    public NodeIdType type() { return type; } 
 
     /*package*/ int  getValue1() { return value1; }
     /*package*/ long getValue2() { return value2; }
@@ -233,6 +214,6 @@ public class NodeId implements Comparable<NodeId>
     public final boolean isConcrete() { return isConcrete(this); }
     
     public static final boolean isConcrete(NodeId nodeId) { 
-        return ! NodeIdTypes.isSpecial(nodeId.type);
+        return ! NodeIdType.isSpecial(nodeId.type);
     }
 }

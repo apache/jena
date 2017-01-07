@@ -17,12 +17,12 @@
 
 package org.seaborne.tdb2.store;
 
-import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
-import static org.seaborne.tdb2.store.NodeIdTypes.*;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATE;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DATETIME;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_DECIMAL;
-import static org.seaborne.tdb2.store.NodeIdTypes.XSD_FLOAT;
+import static org.seaborne.tdb2.store.NodeIdType.PTR;
+import static org.seaborne.tdb2.store.NodeIdType.*;
+import static org.seaborne.tdb2.store.NodeIdType.XSD_DATE;
+import static org.seaborne.tdb2.store.NodeIdType.XSD_DATETIME;
+import static org.seaborne.tdb2.store.NodeIdType.XSD_DECIMAL;
+import static org.seaborne.tdb2.store.NodeIdType.XSD_FLOAT;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -32,31 +32,56 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.ext.com.google.common.collect.BiMap;
-import org.apache.jena.ext.com.google.common.collect.HashBiMap;
+import org.apache.jena.ext.com.google.common.collect.EnumHashBiMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.sparql.util.Utils;
 import org.seaborne.tdb2.TDBException;
 import org.seaborne.tdb2.store.value.*;
 
+/** Encoding values in a {@link NodeId}.
+ *  
+ * TDB2 encoding:
+ * <ul>
+ *  <li>High bit (bit 63) 0 means the node is in the object table (PTR).
+ *  <li>High bit (bit 63) 1, bit 62 1: double as 62 bits. See {@link DoubleNode62}.
+ *  <li>High bit (bit 63) 1, bit 62 0: 6 bits of type, 56 bits of value.
+ * </ul> 
+ *  
+ * If a value would not fit, it will be stored externally so there is no
+ * guarantee that all integers, say, are store inline. 
+ *  
+ * <ul>
+ * <li>Integer format: signed 56 bit number, the type filed has the XSD type.
+ * <li>Decimal format: 8 bits scale, 48bits of signed valued. See {@link DecimalNode56}.
+ * <li>Date and DateTime
+ * <li>Boolean
+ * <li>Float
+ * </ul>
+ *  
+ * @see IntegerNode
+ * @see DecimalNode56
+ * @see DoubleNode62
+ * @see DateTimeNode DateTimeNode for xsd:date and xsd:DateTime  
+ * @see FloatNode
+ */
 public class NodeIdInline {
-//    public static NodeId_Long inlineInteger(long v) { return null; }
-//    public static NodeId_Long inlineDecimal(BigDecimal decimal) { return null; }
-//    public static NodeId_Long inlineDouble(double v) { return null; }
-//    public static NodeId_Long inlineFloat(float v) { return null; }
-//    public static NodeId_Long inlineDateTime(String dateTime) { return null; }
-//    public static NodeId_Long inlineDate(String date) { return null; }
-//    public static NodeId_Long inlineBoolean(boolean bool) { return null; }
+    /* TDB1 encoding:
+     * The long is formatted as:
+     * 8 bits of type
+     * 56 bits of value
+     * No float or double.
+     */
     
     /** Datatypes that are candidates for inlining */ 
     private static Set<RDFDatatype> datatypes = new HashSet<>();
     static { 
         datatypes.add(XSDDatatype.XSDdecimal);
         datatypes.add(XSDDatatype.XSDinteger);
-        // 64 bit
-//        XSDDatatype.XSDdouble,
+        datatypes.add(XSDDatatype.XSDdouble);
         datatypes.add(XSDDatatype.XSDfloat);
 
         datatypes.add(XSDDatatype.XSDlong);
@@ -80,48 +105,23 @@ public class NodeIdInline {
     };
     
     // Integer derived types. 
-    private static BiMap<RDFDatatype, NodeIdTypes> derivedTypeMap = HashBiMap.create();
+    private static BiMap<NodeIdType, RDFDatatype> derivedTypeMap = EnumHashBiMap.create(NodeIdType.class);
     static {
-        derivedTypeMap.put(XSDDatatype.XSDlong, NodeIdTypes.XSD_LONG);
-        derivedTypeMap.put(XSDDatatype.XSDint, NodeIdTypes.XSD_INT);
-        derivedTypeMap.put(XSDDatatype.XSDshort, NodeIdTypes.XSD_SHORT);
-        derivedTypeMap.put(XSDDatatype.XSDbyte, NodeIdTypes.XSD_BYTE);
+        derivedTypeMap.put(NodeIdType.XSD_LONG, XSDDatatype.XSDlong);
+        derivedTypeMap.put(NodeIdType.XSD_INT, XSDDatatype.XSDint);
+        derivedTypeMap.put(NodeIdType.XSD_SHORT, XSDDatatype.XSDshort);
+        derivedTypeMap.put(NodeIdType.XSD_BYTE, XSDDatatype.XSDbyte);
         
-        derivedTypeMap.put(XSDDatatype.XSDpositiveInteger, NodeIdTypes.XSD_POSITIVE_INTEGER);
-        derivedTypeMap.put(XSDDatatype.XSDnonPositiveInteger, NodeIdTypes.XSD_NON_POSITIVE_INTEGER);
-        derivedTypeMap.put(XSDDatatype.XSDnegativeInteger, NodeIdTypes.XSD_NEGATIVE_INTEGER);
-        derivedTypeMap.put(XSDDatatype.XSDnonNegativeInteger, NodeIdTypes.XSD_NON_NEGATIVE_INTEGER);
+        derivedTypeMap.put(NodeIdType.XSD_POSITIVE_INTEGER, XSDDatatype.XSDpositiveInteger);
+        derivedTypeMap.put(NodeIdType.XSD_NON_POSITIVE_INTEGER, XSDDatatype.XSDnonPositiveInteger);
+        derivedTypeMap.put(NodeIdType.XSD_NEGATIVE_INTEGER, XSDDatatype.XSDnegativeInteger);
+        derivedTypeMap.put(NodeIdType.XSD_NON_NEGATIVE_INTEGER, XSDDatatype.XSDnonNegativeInteger);
         
-        derivedTypeMap.put(XSDDatatype.XSDunsignedLong, NodeIdTypes.XSD_UNSIGNEDLONG);
-        derivedTypeMap.put(XSDDatatype.XSDunsignedInt, NodeIdTypes.XSD_UNSIGNEDINT);
-        derivedTypeMap.put(XSDDatatype.XSDunsignedShort, NodeIdTypes.XSD_UNSIGNEDSHORT);     
-        derivedTypeMap.put(XSDDatatype.XSDunsignedByte, NodeIdTypes.XSD_UNSIGNEDBYTE);
+        derivedTypeMap.put(NodeIdType.XSD_UNSIGNEDLONG, XSDDatatype.XSDunsignedLong);
+        derivedTypeMap.put(NodeIdType.XSD_UNSIGNEDINT, XSDDatatype.XSDunsignedInt);
+        derivedTypeMap.put(NodeIdType.XSD_UNSIGNEDSHORT, XSDDatatype.XSDunsignedShort);     
+        derivedTypeMap.put(NodeIdType.XSD_UNSIGNEDBYTE, XSDDatatype.XSDunsignedByte);
     }
-    
-    // ---- Encoding special - inlines.
-    /* TDB1 encoding:
-     * The long is formatted as:
-     * 8 bits of type
-     * 56 bits of value
-     * 
-     * TDB2 encoding
-     *  High bit 0 means the node is in the object table (PTR).
-     *  High bit 1, 7 bit type, means store the value of the node in the remaining 56 or 88 bits remaining.
-     *  
-     *  If a value would not fit, it will be stored externally so there is no
-     *  guarantee that all integers, say, are store inline. 
-     *  
-     *  Integer format: signed 56 bit number.
-     *  Decimal format: 8 bits scale, 48bits of signed valued.
-    
-     *  Date format:
-     *  DateTime format:
-     *  Boolean format:
-     */
-    /* Long encoding:
-     * Integer: 64 bits
-     * Decimal: 
-     */
     
     /** Encode a node as an inline literal.  Return null if it can't be done */
     public static NodeId inline(Node node) {
@@ -196,7 +196,7 @@ public class NodeIdInline {
                     return null;
     
                 // Derived types.
-                NodeIdTypes type = derivedTypeMap.getOrDefault(lit.getDatatype(), NodeIdTypes.XSD_INTEGER);
+                NodeIdType type = derivedTypeMap.inverse().getOrDefault(lit.getDatatype(), NodeIdType.XSD_INTEGER);
                 
                 try {
                     long v = ((Number)lit.getValue()).longValue();
@@ -211,10 +211,11 @@ public class NodeIdInline {
             }
         }
         
-        if ( false && XSDDatatype.XSDdouble.isValidLiteral(lit) ) {
-            // Not ready yet.
+        if ( XSDDatatype.XSDdouble.isValidLiteral(lit) ) {
             double d =  ((Number)lit.getValue()).doubleValue();
             long v = DoubleNode62.pack(d);
+            if ( v == DoubleNode62.NO_ENCODING )
+                return null ;
             // The special encoding of XSD_DOUBLE is handling in the "toBytes" and "toByteBuffer" operations.  
             return NodeId.createRaw(XSD_DOUBLE, v);
         }
@@ -264,8 +265,8 @@ public class NodeIdInline {
         if ( nodeId == NodeId.NodeDoesNotExist )
             return null;
         
-        NodeIdTypes type = nodeId.type();
-        if ( type == PTR || type == NodeIdTypes.SPECIAL)
+        NodeIdType type = nodeId.type();
+        if ( type == PTR || type == NodeIdType.SPECIAL)
             return null;
         switch (type) {
 //            case PTR:       return null;
@@ -286,7 +287,7 @@ public class NodeIdInline {
             case XSD_UNSIGNEDBYTE:
             {
                 long val = IntegerNode.unpack56(nodeId.value2);
-                RDFDatatype dt = derivedTypeMap.inverse().getOrDefault(type, XSDDatatype.XSDinteger);
+                RDFDatatype dt = derivedTypeMap.getOrDefault(type, XSDDatatype.XSDinteger);
                 Node n = NodeFactory.createLiteral(Long.toString(val), dt);
                 return n;
             }
@@ -295,15 +296,16 @@ public class NodeIdInline {
                 String x = d.toPlainString();
                 return NodeFactory.createLiteral(x, XSDDatatype.XSDdecimal);
             }
-            // Not 56 bits.
-//            case XSD_DOUBLE: {
-//                double d = DoubleNode.unpack(nodeId.value2);
-//                Node n = NodeFactory.createLiteral(Double.toString(d), XSDDatatype.XSDdouble);
-//                return n ;
-//            }
+            case XSD_DOUBLE: {
+                double d = DoubleNode62.unpack(nodeId.value2);
+                String xsdStr = Utils.stringForm(d);
+                Node n = NodeFactory.createLiteral(xsdStr, XSDDatatype.XSDdouble);
+                return n ;
+            }
             case XSD_FLOAT: {
                 float f = FloatNode.unpack(nodeId.value2);
-                Node n = NodeFactory.createLiteral(Float.toString(f), XSDDatatype.XSDfloat);
+                String xsdStr = Utils.stringForm(f);
+                Node n = NodeFactory.createLiteral(xsdStr, XSDDatatype.XSDfloat);
                 return n ;
             }
             case XSD_DATETIMESTAMP:
@@ -330,6 +332,4 @@ public class NodeIdInline {
                 throw new TDBException("Unrecognized node id type: " + type);
         }
     }
-    
- 
 }

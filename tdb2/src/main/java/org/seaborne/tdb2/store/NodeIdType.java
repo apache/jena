@@ -17,14 +17,14 @@
 
 package org.seaborne.tdb2.store;
 
-import static org.seaborne.tdb2.store.NodeIdTypes.TYPES.*;
+import static org.seaborne.tdb2.store.NodeIdType.TYPES.*;
 
 /** Constants for NodeIds.
  * Note that "PTR" is special - it uses the high bit only set to zero.
  * Note that "XSD_DOUBLE" is special - it sets the high bit (avleu) and the next bit only, leaving 62 bits of value.
  * Otherwise a tyope is encoded as the high byte. 
  */
-public enum NodeIdTypes {
+public enum NodeIdType {
     PTR(T_PTR, null),
 
     XSD_INTEGER(T_INTEGER, "Integer"),
@@ -116,13 +116,13 @@ public enum NodeIdTypes {
     // We provide lots of natural questions to ask of an NodeId type.
     // All are efficient. There is redundancy but limited to this file. 
 
-    static boolean isStorable(NodeIdTypes type) {
+    static boolean isStorable(NodeIdType type) {
         return !isSpecial(type); 
     }
     
     // For numbers, an out-of-range number maybe stored a PTR.
     
-    static boolean isInteger(NodeIdTypes type) {
+    static boolean isInteger(NodeIdType type) {
         switch(type) {
             case XSD_INTEGER:
             case XSD_POSITIVE_INTEGER:
@@ -143,27 +143,27 @@ public enum NodeIdTypes {
         }
     }
     
-    static boolean isDecimal(NodeIdTypes type) {
+    static boolean isDecimal(NodeIdType type) {
         return type == XSD_DECIMAL;
     }
     
-    static boolean isDouble(NodeIdTypes type) {
+    static boolean isDouble(NodeIdType type) {
         return type == XSD_DOUBLE;
     }
     
-    static boolean isFloat(NodeIdTypes type) {
+    static boolean isFloat(NodeIdType type) {
         return type == XSD_FLOAT;
     }
 
-    static boolean isNumber(NodeIdTypes type) {
+    static boolean isNumber(NodeIdType type) {
         return isInteger(type) || isDecimal(type) || isDouble(type) || isFloat(type);
     }
     
-    static boolean isSpecial(NodeIdTypes type) {
+    static boolean isSpecial(NodeIdType type) {
         return type == SPECIAL;
     }
 
-    static boolean isInline(NodeIdTypes type) {
+    static boolean isInline(NodeIdType type) {
         switch(type) {
             case XSD_INTEGER:
             case XSD_DECIMAL:
@@ -202,7 +202,7 @@ public enum NodeIdTypes {
     @Override
     public String toString() { return displayName != null ? displayName : name(); }
 
-    private NodeIdTypes(int value, String displayName){
+    private NodeIdType(int value, String displayName){
 //        if ( value != 0 )
 //            // Set high bit.
 //            value = TYPES.enc(value);
@@ -210,18 +210,18 @@ public enum NodeIdTypes {
         this.displayName = displayName;
     }
 
-    public static NodeIdTypes intToEnum(int x) {
+    public static NodeIdType intToEnum(int x) {
         if ( x >= 0x80 )
             throw new IllegalArgumentException("Value '"+x+"' not legal: too large");
         if ( x != 0 )
             x = TYPES.enc(x);
-        NodeIdTypes t = intToEnum$(x);
+        NodeIdType t = intToEnum$(x);
         if ( t == INVALID$ )
-            throw new IllegalArgumentException("Value '"+x+"' not legal for "+NodeIdTypes.class.getSimpleName());
+            throw new IllegalArgumentException("Value '"+x+"' not legal for "+NodeIdType.class.getSimpleName());
         return t ;
     }
     
-    private static NodeIdTypes intToEnum$(int x) {
+    private static NodeIdType intToEnum$(int x) {
         //x = TYPES.enc(x);
         if (x == PTR.value )                        return PTR;
         // XSD_DOUBL is special encoded - handled elsewhere.

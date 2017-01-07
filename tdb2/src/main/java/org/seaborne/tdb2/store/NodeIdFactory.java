@@ -17,8 +17,8 @@
 
 package org.seaborne.tdb2.store;
 
-import static org.seaborne.tdb2.store.NodeIdTypes.PTR;
-import static org.seaborne.tdb2.store.NodeIdTypes.isSpecial;
+import static org.seaborne.tdb2.store.NodeIdType.PTR;
+import static org.seaborne.tdb2.store.NodeIdType.isSpecial;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.BitsInt;
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.atlas.lib.Bytes;
 import org.seaborne.tdb2.TDBException;
+import org.seaborne.tdb2.store.value.DoubleNode62;
 
 /** Factory for NodeIds, including to/from disk forms via ByteBuffers and byte[].*/
 final
@@ -37,7 +38,7 @@ public class NodeIdFactory
     
     // XXX Chance for a cache?
 
-    private static NodeId create(NodeIdTypes type, int v1, long v2) {
+    private static NodeId create(NodeIdType type, int v1, long v2) {
         if ( isSpecial(type) ) {
             if ( NodeId.equals(NodeId.NodeDoesNotExist, v1, v2) )
                 return NodeId.NodeDoesNotExist;
@@ -54,12 +55,12 @@ public class NodeIdFactory
         return createNew(type, v1, v2);
     }
     
-    public static NodeId createValue(NodeIdTypes type, long value) {
+    public static NodeId createValue(NodeIdType type, long value) {
         // 64 bit.
         return createNew(type, 0, value);
     }
     
-    private static NodeId createNew(NodeIdTypes type, int v1, long v2) {
+    private static NodeId createNew(NodeIdType type, int v1, long v2) {
         return NodeId.createRaw(type, v1, v2);
     }
 
@@ -81,13 +82,13 @@ public class NodeIdFactory
         long v2 = value2;
         if ( BitsLong.isSet(v2, 62) ) {
             // XSD_DOUBLE
-            v2 = BitsLong.clear(v2, 62, 64); 
-            return NodeId.createRaw(NodeIdTypes.XSD_DOUBLE, v2);
+            v2 = DoubleNode62.removeType(v2); 
+            return NodeId.createRaw(NodeIdType.XSD_DOUBLE, v2);
         }
         int t = (int)BitsLong.unpack(v2, 56, 63);   // 7 bits
         v2 = BitsLong.clear(v2, 56, 64);
-        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        if ( type == NodeIdTypes.SPECIAL )
+        NodeIdType type = NodeIdType.intToEnum(t);
+        if ( type == NodeIdType.SPECIAL )
             throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
         return NodeId.createRaw(type, v2);
     }
@@ -97,8 +98,8 @@ public class NodeIdFactory
         if ( !BitsInt.isSet(v1, 32) )
             return createPtrLong(v1, v2);
         int t = v1 >> 24;
-        NodeIdTypes type = NodeIdTypes.intToEnum(t);
-        if ( type == NodeIdTypes.SPECIAL )
+        NodeIdType type = NodeIdType.intToEnum(t);
+        if ( type == NodeIdType.SPECIAL )
             throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
         return createNew(type, 0, v2);
     }
@@ -145,7 +146,7 @@ public class NodeIdFactory
             case XSD_DOUBLE:
                 // XSD_DOUBLE is special.
                 // Set value bit (63) and bit 62 
-                x = BitsLong.set(x, 62, 64);
+                x = DoubleNode62.insertType(x);
                 return x ;
             default:
                 // Bit 62 is zero - tagt is for doubles.
@@ -177,6 +178,7 @@ public class NodeIdFactory
         Bytes.setLong(v2+1, b, idx);
     }
 
+    // (int,long) versions : check before use
 //    /** Relative {@code ByteBuffer} {@code get} */
 //    public static NodeId get(ByteBuffer b)   {
 //        int value1 = b.getInt();
@@ -253,6 +255,6 @@ public class NodeIdFactory
 
     private static AtomicInteger counter = new AtomicInteger(0xB0);
     public static NodeId genUnique() {
-        return NodeIdFactory.create(NodeIdTypes.SPECIAL, counter.incrementAndGet(), 0);
+        return NodeIdFactory.create(NodeIdType.SPECIAL, counter.incrementAndGet(), 0);
     }
 }
