@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra.optimize ;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.SetUtils ;
@@ -450,7 +449,7 @@ public class TransformFilterPlacement extends TransformCopy {
         ExprList exprListRetain = new ExprList() ;
         for ( Expr expr : exprsIn ) {
             Set<Var> mentioned = expr.getVarsMentioned() ;
-            if ( SetUtils.disjoint(varScope, mentioned) )
+            if ( Collections.disjoint(varScope, mentioned) )
                 exprListPlaceable.add(expr);
             else
                 exprListRetain.add(expr);

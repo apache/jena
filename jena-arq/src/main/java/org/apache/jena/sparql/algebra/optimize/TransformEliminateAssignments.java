@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.* ;

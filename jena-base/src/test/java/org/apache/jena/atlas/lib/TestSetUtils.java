@@ -125,16 +125,6 @@ public class TestSetUtils extends BaseTest
         x3 = SetUtils.difference(x2, x1) ;
         test(x3,4,5,6) ;
     }
-    
-    @Test public void set_disjoint_1() 
-    {
-        Set<Integer> x1 = set(1,2,3) ;
-        Set<Integer> x2 = set(5,6) ;
-        Set<Integer> x3 = set(1,6) ;
-        assertTrue(SetUtils.disjoint(x1, x2)) ;
-        assertFalse(SetUtils.disjoint(x1, x3)) ;
-        assertFalse(SetUtils.disjoint(x1, x1)) ;
-    }
 
     @Test public void set_symmetric_differnce_1() {
         Set<Integer> x1 = set(1,2,3) ;
