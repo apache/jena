@@ -19,7 +19,6 @@ import static org.apache.jena.graph.NodeFactory.createLiteral;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,7 +26,6 @@ import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraphPerGraphLocking;
 import org.junit.Test;
-import org.slf4j.Logger;
 
 public class MultithreadingTest extends BaseTest {
 
