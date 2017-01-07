@@ -23,5 +23,5 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestInMemDatasetAssembler.class })
+@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
 public class TS_Assembler {}

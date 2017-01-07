@@ -45,22 +45,27 @@ public abstract class TransactionalInMemDatasetAssembler extends AssemblerBase {
 
         dataset.begin(WRITE);
         try {
-            // load data into the default graph
-            if (root.hasProperty(data))
-                multiValueResource(root, data)
-                    .forEach(defaultGraphDocument -> read(dataset, defaultGraphDocument.getURI()));
-
-            // load data into named graphs
-            multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
-                final String graphName = getAsStringValue(namedGraphResource, pGraphName);
-                if (namedGraphResource.hasProperty(data))
-                    multiValueResource(namedGraphResource, data)
-                            .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData.getURI()));
-            });
+            loadDefaultGraph(root, dataset);
+            loadNamedGraphs(root, dataset);
             dataset.commit();
         } finally {
             dataset.end();
         }
         return dataset;
+    }
+
+    protected void loadNamedGraphs(final Resource root, final Dataset dataset) {
+        multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
+            final String graphName = getAsStringValue(namedGraphResource, pGraphName);
+            if (namedGraphResource.hasProperty(data))
+                multiValueResource(namedGraphResource, data)
+                        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData.getURI()));
+        });
+    }
+
+    protected void loadDefaultGraph(final Resource root, final Dataset dataset) {
+        if (root.hasProperty(data))
+            multiValueResource(root, data)
+                .forEach(defaultGraphDocument -> read(dataset, defaultGraphDocument.getURI()));
     }
 }

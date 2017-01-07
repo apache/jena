@@ -53,7 +53,7 @@ import org.junit.Test;
  * Tests for {@link TxnInMemDatasetAssembler}
  *
  */
-public class TestInMemDatasetAssembler extends Assert {
+public class TestTxnInMemDatasetAssembler extends Assert {
 
     private Dataset assemble(final Resource example) {
 	    Model model = example.getModel() ;
