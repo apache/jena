@@ -116,7 +116,7 @@ public class GraphHelper extends TestUtils {
 	 * <code>triple</code> with prefix-mapping <code>Extended</code>.
 	 */
 	public static Triple[] tripleArray(String facts) {
-		ArrayList<Triple> al = new ArrayList<Triple>();
+		ArrayList<Triple> al = new ArrayList<>();
 		StringTokenizer semis = new StringTokenizer(facts, ";");
 		while (semis.hasMoreTokens())
 			al.add(triple(PrefixMapping.Extended, semis.nextToken()));
@@ -129,7 +129,7 @@ public class GraphHelper extends TestUtils {
 	 * <code>triple</code>.
 	 */
 	public static Set<Triple> tripleSet(String facts) {
-		Set<Triple> result = new HashSet<Triple>();
+		Set<Triple> result = new HashSet<>();
 		StringTokenizer semis = new StringTokenizer(facts, ";");
 		while (semis.hasMoreTokens())
 			result.add(triple(semis.nextToken()));
@@ -142,7 +142,7 @@ public class GraphHelper extends TestUtils {
 	 * <code>node()</code>.
 	 */
 	public static List<Node> nodeList(String items) {
-		ArrayList<Node> nl = new ArrayList<Node>();
+		ArrayList<Node> nl = new ArrayList<>();
 		StringTokenizer nodes = new StringTokenizer(items);
 		while (nodes.hasMoreTokens())
 			nl.add(node(nodes.nextToken()));

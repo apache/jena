@@ -27,7 +27,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
 
   private static final org.apache.thrift.protocol.TField VARS_FIELD_DESC = new org.apache.thrift.protocol.TField("vars", org.apache.thrift.protocol.TType.LIST, (short)1);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
   static {
     schemes.put(StandardScheme.class, new RDF_VarTupleStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_VarTupleTupleSchemeFactory());
@@ -39,7 +39,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     VARS((short)1, "vars");
 
-    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+    private static final Map<String, _Fields> byName = new HashMap<>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -96,7 +96,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
   // isset id assignments
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
     tmpMap.put(_Fields.VARS, new org.apache.thrift.meta_data.FieldMetaData("vars", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RDF_VAR.class))));
@@ -119,7 +119,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
    */
   public RDF_VarTuple(RDF_VarTuple other) {
     if (other.isSetVars()) {
-      List<RDF_VAR> __this__vars = new ArrayList<RDF_VAR>();
+      List<RDF_VAR> __this__vars = new ArrayList<>();
       for (RDF_VAR other_element : other.vars) {
         __this__vars.add(new RDF_VAR(other_element));
       }

@@ -44,7 +44,7 @@ public class Manifest {
 	private Model manifest;
 	private String manifestName;
 	private String filename;
-	private List<String> includedFiles = new ArrayList<String>();
+	private List<String> includedFiles = new ArrayList<>();
 	private Resource manifestRes = null;
 
     public Manifest(String fn) {
@@ -179,7 +179,7 @@ public class Manifest {
 	public static Collection<Resource> listResources(Resource r, Property p) {
 		if (r == null)
 			return null;
-		List<Resource> x = new ArrayList<Resource>();
+		List<Resource> x = new ArrayList<>();
 		StmtIterator sIter = r.listProperties(p);
 		for (; sIter.hasNext();) {
 			RDFNode n = sIter.next().getObject();

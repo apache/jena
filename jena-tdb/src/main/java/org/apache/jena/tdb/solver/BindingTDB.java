@@ -38,7 +38,7 @@ public class BindingTDB extends BindingBase
     
     private static final boolean caching = false ;
     // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache. 
-    private final Map<Var,Node> cache = ( caching ? new HashMap<Var, Node>() : null ) ;
+    private final Map<Var,Node> cache = ( caching ? new HashMap<>() : null ) ;
 
     public BindingTDB(BindingNodeId idBinding, NodeTable nodeTable)
     {

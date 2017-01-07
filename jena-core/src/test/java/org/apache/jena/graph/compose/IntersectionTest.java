@@ -44,7 +44,7 @@ public class IntersectionTest {
 	public IntersectionTest() {
 		super();
 		graphProducer = new AbstractGraphProducer<Intersection>() {
-			private Map<Graph, Graph[]> dependencyGraph = new HashMap<Graph, Graph[]>();
+			private Map<Graph, Graph[]> dependencyGraph = new HashMap<>();
 
 			@Override
 			protected Intersection createNewGraph() {

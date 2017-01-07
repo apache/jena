@@ -26,7 +26,7 @@ public class RDF_Triple implements org.apache.thrift.TBase<RDF_Triple, RDF_Tripl
   private static final org.apache.thrift.protocol.TField P_FIELD_DESC = new org.apache.thrift.protocol.TField("P", org.apache.thrift.protocol.TType.STRUCT, (short)2);
   private static final org.apache.thrift.protocol.TField O_FIELD_DESC = new org.apache.thrift.protocol.TField("O", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
   static {
     schemes.put(StandardScheme.class, new RDF_TripleStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_TripleTupleSchemeFactory());
@@ -42,7 +42,7 @@ public class RDF_Triple implements org.apache.thrift.TBase<RDF_Triple, RDF_Tripl
     P((short)2, "P"),
     O((short)3, "O");
 
-    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+    private static final Map<String, _Fields> byName = new HashMap<>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -103,7 +103,7 @@ public class RDF_Triple implements org.apache.thrift.TBase<RDF_Triple, RDF_Tripl
   // isset id assignments
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
     tmpMap.put(_Fields.S, new org.apache.thrift.meta_data.FieldMetaData("S", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RDF_Term.class)));
     tmpMap.put(_Fields.P, new org.apache.thrift.meta_data.FieldMetaData("P", org.apache.thrift.TFieldRequirementType.REQUIRED, 

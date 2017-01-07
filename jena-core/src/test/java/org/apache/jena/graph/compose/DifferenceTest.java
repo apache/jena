@@ -42,7 +42,7 @@ public class DifferenceTest {
 	
 	public DifferenceTest() {
 		graphProducer = new AbstractGraphProducer<Difference>() {
-			private Map<Graph, Graph[]> map = new HashMap<Graph, Graph[]>();
+			private Map<Graph, Graph[]> map = new HashMap<>();
 
 			@Override
 			protected Difference createNewGraph() {

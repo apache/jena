@@ -116,7 +116,7 @@ public class localname extends PFuncSimple
         }
         
         //Set bindings = new HashSet() ;    // Use a Set if you want unique results. 
-        List<Binding> bindings = new ArrayList<Binding>() ;   // Use a list if you want counting results. 
+        List<Binding> bindings = new ArrayList<>() ;   // Use a list if you want counting results. 
         Graph graph = execCxt.getActiveGraph() ;
         
         ExtendedIterator<Triple>iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;

@@ -105,7 +105,7 @@ public class GraphPropertyTable extends GraphBase {
 			if (row == null){
 				return NullIterator.instance();
 			} else {
-				ArrayList<Row> rows = new ArrayList<Row>();
+				ArrayList<Row> rows = new ArrayList<>();
 				rows.add(row);
 				return WrappedIterator.create(rows.iterator());
 			}

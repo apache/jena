@@ -65,11 +65,11 @@ public class QueryIterPropertyTable extends QueryIter1 {
 	}
 
 	private Collection<BasicPattern> sort(BasicPattern pattern) {
-		HashMap<Node, BasicPattern> map = new HashMap<Node, BasicPattern>();
+		HashMap<Node, BasicPattern> map = new HashMap<>();
 		for (Triple triple : pattern.getList()) {
 			Node subject = triple.getSubject();
 			if (!map.containsKey(subject)) {
-				List<Triple> triples = new ArrayList<Triple>();
+				List<Triple> triples = new ArrayList<>();
 				BasicPattern p = BasicPattern.wrap(triples);
 				map.put(subject, p);
 				p.add(triple);

@@ -47,7 +47,7 @@ public class UnionTest {
 	
 	public UnionTest() {
 		graphProducer = new AbstractGraphProducer<Union>() {
-			private Map<Graph, Graph[]> map = new HashMap<Graph, Graph[]>();
+			private Map<Graph, Graph[]> map = new HashMap<>();
 
 			@Override
 			protected Union createNewGraph() {

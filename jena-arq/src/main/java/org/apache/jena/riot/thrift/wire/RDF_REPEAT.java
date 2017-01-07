@@ -23,7 +23,7 @@ public class RDF_REPEAT implements org.apache.thrift.TBase<RDF_REPEAT, RDF_REPEA
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("RDF_REPEAT");
 
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
   static {
     schemes.put(StandardScheme.class, new RDF_REPEATStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_REPEATTupleSchemeFactory());
@@ -34,7 +34,7 @@ public class RDF_REPEAT implements org.apache.thrift.TBase<RDF_REPEAT, RDF_REPEA
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
 ;
 
-    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+    private static final Map<String, _Fields> byName = new HashMap<>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -87,7 +87,7 @@ public class RDF_REPEAT implements org.apache.thrift.TBase<RDF_REPEAT, RDF_REPEA
   }
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(RDF_REPEAT.class, metaDataMap);
   }

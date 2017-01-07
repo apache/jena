@@ -50,8 +50,8 @@ public class MonitorModel extends ModelCom {
      * @param deletions a place in which the set of newly deleted statements should be noted, can be null
      */
     public void snapshot(List<Statement> additions, List<Statement> deletions) {
-        List<Triple> additionsTemp = (additions != null) ? new ArrayList<Triple>() : null;
-        List<Triple> deletionsTemp = (deletions != null) ? new ArrayList<Triple>() : null;
+        List<Triple> additionsTemp = (additions != null) ? new ArrayList<>() : null;
+        List<Triple> deletionsTemp = (deletions != null) ? new ArrayList<>() : null;
         ((MonitorGraph)getGraph()).snapshot(additionsTemp, deletionsTemp);
         if (additions != null) {
             for ( Triple anAdditionsTemp : additionsTemp )
