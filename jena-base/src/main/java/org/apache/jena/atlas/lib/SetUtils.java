@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
+import java.util.Collections;
 import java.util.HashSet ;
 import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
@@ -73,7 +74,7 @@ public class SetUtils
     }
 
     public static <T> boolean disjoint(Set<T> set1, Set<T> set2) {
-        return CollectionUtils.disjoint(set1, set2) ;
+        return Collections.disjoint(set1, set2);
     }
 }
 

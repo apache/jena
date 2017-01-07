@@ -268,7 +268,7 @@ public class TransformEliminateAssignments extends TransformCopy {
     }
 
     private VarExprList processUnused(VarExprList assignments) {
-        if (CollectionUtils.disjoint(assignments.getVars(), this.tracker.getAssignments().keySet()))
+        if (Collections.disjoint(assignments.getVars(), this.tracker.getAssignments().keySet()))
             return null;
 
         VarExprList singleUse = new VarExprList();

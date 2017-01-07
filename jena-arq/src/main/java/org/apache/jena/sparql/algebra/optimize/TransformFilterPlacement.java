@@ -862,7 +862,7 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     private static <T> boolean disjoint(Collection<T> collection, Collection<T> possibleElts) {
-        return CollectionUtils.disjoint(collection, possibleElts) ;
+        return Collections.disjoint(collection, possibleElts);
     }
 
     /** Place expressions around an Op */
