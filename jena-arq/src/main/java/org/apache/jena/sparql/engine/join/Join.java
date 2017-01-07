@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import java.util.ArrayList;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.TableFactory ;
@@ -165,7 +165,7 @@ public class Join {
      */
     public static QueryIterator nestedLoopJoinBasic(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         List<Binding> leftRows = Iter.toList(left) ;
-        List<Binding> output = DS.list() ;
+        List<Binding> output = new ArrayList<>() ;
         for ( ; right.hasNext() ; ) {
             Binding row2 = right.next() ;
             for ( Binding row1 : leftRows ) {
@@ -184,7 +184,7 @@ public class Join {
     public static QueryIterator nestedLoopLeftJoinBasic(QueryIterator left, QueryIterator right, ExprList conditions, ExecutionContext execCxt) {
         // Stream from left, materialize right.
         List<Binding> rightRows = Iter.toList(right) ;
-        List<Binding> output = DS.list() ;
+        List<Binding> output = new ArrayList<>() ;
         long count = 0 ;
         for ( ; left.hasNext() ; ) {
             Binding row1 = left.next() ;

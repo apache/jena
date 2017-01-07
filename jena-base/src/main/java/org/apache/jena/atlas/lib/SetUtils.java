@@ -31,9 +31,7 @@ public class SetUtils
     public static final <X> Set<X> concurrentHashSet() {
         return ConcurrentHashMap.newKeySet() ;
     }
-    
-    public static <X> Set<X> setOfOne(X element) { return DS.setOfOne(element) ; }
-    
+
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight) {
         Set<T> results = new HashSet<>(setLeft) ;
         results.retainAll(setRight) ;
@@ -44,13 +42,26 @@ public class SetUtils
         return s1.stream().anyMatch(s2::contains) ;
     }
 
+    /**
+     * @param s1 a {@link Set}
+     * @param s2 a {@link Set}
+     * @return the eager set-theoretic union of {@code s1} and {@code s2}
+     * 
+     * @see org.apache.jena.ext.com.google.common.collect.Sets#union(Set, Set) for a lazy alternative
+     */
     public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>(s1) ;
         s3.addAll(s2) ;
         return s3 ;
     }
 
-    /** union difference intersection : those elements in s1 or s2 but not both. */
+    /**
+     * @param s1 a {@link Set}
+     * @param s2 a {@link Set}
+     * @return eager union difference intersection : those elements in {@code s1} or {@code s2} but not both
+     * 
+     * @see org.apache.jena.ext.com.google.common.collect.Sets#symmetricDifference(Set, Set) for a lazy alternative
+     */
     public static <T> Set<T> symmetricDifference(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>() ;
         s1.forEach(x -> {
@@ -64,8 +75,13 @@ public class SetUtils
         return s3 ;
     }
 
-    /** Return is s1 \ s2 */
-
+    /**
+     * @param s1 a {@link Set}
+     * @param s2 a {@link Set}
+     * @return eager {@code s1} \ {@code s2}
+     * 
+     * @see org.apache.jena.ext.com.google.common.collect.Sets#difference(Set, Set) for a lazy alternative
+     */
     public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2) {
         Set<T> s3 = new HashSet<>(s1) ;
         s3.removeAll(s2) ;
