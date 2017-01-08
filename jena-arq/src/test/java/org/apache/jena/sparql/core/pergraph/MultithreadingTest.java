@@ -18,8 +18,7 @@
 
 package org.apache.jena.sparql.core.pergraph;
 
-import static com.jayway.awaitility.Awaitility.waitAtMost;
-import static com.jayway.awaitility.Duration.TEN_SECONDS;
+import static com.jayway.awaitility.Awaitility.await;
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.query.ReadWrite.READ;
@@ -60,7 +59,7 @@ public class MultithreadingTest extends BaseTest {
                 dataset.add(graph1, dummy, dummy, before);
                 // wait for the baton
                 startMain.set(true);
-                waitAtMost(TEN_SECONDS).untilTrue(baton);
+                await().untilTrue(baton);
                 dataset.add(graph1, dummy, dummy, after);
                 dataset.commit();
                 finishLine.set(true);
@@ -69,7 +68,7 @@ public class MultithreadingTest extends BaseTest {
             }
         }).start();
 
-        waitAtMost(TEN_SECONDS).untilTrue(startMain);
+        await().untilTrue(startMain);
         dataset.begin(WRITE);
         try {
             dataset.add(graph2, dummy, dummy, before);
@@ -80,7 +79,7 @@ public class MultithreadingTest extends BaseTest {
         } finally {
             dataset.end();
         }
-        waitAtMost(TEN_SECONDS).untilTrue(finishLine);
+        await().untilTrue(finishLine);
         dataset.begin(READ);
         try {
             assertTrue("Failed to find the triple that proves that the first thread finished!",
