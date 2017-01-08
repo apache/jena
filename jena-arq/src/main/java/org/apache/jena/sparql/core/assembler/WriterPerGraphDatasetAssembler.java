@@ -26,7 +26,7 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.Dataset;
@@ -60,16 +60,7 @@ public class WriterPerGraphDatasetAssembler extends TransactionalInMemDatasetAss
             // take advantage of writer-per-graph to load in parallel, one thread per named graph
             ExecutorService loaderThreadPool = newFixedThreadPool(namedGraphs.size());
             try {
-                loaderThreadPool
-                        .submit(() -> namedGraphs.stream().parallel().forEach(namedGraphResource -> {
-                            dataset.begin(WRITE);
-                            try {
-                                loadNamedGraph(dataset, namedGraphResource);
-                                dataset.commit();
-                            } finally {
-                                dataset.end();
-                            }
-                        })).get();
+                loaderThreadPool.submit(() -> namedGraphs.parallelStream().forEach(loadIntoDataset(dataset))).get();
             } catch (InterruptedException | ExecutionException e) {
                 loaderThreadPool.shutdownNow();
                 throw new JenaException(e);
@@ -78,6 +69,18 @@ public class WriterPerGraphDatasetAssembler extends TransactionalInMemDatasetAss
         } else 
             // load using only this thread, default mode
             namedGraphs.forEach(namedGraphResource -> loadNamedGraph(dataset, namedGraphResource));
+    }
+    
+    private static Consumer<Resource> loadIntoDataset(Dataset ds) {
+        return namedGraphResource -> {
+            ds.begin(WRITE);
+            try {
+                loadNamedGraph(ds, namedGraphResource);
+                ds.commit();
+            } finally {
+                ds.end();
+            }
+        };
     }
 
     private static void loadNamedGraph(Dataset dataset, Resource namedGraphResource) {
