@@ -12,11 +12,23 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
+import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
+import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
 public class RDF_PrefixName implements org.apache.thrift.TBase<RDF_PrefixName, RDF_PrefixName._Fields>, java.io.Serializable, Cloneable {
@@ -25,7 +37,7 @@ public class RDF_PrefixName implements org.apache.thrift.TBase<RDF_PrefixName, R
   private static final org.apache.thrift.protocol.TField PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("prefix", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField LOCAL_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("localName", org.apache.thrift.protocol.TType.STRING, (short)2);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
     schemes.put(StandardScheme.class, new RDF_PrefixNameStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_PrefixNameTupleSchemeFactory());
@@ -39,7 +51,7 @@ public class RDF_PrefixName implements org.apache.thrift.TBase<RDF_PrefixName, R
     PREFIX((short)1, "prefix"),
     LOCAL_NAME((short)2, "localName");
 
-    private static final Map<String, _Fields> byName = new HashMap<>();
+    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -98,7 +110,7 @@ public class RDF_PrefixName implements org.apache.thrift.TBase<RDF_PrefixName, R
   // isset id assignments
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.PREFIX, new org.apache.thrift.meta_data.FieldMetaData("prefix", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LOCAL_NAME, new org.apache.thrift.meta_data.FieldMetaData("localName", org.apache.thrift.TFieldRequirementType.REQUIRED, 

@@ -12,14 +12,23 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
+import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
 public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_VarTuple._Fields>, java.io.Serializable, Cloneable {
@@ -27,7 +36,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
 
   private static final org.apache.thrift.protocol.TField VARS_FIELD_DESC = new org.apache.thrift.protocol.TField("vars", org.apache.thrift.protocol.TType.LIST, (short)1);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
     schemes.put(StandardScheme.class, new RDF_VarTupleStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_VarTupleTupleSchemeFactory());
@@ -39,7 +48,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     VARS((short)1, "vars");
 
-    private static final Map<String, _Fields> byName = new HashMap<>();
+    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -96,7 +105,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
   // isset id assignments
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.VARS, new org.apache.thrift.meta_data.FieldMetaData("vars", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RDF_VAR.class))));
@@ -119,7 +128,7 @@ public class RDF_VarTuple implements org.apache.thrift.TBase<RDF_VarTuple, RDF_V
    */
   public RDF_VarTuple(RDF_VarTuple other) {
     if (other.isSetVars()) {
-      List<RDF_VAR> __this__vars = new ArrayList<>();
+      List<RDF_VAR> __this__vars = new ArrayList<RDF_VAR>();
       for (RDF_VAR other_element : other.vars) {
         __this__vars.add(new RDF_VAR(other_element));
       }

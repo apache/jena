@@ -12,12 +12,23 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
+import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
 public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Literal._Fields>, java.io.Serializable, Cloneable {
@@ -28,7 +39,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   private static final org.apache.thrift.protocol.TField DATATYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("datatype", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField DT_PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("dtPrefix", org.apache.thrift.protocol.TType.STRUCT, (short)4);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
     schemes.put(StandardScheme.class, new RDF_LiteralStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_LiteralTupleSchemeFactory());
@@ -46,7 +57,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     DATATYPE((short)3, "datatype"),
     DT_PREFIX((short)4, "dtPrefix");
 
-    private static final Map<String, _Fields> byName = new HashMap<>();
+    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -110,7 +121,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   private _Fields optionals[] = {_Fields.LANGTAG,_Fields.DATATYPE,_Fields.DT_PREFIX};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.LEX, new org.apache.thrift.meta_data.FieldMetaData("lex", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LANGTAG, new org.apache.thrift.meta_data.FieldMetaData("langtag", org.apache.thrift.TFieldRequirementType.OPTIONAL, 

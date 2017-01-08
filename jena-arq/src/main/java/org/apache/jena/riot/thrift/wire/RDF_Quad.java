@@ -12,12 +12,23 @@ import org.apache.thrift.scheme.StandardScheme;
 
 import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.protocol.TProtocolException;
+import org.apache.thrift.EncodingUtils;
+import org.apache.thrift.TException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.EnumMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.Collections;
 import java.util.BitSet;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
 public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fields>, java.io.Serializable, Cloneable {
@@ -28,7 +39,7 @@ public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fie
   private static final org.apache.thrift.protocol.TField O_FIELD_DESC = new org.apache.thrift.protocol.TField("O", org.apache.thrift.protocol.TType.STRUCT, (short)3);
   private static final org.apache.thrift.protocol.TField G_FIELD_DESC = new org.apache.thrift.protocol.TField("G", org.apache.thrift.protocol.TType.STRUCT, (short)4);
 
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
+  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
     schemes.put(StandardScheme.class, new RDF_QuadStandardSchemeFactory());
     schemes.put(TupleScheme.class, new RDF_QuadTupleSchemeFactory());
@@ -46,7 +57,7 @@ public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fie
     O((short)3, "O"),
     G((short)4, "G");
 
-    private static final Map<String, _Fields> byName = new HashMap<>();
+    private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
     static {
       for (_Fields field : EnumSet.allOf(_Fields.class)) {
@@ -110,7 +121,7 @@ public class RDF_Quad implements org.apache.thrift.TBase<RDF_Quad, RDF_Quad._Fie
   private _Fields optionals[] = {_Fields.G};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<>(_Fields.class);
+    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.S, new org.apache.thrift.meta_data.FieldMetaData("S", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RDF_Term.class)));
     tmpMap.put(_Fields.P, new org.apache.thrift.meta_data.FieldMetaData("P", org.apache.thrift.TFieldRequirementType.REQUIRED, 
