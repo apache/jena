@@ -1,26 +1,31 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
- * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.core.pergraph;
 
-import static com.jayway.awaitility.Awaitility.await;
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
@@ -39,54 +44,61 @@ public class MultithreadingTest extends BaseTest {
 
     private static final Node graph1 = createURI("info:graph1");
 
+    private static final Quad quad1 = Quad.create(graph1, dummy, dummy, dummy);
+
     private static final Node graph2 = createURI("info:graph2");
+
+    private static final Quad quad2 = Quad.create(graph2, dummy, dummy, dummy);
 
     private static final Node graph3 = createURI("info:graph3");
 
-    private static final Quad[] QUADS = new Quad[] { Quad.create(defaultGraphIRI, dummy, dummy, dummy),
-            Quad.create(graph1, dummy, dummy, dummy), Quad.create(graph2, dummy, dummy, dummy),
+    private static final Quad[] QUADS = new Quad[] { Quad.create(defaultGraphIRI, dummy, dummy, dummy), quad1, quad2,
             Quad.create(graph3, dummy, dummy, dummy) };
 
     @Test
     public void writeTwoGraphsAtOnce() {
         DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
 
-        // We start a thread loading a graph, then wait for the main thread to start loading a different graph. The
-        // first thread must wait to see that the main thread has successfully started loading its graph to finish its
-        // load. So when the first thread does finish, this proves that two graphs were being loaded simultaneously.
+        // We start a thread that begins by waiting for the main thread to start loading a graph. The thread then starts
+        // and finishes loading a different graph. We wait for the thread to finish, load some into the first graph and
+        // then check that the thread successfully loaded another graph. This proves that two graphs can be loaded by
+        // two threads at the same time.
 
-        AtomicBoolean startMain = new AtomicBoolean(), baton = new AtomicBoolean(), finishLine = new AtomicBoolean();
+        final Lock baton = new ReentrantLock(true);
+        baton.lock();
 
-        new Thread(() -> {
+        Thread otherThread = new Thread(() -> {
+            // wait to be allowed to start
+            baton.lock();
             dataset.begin(WRITE);
             try {
                 dataset.add(graph1, dummy, dummy, before);
-                // wait for the baton
-                startMain.set(true);
-                await().untilTrue(baton);
                 dataset.add(graph1, dummy, dummy, after);
                 dataset.commit();
-                finishLine.set(true);
             } finally {
                 dataset.end();
             }
-        }).start();
+            baton.unlock();
+        });
+        otherThread.start();
 
-        await().untilTrue(startMain);
         dataset.begin(WRITE);
         try {
             dataset.add(graph2, dummy, dummy, before);
-            // pass the baton
-            baton.set(true);
+            // let the other thread/txn go forward
+            baton.unlock();
+            // make sure other thread has finished
+            baton.lock();
             dataset.add(graph2, dummy, dummy, after);
             dataset.commit();
         } finally {
             dataset.end();
         }
-        await().untilTrue(finishLine);
         dataset.begin(READ);
         try {
-            assertTrue("Failed to find the triple that proves that the first thread finished!",
+            assertTrue("Failed to find a triple that the first thread should have loaded into its graph!",
+                    dataset.contains(graph1, dummy, dummy, before));
+            assertTrue("Failed to find a triple that the first thread should have loaded into its graph!",
                     dataset.contains(graph1, dummy, dummy, after));
         } finally {
             dataset.end();
@@ -138,7 +150,7 @@ public class MultithreadingTest extends BaseTest {
         // set up some data to read
         dataset.begin(WRITE);
         try {
-            dataset.add(graph1, dummy, dummy, dummy);
+            dataset.add(quad1);
             dataset.commit();
         } finally {
             dataset.end();
@@ -146,7 +158,7 @@ public class MultithreadingTest extends BaseTest {
         // try and read the data while writing some more elsewhere
         dataset.begin(WRITE);
         try {
-            dataset.add(graph2, dummy, dummy, dummy);
+            dataset.add(quad2);
             assertTrue("Couldn't find triple in non-written graph!", dataset.contains(graph1, dummy, dummy, dummy));
             dataset.commit();
         } finally {
@@ -155,42 +167,40 @@ public class MultithreadingTest extends BaseTest {
     }
 
     @Test
-    public void snapshotIsolation() {
+    public void readCommittedIsolation() {
         DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
 
-        // We start a thread loading a graph, then wait for the main thread to start loading a different graph. The
-        // first thread must wait to see that the main thread has successfully started loading its graph to finish its
-        // load. So when the first thread does finish, this proves that two graphs were being loaded simultaneously.
-
-        AtomicBoolean startMain = new AtomicBoolean(), baton = new AtomicBoolean(), finishLine = new AtomicBoolean();
-
-        new Thread(() -> {
+        final Lock baton = new ReentrantLock(true);
+        baton.lock();
+        
+        Thread otherThread = new Thread(() -> {
+            baton.lock();
             dataset.begin(WRITE);
             try {
-                dataset.add(graph1, dummy, dummy, dummy);
-                // wait for the baton
-                startMain.set(true);
-                await().untilTrue(baton);
-                // confirm that the mutation in the other thread is invisible
-                assertFalse("Mutation from another thread was visible!", dataset.contains(graph2, dummy, dummy, dummy));
+                dataset.add(quad1);
+                assertFalse("Mutation from another thread in another graph visible!", dataset.contains(quad2));
                 dataset.commit();
-                finishLine.set(true);
+                baton.unlock();
+                baton.lock();
+                assertTrue("Mutation from another thread in another graph invisible after commit!",
+                        dataset.contains(quad2));
             } finally {
                 dataset.end();
             }
-        }).start();
+            baton.unlock();
+        });
+        otherThread.start();
 
-        await().untilTrue(startMain);
         dataset.begin(WRITE);
         try {
-            dataset.add(graph2, dummy, dummy, dummy);
-            // pass the baton
-            baton.set(true);
-            await().untilTrue(finishLine);
+            dataset.add(quad2);
+            baton.unlock();
+            baton.lock();
             dataset.commit();
         } finally {
             dataset.end();
         }
-
+        baton.unlock();
+        baton.lock();
     }
 }
