@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
+import org.apache.jena.sparql.core.JenaTransactionRegionException;
 import org.apache.jena.sparql.core.Quad;
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ public class MultithreadingTest extends BaseTest {
             Quad.create(graph3, dummy, dummy, dummy) };
 
     @Test
-    public void loadTwoGraphsAtOnce() {
+    public void writeTwoGraphsAtOnce() {
         DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
 
         // We start a thread loading a graph, then wait for the main thread to start loading a different graph. The
@@ -116,5 +116,81 @@ public class MultithreadingTest extends BaseTest {
         } finally {
             dataset.end();
         }
+    }
+
+    @Test(expected = JenaTransactionRegionException.class)
+    public void onlyOneGraphWritableInATxn() {
+        DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
+        dataset.begin(WRITE);
+        try {
+            dataset.add(graph2, dummy, dummy, before);
+            dataset.add(graph1, dummy, dummy, after);
+            fail("Should not have been able to write to two different graphs!");
+            dataset.commit();
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void readFromOneGraphWhileWritingToAnother() {
+        DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
+        // set up some data to read
+        dataset.begin(WRITE);
+        try {
+            dataset.add(graph1, dummy, dummy, dummy);
+            dataset.commit();
+        } finally {
+            dataset.end();
+        }
+        // try and read the data while writing some more elsewhere
+        dataset.begin(WRITE);
+        try {
+            dataset.add(graph2, dummy, dummy, dummy);
+            assertTrue("Couldn't find triple in non-written graph!", dataset.contains(graph1, dummy, dummy, dummy));
+            dataset.commit();
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void snapshotIsolation() {
+        DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
+
+        // We start a thread loading a graph, then wait for the main thread to start loading a different graph. The
+        // first thread must wait to see that the main thread has successfully started loading its graph to finish its
+        // load. So when the first thread does finish, this proves that two graphs were being loaded simultaneously.
+
+        AtomicBoolean startMain = new AtomicBoolean(), baton = new AtomicBoolean(), finishLine = new AtomicBoolean();
+
+        new Thread(() -> {
+            dataset.begin(WRITE);
+            try {
+                dataset.add(graph1, dummy, dummy, dummy);
+                // wait for the baton
+                startMain.set(true);
+                await().untilTrue(baton);
+                // confirm that the mutation in the other thread is invisible
+                assertFalse("Mutation from another thread was visible!", dataset.contains(graph2, dummy, dummy, dummy));
+                dataset.commit();
+                finishLine.set(true);
+            } finally {
+                dataset.end();
+            }
+        }).start();
+
+        await().untilTrue(startMain);
+        dataset.begin(WRITE);
+        try {
+            dataset.add(graph2, dummy, dummy, dummy);
+            // pass the baton
+            baton.set(true);
+            await().untilTrue(finishLine);
+            dataset.commit();
+        } finally {
+            dataset.end();
+        }
+
     }
 }
