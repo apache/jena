@@ -1,19 +1,14 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package org.apache.jena.sparql.core.pergraph;
@@ -23,12 +18,15 @@ import static org.apache.jena.graph.NodeFactory.createLiteral;
 import static org.apache.jena.graph.NodeFactory.createURI;
 import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
+import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraphPerGraphLocking;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
+import org.apache.jena.sparql.core.Quad;
 import org.junit.Test;
 
 public class MultithreadingTest extends BaseTest {
@@ -43,9 +41,15 @@ public class MultithreadingTest extends BaseTest {
 
     private static final Node graph2 = createURI("info:graph2");
 
+    private static final Node graph3 = createURI("info:graph3");
+
+    private static final Quad[] QUADS = new Quad[] { Quad.create(defaultGraphIRI, dummy, dummy, dummy),
+            Quad.create(graph1, dummy, dummy, dummy), Quad.create(graph2, dummy, dummy, dummy),
+            Quad.create(graph3, dummy, dummy, dummy) };
+
     @Test
     public void loadTwoGraphsAtOnce() {
-        DatasetGraphPerGraphLocking dataset = new DatasetGraphPerGraphLocking();
+        DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
 
         // We start a thread loading a graph, then wait for the main thread to start loading a different graph. The
         // first thread must wait to see that the main thread has successfully started loading its graph to finish its
@@ -84,6 +88,31 @@ public class MultithreadingTest extends BaseTest {
         try {
             assertTrue("Failed to find the triple that proves that the first thread finished!",
                     dataset.contains(graph1, dummy, dummy, after));
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void readSeveralGraphsInOneTxn() {
+        DatasetGraphGraphPerTxn dataset = new DatasetGraphGraphPerTxn();
+        // write some quads into different graphs, using a txn-per-graph
+        for (Quad q : QUADS) {
+            dataset.begin(WRITE);
+            try {
+                dataset.add(q);
+                dataset.commit();
+            } finally {
+                dataset.end();
+            }
+        }
+        // check that they are all there in one big txn
+        dataset.begin(READ);
+        try {
+            for (Quad q : QUADS) {
+                assertTrue("Couldn't find quad in its graph!", dataset.contains(q));
+                assertTrue("Couldn't find quad in its graph!", dataset.getGraph(q.getGraph()).contains(q.asTriple()));
+            }
         } finally {
             dataset.end();
         }

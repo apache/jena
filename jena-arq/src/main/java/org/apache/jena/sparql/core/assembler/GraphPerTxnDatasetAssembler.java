@@ -38,12 +38,12 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.sparql.core.DatasetGraphPerGraphLocking;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
 
 /**
  * An {@link Assembler} that creates writer-per-graph in-memory {@link Dataset}s.
  */
-public class WriterPerGraphDatasetAssembler extends TransactionalInMemDatasetAssembler {
+public class GraphPerTxnDatasetAssembler extends TransactionalInMemDatasetAssembler {
 
     @Override
     public Resource getType() {
@@ -52,7 +52,7 @@ public class WriterPerGraphDatasetAssembler extends TransactionalInMemDatasetAss
 
     @Override
     public Dataset createDataset() {
-        return DatasetFactory.wrap(new DatasetGraphPerGraphLocking());
+        return DatasetFactory.wrap(new DatasetGraphGraphPerTxn());
     }
 
     @Override

@@ -20,13 +20,13 @@ package org.apache.jena.sparql.core.pergraph;
 
 import org.apache.jena.sparql.core.AbstractDatasetGraphFind;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphPerGraphLocking;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
 
 public class FindTest extends AbstractDatasetGraphFind {
 
 	@Override
 	protected DatasetGraph create() {
-		return new DatasetGraphPerGraphLocking();
+		return new DatasetGraphGraphPerTxn();
 	}
 
 }

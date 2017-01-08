@@ -1,19 +1,14 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
+ * file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package org.apache.jena.sparql.core;
@@ -45,10 +40,13 @@ import org.apache.jena.sparql.core.mem.TransactionalComponent;
 import org.apache.jena.sparql.core.mem.TriTable;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
+public class DatasetGraphGraphPerTxn extends DatasetGraphCollection {
 
     private final Map<Node, LockableGraph> graphs = new ConcurrentHashMap<>();
 
+    /**
+     * The graph being used as part of a WRITE transaction.
+     */
     private final ThreadLocal<LockableGraph> graphInTransaction = new ThreadLocal<>();
 
     private LockableGraph graphInTransaction() {
@@ -82,21 +80,21 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
         transactionType.set(readWrite);
     }
 
-    private void graphAction(Consumer<LockableGraph> action) {
+    private void actOnGraphInTransaction(Consumer<LockableGraph> action) {
         if (graphInTransaction() != null) action.accept(graphInTransaction());
     }
 
     @Override
     public void commit() {
         if (!isInTransaction()) throw new JenaTransactionException("Cannot commit outside a transaction!");
-        graphAction(LockableGraph::commit);
+        actOnGraphInTransaction(LockableGraph::commit);
         cleanAfterTransaction();
     }
 
     @Override
     public void abort() {
         if (!isInTransaction()) throw new JenaTransactionException("Cannot abort outside a transaction!");
-        graphAction(LockableGraph::abort);
+        actOnGraphInTransaction(LockableGraph::abort);
         cleanAfterTransaction();
     }
 
@@ -121,23 +119,72 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
     }
 
     @Override
-    public Graph getGraph(final Node graphName) {
+    public void add(Quad quad) {
+        mutate(super::add, quad);
+    }
+
+    @Override
+    public void delete(Quad quad) {
+        mutate(super::delete, quad);
+    }
+
+    @Override
+    public void addGraph(Node graphName, Graph triples) {
+        wholeGraphAction(graphName, g -> addInto(getGraph(g), triples));
+    }
+
+    @Override
+    public void removeGraph(Node graphName) {
+        wholeGraphAction(graphName, graphs::remove);
+    }
+
+    /**
+     * Perform an action on a graph after clearing it.
+     * 
+     * @param graphName the graph to mutate
+     * @param action the action to take with that whole graph
+     */
+    private void wholeGraphAction(Node graphName, Consumer<Node> action) {
+        mutate(gN -> {
+            getGraph(gN).clear();
+            action.accept(gN);
+        }, graphName, graphName);
+    }
+
+    private void mutate(Consumer<Quad> action, Quad quad) {
+        mutate(action, quad, quad.getGraph());
+    }
+
+    /**
+     * Take an action inside a transaction for a given graph. Assumes that {@code action} and {@code payload} are
+     * appropriately related to {@code graphName}.
+     * 
+     * @param action action to take
+     * @param payload payload for action
+     * @param graphName graph with which to act
+     */
+    private <T> void mutate(Consumer<T> action, T payload, Node graphName) {
         if (isInTransaction()) {
-            // are we using the current graph?
-            if (graphInTransaction() != null && graphName.equals(graphInTransaction().graphName()))
-                return graphInTransaction();
-            // are we starting work with a graph?
-            if (graphInTransaction() == null) {
-                LockableGraph graph = graphs.computeIfAbsent(graphName, LockableGraph::new);
-                graph.begin(transactionType());
-                graphInTransaction.set(graph);
-                return graph;
+            switch (transactionType()) {
+            case READ:
+                throw new JenaTransactionException("Cannot write during a READ transaction!");
+            case WRITE:
+                // are we trying to mutate the current graph-in-hand?
+                if (graphInTransaction() != null && graphName.equals(graphInTransaction().graphName()))
+                    action.accept(payload);
+                // are we starting work with a newly-chosen graph?
+                else if (graphInTransaction() == null) {
+                    LockableGraph graph = graphs.computeIfAbsent(graphName, LockableGraph::new);
+                    graph.begin(transactionType());
+                    graphInTransaction.set(graph);
+                    action.accept(payload);
+                } else // we already have a different graph in hand and cannot use another!
+                    throw new JenaTransactionRegionException("Cannot work with more than one graph per transaction!");
             }
-            // we already have a graph in hand and cannot use another!
-            throw new JenaTransactionRegionException("Cannot work with more than one graph per transaction!");
+
         }
         // we must work without a transaction
-        return graphs.computeIfAbsent(graphName, LockableGraph::new);
+        action.accept(payload);
     }
 
     @Override
@@ -149,7 +196,7 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
         case WRITE:
             // avoid trying to nest a transaction on a graph we may have in hand
             _clear(graphs.values().stream().filter(g -> !g.equals(graphInTransaction())).collect(toList()));
-            graphAction(LockableGraph::clear);
+            actOnGraphInTransaction(LockableGraph::clear);
         }
 
     }
@@ -165,18 +212,8 @@ public class DatasetGraphPerGraphLocking extends DatasetGraphCollection {
     }
 
     @Override
-    public void addGraph(Node graphName, Graph triples) {
-        wholeGraphAction(graphName, g -> addInto(getGraph(g), triples));
-    }
-
-    @Override
-    public void removeGraph(Node graphName) {
-        wholeGraphAction(graphName, graphs::remove);
-    }
-
-    private void wholeGraphAction(Node graphName, Consumer<Node> action) {
-        getGraph(graphName).clear();
-        action.accept(graphName);
+    public Graph getGraph(final Node graphName) {
+        return graphs.computeIfAbsent(graphName, LockableGraph::new);
     }
 
     /**

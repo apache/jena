@@ -25,4 +25,4 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ BasicTest.class, FindPatternsTest.class, FindTest.class, LockTest.class, TransactionLifecycleTest.class,
 		ViewTest.class, MultithreadingTest.class })
-public class TS_DatasetGraphPerGraphLocking {}
+public class TS_DatasetGraphGraphPerTxn {}

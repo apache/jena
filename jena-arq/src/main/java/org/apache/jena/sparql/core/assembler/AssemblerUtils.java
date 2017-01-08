@@ -60,7 +60,7 @@ public class AssemblerUtils
         registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
         TxnInMemDatasetAssembler txnInMemDatasetAssembler = new TxnInMemDatasetAssembler();
         registerDataset(txnInMemDatasetAssembler.getType(), txnInMemDatasetAssembler);
-        WriterPerGraphDatasetAssembler writerPerGraphDatasetAssembler = new WriterPerGraphDatasetAssembler();
+        GraphPerTxnDatasetAssembler writerPerGraphDatasetAssembler = new GraphPerTxnDatasetAssembler();
         registerDataset(writerPerGraphDatasetAssembler.getType(), writerPerGraphDatasetAssembler);
     }
     
