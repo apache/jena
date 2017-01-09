@@ -45,9 +45,19 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Symbol;
 
 public class JsonLDReader implements ReaderRIOT
 {
+    // using the jena context to pass the value of jsonld's @context
+    private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
+    /**
+     * Expected value: the value of the "@context" 
+     * (a JSON String, or the object expected by the JSONLD-java API - a Map) */
+    public static final Symbol JSONLD_CONTEXT = Symbol.create(SYMBOLS_NS + "JSONLD_CONTEXT");
+
+    //
+    
     private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private ParserProfile parserProfile = null ; 
     
@@ -76,10 +86,22 @@ public class JsonLDReader implements ReaderRIOT
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Object jsonObject = JsonUtils.fromInputStream(in) ;
+            
+            if (context != null) {
+                Object jsonldCtx = context.get(JSONLD_CONTEXT);
+                if (jsonldCtx != null) {
+                    if (jsonObject instanceof Map) {
+                        ((Map) jsonObject).put("@context", jsonldCtx);
+                    } else {
+                        errorHandler.warning("Unexpected: not a Map; unable to set JsonLD's @context",-1,-1);
+                    }
+                }
+            }
             read$(jsonObject, baseURI, ct, output, context) ;
         }
         catch (JsonProcessingException ex) {    
