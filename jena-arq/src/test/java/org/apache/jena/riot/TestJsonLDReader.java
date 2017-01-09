@@ -69,12 +69,14 @@ public class TestJsonLDReader {
         Object jsonldContextAsMap = JsonUtils.fromInputStream(new ByteArrayInputStream(jsonldContext.getBytes(StandardCharsets.UTF_8)));
         jenaCtx.set(JsonLDReader.JSONLD_CONTEXT, jsonldContextAsMap);
         
-        // read the jsonld, replacing its "@context"
-        InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8));
         Dataset ds = DatasetFactory.create();
         ReaderRIOT reader = RDFDataMgr.createReader(Lang.JSONLD);
-        reader.read(in, null, null, StreamRDFLib.dataset(ds.asDatasetGraph()), jenaCtx);
-        
+        // read the jsonld, replacing its "@context"
+        try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
+            reader.read(in, null, null, StreamRDFLib.dataset(ds.asDatasetGraph()), jenaCtx);
+        }
+
+         
         Model m = ds.getDefaultModel();
         assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
         assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));
