@@ -41,16 +41,19 @@ import com.github.jsonldjava.utils.JsonUtils;
 
 public class TestJsonLDReader {
 
-    @Test public final void test() {
-        try {
+    @Test public final void simpleReadtest() {
+       try {
             String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"http://schema.org/Person\",\"name\":\"John Doe\",\"@context\":\"http://schema.org/\"}";
             StringReader reader = new StringReader(jsonld);
             Model m = ModelFactory.createDefaultModel();
             m.read(reader, null, "JSON-LD");
-            m.write(System.out, "TURTLE");
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+            assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
+            assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));
+       } catch (RiotException e) {
+           // cf. org.apache.jena.riot.RiotException: loading remote context failed: http://schema.org/
+           // There's a line printed anyway
+           // e.printStackTrace();
+       }
     }
    
     /** test using the jena Context mechanism to pass the jsonld "@context" */
@@ -73,8 +76,6 @@ public class TestJsonLDReader {
         reader.read(in, null, null, StreamRDFLib.dataset(ds.asDatasetGraph()), jenaCtx);
         
         Model m = ds.getDefaultModel();
-        m.write(System.out, "TTL");
-        
         assertTrue(m.contains(null, RDF.type, m.createResource("http://schema.org/Person")));
         assertTrue(m.contains(null, m.createProperty("http://schema.org/name"), "John Doe"));
      }
