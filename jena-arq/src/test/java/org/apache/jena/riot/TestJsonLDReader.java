@@ -16,31 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer;
+package org.apache.jena.riot;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
-import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.ReaderRIOT;
-import org.apache.jena.riot.WriterDatasetRIOT;
 import org.apache.jena.riot.lang.JsonLDReader;
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
@@ -62,10 +52,9 @@ public class TestJsonLDReader {
             e.printStackTrace();
         }
     }
-
-    @Test
+   
     /** test using the jena Context mechanism to pass the jsonld "@context" */
-    public final void replaceAtContextTest() throws JsonGenerationException, IOException {
+    @Test public final void replaceAtContextTest() throws JsonGenerationException, IOException {
          // some jsonld using schema.org's URI as "@context"
         String jsonld = "{\"@id\":\"_:b0\",\"@type\":\"Person\",\"name\":\"John Doe\",\"@context\":\"http://schema.org/\"}";
         
