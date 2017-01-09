@@ -49,11 +49,12 @@ import org.apache.jena.sparql.util.Symbol;
 
 public class JsonLDReader implements ReaderRIOT
 {
-    // using the jena context to pass the value of jsonld's @context
     private static final String SYMBOLS_NS = "http://jena.apache.org/riot/jsonld#" ;
     /**
-     * Expected value: the value of the "@context" 
-     * (a JSON String, or the object expected by the JSONLD-java API - a Map) */
+     * Symbol to use to pass the "@context" to be used when reading the jsonld
+     * (overriding the actual @context in the jsonld)
+     * Expected value: the value of the "@context", 
+     * as expected by the JSONLD-java API (a Map) */
     public static final Symbol JSONLD_CONTEXT = Symbol.create(SYMBOLS_NS + "JSONLD_CONTEXT");
 
     //
