@@ -178,7 +178,8 @@ public class MultithreadingTest extends BaseTest {
             dataset.begin(WRITE);
             try {
                 dataset.add(quad1);
-                assertFalse("Mutation from another thread in another graph visible!", dataset.contains(quad2));
+                assertFalse("Mutation from another thread in another graph visible before commit!",
+                        dataset.contains(quad2));
                 dataset.commit();
                 baton.unlock();
                 baton.lock();
