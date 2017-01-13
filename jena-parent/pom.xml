@@ -52,7 +52,7 @@
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
 
-    <ver.jsonldjava>0.8.3</ver.jsonldjava>
+    <ver.jsonldjava>0.9.0</ver.jsonldjava>
  
     <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.5.2</ver.httpclient>
