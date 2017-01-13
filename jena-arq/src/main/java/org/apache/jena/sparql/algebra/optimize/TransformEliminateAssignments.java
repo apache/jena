@@ -20,7 +20,6 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.* ;
@@ -268,7 +267,7 @@ public class TransformEliminateAssignments extends TransformCopy {
     }
 
     private VarExprList processUnused(VarExprList assignments) {
-        if (CollectionUtils.disjoint(assignments.getVars(), this.tracker.getAssignments().keySet()))
+        if (Collections.disjoint(assignments.getVars(), this.tracker.getAssignments().keySet()))
             return null;
 
         VarExprList singleUse = new VarExprList();

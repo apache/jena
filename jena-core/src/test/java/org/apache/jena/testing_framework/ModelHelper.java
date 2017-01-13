@@ -145,7 +145,7 @@ public class ModelHelper extends GraphHelper {
 	 * @return a Statement[] of the (S P O) statements from the string
 	 */
 	public static Statement[] statements(String facts) {
-		ArrayList<Statement> sl = new ArrayList<Statement>();
+		ArrayList<Statement> sl = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(facts, ";");
 		while (st.hasMoreTokens())
 			sl.add(statement(st.nextToken()));
@@ -160,7 +160,7 @@ public class ModelHelper extends GraphHelper {
 	 * @return a Resource[] of the parsed resources
 	 */
 	public static Resource[] resources(String items) {
-		ArrayList<Resource> rl = new ArrayList<Resource>();
+		ArrayList<Resource> rl = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(items);
 		while (st.hasMoreTokens())
 			rl.add(resource(st.nextToken()));
@@ -173,7 +173,7 @@ public class ModelHelper extends GraphHelper {
 	 * per <code>resource</code>.
 	 */
 	public static Set<Resource> resourceSet(String items) {
-		Set<Resource> result = new HashSet<Resource>();
+		Set<Resource> result = new HashSet<>();
 		StringTokenizer st = new StringTokenizer(items);
 		while (st.hasMoreTokens())
 			result.add(resource(st.nextToken()));

@@ -30,7 +30,6 @@ import java.util.* ;
 
 import jena.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -225,7 +224,7 @@ public class FusekiServer
         // when processing a config file.
         // Compatibility.
         
-        List<DataAccessPoint> datasets = DS.list() ;
+        List<DataAccessPoint> datasets = new ArrayList<>();
         if ( params == null )
             return datasets ;
 

@@ -54,9 +54,9 @@ public class MonitorGraph extends WrappedGraph {
         boolean wantAdditions = listening || additions != null;
         boolean wantDeletions = listening || deletions != null;
         
-        List<Triple> additionsTemp = (additions != null) ? additions : new ArrayList<Triple>();
-        List<Triple> deletionsTemp = (deletions != null) ? deletions : new ArrayList<Triple>();
-        Set<Triple>  deletionsTempSet = (wantDeletions) ? new HashSet<Triple>() : null;
+        List<Triple> additionsTemp = (additions != null) ? additions : new ArrayList<>();
+        List<Triple> deletionsTemp = (deletions != null) ? deletions : new ArrayList<>();
+        Set<Triple>  deletionsTempSet = (wantDeletions) ? new HashSet<>() : null;
         
         if (wantAdditions || wantDeletions) {
             if (wantDeletions) {

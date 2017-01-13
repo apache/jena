@@ -20,10 +20,7 @@ package org.apache.jena.sparql.algebra.optimize ;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.lib.CollectionUtils ;
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -283,7 +280,7 @@ public class TransformFilterPlacement extends TransformCopy {
     
     private static Placement placeBGP(ExprList exprsIn, BasicPattern pattern) {
         ExprList exprs = ExprList.copy(exprsIn) ;
-        Set<Var> patternVarsScope = DS.set() ;
+        Set<Var> patternVarsScope = new HashSet<>() ;
         // Any filters that depend on no variables.
         Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
 
@@ -309,7 +306,7 @@ public class TransformFilterPlacement extends TransformCopy {
      * but do not break up the BasicPattern in any way.
      */
     private Placement wrapBGP(ExprList exprsIn, BasicPattern pattern) {
-        Set<Var> vs = DS.set();
+        Set<Var> vs = new HashSet<>();
         VarUtils.addVars(vs, pattern);
         ExprList pushed = new ExprList();
         ExprList unpushed = new ExprList();
@@ -363,7 +360,7 @@ public class TransformFilterPlacement extends TransformCopy {
     
     private static Placement placeQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
         ExprList exprs = ExprList.copy(exprsIn) ;
-        Set<Var> patternVarsScope = DS.set() ;
+        Set<Var> patternVarsScope = new HashSet<>() ;
         // Any filters that depend on no variables.
         Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
 
@@ -391,7 +388,7 @@ public class TransformFilterPlacement extends TransformCopy {
      *  but do not break up the BasicPattern in any way.
      */
     private static Placement wrapQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
-        Set<Var> vs = DS.set();
+        Set<Var> vs = new HashSet<>();
         VarUtils.addVars(vs, pattern);
         if (Var.isVar(graphNode)) 
             vs.add(Var.alloc(graphNode));
@@ -433,14 +430,14 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     private Placement placePropertyFunction(ExprList exprsIn, OpPropFunc input) {
-        Set<Var> argVars = DS.set() ;
+        Set<Var> argVars = new HashSet<>() ;
         PropFuncArg.addVars(argVars, input.getSubjectArgs()) ;
         PropFuncArg.addVars(argVars, input.getObjectArgs()) ;
         return placePropertyFunctionProcedure(exprsIn, argVars, input) ;
     }
 
     private Placement placeProcedure(ExprList exprsIn, OpProcedure input) {
-        Set<Var> argVars = DS.set() ;
+        Set<Var> argVars = new HashSet<>() ;
         input.getArgs().varsMentioned(argVars);
         return placePropertyFunctionProcedure(exprsIn, argVars, input) ;
     }
@@ -450,7 +447,7 @@ public class TransformFilterPlacement extends TransformCopy {
         ExprList exprListRetain = new ExprList() ;
         for ( Expr expr : exprsIn ) {
             Set<Var> mentioned = expr.getVarsMentioned() ;
-            if ( SetUtils.disjoint(varScope, mentioned) )
+            if ( Collections.disjoint(varScope, mentioned) )
                 exprListPlaceable.add(expr);
             else
                 exprListRetain.add(expr);
@@ -480,7 +477,7 @@ public class TransformFilterPlacement extends TransformCopy {
      */
     private Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
         ExprList exprs = ExprList.copy(exprsIn) ;
-        Set<Var> varScope = DS.set() ;
+        Set<Var> varScope = new HashSet<>() ;
         List<Op> ops = opSequence.getElements() ;
 
         Op op = null ;
@@ -862,7 +859,7 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     private static <T> boolean disjoint(Collection<T> collection, Collection<T> possibleElts) {
-        return CollectionUtils.disjoint(collection, possibleElts) ;
+        return Collections.disjoint(collection, possibleElts);
     }
 
     /** Place expressions around an Op */

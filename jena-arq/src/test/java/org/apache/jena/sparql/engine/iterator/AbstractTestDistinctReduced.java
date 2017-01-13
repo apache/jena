@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import java.util.ArrayList;
 import java.util.Arrays ;
 import java.util.HashSet ;
 import java.util.List ;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -56,7 +56,7 @@ public abstract class AbstractTestDistinctReduced extends BaseTest {
     protected abstract QueryIterator createQueryIter(List<Binding> data) ;
     
     @Test public void distinct0() {
-        distinct(DS.list(), DS.list()) ;
+        distinct(new ArrayList<>(), new ArrayList<>()) ;
     }
 
     @Test public void distinct1() {
