@@ -660,7 +660,15 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "project") ;
-            List<Var> x = BuilderNode.buildVars(list.get(1).getList()) ; 
+            Item item1 = list.get(1);
+            List<Var> x = null;
+            if ( item1.isList() ) {
+                x = BuilderNode.buildVars(list.get(1).getList()) ; 
+            } else if ( list.get(1).isVar() ) {
+                Var var = BuilderNode.buildVar(item1);
+                x = Collections.singletonList(var);
+            } else 
+                BuilderLib.broken("Not a list of variable for project: "+list.get(1)) ;
             Op sub = build(list, 2) ;
             return new OpProject(sub, x) ;
         }
