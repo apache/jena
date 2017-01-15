@@ -39,7 +39,7 @@ public class Optimize
 {
     /** Factory for the "Do nothing" optimizer. */
     // also known as :: (context) -> { return (op) -> op ; } ;
-    public static RewriteFactory noOptimizationFactory = context -> op -> op ; // Rigth associative.
+    public static RewriteFactory noOptimizationFactory = context -> op -> op ; // Right associative.
     
     /** Factory for the "minimal" optimizer. */ 
     public static RewriteFactory minimalOptimizationFactory = (context) -> new OptimizerMinimal(context);
