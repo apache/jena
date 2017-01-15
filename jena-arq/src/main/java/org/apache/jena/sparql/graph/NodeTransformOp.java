@@ -38,7 +38,7 @@ import org.apache.jena.sparql.path.Path ;
 
 class NodeTransformOp extends TransformCopy
 {
-    // This finds everywhere that node can lurk in an algebra expression:
+    // This finds everywhere that nodes can lurk in an algebra expression:
     //   BGPs, paths, triples, quads
     //   GRAPH, GRAPH{} (DatasetNames)
     //   Filters, including inside EXISTS and expressions in LeftJoin

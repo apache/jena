@@ -29,21 +29,28 @@ import org.apache.jena.sparql.util.Context ;
  * <p>
  *  New optimization processes can be installed via a global change:
  *  <pre>
- *    Optimize.setFactory((cxt)->new MyOptimize(cxt)) ;</pre>
+ *    Optimize.setFactory((cxt)->new MyOptimizer(cxt)) ;</pre>
  *  or on a per-context basis: 
  *  <pre>
- *    Optimize.RewriterFactory f = (cxt)->new MyOptimize(cxt) ;
+ *    Optimize.RewriterFactory f = (cxt)->new MyOptimizer(cxt) ;
  *    context.set(ARQConstants.sysOptimizerFactory, f) ;<pre>
  */
 public class Optimize
 {
-    /** Factory for "Do nothing" optimizer. */ 
-    public static RewriteFactory noOptimizationFactory = (context) -> { return (op) -> op ; } ;
+    /** Factory for the "Do nothing" optimizer. */
+    // also known as :: (context) -> { return (op) -> op ; } ;
+    public static RewriteFactory noOptimizationFactory = context -> op -> op ; // Rigth associative.
     
-    /** Factory for teh standard optimization sequnece. */ 
-    public static RewriteFactory stdOptimizationFactory = (context) -> new OptimizeStd(context) ;
+    /** Factory for the "minimal" optimizer. */ 
+    public static RewriteFactory minimalOptimizationFactory = (context) -> new OptimizerMinimal(context);
+
+    /** Factory for the standard optimization sequnece. */ 
+    public static RewriteFactory stdOptimizationFactory = (context) -> new OptimizerStd(context);
     
-    // Set this to a different factory implementation to have a different general optimizer.  
+    /**
+     * Set this via {@link #setFactory} to a different factory implementation to have a
+     * different general optimizer.
+     */
     private static RewriteFactory factory = stdOptimizationFactory ;
         
     public static Op optimize(Op op, ExecutionContext execCxt) {
@@ -60,9 +67,17 @@ public class Optimize
         return opt.rewrite(op) ;
     }
 
-    /** Set the global optimizer factory to one that does nothing */
+    /** Set the global optimizer factory to one that does nothing.
+     * Applications probably wany {@link #basicOptimizer}  */
     public static void noOptimizer() {
         setFactory(noOptimizationFactory) ;
+    }
+
+    /** Set the global optimizer factory to one that only does property functions and scaoped variables.
+     * @see #minimalOptimizationFactory
+     */
+    public static void basicOptimizer() {
+        setFactory(minimalOptimizationFactory) ;
     }
 
     static private Rewrite decideOptimizer(Context context) {

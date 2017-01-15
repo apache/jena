@@ -22,7 +22,7 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.optimize.TransformScopeRename ;
+import org.apache.jena.sparql.algebra.optimize.Optimize;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.* ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -67,11 +67,8 @@ public class QueryEngineMain extends QueryEngineBase
         return Algebra.optimize(op, super.context) ;
     }
     
-    protected Op minimalModifyOp(Op op)
-    {
-        // Must always do this for QueryEngineMain.
-        // The optimizer does do this.
-        return TransformScopeRename.transform(op) ;
+    protected Op minimalModifyOp(Op op) {
+        return Optimize.minimalOptimizationFactory.create(context).rewrite(op);
     }
     
     // -------- Factory

@@ -29,12 +29,12 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** The standard optimization sequence. */
-public class OptimizeStd implements Rewrite
+public class OptimizerStd implements Rewrite
 {
     static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
     private final Context context ;
 
-    public OptimizeStd(Context context) {
+    public OptimizerStd(Context context) {
         this.context = context ;
     }
 
@@ -88,9 +88,11 @@ public class OptimizeStd implements Rewrite
         if ( context.isTrueOrUndef(ARQ.propertyFunctions) )
             op = transformPropertyFunctions(op) ;
 
+        // Expand (A&&B) to two filter (A), (B) so that they can be placed independently.
         if ( context.isTrueOrUndef(ARQ.optFilterConjunction) )
             op = transformFilterConjunction(op) ;
 
+        // Expand IN and NOT IN which then allows other optimizations to be applied.
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = transformFilterExpandOneOf(op) ;
         
