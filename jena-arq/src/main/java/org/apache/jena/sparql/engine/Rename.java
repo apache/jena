@@ -36,8 +36,7 @@ import org.apache.jena.sparql.graph.NodeTransformLib ;
 public class Rename
 {
     /** Given an old name, and some names already in use, pick a fresh, new name*/ 
-    public static Var chooseVarName(Var var, Collection<Var> inUse, String prefix)
-    {
+    public static Var chooseVarName(Var var, Collection<Var> inUse, String prefix) {
         Var var2 = var ;
         do {
             var2 = Var.alloc(prefix+var2.getName()) ;
@@ -46,17 +45,15 @@ public class Rename
     }
     
     /** Rename one node to another */
-    public static Op renameNode(Op op, Node oldName, Node newName)
-    {
-    		NodeTransform renamer = new RenameNode(oldName, newName) ;
+    public static Op renameNode(Op op, Node oldName, Node newName) {
+        NodeTransform renamer = new RenameNode(oldName, newName) ;
         return NodeTransformLib.transform(renamer, op) ;
     }
 
     /** Rename one variable to another */
-    public static Op renameVar(Op op, Var oldName, Var newName)
-    {
-    		NodeTransform renamer = new RenameNode(oldName, newName) ;
-        return NodeTransformLib.transform(renamer, op) ;
+    public static Op renameVar(Op op, Var oldName, Var newName) {
+        NodeTransform renamer = new RenameNode(oldName, newName);
+        return NodeTransformLib.transform(renamer, op);
     }
     
     
@@ -67,29 +64,25 @@ public class Rename
     private static final String prefix = ARQConstants.allocVarScopeHiding ;
     
     /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
-    public static Op renameVars(Op op, Collection<Var> constants)
-    {
+    public static Op renameVars(Op op, Collection<Var> constants) {
         return NodeTransformLib.transform(new RenameAnyVars(constants, prefix), op) ;
     }
 
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
-    public static ExprList renameVars(ExprList exprList, Set<Var> constants)
-    {
-    		NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+    public static ExprList renameVars(ExprList exprList, Set<Var> constants) {
+        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
-    public static Expr renameVars(Expr expr, Set<Var> constants)
-    {
-    		NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+    public static Expr renameVars(Expr expr, Set<Var> constants) {
+        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
         return NodeTransformLib.transform(renamer, expr) ;
     }
     
     /** Undo the effect of the rename operation, once or repeatedly.
      * This assumes the op was renamed by VarRename.rename */
-    public static Op reverseVarRename(Op op, boolean repeatedly)
-    {
-    		NodeTransform renamer = new UnrenameAnyVars(prefix, repeatedly) ;
+    public static Op reverseVarRename(Op op, boolean repeatedly) {
+        NodeTransform renamer = new UnrenameAnyVars(prefix, repeatedly) ;
         return NodeTransformLib.transform(renamer, op) ;
     }
     
@@ -99,20 +92,18 @@ public class Rename
     {
         private final Node oldName ;
         private final Node newName ;
-        public RenameNode (Node oldName, Node newName)
-        {
-            this.oldName = oldName ; 
-            this.newName = newName ; 
+
+        public RenameNode(Node oldName, Node newName) {
+            this.oldName = oldName;
+            this.newName = newName;
         }
-        
+
         @Override
-        public Node apply(Node node)
-        {
+        public Node apply(Node node) {
             if ( node.equals(oldName) )
-                return newName ;
-            return node ;
+                return newName;
+            return node;
         }
-        
     }
     
     static class RenameAnyVars implements NodeTransform
@@ -121,15 +112,13 @@ public class Rename
         private final Collection<Var> constants ;
         private final String varPrefix ;
         
-        public RenameAnyVars(Collection<Var> constants, String varPrefix)
-        {
-            this.constants = constants ;
-            this.varPrefix = varPrefix ;
+        public RenameAnyVars(Collection<Var> constants, String varPrefix) {
+            this.constants = constants;
+            this.varPrefix = varPrefix;
         }
         
         @Override
-        public final Node apply(Node node)
-        {
+        public final Node apply(Node node) {
             if ( ! Var.isVar(node) ) return node ;
             if ( constants.contains(node) ) return node ;
 
@@ -155,29 +144,24 @@ public class Rename
         private final String varPrefix ;
         private final boolean repeatedly ;
         
-        public UnrenameAnyVars(String varPrefix, boolean repeatedly)
-        {
-            this.varPrefix = varPrefix ;
-            this.repeatedly = repeatedly ;
+        public UnrenameAnyVars(String varPrefix, boolean repeatedly) {
+            this.varPrefix = varPrefix;
+            this.repeatedly = repeatedly;
         }
 
         @Override
-        public Node apply(Node node)
-        {
-            if ( ! Var.isVar(node) ) 
+        public Node apply(Node node) {
+            if ( !Var.isVar(node) )
                 return node ;
             Var var = (Var)node ;
             String varName = var.getName() ;
             
-            if ( repeatedly )
-            {
-                while ( varName.startsWith(varPrefix) )
-                    varName = varName.substring(varPrefix.length()) ;
-            }
-            else
-            {
+            if ( repeatedly ) {
+                while (varName.startsWith(varPrefix))
+                    varName = varName.substring(varPrefix.length());
+            } else {
                 if ( varName.startsWith(varPrefix) )
-                    varName = varName.substring(varPrefix.length()) ;
+                    varName = varName.substring(varPrefix.length());
             }
                 
             if ( varName == var.getName() )
