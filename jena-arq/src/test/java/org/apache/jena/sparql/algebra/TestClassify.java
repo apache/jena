@@ -40,9 +40,9 @@ public class TestClassify extends BaseTest
 	{ classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
 
     // JENA-1167
-    // This actually safe in thsi case but as general component.
+    // This actually safe in this case but as general component.
     // the JoinClassifier is not clever enough to know that ?o is completely
-    // unbound. It may be boudn bu whatever feeds into the potential sequence.
+    // unbound. It may be bound by whatever feeds into the potential sequence.
     @Test public void testClassify_Join_04() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", false) ; }
 
@@ -80,6 +80,7 @@ public class TestClassify extends BaseTest
 	@Test public void testClassify_Join_13() 
 	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
 
+	// See testClassify_Join_04()
 	@Test public void testClassify_Join_14() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", false) ; }
 
@@ -102,7 +103,8 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", true) ; }
 
-    // JENA-1167 : Use of a filter variable not in from the LHS
+    // JENA-1167 : Use of a filter variable not in the LHS
+    // Could be safe but the optimizer is not spotting it. 
     @Test public void testClassify_Join_32() 
     { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", false) ; }
 
