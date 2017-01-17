@@ -21,8 +21,11 @@ import static org.seaborne.tdb2.store.NodeIdType.TYPES.*;
 
 /** Constants for NodeIds.
  * Note that "PTR" is special - it uses the high bit only set to zero.
- * Note that "XSD_DOUBLE" is special - it sets the high bit (avleu) and the next bit only, leaving 62 bits of value.
- * Otherwise a tyope is encoded as the high byte. 
+ * Note that "XSD_DOUBLE" is special - it sets the high bit (value/ptr)
+ * and the next bit only, leaving 62 bits of value.
+ * Otherwise a type is encoded as the high byte.
+ * 
+ *  @see NodeIdInline
  */
 public enum NodeIdType {
     PTR(T_PTR, null),

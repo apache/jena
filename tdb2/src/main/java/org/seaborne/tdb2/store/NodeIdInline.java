@@ -69,13 +69,6 @@ import org.seaborne.tdb2.store.value.*;
  * @see FloatNode
  */
 public class NodeIdInline {
-    /* TDB1 encoding:
-     * The long is formatted as:
-     * 8 bits of type
-     * 56 bits of value
-     * No float or double.
-     */
-    
     /** Datatypes that are candidates for inlining */ 
     private static Set<RDFDatatype> datatypes = new HashSet<>();
     static { 
