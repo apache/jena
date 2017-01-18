@@ -265,7 +265,7 @@ public class OpVars
 
         @Override
         public void visit(OpProcedure opProc) {
-            opProc.getArgs().varsMentioned(acc) ;
+            ExprVars.varsMentioned(acc, opProc.getArgs()) ;
         }
 
     }
@@ -406,7 +406,7 @@ public class OpVars
 
         @Override
         public void visit(OpFilter opFilter) {
-            opFilter.getExprs().varsMentioned(acc) ;
+            ExprVars.varsMentioned(acc, opFilter.getExprs()) ;
         }
 
         @Override

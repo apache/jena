@@ -38,6 +38,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.ExprVars;
 import org.apache.jena.sparql.util.VarUtils ;
 
 public class VarFinder
@@ -251,13 +252,13 @@ public class VarFinder
             // And the associated filter.
             if ( exprs != null ) {
                 processExpr(exprs, rightUsage.defines) ;
-                exprs.varsMentioned(filterMentions);
+                ExprVars.varsMentioned(filterMentions, exprs);
             }
         }
 
         // additionalDefines - set of variables which are defined is the filter is executed. 
         private void processExpr(ExprList exprs, Set<Var> additionalDefines) {
-            Set<Var> vars = exprs.getVarsMentioned() ;
+            Set<Var> vars = ExprVars.getVarsMentioned(exprs);
             filterMentions.addAll(vars) ;
             for ( Var v : vars ) {
                 if ( ! defines.contains(v) && (additionalDefines == null || ! additionalDefines.contains(v) ) )
@@ -324,7 +325,7 @@ public class VarFinder
             varExprList.forEachVarExpr((v,e)-> {
                 defines.add(v) ; // Expression may eval to error -> unset? 
                 if ( e != null )
-                    e.varsMentioned(assignMentions);
+                    ExprVars.varsMentioned(assignMentions, e);
             }) ;
         }
 

@@ -32,6 +32,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprLib ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.ExprVars;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.VarUtils ;
 
@@ -438,7 +439,7 @@ public class TransformFilterPlacement extends TransformCopy {
 
     private Placement placeProcedure(ExprList exprsIn, OpProcedure input) {
         Set<Var> argVars = new HashSet<>() ;
-        input.getArgs().varsMentioned(argVars);
+        ExprVars.varsMentioned(argVars, input.getArgs());
         return placePropertyFunctionProcedure(exprsIn, argVars, input) ;
     }
     
