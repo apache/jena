@@ -65,17 +65,17 @@ public class Rename
     
     /** Rename all variables in a pattern, EXCEPT for those named as constant */ 
     public static Op renameVars(Op op, Collection<Var> constants) {
-        return NodeTransformLib.transform(new RenameAnyVars(constants, prefix), op) ;
+        return NodeTransformLib.transform(new RenameAnyVars(constants), op) ;
     }
 
     /** Rename all variables in an expression, EXCEPT for those named as constant */ 
     public static ExprList renameVars(ExprList exprList, Set<Var> constants) {
-        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+        NodeTransform renamer = new RenameAnyVars(constants) ;
         return NodeTransformLib.transform(renamer, exprList) ;
     }
         
     public static Expr renameVars(Expr expr, Set<Var> constants) {
-        NodeTransform renamer = new RenameAnyVars(constants, prefix) ;
+        NodeTransform renamer = new RenameAnyVars(constants) ;
         return NodeTransformLib.transform(renamer, expr) ;
     }
     
@@ -110,11 +110,9 @@ public class Rename
     {
         private final Map<Var, Var> aliases = new HashMap<>() ;
         private final Collection<Var> constants ;
-        private final String varPrefix ;
         
-        public RenameAnyVars(Collection<Var> constants, String varPrefix) {
+        public RenameAnyVars(Collection<Var> constants) {
             this.constants = constants;
-            this.varPrefix = varPrefix;
         }
         
         @Override
