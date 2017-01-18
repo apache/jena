@@ -144,6 +144,12 @@ public class TestClassify extends BaseTest
     @Test public void testClassify_Join_50() 
     { classifyJ("{ ?x ?y ?z { ?x1 ?y1 ?z1 MINUS { ?a ?b ?c } } UNION {} }", false) ; }
     
+    // JENA-1280
+    @Test public void testClassify_Join_51() { 
+        String x1 = "{ ?s ?p ?o   GRAPH ?g { ?s1 ?p ?o1 FILTER EXISTS {  [] ?p ?unique } }  }";
+        TestClassify.classifyJ(x1, true);
+    }
+    
     public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;

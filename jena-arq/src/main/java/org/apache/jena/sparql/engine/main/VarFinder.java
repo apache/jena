@@ -258,7 +258,7 @@ public class VarFinder
 
         // additionalDefines - set of variables which are defined is the filter is executed. 
         private void processExpr(ExprList exprs, Set<Var> additionalDefines) {
-            Set<Var> vars = ExprVars.getVarsMentioned(exprs);
+            Set<Var> vars = ExprVars.getNonOpVarsMentioned(exprs);
             filterMentions.addAll(vars) ;
             for ( Var v : vars ) {
                 if ( ! defines.contains(v) && (additionalDefines == null || ! additionalDefines.contains(v) ) )
@@ -325,7 +325,7 @@ public class VarFinder
             varExprList.forEachVarExpr((v,e)-> {
                 defines.add(v) ; // Expression may eval to error -> unset? 
                 if ( e != null )
-                    ExprVars.varsMentioned(assignMentions, e);
+                    ExprVars.nonOpVarsMentioned(assignMentions, e);
             }) ;
         }
 
