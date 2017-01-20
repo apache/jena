@@ -34,6 +34,10 @@ public class OpGroup extends Op1
     private VarExprList groupVars ;
     private List<ExprAggregator> aggregators ;
 
+    public static OpGroup create(Op subOp, VarExprList groupVars, List<ExprAggregator> aggregators) {
+        return new OpGroup(subOp, groupVars, aggregators); 
+    }
+    
     public OpGroup(Op subOp, VarExprList groupVars, List<ExprAggregator> aggregators)
     { 
         super(subOp) ;

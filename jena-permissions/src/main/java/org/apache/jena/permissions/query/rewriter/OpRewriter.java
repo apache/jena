@@ -356,8 +356,7 @@ public class OpRewriter implements OpVisitor {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Starting visiting OpGroup");
 		}
-		addOp(new OpGroup(rewriteOp1(opGroup), opGroup.getGroupVars(),
-				opGroup.getAggregators()));
+		addOp(OpGroup.create(rewriteOp1(opGroup), opGroup.getGroupVars(), opGroup.getAggregators()));
 	}
 
 	/**

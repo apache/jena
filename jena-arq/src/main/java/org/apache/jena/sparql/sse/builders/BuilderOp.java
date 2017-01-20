@@ -578,7 +578,7 @@ public class BuilderOp
             }
             
             Op sub = build(list, list.size()-1) ;
-            Op op = new OpGroup(sub,vars, aggregators) ;
+            Op op = OpGroup.create(sub,vars, aggregators) ;
             return op ;
         }
     } ;
