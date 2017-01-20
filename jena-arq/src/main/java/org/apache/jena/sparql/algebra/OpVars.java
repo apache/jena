@@ -55,9 +55,8 @@ public class OpVars
 
     public static void visibleVars(Op op, Set<Var> acc) {
         OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
-        // Does not work.
-        //new WalkerVisitorVisible(visitor, null, null, null).walk(op);
-        //OpWalker.walk(new OpWalkerVisitorVisible(visitor, acc), op) ;
+        // Does not work yet for new walker.
+        OpWalker.walk(new OpWalkerVisitorVisible(visitor, acc), op) ;
     }
     
     /** The set of variables that will be in every solution of this Op */
