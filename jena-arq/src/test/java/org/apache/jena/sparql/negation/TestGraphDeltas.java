@@ -162,7 +162,7 @@ public class TestGraphDeltas {
     }
 
     /**
-     * Tests graph deltas calculate with SPARQL
+     * Tests graph deltas calculation with SPARQL
      */
     @Test
     public void sparql_graph_delta_01() {
