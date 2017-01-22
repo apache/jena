@@ -28,11 +28,15 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.system.JenaSystem;
 
 /** A SPARQL variable */
 
 public class Var extends Node_Variable
 {
+    // This class create Nodes (as Vars)
+    static { JenaSystem.init(); }
+    
     /* Variable used to indicate "don't bind"
      * Each use is unique.
      */

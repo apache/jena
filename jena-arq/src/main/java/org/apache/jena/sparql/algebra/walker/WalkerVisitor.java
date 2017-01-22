@@ -108,7 +108,7 @@ public class WalkerVisitor implements OpVisitorByTypeAndExpr, ExprVisitorFunctio
         });
     }
 
-    // ---- Mode swapping between op and expr. visit=>?walk
+    // ---- Mode swapping between op and expr. visit=>walk
     @Override
     public void visitExpr(ExprList exprList) {
         if ( exprVisitor != null )

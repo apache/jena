@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.ExprVisitor ;
 
 /** Walk algebra 
  * Do project, don't walk into it.
- * Don' walk into RHS of MINUS nor ExprFunctionOp (NOT EXISTS etc)
+ * Don't walk into RHS of MINUS nor ExprFunctionOp (NOT EXISTS etc)
  */
 public class WalkerVisitorVisible extends WalkerVisitor {
     
@@ -36,9 +36,11 @@ public class WalkerVisitorVisible extends WalkerVisitor {
 
     @Override
     public void visit(OpProject op) {
-        //before(op) ;
+        before(op) ;
+        if ( opVisitor != null )
+            op.visit(opVisitor);
         // Skip inner.
-        //after(op) ;
+        after(op) ;
     }
 
     @Override

@@ -27,7 +27,6 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.JenaSystem;
 import org.apache.jena.system.Serializer;
 
 /**
@@ -39,8 +38,6 @@ import org.apache.jena.system.Serializer;
 */
 
 public abstract class Node implements Serializable {
-
-    static { JenaSystem.init(); }
 
     final protected Object label;
     static final int THRESHOLD = 10000;
