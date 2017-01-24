@@ -49,7 +49,7 @@ public class GraphEvents
         { return title.equals( o.title ) && content.equals( o.content ); }
    
 	public static GraphEvents remove( Node s, Node p, Node o )
-	    { return new GraphEvents( "remove", Triple.create( s, p, o ) ){
+	    { return new GraphEvents( "remove", Triple.createMatch( s, p, o ) ){
 	    	@Override
 			public Triple getTriple() { return (Triple)content; }
 	      };
