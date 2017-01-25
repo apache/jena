@@ -750,7 +750,7 @@ public class TransactionManager
                 enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
             } catch (InterruptedException ex)
-            { Log.fatal(this, "Interruped!", ex) ; }
+            { Log.error(this, "Interruped!", ex) ; }
         }
 
         checkReplaySafe() ;
@@ -894,7 +894,7 @@ public class TransactionManager
                         commitedAwaitingFlush.remove(txn) ;
                     }
                 } catch (InterruptedException ex)
-                { Log.fatal(this, "Interruped!", ex) ; }
+                { Log.error(this, "Interruped!", ex) ; }
             }
         }
     }

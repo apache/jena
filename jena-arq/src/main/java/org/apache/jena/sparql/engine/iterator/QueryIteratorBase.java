@@ -118,7 +118,7 @@ public abstract class QueryIteratorBase
                 close() ;
             } catch (QueryFatalException ex)
             { 
-                Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
+                Log.error(this, "Fatal exception: "+ex.getMessage() ) ;
                 throw ex ;      // And pass on up the exception.
             }
         return r ;
@@ -167,7 +167,7 @@ public abstract class QueryIteratorBase
             return obj ;
         } catch (QueryFatalException ex)
         { 
-            Log.fatal(this, "QueryFatalException", ex) ; 
+            Log.error(this, "QueryFatalException", ex) ; 
             throw ex ; 
         }
     }

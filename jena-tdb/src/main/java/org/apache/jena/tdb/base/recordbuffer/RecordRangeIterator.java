@@ -37,7 +37,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     {
         if ( ! pageMgr.valid(pageId) ) {
             String msg = "RecordRangeIterator.iterator -- No such block (pageId="+pageId+", fromRec="+fromRec+", toRec="+toRec+ ")" ;
-            Log.fatal(RecordRangeIterator.class, msg);
+            Log.error(RecordRangeIterator.class, msg);
             throw new BlockException(msg) ;
         }
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;

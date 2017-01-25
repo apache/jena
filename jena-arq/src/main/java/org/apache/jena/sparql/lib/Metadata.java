@@ -68,7 +68,7 @@ public class Metadata
 
             if ( classLoader == null )
             {
-                Log.fatal(Metadata.class, "No classloader") ;
+                Log.error(Metadata.class, "No classloader") ;
                 return ;
             }
 
@@ -86,7 +86,7 @@ public class Metadata
         }
         catch (Throwable ex)
         {
-            Log.fatal(Metadata.class, "Unexpected Thorwable", ex) ;
+            Log.error(Metadata.class, "Unexpected Thorwable", ex) ;
             return ;
         }
     }

@@ -191,7 +191,7 @@ public class NodeLib
             deallocDigest(digest) ;
             return ;
         }
-        catch (DigestException ex) { Log.fatal(NodeLib.class, "DigestException", ex); } 
+        catch (DigestException ex) { Log.error(NodeLib.class, "DigestException", ex); } 
     }
     
     public static NodeId getNodeId(Record r, int idx)

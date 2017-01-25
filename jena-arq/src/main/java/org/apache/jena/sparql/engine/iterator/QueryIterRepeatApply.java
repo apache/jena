@@ -41,7 +41,7 @@ public abstract class QueryIterRepeatApply extends QueryIter1
         
         if ( input == null )
         {
-            Log.fatal(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
+            Log.error(this, "[QueryIterRepeatApply] Repeated application to null input iterator") ;
             return ;
         }
     }
