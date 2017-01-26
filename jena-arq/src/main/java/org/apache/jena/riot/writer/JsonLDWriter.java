@@ -89,7 +89,7 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
  * 
  * Note that this class also provides a static method to convert jena RDF data to the corresponding object in JsonLD API:
- * {@link #jsonLDJavaAPIObject(DatasetGraph, PrefixMap, String, org.apache.jena.riot.RDFFormat.JSONLDVariant, Context)}
+ * {@link #toJsonLDJavaAPI(org.apache.jena.riot.RDFFormat.JSONLDVariant, DatasetGraph, PrefixMap, String, Context)}
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
@@ -175,7 +175,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) {
         try {
-            Object obj = jsonLDJavaAPIObject(dataset, prefixMap, baseURI, getVariant(), jenaContext);
+            Object obj = toJsonLDJavaAPI(getVariant(), dataset, prefixMap, baseURI, jenaContext);
             if (getVariant().isPretty()) {
                 JsonUtils.writePrettyPrint(writer, obj) ;
             } else {
@@ -193,7 +193,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     /**
      * the JsonLD-java API object corresponding to a dataset and a JsonLD format.
      */
-    static public Object jsonLDJavaAPIObject(DatasetGraph dataset, PrefixMap prefixMap, String baseURI, RDFFormat.JSONLDVariant variant, Context jenaContext) throws JsonLdError, JsonParseException, IOException {
+    static public Object toJsonLDJavaAPI(RDFFormat.JSONLDVariant variant, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) throws JsonLdError, JsonParseException, IOException {
         JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
 
         // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
