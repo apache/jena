@@ -39,7 +39,7 @@ public enum JournalEntryType
         else if ( x == Checkpoint.id )      return Checkpoint ;
         else
         {
-            Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
+            Log.error(JournalEntryType.class, "Unknown type: "+x) ;
             throw new InternalErrorException("Unknown type: "+x) ;
         }
     }

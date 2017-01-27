@@ -133,7 +133,7 @@ public class FileRef
         FileRef f = id2name.get(fileId) ;
         if ( f == null )
         {
-            Log.fatal(FileRef.class, "No FileRef registered for id: "+fileId) ;
+            Log.error(FileRef.class, "No FileRef registered for id: "+fileId) ;
             throw new TDBException("No FileRef registered for id: "+fileId) ;
         }
         return f ;

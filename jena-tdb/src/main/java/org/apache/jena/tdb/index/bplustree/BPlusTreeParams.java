@@ -135,7 +135,7 @@ public class BPlusTreeParams
             return new BPlusTreeParams(pOrder, pKeyLen, pRecLen) ;
         } catch (NumberFormatException ex)
         {
-            Log.fatal(BPlusTreeParams.class, "Badly formed metadata for B+Tree") ;
+            Log.error(BPlusTreeParams.class, "Badly formed metadata for B+Tree") ;
             throw new TDBException("Failed to read metadata") ;
         }
     }

@@ -45,7 +45,7 @@ public class ElementService extends Element
     public ElementService(Node n, Element el, boolean silent)
     {
         if ( ! n.isURI() && ! n.isVariable() )
-            Log.fatal(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
+            Log.error(this, "Must be a URI (or variable which will be bound) for a service endpoint") ;
         this.serviceNode = n ;
         this.element = el ;
         this.silent = silent ;

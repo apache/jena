@@ -49,20 +49,23 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected Writer out = null ;
     
     protected static final int INDENT = 2 ;
+    
+    // Configuration.
     protected int unitIndent = INDENT ;
+    private char padChar = ' ' ;
+    private String padString = null ;
+    private String linePrefix = null ;
+    protected boolean lineNumbers = false ;
+    protected boolean flatMode = false ;
+    private boolean flushOnNewline = false ;
+
+    // Internal state.
+    protected boolean startingNewLine = true ;
+    private String endOfLineMarker = null ;
     protected int currentIndent = 0 ;
     protected int column = 0 ;
     protected int row = 1 ;
-    protected boolean lineNumbers = false ;
-    protected boolean startingNewLine = true ;
-    private char padChar = ' ' ;
-    private String endOfLineMarker = null ;     // Null means none.
-    private String padString = null ;
-    private String linePrefix = null ;
-
     
-    protected boolean flatMode = false ;
-    private boolean flushOnNewline = false ;
     
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
@@ -70,6 +73,27 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers) {
         this(makeWriter(outStream), withLineNumbers) ;
+    }
+
+    /** Create an independent copy of the {@code IndentedWriter}.
+     *  Changes to the configuration of the copy will not affect the original {@code IndentedWriter}.
+     *  This include indentation level.
+     *  <br/>Row and column counters are reset.
+     *  <br/>Indent is initially. zero.
+     *  <br/>They do share the underlying output {@link Writer}.  
+     *  @param other
+     *  @return IndentedWriter
+     */
+    public IndentedWriter clone(IndentedWriter other) {
+        IndentedWriter dup = new IndentedWriter(other.out);
+        dup.unitIndent      = other.unitIndent;
+        dup.padChar         = other.padChar;
+        dup.padString       = other.padString;
+        dup.linePrefix      = other.linePrefix;
+        dup.lineNumbers     = other.lineNumbers;
+        dup.flatMode        = other.flatMode;
+        dup.flushOnNewline  = other.flushOnNewline;
+        return dup;
     }
 
     private static Writer makeWriter(OutputStream out) {

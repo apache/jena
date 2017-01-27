@@ -125,7 +125,7 @@ public class BindingTDB extends BindingBase
             return n ;
         } catch (Exception ex)
         {
-            Log.fatal(this, String.format("get1(%s)", var), ex) ;
+            Log.error(this, String.format("get1(%s)", var), ex) ;
             return null ;
         }
     }
