@@ -87,6 +87,9 @@ import com.github.jsonldjava.utils.JsonUtils ;
  * 
  * The {@link org.apache.jena.riot.JsonLDWriteContext} is a convenience class that extends Context and
  * provides methods to set the values of these different Symbols that are used in controlling the writing of JSON-LD.
+ * 
+ * Note that this class also provides a static method to convert jena RDF data to the corresponding object in JsonLD API:
+ * {@link #toJsonLDJavaAPI(org.apache.jena.riot.RDFFormat.JSONLDVariant, DatasetGraph, PrefixMap, String, Context)}
  */
 public class JsonLDWriter extends WriterDatasetRIOTBase
 {
@@ -147,7 +150,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         return (RDFFormat.JSONLDVariant) format.getVariant();
     }
 
-    private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
+    static private JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
         JsonLdOptions opts = null;
         if (jenaContext != null) {
             opts = (JsonLdOptions) jenaContext.get(JSONLD_OPTIONS);
@@ -172,66 +175,8 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) {
         try {
-            JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
-
-            // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
-            // (optimization in jsonld-java 0.8.3)
-            // see https://github.com/jsonld-java/jsonld-java/pull/173
-
-            // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset
-            // Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
-            final RDFDataset jsonldDataset = (new JenaRDF2JSONLD()).parse(dataset);
-            @SuppressWarnings("deprecation") // JsonLdApi.fromRDF(RDFDataset, boolean) is "experimental" rather than "deprecated"
-            Object obj = (new JsonLdApi(opts)).fromRDF(jsonldDataset, true); // true because we know that we don't have any duplicate in jsonldDataset
-
-            RDFFormat.JSONLDVariant variant = getVariant();
-            if (variant.isExpand()) {
-                // nothing more to do
-
-            } else if (variant.isFrame()) {
-                Object frame = null;
-                if (jenaContext != null) {
-                    frame = jenaContext.get(JSONLD_FRAME);
-                }
-                if (frame == null) {
-                    throw new IllegalArgumentException("No frame object found in jena Context");
-                }
-
-                if (frame instanceof String) {
-                    frame = JsonUtils.fromString((String) frame);
-                }
-                obj = JsonLdProcessor.frame(obj, frame, opts);
-
-            } else { // compact or flatten
-                // we need a (jsonld) context. Get it from jenaContext, or create one:
-                Object ctx = getJsonldContext(dataset, prefixMap, jenaContext);
-
-                if (variant.isCompact()) {
-                    obj = JsonLdProcessor.compact(obj, ctx, opts);
-
-                } else if (variant.isFlatten()) {
-                    obj = JsonLdProcessor.flatten(obj, ctx, opts);
-
-                } else {
-                    throw new IllegalArgumentException("Unexpected " + RDFFormat.JSONLDVariant.class.getName() + ": " + variant);
-                }
-
-                // replace @context in output?
-                if (jenaContext != null) {
-                    Object ctxReplacement = jenaContext.get(JSONLD_CONTEXT_SUBSTITUTION);
-                    if (ctxReplacement != null) {
-                        if (obj instanceof Map) {
-                            @SuppressWarnings("unchecked")
-                            Map<String, Object> map = (Map<String, Object>) obj;
-                            if (map.containsKey("@context")) {
-                                map.put("@context", JsonUtils.fromString(ctxReplacement.toString()));
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (variant.isPretty()) {
+            Object obj = toJsonLDJavaAPI(getVariant(), dataset, prefixMap, baseURI, jenaContext);
+            if (getVariant().isPretty()) {
                 JsonUtils.writePrettyPrint(writer, obj) ;
             } else {
                 JsonUtils.write(writer, obj) ;
@@ -243,6 +188,70 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         } catch (IOException e) {
             IO.exception(e) ;
         }
+    }
+    
+    /**
+     * the JsonLD-java API object corresponding to a dataset and a JsonLD format.
+     */
+    static public Object toJsonLDJavaAPI(RDFFormat.JSONLDVariant variant, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context jenaContext) throws JsonLdError, JsonParseException, IOException {
+        JsonLdOptions opts = getJsonLdOptions(baseURI, jenaContext) ;
+
+        // we can benefit from the fact we know that there are no duplicates in the jsonld RDFDataset that we create
+        // (optimization in jsonld-java 0.8.3)
+        // see https://github.com/jsonld-java/jsonld-java/pull/173
+
+        // with this, we cannot call the json-ld fromRDF method that assumes no duplicates in RDFDataset
+        // Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
+        final RDFDataset jsonldDataset = (new JenaRDF2JSONLD()).parse(dataset);
+        @SuppressWarnings("deprecation") // JsonLdApi.fromRDF(RDFDataset, boolean) is "experimental" rather than "deprecated"
+        Object obj = (new JsonLdApi(opts)).fromRDF(jsonldDataset, true); // true because we know that we don't have any duplicate in jsonldDataset
+
+        if (variant.isExpand()) {
+            // nothing more to do
+
+        } else if (variant.isFrame()) {
+            Object frame = null;
+            if (jenaContext != null) {
+                frame = jenaContext.get(JSONLD_FRAME);
+            }
+            if (frame == null) {
+                throw new IllegalArgumentException("No frame object found in jena Context");
+            }
+
+            if (frame instanceof String) {
+                frame = JsonUtils.fromString((String) frame);
+            }
+            obj = JsonLdProcessor.frame(obj, frame, opts);
+
+        } else { // compact or flatten
+            // we need a (jsonld) context. Get it from jenaContext, or create one:
+            Object ctx = getJsonldContext(dataset, prefixMap, jenaContext);
+
+            if (variant.isCompact()) {
+                obj = JsonLdProcessor.compact(obj, ctx, opts);
+
+            } else if (variant.isFlatten()) {
+                obj = JsonLdProcessor.flatten(obj, ctx, opts);
+
+            } else {
+                throw new IllegalArgumentException("Unexpected " + RDFFormat.JSONLDVariant.class.getName() + ": " + variant);
+            }
+
+            // replace @context in output?
+            if (jenaContext != null) {
+                Object ctxReplacement = jenaContext.get(JSONLD_CONTEXT_SUBSTITUTION);
+                if (ctxReplacement != null) {
+                    if (obj instanceof Map) {
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> map = (Map<String, Object>) obj;
+                        if (map.containsKey("@context")) {
+                            map.put("@context", JsonUtils.fromString(ctxReplacement.toString()));
+                        }
+                    }
+                }
+            }
+        }
+        return obj;
     }
 
     //
