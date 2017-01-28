@@ -343,7 +343,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphUtil.delete( g, tripleList );
         assertEquals( "graph has original size", initialSize, g.size() );
     }
-
+    
     public void testAddWithReificationPreamble()
     {
         Graph g = getGraph();
@@ -625,14 +625,44 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph triples = graphWith( "this type graph; I type slowly" );
         GraphUtil.addInto( g, triples );
         L.assertHas( new Object[] {"addGraph", g, triples} );
+        testContains( g, triples );
     }
 
+    public void testBulkAddGraph1() {
+        Graph g1 = graphWith( "pigs might fly; dead can dance" );
+        Graph g2 = graphWith( "this type graph" );
+        GraphUtil.addInto( g1, g2 );
+        testContains( g1, g2 );
+    }
+
+    public void testBulkAddGraph2() {
+        Graph g1 = graphWith( "this type graph" );
+        Graph g2 = graphWith( "pigs might fly; dead can dance" );
+        GraphUtil.addInto( g1, g2 );
+        testContains( g1, g2);
+    }
+    
     public void testBulkDeleteGraph()
     {        
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
         GraphUtil.deleteFrom( g, triples );
         L.assertHas( new Object[] {"deleteGraph", g, triples} );
+        testOmits( g, triples );
+    }
+    
+    public void testBulkDeleteGraph1() {
+        Graph g1 = graphWith( "pigs might fly; dead can dance" );
+        Graph g2 = graphWith( "pigs might fly" );
+        GraphUtil.deleteFrom( g1, g2 );
+        testOmits( g1, g2);
+    }
+
+    public void testBulkDeleteGraph2() {
+        Graph g1 = graphWith( "pigs might fly" );
+        Graph g2 = graphWith( "pigs might fly; dead can dance" );
+        GraphUtil.deleteFrom( g1, g2 );
+        testOmits( g1, g2);
     }
 
     public void testGeneralEvent()
