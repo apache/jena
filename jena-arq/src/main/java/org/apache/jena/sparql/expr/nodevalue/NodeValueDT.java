@@ -39,7 +39,7 @@ public class NodeValueDT extends NodeValue
     public NodeValueDT(String lex, Node n)
     {
         super(n) ;
-        // Java bug : Java6 gMonth with a timezone of Z causes IllegalArgumnentException
+        // Java bug : Java6, Java8: gMonth with a timezone of Z causes IllegalArgumentException
         if ( XSDgMonth.equals(getNode().getLiteralDatatype()) )
         {
             if ( lex.endsWith("Z") )
@@ -55,7 +55,6 @@ public class NodeValueDT extends NodeValue
 
     // Look at datatype.
     // By doing this here, the check of valid lexical form must have been done to create the node.
-    
    
     @Override
     public boolean isDateTime()     { return XSDdateTime.equals(getNode().getLiteralDatatype()) ; }
