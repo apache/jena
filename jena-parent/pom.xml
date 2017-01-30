@@ -52,9 +52,12 @@
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
     <ver.libthrift>0.9.3</ver.libthrift>
-    <!-- the following two versions must work together, consult jsonld-java's POM for the correct Jackson version -->
+    <!-- the following three libraries must work together
+     consult jsonld-java's POM for the correct dependency versions -->
     <ver.jsonldjava>0.9.0</ver.jsonldjava>
     <ver.jackson>2.7.4</ver.jackson>
+    <ver.commonsio>2.5</ver.commonsio>
+    
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.3</ver.commonscsv>
     <ver.dexxcollection>0.6</ver.dexxcollection>
