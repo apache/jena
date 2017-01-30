@@ -162,16 +162,12 @@ public abstract class NodeValue extends ExprNode
      */
     private static DatatypeFactory getDatatypeFactory() 
             throws DatatypeConfigurationException {
-        ClassLoader cl = NodeValue.class.getClassLoader();
-        File jaxpPropFile = new File(
-            System.getProperty("java.home") + File.pathSeparator + 
-            "lib" + File.pathSeparator + 
-            "jaxp.properties");
-        
         // Step 1. Try the system property
         String dtfClass = System.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
         
         try {
+            File jaxpPropFile = new File(System.getProperty("java.home") + 
+                                         File.separator + "lib" + File.separator + "jaxp.properties");
             // Step 2. Otherwise, try property in jaxp.properties
             if (dtfClass == null && jaxpPropFile.exists() && jaxpPropFile.canRead()) {
                 Properties jaxp = new Properties();
@@ -189,15 +185,22 @@ public abstract class NodeValue extends ExprNode
         }
         
         // Step 3. Otherwise try the service approach
+        // This is the normal initialization path, getting it from the Apach Xerces dependency
+        // and loading org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl
         if (dtfClass == null) {
+            ClassLoader cl = NodeValue.class.getClassLoader();
             Iterator<DatatypeFactory> factoryIterator = 
                 ServiceLoader.load(DatatypeFactory.class, cl).iterator();
             if (factoryIterator.hasNext()) return factoryIterator.next();
         }
         
-        // Step 4. Use the default
-        if (dtfClass == null) dtfClass = DatatypeFactory.DATATYPEFACTORY_IMPLEMENTATION_CLASS;
-        
+        // Step 4. Use the default.
+        // Note: When Apache Xerces is on the classpath for Jena, javax.xml.datatype.DatatypeFactory is from that jar and
+        //  DATATYPEFACTORY_IMPLEMENTATION_CLASS is "org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl"
+        // Without an explicit Xerces, we would get "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl"
+        // from the JDK rt.jar version of javax.xml.datatype.DatatypeFactory.
+        if (dtfClass == null) 
+            dtfClass = DatatypeFactory.DATATYPEFACTORY_IMPLEMENTATION_CLASS;
         return DatatypeFactory.newInstance(dtfClass, NodeValue.class.getClassLoader()) ;
     }
     
