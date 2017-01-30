@@ -40,15 +40,25 @@ import org.seaborne.dboe.transaction.txn.journal.JournalEntry ;
 import org.slf4j.Logger ;
 
 /**
- * One TransactionCoordinator per group of TransactionalComponents.
- * TransactionalComponent can not be shared across TransactionCoordinators.
+ * One {@code TransactionCoordinator} per group of {@link TransactionalComponent}s.
+ * {@link TransactionalComponent}s can not be shared across TransactionCoordinators.
  * <p>
  * This is a general engine although tested and most used for multiple-reader
- * and single-writer (MR+SW). TransactionalComponentLifecycle provided the
+ * and single-writer (MR+SW). {@link TransactionalComponentLifecycle} provides the
  * per-threadstyle.
  * <p>
- * Contrast to MRSW: multiple-reader or single-writer
- * 
+ * Contrast to MRSW: multiple-reader or single-writer.
+ * <h3>Block writers</h3>
+ * Block until no writers are active.
+ * When this returns, this guarantees that the database is not changing
+ * and the journal is flushed to disk.
+ * <p>
+ * See {@link #blockWriters()}, {@link #enableWriters()}, {@link #execAsWriter(Runnable)}
+ * <h3>Excluisve mode</h3>
+ * Exclusive mode is when the current thread is the only active code : no readers, no writers.
+ * <p>
+ * See {@link #startExclusiveMode()}/{@link #tryExclusiveMode()} {@link #finishExclusiveMode()}, {@link #execExclusive(Runnable)}
+ *
  * @see Transaction
  * @see TransactionalComponent
  * @see TransactionalSystem
@@ -295,25 +305,42 @@ public class TransactionCoordinator {
         } catch (InterruptedException e) { throw new TransactionException(e) ; }
     }
     
-    /** Enter exclusive mode. 
+    /** Enter exclusive mode; block if necessary.
      * There are no active transactions on return; new transactions will be held up in 'begin'.
      * Return to normal (release waiting transactions, allow new transactions)
-     * with {@link #finishExclusiveMode}.   
+     * with {@link #finishExclusiveMode}.
+     * <p>
+     * Do not call inside an existing transaction.
      */
     public void startExclusiveMode() {
         startExclusiveMode(true);
     }
     
     /** Try to enter exclusive mode. 
-     *  If return is true, then are no active transactions on return and new transactions will be held up in 'begin'.
-     *  If alse, there were in-porgress transactions.
+     *  If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
+     *  If false, there were in-progress transactions.
      *  Return to normal (release waiting transactions, allow new transactions)
      *  with {@link #finishExclusiveMode}.   
+     * <p>
+     * Do not call inside an existing transaction.
      */
-    public boolean tryExclusiveMode(boolean canBlock) {
-        return startExclusiveMode(false);
+    public boolean tryExclusiveMode() {
+        return tryExclusiveMode(false);
     }
     
+    /** Try to enter exclusive mode.  
+     *  If return is true, then there are no active transactions on return and new transactions will be held up in 'begin'.
+     *  If false, there were in-progress transactions.
+     *  Return to normal (release waiting transactions, allow new transactions)
+     *  with {@link #finishExclusiveMode}.   
+     * <p>
+     * Do not call inside an existing transaction.
+     * @param canBlock Allow the operation block and wait for the exclusive mode lock.
+     */
+    public boolean tryExclusiveMode(boolean canBlock) {
+        return startExclusiveMode(canBlock);
+    }
+
     private boolean startExclusiveMode(boolean canBlock) {
         if ( canBlock ) {
             exclusivitylock.writeLock().lock() ;
@@ -346,8 +373,8 @@ public class TransactionCoordinator {
     }
     
     /** Block until no writers are active.
-     *  When this returns, yhis guarantees that the database is not changing
-     *  and the jounral is flush to disk.
+     *  When this returns, this guarantees that the database is not changing
+     *  and the journal is flushed to disk.
      * <p> 
      * The application must call {@link #enableWriters} later.
      * <p> 
@@ -361,18 +388,33 @@ public class TransactionCoordinator {
         acquireWriterLock(true) ;
     }
 
-    /** Block until no writers are active or, optionally, return if can't at the moment.
-     * Return 'true' if the operation succeeded.
+    /** Try to block all writers, or return if can't at the moment.
+     * <p>
+     * Unlike a write transction, there is no associated transaction. 
      * <p>
      * If it returns true, the application must call {@link #enableWriters} later.
      *  
      * @see #blockWriters()
      * @see #enableWriters()
+
+     * @return true if the operation succeeded and writers are blocked 
      */
     public boolean tryBlockWriters() {
-        return acquireWriterLock(false) ;
+        return tryBlockWriters(false) ;
     }
 
+    /**
+     * Block until no writers are active, optionally blocking or returning if can't at the moment.
+     * <p>
+     * Unlike a write transction, there is no associated transaction. 
+     * <p>
+     * If it returns true, the application must call {@link #enableWriters} later.
+     * @param canBlock
+     * @return true if the operation succeeded and writers are blocked
+     */
+    public boolean tryBlockWriters(boolean canBlock) {
+        return acquireWriterLock(canBlock) ;
+    }
     /** Allow writers.  
      * This must be used in conjunction with {@link #blockWriters()} or {@link #tryBlockWriters()}
      * 
@@ -453,7 +495,7 @@ public class TransactionCoordinator {
     // if no writer started since the reader started.
     
     private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
-    private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of epochs
+    private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of the epochs
     
     private Transaction begin$(ReadWrite readWrite) {
         synchronized(lock) {
@@ -520,7 +562,7 @@ public class TransactionCoordinator {
         //   Pretests
         //   If read-committed, don't need synchronized?
         // 
-        //   writerEpoch on commit only (not ported yet)
+        //   XXX writerEpoch on commit only (not ported yet)
         
         if ( transaction.getMode() == WRITE )
             return true ;
@@ -534,9 +576,7 @@ public class TransactionCoordinator {
         if ( dataEpoch1 != currentEpoch1 )
             return false ;
         
-        // XXX writeEpose adavnce only on writer commits.
         // Once we have acquireWriterLock, we are single writer. 
-        
         // We're a reader. Try to be a writer.
         synchronized(lock) {
             // Get the writer lock ...
@@ -580,7 +620,6 @@ public class TransactionCoordinator {
         notifyPrepareStart(transaction);
         transaction.getComponents().forEach(sysTrans -> {
             TransactionalComponent c = sysTrans.getComponent() ;
-            // XXX Pass journal to TransactionalComponent.commitPrepare?
             ByteBuffer data = c.commitPrepare(transaction) ;
             if ( data != null ) {
                 PrepareState s = new PrepareState(c.getComponentId(), data) ;
