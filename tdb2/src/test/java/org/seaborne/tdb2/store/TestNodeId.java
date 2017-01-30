@@ -29,7 +29,6 @@ import org.junit.Test ;
 
 public class TestNodeId
 {
-    
     // Pointers.
     @Test public void nodeId_ptr_01() {
         NodeId nodeId = NodeIdFactory.createPtrLong(17, 37);
