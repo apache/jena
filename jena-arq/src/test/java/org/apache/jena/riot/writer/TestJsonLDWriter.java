@@ -485,12 +485,10 @@ public class TestJsonLDWriter extends BaseTest {
         ds.addNamedModel(namedModelName, m2);
         
         Resource s = m.createResource();
-        String bn1InDefaultGraphLabel = "blank node 1 in default graph";
-        m.add(s, RDFS.label, bn1InDefaultGraphLabel);
+        m.add(s, RDFS.label, "blank node 1 in default graph");
         
         s = m2.createResource();
-        String bn2InNamedGraphLabel = "blank node 2 in named graph";
-        m2.add(s, RDFS.label, bn2InNamedGraphLabel);
+        m2.add(s, RDFS.label, "blank node 2 in named graph");
        
         // blanknodes with given id, shared by the 2 graphs
         
