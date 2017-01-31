@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>18</version>
+    <version>19-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
   <artifactId>jena-base</artifactId>
-  <version>3.2.0</version>
+  <version>3.3.0-SNAPSHOT</version>
   <name>Apache Jena - Base Common Environment</name>
   <description>
     This module contains non-RDF library code and the common system runtime.
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.2.0</version>
+      <version>3.3.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
