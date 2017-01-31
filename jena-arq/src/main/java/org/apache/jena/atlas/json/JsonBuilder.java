@@ -116,6 +116,42 @@ public class JsonBuilder {
         return this ;
     }
 
+    public JsonBuilder pair(String key, JsonValue value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, boolean value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, BigDecimal value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, double value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, long value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, String value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
     public JsonBuilder key(String key) {
         State state = stack.peek() ;
         if ( state != State.OBJECT )
