@@ -513,12 +513,18 @@ public class TestJsonLDWriter extends BaseTest {
         s = m2.createResource(AnonId.create("_:b0"));
         m2.add(s, RDFS.label, "? in named graph");
 
-        // write to jsonld and parse it back
+        // write to jsonld
          
         String jsonld = dataset2jsonld(ds.asDatasetGraph(), RDFFormat.JSONLD, null);
-        // System.out.println(jsonld);
-        Dataset ds2 = jsonld2dataset(jsonld, null);
+        System.out.println(jsonld);
         
+        // check we have kept the blanknodes identifiers that were valid jsonld bn identifiers
+        assertTrue(jsonld.indexOf("\"_:foo\"") > -1);
+        assertTrue(jsonld.indexOf("\"xxx\"") < 0);
+        
+        // parse jsonld back and check we get same thing
+        
+        Dataset ds2 = jsonld2dataset(jsonld, null);       
         assertTrue(ds2.getDefaultModel().isIsomorphicWith(ds.getDefaultModel()));
         assertTrue(ds2.getNamedModel(namedModelName).isIsomorphicWith(ds.getNamedModel(namedModelName)));
      }
