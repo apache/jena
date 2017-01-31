@@ -17,8 +17,6 @@
  */
 package org.apache.jena.riot.writer;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
