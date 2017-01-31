@@ -159,13 +159,17 @@ public class JSON
 
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(IndentedWriter output, JsonValue jValue) {
+        int rowStart = output.getRow();
         JsonWriter w = new JsonWriter(output) ;
         w.startOutput() ;
         jValue.visit(w) ;
         w.finishOutput() ;
+        // If multiline, make sure we end on a new line.
+        if ( ! output.inFlatMode() && output.getRow() > rowStart )
+            output.ensureStartOfLine();
     }
 
-    /** Write out a JSON value to - pass a JSON Object to get legal exchangeable JSON */
+    /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(JsonValue jValue) {
         write(IndentedWriter.stdout, jValue) ;
     }
