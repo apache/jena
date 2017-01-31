@@ -25,7 +25,6 @@ import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
-
 class JSONParserBase
 {
     protected boolean VERBOSE = true ;
