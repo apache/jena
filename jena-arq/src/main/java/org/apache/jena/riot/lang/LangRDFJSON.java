@@ -441,13 +441,13 @@ public class LangRDFJSON extends LangBase
 
     private boolean isPropertyName()
 	{
-		return lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2);
+		return lookingAt(TokenType.STRING);
 	}
 
     private Token checkValidForObjectProperty()
     {
     	Token t = null;
-    	if (lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2))
+    	if (lookingAt(TokenType.STRING) )
     		t = nextToken();
     	else
     		exception(peekToken(), "JSON Values given for properties for an Object must be Strings") ;
