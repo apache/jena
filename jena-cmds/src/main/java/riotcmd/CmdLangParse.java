@@ -42,7 +42,6 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
@@ -257,9 +256,9 @@ public abstract class CmdLangParse extends CmdGeneral
         // Also, as URI.
         final boolean labelsAsGiven = false ;
 
-        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
-        if ( labelsAsGiven )
-            labels = NodeToLabel.createBNodeByLabelEncoded() ;
+//        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
+//        if ( labelsAsGiven )
+//            labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
         StreamRDF s = outputStream ; 
         if ( setup != null )
