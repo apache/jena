@@ -150,11 +150,9 @@ public class GraphUtil
     private static void addIteratorWorkerDirect( Graph graph, Iterator<Triple> it ) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph;
-            while (it.hasNext())
-                g.performAdd(it.next());
+            it.forEachRemaining(g::performAdd);
         } else {
-            while (it.hasNext())
-                graph.add(it.next());
+            it.forEachRemaining(graph::add);
         }
     }
 
@@ -230,11 +228,9 @@ public class GraphUtil
     private static void deleteIteratorWorkerDirect(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
-            while(it.hasNext())
-                g.performDelete(it.next()) ;
+            it.forEachRemaining(g::performDelete);
         } else {
-            while(it.hasNext())
-                graph.delete(it.next());
+            it.forEachRemaining(graph::delete);
         }
     }
 
