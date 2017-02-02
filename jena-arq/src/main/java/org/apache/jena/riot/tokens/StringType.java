@@ -18,5 +18,14 @@
 
 package org.apache.jena.riot.tokens;
 
-/** Seen form of a {@link TokenType#STRING} */
-public enum StringType { STRING1, STRING2, LONG_STRING1, LONG_STRING2 }
+/** The seen form of a {@link TokenType#STRING} */
+public enum StringType {
+    /** A string delimited by 1 single-quote character : {@code 'abc'} */
+    STRING1,
+    /** A string delimited by 1 double-quote character : {@code 'abc'} */
+    STRING2,
+    /** A string delimited by 3 single-quote characters : {@code '''abc'''} */
+    LONG_STRING1,
+    /** A string delimited by 3 double-quote characters : {@code """abc"""} */
+    LONG_STRING2
+}
