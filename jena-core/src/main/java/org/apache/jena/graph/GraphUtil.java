@@ -19,14 +19,14 @@
 package org.apache.jena.graph;
 
 import java.util.ArrayList;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.jena.graph.impl.GraphWithPerform ;
-import org.apache.jena.util.IteratorCollection ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.graph.impl.GraphWithPerform;
+import org.apache.jena.util.IteratorCollection;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
     An ad-hoc collection of useful code for graphs
@@ -102,22 +102,19 @@ public class GraphUtil
     }
     
     public static void add(Graph graph, Triple[] triples) {
-        if ( OldStyle && graph instanceof GraphWithPerform )
-        {
+        if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
             for (Triple t : triples )
                 g.performAdd(t) ;
             graph.getEventManager().notifyAddArray(graph, triples) ;
-        }
-        else
-        {
+        } else {
             for (Triple t : triples )
                 graph.add(t) ; 
         }
     }
         
     public static void add(Graph graph, List<Triple> triples) {
-        addIteratorWorkerDirect(graph, triples.iterator());
+        addIteratorWorkerDirect(graph, triples.iterator()) ;
         if ( OldStyle && graph instanceof GraphWithPerform )
             graph.getEventManager().notifyAddList(graph, triples) ;
     }
@@ -135,10 +132,10 @@ public class GraphUtil
     
     /** Add triples into the destination (arg 1) from the source (arg 2)*/
     public static void addInto(Graph dstGraph, Graph srcGraph ) {
-        if ( dstGraph == srcGraph )
+        if ( dstGraph == srcGraph && ! dstGraph.getEventManager().listening() )
             return ;
         dstGraph.getPrefixMapping().setNsPrefixes(srcGraph.getPrefixMapping()) ;
-        addIteratorWorker(dstGraph, GraphUtil.findAll( srcGraph ));  
+        addIteratorWorker(dstGraph, findAll( srcGraph ));  
         dstGraph.getEventManager().notifyAddGraph( dstGraph, srcGraph );
     }
     
@@ -156,6 +153,10 @@ public class GraphUtil
         }
     }
 
+    private static boolean requireEvents(Graph graph) {
+        return graph.getEventManager().listening() ;
+    }
+    
     public static void delete(Graph graph, Triple[] triples) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
@@ -168,15 +169,13 @@ public class GraphUtil
         }
     }
     
-    public static void delete(Graph graph, List<Triple> triples)
-    {
+    public static void delete(Graph graph, List<Triple> triples) {
         deleteIteratorWorkerDirect(graph, triples.iterator());
         if ( OldStyle && graph instanceof GraphWithPerform )
             graph.getEventManager().notifyDeleteList(graph, triples) ;
     }
     
-    public static void delete(Graph graph, Iterator<Triple> it)
-    {
+    public static void delete(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             // Materialize for the notify.
             List<Triple> s = IteratorCollection.iteratorToList(it) ;
@@ -186,29 +185,43 @@ public class GraphUtil
             deleteIteratorWorker(graph, it);
     }
     
+    private static int MIN_SRC_SIZE   = 1000 ;
+    private static int DST_SRC_RATIO  = 2 ;
+    
     /** Delete triples in the destination (arg 1) as given in the source (arg 2) */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
-        if ( dstGraph == srcGraph ) {
+        boolean events = requireEvents(dstGraph);
+        
+        if ( dstGraph == srcGraph && ! events ) {
             dstGraph.clear();
             return;
         }
-        if ( dstGraph.size() > srcGraph.size() ) {
-            // Loop on srcGraph
-            deleteIteratorWorker(dstGraph, GraphUtil.findAll(srcGraph)) ;
+        
+        int dstSize = dstGraph.size();
+        int srcSize = srcGraph.size();
+        
+        // Whether to loop on dstGraph or srcGraph.
+        // Loop on src if:
+        // * srcGraph is below the threshold MIN_SRC_SIZE (a "Just Do it" number)
+        // * dstGraph is "much" larger than src where "much" is given by DST_SRC_RATIO
+        boolean loopOnSrc = (srcSize < MIN_SRC_SIZE || dstSize > DST_SRC_RATIO*srcSize) ;
+        
+        if ( loopOnSrc ) {
+            deleteIteratorWorker(dstGraph, findAll(srcGraph)) ;
             dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
             return;
         }
-        // dstGraph smaller.
+        // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
         List<Triple> toBeDeleted = new ArrayList<>();
         // Loop on dstGraph
-        Iterator<Triple> iter = dstGraph.find(null, null, null);
+        Iterator<Triple> iter = findAll(dstGraph);
         for( ; iter.hasNext() ; ) {
            Triple t = iter.next();
            if ( srcGraph.contains(t) )
                toBeDeleted.add(t);
         }
-        dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
         deleteIteratorWorkerDirect(dstGraph, toBeDeleted.iterator());
+        dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
     }
 
     /**
