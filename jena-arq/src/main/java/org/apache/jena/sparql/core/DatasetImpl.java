@@ -195,6 +195,8 @@ public class DatasetImpl implements Dataset
     }
     
     protected Model graph2model(final Graph graph) {
+        if ( graph == null ) 
+            return null;
         return ModelFactory.createModelForGraph(graph);
     }
 
