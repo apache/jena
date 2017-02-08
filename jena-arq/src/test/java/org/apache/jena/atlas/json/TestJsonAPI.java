@@ -18,16 +18,29 @@
 
 package org.apache.jena.atlas.json;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-        TestJson.class
-      , TestJsonExt.class
-      , TestJsonWriter.class
-      , TestJsonBuilder.class
-      , TestJsonAPI.class
-})
-public class TS_JSON
-{}
+import org.junit.Test ;
+
+
+public class TestJsonAPI
+{
+    @Test public void jsonAPI_01() {
+        JsonObject obj = JSON.parse("{ key1: 'str1' , key2: [ 1 , 2 ] }") ;
+        assertEquals(2, obj.size());
+    }
+    
+    @Test public void jsonAPI_02() {
+        JsonObject obj = JSON.parse("{ key1: 'str1' , key2: [ 1 , 2 ] }") ;
+        JsonObject obj2 = (JsonObject)JSON.copy(obj);
+        assertNotSame(obj, obj2);
+        assertEquals(obj, obj2);
+    }
+    
+    @Test public void jsonAPI_03() {
+        JsonValue jv1 = JSON.parseAny("2") ;
+        JsonValue jv2 = JSON.copy(jv1);
+        assertSame(jv1, jv2);
+    }
+}

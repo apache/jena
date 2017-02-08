@@ -22,10 +22,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 public class TestJsonBuilder extends BaseTest{
-    // The Jena JSON parser is more livberal than strict JSON to make embedding easier.
-    // * Keys do not need quotes
-    // * Strings can use ''
-    
     @Test public void jsonBuild01() {
         JsonValue x = JSON.parseAny("{ }") ;
         JsonBuilder builder = new JsonBuilder() ;
@@ -79,8 +75,32 @@ public class TestJsonBuilder extends BaseTest{
         JsonValue v = builder.build() ;
         assertEquals(x,v) ;
     }
-
     
+    @Test public void jsonBuild06() {
+        JsonValue x = JSON.parseAny("{ a: 'B'}") ;
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject().pair("a", "B").finishObject() ;
+        JsonValue v = builder.build() ;
+        assertEquals(x,v) ;
+    }
+    
+    @Test public void jsonBuild07() {
+        JsonValue x = JSON.parseAny("{ a: 123}") ;
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject().pair("a", 123).finishObject() ;
+        JsonValue v = builder.build() ;
+        assertEquals(x,v) ;
+    }
+
+    @Test public void jsonBuild08() {
+        JsonValue x = JSON.parseAny("{ a: true}") ;
+        JsonBuilder builder = new JsonBuilder() ;
+        JsonValue jv = new JsonBoolean(true); 
+        builder.startObject().pair("a", jv).finishObject() ;
+        JsonValue v = builder.build() ;
+        assertEquals(x,v) ;
+    }
+
     @Test(expected=JsonException.class)
     public void jsonBuildErr00() {
         JsonBuilder builder = new JsonBuilder() ;
@@ -107,5 +127,20 @@ public class TestJsonBuilder extends BaseTest{
         builder.startObject("A") ;
         builder.finishObject("B") ;
     }
-
+    
+    @Test
+    public void jsonBuildObject_01() {
+        JsonObject obj = JsonBuilder.buildObject(b->{});
+        assertTrue(obj.entrySet().isEmpty());
+    }
+    
+    @Test
+    public void jsonBuildObject_02() {
+        JsonValue x = JSON.parseAny("{ key1: 'value1', key2: 'value2' }") ;
+        JsonObject obj = JsonBuilder.buildObject(b->{
+            b.pair("key1", "value1")
+             .pair("key2", "value2");
+        });
+        assertEquals(x, obj);
+    }
 }
