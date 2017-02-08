@@ -217,16 +217,20 @@ public final class TokenizerText implements Tokenizer
 
         // ---- Literal
         if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 ) {
+            // The token type is STRING.
+            // We incorporate this into a token for LITERAL_LANG or LITERAL_DT.  
+            token.setType(TokenType.STRING) ;
+            
             reader.readChar() ;
             int ch2 = reader.peekChar() ;
             if ( ch2 == ch ) {
                 reader.readChar() ; // Read potential second quote.
                 int ch3 = reader.peekChar() ;
                 if ( ch3 == ch ) {
-                    reader.readChar() ;
+                    reader.readChar() ;     // Read potential third quote.
                     token.setImage(readLongString(ch, false)) ;
-                    TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
-                    token.setType(tt) ;
+                    StringType st = (ch == CH_QUOTE1) ? StringType.LONG_STRING1 : StringType.LONG_STRING2 ;
+                    token.setStringType(st) ;
                 } else {
                     // Two quotes then a non-quote.
                     // Must be '' or ""
@@ -236,16 +240,18 @@ public final class TokenizerText implements Tokenizer
                     // if ( ch1 != EOF ) reader.pushbackChar(ch1) ; // Must be
                     // '' or ""
                     token.setImage("") ;
-                    token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
+                    StringType st = (ch == CH_QUOTE1) ? StringType.STRING1 : StringType.STRING2 ;
+                    token.setStringType(st) ;
                 }
             } else {
-                // Single quote character.
+                // One quote character.
                 token.setImage(readString(ch, ch)) ;
-                // Single quoted string.
-                token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
+                // Record exactly what form of STRING was seen.
+                StringType st = (ch == CH_QUOTE1) ? StringType.STRING1 : StringType.STRING2 ;
+                token.setStringType(st) ;
             }
 
-            // Whte space after lexical part of a literal.
+            // White space after lexical part of a literal.
             skip() ;
             
             // Literal. Is it @ or ^^

@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.apache.jena.riot.tokens.TokenType.STRING2 ;
-
 import java.util.Iterator ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.tokens.StringType;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -100,25 +99,26 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
         switch (token.getType()) {
             case IRI:
             case BNODE:
-            case STRING2:
-                return ;
-            case LITERAL_DT:
-                if ( profile.isStrictMode() && ! token.getSubToken1().hasType(STRING2) )
-                    exception(token, "Illegal single quoted string: %s", token) ;
+                return;
+            case STRING:
+                checkString(token);
                 return ;
             case LITERAL_LANG:
-                if ( profile.isStrictMode() && ! token.getSubToken1().hasType(STRING2) )
-                    exception(token, "Illegal single quoted string: %s", token) ;
+            case LITERAL_DT:
+                checkString(token.getSubToken1());
                 return ;
-            case STRING1:
-                if ( profile.isStrictMode() )
-                    exception(token, "Illegal single quoted string: %s", token) ;
-                break ;
             default:
                 exception(token, "Illegal object: %s", token) ;
         }
     }
-
+    
+    private void checkString(Token token) {
+        if ( token.isLongString() )
+            exception(token, "Triple quoted string not permitted: %s", token) ;
+        if ( profile.isStrictMode() && ! token.hasStringType(StringType.STRING2) )
+            exception(token, "Not a \"\"-quoted string: %s", token); 
+    }
+    
     /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
     public boolean  getSkipOnBadTerm()                      { return skipOnBadTerm ; }
     /** SkipOnBadTerm - do not output tuples with bad RDF terms */ 
