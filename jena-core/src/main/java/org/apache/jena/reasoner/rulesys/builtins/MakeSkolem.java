@@ -21,11 +21,12 @@ package org.apache.jena.reasoner.rulesys.builtins;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.reasoner.rulesys.RuleContext ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.xerces.impl.dv.util.Base64 ;
 
 /**
  * Bind a blank node to the first argument.
@@ -75,9 +76,9 @@ public class MakeSkolem extends BaseBuiltin {
             MessageDigest digester = MessageDigest.getInstance("MD5");
             digester.reset();
             byte[] digest = digester.digest(key.toString().getBytes());
-            Node skolem = NodeFactory.createBlankNode(Base64.encode(digest));
+            String label = DatatypeConverter.printBase64Binary(digest);
+            Node skolem = NodeFactory.createBlankNode(label);
             return context.getEnv().bind(args[0], skolem); 
-            
         } catch (NoSuchAlgorithmException e) {
             throw new JenaException(e);
         }

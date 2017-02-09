@@ -18,8 +18,9 @@
 
 package org.apache.jena.datatypes.xsd;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.xerces.impl.dv.util.HexBin ;
 
 /**
  * Implement hexbinary type. Most of the work is done in the superclass.
@@ -38,7 +39,7 @@ public class XSDhexBinary extends XSDbinary {
     @Override
     public String unparse(Object value) {
         if (value instanceof byte[]) {
-            return HexBin.encode((byte[])value);
+            return DatatypeConverter.printHexBinary((byte[])value);
         } else {
             throw new DatatypeFormatException("hexBinary asked to encode a non-byte arrary");
         }

@@ -30,7 +30,10 @@ public class SysRIOT
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     
+    /** @deprecated Do not use - lexicial forms are always strict. */
+    @Deprecated
     public static boolean StrictXSDLexicialForms      = false ;
+    
     public static boolean strictMode                  = false ;
     
     /** Some people argue that absolute URIs should not be normalized.
@@ -47,7 +50,7 @@ public class SysRIOT
     
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;
-        SysRIOT.StrictXSDLexicialForms = state ;
+        //SysRIOT.StrictXSDLexicialForms = state ;
         //SysRIOT.AbsURINoNormalization = state ;
     }
 
