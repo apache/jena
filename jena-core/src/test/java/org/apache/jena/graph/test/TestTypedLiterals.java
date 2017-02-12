@@ -25,6 +25,8 @@ import java.math.BigInteger ;
 import java.text.SimpleDateFormat ;
 import java.util.* ;
 
+import javax.xml.bind.DatatypeConverter;
+
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.jena.JenaRuntime ;
@@ -43,7 +45,6 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.impl.JenaParameters ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.XSD ;
-import org.apache.xerces.impl.dv.util.HexBin ;
 import org.junit.Assert ;
    
 /**
@@ -960,7 +961,7 @@ public class TestTypedLiterals extends TestCase {
         Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
         LiteralLabel ll = l.asNode().getLiteral();
         assertEquals("binary test 1b", ll.getDatatype(), XSDDatatype.XSDhexBinary);
-        assertEquals("binary test 2b", HexBin.encode(data), ll.getLexicalForm());
+        assertEquals("binary test 2b", DatatypeConverter.printHexBinary(data), ll.getLexicalForm());
         
         // Check round tripping from value
         LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
