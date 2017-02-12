@@ -18,24 +18,54 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <name>Apache Jena - Fuseki Binary Distribution</name>
+  <artifactId>jena-fuseki-docker</artifactId>
+  <packaging>pom</packaging>
+
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena-fuseki</artifactId>
+    <version>2.3.1-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent> 
 
-  <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
-  <artifactId>jena-fuseki</artifactId>
-  <version>2.6.0-SNAPSHOT</version>
-
-  <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
-  SPARQL update and SPARQL graph store protocols.
+  <description>Fuseki Docker image
+  This pom file does not actually build the docker image, but
+  is used to unpack the apache-jena-fuseki distribution.
   </description>
+  <dependencies>
 
-  <packaging>pom</packaging>
-  
-  <url>http://jena.apache.org/</url>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+             <id>unpack</id>
+             <phase>package</phase>
+             <goals>
+               <goal>unpack</goal>
+             </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.jena</groupId>
+                  <artifactId>apache-jena-fuseki</artifactId>
+                  <version>${project.version}</version>
+                  <type>tar.gz</type>
+                  <outputDirectory>${project.build.directory}/dist</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+
+  </build>
 
   <repositories>
     <repository>
@@ -47,34 +77,5 @@
       </releases>
     </repository>
   </repositories>
-
-  <organization>
-    <name>Apache Jena</name>
-    <url>http://jena.apache.org/</url>
-  </organization>
-
-  <licenses>
-    <license>
-      <name>Apache 2.0 License</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-    </license>
-  </licenses>
-
-  <properties>
-    <!--<ver.jetty>9.1.1.v20140108</ver.jetty>-->
-    <ver.jetty>9.3.3.v20150827</ver.jetty>
-    <ver.shiro>1.2.4</ver.shiro>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
-  </properties>
-
-  <modules>
-    <module>jena-fuseki-core</module>
-    <module>jena-fuseki-embedded</module>
-    <module>jena-fuseki-war</module>
-    <module>jena-fuseki-server</module>
-    <module>jena-fuseki-docker</module>
-    <module>apache-jena-fuseki</module>
-  </modules>
   
 </project>
