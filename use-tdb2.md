@@ -15,7 +15,7 @@ Set the repositories (see below) and use:
 
 Example code: **`TDB2Factory`**
 
-For disk laocation 
+For disk location 
 
 ```
      public static void main(String[] args) {
