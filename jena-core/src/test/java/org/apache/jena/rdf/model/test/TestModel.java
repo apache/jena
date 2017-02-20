@@ -28,6 +28,9 @@ import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.test.JenaTestBase ;
 import org.junit.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestModel extends AbstractModelTestBase
 {
 
@@ -98,6 +101,30 @@ public class TestModel extends AbstractModelTestBase
 		final RDFNode S = model.getRDFNode(NodeCreateUtils.create("42"));
 		JenaTestBase.assertInstanceOf(Literal.class, S);
 		Assert.assertEquals("42", ((Literal) S).getLexicalForm());
+	}
+
+	public void testCreateListFromEmptyIterator()
+	{
+		RDFList list = model.createList(new ArrayList<RDFNode>().iterator());
+		Assert.assertEquals(0, list.size());
+	}
+
+	public void testCreateSingletonListFromIterator()
+	{
+		List<RDFNode> expected = new ArrayList<>();
+		expected.add(model.createResource());
+		RDFList list = model.createList(expected.iterator());
+		Assert.assertEquals(expected, list.asJavaList());
+	}
+
+	public void testCreateListFromIterator()
+	{
+		List<RDFNode> expected = new ArrayList<>();
+		expected.add(model.createResource());
+		expected.add(model.createResource());
+		expected.add(model.createResource());
+		RDFList list = model.createList(expected.iterator());
+		Assert.assertEquals(expected, list.asJavaList());
 	}
 
 	public void testCreateResourceFromNode()
