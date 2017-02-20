@@ -32,7 +32,7 @@ public class VCARD {
 	/**
 	 * The namespace of the vocabulary as a string
 	 */
-	public static final String uri ="http://www.w3.org/2001/vcard-rdf/3.0#";
+	public static final String uri ="http://www.w3.org/2006/vcard/ns#";
 
     /** returns the URI for this schema
      * @return the URI for this schema
