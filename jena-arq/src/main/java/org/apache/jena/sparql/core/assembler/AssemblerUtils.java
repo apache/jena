@@ -76,8 +76,11 @@ public class AssemblerUtils
     /** Register an addition assembler */  
     static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
         registerAssembler(g, r, a) ;
-        if ( superType != null && ! superType.equals(r) ) 
-            modelExtras.add(r, RDFS.subClassOf, superType) ;
+        if ( superType != null && ! superType.equals(r) ) {
+            // This is called during Jena-wide initialization.
+            // Use function for constant (JENA-1294)
+           modelExtras.add(r, RDFS.Init.subClassOf(), superType) ;
+        }
     }
     
     /** register */ 

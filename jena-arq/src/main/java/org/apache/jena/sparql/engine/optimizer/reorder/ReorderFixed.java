@@ -56,7 +56,9 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     
     public ReorderFixed() {}
 
-    private static Item              type                = Item.createNode(NodeConst.nodeRDFType) ;
+    // This is called during Jena-wide initialization.
+    // Use function for constant (JENA-1294)
+    private static Item  type() { return Item.createNode(NodeConst.nodeRDFType); }
 
     /** The number of triples used for the base scale */
     public static final int                MultiTermSampleSize = 100 ;
@@ -78,8 +80,8 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
 
         // 1 : TERM type TERM is builtin (SPO).
         // matcherRdfType.addPattern(new Pattern(1, TERM, TERM, TERM)) ; 
-        matcherRdfType.addPattern(new Pattern(5, VAR, type, TERM)) ;
-        matcherRdfType.addPattern(new Pattern(50, VAR, type, VAR)) ;
+        matcherRdfType.addPattern(new Pattern(5, VAR, type(), TERM)) ;
+        matcherRdfType.addPattern(new Pattern(50, VAR, type(), VAR)) ;
         
         // SPO - built-in - not needed as a rule
         // matcher.addPattern(new Pattern(1, TERM, TERM, TERM)) ; 
@@ -99,7 +101,7 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
     public double weight(PatternTriple pt) {
         // Special case rdf:type first to make it lower(worse) than 
         // VAR, TERM, TERM which would otherwise be used.
-        if ( type.equals(pt.predicate) ) {
+        if ( type().equals(pt.predicate) ) {
             double w = matcherRdfType.match(pt) ;
             if ( w > 0 )
                 return w ;

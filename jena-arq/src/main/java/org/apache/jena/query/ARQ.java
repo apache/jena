@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ ;
@@ -579,7 +580,7 @@ public class ARQ
             JenaSystem.logLifecycle("ARQ.init - start") ;
             // Force constants to be set.  This should be independent of other initialization including jena core.
             ARQConstants.getGlobalPrefixMap();
-            
+            ResultSetLang.init();
             globalContext = defaultSettings() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;

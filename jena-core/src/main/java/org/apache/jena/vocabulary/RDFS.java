@@ -26,10 +26,10 @@ import org.apache.jena.rdf.model.* ;
  */
 public class RDFS {
 
-	/**
-	 * The namespace of the vocabulary as a string
-	 */
-	public static final String uri="http://www.w3.org/2000/01/rdf-schema#";
+    /**
+     * The namespace of the vocabulary as a string
+     */
+    public static final String uri="http://www.w3.org/2000/01/rdf-schema#";
 
     protected static final Resource resource( String local )
         { return ResourceFactory.createResource( uri + local ); }
@@ -37,48 +37,72 @@ public class RDFS {
     protected static final Property property( String local )
         { return ResourceFactory.createProperty( uri, local ); }
 
-    public static final Resource Class = resource( "Class");
-    public static final Resource Datatype = resource( "Datatype");
+    public static final Resource Class          = RDFS.Init.Class();
+    public static final Resource Datatype       = RDFS.Init.Datatype();
     
-    public static final Resource Container  = resource( "Container");
+    public static final Resource Container      = RDFS.Init.Container();
     
-    public static final Resource ContainerMembershipProperty
-                                                     = resource( "ContainerMembershipProperty");  
+    public static final Resource ContainerMembershipProperty = RDFS.Init.ContainerMembershipProperty();
     
-    public static final Resource Literal = resource( "Literal");
-    public static final Resource Resource = resource( "Resource");
+    public static final Resource Literal        = RDFS.Init.Literal();
+    public static final Resource Resource       = RDFS.Init.Resource();
 
-    public static final Property comment = property( "comment");
-    public static final Property domain = property( "domain");
-    public static final Property label = property( "label");
-    public static final Property isDefinedBy = property( "isDefinedBy");
-    public static final Property range = property( "range");
-    public static final Property seeAlso = property( "seeAlso");
-    public static final Property subClassOf  = property( "subClassOf");
-    public static final Property subPropertyOf  = property( "subPropertyOf");
-    public static final Property member  = property( "member");
+    public static final Property comment        = RDFS.Init.comment();
+    public static final Property domain         = RDFS.Init.domain();
+    public static final Property label          = RDFS.Init.label();
+    public static final Property isDefinedBy    = RDFS.Init.isDefinedBy();
+    public static final Property range          = RDFS.Init.range();
+    public static final Property seeAlso        = RDFS.Init.seeAlso();
+    public static final Property subClassOf     = RDFS.Init.subClassOf();
+    public static final Property subPropertyOf  = RDFS.Init.subPropertyOf();
+    public static final Property member         = RDFS.Init.member();
 
+    /* RDFS constants are used during Jena initialization.
+     * <p>
+     * If that initialization is triggered by touching the RDFS class,
+     * then the constants are null.
+     * <p>
+     * So for these cases, call this helper class: RDFS.Init.function()   
+     */
+    public static class Init {
+        public static Resource Class()          { return RDFS.resource( "Class"); }
+        public static Resource Datatype()       { return RDFS.resource( "Datatype"); }
+        public static Resource Container ()     { return RDFS.resource( "Container"); }
+        public static Resource ContainerMembershipProperty()    { return RDFS.resource( "ContainerMembershipProperty");   }
+        public static Resource Literal()        { return RDFS.resource( "Literal"); }
+        public static Resource Resource()       { return RDFS.resource( "Resource"); }
+        public static Property comment()        { return RDFS.property( "comment"); }
+        public static Property domain()         { return RDFS.property( "domain"); }
+        public static Property label()          { return RDFS.property( "label"); }
+        public static Property isDefinedBy()    { return RDFS.property( "isDefinedBy"); }
+        public static Property range()          { return RDFS.property( "range"); }
+        public static Property seeAlso()        { return RDFS.property( "seeAlso"); }
+        public static Property subClassOf ()    { return RDFS.property( "subClassOf"); }
+        public static Property subPropertyOf () { return RDFS.property( "subPropertyOf"); }
+        public static Property member ()        { return RDFS.property( "member"); }
+    }
+    
     /**
         The RDFS vocabulary, expressed for the SPI layer in terms of .graph Nodes.
     */
     @SuppressWarnings("hiding") public static class Nodes
         {
-        public static final Node Class = RDFS.Class.asNode();
-        public static final Node Datatype = RDFS.Datatype.asNode();
-        public static final Node Container  = RDFS.Container.asNode();
+        public static final Node Class = RDFS.Init.Class().asNode();
+        public static final Node Datatype = RDFS.Init.Datatype().asNode();
+        public static final Node Container  = RDFS.Init.Container().asNode();
         public static final Node ContainerMembershipProperty
-                                                         = RDFS.ContainerMembershipProperty.asNode();
-        public static final Node Literal = RDFS.Literal.asNode();
-        public static final Node Resource = RDFS.Resource.asNode();
-        public static final Node comment = RDFS.comment.asNode();
-        public static final Node domain = RDFS.domain.asNode();
-        public static final Node label = RDFS.label.asNode();
-        public static final Node isDefinedBy = RDFS.isDefinedBy.asNode();
-        public static final Node range = RDFS.range.asNode();
-        public static final Node seeAlso = RDFS.seeAlso.asNode();
-        public static final Node subClassOf  = RDFS.subClassOf.asNode();
-        public static final Node subPropertyOf  = RDFS.subPropertyOf.asNode();
-        public static final Node member  = RDFS.member.asNode();
+                                                         = RDFS.Init.ContainerMembershipProperty().asNode();
+        public static final Node Literal = RDFS.Init.Literal().asNode();
+        public static final Node Resource = RDFS.Init.Resource().asNode();
+        public static final Node comment = RDFS.Init.comment().asNode();
+        public static final Node domain = RDFS.Init.domain().asNode();
+        public static final Node label = RDFS.Init.label().asNode();
+        public static final Node isDefinedBy = RDFS.Init.isDefinedBy().asNode();
+        public static final Node range = RDFS.Init.range().asNode();
+        public static final Node seeAlso = RDFS.Init.seeAlso().asNode();
+        public static final Node subClassOf  = RDFS.Init.subClassOf().asNode();
+        public static final Node subPropertyOf  = RDFS.Init.subPropertyOf().asNode();
+        public static final Node member  = RDFS.Init.member().asNode();
         }
 
     /**
