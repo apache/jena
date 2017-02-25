@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.engine.optimizer.reorder;
 
+import static org.apache.jena.sparql.engine.optimizer.reorder.PatternElements.TERM;
+import static org.apache.jena.sparql.engine.optimizer.reorder.PatternElements.VAR;
+
 import org.apache.jena.sparql.engine.optimizer.Pattern ;
 import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
-import org.apache.jena.sparql.engine.optimizer.reorder.PatternTriple ;
-import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformationSubstitution ;
-import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.sse.Item ;
-import static org.apache.jena.sparql.engine.optimizer.reorder.PatternElements.* ;
+import org.apache.jena.vocabulary.RDF;
 
 /** Fixed scheme for choosing based on the triple patterns, without
  *  looking at the data.  It gives a weight to a triple, with more grounded terms
@@ -58,7 +58,8 @@ public class ReorderFixed extends ReorderTransformationSubstitution {
 
     // This is called during Jena-wide initialization.
     // Use function for constant (JENA-1294)
-    private static Item  type() { return Item.createNode(NodeConst.nodeRDFType); }
+    private static Item  type() 
+    { return Item.createNode(RDF.Init.type().asNode()); }
 
     /** The number of triples used for the base scale */
     public static final int                MultiTermSampleSize = 100 ;
