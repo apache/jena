@@ -17,11 +17,15 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
+import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
+import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -52,7 +56,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
  *            The derived class type. Used for return types.
  */
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
-		implements Cloneable, PrologClause<T> {
+		implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// the query this builder is building
 	protected Query query;
@@ -297,6 +301,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return getHandlerBlock().getPrologHandler();
 	}
 
+	@Override
+	public ValuesHandler getValuesHandler() {
+		return getHandlerBlock().getValueHandler();
+	}
 
 	/**
 	 * Set a variable replacement. During build all instances of var in the
@@ -374,6 +382,26 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	@Override
 	public T setBase(Object base) {
 		setBase(makeNode(base).getURI());
+		return (T) this;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueVar(Object var) {
+		getValuesHandler().addValueVar( makeVar( var ));
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addDataBlock(Collection<Object> values) {
+		ArrayList<Node> nodeValues = new ArrayList<Node>(values.size());
+		for (Object o : values )
+		{
+			nodeValues.add( makeNode( o ));
+		}
+		getValuesHandler().addDataBlock(nodeValues);
 		return (T) this;
 	}
 
