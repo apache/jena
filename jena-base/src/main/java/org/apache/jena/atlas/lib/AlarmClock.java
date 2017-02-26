@@ -31,7 +31,7 @@ public class AlarmClock {
     // A ThreadFactory that creates daemons
     private static ThreadFactory threadFactory = new BasicThreadFactory.Builder()
         .daemon(true)
-        .namingPattern("alarm-clock-")
+        .namingPattern("alarm-clock-%d")
         //.uncaughtExceptionHandler(null)
         .build() ;
     
