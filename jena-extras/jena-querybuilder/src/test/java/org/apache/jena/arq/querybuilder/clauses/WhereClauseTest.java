@@ -65,7 +65,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@After
-	public final void cleanupDatasetClauseTest() {
+	public final void cleanupWhereClauseTest() {
 		getProducer().cleanUp(); // clean up the producer for the next run
 	}
 
