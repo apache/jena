@@ -51,7 +51,6 @@ public class TestSystemSetup extends TestCase {
                 + separator + "bin" + separator + "java";
         if (SystemUtils.IS_OS_WINDOWS)
             java += ".exe";
-        
 
         List<String> args = Arrays.asList(java, "-cp", classpath,
                 "org.apache.jena.test.RDFSJenaInitTestApp");
