@@ -30,12 +30,9 @@ import org.apache.jena.riot.system.RiotChars ;
  * Grandfathered forms ("i-") are left untouched. Unsupported or syntactically
  * illegal forms are handled in canonicalization by doing nothing.
  * <ul>
- * <li>Language tags syntax: <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC
- * 4646</a></li>
- * <li>Matching Language tags: <a href="http://www.ietf.org/rfc/rfc4647.txt">RFC
- * 4647</a></li>
- * <li>Language tags syntax: <a href="http://www.ietf.org/rfc/rfc5646.txt">RFC
- * 5646</a></li>
+ * <li>Language tags syntax: <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a></li>
+ * <li>Matching Language tags: <a href="http://www.ietf.org/rfc/rfc4647.txt">RFC 4647</a></li>
+ * <li>Language tags syntax (BCP 47): <a href="http://www.ietf.org/rfc/rfc5646.txt">RFC 5646</a></li>
  * </ul>
  */
 
@@ -75,39 +72,36 @@ public class LangTag {
      */
 
     /*
-     * ABNF definition: <a href="http://www.ietf.org/rfc/rfc4234.txt">RFC
-     * 4234</a>
+     * ABNF definition: <a href="http://www.ietf.org/rfc/rfc4234.txt">RFC 4234</a>
      * 
      * Language-Tag = langtag / privateuse ; private use tag / grandfathered ;
      * grandfathered registrations
      * 
-     * langtag = (language ["-" script] ["-" region]("-" variant)("-" extension)
-     * ["-" privateuse])
+     * langtag = (language ["-" script] ["-" region]("-" variant)("-" extension) ["-" privateuse])
      * 
-     * language = (2*3ALPHA [ extlang ]) ; shortest ISO 639 code / 4ALPHA ;
-     * reserved for future use / 5*8ALPHA ; registered language subtag
+     * language = (2*3ALPHA [ extlang ])      ; shortest ISO 639 code / 4ALPHA ;
+     * reserved for future use / 5*8ALPHA     ; registered language subtag
      * 
-     * extlang = *3("-" 3ALPHA) ; reserved for future use
+     * extlang = *3("-" 3ALPHA)               ; reserved for future use
      * 
      * script = 4ALPHA ; ISO 15924 code
      * 
      * region = 2ALPHA ; ISO 3166 code / 3DIGIT ; UN M.49 code
      * 
-     * variant = 5*8alphanum ; registered variants / (DIGIT 3alphanum)
+     * variant = 5*8alphanum                  ; registered variants / (DIGIT 3alphanum)
      * 
      * extension = singleton 1*("-" (2*8alphanum))
      * 
      * singleton = %x41-57 / %x59-5A / %x61-77 / %x79-7A / DIGIT ; "a"-"w" /
-     * "y"-"z" / "A"-"W" / "Y"-"Z" / "0"-"9" ; Single letters: x/X is reserved
-     * for private use
+     * "y"-"z" / "A"-"W" / "Y"-"Z" / "0"-"9"   ; Single letters: x/X is reserved for private use
      * 
      * privateuse = ("x"/"X") 1*("-" (1*8alphanum))
      * 
-     * grandfathered = 1*3ALPHA 1*2("-" (2*8alphanum)) ; grandfathered
-     * registration ; Note: i is the only singleton ; that starts a
-     * grandfathered tag
+     * grandfathered = 1*3ALPHA 1*2("-" (2*8alphanum))   ; grandfathered registration 
+     *                                                   ; Note: i is the only singleton
+     *                                                   ; that starts a grandfathered tag
      * 
-     * alphanum = (ALPHA / DIGIT) ; letters and numbers
+     * alphanum = (ALPHA / DIGIT)                        ; letters and numbers
      */
 
     private static final String languageRE_1         = "(?:[a-zA-Z]{2,3}(?:-[a-zA-Z]{3}){0,3})" ;
@@ -140,8 +134,7 @@ public class LangTag {
     private static Pattern      patternGrandfathered = Pattern.compile(grandfatheredRE) ;
 
     /**
-     * Validate - basic syntax check for a language tags: [a-zA-Z]+ ('-'
-     * [a-zA-Z0-9]+)*
+     * Validate - basic syntax check for a language tags: [a-zA-Z]+ ('-'[a-zA-Z0-9]+)*
      */
     public static boolean check(String languageTag) {
         int len = languageTag.length() ;
@@ -185,11 +178,10 @@ public class LangTag {
 
     /**
      * Parse a langtag string and return it's parts in canonical case. See
-     * constants for the array contents. Parts not present cause a null in the
-     * return array.
+     * constants for the array contents. Parts not present cause a null in
+     * the return array.
      * 
-     * @return Langtag parts, or null if the input string does not poarse as a
-     *         lang tag.
+     * @return Langtag parts, or null if the input string does not poarse as a lang tag.
      */
     public static String[] parse(String languageTag) {
         String[] parts = new String[partsLength] ;
@@ -232,14 +224,14 @@ public class LangTag {
         return parts ;
     }
 
-    /** Canonicalize with the rules of RFC 4646 */
+    /** Canonicalize with the rules of RFC 4646, or RFC5646 without replacement of perferred form. */
     public static String canonical(String str) {
         if ( str == null )
             return null ;
         String[] parts = parse(str) ;
         String x = canonical(parts) ;
         if ( x == null ) {
-            // Could try to apply the rule case-seeting rules
+            // Could try to apply the rule case-setting rules
             // even through it's not a conforming langtag.
             return str ;
         }
@@ -251,10 +243,12 @@ public class LangTag {
      * two-letter subtags are uppercase, all non-initial four-letter subtags are
      * titlecase, and all other subtags are lowercase." In addition, leave
      * extensions unchanged.
+     * <p>
+     * This is the same as RFC5646 without replacement of preferred form
+     * or consulting the registry.
      */
     public static String canonical(String[] parts) {
         // We canonicalised parts on parsing.
-        // RFC 5646 is slightly different.
         if ( parts == null )
             return null ;
 

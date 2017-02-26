@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.json;
 
 import java.io.* ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
@@ -84,9 +85,8 @@ public class JSON
             IO.exception("IOException: " + filename, ex) ;
             return null ;
         }
-
     }
-
+    
     // Hide the reader versions - not encouraged due to charset problems.
 
     private static JsonObject _parse(Reader r) {
@@ -159,14 +159,45 @@ public class JSON
 
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(IndentedWriter output, JsonValue jValue) {
+        int rowStart = output.getRow();
         JsonWriter w = new JsonWriter(output) ;
         w.startOutput() ;
         jValue.visit(w) ;
         w.finishOutput() ;
+        // If multiline, make sure we end on a new line.
+        if ( ! output.inFlatMode() && output.getRow() > rowStart )
+            output.ensureStartOfLine();
     }
 
-    /** Write out a JSON value to - pass a JSON Object to get legal exchangeable JSON */
+    /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(JsonValue jValue) {
         write(IndentedWriter.stdout, jValue) ;
+    }
+    
+    // General functions for working with JSON 
+    
+    /** Create a safe copy of a {@link JsonValue}.
+     *  <p>
+     *  If the JsonValue is a structure (object or array), copy the structure recursively.
+     *  <p>
+     *  If the JsonValue is a primitive (string, number, boolean or null),
+     *  it is immutable so return the same object.  
+     */
+    public static JsonValue copy(JsonValue arg) {
+        return JsonBuilder.copy(arg);
+    }
+
+    /** Build a JsonObject.  The outer object is created and then the {@code setup} function called to fill in the contents.
+     * <pre>
+     * buildObject(builder->{
+     *     builder.pair("key", 1234);
+     * });
+     * </pre>
+     * 
+     * @param setup
+     * @return JsonObject
+     */
+    public static JsonObject buildObject(Consumer<JsonBuilder> setup) {
+        return JsonBuilder.buildObject(setup);
     }
 }

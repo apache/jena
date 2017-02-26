@@ -26,9 +26,13 @@ import org.apache.jena.atlas.json.JsonString ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-/** Test that are of extension of JSON */ 
+/** Tests that are of extensions of JSON */ 
 public class TestJsonExt extends BaseTest
 {
+    // The Jena JSON parser is more liberal than strict JSON to make embedding easier.
+    // * Keys do not need quotes
+    // * Strings can use ''
+    
     // -------- Non-standard things.
     
     @Test public void js_value_ext_1()

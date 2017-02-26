@@ -18,10 +18,9 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.disjoint;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -410,7 +409,7 @@ public class TransformImplicitLeftJoin extends TransformCopy {
 
     private static boolean safeToTransform(Collection<Var> varsEquality, VarExprList varsExprList) {
         // If the named variable is used, unsafe to rewrite.
-        return disjoint(varsExprList.getVars(), varsEquality);
+        return Collections.disjoint(varsExprList.getVars(), varsEquality);
     }
 
     // ---- Transformation

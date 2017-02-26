@@ -201,10 +201,6 @@ public class ParserProfileBase implements ParserProfile {
                 return pp.createLangLiteral(str, token.getImage2(), line, col) ;
 
             case STRING :
-            case STRING1 :
-            case STRING2 :
-            case LONG_STRING1 :
-            case LONG_STRING2 :
                 return pp.createStringLiteral(str, line, col) ;
             default : {
                 Node x = pp.createNodeFromToken(currentGraph, token, line, col) ;

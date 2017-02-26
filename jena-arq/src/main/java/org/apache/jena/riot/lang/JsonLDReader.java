@@ -58,8 +58,8 @@ import com.github.jsonldjava.utils.JsonUtils ;
 
 /**
  * Note: it is possible to override jsonld's "@context" value by providing one,
- * using a {@link org.apache.jena.sparql.util.Context}, and setting {@link org.apache.jena.query.ARQ.RIOT#JSONLD_CONTEXT} Symbol's value
- * to the data expected by JSON-LD java API (a Map)
+ * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link RIOT#JSONLD_CONTEXT} Symbol's value
+ * to the data expected by JSON-LD java API (a {@link Map}).
  */
 public class JsonLDReader implements ReaderRIOT
 {

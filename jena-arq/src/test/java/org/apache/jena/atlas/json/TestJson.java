@@ -19,10 +19,9 @@
 package org.apache.jena.atlas.json;
 
 import static org.apache.jena.atlas.json.LibJsonTest.read ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestJson extends BaseTest
+public class TestJson
 {
     @Test
     public void js_value_1() {

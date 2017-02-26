@@ -22,10 +22,11 @@ import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
@@ -47,16 +48,16 @@ import org.apache.jena.sparql.util.Context ;
 public class RDFParserRegistry
 {
     /** Map Jena I/O names to language */
-    private static Map<String, Lang> mapJenaNameToLang                 = DS.map() ;
+    private static Map<String, Lang> mapJenaNameToLang                 = new HashMap<>() ;
 
     /** map language to a parser factory */ 
-    private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = DS.map() ;
+    private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = new HashMap<>() ;
     
     /** Known triples languages */
-    private static Set<Lang> langTriples  = DS.set() ;
+    private static Set<Lang> langTriples  = new HashSet<>() ;
 
     /** Known quads languages */
-    private static Set<Lang> langQuads    = DS.set() ;
+    private static Set<Lang> langQuads    = new HashSet<>() ;
 
     /** Generic parser factory. */
     private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;

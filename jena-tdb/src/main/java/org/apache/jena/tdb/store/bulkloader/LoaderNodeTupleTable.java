@@ -117,11 +117,10 @@ public class LoaderNodeTupleTable implements Closeable, Sync
     public void loadIndexStart()
     {
         if ( count > 0 )
-        {
             // Do index phase only if any items seen.
             monitor.startIndexPhase() ;
-            loadSecondaryIndexes() ;
-        }
+        // Always do this - it reattaches the secondary indexes.
+        loadSecondaryIndexes() ;
     }
 
     public void loadIndexFinish()

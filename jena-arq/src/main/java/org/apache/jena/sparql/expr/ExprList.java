@@ -77,9 +77,11 @@ public class ExprList implements Iterable<Expr>
         return x ;
     }
 
+    /** @deprecated Use {@link ExprVars#varsMentioned(Collection, ExprList)} */
+    @Deprecated
     public void varsMentioned(Collection<Var> acc) {
         for (Expr expr : expressions)
-            expr.varsMentioned(acc) ;
+            ExprVars.varsMentioned(acc, expr);
     }
     
     /**

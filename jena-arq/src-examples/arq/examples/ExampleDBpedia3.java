@@ -39,9 +39,9 @@ public class ExampleDBpedia3
         
         Query query = QueryFactory.create(queryString) ;
         try(QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
-            Map<String, Map<String,List<String>>> serviceParams = new HashMap<String, Map<String,List<String>>>() ;
-            Map<String,List<String>> params = new HashMap<String,List<String>>() ;
-            List<String> values = new ArrayList<String>() ;
+            Map<String, Map<String,List<String>>> serviceParams = new HashMap<>() ;
+            Map<String,List<String>> params = new HashMap<>() ;
+            List<String> values = new ArrayList<>() ;
             values.add("2000") ;
             params.put("timeout", values) ;
             serviceParams.put(serviceURI, params) ;

@@ -25,15 +25,6 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 
-/**
- * Manage a server for testing. Example for one server per test suite:
- * 
- * <pre>
- *     \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
- *     \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
- *     \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
- * </pre>
- */
 public class ServerTest {
     public static final String  gn1           = "http://graph/1" ;
     public static final String  gn2           = "http://graph/2" ;

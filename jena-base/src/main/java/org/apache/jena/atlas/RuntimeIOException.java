@@ -18,7 +18,11 @@
 
 package org.apache.jena.atlas;
 
-/** Runtime eception used to wrap IOExceptions */
+/** Runtime exception used to wrap or simulate IOExceptions.
+ * <p>
+ *  Unlike {@link java.io.UncheckedIOException}, this did not
+ *  necessarily begin with an {@link java.io.IOException}.
+ */
 public class RuntimeIOException extends AtlasException
 {
     public RuntimeIOException()                          { super() ; }

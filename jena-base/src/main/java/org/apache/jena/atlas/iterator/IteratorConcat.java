@@ -18,11 +18,10 @@
 
 package org.apache.jena.atlas.iterator;
 
+import java.util.ArrayList;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
-
-import org.apache.jena.atlas.lib.DS ;
 
 /** Iterator of Iterators
  *  IteratorConcat is better when there are lots of iterators to be joined.
@@ -31,7 +30,7 @@ import org.apache.jena.atlas.lib.DS ;
 
 public class IteratorConcat<T> implements Iterator<T>
 {
-    private List<Iterator<T>> iterators = DS.list(); 
+    private List<Iterator<T>> iterators = new ArrayList<>(); 
     int idx = -1 ;
     private Iterator<T> current = null ;
     private Iterator<T> removeFrom = null ;

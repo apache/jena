@@ -42,7 +42,7 @@ public class StageGeneratorGeneric implements StageGenerator {
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         if ( input == null )
-            Log.fatal(this, "Null input to " + Lib.classShortName(this.getClass())) ;
+            Log.error(this, "Null input to " + Lib.classShortName(this.getClass())) ;
 
         Graph graph = execCxt.getActiveGraph() ;
 

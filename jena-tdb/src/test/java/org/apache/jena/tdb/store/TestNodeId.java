@@ -152,9 +152,10 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_dateTime_06()
     { test("'2008-04-28T15:36:05.450'^^xsd:dateTime", "'2008-04-28T15:36:05.45'^^xsd:dateTime") ; }
 
-    // Java bug: T24:00:00 not accepted by DatatypeFactory.newXMLGregorianCalendar(lex)
-//    @Test public void nodeId_dateTime_07()
-//    { test("'2008-04-28T24:00:00'^^xsd:dateTime", NodeFactory.parseNode("'2008-04-29T00:00:00'^^xsd:dateTime")) ; }
+    // Old Java bug, now fixed: T24:00:00 not accepted by DatatypeFactory.newXMLGregorianCalendar(lex)
+    // Note the Jena value is an XSDDateTime so it retains the "24"/"00" next day distinction. 
+    @Test public void nodeId_dateTime_07()
+    { test("'2008-04-28T24:00:00'^^xsd:dateTime") ; }
     
     // Out of range.
     @Test public void nodeId_dateTime_08()

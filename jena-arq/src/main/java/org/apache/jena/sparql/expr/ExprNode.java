@@ -56,12 +56,17 @@ public abstract class ExprNode implements Expr
     public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
     
     @Override
-    public Set<Var> getVarsMentioned()                      { return ExprVars.getVarsMentioned(this) ; }
+    public final Set<Var> getVarsMentioned()                    { return ExprVars.getVarsMentioned(this) ; }
     @Override
-    public void varsMentioned(Collection<Var> acc)          { ExprVars.varsMentioned(acc, this) ; }
+    public final void varsMentioned(Collection<Var> acc)        { ExprVars.varsMentioned(acc, this) ; }
 
-    public Set<String> getVarNamesMentioned()               { return ExprVars.getVarNamesMentioned(this) ; }
-    public void varNamesMentioned(Collection<String> acc)   { ExprVars.varNamesMentioned(acc, this) ; }
+    /** @deprecated Use {@link ExprVars#getVarNamesMentioned} */
+    @Deprecated
+    public Set<String> getVarNamesMentioned()                   { return ExprVars.getVarNamesMentioned(this) ; }
+
+    /** @deprecated Use {@link ExprVars#varNamesMentioned} */
+    @Deprecated
+    public void varNamesMentioned(Collection<String> acc)       { ExprVars.varNamesMentioned(acc, this) ; }
 
     @Override
     public abstract int hashCode() ;

@@ -28,33 +28,49 @@ import org.apache.jena.sparql.algebra.op.* ;
 
 public class OpWalker
 {
+    // Predates org.apache.jena.sparql.algebra.walker.Walker
+    // Need to convert but OpVars depends on OpWalkerVisitorFixed, OpWalkerVisitorVisible
+    
+    /* OpVars::
+     public static void visibleVars(Op op, Set<Var> acc) {
+        OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
+        // Does not work.
+        //new WalkerVisitorVisible(visitor, null, null, null).walk(op);
+        //OpWalker.walk(new OpWalkerVisitorVisible(visitor, acc), op) ;
+    }
+     */
+    
+    // **** Replace with org.apache.jena.sparql.algebra.walker.Walker
     public static void walk(Op op, OpVisitor visitor)
     {
-        walk(new WalkerVisitor(visitor, null, null), op) ;
+        // new walker :: this works
+        // Walker.walk(op, visitor);
+        walk(new OpWalkerVisitor(visitor, null, null), op) ;
     }
     
-    public static void walk(Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-    {
-        walk(new WalkerVisitor(visitor, beforeVisitor, afterVisitor), op) ;
-    }
+//    public static void walk(Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+//    {
+//        walk(new OpWalkerVisitor(visitor, beforeVisitor, afterVisitor), op) ;
+//    }
     
-    public static void walk(WalkerVisitor walkerVisitor, Op op)
+    public static void walk(OpWalkerVisitor walkerVisitor, Op op)
     {
+        // Stil needed for OpWalkerVisitorVisible, OpWalkerVisitorFixed
         op.visit(walkerVisitor) ;
     }
     
-    protected static class WalkerVisitor extends OpVisitorByType {
+    protected static class OpWalkerVisitor extends OpVisitorByType {
         private final OpVisitor   beforeVisitor ;
         private final OpVisitor   afterVisitor ;
         protected final OpVisitor visitor ;
 
-        public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
+        public OpWalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
             this.visitor = visitor ;
             this.beforeVisitor = beforeVisitor ;
             this.afterVisitor = afterVisitor ;
         }
 
-        public WalkerVisitor(OpVisitor visitor) {
+        public OpWalkerVisitor(OpVisitor visitor) {
             this(visitor, null, null) ;
         }
 

@@ -134,11 +134,6 @@ public class DateTimeNode
         lex = lex.trim() ;
         
         boolean containsZ = (lex.indexOf('Z') > 0 ) ;
-        
-        // Bug in Java 1.6 (build 5 at least)
-        // T24:00:00 not accepted.
-        // See also TestNodeId.nodeId_date_time_7
-        
         XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
         
         if ( xcal.getFractionalSecond() != null )

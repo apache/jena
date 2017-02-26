@@ -181,15 +181,15 @@ public class RiotLib
             return new ParserProfileBase(prologue, handler, factoryRDF(labelToNode)) ;
     }
 
-    /** Create a new (notinfluenced by anything else) FactoryRDF
+    /** Create a new (not influenced by anything else) {@code FactoryRDF}
      * using the label to blank node scheme provided. 
      */
     public static FactoryRDF factoryRDF(LabelToNode labelMapping) {
         return new FactoryRDFCaching(FactoryRDFCaching.DftNodeCacheSize, labelMapping);
     }
 
-    /** Create a new (not influenced by anything else) FactoryRDF
-     * using the label to blank node scheme scope by this FactoryRDF. 
+    /** Create a new (not influenced by anything else) {@code FactoryRDF}
+     * using the default label to blank node scheme. 
      */  
     public static FactoryRDF factoryRDF() {
         return factoryRDF(SyntaxLabels.createLabelToNode());

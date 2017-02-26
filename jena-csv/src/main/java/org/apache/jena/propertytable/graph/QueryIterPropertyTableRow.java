@@ -109,7 +109,7 @@ public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{
         
         private static BasicPattern tripleNode(BasicPattern pattern)
         {
-        	List<Triple> triples = new ArrayList<Triple>();
+        	List<Triple> triples = new ArrayList<>();
         	for (Triple triple: pattern){
         		triples.add( tripleNode(triple) );
         	}
@@ -143,7 +143,7 @@ public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{
         
         private static BasicPattern substitute(BasicPattern pattern , Binding binding)
         {
-        	List<Triple> triples = new ArrayList<Triple>();
+        	List<Triple> triples = new ArrayList<>();
         	for (Triple triple: pattern){
         		triples.add( substitute(triple,binding) );
         	}

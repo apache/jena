@@ -43,7 +43,7 @@ public abstract class PageBase implements Page
     final public void reset(Block block2)
     { 
         if ( block2.getId() != id )
-            Log.fatal(this, "Block id changed: "+id+" => "+block2.getId()) ;
+            Log.error(this, "Block id changed: "+id+" => "+block2.getId()) ;
         _reset(block2) ; 
         this.block = block2 ;
     } 

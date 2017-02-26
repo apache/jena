@@ -87,7 +87,7 @@ public class NodecLib
             return n ;
         } catch (SSEParseException ex)
         {
-            Log.fatal(NodeLib.class, "decode: Failed to parse: "+s) ;
+            Log.error(NodeLib.class, "decode: Failed to parse: "+s) ;
             throw ex ;
         }
     }

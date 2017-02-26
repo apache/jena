@@ -19,9 +19,8 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.PropertyFunctionGenerator ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.algebra.*;
 import org.apache.jena.sparql.algebra.op.OpBGP ;
 import org.apache.jena.sparql.algebra.op.OpTriple ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
@@ -33,6 +32,21 @@ public class TransformPropertyFunction extends TransformCopy
     private final Context context ;
     private final boolean doingMagicProperties ;
     private final PropertyFunctionRegistry registry ;
+    
+    /** Apply the property function transformation. 
+     *  <p>
+     *  The {@code context} provide the place to find the property function registry.
+     *  A custom one canbe supplied using 
+     *  {@link ARQConstants#registryPropertyFunctions}
+     *  <p>
+     *  See {@link PropertyFunctionRegistry#chooseRegistry} for the full decision process.
+     *  <p>
+     *  In addition, {@link ARQ#enablePropertyFunctions} must be true (this is the default). 
+     */
+    public static Op transform(Op op, Context context) {
+        Transform t = new TransformPropertyFunction(context) ;
+        return Transformer.transform(t, op) ; 
+    }
     
     public TransformPropertyFunction(Context context)
     {

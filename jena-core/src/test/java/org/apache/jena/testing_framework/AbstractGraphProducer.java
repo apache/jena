@@ -38,7 +38,7 @@ public abstract class AbstractGraphProducer<T extends Graph> implements
 	/**
 	 * The list of graphs that have been opened in this test.
 	 */
-	protected List<Graph> graphList = new ArrayList<Graph>();
+	protected List<Graph> graphList = new ArrayList<>();
 
 	/**
 	 * The method to create a new graph.

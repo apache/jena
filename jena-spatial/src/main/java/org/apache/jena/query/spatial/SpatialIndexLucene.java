@@ -29,7 +29,6 @@ import org.apache.lucene.document.Document ;
 import org.apache.lucene.document.Field ;
 import org.apache.lucene.document.FieldType ;
 import org.apache.lucene.index.* ;
-import org.apache.lucene.queries.function.ValueSource ;
 import org.apache.lucene.search.* ;
 import org.apache.lucene.spatial.SpatialStrategy ;
 import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
@@ -42,7 +41,6 @@ import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.spatial4j.core.shape.Point ;
 import com.spatial4j.core.shape.Shape ;
 
 public class SpatialIndexLucene implements SpatialIndex {
@@ -193,18 +191,11 @@ public class SpatialIndexLucene implements SpatialIndex {
 			limit = MAX_N;
 
 		IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-		Point pt = shape.getCenter();
-		ValueSource valueSource = strategy.makeDistanceValueSource(pt);// the
-																		// distance
-																		// (in
-																		// degrees)
-		Sort distSort = new Sort(valueSource.getSortField(false))
-				.rewrite(indexSearcher);
 		SpatialArgs args = new SpatialArgs(operation, shape);
 		args.setDistErr(0.0);
 		Filter filter = strategy.makeFilter(args);
 		TopDocs docs = indexSearcher.search(new MatchAllDocsQuery(), filter,
-				limit, distSort);
+				limit);
 
 		List<Node> results = new ArrayList<>();
 

@@ -891,9 +891,20 @@ implements Model, PrefixMapping, Lock
     @Override
     public RDFList createList( Iterator<? extends RDFNode> members ) 
     {
-        RDFList list = createList();
-        while (members != null && members.hasNext()) list = list.with( members.next() );
-        return list;
+        if (!members.hasNext())
+            return createList();
+
+        Resource root = createResource().addProperty(RDF.first, members.next());
+        Resource last = root;
+        while (members.hasNext())
+        {
+            Resource rest = createResource().addProperty(RDF.first, members.next());
+            last.addProperty(RDF.rest, rest);
+            last = rest;
+        }
+        last.addProperty(RDF.rest, RDF.nil);
+
+        return root.as(RDFList.class);
     }
 
 
