@@ -16,22 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.sys;
+package org.apache.jena.test;
 
+import org.apache.jena.vocabulary.RDFS;
 
-import org.apache.jena.tdb.sys.TestSys ;
-import org.apache.jena.test.TestSystemSetup;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestSys.class
-    // From jena-core ... includes initialization test.  
-    , TestSystemSetup.class
-})
-
-public class TS_Sys
-{
-
+// Invoked from TestSystemSetup 
+public class RDFSJenaInitTestApp {
+    public static void main(String[] args) {
+        System.out.printf("%s\n", RDFS.subClassOf);
+    }
 }

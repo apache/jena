@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.pfunction;
 
 import org.apache.jena.sparql.vocabulary.ListPFunction ;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.RDFS;
 
 public class StandardPropertyFunctions {
     @SuppressWarnings("deprecation")
@@ -36,7 +36,9 @@ public class StandardPropertyFunctions {
         add(registry, ListPFunction.listIndex.getURI() , org.apache.jena.sparql.pfunction.library.listIndex.class) ;
         add(registry, ListPFunction.listLength.getURI() , org.apache.jena.sparql.pfunction.library.listLength.class) ;
         
-        add(registry, RDFS.member.getURI(), org.apache.jena.sparql.pfunction.library.container.class) ;
+        // This is called during Jena-wide initialization.
+        // Use function for constant (JENA-1294)
+        add(registry, RDFS.Init.member().getURI(), org.apache.jena.sparql.pfunction.library.container.class) ;
     }
     
     private static void add(PropertyFunctionRegistry registry, String uri, Class<?> funcClass)
