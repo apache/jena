@@ -231,16 +231,11 @@ public class ResultSetFormatter {
         {
             // Force nodes to be materialized.
             QuerySolution result = resultSet.nextSolution() ;
-            for ( Iterator<String> iter = result.varNames() ; iter.hasNext() ; )
-            {
-                String vn = iter.next();
-                RDFNode n = result.get(vn) ;
-            }
+            materialize(result);
             count++ ;
         }
         return count ;
     }
-    
 
     /**
      * Turn the result set into a java.util.List
@@ -250,13 +245,20 @@ public class ResultSetFormatter {
     static public List<QuerySolution> toList(ResultSet resultSet)
     {
         List<QuerySolution> list = new ArrayList<>() ;
-        for ( ; resultSet.hasNext() ; )
-        {
-            QuerySolution result = 
-                resultSet.nextSolution() ;
+        for ( ; resultSet.hasNext() ; ) {
+            QuerySolution result = resultSet.nextSolution() ;
+            materialize(result);
             list.add(result) ;
         }
         return list ;
+    }
+    
+    /** Touch every var/value */
+    private static void materialize(QuerySolution qs) {
+        for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; ) {
+            String vn = iter.next();
+            RDFNode n = qs.get(vn) ;
+        }
     }
     
     // ----------------------------------------------------------------
