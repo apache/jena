@@ -47,20 +47,27 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 	public QueryIterGroup(QueryIterator qIter, 
                           VarExprList groupVars,
                           List<ExprAggregator> aggregators,
-                          ExecutionContext execCxt)
-    {
-        super(null, execCxt) ;
+                          ExecutionContext execCxt) {
+	    // Delayed initalization 
+	    // Does the group calculation when first used (typically hasNext) 
+        super(calc(qIter, groupVars, aggregators, execCxt),
+              execCxt) ;
         this.embeddedIterator = qIter;
-        Iterator<Binding> iter = calc(qIter, groupVars, aggregators, execCxt) ;
-        setIterator(iter) ;
     }
 
-	@Override
-	public void requestCancel()
-	{
-	    this.embeddedIterator.cancel();
-	    super.requestCancel() ;
-	}
+    @Override
+    public void requestCancel()
+    {
+        this.embeddedIterator.cancel();
+        super.requestCancel() ;
+    }
+    
+    @Override
+    protected void closeIterator()
+    {
+        this.embeddedIterator.close();
+        super.closeIterator();
+    }
 	
     // Phase 1 : Consume the input iterator, assigning groups (keys) 
     //           and push rows through the aggregator function. 
@@ -68,10 +75,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     // Phase 2 : Go over the group bindings and assign the value of each aggregation.
 	
 	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ; 
-	
     
     private static Iterator<Binding> calc(final QueryIterator iter, 
-                                          final VarExprList groupVarExpr, final List<ExprAggregator> aggregators,
+                                          final VarExprList groupVarExpr,
+                                          final List<ExprAggregator> aggregators,
                                           final ExecutionContext execCxt)
     {
         return new IteratorDelayedInitialization<Binding>() {
