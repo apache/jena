@@ -109,6 +109,13 @@
       <version>3.3.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfconnection</artifactId>
+      <version>3.3.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
    <!-- xerces is needed - but this is marked as optional as some
         OSGi frameworks like Karaf will include their own
         xerces in their boot delegation.
