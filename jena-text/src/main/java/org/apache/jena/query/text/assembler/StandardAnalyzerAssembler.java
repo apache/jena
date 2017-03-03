@@ -32,7 +32,7 @@ import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.analysis.CharArraySet;
 
 /**
  * Assembler to create standard analyzers with keyword list.

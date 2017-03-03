@@ -105,10 +105,10 @@ public class TestEntityDefinitionAssembler {
 		EntityDefinitionAssembler emAssembler = new EntityDefinitionAssembler();
 		emAssembler.open(null, spec3, null);
 		if (jts_lib_ready) {
-			assertEquals("com.spatial4j.core.context.jts.JtsSpatialContext",
+			assertEquals("org.locationtech.spatial4j.context.jts.JtsSpatialContext",
 					SpatialQuery.ctx.getClass().getName());
 		} else {
-			assertEquals("com.spatial4j.core.context.SpatialContext",
+			assertEquals("org.locationtech.spatial4j.context.SpatialContext",
 					SpatialQuery.ctx.getClass().getName());
 		}
 

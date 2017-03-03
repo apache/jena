@@ -72,9 +72,9 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
     <ver.commons-codec>1.10</ver.commons-codec>
-    <ver.lucene>5.5.4</ver.lucene>
+    <ver.lucene>6.4.1</ver.lucene>
     <ver.solr>4.9.1</ver.solr>
-    <ver.spatial4j>0.5</ver.spatial4j>
+    <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>1.7.0</ver.awaitility>
@@ -286,7 +286,13 @@
       </dependency>
 
       <dependency>
-        <groupId>com.spatial4j</groupId>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial-extras</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.locationtech.spatial4j</groupId>
         <artifactId>spatial4j</artifactId>
         <version>${ver.spatial4j}</version>
       </dependency>

@@ -86,4 +86,13 @@ public class ConfigurableAnalyzer extends Analyzer {
                 return new TokenStreamComponents(source, stream);
         }
 
+        @Override
+        protected TokenStream normalize(String fieldName, TokenStream in) {
+                TokenStream stream = in;
+                for (String filter : this.filters) {
+                        stream = getTokenFilter(filter, stream);
+                }
+                return stream;
+        }
+
 }
