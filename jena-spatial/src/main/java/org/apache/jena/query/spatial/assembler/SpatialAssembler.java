@@ -29,7 +29,6 @@ public class SpatialAssembler
         AssemblerUtils.registerDataset(SpatialVocab.spatialDataset,       new SpatialDatasetAssembler()) ;
         
         Assembler.general.implementWith(SpatialVocab.definition,          new EntityDefinitionAssembler()) ;
-        Assembler.general.implementWith(SpatialVocab.spatialIndexSolr,    new SpatialIndexSolrAssembler()) ; 
         Assembler.general.implementWith(SpatialVocab.spatialIndexLucene,  new SpatialIndexLuceneAssembler()) ;
     }
 }

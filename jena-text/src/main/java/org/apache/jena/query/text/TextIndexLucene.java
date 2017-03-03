@@ -343,7 +343,6 @@ public class TextIndexLucene implements TextIndex {
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<>() ;
 
-        // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] x = doc.getValues(docDef.getEntityField()) ;
@@ -393,7 +392,6 @@ public class TextIndexLucene implements TextIndex {
 
         List<TextHit> results = new ArrayList<>() ;
 
-        // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] values = doc.getValues(docDef.getEntityField()) ;

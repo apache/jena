@@ -34,10 +34,8 @@ public class TextVocab
     public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
     
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
-    public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
     public static final Property pLanguage          = Vocab.property(NS, "language") ;
-    public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
     public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;

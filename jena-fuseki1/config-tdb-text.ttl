@@ -44,7 +44,6 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 # Text
 [] ja:loadClass "org.apache.jena.query.text.TextQuery" .
 text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
-#text:TextIndexSolr    rdfs:subClassOf   text:TextIndex .
 text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 ## ---------------------------------------------------------------
@@ -63,19 +62,12 @@ text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 <#text_dataset> rdf:type     text:TextDataset ;
     text:dataset   <#dataset> ;
-    ##text:index   <#indexSolr> ;
     text:index     <#indexLucene> ;
     .
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
     tdb:location "DB" ;
     ##tdb:unionDefaultGraph true ;
-    .
-
-<#indexSolr> a text:TextIndexSolr ;
-    #text:server <http://localhost:8983/solr/COLLECTION> ;
-    text:server <embedded:SolrARQ> ;
-    text:entityMap <#entMap> ;
     .
 
 <#indexLucene> a text:TextIndexLucene ;

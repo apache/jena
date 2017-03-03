@@ -31,10 +31,7 @@ public class SpatialVocab
     public static final Property pIndex             = Vocab.property(NS, "index") ;
     
     public static final Resource spatialIndex       = Vocab.resource(NS, "SpatialIndex") ;
-    public static final Resource spatialIndexSolr   = Vocab.resource(NS, "SpatialIndexSolr") ;
     public static final Resource spatialIndexLucene = Vocab.resource(NS, "SpatialIndexLucene") ;
-    public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
-    public static final Property pSolrHome          = Vocab.property(NS, "solrHome") ;          // EmbeddedSolrServer 
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pDefinition        = Vocab.property(NS, "definition") ;
     
