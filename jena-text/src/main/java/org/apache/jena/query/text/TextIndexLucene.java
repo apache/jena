@@ -27,6 +27,7 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
@@ -43,7 +44,6 @@ import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
 import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -51,7 +51,6 @@ public class TextIndexLucene implements TextIndex {
     private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;
 
     private static int             MAX_N    = 10000 ;
-    public static final Version    VER      = Version.LUCENE_4_9 ;
     // prefix for storing datatype URIs in the index, to distinguish them from language tags
     private static final String    DATATYPE_PREFIX = "^^";
 
@@ -60,7 +59,7 @@ public class TextIndexLucene implements TextIndex {
         ftIRI = new FieldType() ;
         ftIRI.setTokenized(false) ;
         ftIRI.setStored(true) ;
-        ftIRI.setIndexed(true) ;
+		ftIRI.setIndexOptions(IndexOptions.DOCS);
         ftIRI.freeze() ;
     }
     public static final FieldType  ftString = StringField.TYPE_NOT_STORED ;
@@ -71,6 +70,7 @@ public class TextIndexLucene implements TextIndex {
     private final Analyzer         queryAnalyzer ;
     private final String           queryParserType ;
     private final FieldType        ftText ;
+    private final boolean          isMultilingual ;
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
     // However, it needs to be volatile in case the next write transaction is on a different thread,
@@ -88,8 +88,14 @@ public class TextIndexLucene implements TextIndex {
         this.directory = directory ;
         this.docDef = config.getEntDef() ;
 
+        this.isMultilingual = config.isMultilingualSupport();
+        if (this.isMultilingual &&  config.getEntDef().getLangField() == null) {
+            //multilingual index cannot work without lang field
+            docDef.setLangField("lang");
+        }
+
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
-        // entity and graph fields and StandardAnalyzer for all other
+        // entity and graph fields and the configured analyzer(s) for all other
         Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
         analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
         if ( docDef.getGraphField() != null )
@@ -104,8 +110,10 @@ public class TextIndexLucene implements TextIndex {
             }
         }
 
-        this.analyzer = new PerFieldAnalyzerWrapper(
-                (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer(VER), analyzerPerField) ;
+        Analyzer defaultAnalyzer = (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer();
+        if (this.isMultilingual)
+            defaultAnalyzer = new MultilingualAnalyzer(defaultAnalyzer);
+        this.analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, analyzerPerField) ;
         this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
         this.queryParserType = config.getQueryParser() ;
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;
@@ -116,7 +124,7 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private void openIndexWriter() {
-        IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
+        IndexWriterConfig wConfig = new IndexWriterConfig(analyzer) ;
         try
         {
             indexWriter = new IndexWriter(directory, wConfig) ;
@@ -264,6 +272,10 @@ public class TextIndexLucene implements TextIndex {
                 RDFDatatype datatype = entity.getDatatype();
                 if (lang != null && !"".equals(lang)) {
                     doc.add(new Field(langField, lang, StringField.TYPE_STORED));
+                    if (this.isMultilingual) {
+                        // add a field that uses a language-specific analyzer via MultilingualAnalyzer
+                        doc.add(new Field(e.getKey() + "_" + lang, (String) e.getValue(), ftText));
+                    }
                 } else if (datatype != null && !datatype.equals(XSDDatatype.XSDstring)) {
                     // for non-string and non-langString datatypes, store the datatype in langField
                     doc.add(new Field(langField, DATATYPE_PREFIX + datatype.getURI(), StringField.TYPE_STORED));
@@ -296,32 +308,37 @@ public class TextIndexLucene implements TextIndex {
     private QueryParser getQueryParser(Analyzer analyzer) {
         switch(queryParserType) {
             case "QueryParser":
-                return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
             case "AnalyzingQueryParser":
-                return new AnalyzingQueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+                return new AnalyzingQueryParser(docDef.getPrimaryField(), analyzer) ;
             case "ComplexPhraseQueryParser":
-                return new ComplexPhraseQueryParser(VER, docDef.getPrimaryField(), analyzer);
+                return new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
             default:
                 log.warn("Unknown query parser type '" + queryParserType + "'. Defaulting to standard QueryParser") ;
-                return new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
         }
     }
 
     private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        if (this.isMultilingual) {
+            if (queryString.contains(getDocDef().getLangField() + ":")) {
+                String lang = queryString.substring(queryString.lastIndexOf(":") + 1);
+                if (!"*".equals(lang)) {
+                    // splice the language into the field name
+                    queryString = queryString.replaceFirst(":", "_" + lang + ":");
+                }
+            }
+        }
         QueryParser queryParser = getQueryParser(analyzer) ;
         queryParser.setAllowLeadingWildcard(true) ;
         Query query = queryParser.parse(queryString) ;
         return query ;
     }
 
-    protected Query preParseQuery(String queryString, Analyzer analyzer) throws ParseException {
-        return parseQuery(queryString, analyzer);
-    }
-
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        Query query = preParseQuery(qs, queryAnalyzer) ;
+        Query query = parseQuery(qs, queryAnalyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<>() ;
@@ -369,7 +386,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<TextHit> query$(IndexReader indexReader, Node property, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = preParseQuery(qs, queryAnalyzer) ;
+        Query query = parseQuery(qs, queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;

@@ -31,13 +31,9 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 
 public class SpatialSearchUtil {
-	
-    private static Version VER = SpatialIndexLucene.VER ;
-    private static final Analyzer analyzer = new StandardAnalyzer(VER);
-    
+    private static final Analyzer analyzer = new StandardAnalyzer();
 	private static final String LUCENE_INDEX_PATH = "target/test/LuceneSpatialIndex";
 	private static final File LUCENE_Index_DIR = new File(LUCENE_INDEX_PATH);
 	
@@ -63,9 +59,8 @@ public class SpatialSearchUtil {
 
     public static void createEmptyIndex(File indexDir) {
         try {
-            Directory directory = FSDirectory.open(indexDir) ;
-            IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
-            @SuppressWarnings("resource")
+            Directory directory = FSDirectory.open(indexDir.toPath()) ;
+            IndexWriterConfig wConfig = new IndexWriterConfig(analyzer) ;
             IndexWriter indexWriter = new IndexWriter(directory, wConfig) ;
             indexWriter.close() ; // force creation of the index files
         } catch (IOException ex) {
@@ -126,7 +121,7 @@ public class SpatialSearchUtil {
 		EntityDefinition entDef = new EntityDefinition("uri", "geo");
 
 		// Lucene, index in File system.
-		Directory dir = FSDirectory.open(indexDir);
+		Directory dir = FSDirectory.open(indexDir.toPath());
 
 		// Join together into a dataset
 		Dataset ds = SpatialDatasetFactory.createLucene(baseDataset, dir, entDef);

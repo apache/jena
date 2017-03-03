@@ -140,7 +140,7 @@ public class JenaSpatialExample1 {
         
 
         // Lucene, index in File system.
-        Directory dir = FSDirectory.open(indexDir);
+        Directory dir = FSDirectory.open(indexDir.toPath());
 
         // Join together into a dataset
         Dataset ds = SpatialDatasetFactory.createLucene(baseDataset, dir, entDef);

@@ -37,7 +37,6 @@ import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree ;
 import org.apache.lucene.spatial.query.SpatialArgs ;
 import org.apache.lucene.spatial.query.SpatialOperation ;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -48,14 +47,13 @@ public class SpatialIndexLucene implements SpatialIndex {
 			.getLogger(SpatialIndexLucene.class);
 
 	private static int MAX_N = 10000;
-	public static final Version VER = Version.LUCENE_4_9;
 
 	public static final FieldType ftIRI;
 	static {
 		ftIRI = new FieldType();
 		ftIRI.setTokenized(false);
 		ftIRI.setStored(true);
-		ftIRI.setIndexed(true);
+		ftIRI.setIndexOptions(IndexOptions.DOCS);
 		ftIRI.freeze();
 	}
 	// public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
@@ -65,7 +63,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 	private final EntityDefinition docDef;
 	private final Directory directory;
 	private IndexWriter indexWriter;
-	private Analyzer analyzer = new StandardAnalyzer(VER);
+	private Analyzer analyzer = new StandardAnalyzer();
 
 	/**
 	 * The Lucene spatial {@link SpatialStrategy} encapsulates an approach to
@@ -108,7 +106,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 	@Override
 	public void startIndexing() {
 		try {
-			IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer);
+			IndexWriterConfig wConfig = new IndexWriterConfig(analyzer);
 			indexWriter = new IndexWriter(directory, wConfig);
 		} catch (IOException e) {
 			exception(e);
@@ -193,9 +191,8 @@ public class SpatialIndexLucene implements SpatialIndex {
 		IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 		SpatialArgs args = new SpatialArgs(operation, shape);
 		args.setDistErr(0.0);
-		Filter filter = strategy.makeFilter(args);
-		TopDocs docs = indexSearcher.search(new MatchAllDocsQuery(), filter,
-				limit);
+		Query query = strategy.makeQuery(args);
+		TopDocs docs = indexSearcher.search(query, limit);
 
 		List<Node> results = new ArrayList<>();
 

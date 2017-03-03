@@ -72,7 +72,7 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
     <ver.commons-codec>1.10</ver.commons-codec>
-    <ver.lucene>4.9.1</ver.lucene>
+    <ver.lucene>5.5.4</ver.lucene>
     <ver.solr>4.9.1</ver.solr>
     <ver.spatial4j>0.5</ver.spatial4j>
 

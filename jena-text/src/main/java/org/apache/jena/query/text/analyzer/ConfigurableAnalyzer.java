@@ -18,7 +18,6 @@
 
 package org.apache.jena.query.text.analyzer ;
 
-import java.io.Reader ;
 import java.util.List ;
 
 import org.apache.jena.query.text.TextIndexException;
@@ -33,7 +32,6 @@ import org.apache.lucene.analysis.core.WhitespaceTokenizer ;
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.util.Version ;
 
 
 /** 
@@ -42,20 +40,19 @@ import org.apache.lucene.util.Version ;
  */
 
 public class ConfigurableAnalyzer extends Analyzer {
-        private final Version version;
         private final String tokenizer;
         private final List<String> filters;
         
-        private Tokenizer getTokenizer(String tokenizerName, Reader reader) {
+        private Tokenizer getTokenizer(String tokenizerName) {
                 switch(tokenizerName) {
                         case "KeywordTokenizer":
-                                return new KeywordTokenizer(reader);
+                                return new KeywordTokenizer();
                         case "LetterTokenizer":
-                                return new LetterTokenizer(version, reader);
+                                return new LetterTokenizer();
                         case "StandardTokenizer":
-                                return new StandardTokenizer(version, reader);
+                                return new StandardTokenizer();
                         case "WhitespaceTokenizer":
-                                return new WhitespaceTokenizer(version, reader);
+                                return new WhitespaceTokenizer();
                         default:
                                 throw new TextIndexException("Unknown tokenizer : " + tokenizerName);
                 }
@@ -66,23 +63,22 @@ public class ConfigurableAnalyzer extends Analyzer {
                         case "ASCIIFoldingFilter":
                                 return new ASCIIFoldingFilter(source);
                         case "LowerCaseFilter":
-                                return new LowerCaseFilter(version, source);
+                                return new LowerCaseFilter(source);
                         case "StandardFilter":
-                                return new StandardFilter(version, source);
+                                return new StandardFilter(source);
                         default:
                                 throw new TextIndexException("Unknown filter : " + filterName);
                 }
         }
         
-        public ConfigurableAnalyzer(Version ver, String tokenizer, List<String> filters) {
-                this.version = ver;
+        public ConfigurableAnalyzer(String tokenizer, List<String> filters) {
                 this.tokenizer = tokenizer;
                 this.filters = filters;
         }
 
         @Override
-        protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-                Tokenizer source = getTokenizer(this.tokenizer, reader);
+        protected TokenStreamComponents createComponents(String fieldName) {
+                Tokenizer source = getTokenizer(this.tokenizer);
                 TokenStream stream = source;
                 for (String filter : this.filters) {
                         stream = getTokenFilter(filter, stream);
