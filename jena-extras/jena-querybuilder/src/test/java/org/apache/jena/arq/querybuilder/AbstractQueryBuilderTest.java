@@ -60,6 +60,7 @@ public class AbstractQueryBuilderTest {
 		public HandlerBlock getHandlerBlock() {
 			return handlerBlock;
 		}
+		
 	}
 
 	private class NodeFront implements FrontsNode {

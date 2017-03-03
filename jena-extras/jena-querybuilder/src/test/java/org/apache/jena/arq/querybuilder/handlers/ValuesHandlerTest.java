@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,16 +55,16 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 	}
 	
 	@Test
-	public void oneVarNoData() {
-		handler.addValueVar( Var.alloc( "x" ));
+	public void oneVarNullData() {
+		handler.addValueVar( Var.alloc( "x" ), null);
 		handler.build();
 		assertNull( query.getValuesVariables());
 		assertNull( query.getValuesData() );
 	}
-	
+
 	@Test
-	public void noVarOneData() {
-		handler.addDataBlock( Arrays.asList( NodeFactory.createLiteral( "hello")));
+	public void oneVarEmptyData() {
+		handler.addValueVar( Var.alloc( "x" ), Collections.emptyList());
 		handler.build();
 		assertNull( query.getValuesVariables());
 		assertNull( query.getValuesData() );
@@ -72,9 +73,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void oneVarOneData() {
 		Node n =NodeFactory.createLiteral( "hello");
-		handler.addDataBlock( Arrays.asList( n));
 		Var v = Var.alloc( "x" );
-		handler.addValueVar( v );
+		handler.addValueVar( v, Arrays.asList(n) );
 		handler.build();
 		
 		List<Var> vars = query.getValuesVariables();
@@ -90,23 +90,19 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		assertTrue( b.contains(v));
 		assertEquals( n, b.get(v) );
 	}
-	
+			
 	@Test
-	public void oneVarTwoBlocks() {
+	public void oneVarTwoData() {
 		Node n =NodeFactory.createLiteral( "hello");
 		Node n2 = NodeFactory.createLiteral( "there");
-		handler.addDataBlock( Arrays.asList( n ));
-		handler.addDataBlock( Arrays.asList( n2 ));
 		
 		Var v = Var.alloc( "x" );
-		handler.addValueVar( v );
+		handler.addValueVar( v, Arrays.asList( n, n2 ));
 		handler.build();
 		
 		List<Var> vars = query.getValuesVariables();
 		assertEquals( 1, vars.size());
 		assertEquals( v, vars.get(0));
-		
-		
 		
 		assertNotNull( query.getValuesData() );
 		List<Binding> lb = query.getValuesData();
@@ -126,11 +122,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void twoVarOneData() {
 		Node n =NodeFactory.createLiteral( "hello");
-		handler.addDataBlock( Arrays.asList( n));
 		Var v = Var.alloc( "x" );
-		Var v2 = Var.alloc( "x" );
-		handler.addValueVar( v );
-		handler.addValueVar( v2 );
+		Var v2 = Var.alloc( "y" );
+		handler.addValueVar( v, Arrays.asList( n) );
+		handler.addValueVar( v2, null );
 		try {
 			handler.build();
 			fail( "Shoud have thrown QueryBuildException");
@@ -141,24 +136,6 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		}
 	}
 	
-	@Test
-	public void oneVarTwoData() {
-		Node n =NodeFactory.createLiteral( "hello");
-		Node n2 = NodeFactory.createLiteral( "there");
-		handler.addDataBlock( Arrays.asList( n, n2 ));		
-		Var v = Var.alloc( "x" );
-		handler.addValueVar( v );
-		
-		try {
-			handler.build();
-			fail( "Shoud have thrown QueryBuildException");
-		}
-		catch (QueryBuildException expected)
-		{
-			// do nothing.
-		}
-		
-	}
 	
 	
 	@Test
@@ -167,15 +144,14 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		Node nn = NodeFactory.createLiteral( "hola");
 		Node n2 = NodeFactory.createLiteral( "there");
 		Node nn2 = NodeFactory.createLiteral( "aqui");
-		handler.addDataBlock( Arrays.asList( n, nn ));
-		handler.addDataBlock( Arrays.asList( n2, nn2 ));
-		
+			
 		Var v = Var.alloc( "x" );
 		Var v2 = Var.alloc( "y");
 		
-		handler.addValueVar( v );
-		handler.addValueVar(v2);
-	
+		handler.addValueVar( v, null );
+		handler.addValueVar(v2, null);
+		handler.addValueRow( Arrays.asList( n, n2));
+		handler.addValueRow( Arrays.asList( nn, nn2));
 
 		handler.build();
 		
@@ -190,10 +166,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		
 		List<Node> ln = new ArrayList<Node>();
 		ln.add(n);
-		ln.add(n2);
+		ln.add(nn);
 		
 		List<Node> ln2 = new ArrayList<Node>();
-		ln2.add(nn);
+		ln2.add(n2);
 		ln2.add(nn2);
 		
 		
@@ -213,14 +189,14 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		Node nn = NodeFactory.createLiteral( "hola");
 		Node n2 = NodeFactory.createLiteral( "there");
 		Node nn2 = NodeFactory.createLiteral( "aqui");
-		handler.addDataBlock( Arrays.asList( n, nn ));
-		handler.addDataBlock( Arrays.asList( n2, nn2 ));
-		
+			
 		Var v = Var.alloc( "x" );
 		Var v2 = Var.alloc( "y");
 		
-		handler.addValueVar( v );
-		handler.addValueVar(v2);
+		handler.addValueVar( v, null );
+		handler.addValueVar(v2, null);
+		handler.addValueRow( Arrays.asList( n, n2));
+		handler.addValueRow( Arrays.asList( nn, nn2));
 		
 		Map<Var,Node> replaceVars = new HashMap<Var,Node>();
 		replaceVars.put( v2, NodeFactory.createBlankNode());
@@ -238,7 +214,7 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		
 		List<Node> ln = new ArrayList<Node>();
 		ln.add(n);
-		ln.add(n2);
+		ln.add(nn);
 		for (Binding b : lb ) {
 			assertTrue( b.contains(v));
 			assertFalse( b.contains(v2));
@@ -253,16 +229,15 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		Node nn = NodeFactory.createLiteral( "hola");
 		Node n2 = NodeFactory.createLiteral( "there");
 		Var nn2 = Var.alloc( "z");
-		handler.addDataBlock( Arrays.asList( n, nn ));
-		handler.addDataBlock( Arrays.asList( n2, nn2 ));
 		
 		Var v = Var.alloc( "x" );
 		Var v2 = Var.alloc( "y");
 		
-		handler.addValueVar( v );
-		handler.addValueVar(v2);
-	
-
+		handler.addValueVar( v, null );
+		handler.addValueVar(v2, null);
+		handler.addValueRow( Arrays.asList( n, n2));
+		handler.addValueRow( Arrays.asList( nn, nn2));
+		
 		Node rep = NodeFactory.createLiteral( "aqui");
 		Map<Var,Node> replaceVars = new HashMap<Var,Node>();
 		replaceVars.put( nn2, rep);
@@ -281,10 +256,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		
 		List<Node> ln = new ArrayList<Node>();
 		ln.add(n);
-		ln.add(n2);
+		ln.add(nn);
 		
 		List<Node> ln2 = new ArrayList<Node>();
-		ln2.add(nn);
+		ln2.add(n2);
 		ln2.add(rep);
 			
 		for (Binding b : lb ) {
@@ -301,19 +276,125 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 	public void oneVarTwoBlocksWithReplacement() {
 		Node n =NodeFactory.createLiteral( "hello");
 		Node n2 = NodeFactory.createLiteral( "there");
-		handler.addDataBlock( Arrays.asList( n ));
-		handler.addDataBlock( Arrays.asList( n2 ));
 		
 		Var v = Var.alloc( "x" );
-		handler.addValueVar( v );
+		handler.addValueVar( v, Arrays.asList( n, n2) );
 		
 		Map<Var,Node> replaceVars = new HashMap<Var,Node>();
-		replaceVars.put( v, NodeFactory.createAnon());
+		replaceVars.put( v, NodeFactory.createBlankNode());
 		
 		handler.setVars(replaceVars);
 		handler.build();
 		
 		assertNull( query.getValuesVariables());
 		assertNull( query.getValuesData() );
+	}
+	
+	@Test
+	public void testAddSquare() {
+		
+		Node n =NodeFactory.createLiteral( "hello");
+		Node nn = NodeFactory.createLiteral( "hola");
+		Node n2 = NodeFactory.createLiteral( "there");
+		Node nn2 = NodeFactory.createLiteral( "aqui");
+			
+		Var v = Var.alloc( "x" );
+		Var v2 = Var.alloc( "y");
+		
+		handler.addValueVar( v, Arrays.asList( n, n2 ) );
+		handler.addValueVar( v2, Arrays.asList( nn, nn2 ) );
+
+		ValuesHandler handler2 = new ValuesHandler(new Query());
+		Node n3 = NodeFactory.createLiteral( "why");
+		Node nn3 = NodeFactory.createLiteral( "quando");
+		handler2.addValueVar( v, Arrays.asList( n3 ) );
+		handler2.addValueVar( v2, Arrays.asList( nn3 ) );
+		
+		handler.addAll( handler2 );
+		handler.build();
+		
+		List<Var> vars = query.getValuesVariables();
+		assertEquals( 2, vars.size());
+		assertTrue( vars.contains(v));
+		assertTrue( vars.contains(v2));
+		
+		assertNotNull( query.getValuesData() );
+		List<Binding> lb = query.getValuesData();
+		assertEquals( 3, lb.size());
+		
+		List<Node> ln = new ArrayList<Node>();
+		ln.add(n);
+		ln.add(n2);
+		ln.add(n3);
+		
+		List<Node> ln2 = new ArrayList<Node>();
+		ln2.add(nn);
+		ln2.add(nn2);
+		ln2.add(nn3);
+		
+		
+		for (Binding b : lb ) {
+			assertTrue( b.contains(v));
+			assertTrue( ln.contains( b.get(v) ) );
+			ln.remove( b.get(v));
+			assertTrue( b.contains(v2));
+			assertTrue( ln2.contains( b.get(v2) ) );
+			ln2.remove( b.get(v2));
+		}
+	}
+	
+	@Test
+	public void testAddNotSquare() {
+		
+		Node n =NodeFactory.createLiteral( "hello");
+		Node nn = NodeFactory.createLiteral( "hola");
+		Node n2 = NodeFactory.createLiteral( "there");
+		Node nn2 = NodeFactory.createLiteral( "aqui");
+			
+		Var v = Var.alloc( "x" );
+		Var v2 = Var.alloc( "y");
+		Var v3 = Var.alloc( "z");
+		
+		handler.addValueVar( v, Arrays.asList( n, n2 ) );
+		handler.addValueVar( v2, Arrays.asList( nn, nn2 ) );
+
+		ValuesHandler handler2 = new ValuesHandler(new Query());
+		Node n3 = NodeFactory.createLiteral( "why");
+		Node nn3 = NodeFactory.createLiteral( "quando");
+		handler2.addValueVar( v2, Arrays.asList( n3 ) );
+		handler2.addValueVar( v3, Arrays.asList( nn3 ) );
+		
+		handler.addAll( handler2 );
+		handler.build();
+		
+		List<Var> vars = query.getValuesVariables();
+		assertEquals( 3, vars.size());
+		assertTrue( vars.contains(v));
+		assertTrue( vars.contains(v2));
+		assertTrue( vars.contains(v3));
+		
+		assertNotNull( query.getValuesData() );
+		List<Binding> lb = query.getValuesData();
+		assertEquals( 3, lb.size());
+		
+	
+		for (Binding b : lb ) {
+			assertTrue( b.contains(v2));
+			Node node = b.get(v2);
+			if (node.equals(nn))
+			{
+				assertEquals( n, b.get(v));
+				assertFalse( b.contains( v3 ));
+			}
+			else if (node.equals(nn2)) {
+				assertEquals( n2, b.get(v));
+				assertFalse( b.contains( v3 ));
+			} else if (node.equals(n3)) {
+				assertFalse( b.contains( v ));
+				assertEquals( nn3, b.get(v3));
+			} else {
+				fail( "Wrong data in table");
+			}
+		}
 	}
 }
