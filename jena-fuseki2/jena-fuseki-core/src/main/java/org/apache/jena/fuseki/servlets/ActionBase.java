@@ -231,8 +231,14 @@ public abstract class ActionBase extends ServletBase
                 log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.contentType)) ;
             if ( action.contentLength != -1 )
                 log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.contentLength)) ;
-            for (Map.Entry<String, String> e : action.headers.entrySet())
+            for (Map.Entry<String, String> e : action.headers.entrySet()) {
+                // Skip already printed.
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.contentType != null)
+                    continue;
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.contentLength != -1)
+                    continue;
                 log.info(format("[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue())) ;
+            }
         }
 
         String timeStr = fmtMillis(time) ;
