@@ -19,9 +19,7 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.rdf.model.RDFWriter;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.Logger ;
@@ -47,6 +45,8 @@ public class SysRIOT
     public static final boolean AbsURINoNormalization   = false ;
     public static final String BNodeGenIdPrefix         = "genid" ;
     
+    private static String riotBase = "http://jena.apache.org/riot/" ;
+
     /**
      * Context key for old style RDFWriter properties. The value of this in a
      * {@link Context} must be a {@code Map<String, Object>}. The entries of the
@@ -54,7 +54,16 @@ public class SysRIOT
      * {@link RDFWriter} is called. Only has any effect on RDF/XML and
      * RDF/XML-ABBREV.
      */
-    public static final Symbol rdfWriterProperties      = Symbol.create("riot.rdfWriter_properties") ;
+
+    /** Context key for old style RDFWriter properties */ 
+    public static final Symbol sysRdfWriterProperties      = Symbol.create(riotBase+"rdfWriter_properties") ;
+    
+    /** @deprecated Use {@link #sysRdfWriterProperties} */
+    @Deprecated
+    public static final Symbol rdfWriterProperties      = sysRdfWriterProperties ;
+    
+    /** Context key for the StreamManager */ 
+    public static Symbol sysStreamManager = Symbol.create(riotBase+"streamManager") ;
     
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;

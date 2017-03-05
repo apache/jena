@@ -57,7 +57,7 @@ public class RDFWriterRIOT implements RDFWriter
     public RDFWriterRIOT(String jenaName) {
         this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
         this.jenaName = jenaName;
-        context.put(SysRIOT.rdfWriterProperties, properties);
+        context.put(SysRIOT.sysRdfWriterProperties, properties);
     }
 
     private WriterGraphRIOT writer() {

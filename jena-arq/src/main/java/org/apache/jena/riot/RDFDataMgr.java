@@ -24,7 +24,6 @@ import java.util.Objects ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.graph.Graph ;
@@ -81,10 +80,10 @@ public class RDFDataMgr
     static { JenaSystem.init() ; }
     
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
-    private static String riotBase = "http://jena.apache.org/riot/" ;
     
-	private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
-	public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
+    /** @deprecated Use {@link SysRIOT#sysStreamManager} */
+    @Deprecated
+    public static Symbol streamManagerSymbol = SysRIOT.sysStreamManager;
 
     /** Read triples into a Model from the given location. 
      *  The syntax is detemined from input source URI (content negotiation or extension). 
@@ -809,13 +808,7 @@ public class RDFDataMgr
      * @return TypedInputStream
      */
     public static TypedInputStream open(String filenameOrURI, Context context) {
-        StreamManager sMgr = StreamManager.get() ;
-        if ( context != null ) {
-            try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
-            catch (ClassCastException ex) 
-            { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Lib.classShortName(StreamManager.class)) ; }
-        }
-        
+        StreamManager sMgr = StreamManager.get(context) ;
         return open(filenameOrURI, sMgr) ;
     }
     
