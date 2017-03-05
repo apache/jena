@@ -37,7 +37,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 
@@ -83,7 +82,7 @@ public class RDFParserBuilder {
     private String baseUri = null;
     
     // ---- Unused but left in case required in the future.
-    private boolean strict = false;
+    private boolean strict = SysRIOT.isStrictMode();
     private boolean resolveURIs = true;
     private IRIResolver resolver = null;
     // ----
@@ -149,6 +148,22 @@ public class RDFParserBuilder {
      *  @return this
      */
     public RDFParserBuilder source(StringReader reader) {
+        clearSource();
+        this.javaReader = reader;
+        return this;
+    }
+
+    /** 
+     *  Set the source to {@link StringReader}. 
+     *  This clears any other source setting.
+     *  The {@link StringReader} will be closed when the 
+     *  parser is called and the parser can not be reused.  
+     *  @param reader
+     *  @return this
+     *  @deprecated   Use an InputStream or a StringReader. 
+     */
+    @Deprecated
+    public RDFParserBuilder source(Reader reader) {
         clearSource();
         this.javaReader = reader;
         return this;
@@ -268,12 +283,6 @@ public class RDFParserBuilder {
         return this;
     }
     
-
-    // Deprecate ParseProfile as a visible class.
-    //public RDFParserBuilder setParserProfile(ParserProfile profile) { return this; }
-    
-    // Divide out the line/column makers in Parser profile.
-
     // There are no strict/unstrict differences. 
 //    /**
 //     * Set "strict" mode.
@@ -285,8 +294,12 @@ public class RDFParserBuilder {
 //        return this;
 //    }
     
-    public RDFParserBuilder context(Context context) { this.context = context.copy() ; return this; }
-    //public Context context() { return this.context; }
+    public RDFParserBuilder context(Context context) {
+        if ( context != null )
+            context = context.copy();
+        this.context = context;
+        return this;
+    }
     
     // ---- Terminals
     // "parse" are short cuts for {@code build().parse(...)}.
@@ -379,7 +392,8 @@ public class RDFParserBuilder {
             return httpClient;
         if ( httpHeaders.isEmpty() )
             // System default.
-            return HttpOp.getDefaultHttpClient();
+            // For complete compatibility, we have to let null pass through.
+            return null; // HttpOp.getDefaultHttpClient();
         List<Header> hdrs = new ArrayList<>();
         httpHeaders.forEach((k,v)->{
             Header header = new BasicHeader(k, v);

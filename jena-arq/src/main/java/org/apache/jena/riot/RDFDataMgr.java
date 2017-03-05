@@ -35,6 +35,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.lang.PipedQuadsStream ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -255,7 +256,7 @@ public class RDFDataMgr
     public static void read(Graph graph, InputStream in, String base, Lang lang) {
         Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        process(dest, new TypedInputStream(in), base, lang, (Context)null) ;
+        process(dest, TypedInputStream.wrap(in), base, lang, (Context)null) ;
     }
 
     /** Read triples into a model with chars from an Reader.
@@ -550,7 +551,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang) {
         Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
-        process(dest, new TypedInputStream(in), base, lang, (Context)null) ;
+        process(dest, TypedInputStream.wrap(in), base, lang, (Context)null) ;
     }
     
     /** Read quads into a dataset with chars from an Reader.
@@ -694,7 +695,7 @@ public class RDFDataMgr
      * @param context   Content object to control reading process.
      */
     public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context) {
-        process(sink, new TypedInputStream(in), base, hintLang, context) ;
+        process(sink, TypedInputStream.wrap(in), base, hintLang, context) ;
     }
 
     /** Read RDF data.
@@ -842,50 +843,62 @@ public class RDFDataMgr
 
     private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context) {
         Objects.requireNonNull(in, "TypedInputStream is null") ;
-        ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
-
-        ReaderRIOT reader = getReader(ct) ;
-        if ( reader == null )
-            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
-        reader.read(in, baseUri, ct, destination, context) ;
+        
+        // If the input stream comes with a content type, use that in preference to the hint (compatibility).
+        
+        if ( in.getContentType() != null )
+            lang = RDFLanguages.contentTypeToLang(in.getMediaType());
+        
+        // XXX [ParserRDF] RDFDataMgr.process
+        // XXX [ParserRDF] ?? .contentType()
+        // XXX [ParserRDF] ?? .source(TypedInputStream)
+        // Remove all this and use a RDFParserBuilder.
+        RDFParser.create().source(in).base(baseUri).lang(lang).context(context).parse(destination);
+        
+        
+//        ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
+//        if ( ct == null )
+//            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
+//
+//        ReaderRIOT reader = getReader(ct) ;
+//        if ( reader == null )
+//            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
+//        reader.read(in, baseUri, ct, destination, context) ;
     }
     
     // java.io.Readers are NOT preferred.
+    @SuppressWarnings("deprecation")
     private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context ) {
         Objects.requireNonNull(in, "Reader is null") ;
-        ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
-        ReaderRIOT reader = getReader(ct) ;
-        if ( reader == null )
-            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
-        reader.read(in, baseUri, ct, destination, context) ;
+        RDFParser.create().source(in).base(baseUri).lang(lang).context(context).parse(destination);
+//        ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
+//        if ( ct == null )
+//            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
+//        ReaderRIOT reader = getReader(ct) ;
+//        if ( reader == null )
+//            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
+//        reader.read(in, baseUri, ct, destination, context) ;
     }
 
+    /** 
+     * @deprecated Use {@link RDFParser#create} or {@link #createReader(Lang, ParserProfile)}.
+     */
+    @Deprecated
+    public static ReaderRIOT createReader(Lang lang) {
+        return createReader(lang, RiotLib.profile(lang, null));
+    }
+    
     /** 
      * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@link Lang}
      * @see RDFLanguages#contentTypeToLang to go from content type to {@link Lang}
      */
 
-    public static ReaderRIOT createReader(Lang lang) {
-        if ( lang == null )
-            throw new NullPointerException("Argument lang can not be null in RDFDataMgr.createReader") ;   
+    public static ReaderRIOT createReader(Lang lang, ParserProfile profile) {
+        Objects.requireNonNull(lang,"Argument lang can not be null in RDFDataMgr.createReader") ;   
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;
-        return r.create(lang) ;
-    }
-    
-    private static ReaderRIOT getReader(ContentType ct) {
-        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        if ( lang == null )
-            return null ;
-        ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
-        if ( r == null )
-            return null ;
-        return r.create(lang) ;
+        return r.create(lang, profile) ;
     }
 
     // Operations to remove "null"s in the code.

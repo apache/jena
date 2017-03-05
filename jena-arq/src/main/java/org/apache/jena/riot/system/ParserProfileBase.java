@@ -77,11 +77,6 @@ public class ParserProfileBase implements ParserProfile {
     }
 
     @Override
-    public FactoryRDF getFactoryRDF() {
-        return factory;
-    }
-
-    @Override
     public void setFactoryRDF(FactoryRDF factory) {
         this.factory = factory;
     }

@@ -27,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -35,6 +34,7 @@ import java.util.Objects;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -151,17 +151,17 @@ public class RDFParser {
                 if ( r == null )
                     throw new RiotException("No parser registered for language: " + forceLang);
                 ct = forceLang.getContentType();
-                reader = r.create(forceLang);
+                reader = createReader(r, forceLang);
             } else {
                 // Conneg and hint
                 ct = WebContent.determineCT(input.getContentType(), hintLang, baseUri);
                 if ( ct == null )
                     throw new RiotException("Failed to determine the content type: (URI=" + baseUri + " : stream=" + input.getContentType()+")");
-                reader = getReader(ct);
+                reader = createReader(ct);
                 if ( reader == null )
                     throw new RiotException("No parser registered for content type: " + ct.getContentType());
             }
-            reader.read(input, baseUri, ct, destination, context);
+            read(reader, input, null, ct, destination);
         }
     }
 
@@ -175,32 +175,25 @@ public class RDFParser {
         if ( ct == null )
             throw new RiotException("Failed to determine the RDF syntax");
     
-        ReaderRIOT readerRiot = getReader(ct);
+        ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
             throw new RiotException("No parser registered for content type: " + ct.getContentType());
+        read(readerRiot, inputStream, javaReader, ct, destination);
+    }
     
-        if ( javaReader != null ) {
-            // try(javaRead;) in Java9
-            try ( Reader r = javaReader ) {
-                readerRiot.read(r, baseUri, ct, destination, context);
-            }
-            catch (IOException ex) {
-                IO.exception(ex);
-            }
+    /** Call the reader, from either an InputStream or a Reader */
+    private void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader, ContentType ct, StreamRDF destination) {
+        if ( inputStream != null && javaReader != null )
+            throw new InternalErrorException("Both inputStream and javaReader are non-null"); 
+        if ( inputStream != null ) {
+            readerRiot.read(inputStream, baseUri, ct, destination, context);
             return;
         }
-    
-        // InputStream
-        try ( InputStream input = inputStream ) {
-            // XXX Setup.
-            readerRiot.read(input, baseUri, ct, destination, context);
+        if ( javaReader != null ) {
+            readerRiot.read(javaReader, baseUri, ct, destination, context);
+            return;
         }
-        catch (AccessDeniedException | NoSuchFileException | FileNotFoundException ex)
-        { throw new RiotNotFoundException() ;} 
-        catch (IOException ex) {
-            IO.exception(ex);
-        }
-        return;
+        throw new InternalErrorException("Both inputStream and javaReader are null");
     }
 
     @SuppressWarnings("resource")
@@ -219,7 +212,9 @@ public class RDFParser {
         
         TypedInputStream in;
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
-            Objects.requireNonNull(httpClient);
+            // For complete compatibility, we have to let null pass through.
+            // Pair with RDFParserBuilder.buildHttpClient
+            //   Objects.requireNonNull(httpClient);
             // Remap.
             urlStr = StreamManager.get(context).mapURI(urlStr);
             in = HttpOp.execHttpGet(urlStr, null, httpClient, null);
@@ -234,7 +229,7 @@ public class RDFParser {
         
     }
 
-    private ReaderRIOT getReader(ContentType ct) {
+    private ReaderRIOT createReader(ContentType ct) {
         Lang lang = RDFLanguages.contentTypeToLang(ct);
         if ( lang == null )
             return null;
@@ -242,13 +237,14 @@ public class RDFParser {
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang);
         if ( r == null )
             return null;
-        ReaderRIOT reader = r.create(lang);
         
+        ReaderRIOT reader = createReader(r, lang);
+        return reader ;
+    }
+
+    private ReaderRIOT createReader(ReaderRIOTFactory r, Lang lang) {
         MakerRDF maker = makeMaker(lang);
-        // XXX
-        //reader.parserSetup(parserFactory);
-        // Back to old world.
-        reader.setParserProfile((MakerRDFStd)maker);
+        ReaderRIOT reader = r.create(lang, (MakerRDFStd)maker);
         return reader ;
     }
 
@@ -257,20 +253,22 @@ public class RDFParser {
         boolean checking = true;
         
         // Per language tweaks.
-        if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) )
-            checking = SysRIOT.isStrictMode() ;
+        if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) ) {
+            checking = SysRIOT.isStrictMode();
+            resolve = false;
+        }
         if ( sameLang(RDFJSON, lang) )
             resolve = false;
 
         IRIResolver resolver = this.resolver;
         if ( resolver == null ) {
-            resolver = resolveURIs ? 
+            resolver = resolve ? 
                 IRIResolver.create(baseUri) :
                 IRIResolver.createNoResolve() ;
         }
         PrefixMap prefixMap = PrefixMapFactory.createForInput();
 
-        MakerRDFStd parserFactory = new MakerRDFStd(factory, errorHandler, resolver, prefixMap, context, checking);
+        MakerRDFStd parserFactory = new MakerRDFStd(factory, errorHandler, resolver, prefixMap, context, checking, strict);
         return parserFactory;
     }
 }

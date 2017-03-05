@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -44,18 +43,22 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
     private /* final */ FactoryRDF   factory;
     private /* final */ ErrorHandler errorHandler;
     private /* final */ Context      context;
-    private final IRIResolver        resolver;
-    private final PrefixMap          prefixMap;
-    private boolean                  strictMode = true;
+    //private /* final */ Prologue     prologue;
+    private /* final */ IRIResolver  resolver;
+    private /* final */ PrefixMap    prefixMap;
+    private boolean                  strictMode;
     private final boolean            checking;
 
-    public MakerRDFStd(FactoryRDF factory, ErrorHandler errorHandler, IRIResolver resolver, PrefixMap prefixMap, Context context, boolean checking) {
+    public MakerRDFStd(FactoryRDF factory, ErrorHandler errorHandler, 
+                       IRIResolver resolver, PrefixMap prefixMap,
+                       Context context, boolean checking, boolean strictMode) {
         this.factory = factory;
         this.errorHandler = errorHandler;
         this.resolver = resolver;
         this.prefixMap = prefixMap;
         this.context = context;
-        this.checking = true;
+        this.checking = checking;
+        this.strictMode = strictMode;
     }
     
     @Deprecated @Override /* ParserProfile - to be removed */
@@ -65,7 +68,10 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
 
     @Deprecated @Override /* ParserProfile - to be removed */
     public void setPrologue(Prologue prologue) {
-        throw new InternalErrorException();
+        // XXX [ParserRDF]
+        // Resetting the base.
+        resolver = prologue.getResolver();
+        prefixMap = prologue.getPrefixMap();
     }
 
     @Deprecated @Override /* ParserProfile - to be removed */
@@ -87,11 +93,11 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
 //    public void setErrorHandler(ErrorHandler errorHandler) {
 //        this.errorHandler = errorHandler;
 //    }
-
-    @Override
-    public FactoryRDF getFactoryRDF() {
-        return factory;
-    }
+//
+//    @Override
+//    public FactoryRDF getFactoryRDF() {
+//        return factory;
+//    }
 
     @Override
     public void setFactoryRDF(FactoryRDF factory) {
@@ -126,15 +132,15 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
     @Override
     public IRI makeIRI(String uriStr, long line, long col) {
         IRI iri = resolver.resolveSilent(uriStr);
-        if ( false /* always checks IRIs */ && !checking )
-            return iri;
-
         // Some specific problems and specific error messages,.
         if ( uriStr.contains(" ") ) {
             // Specific check for spaces.
             errorHandler.warning("Bad IRI: <" + uriStr + "> Spaces are not legal in URIs/IRIs.", line, col);
             return iri;
         }
+
+        if ( !checking )
+            return iri;
 
         // At this point, IRI "errors" are warnings.
         // A tuned set of checking.

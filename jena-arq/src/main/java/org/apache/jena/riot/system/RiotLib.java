@@ -192,14 +192,14 @@ public class RiotLib
         return factoryRDF(SyntaxLabels.createLabelToNode());
     }
 
-    /** Create an {@link MakerRDF} with defautlt settings. */ 
+    /** Create an {@link MakerRDF} with default settings. */ 
     public static MakerRDF dftMakerRDF() {
         return new MakerRDFStd(RiotLib.factoryRDF(), 
                                ErrorHandlerFactory.errorHandlerStd,
                                IRIResolver.create(),
                                PrefixMapFactory.createForInput(),
                                RIOT.getContext().copy(),
-                               true) ;
+                               true, false) ;
     }
 
     /** Get triples with the same subject */
