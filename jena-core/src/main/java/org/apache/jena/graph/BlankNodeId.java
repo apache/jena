@@ -18,7 +18,6 @@
 
 package org.apache.jena.graph;
 
-import java.rmi.server.UID;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.rdf.model.AnonId ;
@@ -34,52 +33,44 @@ import org.apache.jena.shared.impl.JenaParameters ;
  * The equivalent concept for the API is {@link AnonId}. 
  * Historically, that has been in the org.apache.jena.rdf.model
  * package.  
- *  
  *
- * <p>This id is guaranteed to be unique on this machine.</p>
+ * <p>This id is guaranteed to be globally unique.</p>
+ * 
+ * @see JenaParameters#disableBNodeUIDGeneration
  */
 
 public class BlankNodeId extends java.lang.Object {
-    
-    // Support for running in environments, like Google App Engine, where
-    // java.rmi.server.UID is not available
-    // Will be obsoleted by improved AnonId handling
-    static boolean UIDok = true;
-    static {
-        try { new UID() ; }
-        catch (Throwable ex) { UIDok = false ; }
-    }
-    
+    // Jena RIOT parsers also generate labels : see LabelToNode. 
+    // This has been in RIOT for a long time (Jena2).
+    //
+    // Jena used to use java.rmi.UID for API unlabeled blank nodes
+    // in BlankNodeId() until v3.3.0 with "(new UID()).toString()".
+
     protected String id = null;
 
     /**
-     * Support for debugging: global BlankNodeId counter. The intial value is
+     * Support for debugging ONLY: global BlankNodeId counter. The intial value is
      * just to make the output look prettier if it has lots (but not lots and
      * lots) of bnodes in it.
      */
     private static AtomicInteger idCount = new AtomicInteger(100000) ;
     
-    public static BlankNodeId create()
-        { return new BlankNodeId(); }
+    /** Creates new BlankNodeId with a fresh internal id */ 
+    public static BlankNodeId create() {
+        return new BlankNodeId();
+    }
+
+    /** Creates new BlankNodeId with the given id */
+    public static BlankNodeId create(String id) {
+        return new BlankNodeId(id);
+    }
     
-    public static BlankNodeId create( String id )
-        { return new BlankNodeId( id ); }
-    
-    /**
-     * Creates new BlankNodeId. Normally this id is guaranteed to be unique on
-     * this machine: it is time-dependant. However, sometimes [incorrect] code
-     * is sensitive to bnode ordering and produces bizarre bugs. Hence the
-     * disableBNodeUIDGeneration flag, which allows bnode IDs to be predictable.
-     */
     protected BlankNodeId() {
         if (JenaParameters.disableBNodeUIDGeneration)
             id = "A" + idCount.getAndIncrement();
-        else if (!UIDok)
-            id = java.util.UUID.randomUUID().toString(); 
         else
-            id = (new UID()).toString();
+            id = java.util.UUID.randomUUID().toString();
     }
-    
 
     /** Create a new BlankNodeId from the string argument supplied.
      * @param id A string representation of the id to be created.
@@ -91,7 +82,6 @@ public class BlankNodeId extends java.lang.Object {
     protected BlankNodeId( BlankNodeId id ) {
         this.id = id.getLabelString();
     }
-    
 
     //@Override
     public int hashCode1() {
