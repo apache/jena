@@ -207,10 +207,10 @@ public class RDFParserBuilder {
     }
 
     /**
-     * Set an HTTP header. Any previous setting is
+     * Set an HTTP header. Any previous setting is lost.
      * <p> 
-     * Consider setting up an {@link HttpClient} if more complicated setting to an HTTP
-     * request is required.
+     * Consider setting up an {@link HttpClient} if more complicated
+     * setting to an HTTP request is required.
      */
     public RDFParserBuilder httpHeader(String header, String value) {
         httpHeaders.put(header, value);
@@ -218,14 +218,22 @@ public class RDFParserBuilder {
     }
     
     /** Set the HttpClient to use.
-     *  This will override any HTTP header settings.
+     *  This will override any HTTP header settings set for this builder.
      */
     public RDFParserBuilder httpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
     }
 
+    /** Set the base URI for parsing.  The default is to have no base URI. */ 
     public RDFParserBuilder base(String base) { this.baseUri = base ; return this; }
+
+    /** Choose whether to resolve URIs.<br/>
+     *  This does not affect all langages: N-Triples and N-Quads never resolve URIs.<br/>
+     *  Relative URIs are bad data.<br/>
+     *  Only set this to false for debugging and development purposes. 
+     */ 
+    public RDFParserBuilder resolveURIs(boolean flag) { this.resolveURIs = flag ; return this; }
 
     /**
      * Set the {@link ErrorHandler} to use.
@@ -272,7 +280,7 @@ public class RDFParserBuilder {
      * <br/>
      * {@link SyntaxLabels#createLabelToNode} is the default policy.
      * <br>
-     * {@link LabelToNode#createUseLabelAsGiven()} uses the label in teh RDF syntax directly. 
+     * {@link LabelToNode#createUseLabelAsGiven()} uses the label in the RDF syntax directly. 
      * This does not produce safe RDF and should only be used for development and debugging.   
      * @see #factory
      * @param labelToNode
@@ -356,7 +364,6 @@ public class RDFParserBuilder {
             throw new RiotException("No source specified");
         
         // Setup the HTTP client.
-        // XXX HttpClientBuilder ?
         HttpClient client = buildHttpClient();
         FactoryRDF factory$ = buildFactoryRDF();
         ErrorHandler errorHandler$ = errorHandler;
@@ -368,8 +375,7 @@ public class RDFParserBuilder {
         if ( path == null && baseUri == null && uri != null )
             baseUri = uri;
         
-        // Can't build maker here as it is Lang/conneg dependent.
-        
+        // Can't build the maker here as it is Lang/conneg dependent.
         return new RDFParser(uri, path, inputStream, javaReader, client,
                              hintLang, forceLang,
                              baseUri, strict, resolveURIs,
@@ -414,7 +420,7 @@ public class RDFParserBuilder {
         builder.path =              this.path;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
-        builder.httpHeaders =           new HashMap<>(this.httpHeaders);
+        builder.httpHeaders =       new HashMap<>(this.httpHeaders);
         builder.httpClient =        this.httpClient;
         builder.hintLang =          this.hintLang;
         builder.forceLang =         this.forceLang;

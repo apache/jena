@@ -147,6 +147,7 @@ public class RDFParser {
             ReaderRIOT reader;
             ContentType ct;
             if ( forceLang != null ) {
+                @SuppressWarnings("deprecation")
                 ReaderRIOTFactory r = RDFParserRegistry.getFactory(forceLang);
                 if ( r == null )
                     throw new RiotException("No parser registered for language: " + forceLang);
@@ -234,6 +235,7 @@ public class RDFParser {
         if ( lang == null )
             return null;
 
+        @SuppressWarnings("deprecation")
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang);
         if ( r == null )
             return null;

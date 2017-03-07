@@ -133,7 +133,10 @@ public class RDFParserRegistry
         langToParserFactory.remove(lang) ;
     }
     
-    /** Return the parser factory for the language, or null if not registered */
+    /** Return the parser factory for the language, or null if not registered.
+     * @deprecated To be removed or made package scoped. Use {@code RDFParser.create() ... .build()}
+     */
+    @Deprecated
     public static ReaderRIOTFactory getFactory(Lang language)
     {
         return langToParserFactory.get(language) ;

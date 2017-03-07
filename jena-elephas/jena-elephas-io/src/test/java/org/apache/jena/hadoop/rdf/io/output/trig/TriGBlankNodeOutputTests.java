@@ -80,7 +80,7 @@ public class TriGBlankNodeOutputTests extends StreamedTriGOutputTest {
 	@Override
 	protected Iterator<QuadWritable> generateTuples(int num) {
 		List<QuadWritable> qs = new ArrayList<QuadWritable>();
-		Node subject = NodeFactory.createAnon();
+		Node subject = NodeFactory.createBlankNode();
 		for (int i = 0; i < num; i++) {
 			Quad t = new Quad(
 					NodeFactory.createURI("http://example.org/graphs/" + i),

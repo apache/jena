@@ -141,7 +141,7 @@ public class infer extends CmdGeneral
         Lang lang = filename.equals("-") ? RDFLanguages.NQUADS : RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
 
         if ( filename.equals("-") )
-            RDFDataMgr.parse(sink, System.in, null, RDFLanguages.NQUADS, null) ;
+            RDFDataMgr.parse(sink, System.in, null, RDFLanguages.NQUADS) ;
         else
             RDFDataMgr.parse(sink, filename) ;
     }
