@@ -18,9 +18,7 @@
 
 package org.apache.jena.query.text.analyzer;
 
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.util.Version;
 import java.lang.reflect.Constructor;
 import java.util.Hashtable;
 
@@ -34,10 +32,6 @@ public class Util {
     }
 
     public static Analyzer getLocalizedAnalyzer(String lang) {
-        return getLocalizedAnalyzer(lang, TextIndexLucene.VER);
-    }
-
-    public static Analyzer getLocalizedAnalyzer(String lang, Version ver) {
         if (lang == null)
             return null;
 
@@ -48,8 +42,8 @@ public class Util {
             Class<?> className = analyzersClasses.get(lang);
             if (className == null)
                 return null;
-            Constructor<?> constructor = className.getConstructor(Version.class);
-            Analyzer analyzer = (Analyzer)constructor.newInstance(ver);
+            Constructor<?> constructor = className.getConstructor();
+            Analyzer analyzer = (Analyzer)constructor.newInstance();
             cache.put(lang, analyzer);
             return analyzer;
         } catch (Exception e) {

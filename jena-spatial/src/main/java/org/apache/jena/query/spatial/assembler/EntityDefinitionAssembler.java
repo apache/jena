@@ -48,7 +48,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
     ) ;
     spatial:hasWKTPredicates (<#wkt_1> <#wkt_2>) ;
     spatial:spatialContextFactory
-         "com.spatial4j.core.context.jts.JtsSpatialContextFactory"  .
+         "org.locationtech.spatial4j.context.jts.JtsSpatialContextFactory"  .
     */
     
     @Override

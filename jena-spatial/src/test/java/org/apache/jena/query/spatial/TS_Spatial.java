@@ -54,19 +54,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 		TestSouthPFWithLuceneSpatialIndex.class,
 		TestEastPFWithLuceneSpatialIndex.class,
 		TestWestPFWithLuceneSpatialIndex.class,
-		
-//		TestIsWithinCirclePFWithEmbeddedSolrSpatialIndex.class,
-//		TestIsNearByPFWithEmbeddedSolrSpatialIndex.class,
-//		TestIsWithinBoxPFWithEmbeddedSolrSpatialIndex.class,
-//		TestIntersectsBoxPFWithEmbeddedSolrSpatialIndex.class,
-//		TestNorthPFWithEmbeddedSolrSpatialIndex.class,
-//		TestSouthPFWithEmbeddedSolrSpatialIndex.class,
-//		TestEastPFWithEmbeddedSolrSpatialIndex.class,
-//		TestWestPFWithEmbeddedSolrSpatialIndex.class,
-		
 		TestTDBDatasetWithLuceneSpatialIndex.class,
 		TestIndexingSpatialDataWithLucene.class,
-//		TestIndexingSpatialDataWithSolr.class,
 
 		TestEntityDefinitionAssembler.class,
 		TestSpatialDatasetAssembler.class,

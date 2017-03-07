@@ -25,7 +25,6 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.query.text.analyzer.ConfigurableAnalyzer;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -64,7 +63,7 @@ public class ConfigurableAnalyzerAssembler extends AssemblerBase {
             } else {
                 filters = new ArrayList<>();
             }
-            return new ConfigurableAnalyzer(TextIndexLucene.VER, tokenizer, filters);
+            return new ConfigurableAnalyzer(tokenizer, filters);
         } else {
             throw new TextIndexException("text:tokenizer setting is required by ConfigurableAnalyzer");
         }

@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 
-import com.spatial4j.core.context.SpatialContextFactory;
+import org.locationtech.spatial4j.context.SpatialContextFactory;
 
 /**
  * Definition of a "document"

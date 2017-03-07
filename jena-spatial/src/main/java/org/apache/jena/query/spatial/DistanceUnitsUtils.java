@@ -21,7 +21,7 @@ package org.apache.jena.query.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.spatial4j.core.distance.DistanceUtils;
+import org.locationtech.spatial4j.distance.DistanceUtils;
 
 public class DistanceUnitsUtils {
 
