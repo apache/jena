@@ -195,7 +195,8 @@ public class DatasetUtils
             Graph gTmp = GraphFactory.createJenaDefaultGraph();
             for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
-                String absURI = IRIResolver.resolveString(sourceURI, baseURI);
+                String absURI = baseURI(sourceURI, absBaseURI);
+                // We can use a single temp graph.
                 RDFDataMgr.read(gTmp, sourceURI, absURI, null);
             }
             GraphUtil.addInto(dsg.getDefaultGraph(), gTmp);
@@ -204,15 +205,20 @@ public class DatasetUtils
         if ( namedSourceList != null && ! namedSourceList.isEmpty() ) {
             for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
-                if ( absBaseURI == null )
-                    sourceURI = IRIResolver.resolveString(sourceURI);
-                else    
-                    sourceURI = IRIResolver.resolveString(sourceURI, absBaseURI);
+                String absURI = baseURI(sourceURI, absBaseURI);
+                // Read to a tmp graph in case of syntax errors.
                 Graph gTmp = GraphFactory.createJenaDefaultGraph();
                 RDFDataMgr.read(gTmp, sourceURI, absBaseURI, null);
                 Node gn = NodeFactory.createURI(sourceURI);
                 dsg.addGraph(gn, gTmp);
             }
         }
+    }
+    
+    private static String baseURI(String sourceURI, String absBaseURI) {
+        if ( absBaseURI == null )
+            return IRIResolver.resolveString(sourceURI);
+        else    
+            return IRIResolver.resolveString(sourceURI, absBaseURI);
     }
 }
