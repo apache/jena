@@ -94,6 +94,7 @@ public class TestTextIndexES extends ESIntegTestCase {
         Assert.assertEquals(0, result.size());
     }
 
+    @Test
     public void testGetEntity() {
         init();
         //First add an entity
@@ -104,6 +105,7 @@ public class TestTextIndexES extends ESIntegTestCase {
         Assert.assertEquals(1, response.size());
     }
 
+    @Test
     public void testGetWhenDataDoesNotExist() {
         init();
         Map<String, Node> response = classToTest.get("http://example/x3");
