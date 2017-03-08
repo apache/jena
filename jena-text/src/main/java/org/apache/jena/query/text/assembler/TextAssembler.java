@@ -36,6 +36,8 @@ public class TextAssembler
         Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer, new LowerCaseKeywordAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.localizedAnalyzer, new LocalizedAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.configurableAnalyzer, new ConfigurableAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.textIndexES,  new TextIndexESAssembler()) ;
+
     }
 }
 
