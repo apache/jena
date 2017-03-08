@@ -18,16 +18,16 @@
 
 package org.apache.jena.query.text ;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import org.apache.jena.graph.Node;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.lucene.analysis.Analyzer;
+import java.util.Collection ;
+import java.util.Collections ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
+import org.apache.jena.ext.com.google.common.collect.ListMultimap;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Resource ;
+import org.apache.lucene.analysis.Analyzer ;
 
 /**
  * Definition of a "document"
