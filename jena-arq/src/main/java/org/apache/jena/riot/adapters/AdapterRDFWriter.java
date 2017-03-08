@@ -28,12 +28,20 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFWriter ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.WriterGraphRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
 import org.apache.jena.sparql.util.Context ;
 
-/** Wrapper for using old-style Jena RDFWriters in RIOT. */
-
+/**
+ * Adapter providing RIOT interface {@link WriterGraphRIOT} over an old-style
+ * Jena {@link RDFWriter}. Subclasses of this class are used for RDF/XML
+ * (basic and abbrevated) in RIOT.
+ * <p>
+ * See {@link RDFWriterRIOT} for the class plugged into RIOT that provides the
+ * {@link RDFWriter} interface to Jena core operations. It is {@link RDFWriter} over
+ * a {@link WriterGraphRIOT}.
+ */
 public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
 {
     protected abstract RDFWriter create() ;
