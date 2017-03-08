@@ -18,30 +18,27 @@
 
 package org.apache.jena.query.text.assembler;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.assemblers.AssemblerBase;
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Node;
-import org.apache.jena.query.*;
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.lucene.analysis.Analyzer;
+import static org.apache.jena.query.text.assembler.TextVocab.NS ;
 
-import java.util.Collection;
+import java.util.Collection ;
 import java.util.HashMap;
-import java.util.List;
+import java.util.List ;
 import java.util.Map;
 
-import static org.apache.jena.query.text.assembler.TextVocab.NS;
+import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Mode ;
+import org.apache.jena.assembler.assemblers.AssemblerBase ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.ext.com.google.common.collect.HashMultimap;
+import org.apache.jena.ext.com.google.common.collect.Multimap;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.query.* ;
+import org.apache.jena.query.text.EntityDefinition ;
+import org.apache.jena.query.text.TextIndexException ;
+import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.RDF ;
+import org.apache.lucene.analysis.Analyzer;
 
 public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
 {
