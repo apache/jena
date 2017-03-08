@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
  *
  */
 @ESIntegTestCase.ClusterScope()
-public class TextIndexESIntegrationTest extends ESIntegTestCase {
+public class TestTextIndexES extends ESIntegTestCase {
 
     static final String DOC_TYPE = "text";
 
