@@ -21,19 +21,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by LT-Mac-Akumar on 03/03/2017.
+ * Settings for ElasticSearch based indexing
  */
 public class ESSettings {
 
+    /**
+     * Map of hosts and ports. The host could also be an IP Address
+     */
     private Map<String,Integer> hostToPortMapping;
 
+    /**
+     * Name of the Cluster. Defaults to 'elasticsearch'
+     */
     private String clusterName;
 
+    /**
+     * Number of shards. Defaults to '1'
+     */
     private Integer shards;
 
+    /**
+     * Number of replicas. Defaults to '1'
+     */
     private Integer replicas;
 
+    /**
+     * Name of the index. Defaults to 'test'
+     */
     private String indexName;
+
 
     public Map<String, Integer> getHostToPortMapping() {
         return hostToPortMapping;
@@ -47,6 +63,9 @@ public class ESSettings {
         return new ESSettings.Builder();
     }
 
+    /**
+     * Convenient builder class for building ESSettings
+     */
     public static class Builder {
 
         ESSettings settings;
@@ -144,6 +163,7 @@ public class ESSettings {
         this.indexName = indexName;
     }
 
+
     @Override
     public String toString() {
         return "ESSettings{" +
@@ -151,6 +171,7 @@ public class ESSettings {
                 ", clusterName='" + clusterName + '\'' +
                 ", shards=" + shards +
                 ", replicas=" + replicas +
+                ", indexName='" + indexName +
                 '}';
     }
 }

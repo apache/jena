@@ -6,8 +6,6 @@
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix text:    <http://jena.apache.org/text#> .
-@prefix bot:     <http://www.fireeye.com/gi/Bot#> .
-@prefix threat:  <http://www.fireeye.com/gi/Threat#> .
 
 # TDB
 [] ja:loadClass "org.apache.jena.tdb.TDB" .
@@ -36,7 +34,8 @@ text:TextIndexES      rdfs:subClassOf   text:TextIndex .
     text:clusterName "elasticsearch" ; # Name of the ElasticSearch Cluster. If not specified defaults to 'elasticsearch'
     text:shards "1" ;                  # The number of shards for the index. Defaults to 1
     text:replicas "1" ;                # The number of replicas for the index. Defaults to 1
-    text:indexName "test"              # Name of the Index. defaults to test
+    text:indexName "test" ;            # Name of the Index. defaults to test
+    text:embedded "true" ;             # For testing purposes
     text:entityMap <#entMap> ;
     .
 
@@ -47,6 +46,4 @@ text:TextIndexES      rdfs:subClassOf   text:TextIndex .
          # rdfs:label            
          [ text:field "text" ; text:predicate rdfs:label ]
          [ text:field "comment" ; text:predicate rdfs:comment ]
-         [ text:field "botId" ; text:predicate bot:BotId ]
-         [ text:field "threatType" ; text:predicate threat:Type ]
          ) .

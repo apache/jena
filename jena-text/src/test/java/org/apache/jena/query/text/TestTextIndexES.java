@@ -1,5 +1,7 @@
 package org.apache.jena.query.text;
 
+
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.vocabulary.RDFS;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -9,6 +11,7 @@ import org.elasticsearch.test.ESIntegTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -17,6 +20,7 @@ import java.util.concurrent.ExecutionException;
  * Integration test for {@link TextIndexES} class
  * ES Integration test depends on security policies that may sometime not be loaded properly.
  * If you find any issues regarding security set the following VM argument to resolve the issue:
+ * -Dtests.security.manager=false
  *
  */
 @ESIntegTestCase.ClusterScope()
@@ -61,6 +65,35 @@ public class TestTextIndexES extends ESIntegTestCase {
         Assert.assertFalse(response.isExists());
     }
 
+    @Test
+    public void testDeleteWhenNoneExists() {
+        init();
+        GetResponse response = client.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x3").get();
+        Assert.assertFalse(response.isExists());
+        classToTest.deleteEntity(entity("http://example/x3", "doesnt matter", "doesnt matter"));
+        response = client.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x3").get();
+        Assert.assertFalse(response.isExists());
+
+    }
+
+    @Test
+    public void testQuery() {
+        init();
+        testAddEntity();
+        List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "this", 1);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(1, result.size());
+        Assert.assertEquals("this is a sample Label", result.get(0).getLiteral().getLiteralValue().toString());
+    }
+
+    @Test
+    public void testQueryWhenDataDoesNotExist() {
+        init();
+        List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "this", 1);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(0, result.size());
+    }
+
     public void testGetEntity() {
         init();
         //First add an entity
@@ -69,6 +102,14 @@ public class TestTextIndexES extends ESIntegTestCase {
         Map<String, Node> response = classToTest.get("http://example/x3");
         Assert.assertNotNull(response);
         Assert.assertEquals(1, response.size());
+    }
+
+    public void testGetWhenDataDoesNotExist() {
+        init();
+        Map<String, Node> response = classToTest.get("http://example/x3");
+        Assert.assertNotNull(response);
+        Assert.assertEquals(0, response.size());
+
     }
 
     private TextIndexConfig config() {
@@ -83,7 +124,8 @@ public class TestTextIndexES extends ESIntegTestCase {
         entity.put(fieldName, fieldValue);
         return entity;
     }
-    public void init() {
+
+    private void init() {
         if (client == null) {
             client = client();
         }

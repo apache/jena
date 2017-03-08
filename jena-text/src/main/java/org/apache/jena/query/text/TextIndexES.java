@@ -60,13 +60,12 @@ public class TextIndexES implements TextIndex {
     private final EntityDefinition docDef ;
 
     /**
-     * ElasticSearch Java Client to perform Index operations
+     * Thread safe ElasticSearch Java Client to perform Index operations
      */
     private static Client client;
 
     /**
-     * The name of the index.
-     *
+     * The name of the index. Defaults to 'test'
      */
     private String INDEX_NAME;
 
@@ -80,7 +79,10 @@ public class TextIndexES implements TextIndex {
 
     public TextIndexES(TextIndexConfig config, ESSettings esSettings) throws Exception{
 
+        this.INDEX_NAME = esSettings.getIndexName();
+
         if(client == null) {
+
             LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
             Settings settings = Settings.builder()
                     .put(CLUSTER_NAME, esSettings.getClusterName()).build();
@@ -108,7 +110,7 @@ public class TextIndexES implements TextIndex {
             client.admin().indices().prepareCreate(INDEX_NAME).setSettings(indexSettings).get();
         }
 
-        this.INDEX_NAME = esSettings.getIndexName();
+
 
     }
 
@@ -124,29 +126,46 @@ public class TextIndexES implements TextIndex {
         this.INDEX_NAME = indexName;
     }
 
+    /**
+     * We do not have any specific logic to perform before committing
+     */
     @Override
     public void prepareCommit() {
         //Do Nothing
 
     }
 
+    /**
+     * Commit happens in the individual get/add/delete operations
+     */
     @Override
     public void commit() {
         // Do Nothing
     }
 
+    /**
+     * not really sure what we need to roll back.
+     */
     @Override
     public void rollback() {
        //Not sure what to do here
 
     }
 
+    /**
+     * We don't have resources that need to be closed explicitely
+     */
     @Override
     public void close() {
         // Do Nothing
 
     }
 
+    /**
+     * Update an Entity. Since we are doing Upserts in add entity anyways, we simply call {@link #addEntity(Entity)}
+     * method that takes care of updating the Entity as well.
+     * @param entity the entity to update.
+     */
     @Override
     public void updateEntity(Entity entity) {
         //Since Add entity also updates the indexed document in case it already exists,
@@ -155,6 +174,13 @@ public class TextIndexES implements TextIndex {
     }
 
 
+    /**
+     * Add an Entity to the ElasticSearch Index.
+     * The entity will be added as a new document in ES, if it does not already exists.
+     * If the Entity exists, then the entity will simply be updated.
+     * The entity will never be replaced.
+     * @param entity the entity to add
+     */
     @Override
     public void addEntity(Entity entity) {
         LOGGER.debug("Adding/Updating the entity in ES");
@@ -260,10 +286,10 @@ public class TextIndexES implements TextIndex {
 
     /**
      * Query the ElasticSearch for the given Node, with the given query String and limit.
-     * @param property
-     * @param qs
-     * @param limit
-     * @return
+     * @param property the node property to make a search for
+     * @param qs the query string
+     * @param limit limit on the number of records to return
+     * @return List of {@link TextHit}s containing the documents that have been found
      */
     @Override
     public List<TextHit> query(Node property, String qs, int limit) {
@@ -278,7 +304,7 @@ public class TextIndexES implements TextIndex {
         List<TextHit> results = new ArrayList<>() ;
         for (SearchHit hit : response.getHits()) {
 
-            Node literal = null;
+            Node literal;
             String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
             String value = (String)hit.getSource().get(field);
             if(value != null) {
@@ -300,8 +326,6 @@ public class TextIndexES implements TextIndex {
 
     @Override
     public EntityDefinition getDocDef() {
-
-        System.out.println("getDocDef");
         return docDef ;
     }
 

@@ -114,6 +114,7 @@
           </exclusions>
       </dependency>
 
+
       <dependency>
           <groupId>org.apache.lucene</groupId>
           <artifactId>lucene-test-framework</artifactId>
@@ -152,13 +153,13 @@
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-api</artifactId>
           <version>2.7</version>
-          <scope>test</scope>
+          <!--<scope>test</scope>-->
       </dependency>
       <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
           <version>2.7</version>
-          <scope>test</scope>
+          <!--<scope>test</scope>-->
       </dependency>
 
   </dependencies>

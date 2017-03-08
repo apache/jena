@@ -93,6 +93,8 @@ public class TextIndexESAssembler extends AssemblerBase {
                 indexName = "test";
             }
 
+
+
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
