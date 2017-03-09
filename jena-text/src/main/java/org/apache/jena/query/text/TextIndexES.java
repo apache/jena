@@ -49,7 +49,7 @@ import java.util.Map;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 /**
- * Elastic Search V-5.2.1 Implementation of {@link TextIndex}
+ * Elastic Search Implementation of {@link TextIndex}
  *
  */
 public class TextIndexES implements TextIndex {
@@ -67,7 +67,7 @@ public class TextIndexES implements TextIndex {
     /**
      * The name of the index. Defaults to 'test'
      */
-    private String INDEX_NAME;
+    private final String INDEX_NAME;
 
     static final String CLUSTER_NAME = "cluster.name";
 
@@ -75,7 +75,7 @@ public class TextIndexES implements TextIndex {
 
     static final String NUM_OF_REPLICAS = "number_of_replicas";
 
-    private static Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
+    private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
     public TextIndexES(TextIndexConfig config, ESSettings esSettings) throws Exception{
 

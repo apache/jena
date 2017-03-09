@@ -84,69 +84,23 @@
       <dependency>
           <groupId>org.elasticsearch</groupId>
           <artifactId>elasticsearch</artifactId>
-          <version>5.2.1</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>commons-logging</groupId>
-                  <artifactId>commons-logging</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
-
       </dependency>
 
       <dependency>
           <groupId>org.elasticsearch.client</groupId>
           <artifactId>transport</artifactId>
-          <version>5.2.1</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>commons-logging</groupId>
-                  <artifactId>commons-logging</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
 
 
       <dependency>
           <groupId>org.apache.lucene</groupId>
           <artifactId>lucene-test-framework</artifactId>
-          <version>6.4.1</version>
-          <scope>test</scope>
-          <exclusions>
-              <exclusion>
-                  <groupId>commons-logging</groupId>
-                  <artifactId>commons-logging</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
 
       <dependency>
           <groupId>org.elasticsearch.test</groupId>
           <artifactId>framework</artifactId>
           <version>5.2.1</version>
-          <scope>test</scope>
-          <exclusions>
-              <exclusion>
-                  <groupId>commons-logging</groupId>
-                  <artifactId>commons-logging</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
 
       <dependency>
@@ -196,6 +150,9 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
+            <systemProperties>
+                <tests.security.manager>false</tests.security.manager>
+            </systemProperties>
         </configuration>
       </plugin>
 
