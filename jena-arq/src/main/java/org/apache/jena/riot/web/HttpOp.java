@@ -195,6 +195,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
+            .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
@@ -209,6 +210,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return CachingHttpClientBuilder.create()
+            .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
