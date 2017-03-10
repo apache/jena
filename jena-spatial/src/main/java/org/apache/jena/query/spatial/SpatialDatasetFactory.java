@@ -25,7 +25,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.store.Directory;
-import org.apache.solr.client.solrj.SolrServer;
 
 public class SpatialDatasetFactory
 {
@@ -78,25 +77,5 @@ public class SpatialDatasetFactory
         return create(base, index) ; 
     }
 
-    /** Create a Solr TextIndex */ 
-    public static SpatialIndex createSolrIndex(SolrServer server, EntityDefinition entMap)
-    {
-        SpatialIndex index = new SpatialIndexSolr(server, entMap) ;
-        return index ; 
-    }
-
-    /** Create a text-indexed dataset, using Solr */ 
-    public static Dataset createSolrIndex(Dataset base, SolrServer server, EntityDefinition entMap)
-    {
-        SpatialIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index) ; 
-    }
-
-    /** Create a text-indexed dataset, using Solr */ 
-    public static DatasetGraph createSolrIndex(DatasetGraph base, SolrServer server, EntityDefinition entMap)
-    {
-        SpatialIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index) ; 
-    }
 }
 

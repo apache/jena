@@ -37,12 +37,6 @@ public class SpatialSearchUtil {
 	private static final String LUCENE_INDEX_PATH = "target/test/LuceneSpatialIndex";
 	private static final File LUCENE_Index_DIR = new File(LUCENE_INDEX_PATH);
 	
-    private static final String  SOLR_DATA_PATH      = "target/test/SolrARQCollection/data";
-    private static final File    SOLR_DATA_DIR       = new File(SOLR_DATA_PATH);
-    private static final String  SOLR_INDEX_PATH     = SOLR_DATA_PATH + "/index";
-    private static final File    SOLR_INDEX_DIR      = new File(SOLR_INDEX_PATH);
-    private static final String  SOLR_TEST_ASSEM     = "src/test/resources/spatial-solr-config.ttl" ;	
-	
     public static void emptyAndDeleteDirectory(File dir) {
         File[] contents = dir.listFiles() ;
         if (contents != null) {
@@ -68,13 +62,6 @@ public class SpatialSearchUtil {
         }
 	}
     
-    public static Dataset initInMemoryDatasetWithSolrSpatitalIndex() {
-	    SpatialSearchUtil.deleteOldFiles(SOLR_DATA_DIR  );
-	    SOLR_INDEX_DIR.mkdirs();
-	    SpatialSearchUtil.createEmptyIndex(SOLR_INDEX_DIR);
-	    return SpatialDatasetFactory.create(SOLR_TEST_ASSEM) ;
-    }
-    
     public static Dataset initInMemoryDatasetWithLuceneSpatitalIndex() throws IOException{
     	return initInMemoryDatasetWithLuceneSpatitalIndex(LUCENE_Index_DIR);
     }
@@ -96,10 +83,7 @@ public class SpatialSearchUtil {
 	public static void deleteOldLuceneIndexDir() {
 		deleteOldFiles(LUCENE_Index_DIR);
 	}
-	public static void deleteOldSolrDataDir() {
-		deleteOldFiles(SOLR_DATA_DIR);
-	}
-    
+
 	public static void deleteOldFiles(File indexDir) {
 		if (indexDir.exists())
 			emptyAndDeleteDirectory(indexDir);

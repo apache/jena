@@ -87,13 +87,9 @@ public class textindexdump extends CmdARQ {
         
         if ( textIndex instanceof TextIndexLucene )
             dump((TextIndexLucene)textIndex) ;
-        else if ( textIndex instanceof TextIndexSolr )
-            dump((TextIndexSolr)textIndex) ;
         else
             System.err.println("Unsupported index type : "+Lib.className(textIndex)) ;
         }
-
-    private static void dump(TextIndexSolr textIndex) { System.err.println("Not implemented : dump Solr index") ; }
 
     private static void dump(TextIndexLucene textIndex) {
         try {

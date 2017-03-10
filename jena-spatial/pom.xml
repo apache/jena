@@ -93,36 +93,6 @@
       <artifactId>spatial4j</artifactId>
     </dependency>
     
-    <dependency>
-      <artifactId>solr-solrj</artifactId>
-      <groupId>org.apache.solr</groupId>
-    </dependency>
-      <!--
-    <dependency>
-      <artifactId>solr-core</artifactId>
-      <groupId>org.apache.solr</groupId>
-      <version>${ver.solr}</version>
-      <type>jar</type>
-      <scope>test</scope>
-      <exclusions>
-      <exclusion>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      </exclusion>
-      <exclusion>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      </exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>test</scope>
-    </dependency>
-    -->
   </dependencies>
 
   <build>

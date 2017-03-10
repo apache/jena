@@ -199,7 +199,6 @@ public class SpatialIndexLucene implements SpatialIndex {
 
 		List<Node> results = new ArrayList<>();
 
-		// Align and DRY with Solr.
 		for (ScoreDoc sd : docs.scoreDocs) {
 			Document doc = indexSearcher.doc(sd.doc);
 			String[] values = doc.getValues(docDef.getEntityField());

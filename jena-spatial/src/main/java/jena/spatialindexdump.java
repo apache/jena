@@ -89,13 +89,9 @@ public class spatialindexdump extends CmdARQ {
         
         if ( spatialIndex instanceof SpatialIndexLucene )
             dump((SpatialIndexLucene)spatialIndex) ;
-//        else if ( spatialIndex instanceof SpatialIndexSolr )
-//            dump((SpatialIndexSolr)spatialIndex) ;
         else
             System.err.println("Unsupported index type : "+Lib.className(spatialIndex)) ;
         }
-
-//    private static void dump(SpatialIndexSolr spatialIndex) { System.err.println("Not implemented : dump Solr index") ; }
 
     private static void dump(SpatialIndexLucene spatialIndex) {
         try {

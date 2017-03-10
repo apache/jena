@@ -27,7 +27,6 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
-import org.apache.solr.client.solrj.SolrServer ;
 
 public class TextDatasetFactory
 {
@@ -164,27 +163,6 @@ public class TextDatasetFactory
     {
         TextIndex index = createLuceneIndex(directory, config) ;
         return create(base, index, true) ;
-    }
-
-    /** Create a Solr TextIndex */
-    public static TextIndex createSolrIndex(SolrServer server, EntityDefinition entMap)
-    {
-        TextIndex index = new TextIndexSolr(server, entMap) ;
-        return index ; 
-    }
-
-    /** Create a text-indexed dataset, using Solr */ 
-    public static Dataset createSolrIndex(Dataset base, SolrServer server, EntityDefinition entMap)
-    {
-        TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index, true) ; 
-    }
-
-    /** Create a text-indexed dataset, using Solr */ 
-    public static DatasetGraph createSolrIndex(DatasetGraph base, SolrServer server, EntityDefinition entMap)
-    {
-        TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index, true) ; 
     }
 }
 
