@@ -24,7 +24,6 @@ import java.util.Objects ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.graph.Graph ;
@@ -36,6 +35,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.lang.PipedQuadsStream ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -81,10 +81,10 @@ public class RDFDataMgr
     static { JenaSystem.init() ; }
     
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
-    private static String riotBase = "http://jena.apache.org/riot/" ;
     
-	private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
-	public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
+    /** @deprecated Use {@link SysRIOT#sysStreamManager} */
+    @Deprecated
+    public static Symbol streamManagerSymbol = SysRIOT.sysStreamManager;
 
     /** Read triples into a Model from the given location. 
      *  The syntax is detemined from input source URI (content negotiation or extension). 
@@ -150,7 +150,9 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the model is unchanged.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */ 
+    @Deprecated
     public static void read(Model model, String uri, Context context)   { read(model.getGraph(), uri, context) ; }
     
     /** Read triples into a Model from the given location, with some parameters for the reader
@@ -159,7 +161,9 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the graph is unchanged.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */ 
+    @Deprecated
     public static void read(Graph graph, String uri, Context context)   { read(graph, uri, defaultLang(uri), context) ; }
     
     /** Read triples into a Model from the given location, with hint of language and the with some parameters for the reader 
@@ -169,7 +173,9 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the model is unchanged.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void read(Model model, String uri, Lang hintLang, Context context)
     { read(model, uri, defaultBase(uri), hintLang, context) ; }
     
@@ -180,7 +186,9 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the graph is unchanged.
-    */
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
+     */
+    @Deprecated
     public static void read(Graph graph, String uri, Lang hintLang, Context context)
     { read(graph, uri, defaultBase(uri), hintLang, context) ; }
     
@@ -193,7 +201,9 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the model is unchanged.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void read(Model model, String uri, String base, Lang hintLang, Context context)
 	{ read(model.getGraph(), uri, base, hintLang, context) ; }
 
@@ -205,7 +215,9 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      * @throws RiotNotFoundException if the location is not found - the model is unchanged.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void read(Graph graph, String uri, String base, Lang hintLang, Context context)
     {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
@@ -256,7 +268,7 @@ public class RDFDataMgr
     public static void read(Graph graph, InputStream in, String base, Lang lang) {
         Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        process(dest, new TypedInputStream(in), base, lang, (Context)null) ;
+        process(dest, TypedInputStream.wrap(in), base, lang, (Context)null) ;
     }
 
     /** Read triples into a model with chars from an Reader.
@@ -468,7 +480,9 @@ public class RDFDataMgr
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void read(Dataset dataset, String uri, Lang hintLang, Context context) {
         read(dataset.asDatasetGraph(), uri, hintLang, context) ;
     }
@@ -478,7 +492,9 @@ public class RDFDataMgr
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Language syntax
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void read(DatasetGraph dataset, String uri, Lang hintLang, Context context) {
         read(dataset, uri, defaultBase(uri), hintLang, context) ;
     }
@@ -492,8 +508,9 @@ public class RDFDataMgr
 	 * @param context   Context for the reader
 	 * @throws RiotNotFoundException if the location is not found - the dataset is unchanged.
 	 * Throws parse errors depending on the language and reader; the dataset may be partially updated. 
-	 */ 
-
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
+     */
+    @Deprecated
     public static void read(Dataset dataset, String uri, String base, Lang hintLang, Context context) {
 		read(dataset.asDatasetGraph(), uri, defaultBase(uri), hintLang, context) ;
     }
@@ -507,8 +524,9 @@ public class RDFDataMgr
 	 * @param context   Context for the reader
 	 * @throws RiotNotFoundException if the location is not found - the dataset is unchanged.
 	 * Throws parse errors depending on the language and reader; the dataset may be partially updated. 
-	 */ 
-
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
+     */
+    @Deprecated
     public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context) {
         StreamRDF sink = StreamRDFLib.dataset(dataset) ;
         parse(sink, uri, base, hintLang, context) ;
@@ -551,7 +569,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang) {
         Objects.requireNonNull(in, "InputStream is null") ;
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
-        process(dest, new TypedInputStream(in), base, lang, (Context)null) ;
+        process(dest, TypedInputStream.wrap(in), base, lang, (Context)null) ;
     }
     
     /** Read quads into a dataset with chars from an Reader.
@@ -632,7 +650,9 @@ public class RDFDataMgr
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void parse(StreamRDF sink, String uri, Lang hintLang, Context context) {
         parse(sink, uri, defaultBase(uri), hintLang, context) ;
     }
@@ -653,7 +673,9 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context) {
         if ( uri == null )
             throw new IllegalArgumentException("URI to read from is null") ;
@@ -693,9 +715,11 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context) {
-        process(sink, new TypedInputStream(in), base, hintLang, context) ;
+        process(sink, TypedInputStream.wrap(in), base, hintLang, context) ;
     }
 
     /** Read RDF data.
@@ -723,7 +747,9 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void parse(StreamRDF sink, StringReader in, String base, Lang hintLang, Context context) {
         process(sink, in, base, hintLang, context) ;
     }
@@ -757,7 +783,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
-     * @deprecated     Use an InputStream or a StringReader. 
+     * @deprecated     To be removed.  Use {@code RDFParser.create().context(context)...}
      */
     @Deprecated
     public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context) {
@@ -787,7 +813,9 @@ public class RDFDataMgr
      * @param in        Bytes to read.
      * @param base      Base URI
      * @param context   Content object to control reading process.
+     * @deprecated To be removed.  Use {@code RDFParser.create().context(context)...}
      */
+    @Deprecated
     public static void parse(StreamRDF sink, TypedInputStream in, String base, Context context) {
         Objects.requireNonNull(in, "TypedInputStream is null") ;
         Lang hintLang = RDFLanguages.contentTypeToLang(in.getMediaType()) ;
@@ -809,13 +837,7 @@ public class RDFDataMgr
      * @return TypedInputStream
      */
     public static TypedInputStream open(String filenameOrURI, Context context) {
-        StreamManager sMgr = StreamManager.get() ;
-        if ( context != null ) {
-            try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
-            catch (ClassCastException ex) 
-            { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Lib.classShortName(StreamManager.class)) ; }
-        }
-        
+        StreamManager sMgr = StreamManager.get(context) ;
         return open(filenameOrURI, sMgr) ;
     }
     
@@ -849,50 +871,63 @@ public class RDFDataMgr
 
     private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context) {
         Objects.requireNonNull(in, "TypedInputStream is null") ;
-        ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
-
-        ReaderRIOT reader = getReader(ct) ;
-        if ( reader == null )
-            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
-        reader.read(in, baseUri, ct, destination, context) ;
+        
+        // If the input stream comes with a content type, use that in preference to the hint (compatibility).
+        
+        if ( in.getContentType() != null )
+            lang = RDFLanguages.contentTypeToLang(in.getMediaType());
+        
+        // XXX [ParserRDF] RDFDataMgr.process
+        // XXX [ParserRDF] ?? .contentType()
+        // XXX [ParserRDF] ?? .source(TypedInputStream)
+        // Remove all this and use a RDFParserBuilder.
+        RDFParser.create().source(in).base(baseUri).lang(lang).context(context).parse(destination);
+        
+        
+//        ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
+//        if ( ct == null )
+//            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
+//
+//        ReaderRIOT reader = getReader(ct) ;
+//        if ( reader == null )
+//            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
+//        reader.read(in, baseUri, ct, destination, context) ;
     }
     
     // java.io.Readers are NOT preferred.
+    @SuppressWarnings("deprecation")
     private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context ) {
         Objects.requireNonNull(in, "Reader is null") ;
-        ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
-        ReaderRIOT reader = getReader(ct) ;
-        if ( reader == null )
-            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
-        reader.read(in, baseUri, ct, destination, context) ;
+        RDFParser.create().source(in).base(baseUri).lang(lang).context(context).parse(destination);
+//        ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
+//        if ( ct == null )
+//            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
+//        ReaderRIOT reader = getReader(ct) ;
+//        if ( reader == null )
+//            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
+//        reader.read(in, baseUri, ct, destination, context) ;
     }
 
+    /** 
+     * @deprecated Use {@link RDFParser#create} or {@link #createReader(Lang, ParserProfile)}.
+     */
+    @Deprecated
+    public static ReaderRIOT createReader(Lang lang) {
+        return createReader(lang, RiotLib.profile(lang, null));
+    }
+    
     /** 
      * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@link Lang}
      * @see RDFLanguages#contentTypeToLang to go from content type to {@link Lang}
      */
 
-    public static ReaderRIOT createReader(Lang lang) {
-        if ( lang == null )
-            throw new NullPointerException("Argument lang can not be null in RDFDataMgr.createReader") ;   
+    public static ReaderRIOT createReader(Lang lang, ParserProfile profile) {
+        Objects.requireNonNull(lang,"Argument lang can not be null in RDFDataMgr.createReader") ;   
+        @SuppressWarnings("deprecation")
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;
-        return r.create(lang) ;
-    }
-    
-    private static ReaderRIOT getReader(ContentType ct) {
-        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        if ( lang == null )
-            return null ;
-        ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
-        if ( r == null )
-            return null ;
-        return r.create(lang) ;
+        return r.create(lang, profile) ;
     }
 
     // Operations to remove "null"s in the code.

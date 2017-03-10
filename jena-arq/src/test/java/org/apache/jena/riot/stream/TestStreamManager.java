@@ -27,6 +27,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RiotNotFoundException ;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.system.stream.LocatorFile ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
@@ -69,7 +70,7 @@ public class TestStreamManager extends BaseTest
     private static Context context(StreamManager streamMgr)
     {
         Context context = new Context() ;
-        context.put(RDFDataMgr.streamManagerSymbol, streamMgr) ;
+        context.put(SysRIOT.sysStreamManager, streamMgr) ;
         return context ;
     }
     

@@ -96,5 +96,9 @@ public class FactoryRDFStd implements FactoryRDF {
     public Node createBlankNode() {
         return labelMapping.create() ;
     }
-    
+
+    @Override
+    public void reset() {
+        labelMapping.clear();
+    }
 }

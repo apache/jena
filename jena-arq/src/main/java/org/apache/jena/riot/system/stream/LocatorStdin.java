@@ -25,7 +25,7 @@ public class LocatorStdin implements Locator {
     @Override
     public TypedInputStream open(String uri) {
         if ( uri.equals("-") )
-            return new TypedInputStream(System.in) ;
+            return TypedInputStream.wrap(System.in) ;
         return null ;
     }
 

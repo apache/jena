@@ -79,7 +79,6 @@ public class TestJenaReaderRIOT extends BaseTest
 
         TypedInputStream in1 = RDFDataMgr.open(filename("D-not-TTL.ttl") );
         Model m1 = ModelFactory.createDefaultModel() ;
-        // Fails until integration with jena-core as hintlang gets lost.
         m1.read(in1, null, "RDF/XML") ;
     }
     
@@ -129,8 +128,8 @@ public class TestJenaReaderRIOT extends BaseTest
     @Test public void read_input_2() throws IOException
     { jenaread_stream("D.rdf", "RDF/XML") ; }
     
-    private static String plainRelFnTTL = directory+"/D.ttl" ; 
-    private static String plainRelFnRDFXML = directory+"/D.rdf" ; 
+    private static final String plainRelFnTTL = directory+"/D.ttl" ; 
+    private static final String plainRelFnRDFXML = directory+"/D.rdf" ; 
     
     // Ways to pass in the filename.
     // The RDF/XML path is slightly different so test it as well.

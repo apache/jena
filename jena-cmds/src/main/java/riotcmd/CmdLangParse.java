@@ -209,7 +209,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( filename.equals("-") ) {
             if ( baseURI == null )
                 baseURI = "http://base/";
-            TypedInputStream in = new TypedInputStream(System.in) ;
+            TypedInputStream in = TypedInputStream.wrap(System.in) ;
             return parseRIOT(baseURI, "stdin", in) ;
         } else {
             try ( TypedInputStream in = RDFDataMgr.open(filename) ) {
@@ -266,16 +266,18 @@ public abstract class CmdLangParse extends CmdGeneral
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
         
-        ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
         boolean successful = true;
 
+        ParserProfile pp;
         if ( checking ) {
             if ( lang == RDFLanguages.NTRIPLES || lang == RDFLanguages.NQUADS )
-                reader.setParserProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
+                pp = RiotLib.profile(baseURI, false, true, errHandler) ;
             else
-                reader.setParserProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
+                pp = RiotLib.profile(baseURI, true, true, errHandler) ;
         } else
-            reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
+            pp = RiotLib.profile(baseURI, false, false, errHandler);
+        ReaderRIOT reader = RDFDataMgr.createReader(lang, pp) ;
+        reader.setParserProfile(pp) ;
 
         if ( labelsAsGiven ) {
             FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
