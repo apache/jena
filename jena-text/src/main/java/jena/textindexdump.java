@@ -101,7 +101,7 @@ public class textindexdump extends CmdARQ {
             Analyzer analyzer = textIndex.getQueryAnalyzer() ;
             IndexReader indexReader = DirectoryReader.open(directory) ;
             IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-            QueryParser queryParser = new QueryParser(TextIndexLucene.VER, textIndex.getDocDef().getPrimaryField(), analyzer);
+            QueryParser queryParser = new QueryParser(textIndex.getDocDef().getPrimaryField(), analyzer);
             Query query = queryParser.parse("*:*");
             ScoreDoc[] sDocs = indexSearcher.search(query, 1000).scoreDocs ;
             for ( ScoreDoc sd : sDocs ) {

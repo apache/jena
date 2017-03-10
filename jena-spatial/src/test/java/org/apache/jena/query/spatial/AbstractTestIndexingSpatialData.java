@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.junit.Test;
 import static org.junit.Assert.fail;
 
-import com.spatial4j.core.exception.InvalidShapeException;
+import org.locationtech.spatial4j.exception.InvalidShapeException;
 
 public class AbstractTestIndexingSpatialData extends
 		AbstractTestDatasetWithSpatialIndex {

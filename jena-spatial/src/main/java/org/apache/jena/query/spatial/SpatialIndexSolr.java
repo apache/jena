@@ -38,7 +38,7 @@ import org.apache.solr.common.SolrInputDocument ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.spatial4j.core.shape.Shape ;
+import org.locationtech.spatial4j.shape.Shape ;
 
 public class SpatialIndexSolr implements SpatialIndex {
 	private static Logger log = LoggerFactory.getLogger(SpatialIndexSolr.class);

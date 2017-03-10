@@ -103,7 +103,7 @@ public class spatialindexdump extends CmdARQ {
             Analyzer analyzer = spatialIndex.getAnalyzer() ;
             IndexReader indexReader = DirectoryReader.open(directory) ;
             IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-            QueryParser queryParser = new QueryParser(SpatialIndexLucene.VER, spatialIndex.getDocDef().getEntityField(), analyzer);
+            QueryParser queryParser = new QueryParser(spatialIndex.getDocDef().getEntityField(), analyzer);
             Query query = queryParser.parse("*:*");
             ScoreDoc[] sDocs = indexSearcher.search(query, 1000).scoreDocs ;
             for ( ScoreDoc sd : sDocs ) {

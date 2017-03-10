@@ -22,7 +22,6 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.query.text.analyzer.Util;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -52,9 +51,9 @@ public class LocalizedAnalyzerAssembler extends AssemblerBase {
                 throw new TextIndexException("text:language property must be a string : " + node);
             }
             String lang = node.toString();
-            return Util.getLocalizedAnalyzer(lang, TextIndexLucene.VER);
+            return Util.getLocalizedAnalyzer(lang);
         } else {
-            return new StandardAnalyzer(TextIndexLucene.VER);
+            return new StandardAnalyzer();
         }
     }
 }

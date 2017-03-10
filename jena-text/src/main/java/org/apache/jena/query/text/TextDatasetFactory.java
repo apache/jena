@@ -107,12 +107,7 @@ public class TextDatasetFactory
      */
     public static TextIndex createLuceneIndex(Directory directory, TextIndexConfig config)
     {
-        TextIndex index;
-        if (config.isMultilingualSupport())
-            index = new TextIndexLuceneMultilingual(directory, config) ;
-        else
-            index = new TextIndexLucene(directory, config) ;
-        return index ;
+        return new TextIndexLucene(directory, config) ;
     }
 
     /**
