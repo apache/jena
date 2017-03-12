@@ -218,6 +218,11 @@ public class RDFParserRegistry
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
             return new JsonLDReader() ;
         }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
+        }
     }
  
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
@@ -265,12 +270,22 @@ public class RDFParserRegistry
         public ReaderRIOT create(Lang language) {
             return new ReaderTriX() ;
         }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
+        }
     }
 
     private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language) {
             return new ReaderRDFNULL() ;
+        }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
         }
     }
 }
