@@ -55,6 +55,7 @@ public class ExRIOT_2
         // The parsers will do the necessary character set conversion.  
         try (InputStream in = new FileInputStream("data.trig")) {
             RDFParser.create()
+                .source(in)
                 .lang(RDFLanguages.TRIG)
                 .errorHandler(ErrorHandlerFactory.errorHandlerStrict)
                 .base("http://example/base")
