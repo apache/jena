@@ -48,7 +48,6 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionBase ;
 import org.apache.jena.sparql.util.IterLib ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -239,17 +238,15 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private ListMultimap<String,TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {
         // use the graph information in the text index if possible
+        String graph = null;
         if (textIndex.getDocDef().getGraphField() != null
             && execCxt.getActiveGraph() instanceof GraphView) {
             GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
             if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
-                String uri = 
+                graph =
                     activeGraph.getGraphName() != null 
                     ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
                     : Quad.defaultGraphNodeGenerated.getURI() ;
-                String escaped = QueryParserBase.escape(uri) ;
-                String qs2 = textIndex.getDocDef().getGraphField() + ":" + escaped ;
-                queryString = "(" + queryString + ") AND " + qs2 ;
             }
         }
 
@@ -277,8 +274,9 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
 
         final String queryStr = queryString; // final needed for the lambda function
+        final String graphURI = graph; // final needed for the lambda function
         ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, () -> {
-            List<TextHit> resultList = textIndex.query(property, queryStr, limit) ;
+            List<TextHit> resultList = textIndex.query(property, queryStr, graphURI, limit) ;
             ListMultimap<String,TextHit> resultMultimap = LinkedListMultimap.create();
             for (TextHit result : resultList) {
                 resultMultimap.put(TextQueryFuncs.subjectToString(result.getNode()), result);

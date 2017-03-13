@@ -46,9 +46,9 @@ public interface TextIndex extends Closeable //, Transactional
     /** Access the index - limit if -1 for as many as possible 
      * Throw QueryParseException for syntax errors in the query string.
      */ 
-    List<TextHit> query(Node property, String qs, int limit) ;
+    List<TextHit> query(Node property, String qs, String graphURI, int limit) ;
     
-    List<TextHit> query(Node property, String qs) ;
+    List<TextHit> query(Node property, String qs, String graphURI) ;
 
     EntityDefinition getDocDef() ;
 }

@@ -370,14 +370,14 @@ public class TextIndexLucene implements TextIndex {
     }
 
     @Override
-    public List<TextHit> query(Node property, String qs) {
-        return query(property, qs, MAX_N) ;
+    public List<TextHit> query(Node property, String qs, String graphURI) {
+        return query(property, qs, graphURI, MAX_N) ;
     }
 
     @Override
-    public List<TextHit> query(Node property, String qs, int limit) {
+    public List<TextHit> query(Node property, String qs, String graphURI, int limit) {
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return query$(indexReader, property, qs, limit) ;
+            return query$(indexReader, property, qs, graphURI, limit) ;
         }
         catch (ParseException ex) {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
@@ -387,7 +387,13 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, int limit) throws ParseException, IOException {
+    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, String graphURI, int limit) throws ParseException, IOException {
+        if (graphURI != null) {
+            String escaped = QueryParserBase.escape(graphURI) ;
+            String qs2 = getDocDef().getGraphField() + ":" + escaped ;
+            qs = "(" + qs + ") AND " + qs2 ;
+        }
+
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         Query query = parseQuery(qs, queryAnalyzer) ;
         if ( limit <= 0 )
