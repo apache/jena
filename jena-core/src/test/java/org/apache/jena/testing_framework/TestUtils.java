@@ -101,7 +101,7 @@ public class TestUtils {
 	 * spaces.
 	 */
 	public static List<String> listOfStrings(String s) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(s);
 		while (st.hasMoreTokens())
 			result.add(st.nextToken());
@@ -113,7 +113,7 @@ public class TestUtils {
 	 * spaces.
 	 */
 	public static Set<String> setOfStrings(String s) {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		StringTokenizer st = new StringTokenizer(s);
 		while (st.hasMoreTokens())
 			result.add(st.nextToken());
@@ -124,7 +124,7 @@ public class TestUtils {
 	 * Answer a list containing the single object <code>x</code>.
 	 */
 	public static <T> List<T> listOfOne(T x) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		result.add(x);
 		return result;
 	}
@@ -133,7 +133,7 @@ public class TestUtils {
 	 * Answer a Set containing the single object <code>x</code>.
 	 */
 	public static <T> Set<T> setOfOne(T x) {
-		Set<T> result = new HashSet<T>();
+		Set<T> result = new HashSet<>();
 		result.add(x);
 		return result;
 	}
@@ -143,7 +143,7 @@ public class TestUtils {
 	 * <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
 	 */
 	public static <T> List<T> append(List<? extends T> L, List<? extends T> R) {
-		List<T> result = new ArrayList<T>(L);
+		List<T> result = new ArrayList<>(L);
 		result.addAll(R);
 		return result;
 	}

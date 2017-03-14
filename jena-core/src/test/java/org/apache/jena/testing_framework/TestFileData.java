@@ -38,8 +38,8 @@ public class TestFileData {
 
 	public static final String NS = "uri:urn:x-rdf:test#";
 
-	private static Map<String, String[]> rdfData = new HashMap<String, String[]>();
-	private static Map<String, String[]> ttlData = new HashMap<String, String[]>();
+	private static Map<String, String[]> rdfData = new HashMap<>();
+	private static Map<String, String[]> ttlData = new HashMap<>();
 
 	static {
 		rdfData.put(

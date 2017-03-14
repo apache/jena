@@ -67,7 +67,7 @@ public class ManifestSuite extends ParentRunner<Runner> {
 			RunnerBuilder builder) throws Throwable {
 		super(cls);
 
-		List<Throwable> errors = new ArrayList<Throwable>();
+		List<Throwable> errors = new ArrayList<>();
 
 		mf = cls.getAnnotation(ManifestFile.class);
 		if (mf == null) {

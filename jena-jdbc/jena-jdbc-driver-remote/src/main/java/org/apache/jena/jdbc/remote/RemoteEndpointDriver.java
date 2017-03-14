@@ -23,12 +23,14 @@ import java.net.URISyntaxException;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import org.apache.jena.atlas.web.auth.* ;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
@@ -87,29 +89,12 @@ import org.apache.jena.system.JenaSystem ;
  * <p>
  * The driver also supports the standard JDBC {@code user} and {@code password}
  * parameters which are used to set user credentials for authenticating to the
- * remote HTTP server. This uses the ARQ HTTP authenticator API behind the
- * scenes so the following parameters may also be used to configure desired
- * behavior:
+ * remote HTTP server.
  * </p>
- * <ul>
- * <li>{@code preemptive-auth} - Sets a boolean indicating whether preemptive
- * basic authentication should be enabled, disabled by default.</li>
- * <li>{@code form-url} - Sets a URL to use for form based login.</li>
- * <li>{@code form-user-field} - Sets the name of the user name field used for
- * form based login. If omitted but {@code form-url} is used then the default
- * value {@code httpd_username} is used i.e. we assume you are communicating
- * with a Apache mod_auth_form protected site that uses the default form
- * configuration.</li>
- * <li>{@code form-password-field} - Sets the name of the password field used
- * for form based login. If omitted but {@code form-url} is used then the
- * default value {@code httpd_password} is used i.e. we assume you are
- * communicating with a Apache mod_auth_form protected site that uses the
- * default form configuration.</li>
- * </ul>
  * <p>
- * Alternatively you may use the {@code authenticator} parameter to set a
- * specific authenticator implementation to use, must be passed an instance of
- * {@link HttpAuthenticator} so can only be passed via the {@link Properties}
+ * Alternatively you may use the {@code client} parameter to set a
+ * specific client implementation to use, must be passed an instance of
+ * {@link HttpClient} so can only be passed via the {@link Properties}
  * object and not via the connection URL. If this parameter is used then all
  * other authentication parameters are ignored.
  * </p>
@@ -176,40 +161,17 @@ public class RemoteEndpointDriver extends JenaDriver {
     public static final String PARAM_MODEL_RESULTS_TYPE = "model-results-type";
 
     /**
-     * Constant for the connection URL parameter that sets the URL to use for
-     * form based login.
-     */
-    public static final String PARAM_FORMS_LOGIN_URL = "form-url";
-
-    /**
-     * Constant for the connection URL parameter that sets the user name field
-     * to use for form based logins
-     */
-    public static final String PARAM_FORMS_LOGIN_USER_FIELD = "form-user-field";
-
-    /**
-     * Constant for the connection URL parameter that sets the password field to
-     * use for form based logins
-     */
-    public static final String PARAM_FORMS_LOGIN_PASSWORD_FIELD = "form-password-field";
-
-    /**
-     * Constant for the connection URL parameter that sets that preemptive
-     * authentication should be enabled.
-     */
-    public static final String PARAM_PREEMPTIVE_AUTH = "preemptive-auth";
-
-    /**
-     * Constant for the parameter used to specify an authenticator used.
+     * Constant for the parameter used to specify a client used.
      * <p>
      * It is <strong>important</strong> to be aware that you must pass in an
-     * actual instance of a {@link HttpAuthenticator} for this parameter so you
+     * actual instance of a {@link HttpClient} for this parameter so you
      * cannot use directly in the Connection URL and must pass in via the
      * {@link Properties} object.
      * </p>
      */
-    public static final String PARAM_AUTHENTICATOR = "authenticator";
+    public static final String PARAM_CLIENT = "client";
 
+    
     /**
      * Static initializer block which ensures the driver gets registered
      */
@@ -271,7 +233,7 @@ public class RemoteEndpointDriver extends JenaDriver {
         List<String> usingNamedGraphs = this.getValues(props, PARAM_USING_NAMED_GRAPH_URI);
 
         // Authentication settings
-        HttpAuthenticator authenticator = this.configureAuthenticator(queryEndpoint, updateEndpoint, props);
+        HttpClient client = this.configureClient(props);
 
         // Result Types
         String selectResultsType = props.getProperty(PARAM_SELECT_RESULTS_TYPE, null);
@@ -279,87 +241,32 @@ public class RemoteEndpointDriver extends JenaDriver {
 
         // Create connection
         return openConnection(queryEndpoint, updateEndpoint, defaultGraphs, namedGraphs, usingGraphs, usingNamedGraphs,
-                authenticator, JenaConnection.DEFAULT_HOLDABILITY, compatibilityLevel, selectResultsType, modelResultsType);
+                client, JenaConnection.DEFAULT_HOLDABILITY, compatibilityLevel, selectResultsType, modelResultsType);
     }
-
-    protected HttpAuthenticator configureAuthenticator(String queryEndpoint, String updateEndpoint, Properties props)
-            throws SQLException {
-        // Is there a specific authenticator to use?
-        Object authObj = props.get(PARAM_AUTHENTICATOR);
-        if (authObj != null) {
-            if (authObj instanceof HttpAuthenticator) {
-                return (HttpAuthenticator) authObj;
-            } else {
-                throw new SQLException(
-                        "The "
-                                + PARAM_AUTHENTICATOR
-                                + " parameter is specified but the value is not an object implementing the required HttpAuthenticator interface");
-            }
-        }
-
-        // Otherwise get credentials to use
+    
+    protected HttpClient configureClient(Properties props) throws SQLException {
+        // Try to get credentials to use
         String user = props.getProperty(PARAM_USERNAME, null);
-        if (user != null && user.trim().length() == 0)
-            user = null;
+        if (user != null && user.trim().isEmpty()) user = null;
         String password = props.getProperty(PARAM_PASSWORD, null);
-        if (password != null && password.trim().length() == 0)
-            password = null;
+        if (password != null && password.trim().isEmpty()) password = null;
 
-        // If no credentials then we won't configure anything
-        if (user == null || password == null)
-            return null;
-
-        // Are we using HTTP or form based login?
-        String loginURL = props.getProperty(PARAM_FORMS_LOGIN_URL);
-        if (loginURL != null) {
-            // Determine login fields
-            String userField = props.getProperty(PARAM_FORMS_LOGIN_USER_FIELD, ApacheModAuthFormLogin.USER_FIELD);
-            String pwdField = props.getProperty(PARAM_FORMS_LOGIN_PASSWORD_FIELD, ApacheModAuthFormLogin.PASSWORD_FIELD);
-
-            // Create logins
-            Map<URI, FormLogin> logins = new HashMap<URI, FormLogin>();
-            String baseUri = this.getCommonBase(queryEndpoint, updateEndpoint);
-            if (baseUri != null) {
-                // One/both endpoints are specified and they have a common
-                // Base URI so we'll create a single login
-                try {
-                    logins.put(new URI(baseUri), new FormLogin(loginURL, userField, pwdField, user, password.toCharArray()));
-                } catch (URISyntaxException e) {
-                    throw new SQLException("Unable to configure form based login due to invalid Base URI", e);
-                }
-            } else {
-                // Only one endpoint is specified or they did not share a common
-                // base
-                if (queryEndpoint != null) {
-                    // Add a query endpoint specific login
-                    try {
-                        logins.put(new URI(queryEndpoint),
-                                new FormLogin(loginURL, userField, pwdField, user, password.toCharArray()));
-                    } catch (URISyntaxException e) {
-                        throw new SQLException("Unable to configure form based login due to invalid Query Endpoint URI", e);
-                    }
-                }
-                if (updateEndpoint != null) {
-                    // Add an update endpoint specific login
-                    try {
-                        logins.put(new URI(updateEndpoint),
-                                new FormLogin(loginURL, userField, pwdField, user, password.toCharArray()));
-                    } catch (URISyntaxException e) {
-                        throw new SQLException("Unable to configure form based login due to invalid Update Endpoint URI", e);
-                    }
-                }
-            }
-            return new FormsAuthenticator(logins);
-        } else {
-            // Do we want preemptive authentication?
-            if (this.isTrue(props, PARAM_PREEMPTIVE_AUTH)) {
-                return new PreemptiveBasicAuthenticator(new SimpleAuthenticator(user, password.toCharArray()));
-            } else {
-                // Use simple authenticator
-                return new SimpleAuthenticator(user, password.toCharArray());
-            }
+        // If credentials then we use them
+        if (user != null && password != null) {
+            BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+            credsProv.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(user, password));
+            return HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
         }
+        // else use a supplied or default client
+        Object client = props.get(PARAM_CLIENT);
+        if (client != null) {
+            if (!(client instanceof HttpClient)) throw new SQLException("The " + PARAM_CLIENT
+                    + " parameter is specified but the value is not an object implementing the required HttpClient interface");
+            return (HttpClient) client;
+        }
+        return null;
     }
+
 
     /**
      * Determines the common base of the two URIs if there is one. The common
@@ -426,7 +333,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      *            URI
      * @return Reduced URI or null if no further reduction is possible
      */
-    private String stripLastComponent(String input) {
+    private static String stripLastComponent(String input) {
         try {
             URI uri = new URI(input);
             if (uri.getFragment() != null) {
@@ -475,7 +382,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      * @return URI with irrelevant components stripped off or null if stripping
      *         is impossible
      */
-    private String stripIrrelevantComponents(String input) {
+    private static String stripIrrelevantComponents(String input) {
         try {
             URI orig = new URI(input);
             return new URI(orig.getScheme(), orig.getUserInfo(), orig.getHost(), orig.getPort(), orig.getPath(), null, null)
@@ -522,10 +429,10 @@ public class RemoteEndpointDriver extends JenaDriver {
      * @throws SQLException
      */
     protected RemoteEndpointConnection openConnection(String queryEndpoint, String updateEndpoint, List<String> defaultGraphs,
-            List<String> namedGraphs, List<String> usingGraphs, List<String> usingNamedGraphs, HttpAuthenticator authenticator,
+            List<String> namedGraphs, List<String> usingGraphs, List<String> usingNamedGraphs, HttpClient client,
             int holdability, int compatibilityLevel, String selectResultsType, String modelResultsType) throws SQLException {
         return new RemoteEndpointConnection(queryEndpoint, updateEndpoint, defaultGraphs, namedGraphs, usingGraphs,
-                usingNamedGraphs, authenticator, holdability, compatibilityLevel, selectResultsType, modelResultsType);
+                usingNamedGraphs, client, holdability, compatibilityLevel, selectResultsType, modelResultsType);
     }
 
     @Override

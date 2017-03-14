@@ -43,12 +43,8 @@ public class PathEngineSPARQL extends PathEngine
         this.forwardMode = forward ;
     }
 
-    protected Collection<Node> collector() {
-        return new HashSet<Node>() ;
-    }
-
     protected Set<Node> visitedAcc() {
-        return new HashSet<Node>() ;
+        return new HashSet<>() ;
     }
     
     @Override
@@ -93,20 +89,19 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) {
         Set<Node> visited = visitedAcc() ;
-        ALP_1(forwardMode, 0, -1, node, pathStep, visited) ;
-        output.addAll(visited) ;
+        ALP_1(0, -1, node, pathStep, visited, output) ;
     }
 
     @Override
     protected void doOneOrMore(Path pathStep, Node node, Collection<Node> output) {
+        // Track visited.
         Set<Node> visited = visitedAcc() ;
         // Do one step without including.
         Iter<Node> iter1 = eval(pathStep, node) ;
         for (; iter1.hasNext();) {
             Node n1 = iter1.next() ;
-            ALP_1(forwardMode, 0, -1, n1, pathStep, visited) ;
+            ALP_1(0, -1, n1, pathStep, visited, output) ;
         }
-        output.addAll(visited) ;
     }
 
     @Override
@@ -115,16 +110,17 @@ public class PathEngineSPARQL extends PathEngine
         output.add(node) ;
     }
 
-    private void ALP_1(boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited) {
+    private void ALP_1(int stepCount, int maxStepCount, Node node, Path path, Set<Node> visited, Collection<Node> output) {
         if ( maxStepCount >= 0 && stepCount > maxStepCount )
             return ;
         if ( !visited.add(node) )
             return ;
+        output.add(node);
         Iter<Node> iter1 = eval(path, node) ;
         // For each step, add to results and recurse.
         for (; iter1.hasNext();) {
             Node n1 = iter1.next() ;
-            ALP_1(forwardMode, stepCount + 1, maxStepCount, n1, path, visited) ;
+            ALP_1(stepCount + 1, maxStepCount, n1, path, visited, output) ;
         }
     }
 
@@ -147,7 +143,7 @@ public class PathEngineSPARQL extends PathEngine
     }
 
     // This is the worker function for path{*} /counting (non_SPARQL) semantics.
-    private void ALP_N(Node node, Path path, Collection<Node> visited, Collection<Node> output) {
+    private void ALP_N(Node node, Path path, Set<Node> visited, Collection<Node> output) {
         if ( visited.contains(node) )
             return ;
         // If output is a set, then no point going on if node has been added to

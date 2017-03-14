@@ -85,7 +85,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
             Comparator<? super E> comparator) {
         this.policy = policy;
         this.serializationFactory = serializerFactory;
-        this.comparator = new AbortableComparator<E>(comparator);
+        this.comparator = new AbortableComparator<>(comparator);
     }
 
     /**

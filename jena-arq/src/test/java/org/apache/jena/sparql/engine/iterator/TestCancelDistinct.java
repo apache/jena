@@ -92,9 +92,9 @@ public class TestCancelDistinct {
         QueryIteratorBase base = new MockQueryIterator();
             
         QueryIterDistinct d = new QueryIterDistinct(base, c);
-        assertFalse(base.requestingCancel);
+        assertFalse(base.getRequestingCancel());
         d.cancel();
-        assertTrue(base.requestingCancel);
+        assertTrue(base.getRequestingCancel());
     }
     
     final Context params = new Context();
@@ -122,9 +122,9 @@ public class TestCancelDistinct {
         assertNotNull(d.db);      
         DistinctDataBag<Binding> db = d.db;
         
-        assertFalse(base.requestingCancel);
+        assertFalse(base.getRequestingCancel());
         d.cancel();
-        assertTrue(base.requestingCancel);
+        assertTrue(base.getRequestingCancel());
         
     }    
     

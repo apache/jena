@@ -18,7 +18,7 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
@@ -290,12 +290,12 @@ public class UpdateExecutionFactory
     /** Create an UpdateProcessor that sends the update to a remote SPARQL Update service.
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, HttpClient client)
     {
-        return createRemote(new UpdateRequest(update), remoteEndpoint, null, authenticator) ;
+        return createRemote(new UpdateRequest(update), remoteEndpoint, null, client) ;
     }
     
     /** Create an UpdateProcessor that sends the update to a remote SPARQL Update service.
@@ -313,12 +313,12 @@ public class UpdateExecutionFactory
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, Context context, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, Context context, HttpClient client)
     {
-        return createRemote(new UpdateRequest(update), remoteEndpoint, context, authenticator) ;
+        return createRemote(new UpdateRequest(update), remoteEndpoint, context, client) ;
     }
         
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service.
@@ -334,12 +334,12 @@ public class UpdateExecutionFactory
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service.
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, HttpClient client)
     {
-        return createRemote(updateRequest, remoteEndpoint, null, authenticator) ;
+        return createRemote(updateRequest, remoteEndpoint, null, client) ;
     }
 
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service.
@@ -357,12 +357,12 @@ public class UpdateExecutionFactory
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context, HttpClient client)
     {
-        return new UpdateProcessRemote(updateRequest, remoteEndpoint, context, authenticator) ;
+        return new UpdateProcessRemote(updateRequest, remoteEndpoint, context, client) ;
     }
     
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
@@ -378,12 +378,12 @@ public class UpdateExecutionFactory
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, HttpClient client)
     {
-        return createRemoteForm(update, remoteEndpoint, null, null) ;
+        return createRemoteForm(update, remoteEndpoint, null, client) ;
     }
     
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
@@ -394,19 +394,19 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, Context context)
     {
-        return createRemoteForm(new UpdateRequest(update), remoteEndpoint, null, null) ;
+        return createRemoteForm(new UpdateRequest(update), remoteEndpoint, context, null) ;
     }
     
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
      * @param update Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, Context context, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, Context context, HttpClient client)
     {
-        return createRemoteForm(new UpdateRequest(update), remoteEndpoint, null, authenticator) ;
+        return createRemoteForm(new UpdateRequest(update), remoteEndpoint, null, client) ;
     }
     
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
@@ -422,12 +422,12 @@ public class UpdateExecutionFactory
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, HttpClient client)
     {
-        return createRemoteForm(updateRequest, remoteEndpoint, null, authenticator) ;
+        return createRemoteForm(updateRequest, remoteEndpoint, null, client) ;
     }
     
     /** Create an UpdateProcessor that sends the update request to a remote SPARQL Update service using an HTML form
@@ -445,11 +445,11 @@ public class UpdateExecutionFactory
      * @param updateRequest Updates
      * @param remoteEndpoint Endpoint URL
      * @param context Context
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      * @return Remote Update processor
      */
-    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context, HttpAuthenticator authenticator)
+    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context, HttpClient client)
     {
-        return new UpdateProcessRemoteForm(updateRequest, remoteEndpoint, context, authenticator) ;
+        return new UpdateProcessRemoteForm(updateRequest, remoteEndpoint, context, client) ;
     }
 }

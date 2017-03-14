@@ -193,7 +193,6 @@ KEEP_WORK=0
 DEBUG=0
 TRACE=0
 JVM_ARGS=
-SORT_ARGS=
 
 while [ $# -gt 0 ]
 do

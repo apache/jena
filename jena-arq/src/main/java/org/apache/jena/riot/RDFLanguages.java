@@ -22,10 +22,10 @@ import static org.apache.jena.riot.WebContent.* ;
 
 import java.util.Collection ;
 import java.util.Collections ;
+import java.util.HashMap;
 import java.util.Locale ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
@@ -153,16 +153,16 @@ public class RDFLanguages
     // ---- Central registry
     
     /** Mapping of colloquial name to language */
-    private static Map<String, Lang> mapLabelToLang                    = DS.map() ;
+    private static Map<String, Lang> mapLabelToLang                    = new HashMap<>() ;
     
     // For testing mainly.
     public static Collection<Lang> getRegisteredLanguages()     { return Collections.unmodifiableCollection(mapLabelToLang.values()); }
     
     /** Mapping of content type (main and alternatives) to language */  
-    private static Map<String, Lang> mapContentTypeToLang              = DS.map() ;
+    private static Map<String, Lang> mapContentTypeToLang              = new HashMap<>() ;
 
     /** Mapping of file extension to language */
-    private static Map<String, Lang> mapFileExtToLang                  = DS.map() ;
+    private static Map<String, Lang> mapFileExtToLang                  = new HashMap<>() ;
 
     // ----------------------
     public static void init() {}
@@ -305,11 +305,14 @@ public class RDFLanguages
         return true ;
     }
     
-    /** return true if the language is registered as a triples language */
+    /** return true if the language is registered as a triples language. */
     public static boolean isTriples(Lang lang) { return RDFParserRegistry.isTriples(lang) ; }
     
-    /** return true if the language is registered as a quads language */
+    /** return true if the language is registered as a quads language. */
     public static boolean isQuads(Lang lang) { return RDFParserRegistry.isQuads(lang) ; }
+
+    /** return true if the language is registered for parsing as an RDF syntax. */
+    public static boolean hasRegisteredParser(Lang lang) { return RDFParserRegistry.isRegistered(lang); }
 
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(String contentType)

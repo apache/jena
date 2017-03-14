@@ -24,7 +24,6 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -147,7 +146,7 @@ public class TestSolverTDB extends BaseTest
     
     private static ResultSet results(String... rows)
     {
-        String str = "(table "+StrUtils.strjoin("", rows)+")" ;
+        String str = "(table "+String.join("", rows)+")" ;
         return SSE.parseTable(str).toResultSet() ; 
     }
     

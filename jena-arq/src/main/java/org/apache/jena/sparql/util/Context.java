@@ -65,10 +65,11 @@ public class Context {
     }
 
     // -- basic operations
-
+    
     /** Get the object value of a property or null */
-    public Object get(Symbol property) {
-        return context.get(property) ;
+    @SuppressWarnings("unchecked")
+    public <T> T get(Symbol property) {
+        return (T) context.get(property) ;
     }
 
     /**

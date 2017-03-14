@@ -20,7 +20,6 @@ package org.apache.jena.riot.system ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
@@ -61,6 +60,12 @@ public class ParserProfileChecker extends ParserProfileBase // implements Parser
     public IRI makeIRI(String uriStr, long line, long col) {
         // resolves, but we handle the errors and warnings.
         IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
+        if ( uriStr.contains(" ") ) {
+            // Specific check for spaces.
+            errorHandler.warning("Bad IRI: <"+uriStr+"> Spaces are not legal in URIs/IRIs.", line, col);
+            return iri ; 
+        } 
+        // At this point, IRI "errors" are warnings. 
         CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;
     }
@@ -112,16 +117,14 @@ public class ParserProfileChecker extends ParserProfileBase // implements Parser
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) {
-        Node n = NodeFactory.createLiteral(lexical, datatype) ;
         CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col) ;
-        return n ;
+        return super.createTypedLiteral(lexical, datatype, line, col);
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
-        Node n = NodeFactory.createLiteral(lexical, langTag) ;
         CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col) ;
-        return n ;
+        return super.createLangLiteral(lexical, langTag, line, col);
     }
 
     // No checks

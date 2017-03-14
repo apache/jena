@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.jena.ext.com.google.common.collect.Sets;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
 import org.apache.jena.graph.GraphListener;
@@ -373,15 +373,13 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	// the security evaluator in use
 	private final SecuredGraph securedGraph;
 	private final Graph baseGraph;
-	private final Map<GraphListener, Stack<SecuredGraphListener>> listenerMap = new HashMap<GraphListener, Stack<SecuredGraphListener>>();
+	private final Map<GraphListener, Stack<SecuredGraphListener>> listenerMap = new HashMap<>();
 	private static Set<Action> DELETE;
 	private static Set<Action> ADD;
 
 	static {
-		SecuredGraphEventManager.ADD = new HashSet<Action>(
-				Arrays.asList(new Action[] { Action.Create, Action.Read }));
-		SecuredGraphEventManager.DELETE = new HashSet<Action>(
-				Arrays.asList(new Action[] { Action.Delete, Action.Read }));
+		SecuredGraphEventManager.ADD = Sets.newHashSet(Action.Create, Action.Read);
+		SecuredGraphEventManager.DELETE = Sets.newHashSet(Action.Delete, Action.Read);
 	}
 
 	public SecuredGraphEventManager(final SecuredGraph securedGraph,
@@ -581,7 +579,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	public synchronized GraphEventManager register(final GraphListener listener) {
 		Stack<SecuredGraphListener> sgl = listenerMap.get(listener);
 		if (sgl == null) {
-			sgl = new Stack<SecuredGraphListener>();
+			sgl = new Stack<>();
 		}
 		sgl.push(new SecuredGraphListener(listener));
 		listenerMap.put(listener, sgl);

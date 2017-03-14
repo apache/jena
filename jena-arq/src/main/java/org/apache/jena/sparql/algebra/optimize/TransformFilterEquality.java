@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
-
 import java.util.* ;
 
 import org.apache.jena.JenaRuntime ;
@@ -331,7 +329,7 @@ public class TransformFilterEquality extends TransformCopy {
 
     private static boolean safeToTransform(Collection<Var> varsEquality, VarExprList varsExprList) {
         // If the named variable is used, unsafe to rewrite.
-        return disjoint(varsExprList.getVars(), varsEquality);
+        return Collections.disjoint(varsExprList.getVars(), varsEquality);
     }
 
     // -- A special case

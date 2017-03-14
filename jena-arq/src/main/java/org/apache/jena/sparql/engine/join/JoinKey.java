@@ -17,11 +17,11 @@
  */
 
 package org.apache.jena.sparql.engine.join;
+import java.util.ArrayList;
 import java.util.Collection ;
+import java.util.Collections;
 import java.util.Iterator ;
 import java.util.List ;
-
-import org.apache.jena.atlas.lib.DS ;
 
 import org.apache.jena.sparql.core.Var ;
 
@@ -29,12 +29,12 @@ import org.apache.jena.sparql.core.Var ;
 public final class JoinKey implements Iterable<Var>
 {
     /** Key of no variables */
-    private static final JoinKey emptyKey = new JoinKey(DS.listOfNone()) ;
+    private static final JoinKey emptyKey = new JoinKey(Collections.emptyList()) ;
 
     /** Make a JoinKey from the intersection of two sets **/  
     public static JoinKey create(Collection<Var> vars1, Collection<Var> vars2) {
         // JoinKeys and choices for keys are generally small so short loops are best.
-        List<Var> intersection = DS.list() ;
+        List<Var> intersection = new ArrayList<>() ;
         for ( Var v : vars1 ) {
             if ( vars2.contains(v) )
                 intersection.add(v) ;  
@@ -59,7 +59,7 @@ public final class JoinKey implements Iterable<Var>
      * and it can be continued to be used.
      */
     public static final class Builder {
-        private List<Var> keys = DS.list() ;
+        private List<Var> keys = new ArrayList<>() ;
         
         public Builder() { }
         
@@ -82,7 +82,7 @@ public final class JoinKey implements Iterable<Var>
         public Builder clear()      { keys.clear() ; return this ; }
 
         public JoinKey build() {
-            JoinKey joinKey = new JoinKey(DS.list(keys)) ; 
+            JoinKey joinKey = new JoinKey(new ArrayList<>(keys)) ; 
             return joinKey ;
         }
     }
@@ -92,7 +92,7 @@ public final class JoinKey implements Iterable<Var>
     
     private JoinKey(List<Var> _keys) { keys = _keys ; }
     
-    private JoinKey(Var var)        { keys = DS.listOfOne(var) ; }
+    private JoinKey(Var var)        { keys = Collections.singletonList(var) ; }
     
     public boolean isEmpty()        { return keys.isEmpty() ; }
     

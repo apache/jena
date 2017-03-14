@@ -90,7 +90,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     @Deprecated
     public static String setBaseReaderClassName(String lang, String className) {
         if ( rewiredAlternative != null )
-            Log.fatal(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
+            Log.error(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
             
         String oldClassName = currentEntry(lang);
         try {
@@ -152,7 +152,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
 
     private static String remove(String lang) {
         if ( rewiredAlternative != null )
-            Log.fatal(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
+            Log.error(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
 
         String oldClassName = currentEntry(lang);
         custom.remove(lang);

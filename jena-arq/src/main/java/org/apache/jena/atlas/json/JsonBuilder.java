@@ -22,6 +22,7 @@ import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.Log ;
 
@@ -47,8 +48,65 @@ public class JsonBuilder {
 
     public static JsonBuilder create() { return new JsonBuilder() ; }
     
-    public JsonBuilder() {
+    /** Create a builder from a {@link JsonValue}.
+     *  <p>If the argument is an object or array, use it to initailize the builder.
+     *  <p>If the argument is a JSON primitive (string, number, boolean or null),
+     *  <p>Otherwise thrown {@link IllegalArgumentException}.
+     */
+    public static JsonBuilder createFrom(JsonValue arg) {
+        if ( arg.isObject() ) {
+            JsonObject obj = arg.getAsObject() ;
+            JsonBuilder builder = JsonBuilder.create() ;
+            builder.startObject() ;
+            obj.forEach((k,v) -> builder.key(k).value(copy(v))) ;
+            builder.finishObject() ;
+            return builder ; 
+        }
+        if ( arg.isArray() ) {
+            JsonArray array = arg.getAsArray() ;
+            JsonBuilder builder = JsonBuilder.create() ;
+            builder.startArray() ;
+            array.forEach((a)->builder.value(copy(a))) ;
+            builder.finishArray() ;
+            return builder ; 
+        }
+        throw new IllegalArgumentException("Not a JSON object or JSON array; "+arg);
+    }
+    
+    
+    /** Create a safe copy of a {@link JsonValue}.
+     *  <p>
+     *  If the JsonValue is a structure (object or array), copy the structure recursively.
+     *  <p>
+     *  If the JsonValue is a primitive (string, number, boolean or null),
+     *  it is immutable so return the same object.  
+     */
+    public static JsonValue copy(JsonValue arg) {
+        if ( ! arg.isArray() && ! arg.isObject() )
+            return arg;
+        return createFrom(arg).build();
+    }
+    
+    // An unlikely-to-be-used label to help check object alignment 
+    private static String LABEL = "%|%object%|%" ;
 
+    /** Build a JsonObject.  The outer object is created and then the {@code setup} function called to fill in the contents.
+     * <pre>
+     * buildObject(builder->{
+     *     builder.pair("key", 1234);
+     * });
+     * </pre>
+     * 
+     * @param setup
+     * @return JsonObject
+     */
+    public static JsonObject buildObject(Consumer<JsonBuilder> setup) {
+        JsonBuilder b = JsonBuilder.create().startObject(LABEL) ;
+        setup.accept(b);
+        return b.finishObject(LABEL).build().getAsObject() ;
+    }
+    
+    public JsonBuilder() {
     }
 
     public JsonValue build() {
@@ -113,6 +171,42 @@ public class JsonBuilder {
         maybeObjectOrArray(value) ;
         if ( stack.isEmpty() )
             builtValue = value ;
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, JsonValue value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, boolean value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, BigDecimal value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, double value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, long value) {
+        key(key);
+        value(value);
+        return this ;
+    }
+
+    public JsonBuilder pair(String key, String value) {
+        key(key);
+        value(value);
         return this ;
     }
 

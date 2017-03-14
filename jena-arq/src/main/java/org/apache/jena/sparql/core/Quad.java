@@ -18,14 +18,19 @@
 
 package org.apache.jena.sparql.core;
 
+import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.system.Serializer;
 
-public class Quad
-{
+public class Quad implements Serializable 
+{    
     // Create QuadNames? GraphNames?
     
     /** Name of the default for explict use in GRAPH */
@@ -162,6 +167,22 @@ public class Quad
         
         return true ;
     }
+    
+    // ---- Serializable
+    protected Object writeReplace() throws ObjectStreamException {
+        Function<Quad, Object> function =  Serializer.getQuadSerializer() ;
+        if ( function == null )
+            throw new IllegalStateException("Function for Quad.writeReplace not set") ;
+        return function.apply(this);
+    }
+    // Any attempt to serialize without replacement is an error.
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        throw new IllegalStateException(); 
+    }
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        throw new IllegalStateException();
+    }
+    // ---- Serializable
     
     @Override
     public int hashCode() 

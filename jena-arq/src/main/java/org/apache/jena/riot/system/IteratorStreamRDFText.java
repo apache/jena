@@ -112,7 +112,7 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
         private boolean             finished = false ;
         private final Tokenizer     tokens ;
         private List<Token>         list ;
-        private Map<String, String> map      = new HashMap<String, String>() ;
+        private Map<String, String> map      = new HashMap<>() ;
         private String              label ;
 
         public TokenInputStream(String label, Tokenizer tokens) {
@@ -146,7 +146,7 @@ public class IteratorStreamRDFText extends IteratorStreamRDF implements Iterator
         }
 
         private List<Token> buildOneLine() {
-            List<Token> tuple = new ArrayList<Token>() ;
+            List<Token> tuple = new ArrayList<>() ;
             boolean isDirective = false ;
             for (; tokens.hasNext();) {
                 Token token = tokens.next() ;

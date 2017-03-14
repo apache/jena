@@ -56,7 +56,7 @@ public class SecuredAltImpl extends SecuredContainerImpl implements SecuredAlt {
 		if (alt == null) {
 			throw new IllegalArgumentException("Alt may not be null");
 		}
-		final ItemHolder<Alt, SecuredAlt> holder = new ItemHolder<Alt, SecuredAlt>(
+		final ItemHolder<Alt, SecuredAlt> holder = new ItemHolder<>(
 				alt);
 		final SecuredAltImpl checker = new SecuredAltImpl(securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this

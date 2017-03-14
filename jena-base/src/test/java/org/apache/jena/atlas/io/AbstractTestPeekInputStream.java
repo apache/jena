@@ -77,7 +77,6 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
         for ( int i = 0 ; i < c.length(); i++ )
         {
             checkLineCol(in, INIT_LINE, i+INIT_COL) ;
-            long z = in.getPosition() ;
             assertEquals(i, in.getPosition()) ;
             assertEquals(c.charAt(i), in.readByte()) ;
         }
@@ -140,7 +139,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     {
         PeekInputStream in = make("abc") ;
         checkLineCol(in, INIT_LINE, INIT_COL) ;
-        int ch = in.readByte() ;
+        /* int ch = */ in.readByte() ;
         // Pushback does not move line/col backwards.
         checkLineCol(in, INIT_LINE, INIT_COL+1) ;
         assertEquals('b', in.peekByte()) ;
@@ -153,7 +152,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     @Test public void unread3()
     {
         PeekInputStream in = make("") ;
-        int ch = in.readByte() ;
+        /* int ch = */ in.readByte() ;
         assertEquals(-1, in.peekByte()) ;
         in.pushbackByte('a') ;
         contains(in, "a") ;
@@ -162,7 +161,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
     @Test public void unread4()
     {
         PeekInputStream in = make("") ;
-        int ch = in.readByte() ;
+        /* int ch = */ in.readByte() ;
         assertEquals(-1, in.peekByte()) ;
         in.pushbackByte('0') ;
         in.pushbackByte('1') ;
@@ -193,7 +192,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
         contains(in, "320") ;
     }
 
-    private void checkLineCol(PeekInputStream in, long lineNum, long colNum)
+    private static void checkLineCol(PeekInputStream in, long lineNum, long colNum)
     {
         assertEquals("Line", lineNum, in.getLineNum()) ; 
         assertEquals("Column", colNum, in.getColNum()) ;
@@ -228,7 +227,7 @@ public abstract class AbstractTestPeekInputStream extends BaseTest
         assertTrue(in.eof()) ;
     }
     
-    private void contains(PeekInputStream in, String contents)
+    private static void contains(PeekInputStream in, String contents)
     {
         for ( int i = 0 ; i < contents.length(); i++ )
         {

@@ -219,7 +219,7 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because
-        // we have to attempt to make the request atomic in the face of malformed queries
+        // we have to attempt to make the request atomic in the face of malformed updates
         UpdateRequest req = null ;
         if (!action.isTransactional()) {
             try {

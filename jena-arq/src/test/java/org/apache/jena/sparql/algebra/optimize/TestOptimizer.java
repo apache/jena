@@ -29,13 +29,16 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.JenaSystem;
 import org.junit.Test ;
 
 public class TestOptimizer extends AbstractTestTransform
 {
-    // These test call the whole optimzier.
+    static { JenaSystem.init(); }
+    
+    // These test calls of the whole optimzier.
     // A lot of the optimizer is tested by using the scripted queries.
-    // Theer are many tests of individual transforms.
+    // There are many tests of individual transforms.
     
     @Test public void slice_order_to_topn_01() 
     {
@@ -227,6 +230,34 @@ public class TestOptimizer extends AbstractTestTransform
         check(queryString, opExpectedString) ; 
     }
     
+    // JENA-1235
+    @Test public void optimize_02() {
+        String in = StrUtils.strjoinNL
+            (
+             "(filter (exprlist (|| (= ?var3 'ABC') (= ?var3 'XYZ')) (&& (regex ?var4 'pat1') (!= ?VAR 123)))"
+             ,"    (bgp"
+             ,"      (triple ?var2 :p1 ?var4)"
+             ,"      (triple ?var2 :p2 ?var3)"
+             ,"    ))") ;
+
+        String out = StrUtils.strjoinNL
+            ("(filter (!= ?VAR 123)"
+             ," (disjunction"
+             ,"  (assign ((?var3 'ABC'))"
+             ,"    (sequence"
+             ,"      (filter (regex ?var4 'pat1')"
+             ,"        (bgp (triple ?var2 :p1 ?var4)))"
+             ,"      (bgp (triple ?var2 :p2 'ABC'))))"
+             ,"  (assign ((?var3 'XYZ'))"
+             ,"    (sequence"
+             ,"      (filter (regex ?var4 'pat1')"
+             ,"        (bgp (triple ?var2 :p1 ?var4)))"
+             ,"      (bgp (triple ?var2 :p2 'XYZ'))))))"
+             ) ;
+        checkAlgebra(in, out) ;
+    }
+
+    
     @Test public void combine_extend_01()
     {
         Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
@@ -407,5 +438,35 @@ public class TestOptimizer extends AbstractTestTransform
             ,"    (bgp (triple ?s ?p ?label))))") ;
         check(qs, expected) ;
     }
+    
+    // JENA-1280 : Test that variables in FILTER EXISTS do not block sequence
+    @Test public void joinSequence_01() {
+        String queryString = StrUtils.strjoinNL(
+                               "SELECT * {"
+                               , "  ?s ?p ?o"
+                               , "  GRAPH ?g {"
+                               , "    ?s1 ?p ?o1 ."
+                               , "    FILTER EXISTS {  [] ?p ?unique } ."
+                               , "  }"
+                               , "}"
+            );
+        // Fro reference, which is ...
+        String x = StrUtils.strjoinNL(
+            "(join"
+            ,"    (bgp (triple ?s ?p ?o))"
+            ,"    (graph ?g"
+            ,"      (filter (exists (bgp (triple ??0 ?p ?unique)))"
+            ,"        (bgp (triple ?s1 ?p ?o1)))))"
+            );
+        
+        String optimized = StrUtils.strjoinNL(
+                                      "(sequence"
+                                      ,"    (bgp (triple ?s ?p ?o))"
+                                      ,"    (graph ?g"
+                                      ,"      (filter (exists (bgp (triple ??0 ?p ?unique)))"
+                                      ,"        (bgp (triple ?s1 ?p ?o1)))))"
+                                      );
 
+        check(queryString, optimized);
+    }
 }

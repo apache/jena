@@ -29,7 +29,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang3.StringUtils;
@@ -111,8 +110,6 @@ public class ActionDatasets extends ActionContainerItem {
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
-        String newURI = uuid.asURI() ;
-        Node gn = NodeFactory.createURI(newURI) ;
         DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
@@ -181,8 +178,6 @@ public class ActionDatasets extends ActionContainerItem {
                 datasetPath = DataAccessPoint.canonical(datasetName) ;
             }
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-//            System.err.println("'"+datasetPath+"'") ;
-//            DataAccessPointRegistry.get().forEach((s,dap)->System.err.println("'"+s+"'")); 
             // ---- Check whether it already exists 
             if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) )
                 // And abort.
@@ -208,7 +203,6 @@ public class ActionDatasets extends ActionContainerItem {
             DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
             action.getDataAccessPointRegistry().register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
-            ServletOutputStream out = action.getResponse().getOutputStream() ;
             ServletOps.success(action) ;
             system.commit();
             committed = true ;
@@ -254,14 +248,14 @@ public class ActionDatasets extends ActionContainerItem {
             //dSrv.activate() ;
         } else if ( s.equalsIgnoreCase("offline") ) {
             action.log.info(format("[%d] OFFLINE DATASET %s", action.id, name)) ;
-            DataAccessPoint access = action.getDataAccessPoint() ;
+            //DataAccessPoint access = action.getDataAccessPoint() ;
             //access.goOffline() ;
             dSrv.goOffline() ;  // Affects the target of the name. 
             setDatasetState(name, FusekiVocab.stateOffline) ;  
             //dSrv.offline() ;
         } else if ( s.equalsIgnoreCase("unlink") ) {
             action.log.info(format("[%d] UNLINK ACCESS NAME %s", action.id, name)) ;
-            DataAccessPoint access = action.getDataAccessPoint() ;
+            //DataAccessPoint access = action.getDataAccessPoint() ;
             ServletOps.errorNotImplemented("unlink: dataset"+action.getDatasetName());
             //access.goOffline() ;
             // Registry?
@@ -271,11 +265,11 @@ public class ActionDatasets extends ActionContainerItem {
         return null ;
     }
 
-    private void assemblerFromBody(HttpAction action, StreamRDF dest) {
+    private static void assemblerFromBody(HttpAction action, StreamRDF dest) {
         bodyAsGraph(action, dest) ;
     }
 
-    private void assemblerFromForm(HttpAction action, StreamRDF dest) {
+    private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
         if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
@@ -301,7 +295,7 @@ public class ActionDatasets extends ActionContainerItem {
         RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
     }
 
-    private void assemblerFromUpload(HttpAction action, StreamRDF dest) {
+    private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
         Upload.fileUploadWorker(action, dest);
     }
 
@@ -365,7 +359,7 @@ public class ActionDatasets extends ActionContainerItem {
     }
 
     // Persistent state change.
-    private void setDatasetState(String name, Resource newState) {
+    private static void setDatasetState(String name, Resource newState) {
         boolean committed = false ;
         system.begin(ReadWrite.WRITE) ;
         try {
@@ -430,7 +424,7 @@ public class ActionDatasets extends ActionContainerItem {
         try { input = request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
 
-        int len = request.getContentLength() ;
+//        int len = request.getContentLength() ;
 //        if ( verbose ) {
 //            if ( len >= 0 )
 //                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,

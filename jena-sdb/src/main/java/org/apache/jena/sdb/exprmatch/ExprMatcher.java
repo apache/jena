@@ -156,6 +156,11 @@ public class ExprMatcher
                 throw new NoExprMatch("Different value: "+nv+" & "+target.getConstant()) ;
         }
 
+        @Override
+        public void visit(ExprNone none)
+        {
+            throw new NoExprMatch("ExprNone") ;
+        }
         /*
          * Variable is the pattern
          * 1/ If in the action map, do the action

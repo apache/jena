@@ -113,7 +113,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = 0xF0F0 ;
         v = BitsInt.clear(v, 4, 8) ;
-        String s = Integer.toHexString(v) ;
         check(0xF000, v ) ;
     }
 
@@ -121,7 +120,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = 0x80000000;
         v = BitsInt.clear(v, 31, 32) ;
-        String s = Integer.toHexString(v) ;
         check(0x0, v ) ;
     }
 
@@ -129,7 +127,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = 0xC0000000;
         v = BitsInt.clear(v, 31, 32) ;
-        String s = Integer.toHexString(v) ;
         check(0x40000000, v ) ;
     }
 
@@ -137,7 +134,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = -1 ;
         v = BitsInt.clear(v, 31, 32) ;
-        String s = Integer.toHexString(v) ;
         check(0x7FFFFFFF, v ) ;
     }
     
@@ -145,7 +141,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = -1 ;
         v = BitsInt.clear(v, 16, 32) ;
-        String s = Integer.toHexString(v) ;
         check(0x0000FFFF, v ) ;
     }
 
@@ -153,7 +148,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = -1 ;
         v = BitsInt.clear(v, 0, 16) ;
-        String s = Integer.toHexString(v) ;
         check(0xFFFF0000, v ) ;
     }
 
@@ -161,7 +155,6 @@ public class TestBitsInt extends BaseTest
     {
         int v = -1 ;
         v = BitsInt.clear(v, 0, 0) ;
-        String s = Integer.toHexString(v) ;
         check(-1, v ) ;
     }
 
@@ -452,12 +445,12 @@ public class TestBitsInt extends BaseTest
         check(0xAB, v ) ;
     }
     
-    private void check(int expected, int actual)
+    private static void check(int expected, int actual)
     {
         check(null, expected, actual) ;
     }
     
-    private void check(String msg, int expected, int actual)
+    private static void check(String msg, int expected, int actual)
     {
         if ( expected == actual ) return ;
         String s = "Expected: "+Integer.toHexString(expected)+" : Got: "+Integer.toHexString(actual) ;

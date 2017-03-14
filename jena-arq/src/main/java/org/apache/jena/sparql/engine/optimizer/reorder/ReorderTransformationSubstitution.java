@@ -42,20 +42,20 @@ import org.slf4j.LoggerFactory ;
 public abstract class ReorderTransformationSubstitution implements ReorderTransformation
 {
     static public final Logger log = LoggerFactory.getLogger(ReorderTransformationSubstitution.class) ;
-    private final boolean DEBUG = log.isDebugEnabled() ;  
+    static private final boolean DEBUG = false ;  
+    
+    public ReorderTransformationSubstitution() {}
     
     @Override
-    public BasicPattern reorder(BasicPattern pattern)
-    {
+    public BasicPattern reorder(BasicPattern pattern) {
         return reorderIndexes(pattern).reorder(pattern) ;
     }
 
     @Override
-    public final ReorderProc reorderIndexes(BasicPattern pattern)
-    {
-        if (pattern.size() <= 1 )
+    public final ReorderProc reorderIndexes(BasicPattern pattern) {
+        if ( pattern.size() <= 1 )
             return ReorderLib.identityProc() ;
-        
+
         List<Triple> triples = pattern.getList() ;
 
         // Could merge into the conversion step to do the rewrite WRT a Binding.
@@ -70,23 +70,29 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         return proc ;
     }
 
-    protected List<PatternTriple> modifyComponents(List<PatternTriple> components)
-    {
+    protected List<PatternTriple> modifyComponents(List<PatternTriple> components) {
         return components ;
     }
 
-    protected ReorderProc reorder(List<Triple> triples, List<PatternTriple> components)
-    {
+    private AccString<PatternTriple> formatter() { 
+        return new AccString<PatternTriple>() { 
+            @Override
+            protected String toString(PatternTriple pt) {
+                return "(" + printAbbrev(pt.toString()) + ")" ;
+            }
+        } ;
+    }
+    
+    protected ReorderProc reorder(List<Triple> triples, List<PatternTriple> components) {
         int N = components.size() ;
         int numReorder = N ;        // Maybe choose 4, say, and copy over the rest.
         int indexes[] = new int[N] ;
 
         if ( DEBUG )
-            log.debug("Reorder: "+Iter.asString(components, formatter)) ;
-        
+            log.debug("Reorder: " + Iter.asString(components, formatter())) ;
+
         int idx = 0 ;
-        for ( ; idx < numReorder ; idx++ )
-        {
+        for ( ; idx < numReorder ; idx++ ) {
             int j = chooseNext(components) ;
             if ( j < 0 )
                 break ;
@@ -95,92 +101,75 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
             update(triple, components) ;
             components.set(j, null) ;
         }
-        
-        // Copy over the remainder (if any) 
-        for ( int i = 0 ; i < components.size() ; i++ )
-        {
+
+        // Copy over the remainder (if any)
+        for ( int i = 0 ; i < components.size() ; i++ ) {
             if ( components.get(i) != null )
                 indexes[idx++] = i ;
         }
         if ( triples.size() != idx )
-            throw new ARQException(String.format("Inconsistency: number of triples (%d) does not equal to number of indexes processed (%d)", triples.size(), idx)) ;
-        
-        ReorderProc proc = new ReorderProcIndexes(indexes) ;
-        
-        return proc ;
-    }
-    
-    
-//    private int findFirst(List<PatternTriple> pTriples)
-//    {
-//        for ( int i = 0 ; i < pTriples.size() ; i++ )
-//            if ( pTriples.get(i) != null )
-//                return i ;
-//        return -1 ;
-//    }
+            throw new ARQException(String.format("Inconsistency: number of triples (%d) does not equal to number of indexes processed (%d)",
+                                                 triples.size(), idx)) ;
 
+        ReorderProc proc = new ReorderProcIndexes(indexes) ;
+
+        return proc ;
+    }    
+    
     /** Return index of next pattern triple */
-    protected int chooseNext(List<PatternTriple> pTriples)
-    {
-        if ( DEBUG )
-        {
+    protected int chooseNext(List<PatternTriple> pTriples) {
+        if ( DEBUG ) {
             int i = -1 ;
-            StringBuilder buff = new StringBuilder() ; 
-            for ( PatternTriple pt : pTriples )
-            {
+            StringBuilder buff = new StringBuilder() ;
+            for ( PatternTriple pt : pTriples ) {
                 i++ ;
-                if ( pt == null )
-                {
+                if ( pt == null ) {
                     buff.append(String.format("    %d          : null\n", i)) ;
                     continue ;
                 }
                 double w2 = weight(pt) ;
                 buff.append(String.format("    %d %8.0f : %s\n", i, w2, printAbbrev(pt))) ;
             }
-            String x = StrUtils.noNewlineEnding(buff.toString());
-            log.debug(">> Input\n"+x) ;
+            String x = StrUtils.noNewlineEnding(buff.toString()) ;
+            log.debug(">> Input\n" + x) ;
         }
-        
-        int idx = processPTriples(pTriples, null) ; 
-        
-        if ( DEBUG )
-        {
+
+        int idx = processPTriples(pTriples, null) ;
+
+        if ( DEBUG ) {
             String x = printAbbrev(pTriples.get(idx)) ;
             x = StrUtils.noNewlineEnding(x) ;
-            log.debug("<< Output\n    "+x) ;
+            log.debug("<< Output\n    " + x) ;
         }
         return idx ;
     }
 
     /** Return all the indexes of pattern triples of the least weight. */
-    protected List<Integer> chooseAll(List<PatternTriple> pTriples)
-    {
+    protected List<Integer> chooseAll(List<PatternTriple> pTriples) {
         List<Integer> results = new ArrayList<>(pTriples.size()) ;
         processPTriples(pTriples, results) ;
         return results ;
     }
-    
-    /** Return the index of the first, least triple; optionally accumulate all indexes of the same least weight */ 
-    private int processPTriples(List<PatternTriple> pTriples, List<Integer> results)
-    {
+
+    /**
+     * Return the index of the first, least triple; optionally accumulate all indexes of
+     * the same least weight
+     */
+    private int processPTriples(List<PatternTriple> pTriples, List<Integer> results) {
         double min = Double.MAX_VALUE ;     // Current minimum
         int N = pTriples.size() ;
         int idx = -1 ;
-        
-        for ( int i = 0 ; i < N ; i++ )
-        {
+
+        for ( int i = 0 ; i < N ; i++ ) {
             PatternTriple pt = pTriples.get(i) ;
             if ( pt == null )
                 continue ;
             double x = weight(pt) ;
-            if ( x < 0 )
-            {
+            if ( x < 0 ) {
                 // ****
                 DefaultChoice choice = defaultChoice(pt) ;
-                if ( choice != null )
-                {
-                    switch (choice)
-                    {
+                if ( choice != null ) {
+                    switch (choice) {
                         case FIRST :
                             // Weight very low so it goes to front.
                             x = 0.01 ;
@@ -197,29 +186,28 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
                     }
                 }
                 
-                // Not found.  No default action.
-                // Make sure something is returned but otherwise ignore this pattern (goes last). 
-                if ( idx == -1 )
-                {
+                // Not found. No default action.
+                // Make sure something is returned but otherwise ignore this pattern (goes
+                // last).
+                if ( idx == -1 ) {
                     idx = i ;
-                    if ( results != null ) results.add(i) ;
+                    if ( results != null )
+                        results.add(i) ;
                 }
-                // Do nothing.  Does not update min so will be not be in results. 
+                // Do nothing. Does not update min so will be not be in results.
                 continue ;
             }
-            
-            if ( x == min )
-            {
-                if ( results != null ) results.add(i) ;
+
+            if ( x == min ) {
+                if ( results != null )
+                    results.add(i) ;
                 continue ;
             }
-            
-            if ( x < min )
-            {
+
+            if ( x < min ) {
                 min = x ;
                 idx = i ;
-                if ( results != null )
-                {
+                if ( results != null ) {
                     results.clear() ;
                     results.add(i) ;
                 }
@@ -227,7 +215,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         }
         return idx ;
     }
-    
+
     /** Return the weight of the pattern, or -1 if no knowledge for it */
     protected abstract double weight(PatternTriple pt) ;
     
@@ -245,24 +233,20 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
     protected double defaultWeight(PatternTriple pt) { return -1 ; }
 
     /** Update components to note any variables from triple */
-    protected static void update(Triple triple, List<PatternTriple> components)
-    {
+    protected static void update(Triple triple, List<PatternTriple> components) {
         for ( PatternTriple elt : components )
             if ( elt != null )
                 update(triple, elt) ;
     }
 
-    private static void update(Triple triple, PatternTriple tuple)
-    {
+    private static void update(Triple triple, PatternTriple tuple) {
         update(triple.getSubject(), tuple) ;
         update(triple.getPredicate(), tuple) ;
         update(triple.getObject(), tuple) ;
     }
 
-    private static void update(Node node, PatternTriple elt)
-    {
-        if ( Var.isVar(node) )
-        {
+    private static void update(Node node, PatternTriple elt) {
+        if ( Var.isVar(node) ) {
             if ( node.equals(elt.subject.getNode()) )
                 elt.subject = PatternElements.TERM ;
             if ( node.equals(elt.predicate.getNode()) )
@@ -273,15 +257,13 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
     }
     
     /** Update based on a variable/value (c.f. Substitute.substitute) */
-    protected static void update(Var var, Node value, List<PatternTriple> components)
-    {
+    protected static void update(Var var, Node value, List<PatternTriple> components) {
         for ( PatternTriple elt : components )
             if ( elt != null )
                 update(var, value, elt) ;
     }
-    
-    private static void update(Var var, Node value, PatternTriple elt)
-    {
+
+    private static void update(Var var, Node value, PatternTriple elt) {
         if ( var.equals(elt.subject.getNode()) )
             elt.subject = Item.createNode(value) ;
         if ( var.equals(elt.predicate.getNode()) )
@@ -289,12 +271,4 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
         if ( var.equals(elt.object.getNode()) )
             elt.object = Item.createNode(value) ;
     }
-    
-    private AccString<PatternTriple> formatter = 
-        new AccString<PatternTriple>() { 
-            @Override
-            protected String toString(PatternTriple pt) {
-                return "(" + printAbbrev(pt.toString()) + ")" ;
-        }
-    } ;
 }

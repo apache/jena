@@ -379,7 +379,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Check reset.
         testOp("(filter true (distinct (filter (notin ?x 1 2 3) (bgp (?s ?p ?x)) )))",
                t_expandOneOf,
-               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2) (!= ?x 3)) (bgp (triple ?s ?p ?x)) )))") ;
     }
 
 

@@ -20,9 +20,9 @@ package org.apache.jena.atlas.test;
 
 import static org.apache.jena.atlas.lib.RandomLib.random ;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.List ;
+import java.util.* ;
+import java.util.function.IntSupplier;
+import java.util.stream.IntStream;
 
 /** Support for testing.  May be  generally useful */
 public class Gen
@@ -32,52 +32,35 @@ public class Gen
         return rand(numRand, low, high, false) ; 
     }
     
-    /** Generate a random sequence between low (inclusive) and high (exclusive) - choose whether to have duplicates or not */ 
+    /**
+     * Generate a random sequence between low (inclusive) and high (exclusive) - with duplicates or not
+     */
     public static int[] rand(int numRand, int low, int high, boolean allDifferent) {
-        int[] k = new int[numRand] ;
-        Arrays.fill(k, -1) ;
-        for ( int i = 0 ; i < numRand ; i++ ) {
-            if ( allDifferent ) {
-                loop1 : while (true) {
-                    // All different.
-                    int x = random.nextInt(high - low) + low ;
-                    for ( int j = 0 ; j < i ; j++ ) {
-                        if ( k[j] == x )
-                            continue loop1 ;
-                    }
-                    k[i] = x ;
-                    break ;
-                }
-            } else {
-                int x = random.nextInt(high - low) + low ;
-                k[i] = x ;
-            }
+        Set<Integer> used = new HashSet<>();
+        IntSupplier supplier = allDifferent ? () -> {
+            int x = oneRandomInt(low, high);
+            while (!used.add(x)) x = oneRandomInt(low, high);
+            return x;
+        } : () -> oneRandomInt(low, high);
 
-        }
+        return IntStream.generate(supplier).limit(numRand).toArray();
+    }
 
-        return k ;
+    private static int oneRandomInt(int low, int high) {
+        return random.nextInt(high - low) + low;
     }
 
     /** Pull items out of the list in a random order */ 
     public static int[] permute(int[] x) {
-        int[] x2 = new int[x.length] ;
-        List<Integer> list = new ArrayList<>() ;
-        
-        for ( int i : x )
-            list.add(i) ;
-        for ( int i = 0 ; i<x.length ; i++ ) {
-            int idx = random.nextInt(list.size()) ;
-            x2[i] = list.remove(idx) ;
-        }
-        return x2 ; 
+        int[] x2 = Arrays.copyOf(x, x.length);
+        Collections.shuffle(Arrays.asList(x2), random);
+        return x2; 
     }
     
     /** Do a number of random pair-wise swaps */
     public static int[] shuffle(int[] x, int num) {
         // Collections.shuffle.
-        int[] x2 = new int[x.length] ;
-        System.arraycopy(x, 0, x2, 0, x.length) ;
-
+        int[] x2 = Arrays.copyOf(x, x.length) ;
         for ( int i = 0 ; i < num ; i++ ) {
             int a = random.nextInt(x2.length) ;
             int b = random.nextInt(x2.length) ;
@@ -85,29 +68,12 @@ public class Gen
             x2[a] = x2[b] ;
             x2[b] = t ;
         }
-        // Checking.
-        for ( int k : x ) {
-            boolean found = false ;
-            for ( int k2 : x2 )
-                if ( k == k2 ) {
-                    found = true ;
-                    break ;
-                }
-            if ( !found )
-                System.err.printf("Corrupted permute: [%s] [%s]\n", strings(x), strings(x2)) ;
-        }
         return x2 ;
     }
 
     public static String strings(int[] keys) {
-        StringBuilder sb = new StringBuilder() ;
-        boolean first = true ;
-        for ( int k : keys ) {
-            if ( !first )
-                sb.append(", ") ;
-            first = false ;
-            sb.append(k) ;
-        }
-        return sb.toString() ;
+        StringJoiner joiner = new StringJoiner(",");
+        for ( int k : keys ) joiner.add(Integer.toString(k));
+        return joiner.toString();
     }
  }

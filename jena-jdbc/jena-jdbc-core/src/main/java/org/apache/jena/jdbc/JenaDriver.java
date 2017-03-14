@@ -36,7 +36,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor;
@@ -608,7 +607,7 @@ public abstract class JenaDriver implements Driver {
                 // Doesn't yet exist, add a string/list as appropriate
                 if ( this.allowsMultipleValues( key ) )
                 {
-                    List<String> values = new ArrayList<String>();
+                    List<String> values = new ArrayList<>();
                     if ( value.contains( "," ) )
                     {
                         // Comma separated lists are usable for multiple value
@@ -655,7 +654,7 @@ public abstract class JenaDriver implements Driver {
                 else
                 {
                     // Convert to list
-                    List<String> values = new ArrayList<String>();
+                    List<String> values = new ArrayList<>();
                     values.add( currValue.toString() );
                     if ( value.contains( "," ) )
                     {
@@ -732,7 +731,7 @@ public abstract class JenaDriver implements Driver {
                             ((List<Object>) currValue).add(value);
                         } else {
                             // Convert to list
-                            List<String> values = new ArrayList<String>();
+                            List<String> values = new ArrayList<>();
                             values.add(currValue.toString());
                             values.add(value.toString());
                             target.put(key, values);
@@ -872,7 +871,7 @@ public abstract class JenaDriver implements Driver {
         Properties ps = this.getEffectiveProperties(url, props);
 
         // Create base driver properties
-        List<DriverPropertyInfo> baseProps = new ArrayList<DriverPropertyInfo>();
+        List<DriverPropertyInfo> baseProps = new ArrayList<>();
 
         // JDBC compatibility level
         DriverPropertyInfo jdbcCompatLevel = new DriverPropertyInfo(PARAM_JDBC_COMPATIBILITY, ps.getProperty(
@@ -887,7 +886,7 @@ public abstract class JenaDriver implements Driver {
         baseProps.add(jdbcCompatLevel);
 
         // Pre-processors
-        DriverPropertyInfo preProcessor = new DriverPropertyInfo(PARAM_PRE_PROCESSOR, StrUtils.strjoin(",",
+        DriverPropertyInfo preProcessor = new DriverPropertyInfo(PARAM_PRE_PROCESSOR, String.join(",",
                 this.getValues(ps, PARAM_PRE_PROCESSOR)));
         preProcessor.description = "Configures pre-processors which are used to amend SPARQL text, queries or updates before these are passed to the underlying SPARQL engine, multiple fully qualified class names may be specified";
         preProcessor.required = false;
@@ -958,11 +957,11 @@ public abstract class JenaDriver implements Driver {
     protected List<String> getValues(Properties props, String key) throws SQLException {
         Object obj = props.get(key);
         if (obj == null)
-            return new ArrayList<String>();
+            return new ArrayList<>();
         if (obj instanceof List<?>)
             return (List<String>) obj;
         if (obj instanceof String) {
-            List<String> values = new ArrayList<String>();
+            List<String> values = new ArrayList<>();
             values.add(obj.toString());
             return values;
         } else {

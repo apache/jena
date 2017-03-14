@@ -64,7 +64,7 @@ public class SecuredPropertyImpl extends SecuredResourceImpl implements
 			}
 		}
 
-		final ItemHolder<Property, SecuredProperty> holder = new ItemHolder<Property, SecuredProperty>(
+		final ItemHolder<Property, SecuredProperty> holder = new ItemHolder<>(
 				goodProp);
 		final SecuredPropertyImpl checker = new SecuredPropertyImpl(
 				securedModel, holder);

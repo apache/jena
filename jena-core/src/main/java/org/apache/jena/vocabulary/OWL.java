@@ -28,137 +28,170 @@ import org.apache.jena.rdf.model.* ;
  * Vocabulary definitions from file:vocabularies/owl.owl
  */
 public class OWL {
-    // Using ResourceFactory to avoid initialization circularity problems.
-    // OWL is a central place where other classes go to get their constants
-    // causing potential circularity of initialization.
-    // If OWL starts the Jena initialization process
-    // (ModelFactory.createDefaultModel calls JenaSystem.init)
-    // then classes can easily see uninitialized constants. 
-
-    // Remove after Jena 3.0.1 or later.
-//    // ModelFactory.createDefaultModel calls JenaSystem.init
-//    /** <p>The RDF model that holds the vocabulary terms</p> */
-//    private static final Model m_model = ModelFactory.createDefaultModel();
-//
-//    protected static final Resource resource( String uri )
-//    { return m_model.createResource( uri ); }
-//
-//    protected static final Property property( String uri )
-//    { return m_model.createProperty( uri ); }
-
     // These will use ResourceFactory which creates Resource etc without a specific model.
     // This is safer for complex initialization paths.
     protected static final Resource resource( String uri )
-    { return ResourceFactory.createResource( uri ); }
+    { return ResourceFactory.createResource( NS+uri ); }
 
     protected static final Property property( String uri )
-    { return ResourceFactory.createProperty( uri ); }
+    { return ResourceFactory.createProperty( NS, uri ); }
 
-    /** <p>The namespace of the vocabulary as a string ({@value})</p> */
+    /** The namespace of the vocabulary as a string. */
     public static final String NS = "http://www.w3.org/2002/07/owl#";
     
-    /** <p>The namespace of the vocabulary as a string</p>
-     *  @see #NS */
+    /** The namespace of the vocabulary as a string */
     public static String getURI() {return NS;}
     
-    /** <p>The namespace of the vocabulary as a resource</p> */
-    public static final Resource NAMESPACE = resource( NS );
+    /** The namespace of the vocabulary as a resource */
+    public static final Resource NAMESPACE = ResourceFactory.createResource( NS );
     
     /** A resource that denotes the OWL-full sublanguage of OWL */
-    public static final Resource FULL_LANG = resource( getURI() );
+    public static final Resource FULL_LANG = ResourceFactory.createResource( getURI() );
     
     /** A resource, not officially sanctioned by WebOnt, that denotes the OWL-DL sublanguage of OWL */
-    public static final Resource DL_LANG = resource( "http://www.w3.org/TR/owl-features/#term_OWLDL" );
+    public static final Resource DL_LANG = ResourceFactory.createResource("http://www.w3.org/TR/owl-features/#term_OWLDL" );
     
     /** A resource, not officially sanctioned by WebOnt, that denotes the OWL-Lite sublanguage of OWL */
-    public static final Resource LITE_LANG = resource( "http://www.w3.org/TR/owl-features/#term_OWLLite" );
+    public static final Resource LITE_LANG = ResourceFactory.createResource("http://www.w3.org/TR/owl-features/#term_OWLLite" );
 
     // Vocabulary properties
     ///////////////////////////
 
-    public static final Property maxCardinality = property( "http://www.w3.org/2002/07/owl#maxCardinality" );
+    public static final Property maxCardinality = Init.maxCardinality();
     
-    public static final Property versionInfo = property( "http://www.w3.org/2002/07/owl#versionInfo" );
+    public static final Property versionInfo = Init.versionInfo();
     
-    public static final Property equivalentClass = property( "http://www.w3.org/2002/07/owl#equivalentClass" );
+    public static final Property equivalentClass = Init.equivalentClass();
     
-    public static final Property distinctMembers = property( "http://www.w3.org/2002/07/owl#distinctMembers" );
+    public static final Property distinctMembers = Init.distinctMembers();
     
-    public static final Property oneOf = property( "http://www.w3.org/2002/07/owl#oneOf" );
+    public static final Property oneOf = Init.oneOf();
     
-    public static final Property sameAs = property( "http://www.w3.org/2002/07/owl#sameAs" );
+    public static final Property sameAs = Init.sameAs();
     
-    public static final Property incompatibleWith = property( "http://www.w3.org/2002/07/owl#incompatibleWith" );
+    public static final Property incompatibleWith = Init.incompatibleWith();
     
-    public static final Property minCardinality = property( "http://www.w3.org/2002/07/owl#minCardinality" );
+    public static final Property minCardinality = Init.minCardinality();
     
-    public static final Property complementOf = property( "http://www.w3.org/2002/07/owl#complementOf" );
+    public static final Property complementOf = Init.complementOf();
     
-    public static final Property onProperty = property( "http://www.w3.org/2002/07/owl#onProperty" );
+    public static final Property onProperty = Init.onProperty();
     
-    public static final Property equivalentProperty = property( "http://www.w3.org/2002/07/owl#equivalentProperty" );
+    public static final Property equivalentProperty = Init.equivalentProperty();
     
-    public static final Property inverseOf = property( "http://www.w3.org/2002/07/owl#inverseOf" );
+    public static final Property inverseOf = Init.inverseOf();
     
-    public static final Property backwardCompatibleWith = property( "http://www.w3.org/2002/07/owl#backwardCompatibleWith" );
+    public static final Property backwardCompatibleWith = Init.backwardCompatibleWith();
     
-    public static final Property differentFrom = property( "http://www.w3.org/2002/07/owl#differentFrom" );
+    public static final Property differentFrom = Init.differentFrom();
     
-    public static final Property priorVersion = property( "http://www.w3.org/2002/07/owl#priorVersion" );
+    public static final Property priorVersion = Init.priorVersion();
     
-    public static final Property imports = property( "http://www.w3.org/2002/07/owl#imports" );
+    public static final Property imports = Init.imports();
     
-    public static final Property allValuesFrom = property( "http://www.w3.org/2002/07/owl#allValuesFrom" );
+    public static final Property allValuesFrom = Init.allValuesFrom();
     
-    public static final Property unionOf = property( "http://www.w3.org/2002/07/owl#unionOf" );
+    public static final Property unionOf = Init.unionOf();
     
-    public static final Property hasValue = property( "http://www.w3.org/2002/07/owl#hasValue" );
+    public static final Property hasValue = Init.hasValue();
     
-    public static final Property someValuesFrom = property( "http://www.w3.org/2002/07/owl#someValuesFrom" );
+    public static final Property someValuesFrom = Init.someValuesFrom();
     
-    public static final Property disjointWith = property( "http://www.w3.org/2002/07/owl#disjointWith" );
+    public static final Property disjointWith = Init.disjointWith();
     
-    public static final Property cardinality = property( "http://www.w3.org/2002/07/owl#cardinality" );
+    public static final Property cardinality = Init.cardinality();
     
-    public static final Property intersectionOf = property( "http://www.w3.org/2002/07/owl#intersectionOf" );
+    public static final Property intersectionOf = Init.intersectionOf();
 
     // Vocabulary classes
     ///////////////////////////
 
-    public static final Resource Thing = resource( "http://www.w3.org/2002/07/owl#Thing" );
+    public static final Resource Thing = Init.Thing();
     
-    public static final Resource DataRange = resource( "http://www.w3.org/2002/07/owl#DataRange" );
+    public static final Resource DataRange = Init.DataRange();
     
-    public static final Resource Ontology = resource( "http://www.w3.org/2002/07/owl#Ontology" );
+    public static final Resource Ontology = Init.Ontology();
     
-    public static final Resource DeprecatedClass = resource( "http://www.w3.org/2002/07/owl#DeprecatedClass" );
+    public static final Resource DeprecatedClass = Init.DeprecatedClass();
     
-    public static final Resource AllDifferent = resource( "http://www.w3.org/2002/07/owl#AllDifferent" );
+    public static final Resource AllDifferent = Init.AllDifferent();
     
-    public static final Resource DatatypeProperty = resource( "http://www.w3.org/2002/07/owl#DatatypeProperty" );
+    public static final Resource DatatypeProperty = Init.DatatypeProperty();
     
-    public static final Resource SymmetricProperty = resource( "http://www.w3.org/2002/07/owl#SymmetricProperty" );
+    public static final Resource SymmetricProperty = Init.SymmetricProperty();
     
-    public static final Resource TransitiveProperty = resource( "http://www.w3.org/2002/07/owl#TransitiveProperty" );
+    public static final Resource TransitiveProperty = Init.TransitiveProperty();
     
-    public static final Resource DeprecatedProperty = resource( "http://www.w3.org/2002/07/owl#DeprecatedProperty" );
+    public static final Resource DeprecatedProperty = Init.DeprecatedProperty();
     
-    public static final Resource AnnotationProperty = resource( "http://www.w3.org/2002/07/owl#AnnotationProperty" );
+    public static final Resource AnnotationProperty = Init.AnnotationProperty();
     
-    public static final Resource Restriction = resource( "http://www.w3.org/2002/07/owl#Restriction" );
+    public static final Resource Restriction = Init.Restriction();
     
-    public static final Resource Class = resource( "http://www.w3.org/2002/07/owl#Class" );
+    public static final Resource Class = Init.Class();
     
-    public static final Resource OntologyProperty = resource( "http://www.w3.org/2002/07/owl#OntologyProperty" );
+    public static final Resource OntologyProperty = Init.OntologyProperty();
     
-    public static final Resource ObjectProperty = resource( "http://www.w3.org/2002/07/owl#ObjectProperty" );
+    public static final Resource ObjectProperty = Init.ObjectProperty();
     
-    public static final Resource FunctionalProperty = resource( "http://www.w3.org/2002/07/owl#FunctionalProperty" );
+    public static final Resource FunctionalProperty = Init.FunctionalProperty();
     
-    public static final Resource InverseFunctionalProperty = resource( "http://www.w3.org/2002/07/owl#InverseFunctionalProperty" );
+    public static final Resource InverseFunctionalProperty = Init.InverseFunctionalProperty();
     
-    public static final Resource Nothing = resource( "http://www.w3.org/2002/07/owl#Nothing" );
-
+    public static final Resource Nothing = Init.Nothing();
+    
     // Vocabulary individuals
     ///////////////////////////
+    
+    /** OWL constants are used during Jena initialization.
+     * <p>
+     * If that initialization is triggered by touching the OWL class,
+     * then the constants are null.
+     * <p>
+     * So for these cases, call this helper class: Init.function()   
+     */
+    public static class Init {
+        // JENA-1294
+        // Version that calculate the constant when called. 
+        public static Property maxCardinality()             { return property( "maxCardinality" ); }
+        public static Property versionInfo()                { return property( "versionInfo" ); }
+        public static Property equivalentClass()            { return property( "equivalentClass" ); }
+        public static Property distinctMembers()            { return property( "distinctMembers" ); }
+        public static Property oneOf()                      { return property( "oneOf" ); }
+        public static Property sameAs()                     { return property( "sameAs" ); }
+        public static Property incompatibleWith()           { return property( "incompatibleWith" ); }
+        public static Property minCardinality()             { return property( "minCardinality" ); }
+        public static Property complementOf()               { return property( "complementOf" ); }
+        public static Property onProperty()                 { return property( "onProperty" ); }
+        public static Property equivalentProperty()         { return property( "equivalentProperty" ); }
+        public static Property inverseOf()                  { return property( "inverseOf" ); }
+        public static Property backwardCompatibleWith()     { return property( "backwardCompatibleWith" ); }
+        public static Property differentFrom()              { return property( "differentFrom" ); }
+        public static Property priorVersion()               { return property( "priorVersion" ); }
+        public static Property imports()                    { return property( "imports" ); }
+        public static Property allValuesFrom()              { return property( "allValuesFrom" ); }
+        public static Property unionOf()                    { return property( "unionOf" ); }
+        public static Property hasValue()                   { return property( "hasValue" ); }
+        public static Property someValuesFrom()             { return property( "someValuesFrom" ); }
+        public static Property disjointWith()               { return property( "disjointWith" ); }
+        public static Property cardinality()                { return property( "cardinality" ); }
+        public static Property intersectionOf()             { return property( "intersectionOf" ); }
+        public static Resource Thing()                      { return resource( "Thing" ); }
+        public static Resource DataRange()                  { return resource( "DataRange" ); }
+        public static Resource Ontology()                   { return resource( "Ontology" ); }
+        public static Resource DeprecatedClass()            { return resource( "DeprecatedClass" ); }
+        public static Resource AllDifferent()               { return resource( "AllDifferent" ); }
+        public static Resource DatatypeProperty()           { return resource( "DatatypeProperty" ); }
+        public static Resource SymmetricProperty()          { return resource( "SymmetricProperty" ); }
+        public static Resource TransitiveProperty()         { return resource( "TransitiveProperty" ); }
+        public static Resource DeprecatedProperty()         { return resource( "DeprecatedProperty" ); }
+        public static Resource AnnotationProperty()         { return resource( "AnnotationProperty" ); }
+        public static Resource Restriction()                { return resource( "Restriction" ); }
+        public static Resource Class()                      { return resource( "Class" ); }
+        public static Resource OntologyProperty()           { return resource( "OntologyProperty" ); }
+        public static Resource ObjectProperty()             { return resource( "ObjectProperty" ); }
+        public static Resource FunctionalProperty()         { return resource( "FunctionalProperty" ); }
+        public static Resource InverseFunctionalProperty()  { return resource( "InverseFunctionalProperty" ); }
+        public static Resource Nothing()                    { return resource( "Nothing" ); }
+    }
 }

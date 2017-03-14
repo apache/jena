@@ -18,6 +18,11 @@
 
 package org.apache.jena.fuseki.http;
 
+import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
+import static org.apache.jena.fuseki.ServerCtl.serviceUpdate ;
+import static org.apache.jena.fuseki.ServerCtl.urlRoot ;
+
 import java.io.IOException ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -25,28 +30,27 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.ServerTest ;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.* ;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
-// especially error cases abnd unusual usage that the higher level APIs don't use.
+// especially error cases and unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends BaseTest {
     
-    static String pingURL = ServerTest.urlRoot+"ping.txt" ;
-    @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    @AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
     
-    static String graphURL = ServerTest.serviceREST+"?default" ;
-    static String queryURL = ServerTest.serviceQuery ;
-    static String updateURL = ServerTest.serviceUpdate ;
-    
+    static String pingURL     = urlRoot() + "ping.txt" ;
+    static String graphURL    = serviceGSP() + "?default" ;
+    static String queryURL    = serviceQuery() ;
+    static String updateURL   = serviceUpdate() ;
     static String simpleQuery = queryURL+"?query="+IRILib.encodeUriComponent("ASK{}") ;
     
     // Basic operations
@@ -59,7 +63,7 @@ public class TestHttpOp extends BaseTest {
     @Test(expected=HttpException.class) 
     public void httpGet_02() {
         try {
-            TypedInputStream in = HttpOp.execHttpGet(ServerTest.urlRoot+"does-not-exist") ;
+            TypedInputStream in = HttpOp.execHttpGet(urlRoot()+"does-not-exist") ;
             IO.close(in) ;
         } catch(HttpException ex) {
             assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
@@ -74,7 +78,7 @@ public class TestHttpOp extends BaseTest {
     }   
     
     @Test public void httpGet_04() {
-        String x = HttpOp.execHttpGetString(ServerTest.urlRoot+"does-not-exist") ;
+        String x = HttpOp.execHttpGetString(urlRoot()+"does-not-exist") ;
         assertNull(x) ;
     }
     

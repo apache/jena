@@ -169,7 +169,7 @@ public class TestIter
         assertEquals("x/y/z", x) ;
     }
     
-    private void test(Iterator<?> iter, Object... items)
+    private static void test(Iterator<?> iter, Object... items)
     {
         for ( Object x : items )
         {

@@ -43,7 +43,7 @@ public class ExprList implements Iterable<Expr>
     /** Empty, immutable ExprList */
     public static final ExprList emptyList = new ExprList(Collections.emptyList()) ;
     
-    public ExprList() { expressions = new ArrayList<Expr>() ; }
+    public ExprList() { expressions = new ArrayList<>() ; }
     
     private ExprList(ExprList other) {
         this() ;
@@ -72,14 +72,16 @@ public class ExprList implements Iterable<Expr>
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
     public Set<Var> getVarsMentioned() {
-        Set<Var> x = new HashSet<Var>() ;
+        Set<Var> x = new HashSet<>() ;
         varsMentioned(x) ;
         return x ;
     }
 
+    /** @deprecated Use {@link ExprVars#varsMentioned(Collection, ExprList)} */
+    @Deprecated
     public void varsMentioned(Collection<Var> acc) {
         for (Expr expr : expressions)
-            expr.varsMentioned(acc) ;
+            ExprVars.varsMentioned(acc, expr);
     }
     
     /**
@@ -104,6 +106,8 @@ public class ExprList implements Iterable<Expr>
     public void addAll(ExprList exprs)      { expressions.addAll(exprs.getList()) ; }
     public void add(Expr expr)              { expressions.add(expr) ; }
     public List<Expr> getList()             { return Collections.unmodifiableList(expressions) ; }
+    /** Use only while building ExprList */
+    public List<Expr> getListRaw()          { return expressions ; }
     @Override
     public Iterator<Expr> iterator()        { return expressions.iterator() ; }
     
@@ -123,6 +127,8 @@ public class ExprList implements Iterable<Expr>
 
     public boolean equals(ExprList other, boolean bySyntax) {
         if ( this == other ) return true ;
+        if (expressions.size() != other.expressions.size()) return false;
+        
         for ( int i = 0 ; i < expressions.size() ; i++ ) {
             Expr e1 = expressions.get(i) ;
             Expr e2 = other.expressions.get(i) ;

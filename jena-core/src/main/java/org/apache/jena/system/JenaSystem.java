@@ -186,7 +186,7 @@ public class JenaSystem {
     // Order by level (increasing)
     private static Comparator<JenaSubsystemLifecycle> comparator        = (obj1, obj2) -> Integer.compare(obj1.level(), obj2.level()) ;
     // Order by level (decreasing)
-    private static Comparator<JenaSubsystemLifecycle> reverseComparator = (obj1, obj2) -> -1 * comparator.compare(obj1,  obj2) ;
+    private static Comparator<JenaSubsystemLifecycle> reverseComparator = comparator.reversed();
 
     private synchronized static void forEach(Consumer<JenaSubsystemLifecycle> action, Comparator<JenaSubsystemLifecycle> ordering) {
         List<JenaSubsystemLifecycle> x = get().snapshot() ;

@@ -61,23 +61,26 @@ public class TransactionHandlerContractTest {
 	 * Test that Graphs have transaction support methods, and that if they fail
 	 * on some g they fail because they do not support the operation.
 	 */
-	@ContractTest
+	@SuppressWarnings("deprecation")
+    @ContractTest
 	public void testTransactionsExistAsPerTransactionSupported() {
-		Command cmd = new Command() {
-			@Override
-			public Object execute() {
-				return null;
-			}
-		};
+        // Write out explicitly
+        Command cmd = new Command() {
+               @Override
+               public Object execute() { return null; }
+           };
 
-		TransactionHandler th = getTransactionHandlerProducer().newInstance();
+        TransactionHandler th = getTransactionHandlerProducer().newInstance();
 
 		if (th.transactionsSupported()) {
 			th.begin();
 			th.abort();
 			th.begin();
 			th.commit();
-			th.executeInTransaction(cmd);
+            th.execute( ()->{} ) ;
+			th.calculate(()->null);
+			th.executeInTransaction(cmd) ;
+			th.executeInTransaction( ()->null ) ;
 		} else {
 			try {
 				th.begin();
@@ -97,14 +100,26 @@ public class TransactionHandlerContractTest {
 			}
 			/* */
 			try {
-				th.executeInTransaction(cmd);
+				th.execute(()->{});
 				fail("Should have thrown UnsupportedOperationException");
-			} catch (UnsupportedOperationException x) {
-			}
+			} catch (UnsupportedOperationException x) { }
+            try {
+                th.calculate(()->null);
+                fail("Should have thrown UnsupportedOperationException");
+            } catch (UnsupportedOperationException x) { }
+            try {
+                th.executeInTransaction(cmd);
+                fail("Should have thrown UnsupportedOperationException");
+            } catch (UnsupportedOperationException x) { }
+            try {
+                th.executeInTransaction(()->null);
+                fail("Should have thrown UnsupportedOperationException");
+            } catch (UnsupportedOperationException x) { }
 		}
 	}
 
-	@ContractTest
+	@SuppressWarnings("deprecation")
+    @ContractTest
 	public void testExecuteInTransactionCatchesThrowable() {
 		TransactionHandler th = getTransactionHandlerProducer().newInstance();
 
@@ -118,8 +133,15 @@ public class TransactionHandlerContractTest {
 			try {
 				th.executeInTransaction(cmd);
 				fail("Should have thrown JenaException");
-			} catch (JenaException x) {
-			}
+			} catch (JenaException x) { }
+			try {
+                th.execute(()-> { throw new Error() ; });
+                fail("Should have thrown JenaException");
+            } catch (JenaException x) { }
+            try {
+                th.calculate(()->{ throw new Error() ; });
+                fail("Should have thrown JenaException");
+            } catch (JenaException x) { }
 		}
 	}
 

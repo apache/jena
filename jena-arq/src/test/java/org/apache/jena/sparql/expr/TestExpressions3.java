@@ -39,8 +39,8 @@ public class TestExpressions3 extends BaseTest
 {
     @Test public void bound_01()       { eval("BOUND(?x)", "(?x 1)", true) ; }
     @Test public void bound_02()       { eval("BOUND(?x)", "(?y 1)", false) ; }
-    @Test public void bound_03()       { evalExpr("(bound 1)", "(?y 1)", false) ; }
-    @Test public void bound_04()       { evalExpr("(bound 1)", "()", false) ; }
+    @Test public void bound_03()       { evalExpr("(bound 1)", "(?y 1)", true) ; }
+    @Test public void bound_04()       { evalExpr("(bound 1)", "()", true) ; }
     @Test public void bound_05()       { evalExpr("(bound ?x)", "(?y 1)", false) ; }
     @Test public void bound_06()       { evalExpr("(bound ?x)", "(?x 1)", true) ; }
     @Test public void bound_07()       { evalExpr("(bound (+ ?x 1))", "(?y 1)", false) ; }

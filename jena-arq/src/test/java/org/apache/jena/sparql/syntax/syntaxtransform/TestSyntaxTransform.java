@@ -90,6 +90,11 @@ public class TestSyntaxTransform extends BaseTest
         testQuery("SELECT * { ?s ?p ?srv SERVICE ?srv { ?s ?p ?srv}}",
                   "SELECT * { ?s ?p <urn:service> SERVICE <urn:service> { ?s ?p <urn:service>}}",
                   "srv", "<urn:service>") ; }
+    
+    @Test public void subst_query_30() {
+        testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
+                "s", "<urn:x>");
+    }
 
     
     @Test public void subst_update_01() { 
@@ -124,7 +129,7 @@ public class TestSyntaxTransform extends BaseTest
         Query q1 = QueryFactory.create(PREFIX+input) ;
         Query qExpected = QueryFactory.create(PREFIX+output) ;
         
-        Map<Var, Node> map = new HashMap<Var, Node>() ;
+        Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
         
         Query qTrans = QueryTransformOps.transform(q1, map) ;
@@ -136,7 +141,7 @@ public class TestSyntaxTransform extends BaseTest
         UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
         UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
         
-        Map<Var, Node> map = new HashMap<Var, Node>() ;
+        Map<Var, Node> map = new HashMap<>() ;
         map.put(Var.alloc(varStr), SSE.parseNode(valStr)) ;
         
         UpdateRequest reqTrans = UpdateTransformOps.transform(req1, map) ;

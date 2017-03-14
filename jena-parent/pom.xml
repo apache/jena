@@ -23,7 +23,7 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>17-SNAPSHOT</version>
+  <version>19-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -51,12 +51,17 @@
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
+    <ver.libthrift>0.9.3</ver.libthrift>
+    <!-- the following three libraries must work together
+     consult jsonld-java's POM for the correct dependency versions -->
+    <ver.jsonldjava>0.9.0</ver.jsonldjava>
+    <ver.jackson>2.7.4</ver.jackson>
+    <ver.commonsio>2.5</ver.commonsio>
+    
+    <ver.commonslang3>3.4</ver.commonslang3>
+    <ver.commonscsv>1.3</ver.commonscsv>
+    <ver.dexxcollection>0.6</ver.dexxcollection>
 
-    <ver.jsonldjava>0.8.2</ver.jsonldjava>
-    <!-- Used by jena-osgi and must be in-step with jsonldjava -->
-    <ver.jackson>2.6.3</ver.jackson>
-
-    <!-- These are connected because solr4j depends on httpclient as well -->
     <ver.httpclient>4.5.2</ver.httpclient>
     <ver.httpcore>4.4.4</ver.httpcore>
     <!-- Normally, these are the same as the above
@@ -66,9 +71,8 @@
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
     <ver.commons-codec>1.10</ver.commons-codec>
-    <ver.lucene>4.9.1</ver.lucene>
-    <ver.solr>4.9.1</ver.solr>
-    <ver.spatial4j>0.5</ver.spatial4j>
+    <ver.lucene>6.4.1</ver.lucene>
+    <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
     <ver.awaitility>1.7.0</ver.awaitility>
@@ -154,7 +158,7 @@
       <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
-        <version>0.9.3</version>
+        <version>${ver.libthrift}</version>
         <exclusions>
           <!-- Use whatever version Jena is using -->
           <exclusion>
@@ -171,13 +175,13 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>1.3</version>
+        <version>${ver.commonscsv}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.4</version>
+        <version>${ver.commonslang3}</version>
       </dependency>
 
       <dependency>
@@ -196,7 +200,7 @@
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
         <artifactId>collection</artifactId>
-        <version>0.6</version>
+        <version>${ver.dexxcollection}</version>
       </dependency>
       
       <dependency>
@@ -252,26 +256,6 @@
         <version>${ver.lucene}</version>
       </dependency>
 
-      <!-- Solr client -->
-      <!-- Exclusion of slf4j: Necessary so as to pick the version we want. 
-           solrj->zookeeper has a dependency on slf4j -->
-
-      <dependency>
-        <artifactId>solr-solrj</artifactId>
-        <groupId>org.apache.solr</groupId>
-        <version>${ver.solr}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
       <!-- For jena-spatial -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -280,7 +264,13 @@
       </dependency>
 
       <dependency>
-        <groupId>com.spatial4j</groupId>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial-extras</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.locationtech.spatial4j</groupId>
         <artifactId>spatial4j</artifactId>
         <version>${ver.spatial4j}</version>
       </dependency>
@@ -432,9 +422,11 @@
         <configuration>
           <excludeSubProjects>true</excludeSubProjects>
           <excludes>
+            <exclude>**/hs_err_pid*.log</exclude>
             <exclude>**/.project</exclude>
             <exclude>**/.settings/**</exclude>
             <exclude>**/.classpath</exclude>
+            <exclude>**/README.*</exclude>
             <exclude>**/META-INF/services/*</exclude>
             <!--
                 jena-core exclusions

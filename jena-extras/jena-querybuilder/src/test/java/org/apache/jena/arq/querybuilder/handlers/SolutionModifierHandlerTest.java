@@ -198,7 +198,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 		String[] s = byLine(query.toString());
 		assertContainsRegex(GROUP_BY + var("v"), s);
 
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, Var.alloc("v2"));
 		solutionModifier.setVars(values);
 		s = byLine(query.toString());
@@ -213,7 +213,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 		String[] s = byLine(query.toString());
 		assertContainsRegex(HAVING + var("v"), s);
 
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, Var.alloc("v2"));
 		solutionModifier.setVars(values);
 		s = byLine(query.toString());
@@ -228,7 +228,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 		String[] s = byLine(query.toString());
 		assertContainsRegex(ORDER_BY + var("v"), s);
 
-		Map<Var, Node> values = new HashMap<Var, Node>();
+		Map<Var, Node> values = new HashMap<>();
 		values.put(v, Var.alloc("v2"));
 		solutionModifier.setVars(values);
 		s = byLine(query.toString());

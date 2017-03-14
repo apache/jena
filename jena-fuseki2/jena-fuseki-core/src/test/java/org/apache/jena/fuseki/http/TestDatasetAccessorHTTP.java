@@ -18,41 +18,42 @@
 
 package org.apache.jena.fuseki.http;
 
-import static org.apache.jena.fuseki.ServerTest.* ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.apache.jena.fuseki.ServerCtl.datasetPath ;
+import static org.apache.jena.fuseki.ServerCtl.port ;
+import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
+import static org.apache.jena.fuseki.ServerCtl.urlDataset ;
+import static org.apache.jena.fuseki.ServerTest.gn1 ;
+import static org.apache.jena.fuseki.ServerTest.gn2 ;
+import static org.apache.jena.fuseki.ServerTest.gn99 ;
+import static org.apache.jena.fuseki.ServerTest.model1 ;
+import static org.apache.jena.fuseki.ServerTest.model2 ;
+
 import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.fuseki.AbstractFusekiTest ;
 import org.apache.jena.fuseki.FusekiTest ;
-import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 
-public class TestDatasetAccessorHTTP extends BaseTest 
+public class TestDatasetAccessorHTTP extends AbstractFusekiTest 
 {
     //Model level testing.
     
-    static final String datasetURI_not_1    = "http://localhost:"+port+"/junk" ;
-    static final String datasetURI_not_2    = serviceGSP+"/not" ;
-    static final String datasetURI_not_3    = "http://localhost:"+port+datasetPath+"/not/data" ;
-    
-    @BeforeClass public static void beforeClass()   { ServerTest.allocServer() ; }
-    @AfterClass public static void afterClass()     { ServerTest.freeServer() ; }
-    @Before public void before()                    { ServerTest.resetServer() ; }
+    static final String datasetURI_not_1    = "http://localhost:"+port()+"/junk" ;
+    static final String datasetURI_not_2    = serviceGSP()+"/not" ;
+    static final String datasetURI_not_3    = "http://localhost:"+port()+datasetPath()+"/not/data" ;
     
     @Test
     public void test_ds_1()
     {
         // Can GET the dataset service.
         try {
-            HttpOp.execHttpGet(serviceGSP) ;
+            HttpOp.execHttpGet(serviceGSP()) ;
         } catch (HttpException ex) {
             assertTrue(HttpSC.isClientError(ex.getResponseCode())) ;
             throw ex ;
@@ -92,7 +93,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
     public void test_404_3()
     {
         // Right service, wrong graph
-        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP) ;
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceGSP()) ;
         Model graph = du.getModel(gn99) ;
         assertNull(graph) ;
     }
@@ -308,12 +309,12 @@ public class TestDatasetAccessorHTTP extends BaseTest
 
     static DatasetAccessor connectToService()
     {
-        return DatasetAccessorFactory.createHTTP(ServerTest.serviceGSP) ;
+        return DatasetAccessorFactory.createHTTP(serviceGSP()) ;
     }
     
     static DatasetAccessor connectToDataset()
     {
-        return DatasetAccessorFactory.createHTTP(ServerTest.urlDataset) ;
+        return DatasetAccessorFactory.createHTTP(urlDataset()) ;
     }
 
 }

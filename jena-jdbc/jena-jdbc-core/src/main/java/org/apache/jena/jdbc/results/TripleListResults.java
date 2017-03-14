@@ -61,7 +61,7 @@ public class TripleListResults extends MaterializedResults<Triple> {
             throw new SQLException("Triple Iterator cannot be null");
         this.triples = ts;
         this.metadata = statement.getJenaConnection().applyPostProcessors(
-                new TripleResultsMetadata(this, new PeekIterator<Triple>(ts.iterator())));
+                new TripleResultsMetadata(this, new PeekIterator<>(ts.iterator())));
         this.numColumns = this.metadata.getColumnCount();
         this.subjColumn = this.metadata.getSubjectColumnLabel();
         this.predColumn = this.metadata.getPredicateColumnLabel();

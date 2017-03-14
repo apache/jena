@@ -25,9 +25,11 @@ import org.apache.jena.graph.test.NodeCreateUtils ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.Command ;
 import org.apache.jena.test.JenaTestBase ;
 import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestModel extends AbstractModelTestBase
 {
@@ -99,6 +101,30 @@ public class TestModel extends AbstractModelTestBase
 		final RDFNode S = model.getRDFNode(NodeCreateUtils.create("42"));
 		JenaTestBase.assertInstanceOf(Literal.class, S);
 		Assert.assertEquals("42", ((Literal) S).getLexicalForm());
+	}
+
+	public void testCreateListFromEmptyIterator()
+	{
+		RDFList list = model.createList(new ArrayList<RDFNode>().iterator());
+		Assert.assertEquals(0, list.size());
+	}
+
+	public void testCreateSingletonListFromIterator()
+	{
+		List<RDFNode> expected = new ArrayList<>();
+		expected.add(model.createResource());
+		RDFList list = model.createList(expected.iterator());
+		Assert.assertEquals(expected, list.asJavaList());
+	}
+
+	public void testCreateListFromIterator()
+	{
+		List<RDFNode> expected = new ArrayList<>();
+		expected.add(model.createResource());
+		expected.add(model.createResource());
+		expected.add(model.createResource());
+		RDFList list = model.createList(expected.iterator());
+		Assert.assertEquals(expected, list.asJavaList());
 	}
 
 	public void testCreateResourceFromNode()
@@ -229,20 +255,10 @@ public class TestModel extends AbstractModelTestBase
 		Assert.assertEquals(GraphTestBase.node("b"), s.getObject().asNode());
 	}
 
-	public void testTransactions()
-	{
-		final Command cmd = new Command() {
-			@Override
-			public Object execute()
-			{
-				return null;
-			}
-		};
-		if (model.supportsTransactions())
-		{
-			model.executeInTransaction(cmd);
-		}
-	}
+    public void testTransactions() {
+        if ( model.supportsTransactions() )
+            model.executeInTxn(() -> {}) ;
+    }
 
 	public void testURINodeAsResource()
 	{

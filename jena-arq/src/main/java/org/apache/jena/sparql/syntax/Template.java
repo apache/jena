@@ -91,7 +91,7 @@ public class Template
     	if(this.bgp != null){
     		return this.bgp.getList();
     	}
-    	List<Triple> triples = new ArrayList<Triple>();
+    	List<Triple> triples = new ArrayList<>();
     	for(Quad q: qp.getQuads()){
     		if (Quad.defaultGraphNodeGenerated.equals(q.getGraph()))
     			triples.add(q.asTriple());
@@ -100,7 +100,7 @@ public class Template
     }
     public List<Quad> getQuads() {
     	if( this.bgp != null){
-    		List<Quad> quads = new ArrayList<Quad>();
+    		List<Quad> quads = new ArrayList<>();
     		for(Triple triple: this.bgp.getList()){
     			quads.add( new Quad( Quad.defaultGraphNodeGenerated, triple ) ); 
     		}

@@ -27,11 +27,10 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -39,7 +38,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
@@ -72,7 +70,8 @@ public class QueryEngineHTTP implements QueryExecution {
     // Protocol
     private List<String> defaultGraphURIs = new ArrayList<>();
     private List<String> namedGraphURIs = new ArrayList<>();
-    private HttpAuthenticator authenticator;
+    private HttpClient client;
+    private HttpClientContext httpContext;
 
     private boolean closed = false;
 
@@ -83,8 +82,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
     // Compression Support
-    private boolean allowGZip = true;
-    private boolean allowDeflate = true;
+    private boolean allowCompression = true;
 
     // Content Types
     private String selectContentType    = defaultSelectHeader();
@@ -111,43 +109,39 @@ public class QueryEngineHTTP implements QueryExecution {
     // and will close when the engine is closed
     private InputStream retainedConnection = null;
 
-    private HttpClient retainedClient;
-
     public QueryEngineHTTP(String serviceURI, Query query) {
         this(serviceURI, query, query.toString());
     }
     
-    public QueryEngineHTTP(String serviceURI, Query query, HttpAuthenticator authenticator) {
-        this(serviceURI, query, query.toString(), authenticator);
+    public QueryEngineHTTP(String serviceURI, Query query, HttpClient client) {
+        this(serviceURI, query, query.toString(), client);
     }
 
     public QueryEngineHTTP(String serviceURI, String queryString) {
         this(serviceURI, null, queryString);
     }
     
-    public QueryEngineHTTP(String serviceURI, String queryString, HttpAuthenticator authenticator) {
-        this(serviceURI, null, queryString, authenticator);
+    public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client) {
+        this(serviceURI, null, queryString, client);
     }
     
     private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
         this(serviceURI, query, queryString, null);
     }
 
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpAuthenticator authenticator) {
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client) {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
-        // Copy the global context to freeze it.
-        this.context = new Context(ARQ.getContext());
+        this.context = ARQ.getContext().copy();
 
         // Apply service configuration if relevant
-        QueryEngineHTTP.applyServiceConfig(serviceURI, this);
+        applyServiceConfig(serviceURI, this);
         
-        // Don't want to overwrite credentials we may have picked up from
+        // Don't want to overwrite client config we may have picked up from
         // service context in the parent constructor if the specified
-        // authenticator is null
-        if (authenticator != null)
-            this.setAuthenticator(authenticator);
+        // client is null
+        if (client != null) setClient(client);
     }
 
     /**
@@ -178,20 +172,16 @@ public class QueryEngineHTTP implements QueryExecution {
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
 
             // Apply behavioral options
-            engine.setAllowGZip(serviceContext.isTrueOrUndef(Service.queryGzip));
-            engine.setAllowDeflate(serviceContext.isTrueOrUndef(Service.queryDeflate));
+            engine.setAllowCompression(serviceContext.isTrueOrUndef(Service.queryCompression));
             applyServiceTimeouts(engine, serviceContext);
 
-            // Apply authentication settings
-            String user = serviceContext.getAsString(Service.queryAuthUser);
-            String pwd = serviceContext.getAsString(Service.queryAuthPwd);
+            // Apply context-supplied client settings
+            HttpClient client = serviceContext.get(Service.queryClient);
 
-            if (user != null || pwd != null) {
-                user = user == null ? "" : user;
-                pwd = pwd == null ? "" : pwd;
+            if (client != null) {
                 if (log.isDebugEnabled())
-                    log.debug("Setting basic HTTP authentication for endpoint URI {} with username: {} ", serviceURI, user);
-                engine.setBasicAuthentication(user, pwd.toCharArray());
+                    log.debug("Using context-supplied HTTP client for endpoint URI {}", serviceURI);
+                engine.setClient(client);
             }
         }
     }
@@ -263,17 +253,10 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Sets whether the HTTP request will specify Accept-Encoding: gzip
+     * Sets whether the HTTP requests will permit compressed encoding
      */
-    public void setAllowGZip(boolean allowed) {
-        allowGZip = allowed;
-    }
-
-    /**
-     * Sets whether the HTTP requests will specify Accept-Encoding: deflate
-     */
-    public void setAllowDeflate(boolean allowed) {
-        allowDeflate = allowed;
+    public void setAllowCompression(boolean allowed) {
+        allowCompression = allowed;
     }
 
     public void addParam(String field, String value) {
@@ -303,44 +286,41 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Gets whether an authentication mechanism has been provided.
-     * <p>
-     * Even if this returns false authentication may still be used if the
-     * default authenticator applies, this is controlled via the
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method
-     * </p>
+     * Sets the HTTP client to use, if none is set then the default
+     * client is used.
      * 
-     * @return True if an authenticator has been provided
+     * @param client
+     *            HTTP client
      */
-    public boolean isUsingBasicAuthentication() {
-        return this.authenticator != null;
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
-
+    
     /**
-     * Set user and password for basic authentication. After the request is made
-     * (one of the exec calls), the application can overwrite the password array
-     * to remove details of the secret.
-     * <p>
-     * Note that it may be more flexible to
-     * </p>
+     * Get the HTTP client in use, if none is set then null.
      * 
-     * @param user
-     * @param password
+     * @return client HTTP client
      */
-    public void setBasicAuthentication(String user, char[] password) {
-        this.authenticator = new SimpleAuthenticator(user, password);
+    public HttpClient getClient() {
+        return client;
     }
-
+    
     /**
-     * Sets the HTTP authenticator to use, if none is set then the default
-     * authenticator is used. This may be configured via the
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
+     * Sets the HTTP context to use, if none is set then the default context is used.
      * 
-     * @param authenticator
-     *            HTTP authenticator
+     * @param context HTTP context
      */
-    public void setAuthenticator(HttpAuthenticator authenticator) {
-        this.authenticator = authenticator;
+    public void setHttpContext(HttpClientContext context) {
+        this.httpContext = context;
+    }
+    
+    /**
+     * Get the HTTP context in use, if none is set then null.
+     * 
+     * @return the {@code HttpClientContext} in scope
+     */
+    public HttpClientContext getHttpContext() {
+        return httpContext;
     }
 
     /** The Content-Type response header received (null before the remote operation is attempted). */
@@ -369,7 +349,6 @@ public class QueryEngineHTTP implements QueryExecution {
         }
 
         retainedConnection = in; // This will be closed on close()
-        retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
 
         // Don't assume the endpoint actually gives back the
         // content type we asked for
@@ -597,23 +576,13 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     /**
-     * Gets whether HTTP requests will indicate to the remote server that GZip
-     * encoding of responses is accepted
-     * 
-     * @return True if GZip encoding will be accepted
-     */
-    public boolean getAllowGZip() {
-        return allowGZip;
-    }
-
-    /**
      * Gets whether HTTP requests will indicate to the remote server that
-     * Deflate encoding of responses is accepted
+     * compressed encoding of responses is accepted
      * 
-     * @return True if Deflate encoding will be accepted
+     * @return True if compressed encoding will be accepted
      */
-    public boolean getAllowDeflate() {
-        return allowDeflate;
+    public boolean getAllowCompression() {
+        return allowCompression;
     }
 
     private static long asMillis(long duration, TimeUnit timeUnit) {
@@ -637,24 +606,25 @@ public class QueryEngineHTTP implements QueryExecution {
             httpQuery.addParam( HttpParams.pNamedGraph, name );
         }
 
-        if (params != null)
-            httpQuery.merge(params);
+        if (params != null) httpQuery.merge(params);
 
-        if (allowGZip)
-            httpQuery.setAllowGZip(true);
-
-        if (allowDeflate)
-            httpQuery.setAllowDeflate(true);
-
-        httpQuery.setAuthenticator(this.authenticator);
-
+        httpQuery.setAllowCompression(allowCompression);
+        
+        // check for service context overrides
+        if (context.isDefined(Service.serviceContext)) {
+            Map<String, Context> servicesContext = context.get(Service.serviceContext);
+            if (servicesContext.containsKey(service)) {
+                Context serviceContext = servicesContext.get(service);
+                if (serviceContext.isDefined(Service.queryClient)) client = serviceContext.get(Service.queryClient);
+            }
+        }
+        httpQuery.setClient(client);
+        httpQuery.setContext(getHttpContext());
+        
         // Apply timeouts
-        if (connectTimeout > 0) {
-            httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
-        }
-        if (readTimeout > 0) {
-            httpQuery.setReadTimeout((int) readTimeoutUnit.toMillis(readTimeout));
-        }
+        if (connectTimeout > 0) httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
+
+        if (readTimeout > 0) httpQuery.setReadTimeout((int) readTimeoutUnit.toMillis(readTimeout));
 
         return httpQuery;
     }
@@ -698,30 +668,9 @@ public class QueryEngineHTTP implements QueryExecution {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void close() {
         closed = true ;
-
-        // JENA-1063
-        // If we are going to shut down the HTTP client do this first as otherwise
-        // HTTP Client will by default try to re-use the connection and it will
-        // consume any outstanding response data in order to do this which can cause 
-        // the close() on the InputStream to hang for an extremely long time
-        // This also causes resources to continue to be consumed on the server regardless
-        // of the fact that the client has called our close() method and so clearly
-        // does not care about any remaining response
-        // i.e. if we don't do this we are badly behaved towards both the caller and 
-        // the remote server we're interacting with
-        if (retainedClient != null) {
-            try {
-                retainedClient.getConnectionManager().shutdown();
-            } catch (RuntimeException e) {
-                log.debug("Failed to shutdown HTTP client", e);
-            } finally {
-                retainedClient = null;
-            }
-        }
         
         if (retainedConnection != null) {
             try {
@@ -733,7 +682,6 @@ public class QueryEngineHTTP implements QueryExecution {
                 // warning to the logs
                 if (retainedConnection.read() != -1)
                     log.warn("HTTP response not fully consumed, if HTTP Client is reusing connections (its default behaviour) then it will consume the remaining response data which may take a long time and cause this application to become unresponsive");
-                
                 retainedConnection.close();
             } catch (RuntimeIOException e) {
                 // If we are closing early and the underlying stream is chunk encoded

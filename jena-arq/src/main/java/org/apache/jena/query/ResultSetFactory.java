@@ -197,7 +197,7 @@ public class ResultSetFactory {
         }
 
         if (format.equals(ResultsFormat.FMT_TEXT)) {
-            Log.fatal(ResultSet.class, "Can't read a text result set");
+            Log.error(ResultSet.class, "Can't read a text result set");
             throw new ResultSetException("Can't read a text result set");
         }
 
@@ -229,7 +229,7 @@ public class ResultSetFactory {
         if (ResultsFormat.isRDFGraphSyntax(format))
             return FileManager.get().readModel(model, filenameOrURI);
 
-        Log.fatal(ResultSet.class, "Unknown result set syntax: " + format);
+        Log.error(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
     }
 
@@ -255,7 +255,7 @@ public class ResultSetFactory {
         }
 
         if (format.equals(ResultsFormat.FMT_TEXT)) {
-            Log.fatal(ResultSet.class, "Can't read a text result set");
+            Log.error(ResultSet.class, "Can't read a text result set");
             throw new ResultSetException("Can't read a text result set");
         }
 
@@ -293,7 +293,7 @@ public class ResultSetFactory {
             return new SPARQLResult(model);
         }
 
-        Log.fatal(ResultSet.class, "Unknown result set syntax: " + format);
+        Log.error(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
     }
 
@@ -423,6 +423,24 @@ public class ResultSetFactory {
      */
     static public ResultSetPeekable makePeekable(ResultSet resultSet) {
         return new ResultSetPeeking(resultSet);
+    }
+    
+    /** Return a closable resultset for a {@link QueryExecution}.
+     * The {@link QueryExecution} must be for a {@code SELECT} query.
+     * <p>
+     * Example:
+     * <pre>
+     *   QueryExecution qExec = QueryExecutionFactory.create(...);
+     *   try (ResultSetCloseable rs = ResultSetFactory.closableResultSet(qExec) ) {
+     *       ...
+     * }
+     * </pre>
+     * 
+     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
+     * @return ResultSetCloseable
+     */
+    public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
+        return ResultSetCloseable.closeableResultSet(queryExecution);
     }
 
     /**

@@ -50,6 +50,7 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String OPTIONAL = "OPTIONAL" + SPACE;
 	protected static final String BIND = "BIND";
 	protected static final String SEMI = OPT_SPACE+"\\;";
+	protected static final String VALUES = "VALUES" + SPACE;
 
 	protected static String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);
@@ -62,7 +63,7 @@ public abstract class AbstractRegexpBasedTest {
 	/** Regex for rdf:type as a URI or the abbreviation 'a' */
 	protected static String regexRDFtype = "("+uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")+"|a)" ;
 	
-	protected final String var(String s) {
+	protected final static String var(String s) {
 		return "\\?" + s;
 	}
 
@@ -70,12 +71,12 @@ public abstract class AbstractRegexpBasedTest {
 	 * RDF 1.0 : use ^^xsd:string form.
 	 * RDF 1.1 : use untyped form.
 	 */
-	protected final String presentStringType() {
+	protected final static String presentStringType() {
 	    return 
 	        JenaRuntime.isRDF11 ? "" : "\\^\\^\\<http://www.w3.org/2001/XMLSchema#string\\>" ;
 	}
 
-	protected final void assertNotContainsRegex(String expected, String lst) {
+	protected final static void assertNotContainsRegex(String expected, String lst) {
 
 		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
 
@@ -84,7 +85,7 @@ public abstract class AbstractRegexpBasedTest {
 		}
 	}
 
-	protected final void assertContainsRegex(String expected, String entry) {
+	protected final static void assertContainsRegex(String expected, String entry) {
 
 		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
 		if (patt.matcher(entry).find()) {
@@ -93,7 +94,7 @@ public abstract class AbstractRegexpBasedTest {
 		fail(String.format("%s not found in %s", expected, entry));
 	}
 
-	protected final void assertNotContainsRegex(String expected, String[] lst) {
+	protected final static void assertNotContainsRegex(String expected, String[] lst) {
 
 		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
 		for (String s : lst) {
@@ -104,7 +105,7 @@ public abstract class AbstractRegexpBasedTest {
 		}
 	}
 
-	protected final void assertContainsRegex(String expected, String[] lst) {
+	protected final static void assertContainsRegex(String expected, String[] lst) {
 		Pattern patt = Pattern.compile(expected, Pattern.DOTALL|Pattern.CASE_INSENSITIVE);
 		for (String s : lst) {
 			if (patt.matcher(s).find()) {

@@ -18,26 +18,46 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
+import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
-import org.apache.jena.reasoner.transitiveReasoner.* ;
+import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasoner;
+import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * Outline unit tests for initial experimental reasoners
+ * Test cases for transitive reasoner (includes some early RDFS reasoner checks)
  */
 public class TestReasoners extends TestCase {
     
@@ -222,7 +242,6 @@ public class TestReasoners extends TestCase {
         Node q = NodeFactory.createURI("q");
         Node sC = RDFS.subClassOf.asNode();
         Node sP = RDFS.subPropertyOf.asNode();
-        Node ty = RDF.type.asNode();
         data.add( new Triple(c2, sC, c3));
         data.add( new Triple(c1, p, c2));
         Reasoner reasoner = rf.create(null);
@@ -332,6 +351,32 @@ public class TestReasoners extends TestCase {
         assertTrue("Transitive reasoner state leak", ok);
     }
     
+    /**
+     * Test that two transitive engines are independent.
+     * See JENA-1260
+     */
+    public void testTransitiveEngineSeparation() throws InterruptedException {
+        String NS = "http://example.com/test#";
+
+        Property sp = ResourceFactory.createProperty(NS, "sp");
+        Property  p = ResourceFactory.createProperty(NS, "p");
+        Property  s = ResourceFactory.createProperty(NS, "s");
+        Resource  q = ResourceFactory.createProperty(NS, "q");
+        Reasoner reasoner = ReasonerRegistry.getTransitiveReasoner();
+        
+        InfModel simple = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        simple.add(s, sp, p);
+        assertFalse( simple.contains(s, RDFS.subPropertyOf, p) );
+        
+        InfModel withSP = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        withSP.add(sp, RDFS.subPropertyOf, RDFS.subPropertyOf);
+        withSP.add(s, sp, p);
+        assertTrue( withSP.contains(s, RDFS.subPropertyOf, p) );
+
+        simple.add(q, sp, p);
+        assertFalse( simple.contains(q, RDFS.subPropertyOf, p) );
+    }
+        
     /**
      * Test rebind operation for the RDFS reasoner
      */

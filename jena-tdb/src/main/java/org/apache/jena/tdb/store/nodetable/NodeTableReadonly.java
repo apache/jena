@@ -24,14 +24,12 @@ import org.apache.jena.tdb.store.NodeId ;
 
 public class NodeTableReadonly extends NodeTableWrapper
 {
-    public NodeTableReadonly(NodeTable nodeTable)
-    {
+    public NodeTableReadonly(NodeTable nodeTable) {
         super(nodeTable) ;
     }
 
     @Override
-    public NodeId getAllocateNodeId(Node node)
-    {
+    public NodeId getAllocateNodeId(Node node) {
         NodeId nodeId = getNodeIdForNode(node) ;
         if ( NodeId.isDoesNotExist(nodeId) )
             throw new TDBException("Allocation attempt on NodeTableReadonly") ;

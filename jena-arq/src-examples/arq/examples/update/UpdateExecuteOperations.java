@@ -18,7 +18,6 @@
 
 package arq.examples.update;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
@@ -59,7 +58,7 @@ public class UpdateExecuteOperations
         // See ex3 for a better way to build up a request
         // For maximum portability, multiple operations should be separated by a ";".
         // The "\n" imporves readability and parser error messages.
-        String cmd = StrUtils.strjoin(" ;\n",
+        String cmd = String.join(" ;\n",
                                       "DROP ALL",
                                       "CREATE GRAPH <http://example/g2>",   // Not needed for most datasets
                                       "LOAD <file:etc/update-data.ttl> INTO GRAPH <http://example/g2>") ;

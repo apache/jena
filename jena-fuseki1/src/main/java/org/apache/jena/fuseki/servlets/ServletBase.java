@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
@@ -218,7 +217,7 @@ public abstract class ServletBase extends HttpServlet
     }
 
     static String varyHeaderSetting = 
-        StrUtils.strjoin(",", 
+            String.join(",", 
                          HttpNames.hAccept, 
                          HttpNames.hAcceptEncoding, 
                          HttpNames.hAcceptCharset ) ;

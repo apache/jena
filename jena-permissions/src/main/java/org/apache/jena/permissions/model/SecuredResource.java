@@ -46,8 +46,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final boolean o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -59,8 +58,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property p, final char o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -72,8 +70,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property value, final double d)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -85,8 +82,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property value, final float d)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -98,8 +94,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property p, final Literal o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -111,8 +106,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property p, final long o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -124,8 +118,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addLiteral(final Property p, final Object o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -137,8 +130,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addProperty(final Property p, final RDFNode o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -150,8 +142,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addProperty(final Property p, final String o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -162,9 +153,8 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public Resource addProperty(final Property p, final String lexicalForm,
-			final RDFDatatype datatype) throws UpdateDeniedException,
-			AddDeniedException, AuthenticationRequiredException;
+	public Resource addProperty(final Property p, final String lexicalForm, final RDFDatatype datatype)
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -176,8 +166,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public Resource addProperty(final Property p, final String o, final String l)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException;
 
 	@Override
 	public SecuredResource asResource();
@@ -195,8 +184,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean equals(final Object o) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean equals(final Object o) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -205,8 +193,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public AnonId getId() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public AnonId getId() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -215,8 +202,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getLocalName() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public String getLocalName() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -225,8 +211,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getNameSpace() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public String getNameSpace() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -235,8 +220,16 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatement getProperty(final Property p)
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatement getProperty(final Property p) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * @sec.graph Read
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatement getProperty(Property p, String lang);
 
 	/**
 	 * @sec.graph Read
@@ -265,8 +258,17 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public String getURI() throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public SecuredStatement getRequiredProperty(final Property p, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException;
+
+	/**
+	 * @sec.graph Read
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public String getURI() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -342,8 +344,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean hasProperty(final Property p) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean hasProperty(final Property p) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -385,8 +386,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public boolean hasURI(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException;
+	public boolean hasURI(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -396,8 +396,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredStatementIterator listProperties()
-			throws ReadDeniedException, AuthenticationRequiredException;
+	public SecuredStatementIterator listProperties() throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Read
@@ -411,6 +410,16 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	/**
+	 * @sec.graph Read
+	 * @sec.triple Read on returned Statements
+	 * @throws ReadDeniedException
+	 * @throws AuthenticationRequiredException
+	 *             if user is not authenticated and is required to be.
+	 */
+	@Override
+	public SecuredStatementIterator listProperties(final Property p, final String lang);
+
+	/**
 	 * @sec.graph Update
 	 * @sec.triple Delete on associated Statements
 	 * @throws UpdateDeniedException
@@ -420,8 +429,7 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 */
 	@Override
 	public SecuredResource removeAll(final Property p)
-			throws UpdateDeniedException, DeleteDeniedException,
-			AuthenticationRequiredException;
+			throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException;
 
 	/**
 	 * @sec.graph Update
@@ -432,6 +440,6 @@ public interface SecuredResource extends Resource, SecuredRDFNode {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredResource removeProperties() throws UpdateDeniedException,
-			DeleteDeniedException, AuthenticationRequiredException;
+	public SecuredResource removeProperties()
+			throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException;
 }

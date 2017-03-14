@@ -37,7 +37,7 @@ public abstract class AbstractModelProducer<T extends Model> implements
 	/**
 	 * The list of graphs that have been opened in this test.
 	 */
-	protected List<Model> modelList = new ArrayList<Model>();
+	protected List<Model> modelList = new ArrayList<>();
 
 	/**
 	 * @return true if the models returned by this poducer are independent,

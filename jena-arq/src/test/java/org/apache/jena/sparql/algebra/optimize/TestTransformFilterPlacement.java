@@ -80,7 +80,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         testNoBGP("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
                 null) ;
     }
-    
 
     @Test public void place_bgp_06() {
         testNoChange("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))") ;
@@ -808,6 +807,61 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
              ) ; 
+        test( in, out ) ;
+    }
+    
+    // JENA-1235
+    @Test public void place_disjunction_01() {
+        String in = StrUtils.strjoinNL
+            (
+             "(filter (exprlist (!= ?VAR 123) (regex ?var4 'pat1'))"
+             ,"  (disjunction"
+             ,"    (bgp (?var2 :p1 ?var4) (?var2 :p2 ?var3))"
+             ,"    (bgp (?var2 :p3 ?var4) (?var2 :p4 ?var3))"
+             ,"    ))"
+             ) ;
+
+        String out = StrUtils.strjoinNL
+            ("(filter (!= ?VAR 123)"
+            ,"    (disjunction"
+            ,"      (sequence"
+            ,"        (filter (regex ?var4 'pat1')"
+            ,"          (bgp (triple ?var2 :p1 ?var4)))"
+            ,"        (bgp (triple ?var2 :p2 ?var3)))"
+            ,"      (sequence"
+            ,"        (filter (regex ?var4 'pat1')"
+            ,"          (bgp (triple ?var2 :p3 ?var4)))"
+            ,"        (bgp (triple ?var2 :p4 ?var3)))))"
+                ) ;
+        test( in, out ) ;
+    }
+    
+    // Push in, push and wrap, wrap.
+    @Test public void place_disjunction_02() {
+        String in = StrUtils.strjoinNL
+            (
+             "(filter (exprlist (!= ?VAR 123) (regex ?var4 'pat1'))"
+             ,"  (disjunction"
+             ,"    (bgp (?var2 :p1 ?var4) (?var2 :p2 ?var3))"
+             ,"    (bgp (?var2 :p4 ?var3) (?var2 :p3 ?var4))"
+             ,"    (bgp (?var2 :p4 ?var9))"
+             ,"    ))"
+             ) ;
+        String out = StrUtils.strjoinNL
+            ("(filter (!= ?VAR 123)"
+            ,"  (disjunction"
+            ,"    (sequence"
+            ,"      (filter (regex ?var4 'pat1')"
+            ,"        (bgp (triple ?var2 :p1 ?var4)))"
+            ,"      (bgp (triple ?var2 :p2 ?var3)))"
+            ,"    (filter (regex ?var4 'pat1')"
+            ,"      (bgp"
+            ,"        (triple ?var2 :p4 ?var3)"
+            ,"        (triple ?var2 :p3 ?var4)"
+            ,"      ))"
+            ,"    (filter (regex ?var4 'pat1')"
+            ,"      (bgp (triple ?var2 :p4 ?var9)))))"
+             ) ;
         test( in, out ) ;
     }
     

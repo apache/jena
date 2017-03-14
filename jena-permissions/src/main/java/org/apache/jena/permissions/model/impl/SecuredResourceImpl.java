@@ -40,8 +40,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 /**
  * Implementation of SecuredResource to be used by a SecuredItemInvoker proxy.
  */
-public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
-		SecuredResource {
+public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredResource {
 	/**
 	 * Get a SecuredResource.
 	 * 
@@ -51,11 +50,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 *            The resource to secure.
 	 * @return The SecuredResource
 	 */
-	public static SecuredResource getInstance(final SecuredModel securedModel,
-			final Resource resource) {
+	public static SecuredResource getInstance(final SecuredModel securedModel, final Resource resource) {
 		if (securedModel == null) {
-			throw new IllegalArgumentException(
-					"Secured securedModel may not be null");
+			throw new IllegalArgumentException("Secured securedModel may not be null");
 		}
 		if (resource == null) {
 			throw new IllegalArgumentException("Resource may not be null");
@@ -68,18 +65,15 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 		if (goodResource.getModel() == null) {
 			final Node n = resource.asNode();
 			if (resource.isAnon()) {
-				goodResource = securedModel.createResource(new AnonId(n
-						.getBlankNodeId()));
+				goodResource = securedModel.createResource(new AnonId(n.getBlankNodeId()));
 			} else {
 				goodResource = securedModel.createResource(n.getURI());
 			}
 		}
 
-		final ItemHolder<Resource, SecuredResource> holder = new ItemHolder<Resource, SecuredResource>(
-				goodResource);
+		final ItemHolder<Resource, SecuredResource> holder = new ItemHolder<>(goodResource);
 
-		final SecuredResourceImpl checker = new SecuredResourceImpl(
-				securedModel, holder);
+		final SecuredResourceImpl checker = new SecuredResourceImpl(securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this
 		// one.
 		if (goodResource instanceof SecuredResource) {
@@ -88,8 +82,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 			}
 		}
 
-		return holder.setSecuredItem(new SecuredItemInvoker(
-				resource.getClass(), checker));
+		return holder.setSecuredItem(new SecuredItemInvoker(resource.getClass(), checker));
 
 	}
 
@@ -104,8 +97,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @param holder
 	 *            the item holder that will contain this SecuredResource.
 	 */
-	protected SecuredResourceImpl(
-			final SecuredModel securedModel,
+	protected SecuredResourceImpl(final SecuredModel securedModel,
 			final ItemHolder<? extends Resource, ? extends SecuredResource> holder) {
 		super(securedModel, holder);
 		this.holder = holder;
@@ -135,8 +127,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final boolean o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, ResourceFactory.createTypedLiteral(o));
 	}
 
@@ -153,8 +144,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final char o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, ResourceFactory.createTypedLiteral(o));
 	}
 
@@ -171,8 +161,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property value, final double d)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(value, ResourceFactory.createTypedLiteral(d));
 	}
 
@@ -189,8 +178,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property value, final float d)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(value, ResourceFactory.createTypedLiteral(d));
 	}
 
@@ -207,8 +195,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final Literal o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, o);
 	}
 
@@ -225,8 +212,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final long o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, ResourceFactory.createTypedLiteral(o));
 	}
 
@@ -243,8 +229,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addLiteral(final Property p, final Object o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, ResourceFactory.createTypedLiteral(o));
 	}
 
@@ -267,11 +252,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addProperty(final Property p, final RDFNode o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				o.asNode()));
+		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), o.asNode()));
 		holder.getBaseItem().addProperty(p, o);
 		return holder.getSecuredItem();
 	}
@@ -295,8 +278,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredResource addProperty(final Property p, final String o)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		return addProperty(p, o, "");
 	}
 
@@ -320,15 +302,11 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredResource addProperty(final Property p,
-			final String lexicalForm, final RDFDatatype datatype)
-			throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+	public SecuredResource addProperty(final Property p, final String lexicalForm, final RDFDatatype datatype)
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		final Literal l = ResourceFactory.createTypedLiteral(lexicalForm,
-				datatype);
-		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				l.asNode()));
+		final Literal l = ResourceFactory.createTypedLiteral(lexicalForm, datatype);
+		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), l.asNode()));
 		holder.getBaseItem().addProperty(p, l);
 		return holder.getSecuredItem();
 	}
@@ -353,12 +331,10 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredResource addProperty(final Property p, final String o,
-			final String l) throws UpdateDeniedException, AddDeniedException,
-			AuthenticationRequiredException {
+	public SecuredResource addProperty(final Property p, final String o, final String l)
+			throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				NodeFactory.createLiteral(o, l, false)));
+		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l, false)));
 		holder.getBaseItem().addProperty(p, o, l);
 		return holder.getSecuredItem();
 	}
@@ -385,13 +361,13 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	}
 
 	/**
-	 * @param p The property to test.
+	 * @param p
+	 *            The property to test.
 	 * @return true if p can be read as a property with an ANY value
 	 * @throws ReadDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
-	public boolean canReadProperty(final Node p) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public boolean canReadProperty(final Node p) throws ReadDeniedException, AuthenticationRequiredException {
 		return canRead(new Triple(holder.getBaseItem().asNode(), p, Node.ANY));
 	}
 
@@ -401,11 +377,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws ReadDeniedException
 	 * @throws AuthenticationRequiredException
 	 */
-	protected void checkReadProperty(final Node p) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	protected void checkReadProperty(final Node p) throws ReadDeniedException, AuthenticationRequiredException {
 		if (!canReadProperty(p)) {
-			throw new ReadDeniedException(
-					SecuredItem.Util.triplePermissionMsg(getModelNode()),
+			throw new ReadDeniedException(SecuredItem.Util.triplePermissionMsg(getModelNode()),
 					new Triple(holder.getBaseItem().asNode(), p, Node.ANY));
 		}
 	}
@@ -440,8 +414,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public AnonId getId() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public AnonId getId() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getId();
 
@@ -455,8 +428,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public String getLocalName() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public String getLocalName() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getLocalName();
 	}
@@ -469,8 +441,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public String getNameSpace() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public String getNameSpace() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getNameSpace();
 	}
@@ -489,16 +460,30 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredStatement getProperty(final Property p)
-			throws ReadDeniedException, AuthenticationRequiredException {
+	public SecuredStatement getProperty(final Property p) throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.listProperties(p)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().listProperties(p)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			if (iter.hasNext()) {
-				return org.apache.jena.permissions.model.impl.SecuredStatementImpl
-						.getInstance(getModel(), iter.next());
+				return org.apache.jena.permissions.model.impl.SecuredStatementImpl.getInstance(getModel(), iter.next());
+			} else {
+				return null;
+			}
+		} finally {
+			iter.close();
+		}
+	}
+
+	@Override
+	public SecuredStatement getProperty(Property p, String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
+		checkRead();
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().listProperties(p, lang)
+				.filterKeep(new PermStatementFilter(Action.Read, this));
+		try {
+			if (iter.hasNext()) {
+				return org.apache.jena.permissions.model.impl.SecuredStatementImpl.getInstance(getModel(), iter.next());
 			} else {
 				return null;
 			}
@@ -514,15 +499,13 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredResource getPropertyResourceValue(final Property p)
-			throws AuthenticationRequiredException {
+	public SecuredResource getPropertyResourceValue(final Property p) throws AuthenticationRequiredException {
 		final SecuredStatementIterator iter = listProperties(p);
 		try {
 			while (iter.hasNext()) {
 				final Statement s = iter.next();
 				if (s.getObject().isResource()) {
-					return SecuredResourceImpl.getInstance(getModel(), s
-							.getObject().asResource());
+					return SecuredResourceImpl.getInstance(getModel(), s.getObject().asResource());
 				}
 			}
 			return null;
@@ -552,16 +535,30 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 */
 	@Override
 	public SecuredStatement getRequiredProperty(final Property p)
-			throws PropertyNotFoundException, ReadDeniedException,
-			AuthenticationRequiredException {
+			throws PropertyNotFoundException, ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.listProperties(p)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().listProperties(p)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			if (iter.hasNext()) {
-				return org.apache.jena.permissions.model.impl.SecuredStatementImpl
-						.getInstance(getModel(), iter.next());
+				return org.apache.jena.permissions.model.impl.SecuredStatementImpl.getInstance(getModel(), iter.next());
+			} else {
+				throw new PropertyNotFoundException(p);
+			}
+		} finally {
+			iter.close();
+		}
+	}
+
+	@Override
+	public SecuredStatement getRequiredProperty(Property p, String lang)
+			throws PropertyNotFoundException, ReadDeniedException, AuthenticationRequiredException {
+		checkRead();
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().listProperties(p, lang)
+				.filterKeep(new PermStatementFilter(Action.Read, this));
+		try {
+			if (iter.hasNext()) {
+				return org.apache.jena.permissions.model.impl.SecuredStatementImpl.getInstance(getModel(), iter.next());
 			} else {
 				throw new PropertyNotFoundException(p);
 			}
@@ -578,8 +575,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public String getURI() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public String getURI() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().getURI();
 	}
@@ -596,8 +592,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final boolean o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -613,8 +609,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final char o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -630,8 +626,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final double o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -647,8 +643,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final float o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -664,8 +660,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final long o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -681,8 +677,8 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasLiteral(final Property p, final Object o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		checkRead(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				ResourceFactory.createTypedLiteral(o).asNode()));
+		checkRead(
+				new Triple(holder.getBaseItem().asNode(), p.asNode(), ResourceFactory.createTypedLiteral(o).asNode()));
 		return holder.getBaseItem().hasLiteral(p, o);
 	}
 
@@ -697,11 +693,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public boolean hasProperty(final Property p) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public boolean hasProperty(final Property p) throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.listProperties(p)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().listProperties(p)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			return iter.hasNext();
@@ -725,8 +719,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasProperty(final Property p, final RDFNode o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.getModel().listStatements(this, p, o)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().getModel().listStatements(this, p, o)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			return iter.hasNext();
@@ -750,8 +743,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public boolean hasProperty(final Property p, final String o)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.getModel().listStatements(this, p, o)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().getModel().listStatements(this, p, o)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			return iter.hasNext();
@@ -778,8 +770,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		final Literal ll = holder.getBaseItem().getModel().createLiteral(o, l);
-		final ExtendedIterator<Statement> iter = holder.getBaseItem()
-				.getModel().listStatements(this, p, ll)
+		final ExtendedIterator<Statement> iter = holder.getBaseItem().getModel().listStatements(this, p, ll)
 				.filterKeep(new PermStatementFilter(Action.Read, this));
 		try {
 			return iter.hasNext();
@@ -796,8 +787,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public boolean hasURI(final String uri) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public boolean hasURI(final String uri) throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().hasURI(uri);
 	}
@@ -821,11 +811,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredStatementIterator listProperties()
-			throws ReadDeniedException, AuthenticationRequiredException {
+	public SecuredStatementIterator listProperties() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		return new SecuredStatementIterator(getModel(), holder.getBaseItem()
-				.listProperties());
+		return new SecuredStatementIterator(getModel(), holder.getBaseItem().listProperties());
 	}
 
 	/**
@@ -846,9 +834,15 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	public SecuredStatementIterator listProperties(final Property p)
 			throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		return new SecuredStatementIterator(getModel(), holder.getBaseItem()
-				.listProperties(p));
+		return new SecuredStatementIterator(getModel(), holder.getBaseItem().listProperties(p));
 
+	}
+
+	@Override
+	public SecuredStatementIterator listProperties(final Property p, final String lang)
+			throws ReadDeniedException, AuthenticationRequiredException {
+		checkRead();
+		return new SecuredStatementIterator(getModel(), holder.getBaseItem().listProperties(p, lang));
 	}
 
 	/**
@@ -862,11 +856,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredResource removeAll(final Property p)
-			throws ReadDeniedException, AuthenticationRequiredException {
+	public SecuredResource removeAll(final Property p) throws ReadDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		if (!canDelete(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				Node.ANY))) {
+		if (!canDelete(new Triple(holder.getBaseItem().asNode(), p.asNode(), Node.ANY))) {
 			final StmtIterator iter = holder.getBaseItem().listProperties(p);
 			try {
 				if (!iter.hasNext()) {
@@ -893,11 +885,9 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	public SecuredResource removeProperties() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public SecuredResource removeProperties() throws ReadDeniedException, AuthenticationRequiredException {
 		checkUpdate();
-		if (!canDelete(new Triple(holder.getBaseItem().asNode(), Node.ANY,
-				Node.ANY))) {
+		if (!canDelete(new Triple(holder.getBaseItem().asNode(), Node.ANY, Node.ANY))) {
 			final StmtIterator iter = holder.getBaseItem().listProperties();
 			try {
 				if (!iter.hasNext()) {
@@ -931,8 +921,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 
 	@Override
 	public Object visitWith(final RDFVisitor rv) {
-		return isAnon() ? rv.visitBlank(this, getId()) : rv.visitURI(this,
-				getURI());
+		return isAnon() ? rv.visitBlank(this, getId()) : rv.visitURI(this, getURI());
 	}
 
 }

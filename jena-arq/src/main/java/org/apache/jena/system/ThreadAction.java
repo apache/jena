@@ -87,7 +87,7 @@ public class ThreadAction {
      * @param action 
      *      The main action run when {@link #run()} called.
      *      Any exceptions are passed over to {@link #run()} 
-     *      and propagted on the {@link #run()} thread. 
+     *      and propagated on the {@link #run()} thread. 
      * @param after  
      *      Action to run after the main action.
      *      Can be null.
@@ -121,7 +121,7 @@ public class ThreadAction {
                 threadAction.trigger() ;
             }
             catch (Throwable ex) {
-                // Surpress. trigger() recorded it and it is passed
+                // Suppress. trigger() recorded it and it is passed
                 // to the caller in run(). 
             }
             try { 

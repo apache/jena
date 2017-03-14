@@ -33,7 +33,7 @@ public class TestEscapeStr {
     @Test public void escape_str_04()   { test("A\tB", "A\\tB") ; }
     @Test public void escape_str_05()   { test("\"", "\\\"") ; }
 
-    private void test(String input, String expected) {
+    private static void test(String input, String expected) {
         String output = EscapeStr.stringEsc(input) ;
         Assert.assertEquals(expected, output);
     }

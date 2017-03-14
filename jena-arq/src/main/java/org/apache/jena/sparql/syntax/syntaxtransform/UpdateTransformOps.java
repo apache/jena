@@ -162,7 +162,7 @@ public class UpdateTransformOps {
         }
 
         public List<Quad> transform(List<Quad> quads) {
-            List<Quad> x = new ArrayList<Quad>() ;
+            List<Quad> x = new ArrayList<>() ;
             boolean changed = false ;
             for (Quad q : quads) {
                 Quad q1 = transform(q) ;

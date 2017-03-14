@@ -43,7 +43,7 @@ import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
 public class QueryIterDistinct extends QueryIter1
 {
     private long memThreshold = Long.MAX_VALUE ;    // Default "off" value.
-    protected DistinctDataBag<Binding> db = null ;
+    /*package*/ DistinctDataBag<Binding> db = null ;
     private Iterator<Binding> iterator = null ;
     private Set<Binding> seen = new HashSet<>() ;
     private Binding slot = null ;

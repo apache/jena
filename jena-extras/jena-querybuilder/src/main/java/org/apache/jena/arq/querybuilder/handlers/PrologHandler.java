@@ -52,7 +52,7 @@ public class PrologHandler implements Handler {
 	 * @param x The prefix name
 	 * @return The prefix name with the trialing ':' removed.
 	 */
-	private String canonicalPfx(String x) {
+	private static String canonicalPfx(String x) {
 		if (x.endsWith(":"))
 			return x.substring(0, x.length() - 1);
 		return x;

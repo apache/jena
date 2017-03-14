@@ -30,6 +30,7 @@ import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
@@ -96,28 +97,42 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 		getDatasetHandler().from(graphName);
 		return this;
 	}
+	
+	@Override
+	public AskBuilder addWhere(TriplePath t) {
+		getWhereHandler().addWhere(t);
+		return this;
+	}
+
 
 	@Override
 	public AskBuilder addWhere(Triple t) {
-		getWhereHandler().addWhere(t);
+		getWhereHandler().addWhere(new TriplePath(t));
 		return this;
 	}
 
 	@Override
 	public AskBuilder addWhere(FrontsTriple t) {
-		getWhereHandler().addWhere(t.asTriple());
+		getWhereHandler().addWhere(new TriplePath(t.asTriple()));
 		return this;
 	}
 
 	@Override
 	public AskBuilder addWhere(Object s, Object p, Object o) {
-		addWhere(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		getWhereHandler().addWhere( makeTriplePath( s, p, o ));
 		return this;
 	}
 
 	@Override
-	public AskBuilder addOptional(Triple t) {
+	public AskBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);
+		return this;
+	}
+
+	
+	@Override
+	public AskBuilder addOptional(Triple t) {
+		getWhereHandler().addOptional(new TriplePath(t));
 		return this;
 	}
 
@@ -129,13 +144,13 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
 	@Override
 	public AskBuilder addOptional(FrontsTriple t) {
-		getWhereHandler().addOptional(t.asTriple());
+		getWhereHandler().addOptional(new TriplePath(t.asTriple()));
 		return this;
 	}
 
 	@Override
 	public AskBuilder addOptional(Object s, Object p, Object o) {
-		addOptional(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		getWhereHandler().addOptional( makeTriplePath( s, p, o ));
 		return this;
 	}
 
@@ -269,5 +284,4 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
-
 }

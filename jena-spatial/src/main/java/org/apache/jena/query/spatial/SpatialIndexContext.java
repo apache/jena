@@ -27,7 +27,7 @@ import java.util.Set;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 
-import com.spatial4j.core.shape.Shape;
+import org.locationtech.spatial4j.shape.Shape;
 
 public class SpatialIndexContext {
 
@@ -39,7 +39,7 @@ public class SpatialIndexContext {
 		super();
 		this.defn = indexer.getDocDef();
 		this.indexer = indexer;
-		this.spatialPredicatePairValues = new HashMap<String, Set<SpatialPredicatePairValue>>();
+		this.spatialPredicatePairValues = new HashMap<>();
 	}
 
 	public void index(Node g, Node s, Node p, Node o) {
@@ -59,7 +59,7 @@ public class SpatialIndexContext {
 			Set<SpatialPredicatePairValue> pairValues = spatialPredicatePairValues
 					.get(x);
 			if (pairValues == null) {
-				pairValues = new HashSet<SpatialPredicatePairValue>();
+				pairValues = new HashSet<>();
 				spatialPredicatePairValues.put(x, pairValues);
 			}
 

@@ -71,7 +71,7 @@ public class AbstractRecordingListener {
 		}
 	}
 
-	private List<Object> history = new ArrayList<Object>();
+	private List<Object> history = new ArrayList<>();
 
 	protected final void record(String tag, Object x, Object y) {
 		history.add(tag);

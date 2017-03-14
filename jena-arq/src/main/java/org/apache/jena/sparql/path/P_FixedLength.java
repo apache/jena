@@ -18,35 +18,36 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class P_FixedLength extends P_Path1 
-{
-    private final long count ;
-    public P_FixedLength(Path p, long count)
-    {
-        super(p) ;
-        this.count = count ;
+public class P_FixedLength extends P_Path1 {
+    private final long count;
+
+    public P_FixedLength(Path p, long count) {
+        super(p);
+        this.count = count;
     }
 
     @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_FixedLength ) ) return false ;
-        P_FixedLength other = (P_FixedLength)path2 ;
-        return other.count == count && getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_FixedLength) )
+            return false;
+        P_FixedLength other = (P_FixedLength)path2;
+        return other.count == count && getSubPath().equalTo(other.getSubPath(), isoMap);
     }
 
-    public long getCount() { return count ; }
-    
-    @Override
-    public int hashCode()
-    {
-        return hashFixedLength ^ (int)count ^ getSubPath().hashCode() ;
+    public long getCount() {
+        return count;
     }
 
     @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
+    public int hashCode() {
+        return hashFixedLength ^ (int)count ^ getSubPath().hashCode();
+    }
+
+    @Override
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
+    }
 
 }

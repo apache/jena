@@ -48,6 +48,7 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.path.eval.PathEval ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class PathLib
@@ -220,17 +221,22 @@ public class PathLib
             Path subPath = ((P_Path1)path).getSubPath() ;
             if ( subPath instanceof P_Link ) {
                 // :predicate+
+                // If a property functions, 
                 P_Link link = (P_Link)subPath ;
-                Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
-                return Iter.iter(sIter).distinctAdjacent().map(Triple::getSubject).distinct() ;
+                if ( ! isPropertyFunction(link.getNode(), execCxt.getContext()) ) {
+                    Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
+                    return Iter.iter(sIter).distinctAdjacent().map(Triple::getSubject).distinct() ;
+                }
             } else {
                 if ( subPath instanceof P_Inverse ) {
                     P_Inverse pInv = (P_Inverse)subPath ;
                     if ( pInv.getSubPath() instanceof P_Link ) {
                         //  (^:predicate)+
                         P_Link link = (P_Link)(pInv.getSubPath()) ;
-                        Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
-                        return Iter.iter(sIter).distinctAdjacent().map(Triple::getObject).distinct() ;
+                        if ( ! isPropertyFunction(link.getNode(), execCxt.getContext()) ) {
+                            Iterator<Triple> sIter = graph.find(null, link.getNode(), null) ;
+                            return Iter.iter(sIter).distinctAdjacent().map(Triple::getObject).distinct() ;
+                        }
                     }
                 }
             }
@@ -239,6 +245,12 @@ public class PathLib
         return GraphUtils.allNodes(graph) ;
     }
     
+    private static boolean isPropertyFunction(Node node, Context context) {
+        if ( ! node.isURI() )
+            return false ;
+        return PropertyFunctionRegistry.chooseRegistry(context).isRegistered(node.getURI());
+    }
+
     private static int existsPath(Graph graph, Node subject, Path path, final Node object, ExecutionContext execCxt) {
         if ( ! subject.isConcrete() || !object.isConcrete() )
             throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;

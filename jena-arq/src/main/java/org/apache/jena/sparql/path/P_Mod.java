@@ -18,75 +18,67 @@
 
 package org.apache.jena.sparql.path;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** Path element of the form {,N} {N,} {N,M}  but not {N} */ 
-public class P_Mod extends P_Path1
-{
-    public static final long UNSET    = -1 ;
-    public static final long INF      = -2 ;
-    
-    private final long min ;
-    private final long max ;
+/** Path element of the form {,N} {N,} {N,M} but not {N} */
+public class P_Mod extends P_Path1 {
+    public static final long UNSET = -1;
+    public static final long INF   = -2;
 
-    public P_Mod(Path path, long min, long max)
-    {
-        super(path) ;
-        this.min = min ;
-        this.max = max ;
-    }
-    
-    @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
+    private final long       min;
+    private final long       max;
 
-    public long getMin()
-    {
-        return min ;
-    }
-
-    public long getMax()
-    {
-        return max ;
+    public P_Mod(Path path, long min, long max) {
+        super(path);
+        this.min = min;
+        this.max = max;
     }
 
     @Override
-    public int hashCode()
-    {
-        return hashMod ^ (int)min ^ (int)max ^ getSubPath().hashCode() ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public long getMin() {
+        return min;
+    }
+
+    public long getMax() {
+        return max;
     }
 
     @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Mod ) ) return false ;
-        P_Mod other = (P_Mod)path2 ;
-        return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+    public int hashCode() {
+        return hashMod ^ (int)min ^ (int)max ^ getSubPath().hashCode();
     }
 
-    public boolean isFixedLength()
-    {
-        return max == min && min >= 0 ;  
-    }
-    
-    public long getFixedLength()
-    {
-        if ( ! isFixedLength() ) return -1 ;
-        return min ;
-    }
-    
-    public boolean isZeroOrMore()
-    {
-        return min == 0 && max < 0 ;
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Mod) )
+            return false;
+        P_Mod other = (P_Mod)path2;
+        return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap);
     }
 
-    public boolean isOneOrMore()
-    {
-        return min == 1 && max < 0 ;
+    public boolean isFixedLength() {
+        return max == min && min >= 0;
     }
-    
-    public boolean isZeroOrOne()
-    {
-        return min == 0 && max == 1 ;
+
+    public long getFixedLength() {
+        if ( !isFixedLength() )
+            return -1;
+        return min;
+    }
+
+    public boolean isZeroOrMore() {
+        return min == 0 && max < 0;
+    }
+
+    public boolean isOneOrMore() {
+        return min == 1 && max < 0;
+    }
+
+    public boolean isZeroOrOne() {
+        return min == 0 && max == 1;
     }
 }

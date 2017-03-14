@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -81,7 +82,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		push(retval);
 	}
 
-	private void setExprList(ExprFunctionN n, ExprList exprList) {
+	private static void setExprList(ExprFunctionN n, ExprList exprList) {
 		try {
 			Field f = ExprFunctionN.class.getDeclaredField("args");
 			f.setAccessible(true);
@@ -127,7 +128,13 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		push(rewriter.pop());
 	}
 
-	@Override
+    @Override
+    public void visit(ExprNone none) {
+        // This should not occur.
+        throw new InternalErrorException("Visit Expr.NONE");
+    }
+
+    @Override
 	public void visit(ExprVar nv) {
 		Node n = changeNode(nv.asVar());
 		if (n.isVariable()) {
@@ -153,7 +160,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 		if (lst == null) {
 			return null;
 		}
-		List<SortCondition> retval = new ArrayList<SortCondition>();
+		List<SortCondition> retval = new ArrayList<>();
 		for (SortCondition sc : lst) {
 			retval.add(rewrite(sc));
 		}

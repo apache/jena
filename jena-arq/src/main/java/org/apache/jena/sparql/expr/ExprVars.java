@@ -29,77 +29,87 @@ import org.apache.jena.sparql.core.Var ;
 
 public class ExprVars
 {
+    @FunctionalInterface
     interface Action<T> { void var(Collection<T> acc, Var var) ; }
 
-    public static Set<Var> getVarsMentioned(Expr expr)
-    {
-        Set<Var> acc = new HashSet<>() ;
-        varsMentioned(acc, expr) ;
-        return acc ;
+    // Collect variables / ExprList
+
+    public static Set<Var> getVarsMentioned(Expr expr) {
+        Set<Var> acc = new HashSet<>();
+        varsMentioned(acc, expr);
+        return acc;
     }
 
-    public static Set<Var> getVarsMentioned(ExprList exprs)
-    {
-        Set<Var> acc = new HashSet<>() ;
-        for ( Expr expr : exprs )
-            varsMentioned(acc, expr) ;    
-        return acc ;
+    public static Set<Var> getNonOpVarsMentioned(Expr expr) {
+        Set<Var> acc = new HashSet<>();
+        nonOpVarsMentioned(acc, expr);
+        return acc;
     }
 
-    public static void varsMentioned(Collection<Var> acc, Expr expr)
-    {
-        ExprVars.Action<Var> action =
-            new ExprVars.Action<Var>(){
-                @Override
-                public void var(Collection<Var> acc, Var var)
-                {
-                    acc.add(var) ;
-                }
-            } ;
-        ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, action) ;
+    private static Action<Var> accVar = (a, var) -> a.add(var) ;
+    
+    public static void varsMentioned(Collection<Var> acc, Expr expr) {
+        ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, accVar) ;
         Walker.walk(expr, vv) ;
     }
     
-    public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr)
-    {
-        ExprVars.Action<Var> action =
-                new ExprVars.Action<Var>(){
-                    @Override
-                    public void var(Collection<Var> acc, Var var)
-                    {
-                        acc.add(var) ;
-                    }
-                } ;
-        ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, action) ;
+    public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr) {
+        ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, accVar) ;
         Walker.walk(expr, vv) ;
     }
     
-    public static Set<String> getVarNamesMentioned(Expr expr)
-    {
+    // Collect variables / ExprList
+    
+    public static Set<Var> getVarsMentioned(ExprList exprs) {
+        Set<Var> acc = new HashSet<>();
+        varsMentioned(acc, exprs);
+        return acc;
+    }
+
+    public static void varsMentioned(Collection<Var> acc, ExprList exprs) {
+        exprs.forEach(e->varsMentioned(acc, e));
+    }
+
+    public static Set<Var> getNonOpVarsMentioned(ExprList exprs) {
+        Set<Var> acc = new HashSet<>();
+        nonOpVarsMentioned(acc, exprs);
+        return acc;
+    }    
+
+    public static void nonOpVarsMentioned(Collection<Var> acc, ExprList exprs) {
+        exprs.forEach(e->nonOpVarsMentioned(acc, e));
+    }
+
+    // Names variants 
+    
+    public static Set<String> getVarNamesMentioned(Expr expr) {
         Set<String> acc = new HashSet<>() ;
         varNamesMentioned(acc, expr) ;
         return acc ;
     }
     
-    public static void varNamesMentioned(Collection<String> acc, Expr expr)
-    {
-        ExprVars.Action<String> action =
-            new ExprVars.Action<String>(){
-                @Override
-                public void var(Collection<String> acc, Var var)
-                {
-                    acc.add(var.getVarName()) ;
-                }
-            } ;
-        ExprVarsWorker<String> vv = new ExprVarsWorker<>(acc, action) ;
-        Walker.walk(expr, vv) ;
+    public static Set<String> getNonOpVarNamesMentioned(Expr expr) {
+        Set<String> acc = new HashSet<>() ;
+        nonOpVarNamesMentioned(acc, expr) ;
+        return acc ;
     }
     
+    private static Action<String> accVarName = (a, var) -> a.add(var.getVarName());
     
+    public static void varNamesMentioned(Collection<String> acc, Expr expr) {
+        ExprVisitor vv = new ExprVarsWorker<>(acc, accVarName);
+        Walker.walk(expr, vv);
+    }
+
+    public static void nonOpVarNamesMentioned(Collection<String> acc, Expr expr) {
+        ExprVisitor vv = new ExprNoOpVarsWorker<>(acc, accVarName);
+        Walker.walk(expr, vv);
+    }
+
     public static Set<Var> getVarsMentioned(SortCondition sortCondition) {
-        Set<Var> acc = new HashSet<>() ;
-        varsMentioned(acc, sortCondition) ;
-        return acc ;
+        Set<Var> acc = new HashSet<>();
+        varsMentioned(acc, sortCondition);
+        return acc;
     }
     
     public static Set<Var> getVarsMentioned(Collection<SortCondition> sortConditions) {
@@ -109,7 +119,7 @@ public class ExprVars
     }
 
     public static  void varsMentioned(Collection<Var> acc, SortCondition sortCondition) {
-        sortCondition.getExpression().varsMentioned(acc) ;
+        varsMentioned(acc, sortCondition.getExpression());
     }
 
     public static void varsMentioned(Collection<Var> acc, Collection<SortCondition> sortConditions) {
@@ -117,40 +127,35 @@ public class ExprVars
             varsMentioned(acc, sc) ;
     }
 
-    static class ExprVarsWorker<T> extends ExprVisitorBase
+    static class ExprNoOpVarsWorker<T>  extends ExprVisitorBase
     {
-        final Collection<T> acc ;
-        final Action<T> action ;
+        protected final Collection<T> acc ;
+        protected final Action<T> action ;
         
-        public ExprVarsWorker(Collection<T> acc, Action<T> action)
+        public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action)
         { this.acc = acc ; this.action = action ; }
-        
+
         @Override
         public void visit(ExprVar nv)
         { action.var(acc, nv.asVar()) ; }
+    }
+    
+    static class ExprVarsWorker<T> extends ExprNoOpVarsWorker<T>
+    {
+        public ExprVarsWorker(Collection<T> acc, Action<T> action) {
+            super(acc, action);
+        }
         
+        // Also include variables in ExprFunctionOp : EXISTS and NOT EXISTS
         @Override
         public void visit(ExprFunctionOp funcOp)
         { 
             Collection<Var> vars = OpVars.visibleVars(funcOp.getGraphPattern()) ;
-            
             for ( Var v : vars )
                 action.var(acc, v) ;
         }
         
     }
     
-    static class ExprNoOpVarsWorker<T> extends ExprVarsWorker<T>
-    {
-        public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action) {
-            super(acc, action);
-        }
 
-        @Override
-        public void visit(ExprFunctionOp funcOp) {
-            // As for ExprVarsWorker except don't include the vars in the
-            // the algebra exprssion of an ExprFunctionOp
-            return;
-        }
-    }
 }

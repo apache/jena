@@ -40,8 +40,8 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 public class MaterializedSelectResults extends MaterializedResults<Binding> {
 
     private ResultSetRewindable innerResults;
-    private Stack<Binding> previousResults = new Stack<Binding>();
-    private Stack<Binding> nextResults = new Stack<Binding>();
+    private Stack<Binding> previousResults = new Stack<>();
+    private Stack<Binding> nextResults = new Stack<>();
     private List<String> columns;
     private SelectResultsMetadata metadata;
 
@@ -65,7 +65,7 @@ public class MaterializedSelectResults extends MaterializedResults<Binding> {
         if (results == null)
             throw new SQLException("SPARQL Results cannot be null");
         this.innerResults = results;
-        this.columns = new ArrayList<String>(this.innerResults.getResultVars());
+        this.columns = new ArrayList<>(this.innerResults.getResultVars());
         this.metadata = new SelectResultsMetadata(this, this.innerResults);
         this.innerResults.reset();
     }

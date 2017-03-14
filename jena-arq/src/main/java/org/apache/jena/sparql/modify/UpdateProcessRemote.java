@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.http.client.HttpClient;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
@@ -46,16 +46,15 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
      * @param request Update request
      * @param endpoint Update endpoint
      * @param context Context
-     * @param authenticator HTTP Authenticator
+     * @param client HTTP client
      */
-    public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpAuthenticator authenticator)
+    public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpClient client)
     {
         this(request, endpoint, context);
-        // Don't want to overwrite credentials we may have picked up from
+        // Don't want to overwrite config we may have picked up from
         // service context in the parent constructor if the specified
-        // authenticator is null
-        if (authenticator != null)
-            this.setAuthenticator(authenticator);
+        // client is null
+        if (client != null) this.setClient(client);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
         
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;
-        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, getHttpContext(), getAuthenticator()) ;
+        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, getClient(), getHttpContext()) ;
     }
 }
 

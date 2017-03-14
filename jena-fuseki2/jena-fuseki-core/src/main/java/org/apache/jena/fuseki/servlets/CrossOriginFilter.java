@@ -154,10 +154,10 @@ public class CrossOriginFilter implements Filter
     private static final List<String> SIMPLE_HTTP_METHODS = Arrays.asList("GET", /*"POST",*/ "HEAD");
 
     private boolean anyOriginAllowed;
-    private List<String> allowedOrigins = new ArrayList<String>();
-    private List<String> allowedMethods = new ArrayList<String>();
-    private List<String> allowedHeaders = new ArrayList<String>();
-    private List<String> exposedHeaders = new ArrayList<String>();
+    private List<String> allowedOrigins = new ArrayList<>();
+    private List<String> allowedMethods = new ArrayList<>();
+    private List<String> allowedHeaders = new ArrayList<>();
+    private List<String> exposedHeaders = new ArrayList<>();
     private int preflightMaxAge;
     private boolean allowCredentials;
     private boolean chainPreflight;

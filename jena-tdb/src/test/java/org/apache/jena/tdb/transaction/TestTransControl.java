@@ -106,7 +106,7 @@ public class TestTransControl {
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
-        Txn.execWrite(dsg,  ()->{});    // About 20 bytes.
+        Txn.executeWrite(dsg,  ()->{});    // About 20 bytes.
         assertEquals(1, tMgr.getQueueLength()) ;
     }
     
@@ -131,7 +131,7 @@ public class TestTransControl {
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
         
-        Txn.execWrite(dsg,  ()->{});    // About 20 bytes.
+        Txn.executeWrite(dsg,  ()->{});    // About 20 bytes.
         assertEquals(1, tMgr.getQueueLength()) ;
         txnAddData(dsg) ;
         assertEquals(0, tMgr.getQueueLength()) ;
@@ -145,9 +145,9 @@ public class TestTransControl {
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
     }
 
@@ -157,9 +157,9 @@ public class TestTransControl {
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(1, tMgr.getQueueLength()) ;
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
     }
 
@@ -185,9 +185,9 @@ public class TestTransControl {
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(1, tMgr.getQueueLength()) ;
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
     }
     
@@ -201,13 +201,13 @@ public class TestTransControl {
         assertEquals(1, tMgr.getQueueLength()) ;
         txnAddData(dsg) ;
         assertEquals(2, tMgr.getQueueLength()) ;
-        Txn.execWrite(dsg,  ()->{});
+        Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
     }
 
     private static void txnAddData(DatasetGraph dsg) {
         // Unique blank node.
         Quad q = SSE.parseQuad("(_ _:b :p 1)") ;
-        Txn.execWrite(dsg,  ()->dsg.add(q));
+        Txn.executeWrite(dsg,  ()->dsg.add(q));
     }
 }

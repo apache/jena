@@ -48,10 +48,10 @@ public class TestCacheSimple extends BaseTest {
         final String value2 = "B" ;
 	    
 	    final Cache<Integer, Object> testCache = new CacheSimple<>(5);
-	    testCache.put(1,  value1);
-	    testCache.put(1,  value2);
+	    testCache.put(key,  value1);
+	    testCache.put(key,  value2);
 	    assertEquals("Wrong size", 1, testCache.size()) ;
-	    assertEquals("Wrong slot contents", value2, testCache.getIfPresent(1)) ;
+	    assertEquals("Wrong slot contents", value2, testCache.getIfPresent(key)) ;
 	}
 
 }

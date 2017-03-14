@@ -35,13 +35,11 @@ public class PathEval
     /** Evaluate a path : SPARQL semantics */
     static public Iterator<Node> eval(Graph graph, Node node, Path path, Context context) {
         return eval$(graph, node, path, new PathEngineSPARQL(graph, true, context)) ;
-        // return eval$(graph, node, path, new PathEngineN(graph, true)) ;
     }
 
     /** Evaluate a path */
     static public Iterator<Node> evalReverse(Graph graph, Node node, Path path, Context context) {
         return eval$(graph, node, path, new PathEngineSPARQL(graph, false, context)) ;
-        // return eval$(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
     /** Evaluate a path : counting semantics */

@@ -41,8 +41,8 @@ public class DatasetRef implements DatasetMXBean, Counters
     @Override
     public  CounterSet getCounters() { return counters ; }
     
-    private Map<String, ServiceRef> endpoints   = new HashMap<String, ServiceRef>() ;
-    private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
+    private Map<String, ServiceRef> endpoints   = new HashMap<>() ;
+    private List<ServiceRef> serviceRefs        = new ArrayList<>() ;
     private boolean initialized = false ;
     
     // Two step initiation (c.f. Builder pattern)

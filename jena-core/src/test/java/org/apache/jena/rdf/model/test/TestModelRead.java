@@ -69,11 +69,10 @@ public class TestModelRead extends AbstractModelTestBase
     @SuppressWarnings("deprecation")
     public void testSimpleLoadImplictBase() throws IRIException {
         final Model mBasedImplicit = createModel() ;
-        final String fn = org.apache.jena.n3.IRIResolver.resolveFileURL(getFileName("modelReading/based.n3")) ;
+        String fn=org.apache.jena.n3.N3IRIResolver.resolveGlobal(getFileName("modelReading/based.n3"));
         final Model wanted = createModel().add(ModelHelper.resource(fn), ModelHelper.property("ja:predicate"),
                                                ModelHelper.resource("ja:object")) ;
         mBasedImplicit.read(fn, "N3") ;
         ModelHelper.assertIsoModels(wanted, mBasedImplicit) ;
     }
-
 }

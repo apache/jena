@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph;
+package org.apache.jena.sparql.util.graph ;
 
 import java.util.ArrayList ;
 import java.util.HashSet ;
@@ -25,7 +25,6 @@ import java.util.List ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -39,13 +38,13 @@ import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.vocabulary.RDF ;
 
-/** Graph utilities.  See also GraphFactory. */ 
+/** Graph utilities. See also GraphFactory. */
 
-public class GraphUtils
-{
-    /** Convert an iterator of triples into quads for the default graph.
-     * This is {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated},
-     * which is for quads outside a dataset, usually the output of parsers. 
+public class GraphUtils {
+    /**
+     * Convert an iterator of triples into quads for the default graph. This is
+     * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
+     * for quads outside a dataset, usually the output of parsers.
      */
     public static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
         return triples2quads(Quad.defaultGraphIRI, iter) ;
@@ -56,113 +55,104 @@ public class GraphUtils
         return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
     }
 
-    public static List<String> multiValueString(Resource r, Property p)
-    {
+    public static List<String> multiValueString(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
         List<String> values = new ArrayList<>() ;
 
-        for ( RDFNode n : nodes )
-        {
-            if ( n.isLiteral() )
-            {
-                values.add( ( (Literal) n ).getString() );
+        for ( RDFNode n : nodes ) {
+            if ( n.isLiteral() ) {
+                values.add(((Literal)n).getString()) ;
             }
         }
         return values ;
     }
 
-    public static List<RDFNode> multiValue(Resource r, Property p)
-    {
+    public static List<RDFNode> multiValue(Resource r, Property p) {
         List<RDFNode> values = new ArrayList<>() ;
         StmtIterator sIter = r.listProperties(p) ;
-        while(sIter.hasNext())
-        {
+        while (sIter.hasNext()) {
             Statement s = sIter.nextStatement() ;
             values.add(s.getObject()) ;
         }
-        return values;
+        return values ;
     }
-    
-    public static List<Resource> multiValueResource(Resource r, Property p)
-    {
+
+    public static List<Resource> multiValueResource(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
         List<Resource> values = new ArrayList<>() ;
 
-        for ( RDFNode n : nodes )
-        {
-            if ( n.isResource() )
-            {
-                values.add( (Resource) n );
+        for ( RDFNode n : nodes ) {
+            if ( n.isResource() ) {
+                values.add((Resource)n) ;
             }
         }
         return values ;
     }
 
-    public static List<String> multiValueURI(Resource r, Property p)
-    {
+    public static List<String> multiValueURI(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p) ;
         List<String> values = new ArrayList<>() ;
 
-        for ( RDFNode n : nodes )
-        {
-            if ( n.isURIResource() )
-            {
-                values.add( ( (Resource) n ).getURI() );
+        for ( RDFNode n : nodes ) {
+            if ( n.isURIResource() ) {
+                values.add(((Resource)n).getURI()) ;
             }
         }
         return values ;
     }
 
-    public static boolean exactlyOneProperty(Resource r, Property p)
-    {
+    public static boolean exactlyOneProperty(Resource r, Property p) {
         StmtIterator sIter = r.listProperties(p) ;
         try {
-            if ( ! sIter.hasNext() )
+            if ( !sIter.hasNext() )
                 throw new PropertyRequiredException(r, p) ;
             sIter.next() ;
             if ( sIter.hasNext() )
                 throw new NotUniqueException(r, p) ;
-        } finally { sIter.close() ; } 
+        }
+        finally {
+            sIter.close() ;
+        }
         return true ;
     }
 
-    public static boolean atmostOneProperty(Resource r, Property p)
-    {
+    public static boolean atmostOneProperty(Resource r, Property p) {
         StmtIterator sIter = r.listProperties(p) ;
         try {
-            if ( ! sIter.hasNext() ) return true ;
+            if ( !sIter.hasNext() )
+                return true ;
             sIter.next() ;
             if ( sIter.hasNext() )
                 throw new NotUniqueException(r, p) ;
-        } finally { sIter.close() ; } 
+        }
+        finally {
+            sIter.close() ;
+        }
         return true ;
     }
 
-    public static String getStringValue(Resource r, Property p)
-    {
-        if ( ! atmostOneProperty(r, p) )
+    public static String getStringValue(Resource r, Property p) {
+        if ( !atmostOneProperty(r, p) )
             throw new NotUniqueException(r, p) ;
         Statement s = r.getProperty(p) ;
         if ( s == null )
             return null ;
-        return s.getString() ; 
+        return s.getString() ;
     }
 
-    public static String getAsStringValue(Resource r, Property p)
-    {
-        if ( ! atmostOneProperty(r, p) )
+    public static String getAsStringValue(Resource r, Property p) {
+        if ( !atmostOneProperty(r, p) )
             throw new NotUniqueException(r, p) ;
         Statement s = r.getProperty(p) ;
         if ( s == null )
             return null ;
         if ( s.getObject().isResource() )
             return s.getResource().getURI() ;
-        return s.getString() ; 
+        return s.getString() ;
     }
 
-    public static Resource getResourceValue(Resource r, Property p)
-    {
-        if ( ! atmostOneProperty(r, p) )
+    public static Resource getResourceValue(Resource r, Property p) {
+        if ( !atmostOneProperty(r, p) )
             throw new NotUniqueException(r, p) ;
         Statement s = r.getProperty(p) ;
         if ( s == null )
@@ -170,46 +160,42 @@ public class GraphUtils
         return s.getResource() ;
     }
 
-    public static Resource getResourceByType(Model model, Resource type)
-    {
-        // See also 
+    public static Resource getResourceByType(Model model, Resource type) {
+        // See also
         StmtIterator sIter = model.listStatements(null, RDF.type, type) ;
-        if ( ! sIter.hasNext() )
+        if ( !sIter.hasNext() )
             return null ;
         Resource r = sIter.nextStatement().getSubject() ;
         if ( sIter.hasNext() )
             throw new TypeNotUniqueException(r) ;
         return r ;
     }
-    
-    public static Resource findRootByType(Model model, Resource atype)
-    {
-        String s = StrUtils.strjoin("\n", 
-            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" ,
-            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
-        
+
+    public static Resource findRootByType(Model model, Resource atype) {
+        String s = String.join("\n", 
+                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+                                    "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+                                    "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
+
         Query q = QueryFactory.create(s) ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
 
-        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm);
+        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm) ;
         Resource r = (Resource)QueryExecUtils.getOne(qExec, "root") ;
-        return r;
+        return r ;
     }
-    
-    
-    public static String fmtURI(Resource r)
-    { return r.getModel().shortForm(r.getURI()) ;  }
-    
+
+    public static String fmtURI(Resource r) {
+        return r.getModel().shortForm(r.getURI()) ;
+    }
+
     /** All subjects and objects, no duplicates. */
-    public static Iterator<Node> allNodes(Graph graph)
-    {
+    public static Iterator<Node> allNodes(Graph graph) {
         Set<Node> x = new HashSet<>(1000) ;
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Triple t = iter.next();
+        for ( ; iter.hasNext() ; ) {
+            Triple t = iter.next() ;
             x.add(t.getSubject()) ;
             x.add(t.getObject()) ;
         }

@@ -44,7 +44,7 @@ public class AbstractRewriter<T> {
 	// The map of variables to nodes.
 	protected final Map<Var, Node> values;
 	// A stack used in processing.
-	private final Stack<T> result = new Stack<T>();
+	private final Stack<T> result = new Stack<>();
 
 	/**
 	 * Constructor
@@ -140,7 +140,7 @@ public class AbstractRewriter<T> {
 	 * @return The list of nodes.
 	 */
 	protected final List<Node> changeNodes(List<Node> src) {
-		List<Node> lst = new ArrayList<Node>();
+		List<Node> lst = new ArrayList<>();
 		for (Node t : src) {
 			lst.add(changeNode(t));
 		}
@@ -153,7 +153,7 @@ public class AbstractRewriter<T> {
 	 * @return The list of rewritten triples.
 	 */
 	public final List<Triple> rewrite(List<Triple> src) {
-		List<Triple> lst = new ArrayList<Triple>();
+		List<Triple> lst = new ArrayList<>();
 		for (Triple t : src) {
 			lst.add(rewrite(t));
 		}

@@ -61,7 +61,7 @@ public class PrologHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddPrefixes() {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		map.put("pfx", "uri");
 		map.put("pfx2", "uri2");
 		handler.addPrefixes(map);
@@ -72,7 +72,7 @@ public class PrologHandlerTest extends AbstractHandlerTest {
 
 	@Test
 	public void testAddPrefixesWithColon() {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		map.put("pfx:", "uri");
 		map.put("pfx2", "uri2");
 		handler.addPrefixes(map);

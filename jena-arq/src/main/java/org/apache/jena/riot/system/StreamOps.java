@@ -19,7 +19,6 @@
 package org.apache.jena.riot.system;
 
 import java.util.Iterator ;
-import java.util.Map.Entry ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
@@ -58,13 +57,11 @@ public class StreamOps {
 
     /** Send a PrefixMap to a stream */
     public static void sendPrefixesToStream(PrefixMap prefixMap, StreamRDF stream) {
-        for ( Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet())
-            stream.prefix(e.getKey(), e.getValue()) ;
+        prefixMap.forEach((p,u) -> stream.prefix(p, u.toString())) ;
     }
     
     public static void sendPrefixesToStream(PrefixMapping prefixMap, StreamRDF stream) {
-        for ( Entry<String, String> e : prefixMap.getNsPrefixMap().entrySet() )
-            stream.prefix(e.getKey(), e.getValue()) ;
+        prefixMap.getNsPrefixMap().forEach(stream::prefix);
     }
 
     /** Send a dataset graph to a stream with triples for the default graph
@@ -109,7 +106,7 @@ public class StreamOps {
     /** Send the triples of graph and an explicitly given prefix mapping, to a StreamRDF */
     public static void sendGraphToStream(Graph graph, StreamRDF stream, PrefixMap prefixMap) {
         if ( prefixMap != null )
-            sendPrefixesToStream(graph.getPrefixMapping(), stream) ;
+            sendPrefixesToStream(prefixMap, stream) ;
         Iterator<Triple> iter = graph.find(null, null, null) ;
         StreamOps.sendTriplesToStream(iter, stream) ;
     }

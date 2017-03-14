@@ -21,6 +21,8 @@ package org.apache.jena.rdf.model.impl;
 import java.io.* ;
 import java.net.URL ;
 import java.util.* ;
+import java.util.function.Supplier ;
+
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -50,10 +52,12 @@ import org.apache.jena.vocabulary.RDF ;
 public class ModelCom extends EnhGraph
 implements Model, PrefixMapping, Lock
 {
-    private static final RDFReaderF readerFactory = new RDFReaderFImpl();
-    private static final RDFWriterF writerFactory = new RDFWriterFImpl();
+    private static RDFReaderF readerFactory = new RDFReaderFImpl();
+    private static RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
-    private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
+    /** @deprecated Remove when setDefaultModelPrefixes etc removed. */
+    @Deprecated
+    private static PrefixMapping defaultPrefixMapping = null; // Should be the default value in Java.
 
     static {
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
@@ -62,19 +66,39 @@ implements Model, PrefixMapping, Lock
         JenaSystem.init() ;
     }
     
+    /* Internal.
+     * During intialization, all sorts of class loading orders can happen.
+     * Many places create Models, calling into a ModelCom constructor.
+     * so this helps the runtime ensure that ModelCom is
+     * initialized before a ModelCom is created.   
+     */
+    
+    static {
+        if ( defaultPrefixMapping == null )
+            defaultPrefixMapping = PrefixMapping.Factory.create();
+    }
+    
     /**
     	make a model based on the specified graph
      */
     public ModelCom( Graph base ) 
     { this( base, BuiltinPersonalities.model ); }
 
-    public ModelCom( Graph base, Personality<RDFNode> personality )
-    { super( base, personality ); 
-    withDefaultMappings( defaultPrefixMapping ); }
+    public ModelCom( Graph base, Personality<RDFNode> personality ) { 
+        super( base, personality );
+        // JENA-1249. Touching the prefix mappings can incur initialization costs.
+        // Also, must protect against defaultPrefixMapping being null due to initialization effects.
+        if ( defaultPrefixMapping != null && ! defaultPrefixMapping.hasNoMappings() )
+            withDefaultMappings( defaultPrefixMapping );
+    }  
 
+    /** @deprecated This feature will be removed */
+    @Deprecated
     public static PrefixMapping getDefaultModelPrefixes()
     { return defaultPrefixMapping; }
 
+    /** @deprecated This feature will be removed */
+    @Deprecated
     public static PrefixMapping setDefaultModelPrefixes(PrefixMapping pm)
     {
         PrefixMapping result = defaultPrefixMapping ;
@@ -867,9 +891,20 @@ implements Model, PrefixMapping, Lock
     @Override
     public RDFList createList( Iterator<? extends RDFNode> members ) 
     {
-        RDFList list = createList();
-        while (members != null && members.hasNext()) list = list.with( members.next() );
-        return list;
+        if (!members.hasNext())
+            return createList();
+
+        Resource root = createResource().addProperty(RDF.first, members.next());
+        Resource last = root;
+        while (members.hasNext())
+        {
+            Resource rest = createResource().addProperty(RDF.first, members.next());
+            last.addProperty(RDF.rest, rest);
+            last = rest;
+        }
+        last.addProperty(RDF.rest, RDF.nil);
+
+        return root.as(RDFList.class);
     }
 
 
@@ -1050,7 +1085,15 @@ implements Model, PrefixMapping, Lock
     @Override
     public String shortForm( String uri )
     { return getPrefixMapping().shortForm( uri ); }
+    
+    @Override
+    public boolean hasNoMappings()
+    { return getPrefixMapping().hasNoMappings(); }
 
+    @Override
+    public int numPrefixes()
+    { return getPrefixMapping().numPrefixes() ; }
+    
     /**
         Service method to update the namespaces of  a Model given the
         mappings from prefix names to sets of URIs.
@@ -1233,24 +1276,37 @@ implements Model, PrefixMapping, Lock
     { return graph.contains( asNode( s ), asNode( p ), asNode( o ) ); }
 
     @Override
-    public Statement getRequiredProperty( Resource s, Property p )  
-    { Statement st = getProperty( s, p );
-    if (st == null) throw new PropertyNotFoundException( p );
-    return st; }
+    public Statement getRequiredProperty(Resource s, Property p) {
+        Statement st = getProperty( s, p );
+        if (st == null) throw new PropertyNotFoundException( p );
+        return st;
+    }
 
     @Override
-    public Statement getProperty( Resource s, Property p )
-    {
+    public Statement getRequiredProperty(Resource s, Property p, String lang) {
+        Statement st = getProperty( s, p , lang );
+        if (st == null) throw new PropertyNotFoundException( p );
+        return st;
+    }
+    
+    @Override
+    public Statement getProperty( Resource s, Property p ) {
         StmtIterator iter = listStatements( s, p, (RDFNode) null );
         try { return iter.hasNext() ? iter.nextStatement() : null; }
         finally { iter.close(); }
     }
 
+    @Override
+    public Statement getProperty( Resource s, Property p, String lang) {
+        StmtIterator iter = listStatements( s, p, null, lang );
+        try { return iter.hasNext() ? iter.nextStatement() : null; }
+        finally { iter.close(); }
+    }
+    
     public static Node asNode( RDFNode x )
     { return x == null ? Node.ANY : x.asNode(); }
 
-    private NodeIterator listObjectsFor( RDFNode s, RDFNode p )
-    {
+    private NodeIterator listObjectsFor( RDFNode s, RDFNode p ) {
         ClosableIterator<Node> xit = GraphUtil.listObjects(graph, asNode( s ), asNode( p ) ) ;
         return IteratorFactory.asRDFNodeIterator( xit, this );
     }
@@ -1329,6 +1385,7 @@ implements Model, PrefixMapping, Lock
      public Model commit() 
      { getTransactionHandler().commit(); return this; }
 
+     @SuppressWarnings("deprecation")
      @Override
      public Object executeInTransaction( Command cmd )
      { return getTransactionHandler().executeInTransaction( cmd ); }
@@ -1336,6 +1393,20 @@ implements Model, PrefixMapping, Lock
      private TransactionHandler getTransactionHandler()
      { return getGraph().getTransactionHandler(); }
 
+     @Override
+     public void executeInTxn( Runnable action ) {
+         getTransactionHandler().execute( action );
+     }
+
+     /**
+      * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+      * commit the transaction and return the result, otherwise abort the transaction.
+      */
+     @Override
+     public <T> T calculateInTxn( Supplier<T> action ) {
+         return getTransactionHandler().calculate( action );
+     }
+     
      @Override
      public boolean independent() 
      { return true; }

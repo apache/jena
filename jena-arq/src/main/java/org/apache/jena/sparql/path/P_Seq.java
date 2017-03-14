@@ -16,30 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_Seq extends P_Path2
-{
+public class P_Seq extends P_Path2 {
 
-    public P_Seq(Path p1, Path p2)
-    {
+    public P_Seq(Path p1, Path p2) {
         super(p1, p2) ;
     }
 
     @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
-    
-    @Override
-    public int hashSeed() { return hashSeq ; }
-
-    @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_Seq ) ) return false ;
-        return equalsIso((P_Path2)path2, isoMap) ;
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this) ;
     }
 
+    @Override
+    public int hashSeed() {
+        return hashSeq ;
+    }
+
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_Seq) )
+            return false ;
+        return equalsIso((P_Path2)path2, isoMap) ;
+    }
 }

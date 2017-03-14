@@ -23,15 +23,18 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.3.0-SNAPSHOT</version>
 
-  <!-- Needed for -Papache-release -->
   <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>18</version>
   </parent>
+
+  <prerequisites>
+    <maven>3.3.5</maven>
+  </prerequisites>
 
   <licenses>
     <license>
@@ -63,18 +66,23 @@
       <!-- The maven artifacts of the basic modules -->
       <modules>
         <module>jena-parent</module>
-        <!-- <module>jena-shared-guava</module> -->
+        <!-- <module>jena-shaded-guava</module> -->
         <!-- <module>jena-iri</module> -->
         <module>jena-base</module>
         
         <module>jena-core</module>
         <module>jena-arq</module>
-        <module>jena-tdb</module> 
+        <module>jena-rdfconnection</module>
+        <module>jena-tdb</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
-
+        
+        <!--<module>jena-text</module>-->
+        <!--<module>jena-spatial</module>-->
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
+
+        <module>jena-integration-tests</module>
 
         <module>jena-permissions</module>
 
@@ -89,15 +97,32 @@
     </profile>
 
     <profile>
-      <!-- From the start, up until profile "dev" -->
-      <id>bootstrap</id>
-       <modules>
-         <module>jena-parent</module>
-         <module>jena-shaded-guava</module>
-         <module>jena-iri</module>
-       </modules>
+      <!-- From the start, up until profile "dev".
+           Use this (or a full build) when building locally
+           and there are no SNAPSHOTs in the "snapshots" repository.
+           This profile does a more complete "dev" build,
+           does not assume anything is already built,
+           and does not include the longer running modules.
+      -->
+      
+      <id>boostrap</id>
+      <modules>
+        <module>jena-parent</module>
+        <module>jena-shaded-guava</module>
+        <module>jena-iri</module> 
+        <module>jena-base</module>
+        <module>jena-core</module>
+        <module>jena-arq</module>
+        <module>jena-tdb</module> 
+        <module>apache-jena-libs</module>
+        <module>jena-cmds</module>
+        <module>jena-text</module>
+        <module>jena-spatial</module>
+        <!--<module>jena-fuseki1</module>-->
+        <module>jena-fuseki2</module>
+      </modules>
     </profile>
-
+      
     <profile>
       <!--
           This is the complete profile, it builds everything including slow
@@ -119,6 +144,7 @@
 
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
@@ -131,6 +157,15 @@
 
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
+
+        <!--
+            Tests of artifacts that require additional 
+            modules built later in the build process.
+            For example, use Fuseki as a test server to
+            test remote client APIs.
+        -->
+        <module>jena-integration-tests</module>
+
         <module>jena-permissions</module>
 
         <module>jena-jdbc</module>

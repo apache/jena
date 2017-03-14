@@ -33,7 +33,6 @@ import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection ;
 public class RemoteEndpointMetadata extends JenaMetadata {
 
     private Version jdbc;
-    @SuppressWarnings("unused")
     private RemoteEndpointConnection remoteConn;
 
     /**

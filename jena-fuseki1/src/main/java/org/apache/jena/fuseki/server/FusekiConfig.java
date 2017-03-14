@@ -122,7 +122,7 @@ public class FusekiConfig
         if ( ! rs.hasNext() )
             log.warn("No services found") ;
         
-        List<DatasetRef> services =  new ArrayList<DatasetRef>() ; 
+        List<DatasetRef> services =  new ArrayList<>() ; 
         
         for ( ; rs.hasNext() ; )
         {

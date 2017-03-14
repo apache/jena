@@ -254,7 +254,6 @@ public class FRuleEngine implements FRuleEngineI {
      * Compile a list of rules into the internal rule store representation.
      * @param rules the list of Rule objects
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
-     * @returns an object that can be installed into the engine using setRuleStore.
      */
     public void compile(List<Rule> rules, boolean ignoreBrules) {
         clauseIndex = new OneToManyMap<>();

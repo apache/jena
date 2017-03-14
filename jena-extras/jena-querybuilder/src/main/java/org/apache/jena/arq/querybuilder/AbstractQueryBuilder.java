@@ -17,14 +17,22 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
+import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
+import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryParseException;
@@ -33,9 +41,13 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -47,7 +59,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
  *            The derived class type. Used for return types.
  */
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
-		implements Cloneable, PrologClause<T> {
+		implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// the query this builder is building
 	protected Query query;
@@ -75,6 +87,85 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public Node makeNode(Object o) {
 		return makeNode( o, query.getPrefixMapping() );
 	}
+	
+	private Object makeNodeOrPath(Object o)
+	{
+		return makeNodeOrPath(o, query.getPrefixMapping() );
+	}
+	
+	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
+	{
+		if (o == null) {
+			return Node.ANY;
+		}
+		if (o instanceof Path)
+		{
+			return o;
+		}
+		if (o instanceof FrontsNode) {
+			return ((FrontsNode) o).asNode();
+		}
+
+		if (o instanceof Node) {
+			return o;
+		}
+		if (o instanceof String) {
+			try {			
+				Path p = PathParser.parse((String) o, pMapping);
+				if (p instanceof P_Link)
+				{
+					return ((P_Link)p).getNode();
+				}
+				return p;
+			}
+			catch (QueryParseException e)
+			{	// try to parse vars
+				return makeNode( o, pMapping );		
+			}
+			catch (Exception e)
+			{
+				// expected in some cases -- do nothing
+			}
+
+		}
+		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
+	}
+		
+	/**
+	 * Make a triple path from the objects.
+	 * 
+	 * For subject, predicate and objects nodes
+	 * <ul>
+	 * <li>Will return Node.ANY if object is null.</li>
+	 * <li>Will return the enclosed Node from a FrontsNode</li>
+	 * <li>Will return the object if it is a Node.</li>
+	 * <li>If the object is a String
+	 * 	<ul>
+	 * <li>For <code>predicate</code> only will attempt to parse as a path</li>
+	 * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode() 
+	 * using the currently defined prefixes if the object is a String</li>
+	 * </ul></li>
+	 * <li>Will create a literal representation if the parseNode() fails or for
+	 * any other object type.</li>
+	 * </ul>
+	 * 
+	 * @param s The subject object
+	 * @param p the predicate object
+	 * @param o the object object.
+	 * @return a TriplePath
+	 */
+	public TriplePath makeTriplePath(Object s, Object p, Object o) {
+		Object po = makeNodeOrPath( p );
+		if (po instanceof Path)
+		{
+			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
+		} else
+		{
+			return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
+		}
+		
+	}
+
 	
 	/**
 	 * A convenience method to make an expression from a string.  Evaluates the 
@@ -213,6 +304,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return getHandlerBlock().getPrologHandler();
 	}
 
+	@Override
+	public ValuesHandler getValuesHandler() {
+		return getHandlerBlock().getValueHandler();
+	}
 
 	/**
 	 * Set a variable replacement. During build all instances of var in the
@@ -291,6 +386,113 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public T setBase(Object base) {
 		setBase(makeNode(base).getURI());
 		return (T) this;
+	}
+	
+	// --- VALUES
+	
+	private Collection<Node> makeValueNodes( Iterator<?> iter )
+	{
+		if (iter == null || !iter.hasNext())
+		{
+			return null;
+		}
+		List<Node> values = new ArrayList<Node>();
+		while (iter.hasNext())
+		{
+			Object o = iter.next();
+			// handle null as UNDEF
+			if (o == null)
+			{
+				values.add( null );
+			} else 
+			{
+				values.add( makeNode( o ));
+			}
+		}
+		return values;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueVar(Object var) {
+		if (var == null)
+		{
+			throw new IllegalArgumentException( "var must not be null.");
+		}
+		if (var instanceof Collection<?>)
+		{
+			Collection<?> column = (Collection<?>)var;
+			if (column.size() == 0)
+			{
+				throw new IllegalArgumentException( "column must have at least one entry.");
+			}
+			Iterator<?> iter = column.iterator();
+			Var v = makeVar( iter.next() );
+			getValuesHandler().addValueVar(v, makeValueNodes(iter));
+		} else {
+			getValuesHandler().addValueVar(makeVar(var), null );
+		}
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueVar(Object var, Object... objects) {
+		
+		Collection<Node> values = null;
+		if (objects != null)
+		{
+			values = makeValueNodes( Arrays.asList(objects).iterator());
+		}
+		
+		getValuesHandler().addValueVar(makeVar(var), values );
+		return (T) this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <K extends Collection<?>> T addValueVars(Map<?,K> dataTable) {
+		ValuesHandler hdlr = new ValuesHandler( null );
+		for (Map.Entry<?, K> entry : dataTable.entrySet())
+		{
+			Collection<Node> values = null;
+			if (entry.getValue() != null)
+			{
+				values = makeValueNodes( entry.getValue().iterator() );
+			}
+			hdlr.addValueVar(makeVar(entry.getKey()), values );
+		}
+		getValuesHandler().addAll( hdlr );
+		return (T) this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueRow(Object... values) {
+		getValuesHandler().addValueRow( makeValueNodes( Arrays.asList(values).iterator()));
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueRow(Collection<?> values) {
+		getValuesHandler().addValueRow( makeValueNodes( values.iterator()));
+		return (T) this;
+	}
+	
+	@Override
+	public List<Var> getValuesVars() {
+		return getValuesHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var,List<Node>> getValuesMap() {
+		return getValuesHandler().getValuesMap();
+	}
+	
+	@Override
+	public  void clearValues() {
+		getValuesHandler().clear();
 	}
 
 	@Override

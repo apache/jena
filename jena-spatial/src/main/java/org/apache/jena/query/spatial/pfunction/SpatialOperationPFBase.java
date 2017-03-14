@@ -94,9 +94,7 @@ public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 			return IterLib.result(binding, execCxt);
 		}
 
-		DatasetGraph dsg = execCxt.getDataset();
-		
-        argSubject = Substitute.substitute(argSubject, binding) ;
+		argSubject = Substitute.substitute(argSubject, binding) ;
         argObject = Substitute.substitute(argObject, binding) ;
 		
 		if (!argSubject.isNode())

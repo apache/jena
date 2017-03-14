@@ -34,12 +34,16 @@ public class E_Bound extends ExprFunction1
     
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) { 
-        // See alse ExprLib.evalorNull.
-        // This code predates that; it handles exceptions very slightly differently.
+        // See alse ExprLib.evalOrNull.
+        // This code predates that; it handles exceptions 
+        // slightly differently (VariableNotBoundException not
+        // a general ExprEvalException).
         
         if ( expr.isConstant() )
-            // The case of the variable already being substituted for a constant.
-            return NodeValue.FALSE ;
+            // The case of the variable having been substituted for a constant.
+            // Note: this has often been optimized away by constant folding 
+            // (ExprTransformConstantFold) which called eval(NodeValue x) -> TRUE.
+            return NodeValue.TRUE ;
         
         if ( expr.isVariable() )
             // The case of the expr being a single variable. 

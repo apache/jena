@@ -48,7 +48,7 @@ public class sprintf extends FunctionBase
                     args.size()+" : [wanted at least 2]") ;
 
         NodeValue v1 = args.get(0) ;
-        List<NodeValue> allArgs = new ArrayList<NodeValue>();
+        List<NodeValue> allArgs = new ArrayList<>();
         for(int i = 1;i < args.size();i++)
             allArgs.add(args.get(i));
 

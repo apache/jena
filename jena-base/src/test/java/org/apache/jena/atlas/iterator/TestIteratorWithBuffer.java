@@ -87,7 +87,7 @@ public class TestIteratorWithBuffer extends BaseTest
         assertEquals("a", iter.next()) ;
     }
 
-    private IteratorWithBuffer<String> createBuffered(int N, String... strings)
+    private static IteratorWithBuffer<String> createBuffered(int N, String... strings)
     {
         List<String> data = Arrays.asList(strings) ;
         IteratorWithBuffer<String> iter = new IteratorWithBuffer<>(data.iterator(), N) ;

@@ -483,7 +483,12 @@ public class FusekiCmd extends CmdARQ
             { serverLog.error("SPARQLServer: Failed to start management server: " + ex.getMessage(), ex) ; System.exit(1) ; }
         }
 
-        server.start() ;
+        try {
+            server.start() ;
+        } catch (FusekiException ex) {
+            serverLog.warn("Failed to start the server.", ex) ;
+        }
+    
         try { server.getServer().join() ; } catch (Exception ex) {}
 
         if ( mgtServer != null )

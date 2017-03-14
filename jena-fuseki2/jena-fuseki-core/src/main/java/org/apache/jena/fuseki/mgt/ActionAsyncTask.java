@@ -30,9 +30,6 @@ public abstract class ActionAsyncTask extends ActionItem
 {
     private static final long serialVersionUID = 4522916022736091383L;
 
-    // ?? Better as a library (mixin) so can be used outside ActionItem
-    private static AsyncPool asyncPool = AsyncPool.get() ;
-    
     public ActionAsyncTask() { super() ; }
     
     @Override

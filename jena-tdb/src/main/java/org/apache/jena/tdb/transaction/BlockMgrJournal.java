@@ -294,16 +294,16 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private void checkIfClosed()
     {
         if ( closed )
-            Log.fatal(this, "Already closed: "+transaction.getTxnId()) ;
+            Log.error(this, "Already closed: "+transaction.getTxnId()) ;
     }
 
     private void checkActive()
     {
         if ( ! active )
-            Log.fatal(this, "Not active: "+transaction.getTxnId()) ;
+            Log.error(this, "Not active: "+transaction.getTxnId()) ;
         TxnState state = transaction.getState() ; 
         if ( state != TxnState.ACTIVE && state != TxnState.PREPARING )
-            Log.fatal(this, "**** Not active: "+transaction.getTxnId()) ;
+            Log.error(this, "**** Not active: "+transaction.getTxnId()) ;
     }
 
 

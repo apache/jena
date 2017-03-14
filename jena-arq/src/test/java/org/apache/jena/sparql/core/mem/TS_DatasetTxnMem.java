@@ -39,6 +39,8 @@ import org.junit.runners.Suite.SuiteClasses;
     TestDatasetGraphInMemoryTransactions.class,
     
     TestDatasetGraphInMemoryFind.class,
-    TestDatasetGraphInMemoryFindPattern.class
+    TestDatasetGraphInMemoryFindPattern.class,
+    TestDatasetGraphInMemoryIsolation.class,
+    TestDatasetGraphInMemoryPromote.class
  })
 public class TS_DatasetTxnMem {}

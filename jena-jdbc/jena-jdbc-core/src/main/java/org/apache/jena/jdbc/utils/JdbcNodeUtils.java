@@ -38,7 +38,7 @@ import org.apache.jena.vocabulary.XSD ;
  */
 public class JdbcNodeUtils {
 
-    private static Set<String> numericTypes = new HashSet<String>();
+    private static Set<String> numericTypes = new HashSet<>();
 
     static {
         numericTypes.add(XSD.decimal.getURI());

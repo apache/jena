@@ -191,10 +191,12 @@ public class TestItem
     }
 
     private String _getName() {
+        
         Statement s = testResource.getProperty(TestManifest.name) ;
+        String ln = s.getSubject().getLocalName();
         if ( s == null )
-            return "<<unset>>" ;
-        return s.getString() ;
+            return ln+" <<unset>>" ;
+        return "("+ln+") "+s.getString() ;
     }
 
     private Resource _getAction() {

@@ -90,7 +90,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     @Deprecated
     public static String setBaseWriterClassName(String lang, String className) {
         if ( rewiredAlternative != null )
-            Log.fatal(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
+            Log.error(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
         String oldClassName = currentEntry(lang);
         try {
             @SuppressWarnings("unchecked")
@@ -155,7 +155,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
     private static String remove(String lang) {
         if ( rewiredAlternative != null )
-            Log.fatal(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
+            Log.error(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
         String oldClassName = currentEntry(lang);
         custom.remove(lang);
         return oldClassName;

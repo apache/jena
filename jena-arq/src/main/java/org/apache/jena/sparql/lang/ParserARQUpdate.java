@@ -83,7 +83,7 @@ public class ParserARQUpdate extends UpdateParser
         }
         catch (Throwable th)
         {
-            Log.fatal(this, "Unexpected throwable: ",th) ;
+            Log.error(this, "Unexpected throwable: ",th) ;
             throw new QueryException(th.getMessage(), th) ;
         }
     }

@@ -38,8 +38,7 @@ import org.apache.jena.shared.ReadDeniedException;
 /**
  * Implementation of SecuredRDFNode to be used by a SecuredItemInvoker proxy.
  */
-public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
-		SecuredRDFNode {
+public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements SecuredRDFNode {
 	/**
 	 * 
 	 * @param securedModel
@@ -48,14 +47,11 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 	 *            the node to secure.
 	 * @return the secured RDFNode
 	 */
-	public static SecuredRDFNode getInstance(final SecuredModel securedModel,
-			final RDFNode rdfNode) {
+	public static SecuredRDFNode getInstance(final SecuredModel securedModel, final RDFNode rdfNode) {
 		if (rdfNode instanceof Literal) {
-			return SecuredLiteralImpl.getInstance(securedModel,
-					(Literal) rdfNode);
+			return SecuredLiteralImpl.getInstance(securedModel, (Literal) rdfNode);
 		} else {
-			return SecuredResourceImpl.getInstance(securedModel,
-					(Resource) rdfNode);
+			return SecuredResourceImpl.getInstance(securedModel, (Resource) rdfNode);
 		}
 	}
 
@@ -77,9 +73,8 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 			final ItemHolder<? extends RDFNode, ? extends SecuredRDFNode> holder) {
 		super(securedModel, holder);
 		if (holder.getBaseItem().getModel() == null) {
-			throw new IllegalArgumentException(String.format(
-					"Holder base item (%s) must have a securedModel", holder
-							.getBaseItem().getClass()));
+			throw new IllegalArgumentException(
+					String.format("Holder base item (%s) must have a securedModel", holder.getBaseItem().getClass()));
 		}
 		this.securedModel = securedModel;
 		this.holder = holder;
@@ -88,8 +83,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends RDFNode> T as(final Class<T> view)
-			throws ReadDeniedException, AuthenticationRequiredException,
-			SecuredUnsupportedPolymorphismException {
+			throws ReadDeniedException, AuthenticationRequiredException, SecuredUnsupportedPolymorphismException {
 		checkRead();
 		// see if the base Item can as
 		T baseAs = holder.getBaseItem().as(view);
@@ -102,8 +96,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 			throw new SecuredUnsupportedPolymorphismException(this, view);
 		}
 		try {
-			return (T) m.invoke(null, securedModel,
-					holder.getBaseItem().as(view));
+			return (T) m.invoke(null, securedModel, baseAs);
 		} catch (final UnsupportedPolymorphismException e) {
 			throw new SecuredUnsupportedPolymorphismException(this, view);
 		} catch (final IllegalArgumentException e) {
@@ -116,8 +109,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public Node asNode() throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public Node asNode() throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		return holder.getBaseItem().asNode();
 	}
@@ -135,8 +127,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 
 	private <T extends RDFNode> Method getConstructor(final Class<T> view) {
 		String classNm = SecuredRDFNodeImpl.class.getName();
-		classNm = String.format("%s.Secured%sImpl",
-				classNm.substring(0, classNm.lastIndexOf(".")),
+		classNm = String.format("%s.Secured%sImpl", classNm.substring(0, classNm.lastIndexOf(".")),
 				view.getSimpleName());
 		try {
 			final Class<?> c = Class.forName(classNm);
@@ -156,15 +147,13 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 	}
 
 	@Override
-	public RDFNode inModel(final Model m) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	public RDFNode inModel(final Model m) throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
 		if (securedModel.equals(m)) {
 			return this;
 		}
 		if (m instanceof SecuredModel) {
-			return SecuredRDFNodeImpl.getInstance((SecuredModel) m, holder
-					.getBaseItem().inModel(m));
+			return SecuredRDFNodeImpl.getInstance((SecuredModel) m, holder.getBaseItem().inModel(m));
 		}
 		return holder.getBaseItem().inModel(m);
 	}
@@ -204,11 +193,9 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements
 	 * @throws AuthenticationRequiredException
 	 */
 	@Override
-	final public boolean equals(Object o) throws ReadDeniedException,
-			AuthenticationRequiredException {
+	final public boolean equals(Object o) throws ReadDeniedException, AuthenticationRequiredException {
 		checkRead();
-		return o instanceof FrontsNode
-				&& asNode().equals(((FrontsNode) o).asNode());
+		return o instanceof FrontsNode && asNode().equals(((FrontsNode) o).asNode());
 	}
 
 	/**

@@ -3413,13 +3413,9 @@ public abstract class AbstractResultSetTests {
      */
     @Test(expected = SQLFeatureNotSupportedException.class)
     public void results_bad_updates_60() throws SQLException {
-        ResultSet rset = this.createResults(ds, "SELECT * WHERE { ?s ?p ?o }");
-
-        try {
+        try (ResultSet rset = this.createResults(ds, "SELECT * WHERE { ?s ?p ?o }")) {
             rset.updateNCharacterStream("s", (Reader) null);
-        } finally {
-            rset.close();
-        }
+        } 
     }
 
     /**

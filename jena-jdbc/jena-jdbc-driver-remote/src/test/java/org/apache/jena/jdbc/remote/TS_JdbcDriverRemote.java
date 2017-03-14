@@ -17,6 +17,7 @@
  */
 package org.apache.jena.jdbc.remote;
 
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnection;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithAuth;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithGraphUris;
@@ -27,6 +28,8 @@ import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithAuth;
 import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithGraphUris;
 import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithResultSetTypes;
 import org.apache.jena.jdbc.remote.statements.TestRemoteEndpointStatements;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -37,12 +40,15 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestRemoteEndpointDriver.class,
+    
     TestRemoteEndpointConnection.class,
     TestRemoteEndpointConnectionWithAuth.class,
     TestRemoteEndpointConnectionWithGraphUris.class,
-    TestRemoteEndpointConnectionWithResultSetTypes.class,
+    TestRemoteEndpointConnectionWithResultSetTypes.class
+    ,
     TestRemoteConnectionMetadata.class,
-    TestRemoteEndpointStatements.class,
+    TestRemoteEndpointStatements.class
+    ,
     TestRemoteEndpointResults.class,
     TestRemoteEndpointResultsWithAuth.class,
     TestRemoteEndpointResultsWithGraphUris.class,
@@ -51,4 +57,14 @@ import org.junit.runners.Suite;
 
 
 public class TS_JdbcDriverRemote {
+
+    @BeforeClass
+    public static void beforeClassAbstract1() {
+        ServerCtl.ctlBeforeTestSuite() ;
+    }
+
+    @AfterClass
+    public static void afterClassAbstract1() {
+        ServerCtl.ctlAfterTestSuite() ;
+    }
 }

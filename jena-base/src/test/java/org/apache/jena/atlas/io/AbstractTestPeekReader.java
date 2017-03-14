@@ -77,7 +77,6 @@ public abstract class AbstractTestPeekReader extends BaseTest
         for ( int i = 0 ; i < c.length(); i++ )
         {
             checkLineCol(r, INIT_LINE, i+INIT_COL) ;
-            long z = r.getPosition() ;
             assertEquals(i, r.getPosition()) ;
             assertEquals(c.charAt(i), r.readChar()) ;
         }
@@ -140,7 +139,7 @@ public abstract class AbstractTestPeekReader extends BaseTest
     {
         PeekReader r = make("abc") ;
         checkLineCol(r, INIT_LINE, INIT_COL) ;
-        int ch = r.readChar() ;
+        r.readChar() ;
         // Pushback does not move line/col backwards.
         checkLineCol(r, INIT_LINE, INIT_COL+1) ;
         assertEquals('b', r.peekChar()) ;
@@ -153,7 +152,7 @@ public abstract class AbstractTestPeekReader extends BaseTest
     @Test public void unread3()
     {
         PeekReader r = make("") ;
-        int ch = r.readChar() ;
+        r.readChar() ;
         assertEquals(-1, r.peekChar()) ;
         r.pushbackChar('a') ;
         contains(r, "a") ;
@@ -162,7 +161,7 @@ public abstract class AbstractTestPeekReader extends BaseTest
     @Test public void unread4()
     {
         PeekReader r = make("") ;
-        int ch = r.readChar() ;
+        r.readChar() ;
         assertEquals(-1, r.peekChar()) ;
         r.pushbackChar('0') ;
         r.pushbackChar('1') ;
@@ -193,7 +192,7 @@ public abstract class AbstractTestPeekReader extends BaseTest
         contains(r, "320") ;
     }
 
-    private void checkLineCol(PeekReader r, long lineNum, long colNum)
+    private static void checkLineCol(PeekReader r, long lineNum, long colNum)
     {
         assertEquals("Line", lineNum, r.getLineNum()) ; 
         assertEquals("Column", colNum, r.getColNum()) ;
@@ -228,7 +227,7 @@ public abstract class AbstractTestPeekReader extends BaseTest
         assertTrue(r.eof()) ;
     }
     
-    private void contains(PeekReader r, String contents)
+    private static void contains(PeekReader r, String contents)
     {
         for ( int i = 0 ; i < contents.length(); i++ )
         {

@@ -54,7 +54,7 @@ public class CacheFactory {
      */
     public static <Obj> CacheSet<Obj> createCacheSet(int size) {
         Cache<Obj, Object> c = createCache(size) ;
-        return new CacheSetImpl<Obj>(c) ;
+        return new CacheSetImpl<>(c) ;
     }
 
     /** Add a synchronization wrapper to an existing set-cache */

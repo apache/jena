@@ -45,7 +45,7 @@ public class FileSender {
         String contentType ;
     }
     
-    private List<Entry> items = new ArrayList<Entry>() ;
+    private List<Entry> items = new ArrayList<>() ;
     
     private String url ;  
     
@@ -79,7 +79,7 @@ public class FileSender {
                 }
                 ps.print("--" + boundary + "--"+WNL);
             } 
-            connection.connect(); 
+            connection.connect();
             int responseCode = connection.getResponseCode();
         } catch (IOException ex) { IO.exception(ex); }
     }

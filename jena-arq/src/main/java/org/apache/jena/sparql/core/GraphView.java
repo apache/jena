@@ -22,6 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
@@ -162,5 +163,60 @@ public class GraphView extends GraphBase implements Sync
     @Override
     public void sync() {
         SystemARQ.sync(dsg);
+    }
+    
+    @Override
+    public Capabilities getCapabilities() { 
+        if (capabilities == null) 
+            capabilities = new GraphViewCapabilities();
+        return capabilities;
+    }
+    
+    protected static class GraphViewCapabilities implements Capabilities {
+        @Override
+        public boolean sizeAccurate() {
+            return true;
+        }
+
+        @Override
+        public boolean addAllowed() {
+            return addAllowed(false);
+        }
+
+        @Override
+        public boolean addAllowed(boolean every) {
+            return true;
+        }
+
+        @Override
+        public boolean deleteAllowed() {
+            return deleteAllowed(false);
+        }
+
+        @Override
+        public boolean deleteAllowed(boolean every) {
+            return true;
+        }
+
+        @Override
+        public boolean canBeEmpty() {
+            return true;
+        }
+
+        @Override
+        public boolean iteratorRemoveAllowed() {
+            //Default for GraphViews is that iterators do not provide remove. 
+            return false;
+        }
+
+        @Override
+        public boolean findContractSafe() {
+            return true;
+        }
+
+        @Override
+        public boolean handlesLiteralTyping() {
+            return false;
+        }
     }
 }

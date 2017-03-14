@@ -96,7 +96,7 @@ public class RefCountingMap<K, T> {
     				if (v != null && ( v.getRef().equals(value) ) ) {
     					refCount = v.getCount() + 1;
     				}
-    				return new CountedRef<T>(value, refCount );
+    				return new CountedRef<>(value, refCount );
     			});
     }
     
@@ -119,7 +119,7 @@ public class RefCountingMap<K, T> {
     				if ( refCount == 0 )
     				    return null ;
     				else
-    				    return new CountedRef<T>(v.getRef(), refCount);
+    				    return new CountedRef<>(v.getRef(), refCount);
     			});
     }
     

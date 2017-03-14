@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.binding ;
 
 import java.util.Iterator ;
+import java.util.List;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
@@ -93,5 +94,19 @@ public class BindingUtils {
 
     public static boolean equals(Binding b1, Binding b2) {
         return BindingBase.equals(b1, b2) ;
+    }
+    
+    /** Touch every var/value in case that makes the binding do retrieval work. */
+    public static void materialize(Binding binding) {
+        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; ) {
+            Var v = iter.next();
+            binding.get(v);
+        }
+    }
+    
+    /** Touch every var/value in case that makes the binding do retrieval work.
+     *  Use the given vars - does no matter if a variable is no tpresent in the binding. */
+    public static void materialize(List<Var> vars, Binding binding) {
+        vars.forEach(binding::get);
     }
 }

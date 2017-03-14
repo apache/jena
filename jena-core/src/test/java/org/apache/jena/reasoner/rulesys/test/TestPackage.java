@@ -58,7 +58,6 @@ public class TestPackage extends TestSuite {
         addTest( "OWLRuleUnitTests", OWLUnitTest.suite() );
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
         addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
         //addTest ("TestRuleLoader", TestRuleLoader.suite() );

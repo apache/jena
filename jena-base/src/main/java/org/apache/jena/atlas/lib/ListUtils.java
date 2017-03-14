@@ -79,6 +79,22 @@ public class ListUtils
 		out.print(list.stream().map(String::valueOf).collect(joining(sep)));
     }
     
+    /**
+     * Compare two lists, same elements, order of the lists may be different, elements
+     * must have the same cardinality.
+     */
+    public static <T> boolean equalsUnordered(List<T> list1, List<T> list2) {
+        if ( list1.size() != list2.size() )
+            return false ;
+        // containsAll bothe ways round isn't enough.
+        List<T> list2a = new ArrayList<>(list2) ;
+        for ( T elt : list1 )
+            list2a.remove(elt) ;
+        if ( list2a.size() != 0 )
+            return false ;
+        return true ;
+    }
+    
     /** Return a list of lists of all the elements of collection in every order
      *  Easy to run out of heap memory.
      *  

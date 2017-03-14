@@ -35,8 +35,13 @@ public interface Tuple<X> extends Iterable<X> {
      */
     public X get(int i) ;
 
-    /** length : elements are 0 to len()-1 */ 
+    /** length : elements are 0 to len()-1 */
     public int len() ;
+
+    /** Return true if this is a zero-length tuple */
+    public default boolean isEmpty() {
+        return len() == 0 ;
+    }
 
     /** Convert to a List */
     public default List<X> asList() {

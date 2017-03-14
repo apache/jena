@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
 
@@ -76,7 +75,7 @@ public abstract class ServletBase extends HttpServlet {
         response.addHeader("Fuseki-Request-ID", Long.toString(id)) ;
     }
 
-    static final String varyHeaderSetting = StrUtils.strjoin(",",
+    static final String varyHeaderSetting = String.join(",",
          HttpNames.hAccept,
          HttpNames.hAcceptEncoding,
          HttpNames.hAcceptCharset) ;

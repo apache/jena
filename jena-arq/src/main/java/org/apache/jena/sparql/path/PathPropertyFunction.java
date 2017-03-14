@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.TriplePath ;
@@ -27,23 +27,16 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPath ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.pfunction.PFuncSimple ;
 
-public class PathPropertyFunction extends PFuncSimple
-{
+public class PathPropertyFunction extends PFuncSimple {
     private Path path ;
-    public PathPropertyFunction(Path path)
-    {
+
+    public PathPropertyFunction(Path path) {
         super() ;
         this.path = path ;
     }
 
     @Override
-    public QueryIterator execEvaluated(Binding binding,
-                                       Node subject, Node predicate, Node object,
-                                       ExecutionContext execCxt)
-    {
-        return new QueryIterPath(new TriplePath(subject, path, object),
-                                 QueryIterSingleton.create(binding, execCxt),
-                                 execCxt) ;
+    public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
+        return new QueryIterPath(new TriplePath(subject, path, object), QueryIterSingleton.create(binding, execCxt), execCxt) ;
     }
- 
 }

@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.ResourceFactory ;
 
-import com.spatial4j.core.context.SpatialContextFactory;
+import org.locationtech.spatial4j.context.SpatialContextFactory;
 
 /**
  * Definition of a "document"
@@ -65,15 +65,15 @@ public class EntityDefinition {
 				: entityField;
 		this.geoField = geoField == null || geoField.isEmpty() ? "geoField"
 				: geoField;
-		this.WKTPredicates = new HashSet<Node>();
-		this.builtinWKTPredicates = new HashSet<Node>();
-		this.spatialPredicatePairs = new HashSet<SpatialPredicatePair>();
-		this.builtinSpatialPredicatePairs = new HashSet<SpatialPredicatePair>();
+		this.WKTPredicates = new HashSet<>();
+		this.builtinWKTPredicates = new HashSet<>();
+		this.spatialPredicatePairs = new HashSet<>();
+		this.builtinSpatialPredicatePairs = new HashSet<>();
 		initBuiltinPredicates();
 	}
 
 	public void setSpatialContextFactory(String spatialContextFactoryClass) {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		map.put("spatialContextFactory", spatialContextFactoryClass);
 		SpatialQuery.ctx = SpatialContextFactory.makeSpatialContext(map,
 				SpatialQuery.class.getClassLoader());

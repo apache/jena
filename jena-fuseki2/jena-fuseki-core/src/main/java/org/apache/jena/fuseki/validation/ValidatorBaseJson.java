@@ -29,9 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
@@ -72,7 +70,6 @@ public abstract class ValidatorBaseJson extends ServletBase
         
         response = action.response ;
         initResponse(request, response) ;
-        Context cxt = ARQ.getContext() ;
         
         try {
             JsonObject obj = execute(action) ;
@@ -132,7 +129,6 @@ public abstract class ValidatorBaseJson extends ServletBase
     {
         long time = action.getTime() ;
         
-        HttpServletResponse response = action.response ;
         if ( action.verbose )
         {
 //            if ( action.contentType != null )

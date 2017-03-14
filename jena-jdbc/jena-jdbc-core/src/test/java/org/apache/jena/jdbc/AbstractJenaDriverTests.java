@@ -32,7 +32,6 @@ import org.apache.jena.jdbc.postprocessing.ResultsEcho ;
 import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor ;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor ;
 import org.apache.jena.jdbc.preprocessing.Echo ;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.system.JenaSystem ;
 import org.junit.Assert ;
 import org.junit.Assume ;

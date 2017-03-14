@@ -82,7 +82,7 @@ public class BunchMapContractTest {
 
 	@ContractTest
 	public void testGet() {
-		List<TripleBunch> lst = new ArrayList<TripleBunch>();
+		List<TripleBunch> lst = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			TripleBunch tb = mock(TripleBunch.class);
 			lst.add(tb);
@@ -95,7 +95,7 @@ public class BunchMapContractTest {
 
 	@ContractTest
 	public void testPut() {
-		List<TripleBunch> lst = new ArrayList<TripleBunch>();
+		List<TripleBunch> lst = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			map.put(i, mock(TripleBunch.class));
 		}
@@ -111,7 +111,7 @@ public class BunchMapContractTest {
 
 	@ContractTest
 	public void testRemove() {
-		List<TripleBunch> lst = new ArrayList<TripleBunch>();
+		List<TripleBunch> lst = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			TripleBunch tb = mock(TripleBunch.class);
 			lst.add(tb);
@@ -145,7 +145,7 @@ public class BunchMapContractTest {
 
 	@ContractTest
 	public void testKeyIterator() {
-		List<Integer> lst = new ArrayList<Integer>();
+		List<Integer> lst = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			lst.add(i);
 			map.put(i, mock(TripleBunch.class));

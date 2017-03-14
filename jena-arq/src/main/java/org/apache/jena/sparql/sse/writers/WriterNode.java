@@ -42,32 +42,48 @@ public class WriterNode
         WriterLib.finishOneLine(out, Tags.tagTriple) ;
     }
     
+    public static void outputNoTag(IndentedWriter out, Triple triple, SerializationContext naming)
+    {
+        // No tag, with ()
+        out.print("(") ;
+        outputPlain(out, triple, naming) ;
+        out.print(")") ;
+    }
+    
     public static void outputPlain(IndentedWriter out, Triple triple, SerializationContext naming)
     {
-        // No tag
+        // No tag, no ()
         output(out, triple.getSubject(), naming) ;
         out.print(" ") ;
         output(out, triple.getPredicate(), naming) ;
         out.print(" ") ;
         output(out, triple.getObject(), naming) ;
     }
-    
-    public static void output(IndentedWriter out, Quad qp, SerializationContext naming)
+
+    public static void output(IndentedWriter out, Quad quad, SerializationContext naming)
     {
         WriterLib.startOneLine(out, Tags.tagQuad) ;
-        outputPlain(out, qp, naming) ;
+        outputPlain(out, quad, naming) ;
         WriterLib.finishOneLine(out, Tags.tagQuad) ;
     }
     
-    public static void outputPlain(IndentedWriter out, Quad qp, SerializationContext naming)
+    public static void outputNoTag(IndentedWriter out, Quad quad, SerializationContext naming)
     {
-        output(out, qp.getGraph(), naming) ;
+        // No tag, with ()
+        out.print("(") ;
+        outputPlain(out, quad, naming) ;
+        out.print(")") ;
+    }
+    
+    public static void outputPlain(IndentedWriter out, Quad quad, SerializationContext naming)
+    {
+        output(out, quad.getGraph(), naming) ;
         out.print(" ") ;
-        output(out, qp.getSubject(), naming) ;
+        output(out, quad.getSubject(), naming) ;
         out.print(" ") ;
-        output(out, qp.getPredicate(), naming) ;
+        output(out, quad.getPredicate(), naming) ;
         out.print(" ") ;
-        output(out, qp.getObject(), naming) ;
+        output(out, quad.getObject(), naming) ;
     }
     
     public static void output(IndentedWriter out, Node node, SerializationContext naming)

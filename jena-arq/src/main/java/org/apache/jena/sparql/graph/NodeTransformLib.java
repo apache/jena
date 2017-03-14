@@ -22,34 +22,34 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Objects;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.algebra.table.TableData ;
-import org.apache.jena.sparql.core.* ;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.ExprTransform;
 
 public class NodeTransformLib
 {
     /** Do a node->node conversion of an Op - return original BGP for "no change" */
-    public static Op transform(NodeTransform nodeTransform, Op op)
-    {
-        Transform opTransform = new NodeTransformOp(nodeTransform) ; 
-        return Transformer.transform(opTransform, null, op) ;   // No expr transform - we do it ourselves.
+    public static Op transform(NodeTransform nodeTransform, Op op) {
+        Transform opTransform = new NodeTransformOp(nodeTransform) ;
+        ExprTransform exprTransform = new NodeTransformExpr(nodeTransform) ;
+        return Transformer.transform(opTransform, exprTransform, op);
     }
     
     /** Do a node->node conversion of a BGP - return original BGP for "no change" */
-    public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern)  
-    {
+    public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern) {
         BasicPattern bgp2 = new BasicPattern() ;
         boolean changed = false ;
         for ( Triple triple : pattern )
@@ -65,8 +65,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a QuadPattern - return original QuadPattern for "no change" */
-    public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern)  
-    {
+    public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern) {
         QuadPattern qp2 = new QuadPattern() ;
         boolean changed = false ;
         for ( Quad quad : pattern )
@@ -82,8 +81,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a Triple - return original Triple for "no change" */
-    public static Triple transform(NodeTransform nodeTransform, Triple triple)  
-    {
+    public static Triple transform(NodeTransform nodeTransform, Triple triple) {
         boolean change = false ;
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
@@ -102,8 +100,7 @@ public class NodeTransformLib
     }
 
     /** Do a node->node conversion of a Quad - return original Quad for "no change" */
-    public static Quad transform(NodeTransform nodeTransform, Quad quad)  
-    {
+    public static Quad transform(NodeTransform nodeTransform, Quad quad) {
         boolean change = false ;
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
@@ -150,8 +147,7 @@ public class NodeTransformLib
 
 
     /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
-    public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads)
-    {
+    public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads) {
         List<Quad> x = new ArrayList<>() ;
         boolean changed = false ; 
         for ( Quad q : quads )
@@ -165,33 +161,28 @@ public class NodeTransformLib
             return quads ;
         return x ;
     }
-
-    /** Do a node->node conversion of a VarExprList - return original VarExprList for "no change" */
-    public static VarExprList transform(NodeTransform nodeTransform, VarExprList varExprList)
-    {
+    
+    /** Apply the NodeTransform to the variables of a VarExprList. */
+    public static VarExprList transformVars(NodeTransform transform, VarExprList varExprList) {
         VarExprList varExprList2 = new VarExprList() ;
         boolean changed = false ;
-        for ( Var v : varExprList.getVars() )
-        {
+        // Just variables.
+        for ( Var v : varExprList.getVars() ) {
             Expr expr = varExprList.getExpr(v) ;
-            Var v2 = (Var)nodeTransform.apply(v) ;
-            Expr expr2 = ( expr != null ) ? transform(nodeTransform, expr) : null ;
-            
-            if ( ! Objects.equals(v, v2) || ! Objects.equals(expr, expr2) )
+            Var v2 = (Var)transform.apply(v) ;
+            if ( ! Objects.equals(v, v2) )
                 changed = true ;
-            varExprList2.add(v2, expr2) ;
+            varExprList2.add(v2, expr) ;
         }
         if ( ! changed )
             return varExprList ; 
         return varExprList2 ;
     }
 
-    public static List<Var> transformVars(NodeTransform nodeTransform, List<Var> varList)
-    {
+    public static List<Var> transformVars(NodeTransform nodeTransform, List<Var> varList) {
         List<Var> varList2 = new ArrayList<>(varList.size()) ;
         boolean changed = false ;
-        for ( Var v : varList )
-        {
+        for ( Var v : varList ) {
             Var v2 = (Var)nodeTransform.apply(v) ;
             varList2.add(v2) ;
             if ( !Objects.equals(v, v2) )
@@ -202,12 +193,10 @@ public class NodeTransformLib
         return varList2 ;
     }
 
-    public static ExprList transform(NodeTransform nodeTransform, ExprList exprList)
-    {
+    public static ExprList transform(NodeTransform nodeTransform, ExprList exprList) {
           ExprList exprList2 = new ExprList() ;
           boolean changed = false ;
-          for(Expr expr : exprList)
-          {
+          for(Expr expr : exprList) {
               Expr expr2 = transform(nodeTransform, expr) ;
               if ( expr != expr2 )
                   changed = true ;
@@ -217,27 +206,7 @@ public class NodeTransformLib
           return exprList2 ;
     }
 
-    public static Expr transform(NodeTransform nodeTransform, Expr expr)
-    {
+    public static Expr transform(NodeTransform nodeTransform, Expr expr) {
         return expr.applyNodeTransform(nodeTransform) ;
-    }
-
-    public static List<SortCondition> transform(NodeTransform nodeTransform, List<SortCondition> conditions)
-    {
-        List<SortCondition> conditions2 = new ArrayList<>() ;
-        boolean same = true ;
-        for ( SortCondition sc : conditions )
-        {
-            Expr expr = sc.getExpression() ;
-            Expr expr2 = transform(nodeTransform, expr) ;
-            if ( expr != expr2 )
-                same = false ;
-            SortCondition sc2 = new SortCondition(expr2, sc.getDirection()) ;
-            conditions2.add(sc2) ;
-        }
-
-        if ( same )
-            return conditions ;
-        return conditions2 ;
     }
 }

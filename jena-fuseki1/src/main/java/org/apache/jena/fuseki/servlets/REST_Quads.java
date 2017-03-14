@@ -34,9 +34,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** 
@@ -142,9 +139,7 @@ public class REST_Quads extends SPARQL_REST
         try {
             String name = action.request.getRequestURL().toString() ;
             DatasetGraph dsg = action.getActiveDSG() ;
-            StreamRDF dest = StreamRDFLib.dataset(dsg) ;
-            ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
-            reader.read(action.request.getInputStream(), name, null, dest, null);
+            RDFDataMgr.read(dsg, action.request.getInputStream(), name, lang);
             action.commit();
             success(action) ;
         } catch (IOException ex) { action.abort() ; } 
@@ -158,13 +153,11 @@ public class REST_Quads extends SPARQL_REST
         action.beginWrite() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
-            // This should not be anythign other than the datasets name via this route.  
+            // This should not be anything other than the datasets name via this route.  
             String name = action.request.getRequestURL().toString() ;
             //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
             Graph g = dsg.getDefaultGraph() ;
-            StreamRDF dest = StreamRDFLib.graph(g) ;
-            ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
-            reader.read(action.request.getInputStream(), name, null, dest, null);
+            RDFDataMgr.read(g, action.request.getInputStream(), name, lang);
             action.commit();
             success(action) ;
         } catch (IOException ex) { action.abort() ; } 
@@ -184,9 +177,7 @@ public class REST_Quads extends SPARQL_REST
             name = name+(++counter) ;
             Node gn = NodeFactory.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
-            StreamRDF dest = StreamRDFLib.graph(g) ;
-            ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
-            reader.read(action.request.getInputStream(), name, null, dest, null);
+            RDFDataMgr.read(g, action.request.getInputStream(), name, lang);
             log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;
             action.commit();

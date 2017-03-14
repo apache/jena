@@ -27,7 +27,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.RepeatApplyIterator ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
@@ -63,8 +62,9 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodeIds and Variables. 
      *  A variable in the pattern is replaced by its binding or null in the Nodeids.
      *  A variable that is not bound by the binding is placed in the var array.
+     *  Return false if preparation detechs the pattern can not match. 
      */
-    public static void prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
+    public static boolean prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
     {
         // Process the Node to NodeId conversion ourselves because
         // we wish to abort if an unknown node is seen.
@@ -75,11 +75,12 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
             // Variables unsubstituted are null NodeIds
             NodeId nId = idFor(nodeTable, input, n) ;
             if ( NodeId.isDoesNotExist(nId) )
-                new NullIterator<BindingNodeId>() ;
+                return false ;
             ids[i] = nId ;
             if ( nId == null )
                 var[i] = asVar(n) ;
         }
+        return true ;
     }
     
     @Override
@@ -90,7 +91,9 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // Variables for this tuple after subsitution
         final Var[] var = new Var[patternTuple.len()] ;
 
-        prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
+        boolean b = prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
+        if ( !b ) 
+            return Iter.nullIterator() ;
         
         Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(asTuple(ids)) ;  
         

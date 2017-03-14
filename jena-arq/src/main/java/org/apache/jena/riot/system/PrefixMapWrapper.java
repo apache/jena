@@ -19,6 +19,7 @@
 package org.apache.jena.riot.system;
 
 import java.util.Map ;
+import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
@@ -26,75 +27,81 @@ import org.apache.jena.shared.PrefixMapping ;
 
 public class PrefixMapWrapper implements PrefixMap
 {
-    protected final PrefixMap other ;
+    private final PrefixMap other ;
+    protected PrefixMap get() { return other; }
 
     public PrefixMapWrapper(PrefixMap other) { this.other = other ; }
 
     @Override
     public Map<String, IRI> getMapping()
-    { return other.getMapping() ; }
+    { return get().getMapping() ; }
 
     @Override
     public Map<String, IRI> getMappingCopy()
-    { return other.getMappingCopy() ; }
+    { return get().getMappingCopy() ; }
 
     @Override
     public Map<String, String> getMappingCopyStr()
-    { return other.getMappingCopyStr() ; } 
+    { return get().getMappingCopyStr() ; } 
+
+    @Override
+    public void forEach(BiConsumer<String, IRI> action) {
+        get().forEach(action);
+    }
 
     @Override
     public void add(String prefix, String iriString)
-    { other.add(prefix, iriString) ; }
+    { get().add(prefix, iriString) ; }
 
     @Override
     public void add(String prefix, IRI iri)
-    { other.add(prefix, iri) ; }
+    { get().add(prefix, iri) ; }
 
     @Override
     public void putAll(PrefixMap pmap)
-    { other.putAll(pmap) ; }
+    { get().putAll(pmap) ; }
 
     @Override
     public void putAll(PrefixMapping pmap)
-    { other.putAll(pmap) ; }
+    { get().putAll(pmap) ; }
 
     @Override
     public void putAll(Map<String, String> mapping)
-    { other.putAll(mapping) ; }
+    { get().putAll(mapping) ; }
 
     @Override
     public void delete(String prefix)
-    { other.delete(prefix) ; }
+    { get().delete(prefix) ; }
 
     @Override
     public void clear()
-    { other.clear(); }
+    { get().clear(); }
 
     @Override
     public boolean contains(String prefix)
-    { return other.contains(prefix) ; }
+    { return get().contains(prefix) ; }
 
     @Override
     public String abbreviate(String uriStr)
-    { return other.abbreviate(uriStr) ; }
+    { return get().abbreviate(uriStr) ; }
 
     @Override
     public Pair<String, String> abbrev(String uriStr)
-    { return other.abbrev(uriStr) ; }
+    { return get().abbrev(uriStr) ; }
 
     @Override
     public String expand(String prefixedName)
-    { return other.expand(prefixedName) ; }
+    { return get().expand(prefixedName) ; }
 
     @Override
     public String expand(String prefix, String localName)
-    { return other.expand(prefix, localName) ; }
+    { return get().expand(prefix, localName) ; }
 
     @Override
     public boolean isEmpty()
-    { return other.isEmpty() ; }
+    { return get().isEmpty() ; }
 
     @Override
     public int size()
-    { return other.size() ; }
+    { return get().size() ; }
 }

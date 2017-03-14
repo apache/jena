@@ -77,7 +77,7 @@ public class TestIteratorWithHistory extends BaseTest
         assertEquals("b", iter.getPrevious(1)) ;
     }
 
-    private IteratorWithHistory<String> createHistory(int N, String... strings)
+    private static IteratorWithHistory<String> createHistory(int N, String... strings)
     {
         List<String> data = Arrays.asList(strings) ;
         IteratorWithHistory<String> iter = new IteratorWithHistory<>(data.iterator(), N) ;

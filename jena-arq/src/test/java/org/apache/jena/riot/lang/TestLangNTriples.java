@@ -21,7 +21,6 @@ package org.apache.jena.riot.lang;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -101,7 +100,7 @@ public class TestLangNTriples extends TestLangNTuples
     }
 
     private long parseCount(CharSpace charSpace, String... strings) {
-        String string = StrUtils.strjoin("\n", strings);
+        String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
         LangNTriples x = RiotParsers.createParserNTriples(tokenizer, sink);

@@ -280,28 +280,11 @@ public class NodeFunctions {
         /*
          * RFC 4647 basic filtering.
          * 
-         * To do extended: 1. Remove any -*- (but not *-) 2. Compare primary
-         * tags. 3. Is the remaining range a subsequence of the remaining
-         * language tag?
+         * Notes for extended:
+         *  1. Remove any -*- (but not *-)
+         *  2. Compare primary tags.
+         *  3. Is the remaining range a subsequence of the remaining language tag?
          */
-
-        // // Step one: remove "-*-" (but not "*-")
-        // int j = 1 ;
-        // for ( int i = 1 ; i < langRangeElts.length ; i++ )
-        // {
-        // String range = langRangeElts[i] ;
-        // if ( range.equals("*") )
-        // continue ;
-        // langRangeElts[j] = range ;
-        // j++ ;
-        // }
-        //
-        // // Null fill any free space.
-        // for ( int i = j ; i < langRangeElts.length ; i++ )
-        // langRangeElts[i] = null ;
-
-        // This is basic specific.
-
         if ( langRangeElts.length > langElts.length )
             // Lang tag longer than pattern tag => can't match
             return NodeValue.FALSE ;

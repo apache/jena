@@ -89,7 +89,7 @@ public class TestDatasetWithLuceneTextIndexDeletionSupport extends AbstractTestD
                 "    ?s text:query ( rdfs:label 'same' ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<String>() ;
+        Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/object1",
                                            "http://example.org/data/resource/object2")) ;
         doTestSearch(turtle, queryString, expectedURIs);
@@ -102,7 +102,7 @@ public class TestDatasetWithLuceneTextIndexDeletionSupport extends AbstractTestD
         );
         doUpdate(updateString);
 
-        expectedURIs = new HashSet<String>() ;
+        expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/object2")) ;
         doTestQuery(dataset, "", queryString, expectedURIs, 1);
     }

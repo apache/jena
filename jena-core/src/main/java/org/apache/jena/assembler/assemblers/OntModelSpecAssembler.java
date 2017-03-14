@@ -36,9 +36,7 @@ import org.apache.jena.shared.NotFoundException ;
     in which case the defaults are taken from there.
 */
 public class OntModelSpecAssembler extends AssemblerBase implements Assembler
-    {
-    private static final OntModelSpec DEFAULT = OntModelSpec.OWL_MEM_RDFS_INF;
-
+{
     @Override
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
@@ -90,6 +88,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
     */
     private OntModelSpec getDefault( Resource root )
         {
+        OntModelSpec DEFAULT = OntModelAssembler.defaultSpec();
         if (root.isURIResource() && root.getNameSpace().equals( JA.uri ))
             {
             OntModelSpec oms = getOntModelSpecField( root.getLocalName() );

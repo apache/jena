@@ -23,7 +23,7 @@ import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.n3.IRIResolver ;
+import org.apache.jena.n3.N3IRIResolver ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.vocabulary.RDF ;
@@ -44,12 +44,12 @@ public class Manifest {
 	private Model manifest;
 	private String manifestName;
 	private String filename;
-	private List<String> includedFiles = new ArrayList<String>();
+	private List<String> includedFiles = new ArrayList<>();
 	private Resource manifestRes = null;
 
     public Manifest(String fn) {
 		log.debug("Manifest = " + fn);
-		filename = IRIResolver.resolveGlobal(fn);
+		filename = N3IRIResolver.resolveGlobal(fn);
 		log.debug("         = " + filename);
 		manifest = FileManager.get().loadModel(filename);
 		parseIncludes();
@@ -179,7 +179,7 @@ public class Manifest {
 	public static Collection<Resource> listResources(Resource r, Property p) {
 		if (r == null)
 			return null;
-		List<Resource> x = new ArrayList<Resource>();
+		List<Resource> x = new ArrayList<>();
 		StmtIterator sIter = r.listProperties(p);
 		for (; sIter.hasNext();) {
 			RDFNode n = sIter.next().getObject();

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.tdb.base.StorageException ;
 import org.apache.jena.tdb.base.block.BlockException ;
 import org.apache.jena.tdb.base.record.Record ;
@@ -36,8 +37,7 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     {
         if ( ! pageMgr.valid(pageId) ) {
             String msg = "RecordRangeIterator.iterator -- No such block (pageId="+pageId+", fromRec="+fromRec+", toRec="+toRec+ ")" ;
-            System.err.println(msg) ;
-            System.exit(0) ;
+            Log.error(RecordRangeIterator.class, msg);
             throw new BlockException(msg) ;
         }
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;

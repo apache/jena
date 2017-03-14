@@ -47,7 +47,7 @@ public class TestIteratorPeek extends BaseTest
         test(iter, "x", "y", "z", "x", "y", "z") ;
     }
     
-    private void test(Iter<?> iter, Object... items)
+    private static void test(Iter<?> iter, Object... items)
     {
         for ( Object x : items )
         {

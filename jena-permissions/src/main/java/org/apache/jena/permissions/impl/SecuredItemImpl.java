@@ -52,7 +52,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	// a key for the secured item.
 	private class CacheKey implements Comparable<CacheKey> {
 		private final Action action;
-		private final Node modelNode;
+        private final Node mNode;
 		private final Triple from;
 		private final Triple to;
 		private Integer hashCode;
@@ -69,7 +69,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 		public CacheKey(final Action action, final Node modelNode,
 				final Triple to, final Triple from) {
 			this.action = action;
-			this.modelNode = modelNode;
+			this.mNode = modelNode;
 			this.to = to;
 			this.from = from;
 		}
@@ -111,8 +111,8 @@ public abstract class SecuredItemImpl implements SecuredItem {
 		public int compareTo(final CacheKey other) {
 			int retval = this.action.compareTo(other.action);
 			if (retval == Expr.CMP_EQUAL) {
-				retval = NodeUtils.compareRDFTerms(this.modelNode,
-						other.modelNode);
+				retval = NodeUtils.compareRDFTerms(this.mNode,
+						other.mNode);
 			}
 			if (retval == Expr.CMP_EQUAL) {
 				retval = compare(this.to, other.to);
@@ -135,7 +135,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
 		public int hashCode() {
 			if (hashCode == null) {
 				hashCode = new HashCodeBuilder().append(action)
-						.append(modelNode).append(from).append(to).toHashCode();
+						.append(mNode).append(from).append(to).toHashCode();
 			}
 			return hashCode;
 		}
@@ -144,9 +144,9 @@ public abstract class SecuredItemImpl implements SecuredItem {
 	// the maximum size of the cache
 	public static int MAX_CACHE = 100;
 	// the cache for this thread.
-	public static final ThreadLocal<LRUMap<CacheKey, Boolean>> CACHE = new ThreadLocal<LRUMap<CacheKey, Boolean>>();
+	public static final ThreadLocal<LRUMap<CacheKey, Boolean>> CACHE = new ThreadLocal<>();
 	// the number of times this thread has recursively called the constructor.
-	public static final ThreadLocal<Integer> COUNT = new ThreadLocal<Integer>();
+	public static final ThreadLocal<Integer> COUNT = new ThreadLocal<>();
 
 	/**
 	 * May Convert a Jena Node object into the SecurityEvaluator.VARIABLE

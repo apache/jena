@@ -24,7 +24,6 @@ import java.util.List ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.* ;
 
 /**
@@ -33,7 +32,7 @@ import org.apache.jena.sparql.expr.* ;
  */
 public class ExprTransformConstantFold extends ExprTransformCopy {
 
-    private Binding b = null;
+    public ExprTransformConstantFold() {}
     
     @Override
     public Expr transform(ExprFunction1 func, Expr expr1) {

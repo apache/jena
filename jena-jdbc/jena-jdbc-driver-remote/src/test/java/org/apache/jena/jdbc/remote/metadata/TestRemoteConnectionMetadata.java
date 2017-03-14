@@ -23,14 +23,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.ServerTest;
+import org.apache.jena.fuseki.ServerCtl ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.AbstractDatabaseMetadataTests;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before ;
 import org.junit.BeforeClass;
 
 /**
@@ -39,42 +39,19 @@ import org.junit.BeforeClass;
  */
 public class TestRemoteConnectionMetadata extends AbstractDatabaseMetadataTests {
     
-    static {
-        Fuseki.init();
-    }
-
-    /**
-     * Setup for the tests by allocating a Fuseki instance to work with
-     */
-    @BeforeClass
-    public static void setup() {
-        ServerTest.allocServer();
-    }
-    
-    /**
-     * Clean up after each test by resetting the Fuseki instance
-     */
-    @After
-    public void cleanupTest() {
-        ServerTest.resetServer();
-    }
-    
-    /**
-     * Clean up after tests by de-allocating the Fuseki instance
-     */
-    @AfterClass
-    public static void cleanup() {
-        ServerTest.freeServer();
-    }
+    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); } 
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new RemoteEndpointConnection(ServerTest.serviceQuery, ServerTest.serviceUpdate, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
+        return new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT);
     }
 
     @Override
     protected List<Integer> getSupportedTransactionLevels() {
-        List<Integer> levels = new ArrayList<Integer>();
+        List<Integer> levels = new ArrayList<>();
         levels.add(Connection.TRANSACTION_NONE);
         return levels;
     }

@@ -34,7 +34,6 @@ import org.apache.jena.fuseki.mgt.ActionStats ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -95,11 +94,22 @@ public class FusekiEmbeddedServer {
     public final Server server ;
     private int port ;
     
-    public FusekiEmbeddedServer(Server server) {
+    private FusekiEmbeddedServer(int port, Server server) {
         this.server = server ;
-        port = ((ServerConnector)server.getConnectors()[0]).getPort() ;
+        // This should be the same.
+        //this.port = ((ServerConnector)server.getConnectors()[0]).getPort() ;
+        this.port = port ;
     }
     
+    /** 
+     * Return the port begin used.  
+     * This will be the give port, which defauls to 3330, or
+     * the one actually allocated if the port was 0 ("choose a free port").
+     */
+    public int getPort() {
+        return port ; 
+    }
+
     /** Get the underlying Jetty server which has also been set up. */ 
     public Server getJettyServer() {
         return server ; 
@@ -112,15 +122,23 @@ public class FusekiEmbeddedServer {
         return ((ServletContextHandler)server.getHandler()).getServletContext() ;
     }
 
+    /** Get the {@link DataAccessPointRegistry}.
+     * This method is intended for inspecting the registry.
+     */ 
+    public DataAccessPointRegistry getDataAccessPointRegistry() {
+        return DataAccessPointRegistry.get(getServletContext()) ;
+    }
+
     /** Start the server - the server continues to run after this call returns.
      *  To synchronise with the server stopping, call {@link #join}.  
      */
-    public void start() { 
+    public FusekiEmbeddedServer start() { 
         try { server.start(); }
         catch (Exception e) { throw new FusekiException(e) ; }
         if ( port == 0 )
             port = ((ServerConnector)server.getConnectors()[0]).getLocalPort() ;
         Fuseki.serverLog.info("Start Fuseki (port="+port+")");
+        return this ;
     }
 
     /** Stop the server. */
@@ -138,20 +156,22 @@ public class FusekiEmbeddedServer {
     
     /** FusekiEmbeddedServer.Builder */
     public static class Builder {
-        // Keeping this allows accumulation of data access points for one name.  
-        private Map<String, DataService> map = new HashMap<>() ;
-        private int port = 3330 ;
-        private boolean loopback = false ;
-        private boolean withStats = false ;
-        private String contextPath = "/" ;
-        
-        /* Set the port to run on */ 
+        private Map<String, DataService> map           = new HashMap<>() ;
+        // Default values.
+        private int                      port          = 3330 ;
+        private boolean                  loopback      = false ;
+        private boolean                  withStats     = false ;
+        private String                   contextPath   = "/" ;
+
+        /** Set the port to run on. */ 
         public Builder setPort(int port) {
+            if ( port < 0 )
+                throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.") ;
             this.port = port ;
             return this ;
         }
         
-        /* Context path to Fuseki.  If it's "/" then Fuseki URL look like
+        /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
          * "http://host:port/dataset/query" else "http://host:port/path/dataset/query" 
          */
         public Builder setContextPath(String path) {
@@ -173,72 +193,43 @@ public class FusekiEmbeddedServer {
             return this ;
         }
 
-        /* Add the dataset with given name and a default set of services including update */  
+        /** Add the dataset with given name and a default set of services including update */  
         public Builder add(String name, Dataset ds) {
             return add(name, ds.asDatasetGraph()) ;
         }
 
-        /* Add the dataset with given name and a default set of services including update */  
+        /** Add the dataset with given name and a default set of services including update */  
         public Builder add(String name, DatasetGraph dsg) {
             return add(name, dsg, true) ;
         }
 
-        /* Add the dataset with given name and a default set of services. */  
+        /** Add the dataset with given name and a default set of services. */  
         public Builder add(String name, Dataset ds, boolean allowUpdate) {
             return add(name, ds.asDatasetGraph(), allowUpdate) ;
         }
             
         
-        /* Add the dataset with given name and a default set of services. */  
+        /** Add the dataset with given name and a default set of services. */  
         public Builder add(String name, DatasetGraph dsg, boolean allowUpdate) {
             DataService dSrv = FusekiBuilder.buildDataService(dsg, allowUpdate) ; 
             return add(name, dSrv) ;
         }
         
-        /* Add a data service that includes dataset and service names.*/  
+        /** Add a data service that includes dataset and service names.
+         * A {@link DataService} allows for choices of the various endpoint names.
+         */  
         public Builder add(String name, DataService dataService) {
             return add$(name, dataService) ; 
         }
         
-        /* Add an operation, specifing it's endpoint name.
-         * This adds endpoints to any existing data service already setup by the builder.   
-         */
-        public Builder add(String name, Dataset ds, OperationName opName, String epName) {
-            return add(name, ds.asDatasetGraph(), opName, epName) ; 
-        }
-
-            /* Add an operation, specifing it's endpoint name.
-         * This adds endpoints to any existing data service already setup by the builder.   
-         */
-        public Builder add(String name, DatasetGraph dsg, OperationName opName, String epName) {
-            DataService dSrv = map.get(name) ;
-            if ( dSrv == null ) {
-                dSrv = new DataService(dsg) ;
-                map.put(name, dSrv) ;
-            }
-            dSrv.addEndpoint(opName, epName);
-            return this ; 
-        }
-
         private Builder add$(String name, DataService dataService) {
             name = DataAccessPoint.canonical(name) ;
             if ( map.containsKey(name) )
-                throw new FusekiConfigException("Attempt to add a DataService for a different dataset: "+name) ;
+                throw new FusekiConfigException("Data service name already registered: "+name) ;
             map.put(name, dataService) ;
-            
-            // Merge endpoints : too complicated 
-//            DataService dSrv = map.get(name) ;
-//            if ( dSrv != null ) {
-//                DatasetGraph dsg1 = dSrv.getDataset() ;
-//                DatasetGraph dsg2 = dataService.getDataset() ;
-//                if ( dsg1 != dsg2 ) // Object identity
-//                    throw new FusekiConfigException("Attempt to add a DataService for a different dataset: "+name) ;
-//                dSrv.getOperations() ;
-//            } else
-//                map.put(name, dataService) ;
             return this ;
         }
-        
+
         /** Read and parse a Fuseki services/datasets file.
          *  <p>
          *  The application is responsible for ensuring a correct classpath. For example,
@@ -265,7 +256,7 @@ public class FusekiEmbeddedServer {
             DataAccessPointRegistry.set(handler.getServletContext(), registry) ;
             Server server = jettyServer(port, loopback) ;
             server.setHandler(handler);
-            return new FusekiEmbeddedServer(server) ;
+            return new FusekiEmbeddedServer(port, server) ;
         }
 
         /** Build a ServletContextHandler with the Fuseki router : {@link FusekiFilter} */

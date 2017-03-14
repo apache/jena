@@ -214,7 +214,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      */
     public Iterator<To> getAll( Object key ) {
         List<To> entry = m_table.get( key );
-        return (entry != null) ? entry.iterator() : new NullIterator<To>();
+        return (entry != null) ? entry.iterator() : new NullIterator<>();
     }
 
 

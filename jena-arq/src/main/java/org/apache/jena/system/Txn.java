@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.Transactional ;
 
 public class Txn {
     /** Execute the Runnable in a read transaction. */
-    public static <T extends Transactional> void execRead(T txn, Runnable r) {
+    public static <T extends Transactional> void executeRead(T txn, Runnable r) {
         boolean b = txn.isInTransaction() ;
         if ( !b )
             txn.begin(ReadWrite.READ) ;
@@ -48,7 +48,7 @@ public class Txn {
     }
     
     /** Execute and return a value in a read transaction */
-    public static <T extends Transactional, X> X execReadRtn(T txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X calculateRead(T txn, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
         if ( !b )
             txn.begin(ReadWrite.READ) ;
@@ -64,7 +64,7 @@ public class Txn {
     }
 
     /** Execute the Runnable in a write transaction */
-    public static <T extends Transactional> void execWrite(T txn, Runnable r) {
+    public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
         boolean b = txn.isInTransaction() ;
         if ( !b )
             txn.begin(ReadWrite.WRITE) ;
@@ -82,7 +82,7 @@ public class Txn {
     }
 
     /** Execute and return a value in a write transaction. */
-    public static <T extends Transactional, X> X execWriteRtn(Transactional txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X calculateWrite(T txn, Supplier<X> r) {
         boolean b = txn.isInTransaction() ;
         if ( !b )
             txn.begin(ReadWrite.WRITE) ;

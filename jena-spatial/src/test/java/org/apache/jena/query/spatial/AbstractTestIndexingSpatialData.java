@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.junit.Test;
 import static org.junit.Assert.fail;
 
-import com.spatial4j.core.exception.InvalidShapeException;
+import org.locationtech.spatial4j.exception.InvalidShapeException;
 
 public class AbstractTestIndexingSpatialData extends
 		AbstractTestDatasetWithSpatialIndex {
@@ -43,7 +43,7 @@ public class AbstractTestIndexingSpatialData extends
 						"WHERE {",
 						" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .",
 						"}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs
 				.addAll(Arrays
 						.asList((new String[] { "http://example.org/data/resource/testIndexingStringLiteral" })));
@@ -76,7 +76,7 @@ public class AbstractTestIndexingSpatialData extends
 						"WHERE {",
 						" ?s spatial:nearby (51.3000 -2.71000 100.0 'miles' -1) .",
 						"}");
-		Set<String> expectedURIs = (new HashSet<String>());
+		Set<String> expectedURIs = (new HashSet<>());
 		expectedURIs
 				.addAll(Arrays
 						.asList((new String[] { "http://example.org/data/resource/testIndexingWKTLiteral" })));

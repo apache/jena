@@ -20,6 +20,7 @@ package org.apache.jena.rdf.model;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Supplier ;
 
 import org.apache.jena.datatypes.* ;
 import org.apache.jena.shared.* ;
@@ -604,6 +605,18 @@ public interface Model
 	 */
 	Statement getRequiredProperty(Resource s, Property p) ;
 
+    /** Return a statement with given subject and property.
+     *  <p>If more than one statement witht the given subject and property
+     *  exists in the model, it is undefined which will be returned. If none
+     * exist, an exception is thrown.
+     * @return A statement from the model with the given subject and property.
+     * @param s The subject of the statement to be returned.
+     * @param p The property of the statement to be returned.
+     * @param lang The language
+     * @throws PropertyNotFoundException
+     */
+    Statement getRequiredProperty(Resource s, Property p, String lang) ;
+
     /**
         Answer a statement (s, p, ?O) from this model. If none exist, return null;
         if several exist, pick one arbitrarily.
@@ -613,6 +626,16 @@ public interface Model
     */
     Statement getProperty( Resource s, Property p );
 
+    /**
+    Answer a statement (s, p, ?O) from this model. If none exist, return null;
+    if several exist, pick one arbitrarily.
+    @param s the subject of the statement to return
+    @param p the predicate of the statement to return
+    @param lang language of the object
+    @return some statement (s, p, ?O@lang) or null if none can be found
+*/
+    Statement getProperty(Resource s, Property p, String lang) ;
+    
 	/** 
 	    An alias for <code>listResourcesWithProperty(Property)</code>,
 	    retained for backward compatability. It may be deprecated in later
@@ -897,13 +920,26 @@ public interface Model
 	 */
 	Model commit() ;
 
-    /**
-        Execute the command <code>cmd</code> inside a transaction. If it
-        completes, commit the transaction and return the result; if it fails
-        (by throwing an exception), abort the transaction and throw an
-        exception.
-    */
+	 /**
+        If transactions are supported, execute the command c within a transaction
+        and return its result. If not, throw an UnsupportedOperationException.
+        @deprecated use {@link #calculateInTxn(Supplier)} or migrate to {@link #executeInTxn(Runnable)}.  
+	  */
+	@Deprecated
     Object executeInTransaction( Command cmd );
+    
+    
+    /**
+     * Execute the runnable <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction, otherwise abort the transaction.
+     */
+    void executeInTxn( Runnable action );
+
+    /**
+     * Execute the supplier <code>action</code> within a transaction. If it completes normally,
+     * commit the transaction and return the result, otherwise abort the transaction.
+     */
+    <T> T calculateInTxn( Supplier<T> action ) ;
 
 	/** Determine whether this model is independent.
 	 *
@@ -1015,5 +1051,4 @@ public interface Model
         Answer true iff .close() has been called on this Model.
     */
     public boolean isClosed();
-
 }

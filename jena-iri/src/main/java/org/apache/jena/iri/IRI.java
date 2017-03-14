@@ -386,8 +386,8 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      */
     abstract public String toASCIIString() throws MalformedURLException;
     /**
-     * The logical IRI string as originally specified, 
-     * use {@link #toDisplayString()} for display purposes
+     * The logical IRI string as originally specified. 
+     * Use {@link #toDisplayString()} for display purposes
      * such as error messages.
      * @return The IRI string
      */

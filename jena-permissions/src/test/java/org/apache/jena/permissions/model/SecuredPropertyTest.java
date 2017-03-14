@@ -45,9 +45,12 @@ public class SecuredPropertyTest extends SecuredResourceTest {
 	@Before
 	public void setup() {
 		super.setup();
-		final Property p = ResourceFactory
-				.createProperty("http://example.com/testProperty");
+		final Property p = ResourceFactory.createProperty("http://example.com/testProperty");
 		setSecuredRDFNode(SecuredPropertyImpl.getInstance(securedModel, p), p);
+		baseModel.add(p, SecuredRDFNodeTest.p, SecuredRDFNodeTest.o);
+		baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw");
+		baseModel.add(p, SecuredRDFNodeTest.p2, "yeehaw yall", "us");
+		baseModel.add(p, SecuredRDFNodeTest.p2, "whohoo", "uk");
 	}
 
 	@Test
@@ -59,9 +62,8 @@ public class SecuredPropertyTest extends SecuredResourceTest {
 			}
 		} catch (final ReadDeniedException e) {
 			if (securityEvaluator.evaluate(Action.Read)) {
-				Assert.fail(String
-						.format("Should not have thrown ReadDeniedException Exception: %s - %s",
-								e, e.getTriple()));
+				Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
+						e.getTriple()));
 			}
 		}
 	}

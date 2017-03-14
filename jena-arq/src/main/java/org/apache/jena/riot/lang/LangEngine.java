@@ -42,7 +42,7 @@ public class LangEngine
         this.tokens = tokens ;
         this.profile = profile ;
         // The PeekIterator is always loaded with the next token until the end
-        // (for simplicity) but it measn this can throw an exception. 
+        // (for simplicity) but it means this can throw an exception. 
         try { this.peekIter = new PeekIterator<>(tokens) ; }
         catch (RiotParseException ex) { raiseException(ex) ; }
     }

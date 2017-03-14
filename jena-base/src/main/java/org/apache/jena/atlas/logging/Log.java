@@ -88,22 +88,52 @@ public class Log {
         log(cls).warn(msg, th) ;
     }
 
+    static public void error(Object caller, String msg) {
+        error(caller.getClass(), msg) ;
+    }
+
+    static public void error(Class<? > cls, String msg) {
+        log(cls).error(msg) ;
+    }
+
+    static public void error(Object caller, String msg, Throwable th) {
+        error(caller.getClass(), msg, th) ;
+    }
+
+    static public void error(Class<? > cls, String msg, Throwable th) {
+        log(cls).error(msg, th) ;
+    }
+
+    static public void error(String caller, String msg) {
+        log(caller).error(msg) ;
+    }
+
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Object caller, String msg) {
         fatal(caller.getClass(), msg) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Class<? > cls, String msg) {
         log(cls).error(msg) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Object caller, String msg, Throwable th) {
         fatal(caller.getClass(), msg, th) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Class<? > cls, String msg, Throwable th) {
         log(cls).error(msg, th) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(String caller, String msg) {
         log(caller).error(msg) ;
     }

@@ -42,7 +42,7 @@ public class ExRIOT_6 {
         // You can optionally supply a buffer size here for the
         // PipedRDFIterator, see the documentation for details about recommended
         // buffer sizes
-        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<>();
         final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
 
         // PipedRDFStream and PipedRDFIterator need to be on different threads

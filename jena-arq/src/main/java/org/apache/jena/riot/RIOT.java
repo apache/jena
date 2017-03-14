@@ -19,6 +19,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
@@ -73,6 +74,7 @@ public class RIOT {
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
+            ResultSetLang.init();
 
             IO_Jena.wireIntoJena() ;
 
@@ -104,4 +106,12 @@ public class RIOT {
     public static String getBuildDate() {
         return ARQ.BUILD_DATE ;
     }
+    
+    /**
+     * Symbol to use to pass (in a Context object) the "@context" to be used when reading jsonld
+     * (overriding the actual @context in the jsonld)
+     * Expected value: the value of the "@context", 
+     * as expected by the JSONLD-java API (a Map) */
+    public static final Symbol JSONLD_CONTEXT = Symbol.create("http://jena.apache.org/riot/jsonld#JSONLD_CONTEXT");
+
 }

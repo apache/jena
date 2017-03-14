@@ -26,7 +26,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.metadata.results.MetaResultSet;
 import org.apache.jena.vocabulary.XSD ;
@@ -423,7 +422,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
 
     @Override
     public String getNumericFunctions() {
-        return StrUtils.strjoin(",", SPARQL_NUMERIC_FUNCTIONS);
+        return String.join(",", SPARQL_NUMERIC_FUNCTIONS);
     }
 
     @Override
@@ -462,7 +461,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     public String getSQLKeywords() {
         // TODO Use http://developer.mimer.com/validator/sql-reserved-words.tml
         // as a reference to remove those that also count as SQL Keywords
-        return StrUtils.strjoin(",", SPARQL_KEYWORDS);
+        return String.join(",", SPARQL_KEYWORDS);
     }
 
     @Override
@@ -501,7 +500,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
 
     @Override
     public String getStringFunctions() {
-        return StrUtils.strjoin(",", SPARQL_STR_FUNCTIONS);
+        return String.join(",", SPARQL_STR_FUNCTIONS);
     }
 
     @Override
@@ -537,7 +536,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
 
     @Override
     public String getTimeDateFunctions() {
-        return StrUtils.strjoin(",", SPARQL_DATETIME_FUNCTIONS);
+        return String.join(",", SPARQL_DATETIME_FUNCTIONS);
     }
 
     @Override

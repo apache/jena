@@ -30,30 +30,26 @@ public class NodeTableWrapper implements NodeTable
     protected final NodeTable nodeTable ;
     @Override
     public final NodeTable wrapped() { return nodeTable ; } 
-    
-    protected NodeTableWrapper(NodeTable nodeTable)
-    {
+
+    protected NodeTableWrapper(NodeTable nodeTable) {
         this.nodeTable = nodeTable ;
     }
-    
+
     @Override
-    public NodeId getAllocateNodeId(Node node)
-    {
+    public NodeId getAllocateNodeId(Node node) {
         return nodeTable.getAllocateNodeId(node) ;
     }
 
     @Override
-    public NodeId getNodeIdForNode(Node node)
-    {
+    public NodeId getNodeIdForNode(Node node) {
         return nodeTable.getNodeIdForNode(node) ;
     }
 
     @Override
-    public Node getNodeForNodeId(NodeId id)
-    {
+    public Node getNodeForNodeId(NodeId id) {
         return nodeTable.getNodeForNodeId(id) ;
     }
-    
+
     @Override
     public boolean containsNode(Node node) {
         return nodeTable.containsNode(node) ;
@@ -61,27 +57,31 @@ public class NodeTableWrapper implements NodeTable
 
     @Override
     public boolean containsNodeId(NodeId nodeId) {
-        return nodeTable.containsNodeId(nodeId) ;    }
+        return nodeTable.containsNodeId(nodeId) ;
+    }
 
     @Override
-    public NodeId allocOffset()
-    {
+    public NodeId allocOffset() {
         return nodeTable.allocOffset() ;
     }
 
     @Override
-    public Iterator<Pair<NodeId, Node>> all()
-    {
-        return nodeTable.all();
+    public Iterator<Pair<NodeId, Node>> all() {
+        return nodeTable.all() ;
     }
 
     @Override
-    public boolean isEmpty()    { return nodeTable.isEmpty() ; }
-    
-    @Override
-    public void sync() { nodeTable.sync() ; } 
+    public boolean isEmpty() {
+        return nodeTable.isEmpty() ;
+    }
 
     @Override
-    public void close()
-    { nodeTable.close() ; }
+    public void sync() {
+        nodeTable.sync() ;
+    }
+
+    @Override
+    public void close() {
+        nodeTable.close() ;
+    }
 }

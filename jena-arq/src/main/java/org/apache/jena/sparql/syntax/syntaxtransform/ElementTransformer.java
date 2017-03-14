@@ -18,18 +18,9 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform ;
 
-import java.util.ArrayDeque ;
-import java.util.Deque ;
-import java.util.List ;
-
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.ExprTransform ;
-import org.apache.jena.sparql.expr.ExprTransformer ;
 import org.apache.jena.sparql.syntax.* ;
 
 /** A bottom-up application of a transformation of SPARQL syntax Elements. 
@@ -70,11 +61,11 @@ public class ElementTransformer {
     // and these protected methods.
     protected Element transformation(Element element, ElementTransform transform, ExprTransform exprTransform,
                                      ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
-        ApplyTransformVisitor v = new ApplyTransformVisitor(transform, exprTransform) ;
+        ApplyElementTransformVisitor v = new ApplyElementTransformVisitor(transform, exprTransform) ;
         return transformation(v, element, beforeVisitor, afterVisitor) ;
     }
 
-    protected Element transformation(ApplyTransformVisitor transformApply, Element element,
+    protected Element transformation(ApplyElementTransformVisitor transformApply, Element element,
                                      ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
         if ( element == null ) {
             Log.warn(this, "Attempt to transform a null element - ignored") ;
@@ -84,7 +75,7 @@ public class ElementTransformer {
     }
 
     /** The primitive operation to apply a transformation to an Op */
-    protected Element applyTransformation(ApplyTransformVisitor transformApply, Element element,
+    protected Element applyTransformation(ApplyElementTransformVisitor transformApply, Element element,
                                           ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
         ElementWalker.walk(element, transformApply, beforeVisitor, afterVisitor) ;
         Element r = transformApply.result() ;
@@ -92,195 +83,4 @@ public class ElementTransformer {
     }
 
     protected ElementTransformer() {}
-
-    static class ApplyTransformVisitor implements ElementVisitor {
-        protected final ElementTransform transform ;
-        private final ExprTransform      exprTransform ;
-
-        private final Deque<Element>     stack = new ArrayDeque<Element>() ;
-
-        protected final Element pop() {
-            return stack.pop() ;
-        }
-
-        protected final void push(Element elt) {
-            stack.push(elt) ;
-        }
-
-        public ApplyTransformVisitor(ElementTransform transform, ExprTransform exprTransform) {
-            if ( transform == null )
-                transform = ElementTransformIdentity.get() ;
-            this.transform = transform ;
-            this.exprTransform = exprTransform ;
-        }
-
-        final Element result() {
-            if ( stack.size() != 1 )
-                Log.warn(this, "Stack is not aligned") ;
-            return pop() ;
-        }
-
-        @Override
-        public void visit(ElementTriplesBlock el) {
-            Element el2 = transform.transform(el) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementPathBlock el) {
-            Element el2 = transform.transform(el) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementFilter el) {
-            Expr expr = el.getExpr() ;
-            Expr expr2 = transformExpr(expr, exprTransform) ;
-            Element el2 = transform.transform(el, expr2) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementAssign el) {
-            Var v = el.getVar() ;
-            Var v1 = TransformElementLib.applyVar(v, exprTransform) ;
-            Expr expr = el.getExpr() ;
-            Expr expr1 = ExprTransformer.transform(exprTransform, expr) ;
-            Element el2 = transform.transform(el, v1, expr1 ) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementBind el) {
-            Var v = el.getVar() ;
-            Var v1 = TransformElementLib.applyVar(v, exprTransform) ;
-            Expr expr = el.getExpr() ;
-            Expr expr1 = ExprTransformer.transform(exprTransform, expr) ;
-            Element el2 = transform.transform(el, v1, expr1 ) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementData el) {
-            transform.transform(el) ;
-            push(el) ;
-        }
-
-        @Override
-        public void visit(ElementOptional el) {
-            Element elSub = pop() ;
-            Element el2 = transform.transform(el, elSub) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementGroup el) {
-            ElementGroup newElt = new ElementGroup() ;
-            boolean b = transformFromTo(el.getElements(), newElt.getElements()) ;
-            Element el2 = transform.transform(el, newElt.getElements()) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementUnion el) {
-            ElementUnion newElt = new ElementUnion() ;
-            boolean b = transformFromTo(el.getElements(), newElt.getElements()) ;
-            Element el2 = transform.transform(el, newElt.getElements()) ;
-            push(el2) ;
-        }
-
-        private boolean transformFromTo(List<Element> elts, List<Element> elts2) {
-            boolean changed = false ;
-            for (Element elt : elts) {
-                Element elt2 = pop() ;
-                changed = (changed || (elt != elt2)) ;
-                // Add reversed.
-                elts2.add(0, elt2) ;
-            }
-            return changed ;
-        }
-
-        @Override
-        public void visit(ElementDataset el) {
-            Element sub = pop() ;
-            Element el2 = transform.transform(el, sub) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementNamedGraph el) {
-            Node n = el.getGraphNameNode() ;
-            Node n1 = transformNode(n) ;
-            Element elt1 = pop() ;
-            Element el2 = transform.transform(el, n1, elt1) ; 
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementExists el) {
-            Element elt = el.getElement() ;
-            Element elt1 = subElement(elt) ;
-            Element el2 = transform.transform(el, elt1) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementNotExists el) {
-            Element elt = el.getElement() ;
-            Element elt1 = subElement(elt) ;
-            Element el2 = transform.transform(el, elt1) ;
-            push(el2) ;
-        }
-
-        // When you need to force the walking of the tree ... 
-        // EXISTS / NOT EXISTS
-        private Element subElement(Element elt) {
-            ElementWalker.walk(elt, this) ;
-            Element elt1 = pop() ;
-            return elt1 ;
-        }
-
-        @Override
-        public void visit(ElementMinus el) {
-            Element elt = el.getMinusElement() ;
-            Element elt1 = pop() ;
-            if ( elt == elt1 )
-                push(el) ;
-            else
-                push(new ElementMinus(elt1)) ;
-        }
-
-        @Override
-        public void visit(ElementService el) {
-            Node n = el.getServiceNode() ;
-            Node n1 = transformNode(n) ;
-            Element elt1 = pop() ;
-            Element el2 = transform.transform(el, n1, elt1) ;
-            push(el2) ;
-        }
-
-        @Override
-        public void visit(ElementSubQuery el) {
-            Query newQuery = QueryTransformOps.transform(el.getQuery(), transform, exprTransform) ;
-            push(new ElementSubQuery(newQuery)) ;
-        }
-
-        private Node transformNode(Node n) {
-            if ( exprTransform == null )
-                return n ;
-            return TransformElementLib.apply(n, exprTransform) ;
-        }
-
-        private ExprList transformExpr(ExprList exprList, ExprTransform exprTransform) {
-            if ( exprList == null || exprTransform == null )
-                return exprList ;
-            return ExprTransformer.transform(exprTransform, exprList) ;
-        }
-
-        private Expr transformExpr(Expr expr, ExprTransform exprTransform) {
-            if ( expr == null || exprTransform == null )
-                return expr ;
-            return ExprTransformer.transform(exprTransform, expr) ;
-        }
-    }
 }

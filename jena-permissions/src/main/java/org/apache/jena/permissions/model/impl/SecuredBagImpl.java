@@ -49,7 +49,7 @@ public class SecuredBagImpl extends SecuredContainerImpl implements SecuredBag
 		{
 			throw new IllegalArgumentException("Bag may not be null");
 		}
-		final ItemHolder<Bag, SecuredBag> holder = new ItemHolder<Bag, SecuredBag>(
+		final ItemHolder<Bag, SecuredBag> holder = new ItemHolder<>(
 				bag);
 		final SecuredBagImpl checker = new SecuredBagImpl(securedModel, holder);
 		// if we are going to create a duplicate proxy, just return this

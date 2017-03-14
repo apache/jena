@@ -30,7 +30,6 @@ import java.util.* ;
 
 import jena.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -162,10 +161,6 @@ public class FusekiServer
         }
     }
     
-    private static boolean emptyDir(Path dir) {
-        return dir.toFile().list().length <= 2 ;
-    }
-    
     /** Copy a file from src to dst under name fn.
      * If src is null, try as a classpath resource
      * @param src   Source directory, or null meaning use java resource. 
@@ -208,7 +203,7 @@ public class FusekiServer
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
         
-        List<DataAccessPoint> datapoints = new ArrayList<DataAccessPoint>() ;
+        List<DataAccessPoint> datapoints = new ArrayList<>() ;
         datapoints.addAll(configFileDBs) ;
         datapoints.addAll(directoryDBs) ;
         datapoints.addAll(systemDBs) ;
@@ -229,7 +224,7 @@ public class FusekiServer
         // when processing a config file.
         // Compatibility.
         
-        List<DataAccessPoint> datasets = DS.list() ;
+        List<DataAccessPoint> datasets = new ArrayList<>();
         if ( params == null )
             return datasets ;
 
@@ -377,6 +372,10 @@ public class FusekiServer
             throw new FusekiConfigException("Does not exist: "+directory) ; 
         if ( ! dir.isDirectory())
             throw new FusekiConfigException("Not a directory: "+directory) ;
+    }
+    
+    private static boolean emptyDir(Path dir) {
+        return dir.toFile().list().length <= 2 ;
     }
     
     private static boolean exists(Path directory) {

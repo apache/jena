@@ -25,8 +25,10 @@ import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
+import jena.cmd.TerminationException;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
@@ -37,15 +39,14 @@ import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.system.Txn ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
 
 /**
@@ -116,10 +117,6 @@ public class FusekiCmd {
         public FusekiCmdInner(String... argv) {
             super(argv) ;
 
-            if ( false )
-                // Consider ...
-                TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2 ;
-
             getUsage().startCategory("Fuseki") ;
             addModule(modDataset) ;
             add(argMem, "--mem",
@@ -147,10 +144,6 @@ public class FusekiCmd {
             add(argPages) ;
             add(argMgt) ;           // Legacy
             add(argMgtPort) ;       // Legacy
-//            add(argMgt, "--mgt",
-//                "Enable the management commands") ;
-//            add(argMgtPort, "--mgtPort=port",
-//                "Port for management optations") ;
             add(argGZip, "--gzip=on|off",
                 "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
 
@@ -167,13 +160,14 @@ public class FusekiCmd {
 
         @Override
         protected void processModulesAndArgs() {
-            int x = 0 ;
-
             if ( super.isVerbose() || super.isDebug() ) {
                 jettyServerConfig.verboseLogging = true ;
                 // Output is still at level INFO (currently) 
             }
             
+            // Any final tinkering with FUSEKI_HOME and FUSEKI_BASE, e.g. arguments like --home, --base, then .... 
+            FusekiEnv.resetEnvironment() ;
+
             Logger log = Fuseki.serverLog ;
 
             if ( contains(argFusekiConfig) )
@@ -182,6 +176,8 @@ public class FusekiCmd {
             ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
 
             // ---- Datasets
+            // Check one and only way is defined. 
+            int x = 0 ;
 
             if ( contains(argMem) )             
                 x++ ;
@@ -217,13 +213,13 @@ public class FusekiCmd {
             if ( cmdlineConfigPresent && getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
             
-            if ( ! cmdlineConfigPresent ) {
-                // In place config file. 
+            if ( ! cmdlineConfigPresent && cmdLineConfig.fusekiCmdLineConfigFile == null ) {
+                // Turn command line argument into an absolute file name.
+                FusekiEnv.setEnvironment();
                 Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
                 if ( Files.exists(cfg) )
                     cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
             }
-                
             
             cmdLineConfig.allowUpdate = contains(argUpdate) ; 
 
@@ -246,17 +242,10 @@ public class FusekiCmd {
                 // Directly populate the dataset.
                 cmdLineConfig.reset();
                 cmdLineConfig.dsg = DatasetGraphFactory.createTxnMem() ;
-                
-                // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename) ;
                 if ( language == null )
                     throw new CmdException("Can't guess language for file: " + filename) ;
-                // XXX Replace by Txn.
-                cmdLineConfig.dsg.begin(ReadWrite.WRITE) ;
-                try {
-                    RDFDataMgr.read(cmdLineConfig.dsg, filename) ;
-                    cmdLineConfig.dsg.commit() ;
-                } finally { cmdLineConfig.dsg.end() ; }
+                Txn.executeWrite(cmdLineConfig.dsg, ()->RDFDataMgr.read(cmdLineConfig.dsg, filename)) ;
             }
 
             if ( contains(argMemTDB) ) {
@@ -312,18 +301,6 @@ public class FusekiCmd {
             if ( contains(argMgtPort) )
                 Fuseki.configLog.warn("Fuseki v2: Management functions are always on the same port as the server.  --mgtPort ignored.") ; 
 
-//            if ( contains(argMgt) ) {
-//                jettyServerConfig.mgtPort = 0 ;
-//                if (  contains(argMgtPort) ) {
-//                    String mgtPortStr = getValue(argMgtPort) ;
-//                    try {
-//                        jettyServerConfig.mgtPort = Integer.parseInt(mgtPortStr) ;
-//                    } catch (NumberFormatException ex) {
-//                        throw new CmdException("--"+argMgtPort.getKeyName() + " : bad port number: " + mgtPortStr) ;
-//                    }
-//                }
-//            }
-
             if ( contains(argLocalhost) )
                 jettyServerConfig.loopback = true ;
 
@@ -354,26 +331,26 @@ public class FusekiCmd {
             }
         }
 
-        private static String sort_out_dir(String path) {
-            path.replace('\\', '/') ;
-            if ( !path.endsWith("/") )
-                path = path + "/" ;
-            return path ;
-        }
-
         @Override
         protected void exec() {
-            FusekiServerListener.initialSetup = cmdLineConfig ;
-            // For standalone, command line use ...
-            JettyFuseki.initializeServer(jettyServerConfig) ;
-            JettyFuseki.instance.start() ;
-            JettyFuseki.instance.join() ;
-            System.exit(0) ;
+            try {
+                runFuseki(cmdLineConfig, jettyServerConfig) ;
+            } catch (FusekiException ex) {
+                throw new TerminationException(1) ;
+            }
         }
 
         @Override
         protected String getCommandName() {
             return "fuseki" ;
         }
+    }
+    
+    /** Configure and run a Fuseki server - this function does not return except for error starting up*/  
+    public static void runFuseki(ServerInitialConfig serverConfig, JettyServerConfig jettyConfig) {
+        FusekiServerListener.initialSetup = serverConfig ;
+        JettyFuseki.initializeServer(jettyConfig) ;
+        JettyFuseki.instance.start() ;
+        JettyFuseki.instance.join() ;
     }
 }

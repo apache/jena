@@ -18,24 +18,25 @@
 
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
   
-	<feature name="jena" version="3">
-		<bundle>mvn:org.apache.jena/jena-osgi/3.1.0-SNAPSHOT</bundle>
-		<feature version="3">jena_osgi_dependencies</feature>
+	<feature name="jena" version="${project.version}">
+		<bundle>mvn:org.apache.jena/jena-osgi/${project.version}</bundle>
+		<feature version="${project.version}">jena_osgi_dependencies</feature>
 		<!-- This is normally exposed by Apache Karaf via root classloader -->
 		<!--<feature version="2.11.0">xerces</feature>-->
 	</feature>
 
-	<feature name="jena_osgi_dependencies" version="3">
-		<bundle>mvn:com.github.andrewoma.dexx/collection/0.6</bundle>
-		<bundle>mvn:com.github.jsonld-java/jsonld-java/0.8.2</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.7.3</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-databind/2.7.3</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.7.3</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/4.4.4</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/4.5.2</bundle>
-		<bundle>mvn:org.apache.commons/commons-csv/1.2</bundle>
-		<bundle>mvn:org.apache.commons/commons-lang3/3.4</bundle>
-		<bundle>mvn:org.apache.thrift/libthrift/0.9.3</bundle>	
+	<feature name="jena_osgi_dependencies" version="${project.version}">
+		<bundle>mvn:com.github.andrewoma.dexx/collection/${ver.dexxcollection}</bundle>
+		<bundle>mvn:com.github.jsonld-java/jsonld-java/${ver.jsonldjava}</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-core/${ver.jackson}</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${ver.jackson}</bundle>
+		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${ver.jackson}</bundle>
+		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${ver.httpcore-osgi}</bundle>
+		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${ver.httpclient-osgi}</bundle>
+		<bundle>mvn:org.apache.commons/commons-csv/${ver.commonscsv}</bundle>
+		<bundle>mvn:org.apache.commons/commons-lang3/${ver.commonslang3}</bundle>
+		<bundle>mvn:commons-io/commons-io/${ver.commonsio}</bundle>
+		<bundle>mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>	
 	</feature>
 
 	<feature name="xerces" version="2.11.0">

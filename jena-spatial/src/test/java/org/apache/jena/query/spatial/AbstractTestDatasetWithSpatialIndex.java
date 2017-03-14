@@ -70,13 +70,15 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 		doTestSearch(turtle, queryString, expectedEntityURIs, expectedNumResults, false);
 	}
 	
-	private void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults, boolean throwException) {
+	private static void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults, boolean throwException) {
 		Model model = dataset.getDefaultModel();
 		Reader reader = new StringReader(turtle);
-		dataset.begin(ReadWrite.WRITE);
-		model.read(reader, "", "TURTLE");
-		dataset.commit();
-		doTestQuery(dataset, queryString, expectedEntityURIs, expectedNumResults, throwException);
+        try {
+            dataset.begin(ReadWrite.WRITE);
+            model.read(reader, "", "TURTLE");
+            dataset.commit();
+            doTestQuery(dataset, queryString, expectedEntityURIs, expectedNumResults, throwException);
+        } finally { dataset.end(); }
 	}
 	
 	public static void doTestQuery(Dataset dataset, String queryString, Set<String> expectedEntityURIs, int expectedNumResults, boolean throwException) {

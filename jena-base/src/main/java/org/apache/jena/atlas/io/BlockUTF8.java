@@ -22,8 +22,6 @@ import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.CharBuffer ;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
-
 /**
  * Convert between bytes and chars, UTF-8 only.
  * 
@@ -154,10 +152,9 @@ public class BlockUTF8
             }
         }
     }
-
-    private static void toCharsArray(byte[] bytes, char[] chars)
-    {
-        throw new NotImplemented() ;
+    
+    private static void toCharsArray(byte[] bytes, char[] chars) {
+        toCharsBuffer(ByteBuffer.wrap(bytes), CharBuffer.wrap(chars));
     }
     
     private static void fromCharsBuffer(CharBuffer cb, ByteBuffer bb)
@@ -227,15 +224,14 @@ public class BlockUTF8
         }
         //int bytesFinish = bb.position() ;
     }
-
-    private static void fromCharsArray(char[] array, byte[] array2)
-    {
-        throw new NotImplemented() ;
-    }
     
     public static void fromChars(CharSequence cs, ByteBuffer bb)
     {
         fromChars(CharBuffer.wrap(cs), bb) ;
+    }
+    
+    private static void fromCharsArray(char[] chars, byte[] bytes) {
+        fromCharsBuffer(CharBuffer.wrap(chars), ByteBuffer.wrap(bytes));
     }
 
     private static int readMultiBytes(ByteBuffer input, int start, int len)

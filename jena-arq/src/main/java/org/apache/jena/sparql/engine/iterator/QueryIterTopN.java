@@ -28,7 +28,6 @@ import java.util.PriorityQueue ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
-import org.apache.jena.atlas.lib.ReverseComparator ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.SortCondition ;
@@ -74,7 +73,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         }
 
         // Keep heap with maximum accessible.
-        this.heap = new PriorityQueue<Binding>((int)numItems, new ReverseComparator<Binding>(comparator)) ;
+        this.heap = new PriorityQueue<>((int)numItems, comparator.reversed()) ;
         this.setIterator(sortTopN(qIter, comparator)) ;
     }
 

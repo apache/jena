@@ -226,8 +226,8 @@ public class OpRewriter implements OpVisitor {
 			addOp(opBGP);
 		} else {
 			// add security filtering to the resulting triples
-			final List<Triple> newBGP = new ArrayList<Triple>();
-			final List<Node> variables = new ArrayList<Node>();
+			final List<Triple> newBGP = new ArrayList<>();
+			final List<Node> variables = new ArrayList<>();
 			// register all variables
 			for (final Triple t : opBGP.getPattern().getList()) {
 				newBGP.add(registerBGPTriple(t, variables));
@@ -356,8 +356,7 @@ public class OpRewriter implements OpVisitor {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Starting visiting OpGroup");
 		}
-		addOp(new OpGroup(rewriteOp1(opGroup), opGroup.getGroupVars(),
-				opGroup.getAggregators()));
+		addOp(OpGroup.create(rewriteOp1(opGroup), opGroup.getGroupVars(), opGroup.getAggregators()));
 	}
 
 	/**

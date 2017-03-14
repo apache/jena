@@ -51,7 +51,7 @@ public class SortCondition extends PrintSerializableBase
         direction = dir ;
         
         if ( dir != Query.ORDER_ASCENDING && dir != Query.ORDER_DESCENDING && dir != Query.ORDER_DEFAULT )
-            Log.fatal(this, "Unknown sort direction") ;
+            Log.error(this, "Unknown sort direction") ;
     }
     
     public void format(FmtExprSPARQL fmt,

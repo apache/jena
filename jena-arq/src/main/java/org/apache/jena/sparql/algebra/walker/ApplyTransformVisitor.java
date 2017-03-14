@@ -173,18 +173,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
       
       List<Expr> x = collect(vars.size()) ;
 
-//      for ( int i = 0 ; i < vars.size() ; i++ ) {
-//          Var v = vars.get(i) ;
-//          Expr e2 = x.get(i) ;
-//          if ( e2 == null )
-//              varExpr2.add(v) ;
-//          else
-//              varExpr2.add(v, e2) ;
-//      }
-//      return varExpr2 ;
-      
       boolean changed = false ;
-
       for ( int i = 0 ; i < vars.size() ; i++ ) {
           Var v = vars.get(i) ;
           Expr e2 = x.get(i) ;
@@ -198,7 +187,6 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
           }
       }
       return changed ? varExpr2 : varExprList ;
-
     }  
         
     private ExprList collect(ExprList exprList) {
@@ -274,7 +262,7 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
 
         OpGroup opGroup2 = opGroup ;
         if ( changed )
-            opGroup2 = new OpGroup(opGroup.getSubOp(), varExpr2, aggs2) ;
+            opGroup2 = OpGroup.create(opGroup.getSubOp(), varExpr2, aggs2) ;
         visit1(opGroup2) ;
     }
 

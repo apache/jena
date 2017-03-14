@@ -108,4 +108,9 @@ public class MockPrefixMapping implements PrefixMapping
 	{
 		throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public int numPrefixes() {
+        return getNsPrefixMap().size() ;
+    }
 }

@@ -85,7 +85,7 @@ public class TestHex extends BaseTest
     }
     
     private static void testStr2Val(String str, int start, int length, int expected) {
-        int v = Hex.hexStringToInt(str, start, length) ;
+        /* int i = */ Hex.hexStringToInt(str, start, length) ;
     }
     
     @Test public void hexValue_01()     { testStr2Val("A", 10); }

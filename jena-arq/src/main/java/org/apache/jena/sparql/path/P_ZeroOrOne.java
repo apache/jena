@@ -16,32 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.path;
+package org.apache.jena.sparql.path ;
 
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_ZeroOrOne extends P_Path1
-{
-    public P_ZeroOrOne(Path path)
-    {
+public class P_ZeroOrOne extends P_Path1 {
+    public P_ZeroOrOne(Path path) {
         super(path) ;
     }
 
     @Override
-    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( path2 instanceof P_ZeroOrOne ) ) return false ;
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
+        if ( !(path2 instanceof P_ZeroOrOne) )
+            return false ;
         P_ZeroOrOne other = (P_ZeroOrOne)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+        return getSubPath().equalTo(other.getSubPath(), isoMap) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return hashZeroOrOne ^ getSubPath().hashCode() ;
     }
 
     @Override
-    public void visit(PathVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(PathVisitor visitor) {
+        visitor.visit(this) ;
+    }
 }

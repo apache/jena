@@ -117,34 +117,34 @@ public class SPARQL_Upload extends ActionSPARQL
     /** Non-transaction - buffer to a temporary graph so that parse errors
      * are caught before inserting any data.
      */
-     private static long uploadNonTxn(HttpAction action, String base) {
-         UploadDetails upload = uploadWorker(action, base) ;
-         String graphName = upload.graphName ;
-         DatasetGraph dataTmp = upload.data ;
-         long count = upload.count ;
+    private static long uploadNonTxn(HttpAction action, String base) {
+        UploadDetails upload = uploadWorker(action, base) ;
+        String graphName = upload.graphName ;
+        DatasetGraph dataTmp = upload.data ;
+        long count = upload.count ;
 
-         if ( graphName == null )
-             action.log.info(format("[%d] Upload: %d Quads(s)",action.id, count)) ;
-         else
-             action.log.info(format("[%d] Upload: Graph: %s, %d triple(s)", action.id, graphName,  count)) ;
+        if ( graphName == null )
+            action.log.info(format("[%d] Upload: %d Quads(s)",action.id, count)) ;
+        else
+            action.log.info(format("[%d] Upload: Graph: %s, %d triple(s)", action.id, graphName,  count)) ;
 
-         Node gn = null ;
-         if ( graphName != null ) {
-             gn = graphName.equals(HttpNames.valueDefault)
-                 ? Quad.defaultGraphNodeGenerated
-                 : NodeFactory.createURI(graphName) ;
-         }
+        Node gn = null ;
+        if ( graphName != null ) {
+            gn = graphName.equals(HttpNames.valueDefault)
+                ? Quad.defaultGraphNodeGenerated
+                : NodeFactory.createURI(graphName) ;
+        }
 
-         action.beginWrite() ;
-         try {
-             if ( gn != null )
-                 FusekiLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
-             else
-                 FusekiLib.addDataInto(dataTmp, action.getActiveDSG()) ;
+        action.beginWrite() ;
+        try {
+            if ( gn != null )
+                FusekiLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
+            else
+                FusekiLib.addDataInto(dataTmp, action.getActiveDSG()) ;
 
-             action.commit() ;
-             return count ;
-         } catch (RuntimeException ex)
+            action.commit() ;
+            return count ;
+        } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
             try { action.abort() ; } catch (Exception ex2) {}
@@ -160,21 +160,21 @@ public class SPARQL_Upload extends ActionSPARQL
       * Use Graph Store protocol for bulk uploads.
       * (It would be possible to process the incoming stream and see the graph name first.)
       */
-      private static long uploadTxn(HttpAction action, String base) {
-          // We can't do better than the non-transaction approach.
-          return uploadNonTxn(action, base) ;
-      }
+     private static long uploadTxn(HttpAction action, String base) {
+         // We can't do better than the non-transaction approach.
+         return uploadNonTxn(action, base) ;
+     }
 
-    static class UploadDetails {
-        final String graphName  ;
-        final DatasetGraph data ;
-        final long count ;
-        UploadDetails(String gn, DatasetGraph dsg, long parserCount) {
-            this.graphName = gn ;
-            this.data = dsg ;
-            this.count = parserCount ;
-        }
-    }
+     static class UploadDetails {
+         final String graphName  ;
+         final DatasetGraph data ;
+         final long count ;
+         UploadDetails(String gn, DatasetGraph dsg, long parserCount) {
+             this.graphName = gn ;
+             this.data = dsg ;
+             this.count = parserCount ;
+         }
+     }
 
     /** Process an HTTP file upload of RDF with additiona name field for the graph name.
      *  We can't stream straight into a dataset because the graph name can be after the data.

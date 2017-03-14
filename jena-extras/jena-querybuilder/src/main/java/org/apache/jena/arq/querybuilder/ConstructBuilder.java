@@ -28,6 +28,7 @@ import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
@@ -190,26 +191,38 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public ConstructBuilder addWhere(Triple t) {
+	public ConstructBuilder addWhere(TriplePath t) {
 		getWhereHandler().addWhere(t);
+		return this;
+	}
+	
+	@Override
+	public ConstructBuilder addWhere(Triple t) {
+		getWhereHandler().addWhere(new TriplePath(t));
 		return this;
 	}
 
 	@Override
 	public ConstructBuilder addWhere(FrontsTriple t) {
-		getWhereHandler().addWhere(t.asTriple());
+		getWhereHandler().addWhere(new TriplePath(t.asTriple()));
 		return this;
 	}
 
 	@Override
 	public ConstructBuilder addWhere(Object s, Object p, Object o) {
-		addWhere(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		getWhereHandler().addWhere( makeTriplePath( s, p, o ));
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addOptional(TriplePath t) {
+		getWhereHandler().addOptional(t);
 		return this;
 	}
 
 	@Override
 	public ConstructBuilder addOptional(Triple t) {
-		getWhereHandler().addOptional(t);
+		getWhereHandler().addOptional(new TriplePath(t));
 		return this;
 	}
 
@@ -221,13 +234,13 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
 	@Override
 	public ConstructBuilder addOptional(FrontsTriple t) {
-		getWhereHandler().addOptional(t.asTriple());
+		getWhereHandler().addOptional(new TriplePath(t.asTriple()));
 		return this;
 	}
 
 	@Override
 	public ConstructBuilder addOptional(Object s, Object p, Object o) {
-		addOptional(new Triple(makeNode(s), makeNode(p), makeNode(o)));
+		getWhereHandler().addOptional( makeTriplePath( s, p, o ));
 		return this;
 	}
 

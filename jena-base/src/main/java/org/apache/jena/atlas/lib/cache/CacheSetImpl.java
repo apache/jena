@@ -39,7 +39,7 @@ public class CacheSetImpl<T> implements CacheSet<T> {
     /** Callback for entries when dropped from the cache */
     @Override
     public void setDropHandler(Consumer<T> dropHandler) {
-        cacheMap.setDropHandler(new Wrapper<T>(dropHandler)) ;
+        cacheMap.setDropHandler(new Wrapper<>(dropHandler)) ;
     }
     
     // From map action to set action.

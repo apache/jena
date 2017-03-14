@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  TestEmbeddedFuseki.class  
+  TestEmbeddedFuseki.class
+  , TestMultipleEmbedded.class
 })
 public class TS_EmbeddedFuseki {
     @BeforeClass public static void setupForFusekiServer() {

@@ -44,10 +44,10 @@ public class TransitiveEngine {
     protected boolean isPrepared = false;
     
     /** The set of predicates which are aliases for subClassOf */
-    protected static HashSet<Node> subClassAliases;
+    protected HashSet<Node> subClassAliases;
     
     /** The set of predicates which are aliases for subPropertyOf */
-    protected static HashSet<Node> subPropertyAliases;
+    protected HashSet<Node> subPropertyAliases;
     
     /** Classification flag: not relevant to this engine */
     private static final int NOT_RELEVANT = 1;

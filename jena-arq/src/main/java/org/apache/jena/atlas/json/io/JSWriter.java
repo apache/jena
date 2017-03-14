@@ -26,12 +26,11 @@ import java.io.OutputStream ;
 import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.BitsInt ;
 import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.atlas.lib.Ref ;
 
 /**
  * A low level streaming JSON writer - assumes correct sequence of calls (e.g.
@@ -69,15 +68,16 @@ public class JSWriter {
 
     // Remember whether we are in the first element of a compound 
     // (object or array).
-    Deque<Ref<Boolean>> stack = new ArrayDeque<>() ;
+    Deque<AtomicBoolean> stack = new ArrayDeque<>() ;
 
-    public void startObject() {
+    public JSWriter startObject() {
         startCompound() ;
         out.print(ObjectStart) ;
         out.incIndent() ;
+        return this;
     }
 
-    public void finishObject() {
+    public JSWriter finishObject() {
         out.decIndent() ;
         if ( isFirst() )
             out.print(ObjectFinish) ;
@@ -86,9 +86,10 @@ public class JSWriter {
             out.println(ObjectFinish) ;
         }
         finishCompound() ;
+        return this;
     }
 
-    public void key(String key) {
+    public JSWriter key(String key) {
         if ( isFirst() ) {
             out.println() ;
             setNotFirst() ;
@@ -97,69 +98,80 @@ public class JSWriter {
         value(key) ;
         out.print(ObjectPairSep) ;
         // Ready to start the pair value.
+        return this;
     }
 
     // "Pair" is the name used in the JSON spec.
-    public void pair(String key, String value) {
+    public JSWriter pair(String key, String value) {
         key(key) ;
         value(value) ;
+        return this;
     }
 
-    public void pair(String key, boolean val) {
+    public JSWriter pair(String key, boolean val) {
         key(key) ;
         value(val) ;
+        return this;
     }
 
-    public void pair(String key, long val) {
+    public JSWriter pair(String key, long val) {
         key(key) ;
         value(val) ;
+        return this;
     }
     
-    public void pair(String key, Number val) {
+    public JSWriter pair(String key, Number val) {
         key(key) ;
         value(val) ;
+        return this;
     }
 
-    public void startArray() {
+    public JSWriter startArray() {
         startCompound() ;
         out.print(ArrayStart) ;
-        // Messy with objects out.incIndent() ;
+        return this;
     }
 
-    public void finishArray() {
+    public JSWriter finishArray() {
         // out.decIndent() ;
         out.print(ArrayFinish) ; // Leave on same line.
         finishCompound() ;
+        return this;
     }
 
-    public void arrayElement(String str) {
+    public JSWriter arrayElement(String str) {
         arrayElementProcess() ;
         value(str) ;
+        return this;
     }
 
-    private void arrayElementProcess() {
+    private JSWriter arrayElementProcess() {
         if ( isFirst() )
             setNotFirst() ;
         else
             out.print(ArraySep) ;
+        return this;
     }
 
-    public void arrayElement(boolean b) {
+    public JSWriter arrayElement(boolean b) {
         arrayElementProcess() ;
         value(b) ;
+        return this;
     }
 
-    public void arrayElement(long integer) {
+    public JSWriter arrayElement(long integer) {
         arrayElementProcess() ;
         value(integer) ;
+        return this;
     }
 
     /**
      * Useful if you are manually creating arrays and so need to print array
      * separators yourself
      */
-    public void arraySep() {
+    public JSWriter arraySep() {
         out.print(ArraySep) ;
+        return this;
     }
 
     public static String outputQuotedString(String string) {
@@ -277,7 +289,7 @@ public class JSWriter {
     }
 
     private void startCompound() {
-        stack.push(new Ref<>(true)) ;
+        stack.push(new AtomicBoolean(true)) ;
     }
 
     private void finishCompound() {
@@ -285,11 +297,11 @@ public class JSWriter {
     }
 
     private boolean isFirst() {
-        return stack.peek().getValue() ;
+        return stack.peek().get() ;
     }
 
     private void setNotFirst() {
-        stack.peek().setValue(false) ;
+        stack.peek().set(false) ;
     }
 
     private void value(String x) {

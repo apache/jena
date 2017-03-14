@@ -60,6 +60,7 @@ public final class Token
     
     private Token subToken1 = null ;            // A related token (used for datatype literals and language tags)
     private Token subToken2 = null ;            // A related token (used for datatype literals and language tags)
+    private StringType stringType = null ;
     
     public int cntrlCode = 0 ;
     private long column ;
@@ -70,14 +71,25 @@ public final class Token
     public static final String ImageTrue    = "true" ;
     public static final String ImageFalse   = "false" ;
     
-    public final TokenType getType()    { return tokenType ; }
-    public final String getImage()      { return tokenImage ; }
+    public final TokenType getType()        { return tokenType ; }
+    public final String getImage()          { return tokenImage ; }
     //public final String getImage1()  { return tokenImage1 ; }
     
-    public final String getImage2()     { return tokenImage2 ; }
-    public final int getCntrlCode()     { return cntrlCode ; }
-    public final Token getSubToken1()   { return subToken1 ; }
-    public final Token getSubToken2()   { return subToken2 ; }
+    public final String getImage2()         { return tokenImage2 ; }
+    public final int getCntrlCode()         { return cntrlCode ; }
+    public final Token getSubToken1()       { return subToken1 ; }
+    public final Token getSubToken2()       { return subToken2 ; }
+    public final StringType getStringType() { return stringType ; }
+    public final boolean hasStringType(StringType st)   { return this.stringType == st ;}
+    public final boolean isLongString() {
+        switch(stringType) {
+            case LONG_STRING1:
+            case LONG_STRING2:
+                return true;
+                default:
+                    return false;
+        }        
+    }
     
     public final Token setType(TokenType tokenType)     { this.tokenType = tokenType ; return this ; }
     public final Token setImage(String tokenImage)      { this.tokenImage = tokenImage ; return this ; }
@@ -89,6 +101,8 @@ public final class Token
 
     public final Token setSubToken1(Token subToken)     { this.subToken1 = subToken ; return this ; }
     public final Token setSubToken2(Token subToken)     { this.subToken2 = subToken ; return this ; }
+    
+    public final Token setStringType(StringType st)     { this.stringType = st ; return this ; }
     
     static Token create(String s)
     {
@@ -122,13 +136,13 @@ public final class Token
         return line ;
     }
 
-    Token(String string) { this(STRING, string) ; } 
+    public Token(String string) { this(STRING, string) ; } 
 
-    Token(TokenType type) { this(type, null, null) ; }
+    public Token(TokenType type) { this(type, null, null) ; }
 
-    Token(TokenType type, String image1) { this(type, image1, null) ; }
+    public Token(TokenType type, String image1) { this(type, image1, null) ; }
 
-    Token(TokenType type, String image1, String image2) { 
+    public Token(TokenType type, String image1, String image2) { 
         this() ;
         setType(type) ;
         setImage(image1) ;
@@ -176,8 +190,6 @@ public final class Token
         switch (tokenType)
         {
             case STRING: 
-            case STRING1: case STRING2: 
-            case LONG_STRING1: case LONG_STRING2:
                 return getImage() ;
             default:
                 return null ;
@@ -277,26 +289,11 @@ public final class Token
         return sb.toString() ;
     }
     
-    public boolean isEOF() { return tokenType == TokenType.EOF ; }
+    public boolean isEOF()      { return tokenType == TokenType.EOF ; }
     
-    public boolean isCtlCode() { return tokenType == TokenType.CNTRL ; }
+    public boolean isWord()     { return tokenType == TokenType.KEYWORD ; }
 
-    public boolean isWord() { return tokenType == TokenType.KEYWORD ; }
-
-    public boolean isString()
-    {
-        switch(tokenType)
-        {
-            case STRING:
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
-                return true ;
-            default:
-                return false ;
-        }
-    }
+    public boolean isString()   { return tokenType == TokenType.STRING ; }
 
     public boolean isNumber()
     {
@@ -324,10 +321,6 @@ public final class Token
             case LITERAL_DT:
             case LITERAL_LANG:
             case STRING:
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
                 return true ;
             case KEYWORD:
                 if ( tokenImage.equals(ImageANY) )
@@ -348,9 +341,16 @@ public final class Token
             case PREFIXED_NAME :
             case LITERAL_DT:
             case LITERAL_LANG:
-            case STRING1:
-            case STRING2:
-                return true ;
+                return true;
+            case STRING : {
+                switch (stringType) {
+                    case STRING1 :
+                    case STRING2 :
+                        return true;
+                    default :
+                        return false;
+                }
+            }
             default:
                 return false ;
         }
@@ -363,10 +363,6 @@ public final class Token
             case LITERAL_DT:
             case LITERAL_LANG:
             case STRING:
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
                 return true ;
             default:
                 return false ;
@@ -441,10 +437,6 @@ public final class Token
             }
             case LITERAL_LANG : return NodeFactory.createLiteral(tokenImage, tokenImage2)  ;
             case STRING:
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
                 return NodeFactory.createLiteral(tokenImage) ;
             case VAR:
                 return Var.alloc(tokenImage) ;
@@ -501,7 +493,7 @@ public final class Token
             case CH_LBRACKET:   return new Token(TokenType.LBRACKET) ;
             case CH_RBRACKET:   return new Token(TokenType.RBRACKET) ;
             default:
-                throw new RuntimeException("Token error: unrecognized charcater: "+character) ;
+                throw new RuntimeException("Token error: unrecognized character: "+character) ;
         }
     }
     

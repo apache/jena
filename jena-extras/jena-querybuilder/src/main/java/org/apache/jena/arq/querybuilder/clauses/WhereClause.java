@@ -23,6 +23,7 @@ import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 
@@ -36,16 +37,25 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException ;
 public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
-	 * Adds a triple as to the where clause.
+	 * Adds a triple to the where clause.
 	 * 
 	 * @param t
-	 *            The triple to add
+	 *            The triple path to add
 	 * @return The Builder for chaining.
 	 */
 	public T addWhere(Triple t);
+	
+	/**
+	 * Adds a triple path to the where clause.
+	 * 
+	 * @param t
+	 *            The triple path to add
+	 * @return The Builder for chaining.
+	 */
+	public T addWhere(TriplePath t);
 
 	/**
-	 * Adds a triple as to the where clause.
+	 * Adds a triple to the where clause.
 	 * 
 	 * @param t
 	 *            The triple to add
@@ -54,9 +64,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	public T addWhere(FrontsTriple t);
 
 	/**
-	 * Adds a triple to the where clause.
+	 * Adds a triple or triple path to the where clause.
 	 * 
-	 * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
+	 * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param values.
 	 * 
 	 * @param s
 	 *            The subject.
@@ -78,6 +88,14 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	public T addOptional(Triple t);
 
 	/**
+	 * Adds an optional triple path to the where clause.
+	 * 
+	 * @param t
+	 *            The triple path to add
+	 * @return The Builder for chaining.
+	 */
+	public T addOptional(TriplePath t);
+	/**
 	 * Adds an optional triple as to the where clause.
 	 * 
 	 * @param t
@@ -87,9 +105,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	public T addOptional(FrontsTriple t);
 
 	/**
-	 * Adds an optional triple to the where clause.
+	 * Adds an optional triple or triple path to the where clause.
 	 * 
-	 * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
+	 * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param values.
 	 * 
 	 * @param s
 	 *            The subject.

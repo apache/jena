@@ -26,11 +26,6 @@ import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import com.fasterxml.jackson.core.JsonLocation ;
-import com.fasterxml.jackson.core.JsonProcessingException ;
-import com.github.jsonldjava.core.* ;
-import com.github.jsonldjava.utils.JsonUtils ;
-
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -40,12 +35,32 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 
+import com.fasterxml.jackson.core.JsonLocation ;
+import com.fasterxml.jackson.core.JsonProcessingException ;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
+import com.github.jsonldjava.core.JsonLdTripleCallback;
+import com.github.jsonldjava.core.RDFDataset;
+import com.github.jsonldjava.utils.JsonUtils ;
+
+/**
+ * Note: it is possible to override jsonld's "@context" value by providing one,
+ * using a {@link org.apache.jena.sparql.util.Context}, and setting the {@link RIOT#JSONLD_CONTEXT} Symbol's value
+ * to the data expected by JSON-LD java API (a {@link Map}).
+ */
 public class JsonLDReader implements ReaderRIOT
 {
     private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
@@ -76,10 +91,22 @@ public class JsonLDReader implements ReaderRIOT
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {
             Object jsonObject = JsonUtils.fromInputStream(in) ;
+            
+            if (context != null) {
+                Object jsonldCtx = context.get(RIOT.JSONLD_CONTEXT);
+                if (jsonldCtx != null) {
+                    if (jsonObject instanceof Map) {
+                        ((Map) jsonObject).put("@context", jsonldCtx);
+                    } else {
+                        errorHandler.warning("Unexpected: not a Map; unable to set JsonLD's @context",-1,-1);
+                    }
+                }
+            }
             read$(jsonObject, baseURI, ct, output, context) ;
         }
         catch (JsonProcessingException ex) {    

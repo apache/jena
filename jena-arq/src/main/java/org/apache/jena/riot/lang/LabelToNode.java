@@ -123,7 +123,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     {
         super(scopePolicy, allocator) ;
     }
-
+    
     // ======== Scope Policies
     
     /** Single scope */

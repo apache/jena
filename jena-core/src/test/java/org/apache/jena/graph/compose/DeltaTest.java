@@ -41,7 +41,7 @@ public class DeltaTest  {
 	public DeltaTest() {
 		super();
 		graphProducer = new AbstractGraphProducer<Delta>() {
-			private Map<Graph, Graph> map = new HashMap<Graph, Graph>();
+			private Map<Graph, Graph> map = new HashMap<>();
 
 			@Override
 			protected Delta createNewGraph() {

@@ -18,7 +18,6 @@
 
 package arq.examples.bgpmatching;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -71,7 +70,7 @@ public class StageAltMain
             ARQ.getContext().set(ARQ.stageGenerator, stageGenAlt) ;
         }
         
-        Query query = QueryFactory.create( StrUtils.strjoin("\n", queryString)) ;
+        Query query = QueryFactory.create( String.join("\n", queryString)) ;
         QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
         
         // ... or set on a per-execution basis.

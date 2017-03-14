@@ -103,9 +103,9 @@ public abstract class JenaConnection implements Connection {
     private boolean autoCommit = DEFAULT_AUTO_COMMIT;
     private int isolationLevel = DEFAULT_ISOLATION_LEVEL;
     private int compatibilityLevel = JdbcCompatibility.DEFAULT;
-    private List<Statement> statements = new ArrayList<Statement>();
-    private List<CommandPreProcessor> preProcessors = new ArrayList<CommandPreProcessor>();
-    private List<ResultsPostProcessor> postProcessors = new ArrayList<ResultsPostProcessor>();
+    private List<Statement> statements = new ArrayList<>();
+    private List<CommandPreProcessor> preProcessors = new ArrayList<>();
+    private List<ResultsPostProcessor> postProcessors = new ArrayList<>();
 
     /**
      * Creates a new connection

@@ -52,11 +52,7 @@ public abstract class QueryIteratorBase
     // ONLY the requestingCancel variable needs to be volatile. The abortIterator is guaranteed to 
     // be visible because it is written to before requestingCancel, and read from after.
 
-    /** 
-        In the process of requesting a cancel, or one has been done.
-        `protected` to allow tests to read it.
-    */  
-    protected volatile boolean requestingCancel = false;
+    private volatile boolean requestingCancel = false;
 
     /* If set, any hasNext/next throws QueryAbortedException
      * In normal operation, this is the same setting as requestingCancel.
@@ -90,6 +86,10 @@ public abstract class QueryIteratorBase
     /** Propagates the cancellation request - called asynchronously with the iterator itself */
     protected abstract void requestCancel();
     
+    /* package */ boolean getRequestingCancel() {
+        return requestingCancel ;
+    }
+    
     // -------- The contract with the subclasses 
 
     protected boolean isFinished() { return finished ; }
@@ -118,7 +118,7 @@ public abstract class QueryIteratorBase
                 close() ;
             } catch (QueryFatalException ex)
             { 
-                Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
+                Log.error(this, "Fatal exception: "+ex.getMessage() ) ;
                 throw ex ;      // And pass on up the exception.
             }
         return r ;
@@ -167,7 +167,7 @@ public abstract class QueryIteratorBase
             return obj ;
         } catch (QueryFatalException ex)
         { 
-            Log.fatal(this, "QueryFatalException", ex) ; 
+            Log.error(this, "QueryFatalException", ex) ; 
             throw ex ; 
         }
     }

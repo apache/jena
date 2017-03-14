@@ -1,0 +1,61 @@
+Apache Jena Fuseki2
+===================
+
+Apache Jena Fuseki2 is a SPARQL server.
+
+Full documentation:
+  http://jena.apache.org/documentation/fuseki2/
+
+This distribution contains Fuseki2 package as a WAR file ('fuseki.war'),
+to run in a webapp conatiner server such as Apache Tomcat, and also a
+self-contained jar, to run as a operation system process.
+
+The script 'fuseki' is an Linux init script to run Fuseki2 as a service.
+Instructions are in comments at the start of the script.
+
+The script 'fuseki-server' is a script to run the server using
+fuseki-server.jar from the command line.  Use 'fuseki-server --help' for
+details.
+
+The directory 'bin/' contains some scripts execute SPARQL Protocol and
+SPARQL Graph Store Protocol operations.
+Documentation: http://jena.apache.org/documentation/fuseki2/soh.html
+
+
+Cryptographic Software Notice
+-----------------------------
+
+This distribution includes cryptographic software. The country in which
+you currently reside may have restrictions on the import, possession,
+use, and/or re-export to another country, of encryption software. BEFORE
+using any encryption software, please check your country's laws,
+regulations and policies concerning the import, possession, or use, and
+re-export of encryption software, to see if this is permitted.
+See <http://www.wassenaar.org/> for more information.
+
+The U.S. Government Department of Commerce, Bureau of Industry and
+Security (BIS), has classified this software as Export Commodity
+Control Number (ECCN) 5D002.C.1, which includes information security
+software using or performing cryptographic functions with asymmetric
+algorithms. The form and manner of this Apache Software Foundation
+distribution makes it eligible for export under the License Exception
+ENC Technology Software Unrestricted (TSU) exception (see the BIS
+Export Administration Regulations, Section 740.13) for both object
+code and source code.
+
+The following provides more details on the included software that
+may be subject to export controls on cryptographic software:
+
+  Apache Jena Fuseki2 (distribution) includes
+     Apache HttpComponents Client 
+     Apache HttpComponents Core
+  which interfaces with the Java Secure Socket Extension (JSSE) API
+  and also 
+     Apache Shiro
+     Eclipse Jetty
+  to provide
+
+     - HTTPS support
+
+   Apache Jena Fuseki2 (distribution) does not include any
+   implementation of JSSE.

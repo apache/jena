@@ -34,7 +34,7 @@ import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
 public class AbstractResultsMetadata implements ResultSetMetaData {
 
     protected ResultSet results;
-    protected List<ColumnInfo> columns = new ArrayList<ColumnInfo>();
+    protected List<ColumnInfo> columns = new ArrayList<>();
 
     /**
      * Abstract implementation of result set metadata
@@ -200,7 +200,7 @@ public class AbstractResultsMetadata implements ResultSetMetaData {
      * @return Column Information
      */
     public List<ColumnInfo> getJenaColumnInfo() {
-        return new ArrayList<ColumnInfo>(this.columns);
+        return new ArrayList<>(this.columns);
     }
 
 }

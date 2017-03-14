@@ -22,9 +22,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
@@ -55,7 +54,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     private final UpdateRequest request;
     private final String endpoint;
     private final Context context;
-    private HttpAuthenticator authenticator;
+    private HttpClient client;
     private Params params;
 
     protected List<String> defaultGraphURIs = new ArrayList<>();
@@ -106,17 +105,13 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
             if (log.isDebugEnabled())
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
 
-            // Apply authentication settings
-            String user = serviceContext.getAsString(Service.queryAuthUser);
-            String pwd = serviceContext.getAsString(Service.queryAuthPwd);
+            // Apply client settings
+            HttpClient client = serviceContext.get(Service.queryClient);
 
-            if (user != null || pwd != null) {
-                user = user == null ? "" : user;
-                pwd = pwd == null ? "" : pwd;
+            if (client != null) {
                 if (log.isDebugEnabled())
-                    log.debug("Setting basic HTTP authentication for endpoint URI {} with username: {} ", serviceURI, user);
-
-                engine.setAuthentication(user, pwd.toCharArray());
+                    log.debug("Using context-supplied client for endpoint URI {}", serviceURI);
+                engine.setClient(client);
             }
         }
     }
@@ -136,7 +131,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     }
 
     /**
-     * Gets the generated query string portion of the endpoint URL if applicable
+     * Gets the generated HTTP query string portion of the endpoint URL if applicable
      * <p>
      * Generated string will not include leading ? so that consuming code can
      * decide whether to add this themselves since the generated query string
@@ -263,56 +258,31 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     }
 
     /**
-     * Sets authentication credentials for remote updates
+     * Sets the client to use
      * <p>
-     * May be better to use {@link #setAuthenticator(HttpAuthenticator)} as that
-     * allows for more complex authentication to be used
+     * Note that you can globally set an client via
+     * {@link HttpOp#setDefaultHttpClient(HttpClient)} to avoid the
+     * need to set client on a per-request basis
      * </p>
      * 
-     * @param username
-     *            User name
-     * @param password
-     *            Password
+     * @param client
+     *            HTTP client
      */
-    public void setAuthentication(String username, char[] password) {
-        this.setAuthenticator(new SimpleAuthenticator(username, password));
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
 
     /**
-     * Sets the authenticator to use
+     * Gets the client that has been set (if any)
      * <p>
-     * Note that you can globally set an authenticator via
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} to avoid the
-     * need to set authentication on a per-request basis
-     * </p>
-     * 
-     * @param authenticator
-     *            HTTP Authenticator
-     */
-    public void setAuthenticator(HttpAuthenticator authenticator) {
-        this.authenticator = authenticator;
-    }
-
-    /**
-     * Gets the authenticator that has been set (if any)
-     * <p>
-     * If no authenticator is used then the default authenticator will be used,
+     * If no client is used then the default client will be used,
      * this can be configured via the
-     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
+     * {@link HttpOp#setDefaultHttpClient(HttpClient)} method.
      * </p>
      * 
-     * @return HTTP Authenticator if set, null otherwise
+     * @return HTTP client if set, null otherwise
      */
-    public HttpAuthenticator getAuthenticator() {
-        return this.authenticator;
-    }
-
-    /**
-     * Gets whether any authenticator has been set
-     * 
-     * @return True if an authenticator has been set, false otherwise
-     */
-    public boolean isUsingAuthentication() {
-        return this.authenticator != null;
+    public HttpClient getClient() {
+        return this.client;
     }
 }

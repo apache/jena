@@ -19,7 +19,9 @@
 package org.apache.jena.query;
 
 import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
@@ -88,8 +90,8 @@ public class ARQ
 
     /** Symbol to enable logging of execution.  
      * Must also set log4j, or other logging system,
-     * for logger "com.hp.hpl.jena.sparql.exec"
-     * e.g. log4j.properties -- log4j.logger.com.hp.hpl.jena.sparql.exec=INFO
+     * for logger "org.apache.jena.jena.sparql.exec"
+     * e.g. log4j.properties -- log4j.logger.org.apache.jena.sparql.exec=INFO
      * See the <a href="http://jena.apache.org/documentation/query/logging.html">ARQ Logging Documentation</a>.
      */
     public static final Symbol symLogExec           = SystemARQ.allocSymbol("logExec") ;
@@ -576,6 +578,9 @@ public class ARQ
             }
             initialized = true ;
             JenaSystem.logLifecycle("ARQ.init - start") ;
+            // Force constants to be set.  This should be independent of other initialization including jena core.
+            ARQConstants.getGlobalPrefixMap();
+            ResultSetLang.init();
             globalContext = defaultSettings() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;

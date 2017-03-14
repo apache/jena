@@ -197,7 +197,7 @@ public class TestTuple {
         assertArrayEquals(array1, array) ;
     }
 
-    private void check(Tuple<Integer> tuple) {
+    private static void check(Tuple<Integer> tuple) {
         int val = 9 ;
         for ( int i = 0 ; i < tuple.len() ; i++ ) {
             assertEquals(val-i, tuple.get(i).intValue()) ; 

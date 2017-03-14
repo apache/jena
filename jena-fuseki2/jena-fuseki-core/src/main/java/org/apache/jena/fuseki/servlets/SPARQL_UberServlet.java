@@ -204,10 +204,16 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( !hasTrailing ) {
             // Nothing after the DataAccessPoint i.e. Dataset by name.
             // Action on the dataset itself. This can be:
+            //
             //   http://localhost:3030/ds?query=
-            //   http://localhost:3030/ds and a content type.
-            //   http://localhost:3030/ds?default ?graph=  GSP  
-            //   http://localhost:3030/ds , REST quads action on the dataset itself.
+            //   http://localhost:3030/ds and a content type of "applicatiopn/sparql-query"
+            //
+            //   http://localhost:3030/ds?update=
+            //   http://localhost:3030/ds and a content type of "applicatiopn/sparql-update"
+            //
+            //   http://localhost:3030/ds?default ?graph=  GSP
+            //
+            //   http://localhost:3030/ds   REST quads action on the dataset itself.
             if ( isQuery ) {
                 if ( !allowQuery(action) )
                     ServletOps.errorMethodNotAllowed("SPARQL query : "+method) ;

@@ -53,7 +53,7 @@ public class TestDatasetConnectionMetadata extends AbstractDatabaseMetadataTests
 
     @Override
     protected List<Integer> getSupportedTransactionLevels() {
-        List<Integer> levels = new ArrayList<Integer>();
+        List<Integer> levels = new ArrayList<>();
         levels.add(Connection.TRANSACTION_NONE);
         if ( supportsSerializable )
             levels.add(Connection.TRANSACTION_SERIALIZABLE);

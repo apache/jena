@@ -87,7 +87,7 @@ public class SecurityEvaluatorParameters extends Suite
 		}
 	}
 
-	private final ArrayList<Runner> runners = new ArrayList<Runner>();
+	private final ArrayList<Runner> runners = new ArrayList<>();
 
 	/**
 	 * Only called reflectively. Do not use programmatically.
@@ -95,7 +95,7 @@ public class SecurityEvaluatorParameters extends Suite
 	public SecurityEvaluatorParameters( final Class<?> klass ) throws Throwable
 	{
 		super(klass, Collections.<Runner> emptyList());
-		final List<Object[]> parametersList = new ArrayList<Object[]>();
+		final List<Object[]> parametersList = new ArrayList<>();
 
 		final boolean[] bSet = { true, false };
 

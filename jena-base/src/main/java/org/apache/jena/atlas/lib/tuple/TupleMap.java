@@ -24,6 +24,7 @@ import java.util.ArrayList ;
 import java.util.Arrays;
 import java.util.Collections ;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.ListUtils ;
@@ -272,7 +273,7 @@ public class TupleMap {
     }
 
     /** Apply an index transformation */
-    private <T> void applyArray(T[] src, T[] dst, int[] transform) {
+    private static <T> void applyArray(T[] src, T[] dst, int[] transform) {
         for ( int i = 0 ; i < src.length ; i++ ) {
             int j = transform[i] ;
             dst[i] = src[j] ;
@@ -362,7 +363,7 @@ public class TupleMap {
         return arrayToList(putTransform) ;
     }
 
-    private List<Integer> arrayToList(int[] array) {
+    private static List<Integer> arrayToList(int[] array) {
         List<Integer> list = new ArrayList<>(array.length) ;
         for ( int x : array ) 
             list.add(x) ;
@@ -381,18 +382,12 @@ public class TupleMap {
         return format("%s:%s:%s", label, mapStr(putTransform, "->"), mapStr(getTransform, "<-"));
     }
 
-    private Object mapStr(int[] map, String arrow) {
-        StringBuilder buff = new StringBuilder();
-        String sep = "{";
-
+    private static Object mapStr(int[] map, String arrow) {
+        StringJoiner j = new StringJoiner(", ", "{", "}");
         for ( int i = 0 ; i < map.length ; i++ ) {
-            buff.append(sep);
-            sep = ", ";
-            buff.append(format("%d%s%d", i, arrow, map[i]));
+            j.add(format("%d%s%d", i, arrow, map[i]));
         }
-        buff.append("}");
-
-        return buff.toString();
+        return j.toString();
     }
 
     public String getLabel() {

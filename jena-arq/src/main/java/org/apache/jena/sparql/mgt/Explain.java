@@ -227,7 +227,7 @@ public class Explain {
     // Remove when QuadPatterns roll through from ARQ.
 
     private static void formatQuads(IndentedLineBuffer out, QuadPattern quads) {
-        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+        SerializationContext sCxt = SSE.sCxt(SSE.getPrefixMapWrite()) ;
 
         boolean first = true ;
         for ( Quad qp : quads ) {
@@ -254,22 +254,14 @@ public class Explain {
     }
 
     private static void formatTriples(IndentedLineBuffer out, BasicPattern triples) {
-        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+        SerializationContext sCxt = SSE.sCxt(SSE.getPrefixMapWrite()) ;
 
         boolean first = true ;
         for ( Triple qp : triples ) {
-            if ( !first ) {
-                if ( !MultiLinesForPatterns )
-                    out.print(" ") ;
-            } else
-                first = false ;
-            out.print("(") ;
-            WriterNode.output(out, qp.getSubject(), sCxt) ;
-            out.print(" ") ;
-            WriterNode.output(out, qp.getPredicate(), sCxt) ;
-            out.print(" ") ;
-            WriterNode.output(out, qp.getObject(), sCxt) ;
-            out.print(")") ;
+            if ( ! first && ! MultiLinesForPatterns )
+                out.print(" ") ;
+            first = false ;
+            WriterNode.outputPlain(out, qp, sCxt);
             if ( MultiLinesForPatterns )
                 out.println() ;
         }

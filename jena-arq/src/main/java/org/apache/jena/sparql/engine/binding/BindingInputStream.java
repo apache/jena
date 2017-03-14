@@ -42,6 +42,7 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.graph.NodeConst ;
 
 /** Language for reading in a stream of bindings.
  * See <a href="https://cwiki.apache.org/confluence/display/JENA/BindingIO">BindingIO</a>
@@ -133,19 +134,26 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             while ( lookingAt(TokenType.KEYWORD) )
             {
-                Token t = nextToken() ;
+                Token t = peekToken() ;
                 if ( t.getImage().equalsIgnoreCase("VARS") )
                 {
+                    nextToken();
                     directiveVars() ;
                     continue ;
                 }
                 if ( t.getImage().equalsIgnoreCase("PREFIX") )
                 {
+                    nextToken();
                     directivePrefix() ;
                     continue ;
                 }
+                // Not a directive.
+                break;
             }
         }
+        
+        protected final static String  KW_TRUE        = "true" ;
+        protected final static String  KW_FALSE       = "false" ;
 
         @Override
         protected Binding moveToNext()
@@ -168,12 +176,24 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 {
                     Node n ;
                     // One case; VARS line then *
-                    if ( token.hasType(TokenType.STAR ) || ( token.isCtlCode() && token.getCntrlCode() == -1 ) )
+                    if ( token.hasType(TokenType.STAR ) )
                         n = lastLine.get(v) ;
                     else if ( token.hasType(TokenType.BNODE) )
                         n = NodeFactory.createBlankNode(NodeFmtLib.decodeBNodeLabel(token.getImage())) ;
-                    else
+                    else if ( token.hasType(TokenType.KEYWORD) ) {
+                        // Keywords values.
+                        String lex = token.getImage();
+                        if ( lex.equals(KW_TRUE) )
+                            n = NodeConst.nodeTrue ;
+                        else if ( lex.equals(KW_FALSE) )
+                            n = NodeConst.nodeFalse ;
+                        else {
+                            exception(token, "Keyword out of place: "+lex);
+                            n = null;
+                        }
+                    } else {
                         n = profile.create(null, token) ;
+                    }
                     binding.add(v, n) ;
                 }
                 i++ ;

@@ -69,7 +69,8 @@ public class SecuredCapabilities implements Capabilities
 	 * @sec.graph Update
 	 * @sec.triple Create (if everyTriple is true)
 	 */
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public boolean addAllowed( final boolean everyTriple )
 	{
 		Object principal = securityEvaluator.getPrincipal();
@@ -85,7 +86,8 @@ public class SecuredCapabilities implements Capabilities
 		return retval;
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public boolean canBeEmpty()
 	{
 		return capabilities.canBeEmpty();
@@ -105,6 +107,7 @@ public class SecuredCapabilities implements Capabilities
 	 * @sec.graph Update
 	 * @sec.triple Delete (if everyTriple is true)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean deleteAllowed( final boolean everyTriple )
 	{
@@ -121,7 +124,8 @@ public class SecuredCapabilities implements Capabilities
 		return retval;
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public boolean findContractSafe()
 	{
 		return capabilities.findContractSafe();
@@ -136,7 +140,8 @@ public class SecuredCapabilities implements Capabilities
 	/**
 	 * @sec.graph Update
 	 */
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public boolean iteratorRemoveAllowed()
 	{
 		return securityEvaluator.evaluate(securityEvaluator.getPrincipal(), Action.Update, graphIRI)

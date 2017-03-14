@@ -137,7 +137,7 @@ public class SyntaxVarScope
         exprList.forEachExpr((v,e) -> {
             Set<Var> varInExpr = e.getVarsMentioned() ;
             // Include mentioned variables
-            // These may be unused in the query (in vars) but stil contribute.
+            // These may be unused in the query (in vars) but still contribute.
             vars2.addAll(varInExpr) ;
             checkAssignment( vars2, e, v );
             vars2.add( v );

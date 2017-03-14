@@ -41,7 +41,7 @@ public class ReorderProcIndexes implements ReorderProc
         if ( indexes.length != bgp.size() )
         {
             String str = String.format("Expected size = %d : actual basic pattern size = %d", indexes.length, bgp.size()) ;
-            Log.fatal(this, str) ;
+            Log.error(this, str) ;
             throw new ARQException(str) ; 
         }        
         

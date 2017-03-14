@@ -41,14 +41,15 @@ public class DataService { //implements DatasetMXBean {
         return dummy ; 
     }
     
-    public static DataService dummy = new DataService(null) ;
+    public static final DataService dummy ;
     static {
-        dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
+        DatasetGraph dsg = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
+        dummy = new DataService(dsg) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQuery) ;
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }
     
-    private DatasetGraph dataset = null ;              // Only valid if active.
+    private DatasetGraph dataset ;
 
     private ListMultimap<OperationName, Endpoint> operations    = ArrayListMultimap.create() ;
     private Map<String, Endpoint> endpoints                     = new HashMap<>() ;
@@ -56,17 +57,30 @@ public class DataService { //implements DatasetMXBean {
     private volatile DatasetStatus state = UNINITIALIZED ;
 
     // DataService-level counters.
-    private final CounterSet counters                   = new CounterSet() ;
+    private final CounterSet    counters                = new CounterSet() ;
     private final AtomicLong    requestCounter          = new AtomicLong(0) ;   
     private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
     private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
 
+    /** Create a {@code DataService} for the given dataset. */
     public DataService(DatasetGraph dataset) {
         this.dataset = dataset ;
         counters.add(CounterName.Requests) ;
         counters.add(CounterName.RequestsGood) ;
         counters.add(CounterName.RequestsBad) ;
     }
+
+    /**
+     * Create a {@code DataService} that has the same dataset, same operations and
+     * endpoints as another {@code DataService}. Counters are not copied.
+     */
+    public DataService(DataService other) {
+        // Copy non-counter state of 'other'.
+        this.dataset = other.dataset ;
+        this.operations = ArrayListMultimap.create(other.operations) ;
+        this.endpoints = new HashMap<>(other.endpoints) ;
+    }
+
     
     public DatasetGraph getDataset() {
         return dataset ; 

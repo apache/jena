@@ -207,7 +207,7 @@ public class TestDistinctDataNet extends TestCase
     
     private void testDiff(String first, String second, String expected)
     {
-        DistinctDataNet.SortedDiffIterator<String> sdi = DistinctDataNet.SortedDiffIterator.create(
+        DistinctDataNet.SortedDiffIterator.create(
                 Arrays.asList(first.split(" ")).iterator(),
                 Arrays.asList(second.split(" ")).iterator());
         

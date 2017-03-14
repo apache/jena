@@ -275,21 +275,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Command cmd = new Command() 
         { @Override
             public Object execute() { return null; } };
-            try { th.executeInTransaction( cmd ); } 
+            try { th.execute( ()->{} ); } 
             catch (UnsupportedOperationException x) {}
     }
 
-    public void testExecuteInTransactionCatchesThrowable()
-    {Graph g = getGraph();
-    TransactionHandler th = g.getTransactionHandler();
-    if (th.transactionsSupported())
-    {
-        Command cmd = new Command() 
-        { @Override
-            public Object execute() throws Error { throw new Error(); } };
-            try { th.executeInTransaction( cmd ); } 
+    public void testExecuteInTransactionCatchesThrowable() {
+        Graph g = getGraph();
+        TransactionHandler th = g.getTransactionHandler();
+        if (th.transactionsSupported()) {
+            try { th.execute( ()-> { throw new Error() ; } ); } 
             catch (JenaException x) {}
-    }
+        }
     }
 
     static final Triple [] tripleArray = tripleArray( "S P O; A R B; X Q Y" );
@@ -347,7 +343,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphUtil.delete( g, tripleList );
         assertEquals( "graph has original size", initialSize, g.size() );
     }
-
+    
     public void testAddWithReificationPreamble()
     {
         Graph g = getGraph();
@@ -392,10 +388,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
             assertFalse( g.contains( NodeCreateUtils.createTriple( findCheck ) ) );
         }
         catch (UnsupportedOperationException e) {
+            // No iterator remove.
             it.close();
-            assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); 
         }
-        it.close();
     }
 
     public void testHasCapabilities()
@@ -404,10 +399,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Capabilities c = g.getCapabilities();
         boolean sa = c.sizeAccurate();
         boolean aaSome = c.addAllowed();
-        boolean aaAll = c.addAllowed( true );
         boolean daSome = c.deleteAllowed();
-        boolean daAll = c.deleteAllowed( true );
-        boolean cbe = c.canBeEmpty();
     }
 
     public void testFind()
@@ -526,15 +518,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testEventDeleteByFind()
     {
         Graph g = getAndRegister( L );
-        if (g.getCapabilities().iteratorRemoveAllowed())
-        {
-            Triple toRemove = triple( "remove this triple" );
-            g.add( toRemove );
+        Triple toRemove = triple( "remove this triple" );
+        g.add( toRemove );
+        try {
             ExtendedIterator<Triple> rtr = g.find( toRemove );
             assertTrue( "ensure a(t least) one triple", rtr.hasNext() );
             rtr.next(); rtr.remove(); rtr.close();
             L.assertHas( new Object[] { "add", g, toRemove, "delete", g, toRemove} );
+        } catch (UnsupportedOperationException ex) {
+            // No iterator remove
         }
+
     }
 
     public void testTwoListeners()
@@ -631,14 +625,44 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph triples = graphWith( "this type graph; I type slowly" );
         GraphUtil.addInto( g, triples );
         L.assertHas( new Object[] {"addGraph", g, triples} );
+        testContains( g, triples );
     }
 
+    public void testBulkAddGraph1() {
+        Graph g1 = graphWith( "pigs might fly; dead can dance" );
+        Graph g2 = graphWith( "this type graph" );
+        GraphUtil.addInto( g1, g2 );
+        testContains( g1, g2 );
+    }
+
+    public void testBulkAddGraph2() {
+        Graph g1 = graphWith( "this type graph" );
+        Graph g2 = graphWith( "pigs might fly; dead can dance" );
+        GraphUtil.addInto( g1, g2 );
+        testContains( g1, g2);
+    }
+    
     public void testBulkDeleteGraph()
     {        
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
         GraphUtil.deleteFrom( g, triples );
         L.assertHas( new Object[] {"deleteGraph", g, triples} );
+        testOmits( g, triples );
+    }
+    
+    public void testBulkDeleteGraph1() {
+        Graph g1 = graphWith( "pigs might fly; dead can dance" );
+        Graph g2 = graphWith( "pigs might fly" );
+        GraphUtil.deleteFrom( g1, g2 );
+        testOmits( g1, g2);
+    }
+
+    public void testBulkDeleteGraph2() {
+        Graph g1 = graphWith( "pigs might fly" );
+        Graph g2 = graphWith( "pigs might fly; dead can dance" );
+        GraphUtil.deleteFrom( g1, g2 );
+        testOmits( g1, g2);
     }
 
     public void testGeneralEvent()
@@ -827,8 +851,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void failingTestDoubleRemoveAll() {
         final Graph g = getGraph();
-        if (g.getCapabilities().iteratorRemoveAllowed() ) {
-            graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
+        graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
+        try {
             Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)){
                 @Override
                 public void remove() {
@@ -841,6 +865,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
                 it.remove();
             }
             assertTrue( g.isEmpty() );
+        } catch (UnsupportedOperationException ex) {
+            // Iterator.remove not supported.
         }
     }
 

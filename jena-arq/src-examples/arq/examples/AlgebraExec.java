@@ -87,7 +87,7 @@ public class AlgebraExec
         {
             // -------- Or make ResultSet from it (but not both - reading an
             //          iterator consumes the current solution)
-            List<String> varNames = new ArrayList<String>() ;
+            List<String> varNames = new ArrayList<>() ;
             varNames.add("x") ;
             varNames.add("z") ;
             ResultSet rs = new ResultSetStream(varNames, m, qIter);

@@ -48,7 +48,7 @@ public class SecTestPackage extends AbstractTestPackage
 	
 	public SecTestPackage() throws SecurityException, IllegalArgumentException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
 	{
-		super("SecuredModel", new PlainModelFactory() );
+		super("SecuredModelTest", new PlainModelFactory() );
 		// register a jar reader here
 		StreamManager sm =StreamManager.get();
 		sm.addLocator( new LocatorJarURL()  );

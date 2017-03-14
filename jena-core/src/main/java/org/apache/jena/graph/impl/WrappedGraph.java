@@ -27,7 +27,9 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  */
 public class WrappedGraph implements GraphWithPerform
 {
-    protected Graph base;
+    protected final Graph base;
+    public Graph getWrapped() { return base ; }
+    
     protected GraphEventManager gem;
     
     public WrappedGraph( Graph base )

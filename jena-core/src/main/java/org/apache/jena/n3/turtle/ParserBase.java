@@ -24,7 +24,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.n3.IRIResolver ;
+import org.apache.jena.n3.N3IRIResolver ;
 import org.apache.jena.n3.JenaURIException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
@@ -59,12 +59,12 @@ public class ParserBase
     public ParserBase() {}
     
     PrefixMapping prefixMapping = new PrefixMappingImpl() ;
-    IRIResolver resolver = new IRIResolver() ;
+    N3IRIResolver resolver = new N3IRIResolver() ;
     
     protected String getBaseURI()       { return resolver.getBaseIRI() ; }
     public void setBaseURI(String u)
     {
-        resolver = new IRIResolver(u) ;
+        resolver = new N3IRIResolver(u) ;
     }
     
     protected void setBase(String iriStr , int line, int column)

@@ -55,7 +55,7 @@ public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
         return master;
     }
 
-    private final ThreadLocal<TupleMapType> local = withInitial(() -> master().get());
+    private final ThreadLocal<TupleMapType> local = withInitial(()->null);
 
     /**
      * @return a thread-local transactional reference to the internal table structure
@@ -88,7 +88,9 @@ public abstract class PMapTupleTable<TupleMapType, TupleType, ConsumerType>
      * {@link #local} is initialized via {@link #initial()}
      */
     @Override
-    public void begin(final ReadWrite rw) {}
+    public void begin(final ReadWrite rw) {
+        local.set(master().get());
+    }
 
     @Override
     public void end() {
