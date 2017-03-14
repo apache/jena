@@ -63,8 +63,6 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     public TextQueryPF() {}
 
-    private String langArg = null;
-
     private static final Symbol cacheSymbol = Symbol.create("TextQueryPF.cache");
     private static final int CACHE_SIZE = 10;
 
@@ -89,15 +87,6 @@ public class TextQueryPF extends PropertyFunctionBase {
 
             if (list.size() > 4)
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
-            
-            
-            //extract of extra lang arg if present and if is usable.
-            //arg is removed from the list to avoid conflict with order and args length
-            langArg = extractArg("lang", list);
-
-            if (langArg != null && textIndex.getDocDef().getLangField() == null)
-                log.warn("lang argument is ignored if langField not set in the index configuration");
-            
         }
     }
 
@@ -220,13 +209,13 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLimit(), execCxt) ;
+        ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), execCxt) ;
         Collection<TextHit> r = results.values();
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), -1, execCxt) ;
+        ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
             return IterLib.noResults(execCxt) ;
@@ -236,7 +225,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
-    private ListMultimap<String,TextHit> query(Node property, String queryString, int limit, ExecutionContext execCxt) {
+    private ListMultimap<String,TextHit> query(Node property, String queryString, String lang, int limit, ExecutionContext execCxt) {
         // use the graph information in the text index if possible
         String graph = null;
         if (textIndex.getDocDef().getGraphField() != null
@@ -247,16 +236,6 @@ public class TextQueryPF extends PropertyFunctionBase {
                     activeGraph.getGraphName() != null 
                     ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
                     : Quad.defaultGraphNodeGenerated.getURI() ;
-            }
-        }
-
-        //for language-based search extension
-        if (textIndex.getDocDef().getLangField() != null) {
-            String field = textIndex.getDocDef().getLangField();
-            if (langArg != null) {
-                String qs2 = !"none".equals(langArg)?
-                        field + ":" + langArg : "-" + field + ":*";
-                queryString = "(" + queryString + ") AND " + qs2;
             }
         }
 
@@ -276,7 +255,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         final String queryStr = queryString; // final needed for the lambda function
         final String graphURI = graph; // final needed for the lambda function
         ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, () -> {
-            List<TextHit> resultList = textIndex.query(property, queryStr, graphURI, limit) ;
+            List<TextHit> resultList = textIndex.query(property, queryStr, graphURI, lang, limit) ;
             ListMultimap<String,TextHit> resultMultimap = LinkedListMultimap.create();
             for (TextHit result : resultList) {
                 resultMultimap.put(TextQueryFuncs.subjectToString(result.getNode()), result);
@@ -307,11 +286,11 @@ public class TextQueryPF extends PropertyFunctionBase {
             }
 
             String qs = o.getLiteralLexicalForm() ;
-            return new StrMatch(null, qs, -1, 0) ;
+            return new StrMatch(null, qs, null, -1, 0) ;
         }
 
         List<Node> list = argObject.getArgList() ;
-        if (list.size() == 0 || list.size() > 3)
+        if (list.size() == 0 || list.size() > 4)
             throw new TextIndexException("Change in object list size") ;
 
         Node predicate = null ;
@@ -363,23 +342,27 @@ public class TextQueryPF extends PropertyFunctionBase {
             limit = (v < 0) ? -1 : v ;
         }
 
-        String qs = queryString ;
-        if (field != null)
-            qs = field + ":" + qs ;
+        //extract extra lang arg if present and if is usable.
+        String lang = extractArg("lang", list);
 
-        return new StrMatch(predicate, qs, limit, score) ;
+        if (lang != null && textIndex.getDocDef().getLangField() == null)
+            log.warn("lang argument is ignored if langField not set in the index configuration");
+
+        return new StrMatch(predicate, queryString, lang, limit, score) ;
     }
 
     class StrMatch {
         private final Node   property ;
         private final String queryString ;
+        private final String lang ;
         private final int    limit ;
         private final float  scoreLimit ;
 
-        public StrMatch(Node property, String queryString, int limit, float scoreLimit) {
+        public StrMatch(Node property, String queryString, String lang, int limit, float scoreLimit) {
             super() ;
             this.property = property ;
             this.queryString = queryString ;
+            this.lang = lang ;
             this.limit = limit ;
             this.scoreLimit = scoreLimit ;
         }
@@ -390,6 +373,10 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         public String getQueryString() {
             return queryString ;
+        }
+
+        public String getLang() {
+            return lang ;
         }
 
         public int getLimit() {
