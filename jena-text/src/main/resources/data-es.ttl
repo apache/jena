@@ -21,22 +21,25 @@
 
 :s a :Thing ;
    :p :123 ;
-   rdfs:label "Thing 1" ;
+   rdfs:label "Thing 1"@en ;
+   rdfs:comment "this is a comment"@en ;
+   rdfs:comment "this is another comment"@en ;
    :id 123 .
 
 :s1 a :Thing ;
    :p :123 ;
-   rdfs:label "Thing 2" ;
+   rdfs:label "Thing 2"@en ;
    :id 123 .
 
 :s2 a :Thing ;
    :p :123 ;
-   rdfs:label "Whatever" ;
+   rdfs:label "Whatever"@en ;
    :id 123 .
 
    
-:x1 rdfs:label "X1 word" .
-:x1 rdfs:label "X1 word" .
+:x1 rdfs:label "X1 word"@en .
+:x1 rdfs:label "X1 another word" .
 :x2 rdfs:label "X2 word" .
 :x3 rdfs:label "X3 word" .
+:x3 rdfs:label "X4 word" .
 :x1 rdfs:label "X9 word" .

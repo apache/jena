@@ -41,9 +41,9 @@ public class JenaTextExample1
     
     public static void main(String ... argv)
     {
-        Dataset ds = createCode() ;
-        //Dataset ds = createAssembler() ;
-        loadData(ds , "data.ttl") ;
+//        Dataset ds = createCode() ;
+        Dataset ds = createAssembler() ;
+        loadData(ds , "data-es.ttl") ;
         queryData(ds) ;
     }
     
@@ -106,7 +106,7 @@ public class JenaTextExample1
         
         String qs = StrUtils.strjoinNL
             ( "SELECT * "
-            , " { ?s text:query (rdfs:label 'X1') ;"
+            , " { ?s text:query (rdfs:label 'X1' 'lang:en') ;"
             , "      rdfs:label ?label"
             , " }") ; 
         

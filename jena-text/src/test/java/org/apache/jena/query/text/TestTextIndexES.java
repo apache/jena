@@ -43,6 +43,10 @@ import java.util.concurrent.ExecutionException;
 @ESIntegTestCase.ClusterScope()
 public class TestTextIndexES extends ESIntegTestCase {
 
+    static {
+        System.setProperty("tests.security.manager", "false");
+    }
+
     static final String DOC_TYPE = "text";
 
     static final String INDEX_NAME = "test";
@@ -57,6 +61,7 @@ public class TestTextIndexES extends ESIntegTestCase {
      */
     @Test
     public void testAddEntity() {
+        System.setProperty("tests.security.manager", "false");
         init();
         String labelKey = "label";
         String labelValue = "this is a sample Label";
@@ -71,6 +76,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testDeleteEntity() {
+        System.setProperty("tests.security.manager", "false");
         init();
         //First add an entity
         testAddEntity();
@@ -84,6 +90,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testDeleteWhenNoneExists() {
+        System.setProperty("tests.security.manager", "false");
         init();
         GetResponse response = client.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x3").get();
         Assert.assertFalse(response.isExists());
@@ -95,6 +102,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testQuery() {
+        System.setProperty("tests.security.manager", "false");
         init();
         testAddEntity();
         List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "this", 1);
@@ -105,6 +113,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testQueryWhenDataDoesNotExist() {
+        System.setProperty("tests.security.manager", "false");
         init();
         List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "this", 1);
         Assert.assertNotNull(result);
@@ -113,6 +122,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testGetEntity() {
+        System.setProperty("tests.security.manager", "false");
         init();
         //First add an entity
         testAddEntity();
@@ -124,6 +134,7 @@ public class TestTextIndexES extends ESIntegTestCase {
 
     @Test
     public void testGetWhenDataDoesNotExist() {
+        System.setProperty("tests.security.manager", "false");
         init();
         Map<String, Node> response = classToTest.get("http://example/x3");
         Assert.assertNotNull(response);

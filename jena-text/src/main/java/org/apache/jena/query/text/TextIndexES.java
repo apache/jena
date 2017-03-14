@@ -35,16 +35,14 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
@@ -75,12 +73,21 @@ public class TextIndexES implements TextIndex {
 
     static final String NUM_OF_REPLICAS = "number_of_replicas";
 
+    private boolean isMultilingual ;
+
     private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
     public TextIndexES(TextIndexConfig config, ESSettings esSettings) throws Exception{
 
         this.INDEX_NAME = esSettings.getIndexName();
+        this.docDef = config.getEntDef();
 
+
+        this.isMultilingual = config.isMultilingualSupport();
+        if (this.isMultilingual &&  config.getEntDef().getLangField() == null) {
+            //multilingual index cannot work without lang field
+            docDef.setLangField("lang");
+        }
         if(client == null) {
 
             LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
@@ -96,8 +103,6 @@ public class TextIndexES implements TextIndex {
             client = new PreBuiltTransportClient(settings).addTransportAddresses(addresses.toArray(socketAddresses));
             LOGGER.debug("Successfully initialized the client");
         }
-
-        this.docDef = config.getEntDef();
 
 
         IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(INDEX_NAME)).get();
@@ -122,6 +127,7 @@ public class TextIndexES implements TextIndex {
      */
     public TextIndexES(TextIndexConfig config, Client client, String indexName) {
         this.docDef = config.getEntDef();
+        this.isMultilingual = true;
         this.client = client;
         this.INDEX_NAME = indexName;
     }
@@ -185,16 +191,36 @@ public class TextIndexES implements TextIndex {
     public void addEntity(Entity entity) {
         LOGGER.debug("Adding/Updating the entity in ES");
 
+        //The field that has a not null value in the current Entity instance.
+        //Required, mainly for building a script for the update command.
+        String fieldToAdd = null;
+        String fieldValueToAdd = "";
         try {
             XContentBuilder builder = jsonBuilder()
                     .startObject();
 
-            if (docDef.getGraphField() != null) {
-                builder = builder.field(docDef.getGraphField(), entity.getGraph());
-            }
+            //Currently ignoring Graph field based indexing
+//            if (docDef.getGraphField() != null) {
+//                builder = builder.field(docDef.getGraphField(), entity.getGraph());
+//            }
 
             for(String field: docDef.fields()) {
-                builder = builder.field(field, entity.get(field));
+                if(entity.get(field) != null) {
+                    if(entity.getLanguage() != null && !entity.getLanguage().isEmpty() && isMultilingual) {
+                        fieldToAdd = field + "_" + entity.getLanguage();
+                    } else {
+                        fieldToAdd = field;
+                    }
+
+                    fieldValueToAdd = (String) entity.get(field);
+                    builder = builder.field(fieldToAdd, Arrays.asList(fieldValueToAdd));
+                    break;
+                } else {
+                    //We are making sure that the field is at-least added to the index.
+                    //This will help us tremendously when we are appending the data later in an already indexed document.
+                    builder = builder.field(field, Collections.emptyList());
+                }
+
             }
 
             builder = builder.endObject();
@@ -209,8 +235,26 @@ public class TextIndexES implements TextIndex {
              * This functionality is called Upsert functionality and more can be learned about it here:
              * https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#upserts
              */
+
+            //First Search of the field exists or not
+            SearchResponse existsResponse = client.prepareSearch(INDEX_NAME)
+                    .setTypes(docDef.getEntityField())
+                    .setQuery(QueryBuilders.existsQuery(fieldToAdd))
+                    .get();
+            String script;
+            if(existsResponse != null && existsResponse.getHits() != null && existsResponse.getHits().totalHits() > 0) {
+                //This means field already exists and therefore we should append to it
+                script = "ctx._source." + fieldToAdd+".add('"+ fieldValueToAdd + "')";
+            } else {
+                //The field does not exists. so we create one
+                script = "ctx._source." + fieldToAdd+" =['"+ fieldValueToAdd + "']";
+            }
+
+
+
             UpdateRequest upReq = new UpdateRequest(INDEX_NAME, docDef.getEntityField(), entity.getId())
-                    .doc(builder).upsert(indexRequest);
+                    .script(new Script(script))
+                    .upsert(indexRequest);
 
             UpdateResponse response = client.update(upReq).get();
 
@@ -232,8 +276,39 @@ public class TextIndexES implements TextIndex {
     @Override
     public void deleteEntity(Entity entity) {
 
+        String fieldToRemove = null;
+        String valueToRemove = null;
+        for(String field : docDef.fields()) {
+            if(entity.get(field) != null) {
+                fieldToRemove = field;
+                valueToRemove = (String)entity.get(field);
+                break;
+            }
+        }
+        //First Search of the field exists or not
+        SearchResponse existsResponse = client.prepareSearch(INDEX_NAME)
+                .setTypes(docDef.getEntityField())
+                .setQuery(QueryBuilders.existsQuery(fieldToRemove))
+                .get();
+
+        String script = null;
+        if(existsResponse != null && existsResponse.getHits() != null && existsResponse.getHits().totalHits() > 0) {
+            //This means field already exists and therefore we should remove from it
+            script = "ctx._source." + fieldToRemove+".remove('"+ valueToRemove + "')";
+        }
+
+        UpdateRequest updateRequest = new UpdateRequest(INDEX_NAME, docDef.getEntityField(), entity.getId())
+                .script(new Script(script));
+
+        try {
+            client.update(updateRequest).get();
+        }catch(Exception e) {
+            throw new TextIndexException("Unable to delete entity.", e);
+        }
+
+
         LOGGER.debug("deleting content related to entity: " + entity.getId());
-        client.prepareDelete(INDEX_NAME, docDef.getEntityField(), entity.getId()).get();
+//        client.prepareDelete(INDEX_NAME, docDef.getEntityField(), entity.getId()).get();
 
     }
 
@@ -294,6 +369,7 @@ public class TextIndexES implements TextIndex {
     @Override
     public List<TextHit> query(Node property, String qs, int limit) {
 
+        qs = parse(qs);
         LOGGER.debug("Querying ElasticSearch for QueryString: " + qs);
         SearchResponse response = client.prepareSearch(INDEX_NAME)
                 .setTypes(docDef.getEntityField())
@@ -306,9 +382,9 @@ public class TextIndexES implements TextIndex {
 
             Node literal;
             String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
-            String value = (String)hit.getSource().get(field);
+            List<String> value = (List<String>)hit.getSource().get(field);
             if(value != null) {
-                literal = NodeFactory.createLiteral(value);
+                literal = NodeFactory.createLiteral(value.get(0));
             } else {
                 LOGGER.debug("The value for field :" + field + " is null. Not creating a TextHit instance. Moving to the next one.");
                 continue;
@@ -327,6 +403,23 @@ public class TextIndexES implements TextIndex {
     @Override
     public EntityDefinition getDocDef() {
         return docDef ;
+    }
+
+    private String parse(String qs) {
+        if (this.isMultilingual) {
+            if (qs.contains(getDocDef().getLangField() + ":")) {
+                String lang = qs.substring(qs.lastIndexOf(":") + 1);
+                if (!"*".equals(lang)) {
+                    // splice the language into the field name
+                    qs = qs.replaceFirst(":", "_"+ lang + ":");
+                    qs = qs.substring(0, qs.indexOf("AND"));
+                }
+            } else {
+                qs = qs.replaceFirst(":", "\\\\*" + ":");
+            }
+        }
+        return qs;
+
     }
 
 }
