@@ -232,31 +232,12 @@ public class TextIndexES implements TextIndex {
             IndexRequest indexRequest = new IndexRequest(indexName, docDef.getEntityField(), entity.getId())
                     .source(builder);
 
-            /**
-             * We are creating an upsert request here instead of a simple insert request.
-             * The reason is we want to add a document if it does not exist with the given Subject Id (URI).
-             * But if the document exists with the same Subject Id, we want to do an update to it instead of deleting it and
-             * then creating it with only the latest field values.
-             * This functionality is called Upsert functionality and more can be learned about it here:
-             * https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#upserts
-             */
-
-            //First Search if the field exists or not
-            SearchResponse existsResponse = client.prepareSearch(indexName)
-                    .setTypes(docDef.getEntityField())
-                    .setQuery(QueryBuilders.existsQuery(fieldToAdd))
-                    .get();
-            String script;
-            if(existsResponse != null && existsResponse.getHits() != null && existsResponse.getHits().totalHits() > 0) {
-                //This means field already exists and therefore we should append to it
-                script = "ctx._source." + fieldToAdd+".add('"+ fieldValueToAdd + "')";
-            } else {
-                //The field does not exists. so we create one
-                script = "ctx._source." + fieldToAdd+" =['"+ fieldValueToAdd + "']";
-            }
+            String addUpdateScript = "if(ctx._source.<fieldName> == null || ctx._source.<fieldName>.empty) " +
+                    "{ctx._source.<fieldName>=['<fieldValue>'] } else {ctx._source.<fieldName>.add('<fieldValue>')}";
+            addUpdateScript = addUpdateScript.replaceAll("<fieldName>", fieldToAdd).replaceAll("<fieldValue>", fieldValueToAdd);
 
             UpdateRequest upReq = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
-                    .script(new Script(script))
+                    .script(new Script(addUpdateScript))
                     .upsert(indexRequest);
 
             UpdateResponse response = client.update(upReq).get();
@@ -288,17 +269,10 @@ public class TextIndexES implements TextIndex {
                 break;
             }
         }
-        //First Search of the field exists or not
-        SearchResponse existsResponse = client.prepareSearch(indexName)
-                .setTypes(docDef.getEntityField())
-                .setQuery(QueryBuilders.existsQuery(fieldToRemove))
-                .get();
 
-        String script = null;
-        if(existsResponse != null && existsResponse.getHits() != null && existsResponse.getHits().totalHits() > 0) {
-            //This means field already exists and therefore we should remove from it
-            script = "ctx._source." + fieldToRemove+".remove('"+ valueToRemove + "')";
-        }
+        String script = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true)) " +
+                "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf('<valueToRemove>'))}";
+        script = script.replaceAll("<fieldToRemove>", fieldToRemove).replaceAll("<valueToRemove>", valueToRemove);
 
         UpdateRequest updateRequest = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
                 .script(new Script(script));
