@@ -34,7 +34,7 @@ public class TS_LangSuite
     static public TestSuite suite()
     {
         JenaSystem.init() ;
-        TestSuite ts = new TestSuite("RIOT Lang") ;
+        TestSuite ts = new TestSuite(TS_LangSuite.class.getName()) ;
         ts.addTest(FactoryTestRiot.make(manifest1, null, null)) ;
         return ts ;
     }

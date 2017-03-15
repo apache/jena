@@ -180,6 +180,8 @@ public abstract class AbstractWholeFileNodeTupleReader<TValue, T extends Abstrac
             @Override
             public void run() {
                 try {
+                    @SuppressWarnings("deprecation")
+                    // Only needed because of ParserProfile setting errorhandler and label mapping - see RdfIOUtils.createParserProfile
                     ReaderRIOT riotReader = RDFDataMgr.createReader(lang);
                     riotReader.setParserProfile(profile);
                     riotReader.read(input, null, lang.getContentType(), stream, null);

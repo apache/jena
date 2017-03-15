@@ -133,7 +133,10 @@ public class RDFParserRegistry
         langToParserFactory.remove(lang) ;
     }
     
-    /** Return the parser factory for the language, or null if not registered */
+    /** Return the parser factory for the language, or null if not registered.
+     * @deprecated To be removed or made package scoped. Use {@code RDFParser.create() ... .build()}
+     */
+    @Deprecated
     public static ReaderRIOTFactory getFactory(Lang language)
     {
         return langToParserFactory.get(language) ;
@@ -156,6 +159,12 @@ public class RDFParserRegistry
         public ReaderRIOT create(Lang lang) {
             return new ReaderRIOTLang(lang) ;
         }
+        
+        @Override
+        public ReaderRIOT create(Lang lang, ParserProfile parserProfile) {
+            return new ReaderRIOTLang(lang, parserProfile) ;
+        }
+
     }
 
     private static class ReaderRIOTLang implements ReaderRIOT
@@ -167,6 +176,12 @@ public class RDFParserRegistry
         ReaderRIOTLang(Lang lang) {
             this.lang = lang ;
             errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        }
+
+        ReaderRIOTLang(Lang lang, ParserProfile parserProfile) {
+            this.lang = lang ;
+            this.parserProfile = parserProfile;
+            this.errorHandler = parserProfile.getHandler();
         }
 
         @Override
@@ -203,13 +218,23 @@ public class RDFParserRegistry
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
             return new JsonLDReader() ;
         }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
+        }
     }
  
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language) {
             return new ReaderRDFThrift() ;
-        }}
+        }
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return new ReaderRDFThrift() ;
+        }
+    }
     
     private static class ReaderRDFThrift implements ReaderRIOT {
         @Override
@@ -245,12 +270,22 @@ public class RDFParserRegistry
         public ReaderRIOT create(Lang language) {
             return new ReaderTriX() ;
         }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
+        }
     }
 
     private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language) {
             return new ReaderRDFNULL() ;
+        }
+        
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return create(language);
         }
     }
 }

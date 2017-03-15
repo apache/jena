@@ -131,6 +131,10 @@ public class TextIndexLucene implements TextIndex {
             // Force a commit to create the index, otherwise querying before writing will cause an exception
             indexWriter.commit();
         }
+        catch (IndexFormatTooOldException e) {
+        	throw new TextIndexException("jena-text/Lucene cannot use indexes created before Jena 3.3.0. "
+        		+ "Please rebuild your text index using jena.textindexer from Jena 3.3.0 or above.", e);
+        }
         catch (IOException e)
         {
             throw new TextIndexException(e) ;

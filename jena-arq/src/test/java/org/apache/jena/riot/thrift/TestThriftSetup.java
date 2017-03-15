@@ -35,9 +35,11 @@ public class TestThriftSetup extends BaseTest {
         assertEquals(lang, THRIFT) ;
     }
 
+    @SuppressWarnings("deprecation")
     @Test public void setup_03() {
         assertTrue(RDFParserRegistry.isQuads(THRIFT)) ;
         assertTrue(RDFParserRegistry.isTriples(THRIFT)) ;
+        assertTrue(RDFParserRegistry.isRegistered(THRIFT));
         assertNotNull(RDFParserRegistry.getFactory(THRIFT)) ;
     }
     

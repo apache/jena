@@ -110,7 +110,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      */
     protected final long countTuples(File f) {
         StreamRDFCounting counter = StreamRDFLib.count();
-        RDFDataMgr.parse(counter, f.getAbsolutePath(), this.getRdfLanguage(), null);
+        RDFDataMgr.parse(counter, f.getAbsolutePath(), this.getRdfLanguage());
         return counter.count();
     }
 

@@ -40,10 +40,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.SysRIOT ;
-import org.apache.jena.riot.WriterDatasetRIOT ;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -193,6 +190,16 @@ public class RiotLib
      */  
     public static FactoryRDF factoryRDF() {
         return factoryRDF(SyntaxLabels.createLabelToNode());
+    }
+
+    /** Create an {@link MakerRDF} with default settings. */ 
+    public static MakerRDF dftMakerRDF() {
+        return new MakerRDFStd(RiotLib.factoryRDF(), 
+                               ErrorHandlerFactory.errorHandlerStd,
+                               IRIResolver.create(),
+                               PrefixMapFactory.createForInput(),
+                               RIOT.getContext().copy(),
+                               true, false) ;
     }
 
     /** Get triples with the same subject */
