@@ -209,7 +209,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( filename.equals("-") ) {
             if ( baseURI == null )
                 baseURI = "http://base/";
-            TypedInputStream in = new TypedInputStream(System.in) ;
+            TypedInputStream in = TypedInputStream.wrap(System.in) ;
             return parseRIOT(baseURI, "stdin", in) ;
         } else {
             try ( TypedInputStream in = RDFDataMgr.open(filename) ) {
@@ -232,6 +232,8 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;
         
+        RDFParserBuilder builder = RDFParser.create();
+
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         if ( checking ) {
             if ( modLangParse.stopOnBadTerm() )
@@ -255,37 +257,30 @@ public abstract class CmdLangParse extends CmdGeneral
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-
+        
 //        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 //        if ( labelsAsGiven )
 //            labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
+        if ( labelsAsGiven )
+            builder.labelToNode(LabelToNode.createUseLabelAsGiven());
+
         StreamRDF s = outputStream ; 
         if ( setup != null )
             s = InfFactory.inf(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
         
-        ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
         boolean successful = true;
-
-        if ( checking ) {
-            if ( lang == RDFLanguages.NTRIPLES || lang == RDFLanguages.NQUADS )
-                reader.setParserProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
-            else
-                reader.setParserProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
-        } else
-            reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
-
-        if ( labelsAsGiven ) {
-            FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
-            reader.getParserProfile().setFactoryRDF(f);
-        }
-
+        if ( checking ) 
+            SysRIOT.setStrictMode(true);
+        builder.errorHandler(errHandler);
+        
         modTime.startTimer() ;
         sink.start() ;
         try {
-            reader.read(in, baseURI, ct, sink, null);
+            RDFParser parser = builder.build();
+            parser.parse(sink);
             successful = true;
         } catch (RiotException ex) {
             successful = false;

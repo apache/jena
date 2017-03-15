@@ -22,8 +22,11 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RiotNotFoundException ;
+import org.apache.jena.riot.SysRIOT;
+import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -74,10 +77,35 @@ public class StreamManager {
         return streamManager ;
     }
 
+    /**
+     * Return the global {@code StreamManager}.
+     */
     public static StreamManager get() {
         return globalStreamManager ;
     }
 
+    /**
+     * Return the {@code StreamManager} in a context, or the global one if the context is
+     * null or does not contain an entry for a {@code StreamManager}.
+     * <p>
+     * The {@code StreamManager} is keyed in the context by
+     * {@link SysRIOT#sysStreamManager}.
+     */
+    public static StreamManager get(Context context) {
+        if ( context == null )
+            return get();
+        try {
+            return (StreamManager)context.get(SysRIOT.sysStreamManager, context);
+        }
+        catch (ClassCastException ex) {
+            log.warn("Context symbol '" + SysRIOT.sysStreamManager + "' is not a " + Lib.classShortName(StreamManager.class));
+        }
+        return get();
+    }
+
+    /**
+     * Set the global {@code StreamManager}.
+     */
     public static void setGlobal(StreamManager streamManager) {
         globalStreamManager = streamManager ;
     }
@@ -85,8 +113,8 @@ public class StreamManager {
     static { setGlobal(makeDefaultStreamManager()) ; }
 
     /**
-     * Open a file using the locators of this FileManager. Returns null if not
-     * found.
+     * Open a file using the locators of this StreamManager.
+     * Returns null if not found.
      */
     public TypedInputStream open(String filenameOrURI) {
         if ( log.isDebugEnabled() )

@@ -84,26 +84,31 @@ public class DataValidator extends ValidatorBase
             OutputStream output1 = new OutputStreamNoHTML(new BufferedOutputStream(outStream)) ;
             StreamRDF output = StreamRDFWriter.getWriterStream(output1, Lang.NQUADS) ;
             try {
-                ReaderRIOT parser = setupParser(language, errorHandler) ;
                 startFixed(outStream) ;
+                RDFParser parser = RDFParser.create()
+                    .lang(language)
+                    .errorHandler(errorHandler)
+                    .resolveURIs(false)
+                    .build();
                 RiotException exception = null ;
+                startFixed(outStream) ;
                 try {
                     output.start();
-                    parser.read(input, null, null, output, null);
+                    parser.parse(output);
                     output.finish();
                     output1.flush();
                     outStream.flush(); 
                     System.err.flush() ;
                 } catch (RiotException ex) {
                     ex.printStackTrace(stderr); 
-                    exception = ex ; }
+                    exception = ex ;
+                }
             } finally 
             {
                 finishFixed(outStream) ;
                 System.err.flush() ;
                 System.setErr(stderr) ;
             }
-            
             
             outStream.println("</body>") ;
             outStream.println("</html>") ;
@@ -142,15 +147,6 @@ public class DataValidator extends ValidatorBase
     }
     
     
-    private ReaderRIOT setupParser(Lang language, ErrorHandler errorHandler)
-    {
-        // Don't resolve IRIs.  Do checking.
-        ParserProfile profile = RiotLib.profile(null, false, true, errorHandler) ; 
-        ReaderRIOT reader = RDFDataMgr.createReader(language) ;
-        reader.setParserProfile(profile);
-        return reader ;
-    }
-
     // Error handler that records messages
     private static class ErrorHandlerMsg implements ErrorHandler
     {

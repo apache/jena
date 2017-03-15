@@ -305,11 +305,14 @@ public class RDFLanguages
         return true ;
     }
     
-    /** return true if the language is registered as a triples language */
+    /** return true if the language is registered as a triples language. */
     public static boolean isTriples(Lang lang) { return RDFParserRegistry.isTriples(lang) ; }
     
-    /** return true if the language is registered as a quads language */
+    /** return true if the language is registered as a quads language. */
     public static boolean isQuads(Lang lang) { return RDFParserRegistry.isQuads(lang) ; }
+
+    /** return true if the language is registered for parsing as an RDF syntax. */
+    public static boolean hasRegisteredParser(Lang lang) { return RDFParserRegistry.isRegistered(lang); }
 
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(String contentType)

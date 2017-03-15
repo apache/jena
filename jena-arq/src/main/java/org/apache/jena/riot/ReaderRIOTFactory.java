@@ -18,7 +18,15 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.riot.system.ParserProfile;
+
 public interface ReaderRIOTFactory
 {
-    public ReaderRIOT create(Lang language) ;
+    public ReaderRIOT create(Lang language);
+    
+    public default ReaderRIOT create(Lang language, ParserProfile profile) {
+        ReaderRIOT r = create(language);
+        r.setParserProfile(profile);
+        return r;
+    }
 }

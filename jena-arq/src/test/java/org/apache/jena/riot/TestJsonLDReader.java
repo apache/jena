@@ -26,17 +26,16 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.github.jsonldjava.utils.JsonUtils;
+
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.github.jsonldjava.utils.JsonUtils;
 
 public class TestJsonLDReader {
 
@@ -123,7 +122,11 @@ public class TestJsonLDReader {
         //        }
 
         try (InputStream in = new ByteArrayInputStream(jsonld.getBytes(StandardCharsets.UTF_8))) {
-            RDFDataMgr.parse(StreamRDFLib.dataset(ds.asDatasetGraph()), in, null, Lang.JSONLD, jenaCtx);
+            RDFParser.create()
+                .source(in)
+                .lang(Lang.JSONLD)
+                .context(jenaCtx)
+                .parse(ds.asDatasetGraph());
         }
 
         return ds;

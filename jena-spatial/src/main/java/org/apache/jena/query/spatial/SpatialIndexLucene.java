@@ -108,6 +108,9 @@ public class SpatialIndexLucene implements SpatialIndex {
 		try {
 			IndexWriterConfig wConfig = new IndexWriterConfig(analyzer);
 			indexWriter = new IndexWriter(directory, wConfig);
+		} catch (IndexFormatTooOldException e) {
+			throw new SpatialIndexException("jena-spatial/Lucene cannot use indexes created before Jena 3.3.0. "
+	        		+ "Please rebuild your spatial index using jena.spatialindexer from Jena 3.3.0 or above.", e);
 		} catch (IOException e) {
 			exception(e);
 		}

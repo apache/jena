@@ -30,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestJenaReaderRIOT.class
     , TestReadData.class
     , TestRiotReader.class
+    , TestRDFParser.class
     , TestParserRegistry.class
     , TestSysRIOT.class
 })
