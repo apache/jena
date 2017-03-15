@@ -54,8 +54,7 @@ public class JenaESTextExample {
     }
 
     /**
-     * The data being queried from ElasticSearch is proper but what is getting printed is wrong.
-     * This is NOT a bug in ES code.
+     * Query Data
      * @param ds
      */
     private static void queryData(Dataset ds) {

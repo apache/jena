@@ -91,7 +91,7 @@ public class TextIndexESAssembler extends AssemblerBase {
 
             String indexName = GraphUtils.getAsStringValue(root, pIndexName);
             if(indexName == null || indexName.isEmpty()) {
-                LOGGER.warn("index Name property is not specified. Defaulting to 'test'");
+                LOGGER.warn("index Name property is not specified. Defaulting to 'jena-text'");
                 indexName = "jena-text";
             }
 

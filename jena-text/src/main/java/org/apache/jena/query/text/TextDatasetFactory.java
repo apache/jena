@@ -27,7 +27,6 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
-import org.elasticsearch.indices.IndexCreationException;
 
 public class TextDatasetFactory
 {
@@ -187,14 +186,7 @@ public class TextDatasetFactory
      */
     public static TextIndex createESIndex(TextIndexConfig config, ESSettings settings)
     {
-        TextIndex index = null;
-        try {
-            index = new TextIndexES(config, settings) ;
-        }catch(Exception e) {
-            throw new IndexCreationException("Unable to create index.", e);
-        }
-
-        return index ;
+        return new TextIndexES(config, settings) ;
     }
 
 }

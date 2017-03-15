@@ -56,7 +56,7 @@ text:TextIndexES      rdfs:subClassOf   text:TextIndex .
     .
 
 <#entMap> a text:EntityMap ;
-    text:entityField      "intel" ; # Defines the Document Type in the ES Index
+    text:entityField      "uri" ; # Defines the Document Type in the ES Index
     text:defaultField     "text" ; ## Must be defined in the text:maps
     text:map (
          # rdfs:label            

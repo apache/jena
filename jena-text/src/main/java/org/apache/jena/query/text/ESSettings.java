@@ -46,7 +46,7 @@ public class ESSettings {
     private Integer replicas;
 
     /**
-     * Name of the index. Defaults to 'test'
+     * Name of the index. Defaults to 'jena-text'
      */
     private String indexName;
 
@@ -76,7 +76,7 @@ public class ESSettings {
             this.settings.setShards(1);
             this.settings.setReplicas(1);
             this.settings.setHostToPortMapping(new HashMap<>());
-            this.settings.setIndexName("test");
+            this.settings.setIndexName("jena-text");
         }
 
 
