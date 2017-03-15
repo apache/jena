@@ -65,13 +65,18 @@ public class TextIndexES implements TextIndex {
     /**
      * The name of the index. Defaults to 'test'
      */
-    private final String INDEX_NAME;
+    private final String indexName;
 
-    static final String CLUSTER_NAME = "cluster.name";
+    static final String CLUSTER_NAME_PARAM = "cluster.name";
 
-    static final String NUM_OF_SHARDS = "number_of_shards";
+    static final String NUM_OF_SHARDS_PARAM = "number_of_shards";
 
-    static final String NUM_OF_REPLICAS = "number_of_replicas";
+    static final String NUM_OF_REPLICAS_PARAM = "number_of_replicas";
+
+    /**
+     * Number of maximum results to return in case no limit is specified on the search operation
+     */
+    static final Integer MAX_RESULTS = 10000;
 
     private boolean isMultilingual ;
 
@@ -79,7 +84,7 @@ public class TextIndexES implements TextIndex {
 
     public TextIndexES(TextIndexConfig config, ESSettings esSettings) {
 
-        this.INDEX_NAME = esSettings.getIndexName();
+        this.indexName = esSettings.getIndexName();
         this.docDef = config.getEntDef();
 
 
@@ -93,7 +98,7 @@ public class TextIndexES implements TextIndex {
 
                 LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
                 Settings settings = Settings.builder()
-                        .put(CLUSTER_NAME, esSettings.getClusterName()).build();
+                        .put(CLUSTER_NAME_PARAM, esSettings.getClusterName()).build();
                 List<InetSocketTransportAddress> addresses = new ArrayList<>();
                 for(String host: esSettings.getHostToPortMapping().keySet()) {
                     InetSocketTransportAddress addr = new InetSocketTransportAddress(InetAddress.getByName(host), esSettings.getHostToPortMapping().get(host));
@@ -106,14 +111,14 @@ public class TextIndexES implements TextIndex {
             }
 
 
-            IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(INDEX_NAME)).get();
+            IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(indexName)).get();
             if(!exists.isExists()) {
                 Settings indexSettings = Settings.builder()
-                        .put(NUM_OF_SHARDS, esSettings.getShards())
-                        .put(NUM_OF_REPLICAS, esSettings.getReplicas())
+                        .put(NUM_OF_SHARDS_PARAM, esSettings.getShards())
+                        .put(NUM_OF_REPLICAS_PARAM, esSettings.getReplicas())
                         .build();
-                LOGGER.debug("Index with name " + INDEX_NAME + " does not exist yet. Creating one with settings: " + indexSettings.toString());
-                client.admin().indices().prepareCreate(INDEX_NAME).setSettings(indexSettings).get();
+                LOGGER.debug("Index with name " + indexName + " does not exist yet. Creating one with settings: " + indexSettings.toString());
+                client.admin().indices().prepareCreate(indexName).setSettings(indexSettings).get();
             }
         }catch (Exception e) {
             throw new TextIndexException("Exception occured while instantiating ElasticSearch Text Index", e);
@@ -134,7 +139,7 @@ public class TextIndexES implements TextIndex {
         this.docDef = config.getEntDef();
         this.isMultilingual = true;
         this.client = client;
-        this.INDEX_NAME = indexName;
+        this.indexName = indexName;
     }
 
     /**
@@ -204,11 +209,6 @@ public class TextIndexES implements TextIndex {
             XContentBuilder builder = jsonBuilder()
                     .startObject();
 
-            //Currently ignoring Graph field based indexing
-//            if (docDef.getGraphField() != null) {
-//                builder = builder.field(docDef.getGraphField(), entity.getGraph());
-//            }
-
             for(String field: docDef.fields()) {
                 if(entity.get(field) != null) {
                     if(entity.getLanguage() != null && !entity.getLanguage().isEmpty() && isMultilingual) {
@@ -229,7 +229,7 @@ public class TextIndexES implements TextIndex {
             }
 
             builder = builder.endObject();
-            IndexRequest indexRequest = new IndexRequest(INDEX_NAME, docDef.getEntityField(), entity.getId())
+            IndexRequest indexRequest = new IndexRequest(indexName, docDef.getEntityField(), entity.getId())
                     .source(builder);
 
             /**
@@ -241,8 +241,8 @@ public class TextIndexES implements TextIndex {
              * https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#upserts
              */
 
-            //First Search of the field exists or not
-            SearchResponse existsResponse = client.prepareSearch(INDEX_NAME)
+            //First Search if the field exists or not
+            SearchResponse existsResponse = client.prepareSearch(indexName)
                     .setTypes(docDef.getEntityField())
                     .setQuery(QueryBuilders.existsQuery(fieldToAdd))
                     .get();
@@ -255,9 +255,7 @@ public class TextIndexES implements TextIndex {
                 script = "ctx._source." + fieldToAdd+" =['"+ fieldValueToAdd + "']";
             }
 
-
-
-            UpdateRequest upReq = new UpdateRequest(INDEX_NAME, docDef.getEntityField(), entity.getId())
+            UpdateRequest upReq = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
                     .script(new Script(script))
                     .upsert(indexRequest);
 
@@ -291,7 +289,7 @@ public class TextIndexES implements TextIndex {
             }
         }
         //First Search of the field exists or not
-        SearchResponse existsResponse = client.prepareSearch(INDEX_NAME)
+        SearchResponse existsResponse = client.prepareSearch(indexName)
                 .setTypes(docDef.getEntityField())
                 .setQuery(QueryBuilders.existsQuery(fieldToRemove))
                 .get();
@@ -302,7 +300,7 @@ public class TextIndexES implements TextIndex {
             script = "ctx._source." + fieldToRemove+".remove('"+ valueToRemove + "')";
         }
 
-        UpdateRequest updateRequest = new UpdateRequest(INDEX_NAME, docDef.getEntityField(), entity.getId())
+        UpdateRequest updateRequest = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
                 .script(new Script(script));
 
         try {
@@ -313,7 +311,6 @@ public class TextIndexES implements TextIndex {
 
 
         LOGGER.debug("deleting content related to entity: " + entity.getId());
-//        client.prepareDelete(INDEX_NAME, docDef.getEntityField(), entity.getId()).get();
 
     }
 
@@ -329,7 +326,7 @@ public class TextIndexES implements TextIndex {
         Map<String, Node> result = new HashMap<>();
 
         if(uri != null) {
-            response = client.prepareGet(INDEX_NAME, docDef.getEntityField(), uri).get();
+            response = client.prepareGet(indexName, docDef.getEntityField(), uri).get();
             if(response != null && !response.isSourceEmpty()) {
                 String entityField = response.getId();
                 Node entity = NodeFactory.createURI(entityField) ;
@@ -363,7 +360,7 @@ public class TextIndexES implements TextIndex {
     @Override
     public List<TextHit> query(Node property, String qs) {
 
-        return query(property, qs, 0);
+        return query(property, qs, MAX_RESULTS);
     }
 
     /**
@@ -378,7 +375,7 @@ public class TextIndexES implements TextIndex {
 
         qs = parse(qs);
         LOGGER.debug("Querying ElasticSearch for QueryString: " + qs);
-        SearchResponse response = client.prepareSearch(INDEX_NAME)
+        SearchResponse response = client.prepareSearch(indexName)
                 .setTypes(docDef.getEntityField())
                 .setQuery(QueryBuilders.queryStringQuery(qs))
                 .setFrom(0).setSize(limit)
