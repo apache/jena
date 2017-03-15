@@ -77,7 +77,7 @@ public class TextIndexES implements TextIndex {
 
     private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
-    public TextIndexES(TextIndexConfig config, ESSettings esSettings) throws Exception{
+    public TextIndexES(TextIndexConfig config, ESSettings esSettings) {
 
         this.INDEX_NAME = esSettings.getIndexName();
         this.docDef = config.getEntDef();
@@ -88,32 +88,37 @@ public class TextIndexES implements TextIndex {
             //multilingual index cannot work without lang field
             docDef.setLangField("lang");
         }
-        if(client == null) {
+        try {
+            if(client == null) {
 
-            LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
-            Settings settings = Settings.builder()
-                    .put(CLUSTER_NAME, esSettings.getClusterName()).build();
-            List<InetSocketTransportAddress> addresses = new ArrayList<>();
-            for(String host: esSettings.getHostToPortMapping().keySet()) {
-                InetSocketTransportAddress addr = new InetSocketTransportAddress(InetAddress.getByName(host), esSettings.getHostToPortMapping().get(host));
-                addresses.add(addr);
+                LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
+                Settings settings = Settings.builder()
+                        .put(CLUSTER_NAME, esSettings.getClusterName()).build();
+                List<InetSocketTransportAddress> addresses = new ArrayList<>();
+                for(String host: esSettings.getHostToPortMapping().keySet()) {
+                    InetSocketTransportAddress addr = new InetSocketTransportAddress(InetAddress.getByName(host), esSettings.getHostToPortMapping().get(host));
+                    addresses.add(addr);
+                }
+
+                InetSocketTransportAddress socketAddresses[] = new InetSocketTransportAddress[addresses.size()];
+                client = new PreBuiltTransportClient(settings).addTransportAddresses(addresses.toArray(socketAddresses));
+                LOGGER.debug("Successfully initialized the client");
             }
 
-            InetSocketTransportAddress socketAddresses[] = new InetSocketTransportAddress[addresses.size()];
-            client = new PreBuiltTransportClient(settings).addTransportAddresses(addresses.toArray(socketAddresses));
-            LOGGER.debug("Successfully initialized the client");
+
+            IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(INDEX_NAME)).get();
+            if(!exists.isExists()) {
+                Settings indexSettings = Settings.builder()
+                        .put(NUM_OF_SHARDS, esSettings.getShards())
+                        .put(NUM_OF_REPLICAS, esSettings.getReplicas())
+                        .build();
+                LOGGER.debug("Index with name " + INDEX_NAME + " does not exist yet. Creating one with settings: " + indexSettings.toString());
+                client.admin().indices().prepareCreate(INDEX_NAME).setSettings(indexSettings).get();
+            }
+        }catch (Exception e) {
+            throw new TextIndexException("Exception occured while instantiating ElasticSearch Text Index", e);
         }
 
-
-        IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(INDEX_NAME)).get();
-        if(!exists.isExists()) {
-            Settings indexSettings = Settings.builder()
-                    .put(NUM_OF_SHARDS, esSettings.getShards())
-                    .put(NUM_OF_REPLICAS, esSettings.getReplicas())
-                    .build();
-            LOGGER.debug("Index with name " + INDEX_NAME + " does not exist yet. Creating one with settings: " + indexSettings.toString());
-            client.admin().indices().prepareCreate(INDEX_NAME).setSettings(indexSettings).get();
-        }
 
 
 
