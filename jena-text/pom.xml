@@ -91,7 +91,6 @@
           <artifactId>transport</artifactId>
       </dependency>
 
-
       <dependency>
           <groupId>org.apache.lucene</groupId>
           <artifactId>lucene-test-framework</artifactId>
@@ -100,6 +99,18 @@
       <dependency>
           <groupId>org.elasticsearch.test</groupId>
           <artifactId>framework</artifactId>
+      </dependency>
+
+      <!-- This is required to by pass ES JAR Hell in test environment-->
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.hamcrest</groupId>
+                  <artifactId>hamcrest-core</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
 
       <dependency>
@@ -149,9 +160,7 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
-            <systemProperties>
-                <tests.security.manager>false</tests.security.manager>
-            </systemProperties>
+            <argLine>-Dtests.security.manager=false</argLine>
         </configuration>
       </plugin>
 

@@ -18,12 +18,12 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.query.text.assembler.TestEntityMapAssembler ;
-import org.apache.jena.query.text.assembler.TestTextDatasetAssembler ;
-import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.apache.jena.query.text.assembler.TestEntityMapAssembler;
+import org.apache.jena.query.text.assembler.TestTextDatasetAssembler;
+import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -47,7 +47,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class
     , TestDatasetWithComplexPhraseQueryParser.class
+    , TestTextIndexES.class
 })
 
 public class TS_Text
-{ }
+{}

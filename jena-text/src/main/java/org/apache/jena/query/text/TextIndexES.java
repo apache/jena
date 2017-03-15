@@ -325,11 +325,12 @@ public class TextIndexES implements TextIndex {
 
         if(uri != null) {
             response = client.prepareGet(INDEX_NAME, docDef.getEntityField(), uri).get();
-            if(response != null) {
+            if(response != null && !response.isSourceEmpty()) {
                 String entityField = response.getId();
                 Node entity = NodeFactory.createURI(entityField) ;
                 result.put(docDef.getEntityField(), entity);
                 for (String field: docDef.fields()) {
+
                     GetField fieldResponse = response.getField(field);
 
                     if(fieldResponse == null || fieldResponse.getValue() == null) {
@@ -346,6 +347,7 @@ public class TextIndexES implements TextIndex {
                     result.put(field, fieldNode);
 
                 }
+
 
             }
         }
