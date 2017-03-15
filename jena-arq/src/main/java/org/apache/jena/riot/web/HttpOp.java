@@ -129,11 +129,15 @@ public class HttpOp {
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
-        String result;
+        private String result;
 
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
+            if ( entity == null ) {
+                result = null ;
+                return ;
+            }
             try(InputStream instream = entity.getContent()) {
                 result = IO.readWholeFileAsUTF8(instream);
             }
