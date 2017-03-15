@@ -155,6 +155,10 @@ public class HttpOp {
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
+            if ( entity == null ) {
+                stream = new TypedInputStream(EOFInputStream.empty, (String)null);
+                return;
+            }
             String ct = (entity.getContentType() == null) ? null : entity.getContentType().getValue();
             stream = new TypedInputStream(entity.getContent(), ct);
         }
@@ -163,6 +167,16 @@ public class HttpOp {
         public TypedInputStream get() {
             return stream;
         }
+    }
+    
+    static class EOFInputStream extends InputStream {
+        static InputStream empty = new EOFInputStream();
+        
+        @Override
+        public int available() { return 0 ; }
+
+        @Override
+        public int read() { return -1 ; }
     }
 
     /**
