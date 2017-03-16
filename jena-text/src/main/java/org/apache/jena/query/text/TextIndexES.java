@@ -261,7 +261,8 @@ public class TextIndexES implements TextIndex {
             }
         }
 
-        String script = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true)) " +
+        String script = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true) " +
+                "&& (ctx._source.<fieldToRemove>.indexOf('<valueToRemove>') >= 0)) " +
                 "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf('<valueToRemove>'))}";
         script = script.replaceAll("<fieldToRemove>", fieldToRemove).replaceAll("<valueToRemove>", valueToRemove);
 
