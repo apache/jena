@@ -33,7 +33,7 @@ public class TypedInputStream extends FilterInputStream
     private String baseURI ;
     
     public static TypedInputStream wrap(InputStream in) {
-        //Soemtimes this is used to intentional loose the content type (in tests).
+        //Sometimes this is used to intentional loose the content type (in tests).
 //        if ( in instanceof TypedInputStream ) {
 //            return (TypedInputStream)in;
 //        }
@@ -66,6 +66,7 @@ public class TypedInputStream extends FilterInputStream
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
     public String getBaseURI()              { return baseURI ; }
+    public InputStream getInputStream()     { return super.in ; }
     
     @Override
     public void close() {
