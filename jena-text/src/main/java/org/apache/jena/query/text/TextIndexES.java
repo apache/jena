@@ -33,7 +33,6 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.get.GetField;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
@@ -87,7 +86,6 @@ public class TextIndexES implements TextIndex {
         this.indexName = esSettings.getIndexName();
         this.docDef = config.getEntDef();
 
-
         this.isMultilingual = config.isMultilingualSupport();
         if (this.isMultilingual &&  config.getEntDef().getLangField() == null) {
             //multilingual index cannot work without lang field
@@ -110,7 +108,6 @@ public class TextIndexES implements TextIndex {
                 LOGGER.debug("Successfully initialized the client");
             }
 
-
             IndicesExistsResponse exists = client.admin().indices().exists(new IndicesExistsRequest(indexName)).get();
             if(!exists.isExists()) {
                 Settings indexSettings = Settings.builder()
@@ -123,10 +120,6 @@ public class TextIndexES implements TextIndex {
         }catch (Exception e) {
             throw new TextIndexException("Exception occured while instantiating ElasticSearch Text Index", e);
         }
-
-
-
-
     }
 
 
@@ -160,11 +153,11 @@ public class TextIndexES implements TextIndex {
     }
 
     /**
-     * not really sure what we need to roll back.
+     * We do not do rollback
      */
     @Override
     public void rollback() {
-       //Not sure what to do here
+       //Do Nothing
 
     }
 
@@ -247,8 +240,6 @@ public class TextIndexES implements TextIndex {
         } catch(Exception e) {
             throw new TextIndexException("Unable to Index the Entity in ElasticSearch.", e);
         }
-
-
     }
 
     /**
@@ -283,7 +274,6 @@ public class TextIndexES implements TextIndex {
             throw new TextIndexException("Unable to delete entity.", e);
         }
 
-
         LOGGER.debug("deleting content related to entity: " + entity.getId());
 
     }
@@ -305,26 +295,26 @@ public class TextIndexES implements TextIndex {
                 String entityField = response.getId();
                 Node entity = NodeFactory.createURI(entityField) ;
                 result.put(docDef.getEntityField(), entity);
+                Map<String, Object> source = response.getSource();
                 for (String field: docDef.fields()) {
+                    Object fieldResponse = source.get(field);
 
-                    GetField fieldResponse = response.getField(field);
-
-                    if(fieldResponse == null || fieldResponse.getValue() == null) {
+                    if(fieldResponse == null) {
                         //We wont return it.
                         continue;
                     }
-                    if(fieldResponse instanceof List<?>) {
-                        //We are only interested in literal values
-                        continue;
+                    else if(fieldResponse instanceof List<?>) {
+                        //We are storing the values of fields as a List always.
+                        //If there are values stored in the list, then we return the first value,
+                        // else we do not include the field in the returned Map of Field -> Node Mapping
+                        List<?> responseList = (List<?>)fieldResponse;
+                        if(responseList != null && responseList.size() > 0) {
+                            String fieldValue = (String)responseList.get(0);
+                            Node fieldNode = NodeFactoryExtra.createLiteralNode(fieldValue, null, null);
+                            result.put(field, fieldNode);
+                        }
                     }
-                    //We assume it will always be a String value.
-                    String fieldValue = (String)fieldResponse.getValue();
-                    Node fieldNode = NodeFactoryExtra.createLiteralNode(fieldValue, null, null);
-                    result.put(field, fieldNode);
-
                 }
-
-
             }
         }
 

@@ -140,7 +140,7 @@ public class TestTextIndexES extends ESIntegTestCase {
         //Now Get the same entity
         Map<String, Node> response = classToTest.get("http://example/x3");
         Assert.assertNotNull(response);
-        Assert.assertEquals(1, response.size());
+        Assert.assertEquals(2, response.size());
     }
 
     @Test
