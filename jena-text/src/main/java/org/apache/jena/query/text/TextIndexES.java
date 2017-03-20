@@ -62,7 +62,7 @@ public class TextIndexES implements TextIndex {
     private static Client client;
 
     /**
-     * The name of the index. Defaults to 'test'
+     * The name of the index. Defaults to 'jena-text'
      */
     private final String indexName;
 
@@ -72,12 +72,17 @@ public class TextIndexES implements TextIndex {
 
     static final String NUM_OF_REPLICAS_PARAM = "number_of_replicas";
 
+    private static final String ADD_UPDATE_SCRIPT = "if(ctx._source.<fieldName> == null || ctx._source.<fieldName>.empty) " +
+            "{ctx._source.<fieldName>=[params.fieldValue] } else {ctx._source.<fieldName>.add(params.fieldValue)}";
+
+    private static final String DELETE_SCRIPT = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true) " +
+            "&& (ctx._source.<fieldToRemove>.indexOf(params.valueToRemove) >= 0)) " +
+            "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf(params.valueToRemove))}";
+
     /**
      * Number of maximum results to return in case no limit is specified on the search operation
      */
     static final Integer MAX_RESULTS = 10000;
-
-    private boolean isMultilingual ;
 
     private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
@@ -85,12 +90,8 @@ public class TextIndexES implements TextIndex {
 
         this.indexName = esSettings.getIndexName();
         this.docDef = config.getEntDef();
+        docDef.setLangField("lang");
 
-        this.isMultilingual = config.isMultilingualSupport();
-        if (this.isMultilingual &&  config.getEntDef().getLangField() == null) {
-            //multilingual index cannot work without lang field
-            docDef.setLangField("lang");
-        }
         try {
             if(client == null) {
 
@@ -130,7 +131,6 @@ public class TextIndexES implements TextIndex {
      */
     public TextIndexES(TextIndexConfig config, Client client, String indexName) {
         this.docDef = config.getEntDef();
-        this.isMultilingual = true;
         this.client = client;
         this.indexName = indexName;
     }
@@ -204,7 +204,7 @@ public class TextIndexES implements TextIndex {
 
             for(String field: docDef.fields()) {
                 if(entity.get(field) != null) {
-                    if(entity.getLanguage() != null && !entity.getLanguage().isEmpty() && isMultilingual) {
+                    if(entity.getLanguage() != null && !entity.getLanguage().isEmpty()) {
                         fieldToAdd = field + "_" + entity.getLanguage();
                     } else {
                         fieldToAdd = field;
@@ -225,12 +225,12 @@ public class TextIndexES implements TextIndex {
             IndexRequest indexRequest = new IndexRequest(indexName, docDef.getEntityField(), entity.getId())
                     .source(builder);
 
-            String addUpdateScript = "if(ctx._source.<fieldName> == null || ctx._source.<fieldName>.empty) " +
-                    "{ctx._source.<fieldName>=['<fieldValue>'] } else {ctx._source.<fieldName>.add('<fieldValue>')}";
-            addUpdateScript = addUpdateScript.replaceAll("<fieldName>", fieldToAdd).replaceAll("<fieldValue>", fieldValueToAdd);
+            String addUpdateScript = ADD_UPDATE_SCRIPT.replaceAll("<fieldName>", fieldToAdd);
+            Map<String, Object> params = new HashMap<>();
+            params.put("fieldValue", fieldValueToAdd);
 
             UpdateRequest upReq = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
-                    .script(new Script(addUpdateScript))
+                    .script(new Script(Script.DEFAULT_SCRIPT_TYPE, Script.DEFAULT_SCRIPT_LANG, addUpdateScript, params))
                     .upsert(indexRequest);
 
             UpdateResponse response = client.update(upReq).get();
@@ -261,13 +261,12 @@ public class TextIndexES implements TextIndex {
             }
         }
 
-        String script = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true) " +
-                "&& (ctx._source.<fieldToRemove>.indexOf('<valueToRemove>') >= 0)) " +
-                "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf('<valueToRemove>'))}";
-        script = script.replaceAll("<fieldToRemove>", fieldToRemove).replaceAll("<valueToRemove>", valueToRemove);
+        String deleteScript = DELETE_SCRIPT.replaceAll("<fieldToRemove>", fieldToRemove);
+        Map<String,Object> params = new HashMap<>();
+        params.put("valueToRemove", valueToRemove);
 
         UpdateRequest updateRequest = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
-                .script(new Script(script));
+                .script(new Script(Script.DEFAULT_SCRIPT_TYPE, Script.DEFAULT_SCRIPT_LANG,deleteScript,params));
 
         try {
             client.update(updateRequest).get();
@@ -343,26 +342,20 @@ public class TextIndexES implements TextIndex {
         SearchResponse response = client.prepareSearch(indexName)
                 .setTypes(docDef.getEntityField())
                 .setQuery(QueryBuilders.queryStringQuery(qs))
+                // Not fetching the source because we are currently not interested
+                // in the actual values but only Id of the document. This will also speed up search
+                .setFetchSource(false)
                 .setFrom(0).setSize(limit)
                 .get();
 
         List<TextHit> results = new ArrayList<>() ;
         for (SearchHit hit : response.getHits()) {
 
-            Node literal;
-            String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
-            List<String> value = (List<String>)hit.getSource().get(field);
-            if(value != null) {
-                literal = NodeFactory.createLiteral(value.get(0));
-            } else {
-                LOGGER.debug("The value for field :" + field + " is null. Not creating a TextHit instance. Moving to the next one.");
-                continue;
-            }
-
+            //It has been decided to return NULL literal values for now.
             String entityField = hit.getId();
             Node entityNode = TextQueryFuncs.stringToNode(entityField);
             Float score = hit.getScore();
-            TextHit textHit = new TextHit(entityNode, score, literal);
+            TextHit textHit = new TextHit(entityNode, score, null);
             results.add(textHit);
 
         }
@@ -375,17 +368,16 @@ public class TextIndexES implements TextIndex {
     }
 
     private String parse(String qs) {
-        if (this.isMultilingual) {
-            if (qs.contains(getDocDef().getLangField() + ":")) {
-                String lang = qs.substring(qs.lastIndexOf(":") + 1);
-                if (!"*".equals(lang)) {
-                    // splice the language into the field name
-                    qs = qs.replaceFirst(":", "_"+ lang + ":");
-                    qs = qs.substring(0, qs.indexOf("AND"));
-                }
-            } else {
-                qs = qs.replaceFirst(":", "\\\\*" + ":");
+
+        if (qs.contains(getDocDef().getLangField() + ":")) {
+            String lang = qs.substring(qs.lastIndexOf(":") + 1);
+            if (!"*".equals(lang)) {
+                // splice the language into the field name
+                qs = qs.replaceFirst(":", "_"+ lang + ":");
+                qs = qs.substring(0, qs.indexOf("AND"));
             }
+        } else {
+            qs = qs.replaceFirst(":", "\\\\*" + ":");
         }
         return qs;
 

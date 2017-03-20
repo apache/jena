@@ -17,8 +17,9 @@
  */
 package examples;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.util.QueryExecUtils;
 
 /**
  * Simple example class to test the {@link org.apache.jena.query.text.assembler.TextIndexESAssembler}
@@ -58,7 +59,34 @@ public class JenaESTextExample {
      * @param ds
      */
     private static void queryData(Dataset ds) {
-        JenaTextExample1.queryData(ds);
+//        JenaTextExample1.queryData(ds);
+        queryDataWithoutProperty(ds);
+
+
+    }
+
+    public static void queryDataWithoutProperty(Dataset dataset)
+    {
+
+
+        String pre = StrUtils.strjoinNL
+                ( "PREFIX : <http://example/>"
+                        , "PREFIX text: <http://jena.apache.org/text#>"
+                        , "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>") ;
+
+        String qs = StrUtils.strjoinNL
+                ( "SELECT * "
+                        , " { ?s text:query ('X1') ;"
+                        , "      rdfs:label ?label"
+                        , " }") ;
+
+        dataset.begin(ReadWrite.READ) ;
+        try {
+            Query q = QueryFactory.create(pre+"\n"+qs) ;
+            QueryExecution qexec = QueryExecutionFactory.create(q , dataset) ;
+            QueryExecUtils.executeQuery(q, qexec) ;
+        } finally { dataset.end() ; }
+
 
     }
 }

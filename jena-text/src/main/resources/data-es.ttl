@@ -22,7 +22,7 @@
 :s a :Thing ;
    :p :123 ;
    rdfs:label "Thing 1"@en ;
-   rdfs:comment "this is a comment"@en ;
+   rdfs:comment "It's a complicated comment"@en ;
    rdfs:comment "this is another comment"@en ;
    :id 123 .
 
@@ -37,7 +37,7 @@
    :id 123 .
 
    
-:x1 rdfs:label "X1 word"@en .
+:x1 rdfs:label "X2 word"@en .
 :x1 rdfs:label "X1 another word" .
 :x2 rdfs:label "X2 word" .
 :x3 rdfs:label "X3 word" .
