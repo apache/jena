@@ -243,10 +243,9 @@ public class TextIndexES implements TextIndex {
     }
 
     /**
-     * Delete an entity.
-     * Since we are storing different predicate values within the same indexed document,
-     * deleting the document using entity Id is sufficient to delete all the related contents for a given entity.
-     * @param entity entity to delete
+     * Delete the value ofthe entity from the existing document, if any.
+     * The document itself will never get deleted. Only the value will get deleted.
+     * @param entity entity whose value needs to be deleted
      */
     @Override
     public void deleteEntity(Entity entity) {

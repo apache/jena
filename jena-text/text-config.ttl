@@ -50,7 +50,6 @@ text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 <#indexLucene> a text:TextIndexLucene ;
     #text:directory <file:Lucene> ;
     text:directory "mem" ;
-    text:multilingualSupport true ;
     text:entityMap <#entMap> ;
     .
 
