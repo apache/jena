@@ -81,7 +81,8 @@ void QueryUnit(): { }
 void Query() : { }
 {
   Prologue()
-  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() | JsonQuery()
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery()
+    | JsonQuery()
   )
   ValuesClause()
 }
