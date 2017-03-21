@@ -92,11 +92,6 @@
       </dependency>
 
       <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-test-framework</artifactId>
-      </dependency>
-
-      <dependency>
           <groupId>org.elasticsearch.test</groupId>
           <artifactId>framework</artifactId>
       </dependency>
@@ -160,7 +155,6 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
-            <!-- Required to bypass Embedded ES security checks, especially JAR Hell-->
             <argLine>-Dtests.security.manager=false</argLine>
         </configuration>
       </plugin>

@@ -121,7 +121,6 @@ public class TestTextIndexES extends ESIntegTestCase {
         List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "this", 1);
         Assert.assertNotNull(result);
         Assert.assertEquals(1, result.size());
-        Assert.assertEquals("this is a sample Label", result.get(0).getLiteral().getLiteralValue().toString());
     }
 
     @Test
