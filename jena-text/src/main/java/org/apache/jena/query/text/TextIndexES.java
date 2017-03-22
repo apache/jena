@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
@@ -33,6 +34,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
@@ -66,16 +68,41 @@ public class TextIndexES implements TextIndex {
      */
     private final String indexName;
 
+    /**
+     * The parameter representing the cluster name key
+     */
     static final String CLUSTER_NAME_PARAM = "cluster.name";
 
+    /**
+     * The parameter representing the number of shards key
+     */
     static final String NUM_OF_SHARDS_PARAM = "number_of_shards";
 
+    /**
+     * The parameter representing the number of replicas key
+     */
     static final String NUM_OF_REPLICAS_PARAM = "number_of_replicas";
 
-    private static final String ADD_UPDATE_SCRIPT = "if(ctx._source.<fieldName> == null || ctx._source.<fieldName>.empty) " +
+    private static final String DASH = "-";
+
+    private static final String UNDERSCORE = "_";
+
+    private static final String COLON = ":";
+
+    private static final String ASTREIX = "*";
+
+    /**
+     * ES Script for adding/updating the document in the index.
+     * The main reason to use scripts is because we want to modify the values of the fields that contains an array of values
+     */
+    private static final String ADD_UPDATE_SCRIPT = "if((ctx._source == null) || (ctx._source.<fieldName> == null) || (ctx._source.<fieldName>.empty == true)) " +
             "{ctx._source.<fieldName>=[params.fieldValue] } else {ctx._source.<fieldName>.add(params.fieldValue)}";
 
-    private static final String DELETE_SCRIPT = "if(ctx._source.<fieldToRemove> != null && (ctx._source.<fieldToRemove>.empty != true) " +
+    /**
+     * ES Script for deleting a specific value in the field for the given document in the index.
+     * The main reason to use scripts is because we want to delete specific value of the field that contains an array of values
+     */
+    private static final String DELETE_SCRIPT = "if((ctx._source != null) && (ctx._source.<fieldToRemove>) != null && (ctx._source.<fieldToRemove>.empty != true) " +
             "&& (ctx._source.<fieldToRemove>.indexOf(params.valueToRemove) >= 0)) " +
             "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf(params.valueToRemove))}";
 
@@ -86,6 +113,13 @@ public class TextIndexES implements TextIndex {
 
     private static final Logger LOGGER      = LoggerFactory.getLogger(TextIndexES.class) ;
 
+    /**
+     * Construct an instance of {@link TextIndexES} based on provided {@link TextIndexConfig} and {@link ESSettings}
+     * The constructor is responsible for initializing a {@link TransportClient} based on the provided configs
+     * and create index based on the provided {@link ESSettings}
+     * @param config an instance of {@link TextIndexConfig}
+     * @param esSettings an instance of {@link ESSettings}
+     */
     public TextIndexES(TextIndexConfig config, ESSettings esSettings) {
 
         this.indexName = esSettings.getIndexName();
@@ -119,7 +153,7 @@ public class TextIndexES implements TextIndex {
                 client.admin().indices().prepareCreate(indexName).setSettings(indexSettings).get();
             }
         }catch (Exception e) {
-            throw new TextIndexException("Exception occured while instantiating ElasticSearch Text Index", e);
+            throw new TextIndexException("Exception occurred while instantiating ElasticSearch Text Index", e);
         }
     }
 
@@ -197,7 +231,7 @@ public class TextIndexES implements TextIndex {
         //The field that has a not null value in the current Entity instance.
         //Required, mainly for building a script for the update command.
         String fieldToAdd = null;
-        String fieldValueToAdd = "";
+        String fieldValueToAdd = null;
         try {
             XContentBuilder builder = jsonBuilder()
                     .startObject();
@@ -205,7 +239,9 @@ public class TextIndexES implements TextIndex {
             for(String field: docDef.fields()) {
                 if(entity.get(field) != null) {
                     if(entity.getLanguage() != null && !entity.getLanguage().isEmpty()) {
-                        fieldToAdd = field + "_" + entity.getLanguage();
+                        //We make sure that the field name contains all underscore and no dash (for eg. when the lang value is en-GB)
+                        //The reason to do this is because the script fails with exception in case we have "-" in field name.
+                        fieldToAdd = normalizeFieldName(field, entity.getLanguage());
                     } else {
                         fieldToAdd = field;
                     }
@@ -218,7 +254,6 @@ public class TextIndexES implements TextIndex {
                     //This will help us tremendously when we are appending the data later in an already indexed document.
                     builder = builder.field(field, Collections.emptyList());
                 }
-
             }
 
             builder = builder.endObject();
@@ -243,7 +278,7 @@ public class TextIndexES implements TextIndex {
     }
 
     /**
-     * Delete the value ofthe entity from the existing document, if any.
+     * Delete the value of the entity from the existing document, if any.
      * The document itself will never get deleted. Only the value will get deleted.
      * @param entity entity whose value needs to be deleted
      */
@@ -255,26 +290,34 @@ public class TextIndexES implements TextIndex {
         for(String field : docDef.fields()) {
             if(entity.get(field) != null) {
                 fieldToRemove = field;
+                if(entity.getLanguage()!= null && !entity.getLanguage().isEmpty()) {
+                    fieldToRemove = normalizeFieldName(fieldToRemove, entity.getLanguage());
+                }
                 valueToRemove = (String)entity.get(field);
                 break;
             }
         }
 
-        String deleteScript = DELETE_SCRIPT.replaceAll("<fieldToRemove>", fieldToRemove);
-        Map<String,Object> params = new HashMap<>();
-        params.put("valueToRemove", valueToRemove);
+        if(fieldToRemove != null && valueToRemove != null) {
 
-        UpdateRequest updateRequest = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
-                .script(new Script(Script.DEFAULT_SCRIPT_TYPE, Script.DEFAULT_SCRIPT_LANG,deleteScript,params));
+            LOGGER.debug("deleting content related to entity: " + entity.getId());
+            String deleteScript = DELETE_SCRIPT.replaceAll("<fieldToRemove>", fieldToRemove);
+            Map<String,Object> params = new HashMap<>();
+            params.put("valueToRemove", valueToRemove);
 
-        try {
-            client.update(updateRequest).get();
-        }catch(Exception e) {
-            throw new TextIndexException("Unable to delete entity.", e);
+            UpdateRequest updateRequest = new UpdateRequest(indexName, docDef.getEntityField(), entity.getId())
+                    .script(new Script(Script.DEFAULT_SCRIPT_TYPE, Script.DEFAULT_SCRIPT_LANG,deleteScript,params));
+
+            try {
+                client.update(updateRequest).get();
+            }catch(Exception e) {
+                if( ExceptionUtils.getRootCause(e) instanceof DocumentMissingException) {
+                    LOGGER.debug("Trying to delete values from a missing document. Ignoring deletion of entity: ", entity);
+                } else {
+                    throw new TextIndexException("Unable to delete entity.", e);
+                }
+            }
         }
-
-        LOGGER.debug("deleting content related to entity: " + entity.getId());
-
     }
 
     /**
@@ -335,7 +378,6 @@ public class TextIndexES implements TextIndex {
      */
     @Override
     public List<TextHit> query(Node property, String qs, int limit) {
-
         qs = parse(qs);
         LOGGER.debug("Querying ElasticSearch for QueryString: " + qs);
         SearchResponse response = client.prepareSearch(indexName)
@@ -368,17 +410,25 @@ public class TextIndexES implements TextIndex {
 
     private String parse(String qs) {
 
-        if (qs.contains(getDocDef().getLangField() + ":")) {
-            String lang = qs.substring(qs.lastIndexOf(":") + 1);
-            if (!"*".equals(lang)) {
-                // splice the language into the field name
-                qs = qs.replaceFirst(":", "_"+ lang + ":");
-                qs = qs.substring(0, qs.indexOf("AND"));
+        if (qs.contains(getDocDef().getLangField() + COLON)) {
+            String lang = qs.substring(qs.lastIndexOf(COLON) + 1);
+            if (!ASTREIX.equals(lang)) {
+                //Normalize the lang field
+                lang = lang.replaceAll(DASH, UNDERSCORE);
+                qs = qs.replaceFirst(COLON, UNDERSCORE+ lang + COLON);
+                qs = qs.substring(0, qs.indexOf(" AND"));
             }
-        } else {
-            qs = qs.replaceFirst(":", "\\\\*" + ":");
         }
-        return qs;
+        //We do this to enable wild card search
+        return qs.replaceAll("\\*", "\\\\*");
+
+    }
+
+    private String normalizeFieldName(String fieldName, String lang) {
+        //We know that the lang field is not null already
+        StringBuilder sb = new StringBuilder(fieldName);
+        return sb.append(UNDERSCORE).append(lang.replaceAll(DASH,UNDERSCORE)).toString();
+
 
     }
 

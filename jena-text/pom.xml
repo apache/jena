@@ -91,21 +91,10 @@
           <artifactId>transport</artifactId>
       </dependency>
 
-      <dependency>
-          <groupId>org.elasticsearch.test</groupId>
-          <artifactId>framework</artifactId>
-      </dependency>
-
       <!-- This is required to by pass ES JAR Hell in test environment-->
       <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
-          <exclusions>
-              <exclusion>
-                  <groupId>org.hamcrest</groupId>
-                  <artifactId>hamcrest-core</artifactId>
-              </exclusion>
-          </exclusions>
       </dependency>
 
       <dependency>

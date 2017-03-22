@@ -76,7 +76,9 @@ public class JenaESTextExample {
 
         String qs = StrUtils.strjoinNL
                 ( "SELECT * "
-                        , " { ?s text:query ('X1') ;"
+                        , " { ?s text:query (rdfs:comment 'this' 'lang:en') ;"
+//                        , " { ?s text:query (rdfs:comment 'this') ;"
+//                        , " { ?s text:query ('X1' 'lang:en') ;"
                         , "      rdfs:label ?label"
                         , " }") ;
 
