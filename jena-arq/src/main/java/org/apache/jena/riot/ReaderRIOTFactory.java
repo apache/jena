@@ -19,14 +19,20 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
 
 public interface ReaderRIOTFactory
 {
-    public ReaderRIOT create(Lang language);
-    
-    public default ReaderRIOT create(Lang language, ParserProfile profile) {
-        ReaderRIOT r = create(language);
-        r.setParserProfile(profile);
-        return r;
+    public default ReaderRIOT create(Lang language) {
+        return create(language, RiotLib.profile(language, null));
     }
+    
+    public ReaderRIOT create(Lang language, ParserProfile profile);
+    
+//    public default ReaderRIOT create(Lang language, ParserProfile profile) {
+//        return create(language, profile, profile.getHandler());
+//    }
+//
+//    /** Create a parser engine (a {@link ReaderRIOT}) */
+//    public ReaderRIOT create(Lang language, MakerRDF maker, ErrorHandler errorHandler);  
 }

@@ -61,8 +61,8 @@ public interface ParserProfile extends MakerRDF
     public void setPrologue(Prologue prologue) ;
     
     //public FactoryRDF getFactoryRDF() ;
-    public void setFactoryRDF(FactoryRDF factory) ;
+    //public void setFactoryRDF(FactoryRDF factory) ;
     
     public boolean isStrictMode() ;
-    public void setStrictMode(boolean mode) ;
+//    public void setStrictMode(boolean mode) ;
 }

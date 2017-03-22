@@ -22,10 +22,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
@@ -80,6 +77,8 @@ public class RDFParserBuilder {
     private Lang forceLang = null;
     
     private String baseUri = null;
+    private boolean canonicalLiterals = false;
+    private Optional<Boolean> checking = Optional.empty();
     
     // ---- Unused but left in case required in the future.
     private boolean strict = SysRIOT.isStrictMode();
@@ -236,6 +235,58 @@ public class RDFParserBuilder {
     public RDFParserBuilder resolveURIs(boolean flag) { this.resolveURIs = flag ; return this; }
 
     /**
+     * Convert the lexical form of literals to a canonical form.
+     * <p>
+     * Two literals can be different RDF terms for the same value.
+     * <p>
+     * Examples include (first shows of the pair is the canonical form):
+     * 
+     * <pre>
+     *    {@code "1"^^xsd:integer} and {@code "+01"^^xsd:integer} 
+     *    {@code "1.0E0"^^xsd:double} and {@code "1"^^xsd:double}
+     * </pre>
+     * 
+     * The canonical forms follow XSD 1.1
+     * <href="https://www.w3.org/TR/xmlschema11-2/#canonical-lexical-representation">2.3.1
+     * Canonical Mapping</a> except in the case of xsd:decimal where it follows the older
+     * XSD 1.0 which makes it legal for Turtle's short form ({@code "1.0"^^xsd:Decimal}
+     * rather than {@code "1"^^xsd:decimal}). See XSD 1.0 <a href=
+     * "https://www.w3.org/TR/xmlschema-2/#decimal-canonical-representation">3.2.3.2
+     * Canonical representation</a>
+     * <p>
+     * Language tags are case-normalized as defined by
+     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>. Example: {@code en-GB}
+     * not {@code en-gb}. This does not affect the RDF 1.1 requirement that the
+     * value-space of language tags is lower-case.
+     * <p>
+     * The effect on literals where the lexical form does not represent a
+     * valid value (for example, {@code "3000"^^xsd:byte}) is undefined.
+     * <p>
+     * This option is off by default.
+     * <p>
+     * This option can slow parsing down.
+     * <p>
+     * For consistent loading of data, it is recommended that data is cleaned and
+     * canonicalized before loading so the conversion is done once.
+     */
+    public RDFParserBuilder canonicalLiterals(boolean flag) { this.canonicalLiterals = flag ; return this; }
+    
+    /** Set whether to perform checking, 
+     * NTriples and NQuads default to no checking, olther langauges to checking.
+     * <p>
+     * Checking adds warnings over and above basic syntax errors.
+     * <ul>
+     * <li>URIs - whether IRs confrm to all the rules of the URI scheme
+     * <li>Literals: whether the lexical form conforms to the rules for the datatype. 
+     * <li>Triples and quads: check slots have a valid kind of RDF term (parsers usually make this a syntax error anyway).
+     * </ul> 
+     * <p>
+     * See also {@link #errorHandler(ErrorHandler)} to control the output. The default is to log.
+     * Thsi can also be used to turn warnings into exceptions. 
+     */
+    public RDFParserBuilder checking(boolean flag) { this.checking = Optional.of(flag) ; return this; }
+    
+    /**
      * Set the {@link ErrorHandler} to use.
      * This replaces any previous setting.
      * The default is use slf4j logger "RIOT".   
@@ -291,7 +342,8 @@ public class RDFParserBuilder {
         return this;
     }
     
-    // There are no strict/unstrict differences. 
+    // There are no strict/unstrict differences.
+    // Strict is passed through to the RIOT reader.
 //    /**
 //     * Set "strict" mode.
 //     * @param strictMode
@@ -378,7 +430,7 @@ public class RDFParserBuilder {
         // Can't build the maker here as it is Lang/conneg dependent.
         return new RDFParser(uri, path, inputStream, javaReader, client,
                              hintLang, forceLang,
-                             baseUri, strict, resolveURIs,
+                             baseUri, strict, checking, resolveURIs, canonicalLiterals,
                              resolver, factory$, errorHandler$, context);
     }
 
@@ -425,6 +477,8 @@ public class RDFParserBuilder {
         builder.hintLang =          this.hintLang;
         builder.forceLang =         this.forceLang;
         builder.baseUri =           this.baseUri;
+        builder.checking =          this.checking;
+        builder.canonicalLiterals = this.canonicalLiterals;
         builder.strict =            this.strict;
         builder.resolveURIs =       this.resolveURIs;
         builder.resolver =          this.resolver;

@@ -159,7 +159,9 @@ public class RiotLib
      * @param handler       Error handler
      * @return ParserProfile
      * @see #profile for per-language setup
+     * @deprecated To be removed.
      */
+    @Deprecated
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
         LabelToNode labelToNode = true

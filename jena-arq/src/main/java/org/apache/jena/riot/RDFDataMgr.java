@@ -898,7 +898,7 @@ public class RDFDataMgr
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;
-        return r.create(lang, profile) ;
+        return r.create(lang, profile) ;//, profile.getHandler()); 
     }
 
     // Operations to remove "null"s in the code.

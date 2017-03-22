@@ -72,9 +72,14 @@ public class ReaderTriX implements ReaderRIOT {
 <!ATTLIST typedLiteral datatype CDATA #REQUIRED> 
      */
     
-    private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-    private ParserProfile parserProfile = null ;
+    private final ErrorHandler errorHandler;
+    private final MakerRDF maker;
     
+    public ReaderTriX(MakerRDF maker, ErrorHandler errorHandler) {
+        this.maker = maker;
+        this.errorHandler = errorHandler;
+    }
+
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
@@ -103,12 +108,6 @@ public class ReaderTriX implements ReaderRIOT {
     enum State { OUTER, TRIX, GRAPH, TRIPLE }
     
     private void read(XMLStreamReader parser, String baseURI, StreamRDF output) {
-        ParserProfile profile = parserProfile ;
-        if ( profile == null )
-            profile = RiotLib.profile(baseURI, false, false, errorHandler) ; 
-        if ( errorHandler == null )
-            setErrorHandler(profile.getHandler()) ;
-        
         State state = OUTER ;
         Node g = null ;
         List<Node> terms = new ArrayList<>() ; 
@@ -140,13 +139,13 @@ public class ReaderTriX implements ReaderRIOT {
                                 if ( s.isLiteral() )
                                     staxError(parser.getLocation(), "Subject is a literal") ;
                                 if ( g == null ) {
-                                    Triple t = profile.createTriple(s, p, o, line, col) ;
+                                    Triple t = maker.createTriple(s, p, o, line, col) ;
                                     output.triple(t) ;
                                 }
                                 else {
                                     if ( g.isLiteral() )
                                         staxError(parser.getLocation(), "graph name is a literal") ;
-                                    Quad q = profile.createQuad(g, s, p, o, line, col) ;
+                                    Quad q = maker.createQuad(g, s, p, o, line, col) ;
                                     output.quad(q) ;
                                 }
                                 terms.clear();
@@ -195,7 +194,7 @@ public class ReaderTriX implements ReaderRIOT {
                             case TriX.tagURI: {
                                 if ( state != GRAPH && state != TRIPLE )
                                     staxErrorOutOfPlaceElement(parser) ;
-                                Node n = term(parser, profile) ;
+                                Node n = term(parser, maker) ;
                                 if ( state == GRAPH ) {
                                     if ( g != null )
                                         staxError(parser.getLocation(), "Duplicate graph name") ;
@@ -212,7 +211,7 @@ public class ReaderTriX implements ReaderRIOT {
                             case TriX.tagTypedLiteral: {    
                                 if ( state != TRIPLE )
                                     staxErrorOutOfPlaceElement(parser) ;
-                                Node n = term(parser, profile) ;
+                                Node n = term(parser, maker) ;
                                 add(terms, n, 3, parser) ;
                                 break ;
                             }
@@ -240,7 +239,7 @@ public class ReaderTriX implements ReaderRIOT {
         staxError(parser.getLocation(), "Out of place XML element: "+tagName(parser)) ; 
     }    
 
-    private Node term(XMLStreamReader parser, ParserProfile profile) throws XMLStreamException {
+    private Node term(XMLStreamReader parser, MakerRDF maker) throws XMLStreamException {
         String tag = parser.getLocalName() ;
         int line = parser.getLocation().getLineNumber() ;
         int col = parser.getLocation().getColumnNumber() ;
@@ -249,7 +248,7 @@ public class ReaderTriX implements ReaderRIOT {
             case TriX.tagURI: {
                 // Two uses!
                 String x = parser.getElementText() ;
-                Node n = profile.createURI(x, line, col) ;
+                Node n = maker.createURI(x, line, col) ;
                 return n ; 
             }
             case TriX.tagQName: {
@@ -260,11 +259,11 @@ public class ReaderTriX implements ReaderRIOT {
                 String[] y = x.split(":", 2) ;  // Allows additional ':'
                 String prefUri = parser.getNamespaceURI(y[0]) ;
                 String local = y[1] ; 
-                return profile.createURI(prefUri+local, line, col) ;
+                return maker.createURI(prefUri+local, line, col) ;
             }
             case TriX.tagId: {
                 String x = parser.getElementText() ;
-                return profile.createBlankNode(null, x, line, col) ;
+                return maker.createBlankNode(null, x, line, col) ;
             }
             case TriX.tagPlainLiteral: {
                 // xml:lang
@@ -277,9 +276,9 @@ public class ReaderTriX implements ReaderRIOT {
                     lang = attribute(parser, nsXML0, TriX.attrXmlLang) ;
                 String lex = parser.getElementText() ;
                 if ( lang == null )
-                    return profile.createStringLiteral(lex, line, col) ;
+                    return maker.createStringLiteral(lex, line, col) ;
                 else
-                    return profile.createLangLiteral(lex, lang, line, col) ;
+                    return maker.createLangLiteral(lex, lang, line, col) ;
             }
             case TriX.tagTypedLiteral: {
                 int nAttr = parser.getAttributeCount() ;
@@ -293,7 +292,7 @@ public class ReaderTriX implements ReaderRIOT {
                 String lex = (rdfXMLLiteral.equals(dt)) 
                     ? slurpRDFXMLLiteral(parser)
                     : parser.getElementText() ;
-                return profile.createTypedLiteral(lex, rdt, line, col) ;                    
+                return maker.createTypedLiteral(lex, rdt, line, col) ;                    
             }
             default: {
                 QName qname = parser.getName() ;
@@ -416,7 +415,7 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     private void staxError(int line, int col, String msg) {
-        getErrorHandler().error(msg, line, col) ;
+        errorHandler.error(msg, line, col) ;
     }
 
     @Override
@@ -425,14 +424,12 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     @Override
-    public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
+    public void setErrorHandler(ErrorHandler errorHandler) { throw new UnsupportedOperationException(); }
 
     @Override
-    public ParserProfile getParserProfile() {
-        return parserProfile ;
-    }
+    public ParserProfile getParserProfile() { throw new UnsupportedOperationException(); }
 
     @Override
-    public void setParserProfile(ParserProfile profile) { this.parserProfile = profile ; }
+    public void setParserProfile(ParserProfile profile) { throw new UnsupportedOperationException(); }
 }
 
