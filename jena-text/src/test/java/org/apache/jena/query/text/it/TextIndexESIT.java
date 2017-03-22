@@ -64,7 +64,6 @@ public class TextIndexESIT extends BaseESTest {
     }
 
     @Test
-//    @Ignore
     public void testDeleteWhenNoneExists() {
 
         GetResponse response = transportClient.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x3").get();
