@@ -143,9 +143,6 @@
         <configuration>
             <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
             <skip>true</skip>
-
-            <!-- Required to bypass Embedded ES security checks, especially JAR Hell-->
-            <argLine>-Dtests.security.manager=false</argLine>
             <!--<excludedGroups>org.apache.jena.query.text.IntegrationTest</excludedGroups>-->
         </configuration>
           <executions>
@@ -176,7 +173,6 @@
                       <includes>
                           <include>**/*IT.java</include>
                       </includes>
-                      <argLine>-Dtests.security.manager=false</argLine>
                   </configuration>
               </execution>
           </executions>
