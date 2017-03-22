@@ -102,7 +102,7 @@ public class TextIndexES implements TextIndex {
      * ES Script for deleting a specific value in the field for the given document in the index.
      * The main reason to use scripts is because we want to delete specific value of the field that contains an array of values
      */
-    private static final String DELETE_SCRIPT = "if((ctx._source != null) && (ctx._source.<fieldToRemove>) != null && (ctx._source.<fieldToRemove>.empty != true) " +
+    private static final String DELETE_SCRIPT = "if((ctx._source != null) && (ctx._source.<fieldToRemove> != null) && (ctx._source.<fieldToRemove>.empty != true) " +
             "&& (ctx._source.<fieldToRemove>.indexOf(params.valueToRemove) >= 0)) " +
             "{ctx._source.<fieldToRemove>.remove(ctx._source.<fieldToRemove>.indexOf(params.valueToRemove))}";
 
