@@ -47,7 +47,6 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class
     , TestDatasetWithComplexPhraseQueryParser.class
-//    , TestTextIndexES.class
 })
 
 public class TS_Text
