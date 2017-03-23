@@ -22,9 +22,7 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.text.*;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,22 +93,9 @@ public class TextIndexESAssembler extends AssemblerBase {
                 indexName = "jena-text";
             }
 
-            boolean isMultilingualSupport = false;
-            Statement mlSupportStatement = root.getProperty(pMultilingualSupport);
-            if (null != mlSupportStatement) {
-                RDFNode mlsNode = mlSupportStatement.getObject();
-                if (! mlsNode.isLiteral()) {
-                    throw new TextIndexException("text:multilingualSupport property must be a string : " + mlsNode);
-                }
-                isMultilingualSupport = mlsNode.asLiteral().getBoolean();
-            }
-
-
-
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
-            config.setMultilingualSupport(isMultilingualSupport);
 
             //We have to create an ES specific settings class in order to pass the Index Initialization specific properties.
             ESSettings settings = new ESSettings().builder()

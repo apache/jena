@@ -289,14 +289,6 @@
         <version>${ver.elasticsearch}</version>
       </dependency>
 
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-test-framework</artifactId>
-        <version>${ver.lucene}</version>
-        <scope>test</scope>
-      </dependency>
-
       <!-- Logging -->
       <dependency>
         <groupId>org.slf4j</groupId>

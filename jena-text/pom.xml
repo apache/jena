@@ -91,7 +91,6 @@
           <artifactId>transport</artifactId>
       </dependency>
 
-      <!-- This is required to by pass ES JAR Hell in test environment-->
       <dependency>
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
@@ -101,13 +100,11 @@
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-api</artifactId>
           <version>2.7</version>
-          <!--<scope>test</scope>-->
       </dependency>
       <dependency>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
           <version>2.7</version>
-          <!--<scope>test</scope>-->
       </dependency>
 
   </dependencies>
@@ -143,7 +140,6 @@
         <configuration>
             <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
             <skip>true</skip>
-            <!--<excludedGroups>org.apache.jena.query.text.IntegrationTest</excludedGroups>-->
         </configuration>
           <executions>
               <execution>
@@ -184,8 +180,8 @@
             <version>5.2</version>
             <configuration>
                 <clusterName>elasticsearch</clusterName>
-                <tcpPort>9300</tcpPort>
-                <httpPort>9200</httpPort>
+                <tcpPort>9500</tcpPort>
+                <httpPort>9400</httpPort>
             </configuration>
             <executions>
                 <!--

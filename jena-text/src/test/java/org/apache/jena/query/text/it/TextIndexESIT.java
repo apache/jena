@@ -149,7 +149,7 @@ public class TextIndexESIT extends BaseESTest {
         Assert.assertEquals(1, result.size());
         Assert.assertEquals("http://example/x3", result.get(0).getNode().getURI());
 
-        //Now lets delete the German label
+        //Now lets delete the Germany label
         classToTest.deleteEntity(entity("http://example/x3", "label", "Germany", "en"));
 
         TimeUnit.SECONDS.sleep(1);

@@ -51,7 +51,6 @@ text:TextIndexES      rdfs:subClassOf   text:TextIndex .
     text:shards "1" ;                  # The number of shards for the index. Defaults to 1
     text:replicas "1" ;                # The number of replicas for the index. Defaults to 1
     text:indexName "jena-text" ;       # Name of the Index. defaults to jena-text
-    text:multilingualSupport true ;
     text:entityMap <#entMap> ;
     .
 

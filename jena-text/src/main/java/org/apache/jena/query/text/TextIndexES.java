@@ -89,7 +89,7 @@ public class TextIndexES implements TextIndex {
 
     private static final String COLON = ":";
 
-    private static final String ASTREIX = "*";
+    private static final String ASTERISK = "*";
 
     /**
      * ES Script for adding/updating the document in the index.
@@ -412,7 +412,7 @@ public class TextIndexES implements TextIndex {
 
         if (qs.contains(getDocDef().getLangField() + COLON)) {
             String lang = qs.substring(qs.lastIndexOf(COLON) + 1);
-            if (!ASTREIX.equals(lang)) {
+            if (!ASTERISK.equals(lang)) {
                 //Normalize the lang field
                 lang = lang.replaceAll(DASH, UNDERSCORE);
                 qs = qs.replaceFirst(COLON, UNDERSCORE+ lang + COLON);

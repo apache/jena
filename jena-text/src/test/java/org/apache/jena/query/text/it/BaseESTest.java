@@ -43,7 +43,7 @@ public abstract class BaseESTest {
     protected static TransportClient transportClient;
 
     private final static String ADDRESS = "127.0.0.1";
-    private final static int PORT = 9300;
+    private final static int PORT = 9500;
     private final static String CLUSTER_NAME = "elasticsearch";
     protected final static String INDEX_NAME = "jena-text";
 
