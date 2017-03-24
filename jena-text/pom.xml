@@ -180,7 +180,7 @@
             <version>5.2</version>
             <configuration>
                 <clusterName>elasticsearch</clusterName>
-                <tcpPort>9500</tcpPort>
+                <transportPort>9500</transportPort>
                 <httpPort>9400</httpPort>
             </configuration>
             <executions>

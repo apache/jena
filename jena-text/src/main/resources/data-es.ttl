@@ -24,6 +24,7 @@
    rdfs:label "Thing 1"@en ;
    rdfs:comment "It's a complicated comment"@en ;
    rdfs:comment "this is another comment"@en ;
+   rdfs:comment "this is en GB comment"@en-GB ;
    :id 123 .
 
 :s1 a :Thing ;

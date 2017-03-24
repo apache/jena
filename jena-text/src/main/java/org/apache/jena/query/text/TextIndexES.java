@@ -363,10 +363,10 @@ public class TextIndexES implements TextIndex {
         return result;
     }
 
-    @Override
-    public List<TextHit> query(Node property, String qs) {
 
-        return query(property, qs, MAX_RESULTS);
+    @Override
+    public List<TextHit> query(Node property, String qs, String graphURI, String lang) {
+        return query(property, qs, graphURI, lang, MAX_RESULTS);
     }
 
     /**
@@ -377,8 +377,13 @@ public class TextIndexES implements TextIndex {
      * @return List of {@link TextHit}s containing the documents that have been found
      */
     @Override
-    public List<TextHit> query(Node property, String qs, int limit) {
-        qs = parse(qs);
+    public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit) {
+        if(property != null) {
+            qs = parse(property.getLocalName(), qs, lang);
+        } else {
+            qs = parse(null, qs, lang);
+        }
+
         LOGGER.debug("Querying ElasticSearch for QueryString: " + qs);
         SearchResponse response = client.prepareSearch(indexName)
                 .setTypes(docDef.getEntityField())
@@ -408,15 +413,23 @@ public class TextIndexES implements TextIndex {
         return docDef ;
     }
 
-    private String parse(String qs) {
+    private String parse(String fieldName, String qs, String lang) {
+        if(fieldName != null && !fieldName.isEmpty()) {
+            if(lang != null && !lang.equals("none")) {
+                if (!ASTERISK.equals(lang)) {
+                    fieldName = fieldName + UNDERSCORE + lang.replaceAll(DASH, UNDERSCORE);
+                    qs = fieldName + COLON + qs;
+                } else {
+                    if(!qs.contains("\\*")) {
+                        fieldName = fieldName + ASTERISK;
+                        qs = fieldName + COLON + qs;
+                    }
+                }
 
-        if (qs.contains(getDocDef().getLangField() + COLON)) {
-            String lang = qs.substring(qs.lastIndexOf(COLON) + 1);
-            if (!ASTERISK.equals(lang)) {
-                //Normalize the lang field
-                lang = lang.replaceAll(DASH, UNDERSCORE);
-                qs = qs.replaceFirst(COLON, UNDERSCORE+ lang + COLON);
-                qs = qs.substring(0, qs.indexOf(" AND"));
+                } else {
+                //Lang is null, but field name is not null
+                qs = fieldName + COLON + qs;
+
             }
         }
         //We do this to enable wild card search
