@@ -94,6 +94,11 @@ fi
 
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
+# Debug assistence
+## echo "++++ Classpath:"
+## echo "$(echo $CP | sed -e "s/:/\n/g")"
+## exit
+
 exec "$JAVA" -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 # Run as war file.
