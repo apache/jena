@@ -538,9 +538,9 @@ public class ResultSetFormatter {
            JsonObject jsonItem = jsonItems.next() ;
            for (Entry<String, JsonValue> entry: jsonItem.entrySet()) 
            {
-               JsonValue value = entries.getValue() ;
+               JsonValue value = entry.getValue() ;
                String val = value.getAsString().value() ;
-               jWriter.pair(entries.getKey(), val) ;
+               jWriter.pair(entry.getKey(), val) ;
            }
            jWriter.finishObject() ;
        }
