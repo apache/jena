@@ -217,18 +217,26 @@ void JsonQuery() : {}
   WhereClause()
   SolutionModifier()
 }
-void JsonClause() : { Object o ; String s ; }
+void JsonClause() : { Object o ; String s ; Token t; }
 {
   <JSON> { getQuery().setQueryJsonType() ; }
   <LBRACE>
-  s = String() < PNAME_NS >
+  s = String()
+  t = < PNAME_NS > {
+    if ( ! t.image.equals(":") )
+      throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
+  }
   (
     o = Var() { getQuery().addResultVar((Var) o) ; getQuery().addJsonMapping(s, o) ; }
   | o = String() { getQuery().addJsonMapping(s, o) ; }
   | o = Number() { getQuery().addJsonMapping(s, o) ; }
   )
   (
-    <COMMA> s = String() < PNAME_NS >
+    <COMMA> s = String()
+    t = < PNAME_NS > {
+      if ( ! t.image.equals(":") )
+        throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
+    }
     (
       o = Var() { getQuery().addResultVar((Var) o) ; getQuery().addJsonMapping(s, o) ; }
     | o = String() { getQuery().addJsonMapping(s, o) ; }
