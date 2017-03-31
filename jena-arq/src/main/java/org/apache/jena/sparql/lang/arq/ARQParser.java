@@ -714,12 +714,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void JsonClause() throws ParseException {
-                      Object o ; String s ;
+                      Object o ; String s ; Token t;
     jj_consume_token(JSON);
            getQuery().setQueryJsonType() ;
     jj_consume_token(LBRACE);
     s = String();
-    jj_consume_token(PNAME_NS);
+    t = jj_consume_token(PNAME_NS);
+    if ( ! t.image.equals(":") )
+      throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
@@ -755,7 +757,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       jj_consume_token(COMMA);
       s = String();
-      jj_consume_token(PNAME_NS);
+      t = jj_consume_token(PNAME_NS);
+      if ( ! t.image.equals(":") )
+        throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VAR1:
       case VAR2:
@@ -5850,12 +5854,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3_5() {
-    if (jj_scan_token(SEMICOLON)) return true;
-    if (jj_scan_token(SEPARATOR)) return true;
-    return false;
-  }
-
   private boolean jj_3R_145() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -6576,11 +6574,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_116() {
-    if (jj_3R_136()) return true;
-    return false;
-  }
-
   private boolean jj_3R_104() {
     if (jj_3R_117()) return true;
     return false;
@@ -6612,13 +6605,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_136() {
-    if (jj_scan_token(PREFIX)) return true;
-    if (jj_scan_token(PNAME_NS)) return true;
-    if (jj_3R_142()) return true;
-    return false;
-  }
-
   private boolean jj_3R_155() {
     Token xsp;
     xsp = jj_scanpos;
@@ -6629,14 +6615,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_148() {
-    if (jj_3R_155()) return true;
+  private boolean jj_3R_116() {
+    if (jj_3R_136()) return true;
     return false;
   }
 
-  private boolean jj_3R_135() {
-    if (jj_scan_token(BASE)) return true;
-    if (jj_3R_142()) return true;
+  private boolean jj_3R_148() {
+    if (jj_3R_155()) return true;
     return false;
   }
 
@@ -6651,6 +6636,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_147() {
+    if (jj_3R_142()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_136() {
+    if (jj_scan_token(PREFIX)) return true;
+    if (jj_scan_token(PNAME_NS)) return true;
+    if (jj_3R_142()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_135() {
+    if (jj_scan_token(BASE)) return true;
     if (jj_3R_142()) return true;
     return false;
   }
@@ -7036,6 +7034,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_126() {
     if (jj_scan_token(STDEV)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_scan_token(SEMICOLON)) return true;
+    if (jj_scan_token(SEPARATOR)) return true;
     return false;
   }
 
