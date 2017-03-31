@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
@@ -526,26 +527,26 @@ public class ResultSetFormatter {
     * @param outStream output stream
     * @param jsonItems The JSON values
     */
-    public static void outputAsJSON(OutputStream outStream, Iterator<JsonObject> jsonItems)
-    {
-        JSWriter jWriter = new JSWriter(outStream) ;
-        jWriter.startArray() ;
-        jWriter.startOutput() ;
-        while (jsonItems.hasNext()) 
-        {
-            jWriter.startObject() ;
-            JsonObject jsonItem = jsonItems.next() ;
-            for (String key: jsonItem.keys()) 
-            {
-                JsonValue value = jsonItem.get(key) ;
-                String val = value.getAsString().value() ;
-                jWriter.pair(key, val) ;
-            }
-            jWriter.finishObject() ;
-        }
-        jWriter.finishArray() ;
-        jWriter.finishOutput() ;
-    }
+   public static void outputAsJSON(OutputStream outStream, Iterator<JsonObject> jsonItems)
+   {
+       JSWriter jWriter = new JSWriter(outStream) ;
+       jWriter.startArray() ;
+       jWriter.startOutput() ;
+       while (jsonItems.hasNext()) 
+       {
+           jWriter.startObject() ;
+           JsonObject jsonItem = jsonItems.next() ;
+           for (Entry<String, JsonValue> entries: jsonItem.entrySet()) 
+           {
+               JsonValue value = entries.getValue() ;
+               String val = value.getAsString().value() ;
+               jWriter.pair(entries.getKey(), val) ;
+           }
+           jWriter.finishObject() ;
+       }
+       jWriter.finishArray() ;
+       jWriter.finishOutput() ;
+   }
 
     // ---- SSE
     
