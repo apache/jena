@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -178,13 +179,14 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         if ( action.verbose ) {
             // Verbose mode only .... capture request for logging (does not scale).
-            String requestStr = null ;
-            try { requestStr = IO.readWholeFileAsUTF8(input) ; }
-            catch (IOException ex) { IO.exception(ex) ; }
-            action.log.info(format("[%d] Update = %s", action.id, ServletOps.formatForLog(requestStr))) ;
-
-            input = new ByteArrayInputStream(requestStr.getBytes());
-            requestStr = null;
+            byte[] bytes = IO.readWholeFile(input);
+            input = new ByteArrayInputStream(bytes);
+            try {
+                String requestStr = Bytes.bytes2string(bytes) ;
+                action.log.info(format("[%d] Update = %s", action.id, ServletOps.formatForLog(requestStr))) ;
+            } catch (Exception ex) {
+                action.log.info(format("[%d] Update = <failed to decode>", action.id)) ;
+            }
         }
 
         execute(action, input) ;
