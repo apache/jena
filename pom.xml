@@ -113,6 +113,7 @@
         <module>jena-base</module>
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-rdfconnection</module>
         <module>jena-tdb</module> 
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
