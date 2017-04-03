@@ -112,7 +112,10 @@ public interface TransactionalComponent
     public void begin(Transaction transaction) ;
     
     /** Promote a component in a transaction.
-     * May return "false" for "can't do that".
+     * <p>
+     *  May return "false" for "can't do that" if the transaction can not be promoted.
+     *  <p>
+     *  May throw {@link UnsupportedOperationException} if promotion is not supported.
      */
     public boolean promote(Transaction transaction) ;
 
@@ -124,7 +127,7 @@ public interface TransactionalComponent
 
     /** Commit a transaction (make durable).
      * Other components not have been commited yet and recovery may occur still.
-     * Permanet state should not be finalised until {@link #commitEnd}.
+     * Permanent state should not be finalised until {@link #commitEnd}.
      */
     public void commit(Transaction transaction) ;
     
