@@ -324,15 +324,6 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
-        if (this.isMultilingual) {
-            if (queryString.contains(getDocDef().getLangField() + ":")) {
-                String lang = queryString.substring(queryString.lastIndexOf(":") + 1);
-                if (!"*".equals(lang)) {
-                    // splice the language into the field name
-                    queryString = queryString.replaceFirst(":", "_" + lang + ":");
-                }
-            }
-        }
         QueryParser queryParser = getQueryParser(analyzer) ;
         queryParser.setAllowLeadingWildcard(true) ;
         Query query = queryParser.parse(queryString) ;
@@ -370,14 +361,14 @@ public class TextIndexLucene implements TextIndex {
     }
 
     @Override
-    public List<TextHit> query(Node property, String qs) {
-        return query(property, qs, MAX_N) ;
+    public List<TextHit> query(Node property, String qs, String graphURI, String lang) {
+        return query(property, qs, graphURI, lang, MAX_N) ;
     }
 
     @Override
-    public List<TextHit> query(Node property, String qs, int limit) {
+    public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit) {
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return query$(indexReader, property, qs, limit) ;
+            return query$(indexReader, property, qs, graphURI, lang, limit) ;
         }
         catch (ParseException ex) {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
@@ -387,9 +378,43 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, int limit) throws ParseException, IOException {
+    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, String graphURI, String lang, int limit)
+            throws ParseException, IOException {
+        String textField = docDef.getField(property);
+        String textClause;
+        String langClause = null;
+        String graphClause = null;
+
+        //for language-based search extension
+        if (getDocDef().getLangField() != null) {
+            String langField = getDocDef().getLangField();
+            if (lang != null) {
+                if (this.isMultilingual && !lang.equals("none")) {
+                    textField = textField + "_" + lang;
+                }
+                langClause = !"none".equals(lang)?
+                        langField + ":" + lang : "-" + langField + ":*";
+            }
+        }
+
+        if (textField != null)
+            textClause = textField + ":" + qs ;
+        else
+            textClause = qs ;
+
+        if (graphURI != null) {
+            String escaped = QueryParserBase.escape(graphURI) ;
+            graphClause = getDocDef().getGraphField() + ":" + escaped ;
+        }
+
+        String queryString = textClause ;
+        if (langClause != null)
+            queryString = "(" + queryString + ") AND " + langClause ;
+        if (graphClause != null)
+            queryString = "(" + queryString + ") AND " + graphClause ;
+
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(qs, queryAnalyzer) ;
+        Query query = parseQuery(queryString, queryAnalyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
@@ -407,13 +432,13 @@ public class TextIndexLucene implements TextIndex {
                 String lexical = lexicals[0];
                 String[] langs = doc.getValues(docDef.getLangField()) ;
                 if (langs.length > 0) {
-                    String lang = langs[0];
-                    if (lang.startsWith(DATATYPE_PREFIX)) {
-                        String datatype = lang.substring(DATATYPE_PREFIX.length());
+                    String doclang = langs[0];
+                    if (doclang.startsWith(DATATYPE_PREFIX)) {
+                        String datatype = doclang.substring(DATATYPE_PREFIX.length());
                         TypeMapper tmap = TypeMapper.getInstance();
                         literal = NodeFactory.createLiteral(lexical, tmap.getSafeTypeByName(datatype));
                     } else {
-                        literal = NodeFactory.createLiteral(lexical, lang);
+                        literal = NodeFactory.createLiteral(lexical, doclang);
                     }
                 } else {
                     literal = NodeFactory.createLiteral(lexical);

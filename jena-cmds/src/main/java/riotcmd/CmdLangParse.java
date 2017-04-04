@@ -250,6 +250,7 @@ public abstract class CmdLangParse extends CmdGeneral
         Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
         if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
             throw new CmdException("Undefined language: "+lang) ; 
+        builder.lang(lang);
         
         // Make a flag.
         // Input and output subflags.
@@ -278,8 +279,10 @@ public abstract class CmdLangParse extends CmdGeneral
         
         modTime.startTimer() ;
         sink.start() ;
+        
+        builder.source(in);
+        RDFParser parser = builder.build();
         try {
-            RDFParser parser = builder.build();
             parser.parse(sink);
             successful = true;
         } catch (RiotException ex) {

@@ -81,6 +81,32 @@
       <artifactId>lucene-queryparser</artifactId>
     </dependency>
 
+      <dependency>
+          <groupId>org.elasticsearch</groupId>
+          <artifactId>elasticsearch</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.elasticsearch.client</groupId>
+          <artifactId>transport</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+          <version>2.7</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>2.7</version>
+      </dependency>
+
   </dependencies>
 
   <build>
@@ -112,11 +138,72 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <includes>
-            <include>**/TS_*.java</include>
-          </includes>
+            <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
+            <skip>true</skip>
         </configuration>
+          <executions>
+              <execution>
+                  <id>unit-tests</id>
+                  <phase>test</phase>
+                  <goals>
+                      <goal>test</goal>
+                  </goals>
+                  <configuration>
+                      <skip>false</skip>
+                      <includes>
+                          <include>**/TS_*.java</include>
+                      </includes>
+                      <excludes>
+                          <exclude>**/*IT.java</exclude>
+                      </excludes>
+                  </configuration>
+              </execution>
+              <execution>
+                  <id>integration-tests</id>
+                  <phase>integration-test</phase>
+                  <goals>
+                      <goal>test</goal>
+                  </goals>
+                  <configuration>
+                      <skip>false</skip>
+                      <includes>
+                          <include>**/*IT.java</include>
+                      </includes>
+                  </configuration>
+              </execution>
+          </executions>
       </plugin>
+        <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <!-- REPLACE THE FOLLOWING WITH THE PLUGIN VERSION YOU NEED -->
+            <version>5.2</version>
+            <configuration>
+                <clusterName>elasticsearch</clusterName>
+                <transportPort>9500</transportPort>
+                <httpPort>9400</httpPort>
+            </configuration>
+            <executions>
+                <!--
+                    The elasticsearch maven plugin goals are by default bound to the
+                    pre-integration-test and post-integration-test phases
+                -->
+                <execution>
+                    <id>start-elasticsearch</id>
+                    <phase>pre-integration-test</phase>
+                    <goals>
+                        <goal>runforked</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>stop-elasticsearch</id>
+                    <phase>post-integration-test</phase>
+                    <goals>
+                        <goal>stop</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

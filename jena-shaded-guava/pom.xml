@@ -46,7 +46,7 @@
       <!-- Version number specified explicitly and not in jena-parent, 
            as it should only be used here, and further shadowing/bundle/NOTICE
            consideration might be needed on upgrade. -->
-      <version>18.0</version>
+      <version>21.0</version>
     </dependency>
   </dependencies>
 
