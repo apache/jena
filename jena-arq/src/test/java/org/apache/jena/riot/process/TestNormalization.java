@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.process;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.riot.process.normalize.CanonicalizeLiteral ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
-public class TestNormalization extends BaseTest
+public class TestNormalization
 {
     @Test public void normalize_int_01()        { normalize("23", "23") ; }
     @Test public void normalize_int_02()        { normalize("023", "23") ; }
@@ -39,12 +39,12 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_int_11()        { normalize("-000", "0") ; }
     
     // Subtypes of integer
-    @Test public void normalize_int_20()        { normalize("'-000'^^xsd:int", "0") ; }
-    @Test public void normalize_int_21()        { normalize("'0'^^xsd:int", "0") ; }
-    @Test public void normalize_int_22()        { normalize("'1'^^xsd:long", "1") ; }
-    @Test public void normalize_int_23()        { normalize("'100'^^xsd:unsignedInt", "100") ; }
-    @Test public void normalize_int_24()        { normalize("'-100'^^xsd:nonPositiveInteger", "-100") ; }
-    @Test public void normalize_int_25()        { normalize("'+100'^^xsd:positiveInteger", "100") ; }
+    @Test public void normalize_int_20()        { normalize("'-000'^^xsd:int", "'0'^^xsd:int") ; }
+    @Test public void normalize_int_21()        { normalize("'0'^^xsd:int", "'0'^^xsd:int") ; }
+    @Test public void normalize_int_22()        { normalize("'1'^^xsd:long", "'1'^^xsd:long") ; }
+    @Test public void normalize_int_23()        { normalize("'0100'^^xsd:unsignedInt", "'100'^^xsd:unsignedInt") ; }
+    @Test public void normalize_int_24()        { normalize("'-100'^^xsd:nonPositiveInteger", "'-100'^^xsd:nonPositiveInteger") ; }
+    @Test public void normalize_int_25()        { normalize("'+100'^^xsd:positiveInteger", "'100'^^xsd:positiveInteger") ; }
     
     @Test public void normalize_decimal_01()    { normalize("0.0", "0.0") ; }
     @Test public void normalize_decimal_02()    { normalize("'0'^^xsd:decimal", "0.0") ; }
@@ -98,42 +98,34 @@ public class TestNormalization extends BaseTest
     @Test public void normalize_lang_05()       { normalizeLang("'abc'@EN", "'abc'@EN", false) ; }
     @Test public void normalize_lang_06()       { normalizeLang("'abc'@EN-UK", "'abc'@en-uk", false) ; }
 
-    private static void normalize(String input, String expected)
-    {
-        Node n1 = NodeFactoryExtra.parseNode(input) ;
+    private static void normalize(String input, String expected) {
+        Node n1 = NodeFactoryExtra.parseNode(input);
         assertTrue("Invalid lexical form", n1.getLiteralDatatype().isValid(n1.getLiteralLexicalForm()));
-        
-        Node n2 = CanonicalizeLiteral.get().apply(n1) ;
-        Node n3 = NodeFactoryExtra.parseNode(expected) ;
-        assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm()) ;
-        assertEquals("Invalid canonicalization (node)", n3, n2) ;
+
+        Node n2 = CanonicalizeLiteral.get().apply(n1);
+        Node n3 = NodeFactoryExtra.parseNode(expected);
+        assertEquals("Different datatype", n3.getLiteralDatatype(), n2.getLiteralDatatype());
+        assertEquals("Invalid canonicalization (lex)", n3.getLiteralLexicalForm(), n2.getLiteralLexicalForm());
+        assertEquals("Invalid canonicalization (node)", n3, n2);
     }
 
     private static void normalizeLang(String input, String expected)
     { normalizeLang(input, expected, true) ; }
     
-    private static void normalizeLang(String input, String expected, boolean correct)
-    {
-        Node n1 = NodeFactoryExtra.parseNode(input) ;
-        Node n2 = CanonicalizeLiteral.get().apply(n1) ;
-        Node n3 = NodeFactoryExtra.parseNode(expected) ;
-        if ( correct )
-        {
-            assertEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage()) ;
-            assertEquals("Invalid canonicalization (node)", n3, n2) ;
-        }
-        else
-        {
-            assertNotEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage()) ;
-            assertNotEquals("Invalid canonicalization (node)", n3, n2) ;
+    private static void normalizeLang(String input, String expected, boolean correct) {
+        Node n1 = NodeFactoryExtra.parseNode(input);
+        Node n2 = CanonicalizeLiteral.get().apply(n1);
+        Node n3 = NodeFactoryExtra.parseNode(expected);
+        if ( correct ) {
+            assertEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage());
+            assertEquals("Invalid canonicalization (node)", n3, n2);
+        } else {
+            assertNotEquals("Invalid canonicalization (lang)", n3.getLiteralLanguage(), n2.getLiteralLanguage());
+            assertNotEquals("Invalid canonicalization (node)", n3, n2);
         }
     }
     
-
-    private static void normalizeDT(String input, String expected)
-    {
-        normalize("'"+input+"'^^xsd:dateTime",
-                  "'"+expected+"'^^xsd:dateTime") ;
+    private static void normalizeDT(String input, String expected) {
+        normalize("'" + input + "'^^xsd:dateTime", "'" + expected + "'^^xsd:dateTime");
     }
-
 }

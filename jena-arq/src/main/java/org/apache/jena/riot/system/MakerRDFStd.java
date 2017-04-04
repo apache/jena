@@ -99,11 +99,6 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
 //        return factory;
 //    }
 
-    @Override
-    public void setFactoryRDF(FactoryRDF factory) {
-        this.factory = factory;
-    }
-
     // XXX ??? @Override
     public Context getContext() {
         return context;
@@ -117,11 +112,6 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
     @Override
     public boolean isStrictMode() {
         return strictMode;
-    }
-
-    @Override
-    public void setStrictMode(boolean mode) {
-        this.strictMode = mode;
     }
 
     @Override

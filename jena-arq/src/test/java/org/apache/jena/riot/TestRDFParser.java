@@ -31,10 +31,6 @@ import java.nio.file.Paths;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.FactoryRDFStd;
@@ -56,33 +52,33 @@ public class TestRDFParser {
     @Test public void source_not_uri_02() {
         Graph graph = GraphFactory.createGraphMem();
         InputStream input = new ByteArrayInputStream(testdata.getBytes(StandardCharsets.UTF_8));
-        RDFParserBuilder.create().lang(Lang.TTL).source(input).parse(graph);
+        RDFParser.create().lang(Lang.TTL).source(input).parse(graph);
         assertEquals(1, graph.size());
     }
     
     @Test public void source_uri_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().source("file:"+DIR+"data.ttl").parse(graph);
+        RDFParser.create().source("file:"+DIR+"data.ttl").parse(graph);
         assertEquals(3, graph.size());
     }
 
     @Test(expected=RiotException.class)
     public void source_uri_02() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().source("file:"+DIR+"data.unknown").parse(graph);
+        RDFParser.create().source("file:"+DIR+"data.unknown").parse(graph);
     }
 
     @Test
     public void source_uri_03() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().source("file:"+DIR+"data.unknown").lang(Lang.TTL).parse(graph);
+        RDFParser.create().source("file:"+DIR+"data.unknown").lang(Lang.TTL).parse(graph);
         assertEquals(3, graph.size());
     }
 
     @Test
     public void source_uri_04() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create()
+        RDFParser.create()
             .source(Paths.get(DIR+"data.ttl"))
             .parse(graph);
         assertEquals(3, graph.size());
@@ -92,18 +88,25 @@ public class TestRDFParser {
     public void source_uri_05() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create()
+        RDFParser.create()
             .source("http://example/")
             .source(DIR+"data.ttl")
             .parse(graph);
         assertEquals(3, graph.size());
     }
 
+    // Shortcut source
+    @Test public void source_shortcut_01() {
+        Graph graph = GraphFactory.createGraphMem();
+        RDFParser.source(new StringReader(testdata)).lang(Lang.TTL).parse(graph);
+        assertEquals(1, graph.size());
+    }
+    
     @Test(expected=RiotNotFoundException.class)
     public void source_notfound_1() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create()
+        RDFParser.create()
             .source(Paths.get(DIR+"data.nosuchfile.ttl"))
             .parse(graph);
         assertEquals(3, graph.size());
@@ -113,7 +116,7 @@ public class TestRDFParser {
     public void source_notfound_2() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create()
+        RDFParser.create()
             .source(DIR+"data.nosuchfile.ttl")
             .parse(graph);
         assertEquals(3, graph.size());
@@ -122,7 +125,7 @@ public class TestRDFParser {
     @Test(expected=RiotException.class)
     public void source_uri_hint_lang() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().source("file:data.rdf")
+        RDFParser.create().source("file:data.rdf")
             .lang(Lang.RDFXML)
             .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
             .parse(graph);
@@ -133,7 +136,7 @@ public class TestRDFParser {
     public void errorHandler() {
         Graph graph = GraphFactory.createGraphMem();
         // This test file contains Turtle. 
-        RDFParserBuilder.create().source(DIR+"data.rdf")
+        RDFParser.create().source(DIR+"data.rdf")
             // and no test log output.  
             .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
             .parse(graph);
@@ -142,7 +145,7 @@ public class TestRDFParser {
     @Test
     public void source_uri_force_lang() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().source("file:"+DIR+"data.rdf").forceLang(Lang.TTL).parse(graph);
+        RDFParser.create().source("file:"+DIR+"data.rdf").forceLang(Lang.TTL).parse(graph);
         assertEquals(3, graph.size());
     }
 

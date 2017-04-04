@@ -30,10 +30,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -156,11 +153,6 @@ public class RDFParserRegistry
     private static class ReaderRIOTFactoryImpl implements ReaderRIOTFactory
     {
         @Override
-        public ReaderRIOT create(Lang lang) {
-            return new ReaderRIOTLang(lang) ;
-        }
-        
-        @Override
         public ReaderRIOT create(Lang lang, ParserProfile parserProfile) {
             return new ReaderRIOTLang(lang, parserProfile) ;
         }
@@ -213,23 +205,14 @@ public class RDFParserRegistry
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {
         @Override
-        public ReaderRIOT create(Lang language) {
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
             if ( !Lang.JSONLD.equals(language) )
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
-            return new JsonLDReader() ;
-        }
-        
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return create(language);
+            return new JsonLDReader(language, profile, profile.getHandler());
         }
     }
  
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language) {
-            return new ReaderRDFThrift() ;
-        }
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
             return new ReaderRDFThrift() ;
@@ -267,25 +250,15 @@ public class RDFParserRegistry
 
     private static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
         @Override
-        public ReaderRIOT create(Lang language) {
-            return new ReaderTriX() ;
-        }
-        
-        @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return create(language);
+            return new ReaderTriX(profile, profile.getHandler());
         }
     }
 
     private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
         @Override
-        public ReaderRIOT create(Lang language) {
-            return new ReaderRDFNULL() ;
-        }
-        
-        @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return create(language);
+            return new ReaderRDFNULL();
         }
     }
 }
