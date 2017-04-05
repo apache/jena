@@ -41,7 +41,10 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.MakerRDF ;
+import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterTriX ;
 import org.apache.jena.sparql.core.Quad ;
@@ -72,8 +75,9 @@ public class ReaderTriX implements ReaderRIOT {
 <!ATTLIST typedLiteral datatype CDATA #REQUIRED> 
      */
     
-    private final ErrorHandler errorHandler;
-    private final MakerRDF maker;
+    // Non-final for reset in setParseProfile - legacy.
+    private /*final*/ ErrorHandler errorHandler;
+    private /*final*/ MakerRDF maker;
     
     public ReaderTriX(MakerRDF maker, ErrorHandler errorHandler) {
         this.maker = maker;
@@ -424,12 +428,20 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     @Override
-    public void setErrorHandler(ErrorHandler errorHandler) { throw new UnsupportedOperationException(); }
+    public void setErrorHandler(ErrorHandler errorHandler) { 
+        this.errorHandler = errorHandler;
+    }
 
     @Override
-    public ParserProfile getParserProfile() { throw new UnsupportedOperationException(); }
+    public ParserProfile getParserProfile() {
+        if ( maker instanceof ParserProfile )
+            return (ParserProfile)maker;
+        throw new UnsupportedOperationException() ;
+    }
 
     @Override
-    public void setParserProfile(ParserProfile profile) { throw new UnsupportedOperationException(); }
+    public void setParserProfile(ParserProfile profile) {
+        maker = profile ;
+    }
 }
 

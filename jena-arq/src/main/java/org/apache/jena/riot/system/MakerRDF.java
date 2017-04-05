@@ -31,7 +31,7 @@ import org.apache.jena.sparql.core.Quad;
  * column are available to put in error messages.
  * <p>
  * {@link MakerRDFStd} uses a {@link FactoryRDF} to create items in the parsing
- * process.
+ * process. It adds handling the position in the parsing stream.
  * 
  * @see FactoryRDF
  */
