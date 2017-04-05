@@ -61,7 +61,6 @@ public class RegexJava implements RegexEngine
         {
             switch(modifiers.charAt(i))
             {
-                //case 'i' : newMask |= Pattern.CASE_INSENSITIVE;     break ;
                 case 'i' : 
                     // Need both (Java 1.4)
                     newMask |= Pattern.UNICODE_CASE ;

@@ -77,7 +77,7 @@ public class E_Regex extends ExprFunctionN
         } catch (ExprEvalException ex) {
             // Here, we are doing static compilation of the pattern.
             // ExprEvalException does not have a stacktrace. 
-            // We could non-eval exception.
+            // We could throw a non-eval exception.
             throw ex; //new ExprException(ex.getMessage(), ex.getCause());
         }
     }
