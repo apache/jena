@@ -105,22 +105,55 @@ public class RDFParser {
         return RDFParserBuilder.create();
     }
 
-    /** Shortcut for {@code RDFParser.create.source(path)}. */
+    /**
+     * Create an {@link RDFParserBuilder} and set the source to the
+     * {@link Path}.
+     * <p>
+     * This is a shortcut for {@code RDFParser.create.source(path)}.
+     * 
+     * @param path
+     * @return this
+     */
     public static RDFParserBuilder source(Path path) {
         return RDFParserBuilder.create().source(path);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(uriOrFile)}. */
+    /**
+     * Create an {@link RDFParserBuilder} and set the source to the URI, which
+     * can be a filename.
+     * <p>
+     * Thsi is a shortcut for {@code RDFParser.create.source(uriOrFile)}.
+     * 
+     * @param uriOrFile
+     * @return this
+     */
+    
     public static RDFParserBuilder source(String uriOrFile) {
         return RDFParserBuilder.create().source(uriOrFile);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(reader)}. */
-    public static RDFParserBuilder source(StringReader reader) {
-        return RDFParserBuilder.create().source(reader);
+    /**
+     * Create an {@link RDFParserBuilder} and set content to parse to be the
+     * given string. The syntax must be set with {@code .lang(...)}.
+     * <p>
+     * Shortcut for {@code RDFParser.create.fromString(string)}.
+     * @param string
+     * @return this
+     */
+    public static RDFParserBuilder fromString(String string) {
+        return RDFParserBuilder.create().fromString(string);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(input)}. */
+    /** 
+     * Create an {@link RDFParserBuilder} and set the source to {@link InputStream}.
+     *  The {@link InputStream} will be closed when the 
+     *  parser is called and the parser can not be reused. 
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  This is a shortcut for {@code RDFParser.create.source(input)}.
+     *  @param input
+     *  @return this 
+     */
     public static RDFParserBuilder source(InputStream input) {
         return RDFParserBuilder.create().source(input);
     }

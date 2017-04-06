@@ -113,14 +113,14 @@ public class RDFParserBuilder {
 
     /** 
      *  Set the source to a URI; this includes OS file names.
-     *  File URL shoudl be of the form {@code file:///...}. 
+     *  File URL should be of the form {@code file:///...}. 
      *  This clears any other source setting.
-     *  @param uri
+     *  @param uriOrFile
      *  @return this
      */
-    public RDFParserBuilder source(String uri) {
+    public RDFParserBuilder source(String uriOrFile) {
         clearSource();
-        this.uri = uri;
+        this.uri = uriOrFile;
         return this;
     }
 
@@ -139,17 +139,14 @@ public class RDFParserBuilder {
     }
 
     /** 
-     *  Set the source to {@link StringReader}. 
+     *  Use the given string as the content to parse. 
      *  This clears any other source setting.
-     *  The {@link StringReader} will be closed when the 
-     *  parser is called and the parser can not be reused.  
-     *  @param reader
+     *  The parser can not be reused.  
+     *  @param string
      *  @return this
      */
-    public RDFParserBuilder source(StringReader reader) {
-        clearSource();
-        this.javaReader = reader;
-        return this;
+    public RDFParserBuilder fromString(String string) {
+        return source(new StringReader(string));
     }
 
     /** 

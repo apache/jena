@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -45,7 +44,7 @@ public class TestRDFParser {
     
     @Test public void source_not_uri_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().lang(Lang.TTL).source(new StringReader(testdata)).parse(graph);
+        RDFParserBuilder.create().lang(Lang.TTL).fromString(testdata).parse(graph);
         assertEquals(1, graph.size());
     }
     
@@ -98,7 +97,7 @@ public class TestRDFParser {
     // Shortcut source
     @Test public void source_shortcut_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.source(new StringReader(testdata)).lang(Lang.TTL).parse(graph);
+        RDFParser.fromString(testdata).lang(Lang.TTL).parse(graph);
         assertEquals(1, graph.size());
     }
     
