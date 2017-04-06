@@ -125,16 +125,6 @@ public class RDFParserBuilder {
     }
 
     /** 
-     *  Set the source as the contents of a string. 
-     *  This clears any other source setting.
-     *  @param string
-     *  @return this
-     */
-    public RDFParserBuilder fromString(String string) {
-        return source(new StringReader(string));
-    }
-
-    /** 
      *  Set the source to {@link InputStream}. 
      *  This clears any other source setting.
      *  The {@link InputStream} will be closed when the 
