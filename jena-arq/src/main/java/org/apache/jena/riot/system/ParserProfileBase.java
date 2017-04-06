@@ -77,11 +77,6 @@ public class ParserProfileBase implements ParserProfile {
     }
 
     @Override
-    public void setFactoryRDF(FactoryRDF factory) {
-        this.factory = factory;
-    }
-   
-    @Override
     public String resolveIRI(String uriStr, long line, long col) {
         return prologue.getResolver().resolveToString(uriStr) ;
     }
@@ -221,10 +216,4 @@ public class ParserProfileBase implements ParserProfile {
     public boolean isStrictMode() {
         return strictMode ;
     }
-
-    @Override
-    public void setStrictMode(boolean mode) {
-        strictMode = mode ;
-    }
-
 }

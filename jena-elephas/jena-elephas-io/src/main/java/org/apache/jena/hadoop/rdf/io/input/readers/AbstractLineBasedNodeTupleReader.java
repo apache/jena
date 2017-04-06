@@ -77,7 +77,8 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
             throw new IOException("This record reader only supports FileSplit inputs");
         FileSplit split = (FileSplit) genericSplit;
 
-        // Configuration
+        // TODO [RDFParser]
+        // Use RDFParser builder.
         profile = RdfIOUtils.createParserProfile(context, split.getPath());
         Configuration config = context.getConfiguration();
         this.ignoreBadTuples = config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true);

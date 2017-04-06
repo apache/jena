@@ -28,14 +28,13 @@ import java.util.Locale ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 
-/** Operation to convert the given Node to a normalized form */ 
+/** Operations to convert the given Node to a normalized form */ 
 class NormalizeValue
 {
     /** Handler that makes no changes and returns the input node */ 
@@ -123,7 +122,7 @@ class NormalizeValue
             lex2 = lex2.substring(1) ;
 
         if ( lex2.length() > 8 )
-            // Maybe large than an int so do carefully.
+            // Maybe larger than an int so do carefully.
             lex2 = new BigInteger(lexicalForm).toString() ;
         else
         {
@@ -132,16 +131,18 @@ class NormalizeValue
             lex2 = Integer.toString(x) ;
         }
 
-        // If it's a subtype of integer, then output a new node of datatype integer.
-        if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
+        if ( lex2.equals(lexicalForm) )
             return node ;
-        return NodeFactory.createLiteral(lex2, XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(lex2, datatype) ;
     } ;
 
     static DatatypeHandler dtDecimal = (Node node, String lexicalForm, RDFDatatype datatype) -> {
         BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
         String lex2 = bd.toPlainString() ;
 
+        // XSD canonical is "1"
+        // but in Turtle the ".0" is need for short print form.
+        
         // Ensure there is a "."
         //if ( bd.scale() <= 0 )
         if ( lex2.indexOf('.') == -1 )

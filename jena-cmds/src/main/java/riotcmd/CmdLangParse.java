@@ -228,11 +228,11 @@ public abstract class CmdLangParse extends CmdGeneral
         
         baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
         
+        RDFParserBuilder builder = RDFParser.create();
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;
-        
-        RDFParserBuilder builder = RDFParser.create();
+        builder.checking(checking);
 
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         if ( checking ) {

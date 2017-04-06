@@ -105,7 +105,7 @@
            and does not include the longer running modules.
       -->
       
-      <id>boostrap</id>
+      <id>bootstrap</id>
       <modules>
         <module>jena-parent</module>
         <module>jena-shaded-guava</module>

@@ -34,16 +34,8 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.SyntaxLabels;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -63,14 +55,24 @@ import com.github.jsonldjava.utils.JsonUtils ;
  */
 public class JsonLDReader implements ReaderRIOT
 {
-    private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-    private ParserProfile parserProfile = null ; 
+    private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+    private /*final*/ MakerRDF maker;
     
     @Override public ErrorHandler getErrorHandler() { return errorHandler ; }
     @Override public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
     
-    @Override public ParserProfile getParserProfile()                   { return parserProfile ; }
-    @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
+    @Override public ParserProfile getParserProfile()                   { return (MakerRDFStd)maker ; }
+
+    @Override
+    public void setParserProfile(ParserProfile parserProfile) {
+        this.errorHandler = parserProfile.getHandler();
+        this.maker = parserProfile;
+    }
+    
+    public JsonLDReader(Lang lang, MakerRDF maker, ErrorHandler errorHandler) {
+        this.maker = maker;
+        this.errorHandler = errorHandler;
+    }
     
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
@@ -123,8 +125,6 @@ public class JsonLDReader implements ReaderRIOT
     }
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
-        if ( parserProfile == null )
-            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         output.start() ;
         try {       	
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
@@ -146,7 +146,7 @@ public class JsonLDReader implements ReaderRIOT
                                 Node s = createNode(t, "subject") ;
                                 Node p = createNode(t, "predicate") ;
                                 Node o = createNode(t, "object") ;
-                                Triple triple = parserProfile.createTriple(s, p, o, -1, -1) ;
+                                Triple triple = maker.createTriple(s, p, o, -1, -1) ;
                                 output.triple(triple) ;
                             }
                         } else {
@@ -157,7 +157,7 @@ public class JsonLDReader implements ReaderRIOT
                                 Node s = createNode(q, "subject") ;
                                 Node p = createNode(q, "predicate") ;
                                 Node o = createNode(q, "object") ;
-                                Quad quad = parserProfile.createQuad(g, s, p, o, -1, -1) ;
+                                Quad quad = maker.createQuad(g, s, p, o, -1, -1) ;
                                 output.quad(quad) ;
                             }
                         }
@@ -205,11 +205,11 @@ public class JsonLDReader implements ReaderRIOT
                 // During migration, we prefer simple literals to xsd:strings. 
                 datatype = null ;
             if ( lang == null && datatype == null )
-                return parserProfile.createStringLiteral(lex,-1, -1) ;
+                return maker.createStringLiteral(lex,-1, -1) ;
             if ( lang != null )
-                return parserProfile.createLangLiteral(lex, lang, -1, -1) ;
+                return maker.createLangLiteral(lex, lang, -1, -1) ;
             RDFDatatype dt = NodeFactory.getType(datatype) ;
-            return parserProfile.createTypedLiteral(lex, dt, -1, -1) ;
+            return maker.createTypedLiteral(lex, dt, -1, -1) ;
         } else
             throw new InternalErrorException("Node is not a IRI, bNode or a literal: " + type) ;
     }
@@ -218,7 +218,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( str.startsWith("_:") )
             return labels.get(null, str) ;
         else
-            return parserProfile.createURI(str, -1, -1) ;
+            return maker.createURI(str, -1, -1) ;
     }
 
     private Node createLiteral(String lex, String datatype, String lang) {

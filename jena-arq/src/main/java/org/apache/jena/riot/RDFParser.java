@@ -23,14 +23,12 @@ import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON;
 import static org.apache.jena.riot.RDFLanguages.sameLang;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.io.IO;
@@ -38,6 +36,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.process.normalize.StreamCanonicalLiterals;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.web.HttpOp;
@@ -60,12 +59,14 @@ import org.apache.jena.sparql.util.Context;
  *    RDFParser parser = RDFParser.create().source("filename.ttl").build();
  *    parser.parse(destination);
  * </pre>
- * or using an abbreviated form:
+ * or using abbreviated forms:
  * <pre>
- * RDFParser.create().source("filename.ttl").parse(destination);
+ * RDFParser.source("filename.ttl").parse(destination);
  * </pre>
  * The {@code destination} {@link StreamRDF} and can be given as a
- * {@link Graph} or {@link DatasetGraph} as well. 
+ * {@link Graph} or {@link DatasetGraph} as well.
+ * 
+ * @see ReaderRIOT The interface to the syntax parsing process for each RDF syntax. 
  */
 
 public class RDFParser {
@@ -79,6 +80,8 @@ public class RDFParser {
     private final String       baseUri;
     private final boolean      strict;
     private final boolean      resolveURIs;
+    private final boolean      canonicalLiterals;
+    private final Optional<Boolean> checking ;
     private final IRIResolver  resolver;
     private final FactoryRDF   factory;
     private final ErrorHandler errorHandler;
@@ -86,18 +89,53 @@ public class RDFParser {
 
     private boolean            canUse = true;
 
+    // ---- Builder creation
+    
+    /** Create an {@link RDFParserBuilder}.
+     * <p>
+     * Often used in a pattern such as:
+     * <pre>
+     *    RDFParserBuilder.create()
+     *        .source("data.ttl")
+     *        .parse(graph);
+     * </pre>
+     * 
+     */
     public static RDFParserBuilder create() {
         return RDFParserBuilder.create();
     }
 
+    /** Shortcut for {@code RDFParser.create.source(path)}. */
+    public static RDFParserBuilder source(Path path) {
+        return RDFParserBuilder.create().source(path);
+    }
+
+    /** Shortcut for {@code RDFParser.create.source(uriOrFile)}. */
+    public static RDFParserBuilder source(String uriOrFile) {
+        return RDFParserBuilder.create().source(uriOrFile);
+    }
+
+    /** Shortcut for {@code RDFParser.create.source(reader)}. */
+    public static RDFParserBuilder source(StringReader reader) {
+        return RDFParserBuilder.create().source(reader);
+    }
+
+    /** Shortcut for {@code RDFParser.create.source(input)}. */
+    public static RDFParserBuilder source(InputStream input) {
+        return RDFParserBuilder.create().source(input);
+    }
+    
     /* package */ RDFParser(String uri, Path path, InputStream inputStream, Reader javaReader, HttpClient httpClient, Lang hintLang,
-                            Lang forceLang, String baseUri, boolean strict, boolean resolveURIs, IRIResolver resolver, FactoryRDF factory,
+                            Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking, boolean resolveURIs, boolean canonicalLiterals, IRIResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, inputStream, javaReader);
         if ( x >= 2 )
-            throw new IllegalArgumentException("Only one source allowed: At most one of uri, path, inputStream and javaReader can be set");
+            throw new IllegalArgumentException("Only one source allowed: one of uri, path, inputStream and javaReader must be set");
+        if ( x < 1 )
+            throw new IllegalArgumentException("No source specified allowed: one of uri, path, inputStream and javaReader must be set");
         Objects.requireNonNull(factory);
         Objects.requireNonNull(errorHandler);
+        Objects.requireNonNull(checking);
         
         this.uri = uri;
         this.path = path;
@@ -109,6 +147,8 @@ public class RDFParser {
         this.baseUri = baseUri;
         this.strict = strict;
         this.resolveURIs = resolveURIs;
+        this.canonicalLiterals = canonicalLiterals;
+        this.checking = checking;
         this.resolver = resolver;
         this.factory = factory;
         this.errorHandler = errorHandler;
@@ -128,9 +168,12 @@ public class RDFParser {
             throw new RiotException("Parser has been used once and can not be used again");
         // Consuming mode.
         canUse = (inputStream == null && javaReader == null);
-        // XXX FactoryRDF is stateful in the LabelToNode mapping.
-        // NB FactoryRDFCaching does not reset it's cache.
-        // factory.reset() ;
+        // FactoryRDF is stateful in the LabelToNode mapping.
+        // NB FactoryRDFCaching does not need to reset its cache.
+        factory.reset() ;
+        
+        if ( canonicalLiterals )
+            destination = new StreamCanonicalLiterals(destination);
 
         if ( inputStream != null || javaReader != null ) {
             parseNotUri(destination);
@@ -247,17 +290,22 @@ public class RDFParser {
     private ReaderRIOT createReader(ReaderRIOTFactory r, Lang lang) {
         MakerRDF maker = makeMaker(lang);
         ReaderRIOT reader = r.create(lang, (MakerRDFStd)maker);
+        //reader.set*
         return reader ;
     }
 
     private MakerRDF makeMaker(Lang lang) {
         boolean resolve = resolveURIs;
-        boolean checking = true;
+        boolean checking$ = strict;
         
         // Per language tweaks.
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) ) {
-            checking = SysRIOT.isStrictMode();
+            if ( ! strict )
+                checking$ = checking.orElseGet(()->false);
             resolve = false;
+        } else {
+            if ( ! strict )
+                checking$ = checking.orElseGet(()->true);
         }
         if ( sameLang(RDFJSON, lang) )
             resolve = false;
@@ -270,7 +318,7 @@ public class RDFParser {
         }
         PrefixMap prefixMap = PrefixMapFactory.createForInput();
 
-        MakerRDFStd parserFactory = new MakerRDFStd(factory, errorHandler, resolver, prefixMap, context, checking, strict);
+        MakerRDFStd parserFactory = new MakerRDFStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
         return parserFactory;
     }
 }

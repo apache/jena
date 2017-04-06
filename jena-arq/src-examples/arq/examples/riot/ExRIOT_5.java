@@ -71,7 +71,7 @@ public class ExRIOT_5
     static class SSEReaderFactory implements ReaderRIOTFactory
     {
         @Override
-        public ReaderRIOT create(Lang language) {
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
             return new SSEReader() ;
         }
     }

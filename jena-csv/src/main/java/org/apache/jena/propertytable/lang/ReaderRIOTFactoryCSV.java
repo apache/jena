@@ -21,11 +21,12 @@ package org.apache.jena.propertytable.lang;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.ReaderRIOTFactory ;
+import org.apache.jena.riot.system.ParserProfile ;
 
 class ReaderRIOTFactoryCSV implements ReaderRIOTFactory
 {
     @Override
-    public ReaderRIOT create(Lang lang) {
-        return new ReaderRIOTLangCSV(lang) ;
+    public ReaderRIOT create(Lang language, ParserProfile profile) {
+        return new ReaderRIOTLangCSV(language) ;
     }
 }
