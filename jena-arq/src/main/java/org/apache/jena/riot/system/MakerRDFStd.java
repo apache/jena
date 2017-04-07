@@ -75,16 +75,11 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
     }
 
     @Deprecated @Override /* ParserProfile - to be removed */
-    public ErrorHandler getHandler() {
-        return getErrorHandler();
-    }
-
-    @Deprecated @Override /* ParserProfile - to be removed */
     public void setHandler(ErrorHandler handler) {
         //Ignore
     }
 
-    // XXX @Override?
+    @Override
     public ErrorHandler getErrorHandler() {
         return errorHandler;
     }
@@ -117,6 +112,11 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
     @Override
     public String resolveIRI(String uriStr, long line, long col) {
         return makeIRI(uriStr, line, col).toString();
+    }
+
+    @Override
+    public void setIRIResolver(IRIResolver resolver) {
+        this.resolver = resolver; 
     }
 
     @Override
@@ -265,6 +265,11 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
                 return null;
             }
         }
+    }
+
+    @Override
+    public PrefixMap getPrefixMap() {
+        return prefixMap;
     }
 
     private String expandPrefixedName(String prefix, String localPart, Token token) {

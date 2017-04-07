@@ -31,10 +31,9 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
@@ -188,15 +187,37 @@ abstract public class TestLangNTuples extends BaseTest
         return tokenizer;
     }
 
-    @SuppressWarnings("deprecation")
     final protected void parseCheck(String... strings) {
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink);
-        x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx()));
+        LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink, dftMakerRDF2(new ErrorHandlerEx()));
         x.parse();
     }
+    
+    final protected long parseCount(CharSpace charSpace, String... strings) {
+        String string = String.join("\n", strings);
+        Tokenizer tokenizer = tokenizer(charSpace, string);
+        StreamRDFCounting sink = StreamRDFLib.count();
+        LangRIOT x = RiotParsers.createParserNTriples(tokenizer, sink, dftMakerRDF2(new ErrorHandlerEx()));
+        x.parse();
+        return sink.count();
+    }
+
+    
+    
+    /** Create a {@link MakerRDF}, no resolving, no prefix map. */
+    // XXX [RDFParser] MakerRDF has en aerorHandler apready set but passed in parallel.
+    // MakerRDF.getErrorHandler?
+    static MakerRDF dftMakerRDF2(ErrorHandler errorHandler) {
+        return new MakerRDFStd(RiotLib.factoryRDF(), 
+                               errorHandler,
+                               IRIResolver.createNoResolve(),
+                               PrefixMapFactory.emptyPrefixMap(),
+                               RIOT.getContext().copy(),
+                               true, false) ;
+    }
+
 
     protected abstract Lang getLang();
 

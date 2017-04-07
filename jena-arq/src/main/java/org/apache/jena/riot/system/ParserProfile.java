@@ -54,9 +54,13 @@ public interface ParserProfile extends MakerRDF
 //    /** Make any node from a token as appropriate */
 //    public Node create(Node currentGraph, Token token) ;
 
-    public ErrorHandler getHandler() ;
+    public default ErrorHandler getHandler() { return getErrorHandler(); }
+    
+    @Override
+    public ErrorHandler getErrorHandler() ;
     public void setHandler(ErrorHandler handler) ;
     
+    @Override
     public Prologue getPrologue() ;
     public void setPrologue(Prologue prologue) ;
     

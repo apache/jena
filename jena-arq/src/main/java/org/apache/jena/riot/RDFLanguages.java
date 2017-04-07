@@ -188,6 +188,7 @@ public class RDFLanguages
     public static void init() {}
     static { init$() ; }
     
+    @SuppressWarnings("deprecation")
     private static synchronized void init$()
     {
         initStandard() ;
@@ -206,6 +207,7 @@ public class RDFLanguages
         Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
         Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
+        Lang.CSV        = RDFLanguages.CSV ;
     }
     // ----------------------
     

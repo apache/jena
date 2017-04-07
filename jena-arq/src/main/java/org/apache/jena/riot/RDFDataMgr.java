@@ -35,10 +35,8 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.lang.PipedQuadsStream ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.lang.RiotParsers;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager ;
 import org.apache.jena.riot.writer.NQuadsWriter ;
 import org.apache.jena.riot.writer.NTriplesWriter ;
@@ -1249,7 +1247,7 @@ public class RDFDataMgr
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNTriples(input, null), input);
+            return new IteratorResourceClosing<>(RiotParsers.createIteratorNTriples(input, null), input);
         // Otherwise, we have to spin up a thread to deal with it
         PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         PipedTriplesStream out = new PipedTriplesStream(it);
@@ -1267,8 +1265,11 @@ public class RDFDataMgr
      */
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
-        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
-            return new IteratorResourceClosing<>(org.apache.jena.riot.lang.RiotParsers.createIteratorNQuads(input, null), input);
+        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) ) {
+            return new IteratorResourceClosing<>(
+                RiotParsers.createIteratorNQuads(input, null, RiotLib.dftMakerRDF()),
+                input);
+        }
         // Otherwise, we have to spin up a thread to deal with it
         final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();
         final PipedQuadsStream out = new PipedQuadsStream(it);

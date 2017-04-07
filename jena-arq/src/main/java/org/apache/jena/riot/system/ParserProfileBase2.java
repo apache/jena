@@ -37,17 +37,13 @@ import org.apache.jena.sparql.core.Quad ;
  * Basic profile of things, with key operations based on a simple use of the
  * parse elements into Nodes
  */
-public class ParserProfileBase implements ParserProfile {
+public class ParserProfileBase2 implements ParserProfile {
     protected ErrorHandler errorHandler ;
     protected Prologue     prologue ;
     protected boolean      strictMode = SysRIOT.isStrictMode() ;
-    protected FactoryRDF   factory ;
+    protected MakerRDF     factory ;
 
-    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler) {
-        this(prologue, errorHandler, RiotLib.factoryRDF()) ;
-    }
-
-    public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler, FactoryRDF factory) {
+    public ParserProfileBase2(Prologue prologue, ErrorHandler errorHandler, MakerRDF factory) {
         Objects.requireNonNull(prologue) ;
         Objects.requireNonNull(errorHandler) ;
         Objects.requireNonNull(factory) ;
@@ -93,42 +89,42 @@ public class ParserProfileBase implements ParserProfile {
 
     @Override
     public Quad createQuad(Node g, Node s, Node p, Node o, long line, long col) {
-        return factory.createQuad(g, s, p, o);
+        return factory.createQuad(g, s, p, o, line, col);
     }
 
     @Override
     public Triple createTriple(Node s, Node p, Node o, long line, long col) {
-        return factory.createTriple(s, p, o);
+        return factory.createTriple(s, p, o, line, col);
     }
 
     @Override
     public Node createURI(String uriStr, long line, long col) {
-        return factory.createURI(uriStr);
+        return factory.createURI(uriStr, line, col);
     }
 
     @Override
     public Node createBlankNode(Node scope, String label, long line, long col) {
-        return factory.createBlankNode(label);
+        return factory.createBlankNode(scope, label, line, col);
     }
 
     @Override
     public Node createBlankNode(Node scope, long line, long col) {
-        return factory.createBlankNode();
+        return factory.createBlankNode(scope, line, col);
     }
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col) {
-        return factory.createTypedLiteral(lexical, dt);
+        return factory.createTypedLiteral(lexical, dt, line, col);
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
-        return factory.createLangLiteral(lexical, langTag);
+        return factory.createLangLiteral(lexical, langTag, line, col);
     }
 
     @Override
     public Node createStringLiteral(String lexical, long line, long col) {
-        return factory.createStringLiteral(lexical);
+        return factory.createStringLiteral(lexical, line, col);
     }
   
     /** Special token forms */

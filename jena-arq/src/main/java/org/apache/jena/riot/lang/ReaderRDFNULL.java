@@ -22,7 +22,6 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.util.Context ;
@@ -34,14 +33,6 @@ public class ReaderRDFNULL implements ReaderRIOT {
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {}
-
-    @Override
-    public ErrorHandler getErrorHandler() {
-        return null;
-    }
-
-    @Override
-    public void setErrorHandler(ErrorHandler errorHandler) {}
 
     @Override
     public ParserProfile getParserProfile() {

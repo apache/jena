@@ -76,7 +76,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     
     /** Note a tuple not being output */
     protected void skipOne(X object, String printForm, long line, long col) {
-        profile.getHandler().warning("Skip: " + printForm, line, col);
+        errorHandler.warning("Skip: " + printForm, line, col);
     }
 
     protected abstract Node tokenAsNode(Token token) ;
@@ -115,7 +115,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     private void checkString(Token token) {
         if ( token.isLongString() )
             exception(token, "Triple quoted string not permitted: %s", token) ;
-        if ( profile.isStrictMode() && ! token.hasStringType(StringType.STRING2) )
+        if ( isStrictMode && ! token.hasStringType(StringType.STRING2) )
             exception(token, "Not a \"\"-quoted string: %s", token); 
     }
     

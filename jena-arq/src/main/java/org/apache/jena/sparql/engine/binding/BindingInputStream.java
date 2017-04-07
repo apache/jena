@@ -96,7 +96,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)
     {
-        super(tokenizer, profile) ;
+        super(tokenizer, profile, profile.getHandler()) ;
         iter = new IteratorTuples() ;
     }
 
@@ -244,7 +244,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
             String iriStr = peekToken().getImage() ;
             IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
-            profile.getPrologue().getPrefixMap().add(prefix, iri) ;
+            profile.getPrefixMap().add(prefix, iri) ;
             nextToken() ;
             expect("PREFIX directive not terminated by a dot", DOT) ;
         }

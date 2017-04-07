@@ -58,14 +58,11 @@ public class JsonLDReader implements ReaderRIOT
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
     private /*final*/ MakerRDF maker;
     
-    @Override public ErrorHandler getErrorHandler() { return errorHandler ; }
-    @Override public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
-    
     @Override public ParserProfile getParserProfile()                   { return (MakerRDFStd)maker ; }
 
     @Override
     public void setParserProfile(ParserProfile parserProfile) {
-        this.errorHandler = parserProfile.getHandler();
+        this.errorHandler = parserProfile.getErrorHandler();
         this.maker = parserProfile;
     }
     

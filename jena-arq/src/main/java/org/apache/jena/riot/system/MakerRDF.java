@@ -42,6 +42,9 @@ public interface MakerRDF {
     /** Create an IRI */
     public IRI makeIRI(String uriStr, long line, long col);
 
+    /* Reset the resolver used to process IRIs. */
+    public void setIRIResolver(IRIResolver resolver);
+
     /** Create a triple */
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col);
 
@@ -74,4 +77,14 @@ public interface MakerRDF {
 
     /** Make any node from a token as appropriate */
     public Node create(Node currentGraph, Token token);
+    
+    /* Return the prefix map, if any, used for mapping tokens into Nodes. */
+    public PrefixMap getPrefixMap();
+    
+    /* XXX Temporary [RDFParser] */
+    public Prologue getPrologue();
+    
+    /* XXX Temporary [RDFParser] */
+    public ErrorHandler getErrorHandler();
+
 }

@@ -423,16 +423,6 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     @Override
-    public ErrorHandler getErrorHandler() {
-        return errorHandler ;
-    }
-
-    @Override
-    public void setErrorHandler(ErrorHandler errorHandler) { 
-        this.errorHandler = errorHandler;
-    }
-
-    @Override
     public ParserProfile getParserProfile() {
         if ( maker instanceof ParserProfile )
             return (ParserProfile)maker;

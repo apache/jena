@@ -22,7 +22,6 @@ import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.util.Context ;
@@ -58,9 +57,6 @@ public interface ReaderRIOT
      * @param context   Environment settings.
      */
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) ;
-    
-    public ErrorHandler getErrorHandler() ;
-    public void setErrorHandler(ErrorHandler errorHandler) ;
     
     /** Get the parser profile.  Not all parsers have parser profiles so this may be null */
     public ParserProfile getParserProfile() ;

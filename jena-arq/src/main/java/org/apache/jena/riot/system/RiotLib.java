@@ -203,16 +203,21 @@ public class RiotLib
         return factoryRDF(SyntaxLabels.createLabelToNode());
     }
 
-    /** Create an {@link MakerRDF} with default settings. */ 
+    /** Create a {@link MakerRDF} with default settings. */
     public static MakerRDF dftMakerRDF() {
+        return dftMakerRDF(ErrorHandlerFactory.errorHandlerStd);
+    }
+
+    /** Create a {@link MakerRDF} with default settings, and a specific error handler. */
+    public static MakerRDF dftMakerRDF(ErrorHandler errorHandler) {
         return new MakerRDFStd(RiotLib.factoryRDF(), 
-                               ErrorHandlerFactory.errorHandlerStd,
+                               errorHandler,
                                IRIResolver.create(),
                                PrefixMapFactory.createForInput(),
                                RIOT.getContext().copy(),
                                true, false) ;
     }
-
+    
     /** Get triples with the same subject */
     public static Collection<Triple> triplesOfSubject(Graph graph, Node subj) {
         return triples(graph, subj, Node.ANY, Node.ANY) ;
