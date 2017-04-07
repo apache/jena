@@ -21,7 +21,7 @@ package org.apache.jena.hadoop.rdf.io.input.readers;
 import java.util.Iterator;
 
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
-import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.MakerRDF;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -34,9 +34,9 @@ import org.apache.jena.sparql.core.Quad ;
 public abstract class AbstractLineBasedQuadReader extends AbstractLineBasedNodeTupleReader<Quad, QuadWritable> {
 
     @Override
-    protected Iterator<Quad> getIterator(String line, ParserProfile profile) {
+    protected Iterator<Quad> getIterator(String line, MakerRDF maker) {
         Tokenizer tokenizer = getTokenizer(line);
-        return getQuadsIterator(tokenizer, profile);
+        return getQuadsIterator(tokenizer, maker);
     }
 
     @Override
@@ -44,7 +44,5 @@ public abstract class AbstractLineBasedQuadReader extends AbstractLineBasedNodeT
         return new QuadWritable(q);
     }
 
-    protected abstract Tokenizer getTokenizer(String line);
-
-    protected abstract Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, ParserProfile profile);
+    protected abstract Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, MakerRDF maker);
 }

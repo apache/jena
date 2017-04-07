@@ -40,6 +40,8 @@ import org.apache.jena.hadoop.rdf.io.input.util.RdfIOUtils;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.riot.tokens.TokenizerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +69,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     private LongWritable key = null;
     private Text value = null;
     private T tuple = null;
-    private ParserProfile parserProfile = null ;
+    private MakerRDF maker = null;
     private boolean ignoreBadTuples = true;
 
     @Override
@@ -81,9 +83,10 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
 
         // Intermediate : RDFParser but need to make a Iterator<Quad/Triple>
         LabelToNode labelToNode = RdfIOUtils.createLabelToNode(context, split.getPath());
-        Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.create());
-        parserProfile = new ParserProfileBase(prologue, ErrorHandlerFactory.errorHandlerStd, RiotLib.factoryRDF(labelToNode));
-
+        maker = new MakerRDFStd(RiotLib.factoryRDF(labelToNode), 
+                                     ErrorHandlerFactory.errorHandlerStd, 
+                                     IRIResolver.create(), PrefixMapFactory.createForInput(), 
+                                     null, true, false); 
         
         Configuration config = context.getConfiguration();
         this.ignoreBadTuples = config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true);
@@ -144,7 +147,17 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
      *            Parser setup.
      * @return Iterator
      */
-    protected abstract Iterator<TValue> getIterator(String line, ParserProfile profile);
+    protected abstract Iterator<TValue> getIterator(String line, MakerRDF maker);
+    
+    /** Create a tokenizer for a line
+     * @param line
+     *          Content
+     * @return Tokenizer
+     */
+    protected Tokenizer getTokenizer(String line) {
+        return TokenizerFactory.makeTokenizerString(line);
+    }
+
 
     /**
      * Creates an instance of a writable tuple from the given tuple value
@@ -196,7 +209,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
 
             // Attempt to read the tuple from current line
             try {
-                Iterator<TValue> iter = this.getIterator(value.toString(), parserProfile);
+                Iterator<TValue> iter = this.getIterator(value.toString(), maker);
                 if (iter.hasNext()) {
                     tuple = this.createInstance(iter.next());
 
