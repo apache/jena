@@ -18,8 +18,6 @@
 
 package org.apache.jena.sdb.sql;
 
-import static org.apache.jena.atlas.lib.StrUtils.strjoin ;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
@@ -190,7 +188,7 @@ public class TableDump
                                     result.append("CREATE ");
                                     if (index2unique.get(index)) result.append("UNIQUE ");
                                     result.append("INDEX " + index + " ON " + tableName + " (");
-                                    result.append(strjoin(", ", cols.toArray(new String[]{})));
+                                    result.append(String.join(", ", cols.toArray(new String[]{})));
                                     result.append(")\n");
                                 }
                             }
