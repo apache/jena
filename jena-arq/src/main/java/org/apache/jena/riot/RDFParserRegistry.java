@@ -18,7 +18,18 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.*;
+import static org.apache.jena.riot.RDFLanguages.CSV;
+import static org.apache.jena.riot.RDFLanguages.JSONLD;
+import static org.apache.jena.riot.RDFLanguages.N3;
+import static org.apache.jena.riot.RDFLanguages.NQUADS;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON;
+import static org.apache.jena.riot.RDFLanguages.RDFNULL;
+import static org.apache.jena.riot.RDFLanguages.RDFXML;
+import static org.apache.jena.riot.RDFLanguages.THRIFT;
+import static org.apache.jena.riot.RDFLanguages.TRIG;
+import static org.apache.jena.riot.RDFLanguages.TRIX;
+import static org.apache.jena.riot.RDFLanguages.TURTLE;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -57,12 +68,14 @@ public class RDFParserRegistry
     /** Known quads languages */
     private static Set<Lang> langQuads    = new HashSet<>() ;
 
-    /** Generic parser factory. */
+    /** General parser factory for parsers implementned by "Lang" */
     private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;
+    
+    private static ReaderRIOTFactory parserFactoryRDFXML    = new ReaderRIOTRDFXML.Factory(); 
     private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
-    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderRIOTFactoryTriX() ;
-    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRIOTFactoryRDFNULL() ;
+    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderTriX.ReaderRIOTFactoryTriX() ;
+    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRDFNULL.Factory() ;
     private static ReaderRIOTFactory parserFactoryCSV       = new ReaderRIOTCSV.Factory() ;
         
     private static boolean initialized = false ;
@@ -80,12 +93,12 @@ public class RDFParserRegistry
         // Make sure the constants are initialized.
         RDFLanguages.init() ;
         
-        registerLangTriples(RDFXML,     parserFactory) ;
         registerLangTriples(NTRIPLES,   parserFactory) ;
         registerLangTriples(N3,         parserFactory) ;
         registerLangTriples(TURTLE,     parserFactory) ;
-        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
+        registerLangTriples(RDFXML,     parserFactoryRDFXML) ;
+        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(CSV,        parserFactoryCSV) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
         registerLangTriples(TRIX,       parserFactoryTriX) ;
@@ -232,21 +245,6 @@ public class RDFParserRegistry
 
         @Override
         public void setParserProfile(ParserProfile profile) {}
-        
-    }
-
-    private static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderTriX(profile, profile.getErrorHandler());
-        }
-    }
-
-    private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFNULL();
-        }
     }
 }
 

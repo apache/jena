@@ -39,7 +39,9 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT ;
+import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.MakerRDF ;
@@ -59,7 +61,14 @@ import org.apache.jena.vocabulary.RDF ;
  * @see StreamWriterTriX
  */
 public class ReaderTriX implements ReaderRIOT {
+    public static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return new ReaderTriX(profile, profile.getErrorHandler());
+        }
+    }
 
+    
     // DTD for TrIX : The schema is a much longer.
 /*
 <!-- TriX: RDF Triples in XML -->
