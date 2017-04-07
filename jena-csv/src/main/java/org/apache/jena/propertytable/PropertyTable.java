@@ -31,6 +31,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * You can use getColumn() to get the Column by its columnKey Node of the predicate, while getRow() for Row.
  * 
  */
+@Deprecated
 public interface PropertyTable {
 	
 	/**

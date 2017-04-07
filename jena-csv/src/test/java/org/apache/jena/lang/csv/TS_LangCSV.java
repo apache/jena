@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.lang;
+package org.apache.jena.lang.csv;
 
-public class CSV2RDF {
-    
-    public static void init() { org.apache.jena.lang.csv.CSV2RDF.init(); }
-}
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestLangCSV.class
+})
+public class TS_LangCSV { }

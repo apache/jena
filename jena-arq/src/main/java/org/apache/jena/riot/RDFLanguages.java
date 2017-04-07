@@ -18,13 +18,31 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.WebContent.* ;
+import static org.apache.jena.riot.WebContent.charsetASCII;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeN3;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt1;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt2;
+import static org.apache.jena.riot.WebContent.contentTypeNQuads;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt2;
+import static org.apache.jena.riot.WebContent.contentTypeNTriples;
+import static org.apache.jena.riot.WebContent.contentTypeNTriplesAlt;
+import static org.apache.jena.riot.WebContent.contentTypeRDFJSON;
+import static org.apache.jena.riot.WebContent.contentTypeRDFThrift;
+import static org.apache.jena.riot.WebContent.contentTypeRDFXML;
+import static org.apache.jena.riot.WebContent.contentTypeTextCSV;
+import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
+import static org.apache.jena.riot.WebContent.contentTypeTriG;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt2;
+import static org.apache.jena.riot.WebContent.contentTypeTriX;
+import static org.apache.jena.riot.WebContent.contentTypeTriXxml;
+import static org.apache.jena.riot.WebContent.contentTypeTurtle;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt2;
 
-import java.util.Collection ;
-import java.util.Collections ;
-import java.util.HashMap;
-import java.util.Locale ;
-import java.util.Map ;
+import java.util.*;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -46,6 +64,7 @@ public class RDFLanguages
     public static final String strLangJSONLD     = "JSON-LD" ;
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
+    @Deprecated
     public static final String strLangCSV        = "CSV";
     public static final String strLangTriX       = "TriX";
     public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
@@ -120,6 +139,7 @@ public class RDFLanguages
     public static final Lang NQ     = NQUADS ;
     
     /** CSV data.  This can be read into an RDF model with simple conversion */
+    @Deprecated
     public static final Lang CSV        = LangBuilder.create(strLangCSV, contentTypeTextCSV)
                                                      .addAltNames("csv")   
                                                      .addFileExtensions("csv")
@@ -167,6 +187,7 @@ public class RDFLanguages
     // ----------------------
     public static void init() {}
     static { init$() ; }
+    
     private static synchronized void init$()
     {
         initStandard() ;
@@ -183,7 +204,6 @@ public class RDFLanguages
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ;
         Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
-        Lang.CSV        = RDFLanguages.CSV ;
         Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }

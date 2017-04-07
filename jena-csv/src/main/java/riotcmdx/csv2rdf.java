@@ -20,8 +20,8 @@ package riotcmdx;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.lang.csv.CSV2RDF;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
 import riotcmd.CmdLangParse ;
 
 /**
@@ -42,7 +42,7 @@ public class csv2rdf extends CmdLangParse{
 	
 	@Override
 	protected Lang selectLang(String filename, ContentType contentType, Lang dftLang) {
-		return RDFLanguages.CSV; 
+		return CSV2RDF.CSV;
 	}
 
 	@Override

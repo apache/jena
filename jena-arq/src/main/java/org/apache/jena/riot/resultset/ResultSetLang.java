@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.resultset;
 
+import static org.apache.jena.riot.WebContent.contentTypeTextCSV;
+
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.LangBuilder ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -37,10 +39,15 @@ public class ResultSetLang {
                      .addFileExtensions("srj")
                      .build() ;
     
-    public static final Lang SPARQLResultSetCSV = Lang.CSV ;
+    public static final Lang SPARQLResultSetCSV 
+        = LangBuilder.create("SPARQL-Results-CSV", contentTypeTextCSV)
+                     .addAltNames("CSV")   
+                     .addFileExtensions("csv")
+                     .build() ;
     
     public static final Lang SPARQLResultSetTSV
-        = LangBuilder.create("TSV", WebContent.contentTypeTextTSV)
+        = LangBuilder.create("SPARQL-Results-TSV", WebContent.contentTypeTextTSV)
+                     .addAltNames("TSV")
                      .addFileExtensions("tsv")
                      .build() ;
     

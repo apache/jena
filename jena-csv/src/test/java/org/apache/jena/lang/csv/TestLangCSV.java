@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.lang;
+package org.apache.jena.lang.csv;
 
 import java.io.StringReader;
 
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.propertytable.lang.CSV2RDF;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang;
@@ -87,7 +88,8 @@ public class TestLangCSV extends BaseTest {
 	
 	@Test
 	public void RDFDataMgrReadTest() {
-		Model m1 = RDFDataMgr.loadModel(FILE_NAME, RDFLanguages.CSV);
+		@SuppressWarnings("deprecation")
+        Model m1 = RDFDataMgr.loadModel(FILE_NAME, RDFLanguages.CSV);
 		Model m2 = ModelFactory.createDefaultModel();
 		m2.read(FILE_NAME, "CSV");
 		assertEquals(12, m1.size());
@@ -103,7 +105,8 @@ public class TestLangCSV extends BaseTest {
 	}
 	
 	private void assertIsomorphicWith(String[] s1, String[] s2){
-		Model m1 = parseToModel(s1, RDFLanguages.CSV);
+		@SuppressWarnings("deprecation")
+        Model m1 = parseToModel(s1, RDFLanguages.CSV);
 		Model m2 = parseToModel(s2, RDFLanguages.TURTLE);
 		assertTrue(m1.isIsomorphicWith(m2));
 	}

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,10 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.lang;
+package org.apache.jena.lang.csv;
 
-public class CSV2RDF {
-    
-    public static void init() { org.apache.jena.lang.csv.CSV2RDF.init(); }
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.system.ParserProfile;
+
+public class ReaderRIOTFactoryCSV implements ReaderRIOTFactory {
+    @Override
+    public ReaderRIOT create(Lang language, ParserProfile profile) {
+        return new ReaderRIOTCSV(profile.getErrorHandler());
+    }
 }
-

@@ -16,17 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.lang;
+package org.apache.jena.lang.csv;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.ReaderRIOTFactory ;
-import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.system.JenaSubsystemLifecycle ;
 
-class ReaderRIOTFactoryCSV implements ReaderRIOTFactory
-{
+/** ARQ initialization. Used by {@code JenaSystem} */
+public class InitCSV implements JenaSubsystemLifecycle {
+    
     @Override
-    public ReaderRIOT create(Lang language, ParserProfile profile) {
-        return new ReaderRIOTLangCSV(language) ;
+    public void start() {
+        CSV2RDF.init();
+    }
+
+    @Override
+    public void stop() {}
+
+    @Override
+    public int level() {
+        return 90;
     }
 }

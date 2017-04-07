@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.lang.csv;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -25,20 +25,17 @@ import java.util.List;
 
 import org.apache.jena.atlas.csv.CSVParser;
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.IRIResolver;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.system.*;
+import org.apache.jena.sparql.util.Context;
 
-public class LangCSV implements LangRIOT {
-
-	public static final String CSV_PREFIX = "http://w3c/future-csv-vocab/";
+public class ReaderRIOTCSV implements ReaderRIOT {
+    
+    public static final String CSV_PREFIX = "http://w3c/future-csv-vocab/";
 	public static final String CSV_ROW = CSV_PREFIX + "row";
 
 	private InputStream input = null;
@@ -46,47 +43,35 @@ public class LangCSV implements LangRIOT {
 	private String base;
 	private String filename;
 	private StreamRDF sink;
-	private ParserProfile profile; // Warning - we don't use all of this.
+	private MakerRDF maker;
 
-	@Override
-	public Lang getLang() {
-		return RDFLanguages.CSV;
-
+	public ReaderRIOTCSV(ErrorHandler errorHandler) {
+		this.maker = RiotLib.dftMakerRDF(errorHandler);
 	}
 
 	@Override
-	public ParserProfile getProfile() {
-		return profile;
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+	    this.input = in;
+        this.reader = null;
+        this.base = baseURI;
+        this.filename = baseURI;
+        this.sink = output;
+	    parse();
 	}
 
-	@Override
-	public void setProfile(ParserProfile profile) {
-		this.profile = profile;
-	}
+    @Override
+    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        this.input = null;
+        this.reader = reader;
+        this.base = baseURI;
+        this.filename = baseURI;
+        this.sink = output;
+        parse();
+    }
 
-	public LangCSV(Reader reader, String base, String filename,
-			ErrorHandler errorHandler, StreamRDF sink) {
-		this.reader = reader;
-		this.base = base;
-		this.filename = filename;
-		this.sink = sink;
-		this.profile = RiotLib.profile(getLang(), base, errorHandler);
-	}
-
-	public LangCSV(InputStream in, String base, String filename,
-			ErrorHandler errorHandler, StreamRDF sink) {
-		this.input = in;
-		this.base = base;
-		this.filename = filename;
-		this.sink = sink;
-		this.profile = RiotLib.profile(getLang(), base, errorHandler);
-	}
-
-	@Override
 	public void parse() {
 		sink.start();
-		CSVParser parser = (input != null) ? CSVParser.create(input)
-				: CSVParser.create(reader);
+		CSVParser parser = (input != null) ? CSVParser.create(input) : CSVParser.create(reader);
 		ArrayList<Node> predicates = new ArrayList<>();
 		int rowNum = 0;
 		for (List<String> row : parser) {
@@ -95,18 +80,15 @@ public class LangCSV implements LangRIOT {
 				for (String column : row) {
 					String uri = IRIResolver.resolveString(filename) + "#"
 							+ toSafeLocalname(column);
-					Node predicate = this.profile.createURI(uri, rowNum, 0);
+					Node predicate = this.maker.createURI(uri, rowNum, 0);
 					predicates.add(predicate);
 				}
 			} else {
 				//Node subject = this.profile.createBlankNode(null, -1, -1);
-				Node subject = caculateSubject(rowNum, filename);
-				Node predicateRow = this.profile.createURI(CSV_ROW, -1, -1);
-				Node objectRow = this.profile
-						.createTypedLiteral((rowNum + ""),
-								XSDDatatype.XSDinteger, rowNum, 0);
-				sink.triple(this.profile.createTriple(subject, predicateRow,
-						objectRow, rowNum, 0));
+				Node subject = calculateSubject(rowNum, filename);
+				Node predicateRow = this.maker.createURI(CSV_ROW, -1, -1);
+				Node objectRow = this.maker.createTypedLiteral((rowNum + ""), XSDDatatype.XSDinteger, rowNum, 0);
+				sink.triple(this.maker.createTriple(subject, predicateRow, objectRow, rowNum, 0));
 				for (int col = 0; col < row.size() && col<predicates.size(); col++) {
 					Node predicate = predicates.get(col);
 					String columnValue = row.get(col).trim();
@@ -122,10 +104,9 @@ public class LangCSV implements LangRIOT {
 					} catch (Exception e) {
 						o = NodeFactory.createLiteral(columnValue);
 					}
-					sink.triple(this.profile.createTriple(subject, predicate,
+					sink.triple(this.maker.createTriple(subject, predicate,
 							o, rowNum, col));
 				}
-
 			}
 			rowNum++;
 		}
@@ -136,17 +117,25 @@ public class LangCSV implements LangRIOT {
 	public static String toSafeLocalname(String raw) {
 		String ret = raw.trim();
 		return encodeURIComponent(ret);
-		
 	}
 	
-	public static String encodeURIComponent(String s) {
+	private static String encodeURIComponent(String s) {
 	    return IRILib.encodeUriComponent(s);
 	}
 	
-	public static Node caculateSubject(int rowNum, String filename){
+	public static Node calculateSubject(int rowNum, String filename){
 		Node subject = NodeFactory.createBlankNode();
 //		String uri = IRIResolver.resolveString(filename) + "#Row_" + rowNum; 
 //		Node subject =  NodeFactory.createURI(uri);
 		return subject;
 	}
+
+    @Override
+    public ParserProfile getParserProfile() {
+        return null;
+    }
+
+    @Override
+    public void setParserProfile(ParserProfile profile) {
+    }
 }
