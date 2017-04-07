@@ -1,0 +1,26 @@
+@prefix :      <http://example/> .
+
+@prefix book:	<http://example/book/> .
+@prefix author:	<http://example/author/> .
+@prefix series:	<http://example/series/> .
+
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+series:confederation dc:author author:tanya_huff ;
+	skos:narrower [ book:valors_choice book:the_better_part_of_valor ] .
+
+author:tanya_huff
+	a foaf:Person ;
+	foaf:name "Tanya Huff" .
+	
+
+book:valors_choice
+	dc:author author:tanya_huff ;
+	dc:title "Valor's Choice" .
+
+book:the_better_part_of_valor
+	dc:author author:tanya_huff ;
+	dc:title "The Better Part Of Valor" .

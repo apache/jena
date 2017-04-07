@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class Page {
 
-	public static final int PAGE_CAPACITY_DEFAULT = 256; 
+	public static final int PAGE_CAPACITY_DEFAULT = 8192; 
 	
 	public static Page createDefault() {
 		return new Page(ByteBuffer.allocate(PAGE_CAPACITY_DEFAULT));

@@ -5,14 +5,42 @@ import org.apache.jena.sparql.core.Quad;
 
 public interface DatasetGraphShimWrite {
 
-	public void add(Quad quad);
+	static DatasetGraphShimWrite RO = new DatasetGraphShimWrite() {
+		
+		@Override
+		public void deleteAny(Node g, Node s, Node p, Node o) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void delete(Node g, Node s, Node p, Node o) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void delete(Quad quad) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void add(Node g, Node s, Node p, Node o) {
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void add(Quad quad) {
+			throw new UnsupportedOperationException();
+		}
+	};
+	
+	void add(Quad quad);
 
-	public void add(Node g, Node s, Node p, Node o);
+	void add(Node g, Node s, Node p, Node o);
 
-	public void delete(Quad quad);
+	void delete(Quad quad);
 
-	public void delete(Node g, Node s, Node p, Node o);
+	void delete(Node g, Node s, Node p, Node o);
 
-	public void deleteAny(Node g, Node s, Node p, Node o);
+	void deleteAny(Node g, Node s, Node p, Node o);
 
 }

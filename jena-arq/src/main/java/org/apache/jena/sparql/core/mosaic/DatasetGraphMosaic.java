@@ -580,7 +580,7 @@ public class DatasetGraphMosaic implements DatasetGraph {
 	public String toString() {
 		final StringBuilder text = new StringBuilder(1024);
 		text.append("Context [" + getContext() + "]");
-		text.append("\nTransactional\n(All) Read [" + readCount.get() + "] Write [" + writeCount.get() + "]");
+		text.append("\nTransactional\nAll [" + transactionCount + "] Read [" + readCount.get() + "] Write [" + writeCount.get() + "]");
 		text.append("\n(ThreadLocal) [" + peekTransactionDistributed() + "]");
 		text.append("\n(Monitor) [" + monitor.entrySet().stream().map((entry) -> {return entry.getKey().getName() + " " + entry.getValue();}).collect(Collectors.joining(",")) + "]");
 		text.append("\nMosaic [\n" + getMosaic().stream().map((datasetGraph) -> {return datasetGraph.toString();}).collect(Collectors.joining("\n")) + "]");

@@ -1,13 +1,4 @@
-namespace java org.twocows.jena.datasetgraph.thrift
-
-struct ThriftIteratorStruct {
-	1: i32 flags;
-	2: binary buffer;
-}
-
-exception ThriftDatasetGraphException {
-	1: string description;
-}
+namespace java org.apache.jena.sparql.core.thrift
 
 service DatasetGraphThrift {
 

@@ -3,10 +3,20 @@ package org.apache.jena.sparql.core.thrift;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This class supplies an input stream based on a page of data.
+ * How the next page is generated is implementation specific.
+ * 
+ * @author dick
+ *
+ */
 public abstract class InputStreamPaged extends InputStream {
 
 	protected Page page = null;
 
+	/**
+	 * Return the next page...
+	 */
 	protected abstract Page nextPage();
 	
 	@Override
