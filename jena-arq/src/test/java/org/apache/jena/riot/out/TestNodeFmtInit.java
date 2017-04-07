@@ -15,21 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.riot.out;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import static org.junit.Assert.assertEquals;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNodeFmtInit.class
-    , TestQuotedStringOutput.class
-    , TestNodeFmt.class
-    , TestNodeFmtLib.class
-})
+/**
+ * Tests {@link NodeFmtLib} initialization
+ * 
+ * @see <a href="https://issues.apache.org/jira/browse/JENA-1258">JENA-1258</a>
+ */
+public class TestNodeFmtInit {
+    @Test
+    public void strWithoutJenaSystemInit() throws Exception {
+        // NOTE: Deliberately NOT calling first
+        // JenaSystem.init();
+        Node node = NodeFactory.createLiteral("Hello world", "en");
+        assertEquals("\"Hello world\"@en", NodeFmtLib.str(node));
+    }
 
-public class TS_Out
-{}
-
+}

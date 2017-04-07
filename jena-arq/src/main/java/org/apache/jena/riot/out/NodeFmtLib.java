@@ -34,6 +34,7 @@ import org.apache.jena.riot.system.* ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.system.JenaSystem;
 
 /** Presentation utilitiles for Nodes, Triples, Quads and more.
  * <p>
@@ -45,13 +46,14 @@ import org.apache.jena.sparql.core.Quad ;
 public class NodeFmtLib
 {
     // Replaces FmtUtils
-    // See OutputLangUtils.
     // See and use EscapeStr
-    
+ 
     private static final NodeFormatter plainFormatter = new NodeFormatterNT() ;
     
     private static PrefixMap dftPrefixMap = PrefixMapFactory.create() ;
+ 
     static {
+        JenaSystem.init();
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
         Map<String, String> map = pm.getNsPrefixMap() ;
         for ( Map.Entry<String, String> e : map.entrySet() )

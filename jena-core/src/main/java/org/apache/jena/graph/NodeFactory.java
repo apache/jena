@@ -31,6 +31,10 @@ public class NodeFactory {
     
     static { JenaSystem.init(); }
 
+    static {
+        JenaSystem.init();
+    }
+    
     public static RDFDatatype getType(String s) {
         if ( s == null )
             return null ;
