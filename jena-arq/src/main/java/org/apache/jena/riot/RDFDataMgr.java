@@ -1267,7 +1267,7 @@ public class RDFDataMgr
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) ) {
             return new IteratorResourceClosing<>(
-                RiotParsers.createIteratorNQuads(input, null, RiotLib.dftMakerRDF()),
+                RiotParsers.createIteratorNQuads(input, null, RiotLib.dftProfile()),
                 input);
         }
         // Otherwise, we have to spin up a thread to deal with it

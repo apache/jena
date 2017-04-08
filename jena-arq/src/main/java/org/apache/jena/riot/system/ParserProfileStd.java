@@ -35,23 +35,22 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 
 /** 
- * {@link MakerRDFStd} uses a {@link FactoryRDF} to 
+ * {@link ParserProfileStd} uses a {@link FactoryRDF} to 
  * create items in the parsing process.
  */
-public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* Old World */
+public class ParserProfileStd implements ParserProfile
 {
-    private /* final */ FactoryRDF   factory;
-    private /* final */ ErrorHandler errorHandler;
-    private /* final */ Context      context;
-    //private /* final */ Prologue     prologue;
-    private /* final */ IRIResolver  resolver;
-    private /* final */ PrefixMap    prefixMap;
-    private boolean                  strictMode;
+    private final FactoryRDF   factory;
+    private final ErrorHandler errorHandler;
+    private final Context      context;
+    private       IRIResolver  resolver;
+    private final PrefixMap    prefixMap;
+    private final boolean                  strictMode;
     private final boolean            checking;
 
-    public MakerRDFStd(FactoryRDF factory, ErrorHandler errorHandler, 
-                       IRIResolver resolver, PrefixMap prefixMap,
-                       Context context, boolean checking, boolean strictMode) {
+    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler, 
+                            IRIResolver resolver, PrefixMap prefixMap,
+                            Context context, boolean checking, boolean strictMode) {
         this.factory = factory;
         this.errorHandler = errorHandler;
         this.resolver = resolver;
@@ -61,47 +60,9 @@ public class MakerRDFStd implements MakerRDF /*To be removed*/, ParserProfile/* 
         this.strictMode = strictMode;
     }
     
-    @Deprecated @Override /* ParserProfile - to be removed */
-    public Prologue getPrologue() {
-        return new Prologue(prefixMap, resolver);
-    }
-
-    @Deprecated @Override /* ParserProfile - to be removed */
-    public void setPrologue(Prologue prologue) {
-        // XXX [ParserRDF]
-        // Resetting the base.
-        resolver = prologue.getResolver();
-        prefixMap = prologue.getPrefixMap();
-    }
-
-    @Deprecated @Override /* ParserProfile - to be removed */
-    public void setHandler(ErrorHandler handler) {
-        //Ignore
-    }
-
     @Override
     public ErrorHandler getErrorHandler() {
         return errorHandler;
-    }
-
-//    // XXX @Override
-//    public void setErrorHandler(ErrorHandler errorHandler) {
-//        this.errorHandler = errorHandler;
-//    }
-//
-//    @Override
-//    public FactoryRDF getFactoryRDF() {
-//        return factory;
-//    }
-
-    // XXX ??? @Override
-    public Context getContext() {
-        return context;
-    }
-
-    // XXX ??? @Override
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     @Override

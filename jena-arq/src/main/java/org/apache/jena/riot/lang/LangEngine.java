@@ -27,30 +27,26 @@ import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.iterator.PeekIterator;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.MakerRDF;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer;
 
 /** Common operations for RIOT token stream parsing - not the implementation LangRIOT. */
 public class LangEngine {
-    protected MakerRDF          profile;
+    protected ParserProfile          profile;
     protected ErrorHandler      errorHandler;
     protected final Tokenizer   tokens;
     private PeekIterator<Token> peekIter;
 
-    protected LangEngine(Tokenizer tokens, MakerRDF profile, ErrorHandler errorHandler) {
+    protected LangEngine(Tokenizer tokens, ParserProfile profile, ErrorHandler errorHandler) {
         this.tokens = Objects.requireNonNull(tokens);
         this.profile = Objects.requireNonNull(profile);
         this.errorHandler = errorHandler;
         // The PeekIterator is always loaded with the next token until the end
         // (for simplicity) but it means this can throw an exception.
-        try {
-            this.peekIter = new PeekIterator<>(tokens);
-        }
-        catch (RiotParseException ex) {
-            raiseException(ex);
-        }
+        try { this.peekIter = new PeekIterator<>(tokens); }
+        catch (RiotParseException ex) { raiseException(ex); }
     }
 
     // ---- Managing tokens.
@@ -118,7 +114,6 @@ public class LangEngine {
     }
 
     protected final void expectOrEOF(String msg, TokenType tokenType) {
-        // DOT or EOF
         if ( eof() )
             return;
         expect(msg, tokenType);

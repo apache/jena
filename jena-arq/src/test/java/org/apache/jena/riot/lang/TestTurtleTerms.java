@@ -241,8 +241,8 @@ public class TestTurtleTerms extends BaseTest
 	    
 	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
 	    StreamRDF sink = StreamRDFLib.sinkNull() ;
-        LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, sink, RiotLib.dftMakerRDF()) ;
-	    PrefixMap prefixMap = parser.getProfile().getPrologue().getPrefixMap() ;
+        LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, sink, RiotLib.dftProfile()) ;
+	    PrefixMap prefixMap = parser.getProfile().getPrefixMap() ;
 
 	    prefixMap.add("a", "http://host/a#") ;
         prefixMap.add("x", "http://host/a#") ;

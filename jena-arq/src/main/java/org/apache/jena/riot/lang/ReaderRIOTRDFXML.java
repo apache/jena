@@ -66,15 +66,6 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     private StreamRDF sink ;
     private ErrorHandler errorHandler; 
     
-    @Override
-    public ParserProfile getParserProfile() {
-        return null ;
-    }
-
-    @Override
-    public void setParserProfile(ParserProfile profile)
-    { this.errorHandler = profile.getErrorHandler() ; }
-
     public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler; 
     }

@@ -58,8 +58,13 @@ public interface ReaderRIOT
      */
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) ;
     
-    /** Get the parser profile.  Not all parsers have parser profiles so this may be null */
-    public ParserProfile getParserProfile() ;
-    /** Set the parser profile.  Not all parsers have parser profiles so this may be a no-op */
-    public void setParserProfile(ParserProfile profile) ;
+    /** @deprecated Returns null. */
+    @Deprecated
+    public default ParserProfile getParserProfile() { return null; }
+
+    /** Set the parser profile.  Not all parsers have parser profiles so this may be a no-op
+     * @deprecated Does nothing.
+     */
+    @Deprecated
+    public default void setParserProfile(ParserProfile profile) { }
 }

@@ -69,7 +69,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     private LongWritable key = null;
     private Text value = null;
     private T tuple = null;
-    private MakerRDF maker = null;
+    private ParserProfile maker = null;
     private boolean ignoreBadTuples = true;
 
     @Override
@@ -83,7 +83,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
 
         // Intermediate : RDFParser but need to make a Iterator<Quad/Triple>
         LabelToNode labelToNode = RdfIOUtils.createLabelToNode(context, split.getPath());
-        maker = new MakerRDFStd(RiotLib.factoryRDF(labelToNode), 
+        maker = new ParserProfileStd(RiotLib.factoryRDF(labelToNode), 
                                      ErrorHandlerFactory.errorHandlerStd, 
                                      IRIResolver.create(), PrefixMapFactory.createForInput(), 
                                      null, true, false); 
@@ -147,7 +147,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
      *            Parser setup.
      * @return Iterator
      */
-    protected abstract Iterator<TValue> getIterator(String line, MakerRDF maker);
+    protected abstract Iterator<TValue> getIterator(String line, ParserProfile maker);
     
     /** Create a tokenizer for a line
      * @param line

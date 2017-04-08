@@ -79,8 +79,8 @@ public class TestParserFactory extends BaseTest
         // NQ version tests that relative URIs remain relative. 
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ;
         CatchParserOutput sink = new CatchParserOutput() ;
-        MakerRDF maker = makeMaker(IRIResolver.createNoResolve(), null, false);
-        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink, maker) ;
+        ParserProfile profile = makeParserProfile(IRIResolver.createNoResolve(), null, false);
+        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink, profile) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
@@ -106,7 +106,7 @@ public class TestParserFactory extends BaseTest
         // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> .") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        MakerRDF maker = makeMaker(IRIResolver.create("http://base/"), null, true);
+        ParserProfile maker = makeParserProfile(IRIResolver.create("http://base/"), null, true);
         LangRIOT parser = RiotParsers.createParserTurtle(tokenizer, sink, maker) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
@@ -116,15 +116,15 @@ public class TestParserFactory extends BaseTest
         assertEquals(SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)"), last(sink.triples)) ;
     }
     
-    private MakerRDF makeMaker(IRIResolver resolver, ErrorHandler errorHandler, boolean checking) {
+    private ParserProfile makeParserProfile(IRIResolver resolver, ErrorHandler errorHandler, boolean checking) {
         if ( errorHandler == null )
             errorHandler = ErrorHandlerFactory.errorHandlerStd;
-        return new MakerRDFStd(RiotLib.factoryRDF(), 
-                               errorHandler,
-                               resolver,
-                               PrefixMapFactory.createForInput(),
-                               RIOT.getContext().copy(),
-                               checking, false) ;
+        return new ParserProfileStd(RiotLib.factoryRDF(), 
+                                    errorHandler,
+                                    resolver,
+                                    PrefixMapFactory.createForInput(),
+                                    RIOT.getContext().copy(),
+                                    checking, false) ;
     }
 
     @Test public void nquads_01() 
@@ -143,7 +143,7 @@ public class TestParserFactory extends BaseTest
         // Old style, deprecated.
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("<x> <p> <q> <g>.") ; 
         CatchParserOutput sink = new CatchParserOutput() ;
-        MakerRDF x = makeMaker(IRIResolver.createNoResolve(), null, false);
+        ParserProfile x = makeParserProfile(IRIResolver.createNoResolve(), null, false);
         LangRIOT parser = RiotParsers.createParserNQuads(tokenizer, sink, x) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;

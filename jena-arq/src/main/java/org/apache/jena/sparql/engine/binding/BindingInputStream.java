@@ -80,12 +80,11 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     static ParserProfile profile()
     {
-        // Don't do anything with IRIs.
+        // Don't do anything with IRIs or blank nodes.
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         FactoryRDF factory = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
-        ParserProfile profile = new ParserProfileBase(prologue, handler, factory) ;
-        // Include safe bNode labels.
+        ParserProfile profile = RiotLib.createParserProfile(factory, handler, false);
         return profile ;
     }
     
@@ -96,7 +95,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)
     {
-        super(tokenizer, profile, profile.getHandler()) ;
+        super(tokenizer, profile, profile.getErrorHandler()) ;
         iter = new IteratorTuples() ;
     }
 

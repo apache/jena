@@ -23,7 +23,7 @@ import java.util.Iterator;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.io.input.readers.AbstractLineBasedTripleReader;
 import org.apache.jena.riot.lang.RiotParsers;
-import org.apache.jena.riot.system.MakerRDF;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
 
 /**
@@ -35,7 +35,7 @@ import org.apache.jena.riot.tokens.Tokenizer;
 public class NTriplesReader extends AbstractLineBasedTripleReader {
 
     @Override
-    protected Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, MakerRDF maker) {
+    protected Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, ParserProfile maker) {
         return  RiotParsers.createParserNTriples(tokenizer, null, maker);
     }
 }

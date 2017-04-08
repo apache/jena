@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import org.apache.jena.hadoop.rdf.io.input.readers.AbstractLineBasedQuadReader;
 import org.apache.jena.riot.lang.RiotParsers;
-import org.apache.jena.riot.system.MakerRDF;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.core.Quad ;
 
@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public class NQuadsReader extends AbstractLineBasedQuadReader {
     @Override
-    protected Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, MakerRDF maker) {
+    protected Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, ParserProfile maker) {
         return RiotParsers.createParserNQuads(tokenizer, null, maker);
     }
 }

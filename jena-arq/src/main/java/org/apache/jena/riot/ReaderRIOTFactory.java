@@ -23,16 +23,11 @@ import org.apache.jena.riot.system.RiotLib;
 
 public interface ReaderRIOTFactory
 {
+    /** @deprecated See {@link #create(Lang, ParserProfile)} */
+    @Deprecated
     public default ReaderRIOT create(Lang language) {
         return create(language, RiotLib.profile(language, null));
     }
-    
+
     public ReaderRIOT create(Lang language, ParserProfile profile);
-    
-//    public default ReaderRIOT create(Lang language, ParserProfile profile) {
-//        return create(language, profile, profile.getHandler());
-//    }
-//
-//    /** Create a parser engine (a {@link ReaderRIOT}) */
-//    public ReaderRIOT create(Lang language, MakerRDF maker, ErrorHandler errorHandler);  
 }

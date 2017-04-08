@@ -199,16 +199,6 @@ public class RDFParserRegistry
             LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output, parserProfile);
             parser.parse() ;
         }
-
-        @Override
-        public ParserProfile getParserProfile() {
-            return parserProfile;
-        }
-
-        @Override
-        public void setParserProfile(ParserProfile parserProfile) {
-            this.parserProfile = parserProfile;
-        }
     }
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {
@@ -237,14 +227,6 @@ public class RDFParserRegistry
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
         }
-
-        @Override
-        public ParserProfile getParserProfile() {
-            return null ;
-        }
-
-        @Override
-        public void setParserProfile(ParserProfile profile) {}
     }
 }
 

@@ -131,6 +131,15 @@ public class TestRDFParser {
         assertEquals(3, graph.size());
     }
 
+    @Test
+    public void source_string() {
+        Graph graph = GraphFactory.createGraphMem();
+        RDFParser.create().fromString("<x> <p> <z> .")
+            .lang(Lang.NT)
+            .parse(graph);
+        assertEquals(1, graph.size());
+    }
+
     @Test(expected=RiotException.class)
     public void errorHandler() {
         Graph graph = GraphFactory.createGraphMem();

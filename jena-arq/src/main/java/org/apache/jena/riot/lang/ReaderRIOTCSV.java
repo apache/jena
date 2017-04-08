@@ -51,10 +51,10 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 	private String base;
 	private String filename;
 	private StreamRDF sink;
-	private MakerRDF maker;
+	private ParserProfile profile;
 
 	public ReaderRIOTCSV(ErrorHandler errorHandler) {
-		this.maker = RiotLib.dftMakerRDF(errorHandler);
+		this.profile = RiotLib.createParserProfile(errorHandler);
 	}
 
 	@Override
@@ -88,15 +88,15 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 				for (String column : row) {
 					String uri = IRIResolver.resolveString(filename) + "#"
 							+ toSafeLocalname(column);
-					Node predicate = this.maker.createURI(uri, rowNum, 0);
+					Node predicate = this.profile.createURI(uri, rowNum, 0);
 					predicates.add(predicate);
 				}
 			} else {
 				//Node subject = this.profile.createBlankNode(null, -1, -1);
 				Node subject = calculateSubject(rowNum, filename);
-				Node predicateRow = this.maker.createURI(CSV_ROW, -1, -1);
-				Node objectRow = this.maker.createTypedLiteral((rowNum + ""), XSDDatatype.XSDinteger, rowNum, 0);
-				sink.triple(this.maker.createTriple(subject, predicateRow, objectRow, rowNum, 0));
+				Node predicateRow = this.profile.createURI(CSV_ROW, -1, -1);
+				Node objectRow = this.profile.createTypedLiteral((rowNum + ""), XSDDatatype.XSDinteger, rowNum, 0);
+				sink.triple(this.profile.createTriple(subject, predicateRow, objectRow, rowNum, 0));
 				for (int col = 0; col < row.size() && col<predicates.size(); col++) {
 					Node predicate = predicates.get(col);
 					String columnValue = row.get(col).trim();
@@ -112,7 +112,7 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 					} catch (Exception e) {
 						o = NodeFactory.createLiteral(columnValue);
 					}
-					sink.triple(this.maker.createTriple(subject, predicate,
+					sink.triple(this.profile.createTriple(subject, predicate,
 							o, rowNum, col));
 				}
 			}
@@ -138,12 +138,4 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 		return subject;
 	}
 
-    @Override
-    public ParserProfile getParserProfile() {
-        return null;
-    }
-
-    @Override
-    public void setParserProfile(ParserProfile profile) {
-    }
 }

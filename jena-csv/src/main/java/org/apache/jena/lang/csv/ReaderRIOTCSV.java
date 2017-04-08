@@ -43,10 +43,10 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 	private String base;
 	private String filename;
 	private StreamRDF sink;
-	private MakerRDF maker;
+	private ParserProfile maker;
 
 	public ReaderRIOTCSV(ErrorHandler errorHandler) {
-		this.maker = RiotLib.dftMakerRDF(errorHandler);
+		this.maker = RiotLib.createParserProfile(errorHandler);
 	}
 
 	@Override
@@ -129,13 +129,4 @@ public class ReaderRIOTCSV implements ReaderRIOT {
 //		Node subject =  NodeFactory.createURI(uri);
 		return subject;
 	}
-
-    @Override
-    public ParserProfile getParserProfile() {
-        return null;
-    }
-
-    @Override
-    public void setParserProfile(ParserProfile profile) {
-    }
 }

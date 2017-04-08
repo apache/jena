@@ -59,26 +59,19 @@ public abstract class LangTurtleBase extends LangBase {
     
     protected /*final*/ PrefixMap prefixMap;
 
-    public final Node getCurrentGraph() {
+    protected final Node getCurrentGraph() {
         return currentGraph ;
     }
 
-    public final void setCurrentGraph(Node graph) {
+    protected final void setCurrentGraph(Node graph) {
         this.currentGraph = graph ;
     }
 
     protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
-        // Shared with the MakerRDF
         prefixMap = profile.getPrefixMap();
     }
 
-    @Override
-    public void setProfile(ParserProfile profile) {
-        super.setProfile(profile);
-        prefixMap = profile.getPrefixMap();
-    }
-    
     @Override
     protected final void runParser() {
         while (moreTokens()) {

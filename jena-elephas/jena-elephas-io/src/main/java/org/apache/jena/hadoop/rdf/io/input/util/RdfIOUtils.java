@@ -53,13 +53,14 @@ public class RdfIOUtils {
      * @param path
      *            File path
      * @return Parser profile
-     * @deprecated Legacy - use {@link #createRDFParserBuilder} - do not use a {@link ParserProfile}, use {@link MakerRDF}.
+     * @deprecated Legacy - use {@link #createRDFParserBuilder}.
      */
     @Deprecated
     public static ParserProfile createParserProfile(JobContext context, Path path) {
-        Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve());
         LabelToNode labelMapping = createLabelToNode(context, path);
-        return new ParserProfileBase(prologue, ErrorHandlerFactory.errorHandlerStd, RiotLib.factoryRDF(labelMapping));
+        ParserProfile profile = RiotLib.createParserProfile(RiotLib.factoryRDF(labelMapping), ErrorHandlerFactory.errorHandlerStd,
+                                                  IRIResolver.createNoResolve(), false);
+        return profile;
     }
 
     public static RDFParserBuilder createRDFParserBuilder(JobContext context, Path path) {

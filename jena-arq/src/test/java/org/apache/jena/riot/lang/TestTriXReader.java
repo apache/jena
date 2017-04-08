@@ -77,7 +77,7 @@ public class TestTriXReader extends BaseTest {
     
     @Test
     public void trix_direct() {
-        ReaderRIOT r = new ReaderTriX(RiotLib.dftMakerRDF(), ErrorHandlerFactory.errorHandlerNoWarnings);
+        ReaderRIOT r = new ReaderTriX(RiotLib.dftProfile(), ErrorHandlerFactory.errorHandlerNoWarnings);
         InputStream in = IO.openFile(fInput) ;
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         //StreamRDF stream = StreamRDFLib.writer(System.out) ;

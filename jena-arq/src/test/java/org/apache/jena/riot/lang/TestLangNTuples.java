@@ -191,7 +191,7 @@ abstract public class TestLangNTuples extends BaseTest
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink, dftMakerRDF2(new ErrorHandlerEx()));
+        LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
     }
     
@@ -199,25 +199,20 @@ abstract public class TestLangNTuples extends BaseTest
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = RiotParsers.createParserNTriples(tokenizer, sink, dftMakerRDF2(new ErrorHandlerEx()));
+        LangRIOT x = RiotParsers.createParserNTriples(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
         return sink.count();
     }
 
-    
-    
-    /** Create a {@link MakerRDF}, no resolving, no prefix map. */
-    // XXX [RDFParser] MakerRDF has en aerorHandler apready set but passed in parallel.
-    // MakerRDF.getErrorHandler?
-    static MakerRDF dftMakerRDF2(ErrorHandler errorHandler) {
-        return new MakerRDFStd(RiotLib.factoryRDF(), 
-                               errorHandler,
-                               IRIResolver.createNoResolve(),
-                               PrefixMapFactory.emptyPrefixMap(),
-                               RIOT.getContext().copy(),
-                               true, false) ;
+    /** Create a {@link ParserProfile}, no resolving, no prefix map. */
+    static ParserProfile parserProfile(ErrorHandler errorHandler) {
+        return new ParserProfileStd(RiotLib.factoryRDF(), 
+                                    errorHandler,
+                                    IRIResolver.createNoResolve(),
+                                    PrefixMapFactory.emptyPrefixMap(),
+                                    RIOT.getContext().copy(),
+                                    true, false) ;
     }
-
 
     protected abstract Lang getLang();
 

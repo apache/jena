@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-import org.apache.jena.riot.system.MakerRDF;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
 
 /**
@@ -34,7 +34,7 @@ import org.apache.jena.riot.tokens.Tokenizer;
 public abstract class AbstractLineBasedTripleReader extends AbstractLineBasedNodeTupleReader<Triple, TripleWritable> {
 
     @Override
-    protected Iterator<Triple> getIterator(String line, MakerRDF maker) {
+    protected Iterator<Triple> getIterator(String line, ParserProfile maker) {
         Tokenizer tokenizer = getTokenizer(line);
         return getTriplesIterator(tokenizer, maker);
     }
@@ -44,6 +44,6 @@ public abstract class AbstractLineBasedTripleReader extends AbstractLineBasedNod
         return new TripleWritable(t);
     }
 
-    protected abstract Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, MakerRDF maker);
+    protected abstract Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, ParserProfile maker);
 
 }

@@ -49,12 +49,4 @@ public class ReaderRDFNULL implements ReaderRIOT {
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
         IO.close(reader);
     }
-
-    @Override
-    public ParserProfile getParserProfile() {
-        return null;
-    }
-
-    @Override
-    public void setParserProfile(ParserProfile profile) {}
 }
