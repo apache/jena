@@ -22,7 +22,7 @@ import org.apache.jena.query.spatial.DistanceUnitsUtils;
 import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.lucene.spatial.query.SpatialOperation;
 
-import com.spatial4j.core.shape.Shape;
+import org.locationtech.spatial4j.shape.Shape;
 
 public class SpatialMatch {
 

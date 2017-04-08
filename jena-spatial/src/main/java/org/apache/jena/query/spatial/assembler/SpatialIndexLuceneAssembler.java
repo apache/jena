@@ -50,7 +50,6 @@ public class SpatialIndexLuceneAssembler extends AssemblerBase
         .
     */
 
-    @SuppressWarnings("resource")
     @Override
     public SpatialIndex open(Assembler a, Resource root, Mode mode)
     {
@@ -72,7 +71,7 @@ public class SpatialIndexLuceneAssembler extends AssemblerBase
                 Resource x = n.asResource() ;
                 String path = IRILib.IRIToFilename(x.getURI()) ; 
                 File dir = new File(path) ; 
-                directory = FSDirectory.open(dir) ;
+                directory = FSDirectory.open(dir.toPath()) ;
             }
         
             Resource r = GraphUtils.getResourceValue(root, pDefinition) ;

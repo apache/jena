@@ -87,13 +87,9 @@ public class textindexdump extends CmdARQ {
         
         if ( textIndex instanceof TextIndexLucene )
             dump((TextIndexLucene)textIndex) ;
-        else if ( textIndex instanceof TextIndexSolr )
-            dump((TextIndexSolr)textIndex) ;
         else
             System.err.println("Unsupported index type : "+Lib.className(textIndex)) ;
         }
-
-    private static void dump(TextIndexSolr textIndex) { System.err.println("Not implemented : dump Solr index") ; }
 
     private static void dump(TextIndexLucene textIndex) {
         try {
@@ -101,7 +97,7 @@ public class textindexdump extends CmdARQ {
             Analyzer analyzer = textIndex.getQueryAnalyzer() ;
             IndexReader indexReader = DirectoryReader.open(directory) ;
             IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-            QueryParser queryParser = new QueryParser(TextIndexLucene.VER, textIndex.getDocDef().getPrimaryField(), analyzer);
+            QueryParser queryParser = new QueryParser(textIndex.getDocDef().getPrimaryField(), analyzer);
             Query query = queryParser.parse("*:*");
             ScoreDoc[] sDocs = indexSearcher.search(query, 1000).scoreDocs ;
             for ( ScoreDoc sd : sDocs ) {

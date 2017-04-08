@@ -145,6 +145,8 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
         // Set up background thread for parser
         iter = this.getPipedIterator();
         this.stream = this.getPipedStream(iter, this.input);
+        // TODO [RDFParser]
+        // Use RDFParser builder.
         ParserProfile profile = RdfIOUtils.createParserProfile(context, file);
         Runnable parserRunnable = this.createRunnable(this, this.input, stream, this.getRdfLanguage(), profile);
         this.parserThread = new Thread(parserRunnable);
@@ -186,12 +188,17 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
      *            Language to use for parsing
      * @return Parser runnable
      */
-    private Runnable createRunnable(@SuppressWarnings("rawtypes") final AbstractBlockBasedNodeTupleReader reader, final InputStream input,
-            final PipedRDFStream<TValue> stream, final Lang lang, final ParserProfile profile) {
+    private Runnable createRunnable(final AbstractBlockBasedNodeTupleReader<?,?> reader, final InputStream input,
+                                    final PipedRDFStream<TValue> stream, final Lang lang, final ParserProfile profile) {
         return new Runnable() {
             @Override
             public void run() {
                 try {
+                    @SuppressWarnings("deprecation")
+                    // Only needed because of ParserProfile setting errorhandler and label mapping - see RdfIOUtils.createParserProfile
+                    
+                    // 
+                    
                     ReaderRIOT riotReader = RDFDataMgr.createReader(lang);
                     riotReader.setParserProfile(profile);
                     riotReader.read(input, null, lang.getContentType(), stream, null);

@@ -37,6 +37,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.Prologue;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
@@ -172,7 +173,12 @@ public abstract class LangTurtleBase extends LangBase {
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
         emitBase(baseIRI.toString()) ;
         nextToken() ;
-        profile.getPrologue().setBaseURI(baseIRI) ;
+        //profile.getPrologue().setBaseURI(baseIRI) ;
+        // XXX [ParserRDF]
+        // This creates a new resolver but MakerRDFStd has a copy of the resolver object
+        Prologue prologue = profile.getPrologue();
+        prologue.setBaseURI(baseIRI);
+        profile.setPrologue(prologue);
     }
 
     

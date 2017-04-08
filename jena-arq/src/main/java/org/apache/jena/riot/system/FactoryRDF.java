@@ -54,4 +54,7 @@ public interface FactoryRDF {
      *  @see <a href="http://www.ietf.org/rfc/rfc4122.txt" ><i>RFC&nbsp;4122: A Universally Unique IDentifier (UUID) URN Namespace</i></a>
      */
     public Node createBlankNode(long mostSigBits, long leastSigBits) ;
+    
+    /** Reset any internal state that should not be carried across parse runs (e.g. blank node labels). */
+    public void reset();
 }

@@ -25,7 +25,6 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
@@ -33,7 +32,7 @@ import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.analysis.CharArraySet;
 
 /**
  * Assembler to create standard analyzers with keyword list.
@@ -56,7 +55,7 @@ public class StandardAnalyzerAssembler extends AssemblerBase {
         if (root.hasProperty(TextVocab.pStopWords)) {
             return analyzerWithStopWords(root);
         } else {
-            return new StandardAnalyzer(TextIndexLucene.VER);
+            return new StandardAnalyzer();
         }
     }
 
@@ -66,11 +65,11 @@ public class StandardAnalyzerAssembler extends AssemblerBase {
             throw new TextIndexException("text:stopWords property takes a list as a value : " + node);
         }
         CharArraySet stopWords = toCharArraySet((Resource) node);
-        return new StandardAnalyzer(TextIndexLucene.VER, stopWords);
+        return new StandardAnalyzer(stopWords);
     }
 
     private CharArraySet toCharArraySet(Resource list) {
-        return new CharArraySet(TextIndexLucene.VER, toList(list), false);
+        return new CharArraySet(toList(list), false);
     }
 
     private List<String> toList(Resource list) {

@@ -32,10 +32,7 @@ import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
@@ -290,11 +287,15 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     // Check for all RiotReader
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         try {
-            ReaderRIOT r = RDFDataMgr.createReader(lang) ;
-            if ( r == null )
+            if ( ! RDFLanguages.hasRegisteredParser(lang) ) {
                 errorBadRequest("No parser for language '"+lang.getName()+"'") ;
-            r.setErrorHandler(errorHandler); 
-            r.read(input, base, null, dest, null) ; 
+            }
+            RDFParser.create()
+                .source(input)
+                .lang(lang)
+                .base(base)
+                .errorHandler(errorHandler)
+                .parse(dest);
         } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }

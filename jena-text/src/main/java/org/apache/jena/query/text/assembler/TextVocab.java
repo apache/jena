@@ -34,10 +34,8 @@ public class TextVocab
     public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
     
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
-    public static final Resource textIndexSolr      = Vocab.resource(NS, "TextIndexSolr") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
     public static final Property pLanguage          = Vocab.property(NS, "language") ;
-    public static final Property pServer            = Vocab.property(NS, "server") ;            // Solr
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
     public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;
@@ -79,6 +77,14 @@ public class TextVocab
     public static final Resource standardFilter     = Vocab.resource(NS, "StandardFilter");
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
     public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
+
+    //Elasticsearch
+    public static final Resource textIndexES        = Vocab.resource(NS, "TextIndexES") ;
+    public static final Property pServerList        = Vocab.property(NS, "serverList");
+    public static final Property pClusterName       = Vocab.property(NS, "clusterName");
+    public static final Property pShards            = Vocab.property(NS, "shards");
+    public static final Property pReplicas          = Vocab.property(NS, "replicas");
+    public static final Property pIndexName          = Vocab.property(NS, "indexName");
 
 }
 

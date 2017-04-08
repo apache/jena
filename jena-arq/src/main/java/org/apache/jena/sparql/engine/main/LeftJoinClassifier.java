@@ -63,8 +63,22 @@ public class LeftJoinClassifier
         Set<Var> leftVars = OpVars.visibleVars(left) ;
         if ( print ) {
             System.err.println("Left") ;
-            System.err.println(leftVars) ;
+            System.err.println("  Visible: "+leftVars) ;
         }
+        if ( print ) {
+            VarFinder vfLeft = VarFinder.process(left) ;
+            System.err.println("Left") ;
+            vfLeft.print(System.err) ;
+//        // Check
+//        Set<Var> leftVars2 = new HashSet<>();
+//        leftVars.addAll(vfLeft.getFixed());
+//        leftVars.addAll(vfLeft.getOpt());
+//        leftVars.addAll(vfLeft.getAssign());
+//        if ( print ) {
+//            System.err.println("  Visible: "+leftVars);
+//        }
+        }
+
         VarFinder vf = VarFinder.process(right) ;
         if ( print ) {
             System.err.println("Right") ;
@@ -78,9 +92,11 @@ public class LeftJoinClassifier
             // left.  If not, then we can still use a sequence. 
             // But an outer sequence may push arbitrary here so play safe on the argument
             // this is a relative uncommon case.
+            if (print) System.err.println("Case 1 - " + false);
             return false ;
         }
         
+        if (print) System.err.println("Case 1 - " + true);
         Set<Var> optRight = vf.getOpt() ;
         Set<Var> fixedRight = vf.getFixed() ;
         Set<Var> filterVarsRight = vf.getFilter() ; 
@@ -88,25 +104,25 @@ public class LeftJoinClassifier
         // Case 2
         // A variable is nested in an optional on the RHS and on the LHS
         // Cannot linearize as we must preserve scope
-        boolean b1 = SetUtils.intersectionP(leftVars, optRight) ;
-        if (print) System.err.println("Case 1 - " + b1);
+        boolean b2 = SetUtils.intersectionP(leftVars, optRight) ;
+        if (print) System.err.println("Case 2 - " + b2);
         
         // Case 3
         // A variable mentioned in a filter within the RHS already exists on the LHS
         // Cannot linearize as would change filter evaluation
-        boolean b2 = SetUtils.intersectionP(leftVars, filterVarsRight) ;
-        if (print) System.err.println("Case 2 - " + b2);
+        boolean b3 = SetUtils.intersectionP(leftVars, filterVarsRight) ;
+        if (print) System.err.println("Case 3 - " + b3);
         
         // Case 4
         // A variable mentioned in the assign is not introduced on the RHS
         // Cannot linearize as would change bind evaluation
         Set<Var> unsafeAssign = new HashSet<>(assignVarsRight);
         unsafeAssign.removeAll(fixedRight);
-        boolean b3 = unsafeAssign.size() > 0 ;
-        if (print) System.err.println("Case 3 - " + b3);
+        boolean b4 = unsafeAssign.size() > 0 ;
+        if (print) System.err.println("Case 4 - " + b4);
 
         // Linear if all conditions are false
-        return ! b1 && ! b2 && ! b3 ;
+        return ! b2 && ! b3 && ! b4 ;
     }
     
     static public Set<Var> nonLinearVars(OpLeftJoin op) { 

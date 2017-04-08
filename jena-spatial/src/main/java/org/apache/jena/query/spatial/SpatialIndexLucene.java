@@ -37,25 +37,23 @@ import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree ;
 import org.apache.lucene.spatial.query.SpatialArgs ;
 import org.apache.lucene.spatial.query.SpatialOperation ;
 import org.apache.lucene.store.Directory ;
-import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.spatial4j.core.shape.Shape ;
+import org.locationtech.spatial4j.shape.Shape ;
 
 public class SpatialIndexLucene implements SpatialIndex {
 	private static Logger log = LoggerFactory
 			.getLogger(SpatialIndexLucene.class);
 
 	private static int MAX_N = 10000;
-	public static final Version VER = Version.LUCENE_4_9;
 
 	public static final FieldType ftIRI;
 	static {
 		ftIRI = new FieldType();
 		ftIRI.setTokenized(false);
 		ftIRI.setStored(true);
-		ftIRI.setIndexed(true);
+		ftIRI.setIndexOptions(IndexOptions.DOCS);
 		ftIRI.freeze();
 	}
 	// public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
@@ -65,7 +63,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 	private final EntityDefinition docDef;
 	private final Directory directory;
 	private IndexWriter indexWriter;
-	private Analyzer analyzer = new StandardAnalyzer(VER);
+	private Analyzer analyzer = new StandardAnalyzer();
 
 	/**
 	 * The Lucene spatial {@link SpatialStrategy} encapsulates an approach to
@@ -108,8 +106,11 @@ public class SpatialIndexLucene implements SpatialIndex {
 	@Override
 	public void startIndexing() {
 		try {
-			IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer);
+			IndexWriterConfig wConfig = new IndexWriterConfig(analyzer);
 			indexWriter = new IndexWriter(directory, wConfig);
+		} catch (IndexFormatTooOldException e) {
+			throw new SpatialIndexException("jena-spatial/Lucene cannot use indexes created before Jena 3.3.0. "
+	        		+ "Please rebuild your spatial index using jena.spatialindexer from Jena 3.3.0 or above.", e);
 		} catch (IOException e) {
 			exception(e);
 		}
@@ -193,13 +194,11 @@ public class SpatialIndexLucene implements SpatialIndex {
 		IndexSearcher indexSearcher = new IndexSearcher(indexReader);
 		SpatialArgs args = new SpatialArgs(operation, shape);
 		args.setDistErr(0.0);
-		Filter filter = strategy.makeFilter(args);
-		TopDocs docs = indexSearcher.search(new MatchAllDocsQuery(), filter,
-				limit);
+		Query query = strategy.makeQuery(args);
+		TopDocs docs = indexSearcher.search(query, limit);
 
 		List<Node> results = new ArrayList<>();
 
-		// Align and DRY with Solr.
 		for (ScoreDoc sd : docs.scoreDocs) {
 			Document doc = indexSearcher.doc(sd.doc);
 			String[] values = doc.getValues(docDef.getEntityField());

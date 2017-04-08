@@ -30,7 +30,6 @@ public abstract class AbstractTestSpatialAssembler {
 	private static final String TESTBASE = "http://example.org/abstractTestSpatialAssembler/";
 	protected static final Resource SIMPLE_DATASET_SPEC;
 	protected static final Resource SIMPLE_LUCENE_INDEX_SPEC;
-	protected static final Resource SIMPLE_SOLR_INDEX_SPEC;
 	protected static final Resource SIMPLE_ENTITY_DEFINITION_SPEC;
 	
 	static {
@@ -66,12 +65,6 @@ public abstract class AbstractTestSpatialAssembler {
 				     .addProperty(RDF.type, SpatialVocab.spatialIndexLucene)
 				     .addProperty(SpatialVocab.pDirectory, model.createResource("file:target/test/simpleLuceneIndex"))
 				     .addProperty(SpatialVocab.pDefinition, SIMPLE_ENTITY_DEFINITION_SPEC);
-		
-		SIMPLE_SOLR_INDEX_SPEC =
-				model.createResource(TESTBASE + "simpleSolrIndexSpec")
-				     .addProperty(RDF.type, SpatialVocab.spatialIndexSolr)
-				     .addProperty(SpatialVocab.pServer, model.createResource("http://localhost:8080/solr"))
-				     .addProperty(SpatialVocab.pDefinition, SIMPLE_ENTITY_DEFINITION_SPEC);
-	}
+		}
 
 }

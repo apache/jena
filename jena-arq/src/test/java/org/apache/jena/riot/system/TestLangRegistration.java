@@ -78,11 +78,14 @@ public class TestLangRegistration extends BaseTest
             assertTrue(RDFLanguages.isQuads(lang)) ;
         else
             assertFalse(RDFLanguages.isQuads(lang)) ;
-        
     }
+    
+    @SuppressWarnings("deprecation")
     @Test public void jenaSystem_read_2() {
-        if ( ! Lang.RDFNULL.equals(lang) )
+        if ( ! Lang.RDFNULL.equals(lang) ) {
+            assertTrue(RDFParserRegistry.isRegistered(lang));
             assertNotNull(RDFParserRegistry.getFactory(lang)) ;
+        }
     }
     
     @Test public void jenaSystem_write_1() {

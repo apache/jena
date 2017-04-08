@@ -209,7 +209,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( filename.equals("-") ) {
             if ( baseURI == null )
                 baseURI = "http://base/";
-            TypedInputStream in = new TypedInputStream(System.in) ;
+            TypedInputStream in = TypedInputStream.wrap(System.in) ;
             return parseRIOT(baseURI, "stdin", in) ;
         } else {
             try ( TypedInputStream in = RDFDataMgr.open(filename) ) {
@@ -228,10 +228,12 @@ public abstract class CmdLangParse extends CmdGeneral
         
         baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
         
+        RDFParserBuilder builder = RDFParser.create();
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )  checking = true ;
         if ( modLangParse.explicitNoChecking() ) checking = false ;
-        
+        builder.checking(checking);
+
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         if ( checking ) {
             if ( modLangParse.stopOnBadTerm() )
@@ -248,6 +250,7 @@ public abstract class CmdLangParse extends CmdGeneral
         Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
         if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
             throw new CmdException("Undefined language: "+lang) ; 
+        builder.lang(lang);
         
         // Make a flag.
         // Input and output subflags.
@@ -255,37 +258,32 @@ public abstract class CmdLangParse extends CmdGeneral
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-
+        
 //        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 //        if ( labelsAsGiven )
 //            labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
+        if ( labelsAsGiven )
+            builder.labelToNode(LabelToNode.createUseLabelAsGiven());
+
         StreamRDF s = outputStream ; 
         if ( setup != null )
             s = InfFactory.inf(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
         
-        ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
         boolean successful = true;
-
-        if ( checking ) {
-            if ( lang == RDFLanguages.NTRIPLES || lang == RDFLanguages.NQUADS )
-                reader.setParserProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
-            else
-                reader.setParserProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
-        } else
-            reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
-
-        if ( labelsAsGiven ) {
-            FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
-            reader.getParserProfile().setFactoryRDF(f);
-        }
-
+        if ( checking ) 
+            SysRIOT.setStrictMode(true);
+        builder.errorHandler(errHandler);
+        
         modTime.startTimer() ;
         sink.start() ;
+        
+        builder.source(in);
+        RDFParser parser = builder.build();
         try {
-            reader.read(in, baseURI, ct, sink, null);
+            parser.parse(sink);
             successful = true;
         } catch (RiotException ex) {
             successful = false;

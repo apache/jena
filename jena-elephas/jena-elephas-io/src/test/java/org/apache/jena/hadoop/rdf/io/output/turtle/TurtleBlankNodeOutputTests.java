@@ -80,7 +80,7 @@ public class TurtleBlankNodeOutputTests extends StreamedTurtleOutputTest {
 	@Override
 	protected Iterator<TripleWritable> generateTuples(int num) {
 		List<TripleWritable> ts = new ArrayList<TripleWritable>();
-		Node subject = NodeFactory.createAnon();
+		Node subject = NodeFactory.createBlankNode();
 		for (int i = 0; i < num; i++) {
 			Triple t = new Triple(subject,
 					NodeFactory.createURI("http://example.org/predicate"),

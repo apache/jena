@@ -29,14 +29,15 @@ public class TextAssembler
         AssemblerUtils.registerDataset(TextVocab.textDataset,      new TextDatasetAssembler()) ;
         
         Assembler.general.implementWith(TextVocab.entityMap,        new EntityDefinitionAssembler()) ;
-        Assembler.general.implementWith(TextVocab.textIndexSolr,    new TextIndexSolrAssembler()) ; 
         Assembler.general.implementWith(TextVocab.textIndexLucene,  new TextIndexLuceneAssembler()) ;
+        Assembler.general.implementWith(TextVocab.textIndexES,  new TextIndexESAssembler()) ;
         Assembler.general.implementWith(TextVocab.standardAnalyzer, new StandardAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.simpleAnalyzer,   new SimpleAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.keywordAnalyzer,  new KeywordAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer, new LowerCaseKeywordAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.localizedAnalyzer, new LocalizedAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.configurableAnalyzer, new ConfigurableAnalyzerAssembler()) ;
+
     }
 }
 

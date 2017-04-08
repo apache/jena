@@ -53,6 +53,8 @@ public class RdfIOUtils {
      * @return Parser profile
      */
     public static ParserProfile createParserProfile(JobContext context, Path path) {
+        // [RDFParser]
+        // Replace call sites with RDFParser builder.
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve());
         UUID seed = RdfIOUtils.getSeed(context, path);
         LabelToNode labelMapping = LabelToNode.createScopeByDocumentHash(seed);

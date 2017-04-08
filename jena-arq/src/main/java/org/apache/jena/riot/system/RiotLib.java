@@ -40,10 +40,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.SysRIOT ;
-import org.apache.jena.riot.WriterDatasetRIOT ;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -111,9 +108,9 @@ public class RiotLib
         return fixupPrefixes.apply(prefixedName) ;
     }
     
-    private static ParserProfile profile = profile(RDFLanguages.TURTLE, null, ErrorHandlerFactory.errorHandlerStd) ;
-    static {
-        PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
+    /** Internal MakerRDF used to create nodes from strings. */ 
+    private static MakerRDF setupInternalMakerRDF() {
+        PrefixMap pmap = PrefixMapFactory.createForInput();
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
         pmap.add("rdfs", ARQConstants.rdfsPrefix) ;
         pmap.add("xsd",  ARQConstants.xsdPrefix) ;
@@ -122,16 +119,25 @@ public class RiotLib
         pmap.add("op" ,  ARQConstants.fnPrefix) ; 
         pmap.add("ex" ,  "http://example/ns#") ;
         pmap.add("" ,    "http://example/") ;
+        
+        return new MakerRDFStd(RiotLib.factoryRDF(), 
+                               ErrorHandlerFactory.errorHandlerStd,
+                               IRIResolver.create(),
+                               pmap,
+                               RIOT.getContext().copy(),
+                               true, false) ;
     }
     
-    /** Parse a string to get one Node (the first token in the string) */ 
+    private static MakerRDF maker = setupInternalMakerRDF();
+    
+    /** Parse a string to get one Node (the first token in the string) */
     public static Node parse(String string)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         if ( ! tokenizer.hasNext() )
             return null ;
         Token t = tokenizer.next();
-        Node n = profile.create(null, t) ;
+        Node n = maker.create(null, t) ;
         if ( tokenizer.hasNext() )
             Log.warn(RiotLib.class, "String has more than one token in it: "+string) ;
         return n ;
@@ -162,7 +168,9 @@ public class RiotLib
      * @param handler       Error handler
      * @return ParserProfile
      * @see #profile for per-language setup
+     * @deprecated To be removed.
      */
+    @Deprecated
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
         LabelToNode labelToNode = true
@@ -193,6 +201,16 @@ public class RiotLib
      */  
     public static FactoryRDF factoryRDF() {
         return factoryRDF(SyntaxLabels.createLabelToNode());
+    }
+
+    /** Create an {@link MakerRDF} with default settings. */ 
+    public static MakerRDF dftMakerRDF() {
+        return new MakerRDFStd(RiotLib.factoryRDF(), 
+                               ErrorHandlerFactory.errorHandlerStd,
+                               IRIResolver.create(),
+                               PrefixMapFactory.createForInput(),
+                               RIOT.getContext().copy(),
+                               true, false) ;
     }
 
     /** Get triples with the same subject */

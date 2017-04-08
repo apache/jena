@@ -21,7 +21,6 @@ package org.apache.jena.query.text.assembler ;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.query.text.analyzer.LowerCaseKeywordAnalyzer;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.lucene.analysis.Analyzer;
@@ -42,6 +41,6 @@ public class LowerCaseKeywordAnalyzerAssembler extends AssemblerBase {
 
     @Override
     public Analyzer open(Assembler a, Resource root, Mode mode) {
-        return new LowerCaseKeywordAnalyzer(TextIndexLucene.VER);
+        return new LowerCaseKeywordAnalyzer();
     }
 }

@@ -35,7 +35,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;
-import org.apache.lucene.util.Version ;
 import org.junit.Test ;
 
 /**
@@ -49,7 +48,7 @@ public class TestLuceneWithMultipleThreads
         entDef = new EntityDefinition("uri", "label");
         entDef.setGraphField("graph");
         entDef.setPrimaryPredicate(RDFS.label);
-        StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_4_9);
+        StandardAnalyzer analyzer = new StandardAnalyzer();
         entDef.setAnalyzer("label", analyzer);
     }
     

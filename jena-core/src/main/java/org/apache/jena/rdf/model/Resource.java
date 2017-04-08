@@ -107,7 +107,7 @@ public interface Resource extends RDFNode {
      *
      * <p>A resource can only be equal to another resource.
      * If both resources are not anonymous, then they are equal if the URI's are
-     * equal.  If both resources are anonymous, they are equal only if there Id's
+     * equal.  If both resources are anonymous, they are equal only if their Id's
      * are the same.  If one resource is anonymous and the other is not, then they
      * are not equal.</p>
      * @param o The object to be compared.
@@ -152,7 +152,7 @@ public interface Resource extends RDFNode {
 
     /** Answer some statement (this, p, O), in language <code>lang</code>, in the
      * associated model. If there are several such statements, any one of them may be
-     * returned. If no such statements exist, null is returned - in this is differs
+     * returned. If no such statements exist, null is returned - in this it differs
      * from getRequiredProperty.
      * @param p The property sought.
      * @param lang The language of the property sought.
@@ -169,7 +169,7 @@ public interface Resource extends RDFNode {
      */
     public StmtIterator listProperties( Property p );
     
-    /** Return an iterator over all the properties of this resource with a specific langauge.
+    /** Return an iterator over all the properties of this resource with a specific language.
     *
     * <p>The model associated with this resource is searched and an iterator is
     * returned which iterates over all the statements which have this resource

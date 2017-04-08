@@ -50,6 +50,7 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String OPTIONAL = "OPTIONAL" + SPACE;
 	protected static final String BIND = "BIND";
 	protected static final String SEMI = OPT_SPACE+"\\;";
+	protected static final String VALUES = "VALUES" + SPACE;
 
 	protected static String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);

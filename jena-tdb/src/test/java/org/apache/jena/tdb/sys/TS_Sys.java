@@ -20,12 +20,15 @@ package org.apache.jena.tdb.sys;
 
 
 import org.apache.jena.tdb.sys.TestSys ;
+import org.apache.jena.test.TestSystemSetup;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestSys.class
+    // From jena-core ... includes initialization test.  
+    , TestSystemSetup.class
 })
 
 public class TS_Sys

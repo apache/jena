@@ -27,7 +27,6 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
-import org.apache.solr.client.solrj.SolrServer ;
 
 public class TextDatasetFactory
 {
@@ -107,12 +106,7 @@ public class TextDatasetFactory
      */
     public static TextIndex createLuceneIndex(Directory directory, TextIndexConfig config)
     {
-        TextIndex index;
-        if (config.isMultilingualSupport())
-            index = new TextIndexLuceneMultilingual(directory, config) ;
-        else
-            index = new TextIndexLucene(directory, config) ;
-        return index ;
+        return new TextIndexLucene(directory, config) ;
     }
 
     /**
@@ -171,25 +165,29 @@ public class TextDatasetFactory
         return create(base, index, true) ;
     }
 
-    /** Create a Solr TextIndex */
-    public static TextIndex createSolrIndex(SolrServer server, EntityDefinition entMap)
+    /**
+     * Create an ElasticSearch based Index and return a Dataset based on this index
+     * @param base the base {@link Dataset}
+     * @param config {@link TextIndexConfig} containing the {@link EntityDefinition}
+     * @param settings ElasticSearch specific settings for initializing and connecting to an ElasticSearch Cluster
+     * @return The config definition for the index instantiation
+     */
+    public static Dataset createES(Dataset base, TextIndexConfig config, ESSettings settings)
     {
-        TextIndex index = new TextIndexSolr(server, entMap) ;
-        return index ; 
+        TextIndex index = createESIndex(config, settings) ;
+        return create(base, index, true) ;
     }
 
-    /** Create a text-indexed dataset, using Solr */ 
-    public static Dataset createSolrIndex(Dataset base, SolrServer server, EntityDefinition entMap)
+    /**
+     * Create an ElasticSearch based Index
+     * @param config {@link TextIndexConfig} containing the {@link EntityDefinition}
+     * @param settings ElasticSearch specific settings for initializing and connecting to an ElasticSearch Cluster
+     * @return a configured instance of TextIndexES
+     */
+    public static TextIndex createESIndex(TextIndexConfig config, ESSettings settings)
     {
-        TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index, true) ; 
+        return new TextIndexES(config, settings) ;
     }
 
-    /** Create a text-indexed dataset, using Solr */ 
-    public static DatasetGraph createSolrIndex(DatasetGraph base, SolrServer server, EntityDefinition entMap)
-    {
-        TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index, true) ; 
-    }
 }
 

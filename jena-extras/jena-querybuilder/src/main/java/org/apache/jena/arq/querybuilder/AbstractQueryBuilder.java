@@ -17,11 +17,18 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
+import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
+import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -52,7 +59,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
  *            The derived class type. Used for return types.
  */
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
-		implements Cloneable, PrologClause<T> {
+		implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// the query this builder is building
 	protected Query query;
@@ -297,6 +304,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return getHandlerBlock().getPrologHandler();
 	}
 
+	@Override
+	public ValuesHandler getValuesHandler() {
+		return getHandlerBlock().getValueHandler();
+	}
 
 	/**
 	 * Set a variable replacement. During build all instances of var in the
@@ -375,6 +386,113 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public T setBase(Object base) {
 		setBase(makeNode(base).getURI());
 		return (T) this;
+	}
+	
+	// --- VALUES
+	
+	private Collection<Node> makeValueNodes( Iterator<?> iter )
+	{
+		if (iter == null || !iter.hasNext())
+		{
+			return null;
+		}
+		List<Node> values = new ArrayList<Node>();
+		while (iter.hasNext())
+		{
+			Object o = iter.next();
+			// handle null as UNDEF
+			if (o == null)
+			{
+				values.add( null );
+			} else 
+			{
+				values.add( makeNode( o ));
+			}
+		}
+		return values;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueVar(Object var) {
+		if (var == null)
+		{
+			throw new IllegalArgumentException( "var must not be null.");
+		}
+		if (var instanceof Collection<?>)
+		{
+			Collection<?> column = (Collection<?>)var;
+			if (column.size() == 0)
+			{
+				throw new IllegalArgumentException( "column must have at least one entry.");
+			}
+			Iterator<?> iter = column.iterator();
+			Var v = makeVar( iter.next() );
+			getValuesHandler().addValueVar(v, makeValueNodes(iter));
+		} else {
+			getValuesHandler().addValueVar(makeVar(var), null );
+		}
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueVar(Object var, Object... objects) {
+		
+		Collection<Node> values = null;
+		if (objects != null)
+		{
+			values = makeValueNodes( Arrays.asList(objects).iterator());
+		}
+		
+		getValuesHandler().addValueVar(makeVar(var), values );
+		return (T) this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <K extends Collection<?>> T addValueVars(Map<?,K> dataTable) {
+		ValuesHandler hdlr = new ValuesHandler( null );
+		for (Map.Entry<?, K> entry : dataTable.entrySet())
+		{
+			Collection<Node> values = null;
+			if (entry.getValue() != null)
+			{
+				values = makeValueNodes( entry.getValue().iterator() );
+			}
+			hdlr.addValueVar(makeVar(entry.getKey()), values );
+		}
+		getValuesHandler().addAll( hdlr );
+		return (T) this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueRow(Object... values) {
+		getValuesHandler().addValueRow( makeValueNodes( Arrays.asList(values).iterator()));
+		return (T) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T addValueRow(Collection<?> values) {
+		getValuesHandler().addValueRow( makeValueNodes( values.iterator()));
+		return (T) this;
+	}
+	
+	@Override
+	public List<Var> getValuesVars() {
+		return getValuesHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var,List<Node>> getValuesMap() {
+		return getValuesHandler().getValuesMap();
+	}
+	
+	@Override
+	public  void clearValues() {
+		getValuesHandler().clear();
 	}
 
 	@Override

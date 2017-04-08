@@ -18,48 +18,41 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.sparql.core.Quad ;
-
-public interface ParserProfile
+public interface ParserProfile extends MakerRDF
 {
-    public String resolveIRI(String uriStr, long line, long col) ;
-    public IRI makeIRI(String uriStr, long line, long col) ;
-    
-    /** Create a triple */
-    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
-
-    /** Create a Quad */
-    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;
-    
-    /** Create a URI Node */
-    public Node createURI(String uriStr, long line, long col) ;
-    
-    /** Create a literal for a string+datatype */
-    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
-    
-    /** Create a literal for a string+language */
-    public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
-    
-    /** Create a literal for a string */ 
-    public Node createStringLiteral(String lexical, long line, long col) ;
-    
-    /** Create a fresh blank node based on scope and label */ 
-    public Node createBlankNode(Node scope, String label, long line, long col) ;
-    /** Create a fresh blank node */ 
-    public Node createBlankNode(Node scope, long line, long col) ;
-    
-    /** Make a node from a token - called after all else has been tried to handle special cases 
-     *  Return null for "no special node recoginzed"
-     */
-    public Node createNodeFromToken(Node scope, Token token, long line, long col) ;
-    
-    /** Make any node from a token as appropriate */
-    public Node create(Node currentGraph, Token token) ;
+//    public String resolveIRI(String uriStr, long line, long col) ;
+//    public IRI makeIRI(String uriStr, long line, long col) ;
+//    
+//    /** Create a triple */
+//    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
+//
+//    /** Create a Quad */
+//    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;
+//    
+//    /** Create a URI Node */
+//    public Node createURI(String uriStr, long line, long col) ;
+//    
+//    /** Create a literal for a string+datatype */
+//    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
+//    
+//    /** Create a literal for a string+language */
+//    public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
+//    
+//    /** Create a literal for a string */ 
+//    public Node createStringLiteral(String lexical, long line, long col) ;
+//    
+//    /** Create a fresh blank node based on scope and label */ 
+//    public Node createBlankNode(Node scope, String label, long line, long col) ;
+//    /** Create a fresh blank node */ 
+//    public Node createBlankNode(Node scope, long line, long col) ;
+//    
+//    /** Make a node from a token - called after all else has been tried to handle special cases 
+//     *  Return null for "no special node recoginzed"
+//     */
+//    public Node createNodeFromToken(Node scope, Token token, long line, long col) ;
+//    
+//    /** Make any node from a token as appropriate */
+//    public Node create(Node currentGraph, Token token) ;
 
     public ErrorHandler getHandler() ;
     public void setHandler(ErrorHandler handler) ;
@@ -67,9 +60,9 @@ public interface ParserProfile
     public Prologue getPrologue() ;
     public void setPrologue(Prologue prologue) ;
     
-    public FactoryRDF getFactoryRDF() ;
-    public void setFactoryRDF(FactoryRDF factory) ;
+    //public FactoryRDF getFactoryRDF() ;
+    //public void setFactoryRDF(FactoryRDF factory) ;
     
     public boolean isStrictMode() ;
-    public void setStrictMode(boolean mode) ;
+//    public void setStrictMode(boolean mode) ;
 }

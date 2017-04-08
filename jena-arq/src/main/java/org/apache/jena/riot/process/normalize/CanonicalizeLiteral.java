@@ -30,6 +30,7 @@ import org.apache.jena.riot.web.LangTag ;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
+/** Convert literals to canonical form. */   
 public class CanonicalizeLiteral implements Function<Node, Node>    
 {
     private static final CanonicalizeLiteral singleton = new CanonicalizeLiteral(); 
@@ -42,6 +43,10 @@ public class CanonicalizeLiteral implements Function<Node, Node>
     public Node apply(Node node) {
         if ( ! node.isLiteral() )
             return node ;
+
+        if ( ! node.getLiteralDatatype().isValid(node.getLiteralLexicalForm()) )
+            // Invalid lexicakl form for the datatype - do nothing.
+            return node;
             
         RDFDatatype dt = node.getLiteralDatatype() ;
         Node n2 ;

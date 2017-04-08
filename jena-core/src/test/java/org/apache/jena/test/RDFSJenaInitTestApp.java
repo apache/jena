@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.spatial.pfunction.solr;
+package org.apache.jena.test;
 
-import org.apache.jena.query.spatial.SpatialIndexSolr;
-import org.apache.jena.query.spatial.SpatialQuery;
-import org.apache.jena.query.spatial.SpatialSearchUtil;
-import org.apache.jena.query.spatial.pfunction.AbstractTestIsWithinCirclePF;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.jena.vocabulary.RDFS;
 
-public class TestIsWithinCirclePFWithEmbeddedSolrSpatialIndex extends AbstractTestIsWithinCirclePF {
- 
-	@Before
-	public void init() {
-		dataset = SpatialSearchUtil.initInMemoryDatasetWithSolrSpatitalIndex();
-	}
-
-	@After
-	public void destroy() {
-		SpatialIndexSolr index = (SpatialIndexSolr) dataset.getContext().get(SpatialQuery.spatialIndex) ;
-		index.getServer().shutdown();
-		SpatialSearchUtil.deleteOldSolrDataDir();
-	}
+// Invoked from TestSystemSetup 
+public class RDFSJenaInitTestApp {
+    public static void main(String[] args) {
+        System.out.printf("%s\n", RDFS.subClassOf);
+    }
 }

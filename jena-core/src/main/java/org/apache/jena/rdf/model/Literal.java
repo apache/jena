@@ -59,7 +59,10 @@ public interface Literal extends RDFNode {
      * this will return the literal string. In the case of typed literals
      * it will return a java object representing the value. In the case
      * of typed literals representing a java primitive then the appropriate
-     * java wrapper class (Integer etc) will be returned.
+     * java wrapper class (Integer etc) will be returned. A Long value
+     * may be converted to its equivalent Integer value if there is no
+     * loss of precision (i.e. if the value is within the Integer minimum
+     * and maximum values).
      */
     public Object getValue();
     

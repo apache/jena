@@ -105,7 +105,7 @@
            and does not include the longer running modules.
       -->
       
-      <id>boostrap</id>
+      <id>bootstrap</id>
       <modules>
         <module>jena-parent</module>
         <module>jena-shaded-guava</module>
@@ -113,6 +113,7 @@
         <module>jena-base</module>
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-rdfconnection</module>
         <module>jena-tdb</module> 
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>

@@ -53,11 +53,11 @@ public class OntModelAssembler extends InfModelAssembler implements Assembler
         return result;
         }
 
-    private static final OntModelSpec defaultSpec = OntModelSpec.OWL_MEM_RDFS_INF;
+    /*package*/ static final OntModelSpec defaultSpec() { return OntModelSpec.OWL_MEM_RDFS_INF; }
 
     protected OntModelSpec getOntModelSpec( Assembler a, Resource root )
         {
         Resource r = getUniqueResource( root, JA.ontModelSpec );
-        return r == null ? defaultSpec : (OntModelSpec) a.open( r );
+        return r == null ? defaultSpec() : (OntModelSpec) a.open( r );
         }
     }

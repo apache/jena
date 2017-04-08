@@ -49,7 +49,8 @@ import org.apache.jena.sparql.core.Quad ;
  * <b>This class is internal to RIOT.</b>
  */
 public class RiotParsers {
-    /*package*/ RiotParsers() {}
+    // package statics -- for the tests to create exactly what they test.
+    private RiotParsers() {}
     
     /** Create a parser 
      * Use {@link RDFDataMgr#createReader(Lang)}
@@ -93,93 +94,53 @@ public class RiotParsers {
         return createParserNQuads(input, dest) ;
     }
 
-    /*package*/ static LangTurtle createParserTurtle(InputStream input, String baseIRI, StreamRDF dest) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParserTurtle(tokenizer, baseIRI, dest) ;
-    }
-
-    /*package*/ static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest) {
-        ParserProfile profile = RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
-        LangTurtle parser = new LangTurtle(tokenizer, profile, dest) ;
-        return parser ;
-    }
-
-    /*package*/ static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, StreamRDF dest) {
+    private static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, StreamRDF dest) {
         baseIRI = baseURI_RDFXML(baseIRI) ;
         LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
         return parser ;
     }
 
-    /*package*/ static LangRDFXML createParserRDFXML(Reader input, String baseIRI, StreamRDF dest) {
+    private static LangRDFXML createParserRDFXML(Reader input, String baseIRI, StreamRDF dest) {
         baseIRI = baseURI_RDFXML(baseIRI) ;
         LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
         return parser ;
     }
-    
-    /** Sort out the base URI for RDF/XML parsing. */
-    private static String baseURI_RDFXML(String baseIRI) {
-        // LangRIOT derived from LangEngine do this in ParserProfile 
-        if ( baseIRI == null )
-            return SysRIOT.chooseBaseIRI() ;
-        else
-            // This normalizes the URI.
-            return SysRIOT.chooseBaseIRI(baseIRI) ;
-    }
 
-    /*package*/ static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, StreamRDF dest) {
-        ParserProfile profile = RiotLib.profile(RDFLanguages.RDFJSON, null);
-        LangRDFJSON parser = new LangRDFJSON(tokenizer, profile, dest) ;
-    	return parser;
-    }
+//    /*package*/ static LangTurtle createParserTurtle(InputStream input, String baseIRI, StreamRDF dest) {
+//        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+//        return createParserTurtle(tokenizer, baseIRI, dest) ;
+//    }
 
-    /*package*/ static LangRDFJSON createParserRdfJson(InputStream input, StreamRDF dest) {
-        TokenizerJSON tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
-        return createParserRdfJson(tokenizer, dest) ;
-    }
-
-    /*package*/ static LangTriG createParserTriG(InputStream input, String baseIRI, StreamRDF dest) {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParserTriG(tokenizer, baseIRI, dest) ;
-    }
-
-    /*package*/ static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, StreamRDF dest) {
-        ParserProfile profile = RiotLib.profile(RDFLanguages.TRIG, baseIRI);
-        LangTriG parser = new LangTriG(tokenizer, profile, dest) ;
-        return parser ;
-    }
-
-    /*package*/ static LangNTriples createParserNTriples(InputStream input, StreamRDF dest) {
+//    /*package*/ static LangRDFJSON createParserRdfJson(InputStream input, StreamRDF dest) {
+//        TokenizerJSON tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
+//        return createParserRdfJson(tokenizer, dest) ;
+//    }
+//
+//    /*package*/ static LangTriG createParserTriG(InputStream input, String baseIRI, StreamRDF dest) {
+//        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+//        return createParserTriG(tokenizer, baseIRI, dest) ;
+//    }
+//
+    private static LangNTriples createParserNTriples(InputStream input, StreamRDF dest) {
         return createParserNTriples(input, CharSpace.UTF8, dest);
     }
 
-    /*package*/ static  LangNTriples createParserNTriples(InputStream input, CharSpace charSpace, StreamRDF dest) {
+    private static  LangNTriples createParserNTriples(InputStream input, CharSpace charSpace, StreamRDF dest) {
         Tokenizer tokenizer = charSpace == CharSpace.ASCII
             ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input);
         return createParserNTriples(tokenizer, dest) ;
     }
 
-    /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest) {
-        ParserProfile profile = RiotLib.profile(RDFLanguages.NTRIPLES, null) ;
-        LangNTriples parser = new LangNTriples(tokenizer, profile, dest) ;
-        return parser ;
-    }
-
-    /*package*/ static LangNQuads createParserNQuads(InputStream input, StreamRDF dest) {
+    private static LangNQuads createParserNQuads(InputStream input, StreamRDF dest) {
         return createParserNQuads(input, CharSpace.UTF8, dest) ;
     }
 
-    /*package*/ static LangNQuads createParserNQuads(InputStream input, CharSpace charSpace, StreamRDF dest) {
+    private static LangNQuads createParserNQuads(InputStream input, CharSpace charSpace, StreamRDF dest) {
         Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
 
-    /*package*/ static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest) {
-        ParserProfile profile = RiotLib.profile(RDFLanguages.NQUADS, null) ;
-        LangNQuads parser = new LangNQuads(tokenizer, profile, dest) ;
-        return parser ;
-    }
-
-    /*package*/ static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest) {
+    private static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest) {
         if ( RDFLanguages.sameLang(RDFXML, lang) )
             throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
         if ( RDFLanguages.sameLang(TURTLE, lang) || RDFLanguages.sameLang(N3,  lang) ) 
@@ -195,6 +156,46 @@ public class RiotParsers {
         if ( RDFLanguages.sameLang(TRIG, lang) )
             return createParserTriG(tokenizer, baseIRI, dest) ;
         return null ;
+    }
+
+    /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest) {
+        /* XXX */ ParserProfile profile = RiotLib.profile(RDFLanguages.NTRIPLES, null) ;
+        LangNTriples parser = new LangNTriples(tokenizer, profile, dest) ;
+        return parser ;
+    }
+
+    /*package*/ static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest) {
+        /* XXX */ ParserProfile profile = RiotLib.profile(RDFLanguages.NQUADS, null) ;
+        LangNQuads parser = new LangNQuads(tokenizer, profile, dest) ;
+        return parser ;
+    }
+
+    /*package*/ static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest) {
+        /* XXX */ ParserProfile profile = RiotLib.profile(RDFLanguages.TURTLE, baseIRI) ;
+        LangTurtle parser = new LangTurtle(tokenizer, profile, dest) ;
+        return parser ;
+    }
+
+    /*package*/ static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, StreamRDF dest) {
+        /* XXX */ ParserProfile profile = RiotLib.profile(RDFLanguages.TRIG, baseIRI);
+        LangTriG parser = new LangTriG(tokenizer, profile, dest) ;
+        return parser ;
+    }
+
+    /*package*/ static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, StreamRDF dest) {
+        /* XXX */ ParserProfile profile = RiotLib.profile(RDFLanguages.RDFJSON, null);
+        LangRDFJSON parser = new LangRDFJSON(tokenizer, profile, dest) ;
+    	return parser;
+    }
+
+    /** Sort out the base URI for RDF/XML parsing. */
+    private static String baseURI_RDFXML(String baseIRI) {
+        // LangRIOT derived from LangEngine do this in ParserProfile 
+        if ( baseIRI == null )
+            return SysRIOT.chooseBaseIRI() ;
+        else
+            // This normalizes the URI.
+            return SysRIOT.chooseBaseIRI(baseIRI) ;
     }
 }
 
