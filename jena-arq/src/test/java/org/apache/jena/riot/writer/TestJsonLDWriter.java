@@ -19,7 +19,6 @@ package org.apache.jena.riot.writer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -494,6 +493,7 @@ public class TestJsonLDWriter extends BaseTest {
     /**
      * setting @vocab and replacing @context
      * not really a test, sample code for JENA-1292 */
+    @SuppressWarnings("unchecked")
     @Test public final void atVocabJENA1292() throws JsonParseException, JsonLdError, IOException {
         Model m = ModelFactory.createDefaultModel();
         String ns = "http://schema.org/";
@@ -513,7 +513,7 @@ public class TestJsonLDWriter extends BaseTest {
         Context jenaContext = null;
 
         // the JSON-LD API object. It's a map
-        Map map = (Map) JsonLDWriter.toJsonLDJavaAPI((RDFFormat.JSONLDVariant)RDFFormat.JSONLD.getVariant()
+        Map<String, Object> map = (Map<String, Object>) JsonLDWriter.toJsonLDJavaAPI((RDFFormat.JSONLDVariant)RDFFormat.JSONLD.getVariant()
                 , g, pm, base, jenaContext);
 
         // get the @context:
@@ -525,7 +525,7 @@ public class TestJsonLDWriter extends BaseTest {
             // is it the declaration of a prop in ns?
             Object o = e.getValue();
             if (o instanceof Map) {
-                o = ((Map) o).get("@id");
+                o = ((Map<String, Object>) o).get("@id");
             }           
             if ((o != null) && (o instanceof String)) {
                 if (((String) o).equals(ns + e.getKey())) {
