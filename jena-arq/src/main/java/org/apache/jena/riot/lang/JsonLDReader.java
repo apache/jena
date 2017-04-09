@@ -165,8 +165,6 @@ public class JsonLDReader implements ReaderRIOT
         output.finish() ;
     }
 
-    private LabelToNode  labels     = SyntaxLabels.createLabelToNode() ;
-
     public static String LITERAL    = "literal" ;
     public static String BLANK_NODE = "blank node" ;
     public static String IRI        = "IRI" ;
@@ -185,7 +183,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( type.equals(IRI) )
             return createURI(lex) ;
         else if ( type.equals(BLANK_NODE) )
-            return labels.get(null, lex) ;  //??
+            return createBlankNode(lex);
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
@@ -203,19 +201,16 @@ public class JsonLDReader implements ReaderRIOT
             throw new InternalErrorException("Node is not a IRI, bNode or a literal: " + type) ;
     }
 
-    private Node createURI(String str) {
+    private Node createBlankNode(String str) {
         if ( str.startsWith("_:") )
-            return labels.get(null, str) ;
-        else
-            return profile.createURI(str, -1, -1) ;
+            str = str.substring(2);
+        return profile.createBlankNode(null, str, -1,-1);
     }
 
-    private Node createLiteral(String lex, String datatype, String lang) {
-        if ( lang == null && datatype == null )
-            return NodeFactory.createLiteral(lex) ;
-        if ( lang != null )
-            return NodeFactory.createLiteral(lex, lang) ;
-        RDFDatatype dt = NodeFactory.getType(datatype) ;
-        return NodeFactory.createLiteral(lex, dt) ;
+    private Node createURI(String str) {
+        if ( str.startsWith("_:") )
+            return createBlankNode(str);
+        else
+            return profile.createURI(str, -1, -1) ;
     }
 }
