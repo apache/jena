@@ -54,15 +54,15 @@ public class BlockInputStreamTest extends AbstractTrackableInputStreamTests {
     
     protected final void testSingleByteRead(int length, long limit) throws IOException {
         InputStream input = this.generateData(length);
-        TrackableInputStream trackable = this.getInstance(input, limit);
-        long count = 0;
-        while (trackable.read() >= 0) {
-            count++;
+        try(TrackableInputStream trackable = this.getInstance(input, limit)) {
+            long count = 0;
+            while (trackable.read() >= 0) {
+                count++;
+            }
+            int expected = (int) Math.min(length, limit);
+            Assert.assertEquals(expected, count);
+            Assert.assertEquals(expected, trackable.getBytesRead());
         }
-        int expected = (int) Math.min(length, limit);
-        Assert.assertEquals(expected, count);
-        Assert.assertEquals(expected, trackable.getBytesRead());
-        trackable.close();
     }
     
     /**

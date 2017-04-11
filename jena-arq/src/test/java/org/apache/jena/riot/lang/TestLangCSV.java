@@ -73,9 +73,10 @@ public class TestLangCSV extends BaseTest {
 		assertIsomorphicWith(s1, s2);
 	}
 	
+    @SuppressWarnings("deprecation")
 	@Test
 	public void RDFDataMgrReadTest() {
-		Model m1 = RDFDataMgr.loadModel(FILE_NAME, RDFLanguages.CSV);
+        Model m1 = RDFDataMgr.loadModel(FILE_NAME, RDFLanguages.CSV);
 		Model m2 = ModelFactory.createDefaultModel();
 		m2.read(FILE_NAME, "CSV");
 		assertEquals(12, m1.size());
@@ -90,6 +91,7 @@ public class TestLangCSV extends BaseTest {
 		return model;
 	}
 	
+    @SuppressWarnings("deprecation")
 	private void assertIsomorphicWith(String[] s1, String[] s2){
 		Model m1 = parseToModel(s1, RDFLanguages.CSV);
 		Model m2 = parseToModel(s2, RDFLanguages.TURTLE);

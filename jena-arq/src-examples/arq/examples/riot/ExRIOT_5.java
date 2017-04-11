@@ -30,10 +30,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderGraph ;
@@ -105,17 +102,6 @@ public class ExRIOT_5
             for ( ; iter.hasNext() ; )
                 output.triple(iter.next()) ;
         }
-
-        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
-        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
-
-        @Override
-        public ParserProfile getParserProfile() {
-            return null ;
-        }
-
-        @Override
-        public void setParserProfile(ParserProfile profile) {}
     }
 
     // Model.read adapter - must be public.

@@ -188,7 +188,7 @@ public class LangTriG extends LangTurtleBase {
 
         // = is optional and old style.
         if ( lookingAt(EQUALS) ) {
-            if ( profile.isStrictMode() )
+            if ( isStrictMode )
                 exception(token, "Use of = {} is not part of standard TriG: " + graphNode) ;
             // Skip.
             nextToken() ;
@@ -218,7 +218,7 @@ public class LangTriG extends LangTurtleBase {
         if ( lookingAt(RBRACE) )
             exception(token, "Expected end of graph: got %s", token) ;
 
-        if ( !profile.isStrictMode() ) {
+        if ( !isStrictMode ) {
             // Skip DOT after {}
             token = peekToken() ;
             if ( lookingAt(DOT) )

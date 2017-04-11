@@ -113,7 +113,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
      * 
      * Note that it is supposed to be a JSON String: to set the value of @context to a URI,
      * the String must be quoted.*/
-    public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = createSymbol("JSONLD_CONTEXT_SUBSTITUTION");		
+    public static final Symbol JSONLD_CONTEXT_SUBSTITUTION = createSymbol("JSONLD_CONTEXT_SUBSTITUTION");       
     /** value: a JSON String, or the frame object expected by JsonLdProcessor.frame */
     public static final Symbol JSONLD_FRAME = createSymbol("JSONLD_FRAME");
     /** value: the option object expected by JsonLdProcessor (instance of JsonLdOptions) */
@@ -189,7 +189,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             IO.exception(e) ;
         }
     }
-    
+
     /**
      * the JsonLD-java API object corresponding to a dataset and a JsonLD format.
      */
@@ -349,7 +349,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         } ;
         g.find(ANY).forEachRemaining(x);
     }
-    
+
     /**
      * Add the prefixes to jsonld context.
      *
@@ -399,9 +399,11 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     /** Add one prefix to jsonld context */
     static void addOnePrefix(Map<String, Object> ctx, String prefix, String value) {
-        if (!prefix.isEmpty()) { // Prefix "" is not allowed in JSON-LD -- could probably be replaced by "@vocab"
+        if (!prefix.isEmpty()) { // Prefix "" is not allowed in JSON-LD
             ctx.put(prefix, value);
-        }        
+        } else {
+            ctx.put("@vocab", value);
+        }
     }
 
     private static boolean addAllPrefixesToContextFlag(Context jenaContext) {

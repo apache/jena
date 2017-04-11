@@ -135,21 +135,19 @@ public class RdfStats implements Tool {
      *            Arguments
      */
     public static void main(String[] args) {
-        ColorizedOutputStream<BasicColor> error = new AnsiBasicColorizedOutputStream(
-                new CloseShieldOutputStream(System.err));
-        try {
-            // Run and exit with result code if no errors bubble up
-            // Note that the exit code may still be a error code
-            int res = ToolRunner.run(new Configuration(true), new RdfStats(), args);
-            System.exit(res);
-        } catch (Throwable e) {
-            // This will only happen if Hadoop option parsing errors
-            // The run() method will handle its error itself
-            error.setForegroundColor(BasicColor.RED);
-            error.println(e.getMessage());
-            e.printStackTrace(error);
-        } finally {
-            error.close();
+        try(ColorizedOutputStream<BasicColor> error = new AnsiBasicColorizedOutputStream(new CloseShieldOutputStream(System.err))){
+            try {
+                // Run and exit with result code if no errors bubble up
+                // Note that the exit code may still be a error code
+                int res = ToolRunner.run(new Configuration(true), new RdfStats(), args);
+                System.exit(res);
+            } catch (Throwable e) {
+                // This will only happen if Hadoop option parsing errors
+                // The run() method will handle its error itself
+                error.setForegroundColor(BasicColor.RED);
+                error.println(e.getMessage());
+                e.printStackTrace(error);
+            }
         }
         // If any errors bubble up exit with non-zero code
         System.exit(1);
@@ -173,38 +171,36 @@ public class RdfStats implements Tool {
 
     @Override
     public int run(String[] args) {
-        ColorizedOutputStream<BasicColor> error = new AnsiBasicColorizedOutputStream(
-                new CloseShieldOutputStream(System.err));
-        try {
-            if (args.length == 0) {
-                showUsage();
-            }
-
-            // Parse custom arguments
-            RdfStats cmd = SingleCommand.singleCommand(RdfStats.class).parse(args);
-
-            // Copy Hadoop configuration across
-            cmd.setConf(this.getConf());
-
-            // Show help if requested and exit with success
-            if (cmd.helpOption.showHelpIfRequested()) {
+        try(ColorizedOutputStream<BasicColor> error = new AnsiBasicColorizedOutputStream(new CloseShieldOutputStream(System.err))) {
+            try {
+                if (args.length == 0) {
+                    showUsage();
+                }
+    
+                // Parse custom arguments
+                RdfStats cmd = SingleCommand.singleCommand(RdfStats.class).parse(args);
+    
+                // Copy Hadoop configuration across
+                cmd.setConf(this.getConf());
+    
+                // Show help if requested and exit with success
+                if (cmd.helpOption.showHelpIfRequested()) {
+                    return 0;
+                }
+    
+                // Run the command and exit with success
+                cmd.run();
                 return 0;
+            } catch (ParseException e) {
+                error.setForegroundColor(BasicColor.RED);
+                error.println(e.getMessage());
+                error.println();
+            } catch (Throwable e) {
+                error.setForegroundColor(BasicColor.RED);
+                error.println(e.getMessage());
+                e.printStackTrace(error);
+                error.println();
             }
-
-            // Run the command and exit with success
-            cmd.run();
-            return 0;
-        } catch (ParseException e) {
-            error.setForegroundColor(BasicColor.RED);
-            error.println(e.getMessage());
-            error.println();
-        } catch (Throwable e) {
-            error.setForegroundColor(BasicColor.RED);
-            error.println(e.getMessage());
-            e.printStackTrace(error);
-            error.println();
-        } finally {
-            error.close();
         }
         return 1;
     }

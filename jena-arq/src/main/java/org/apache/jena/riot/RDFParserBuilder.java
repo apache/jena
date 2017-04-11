@@ -61,11 +61,13 @@ import org.apache.jena.sparql.util.Context;
  * </pre> 
  */
 public class RDFParserBuilder {
-    // Source
+    // The various sources
+    // Reusable parser
     private String uri = null;
     private Path path = null;
+    private String content = null;
+    // The not reusable sources.
     private InputStream inputStream;
-    // StringReader - charset problems with any other kind.
     private Reader javaReader = null;
 
     // HTTP
@@ -102,6 +104,8 @@ public class RDFParserBuilder {
     /** 
      *  Set the source to {@link Path}. 
      *  This clears any other source setting.
+     *  <p>
+     *  The parser can be reused.
      *  @param path
      *  @return this
      */
@@ -115,6 +119,8 @@ public class RDFParserBuilder {
      *  Set the source to a URI; this includes OS file names.
      *  File URL should be of the form {@code file:///...}. 
      *  This clears any other source setting.
+     *  <p>
+     *  The parser can be reused.
      *  @param uriOrFile
      *  @return this
      */
@@ -125,8 +131,27 @@ public class RDFParserBuilder {
     }
 
     /** 
+     *  Use the given string as the content to parse. 
+     *  This clears any other source setting.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  The parser can be reused.  
+     *  @param string The characters to be parsed. 
+     *  @return this
+     */
+    public RDFParserBuilder fromString(String string) {
+        clearSource();
+        this.content = string;
+        return this;
+    }
+    
+    /** 
      *  Set the source to {@link InputStream}. 
      *  This clears any other source setting.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
      *  The {@link InputStream} will be closed when the 
      *  parser is called and the parser can not be reused.  
      *  @param input
@@ -138,25 +163,34 @@ public class RDFParserBuilder {
         return this;
     }
 
-    /** 
-     *  Use the given string as the content to parse. 
-     *  This clears any other source setting.
-     *  The parser can not be reused.  
-     *  @param string
-     *  @return this
-     */
-    public RDFParserBuilder fromString(String string) {
-        return source(new StringReader(string));
-    }
-
-    /** 
+    /**
      *  Set the source to {@link StringReader}. 
      *  This clears any other source setting.
      *  The {@link StringReader} will be closed when the 
-     *  parser is called and the parser can not be reused.  
+     *  parser is called and the parser can not be reused.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  Consider using {@link #fromString} instead.   
      *  @param reader
      *  @return this
-     *  @deprecated   Use an InputStream or a StringReader. 
+     */
+    public RDFParserBuilder source(StringReader reader) {
+        clearSource();
+        this.javaReader = reader;
+        return this;
+    }
+
+    /** 
+     *  Set the source to {@link Reader}. 
+     *  This clears any other source setting.
+     *  The {@link Reader} will be closed when the 
+     *  parser is called and the parser can not be reused.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  @param reader
+     *  @return this
+     *  @deprecated Use {@link #fromString}, or an InputStream or a StringReader. 
      */
     @Deprecated
     public RDFParserBuilder source(Reader reader) {
@@ -167,8 +201,9 @@ public class RDFParserBuilder {
 
     private void clearSource() {
         this.uri = null;
-        this.inputStream = null;
         this.path = null;
+        this.content = null;
+        this.inputStream = null;
         this.javaReader = null;
     }
 
@@ -407,9 +442,8 @@ public class RDFParserBuilder {
      * @return RDFParser
      */
     public RDFParser build() {
-        // Build what we can now - something have to be built in the parser.
-        
-        if ( uri == null && path == null && inputStream == null && javaReader == null )
+        // Build what we can now - some things have to be built in the parser.
+        if ( uri == null && path == null && content == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
         
         // Setup the HTTP client.
@@ -424,8 +458,8 @@ public class RDFParserBuilder {
         if ( path == null && baseUri == null && uri != null )
             baseUri = uri;
         
-        // Can't build the maker here as it is Lang/conneg dependent.
-        return new RDFParser(uri, path, inputStream, javaReader, client,
+        // Can't build the profile here as it is Lang/conneg dependent.
+        return new RDFParser(uri, path, content, inputStream, javaReader, client,
                              hintLang, forceLang,
                              baseUri, strict, checking, resolveURIs, canonicalLiterals,
                              resolver, factory$, errorHandler$, context);
@@ -467,6 +501,7 @@ public class RDFParserBuilder {
         RDFParserBuilder builder = new RDFParserBuilder();
         builder.uri =               this.uri;
         builder.path =              this.path;
+        builder.content =           this.content;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
         builder.httpHeaders =       new HashMap<>(this.httpHeaders);

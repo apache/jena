@@ -36,7 +36,6 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.AfterClass ;
@@ -156,7 +155,7 @@ public class TestLangTurtle extends BaseTest
     @Test(expected=ExFatal.class)
     public void errorBadDatatype()          { parse("<p> <p> 'q'^^.") ; }
     
-    @Test(expected=RiotException.class)
+    @Test(expected=ExFatal.class)
     public void errorBadURI_1()
     { parse("<http://example/a b> <http://example/p> 123 .") ; }
 

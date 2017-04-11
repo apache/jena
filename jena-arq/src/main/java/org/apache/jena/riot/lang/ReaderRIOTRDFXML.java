@@ -22,8 +22,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
@@ -32,13 +32,15 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -46,10 +48,14 @@ import org.xml.sax.SAXParseException ;
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
-public class LangRDFXML implements LangRIOT
+public class ReaderRIOTRDFXML  implements ReaderRIOT
 {
-    // This is not a full member of the RIOT suite because it needs to work
-    // with Xerces and already carries out it's own error handling and output
+    public static class Factory implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile parserProfile) {
+            return new ReaderRIOTRDFXML(parserProfile.getErrorHandler()) ;
+        }
+    }
     
     private ARP arp = new ARP() ;
     
@@ -58,48 +64,29 @@ public class LangRDFXML implements LangRIOT
     private String xmlBase ;
     private String filename ;
     private StreamRDF sink ;
-    private ParserProfile profile ;             // Warning - we don't use all of this.
+    private ErrorHandler errorHandler; 
+    
+    public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler; 
+    }
     
     @Override
-    public ParserProfile getProfile()
-    {
-        return profile ;
-    }
-
-    @Override
-    public void setProfile(ParserProfile profile)
-    { this.profile = profile ; }
-
-    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
-        return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
-    }
-
-    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
-        return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;
-    }    
-
-    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
-        return create(IO.openFile(filename), xmlBase, filename, errorHandler, sink) ;
-    }
-
-    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
-        this.reader = reader ;
-        this.xmlBase = xmlBase ;
-        this.filename = filename ;
-        this.sink = sink ;
-        this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
-    }
-    
-    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink) {
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         this.input = in ;
-        this.xmlBase = xmlBase ;
-        this.filename = filename ;
-        this.sink = sink ;
-        this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
+        this.xmlBase = baseURI_RDFXML(baseURI) ;
+        this.filename = baseURI ;
+        this.sink = output ;
+        parse();
     }
-    
+
     @Override
-    public Lang getLang()   { return RDFLanguages.RDFXML ; }
+    public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        this.reader = reader ;
+        this.xmlBase = baseURI_RDFXML(baseURI) ;
+        this.filename = baseURI ;
+        this.sink = output ;
+        parse();
+    }
 
     public static boolean RiotUniformCompatibility = false ;
     // Warnings in ARP that should be errors to be compatible with
@@ -110,11 +97,10 @@ public class LangRDFXML implements LangRIOT
         //, ARPErrorNumbers.WARN_STRING_NOT_NORMAL_FORM_C
     } ;
     
-    @Override
     public void parse() {
         // Hacked out of ARP because of all the "private" methods
         sink.start() ;
-        HandlerSink rslt = new HandlerSink(sink, getProfile().getHandler()) ;
+        HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
         arp.getHandlers().setStatementHandler(rslt) ;
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
@@ -134,15 +120,24 @@ public class LangRDFXML implements LangRIOT
                 arp.load(input, xmlBase) ;
         }
         catch (IOException e) {
-            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(e), -1, -1) ;
+            errorHandler.error(filename + ": " + ParseException.formatMessage(e), -1, -1) ;
         }
         catch (SAXParseException e) {
             // already reported.
         }
         catch (SAXException sax) {
-            getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(sax), -1, -1) ;
+            errorHandler.error(filename + ": " + ParseException.formatMessage(sax), -1, -1) ;
         }
         sink.finish() ;
+    }
+    
+    /** Sort out the base URI for RDF/XML parsing. */
+    private static String baseURI_RDFXML(String baseIRI) {
+        if ( baseIRI == null )
+            return SysRIOT.chooseBaseIRI() ;
+        else
+            // This normalizes the URI.
+            return SysRIOT.chooseBaseIRI(baseIRI) ;
     }
     
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
