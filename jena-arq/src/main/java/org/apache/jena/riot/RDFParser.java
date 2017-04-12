@@ -271,7 +271,7 @@ public class RDFParser {
             lang = forceLang;
         ContentType ct = WebContent.determineCT(null, lang, baseUri);
         if ( ct == null )
-            throw new RiotException("Failed to determine the RDF syntax");
+            throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
     
         ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
