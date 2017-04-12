@@ -301,11 +301,13 @@ public abstract class LangTurtleBase extends LangBase {
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
+            // N3-isms
             if ( !strict && image.equals(KW_SAME_AS) )
                 return nodeSameAs ;
-            if ( !strict && image.equals(KW_LOG_IMPLIES) )
-                return NodeConst.nodeRDFType ;
-            exception(tErr, "Unrecognized: " + image) ;
+            // Relationship between two formulae in N3.
+//            if ( false && !strict && image.equals(KW_LOG_IMPLIES) )
+//                return log:implies.
+            exception(tErr, "Unrecognized keyword: " + image) ;
         }
 
         Node n = node() ;
@@ -404,7 +406,7 @@ public abstract class LangTurtleBase extends LangBase {
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception(peekToken(), "Unrecognized: " + peekToken()) ;
+        exception(peekToken(), "Unrecognized (expected an RDF Term): " + peekToken()) ;
         return null ;
     }
 
@@ -459,21 +461,18 @@ public abstract class LangTurtleBase extends LangBase {
             lastCell = nextCell ;
 
             emitTriple(nextCell, NodeConst.nodeFirst, n) ;
-
-            if ( !moreTokens() ) // Error.
-                break ;
         }
         // On exit, just after the RPARENS
 
-        if ( lastCell == null )
+        if ( lastCell == null ) {
             // Simple ()
+            finishList();
             return NodeConst.nodeNil ;
+        }
 
         // Finish list.
         emitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
-
         finishList() ;
-
         return listHead ;
     }
 
