@@ -82,6 +82,8 @@ public class E_Regex extends ExprFunctionN
         }
     }
 
+    private String currentFailMessage = null;
+    
     @Override
     public NodeValue eval(List<NodeValue> args)
     {
@@ -95,11 +97,22 @@ public class E_Regex extends ExprFunctionN
             try {
                 regex = makeRegexEngine(vPattern, vFlags) ;
             } catch (ExprEvalException ex) {
-                Log.warn(this, ex.getMessage());
+                // Avoid multiple logging of the same message. 
+                String m = ex.getMessage();
+                if ( m != null && ! m.equals(currentFailMessage) )
+                    Log.warn(this, m);
+                currentFailMessage = m;
                 // This becomes an eval error, the FILTER is false and the current row rejected. 
                 throw ex;
             }
         }
+        
+        
+//        String m = ex.getMessage();
+//        if (!m.equals(currentFailMessage)) {
+//        currentFailMessage = m;
+//        Log.warn(this, m);
+//        }
         
         boolean b = regex.match(arg.getLiteralLexicalForm()) ;
         
