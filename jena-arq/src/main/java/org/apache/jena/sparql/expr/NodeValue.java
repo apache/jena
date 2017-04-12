@@ -27,8 +27,10 @@ import java.io.FileInputStream ;
 import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.Collator;
 import java.util.Calendar ;
 import java.util.Iterator ;
+import java.util.Locale;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
 
@@ -784,10 +786,15 @@ public abstract class NodeValue extends ExprNode
                     return x ;
                 }
 
-                // same lang tag (case insensitive)
-                x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
+                // same lang tag, handle collation
+                // TBD: cache locales? cache collators? pre define both/any? a simple in-memory lru-map-cache?
+                Locale desiredLocale = Locale.forLanguageTag(node1.getLiteralLanguage());
+                Collator collator = Collator.getInstance(desiredLocale);
+
+                x = collator.compare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm());
                 if ( x != Expr.CMP_EQUAL )
                     return x ;
+
                 // Same lexical forms, same lang tag by value
                 // Try to split by syntactic lang tags.
                 x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
