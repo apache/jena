@@ -175,6 +175,12 @@ public class TestLangTurtle extends BaseTest
     @Test (expected=ExFatal.class)
     public void errorBadURI_5()     { parse("<x> <p> 'number'^^<bad uri> ") ; }
     
+    @Test (expected=ExFatal.class)
+    public void errorBadList_1()     { parse("<x> <p> (") ; }
+
+    @Test (expected=ExFatal.class)
+    public void errorBadList_2()     { parse("<x> <p> ( <z>") ; }
+
     @Test
     public void turtle_01() {
         Triple t = parseOneTriple("<s> <p> 123 . ") ;
