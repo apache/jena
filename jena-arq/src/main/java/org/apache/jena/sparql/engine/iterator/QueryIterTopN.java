@@ -83,6 +83,12 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         super.requestCancel() ;
     }
 
+    @Override
+    protected void closeIterator() {
+        this.embeddedIterator.close();
+        super.closeIterator();
+    }
+    
     private Iterator<Binding> sortTopN(final QueryIterator qIter, final Comparator<Binding> comparator) {
         return new IteratorDelayedInitialization<Binding>() {
             @Override

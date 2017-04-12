@@ -41,9 +41,9 @@ public class RegexXerces implements RegexEngine
         // Input : only  m s i x
         // Check/modify flags.
         // Always "u", never patternStr
-        //x: Remove whitespace characters (#x9, #xA, #xD and #x20) unless in [] classes
+        // x: Remove whitespace characters (#x9, #xA, #xD and #x20) unless in [] classes
         try { return new RegularExpression(patternStr, flags) ; }
         catch (ParseException pEx)
-        { throw new ExprException("Regex: Pattern exception: "+pEx) ; }
+        { throw new ExprEvalException("Regex: Pattern exception: "+pEx) ; }
     }
 }
