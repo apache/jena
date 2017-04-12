@@ -48,7 +48,7 @@ public abstract class LangTurtleBase extends LangBase {
     // Some predicates (if accepted)
     protected final static String  KW_A           = "a" ;
     protected final static String  KW_SAME_AS     = "=" ;
-    protected final static String  KW_LOG_IMPLIES = "=>" ;
+    //protected final static String  KW_LOG_IMPLIES = "=>" ;
     protected final static String  KW_TRUE        = "true" ;
     protected final static String  KW_FALSE       = "false" ;
 
@@ -305,8 +305,8 @@ public abstract class LangTurtleBase extends LangBase {
             if ( !strict && image.equals(KW_SAME_AS) )
                 return nodeSameAs ;
             // Relationship between two formulae in N3.
-//            if ( false && !strict && image.equals(KW_LOG_IMPLIES) )
-//                return log:implies.
+//            if ( !strict && image.equals(KW_LOG_IMPLIES) )
+//                return log:implies;
             exception(tErr, "Unrecognized keyword: " + image) ;
         }
 
@@ -324,8 +324,8 @@ public abstract class LangTurtleBase extends LangBase {
                 return true ;
             if ( !isStrictMode && image.equals(KW_SAME_AS) )
                 return true ;
-            if ( !isStrictMode && image.equals(KW_LOG_IMPLIES) )
-                return true ;
+//            if ( !isStrictMode && image.equals(KW_LOG_IMPLIES) )
+//                return true ;
             return false ;
         }
         // if ( lookingAt(NODE) )
