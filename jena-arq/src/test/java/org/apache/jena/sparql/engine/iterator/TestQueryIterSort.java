@@ -341,7 +341,7 @@ public class TestQueryIterSort {
         public void cancel() { canceled = true ; }
         
         @Override
-        public void close() { throw new ARQNotImplemented() ; }
+        public void close() { }
         
         @Override
         public void output(IndentedWriter out, SerializationContext sCxt) { throw new ARQNotImplemented() ; }
