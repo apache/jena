@@ -97,7 +97,7 @@ public class E_Regex extends ExprFunctionN
             try {
                 regex = makeRegexEngine(vPattern, vFlags) ;
             } catch (ExprEvalException ex) {
-                // Avoid multiple logging of the same message. 
+                // Avoid multiple logging of the same message (at least if adjacent) 
                 String m = ex.getMessage();
                 if ( m != null && ! m.equals(currentFailMessage) )
                     Log.warn(this, m);
@@ -106,10 +106,8 @@ public class E_Regex extends ExprFunctionN
                 throw ex;
             }
         }
-        
         boolean b = regex.match(arg.getLiteralLexicalForm()) ;
-        
-        return b ?  NodeValue.TRUE : NodeValue.FALSE ; 
+        return b ? NodeValue.TRUE : NodeValue.FALSE ; 
     }
 
     public static RegexEngine makeRegexEngine(NodeValue vPattern, NodeValue vFlags)
