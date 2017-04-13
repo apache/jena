@@ -25,6 +25,7 @@ import java.util.Map ;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ConnectTimeoutException ;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
@@ -72,7 +73,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            Throwable thrown = expected.getCause() ;
+            Throwable cause = expected.getCause();
+            Assert.assertTrue(String.format("Expected HttpException, instead got: %s %s", cause.getClass().getName(),
+                    cause.getMessage()), HttpException.class.isAssignableFrom(cause.getClass()));
+            Throwable thrown = cause.getCause() ;
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
@@ -100,7 +104,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            Throwable thrown = expected.getCause() ;
+            Throwable cause = expected.getCause();
+            Assert.assertTrue(String.format("Expected HttpException, instead got: %s %s", cause.getClass().getName(),
+                    cause.getMessage()), HttpException.class.isAssignableFrom(cause.getClass()));
+            Throwable thrown = cause.getCause() ;
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
@@ -127,7 +134,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            Throwable thrown = expected.getCause() ;
+            Throwable cause = expected.getCause();
+            Assert.assertTrue(String.format("Expected HttpException, instead got: %s %s", cause.getClass().getName(),
+                    cause.getMessage()), HttpException.class.isAssignableFrom(cause.getClass()));
+            Throwable thrown = cause.getCause() ;
             if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
