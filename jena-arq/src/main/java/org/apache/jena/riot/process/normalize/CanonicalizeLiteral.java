@@ -45,7 +45,7 @@ public class CanonicalizeLiteral implements Function<Node, Node>
             return node ;
 
         if ( ! node.getLiteralDatatype().isValid(node.getLiteralLexicalForm()) )
-            // Invalid lexicakl form for the datatype - do nothing.
+            // Invalid lexical form for the datatype - do nothing.
             return node;
             
         RDFDatatype dt = node.getLiteralDatatype() ;
