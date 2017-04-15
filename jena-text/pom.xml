@@ -75,37 +75,38 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers-common</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queryparser</artifactId>
     </dependency>
 
-      <dependency>
-          <groupId>org.elasticsearch</groupId>
-          <artifactId>elasticsearch</artifactId>
-      </dependency>
+    <!-- Elasticsearch server
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-to-slf4j</artifactId>
+    </dependency>
+    -->
 
-      <dependency>
-          <groupId>org.elasticsearch.client</groupId>
-          <artifactId>transport</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>transport</artifactId>
+    </dependency>
 
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-      </dependency>
-
-      <dependency>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-api</artifactId>
-          <version>2.7</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-core</artifactId>
-          <version>2.7</version>
-      </dependency>
+    <!-- Convert commons logging to SLF4J -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
 
   </dependencies>
 
