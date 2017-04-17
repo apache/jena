@@ -66,6 +66,7 @@ public class TextVocab
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
     public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
     public static final Resource configurableAnalyzer = Vocab.resource(NS, "ConfigurableAnalyzer");
+    public static final Resource genericAnalyzer   = Vocab.resource(NS, "GenericAnalyzer");
     
     // Tokenizers
     public static final Resource standardTokenizer  = Vocab.resource(NS, "StandardTokenizer");
