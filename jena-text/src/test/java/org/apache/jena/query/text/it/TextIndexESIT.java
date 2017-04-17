@@ -42,7 +42,7 @@ public class TextIndexESIT extends BaseESTest {
         Entity entityToAdd = entity("http://example/x3", labelKey, labelValue);
         GetResponse response = addEntity(entityToAdd);
         Assert.assertTrue(response.getSource().containsKey(labelKey));
-        Assert.assertEquals(labelValue, ((List)response.getSource().get(labelKey)).get(0));
+        Assert.assertEquals(labelValue, ((List<?>)response.getSource().get(labelKey)).get(0));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class TextIndexESIT extends BaseESTest {
         //But the field value should now be empty
         Assert.assertEquals("http://example/x3", response.getId());
         Assert.assertTrue(response.getSource().containsKey(labelKey));
-        Assert.assertEquals(0, ((List)response.getSource().get(labelKey)).size());
+        Assert.assertEquals(0, ((List<?>)response.getSource().get(labelKey)).size());
     }
 
     @Test

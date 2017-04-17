@@ -139,7 +139,9 @@ public class TextIndexES implements TextIndex {
                 }
 
                 InetSocketTransportAddress socketAddresses[] = new InetSocketTransportAddress[addresses.size()];
-                client = new PreBuiltTransportClient(settings).addTransportAddresses(addresses.toArray(socketAddresses));
+                TransportClient tc = new PreBuiltTransportClient(settings);
+                tc.addTransportAddresses(addresses.toArray(socketAddresses));
+                client = tc;
                 LOGGER.debug("Successfully initialized the client");
             }
 
