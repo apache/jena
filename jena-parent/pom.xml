@@ -74,6 +74,8 @@
     <ver.lucene>6.4.1</ver.lucene>
 
     <ver.elasticsearch>5.2.2</ver.elasticsearch>
+    <!-- elasticsearch uses this by reflection -->
+    <ver.log4j2>2.7</ver.log4j2>
 
     <ver.spatial4j>0.6</ver.spatial4j>
 
@@ -292,6 +294,7 @@
         <artifactId>elasticsearch</artifactId>
         <version>${ver.elasticsearch}</version>
       </dependency>
+      -->
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -304,7 +307,6 @@
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${ver.log4j2}</version>
       </dependency>
-      -->
 
       <!-- Logging -->
       <dependency>
