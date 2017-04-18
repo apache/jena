@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -29,6 +30,7 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
@@ -37,9 +39,7 @@ import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -53,11 +53,24 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     public static class Factory implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile parserProfile) {
+            // Ignore the provided ParserProfile
+            // ARP predates RIOT and does many things internall already.
+            // Thisincludes IRI resolution.
             return new ReaderRIOTRDFXML(parserProfile.getErrorHandler()) ;
         }
     }
     
+    // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
+    // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
+    static { 
+        if ( JenaRuntime.isRDF11 ) {
+            ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation());
+        }
+    }
+    
     private ARP arp = new ARP() ;
+    // arp.getOptions.setIRIFactory does not work if called this early : it gets overwritten in JenaReader.
+    // Using ARPOptions.setIRIFactoryGlobal does work. 
     
     private InputStream input = null ;
     private Reader reader = null ;
@@ -142,13 +155,13 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
         private StreamRDF       output ;
-        private ErrorHandler    errHandler ;
+        private ErrorHandler    riotErrorHandler ;
         private CheckerLiterals checker ;
 
         HandlerSink(StreamRDF output, ErrorHandler errHandler) {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
-            this.errHandler = errHandler ;
+            this.riotErrorHandler = errHandler ;
             this.checker = new CheckerLiterals(errHandler) ;
         }
         
@@ -172,10 +185,9 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
             return NodeFactory.createLiteral(lit.toString(), dt);
-
         }
 
-        private static Node convert(AResource r) {
+        private Node convert(AResource r) {
             if (!r.isAnonymous())
                 return NodeFactory.createURI(r.getURI());
 
@@ -186,7 +198,6 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
                 r.setUserData(rr);
             }
             return rr;
-
         }
 
         private Triple convert(AResource s, AResource p, AResource o) {
