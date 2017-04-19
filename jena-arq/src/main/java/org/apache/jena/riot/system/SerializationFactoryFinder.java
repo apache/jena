@@ -31,9 +31,6 @@ import org.apache.jena.riot.lang.LangNTriples ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.out.SinkTripleOutput ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.ParserProfileBase ;
-import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.Quad ;
@@ -66,7 +63,7 @@ public class SerializationFactoryFinder
                 return 0 ;
             }
         };
-    }
+   }
     
     public static SerializationFactory<Triple> tripleSerializationFactory()
     {
@@ -82,9 +79,10 @@ public class SerializationFactoryFinder
             public Iterator<Triple> createDeserializer(InputStream in)
             {
                 Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in);
-                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), 
-                                                                  ErrorHandlerFactory.errorHandlerNoWarnings,
-                                                                  RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()));
+                ParserProfile profile = RiotLib.createParserProfile(RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()),
+                                                          ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                          IRIResolver.createNoResolve(),
+                                                          false);
                 LangNTriples parser = new LangNTriples(tokenizer, profile, null);
                 return parser ;
             }
@@ -111,10 +109,11 @@ public class SerializationFactoryFinder
             @Override
             public Iterator<Quad> createDeserializer(InputStream in)
             {
-                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
-                ParserProfileBase profile = new ParserProfileBase(new Prologue(null, IRIResolver.createNoResolve()), 
-                                                                  ErrorHandlerFactory.errorHandlerNoWarnings,
-                                                                  RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded())) ;
+                Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in);
+                ParserProfile profile = RiotLib.createParserProfile(RiotLib.factoryRDF(LabelToNode.createUseLabelEncoded()),
+                                                          ErrorHandlerFactory.errorHandlerNoWarnings,
+                                                          IRIResolver.createNoResolve(),
+                                                          false);
                 LangNQuads parser = new LangNQuads(tokenizer, profile, null) ;
                 return parser ;
             }

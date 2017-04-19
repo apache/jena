@@ -34,6 +34,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFWriterRegistry ;
 import org.apache.jena.riot.system.StreamRDFWriter ;
 
+@SuppressWarnings("deprecation")
 public class ModLangOutput extends ModBase
 {
     protected ArgDecl argOutput       = new ArgDecl(ArgDecl.HasValue, "out", "output") ;

@@ -22,8 +22,6 @@ import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 import java.util.regex.PatternSyntaxException ;
 
-import org.apache.jena.query.QueryParseException ;
-
 public class RegexJava implements RegexEngine
 {
     Pattern regexPattern ;
@@ -49,7 +47,7 @@ public class RegexJava implements RegexEngine
             return Pattern.compile(patternStr, mask) ;
         } 
         catch (PatternSyntaxException pEx)
-        { throw new ExprException("Regex: Pattern exception: "+pEx) ; }
+        { throw new ExprEvalException("Regex: Pattern exception: "+pEx) ; }
     }
 
 
@@ -63,7 +61,6 @@ public class RegexJava implements RegexEngine
         {
             switch(modifiers.charAt(i))
             {
-                //case 'i' : newMask |= Pattern.CASE_INSENSITIVE;     break ;
                 case 'i' : 
                     // Need both (Java 1.4)
                     newMask |= Pattern.UNICODE_CASE ;
@@ -73,8 +70,8 @@ public class RegexJava implements RegexEngine
                 case 's' : newMask |= Pattern.DOTALL ;              break ;
                 //case 'x' : newMask |= Pattern.;  break ;
                 
-                default  : 
-                    throw new QueryParseException("Illegal flag in regex modifiers: "+modifiers.charAt(i), -1, -1) ;
+                default: 
+                    throw new ExprEvalException("Illegal flag in regex modifiers: "+modifiers.charAt(i)) ;
             }
         }
         return newMask ;

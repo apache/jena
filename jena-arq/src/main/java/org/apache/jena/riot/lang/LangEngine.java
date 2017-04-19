@@ -18,151 +18,134 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.apache.jena.riot.tokens.TokenType.EOF ;
-import static org.apache.jena.riot.tokens.TokenType.NODE ;
+import static org.apache.jena.riot.tokens.TokenType.EOF;
+import static org.apache.jena.riot.tokens.TokenType.NODE;
 
-import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.iterator.PeekIterator ;
-import org.apache.jena.riot.RiotParseException ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
-import org.apache.jena.riot.tokens.Tokenizer ;
+import java.util.Objects;
 
-/** Common operations for RIOT parsers - not the implementation LangRIOT  */
-public class LangEngine
-{
-    protected ParserProfile profile ;
-    protected final Tokenizer tokens ;
-    private PeekIterator<Token> peekIter ;
+import org.apache.jena.atlas.AtlasException;
+import org.apache.jena.atlas.iterator.PeekIterator;
+import org.apache.jena.riot.RiotParseException;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.tokens.Token;
+import org.apache.jena.riot.tokens.TokenType;
+import org.apache.jena.riot.tokens.Tokenizer;
 
-    protected LangEngine(Tokenizer tokens, ParserProfile profile)
-    {
-        this.tokens = tokens ;
-        this.profile = profile ;
+/** Common operations for RIOT token stream parsing - not the implementation LangRIOT. */
+public class LangEngine {
+    protected ParserProfile          profile;
+    protected ErrorHandler      errorHandler;
+    protected final Tokenizer   tokens;
+    private PeekIterator<Token> peekIter;
+
+    protected LangEngine(Tokenizer tokens, ParserProfile profile, ErrorHandler errorHandler) {
+        this.tokens = Objects.requireNonNull(tokens);
+        this.profile = Objects.requireNonNull(profile);
+        this.errorHandler = errorHandler;
         // The PeekIterator is always loaded with the next token until the end
-        // (for simplicity) but it means this can throw an exception. 
-        try { this.peekIter = new PeekIterator<>(tokens) ; }
-        catch (RiotParseException ex) { raiseException(ex) ; }
+        // (for simplicity) but it means this can throw an exception.
+        try { this.peekIter = new PeekIterator<>(tokens); }
+        catch (RiotParseException ex) { raiseException(ex); }
     }
-    
+
     // ---- Managing tokens.
-    
-    protected final Token peekToken()
-    {
+
+    protected final Token peekToken() {
         // Avoid repeating.
-        if ( eof() ) return tokenEOF ;
-        return peekIter.peek() ;
+        if ( eof() )
+            return tokenEOF;
+        return peekIter.peek();
     }
-    
+
     // Set when we get to EOF to record line/col of the EOF.
-    private Token tokenEOF = null ;
+    private Token tokenEOF = null;
 
-    protected final boolean eof()
-    {
+    protected final boolean eof() {
         if ( tokenEOF != null )
-            return true ;
-        
-        if ( ! moreTokens() )
-        {
-            tokenEOF = new Token(tokens.getLine(), tokens.getColumn()) ;
-            tokenEOF.setType(EOF) ;
-            return true ;
+            return true;
+
+        if ( !moreTokens() ) {
+            tokenEOF = new Token(tokens.getLine(), tokens.getColumn());
+            tokenEOF.setType(EOF);
+            return true;
         }
-        return false ;
+        return false;
     }
 
-    protected final boolean moreTokens() 
-    {
-        return peekIter.hasNext() ;
+    protected final boolean moreTokens() {
+        return peekIter.hasNext();
     }
-    
-    protected final boolean lookingAt(TokenType tokenType)
-    {
+
+    protected final boolean lookingAt(TokenType tokenType) {
         if ( eof() )
-            return tokenType == EOF ;
+            return tokenType == EOF;
         if ( tokenType == NODE )
-            return peekToken().isNode() ;
-        return peekToken().hasType(tokenType) ;
+            return peekToken().isNode();
+        return peekToken().hasType(tokenType);
     }
-    
-    // Remember line/col of last token for messages 
-    protected long currLine = -1 ;
-    protected long currCol = -1 ;
-    
-    protected final Token nextToken()
-    {
+
+    // Remember line/col of last token for messages
+    protected long currLine = -1;
+    protected long currCol  = -1;
+
+    protected final Token nextToken() {
         if ( eof() )
-            return tokenEOF ;
-        
+            return tokenEOF;
+
         // Tokenizer errors appear here!
         try {
-            Token t = peekIter.next() ;
-            currLine = t.getLine() ;
-            currCol = t.getColumn() ;
-            return t ;
-        } catch (RiotParseException ex)
-        {
-            // Intercept to log it.
-            raiseException(ex) ;
-            throw ex ;
+            Token t = peekIter.next();
+            currLine = t.getLine();
+            currCol = t.getColumn();
+            return t;
         }
-        catch (AtlasException ex)
-        {
+        catch (RiotParseException ex) {
+            // Intercept to log it.
+            raiseException(ex);
+            throw ex;
+        }
+        catch (AtlasException ex) {
             // Bad I/O
-            RiotParseException ex2 = new RiotParseException(ex.getMessage(), -1, -1) ;
-            raiseException(ex2) ;
-            throw ex2 ;
+            RiotParseException ex2 = new RiotParseException(ex.getMessage(), -1, -1);
+            raiseException(ex2);
+            throw ex2;
         }
     }
 
-//    protected final Node scopedBNode(Node scopeNode, String label)
-//    {
-//        return profile.getLabelToNode().get(scopeNode, label) ;
-//    }
-//    
-    protected final void expectOrEOF(String msg, TokenType tokenType)
-    {
-        // DOT or EOF
+    protected final void expectOrEOF(String msg, TokenType tokenType) {
         if ( eof() )
-            return ;
-        expect(msg, tokenType) ;
+            return;
+        expect(msg, tokenType);
     }
-    
+
     protected final void skipIf(TokenType ttype) {
         if ( lookingAt(ttype) )
-            nextToken() ;
+            nextToken();
     }
-    
-    protected final void expect(String msg, TokenType ttype)
-    {
-        if ( ! lookingAt(ttype) )
-        {
-            Token location = peekToken() ;
-            exception(location, msg) ;
+
+    protected final void expect(String msg, TokenType ttype) {
+        if ( !lookingAt(ttype) ) {
+            Token location = peekToken();
+            exception(location, msg);
         }
-        nextToken() ;
+        nextToken();
     }
 
-    protected final void exception(Token token, String msg, Object... args)
-    { 
+    protected final void exception(Token token, String msg, Object... args) {
         if ( token != null )
-            exceptionDirect(String.format(msg, args), token.getLine(), token.getColumn()) ;
+            exceptionDirect(String.format(msg, args), token.getLine(), token.getColumn());
         else
-            exceptionDirect(String.format(msg, args), -1, -1) ;
+            exceptionDirect(String.format(msg, args), -1, -1);
     }
 
-    protected final void exceptionDirect(String msg, long line, long col)
-    { 
-        raiseException(new RiotParseException(msg, line, col)) ;
+    protected final void exceptionDirect(String msg, long line, long col) {
+        raiseException(new RiotParseException(msg, line, col));
     }
-    
-    protected final void raiseException(RiotParseException ex)
-    { 
-        ErrorHandler errorHandler = profile.getHandler() ; 
+
+    protected final void raiseException(RiotParseException ex) {
         if ( errorHandler != null )
-            errorHandler.fatal(ex.getOriginalMessage(), ex.getLine(), ex.getCol()) ;
-        throw ex ;
+            errorHandler.fatal(ex.getOriginalMessage(), ex.getLine(), ex.getCol());
+        throw ex;
     }
 }

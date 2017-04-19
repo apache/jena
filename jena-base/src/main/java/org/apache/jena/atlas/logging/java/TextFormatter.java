@@ -26,7 +26,7 @@ import java.util.logging.LogManager ;
 import java.util.logging.LogRecord ;
 
 /** A pattern-driven log formatter.
- * inspired by Log4j's PatternLayout
+ * Inspired by Log4j's PatternLayout
  * Set a different output pattern with {@code .format}.
  * <p>
  * The default format is {@code "%5$tT %3$-5s %2$-20s :: %6$s\n"}.
@@ -109,7 +109,7 @@ public class TextFormatter extends Formatter
         //    FINEST  -> TRACE
         //    FINER   -> DEBUG
         //    FINE    -> DEBUG
-        //    CONFIG  -> INFO
+        //    CONFIG  -> CONF
         //    INFO    -> INFO
         //    WARNING -> WARN
         //    SEVERE  -> ERROR
@@ -119,8 +119,8 @@ public class TextFormatter extends Formatter
             return "ERROR" ;
         if ( Level.INFO.equals(level) )
             return "INFO" ;
-        if ( Level.CONFIG.equals(level) )   // Keep name.
-            return "CONFIG" ;
+        if ( Level.CONFIG.equals(level) )   // Keep name. No equivalent in SLF4J.
+            return "CONF" ;
         if ( Level.FINE.equals(level) )
             return "DEBUG" ;
         if ( Level.FINER.equals(level) )

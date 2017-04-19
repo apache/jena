@@ -72,6 +72,7 @@ import org.apache.jena.sparql.util.Context;
 public class RDFParser {
     private final String       uri;
     private final Path         path;
+    private final String       content;
     private final InputStream  inputStream;
     private final Reader       javaReader;
     private final HttpClient   httpClient;
@@ -95,7 +96,7 @@ public class RDFParser {
      * <p>
      * Often used in a pattern such as:
      * <pre>
-     *    RDFParserBuilder.create()
+     *    RDFParser.create()
      *        .source("data.ttl")
      *        .parse(graph);
      * </pre>
@@ -105,40 +106,74 @@ public class RDFParser {
         return RDFParserBuilder.create();
     }
 
-    /** Shortcut for {@code RDFParser.create.source(path)}. */
+    /**
+     * Create an {@link RDFParserBuilder} and set the source to the
+     * {@link Path}.
+     * <p>
+     * This is a shortcut for {@code RDFParser.create().source(path)}.
+     * 
+     * @param path
+     * @return this
+     */
     public static RDFParserBuilder source(Path path) {
         return RDFParserBuilder.create().source(path);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(uriOrFile)}. */
+    /**
+     * Create an {@link RDFParserBuilder} and set the source to the URI, which
+     * can be a filename.
+     * <p>
+     * This is a shortcut for {@code RDFParser.create().source(uriOrFile)}.
+     * 
+     * @param uriOrFile
+     * @return this
+     */
+    
     public static RDFParserBuilder source(String uriOrFile) {
         return RDFParserBuilder.create().source(uriOrFile);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(reader)}. */
-    public static RDFParserBuilder source(StringReader reader) {
-        return RDFParserBuilder.create().source(reader);
+    /**
+     * Create an {@link RDFParserBuilder} and set content to parse to be the
+     * given string. The syntax must be set with {@code .lang(...)}.
+     * <p>
+     * Shortcut for {@code RDFParser.create.fromString(string)}.
+     * @param string
+     * @return this
+     */
+    public static RDFParserBuilder fromString(String string) {
+        return RDFParserBuilder.create().fromString(string);
     }
 
-    /** Shortcut for {@code RDFParser.create.source(input)}. */
+    /** 
+     * Create an {@link RDFParserBuilder} and set the source to {@link InputStream}.
+     *  The {@link InputStream} will be closed when the 
+     *  parser is called and the parser can not be reused. 
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  This is a shortcut for {@code RDFParser.create().source(input)}.
+     *  @param input
+     *  @return this 
+     */
     public static RDFParserBuilder source(InputStream input) {
         return RDFParserBuilder.create().source(input);
     }
     
-    /* package */ RDFParser(String uri, Path path, InputStream inputStream, Reader javaReader, HttpClient httpClient, Lang hintLang,
+    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, HttpClient httpClient, Lang hintLang,
                             Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking, boolean resolveURIs, boolean canonicalLiterals, IRIResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
-        int x = countNonNull(uri, path, inputStream, javaReader);
+        int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
-            throw new IllegalArgumentException("Only one source allowed: one of uri, path, inputStream and javaReader must be set");
+            throw new IllegalArgumentException("Only one source allowed: one of uri, path, content, inputStream and javaReader must be set");
         if ( x < 1 )
-            throw new IllegalArgumentException("No source specified allowed: one of uri, path, inputStream and javaReader must be set");
+            throw new IllegalArgumentException("No source specified allowed: one of uri, path, content, inputStream and javaReader must be set");
         Objects.requireNonNull(factory);
         Objects.requireNonNull(errorHandler);
         Objects.requireNonNull(checking);
         
         this.uri = uri;
         this.path = path;
+        this.content = content;
         this.inputStream = inputStream;
         this.javaReader = javaReader;
         this.httpClient = httpClient;
@@ -155,6 +190,7 @@ public class RDFParser {
         this.context = context;
     }
 
+    /** Count the nulls */
     private int countNonNull(Object... objs) {
         int x = 0;
         for ( Object obj : objs )
@@ -163,6 +199,24 @@ public class RDFParser {
         return x;
     }
 
+    /** One or more non-null */
+    private boolean isNonNull(Object... objs) {
+        int x = 0;
+        for ( Object obj : objs )
+            if ( obj != null )
+                return true;
+        return false;
+    }
+
+    /** All null */
+    private boolean allNull(Object... objs) {
+        int x = 0;
+        for ( Object obj : objs )
+            if ( obj != null )
+                return false;
+        return true;
+    }
+    
     public void parse(StreamRDF destination) {
         if ( !canUse )
             throw new RiotException("Parser has been used once and can not be used again");
@@ -175,7 +229,7 @@ public class RDFParser {
         if ( canonicalLiterals )
             destination = new StreamCanonicalLiterals(destination);
 
-        if ( inputStream != null || javaReader != null ) {
+        if ( isNonNull(content, inputStream, javaReader) ) {
             parseNotUri(destination);
             return;
         }
@@ -205,7 +259,7 @@ public class RDFParser {
                 if ( reader == null )
                     throw new RiotException("No parser registered for content type: " + ct.getContentType());
             }
-            read(reader, input, null, ct, destination);
+            read(reader, input, null, baseUri, context, ct, destination);
         }
     }
 
@@ -217,16 +271,22 @@ public class RDFParser {
             lang = forceLang;
         ContentType ct = WebContent.determineCT(null, lang, baseUri);
         if ( ct == null )
-            throw new RiotException("Failed to determine the RDF syntax");
+            throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
     
         ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
             throw new RiotException("No parser registered for content type: " + ct.getContentType());
-        read(readerRiot, inputStream, javaReader, ct, destination);
+        Reader jr = javaReader;
+        if ( content != null )
+            jr = new StringReader(content);
+        
+        read(readerRiot, inputStream, jr, baseUri, context, ct, destination);
     }
     
     /** Call the reader, from either an InputStream or a Reader */
-    private void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader, ContentType ct, StreamRDF destination) {
+    private static void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader,
+                             String baseUri, Context context,
+                             ContentType ct, StreamRDF destination) {
         if ( inputStream != null && javaReader != null )
             throw new InternalErrorException("Both inputStream and javaReader are non-null"); 
         if ( inputStream != null ) {
@@ -288,13 +348,12 @@ public class RDFParser {
     }
 
     private ReaderRIOT createReader(ReaderRIOTFactory r, Lang lang) {
-        MakerRDF maker = makeMaker(lang);
-        ReaderRIOT reader = r.create(lang, (MakerRDFStd)maker);
-        //reader.set*
+        ParserProfile profile = makeParserProfile(lang);
+        ReaderRIOT reader = r.create(lang, profile);
         return reader ;
     }
 
-    private MakerRDF makeMaker(Lang lang) {
+    private ParserProfile makeParserProfile(Lang lang) {
         boolean resolve = resolveURIs;
         boolean checking$ = strict;
         
@@ -317,8 +376,7 @@ public class RDFParser {
                 IRIResolver.createNoResolve() ;
         }
         PrefixMap prefixMap = PrefixMapFactory.createForInput();
-
-        MakerRDFStd parserFactory = new MakerRDFStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
+        ParserProfileStd parserFactory = new ParserProfileStd(factory, errorHandler, resolver, prefixMap, context, checking$, strict);
         return parserFactory;
     }
 }

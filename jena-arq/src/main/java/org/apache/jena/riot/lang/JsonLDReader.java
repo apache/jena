@@ -56,21 +56,10 @@ import com.github.jsonldjava.utils.JsonUtils ;
 public class JsonLDReader implements ReaderRIOT
 {
     private /*final*/ ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-    private /*final*/ MakerRDF maker;
+    private /*final*/ ParserProfile profile;
     
-    @Override public ErrorHandler getErrorHandler() { return errorHandler ; }
-    @Override public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
-    
-    @Override public ParserProfile getParserProfile()                   { return (MakerRDFStd)maker ; }
-
-    @Override
-    public void setParserProfile(ParserProfile parserProfile) {
-        this.errorHandler = parserProfile.getHandler();
-        this.maker = parserProfile;
-    }
-    
-    public JsonLDReader(Lang lang, MakerRDF maker, ErrorHandler errorHandler) {
-        this.maker = maker;
+    public JsonLDReader(Lang lang, ParserProfile profile, ErrorHandler errorHandler) {
+        this.profile = profile;
         this.errorHandler = errorHandler;
     }
     
@@ -146,7 +135,7 @@ public class JsonLDReader implements ReaderRIOT
                                 Node s = createNode(t, "subject") ;
                                 Node p = createNode(t, "predicate") ;
                                 Node o = createNode(t, "object") ;
-                                Triple triple = maker.createTriple(s, p, o, -1, -1) ;
+                                Triple triple = profile.createTriple(s, p, o, -1, -1) ;
                                 output.triple(triple) ;
                             }
                         } else {
@@ -157,7 +146,7 @@ public class JsonLDReader implements ReaderRIOT
                                 Node s = createNode(q, "subject") ;
                                 Node p = createNode(q, "predicate") ;
                                 Node o = createNode(q, "object") ;
-                                Quad quad = maker.createQuad(g, s, p, o, -1, -1) ;
+                                Quad quad = profile.createQuad(g, s, p, o, -1, -1) ;
                                 output.quad(quad) ;
                             }
                         }
@@ -175,8 +164,6 @@ public class JsonLDReader implements ReaderRIOT
         }
         output.finish() ;
     }
-
-    private LabelToNode  labels     = SyntaxLabels.createLabelToNode() ;
 
     public static String LITERAL    = "literal" ;
     public static String BLANK_NODE = "blank node" ;
@@ -196,7 +183,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( type.equals(IRI) )
             return createURI(lex) ;
         else if ( type.equals(BLANK_NODE) )
-            return labels.get(null, lex) ;  //??
+            return createBlankNode(lex);
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
@@ -205,28 +192,25 @@ public class JsonLDReader implements ReaderRIOT
                 // During migration, we prefer simple literals to xsd:strings. 
                 datatype = null ;
             if ( lang == null && datatype == null )
-                return maker.createStringLiteral(lex,-1, -1) ;
+                return profile.createStringLiteral(lex,-1, -1) ;
             if ( lang != null )
-                return maker.createLangLiteral(lex, lang, -1, -1) ;
+                return profile.createLangLiteral(lex, lang, -1, -1) ;
             RDFDatatype dt = NodeFactory.getType(datatype) ;
-            return maker.createTypedLiteral(lex, dt, -1, -1) ;
+            return profile.createTypedLiteral(lex, dt, -1, -1) ;
         } else
             throw new InternalErrorException("Node is not a IRI, bNode or a literal: " + type) ;
     }
 
-    private Node createURI(String str) {
+    private Node createBlankNode(String str) {
         if ( str.startsWith("_:") )
-            return labels.get(null, str) ;
-        else
-            return maker.createURI(str, -1, -1) ;
+            str = str.substring(2);
+        return profile.createBlankNode(null, str, -1,-1);
     }
 
-    private Node createLiteral(String lex, String datatype, String lang) {
-        if ( lang == null && datatype == null )
-            return NodeFactory.createLiteral(lex) ;
-        if ( lang != null )
-            return NodeFactory.createLiteral(lex, lang) ;
-        RDFDatatype dt = NodeFactory.getType(datatype) ;
-        return NodeFactory.createLiteral(lex, dt) ;
+    private Node createURI(String str) {
+        if ( str.startsWith("_:") )
+            return createBlankNode(str);
+        else
+            return profile.createURI(str, -1, -1) ;
     }
 }

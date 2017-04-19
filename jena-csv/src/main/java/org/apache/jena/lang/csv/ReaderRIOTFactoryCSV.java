@@ -16,18 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.lang.csv;
 
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
 
-public interface ReaderRIOTFactory
-{
-    /** @deprecated See {@link #create(Lang, ParserProfile)} */
-    @Deprecated
-    public default ReaderRIOT create(Lang language) {
-        return create(language, RiotLib.profile(language, null));
+public class ReaderRIOTFactoryCSV implements ReaderRIOTFactory {
+    @Override
+    public ReaderRIOT create(Lang language, ParserProfile profile) {
+        return new ReaderRIOTCSV(profile.getErrorHandler());
     }
-
-    public ReaderRIOT create(Lang language, ParserProfile profile);
 }

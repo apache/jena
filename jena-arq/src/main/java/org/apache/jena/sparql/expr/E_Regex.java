@@ -71,11 +71,19 @@ public class E_Regex extends ExprFunctionN
     
     private void init(Expr pattern, Expr flags)
     {
+        try {
         if ( pattern.isConstant() && pattern.getConstant().isString() && ( flags==null || flags.isConstant() ) )
             regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
+        } catch (ExprEvalException ex) {
+            // Here, we are doing static compilation of the pattern.
+            // ExprEvalException does not have a stacktrace. 
+            // We could throw a non-eval exception.
+            throw ex; //new ExprException(ex.getMessage(), ex.getCause());
+        }
     }
-    
 
+    private String currentFailMessage = null;
+    
     @Override
     public NodeValue eval(List<NodeValue> args)
     {
@@ -84,12 +92,22 @@ public class E_Regex extends ExprFunctionN
         NodeValue vFlags = ( args.size() == 2 ? null : args.get(2) ) ;
         
         RegexEngine regex = regexEngine ;
-        if ( regex == null  )
-            regex = makeRegexEngine(vPattern, vFlags) ;
-        
+        if ( regex == null  ) {
+            // Execution time regex compile (not a constant pattern).
+            try {
+                regex = makeRegexEngine(vPattern, vFlags) ;
+            } catch (ExprEvalException ex) {
+                // Avoid multiple logging of the same message (at least if adjacent) 
+                String m = ex.getMessage();
+                if ( m != null && ! m.equals(currentFailMessage) )
+                    Log.warn(this, m);
+                currentFailMessage = m;
+                // This becomes an eval error, the FILTER is false and the current row rejected. 
+                throw ex;
+            }
+        }
         boolean b = regex.match(arg.getLiteralLexicalForm()) ;
-        
-        return b ?  NodeValue.TRUE : NodeValue.FALSE ; 
+        return b ? NodeValue.TRUE : NodeValue.FALSE ; 
     }
 
     public static RegexEngine makeRegexEngine(NodeValue vPattern, NodeValue vFlags)

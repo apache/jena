@@ -37,7 +37,6 @@ import org.apache.jena.riot.tokens.Tokenizer ;
  */
 public class LangRDFJSON extends LangBase
 {
-
 	public LangRDFJSON(Tokenizer tokenizer, ParserProfile profile, StreamRDF dest)
 	{
 		super(tokenizer, profile, dest) ;

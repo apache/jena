@@ -28,9 +28,9 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.lang.csv.ReaderRIOTCSV;
 import org.apache.jena.propertytable.PropertyTable ;
 import org.apache.jena.propertytable.Row ;
-import org.apache.jena.propertytable.lang.LangCSV ;
 import org.apache.jena.riot.system.IRIResolver ;
 
 
@@ -41,7 +41,7 @@ import org.apache.jena.riot.system.IRIResolver ;
  */
 public class PropertyTableBuilder {
 	
-	public static Node CSV_ROW_NODE = NodeFactory.createURI(LangCSV.CSV_ROW);
+	public static Node CSV_ROW_NODE = NodeFactory.createURI(ReaderRIOTCSV.CSV_ROW);
 	
 	public static PropertyTable buildPropetyTableHashMapImplFromCsv(String csvFilePath) {		
 		PropertyTable table = new PropertyTableHashMapImpl();
@@ -100,7 +100,7 @@ public class PropertyTableBuilder {
         rowNum++ ;
         while(iter.hasNext()) {
             List<String> rowLine = iter.next();
-            Node subject = LangCSV.caculateSubject(rowNum, csvFilePath);
+            Node subject = ReaderRIOTCSV.calculateSubject(rowNum, csvFilePath);
             Row row = table.createRow(subject);
 
             row.setValue(table.getColumn(CSV_ROW_NODE), 
@@ -129,7 +129,7 @@ public class PropertyTableBuilder {
 	}
 	
 	protected static String createColumnKeyURI(String csvFilePath, String column){
-		String uri = IRIResolver.resolveString(csvFilePath) + "#" + LangCSV.toSafeLocalname(column);
+		String uri = IRIResolver.resolveString(csvFilePath) + "#" + ReaderRIOTCSV.toSafeLocalname(column);
 		return uri;
 	}
 }

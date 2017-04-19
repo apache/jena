@@ -20,6 +20,7 @@ package org.apache.jena.hadoop.rdf.io.input.readers;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,7 +38,10 @@ import org.apache.jena.hadoop.rdf.io.HadoopIOConstants;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.io.input.util.RdfIOUtils;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
-import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.riot.tokens.TokenizerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +69,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
     private LongWritable key = null;
     private Text value = null;
     private T tuple = null;
-    private ParserProfile profile = null;
+    private ParserProfile maker = null;
     private boolean ignoreBadTuples = true;
 
     @Override
@@ -77,9 +81,13 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
             throw new IOException("This record reader only supports FileSplit inputs");
         FileSplit split = (FileSplit) genericSplit;
 
-        // TODO [RDFParser]
-        // Use RDFParser builder.
-        profile = RdfIOUtils.createParserProfile(context, split.getPath());
+        // Intermediate : RDFParser but need to make a Iterator<Quad/Triple>
+        LabelToNode labelToNode = RdfIOUtils.createLabelToNode(context, split.getPath());
+        maker = new ParserProfileStd(RiotLib.factoryRDF(labelToNode), 
+                                     ErrorHandlerFactory.errorHandlerStd, 
+                                     IRIResolver.create(), PrefixMapFactory.createForInput(), 
+                                     null, true, false); 
+        
         Configuration config = context.getConfiguration();
         this.ignoreBadTuples = config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true);
         if (this.ignoreBadTuples)
@@ -135,11 +143,21 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
      * 
      * @param line
      *            Line
-     * @param profile
-     *            Parser profile
+     * @param builder
+     *            Parser setup.
      * @return Iterator
      */
-    protected abstract Iterator<TValue> getIterator(String line, ParserProfile profile);
+    protected abstract Iterator<TValue> getIterator(String line, ParserProfile maker);
+    
+    /** Create a tokenizer for a line
+     * @param line
+     *          Content
+     * @return Tokenizer
+     */
+    protected Tokenizer getTokenizer(String line) {
+        return TokenizerFactory.makeTokenizerString(line);
+    }
+
 
     /**
      * Creates an instance of a writable tuple from the given tuple value
@@ -191,7 +209,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
 
             // Attempt to read the tuple from current line
             try {
-                Iterator<TValue> iter = this.getIterator(value.toString(), profile);
+                Iterator<TValue> iter = this.getIterator(value.toString(), maker);
                 if (iter.hasNext()) {
                     tuple = this.createInstance(iter.next());
 

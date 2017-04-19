@@ -72,7 +72,11 @@
 
     <ver.commons-codec>1.10</ver.commons-codec>
     <ver.lucene>6.4.1</ver.lucene>
-    <ver.elasticsearch>5.2.1</ver.elasticsearch>
+
+    <ver.elasticsearch>5.2.2</ver.elasticsearch>
+    <!-- elasticsearch uses this by reflection -->
+    <ver.log4j2>2.7</ver.log4j2>
+
     <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
@@ -276,17 +280,32 @@
         <version>${ver.spatial4j}</version>
       </dependency>
 
-      <!-- ES dependencies-->
-      <dependency>
-        <groupId>org.elasticsearch</groupId>
-        <artifactId>elasticsearch</artifactId>
-        <version>${ver.elasticsearch}</version>
-      </dependency>
+      <!-- Elasticsearch dependencies -->
 
       <dependency>
         <groupId>org.elasticsearch.client</groupId>
         <artifactId>transport</artifactId>
         <version>${ver.elasticsearch}</version>
+      </dependency>
+
+      <!-- Elasticsearch Server
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${ver.elasticsearch}</version>
+      </dependency>
+      -->
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${ver.log4j2}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${ver.log4j2}</version>
       </dependency>
 
       <!-- Logging -->

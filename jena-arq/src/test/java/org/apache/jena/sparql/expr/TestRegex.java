@@ -63,5 +63,12 @@ public class TestRegex extends BaseTest
         tmp = tmp + ")" ;
         return tmp ; 
     }
+
+    // Bad regex
+    @Test(expected=ExprEvalException.class)
+    public void testRegexErr1() { regexTest("ABC", "(", null, false) ; }
     
+    // No such flag
+    @Test(expected=ExprEvalException.class)
+    public void testRegexErr2() { regexTest("ABC", "abc", "g", false) ; }
 }

@@ -30,6 +30,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -446,7 +447,7 @@ public class TestLangRdfJson extends BaseTest
 		ByteArrayInputStream in = new ByteArrayInputStream(b);
 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
-		LangRDFJSON parser = RiotParsers.createParserRdfJson(tokenizer, sink) ;
+		LangRDFJSON parser = RiotParsers.createParserRdfJson(tokenizer, sink, RiotLib.dftProfile()) ;
 	}
 
     private long parseCount(String string) {
