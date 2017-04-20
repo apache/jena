@@ -66,7 +66,6 @@ public class TextVocab
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
     public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
     public static final Resource configurableAnalyzer = Vocab.resource(NS, "ConfigurableAnalyzer");
-    public static final Resource genericAnalyzer   = Vocab.resource(NS, "GenericAnalyzer");
     
     // Tokenizers
     public static final Resource standardTokenizer  = Vocab.resource(NS, "StandardTokenizer");
@@ -87,5 +86,12 @@ public class TextVocab
     public static final Property pReplicas          = Vocab.property(NS, "replicas");
     public static final Property pIndexName          = Vocab.property(NS, "indexName");
 
+    //GenericAnalyzer
+    public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
+    public static final Property pClass             = Vocab.property(NS, "class");
+    public static final Property pParams            = Vocab.property(NS, "params");
+    public static final Property pParamName         = Vocab.property(NS, "paramName");
+    public static final Property pParamType         = Vocab.property(NS, "paramType");
+    public static final Property pParamValue        = Vocab.property(NS, "paramValue");
 }
 
