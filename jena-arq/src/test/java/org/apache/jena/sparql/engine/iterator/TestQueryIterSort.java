@@ -18,9 +18,7 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -135,6 +133,37 @@ public class TestQueryIterSort {
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
     
+    @Test public void testCloseClosesSourceIterator() {
+	Context context = new Context() ;
+	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+	QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+	qis.close();
+	assertTrue("source iterator should have been closed", iterator.isClosed());
+    }
+
+        @Test public void testExhaustionClosesSourceIterator() {
+		iterator.setCallback(new Callback()
+			{ @Override public void call() { /* do nothing */ }
+		});
+		Context context = new Context() ;
+		ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+		QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+		while (qis.hasNext()) qis.next();
+		assertTrue("source iterator should have been closed", iterator.isClosed());
+       }
+
+        @Test public void testCancelClosesSourceIterator() {
+		Context context = new Context() ;
+		ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+		QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+		try {
+			while (qis.hasNext()) qis.next();
+			fail("query should have been cancelled by trigger");
+		} catch (QueryCancelledException q) {
+			assertTrue("source iterator should have been closed", iterator.isClosed());
+		}
+	}
+
     @Test
     public void testCleanAfterExhaustion()
     {
@@ -248,6 +277,32 @@ public class TestQueryIterSort {
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
 
+    @Test public void testTopNCloseClosesSource() {
+
+	long numItems = 3;
+	boolean distinct = false;
+	Context context = new Context() ;
+	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+	QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
+	tn.close();
+	assertTrue(iterator.isClosed());
+	}
+
+       @Test public void testTopNExhaustionClosesSource() {
+
+	Callback nullCB = new Callback() { @Override public void call() {} };
+	iterator.setCallback(nullCB);
+
+	long numItems = 3;
+	boolean distinct = false;
+	Context context = new Context() ;
+	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+	QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
+	while (tn.hasNext()) tn.next();
+	assertTrue(iterator.isClosed());
+    }
+
+
     private Binding randomBinding(Var[] vars)
     {
         BindingMap binding = BindingFactory.create();
@@ -279,13 +334,14 @@ public class TestQueryIterSort {
     }
     
 
-    private class CallbackIterator implements QueryIterator
+    private static class CallbackIterator implements QueryIterator
     {
         int elementsReturned = 0 ;
         Callback callback ;
         int trigger ;
         Iterator<Binding> delegate ;
         boolean canceled = false ;
+        boolean closed = false ;
         
         public CallbackIterator(Iterator<Binding> delegate, int trigger, Callback callback)
         {
@@ -302,7 +358,10 @@ public class TestQueryIterSort {
         @Override
         public boolean hasNext() 
         {
-            return delegate.hasNext() ;
+		// self-closing
+		boolean has = delegate.hasNext() ;
+		if (has == false) closed = true;
+		return has ;
         }
 
         @Override
@@ -326,6 +385,10 @@ public class TestQueryIterSort {
             return elementsReturned ;
         }
 
+        public boolean isClosed() {
+		return closed ;
+        }
+
         public boolean isCanceled() {
             return canceled ;
         }
@@ -339,10 +402,10 @@ public class TestQueryIterSort {
 
         @Override
         public void cancel() { canceled = true ; }
-        
+
         @Override
-        public void close() { throw new ARQNotImplemented() ; }
-        
+        public void close() { closed = true ; }
+
         @Override
         public void output(IndentedWriter out, SerializationContext sCxt) { throw new ARQNotImplemented() ; }
         
@@ -354,7 +417,7 @@ public class TestQueryIterSort {
 
     }
 
-    private interface Callback
+    public interface Callback
     {
         public void call() ;
     }

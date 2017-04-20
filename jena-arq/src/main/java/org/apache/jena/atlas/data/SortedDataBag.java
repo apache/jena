@@ -94,6 +94,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E> {
      */
     public void cancel() {
         comparator.cancel();
+        close();
     }
 
     /**
