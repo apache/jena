@@ -71,13 +71,13 @@ public class QueryExceptionHTTP extends QueryException
      */  
     public String getResponseMessage() { return responseMessage ; }
 
-    /** The response for this exception
-     * @return response
+    /** The response for this exception if available from HTTP
+     * @return response or {@code null} if no HTTP response was received
      */  
     public String getResponse() { return response ; }
 
-    /** The status line for the response for this exception
-     * @return status line
+    /** The status line for the response for this exception if available from HTTP
+     * @return status line or {@code null} if no HTTP response was received
      */  
     public String getStatusLine() { return statusLine ; }
 
