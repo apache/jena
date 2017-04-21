@@ -18,16 +18,19 @@
 
 package org.apache.jena.sparql.engine.http;
 
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryException ;
 
 /** Exception class for all operations in the SPARQL client library.
  *  Error codes are as HTTP status codes. */
 public class QueryExceptionHTTP extends QueryException
 {
-    private static final long serialVersionUID = 99L;  // Serilizable.
+    private static final long serialVersionUID = 99L;  // Serializable.
     public static final int noResponseCode = -1234 ;
     private int responseCode = noResponseCode ;
-    private String responseMessage = null ;
+    private final String responseMessage ;
+    private String statusLine ;
+    private String response;
 
     // Codes for extra errors.  We use HTTP error codes so
     // these are negative to avoid clashes
@@ -63,10 +66,20 @@ public class QueryExceptionHTTP extends QueryException
     public int getResponseCode() { return responseCode ; }
     
     
-    /** The messge for the reason for this exception
+    /** The message for the reason for this exception
      * @return message
      */  
     public String getResponseMessage() { return responseMessage ; }
+
+    /** The response for this exception if available from HTTP
+     * @return response or {@code null} if no HTTP response was received
+     */  
+    public String getResponse() { return response ; }
+
+    /** The status line for the response for this exception if available from HTTP
+     * @return status line or {@code null} if no HTTP response was received
+     */  
+    public String getStatusLine() { return statusLine ; }
 
     /**
      * Constructor for HttpException used for some unexpected execution error.
@@ -87,11 +100,16 @@ public class QueryExceptionHTTP extends QueryException
     }
     
     public QueryExceptionHTTP(int responseCode, String message, Throwable cause) {
-        super(message, cause);
+        this(message, cause);
         this.responseCode = responseCode;
     }
 
-
+    public QueryExceptionHTTP(int responseCode, String message, final HttpException ex) {
+        this(responseCode, message, ex.getCause());
+        this.statusLine = ex.getStatusLine();
+        this.response = ex.getResponse();
+    }
+    
     @Override
     public String toString()
     {

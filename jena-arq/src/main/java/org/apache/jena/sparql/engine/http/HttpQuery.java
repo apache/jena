@@ -358,23 +358,23 @@ public class HttpQuery extends Params {
     }
     
     private QueryExceptionHTTP rewrap(HttpException httpEx) {
-    	// The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
-    	// ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
-        // Therefore we need to unnwrap and re-wrap  appropriately
+        // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
+    	    // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
+        // Therefore we need to wrap appropriately
         responseCode = httpEx.getResponseCode();
         if (responseCode != -1) {
         	// Was an actual HTTP error
         	String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
-        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
         	// Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP("Unexpected error making the query: " + httpEx.getMessage(), httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
         } else if (httpEx.getCause() != null) {
         	// Some other error with a cause e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP("Unexpected error making the query, see cause for further details", httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
         } else {
         	// Some other error with no message and no further cause
-        	return new QueryExceptionHTTP("Unexpected error making the query", httpEx);
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query", httpEx);
         }
     }
 
