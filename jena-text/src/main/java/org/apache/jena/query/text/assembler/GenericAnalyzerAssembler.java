@@ -167,7 +167,7 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
 	            return newAnalyzer(clazz, new Class<?>[0], new Object[0]);
 	        }
 	    } else {
-	        throw new TextIndexException("text:class property is required by GenericAnalyzer");
+	        throw new TextIndexException("text:class property is required by GenericAnalyzer: " + root);
 	    }
 	}
 
