@@ -1,35 +1,21 @@
 package org.apache.jena.query.text.assembler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
-import org.apache.jena.assembler.Assembler;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGenericAnalyzerAssembler {
 
-    private static final String TESTBASE = "http://example.org/test/";
     private static final Resource spec1;
     private static final Resource spec2;
     private static final Resource spec3;
