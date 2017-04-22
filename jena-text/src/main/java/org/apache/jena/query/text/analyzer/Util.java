@@ -51,6 +51,10 @@ public class Util {
             return null;
         }
     }
+    
+    public static void addAnalyzer(String lang, Analyzer analyzer) {
+        cache.put(lang, analyzer);
+    }
 
     private static void initAnalyzerDefs() {
         analyzersClasses = new Hashtable<>();

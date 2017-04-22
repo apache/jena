@@ -88,10 +88,15 @@ public class TextVocab
 
     //GenericAnalyzer
     public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
+    public static final Resource definedAnalyzer    = Vocab.resource(NS, "DefinedAnalyzer");
     public static final Property pClass             = Vocab.property(NS, "class");
     public static final Property pParams            = Vocab.property(NS, "params");
     public static final Property pParamName         = Vocab.property(NS, "paramName");
     public static final Property pParamType         = Vocab.property(NS, "paramType");
     public static final Property pParamValue        = Vocab.property(NS, "paramValue");
+    public static final Property pDefAnalyzers      = Vocab.property(NS, "defineAnalyzers");
+    public static final Property pDefAnalyzer       = Vocab.property(NS, "defineAnalyzer");
+    public static final Property pAddLang           = Vocab.property(NS, "addLang");
+    public static final Property pUseAnalyzer       = Vocab.property(NS, "useAnalyzer");
 }
 

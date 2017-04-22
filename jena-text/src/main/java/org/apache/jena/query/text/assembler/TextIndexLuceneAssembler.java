@@ -115,6 +115,18 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
             }
+            
+            Statement defAnalyzersStatement = root.getProperty(pDefAnalyzers);
+            if (null != defAnalyzersStatement) {
+                RDFNode aNode = defAnalyzersStatement.getObject();
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("text:defineAnalyzers property is not a resource : " + aNode);
+                }
+                boolean addedLangs = DefinedAnalyzerAssembler.addAnalyzers(a, (Resource) aNode);
+                if (addedLangs) {
+                    isMultilingualSupport = true;
+                }
+            }
 
             boolean storeValues = false;
             Statement storeValuesStatement = root.getProperty(pStoreValues);
