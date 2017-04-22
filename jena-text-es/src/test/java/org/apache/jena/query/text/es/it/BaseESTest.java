@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.query.text.it;
+package org.apache.jena.query.text.es.it;
 
 import org.apache.jena.query.text.EntityDefinition;
 import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.query.text.TextIndexES;
+import org.apache.jena.query.text.es.TextIndexES;
 import org.apache.jena.vocabulary.RDFS;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;

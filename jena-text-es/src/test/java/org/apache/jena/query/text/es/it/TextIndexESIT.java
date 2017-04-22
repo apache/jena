@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.query.text.it;
+package org.apache.jena.query.text.es.it;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.text.Entity;
@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Integration test class for {@link org.apache.jena.query.text.TextIndexES}
+ * Integration test class for {@link org.apache.jena.query.text.es.TextIndexES}
  */
 public class TextIndexESIT extends BaseESTest {
 
