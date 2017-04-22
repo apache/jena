@@ -20,21 +20,22 @@ import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
+import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestGenericAnalyzerAssembler {
-    
-//    // Suppress warnings
-//    @BeforeClass public static void beforeClass() { LogCtl.setError(EntityDefinitionAssembler.class); }
-//    @AfterClass  public static void afterClass()  { LogCtl.setInfo(EntityDefinitionAssembler.class); }
 
     private static final String TESTBASE = "http://example.org/test/";
     private static final Resource spec1;
     private static final Resource spec2;
     private static final Resource spec3;
+    private static final Resource spec4;
+    private static final Resource spec5;
+    private static final Resource spec6;
     
     @Test public void AnalyzerNullaryCtor() {
         GenericAnalyzerAssembler gaAssem = new GenericAnalyzerAssembler();
@@ -54,15 +55,38 @@ public class TestGenericAnalyzerAssembler {
         assertEquals(FrenchAnalyzer.class, analyzer.getClass());
     }
     
+    @Test public void AnalyzerCtorAnalyzerInt() {
+        GenericAnalyzerAssembler gaAssem = new GenericAnalyzerAssembler();
+        Analyzer analyzer = gaAssem.open(null, spec4, null);
+        assertEquals(ShingleAnalyzerWrapper.class, analyzer.getClass());
+    }
+    
+    @Test public void AnalyzerCtorShingle7() {
+        GenericAnalyzerAssembler gaAssem = new GenericAnalyzerAssembler();
+        Analyzer analyzer = gaAssem.open(null, spec5, null);
+        assertEquals(ShingleAnalyzerWrapper.class, analyzer.getClass());
+    }
+    
+    @Test public void AnalyzerCtorFile() {
+        GenericAnalyzerAssembler gaAssem = new GenericAnalyzerAssembler();
+        Analyzer analyzer = gaAssem.open(null, spec6, null);
+        assertEquals(StopAnalyzer.class, analyzer.getClass());
+    }
+    
     
     private static final String CLASS_SIMPLE = "org.apache.lucene.analysis.core.SimpleAnalyzer";
     private static final String CLASS_FRENCH = "org.apache.lucene.analysis.fr.FrenchAnalyzer";
+    private static final String CLASS_SHINGLE = "org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper";
+    private static final String CLASS_STOP = "org.apache.lucene.analysis.core.StopAnalyzer";
     
-    private static final String PARAM_TYPE_BOOL = "boolean";
-    private static final String PARAM_TYPE_FILE = "file";
-    private static final String PARAM_TYPE_INT = "int";
-    private static final String PARAM_TYPE_SET = "set";
-    private static final String PARAM_TYPE_STRING = "string";
+    private static final String FILE_STOPS = "testing/some-stop-words.txt";
+    
+    private static final String PARAM_TYPE_ANALYZER = GenericAnalyzerAssembler.TYPE_ANALYZER;
+    private static final String PARAM_TYPE_BOOL = GenericAnalyzerAssembler.TYPE_BOOL;
+    private static final String PARAM_TYPE_FILE = GenericAnalyzerAssembler.TYPE_FILE;
+    private static final String PARAM_TYPE_INT = GenericAnalyzerAssembler.TYPE_INT;
+    private static final String PARAM_TYPE_SET = GenericAnalyzerAssembler.TYPE_SET;
+    private static final String PARAM_TYPE_STRING = GenericAnalyzerAssembler.TYPE_STRING;
     
     static {
         TextAssembler.init();
@@ -98,6 +122,85 @@ public class TestGenericAnalyzerAssembler {
                                                   .addProperty(TextVocab.pParamName, "stopWords")
                                                   .addProperty(TextVocab.pParamType, PARAM_TYPE_SET)
                                                   .addProperty(TextVocab.pParamValue, strs2list(model, "les le du"))
+                                          }))
+                     ;
+        
+        // analyzer spec w/ analyzer param and int
+                
+        spec4 = model.createResource()
+                     .addProperty(RDF.type, TextVocab.genericAnalyzer)
+                     .addProperty(TextVocab.pClass, CLASS_SHINGLE)
+                     .addProperty(TextVocab.pParams,
+                                  model.createList(
+                                          new RDFNode[] { 
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "defaultAnalyzer")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_ANALYZER)
+                                                  .addProperty(TextVocab.pParamValue, 
+                                                               model.createResource()
+                                                               .addProperty(RDF.type, TextVocab.simpleAnalyzer)
+                                                               ),
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "maxShingleSize")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addLiteral(TextVocab.pParamValue, 3)
+                                          }))
+                     ;
+        
+        // analyzer spec w/ seven params of mixed types
+                
+        spec5 = model.createResource()
+                     .addProperty(RDF.type, TextVocab.genericAnalyzer)
+                     .addProperty(TextVocab.pClass, CLASS_SHINGLE)
+                     .addProperty(TextVocab.pParams,
+                                  model.createList(
+                                          new RDFNode[] { 
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "delegate")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_ANALYZER)
+                                                  .addProperty(TextVocab.pParamValue, 
+                                                               model.createResource()
+                                                               .addProperty(RDF.type, TextVocab.simpleAnalyzer)
+                                                               ) ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "minShingleSize")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addLiteral(TextVocab.pParamValue, 2) ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "maxShingleSize")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addLiteral(TextVocab.pParamValue, 4) ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "tokenSeparator")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_STRING)
+                                                  .addLiteral(TextVocab.pParamValue, "|") ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "outputUnigrams")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_BOOL)
+                                                  .addLiteral(TextVocab.pParamValue, false) ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "outputUnigramsIfNoShingles")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_BOOL)
+                                                  .addLiteral(TextVocab.pParamValue, true) ,
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "fillerToken")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_STRING)
+                                                  .addLiteral(TextVocab.pParamValue, "foo")
+                                          }))
+                     ;
+        
+        // analyzer spec w/ one file param
+                
+        spec6 = model.createResource()
+                     .addProperty(RDF.type, TextVocab.genericAnalyzer)
+                     .addProperty(TextVocab.pClass, CLASS_STOP)
+                     .addProperty(TextVocab.pParams,
+                                  model.createList(
+                                          new RDFNode[] { 
+                                                  model.createResource()
+                                                  .addProperty(TextVocab.pParamName, "stopWords")
+                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_FILE)
+                                                  .addProperty(TextVocab.pParamValue, FILE_STOPS)
                                           }))
                      ;
     }
