@@ -34,10 +34,7 @@ import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.ReaderRIOT;
-import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.SysRIOT;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.util.Context;
@@ -60,17 +57,7 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         }
     }
     
-    // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
-    // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
-    static { 
-        if ( JenaRuntime.isRDF11 ) {
-            ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation());
-        }
-    }
-    
     private ARP arp = new ARP() ;
-    // arp.getOptions.setIRIFactory does not work if called this early : it gets overwritten in JenaReader.
-    // Using ARPOptions.setIRIFactoryGlobal does work. 
     
     private InputStream input = null ;
     private Reader reader = null ;
@@ -100,18 +87,30 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         this.sink = output ;
         parse();
     }
+    
+    // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
+    // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
+    // Use with TDB erquires this to be "true" - it is set by InitTDB.
     public static boolean RiotUniformCompatibility = false ;
     // Warnings in ARP that should be errors to be compatible with
     // non-XML-based languages.  e.g. language tags should be
     // syntactically valid.
     private static int[] additionalErrors = new int[] {
         ARPErrorNumbers.WARN_MALFORMED_XMLLANG
+        //, ARPErrorNumbers.WARN_MALFORMED_URI 
         //, ARPErrorNumbers.WARN_STRING_NOT_NORMAL_FORM_C
     } ;
+
+    // Special case of space in URI is handled in HandlerSink (below).
+    // This is instead of ARPErrorNumbers.WARN_MALFORMED_URI in additionalErrors[].
+    // which causes a WARN (from ARP, with line+column numbers) then a ERROR from RIOT.
+    // It's a pragmatic compromise.
+    private static boolean errorForSpaceInURI = true;
     
     public void parse() {
         // Hacked out of ARP because of all the "private" methods
+        // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
         HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
         arp.getHandlers().setStatementHandler(rslt) ;
@@ -122,9 +121,12 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
             ARPOptions options = arp.getOptions() ;
             // Convert some warnings to errors for compatible behaviour for all parsers.
             for ( int code : additionalErrors )
-                options.setErrorMode(code, ARPErrorNumbers.EM_FATAL) ;
+                options.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
             arp.setOptionsWith(options) ;
         }
+        
+        if ( JenaRuntime.isRDF11 )
+            arp.getOptions().setIRIFactory(IRIFactory.iriImplementation());
 
         try {
             if ( reader != null )
@@ -188,9 +190,23 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         }
 
         private Node convert(AResource r) {
-            if (!r.isAnonymous())
-                return NodeFactory.createURI(r.getURI());
-
+            if (!r.isAnonymous()) {
+                // URI.
+                String uriStr = r.getURI() ;
+                if ( errorForSpaceInURI ) {
+                    // Special check for spaces in a URI.
+                    // Convert to an error like TokernizerText.
+                    if ( uriStr.contains(" ") ) {
+                        int i = uriStr.indexOf(' ');
+                        String s = uriStr.substring(0,i);
+                        String msg = String.format("Bad character in IRI (space): <%s[space]...>", s);
+                        riotErrorHandler.error(msg, -1, -1);
+                        throw new RiotParseException(msg, -1, -1);
+                    }
+                }
+                return NodeFactory.createURI(uriStr);
+            }
+            
             // String id = r.getAnonymousID();
             Node rr = (Node) r.getUserData();
             if (rr == null) {
