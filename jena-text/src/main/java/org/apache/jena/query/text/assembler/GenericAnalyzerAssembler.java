@@ -48,6 +48,7 @@ import org.apache.lucene.analysis.CharArraySet;
  *     file      java.io.FileReader
  *     int       int
  *     boolean   boolean
+ *     analyzer  org.apache.lucene.analysis.Analyzer
  * </pre>
  * 
  * Although the list of types is not exhaustive it is a simple matter
@@ -83,7 +84,7 @@ import org.apache.lucene.analysis.CharArraySet;
  * A parameter of type <code>string</code>, <code>file</code>, <code>boolean</code>, or 
  * <code>int</code> <i>must have</i> a single <code>text:paramValue</code> of the appropriate type.
  * <p>
- * Example:
+ * Examples:
  * <pre>
     text:map (
          [ text:field "text" ; 
@@ -98,6 +99,23 @@ import org.apache.lucene.analysis.CharArraySet;
                     [ text:paramName "stemExclusionSet" ;
                       text:paramType "set" ;
                       text:paramValue ("ing" "ed") ]
+                    )
+           ] .
+ * </pre>
+ * <pre>
+    text:map (
+         [ text:field "text" ; 
+           text:predicate rdfs:label;
+           text:analyzer [
+               a text:GenericAnalyzer ;
+               text:class "org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper" ;
+               text:params (
+                    [ text:paramName "defaultAnalyzer" ;
+                      text:paramType "analyzer" ;
+                      text:paramValue [ a text:SimpleAnalyzer ] ]
+                    [ text:paramName "maxShingleSize" ;
+                      text:paramType "int" ;
+                      text:paramValue 3 ]
                     )
            ] .
  * </pre>
@@ -121,7 +139,14 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
            ] .
      */
 
-	@Override
+    public static final String TYPE_ANALYZER = "analyzer";
+    public static final String TYPE_BOOL = "boolean";
+    public static final String TYPE_FILE = "file";
+    public static final String TYPE_INT = "int";
+    public static final String TYPE_SET = "set";
+    public static final String TYPE_STRING = "string";
+
+    @Override
 	public Analyzer open(Assembler a, Resource root, Mode mode) {
 	    if (root.hasProperty(TextVocab.pClass)) {
 	        // text:class is expected to be a string literal
@@ -242,7 +267,7 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
         switch (type) {
 
         // String
-        case "string": {
+        case TYPE_STRING: {
             if (value == null) {
                 throw new TextIndexException("Value for string param: " + name + " must not be empty!");
             }
@@ -250,8 +275,8 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             return new ParamSpec(name, value, String.class);
         }
         
-        // "java.io.FileReader":
-        case "file": {
+        // java.io.FileReader
+        case TYPE_FILE: {
 
             if (value == null) {
                 throw new TextIndexException("Value for file param must exist and must contain a file name.");
@@ -267,8 +292,8 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             }
         }
         
-        // "org.apache.lucene.analysis.util.CharArraySet":
-        case "set": {
+        // org.apache.lucene.analysis.util.CharArraySet
+        case TYPE_SET: {
             if (valueStmt == null) {
                 throw new TextIndexException("A set param spec must have a text:paramValue:" + node);
             }
@@ -283,8 +308,8 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             return new ParamSpec(name, new CharArraySet(values, false), CharArraySet.class);
         }
         
-        // "int":
-        case "int":
+        // int
+        case TYPE_INT:
             if (value == null) {
                 throw new TextIndexException("Value for int param: " + name + " must not be empty!");
             }
@@ -292,14 +317,28 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             int n = ((Literal) valueStmt.getObject()).getInt();
             return new ParamSpec(name, n, int.class);
 
-        // "boolean":
-        case "boolean":
+        // boolean
+        case TYPE_BOOL:
             if (value == null) {
                 throw new TextIndexException("Value for boolean param: " + name + " must not be empty!");
             }
 
             boolean b = ((Literal) valueStmt.getObject()).getBoolean();
             return new ParamSpec(name, b, boolean.class);
+        
+        // org.apache.lucene.analysis.Analyzer
+        case TYPE_ANALYZER:
+            if (valueStmt == null) {
+                throw new TextIndexException("Analyzer param spec must have a text:paramValue:" + node);
+            }
+            
+            RDFNode valueNode = valueStmt.getObject();
+            if (!valueNode.isResource()) {
+                throw new TextIndexException("Analyzer param spec text:paramValue must be an analyzer spec resource: " + valueNode);
+            }
+            
+            Analyzer analyzer = (Analyzer) Assembler.general.open((Resource) valueNode);
+            return new ParamSpec(name, analyzer, Analyzer.class);
         
         default:
             // there was no match
