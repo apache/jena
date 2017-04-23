@@ -43,12 +43,12 @@ import org.apache.lucene.analysis.CharArraySet;
  * <p>
  * The parameters may be of the following types:
  * <pre>
- *     string    String
- *     set       org.apache.lucene.analysis.util.CharArraySet
- *     file      java.io.FileReader
- *     int       int
- *     boolean   boolean
- *     analyzer  org.apache.lucene.analysis.Analyzer
+ *     text:TypeString    String
+ *     text:TypeSet       org.apache.lucene.analysis.util.CharArraySet
+ *     text:TypeFile      java.io.FileReader
+ *     text:TypeInt       int
+ *     text:TypeBoolean   boolean
+ *     text:TypeAnalyzer  org.apache.lucene.analysis.Analyzer
  * </pre>
  * 
  * Although the list of types is not exhaustive it is a simple matter
@@ -74,15 +74,18 @@ import org.apache.lucene.analysis.CharArraySet;
  * <ul>
  * <li>an optional <code>text:paramName</code> that may be used to document which 
  * parameter is represented</li>
- * <li>a <code>text:paramType</code> which is one of: <code>string</code>, 
- * <code>set</code>, <code>file</code>, <code>int</code>, <code>boolean</code>.</li>
- * <li>a text:paramValue which is an xsd:string, xsd:boolean or xsd:int.</li>
+ * <li>a <code>text:paramType</code> which is one of: <code>text:TypeString</code>, 
+ * <code>text:TypeSet</code>, <code>text:TypeFile</code>, <code>text:TypeInt</code>, 
+ * <code>text:TypeBoolean</code>, <code>text:TypeAnalyzer</code>.</li>
+ * <li>a text:paramValue which is an xsd:string, xsd:boolean or xsd:int or resource.</li>
  * </ul>
  * <p>
- * A parameter of type <code>set</code> <i>must have</i> a list of zero or more <code>String</code>s.
+ * A parameter of type <code>text:TypeSet</code> <i>must have</i> a list of zero or 
+ * more <code>String</code>s.
  * <p>
- * A parameter of type <code>string</code>, <code>file</code>, <code>boolean</code>, or 
- * <code>int</code> <i>must have</i> a single <code>text:paramValue</code> of the appropriate type.
+ * A parameter of type <code>text:TypeString</code>, <code>text:TypeFile</code>, 
+ * <code>text:TypeBoolean</code>, <code>text:TypeInt</code> or <code>text:TypeAnalyzer</code> 
+ * <i>must have</i> a single <code>text:paramValue</code> of the appropriate type.
  * <p>
  * Examples:
  * <pre>
@@ -94,10 +97,10 @@ import org.apache.lucene.analysis.CharArraySet;
                text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
                text:params (
                     [ text:paramName "stopwords" ;
-                      text:paramType "set" ;
+                      text:paramType text:TypeSet ;
                       text:paramValue ("the" "a" "an") ]
                     [ text:paramName "stemExclusionSet" ;
-                      text:paramType "set" ;
+                      text:paramType text:TypeSet ;
                       text:paramValue ("ing" "ed") ]
                     )
            ] .
@@ -111,10 +114,10 @@ import org.apache.lucene.analysis.CharArraySet;
                text:class "org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper" ;
                text:params (
                     [ text:paramName "defaultAnalyzer" ;
-                      text:paramType "analyzer" ;
+                      text:paramType text:TypeAnalyzer ;
                       text:paramValue [ a text:SimpleAnalyzer ] ]
                     [ text:paramName "maxShingleSize" ;
-                      text:paramType "int" ;
+                      text:paramType text:TypeInt ;
                       text:paramValue 3 ]
                     )
            ] .
@@ -130,71 +133,71 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
                text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
                text:params (
                     [ text:paramName "stopwords" ;
-                      text:paramType "set" ;
+                      text:paramType text:TypeSet ;
                       text:paramValue ("the" "a" "an") ]
                     [ text:paramName "stemExclusionSet" ;
-                      text:paramType "set" ;
+                      text:paramType text:TypeSet ;
                       text:paramValue ("ing" "ed") ]
                     )
            ] .
      */
 
-    public static final String TYPE_ANALYZER = "analyzer";
-    public static final String TYPE_BOOL = "boolean";
-    public static final String TYPE_FILE = "file";
-    public static final String TYPE_INT = "int";
-    public static final String TYPE_SET = "set";
-    public static final String TYPE_STRING = "string";
+    public static final String TYPE_ANALYZER   = "TypeAnalyzer";
+    public static final String TYPE_BOOL       = "TypeBoolean";
+    public static final String TYPE_FILE       = "TypeFile";
+    public static final String TYPE_INT        = "TypeInt";
+    public static final String TYPE_SET        = "TypeSet";
+    public static final String TYPE_STRING     = "TypeString";
 
     @Override
-	public Analyzer open(Assembler a, Resource root, Mode mode) {
-	    if (root.hasProperty(TextVocab.pClass)) {
-	        // text:class is expected to be a string literal
-	        String className = root.getProperty(TextVocab.pClass).getString();
+    public Analyzer open(Assembler a, Resource root, Mode mode) {
+        if (root.hasProperty(TextVocab.pClass)) {
+            // text:class is expected to be a string literal
+            String className = root.getProperty(TextVocab.pClass).getString();
 
-	        // is the class accessible?
-	        Class<?> clazz = null;
-	        try {
-	            clazz = Class.forName(className);
-	        } catch (ClassNotFoundException e) {
-	            Log.error(this, "Analyzer class " + className + " not found. " + e.getMessage(), e);
-	            return null;
-	        }
+            // is the class accessible?
+            Class<?> clazz = null;
+            try {
+                clazz = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                Log.error(this, "Analyzer class " + className + " not found. " + e.getMessage(), e);
+                return null;
+            }
 
-	        // Is the class an Analyzer?
-	        if (!Analyzer.class.isAssignableFrom(clazz)) {
-	            Log.error(this, clazz.getName() + " has to be a subclass of " + Analyzer.class.getName());
-	            return null;
-	        }
-	        
-	        if (root.hasProperty(TextVocab.pParams)) {
-	            RDFNode node = root.getProperty(TextVocab.pParams).getObject();
-	            if (! node.isResource()) {
-	                throw new TextIndexException("text:params must be a list of parameter resources: " + node);
-	            }
+            // Is the class an Analyzer?
+            if (!Analyzer.class.isAssignableFrom(clazz)) {
+                Log.error(this, clazz.getName() + " has to be a subclass of " + Analyzer.class.getName());
+                return null;
+            }
 
-	            List<ParamSpec> specs = getParamSpecs((Resource) node);
+            if (root.hasProperty(TextVocab.pParams)) {
+                RDFNode node = root.getProperty(TextVocab.pParams).getObject();
+                if (! node.isResource()) {
+                    throw new TextIndexException("text:params must be a list of parameter resources: " + node);
+                }
 
-	            // split the param specs into classes and values for constructor lookup
-	            final Class<?> paramClasses[] = new Class<?>[specs.size()];
-	            final Object paramValues[] = new Object[specs.size()];
-	            for (int i = 0; i < specs.size(); i++) {
-	                ParamSpec spec = specs.get(i);
-	                paramClasses[i] = spec.getValueClass();
-	                paramValues[i] = spec.getValue();
-	            }
+                List<ParamSpec> specs = getParamSpecs((Resource) node);
 
-	            // Create new analyzer
-	            return newAnalyzer(clazz, paramClasses, paramValues);
+                // split the param specs into classes and values for constructor lookup
+                final Class<?> paramClasses[] = new Class<?>[specs.size()];
+                final Object paramValues[] = new Object[specs.size()];
+                for (int i = 0; i < specs.size(); i++) {
+                    ParamSpec spec = specs.get(i);
+                    paramClasses[i] = spec.getValueClass();
+                    paramValues[i] = spec.getValue();
+                }
 
-	        } else {
-	            // use the nullary Analyzer constructor
-	            return newAnalyzer(clazz, new Class<?>[0], new Object[0]);
-	        }
-	    } else {
-	        throw new TextIndexException("text:class property is required by GenericAnalyzer: " + root);
-	    }
-	}
+                // Create new analyzer
+                return newAnalyzer(clazz, paramClasses, paramValues);
+
+            } else {
+                // use the nullary Analyzer constructor
+                return newAnalyzer(clazz, new Class<?>[0], new Object[0]);
+            }
+        } else {
+            throw new TextIndexException("text:class property is required by GenericAnalyzer: " + root);
+        }
+    }
 
     /**
      * Create instance of the Lucene Analyzer, <code>class</code>, with provided parameters
@@ -221,47 +224,52 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
 
         return null;
     }
-    
+
     private List<ParamSpec> getParamSpecs(Resource list) {
         List<ParamSpec> result = new ArrayList<>();
         Resource current = list;
-        
+
         while (current != null && ! current.equals(RDF.nil)){
             Statement firstStmt = current.getProperty(RDF.first);
             if (firstStmt == null) {
                 throw new TextIndexException("parameter list not well formed: " + current);
             }
-            
+
             RDFNode first = firstStmt.getObject();
             if (! first.isResource()) {
                 throw new TextIndexException("parameter specification must be an anon resource : " + first);
             }
 
             result.add(getParamSpec((Resource) first));
-            
+
             Statement restStmt = current.getProperty(RDF.rest);
             if (restStmt == null) {
                 throw new TextIndexException("parameter list not terminated by rdf:nil");
             }
-            
+
             RDFNode rest = restStmt.getObject();
             if (! rest.isResource()) {
                 throw new TextIndexException("parameter list node is not a resource : " + rest);
             }
-            
+
             current = (Resource) rest;
         }
-        
+
         return result;
     }
-    
+
     private ParamSpec getParamSpec(Resource node) {
         Statement nameStmt = node.getProperty(TextVocab.pParamName);
         Statement typeStmt = node.getProperty(TextVocab.pParamType);
         Statement valueStmt = node.getProperty(TextVocab.pParamValue);
         
+        if (typeStmt == null) {
+            throw new TextIndexException("Parameter specification must have a text:paramType: " + node);
+        }        
+        Resource typeRes = typeStmt.getResource();
+        String type = typeRes.getLocalName();
+
         String name = getStringValue(nameStmt);
-        String type = getStringValue(typeStmt);
         String value = getStringValue(valueStmt);
 
         switch (type) {
@@ -274,7 +282,7 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
 
             return new ParamSpec(name, value, String.class);
         }
-        
+
         // java.io.FileReader
         case TYPE_FILE: {
 
@@ -291,23 +299,23 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
                 throw new TextIndexException("File " + value + " for param " + name + " not found!");
             }
         }
-        
+
         // org.apache.lucene.analysis.util.CharArraySet
         case TYPE_SET: {
             if (valueStmt == null) {
                 throw new TextIndexException("A set param spec must have a text:paramValue:" + node);
             }
-            
+
             RDFNode valueNode = valueStmt.getObject();
             if (!valueNode.isResource()) {
                 throw new TextIndexException("A set param spec text:paramValue must be a list of strings: " + valueNode);
             }
-            
+
             List<String> values = toStrings((Resource) valueNode);
 
             return new ParamSpec(name, new CharArraySet(values, false), CharArraySet.class);
         }
-        
+
         // int
         case TYPE_INT:
             if (value == null) {
@@ -317,7 +325,7 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             int n = ((Literal) valueStmt.getObject()).getInt();
             return new ParamSpec(name, n, int.class);
 
-        // boolean
+            // boolean
         case TYPE_BOOL:
             if (value == null) {
                 throw new TextIndexException("Value for boolean param: " + name + " must not be empty!");
@@ -325,21 +333,21 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
 
             boolean b = ((Literal) valueStmt.getObject()).getBoolean();
             return new ParamSpec(name, b, boolean.class);
-        
-        // org.apache.lucene.analysis.Analyzer
+
+            // org.apache.lucene.analysis.Analyzer
         case TYPE_ANALYZER:
             if (valueStmt == null) {
                 throw new TextIndexException("Analyzer param spec must have a text:paramValue:" + node);
             }
-            
+
             RDFNode valueNode = valueStmt.getObject();
             if (!valueNode.isResource()) {
                 throw new TextIndexException("Analyzer param spec text:paramValue must be an analyzer spec resource: " + valueNode);
             }
-            
+
             Analyzer analyzer = (Analyzer) Assembler.general.open((Resource) valueNode);
             return new ParamSpec(name, analyzer, Analyzer.class);
-        
+
         default:
             // there was no match
             Log.error(this, "Unknown parameter type: " + type + " for param: " + name + " with value: " + value);
@@ -348,7 +356,7 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
 
         return null;
     }
-    
+
     private String getStringValue(Statement stmt) {
         if (stmt == null) {
             return null;
@@ -365,33 +373,33 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
     private List<String> toStrings(Resource list) {
         List<String> result = new ArrayList<>();
         Resource current = list;
-        
+
         while (current != null && ! current.equals(RDF.nil)){
             Statement firstStmt = current.getProperty(RDF.first);
             if (firstStmt == null) {
                 throw new TextIndexException("param spec of type set not well formed");
             }
-            
+
             RDFNode first = firstStmt.getObject();
             if (! first.isLiteral()) {
                 throw new TextIndexException("param spec of type set item is not a literal: " + first);
             }
-            
+
             result.add(((Literal)first).getLexicalForm());
-            
+
             Statement restStmt = current.getProperty(RDF.rest);
             if (restStmt == null) {
                 throw new TextIndexException("param spec of type set not terminated by rdf:nil");
             }
-            
+
             RDFNode rest = restStmt.getObject();
             if (! rest.isResource()) {
                 throw new TextIndexException("param spec of type set rest is not a resource: " + rest);
             }
-            
+
             current = (Resource) rest;
         }
-        
+
         return result;
     }
 

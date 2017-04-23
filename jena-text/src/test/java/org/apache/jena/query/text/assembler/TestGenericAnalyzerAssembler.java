@@ -67,13 +67,6 @@ public class TestGenericAnalyzerAssembler {
     
     private static final String FILE_STOPS = "testing/some-stop-words.txt";
     
-    private static final String PARAM_TYPE_ANALYZER = GenericAnalyzerAssembler.TYPE_ANALYZER;
-    private static final String PARAM_TYPE_BOOL = GenericAnalyzerAssembler.TYPE_BOOL;
-    private static final String PARAM_TYPE_FILE = GenericAnalyzerAssembler.TYPE_FILE;
-    private static final String PARAM_TYPE_INT = GenericAnalyzerAssembler.TYPE_INT;
-    private static final String PARAM_TYPE_SET = GenericAnalyzerAssembler.TYPE_SET;
-    private static final String PARAM_TYPE_STRING = GenericAnalyzerAssembler.TYPE_STRING;
-    
     static {
         TextAssembler.init();
         Model model = ModelFactory.createDefaultModel();
@@ -106,7 +99,7 @@ public class TestGenericAnalyzerAssembler {
                                           new RDFNode[] { 
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "stopWords")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_SET)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeSet)
                                                   .addProperty(TextVocab.pParamValue, strs2list(model, "les le du"))
                                           }))
                      ;
@@ -121,14 +114,14 @@ public class TestGenericAnalyzerAssembler {
                                           new RDFNode[] { 
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "defaultAnalyzer")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_ANALYZER)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeAnalyzer)
                                                   .addProperty(TextVocab.pParamValue, 
                                                                model.createResource()
                                                                .addProperty(RDF.type, TextVocab.simpleAnalyzer)
                                                                ),
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "maxShingleSize")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeInt)
                                                   .addLiteral(TextVocab.pParamValue, 3)
                                           }))
                      ;
@@ -143,34 +136,34 @@ public class TestGenericAnalyzerAssembler {
                                           new RDFNode[] { 
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "delegate")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_ANALYZER)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeAnalyzer)
                                                   .addProperty(TextVocab.pParamValue, 
                                                                model.createResource()
                                                                .addProperty(RDF.type, TextVocab.simpleAnalyzer)
                                                                ) ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "minShingleSize")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeInt)
                                                   .addLiteral(TextVocab.pParamValue, 2) ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "maxShingleSize")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_INT)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeInt)
                                                   .addLiteral(TextVocab.pParamValue, 4) ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "tokenSeparator")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_STRING)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeString)
                                                   .addLiteral(TextVocab.pParamValue, "|") ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "outputUnigrams")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_BOOL)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeBoolean)
                                                   .addLiteral(TextVocab.pParamValue, false) ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "outputUnigramsIfNoShingles")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_BOOL)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeBoolean)
                                                   .addLiteral(TextVocab.pParamValue, true) ,
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "fillerToken")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_STRING)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeString)
                                                   .addLiteral(TextVocab.pParamValue, "foo")
                                           }))
                      ;
@@ -185,7 +178,7 @@ public class TestGenericAnalyzerAssembler {
                                           new RDFNode[] { 
                                                   model.createResource()
                                                   .addProperty(TextVocab.pParamName, "stopWords")
-                                                  .addProperty(TextVocab.pParamType, PARAM_TYPE_FILE)
+                                                  .addProperty(TextVocab.pParamType, TextVocab.typeFile)
                                                   .addProperty(TextVocab.pParamValue, FILE_STOPS)
                                           }))
                      ;

@@ -89,6 +89,12 @@ public class TextVocab
     //GenericAnalyzer
     public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
     public static final Resource definedAnalyzer    = Vocab.resource(NS, "DefinedAnalyzer");
+    public static final Resource typeAnalyzer       = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_ANALYZER);
+    public static final Resource typeBoolean        = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_BOOL);
+    public static final Resource typeFile           = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_FILE);
+    public static final Resource typeInt            = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_INT);
+    public static final Resource typeSet            = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_SET);
+    public static final Resource typeString         = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_STRING);
     public static final Property pClass             = Vocab.property(NS, "class");
     public static final Property pParams            = Vocab.property(NS, "params");
     public static final Property pParamName         = Vocab.property(NS, "paramName");
