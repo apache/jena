@@ -20,6 +20,9 @@ public class IDFactory {
 
 	protected static final String JVM_ID = createUUID();
 	
+	/**
+	 * Indirection to return JVM_ID.
+	 */
 	public static String jvmID() {
 		return JVM_ID;
 	}

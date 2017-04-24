@@ -25,6 +25,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.hamcrest.CoreMatchers;
@@ -62,7 +63,7 @@ public class TestDatasetGraphMosaic {
 
 		datasetGraphZ = DatasetGraphFactory.createTxnMem();
 		
-		datasetGraphMosaic = new DatasetGraphMosaic();
+		datasetGraphMosaic = new DatasetGraphMosaic(new Context());
 		datasetGraphMosaic.add(datasetGraphX);
 		datasetGraphMosaic.add(datasetGraphY);
 		datasetGraphMosaic.add(datasetGraphZ);

@@ -210,6 +210,14 @@ public class DatasetGraphThriftClient implements DatasetGraph {
 		}
 	}
 
+	protected void wrappedException(final Runnable r) {
+		try {
+			r.run();
+		} catch (final Exception exception) {
+			throw new JenaException(exception);
+		}
+	}
+	
 	/**
 	 * Convenience method to catch the TException thrown by every Thrift Client method call and return as a JenaException with cause.
 	 */
@@ -223,109 +231,35 @@ public class DatasetGraphThriftClient implements DatasetGraph {
 	
 	@Override
 	public Iterator<Quad> find() {
-		return iteratorPaged2RDFQuad(() -> {return wrappedException(() -> {return getClient().find(getUUID());});});
-//		try {
-//			return new IteratorPaged2RDFQuad(new InputStreamPaged() {
-//				
-//				protected final String uuid = getClient().find(getUUID());
-//				
-//				@Override
-//				protected Page nextPage() {
-//					try {
-//						return new Page(getClient().nextIteratorPage(uuid)); 
-//					} catch (final Exception exception) {
-//						throw new JenaException(exception);
-//					}
-//				}
-//			});
-//		} catch (final Exception exception) {
-//			throw new JenaException(exception);
-//		}
+		return iteratorPaged2RDFQuad(() -> wrappedException(() -> getClient().find(getUUID())));
 	}
 
 	@Override
 	public Iterator<Quad> find(final Quad quad) {
-		try {
-			return new IteratorPaged2RDFQuad(new InputStreamPaged() {
-				
-				protected final String uuid = getClient().findQ(getUUID(), DatasetGraphThriftFactory.toThrift(quad));
-				
-				@Override
-				protected Page nextPage() {
-					try {
-						return new Page(getClient().nextIteratorPage(uuid)); 
-					} catch (final Exception exception) {
-						throw new JenaException(exception);
-					}
-				}
-			});
-		} catch (final Exception exception) {
-			throw new JenaException(exception);
-		}
+		return iteratorPaged2RDFQuad(() -> wrappedException(() -> getClient().findQ(getUUID(), DatasetGraphThriftFactory.toThrift(quad))));
 	}
 
 	@Override
 	public Iterator<Quad> find(final Node g, final Node s, final Node p, final Node o) {
-		try {
-			return new IteratorPaged2RDFQuad(new InputStreamPaged() {
-				
-				protected final String uuid = getClient().findGSPO(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o));
-				
-				@Override
-				protected Page nextPage() {
-					try {
-						return new Page(getClient().nextIteratorPage(uuid)); 
-					} catch (final Exception exception) {
-						throw new JenaException(exception);
-					}
-				}
-			});
-		} catch (final Exception exception) {
-			throw new JenaException(exception);
-		}
+		return iteratorPaged2RDFQuad(() -> wrappedException(() -> getClient().findGSPO(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o))));
 	}
 
 	@Override
 	public Iterator<Quad> findNG(Node g, Node s, Node p, Node o) {
-		try {
-			return new IteratorPaged2RDFQuad(new InputStreamPaged() {
-				
-				protected final String uuid = getClient().findNG(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o));
-				
-				@Override
-				protected Page nextPage() {
-					try {
-						return new Page(getClient().nextIteratorPage(uuid)); 
-					} catch (final Exception exception) {
-						throw new JenaException(exception);
-					}
-				}
-			});
-		} catch (final Exception exception) {
-			throw new JenaException(exception);
-		}
+		return iteratorPaged2RDFQuad(() -> wrappedException(() -> getClient().findNG(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o))));
 	}
 
 	@Override
 	public boolean contains(Node g, Node s, Node p, Node o) {
-		try {
-			return getClient().containsGSPO(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o));
-		} catch (final Exception exception) {
-			throw new JenaException(exception);
-		}
+		return wrappedException(() -> getClient().containsGSPO(getUUID(), DatasetGraphThriftFactory.toThrift(g), DatasetGraphThriftFactory.toThrift(s), DatasetGraphThriftFactory.toThrift(p), DatasetGraphThriftFactory.toThrift(o)));
 	}
 
 	@Override
 	public boolean contains(Quad quad) {
-		try {
-			return getClient().containsQ(getUUID(), DatasetGraphThriftFactory.toThrift(quad));
-		} catch (final Exception exception) {
-			throw new JenaException(exception);
-		}
+		return wrappedException(() -> getClient().containsQ(getUUID(), DatasetGraphThriftFactory.toThrift(quad)));
 	}
 
-	@Override		// TODO Auto-generated method stub
-
+	@Override
 	public void clear() {
 		try {
 			getClient().clear(getUUID());

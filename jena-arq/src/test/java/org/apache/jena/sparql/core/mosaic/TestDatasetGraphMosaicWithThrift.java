@@ -101,7 +101,7 @@ public class TestDatasetGraphMosaicWithThrift {
 		zIFace = iFace(datasetGraphZ, 1974);
 		zClient = client(1974);
 
-		datasetGraphMosaic = new DatasetGraphMosaic();
+		datasetGraphMosaic = new DatasetGraphMosaic(new Context());
 		datasetGraphMosaic.add(xClient);
 		datasetGraphMosaic.add(yClient);
 		datasetGraphMosaic.add(zClient);

@@ -5,7 +5,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,14 +41,14 @@ import org.slf4j.Logger;
 public class DatasetGraphMosaic implements DatasetGraph {
 	
 	private static final Logger LOGGER = getLogger(DatasetGraphMosaic.class);
-
-	public static final String jenaID = UUID.randomUUID().toString();
 	
-	public static final Symbol MOSAIC_STREAM_SEQUENTIAL = Symbol.create(DatasetGraphMosaic.class.getSimpleName() + ".mosaicStreamSequential");
+	protected static final IDFactory ID_FACTORY = IDFactory.valueOf(DatasetGraphMosaic.class);
+	
+	public static final Symbol MOSAIC_STREAM_SEQUENTIAL = Symbol.create(ID_FACTORY.suffix("mosaicStreamSequential"));
 
-	public static final Symbol WRAP_ITERATOR = Symbol.create(DatasetGraphMosaic.class.getSimpleName() + ".wrapIterator");
+	public static final Symbol WRAP_ITERATOR = Symbol.create(ID_FACTORY.suffix("wrapIterator"));
 
-	protected final String id = UUID.randomUUID().toString();
+	protected final String id = IDFactory.createUUID();
 	
 	protected volatile Boolean closed = false;
 	
@@ -73,7 +72,7 @@ public class DatasetGraphMosaic implements DatasetGraph {
 	
 	protected final Context context;
 	
-	public DatasetGraphMosaic() {
+	public DatasetGraphMosaic(final Context context) {
 		super();
 		
 		mosaic = ConcurrentHashMap.newKeySet(256);
@@ -83,37 +82,10 @@ public class DatasetGraphMosaic implements DatasetGraph {
 		monitor = new WeakHashMap<>(32);
 		
 		lock = new LockMRAndMW();
+
+		shimWrite = (DatasetGraphShimWrite) context.get(DatasetGraphShimWrite.SHIM_WRITE, DatasetGraphShimWrite.RO);
 		
-		shimWrite = new DatasetGraphShimWrite() {
-			
-			@Override
-			public void add(final Node g, final Node s, final Node p, final Node o) {
-				
-			}
-			
-			@Override
-			public void add(final Quad q) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void delete(final Node g, final Node s, final Node p, final Node o) {
-				mosaicForEach((datasetGraph) -> {datasetGraph.delete(g, s, p, o);});
-			}
-			
-			@Override
-			public void delete(final Quad q) {
-				mosaicForEach((datasetGraph) -> {datasetGraph.delete(q);});
-			}
-			
-			@Override
-			public void deleteAny(final Node g, final Node s, final Node p, final Node o) {
-				mosaicForEach((datasetGraph) -> {datasetGraph.deleteAny(g, s, p, o);});
-			}
-		};
-		
-		context = new Context();
+		this.context = context;
 	}
 	
 	/*
