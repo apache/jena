@@ -92,7 +92,7 @@ public class QueryIterSort extends QueryIterPlainWrapper {
             // iterator in a try/finally block, and thus will call
             // close() themselves.
             catch (QueryCancelledException e) {
-		QueryIterSort.this.close();
+                QueryIterSort.this.close();
                 close();
                 throw e;
             }
