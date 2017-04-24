@@ -134,34 +134,37 @@ public class TestQueryIterSort {
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
     
-    @Test public void testCloseClosesSourceIterator() {
-	Context context = new Context() ;
-	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
-	QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
-	qis.close();
-	assertTrue("source iterator should have been closed", iterator.isClosed());
+    @Test 
+    public void testCloseClosesSourceIterator() {
+        Context context = new Context() ;
+        ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+        QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+        qis.close();
+        assertTrue("source iterator should have been closed", iterator.isClosed());
     }
 
-        @Test public void testExhaustionClosesSourceIterator() {
-		iterator.setCallback(() -> {});
-		Context context = new Context() ;
-		ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
-		QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
-		while (qis.hasNext()) qis.next();
-		assertTrue("source iterator should have been closed", iterator.isClosed());
-       }
+    @Test 
+    public void testExhaustionClosesSourceIterator() {
+        iterator.setCallback(() -> {});
+        Context context = new Context() ;
+        ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+        QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+        while (qis.hasNext()) qis.next();
+        assertTrue("source iterator should have been closed", iterator.isClosed());
+    }
 
-        @Test public void testCancelClosesSourceIterator() {
-		Context context = new Context() ;
-		ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
-		QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
-		try {
-			while (qis.hasNext()) qis.next();
-			fail("query should have been cancelled by trigger");
-		} catch (QueryCancelledException q) {
-			assertTrue("source iterator should have been closed", iterator.isClosed());
-		}
-	}
+    @Test 
+    public void testCancelClosesSourceIterator() {
+        Context context = new Context() ;
+        ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+        QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
+        try {
+            while (qis.hasNext()) qis.next();
+            fail("query should have been cancelled by trigger");
+        } catch (QueryCancelledException q) {
+            assertTrue("source iterator should have been closed", iterator.isClosed());
+        }
+    }
 
     @Test
     public void testCleanAfterExhaustion()
@@ -274,28 +277,27 @@ public class TestQueryIterSort {
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
     }
 
-    @Test public void testTopNCloseClosesSource() {
+    @Test 
+    public void testTopNCloseClosesSource() {
+        long numItems = 3;
+        boolean distinct = false;
+        Context context = new Context() ;
+        ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+        QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
+        tn.close();
+        assertTrue(iterator.isClosed());
+    }
 
-	long numItems = 3;
-	boolean distinct = false;
-	Context context = new Context() ;
-	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
-	QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
-	tn.close();
-	assertTrue(iterator.isClosed());
-	}
-
-       @Test public void testTopNExhaustionClosesSource() {
-
-	iterator.setCallback(() -> {});
-
-	long numItems = 3;
-	boolean distinct = false;
-	Context context = new Context() ;
-	ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
-	QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
-	while (tn.hasNext()) tn.next();
-	assertTrue(iterator.isClosed());
+    @Test 
+    public void testTopNExhaustionClosesSource() {
+        iterator.setCallback(() -> {});
+        long numItems = 3;
+        boolean distinct = false;
+        Context context = new Context() ;
+        ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
+        QueryIterTopN tn = new QueryIterTopN(iterator, comparator, numItems, distinct, ec);
+        while (tn.hasNext()) tn.next();
+        assertTrue(iterator.isClosed());
     }
 
 
@@ -354,10 +356,10 @@ public class TestQueryIterSort {
         @Override
         public boolean hasNext() 
         {
-		// self-closing
-		boolean has = delegate.hasNext() ;
-		if (has == false) closed = true;
-		return has ;
+        // self-closing
+        boolean has = delegate.hasNext() ;
+        if (has == false) closed = true;
+        return has ;
         }
 
         @Override
@@ -382,7 +384,7 @@ public class TestQueryIterSort {
         }
 
         public boolean isClosed() {
-		return closed ;
+            return closed ;
         }
 
         public boolean isCanceled() {
