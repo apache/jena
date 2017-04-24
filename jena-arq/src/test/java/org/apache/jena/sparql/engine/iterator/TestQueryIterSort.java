@@ -88,8 +88,9 @@ public class TestQueryIterSort {
     @Test
     public void testNoSpill()
     {
-        iterator.setCallback(new Callback() { @Override
-        public void call() { /* do nothing */ } });
+        iterator.setCallback(()->{});
+        //new Callback() { @Override
+        //public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
@@ -142,9 +143,7 @@ public class TestQueryIterSort {
     }
 
         @Test public void testExhaustionClosesSourceIterator() {
-		iterator.setCallback(new Callback()
-			{ @Override public void call() { /* do nothing */ }
-		});
+		iterator.setCallback(() -> {});
 		Context context = new Context() ;
 		ExecutionContext ec = new ExecutionContext(context, (Graph) null, (DatasetGraph) null, (OpExecutorFactory) null);
 		QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
@@ -167,8 +166,7 @@ public class TestQueryIterSort {
     @Test
     public void testCleanAfterExhaustion()
     {
-        iterator.setCallback(new Callback() { @Override
-        public void call() { /* do nothing */ } });
+        iterator.setCallback(() -> {});
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillToDiskThreshold, 10L) ;
@@ -250,8 +248,7 @@ public class TestQueryIterSort {
     public void testCancelInterruptsExternalSortAtStartOfIteration() 
     {
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
-        iterator.setCallback(new Callback() { @Override
-        public void call() { /* do nothing */ } });
+        iterator.setCallback(()->{});
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillToDiskThreshold, 10L) ;
@@ -290,8 +287,7 @@ public class TestQueryIterSort {
 
        @Test public void testTopNExhaustionClosesSource() {
 
-	Callback nullCB = new Callback() { @Override public void call() {} };
-	iterator.setCallback(nullCB);
+	iterator.setCallback(() -> {});
 
 	long numItems = 3;
 	boolean distinct = false;
