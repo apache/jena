@@ -1,6 +1,10 @@
 package org.apache.jena.sparql.core.mirage;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -10,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.GraphView;
@@ -24,9 +29,17 @@ public class DatasetGraphMirage implements DatasetGraph {
 	
 	public static final Quad QUAD_ANY = new Quad(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
 	
+	public static final String NODE_ANY_URI = "urn:jena:node/any";
+	
 	protected final Set<Ray> rays;
 	
 	protected final Context context;
+
+	protected final ThreadLocal<ReadWrite> type;
+	
+	protected final ThreadLocal<Set<Ray>> children;
+	
+	protected volatile Boolean closed = false;
 	
 	public DatasetGraphMirage(final Context context) {
 		super();
@@ -35,6 +48,10 @@ public class DatasetGraphMirage implements DatasetGraph {
 		rays = ConcurrentHashMap.newKeySet(256);
 		
 		this.context = context;
+		
+		type = new ThreadLocal<>();
+		
+		children = ThreadLocal.withInitial(HashSet::new);
 	}
 	
 	public void addRay(final Ray ray) {
@@ -65,7 +82,7 @@ public class DatasetGraphMirage implements DatasetGraph {
 		return streamRays()
 			.flatMap(Ray::listGraphNodes)
 			.distinct()
-			.peek((node) -> {LOGGER.info("node={}", node);});
+			.peek((node) -> {LOGGER.debug("node={}", node);});
 	}
 	
 	/**
@@ -91,6 +108,46 @@ public class DatasetGraphMirage implements DatasetGraph {
 	
 	public boolean mirageMatchAny(final Stream<Quad> stream, final Predicate<Quad> predicate) {
 		return stream.anyMatch(predicate::test);
+	}
+
+	protected void exceptionIfClosed() {
+		if (closed) {
+			throw new JenaException(DatasetGraphMirage.class + " is closed");
+		}
+	}
+
+	/**
+	 * Return the per thread transaction type.
+	 */
+	protected ReadWrite getType() {
+		return type.get();
+	}
+	
+	/**
+	 * Return the per thread children.
+	 */
+	protected Set<Ray> getChildren() {
+		return children.get();
+	}
+	
+	protected Ray begin(final Ray ray) {
+		LOGGER.debug("begin(ray=[{}])", ray);
+		if (!isInTransaction()) {
+			throw new JenaException("No parent transaction");
+		}
+		try {
+			if (!children.get().contains(ray)) {
+				if (ray.supportsTransactions()) {
+					ray.begin(type.get());
+				}
+				children.get().add(ray);
+				LOGGER.debug("begin(ray=[{}]) added ray", ray);
+			}
+			return ray;
+		} catch (final Exception exception) {
+			throw new JenaException(exception);
+		}
+
 	}
 	
 	/*
@@ -132,8 +189,11 @@ public class DatasetGraphMirage implements DatasetGraph {
 	@Override
 	public Iterator<Node> listGraphNodes() {
 		return streamRays()
-			.flatMap(Ray::listGraphNodes)
+			.flatMap((ray) -> {
+				return begin(ray).listGraphNodes();
+			})
 			.distinct()
+			.peek((node) -> {LOGGER.debug("listGraphNodes() node=[{}]", node);})
 			.iterator();
 	}
 
@@ -229,7 +289,7 @@ public class DatasetGraphMirage implements DatasetGraph {
 
 	@Override
 	public boolean supportsTransactions() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -242,8 +302,11 @@ public class DatasetGraphMirage implements DatasetGraph {
 	 */
 
 	@Override
-	public void begin(ReadWrite readWrite) {
-		throw new UnsupportedOperationException();
+	public void begin(final ReadWrite readWrite) {
+		if (isInTransaction()) {
+			throw new JenaException("Already in a transaction " + type);
+		}
+		type.set(readWrite);
 	}
 
 	@Override
@@ -258,12 +321,33 @@ public class DatasetGraphMirage implements DatasetGraph {
 
 	@Override
 	public void end() {
-		throw new UnsupportedOperationException();
+		if (Objects.equals(getType(), ReadWrite.WRITE)) {
+			LOGGER.warn("End without commit/abort");
+		}
+		List<Exception> threw = new LinkedList<>();
+		getChildren()
+			.forEach((ray) -> {
+				try {
+					if (ray.supportsTransactions()) {
+						ray.end();
+					}
+				} catch (final Exception exception) {
+					threw.add(exception);
+				}
+			});
+		getChildren().clear();
+		children.remove();
+		type.remove();
+		if (!threw.isEmpty()) {
+			final JenaException jenaException = new JenaException();
+			threw.forEach((exception) -> {jenaException.addSuppressed(exception);});
+			throw jenaException;
+		}
 	}
 
 	@Override
 	public boolean isInTransaction() {
-		return false;
+		return getType() != null;
 	}
 
 	/*

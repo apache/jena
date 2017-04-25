@@ -3,15 +3,15 @@ package org.apache.jena.sparql.core.mirage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RayFolderResolverRoot implements RayFolderResolver {
+public class RayFolderResolverPrefix implements RayFolderResolver {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RayFolderResolverRoot.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RayFolderResolverPrefix.class);
 	
 	protected final String nodePrefix;
 	
 	protected final String filePrefix;
 	
-	public RayFolderResolverRoot(final String nodePrefix, final String filePrefix) {
+	public RayFolderResolverPrefix(final String nodePrefix, final String filePrefix) {
 		super();
 		this.nodePrefix = nodePrefix;
 		this.filePrefix = filePrefix;
