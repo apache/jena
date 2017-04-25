@@ -1218,23 +1218,21 @@ public class RDFDataMgr
     }
 
     private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
-        WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(graph).output(out);
     }
 
+    @SuppressWarnings("deprecation")
     private static void write$(Writer out, Graph graph, RDFFormat serialization) {
-        WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(graph).build().output(out);
     }
 
     private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(dataset).output(out);
     }
 
+    @SuppressWarnings("deprecation")
     private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization) {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(dataset).build().output(out);
     }
 
     /**
