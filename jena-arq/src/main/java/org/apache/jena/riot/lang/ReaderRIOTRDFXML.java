@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -29,17 +30,13 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.ReaderRIOT;
-import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.SysRIOT;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -53,6 +50,9 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     public static class Factory implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile parserProfile) {
+            // Ignore the provided ParserProfile
+            // ARP predates RIOT and does many things internall already.
+            // Thisincludes IRI resolution.
             return new ReaderRIOTRDFXML(parserProfile.getErrorHandler()) ;
         }
     }
@@ -87,18 +87,30 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         this.sink = output ;
         parse();
     }
+    
+    // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
+    // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
+    // Use with TDB erquires this to be "true" - it is set by InitTDB.
     public static boolean RiotUniformCompatibility = false ;
     // Warnings in ARP that should be errors to be compatible with
     // non-XML-based languages.  e.g. language tags should be
     // syntactically valid.
     private static int[] additionalErrors = new int[] {
         ARPErrorNumbers.WARN_MALFORMED_XMLLANG
+        //, ARPErrorNumbers.WARN_MALFORMED_URI 
         //, ARPErrorNumbers.WARN_STRING_NOT_NORMAL_FORM_C
     } ;
+
+    // Special case of space in URI is handled in HandlerSink (below).
+    // This is instead of ARPErrorNumbers.WARN_MALFORMED_URI in additionalErrors[].
+    // which causes a WARN (from ARP, with line+column numbers) then a ERROR from RIOT.
+    // It's a pragmatic compromise.
+    private static boolean errorForSpaceInURI = true;
     
     public void parse() {
         // Hacked out of ARP because of all the "private" methods
+        // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
         HandlerSink rslt = new HandlerSink(sink, errorHandler) ;
         arp.getHandlers().setStatementHandler(rslt) ;
@@ -109,9 +121,12 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
             ARPOptions options = arp.getOptions() ;
             // Convert some warnings to errors for compatible behaviour for all parsers.
             for ( int code : additionalErrors )
-                options.setErrorMode(code, ARPErrorNumbers.EM_FATAL) ;
+                options.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
             arp.setOptionsWith(options) ;
         }
+        
+        if ( JenaRuntime.isRDF11 )
+            arp.getOptions().setIRIFactory(IRIFactory.iriImplementation());
 
         try {
             if ( reader != null )
@@ -142,13 +157,13 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler {
         private StreamRDF       output ;
-        private ErrorHandler    errHandler ;
+        private ErrorHandler    riotErrorHandler ;
         private CheckerLiterals checker ;
 
         HandlerSink(StreamRDF output, ErrorHandler errHandler) {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
-            this.errHandler = errHandler ;
+            this.riotErrorHandler = errHandler ;
             this.checker = new CheckerLiterals(errHandler) ;
         }
         
@@ -172,13 +187,26 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
             return NodeFactory.createLiteral(lit.toString(), dt);
-
         }
 
-        private static Node convert(AResource r) {
-            if (!r.isAnonymous())
-                return NodeFactory.createURI(r.getURI());
-
+        private Node convert(AResource r) {
+            if (!r.isAnonymous()) {
+                // URI.
+                String uriStr = r.getURI() ;
+                if ( errorForSpaceInURI ) {
+                    // Special check for spaces in a URI.
+                    // Convert to an error like TokernizerText.
+                    if ( uriStr.contains(" ") ) {
+                        int i = uriStr.indexOf(' ');
+                        String s = uriStr.substring(0,i);
+                        String msg = String.format("Bad character in IRI (space): <%s[space]...>", s);
+                        riotErrorHandler.error(msg, -1, -1);
+                        throw new RiotParseException(msg, -1, -1);
+                    }
+                }
+                return NodeFactory.createURI(uriStr);
+            }
+            
             // String id = r.getAnonymousID();
             Node rr = (Node) r.getUserData();
             if (rr == null) {
@@ -186,7 +214,6 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
                 r.setUserData(rr);
             }
             return rr;
-
         }
 
         private Triple convert(AResource s, AResource p, AResource o) {
