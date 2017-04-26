@@ -16,12 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text.assembler;
+package org.apache.jena.query.text.es.assembler;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
-import org.apache.jena.query.text.*;
+import org.apache.jena.query.text.EntityDefinition;
+import org.apache.jena.query.text.TextIndex;
+import org.apache.jena.query.text.TextIndexConfig;
+import org.apache.jena.query.text.TextIndexException;
+import org.apache.jena.query.text.es.*;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.slf4j.Logger;
@@ -105,7 +109,7 @@ public class TextIndexESAssembler extends AssemblerBase {
                     .indexName(indexName)
                     .build();
 
-            return TextDatasetFactory.createESIndex(config, settings) ;
+            return TextESDatasetFactory.createESIndex(config, settings) ;
         } catch (Exception e) {
             throw new TextIndexException("An exception occurred while trying to open/load the Assembler configuration. ", e);
         }

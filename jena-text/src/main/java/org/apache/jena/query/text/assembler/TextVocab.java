@@ -78,8 +78,6 @@ public class TextVocab
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
     public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
 
-    //Elasticsearch
-    public static final Resource textIndexES        = Vocab.resource(NS, "TextIndexES") ;
     public static final Property pServerList        = Vocab.property(NS, "serverList");
     public static final Property pClusterName       = Vocab.property(NS, "clusterName");
     public static final Property pShards            = Vocab.property(NS, "shards");

@@ -77,7 +77,8 @@
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         
-        <!--<module>jena-text</module>-->
+        <module>jena-text</module>
+        <!--<module>jena-text-es</module>-->
         <!--<module>jena-spatial</module>-->
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
@@ -118,12 +119,13 @@
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         <module>jena-text</module>
+        <!--<module>jena-text-es</module>-->
         <module>jena-spatial</module>
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
       </modules>
     </profile>
-      
+    
     <profile>
       <!--
           This is the complete profile, it builds everything including slow
@@ -151,6 +153,9 @@
         <module>jena-cmds</module>
 
         <module>jena-text</module>
+        <!-- Move later? -->
+        <module>jena-text-es</module>
+
         <module>jena-spatial</module>
         <module>jena-csv</module>
 
