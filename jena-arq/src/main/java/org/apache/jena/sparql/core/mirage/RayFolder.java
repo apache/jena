@@ -14,22 +14,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.mem.HexTable;
 import org.apache.jena.sparql.core.mem.TriTable;
-import org.apache.jena.sparql.core.mem.TripleTable;
-import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,9 +233,8 @@ public class RayFolder implements Ray {
 	}
 
 	@Override
-	public void begin(ReadWrite readWrite) {
-		// TODO Auto-generated method stub
-		Ray.super.begin(readWrite);
+	public void begin(final ReadWrite readWrite) {
+		
 	}
 
 	@Override

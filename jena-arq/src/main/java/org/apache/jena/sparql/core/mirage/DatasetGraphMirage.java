@@ -16,9 +16,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.Lock;
+import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.mosaic.LockMRAndMW;
 import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,8 @@ public class DatasetGraphMirage implements DatasetGraph {
 	
 	protected final Context context;
 
+	protected Lock lock;
+	
 	protected final ThreadLocal<ReadWrite> type;
 	
 	protected final ThreadLocal<Set<Ray>> children;
@@ -44,10 +48,12 @@ public class DatasetGraphMirage implements DatasetGraph {
 	public DatasetGraphMirage(final Context context) {
 		super();
 
-		// TODO Implement this as a TreeSet to enable ordering and thus possible optimisation in short circuit streams.
+		// TODO Implement this as a TreeSet to enable ordering and thus possible optimisation via stream short circuit.
 		rays = ConcurrentHashMap.newKeySet(256);
 		
 		this.context = context;
+		
+		lock = new LockMRAndMW();
 		
 		type = new ThreadLocal<>();
 		
@@ -130,6 +136,9 @@ public class DatasetGraphMirage implements DatasetGraph {
 		return children.get();
 	}
 	
+	/**
+	 * Begin a transaction on the given Ray.
+	 */
 	protected Ray begin(final Ray ray) {
 		LOGGER.debug("begin(ray=[{}])", ray);
 		if (!isInTransaction()) {
@@ -266,8 +275,7 @@ public class DatasetGraphMirage implements DatasetGraph {
 
 	@Override
 	public Lock getLock() {
-		// TODO Auto-generated method stub
-		return null;
+		return lock;
 	}
 
 	@Override

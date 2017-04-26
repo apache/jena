@@ -103,7 +103,7 @@ public class TransactionalDistributed implements Transactional {
 		return workers;
 	}
 
-	/**throw new JenaE
+	/**
 	 * Get the ThreadProxy for the given DatasetGraph.
 	 */
 	protected ThreadProxy getWorker(final DatasetGraph datasetGraph) {
