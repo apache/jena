@@ -36,12 +36,13 @@ import java.util.Iterator;
     Implementors are encouraged to dispose of resources as soon as is convenient.
  */
 
-public interface ClosableIterator<T> extends Iterator<T> 
+public interface ClosableIterator<T> extends Iterator<T>, AutoCloseable
     {
     /** 
         Close the iterator. Other operations on this iterator may now throw an exception. 
         A ClosableIterator may be closed as many times as desired - the subsequent
         calls do nothing.
     */
+    @Override
     public void close();
     }
