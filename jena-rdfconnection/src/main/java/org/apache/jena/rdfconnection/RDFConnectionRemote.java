@@ -50,7 +50,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
 
 /** 
- * Implemntation of the {@link RDFConnection} interface using remote SPARQL operations.  
+ * Implementation of the {@link RDFConnection} interface using remote SPARQL operations.  
  */
 public class RDFConnectionRemote implements RDFConnection {
     private static final String fusekiDftSrvQuery   = "sparql";
@@ -74,7 +74,6 @@ public class RDFConnectionRemote implements RDFConnection {
              fusekiDftSrvGSP);
     }
 
-
     /** Create connection, using URL of the dataset and default service names */
     public RDFConnectionRemote(String destination) {
         this(requireNonNull(destination),
@@ -83,7 +82,6 @@ public class RDFConnectionRemote implements RDFConnection {
              fusekiDftSrvGSP);
     }
 
-    // ??
     /** Create connection, using full URLs for services. Pass a null for "no service endpoint". */
     public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
         this(null, sQuery, sUpdate, sGSP);
@@ -97,9 +95,9 @@ public class RDFConnectionRemote implements RDFConnection {
     /** Create connection, using URL of the dataset and short names for the services */
     public RDFConnectionRemote(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
         this.destination = destination;
-        this.svcQuery = formServiceURL(destination,sQuery);
-        this.svcUpdate = formServiceURL(destination,sUpdate);
-        this.svcGraphStore = formServiceURL(destination,sGSP);
+        this.svcQuery = RDFConn.formServiceURL(destination, sQuery);
+        this.svcUpdate = RDFConn.formServiceURL(destination, sUpdate);
+        this.svcGraphStore = RDFConn.formServiceURL(destination, sGSP);
         this.httpClient = httpClient;
     }
     
@@ -119,25 +117,20 @@ public class RDFConnectionRemote implements RDFConnection {
         this.httpContext = httpContext;
     }
 
-    private static String formServiceURL(String destination, String srvEndpoint) {
-        if ( destination == null )
-            return srvEndpoint;
-        String dest = destination;
-        if ( dest.endsWith("/") )
-            dest = dest.substring(0, dest.length()-1);
-        return dest+"/"+srvEndpoint;
-    }
+    
 
+    // Needs HttpContext
+    
     @Override
     public QueryExecution query(Query query) {
         checkQuery();
-        return exec(()->QueryExecutionFactory.createServiceRequest(svcQuery, query));
+        return exec(()->QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext));
     }
 
     @Override
     public void update(UpdateRequest update) {
         checkUpdate();
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, svcUpdate);
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, svcUpdate, this.httpClient, this.httpContext);
         exec(()->proc.execute());
     }
     
