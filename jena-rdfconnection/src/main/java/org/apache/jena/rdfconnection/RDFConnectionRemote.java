@@ -200,7 +200,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(model, null, true);
     }
     
-    private void upload(String graph, String file, boolean replace) {
+    /** Send a file to named graph (or "default" or null for the default graph).
+     * <p>
+     * The Content-Type is inferred from the file extension.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void upload(String graph, String file, boolean replace) {
         // if triples
         Lang lang = RDFLanguages.filenameToLang(file);
         if ( RDFLanguages.isQuads(lang) )
@@ -211,7 +217,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(url, file, lang, replace);
     }
 
-    private void doPutPost(String url, String file, Lang lang, boolean replace) {
+    /** Send a file to named graph (or "default" or null for the defaultl graph).
+     * <p>
+     * The Content-Type is taken from the given {@code Lang}.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void doPutPost(String url, String file, Lang lang, boolean replace) {
         File f = new File(file);
         long length = f.length(); 
         InputStream source = IO.openFile(file);
@@ -224,7 +236,13 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    private void doPutPost(Model model, String name, boolean replace) {
+    /** Send a model to named graph (or "default" or null for the defaultl graph).
+     * <p>
+     * The Content-Type is taken from the given {@code Lang}.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void doPutPost(Model model, String name, boolean replace) {
         String url = RDFConn.urlForGraph(svcGraphStore, name);
         exec(()->{
             Graph graph = model.getGraph();
@@ -289,7 +307,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPostDataset(dataset, true); 
     }
 
-    private void doPutPostDataset(String file, boolean replace) {
+    /** Do a PUT or POST to a dataset, sending the contents of the file.
+     * <p>
+     * The Content-Type is inferred from the file extension.
+     * <p>
+     * "Replace" implies PUT, otherwise a POST is used.
+     */
+    protected void doPutPostDataset(String file, boolean replace) {
         Lang lang = RDFLanguages.filenameToLang(file);
         File f = new File(file);
         long length = f.length();
@@ -302,7 +326,12 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    private void doPutPostDataset(Dataset dataset, boolean replace) {
+    /** Do a PUT or POST to a dataset, sending the contents of a daatsets.
+     * The Content-Type is {@code application/n-quads}.
+     * <p>
+     * "Replace" implies PUT, otherwise a POST is used.
+     */
+    protected void doPutPostDataset(Dataset dataset, boolean replace) {
         exec(()->{
             DatasetGraph dsg = dataset.asDatasetGraph();
             if ( replace )
