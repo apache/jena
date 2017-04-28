@@ -117,10 +117,6 @@ public class RDFConnectionRemote implements RDFConnection {
         this.httpContext = httpContext;
     }
 
-    
-
-    // Needs HttpContext
-    
     @Override
     public QueryExecution query(Query query) {
         checkQuery();
@@ -341,7 +337,6 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-
     private void checkQuery() {
         checkOpen();
         if ( svcQuery == null )
@@ -425,12 +420,8 @@ public class RDFConnectionRemote implements RDFConnection {
         throw ex;
     }
 
-    /** Engine for the transaction lifecycle.
-     * MR+SW
-     */
-    
+    /** Engine for the transaction lifecycle. MR+SW */
     static class TxnLifecycle implements Transactional {
-        // MR+SW policy.
         private ReentrantLock lock = new ReentrantLock();
         private ThreadLocal<ReadWrite> mode = ThreadLocal.withInitial(()->null);
         @Override
@@ -488,6 +479,5 @@ public class RDFConnectionRemote implements RDFConnection {
 
     @Override
     public void end()                       { inner.end(); }
-
 }
 
