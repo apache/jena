@@ -27,8 +27,10 @@ import java.io.FileInputStream ;
 import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.Collator;
 import java.util.Calendar ;
 import java.util.Iterator ;
+import java.util.Locale;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
 
@@ -243,8 +245,12 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDouble(double d)
     { return new NodeValueDouble(d) ; }
 
-    public static NodeValue makeString(String s) 
+    public static NodeValue makeString(String s)
     { return new NodeValueString(s) ; }
+
+    // instead of changing makeString, we can add another method like makeCollatedString
+    public static NodeValue makeString(String s, String collation)
+    { return new NodeValueString(s, collation) ; }
 
     public static NodeValue makeLangString(String s, String lang) 
     { return new NodeValueLang(s, lang) ; }
@@ -750,7 +756,18 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) ;
             case VSPACE_STRING:
             {
-                int cmp = XSDFuncOp.compareString(nv1, nv2) ;
+                // Not sure if this would fit in XSDFuncOp, maybe passing a locale string or Collator object
+                // to compareString
+                int cmp = 0;
+                String c1 = nv1.getCollation();
+                String c2 = nv2.getCollation();
+                if (c1 != null && c2 != null && c1.equals(c2)) {
+                    Locale desiredLocale = Locale.forLanguageTag(c1);
+                    Collator collator = Collator.getInstance(desiredLocale);
+                    cmp = collator.compare(nv1.getString(), nv2.getString());
+                } else {
+                    cmp = XSDFuncOp.compareString(nv1, nv2) ;
+                }
                 
                 // Split plain literals and xsd:strings for sorting purposes.
                 if ( ! sortOrderingCompare )
@@ -954,7 +971,8 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
-    
+    public String      getCollation()   { raise(new ExprEvalTypeException("Not a collation: "+this)) ; return null ; }
+
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }

@@ -188,6 +188,11 @@ public class NodeFunctions {
         return NodeValue.makeString(str(nv.asNode())) ;
     }
 
+    // or instead or can create another utility method like strCollation(NodeValue, String)
+    public static NodeValue str(NodeValue nv, String collation) {
+        return NodeValue.makeString(str(nv.asNode()), collation) ;
+    }
+
     public static String str(Node node) {
         if ( node.isLiteral() )
             return node.getLiteral().getLexicalForm() ;

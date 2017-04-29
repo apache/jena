@@ -29,9 +29,14 @@ public class NodeValueString extends NodeValue
     // A plain string, with no language tag, or an xsd:string.
     
     private String string ; 
-    
-    public NodeValueString(String str)         { string = str ; } 
-    public NodeValueString(String str, Node n) { super(n) ; string = str ; }
+    // Here we are adding a new feature to a NodeValueString. Instead, we could try to create a new type
+    // that extends NodeValue. e.g. NodeValueCollatedString, moving this property and half constructors away
+    private final String collation;
+
+    public NodeValueString(String str)         { this(str, (String) null); }
+    public NodeValueString(String str, String collation)         { string = str ; this.collation = collation; }
+    public NodeValueString(String str, Node n) { this(str, n, (String) null); }
+    public NodeValueString(String str, Node n, String collation) { super(n) ; string = str ; this.collation = collation; }
     
     @Override
     public boolean isString() { return true ; }
@@ -41,7 +46,10 @@ public class NodeValueString extends NodeValue
 
     @Override
     public String asString() { return string ; }
-    
+
+    @Override
+    public String getCollation() { return collation ; }
+
     @Override
     public String toString()
     { 
