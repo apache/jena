@@ -19,11 +19,14 @@
 package org.apache.jena.sparql.function.library;
 
 import java.text.Collator;
+import java.text.RuleBasedCollator;
 import java.util.Locale;
 
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueLang;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
 import org.apache.jena.sparql.function.FunctionBase2;
 
 /**
@@ -41,6 +44,8 @@ import org.apache.jena.sparql.function.FunctionBase2;
  * expr is a {@link NodeValueLang} (e.g. rendered from "Casa"@pt), the language tag will
  * be discarded, and only the literal string value (i.e. Casa) will be taken into account
  * for this function.</p>
+ *
+ * @see {@link NodeValueSortKey}
  */
 public class FN_Collation extends FunctionBase2 {
 
@@ -53,7 +58,7 @@ public class FN_Collation extends FunctionBase2 {
         // retrieve collation value
         String collation = NodeFunctions.str(v1.asNode());
         // return a NodeValue that contains the v2 literal string, plus the given collation
-        return NodeFunctions.str(v2, collation);
+        return NodeFunctions.sortKey(v2, collation);
     }
 
 }

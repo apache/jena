@@ -248,9 +248,8 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeString(String s)
     { return new NodeValueString(s) ; }
 
-    // instead of changing makeString, we can add another method like makeCollatedString
-    public static NodeValue makeString(String s, String collation)
-    { return new NodeValueString(s, collation) ; }
+    public static NodeValue makeSortKey(String s, String collation)
+    { return new NodeValueSortKey(s, collation) ; }
 
     public static NodeValue makeLangString(String s, String lang) 
     { return new NodeValueLang(s, lang) ; }
@@ -736,6 +735,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_NODE :
             case VSPACE_NUM :
             case VSPACE_STRING :
+            case VSPACE_SORTKEY :
             case VSPACE_UNKNOWN :
                 // Drop through.
         }
@@ -756,18 +756,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_NUM:        return XSDFuncOp.compareNumeric(nv1, nv2) ;
             case VSPACE_STRING:
             {
-                // Not sure if this would fit in XSDFuncOp, maybe passing a locale string or Collator object
-                // to compareString
-                int cmp = 0;
-                String c1 = nv1.getCollation();
-                String c2 = nv2.getCollation();
-                if (c1 != null && c2 != null && c1.equals(c2)) {
-                    Locale desiredLocale = Locale.forLanguageTag(c1);
-                    Collator collator = Collator.getInstance(desiredLocale);
-                    cmp = collator.compare(nv1.getString(), nv2.getString());
-                } else {
-                    cmp = XSDFuncOp.compareString(nv1, nv2) ;
-                }
+                int cmp = XSDFuncOp.compareString(nv1, nv2) ;
                 
                 // Split plain literals and xsd:strings for sorting purposes.
                 if ( ! sortOrderingCompare )
@@ -782,6 +771,22 @@ public abstract class NodeValue extends ExprNode
                 if ( dt2 == null && dt1 != null )
                     return Expr.CMP_GREATER ;
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
+            }
+            case VSPACE_SORTKEY :
+            {
+                int cmp = 0;
+                String c1 = nv1.getCollation();
+                String c2 = nv2.getCollation();
+                if (c1 != null && c2 != null && c1.equals(c2)) {
+                    // locales are parsed. Here we could think about caching if necessary
+                    Locale desiredLocale = Locale.forLanguageTag(c1);
+                    // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>
+                    Collator collator = Collator.getInstance(desiredLocale);
+                    cmp = collator.compare(nv1.getString(), nv2.getString());
+                } else {
+                    cmp = XSDFuncOp.compareString(nv1, nv2) ;
+                }
+                return cmp;
             }
             case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
@@ -884,6 +889,7 @@ public abstract class NodeValue extends ExprNode
             return VSPACE_DATE ;
         
         if ( nv.isString())         return VSPACE_STRING ;
+        if ( nv.isSortKey())        return VSPACE_SORTKEY ;
         if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
         
         if ( ! nv.isLiteral() )     return VSPACE_NODE ;
@@ -927,6 +933,7 @@ public abstract class NodeValue extends ExprNode
     public boolean isBoolean()      { return false ; } 
     public boolean isString()       { return false ; } 
     public boolean isLangString()   { return false ; }
+    public boolean isSortKey()      { return false ; }
 
     public boolean isNumber()       { return false ; }
     public boolean isInteger()      { return false ; }
@@ -971,7 +978,7 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
-    public String      getCollation()   { raise(new ExprEvalTypeException("Not a collation: "+this)) ; return null ; }
+    public String      getCollation()   { raise(new ExprEvalTypeException("Not a sort key: "+this)) ; return null ; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }

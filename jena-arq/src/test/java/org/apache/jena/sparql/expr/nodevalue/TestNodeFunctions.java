@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr;
+package org.apache.jena.sparql.expr.nodevalue;
 
-public enum ValueSpaceClassification {
-    VSPACE_NODE,
-    VSPACE_NUM, 
-    VSPACE_DATETIME, 
-    VSPACE_DATE,
-    VSPACE_TIME,
-    VSPACE_DURATION,
-    
-    // Collapse to VSPACE_DATETIME?
-    VSPACE_G_YEAR,
-    VSPACE_G_YEARMONTH,
-    VSPACE_G_MONTHDAY,
-    VSPACE_G_MONTH,    
-    VSPACE_G_DAY,
-    
-    VSPACE_STRING, VSPACE_LANG, VSPACE_SORTKEY,
-    VSPACE_BOOLEAN,
-    VSPACE_UNKNOWN,
-    VSPACE_DIFFERENT
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.jena.sparql.expr.NodeValue;
+import org.junit.Test;
+
+/**
+ * Tests for {@link NodeFunctions}.
+ */
+public class TestNodeFunctions {
+
+    @Test
+    public void testSortKeyNodeValue() {
+        NodeValue noveValue = NodeValue.makeString("Casa");
+        NodeValue nv = NodeFunctions.sortKey(noveValue, "es");
+        assertTrue(nv instanceof NodeValueSortKey);
+        assertEquals("es", ((NodeValueSortKey) nv).getCollation());
+    }
+
 }

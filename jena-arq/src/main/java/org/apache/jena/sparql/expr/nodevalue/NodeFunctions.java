@@ -188,11 +188,6 @@ public class NodeFunctions {
         return NodeValue.makeString(str(nv.asNode())) ;
     }
 
-    // or instead or can create another utility method like strCollation(NodeValue, String)
-    public static NodeValue str(NodeValue nv, String collation) {
-        return NodeValue.makeString(str(nv.asNode()), collation) ;
-    }
-
     public static String str(Node node) {
         if ( node.isLiteral() )
             return node.getLiteral().getLexicalForm() ;
@@ -205,6 +200,12 @@ public class NodeFunctions {
 
         NodeValue.raise(new ExprEvalException("Not a string: " + node)) ;
         return "[undef]" ;
+    }
+
+    // -------- sort key (collation)
+
+    public static NodeValue sortKey(NodeValue nv, String collation) {
+        return NodeValue.makeSortKey(str(nv.asNode()), collation) ;
     }
 
     // -------- datatype
