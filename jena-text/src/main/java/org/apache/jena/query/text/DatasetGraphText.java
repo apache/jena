@@ -40,11 +40,9 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     // JENA-1302.
     private final Object        txnExitLock = new Object();
     
-    
     // If we are going to implement Transactional, then we are going to have to do as DatasetGraphWithLock and
     // TDB's DatasetGraphTransaction do and track transaction state in a ThreadLocal
     private final ThreadLocal<ReadWrite> readWriteMode = new ThreadLocal<>();
-    
     
     public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer)
     { 
