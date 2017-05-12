@@ -50,7 +50,7 @@ public enum JournalEntryType
         else if ( x == ABORT.id )           return ABORT ;
         //else if ( x == CHECKPOINT.id )      return CHECKPOINT ;
         else {
-            Log.fatal(JournalEntryType.class, "Unknown type: "+x) ;
+            Log.error(JournalEntryType.class, "Unknown type: "+x) ;
             throw new InternalErrorException("Unknown type: "+x) ;
         }
     }

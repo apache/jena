@@ -251,7 +251,7 @@ public class SystemTDB
     
     public static void panic(Class<?> clazz, String string)
     {
-        Log.fatal(clazz, string) ;
+        Log.error(clazz, string) ;
         throw new TDBException(string) ;
     }
     

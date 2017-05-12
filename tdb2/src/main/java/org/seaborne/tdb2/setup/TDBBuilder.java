@@ -21,7 +21,6 @@ import java.io.File ;
 import java.io.FileFilter ;
 import java.util.UUID ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -181,8 +180,8 @@ public class TDBBuilder {
 
         // Validation checks - common index forms.  
         if ( indexes.length != 3 && indexes.length != 2 )
-            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+            error(log, "Wrong number of triple table indexes: "+String.join(",", indexes)) ;
+        log.debug("Triple table: "+primary+" :: "+String.join(",", indexes)) ;
 
         TupleIndex tripleIndexes[] = makeTupleIndexes(primary, indexes) ;
 
@@ -198,8 +197,8 @@ public class TDBBuilder {
 
         // Validation checks - common index forms.  
         if ( indexes.length != 6 && indexes.length != 4 )
-            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+            error(log, "Wrong number of quad table indexes: "+String.join(",", indexes)) ;
+        log.debug("Quad table: "+primary+" :: "+String.join(",", indexes)) ;
 
         TupleIndex tripleIndexes[] = makeTupleIndexes(primary, indexes) ;
 
@@ -223,7 +222,7 @@ public class TDBBuilder {
                                                                 prefixIndexes,
                                                                 prefixNodes, createPolicy()) ;
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
-        log.debug("Prefixes: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+        log.debug("Prefixes: "+primary+" :: "+String.join(",", indexes)) ;
         return prefixes ;
     }
 

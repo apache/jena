@@ -95,7 +95,7 @@ public class ObjectFileStorage implements ObjectFile
         log("W") ;
 
         if ( inAllocWrite )
-            Log.fatal(this, "In the middle of an alloc-write") ;
+            Log.error(this, "In the middle of an alloc-write") ;
         inAllocWrite = false ;
         if ( writeBuffer == null ) {
             long x = rawWrite(bb) ;
@@ -149,7 +149,7 @@ public class ObjectFileStorage implements ObjectFile
     public Block allocWrite(int bytesSpace) {
         // log.info("AW("+bytesSpace+"):"+state()) ;
         if ( inAllocWrite )
-            Log.fatal(this, "In the middle of an alloc-write") ;
+            Log.error(this, "In the middle of an alloc-write") ;
 
         // Include space for length.
         int spaceRequired = bytesSpace + SizeOfInt ;

@@ -104,11 +104,11 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
             return Long.parseLong(str) ;
         } 
         catch (IOException ex) {
-            Log.fatal(TransInteger.class, "IOException: " + ex.getMessage(), ex) ;
+            Log.error(TransInteger.class, "IOException: " + ex.getMessage(), ex) ;
             IO.exception(ex) ;
         }
         catch (NumberFormatException ex) {
-            Log.fatal(TransInteger.class, "NumberformatException: " + ex.getMessage()) ;
+            Log.error(TransInteger.class, "NumberformatException: " + ex.getMessage()) ;
             throw new InternalErrorException(ex) ;
         }
         // Not reached.

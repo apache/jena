@@ -52,42 +52,53 @@ final
 public class DatasetGraphTDB extends DatasetGraphTriplesQuads
                              implements DatasetGraphTxn, Sync, Closeable
 {
-    // SWITCHING.
-    private TripleTable tripleTable ;
-    private QuadTable quadTable ;
-    private DatasetPrefixStorage prefixes ;
-    private Location location ;
-    // SWITCHING.
+    private StorageTDB storage; 
+//    // SWITCHING.
+//    private TripleTable tripleTable ;
+//    private QuadTable quadTable ;
+//    private DatasetPrefixStorage prefixes ;
+//    private Location location ;
+//    private StoreParams storeParams ;
+//    // SWITCHING.
+    private TransactionalSystem txnSystem ;
     private final ReorderTransformation transform ;
-    private StoreParams config ;
     
     private GraphTDB defaultGraphTDB ;
     private final boolean checkForChange = false ;
     private boolean closed = false ;
-    private TransactionalSystem txnSystem ;
 
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
                            TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {
-        reset(txnSystem,tripleTable, quadTable, prefixes, location, params) ;
+        reset(txnSystem, tripleTable, quadTable, prefixes, location, params) ;
         this.transform = transform ;
         this.defaultGraphTDB = getDefaultGraphTDB() ;
     }
 
-    public void reset(TransactionalSystem txnSystem, 
+    public void reset(TransactionalSystem txnSystem,
                       TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
                       Location location, StoreParams params) {
+//        this.tripleTable = tripleTable ;
+//        this.quadTable = quadTable ;
+//        this.location = location ;
+//        this.prefixes = prefixes ;
+//        this.storeParams = params ;
         this.txnSystem = txnSystem ;
-        this.tripleTable = tripleTable ;
-        this.quadTable = quadTable ;
-        this.prefixes = prefixes ;
-        this.defaultGraphTDB = getDefaultGraphTDB() ;
-        this.config = params ;
-        this.location = location ;
+        // XXX Threading?
+        // XXX (re)set transaction components in TransactionCoordinator?? 
+        this.storage = new StorageTDB(tripleTable, quadTable, prefixes, location, params);
+        this.defaultGraphTDB = getDefaultGraphTDB();
     }
     
-    public QuadTable getQuadTable()         { checkNotClosed() ; return quadTable ; }
-    public TripleTable getTripleTable()     { checkNotClosed() ; return tripleTable ; }
+    public QuadTable getQuadTable()         { checkNotClosed(); return storage.quadTable; }
+    public TripleTable getTripleTable()     { checkNotClosed(); return storage.tripleTable; }
+
+    /** Low level manipulation. */
+    public StorageTDB getStorage()              { return storage; }
+    /** Low level manipulation. 
+     * <b>Do not use unless in exclusive mode.</b>
+     */
+    public void setStorage(StorageTDB storage)  { this.storage = storage; }
     
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
@@ -207,13 +218,10 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
      *  Use {@link StoreConnection#release(Location)}. 
      */
     public void shutdown() {
-        tripleTable.close() ;
-        quadTable.close() ;
-        prefixes.close();
-        // Which will cause reuse to throw exceptions early.
-        tripleTable = null ;
-        quadTable = null ;
-        prefixes = null ;
+        close();
+        storage.tripleTable.close() ;
+        storage.quadTable.close() ;
+        storage.prefixes.close();
         txnSystem.getTxnMgr().shutdown(); 
     }
     
@@ -230,7 +238,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
         // Only pattern with complex paths go via GRAPH. 
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAsNodeIds(graphNode, null, null, null) ;
+        Iterator<Tuple<NodeId>> x = storage.quadTable.getNodeTupleTable().findAsNodeIds(graphNode, null, null, null) ;
         if ( x == null )
             return false ; 
         boolean result = x.hasNext() ;
@@ -272,9 +280,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return (GraphTDB)getGraph(graphNode);
     }
 
-    public StoreParams getConfig() {
+    public StoreParams getStoreParams() {
         checkNotClosed();
-        return config;
+        return storage.storeParams;
     }
 
     public ReorderTransformation getReorderTransform() {
@@ -284,15 +292,15 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public DatasetPrefixStorage getPrefixes() {
         checkNotClosed();
-        return prefixes;
+        return storage.prefixes;
     }
 
     @Override
     public Iterator<Node> listGraphNodes() {
         checkNotClosed();
-        Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll();
+        Iterator<Tuple<NodeId>> x = storage.quadTable.getNodeTupleTable().findAll();
         Iterator<NodeId> z = Iter.iter(x).map(t -> t.get(0)).distinct();
-        return NodeLib.nodes(quadTable.getNodeTupleTable().getNodeTable(), z);
+        return NodeLib.nodes(storage.quadTable.getNodeTupleTable().getNodeTable(), z);
     }
 
     @Override
@@ -375,14 +383,14 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         }
     }
     
-    public Location getLocation()       { return location ; }
+    public Location getLocation()       { return storage.location ; }
 
     @Override
     public void sync() {
         checkNotClosed();
-        tripleTable.sync();
-        quadTable.sync();
-        prefixes.sync();
+        storage.tripleTable.sync();
+        storage.quadTable.sync();
+        storage.prefixes.sync();
     }
     
     @Override

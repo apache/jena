@@ -56,7 +56,7 @@ public class Sys
     static public void init() {}
 
     public static void panic(Class<? > clazz, String string) {
-        Log.fatal(clazz, string) ;
+        Log.error(clazz, string) ;
         throw new DBOpEnvException(string) ;
     }
     public static final boolean isWindows = determineIfWindows() ;	// Memory mapped files behave differently.

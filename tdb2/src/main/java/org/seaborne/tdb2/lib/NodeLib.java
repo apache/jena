@@ -121,7 +121,7 @@ public class NodeLib {
             return;
         }
         catch (DigestException ex) {
-            Log.fatal(NodeLib.class, "DigestException", ex);
+            Log.error(NodeLib.class, "DigestException", ex);
         }
     }
 

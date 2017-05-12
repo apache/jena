@@ -84,7 +84,7 @@ public class NodeTableTRDF extends NodeTableNative {
             throw new TDBException("NodeTableTRDF/Read", ex) ;
         }
         catch (RiotThriftException ex) {
-            Log.fatal(this, "Bad encoding: NodeId = "+id) ;
+            Log.error(this, "Bad encoding: NodeId = "+id) ;
             throw ex ;
         }
     }

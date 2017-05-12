@@ -24,7 +24,7 @@ import org.apache.jena.ontology.impl.OntModelImpl ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.riot.lang.LangRDFXML ;
+import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
@@ -206,7 +206,7 @@ public class TDB2 {
 
             SystemTDB.init() ;
             ARQ.init() ;
-            LangRDFXML.RiotUniformCompatibility = true ;
+            ReaderRIOTRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
 
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;

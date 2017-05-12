@@ -19,7 +19,6 @@ package org.seaborne.tdb2.setup;
 
 import java.util.Objects ;
 
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.index.IndexParams ;
 import org.seaborne.tdb2.setup.StoreParamsBuilder.Item ;
@@ -268,7 +267,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         String dftStr = "" ;
         if ( ! isSet )
             dftStr = "dft:" ;
-        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, StrUtils.strjoin(", ", strings))) ;
+        buff.append(String.format("%-20s   %s[%s]\n", name, dftStr, String.join(", ", strings))) ;
     }
 
     private void fmt(StringBuilder buff, String name, String value, boolean isSet) {
