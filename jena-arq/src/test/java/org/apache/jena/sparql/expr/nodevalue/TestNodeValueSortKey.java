@@ -71,4 +71,16 @@ public class TestNodeValueSortKey {
         NodeValueSortKey nv = new NodeValueSortKey("Tutte", "it");
         assertEquals("'Tutte'", nv.toString());
     }
+
+    @Test
+    public void testCompareTo() {
+        final String languageTag = "pt";
+        NodeValueSortKey nv = new NodeValueSortKey("Bonito", languageTag);
+        assertEquals(0, nv.compareTo(null));
+        assertEquals(1, nv.compareTo(new NodeValueSortKey("Bonita", languageTag)));
+        assertEquals(-1, nv.compareTo(new NodeValueSortKey("Bonitos", languageTag)));
+        // comparing string, regardless of the collations
+        assertEquals(1, nv.compareTo(new NodeValueSortKey("Bonita", "es")));
+        assertEquals(0, nv.compareTo(new NodeValueSortKey("Bonito", "es")));
+    }
 }

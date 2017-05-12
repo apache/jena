@@ -18,8 +18,12 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
+import java.text.Collator;
+import java.util.Locale;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Literal;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.FmtUtils;
 
@@ -27,7 +31,7 @@ import org.apache.jena.sparql.util.FmtUtils;
  * A {@link NodeValue} that supports collation value for a string. This allows query values
  * to be sorted following rules for a specific collation.
  */
-public class NodeValueSortKey extends NodeValue {
+public final class NodeValueSortKey extends NodeValue implements Comparable<NodeValueSortKey> {
 
     /**
      * Node value text.
@@ -64,11 +68,15 @@ public class NodeValueSortKey extends NodeValue {
         return string;
     }
 
-    @Override
     public String getCollation() {
         return collation;
     }
 
+    /**
+     * The node created by a NodeValueSortKey is a {@link Node_Literal}. This is used to represent
+     * the node value internally for comparison, and should no be expected to work in other cases.
+     * Users are not expected to extend it, or use in other functions.
+     */
     @Override
     protected Node makeNode() {
         return NodeFactory.createLiteral(string);
@@ -86,6 +94,25 @@ public class NodeValueSortKey extends NodeValue {
             return FmtUtils.stringForNode(getNode()) ;
         }
         return "'"+getString()+"'";
+    }
+
+    @Override
+    public int compareTo(NodeValueSortKey other) {
+        int cmp = 0;
+        if (other != null) {
+            String c1 = this.getCollation();
+            String c2 = other.getCollation();
+            if (c1 != null && c2 != null && c1.equals(c2)) {
+                // locales are parsed. Here we could think about caching if necessary
+                Locale desiredLocale = Locale.forLanguageTag(c1);
+                // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>
+                Collator collator = Collator.getInstance(desiredLocale);
+                cmp = collator.compare(this.getString(), other.getString());
+            } else {
+                cmp = XSDFuncOp.compareString(this, other) ;
+            }
+        }
+        return cmp;
     }
 
 }

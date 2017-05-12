@@ -27,10 +27,8 @@ import java.io.FileInputStream ;
 import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
-import java.text.Collator;
 import java.util.Calendar ;
 import java.util.Iterator ;
-import java.util.Locale;
 import java.util.Properties ;
 import java.util.ServiceLoader ;
 
@@ -774,19 +772,10 @@ public abstract class NodeValue extends ExprNode
             }
             case VSPACE_SORTKEY :
             {
-                int cmp = 0;
-                String c1 = nv1.getCollation();
-                String c2 = nv2.getCollation();
-                if (c1 != null && c2 != null && c1.equals(c2)) {
-                    // locales are parsed. Here we could think about caching if necessary
-                    Locale desiredLocale = Locale.forLanguageTag(c1);
-                    // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>
-                    Collator collator = Collator.getInstance(desiredLocale);
-                    cmp = collator.compare(nv1.getString(), nv2.getString());
-                } else {
-                    cmp = XSDFuncOp.compareString(nv1, nv2) ;
+                if (!(nv1 instanceof NodeValueSortKey) || !(nv2 instanceof NodeValueSortKey)) {
+                    raise(new ExprNotComparableException("Can't compare (not node value sort keys) "+nv1+" and "+nv2)) ;
                 }
-                return cmp;
+                return ((NodeValueSortKey) nv1).compareTo((NodeValueSortKey) nv2);
             }
             case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
@@ -978,7 +967,6 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
-    public String      getCollation()   { raise(new ExprEvalTypeException("Not a sort key: "+this)) ; return null ; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
