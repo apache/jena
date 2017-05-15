@@ -18,10 +18,24 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.apache.jena.query.DatasetFactory.createTxnMem;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Resource;
+
+/**
+ * An {@link Assembler} for basic transactional in-memory {@link Dataset}s.
+ */
+public class TxnInMemDatasetAssembler extends TransactionalInMemDatasetAssembler {
+
+    @Override
+    public Resource getType() {
+        return DatasetAssemblerVocab.tDatasetTxnMem ;
+    }
+    
+    @Override
+    public Dataset createDataset() {
+        return createTxnMem();
+    }
+}

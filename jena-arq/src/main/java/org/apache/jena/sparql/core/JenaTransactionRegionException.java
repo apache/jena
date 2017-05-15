@@ -16,12 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.assembler;
+package org.apache.jena.sparql.core;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.sparql.JenaTransactionException;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+/**
+ * Thrown when a transaction attempts to work outside its controlled region of data.
+ */
+public class JenaTransactionRegionException extends JenaTransactionException {
+
+    public JenaTransactionRegionException(String message) {
+        super(message);
+    }
+
+}

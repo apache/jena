@@ -30,8 +30,12 @@ public class DatasetAssemblerVocab
     
     // General dataset
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
-    // In-memory dataset
+    // Basic txn in-memory dataset
     public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"DatasetTxnMem") ;
+    // Writer-per-graph txn in-memory dataset
+    public static final Resource tDatasetPGraphWriter = ResourceFactory.createResource(NS+"DatasetMemWriterPerGraph");
+    public static final Property pParallelize        = ResourceFactory.createProperty(NS, "parallelize") ;
+
     public static final Resource tDatasetNull        = ResourceFactory.createResource(NS+"DatasetNull") ;
     
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;

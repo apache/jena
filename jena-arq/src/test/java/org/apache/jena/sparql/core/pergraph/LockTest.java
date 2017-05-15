@@ -16,12 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.assembler;
+package org.apache.jena.sparql.core.pergraph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.apache.jena.query.DatasetFactory.wrap;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
+import org.apache.jena.sparql.core.mem.TestDatasetGraphInMemoryLock;
+
+public class LockTest extends TestDatasetGraphInMemoryLock {
+
+	@Override
+	protected Dataset createDataset() {
+		return wrap(new DatasetGraphGraphPerTxn());
+	}
+
+}

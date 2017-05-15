@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.assembler;
+package org.apache.jena.sparql.core.pergraph;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+@Suite.SuiteClasses({ BasicTest.class, FindPatternsTest.class, FindTest.class, LockTest.class, TransactionLifecycleTest.class,
+		ViewTest.class, MultithreadingTest.class })
+public class TS_DatasetGraphGraphPerTxn {}

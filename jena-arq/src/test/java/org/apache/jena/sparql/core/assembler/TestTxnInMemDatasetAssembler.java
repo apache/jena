@@ -50,17 +50,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests for {@link InMemDatasetAssembler}
+ * Tests for {@link TxnInMemDatasetAssembler}
  *
  */
-public class TestInMemDatasetAssembler extends Assert {
+public class TestTxnInMemDatasetAssembler extends Assert {
 
     private Dataset assemble(final Resource example) {
 	    Model model = example.getModel() ;
 	    model.setNsPrefix("ja", JA.getURI()) ;
 //	    System.out.println("-------------");
 //	    RDFDataMgr.write(System.out, model, Lang.TTL) ;
-	    final InMemDatasetAssembler testAssembler = new InMemDatasetAssembler();
+	    final TxnInMemDatasetAssembler testAssembler = new TxnInMemDatasetAssembler();
 		return testAssembler.open(testAssembler, example, DEFAULT);
 	}
 	

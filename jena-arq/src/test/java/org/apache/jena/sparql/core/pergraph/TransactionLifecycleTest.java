@@ -16,12 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.assembler;
+package org.apache.jena.sparql.core.pergraph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.apache.jena.query.DatasetFactory.wrap;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle;
+import org.junit.Ignore;
+import org.junit.Test;
+
+public class TransactionLifecycleTest extends AbstractTestTransactionLifecycle {
+
+    @Override
+    protected Dataset create() {
+        return wrap(new DatasetGraphGraphPerTxn());
+    }
+
+    @Test
+    @Override
+    @Ignore("Block this test in the superclass because we can have multiple writers.")
+    public synchronized void transaction_concurrency_writer() {}
+}

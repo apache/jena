@@ -16,12 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.assembler;
+package org.apache.jena.sparql.core.pergraph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphGraphPerTxn;
+import org.apache.jena.sparql.core.TestDatasetGraphViewGraphs;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestTxnInMemDatasetAssembler.class })
-public class TS_Assembler {}
+public class ViewTest extends TestDatasetGraphViewGraphs {
+
+	@Override
+	protected DatasetGraph createBaseDSG() {
+		return new DatasetGraphGraphPerTxn();
+	}
+}
