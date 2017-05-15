@@ -40,8 +40,9 @@ public class NTripleWriter extends Object implements RDFWriter {
     @Override
     public void write(Model model, OutputStream out, String base)
          {
+    	Writer w = null;
         try {
-            Writer w;
+            
             try {
                 w = new OutputStreamWriter(out, "ascii");
             } catch (UnsupportedEncodingException e) {
@@ -53,13 +54,19 @@ public class NTripleWriter extends Object implements RDFWriter {
 
         } catch (Exception ioe) {
             errorHandler.error(ioe);
+        }finally{
+        	try{
+        		w.close();
+        	}catch(IOException e){
+        		//nothing to be done
+        	}
         }
     }
     @Override
     public void write(Model model, Writer writer, String base)
          {
+    	PrintWriter pw = null;
         try {
-            PrintWriter pw;
             if (writer instanceof PrintWriter) {
                 pw = (PrintWriter) writer;
             } else {
@@ -81,6 +88,10 @@ public class NTripleWriter extends Object implements RDFWriter {
             pw.flush();
         } catch (Exception e) {
             errorHandler.error(e);
+        }finally{
+        	if(!(writer instanceof PrintWriter)){
+        		pw.close();     
+        	}   	
         }
     }
 
