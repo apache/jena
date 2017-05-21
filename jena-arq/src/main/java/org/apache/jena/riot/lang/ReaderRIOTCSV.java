@@ -43,7 +43,7 @@ public class ReaderRIOTCSV implements ReaderRIOT {
         }
     }
     
-    public static final String CSV_PREFIX = "http://w3c/future-csv-vocab/";
+    public static final String CSV_PREFIX = "http://jena.apache.org/csv/";
 	public static final String CSV_ROW = CSV_PREFIX + "row";
 
 	private InputStream input = null;
