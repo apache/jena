@@ -190,13 +190,23 @@ public class RDFParserRegistry
 
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output, parserProfile);
+            // Unnecessary - RDFParser did it and set it in the ParserProfile
+//            if ( baseURI != null ) {
+//                IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//                parserProfile.setIRIResolver(newResolver);
+//            }
+            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
             parser.parse() ;
         }
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output, parserProfile);
+            // Unnecessary - RDFParser did it and set it in the ParserProfile
+//          if ( baseURI != null ) {
+//              IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//              parserProfile.setIRIResolver(newResolver);
+//          }
+            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
             parser.parse() ;
         }
     }

@@ -48,7 +48,7 @@ public class RiotParsers {
     private RiotParsers() {}
 
     /** InputStream input */
-    public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest, ParserProfile profile) {
+    public static LangRIOT createParser(InputStream input, Lang lang, StreamRDF dest, ParserProfile profile) {
         if ( RDFLanguages.sameLang(RDFJSON, lang) ) {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input));
             return createParserRdfJson(tokenizer, dest, profile);
@@ -67,7 +67,7 @@ public class RiotParsers {
     }
 
     /** Reader input */
-    public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest, ParserProfile profile) {
+    public static LangRIOT createParser(Reader input, Lang lang, StreamRDF dest, ParserProfile profile) {
         if ( RDFLanguages.sameLang(RDFJSON, lang) ) {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.make(input));
             return createParserRdfJson(tokenizer, dest, profile);
