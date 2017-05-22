@@ -42,7 +42,8 @@ public class SpatialIndexContext {
 		this.spatialPredicatePairValues = new HashMap<>();
 	}
 
-	public void index(Node g, Node s, Node p, Node o) {
+	@SuppressWarnings("deprecation")
+    public void index(Node g, Node s, Node p, Node o) {
 
 		if (!o.isLiteral()) {
 			return;
@@ -95,7 +96,6 @@ public class SpatialIndexContext {
 			pairValues.add(toAdd);
 
 		} else if (defn.isWKTPredicate(p) && SpatialValueUtil.isWKTLiteral(o.getLiteral())) {
-			@SuppressWarnings("deprecation")
             Shape shape = SpatialQuery.ctx.readShape(o.getLiteralLexicalForm());
 			indexer.add(x, shape);
 		}

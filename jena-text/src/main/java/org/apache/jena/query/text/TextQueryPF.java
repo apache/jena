@@ -70,7 +70,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
         DatasetGraph dsg = execCxt.getDataset() ;
-        textIndex = chooseTextIndex(dsg) ;
+        textIndex = chooseTextIndex(execCxt, dsg) ;
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
@@ -90,9 +90,23 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
     }
 
-    private static TextIndex chooseTextIndex(DatasetGraph dsg) {
+    /**
+     * Find the text index from:
+     * <ul>
+     * <li>The execution context.
+     * <li>The dataset.
+     * </ul>
+     * 
+     * If the text index is set in the dataset context, it will have been merged
+     * into the execution context. This is the normal route because
+     * {@link TextDatasetFactory} sets the text index in the dataset context.
+     * Asking the dataset directly is only needed for the case of no context set,
+     * just in case of a unusually, progammatically constructed
+     * {@code DatasetGraphText} is being used (a bug, or old code, probably).
+     */
+    private static TextIndex chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
         
-        Object obj = dsg.getContext().get(TextQuery.textIndex) ;
+        Object obj = execCxt.getContext().get(TextQuery.textIndex) ;
 
         if (obj != null) {
             try {
