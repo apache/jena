@@ -22,7 +22,6 @@ import java.io.* ;
 import java.util.Iterator ;
 import java.util.Objects ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -670,11 +669,11 @@ public class RDFDataMgr
             base = SysRIOT.chooseBaseIRI(uri) ;
         if ( hintLang == null )
             hintLang = RDFLanguages.filenameToLang(uri) ;
-        TypedInputStream in = open(uri, context) ;
-        if ( in == null )
-            throw new RiotNotFoundException("Not found: "+uri) ;
-        process(sink, in, base, hintLang, context) ;
-        IO.close(in) ;
+        try ( TypedInputStream in = open(uri, context) ) { 
+            if ( in == null )
+                throw new RiotNotFoundException("Not found: "+uri) ;
+            process(sink, in, base, hintLang, context) ;
+        }
     }
 
     /** Read RDF data.
