@@ -20,6 +20,12 @@ package org.seaborne.dboe.sys;
 /** Names of things in TDB */
 public class Names
 {
+    /** Filename of the TDB configuration file */
+    public static final String TDB_CONFIG_FILE = "tdb.cfg" ;
+    
+    /** Filename of the TDB lock file */
+    public static final String TDB_LOCK_FILE = "tdb.lock" ; 
+    
     /* System files */
     public static final String extJournal               = "jrnl" ;
     /* Component Transactional State */    

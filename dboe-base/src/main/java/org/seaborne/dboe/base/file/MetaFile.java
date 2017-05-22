@@ -44,7 +44,7 @@ public class MetaFile implements Sync, Closeable
     /** Create a MetaFile
      *  
      * @param label     Convenience label.
-     * @param fn        On disk filename @link{Names.mem} for in-memory
+     * @param fn        On disk filename; {@link Names#memName} for in-memory
      */
     public MetaFile(String label, String fn)
     {

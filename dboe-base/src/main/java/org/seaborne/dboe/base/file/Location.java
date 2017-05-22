@@ -38,7 +38,6 @@ public class Location {
     private MetaFile metafile      = null ;
     private boolean  isMem         = false ;
     private boolean  isMemUnique   = false ;
-    private LocationLock lock ;
 
     static int       memoryCount   = 0 ;
 
@@ -79,7 +78,6 @@ public class Location {
             location.pathname = location.pathname + '/' ;
         location.isMem = true ;
         location.metafile = new MetaFile(Names.memName, Names.memName) ;
-        location.lock = new LocationLock(location);
     }
 
     private Location(String rootname) {
@@ -100,11 +98,6 @@ public class Location {
         String metafileName = getPath(Names.directoryMetafile, Names.extMeta) ;
 
         metafile = new MetaFile("Location: " + rootname, metafileName) ;
-        
-        // Set up locking
-        // Note that we don't check the lock in any way at this point, checking
-        // and obtaining the lock is carried out by StoreConnection
-        lock = new LocationLock(this);
     }
 
     // MS Windows:
@@ -143,10 +136,6 @@ public class Location {
         return isMemUnique ;
     }
     
-    public LocationLock getLock() {
-    	return lock;
-    }
-
     public Location getSubLocation(String dirname) {
         String newName = pathname + dirname ;
         ensure(newName) ;
