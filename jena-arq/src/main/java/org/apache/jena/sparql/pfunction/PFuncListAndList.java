@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.sparql.pfunction;
 
 import org.apache.jena.graph.Node ;
@@ -23,36 +22,30 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
-/** Common, simple case:
- *  <ul> 
- *  <li>subject argument is not a list</li>
- *  <li>object is a list</li>
- *  <li>call the implementation with one binding at a time</li>
- *  </ul> */
+/**
+ * The case of:
+ * <ul>
+ * <li>subject is a list</li>
+ * <li>object is a list</li>
+ * <li>call the implementation with one binding at a time</li>
+ * </ul>
+ */
+public abstract class PFuncListAndList extends PropertyFunctionEval {
 
-public abstract
-class PFuncSimpleAndList extends PropertyFunctionEval
-{
-    protected PFuncSimpleAndList()
-    {
-        super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_LIST) ;
-    }
-    
-    @Override
-    public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
-        return execEvaluated(binding, argSubject.getArg(), predicate, argObject, execCxt) ;
+    protected PFuncListAndList() {
+        super(PropFuncArgType.PF_ARG_LIST, PropFuncArgType.PF_ARG_LIST);
     }
 
     /** 
      * @param binding   Current solution from previous query stage 
-     * @param subject   Node in subject slot, after substitution if a bound variable in this binding
+     * @param subject   List in subject slot, after substitution of any bound variables in this binding
      * @param predicate This predicate
      * @param object    List in object slot, after substitution of any bound variables in this binding
      * @param execCxt   Execution context
      * @return          QueryIterator
      */
+    @Override
     public abstract QueryIterator execEvaluated(Binding binding, 
-                                                Node subject, Node predicate, PropFuncArg object,
+                                                PropFuncArg subject, Node predicate, PropFuncArg object,
                                                 ExecutionContext execCxt) ;
 }
