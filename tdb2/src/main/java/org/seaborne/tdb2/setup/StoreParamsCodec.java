@@ -30,6 +30,7 @@ import org.apache.jena.atlas.json.* ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.TDBException ;
 
 /** Encode and decode {@link StoreParams} */ 
@@ -37,7 +38,7 @@ public class StoreParamsCodec {
     
     /** Write to a file */ 
     public static void write(Location location, StoreParams params) {
-        write(location.getPath(TDB_CONFIG_FILE) ,params) ;
+        write(location.getPath(Names.TDB_CONFIG_FILE) ,params) ;
     }
     
     /** Write to a file */ 
@@ -53,7 +54,7 @@ public class StoreParamsCodec {
 
     /** Read from a file */ 
     public static StoreParams read(Location location) {
-        return read(location.getPath(TDB_CONFIG_FILE)) ;
+        return read(location.getPath(Names.TDB_CONFIG_FILE)) ;
     }
     
     /** Read from a file, if possible. */ 

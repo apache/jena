@@ -160,7 +160,7 @@ public class TDBBuilder {
     }
     
     /** FileFilter
-     * Skips "..", "." and "tdb.cfg"
+     * Skips "..", ".", "tdb.lock" and "tdb.cfg"
      * 
      */
   private static  FileFilter fileFilterNewDB  = (pathname)->{
@@ -169,8 +169,11 @@ public class TDBBuilder {
             return false ;
         if ( pathname.isDirectory() )
             return true ;
-        if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+        if ( fn.equals(Names.TDB_LOCK_FILE) )
             return false ;
+        if ( fn.equals(Names.TDB_CONFIG_FILE) )
+            return false ;
+        
         return true ;
     } ;
     

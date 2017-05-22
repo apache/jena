@@ -18,6 +18,7 @@
 package org.seaborne.tdb2.setup;
 
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.TDB2Factory ;
 
 public class StoreParamsFactory {
@@ -76,7 +77,7 @@ public class StoreParamsFactory {
         if ( pApp != null ) {
             if ( isNew ) {
                 if ( ! location.isMem() ) {
-                    String filename = location.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+                    String filename = location.getPath(Names.TDB_CONFIG_FILE) ;
                     StoreParamsCodec.write(filename, pApp) ;
                 }
                 return pApp ;

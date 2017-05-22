@@ -22,11 +22,7 @@ import org.seaborne.dboe.sys.Names ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 public class StoreParamsConst {
-    /** Filename of the TDB configuration file */
-    public static final String TDB_CONFIG_FILE = "tdb.cfg" ;
-    
     // SystemParams are built with a SystemParamsBuilder
-    
     // Initial values are the system defaults.
     
     /** Database and query configuration */ 
