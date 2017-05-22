@@ -18,11 +18,12 @@
 
 package tdb2;
 
+import arq.query;
 import arq.cmdline.ModDataset;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.ModTDBDataset;
 
-public class tdbquery extends query_x {
+public class tdbquery extends query {
     // Inherits from arq.query so is not a CmdTDB. Mixins for Java!
     public static void main(String... argv) {
         CmdTDB.init();
