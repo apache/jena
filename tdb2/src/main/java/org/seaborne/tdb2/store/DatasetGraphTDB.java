@@ -38,6 +38,7 @@ import org.seaborne.dboe.transaction.TransactionalMonitor ;
 import org.seaborne.dboe.transaction.txn.Transaction ;
 import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.dboe.transaction.txn.TransactionalSystem ;
+import org.seaborne.dboe.transaction.txn.TxnId;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.NodeLib ;
 import org.seaborne.tdb2.setup.StoreParams ;
@@ -121,9 +122,14 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     protected Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
     { return isolate(triples2quads(Quad.defaultGraphIRI, iter)); }
  
+    private static final boolean CHECK_TXN = true; 
+    
     private <T> Iterator<T> isolate(Iterator<T> iterator) {
-        if ( txnSystem.isInTransaction() ) 
-            return iterator;
+        if ( txnSystem.isInTransaction() ) {
+            TxnId txnId = txnSystem.getThreadTransaction().getTxnId();
+            // Add transaction protection.
+            return new IteratorTxnTracker<>(iterator, txnSystem, txnId);
+        }
         // Risk the hidden arraylist is copied on growth.
         return Iter.iterator(iterator);
     }

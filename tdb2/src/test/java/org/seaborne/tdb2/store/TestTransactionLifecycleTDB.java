@@ -22,7 +22,7 @@ import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle;
 import org.seaborne.tdb2.TDB2Factory ;
 
 /** Transaction tests - from ARQ */
-public class TestTransactions2 extends AbstractTestTransactionLifecycle
+public class TestTransactionLifecycleTDB extends AbstractTestTransactionLifecycle
 {
     @Override
     protected Dataset create() {

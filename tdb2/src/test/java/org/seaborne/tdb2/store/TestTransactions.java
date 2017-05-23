@@ -18,21 +18,27 @@
 package org.seaborne.tdb2.store;
 
 import java.io.StringReader ;
+import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.sparql.core.Quad;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
+import org.seaborne.dboe.transaction.txn.TransactionException;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.sys.TDBInternal;
 
 /** Transactions and store connections - extended tests assuming the
  * basics work. Hence these tests use memory databases. 
@@ -106,6 +112,94 @@ public class TestTransactions extends BaseTest
             assertEquals(4, model.size()) ;
         }) ;        
     }
+    
+    // Iterators and trasnaxction scope.
+    
+    private void load(String data) { 
+        Txn.executeWrite(dataset, ()->{
+            RDFDataMgr.read(dataset, new StringReader(data), null, Lang.TURTLE) ;
+        }) ;
+    }
+    
+    public void iterator_01() {
+        load(data2);
+        
+        dataset.begin(ReadWrite.READ);
+        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        Iter.consume(iter);
+        dataset.end();
+    }
+    
+    @Test(expected=TransactionException.class)
+    public void iterator_02() {
+        load(data2);
+        
+        dataset.begin(ReadWrite.READ);
+        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        dataset.end();
+        iter.next();
+    }
+    
+    @Test(expected=TransactionException.class)
+    public void iterator_03() {
+        load(data2);
+        
+        dataset.begin(ReadWrite.READ);
+        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        dataset.end();
+        iter.next();
+    }
+
+    @Test(expected=TransactionException.class)
+    public void iterator_04() {
+        load(data2);
+        Iterator<Statement> iter = Txn.calculateRead(dataset, ()->dataset.getDefaultModel().listStatements());
+        iter.next();
+    }
+    
+    @Test(expected=TransactionException.class)
+    public void iterator_05() {
+        load(data2);
+        Iterator<Statement> iter = Txn.calculateWrite(dataset, ()->dataset.getDefaultModel().listStatements());
+        iter.next();
+    }
+
+    @Test(expected=TransactionException.class)
+    public void iterator_06() {
+        load(data2);
+        
+        dataset.begin(ReadWrite.READ);
+        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        dataset.end();
+        
+        dataset.begin(ReadWrite.READ);
+        iter.next();
+        dataset.end();
+    }
+    
+//    @Test
+//    public void iterator_07() {
+//        load(data2);
+//        
+//        // Isolated by copy.
+//        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+//        
+//        dataset.begin(ReadWrite.READ);
+//        iter.next();
+//        dataset.end();
+//    }
+//
+//    @Test
+//    public void iterator_08() {
+//        load(data2);
+//        
+//        // Isolated by copy.
+//        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+//        
+//        dataset.begin(ReadWrite.READ);
+//        dataset.end();
+//        iter.next();
+//    }
 }
 
 
