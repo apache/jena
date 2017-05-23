@@ -61,19 +61,19 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     @Test
     public void store_01()
     {
-        StoreConnection sConn = StoreConnection.make(location) ;
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
         assertNotNull(sConn);
         StoreConnection.release(location) ;
         StoreConnection sConn2 = StoreConnection.connectExisting(location) ;
         assertNull(sConn2);
-        StoreConnection sConn3 = StoreConnection.make(location) ;
+        StoreConnection sConn3 = StoreConnection.connectCreate(location) ;
         assertNotNull(sConn3);
     }
 
     @Test
     public void store_02()
     {
-        StoreConnection sConn = StoreConnection.make(location) ;
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
 
         { // Isolate to stop mix ups on variables.
             DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
@@ -91,7 +91,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         }
 
         {
-            StoreConnection sConn2 = StoreConnection.make(location) ;
+            StoreConnection sConn2 = StoreConnection.connectCreate(location) ;
             DatasetGraphTDB dsg2 = sConn.getDatasetGraphTDB() ;
             Txn.executeRead(dsg2, ()->{
                 assertTrue(dsg2.contains(q1)) ;
@@ -103,7 +103,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
         
         {
             if ( ! location.isMem() ) {
-                StoreConnection sConn2 = StoreConnection.make(location) ;
+                StoreConnection sConn2 = StoreConnection.connectCreate(location) ;
                 DatasetGraphTDB dsg3 = sConn2.getDatasetGraphTDB() ;
                 Txn.executeRead(dsg3, ()->{
                     assertTrue(dsg3.contains(q1)) ;
@@ -115,7 +115,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     @Test
     public void store_03()
     {
-        StoreConnection sConn = StoreConnection.make(location) ;
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
         Txn.executeWrite(dsg, ()->{
@@ -143,7 +143,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     @Test
     public void store_04()
     {
-        StoreConnection sConn = StoreConnection.make(location) ;
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
         Txn.executeWrite(dsg, ()->{
@@ -168,7 +168,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     @Test
     public void store_05()
     {
-        StoreConnection sConn = StoreConnection.make(location) ;
+        StoreConnection sConn = StoreConnection.connectCreate(location) ;
         
         DatasetGraphTDB dsg = sConn.getDatasetGraphTDB() ;
         Txn.executeWrite(dsg, ()->{

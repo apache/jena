@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.store;
+package org.seaborne.tdb2.store ;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -26,20 +26,17 @@ import org.seaborne.tdb2.sys.SystemTDB ;
 import org.seaborne.tdb2.sys.TestOps ;
 
 /** Slow tests - complete cleaning of disk areas each time */
-public class TestStoreConnectionsMapped extends AbstractTestStoreConnectionBasics
-{
-    static FileMode mode ;   
+public class TestStoreConnectionDirect extends AbstractTestStoreConnectionBasics {
+    static FileMode mode ;
 
     @BeforeClass
-    public static void beforeClassFileMode()
-    {
+    public static void beforeClassFileMode() {
         mode = SystemTDB.fileMode() ;
-        TestOps.setFileMode(FileMode.mapped) ;
+        TestOps.setFileMode(FileMode.direct) ;
     }
 
     @AfterClass
-    public static void afterClassFileMode()
-    {
+    public static void afterClassFileMode() {
         TestOps.setFileMode(mode) ;
     }
 

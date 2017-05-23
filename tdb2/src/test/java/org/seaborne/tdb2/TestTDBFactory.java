@@ -77,8 +77,8 @@ public class TestTDBFactory extends BaseTest
     @Test public void testStoreConnectionTxn1()
     {
         StoreConnection.reset() ;
-        DatasetGraph dg1 = StoreConnection.make(DIR).getDatasetGraph() ;
-        DatasetGraph dg2 = StoreConnection.make(DIR).getDatasetGraph() ;
+        DatasetGraph dg1 = StoreConnection.connectCreate(DIR).getDatasetGraph() ;
+        DatasetGraph dg2 = StoreConnection.connectCreate(DIR).getDatasetGraph() ;
         assertSame(dg1, dg2) ;
     }
     
@@ -86,8 +86,8 @@ public class TestTDBFactory extends BaseTest
     {
         // Named memory locations
         StoreConnection.reset() ;
-        DatasetGraph dg1 = StoreConnection.make(Location.mem("FOO")).getDatasetGraph() ;
-        DatasetGraph dg2 = StoreConnection.make(Location.mem("FOO")).getDatasetGraph() ;
+        DatasetGraph dg1 = StoreConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
+        DatasetGraph dg2 = StoreConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
         
         assertSame(dg1, dg2) ;
     }
@@ -96,8 +96,8 @@ public class TestTDBFactory extends BaseTest
     {
         // Un-named memory locations
         StoreConnection.reset() ;
-        DatasetGraph dg1 = StoreConnection.make(Location.mem()).getDatasetGraph() ;
-        DatasetGraph dg2 = StoreConnection.make(Location.mem()).getDatasetGraph() ;
+        DatasetGraph dg1 = StoreConnection.connectCreate(Location.mem()).getDatasetGraph() ;
+        DatasetGraph dg2 = StoreConnection.connectCreate(Location.mem()).getDatasetGraph() ;
         
         assertNotSame(dg1, dg2) ;
     }

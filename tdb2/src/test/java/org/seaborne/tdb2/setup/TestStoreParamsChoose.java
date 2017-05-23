@@ -21,11 +21,8 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.setup.StoreParamsFactory ;
-import org.seaborne.tdb2.setup.StoreParams ;
-import org.seaborne.tdb2.setup.StoreParamsCodec ;
-import org.seaborne.tdb2.setup.StoreParamsConst ;
 
 //TestParamsCreate
 /** This test suite uses on-disk structures and can be slow */ 
@@ -115,7 +112,7 @@ public class TestStoreParamsChoose extends BaseTest {
         // Clear.
         StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, null, pDft) ;
         // Check location now has a pLoc.
-        String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;
 
         StoreParams pLoc2 = StoreParamsCodec.read(loc) ;
@@ -131,7 +128,7 @@ public class TestStoreParamsChoose extends BaseTest {
         // Clear.
         StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, null, pLoc, pDft) ;
         // Check location still has a pLoc.
-        String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;
 
         StoreParams pLoc2 = StoreParamsCodec.read(loc) ;
@@ -147,7 +144,7 @@ public class TestStoreParamsChoose extends BaseTest {
         // Clear.
         StoreParams p = StoreParamsFactory.decideStoreParams(loc, true, pApp, pLoc, pDft) ;
         // Check location still has a pLoc.
-        String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+        String fn = loc.getPath(Names.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;
 
         StoreParams pLoc2 = StoreParamsCodec.read(loc) ;

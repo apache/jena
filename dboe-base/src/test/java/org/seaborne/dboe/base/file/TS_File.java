@@ -23,7 +23,6 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestMetaFile.class
-    , TestLocationLock.class
     , TestSegmentedMemBuffer.class
     , TestChannelMem.class
     , TestChannelFile.class
@@ -38,6 +37,8 @@ import org.junit.runners.Suite ;
     , TestBinaryDataRAFInitial.class
     , TestBinaryDataRAF.class
     , TestBinaryDataFileWriteBufferedFile.class
+    
+    , TestProcessFileLock.class
 })
 
 

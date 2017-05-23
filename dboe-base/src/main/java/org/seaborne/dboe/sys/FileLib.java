@@ -29,6 +29,8 @@ import org.seaborne.dboe.base.file.FileException ;
 // => IO
 public class FileLib
 {
+    // Check whether still used.
+    
     public static FileChannel openUnmanaged(String filename) {
         return openUnmanaged(filename, "rw") ;
     }

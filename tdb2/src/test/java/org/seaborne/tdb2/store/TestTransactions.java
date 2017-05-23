@@ -39,9 +39,9 @@ import org.seaborne.tdb2.sys.StoreConnection ;
  * 
  * For tests of StoreConnection basics:
  * @see AbstractTestStoreConnectionBasics
- * @see TestStoreConnectionsDirect
- * @see TestStoreConnectionsMapped
- * @see TestStoreConnectionsMem
+ * @see TestStoreConnectionDirect
+ * @see TestStoreConnectionMapped
+ * @see TestStoreConnectionMem
  */
 public class TestTransactions extends BaseTest
 {

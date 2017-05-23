@@ -35,18 +35,20 @@ import org.seaborne.tdb2.sys.TestOps ;
     , TestTripleTable.class
     , TestGraphTDB.class
     , TestGraphNamedTDB.class
-    , TestDatasetTDBPersist.class
     , TestDatasetTDB.class
-    //, TestLoader.class
+    , TestDatasetTDBPersist.class
+    //, TestBulkLoader.class
     // The script suite
     , TestSuiteGraphTDB.class
+    
     , Test_SPARQL_TDB.class
     , TestDynamicDatasetTDB.class
-    , TestStoreConnectionsMem.class
-    , TestStoreConnectionsDirect.class
-    , TestStoreConnectionsMapped.class
+    , TestStoreConnectionMem.class
+    , TestStoreConnectionDirect.class
+    , TestStoreConnectionMapped.class
+    , TestStoreConnectionLock.class
     , TestTransactions.class
-    , TestLocationLockStoreConnection.class
+    , TestTransactions2.class
     , TestQuadFilter.class
 } )
 public class TS_Store

@@ -29,10 +29,8 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.setup.StoreParams ;
-import org.seaborne.tdb2.setup.StoreParamsCodec ;
-import org.seaborne.tdb2.setup.StoreParamsConst ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 /**
@@ -42,7 +40,7 @@ import org.seaborne.tdb2.sys.StoreConnection ;
 public class TestStoreParamsCreate extends BaseTest {
     private final String DB_DIR = ConfigTest.getCleanDir() ;
     private final Path db = Paths.get(DB_DIR) ;
-    private final Path cfg = Paths.get(DB_DIR, StoreParamsConst.TDB_CONFIG_FILE) ;
+    private final Path cfg = Paths.get(DB_DIR, Names.TDB_CONFIG_FILE) ;
     private final Location loc = Location.create(DB_DIR) ;
     
     static final StoreParams pApp = StoreParams.getSmallStoreParams() ; 
@@ -63,14 +61,14 @@ public class TestStoreParamsCreate extends BaseTest {
     }
     
     @Test public void params_create_01() {
-        StoreConnection.make(loc, null) ;
+        StoreConnection.connectCreate(loc) ;
         // Check.  Default setup, no params.
         assertTrue("DB directory", Files.exists(db)) ;
         assertFalse("Config file unexpectedly found", Files.exists(cfg)) ;
     }
     
     @Test public void params_create_02() {
-        StoreConnection.make(loc, pApp) ;
+        StoreConnection.connectCreate(loc, pApp) ;
         // Check.  Custom setup.
         assertTrue("DB directory", Files.exists(db)) ;
         assertTrue("Config file not found", Files.exists(cfg)) ;
@@ -81,11 +79,11 @@ public class TestStoreParamsCreate extends BaseTest {
     // Defaults
     @Test public void params_reconnect_01() { 
         // Create.
-        StoreConnection.make(loc, null) ;
+        StoreConnection.connectCreate(loc) ;
         // Drop.
         StoreConnection.expel(loc, true) ;
         // Reconnect
-        StoreConnection.make(loc, null) ;
+        StoreConnection.connectCreate(loc, null) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
         assertNull(pLoc) ;
         
@@ -98,11 +96,11 @@ public class TestStoreParamsCreate extends BaseTest {
     // Defaults, then reconnect with app modified.
     @Test public void params_reconnect_02() { 
         // Create.
-        StoreConnection.make(loc, null) ;
+        StoreConnection.connectCreate(loc, null) ;
         // Drop.
         StoreConnection.expel(loc, true) ;
         // Reconnect
-        StoreConnection.make(loc, pSpecial) ;
+        StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
         
@@ -123,11 +121,11 @@ public class TestStoreParamsCreate extends BaseTest {
     // Custom, then reconnect with some special settings.
     @Test public void params_reconnect_03() { 
         // Create.
-        StoreConnection.make(loc, pApp) ;
+        StoreConnection.connectCreate(loc, pApp) ;
         // Drop.
         StoreConnection.expel(loc, true) ;
         // Reconnect
-        StoreConnection.make(loc, pSpecial) ;
+        StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
         //assertNotNull(pLoc) ;
         
@@ -149,11 +147,11 @@ public class TestStoreParamsCreate extends BaseTest {
 //    // Custom then modified.
 //    @Test public void params_reconnect_03() { 
 //        // Create.
-//        StoreConnection.make(loc, pLoc) ;
+//        StoreConnection.connectCreate(loc, pLoc) ;
 //        // Drop.
 //        StoreConnection.expel(loc, true) ;
 //        // Reconnect
-//        StoreConnection.make(loc, pApp) ;
+//        StoreConnection.connectCreate(loc, pApp) ;
 //        StoreParams pLoc = StoreParamsCodec.read(loc) ;
 //        assertFalse(StoreParams.sameValues(pApp, pLoc)) ;
 //        assertFalse(StoreParams.sameValues(pApp, pLoc)) ;
@@ -162,7 +160,7 @@ public class TestStoreParamsCreate extends BaseTest {
     // Dataset tests
 
     static StoreParams read(Location location) {
-        String fn = location.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+        String fn = location.getPath(Names.TDB_CONFIG_FILE) ;
         JsonObject obj = JSON.read(fn) ;
         return StoreParamsCodec.decode(obj) ;
     }

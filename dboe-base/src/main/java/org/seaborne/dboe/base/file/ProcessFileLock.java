@@ -35,27 +35,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.Log;
 import org.seaborne.dboe.DBOpEnvException;
 import org.seaborne.dboe.sys.ProcessUtils;
 
-/** A simple packaging around a {@link java.nio.channels.FileLock}. */
+/** A simple packaging around a {@link java.nio.channels.FileLock}. 
+ *  {@code ProcessFileLock} are not reentrant.
+ */
 public class ProcessFileLock {
-    
-    public static void main(String... args) throws Exception {
-        ProcessFileLock fileLock = ProcessFileLock.create("/home/afs/tmp/file.lock");
-        fileLock.lockEx();
-        System.out.println("Sleep");
-        Lib.sleep(5000);
-        fileLock.unlock();
-        System.out.println("DONE");
-    }
 
-    // Different variations for what to do when a lock can not be taken.
-    private enum NoLockAction { EXCEPTION, RETURN, WAIT }; 
-    
     // Static (process-wide) sync.
     private static Object sync = new Object();
     
@@ -66,6 +55,12 @@ public class ProcessFileLock {
     private final FileChannel fileChannel;
     private FileLock fileLock;
 
+    // Different variations for what to do when a lock can not be taken.
+    private enum NoLockAction { EXCEPTION, RETURN, WAIT }
+
+    /** Create a {@code ProcessFileLock} using the named file.
+     *  Locks are JVM-wide; each filename is assocauted with one lock object.  
+     */
     public static ProcessFileLock create(String filename) {
         try {
             Path abspath = Paths.get(filename).toRealPath();
@@ -74,6 +69,14 @@ public class ProcessFileLock {
         catch (IOException e) { IO.exception(e); return null; }
     }
     
+    /** Return the lock, unclokign the file if this process has it locked. */
+    public static void release(ProcessFileLock lockFile) {
+        if ( lockFile == null )
+            return ;
+        if ( lockFile.isLockedHere() )
+            lockFile.unlock();
+        locks.remove(lockFile.getPath());
+    }
     /** Create the structure for a ProcessFileLock on file {@code filename}.
      * This does not take the lock
      * 
@@ -131,6 +134,10 @@ public class ProcessFileLock {
         return fileLock.isValid();
     }
     
+    public Path getPath() {
+        return filepath;
+    }
+    
     /** Take the lock.
      * <p>
      * Write our PID into the file and return true if it succeeds.
@@ -139,7 +146,10 @@ public class ProcessFileLock {
      */
     private boolean lockOperation(NoLockAction action) {
         synchronized(sync) {
-            try { 
+            if ( fileLock != null )
+                throw new AlreadyLocked("Failed to get a lock: file='"+filepath+"': Lock already held");
+            
+            try {
                 fileLock = (action == NoLockAction.WAIT) ? fileChannel.lock() : fileChannel.tryLock();
                 if ( fileLock == null ) {
                     if ( action == NoLockAction.RETURN ) 

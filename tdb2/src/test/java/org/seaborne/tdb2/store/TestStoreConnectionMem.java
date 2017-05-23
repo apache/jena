@@ -15,33 +15,14 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.store ;
+package org.seaborne.tdb2.store;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.sys.SystemTDB ;
-import org.seaborne.tdb2.sys.TestOps ;
 
-/** Slow tests - complete cleaning of disk areas each time */
-public class TestStoreConnectionsDirect extends AbstractTestStoreConnectionBasics {
-    static FileMode mode ;
-
-    @BeforeClass
-    public static void beforeClassFileMode() {
-        mode = SystemTDB.fileMode() ;
-        TestOps.setFileMode(FileMode.direct) ;
-    }
-
-    @AfterClass
-    public static void afterClassFileMode() {
-        TestOps.setFileMode(mode) ;
-    }
-
+public class TestStoreConnectionMem extends AbstractTestStoreConnectionBasics
+{
     @Override
     protected Location getLocation() {
-        return Location.create(ConfigTest.getCleanDir()) ;
+        return Location.mem("TestStoreConnection") ;
     }
 }

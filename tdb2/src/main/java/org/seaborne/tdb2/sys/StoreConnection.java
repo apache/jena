@@ -31,6 +31,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.ChannelManager ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.ProcessFileLock;
+import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
@@ -41,25 +42,44 @@ import org.seaborne.tdb2.store.DatasetGraphTDB ;
 public class StoreConnection
 {
     private static Map<Location, StoreConnection> cache = new ConcurrentHashMap<>() ;
-    private static final String LOCK_FILENAME = "tdb.lock";
     
+    /** Get the {@code StoreConnection} to a location, 
+     *  creating the storage structures if it does not exist. */ 
     public synchronized static StoreConnection connectCreate(Location location) {
-        return make(location, StoreParams.getDftStoreParams()) ;
+        return connectCreate(location, null) ;
+    }
+
+    /** Get the {@code StoreConnection} to a location, 
+     *  creating the storage structures if it does not exist.
+     *  Use the provided {@link StoreParams} - any persistent setting 
+     *  already at the location take precedence.
+     */ 
+    public synchronized static StoreConnection connectCreate(Location location, StoreParams params) {
+        return make(location, params) ;
+    }
+
+    /** Get the {@code StoreConnection} for a location, but do not create it.
+     *  Returns null for "not setup". 
+     */
+    public synchronized static StoreConnection connectExisting(Location location) {
+        StoreConnection sConn = cache.get(location) ;
+        return sConn ;
     }
 
     public synchronized static boolean isSetup(Location location) {
         return cache.containsKey(location) ;
     }
 
-    public synchronized static StoreConnection connectExisting(Location location) {
-        StoreConnection sConn = cache.get(location) ;
-        return sConn ;
+    /** Make a StoreConnection based on any StoreParams at the location or the system defaults. */
+    private static StoreConnection make(Location location) {
+        return make(location, null) ;
     }
 
     /**
-     * Return a StoreConnection for a particular connection.
+     * Return a {@code StoreConnection} for a particular location,
+     * creating it if it does not exist in storage.
      */
-    public synchronized static StoreConnection make(Location location, StoreParams params) {
+    private synchronized static StoreConnection make(Location location, StoreParams params) {
         StoreConnection sConn = cache.get(location) ;
         if ( sConn == null ) {
             ProcessFileLock lock = null;
@@ -81,11 +101,6 @@ public class StoreConnection
         return sConn ;
     }
     
-    /** Make a StoreConnection based on any StoreParams at the location or the system defaults. */
-    public static StoreConnection make(Location location) {
-        return make(location, null) ;
-    }
-
     /** Stop managing all locations. Use with great care. */
     public static synchronized void reset() {
         // Copy to avoid potential CME.
@@ -111,8 +126,6 @@ public class StoreConnection
 
         // No transactions at this point 
         // (or we don't care and are clearing up forcefully.)
-//        try { sConn.getDatasetGraph().getCoordinator().shutdown(); } catch (Throwable th ) {} 
-//        try { sConn.getDatasetGraphTDB().close() ; } catch (Throwable th ) {}
         
         sConn.getDatasetGraphTDB().getTxnSystem().getTxnMgr().shutdown();
         sConn.getDatasetGraphTDB().shutdown() ;
@@ -125,13 +138,14 @@ public class StoreConnection
             if ( ! sConn.lock.isLockedHere() )
                 SystemTDB.errlog.warn("Location " + location.getDirectoryPath() + " was not locked by this process.");
             sConn.lock.unlock();
+            ProcessFileLock.release(sConn.lock);
         }
     }
 
-    /** Create a ProcessFileLock for a Location */
-    private static ProcessFileLock lockForLocation(Location location) {
+    /** Create or fetch a {@link ProcessFileLock} for a Location */
+    public static ProcessFileLock lockForLocation(Location location) {
         FileOps.ensureDir(location.getDirectoryPath());
-        String lockFilename = location.getPath(LOCK_FILENAME);
+        String lockFilename = location.getPath(Names.TDB_LOCK_FILE);
         Path path = Paths.get(lockFilename);
         try {
             path.toFile().createNewFile();
@@ -159,10 +173,14 @@ public class StoreConnection
     public DatasetGraphTDB getDatasetGraphTDB() {
         return datasetGraph;
     }
-
     
     public Location getLocation() {
         return location ;
     }
+    
+    public ProcessFileLock getLock() {
+        return lock ;
+    }
+
 }
 
