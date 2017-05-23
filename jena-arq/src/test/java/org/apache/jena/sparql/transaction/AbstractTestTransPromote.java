@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicInteger ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -43,11 +42,11 @@ import org.junit.Test ;
 /** Tests for transactions that start read and then promote to write */
 public abstract class AbstractTestTransPromote {
 
-    // Currently,
-    // this feature is off and needs enabling via setPromotion.
-    // promotion is implicit when a write happens.
+    // Currently, this feature is off in the relevant uses in TIM and TDB.
+    // It needs to be enabled via setPromotion.
+    // Promotion happenes implicitly when a write happens.
 
-    // See beforeClass / afterClass.
+    // See before() / after().
 
     // Loggers.
     private final Logger[] loggers ;
@@ -100,7 +99,6 @@ public abstract class AbstractTestTransPromote {
     protected AbstractTestTransPromote(Logger[] loggers) {
         this.loggers = loggers ;
     }
-    
     
     private static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
     private static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
@@ -272,9 +270,6 @@ public abstract class AbstractTestTransPromote {
         }) ;
     }
 
-    // Tests for XXX Read-committed yes/no (false = snapshot isolation, true = read committed),
-    // and whether the other transaction commits (true) or aborts (false).
-    
     @Test
     public void promote_10() { promote_readCommit_txnCommit(true, true) ; }
 
@@ -379,7 +374,7 @@ public abstract class AbstractTestTransPromote {
         // The transaction has been created and started.
         semaActiveWriterStart.acquireUninterruptibly(); 
 
-        Callable<JenaException> attemptedPromote = ()->{
+        Callable<RuntimeException> attemptedPromote = ()->{
             dsg.begin(ReadWrite.READ) ;
             semaPromoteTxnStart.release(1) ;
             // (*2)
@@ -388,7 +383,7 @@ public abstract class AbstractTestTransPromote {
                 // (*3)
                 dsg.add(q1) ;
                 return null ;
-            } catch (JenaException e) {
+            } catch (RuntimeException e) {
                 Class<?> c = getTransactionExceptionClass() ;
                 if ( ! e.getClass().equals(c) ) 
                     throw e ;
@@ -396,7 +391,7 @@ public abstract class AbstractTestTransPromote {
             }
         } ;
 
-        Future<JenaException> attemptedPromoteFuture = executor.submit(attemptedPromote) ;
+        Future<RuntimeException> attemptedPromoteFuture = executor.submit(attemptedPromote) ;
         // Advance "attempted promote" to (*2), inside a read transaction, before attempting a promoting write.
         // The transaction has been created and started.
         semaPromoteTxnStart.acquireUninterruptibly();
@@ -415,7 +410,7 @@ public abstract class AbstractTestTransPromote {
             activeWriterFuture.get();
             
             // (Ideal) and the attempted promotion should advance if the active writer aborts.
-            JenaException e = attemptedPromoteFuture.get() ;
+            RuntimeException e = attemptedPromoteFuture.get() ;
             if ( e != null )
                 throw e ;
         } catch (InterruptedException | ExecutionException e1) { throw new RuntimeException(e1) ; }
