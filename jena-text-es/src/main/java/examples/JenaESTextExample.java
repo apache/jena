@@ -22,7 +22,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.sparql.util.QueryExecUtils;
 
 /**
- * Simple example class to test the {@link org.apache.jena.query.text.assembler.TextIndexESAssembler}
+ * Simple example class to test the {@link org.apache.jena.query.text.es.assembler.TextIndexESAssembler}
  * For this class to work properly, an elasticsearch node should be up and running, otherwise it will fail.
  * You can find the details of downloading and running an ElasticSearch version here: https://www.elastic.co/downloads/past-releases/elasticsearch-5-2-1
  * Unzip the file in your favourite directory and then execute the appropriate file under the bin directory.
@@ -44,8 +44,7 @@ public class JenaESTextExample {
 
     private static Dataset createAssembler() {
         String assemblerFile = "text-config-es.ttl";
-        Dataset ds = DatasetFactory.assemble(assemblerFile,
-                "http://localhost/jena_example/#text_dataset") ;
+        Dataset ds = DatasetFactory.assemble(assemblerFile, "http://localhost/jena_example/#text_dataset") ;
         return ds;
     }
 
@@ -59,10 +58,7 @@ public class JenaESTextExample {
      * @param ds
      */
     private static void queryData(Dataset ds) {
-//        JenaTextExample1.queryData(ds);
         queryDataWithoutProperty(ds);
-
-
     }
 
     public static void queryDataWithoutProperty(Dataset dataset)

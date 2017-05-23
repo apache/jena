@@ -21,12 +21,12 @@
   <artifactId>jena-text</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Text Search</name>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.4.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
+    <version>20-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -41,14 +41,14 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
     </dependency>
     
     <dependency>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -79,35 +79,6 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queryparser</artifactId>
-    </dependency>
-
-    <!-- Elasticsearch server
-    <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <scope>test</scope>
-    </dependency>
-    -->
-    
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-to-slf4j</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>transport</artifactId>
-    </dependency>
-
-    <!-- Convert commons logging to SLF4J -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
 
   </dependencies>
@@ -141,72 +112,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-            <!-- Skip the default running of this plug-in (or everything is run twice...see below) -->
-            <skip>true</skip>
+          <skip>false</skip>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
         </configuration>
-          <executions>
-              <execution>
-                  <id>unit-tests</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <skip>false</skip>
-                      <includes>
-                          <include>**/TS_*.java</include>
-                      </includes>
-                      <excludes>
-                          <exclude>**/*IT.java</exclude>
-                      </excludes>
-                  </configuration>
-              </execution>
-              <execution>
-                  <id>integration-tests</id>
-                  <phase>integration-test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <skip>false</skip>
-                      <includes>
-                          <include>**/*IT.java</include>
-                      </includes>
-                  </configuration>
-              </execution>
-          </executions>
       </plugin>
-        <plugin>
-            <groupId>com.github.alexcojocaru</groupId>
-            <artifactId>elasticsearch-maven-plugin</artifactId>
-            <!-- REPLACE THE FOLLOWING WITH THE PLUGIN VERSION YOU NEED -->
-            <version>5.2</version>
-            <configuration>
-                <clusterName>elasticsearch</clusterName>
-                <transportPort>9500</transportPort>
-                <httpPort>9400</httpPort>
-            </configuration>
-            <executions>
-                <!--
-                    The elasticsearch maven plugin goals are by default bound to the
-                    pre-integration-test and post-integration-test phases
-                -->
-                <execution>
-                    <id>start-elasticsearch</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                        <goal>runforked</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>stop-elasticsearch</id>
-                    <phase>post-integration-test</phase>
-                    <goals>
-                        <goal>stop</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

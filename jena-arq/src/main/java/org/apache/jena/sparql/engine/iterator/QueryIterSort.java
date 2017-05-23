@@ -44,9 +44,7 @@ import org.apache.jena.sparql.engine.binding.BindingComparator;
  */
 
 public class QueryIterSort extends QueryIterPlainWrapper {
-    private final QueryIterator embeddedIterator; // Keep a record of the
-    // underlying source for
-    // .cancel.
+    private final QueryIterator embeddedIterator;
     final SortedDataBag<Binding> db;
 
     public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context) {
@@ -57,10 +55,8 @@ public class QueryIterSort extends QueryIterPlainWrapper {
             final ExecutionContext context) {
         super(null, context);
         this.embeddedIterator = qIter;
-
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext());
         this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
-
         this.setIterator(new SortedBindingIterator(qIter));
     }
 
@@ -69,6 +65,13 @@ public class QueryIterSort extends QueryIterPlainWrapper {
         this.db.cancel();
         this.embeddedIterator.cancel();
         super.requestCancel();
+    }
+
+    @Override
+    protected void closeIterator() {
+        this.db.close();
+        this.embeddedIterator.close();
+        super.closeIterator();
     }
 
     private class SortedBindingIterator extends IteratorDelayedInitialization<Binding> implements Closeable {
@@ -89,6 +92,7 @@ public class QueryIterSort extends QueryIterPlainWrapper {
             // iterator in a try/finally block, and thus will call
             // close() themselves.
             catch (QueryCancelledException e) {
+                QueryIterSort.this.close();
                 close();
                 throw e;
             }

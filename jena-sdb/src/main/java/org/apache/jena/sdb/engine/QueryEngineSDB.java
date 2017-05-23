@@ -143,7 +143,7 @@ public class QueryEngineSDB extends QueryEngineBase
             if ( binding != null && binding.size() != 0 )
                 qIter = QueryIterSingleton.create(binding, execCxt) ;
             else
-                qIter = QueryIterRoot.create(execCxt) ;
+                qIter = QueryIterRoot.createRoot(execCxt) ;
         }
         else
             qIter = opSQL.exec(binding, execCxt) ;

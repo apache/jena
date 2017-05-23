@@ -50,7 +50,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
 
 /** 
- * Implemntation of the {@link RDFConnection} interface using remote SPARQL operations.  
+ * Implementation of the {@link RDFConnection} interface using remote SPARQL operations.  
  */
 public class RDFConnectionRemote implements RDFConnection {
     private static final String fusekiDftSrvQuery   = "sparql";
@@ -74,7 +74,6 @@ public class RDFConnectionRemote implements RDFConnection {
              fusekiDftSrvGSP);
     }
 
-
     /** Create connection, using URL of the dataset and default service names */
     public RDFConnectionRemote(String destination) {
         this(requireNonNull(destination),
@@ -83,7 +82,6 @@ public class RDFConnectionRemote implements RDFConnection {
              fusekiDftSrvGSP);
     }
 
-    // ??
     /** Create connection, using full URLs for services. Pass a null for "no service endpoint". */
     public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
         this(null, sQuery, sUpdate, sGSP);
@@ -97,9 +95,9 @@ public class RDFConnectionRemote implements RDFConnection {
     /** Create connection, using URL of the dataset and short names for the services */
     public RDFConnectionRemote(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
         this.destination = destination;
-        this.svcQuery = formServiceURL(destination,sQuery);
-        this.svcUpdate = formServiceURL(destination,sUpdate);
-        this.svcGraphStore = formServiceURL(destination,sGSP);
+        this.svcQuery = RDFConn.formServiceURL(destination, sQuery);
+        this.svcUpdate = RDFConn.formServiceURL(destination, sUpdate);
+        this.svcGraphStore = RDFConn.formServiceURL(destination, sGSP);
         this.httpClient = httpClient;
     }
     
@@ -119,25 +117,16 @@ public class RDFConnectionRemote implements RDFConnection {
         this.httpContext = httpContext;
     }
 
-    private static String formServiceURL(String destination, String srvEndpoint) {
-        if ( destination == null )
-            return srvEndpoint;
-        String dest = destination;
-        if ( dest.endsWith("/") )
-            dest = dest.substring(0, dest.length()-1);
-        return dest+"/"+srvEndpoint;
-    }
-
     @Override
     public QueryExecution query(Query query) {
         checkQuery();
-        return exec(()->QueryExecutionFactory.createServiceRequest(svcQuery, query));
+        return exec(()->QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext));
     }
 
     @Override
     public void update(UpdateRequest update) {
         checkUpdate();
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, svcUpdate);
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, svcUpdate, this.httpClient, this.httpContext);
         exec(()->proc.execute());
     }
     
@@ -207,7 +196,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(model, null, true);
     }
     
-    private void upload(String graph, String file, boolean replace) {
+    /** Send a file to named graph (or "default" or null for the default graph).
+     * <p>
+     * The Content-Type is inferred from the file extension.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void upload(String graph, String file, boolean replace) {
         // if triples
         Lang lang = RDFLanguages.filenameToLang(file);
         if ( RDFLanguages.isQuads(lang) )
@@ -218,7 +213,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(url, file, lang, replace);
     }
 
-    private void doPutPost(String url, String file, Lang lang, boolean replace) {
+    /** Send a file to named graph (or "default" or null for the defaultl graph).
+     * <p>
+     * The Content-Type is taken from the given {@code Lang}.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void doPutPost(String url, String file, Lang lang, boolean replace) {
         File f = new File(file);
         long length = f.length(); 
         InputStream source = IO.openFile(file);
@@ -231,7 +232,13 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    private void doPutPost(Model model, String name, boolean replace) {
+    /** Send a model to named graph (or "default" or null for the defaultl graph).
+     * <p>
+     * The Content-Type is taken from the given {@code Lang}.
+     * <p>
+     * "Replace" means overwrite existing data, othewise the date is added to the target.
+     */
+    protected void doPutPost(Model model, String name, boolean replace) {
         String url = RDFConn.urlForGraph(svcGraphStore, name);
         exec(()->{
             Graph graph = model.getGraph();
@@ -296,7 +303,13 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPostDataset(dataset, true); 
     }
 
-    private void doPutPostDataset(String file, boolean replace) {
+    /** Do a PUT or POST to a dataset, sending the contents of the file.
+     * <p>
+     * The Content-Type is inferred from the file extension.
+     * <p>
+     * "Replace" implies PUT, otherwise a POST is used.
+     */
+    protected void doPutPostDataset(String file, boolean replace) {
         Lang lang = RDFLanguages.filenameToLang(file);
         File f = new File(file);
         long length = f.length();
@@ -309,7 +322,12 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    private void doPutPostDataset(Dataset dataset, boolean replace) {
+    /** Do a PUT or POST to a dataset, sending the contents of a daatsets.
+     * The Content-Type is {@code application/n-quads}.
+     * <p>
+     * "Replace" implies PUT, otherwise a POST is used.
+     */
+    protected void doPutPostDataset(Dataset dataset, boolean replace) {
         exec(()->{
             DatasetGraph dsg = dataset.asDatasetGraph();
             if ( replace )
@@ -318,7 +336,6 @@ public class RDFConnectionRemote implements RDFConnection {
                 HttpOp.execHttpPost(destination, datasetToHttpEntity(dsg), httpClient, null);
         });
     }
-
 
     private void checkQuery() {
         checkOpen();
@@ -403,12 +420,8 @@ public class RDFConnectionRemote implements RDFConnection {
         throw ex;
     }
 
-    /** Engine for the transaction lifecycle.
-     * MR+SW
-     */
-    
+    /** Engine for the transaction lifecycle. MR+SW */
     static class TxnLifecycle implements Transactional {
-        // MR+SW policy.
         private ReentrantLock lock = new ReentrantLock();
         private ThreadLocal<ReadWrite> mode = ThreadLocal.withInitial(()->null);
         @Override
@@ -466,6 +479,5 @@ public class RDFConnectionRemote implements RDFConnection {
 
     @Override
     public void end()                       { inner.end(); }
-
 }
 
