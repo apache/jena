@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-text-es</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - SPARQL Text Search</name>
+  <name>Apache Jena - SPARQL Text Search - Elasticsearch</name>
   <version>3.4.0-SNAPSHOT</version>
 
   <parent>
