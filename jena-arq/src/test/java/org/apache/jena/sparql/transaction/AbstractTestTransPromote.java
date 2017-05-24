@@ -315,7 +315,7 @@ public abstract class AbstractTestTransPromote {
         dsg.add(q1) ;
         if ( ! allowReadCommitted && asyncCommit )
             fail("Should not be here") ;
-        
+        // read commited - we should see the ThreadAction change.
         assertEquals(asyncCommit, dsg.contains(q3)) ;
         dsg.commit() ;
         dsg.end() ;
