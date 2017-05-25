@@ -156,7 +156,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeNode getRootRead() {
         if ( isTransactional() ) {
             super.checkTxn() ;
-            int rootId = super.getDataState().root ;
+            int rootId = super.getDataState().getRoot() ;
             return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
         }
         return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
@@ -165,7 +165,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     private BPTreeNode getRootWrite() {
         if ( isTransactional() ) {
             super.checkWriteTxn() ;
-            int rootId = super.getDataState().root ;
+            int rootId = super.getDataState().getRoot() ;
             return nodeManager.getRead(rootId, BPlusTreeParams.RootParent) ;
         }
         return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
@@ -189,7 +189,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     public void newRoot(BPTreeNode newRoot) {
         if ( isTransactional() )
-            getDataState().root = newRoot.getId() ;
+            getDataState().setRoot(newRoot.getId()) ;
         else
             rootIdx = newRoot.getId() ; 
     }
@@ -201,7 +201,7 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     public int getRootId() {
         if ( super.isActiveTxn() )
-            return super.getDataState().root ;
+            return super.getDataState().getRoot() ;
         else
             return rootIdx ;
     }
@@ -481,20 +481,23 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
 
     @Override
     protected BptTxnState _begin(ReadWrite readWrite, TxnId txnId) {
+        return createState();
+    }
+
+    private BptTxnState createState() {
         return new BptTxnState(rootIdx, 
                                nodeManager.allocLimit(),
                                recordsMgr.allocLimit()) ;
     }
-
+    
     /* The persistent transactional state of a B+Tree is new root and the
      * allocation limits of both block managers.
      */
     
     @Override
-    protected boolean _promote(TxnId txnId, BptTxnState state) {
-        // Could check no changes.
-        // Or assume that the trasnaction coordinator did that.
-        return true ;
+    protected BptTxnState _promote(TxnId txnId, BptTxnState oldState) {
+        BptTxnState newState = createState();
+        return newState;
     }
 
     @Override
@@ -505,14 +508,14 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         long nodeLimit = nodeManager.allocLimit() ;
         long recordsLimit = recordsMgr.allocLimit() ;
         // But don't write it yet.
-        stateManager.setState(state.root, nodeLimit, recordsLimit); 
+        stateManager.setState(state.getRoot(), nodeLimit, recordsLimit); 
         return stateManager.getState() ;
     }
 
     @Override
     protected void _commit(TxnId txnId, BptTxnState state) {
         if ( isWriteTxn() ) {
-            rootIdx = state.root ;
+            rootIdx = state.getRoot() ;
             stateManager.sync();
         }
     }

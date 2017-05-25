@@ -17,11 +17,10 @@
 
 package org.seaborne.dboe.trans.bplustree;
 
-
 /** Transactional state of a {@link BPlusTree} */
 final class BptTxnState {
     final int initialroot ;
-    int root = -1 ;
+    private int root = -1 ;
     
     // Point at which we start adding blocks in a write transaction.
     // The unmodifiable area is [0,boundary) and is different for each block manager. 
@@ -46,6 +45,19 @@ final class BptTxnState {
         if ( BPT.forcePromoteModes )
             return ! BPT.promoteDuplicateRecords ;
         return id >= boundaryBlocksRecord ;
+    }
+    
+    @Override
+    public String toString() {
+        return "BptTxnState: [root="+root+", n="+boundaryBlocksNode+", r="+boundaryBlocksRecord+"]";
+    }
+
+    public int getRoot() {
+        return root;
+    }
+
+    public void setRoot(int root) {
+        this.root = root;
     }
 }
 

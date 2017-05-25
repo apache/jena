@@ -49,6 +49,7 @@ import org.seaborne.tdb2.sys.TestOps ;
     , TestStoreConnectionLock.class
     , TestTransactions.class
     , TestTransactionLifecycleTDB.class
+    , TestTransPromoteTDB.class
     , TestQuadFilter.class
 } )
 public class TS_Store

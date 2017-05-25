@@ -115,14 +115,17 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
     protected TxnBinFile _begin(ReadWrite readWrite, TxnId txnId) {
         // Atomic read across the two because it's called from within 
         // TransactionCoordinator.begin$ where there is a lock.
+        return createState() ;
+    }
+    
+    private TxnBinFile createState() {
         long xLength = committedLength.get() ;
         return new TxnBinFile(xLength) ;
     }
 
     @Override
-    protected boolean _promote(TxnId txnId, TxnBinFile state) {
-        // Our write state is the read state.
-        return true ;
+    protected TxnBinFile _promote(TxnId txnId, TxnBinFile state) {
+        return createState() ;
     }
 
     @Override

@@ -67,21 +67,25 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
             startWriteTxn(); 
         else 
             startReadTxn(); 
-        return new Object() ;                    
+        return createState();                    
     }
 
+    private Object createState() {
+        return new Object();
+    }
+    
     @Override
-    protected boolean _promote(TxnId txnId, Object state) {
+    protected Object _promote(TxnId txnId, Object state) {
         // We have a read lock, the transaction coordinator has said 
         // it's OK (from it's point-of-view) to promote so this should succeed.
         // We have a read lock - theer are no other writers.
-        boolean b = lock.writeLock().tryLock() ;
+        boolean b = lock.writeLock().tryLock();
         if ( ! b ) {
-            Log.warn(this, "Failed to promote") ;  
-            return false ;
+            Log.warn(this, "Failed to promote");  
+            return false;
         }
         lock.readLock().unlock(); 
-        return true ; 
+        return createState(); 
     }
 
     // Checks.

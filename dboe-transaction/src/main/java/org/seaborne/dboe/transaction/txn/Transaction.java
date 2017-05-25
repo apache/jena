@@ -17,7 +17,15 @@
 
 package org.seaborne.dboe.transaction.txn;
 
-import static org.seaborne.dboe.transaction.txn.TxnState.* ;
+import static org.seaborne.dboe.transaction.txn.TxnState.ABORTED;
+import static org.seaborne.dboe.transaction.txn.TxnState.ACTIVE;
+import static org.seaborne.dboe.transaction.txn.TxnState.COMMIT;
+import static org.seaborne.dboe.transaction.txn.TxnState.COMMITTED;
+import static org.seaborne.dboe.transaction.txn.TxnState.DETACHED;
+import static org.seaborne.dboe.transaction.txn.TxnState.END_ABORTED;
+import static org.seaborne.dboe.transaction.txn.TxnState.END_COMMITTED;
+import static org.seaborne.dboe.transaction.txn.TxnState.INACTIVE;
+import static org.seaborne.dboe.transaction.txn.TxnState.PREPARE;
 
 import java.util.List ;
 import java.util.Objects ;
@@ -49,23 +57,24 @@ public class Transaction implements TransactionInfo {
     // It also allow for multithreaded transactions (later). 
     private final AtomicReference<TxnState> state = new AtomicReference<>() ;
     //private TxnState state ;
-    private final long dataEpoch ;
+    private long dataVersion ;
     private ReadWrite mode ;
     
-    public Transaction(TransactionCoordinator txnMgr, TxnId txnId, ReadWrite readWrite, long dataEpoch, List<SysTrans> components) {
+    public Transaction(TransactionCoordinator txnMgr, TxnId txnId, ReadWrite readWrite, long dataVersion, List<SysTrans> components) {
         Objects.requireNonNull(txnMgr) ;
         Objects.requireNonNull(txnId) ;
         Objects.requireNonNull(readWrite) ;
+        Objects.requireNonNull(components) ;
         this.txnMgr = txnMgr ;
         this.txnId = txnId ;
         this.mode = readWrite ;
-        this.dataEpoch = dataEpoch ;
+        this.dataVersion = dataVersion ;
         this.components = components ;
         setState(INACTIVE) ;
     }
     
-    public void add(SysTrans x) {
-        components.add(x) ;
+    /*package*/ void resetDataVersion(long dataVersion) {
+        this.dataVersion = dataVersion;
     }
 
     /*package*/ void setState(TxnState newState) {
@@ -84,8 +93,8 @@ public class Transaction implements TransactionInfo {
      * serialization point - they are working with the same view of the data.
      */
     @Override
-    public long getDataEpoch() {
-        return dataEpoch ;
+    public long getDataVersion() {
+        return dataVersion ;
     }
 
     public void begin() {
@@ -99,11 +108,12 @@ public class Transaction implements TransactionInfo {
         boolean b = txnMgr.promoteTxn(this) ;
         if ( !b )
             return false ;
+        mode = ReadWrite.WRITE;
         return true ;
     }
     
     /*package*/ void promoteComponents() {
-        // Call back from the Trasnaction coordinator during promote.
+        // Call back from the Transaction coordinator during promote.
         components.forEach((c) -> {
             if ( ! c.promote() )
                 throw new TransactionException("Failed to promote") ;
@@ -152,19 +162,25 @@ public class Transaction implements TransactionInfo {
     }
     
     public void abort() {
+        abort$();
+        endInternal() ;
+    }
+
+    private void abort$() {
         // Split into READ and WRITE forms.
         checkState(ACTIVE, ABORTED) ;
         // Includes notification start/finish
         txnMgr.executeAbort(this, ()-> { components.forEach((c) -> c.abort()) ; }) ;
         setState(ABORTED) ;
-        endInternal() ;
     }
 
     public void end() {
         txnMgr.notifyEndStart(this) ;
         if ( isWriteTxn() && getState() == ACTIVE ) {
-            throw new TransactionException("Write transaction with no commit or abort") ; 
-            //abort() ;
+            throw new TransactionException("Write transaction with no commit or abort") ;
+            //Log.warn(this, "Write transaction with no commit() or abort() before end()");
+            // Just the abort process.
+            //abort$() ;
         }
         endInternal() ;
         txnMgr.notifyEndFinish(this) ;

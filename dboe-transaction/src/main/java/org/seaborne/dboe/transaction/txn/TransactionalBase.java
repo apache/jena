@@ -236,9 +236,13 @@ public class TransactionalBase implements TransactionalSystem {
     private final void _end() {
         Transaction txn = theTxn.get() ;
         if ( txn != null ) {
-            txn.end() ;
-            theTxn.set(null) ;
-            theTxn.remove() ;
+            try {
+                // Can throw an exception on begin(W)...end().
+                txn.end() ;
+            } finally {
+                theTxn.set(null) ;
+                theTxn.remove() ;
+            }
         }
     }
 }

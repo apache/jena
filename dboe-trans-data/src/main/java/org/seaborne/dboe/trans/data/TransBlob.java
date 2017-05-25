@@ -155,15 +155,19 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     
     @Override
     protected BlobState _begin(ReadWrite readWrite, TxnId txnId) {
+        return createState();
+    }
+
+    private BlobState createState() {
         ByteBuffer blob = blobRef.get() ;
         // Save reference to ByteBuffer into the transaction state.
         return new BlobState(blob) ;
     }
-
+    
     @Override
-    protected boolean _promote(TxnId txnId, BlobState state) {
+    protected BlobState _promote(TxnId txnId, BlobState state) {
         // Our write state is the read state.
-        return true ;
+        return createState();
     }
     
     @Override

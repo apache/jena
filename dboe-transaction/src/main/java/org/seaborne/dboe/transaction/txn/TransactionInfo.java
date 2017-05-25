@@ -35,7 +35,7 @@ public interface TransactionInfo {
      * over time as the data changes. Two readers can have the same
      * serialization point - they are working with the same view of the data.
      */
-    public long getDataEpoch() ;
+    public long getDataVersion() ;
 
     /** Has the transaction started? */ 
     public boolean hasStarted() ;

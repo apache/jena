@@ -123,17 +123,21 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
 
     @Override
     protected TxnObjectFile _begin(ReadWrite readWrite, TxnId txnId) {
+        return createState();
+    }
+    
+    private TxnObjectFile createState() {
         // Atomic read across the two because it's called from within 
-        // TransactionCoordinator.begin$ where there is a lock.
+        // TransactionCoordinator.begin$ or promote$ where there is a lock.
         long xLength = length.get() ;
         long xPosition = position.get() ;
         return new TxnObjectFile(xLength, xPosition) ;
     }
     
     @Override
-    protected boolean _promote(TxnId txnId, TxnObjectFile state) {
+    protected TxnObjectFile _promote(TxnId txnId, TxnObjectFile state) {
         // Our write state is the read state.
-        return true ;
+        return createState();
     }
 
     @Override

@@ -192,12 +192,16 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
 
     @Override
     protected IntegerState _begin(ReadWrite readWrite, TxnId txnId) {
-        return new IntegerState(value.get()) ;
+        return createState();
     }
 
+    private IntegerState createState() {
+        return new IntegerState(value.get()) ;
+    }
+    
     @Override
-    protected boolean _promote(TxnId txnId, IntegerState state) {
-        return true ;
+    protected IntegerState _promote(TxnId txnId, IntegerState state) {
+        return createState();
     }
 
     @Override

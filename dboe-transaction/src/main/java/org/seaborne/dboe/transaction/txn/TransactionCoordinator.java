@@ -90,7 +90,7 @@ public class TransactionCoordinator {
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
 
     // Coordinator wide lock object.
-    private Object lock = new Object() ;
+    private Object coordinatorLock = new Object() ;
 
     @FunctionalInterface
     public interface ShutdownHook { void shutdown() ; }
@@ -133,7 +133,7 @@ public class TransactionCoordinator {
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
         checkSetup() ;
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             components.add(elt) ;
         }
         return this ;
@@ -145,7 +145,7 @@ public class TransactionCoordinator {
      */
     public TransactionCoordinator remove(TransactionalComponent elt) {
         checkSetup() ;
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             components.remove(elt.getComponentId()) ;
         }
         return this ;
@@ -157,7 +157,7 @@ public class TransactionCoordinator {
      */
     public void add(TransactionCoordinator.ShutdownHook hook) {
         checkSetup() ;
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             shutdownHooks.add(hook) ;
         }
     }
@@ -165,7 +165,7 @@ public class TransactionCoordinator {
     /** Remove a shutdown hook */
     public void remove(TransactionCoordinator.ShutdownHook hook) {
         checkSetup() ;
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             shutdownHooks.remove(hook) ;
         }
     }
@@ -262,11 +262,11 @@ public class TransactionCoordinator {
     }
 
     public void shutdown() {
-        if ( lock == null )
+        if ( coordinatorLock == null )
             return ;
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
-        lock = null ;
+        coordinatorLock = null ;
         journal.close(); 
     }
 
@@ -285,7 +285,7 @@ public class TransactionCoordinator {
 
     // Check not wrapped up
     private void checkNotShutdown() {
-        if ( lock == null )
+        if ( coordinatorLock == null )
             throw new TransactionException("TransactionCoordinator has been shutdown") ;
     }
 
@@ -296,6 +296,7 @@ public class TransactionCoordinator {
         writersWaiting.release() ;
     }
     
+    /** Acquire the writer lock - return true if succeeded */
     private boolean acquireWriterLock(boolean canBlock) {
         if ( ! canBlock )
             return writersWaiting.tryAcquire() ;
@@ -483,31 +484,28 @@ public class TransactionCoordinator {
         return transaction;
     }
     
-    // The epoch is the serialization point for a transaction.
-    // All readers on the same view of the data get the same serialization point.
-    // The serialization point (epoch for short) of the active writer
-    // is the next
-    // This becomes the new reader 
+    // The version is the serialization point for a transaction.
+    // All transactions on the same view of the data get the same serialization point.
     
     // A read transaction can be promoted if writer does not start
     // This TransactionCoordinator provides Serializable, Read-lock-free
     // execution.  With no item locking, a read can only be promoted
     // if no writer started since the reader started.
-    
-    private final AtomicLong writerEpoch = new AtomicLong(0) ;      // The leading edge of the epochs
-    private final AtomicLong readerEpoch = new AtomicLong(0) ;      // The trailing edge of the epochs
+
+    /* The version of the data - incremented when transaction commits.
+     * This is the version with repest to the last commited transaction.
+     * Aborts do not cause the data version to advance. 
+     * This counterr never goes backwards.
+     */ 
+    private final AtomicLong dataVersion = new AtomicLong(0) ;
     
     private Transaction begin$(ReadWrite readWrite) {
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             // Thread safe part of 'begin'
             // Allocate the transaction serialization point.
-            long dataVersion =    
-                ( readWrite == WRITE ) ?
-                    writerEpoch.incrementAndGet() :
-                    readerEpoch.get() ;
             TxnId txnId = txnIdGenerator.generate() ;
             List<SysTrans> sysTransList = new ArrayList<>() ;
-            Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion, sysTransList) ;
+            Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion.get(), sysTransList) ;
             
             ComponentGroup txnComponents = chooseComponents(this.components, readWrite) ;
             
@@ -546,66 +544,111 @@ public class TransactionCoordinator {
         return cg ;
     }
 
+    /** Is promotion of transactions enabled? */ 
+    /*private*/public/*for development*/ static boolean promotion               = true ;
+    
     /** Control of whether a transaction promotion can see any commits that
-     *  happened between thistrasnaction startign and it promoting.
+     *  happened between this transaction starting and it promoting.
      *  A form of "ReadCommitted".   
      */
-    private static boolean promoteReadCommitted = false ; 
+    /*private*/public/*for development*/ static boolean readCommittedPromotion  = false ;
     
+    /** Whether to wait for writers when trying to promote */
+    private static final boolean promotionWaitForWriters = true;
+
     /** Attempt to promote a tranasaction from READ to WRITE.
      * No-op for a transaction already a writer.
      * Throws {@link TransactionException} if the promotion
      * can not be done.
      */
     /*package*/ boolean promoteTxn(Transaction transaction) {
-        // **** Checkout with TDB1 TransactionManager
-        //   Pretests
-        //   If read-committed, don't need synchronized?
-        // 
-        //   XXX writerEpoch on commit only (not ported yet)
-        
+        if ( ! promotion )
+            return false;
+
         if ( transaction.getMode() == WRITE )
             return true ;
         
         // Has there been an writer active since the transaction started?
-        // Do a test outside the lock - only writerEpoch can change and that increases
-        // from the data epoch so if this test fail outside the lock it will fail inside.
-        // if it passes, we have to test again. 
-        long dataEpoch1 = transaction.getDataEpoch() ;   // Our epoch.
-        long currentEpoch1 = writerEpoch.get() ;         // Advances as a writer starts
-        if ( dataEpoch1 != currentEpoch1 )
-            return false ;
+        // Do a test outside the lock - only dataVaersion can change and that increases.
+        // If "read commited transactions" not allowed, the data has changed in a way we
+        // do no twish to expose.
+        // If this test fails outside the lock it will fail inside.
+        // If it passes, we have to test again in case there is an active writer.
         
-        // Once we have acquireWriterLock, we are single writer. 
-        // We're a reader. Try to be a writer.
-        synchronized(lock) {
-            // Get the writer lock ...
-            if ( promoteReadCommitted ) {
-                // **** Can this be moved outside the synchronized? 
-                // Get the writer lock - don't check epochs - wait for any writer to finish.
-                acquireWriterLock(true) ;
-            } else {
-                // Has there been an writer active since the transaction started?
-                long dataEpoch = transaction.getDataEpoch() ;   // Our epoch.
-                long currentEpoch = writerEpoch.get() ;         // Advances as a writer starts
-
-                if ( dataEpoch != currentEpoch )
+        if ( ! readCommittedPromotion ) {
+            long txnEpoch = transaction.getDataVersion() ;      // The transaction-start point.
+            long currentEpoch = dataVersion.get() ;             // The data serialization point.
+            
+            if ( txnEpoch < currentEpoch )
+                // The data has changed and "read committed" not allowed.
+                // We can reject now.
+                return false ;
+        }
+        
+        // Once we have acquireWriterLock, we are single writer.
+        // We may have to discard writer status because eocne we can make the defintite
+        // decision on promotion, we find we can't promote after all.
+        if ( readCommittedPromotion ) {
+            /*
+             * acquireWriterLock(true) ;
+             * synchronized(coordinatorLock) {
+             * begin$ ==>
+             *    reset transaction.
+             *    promote components
+             *    reset dataVersion
+             */
+            acquireWriterLock(true) ;
+            synchronized(coordinatorLock) {
+                try { 
+                    transaction.promoteComponents() ;
+                    // Because we want to see the new state of the data.s
+                    //transaction.resetDataVersion(dataVersion.get());
+                } catch (TransactionException ex) {
+                    try { transaction.abort(); } catch(RuntimeException ex2) {}
+                    releaseWriterLock();
                     return false ;
-                // Should not block if dataEpoch == currentEpoch.
-                // We are inside "synchronized(lock)" so there are no writers.
-                boolean b = acquireWriterLock(false) ;
-                if ( !b )
-                    throw new TransactionException("Promote: Inconsistent: Failed to get the writer lock");
+                }
             }
-            // ... we have now got the writer lock ...
-            try { transaction.promoteComponents() ; }
-            catch (TransactionException ex) {
-                transaction.abort();
+            return true;
+        }
+        
+        if ( ! waitForWriters() )
+            // Failed to become a writer.
+            return false;
+        // Now a proto-writer.
+        
+        synchronized(coordinatorLock) {
+            // Not read commited.
+            // Need to check the data version once we are the writer and all previous
+            // writers have commited or aborted.
+            // Has there been an writer active since the transaction started?
+            long txnEpoch = transaction.getDataVersion() ;    // The transaction-start point.
+            long currentEpoch = dataVersion.get() ;         // The data serialization point.
+
+            if ( txnEpoch != currentEpoch ) {
+                // Failed to promote.
+                releaseWriterLock();
                 return false ;
             }
-            writerEpoch.incrementAndGet() ;
+            
+            // ... we have now got the writer lock ...
+            try { 
+                transaction.promoteComponents() ;
+                // No need to reset the data version because strict isolation. 
+            } catch (TransactionException ex) {
+                try { transaction.abort(); } catch(RuntimeException ex2) {}
+                releaseWriterLock();
+                return false ;
+            }
         }
         return true ;
+    }
+        
+    private boolean waitForWriters() {
+        if ( promotionWaitForWriters )
+            return acquireWriterLock(true) ;
+        else
+            return acquireWriterLock(false) ;
     }
 
     // Called once by Transaction after the action of commit()/abort() or end()
@@ -631,7 +674,7 @@ public class TransactionCoordinator {
 
     /*package*/ void executeCommit(Transaction transaction,  Runnable commit, Runnable finish) {
         // This is the commit point. 
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             // *** COMMIT POINT
             journal.sync() ;
             // *** COMMIT POINT
@@ -642,17 +685,14 @@ public class TransactionCoordinator {
             finish.run() ;
             // Bump global serialization point if necessary.
             if ( transaction.getMode() == WRITE )
-                advanceEpoch() ;
+                advanceDataVersion() ;
             notifyCommitFinish(transaction) ;
         }
     }
-
     
     // Inside the global transaction start/commit lock.
-    private void advanceEpoch() {
-        long wEpoch = writerEpoch.get() ;
-        // The next reader will see the committed state. 
-        readerEpoch.set(wEpoch) ;
+    private void advanceDataVersion() {
+        dataVersion.incrementAndGet();
     }
     
     /*package*/ void executeAbort(Transaction transaction, Runnable abort) {
@@ -669,7 +709,7 @@ public class TransactionCoordinator {
     private AtomicLong activeWritersCount = new AtomicLong(0) ;
     
     private void startActiveTransaction(Transaction transaction) {
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             // Use lock to ensure all the counters move together.
             // Thread safe - we have not let the Transaction object out yet.
             countBegin.incrementAndGet() ;
@@ -683,7 +723,7 @@ public class TransactionCoordinator {
     }
     
     private void finishActiveTransaction(Transaction transaction) {
-        synchronized(lock) {
+        synchronized(coordinatorLock) {
             // Idempotent.
             Object x = activeTransactions.remove(transaction) ;
             if ( x == null )

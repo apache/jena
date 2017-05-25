@@ -183,20 +183,35 @@ public class TestTransactionLifecycle2 {
     
     @Test
     public void txn_promote_2() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.WRITE) ;
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        b = txn1.promote() ;
+        assertTrue(b) ;
+        txn1.abort() ;
+        txn1.end() ;
+        checkClear() ;
+    }
+    
+    @Test(expected=TransactionException.class)
+    public void txn_promote_3() {
         Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
         boolean b = txn1.promote() ;
         assertTrue(b) ;
         b = txn1.promote() ;
         assertTrue(b) ;
-        txn1.commit() ;
+        // Exception - now a writer
         txn1.end() ;
         checkClear() ;
     }
-    
-    @Test
-    public void txn_promote_3() {
+
+    //Not a @Test
+    public void txn_promote_deadlock() {
         Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
         Transaction txn2 = txnMgr.begin(ReadWrite.WRITE) ;
+        // Deadlock.
+        // Promotion waits for the writer to decide whether it is commiting or not.
+        // This can't be done on one thread.
         boolean b = txn1.promote() ;
         assertFalse(b) ;
         txn1.end() ;
@@ -206,7 +221,7 @@ public class TestTransactionLifecycle2 {
     }
 
     @Test
-    public void txn_promote_4() {
+    public void txn_promote_thread_writer_1() {
         Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
         L.syncOtherThread(()->{
             Transaction txn2 = txnMgr.begin(ReadWrite.WRITE) ;
@@ -221,7 +236,24 @@ public class TestTransactionLifecycle2 {
     }
     
     @Test
-    public void txn_promote_5() {
+    public void txn_promote_thread_writer_2() {
+        Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
+        L.syncOtherThread(()->{
+            Transaction txn2 = txnMgr.begin(ReadWrite.WRITE) ;
+            txn2.abort(); 
+            txn2.end() ;
+        }) ;
+            
+        boolean b = txn1.promote() ;
+        assertTrue(b) ;
+        // Now a writer.
+        txn1.commit();
+        txn1.end() ;
+        checkClear() ;
+    }
+
+    @Test
+    public void txn_promote_thread_writer_3() {
         Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
         boolean b = txn1.promote() ;
         assertTrue(b) ;
@@ -237,7 +269,7 @@ public class TestTransactionLifecycle2 {
     }
     
     @Test
-    public void txn_promote_6() {
+    public void txn_promote_thread_writer_4() {
         Transaction txn1 = txnMgr.begin(ReadWrite.READ) ;
         boolean b = txn1.promote() ;
         assertTrue(b) ;
