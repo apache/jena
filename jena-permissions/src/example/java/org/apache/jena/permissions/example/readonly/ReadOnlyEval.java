@@ -77,7 +77,7 @@ public class ReadOnlyEval implements SecurityEvaluator {
     }
 
     /**
-     * No updated are alowed.
+     * No updated are allowed.
      */
     @Override
     public boolean evaluateUpdate(Object principal, Node graphIRI,
