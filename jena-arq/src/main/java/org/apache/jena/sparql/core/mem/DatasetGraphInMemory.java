@@ -212,9 +212,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void end() {
         if (isInTransaction()) {
             if (transactionType().equals(WRITE)) {
-                log.warn("end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.");
+                String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
                 // _abort does _end actions inside the lock. 
                 _abort() ;
+                finishTransaction();
+                throw new JenaTransactionException(msg);
             } else {
                 _end() ;
             }
