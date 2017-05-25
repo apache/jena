@@ -109,7 +109,7 @@ public class HttpOp {
     public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
     
     public static HttpClient createDefaultHttpClient() {
-        return createCachingHttpClient();
+        return createPoolingHttpClient();
     }
     
     /**
