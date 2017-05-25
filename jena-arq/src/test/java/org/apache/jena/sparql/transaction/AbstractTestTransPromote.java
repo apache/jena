@@ -36,6 +36,7 @@ import org.apache.jena.system.Txn ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.After ;
+import org.junit.Assume ;
 import org.junit.Before ;
 import org.junit.Test ;
 
@@ -72,9 +73,27 @@ public abstract class AbstractTestTransPromote {
         }
     }
 
+    /**
+     * Return true if this implement supports transaction promotion (i.e. a read
+     * transaction can beome a write transaction if an update is attempted.
+     * This need not be the default mode - see {@link #setPromotion(boolean)}.
+     */
+    protected abstract boolean supportsReadCommitted() ;
+    
+    /** Enable transaction promotion (it does not need to be the defaukl bahvaiour of the system under test.
+     * A call of setPromotion(true) is made before each test.
+     * The original setting is retored at the end of the test.   
+     */
     protected abstract void setPromotion(boolean b) ;
+    /** Whether promotion is active */ 
     protected abstract boolean getPromotion() ;
+    
+    /**
+     * If {@link #supportsReadCommitted} is true (whether by default or not),
+     * then set/reset the state aroudn tests that test its behaviour.
+     */
     protected abstract void setReadCommitted(boolean b) ;
+    /** Whether read committed promotion is active */
     protected abstract boolean getReadCommitted() ;
     
     // The exact class used by exceptions of the system under test.
@@ -122,8 +141,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_readCommitted_01()    { run_01(true) ; }
     
     // READ-add
-    private void run_01(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_01(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         
         dsg.begin(ReadWrite.READ) ;
@@ -136,8 +157,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_readCommitted_02()    { run_02(true) ; }
     
     // Previous transaction then READ-add
-    private void run_02(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_02(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         
         dsg.begin(ReadWrite.READ) ;dsg.end() ;
@@ -151,8 +174,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_snapshot_03()         { run_03(false) ; }
     @Test public void promote_readCommitted_03()    { run_03(true) ; }
 
-    private void run_03(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_03(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         
         dsg.begin(ReadWrite.WRITE) ;dsg.commit() ; dsg.end() ;
@@ -166,8 +191,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_snapshot_04()         { run_04(false) ; }
     @Test public void promote_readCommitted_04()    { run_04(true) ; }
 
-    private void run_04(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_04(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         
         dsg.begin(ReadWrite.WRITE) ;dsg.abort() ; dsg.end() ;
@@ -181,8 +208,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_snapshot_05()         { run_05(false) ; }
     @Test public void promote_readCommitted_05()    { run_05(true) ; }
     
-    private void run_05(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_05(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         dsg.begin(ReadWrite.READ) ;
         dsg.add(q1) ;
@@ -200,8 +229,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_readCommitted_06()    { run_06(true) ; }
     
     // Async writer after promotion.
-    private void run_06(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_06(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         AtomicInteger a = new AtomicInteger(0) ;
 
@@ -232,8 +263,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_readCommitted_07()    { run_07(true) ; }
     
     // Async writer after promotion.
-    private void run_07(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_07(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         // Start long running reader.
         ThreadAction tt = ThreadTxn.threadTxnRead(dsg, () -> {
@@ -255,8 +288,10 @@ public abstract class AbstractTestTransPromote {
     @Test public void promote_readCommitted_08()    { run_08(true) ; }
     
     // Async writer after promotion trasnaction ends.
-    private void run_08(boolean allowReadCommitted) {
-        setReadCommitted(allowReadCommitted);
+    private void run_08(boolean readCommitted) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted);
         DatasetGraph dsg = create() ;
         // Start R->W here
         dsg.begin(ReadWrite.READ) ;
@@ -299,8 +334,10 @@ public abstract class AbstractTestTransPromote {
     @Test
     public void promote_13() { promote_readCommit_txnCommit(false, false) ; }
 
-    private void promote_readCommit_txnCommit(boolean allowReadCommitted, boolean asyncCommit) {
-        setReadCommitted(allowReadCommitted) ;
+    private void promote_readCommit_txnCommit(boolean readCommitted, boolean asyncCommit) {
+        Assume.assumeTrue( ! readCommitted || supportsReadCommitted());
+        
+        setReadCommitted(readCommitted) ;
         DatasetGraph dsg = create() ;
         
         ThreadAction tt = asyncCommit?
@@ -313,7 +350,7 @@ public abstract class AbstractTestTransPromote {
         // Can promote if readCommited
         // Can't promote if not readCommited
         dsg.add(q1) ;
-        if ( ! allowReadCommitted && asyncCommit )
+        if ( ! readCommitted && asyncCommit )
             fail("Should not be here") ;
         // read commited - we should see the ThreadAction change.
         assertEquals(asyncCommit, dsg.contains(q3)) ;
