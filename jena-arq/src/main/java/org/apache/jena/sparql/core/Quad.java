@@ -50,6 +50,9 @@ public class Quad implements Serializable
      */
     public static final Node tripleInQuad           =  null ;
     
+    /** A {@code Quad} that has a wildcard in all fields. */
+    public static final Quad ANY = Quad.create( Node.ANY, Node.ANY, Node.ANY, Node.ANY );
+    
     private final Node graph, subject, predicate, object ;
     
     public Quad(Node graph, Triple triple)

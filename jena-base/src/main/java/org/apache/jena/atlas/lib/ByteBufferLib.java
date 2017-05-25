@@ -108,8 +108,8 @@ public class ByteBufferLib {
     }
 
     private static void bb2array(ByteBuffer bb, int start, int finish, byte[] b) {
-        for ( int j = 0, i = start ; i < finish ; i++ )
-            b[j] = bb.get(i) ;
+        for ( int j = 0, i = start ; i < finish ; )
+            b[j++] = bb.get(i++) ;
     }
 
     // For non-array versions : beware of overlaps.

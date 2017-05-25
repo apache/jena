@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory ;
  
 public class AdapterFileManager extends org.apache.jena.util.FileManager
 {
-    // This is a legacy class -  it provides  FileManager calls onto the RIOT equivalents.  
+    // This is a legacy class - it provides  FileManager calls onto the RIOT equivalents.  
     // The different aspects are now split out 
     // and this class maintains the old interface. 
     // Aspects: StreamManager, LocationMapper, Model cache.
@@ -129,7 +129,6 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         StreamManager sm = streamManager.clone() ;
         AdapterFileManager x = new AdapterFileManager(sm) ;
         return x ;
-
     }
 
     public AdapterFileManager(StreamManager streamManager) {

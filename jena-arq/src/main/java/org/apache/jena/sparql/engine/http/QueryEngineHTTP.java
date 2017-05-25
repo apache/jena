@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -71,7 +72,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private List<String> defaultGraphURIs = new ArrayList<>();
     private List<String> namedGraphURIs = new ArrayList<>();
     private HttpClient client;
-    private HttpClientContext httpContext;
+    private HttpContext httpContext;
 
     private boolean closed = false;
 
@@ -110,26 +111,30 @@ public class QueryEngineHTTP implements QueryExecution {
     private InputStream retainedConnection = null;
 
     public QueryEngineHTTP(String serviceURI, Query query) {
-        this(serviceURI, query, query.toString());
+        this(serviceURI, query, null, null);
     }
     
     public QueryEngineHTTP(String serviceURI, Query query, HttpClient client) {
-        this(serviceURI, query, query.toString(), client);
+        this(serviceURI, query, client, null);
+    }
+
+    public QueryEngineHTTP(String serviceURI, Query query, HttpClient client, HttpContext httpContext) {
+        this(serviceURI, query, query.toString(), client, httpContext);
     }
 
     public QueryEngineHTTP(String serviceURI, String queryString) {
-        this(serviceURI, null, queryString);
+        this(serviceURI, queryString, null, null);
     }
     
     public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client) {
-        this(serviceURI, null, queryString, client);
-    }
-    
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
-        this(serviceURI, query, queryString, null);
+        this(serviceURI, queryString, client, null);
     }
 
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client) {
+    public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client, HttpContext httpContext) {
+        this(serviceURI, null, queryString, client, httpContext);
+    }
+    
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client, HttpContext httpContext) {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
@@ -142,6 +147,7 @@ public class QueryEngineHTTP implements QueryExecution {
         // service context in the parent constructor if the specified
         // client is null
         if (client != null) setClient(client);
+        if (httpContext != null) setHttpContext(httpContext);
     }
 
     /**
@@ -310,16 +316,16 @@ public class QueryEngineHTTP implements QueryExecution {
      * 
      * @param context HTTP context
      */
-    public void setHttpContext(HttpClientContext context) {
+    public void setHttpContext(HttpContext context) {
         this.httpContext = context;
     }
     
     /**
      * Get the HTTP context in use, if none is set then null.
      * 
-     * @return the {@code HttpClientContext} in scope
+     * @return the {@code HttpContext} in scope
      */
-    public HttpClientContext getHttpContext() {
+    public HttpContext getHttpContext() {
         return httpContext;
     }
 
@@ -619,7 +625,8 @@ public class QueryEngineHTTP implements QueryExecution {
             }
         }
         httpQuery.setClient(client);
-        httpQuery.setContext(getHttpContext());
+        HttpClientContext hcc = ( httpContext == null ) ? null : HttpClientContext.adapt(httpContext);
+        httpQuery.setContext(hcc);
         
         // Apply timeouts
         if (connectTimeout > 0) httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));

@@ -47,11 +47,13 @@ public class riot extends CmdLangParse
         
         if ( contentType != null && ! WebContent.matchContentType(WebContent.ctTextPlain, contentType) )
             return RDFLanguages.contentTypeToLang(contentType) ;
-
-        Lang lang =  RDFLanguages.filenameToLang(filename) ;
-        if ( lang == null )
-            lang = dftLang ;
-        return lang ;
+        
+        if ( filename != null ) {
+            Lang lang =  RDFLanguages.filenameToLang(filename) ;
+            if ( lang != null )
+                return lang;
+        }
+        return dftLang;
     }
 
     @Override

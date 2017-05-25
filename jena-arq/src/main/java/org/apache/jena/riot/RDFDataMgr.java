@@ -22,7 +22,6 @@ import java.io.* ;
 import java.util.Iterator ;
 import java.util.Objects ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
@@ -670,11 +669,11 @@ public class RDFDataMgr
             base = SysRIOT.chooseBaseIRI(uri) ;
         if ( hintLang == null )
             hintLang = RDFLanguages.filenameToLang(uri) ;
-        TypedInputStream in = open(uri, context) ;
-        if ( in == null )
-            throw new RiotNotFoundException("Not found: "+uri) ;
-        process(sink, in, base, hintLang, context) ;
-        IO.close(in) ;
+        try ( TypedInputStream in = open(uri, context) ) { 
+            if ( in == null )
+                throw new RiotNotFoundException("Not found: "+uri) ;
+            process(sink, in, base, hintLang, context) ;
+        }
     }
 
     /** Read RDF data.
@@ -1218,23 +1217,21 @@ public class RDFDataMgr
     }
 
     private static void write$(OutputStream out, Graph graph, RDFFormat serialization) {
-        WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(graph).output(out);
     }
 
+    @SuppressWarnings("deprecation")
     private static void write$(Writer out, Graph graph, RDFFormat serialization) {
-        WriterGraphRIOT w = createGraphWriter$(serialization);
-        w.write(out, graph, RiotLib.prefixMap(graph), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(graph).build().output(out);
     }
 
     private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization) {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(dataset).output(out);
     }
 
+    @SuppressWarnings("deprecation")
     private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization) {
-        WriterDatasetRIOT w = createDatasetWriter$(serialization);
-        w.write(out, dataset, RiotLib.prefixMap(dataset), null, RIOT.getContext());
+        RDFWriter.create().format(serialization).source(dataset).build().output(out);
     }
 
     /**

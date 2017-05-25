@@ -27,6 +27,8 @@ import java.util.regex.Pattern ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
@@ -69,7 +71,7 @@ public class HttpQuery extends Params {
     private boolean allowCompression = false;
     private HttpClient client;
 
-    private HttpClientContext context;
+    private HttpContext context;
 
     /**
      * Create a execution object for a whole model GET
@@ -177,7 +179,7 @@ public class HttpQuery extends Params {
      * Sets the context to use
      * @param context HTTP context
      */
-    public void setContext(HttpClientContext context) {
+    public void setContext(HttpContext context) {
         this.context = context;
     }
     
@@ -200,10 +202,11 @@ public class HttpQuery extends Params {
     
     /**
      * Gets the HTTP context that is being used, or sets and returns a default
-     * @return the {@code HttpClientContext} in scope
+     * @return the {@code HttpContext} in scope
      */
-    public HttpClientContext getContext() {
-        if (context == null) context = new HttpClientContext();
+    public HttpContext getContext() {
+        if (context == null) 
+            context = new BasicHttpContext();
         return context;
     }
 
@@ -274,8 +277,11 @@ public class HttpQuery extends Params {
      */
     public InputStream exec() throws QueryExceptionHTTP {
         // Select the appropriate HttpClient to use
-        contextualizeCompressionSettings();
-        contextualizeTimeoutSettings();
+        HttpClientContext hcc = HttpClientContext.adapt(getContext());
+        RequestConfig.Builder builder = RequestConfig.copy(hcc.getRequestConfig());
+        contextualizeCompressionSettings(builder);
+        contextualizeTimeoutSettings(builder);
+        hcc.setRequestConfig(builder.build());
         try {
             if (usesPOST())
                 return execPost();
@@ -289,17 +295,14 @@ public class HttpQuery extends Params {
         }
     }
     
-    private void contextualizeCompressionSettings() {
-        final RequestConfig.Builder builder = RequestConfig.copy(getContext().getRequestConfig());
+    private void contextualizeCompressionSettings(RequestConfig.Builder builder) {
         builder.setContentCompressionEnabled(allowCompression);
-        context.setRequestConfig(builder.build());
     }
     
-    private void contextualizeTimeoutSettings() {
-        final RequestConfig.Builder builder = RequestConfig.copy(context.getRequestConfig());
-        if (connectTimeout > 0) builder.setConnectTimeout(connectTimeout);
-
-        context.setRequestConfig(builder.build());
+    private void contextualizeTimeoutSettings(RequestConfig.Builder builder) {
+        if (connectTimeout <= 0)
+            return;
+        builder.setConnectTimeout(connectTimeout);
     }
 
     private InputStream execGet() throws QueryExceptionHTTP {

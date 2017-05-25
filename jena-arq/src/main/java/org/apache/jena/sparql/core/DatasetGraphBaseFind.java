@@ -70,7 +70,11 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     protected Iterator<Quad> findAny(Node s, Node p, Node o) {
         // Default graph
         Iterator<Quad> iter1 = findInDftGraph(s, p, o);
+        if ( ! iter1.hasNext() )
+            iter1 = null;
         Iterator<Quad> iter2 = findInAnyNamedGraphs(s, p, o);
+        if ( ! iter2.hasNext() )
+            iter2 = null;
         // Copes with null in either or both positions.
         return Iter.append(iter1, iter2);
     }

@@ -66,7 +66,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected int column = 0 ;
     protected int row = 1 ;
     
-    
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
