@@ -18,34 +18,38 @@
 
 package org.apache.jena.fuseki.validation;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
-import java.io.OutputStream ;
-import java.util.Enumeration ;
+import java.io.OutputStream;
+import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.fuseki.servlets.ActionErrorException ;
-import org.apache.jena.fuseki.servlets.ActionLib ;
-import org.apache.jena.fuseki.servlets.ServletBase ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.web.AcceptList;
+import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.fuseki.DEF;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.conneg.ConNeg;
+import org.apache.jena.fuseki.servlets.ActionErrorException;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.ServletBase;
+import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.validation.json.ValidationAction;
+import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
 
-import static org.apache.jena.riot.WebContent.* ;
-import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
-
-/** Validation base for JSON output */ 
-public abstract class ValidatorBaseJson extends ServletBase
-{
+public abstract class ValidatorBase extends ServletBase {
     private static Logger vLog = Fuseki.validationLog ;
-
-    public static final String respService      = "X-Service" ;
+    public static final String      contentTypeHTML         = "text/html";
+    public static final AcceptList  jsonOrTextOffer         = AcceptList.create(contentTypeHTML,contentTypeJSON);
+    public static final ContentType dftContentType          = ContentType.create(contentTypeHTML); 
     
     @Override
     public void doGet(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
@@ -55,7 +59,14 @@ public abstract class ValidatorBaseJson extends ServletBase
     public void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     { execute(httpRequest, httpResponse) ; }
     
-    protected void execute(HttpServletRequest request, HttpServletResponse response) {
+    protected abstract void executeHTML(HttpServletRequest request, HttpServletResponse response);
+
+    // JSON and framework.
+    protected abstract void executeJSON(HttpServletRequest request, HttpServletResponse response);
+
+    protected void executeJSON(HttpServletRequest request, HttpServletResponse response, 
+                               JsonAction jsonAction
+        ) {
         long id = allocRequestId(request, response) ;
         ValidationAction action = new ValidationAction(id, vLog, request, response, false) ;
         printRequest(action) ;
@@ -65,7 +76,7 @@ public abstract class ValidatorBaseJson extends ServletBase
         initResponse(request, response) ;
         
         try {
-            JsonObject obj = execute(action) ;
+            JsonObject obj = jsonAction.execute(action);
             action.statusCode = HttpSC.OK_200 ;
             action.message = "OK" ;
             response.setCharacterEncoding(charsetUTF8);
@@ -87,7 +98,7 @@ public abstract class ValidatorBaseJson extends ServletBase
         action.setFinishTime() ;
         printResponse(action) ;
     }
-    
+
     static void initResponse(HttpServletRequest request, HttpServletResponse response)
     {
         setCommonHeaders(response) ;
@@ -96,6 +107,20 @@ public abstract class ValidatorBaseJson extends ServletBase
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response) ;
     }
+
+    
+    protected void execute(HttpServletRequest request, HttpServletResponse response) {
+        MediaType mt = ConNeg.chooseContentType(request, jsonOrTextOffer, null) ;
+        //MediaType mt = ConNeg.chooseContentType(request, jsonOrTextOffer, DEF.acceptJSON) ;
+        
+        if ( mt != null && mt.equals(DEF.acceptJSON) ) {
+            executeJSON(request, response);
+        } else {
+            executeHTML(request, response);
+        }
+    }
+    
+    public interface JsonAction {  JsonObject execute(ValidationAction action) ; }
     
     static void printRequest(ValidationAction action)
     {
@@ -147,46 +172,5 @@ public abstract class ValidatorBaseJson extends ServletBase
             return String.format("%,d ms", time) ;
         return String.format("%,.3f s", time/1000.0) ;
     }
-    
-    protected abstract JsonObject execute(ValidationAction action) ;
-    
-    protected abstract String validatorName() ;
 
-    static void setHeaders(HttpServletResponse httpResponse, String vName)
-    {
-        httpResponse.setCharacterEncoding(charsetUTF8) ;
-        httpResponse.setContentType(contentTypeJSON) ;
-        httpResponse.setHeader(respService, "Jena Fuseki Validator / "+vName+": http://jena.apache.org/") ;
-    }
-
-    protected static String getArg(ValidationAction action, String paramName) {
-        String arg = getArgOrNull(action, paramName) ;
-        if ( arg == null ) {
-            ServletOps.error(HttpSC.BAD_REQUEST_400, "No parameter given: " + paramName) ;
-            return null ;
-        }
-        return arg ;
-    }
-
-    protected static String getArgOrNull(ValidationAction action, String paramName) {
-        String[] args = getArgs(action, paramName) ;
-
-        if ( args == null || args.length == 0 )
-            return null ;
-
-        if ( args.length > 1 ) {
-            ServletOps.error(HttpSC.BAD_REQUEST_400, "Too many ("+args.length+") parameter values: "+paramName) ;
-            return null ;
-        }
-        
-        return args[0] ;
-    }
-    
-    protected static String[] getArgs(ValidationAction action, String paramName) {
-        String[] args = action.request.getParameterValues(paramName) ;
-        if ( args == null || args.length == 0 )
-            return null ;
-        return args ;
-    }
-}    
-
+}

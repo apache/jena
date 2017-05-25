@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation;
+package org.apache.jena.fuseki.validation.json;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -39,12 +39,12 @@ public class ValidationAction
     private long finishTime = -2 ;
     
     // Outcome.
-    int statusCode = -1 ;
-    String message = null ;
-    int contentLength = -1 ;
-    String contentType = null ;
+    public int statusCode = -1 ;
+    public String message = null ;
+    public int contentLength = -1 ;
+    public String contentType = null ;
     
-    Map <String, String> headers = new HashMap<>() ;
+    public Map <String, String> headers = new HashMap<>() ;
     public HttpServletRequest request;
     public HttpServletResponse response ;
     
