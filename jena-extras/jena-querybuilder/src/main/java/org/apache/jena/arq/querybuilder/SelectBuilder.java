@@ -329,7 +329,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public SelectBuilder addOptional(SelectBuilder t) {
+	public SelectBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -341,19 +341,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public SelectBuilder addSubQuery(SelectBuilder subQuery) {
+	public SelectBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addUnion(SelectBuilder subQuery) {
+	public SelectBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public SelectBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;

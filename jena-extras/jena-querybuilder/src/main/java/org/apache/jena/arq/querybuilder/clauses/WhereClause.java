@@ -18,7 +18,6 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple ;
 import org.apache.jena.graph.Node;
@@ -126,7 +125,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The select builder to add as an optional pattern
 	 * @return The Builder for chaining.
 	 */
-	public T addOptional(SelectBuilder t);
+	public T addOptional(AbstractQueryBuilder<?> t);
 
 	/**
 	 * Adds a filter to the where clause
@@ -146,7 +145,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The subquery as defined by a SelectBuilder.
 	 * @return This builder for chaining.
 	 */
-	public T addSubQuery(SelectBuilder subQuery);
+	public T addSubQuery(AbstractQueryBuilder<?> subQuery);
 
 	/**
 	 * Add a union.
@@ -155,7 +154,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The union as defined by a SelectBuilder.
 	 * @return This builder for chaining.
 	 */
-	public T addUnion(SelectBuilder union);
+	public T addUnion(AbstractQueryBuilder<?> union);
 
 	/**
 	 * Add a graph statement to the query as per
@@ -170,7 +169,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 *            The graph to add.
 	 * @return This builder for chaining.
 	 */
-	public T addGraph(Object graph, SelectBuilder subQuery);
+	public T addGraph(Object graph, AbstractQueryBuilder<?> subQuery);
 	
 	/**
 	 * Add a bind statement to the query

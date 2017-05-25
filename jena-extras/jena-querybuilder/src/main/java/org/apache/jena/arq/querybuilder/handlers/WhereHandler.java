@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -261,7 +261,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The sub query to add.
 	 */
-	public void addSubQuery(SelectBuilder subQuery) {
+	public void addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getClause().addElement(makeSubQuery(subQuery));
 	}
 
@@ -304,7 +304,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The subquery to add as the union.
 	 */
-	public void addUnion(SelectBuilder subQuery) {
+	public void addUnion(AbstractQueryBuilder<?> subQuery) {
 		ElementUnion union = null;
 		ElementGroup clause = getClause();
 		// if the last element is a union make sure we add to it.
@@ -326,7 +326,7 @@ public class WhereHandler implements Handler {
 		}
 		// if there are projected vars then do a full blown subquery
 		// otherwise just add the clause.
-		if (subQuery.getVars().size() > 0) {
+		if (subQuery instanceof SelectClause && ((SelectClause<?>)subQuery).getVars().size() > 0) {
 			union.addElement(makeSubQuery(subQuery));
 		} else {
 			PrologHandler ph = new PrologHandler(query);

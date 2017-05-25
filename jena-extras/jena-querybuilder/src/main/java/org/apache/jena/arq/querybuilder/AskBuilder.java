@@ -132,7 +132,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
-	public AskBuilder addOptional(SelectBuilder t) {
+	public AskBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -156,19 +156,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
-	public AskBuilder addSubQuery(SelectBuilder subQuery) {
+	public AskBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public AskBuilder addUnion(SelectBuilder subQuery) {
+	public AskBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public AskBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public AskBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
