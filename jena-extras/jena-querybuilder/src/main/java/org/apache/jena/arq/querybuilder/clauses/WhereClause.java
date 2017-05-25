@@ -123,7 +123,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * Adds an optional group pattern to the where clause.
 	 * 
 	 * @param t
-	 *            The select builder to add as a group pattern
+	 *            The select builder to add as an optional pattern
 	 * @return The Builder for chaining.
 	 */
 	public T addOptional(SelectBuilder t);
@@ -216,5 +216,16 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * @return the first blank node in the list.
 	 */
 	public Node list( Object ... objs );
+	
+	/**
+	 * Add a minus clause to the query.
+	 * 
+	 * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rMinusGraphPattern
+	 * 
+	 * @param t 
+	 *            The select builder to add as a minus pattern
+	 * @return this builder for chaining
+	 */
+	public T addMinus( AbstractQueryBuilder<?> t );
 
 }

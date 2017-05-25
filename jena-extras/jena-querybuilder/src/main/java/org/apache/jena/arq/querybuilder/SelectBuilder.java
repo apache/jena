@@ -68,11 +68,6 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
-	}
-
-	@Override
 	public SelectBuilder clone() {
 		SelectBuilder qb = new SelectBuilder();
 		qb.handlerBlock.addAll(handlerBlock);
@@ -385,5 +380,10 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
-
+	
+	@Override
+	public SelectBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
+	}
 }

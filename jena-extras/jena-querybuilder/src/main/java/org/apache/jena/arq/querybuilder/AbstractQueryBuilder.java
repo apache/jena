@@ -29,6 +29,7 @@ import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
+import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -307,6 +308,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	@Override
 	public ValuesHandler getValuesHandler() {
 		return getHandlerBlock().getValueHandler();
+	}
+	
+	public final WhereHandler getWhereHandler() {
+		return getHandlerBlock().getWhereHandler();
 	}
 
 	/**

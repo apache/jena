@@ -419,4 +419,13 @@ public class WhereHandler implements Handler {
 
 		return retval;
 	}
+	
+	public void addMinus( AbstractQueryBuilder<?> t )
+	{
+		PrologHandler ph = new PrologHandler(query);
+		ph.addPrefixes( t.getPrologHandler().getPrefixes() );
+		ElementGroup clause = getClause();
+		ElementMinus minus = new ElementMinus(t.getWhereHandler().getClause());
+		clause.addElement(minus);
+	}
 }

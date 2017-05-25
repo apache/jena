@@ -56,11 +56,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
-	}
-
-	@Override
 	public ConstructHandler getConstructHandler() {
 		return handlerBlock.getConstructHandler();
 	}
@@ -300,5 +295,11 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
+	}
+	
+	@Override
+	public ConstructBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
 	}
 }

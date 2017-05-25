@@ -63,11 +63,6 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
-	}
-
-	@Override
 	public AskBuilder clone() {
 		AskBuilder qb = new AskBuilder();
 		qb.handlerBlock.addAll(handlerBlock);
@@ -283,5 +278,11 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
+	}
+	
+	@Override
+	public AskBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
 	}
 }
