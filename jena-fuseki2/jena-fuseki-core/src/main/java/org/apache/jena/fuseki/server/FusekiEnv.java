@@ -203,7 +203,7 @@ public class FusekiEnv {
         return generateConfigurationFilename(dsName) ;
     }
 
-    /** Choose a configuration file name - existign one or ".ttl" form if new */
+    /** Choose a configuration file name - existing one or ".ttl" form if new */
     public static String generateConfigurationFilename(String dsName) {
         String filename = dsName ;
         // Without "/"
