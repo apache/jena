@@ -269,6 +269,31 @@ public class TestEmbeddedFuseki {
         } finally { server.stop() ; } 
     }
     
+    @Test public void embedded_21() {
+        DatasetGraph dsg = dataset() ;
+        int port = FusekiEnv.choosePort() ;
+
+        DataService dSrv = new DataService(dsg) ;
+        dSrv.addEndpoint(OperationName.Query, "q") ;
+        dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
+            .add("/dsrv1", dSrv)
+            .setStaticFileBase(DIR)
+            .setPort(port)
+            .build() ;
+        server.start() ;
+        
+        try {
+            query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{}) ;
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/dsrv1/gsp") ;
+            assertNotNull(x1) ;
+            // Static
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/test.txt");
+            assertNotNull(x2) ;
+        } finally { server.stop() ; } 
+    }
+
+    
     /** Create an HttpEntity for the graph */  
     protected static HttpEntity graphToHttpEntity(final Graph graph) {
         final RDFFormat syntax = RDFFormat.TURTLE_BLOCKS ;

@@ -23,6 +23,7 @@ import java.util.List ;
 import java.util.Map ;
 
 import javax.servlet.ServletContext ;
+import javax.servlet.http.HttpServlet;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
@@ -35,13 +36,21 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
+import org.apache.jena.fuseki.validation.DataValidator;
+import org.apache.jena.fuseki.validation.IRIValidator;
+import org.apache.jena.fuseki.validation.QueryValidator;
+import org.apache.jena.fuseki.validation.UpdateValidator;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.ServerConnector ;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * Embedded Fuseki server. This is a Fuseki server running with a precofigured set of
@@ -156,12 +165,13 @@ public class FusekiEmbeddedServer {
     
     /** FusekiEmbeddedServer.Builder */
     public static class Builder {
-        private Map<String, DataService> map           = new HashMap<>() ;
+        private Map<String, DataService> map                = new HashMap<>() ;
         // Default values.
-        private int                      port          = 3330 ;
-        private boolean                  loopback      = false ;
-        private boolean                  withStats     = false ;
-        private String                   contextPath   = "/" ;
+        private int                      port               = 3330 ;
+        private boolean                  loopback           = false ;
+        private boolean                  withStats          = false ;
+        private String                   contextPath        = "/" ;
+        private String                   staticContentDir   = null ;
 
         /** Set the port to run on. */ 
         public Builder setPort(int port) {
@@ -179,11 +189,18 @@ public class FusekiEmbeddedServer {
             return this ;
         }
         
-        /** Restrict the server to only respoding to the localhost interface. */ 
+        /** Restrict the server to only responding to the localhost interface. */ 
         public Builder setLoopback(boolean loopback) {
             this.loopback = loopback;
             return this ;
         }
+
+        /** Set the location (filing system directory) to serve static file from. */ 
+        public Builder setStaticFileBase(String directory) {
+            this.staticContentDir = directory;
+            return this ;
+        }
+
 
         /** Add the "/$/stats" servlet that responds with stats about the server,
          * including counts of all calls made.
@@ -260,28 +277,86 @@ public class FusekiEmbeddedServer {
         }
 
         /** Build a ServletContextHandler with the Fuseki router : {@link FusekiFilter} */
-        private static ServletContextHandler buildServletContext(String contextPath, DataAccessPointRegistry registry) {
+        private ServletContextHandler buildServletContext(String contextPath, DataAccessPointRegistry registry) {
             if ( contextPath == null || contextPath.isEmpty() )
                 contextPath = "/" ;
             else if ( !contextPath.startsWith("/") )
                 contextPath = "/" + contextPath ;
             ServletContextHandler context = new ServletContextHandler() ;
-            FusekiFilter ff = new FusekiFilter() ;
-            FilterHolder h = new FilterHolder(ff) ;
-            context.setContextPath(contextPath) ;
-            context.addFilter(h, "/*", null) ;
             context.setDisplayName(Fuseki.servletRequestLogName) ;
             context.setErrorHandler(new FusekiErrorHandler1()) ;
+            context.setContextPath(contextPath) ;
+
+            setMimeTypes(context);
+            servlets(context);
+            
             return context ;
         }
         
+        private static void setMimeTypes(ServletContextHandler context) {
+            MimeTypes mimeTypes = new MimeTypes();
+            // RDF syntax
+            mimeTypes.addMimeMapping("nt",      WebContent.contentTypeNTriples);
+            mimeTypes.addMimeMapping("nq",      WebContent.contentTypeNQuads);
+            mimeTypes.addMimeMapping("ttl",     WebContent.contentTypeTurtle+";charset=utf-8");
+            mimeTypes.addMimeMapping("trig",    WebContent.contentTypeTriG+";charset=utf-8");
+            mimeTypes.addMimeMapping("rdfxml",  WebContent.contentTypeRDFXML);
+            mimeTypes.addMimeMapping("jsonld",  WebContent.contentTypeJSONLD);
+            mimeTypes.addMimeMapping("rj",      WebContent.contentTypeRDFJSON);
+            mimeTypes.addMimeMapping("rt",      WebContent.contentTypeRDFThrift);
+            mimeTypes.addMimeMapping("trdf",    WebContent.contentTypeRDFThrift);
+
+            // SPARQL syntax
+            mimeTypes.addMimeMapping("rq",      WebContent.contentTypeSPARQLQuery);
+            mimeTypes.addMimeMapping("ru",      WebContent.contentTypeSPARQLUpdate);
+
+            // SPARQL Result set
+            mimeTypes.addMimeMapping("rsj",     WebContent.contentTypeResultsJSON);
+            mimeTypes.addMimeMapping("rsx",     WebContent.contentTypeResultsXML);
+            mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsThrift);
+
+            // Other
+            mimeTypes.addMimeMapping("txt",     WebContent.contentTypeTextPlain);
+            mimeTypes.addMimeMapping("csv",     WebContent.contentTypeTextCSV);
+            mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
+            context.setMimeTypes(mimeTypes);
+        }
+
+        private void servlets(ServletContextHandler context) {
+            // Fuseki dataset services filter
+            FusekiFilter ff = new FusekiFilter() ;
+            FilterHolder h = new FilterHolder(ff) ;
+            context.addFilter(h, "/*", null) ;
+
+            // Validators
+            if ( true ) {
+                addServlet(context, "/validate/query",   new QueryValidator());
+                addServlet(context, "/validate/update",  new UpdateValidator());
+                addServlet(context, "/validate/iri",     new IRIValidator());
+                addServlet(context, "/validate/data",    new DataValidator());
+            }
+
+            if ( staticContentDir != null ) {
+                DefaultServlet staticServlet = new DefaultServlet() ;
+                ServletHolder staticContent = new ServletHolder(staticServlet) ;
+                staticContent.setInitParameter("resourceBase", staticContentDir) ;
+                context.addServlet(staticContent, "/");
+            }
+                
+        }
+
+        private static void addServlet(ServletContextHandler context, String pathspec, HttpServlet httpServlet) {
+            ServletHolder sh = new ServletHolder(httpServlet);
+            context.addServlet(sh, pathspec) ;
+        }
+
         /** Jetty server */
         private static Server jettyServer(int port, boolean loopback) {
             Server server = new Server() ;
             HttpConnectionFactory f1 = new HttpConnectionFactory() ;
             // Some people do try very large operations ... really, should use POST.
             f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
-            f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
+            f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024) ;
             // Do not add "Server: Jetty(....) when not a development system.
             if ( ! Fuseki.outputJettyServerHeader )
                 f1.getHttpConfiguration().setSendServerVersion(false) ;
