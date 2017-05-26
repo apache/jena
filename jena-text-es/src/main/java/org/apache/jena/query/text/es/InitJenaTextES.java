@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text.es;
 
+import org.apache.jena.query.text.InitJenaText ;
 import org.apache.jena.query.text.TextQuery;
 import org.apache.jena.system.JenaSubsystemLifecycle ;
 
@@ -29,6 +30,11 @@ public class InitJenaTextES implements JenaSubsystemLifecycle {
 
     @Override
     public void stop() {
+    }
+    
+    @Override
+    public int level() {
+        return InitJenaText.LEVEL_ES;
     }
 }
 
