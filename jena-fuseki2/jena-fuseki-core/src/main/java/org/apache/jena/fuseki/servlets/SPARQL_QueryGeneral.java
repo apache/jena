@@ -56,7 +56,9 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
     protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetDescription datasetDesc = getDatasetDescription(action, query) ;
         if ( datasetDesc == null )
-            ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
+            //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
+            // Hope the query has something in it!
+            return DatasetFactory.createTxnMem();
         return datasetFromDescriptionWeb(action, datasetDesc) ;
     }
 
