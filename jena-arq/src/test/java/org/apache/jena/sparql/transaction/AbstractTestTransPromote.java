@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -119,9 +120,9 @@ public abstract class AbstractTestTransPromote {
         this.loggers = loggers ;
     }
     
-    private static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
-    private static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
-    private static Quad q3 = SSE.parseQuad("(_ :s :p3 3)") ;
+    protected final static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
+    protected final static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
+    protected final static Quad q3 = SSE.parseQuad("(_ :s :p3 3)") ;
 
     protected abstract DatasetGraph create() ;
 
@@ -215,12 +216,11 @@ public abstract class AbstractTestTransPromote {
         DatasetGraph dsg = create() ;
         dsg.begin(ReadWrite.READ) ;
         dsg.add(q1) ;
-
-        // bad - forced abort.
-        // Causes a WARN.
-        //logger1.setLevel(Level.ERROR) ;
-        dsg.end() ;
-        //logger1.setLevel(level1) ;
+        
+        try {
+            dsg.end() ;
+            fail("begin(W);end() did not throw an exception");
+        } catch ( JenaTransactionException ex) {}
 
         assertCount(0, dsg) ;
     }

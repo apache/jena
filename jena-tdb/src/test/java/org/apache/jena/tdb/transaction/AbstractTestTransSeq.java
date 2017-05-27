@@ -22,6 +22,7 @@ package org.apache.jena.tdb.transaction;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -500,7 +501,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsg.add(q) ;
     }
     
-    @Test //(expected=TDBException.class) 
+    @Test(expected=JenaTransactionException.class) 
     public void trans_22()
     {
         // WRITE-close causes implicit abort

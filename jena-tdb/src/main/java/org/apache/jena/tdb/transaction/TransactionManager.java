@@ -540,6 +540,8 @@ public class TransactionManager
         // Caution - not called if "Transactional.end() is not called."
         if ( txn.getState() == TxnState.ACTIVE )
         {
+            // The application error case for begin(WRITE)...end() is handled in Trasnaction.close().
+            // This is internal checking.
             String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
             syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
             // Force abort then close
