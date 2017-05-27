@@ -54,7 +54,7 @@ public class TestRemoteEndpointResultsWithResultSetTypes extends AbstractRemoteE
     @BeforeClass
     public static void setup() throws SQLException {
         ServerCtl.ctlBeforeClass();
-        connection = new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRdfJson);
+        connection = new RemoteEndpointConnection(ServerCtl.serviceQuery(), ServerCtl.serviceUpdate(), null, null, null, null, null, JenaConnection.DEFAULT_HOLDABILITY, JdbcCompatibility.DEFAULT, WebContent.contentTypeTextTSV, WebContent.contentTypeRDFJSON);
         connection.setJdbcCompatibilityLevel(JdbcCompatibility.HIGH);
     }
     
