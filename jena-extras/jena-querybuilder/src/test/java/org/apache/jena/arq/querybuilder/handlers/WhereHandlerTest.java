@@ -438,4 +438,5 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		assertContainsRegex(MINUS + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
 				query.toString());		
 	}
+	
 }

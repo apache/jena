@@ -25,7 +25,6 @@ import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -149,6 +148,12 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 		return this;
 	}
 
+	@Override
+	public AskBuilder addFilter(Expr expr)  {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+	
 	@Override
 	public AskBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);

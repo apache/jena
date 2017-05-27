@@ -240,6 +240,12 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
+	public ConstructBuilder addFilter(Expr expr) {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+
+	@Override
 	public ConstructBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);
 		return this;

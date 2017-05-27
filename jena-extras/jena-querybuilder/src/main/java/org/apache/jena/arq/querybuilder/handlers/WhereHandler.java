@@ -97,7 +97,7 @@ public class WhereHandler implements Handler {
 	/**
 	 * Get the base element from the where clause. If the clause does not
 	 * contain an element return the element group, otherwise return the
-	 * enclosed elelment.
+	 * enclosed element.
 	 * 
 	 * @return the base element.
 	 */
@@ -113,9 +113,11 @@ public class WhereHandler implements Handler {
 	 * Get the element group for the clause. if The element group is not set,
 	 * create and set it.
 	 * 
+	 * Public for ExprFactory use.
+	 * 
 	 * @return The element group.
 	 */
-	private ElementGroup getClause() {
+	public ElementGroup getClause() {
 		Element e = query.getQueryPattern();
 		if (e == null) {
 			e = new ElementGroup();
@@ -127,7 +129,6 @@ public class WhereHandler implements Handler {
 
 		ElementGroup eg = new ElementGroup();
 		eg.addElement(e);
-		;
 		query.setQueryPattern(eg);
 		return eg;
 	}

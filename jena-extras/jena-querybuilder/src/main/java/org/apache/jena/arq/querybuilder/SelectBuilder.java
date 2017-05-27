@@ -28,7 +28,6 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
@@ -334,6 +333,12 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		return this;
 	}
 
+	@Override
+	public SelectBuilder addFilter(Expr expr) {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+	
 	@Override
 	public SelectBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);

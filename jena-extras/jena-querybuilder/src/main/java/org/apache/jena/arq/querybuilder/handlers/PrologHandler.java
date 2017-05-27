@@ -20,6 +20,7 @@ package org.apache.jena.arq.querybuilder.handlers;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.riot.system.IRIResolver;
@@ -103,6 +104,10 @@ public class PrologHandler implements Handler {
 	
 	public PrefixMapping getPrefixes() {
 		return query.getPrefixMapping();
+	}
+	
+	public ExprFactory getExprFactory() {
+		return new ExprFactory( query.getPrefixMapping() );
 	}
 
 	/**

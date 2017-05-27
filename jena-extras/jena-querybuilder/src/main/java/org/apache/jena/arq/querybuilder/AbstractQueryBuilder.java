@@ -192,7 +192,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * 
 	 * @return the quoted string. 
 	 */
-	public String quote(String q) {
+	public static String quote(String q) {
 		int qt = q.indexOf('"');
 		int sqt = q.indexOf("'");
 		
@@ -263,7 +263,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return the Var value.
 	 * @throws ARQInternalErrorException
 	 */
-	public Var makeVar(Object o) throws ARQInternalErrorException {
+	public static Var makeVar(Object o) throws ARQInternalErrorException {
 		if (o == null) {
 			return Var.ANON;
 		}
@@ -314,6 +314,9 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return getHandlerBlock().getWhereHandler();
 	}
 
+	public final ExprFactory getExprFactory() {
+		return getHandlerBlock().getPrologHandler().getExprFactory();
+	}
 	/**
 	 * Set a variable replacement. During build all instances of var in the
 	 * query will be replaced with value. If value is null the replacement is
