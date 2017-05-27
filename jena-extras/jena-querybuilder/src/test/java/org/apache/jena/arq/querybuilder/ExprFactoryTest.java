@@ -295,8 +295,9 @@ public class ExprFactoryTest {
 	// public void castTest( Expr expr1, Expr expr2 )
 	// {
 	// assertTrue( e instanceof E_Cast);
-	// }@Test
-
+	// }
+	
+	@Test
 	public void divideTest() {
 		Expr e = factory.divide(factory.none(), factory.none());
 		assertTrue(e instanceof E_Divide);
@@ -416,14 +417,18 @@ public class ExprFactoryTest {
 		assertTrue(e instanceof E_Subtract);
 	}
 
-	// expr3 functions@Test
-	public void condTest(Expr condition, Expr thenExpr, Expr elseExpr) {
+	// expr3 functions
+	
+	@Test
+	public void condTest() {
 		Expr e = factory.cond(factory.none(), factory.none(), factory.none());
 		assertTrue(e instanceof E_Conditional);
 	}
 
-	// exprN functions@Test
-	public void bnodeTest(Expr expr1) {
+	// exprN functions
+	
+	@Test
+	public void bnodeTest_expr() {
 		Expr e = factory.bnode(factory.none());
 		assertTrue(e instanceof E_BNode);
 	}
@@ -527,8 +532,8 @@ public class ExprFactoryTest {
 		assertTrue(e instanceof E_StrSubstring);
 	}
 
-	// expr op@Test
-
+	// expr op
+	
 	@Test
 	public void existsTest() {
 		WhereHandler handler = new WhereHandler(new Query());
