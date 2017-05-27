@@ -367,7 +367,7 @@ public class HttpOp {
     }
 
     /**
-     * Convenience operation to execute a GET with no content negtotiation and
+     * Convenience operation to execute a GET with no content negotiation and
      * return the response as a string.
      * 
      * @param url

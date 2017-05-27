@@ -265,6 +265,8 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
+  <!-- For serving static files -->
+
   <mime-mapping>
     <extension>rdf</extension>
     <mime-type>application/rdf+xml;charset=utf-8</mime-type>
@@ -284,6 +286,41 @@
   <mime-mapping>
     <extension>trig</extension>
     <mime-type>application/trig;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>jsonld</extension>
+    <mime-type>application/ld+json</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>tr</extension>
+    <mime-type>application/rdf+thrift</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>trdf</extension>
+    <mime-type>application/rdf+thrift</mime-type>
+  </mime-mapping>
+  
+  <mime-mapping>
+    <extension>rq</extension>
+    <mime-type>application/sparql-query</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>ru</extension>
+    <mime-type>application/sparql-update</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>srx</extension>
+    <mime-type>application/sparql-results+xml</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>srj</extension>
+    <mime-type>application/sparql-results+json</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>srt</extension>
+    <mime-type>application/sparql-results+thrift</mime-type>
   </mime-mapping>
 
 </web-app>

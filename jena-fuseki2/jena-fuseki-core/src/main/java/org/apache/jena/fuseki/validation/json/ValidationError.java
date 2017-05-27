@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation;
+package org.apache.jena.fuseki.validation.json;
 
 public class ValidationError {
 
