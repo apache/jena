@@ -44,6 +44,7 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.ServerConnector ;
@@ -172,6 +173,7 @@ public class FusekiEmbeddedServer {
         private boolean                  withStats          = false ;
         private String                   contextPath        = "/" ;
         private String                   staticContentDir   = null ;
+        private SecurityHandler          securityHandler    = null ;
 
         /** Set the port to run on. */ 
         public Builder setPort(int port) {
@@ -200,7 +202,18 @@ public class FusekiEmbeddedServer {
             this.staticContentDir = directory;
             return this ;
         }
-
+        
+        /** Set a Jetty SecurityHandler.
+         *  By default, the server runs with no security.
+         *  This is more for using the basic server for testing.
+         *  The full Fuseki server provides secjurity with Apache Shiro
+         *  and a defensive reverse proxy (e.g. Apache httpd) in front og the Jetty server
+         *  can also be used, which provides a wide varient of proven security options.   
+         */
+        public Builder setSecurityHandler(SecurityHandler securityHandler) {
+            this.securityHandler = securityHandler;
+            return this;
+        }
 
         /** Add the "/$/stats" servlet that responds with stats about the server,
          * including counts of all calls made.
@@ -224,7 +237,6 @@ public class FusekiEmbeddedServer {
         public Builder add(String name, Dataset ds, boolean allowUpdate) {
             return add(name, ds.asDatasetGraph(), allowUpdate) ;
         }
-            
         
         /** Add the dataset with given name and a default set of services. */  
         public Builder add(String name, DatasetGraph dsg, boolean allowUpdate) {
@@ -286,7 +298,9 @@ public class FusekiEmbeddedServer {
             context.setDisplayName(Fuseki.servletRequestLogName) ;
             context.setErrorHandler(new FusekiErrorHandler1()) ;
             context.setContextPath(contextPath) ;
-
+            if ( securityHandler != null )
+                context.setSecurityHandler(securityHandler);
+            
             setMimeTypes(context);
             servlets(context);
             

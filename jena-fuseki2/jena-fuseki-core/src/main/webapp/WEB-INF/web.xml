@@ -277,7 +277,7 @@
   </mime-mapping>
   <mime-mapping>
     <extension>nt</extension>
-    <mime-type>applicartion/n-triples</mime-type>
+    <mime-type>application/n-triples</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>nq</extension>
