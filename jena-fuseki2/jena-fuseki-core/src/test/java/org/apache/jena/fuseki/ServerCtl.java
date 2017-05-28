@@ -109,7 +109,7 @@ public class ServerCtl {
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS ;
-    private static int currentPort = FusekiEnv.choosePort() ;
+    private static int currentPort = FusekiLib.choosePort() ;
     
     public static int port() {
         return currentPort ;

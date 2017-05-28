@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.server;
 import static java.lang.String.format ;
 
 import java.io.IOException ;
-import java.net.ServerSocket;
 import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
@@ -30,7 +29,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 
@@ -176,15 +174,6 @@ public class FusekiEnv {
         if ( x == null )
             x = System.getProperty(name) ;
         return x ;
-    }
-    
-    /** Choose an unused port for a server to listen on */
-    public static int choosePort() {
-        try (ServerSocket s = new ServerSocket(0)) {
-            return s.getLocalPort();
-        } catch (IOException ex) {
-            throw new FusekiException("Failed to find a port");
-        }
     }
     
     /** Dataset set name to configuration file name. */

@@ -18,12 +18,11 @@
 
 package org.apache.jena.fuseki.embedded;
 
-import static org.apache.jena.fuseki.server.FusekiEnv.choosePort;
-
 import java.util.Objects;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
@@ -80,7 +79,7 @@ import org.junit.Assert;
  * large test suite may end up quite slow.
  */
 public class FusekiTestAuth {
-    private static int currentPort = choosePort() ;
+    private static int currentPort = FusekiLib.choosePort() ;
     
     public static int port() {
         return currentPort ;
@@ -100,10 +99,18 @@ public class FusekiTestAuth {
     public static final String serviceGSP()         { return "http://localhost:"+port()+datasetPath()+"/data" ; }
     
     private static FusekiEmbeddedServer server ;
-    
+
+    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication. 
+     * The server will have an empty, in-emory transactional dataset.
+     */
     public static void setupServer(boolean updateable, SecurityHandler sh) {
-        // Clean datasets.
-        dsgTesting = DatasetGraphFactory.createTxnMem();
+        setupServer(updateable, sh, DatasetGraphFactory.createTxnMem());
+    }
+    
+    /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication. 
+     */
+    public static void setupServer(boolean updateable, SecurityHandler sh, DatasetGraph dsg) {
+        dsgTesting = dsg;
         server = FusekiEmbeddedServer.create()
             .add(datasetPath(), dsgTesting)
             .setPort(port())
@@ -112,10 +119,12 @@ public class FusekiTestAuth {
             .start();
     }
     
+    /** Shutdown the server.*/
     public static void teardownServer() {
         if ( server != null ) {
             server.stop() ;
             server = null ;
+            dsgTesting = null;
         }
     }
 
