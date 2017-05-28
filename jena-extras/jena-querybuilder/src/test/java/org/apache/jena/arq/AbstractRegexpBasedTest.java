@@ -44,6 +44,7 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String CONSTRUCT = "CONSTRUCT" + SPACE;
 	protected static final String ASK = "ASK" + SPACE;
 	protected static final String SELECT = "SELECT" + SPACE;
+	protected static final String DESCRIBE = "DESCRIBE" + SPACE;
 	protected static final String UNION = "UNION" + SPACE;
 	protected static final String LIMIT = "LIMIT" + SPACE;
 	protected static final String OFFSET = "OFFSET" + SPACE;

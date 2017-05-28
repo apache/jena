@@ -61,7 +61,7 @@ public class HandlerBlock {
 		} else if (query.isAskType()) {
 			// nochange
 		} else if (query.isDescribeType()) {
-			// no change
+			sTemp = new SelectHandler(aggHandler);
 		} else if (query.isConstructType()) {
 			cTemp = new ConstructHandler(query);
 		}

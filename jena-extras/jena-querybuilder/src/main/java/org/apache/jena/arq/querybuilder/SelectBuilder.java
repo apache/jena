@@ -73,13 +73,29 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		return qb;
 	}
 
-	@Override
+	/**
+	 * Set set the distinct flag.
+	 * 
+	 * Setting the select distinct will unset reduced if it was set.
+	 * 
+	 * @param state
+	 *            if true results will be distinct.
+	 * @return The builder for chaining.
+	 */
 	public SelectBuilder setDistinct(boolean state) {
 		getSelectHandler().setDistinct(state);
 		return this;
 	}
 
-	@Override
+	/**
+	 * Set set the reduced flag.
+	 * 
+	 * Setting the select reduced will unset distinct if it was set.
+	 * 
+	 * @param state
+	 *            if true results will be reduced.
+	 * @return The builder for chaining.
+	 */
 	public SelectBuilder setReduced(boolean state) {
 		getSelectHandler().setReduced(state);
 		return this;

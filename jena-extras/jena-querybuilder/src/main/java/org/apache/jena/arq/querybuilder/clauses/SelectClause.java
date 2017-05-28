@@ -40,27 +40,7 @@ public interface SelectClause<T extends AbstractQueryBuilder<T>> {
 	 */
 	public SelectHandler getSelectHandler();
 
-	/**
-	 * Set set the distinct flag.
-	 * 
-	 * Setting the select distinct will unset reduced if it was set.
-	 * 
-	 * @param state
-	 *            if true results will be distinct.
-	 * @return The builder for chaining.
-	 */
-	public T setDistinct(boolean state);
-
-	/**
-	 * Set set the reduced flag.
-	 * 
-	 * Setting the select reduced will unset distinct if it was set.
-	 * 
-	 * @param state
-	 *            if true results will be reduced.
-	 * @return The builder for chaining.
-	 */
-	public T setReduced(boolean state);
+	
 
 	/**
 	 * Add a variable to the select statement.
