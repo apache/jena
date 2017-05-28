@@ -251,7 +251,8 @@ public class RDFParser {
                 ct = forceLang.getContentType();
                 reader = createReader(r, forceLang);
             } else {
-                // Conneg and hint
+                // No forced language.
+                // Conneg and hint, ignoring text/plain.
                 ct = WebContent.determineCT(input.getContentType(), hintLang, baseUri);
                 if ( ct == null )
                     throw new RiotException("Failed to determine the content type: (URI=" + baseUri + " : stream=" + input.getContentType()+")");

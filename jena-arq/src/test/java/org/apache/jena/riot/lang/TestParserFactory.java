@@ -26,7 +26,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -183,7 +183,7 @@ public class TestParserFactory extends BaseTest
 
     private CatchParserOutput parseCapture(String s, Lang lang) {
         CatchParserOutput sink = new CatchParserOutput() ;
-        RDFDataMgr.parse(sink, new StringReader(s), "http://base/", lang) ;
+        RDFParser.create().source(new StringReader(s)).base("http://base/").lang(lang).parse(sink);
         return sink ;
     }
 
