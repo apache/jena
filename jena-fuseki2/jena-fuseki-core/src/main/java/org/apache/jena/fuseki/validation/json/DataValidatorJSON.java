@@ -59,8 +59,7 @@ public class DataValidatorJSON {
         StreamRDF dest = StreamRDFLib.sinkNull() ;
         
         try {
-            // Set error handler!
-            RDFDataMgr.parse(dest, sr, null, language) ;
+            RDFParser.create().source(sr).lang(language).parse(dest);
         } catch (RiotParseException ex) {
             obj.key(jErrors) ;
 
