@@ -269,7 +269,7 @@
 
   <mime-mapping>
     <extension>rdf</extension>
-    <mime-type>application/rdf+xml;charset=utf-8</mime-type>
+    <mime-type>application/rdf+xml</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>ttl</extension>
@@ -277,15 +277,15 @@
   </mime-mapping>
   <mime-mapping>
     <extension>nt</extension>
-    <mime-type>text/plain;charset=utf-8</mime-type>
+    <mime-type>application/n-triples</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>nq</extension>
-    <mime-type>text/nquads;charset=utf-8</mime-type>
+    <mime-type>application/n-quads</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>trig</extension>
-    <mime-type>application/trig;charset=utf-8</mime-type>
+    <mime-type>application/trig</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>jsonld</extension>

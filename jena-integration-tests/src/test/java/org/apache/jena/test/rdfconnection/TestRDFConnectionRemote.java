@@ -37,7 +37,6 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     
     @BeforeClass
     public static void beforeClass() {
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
         server = FusekiEmbeddedServer.create()
             .setPort(2244)
             .add("/ds", serverdsg)

@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
@@ -221,12 +223,10 @@ public class FusekiLib {
         return lit.getLexicalForm() ;
     }
 
-    // XXX Lib
     public static String strForResource(Resource r) {
         return strForResource(r, r.getModel()) ;
     }
 
-    // XXX Lib
     public static String strForResource(Resource r, PrefixMapping pm) {
         if ( r == null )
             return "NULL " ;
@@ -253,5 +253,14 @@ public class FusekiLib {
                 return x ;
         }
         return "<" + uri + ">" ;
+    }
+
+    /** Choose an unused port for a server to listen on */
+    public static int choosePort() {
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException ex) {
+            throw new FusekiException("Failed to find a port");
+        }
     }
 }

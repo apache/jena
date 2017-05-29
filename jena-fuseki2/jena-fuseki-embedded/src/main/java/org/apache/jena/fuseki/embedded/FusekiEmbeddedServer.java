@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.embedded;
 
+import java.util.ArrayList;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
@@ -25,6 +26,7 @@ import java.util.Map ;
 import javax.servlet.ServletContext ;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -36,14 +38,11 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
-import org.apache.jena.fuseki.validation.DataValidator;
-import org.apache.jena.fuseki.validation.IRIValidator;
-import org.apache.jena.fuseki.validation.QueryValidator;
-import org.apache.jena.fuseki.validation.UpdateValidator;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.ServerConnector ;
@@ -170,8 +169,11 @@ public class FusekiEmbeddedServer {
         private int                      port               = 3330 ;
         private boolean                  loopback           = false ;
         private boolean                  withStats          = false ;
+        // Other servlets to add.
+        private List<Pair<String, HttpServlet>> other = new ArrayList<>();
         private String                   contextPath        = "/" ;
         private String                   staticContentDir   = null ;
+        private SecurityHandler          securityHandler    = null ;
 
         /** Set the port to run on. */ 
         public Builder setPort(int port) {
@@ -200,7 +202,18 @@ public class FusekiEmbeddedServer {
             this.staticContentDir = directory;
             return this ;
         }
-
+        
+        /** Set a Jetty SecurityHandler.
+         *  By default, the server runs with no security.
+         *  This is more for using the basic server for testing.
+         *  The full Fuseki server provides secjurity with Apache Shiro
+         *  and a defensive reverse proxy (e.g. Apache httpd) in front og the Jetty server
+         *  can also be used, which provides a wide varient of proven security options.   
+         */
+        public Builder setSecurityHandler(SecurityHandler securityHandler) {
+            this.securityHandler = securityHandler;
+            return this;
+        }
 
         /** Add the "/$/stats" servlet that responds with stats about the server,
          * including counts of all calls made.
@@ -224,7 +237,6 @@ public class FusekiEmbeddedServer {
         public Builder add(String name, Dataset ds, boolean allowUpdate) {
             return add(name, ds.asDatasetGraph(), allowUpdate) ;
         }
-            
         
         /** Add the dataset with given name and a default set of services. */  
         public Builder add(String name, DatasetGraph dsg, boolean allowUpdate) {
@@ -260,6 +272,16 @@ public class FusekiEmbeddedServer {
             return this ;
         }
 
+        /**
+         * Add the given servlet with the pathSpec. These are added so that they are
+         * checked after the Fuseki filter for datasets and before the static content
+         * handler (which is the last servlet) used for {@link #setStaticFileBase(String)}.
+         */
+        public Builder addServlet(String pathSpec, HttpServlet servlet) {
+            other.add(Pair.create(pathSpec, servlet));
+            return this;
+        }
+        
         /** Build a server according to the current description */ 
         public FusekiEmbeddedServer build() {
             DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
@@ -268,8 +290,10 @@ public class FusekiEmbeddedServer {
                 registry.put(name, dap) ;
             }) ;
             ServletContextHandler handler = buildServletContext(contextPath, registry) ;
-            if ( withStats )
-                handler.addServlet(ActionStats.class, "/$/stats") ;
+            
+            setMimeTypes(handler);
+            servlets(handler);
+            
             DataAccessPointRegistry.set(handler.getServletContext(), registry) ;
             Server server = jettyServer(port, loopback) ;
             server.setHandler(handler);
@@ -286,9 +310,8 @@ public class FusekiEmbeddedServer {
             context.setDisplayName(Fuseki.servletRequestLogName) ;
             context.setErrorHandler(new FusekiErrorHandler1()) ;
             context.setContextPath(contextPath) ;
-
-            setMimeTypes(context);
-            servlets(context);
+            if ( securityHandler != null )
+                context.setSecurityHandler(securityHandler);
             
             return context ;
         }
@@ -328,14 +351,11 @@ public class FusekiEmbeddedServer {
             FilterHolder h = new FilterHolder(ff) ;
             context.addFilter(h, "/*", null) ;
 
-            // Validators
-            if ( true ) {
-                addServlet(context, "/validate/query",   new QueryValidator());
-                addServlet(context, "/validate/update",  new UpdateValidator());
-                addServlet(context, "/validate/iri",     new IRIValidator());
-                addServlet(context, "/validate/data",    new DataValidator());
-            }
-
+            other.forEach(p->addServlet(context, p.getLeft(), p.getRight()));
+            
+            if ( withStats )
+                addServlet(context, "/$/stats", new ActionStats()) ;
+            
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet() ;
                 ServletHolder staticContent = new ServletHolder(staticServlet) ;
