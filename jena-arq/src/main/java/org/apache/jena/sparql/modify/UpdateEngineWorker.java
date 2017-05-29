@@ -33,7 +33,6 @@ import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
@@ -41,11 +40,9 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.* ;
@@ -142,23 +139,20 @@ public class UpdateEngineWorker implements UpdateVisitor
         Node dest = update.getDest();
         try {
             // Read into temporary storage to protect against parse errors.
-            TypedInputStream s = RDFDataMgr.open(source);
-            Lang lang = RDFDataMgr.determineLang(source, s.getContentType(), null);
-
-            if ( RDFLanguages.isTriples(lang) ) {
-                // Triples
+            if ( dest != null ) {
+                Lang lang = RDFLanguages.filenameToLang(source);
+                // load-to-graph - must be triples. 
+                if ( ! RDFLanguages.isTriples(lang) )
+                    throw new UpdateException("Attempt to load quads into a graph");
+                // LOAD-INTO graph ... must be triples.
                 Graph g = GraphFactory.createGraphMem();
-                StreamRDF stream = StreamRDFLib.graph(g);
-                RDFDataMgr.parse(stream, s, source);
+                RDFParser.source(source).parse(g);
                 Graph g2 = graph(datasetGraph, dest);
                 GraphUtil.addInto(g2, g);
             } else {
-                // Quads
-                if ( dest != null )
-                    throw new UpdateException("Attempt to load quads into a graph");
+                // LOAD <iri> -- allow quads.
                 DatasetGraph dsg = DatasetGraphFactory.create();
-                StreamRDF stream = StreamRDFLib.dataset(dsg);
-                RDFDataMgr.parse(stream, s, source);
+                RDFParser.source(source).parse(dsg);
                 Iterator<Quad> iter = dsg.find();
                 for ( ; iter.hasNext() ; ) {
                     Quad q = iter.next();
@@ -169,7 +163,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         catch (RuntimeException ex) {
             if ( !update.getSilent() ) {
                 if ( ex instanceof UpdateException )
-                    throw (UpdateException)ex;
+                    throw ex;
                 throw new UpdateException("Failed to LOAD '" + source + "'", ex);
             }
         }
