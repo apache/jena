@@ -63,7 +63,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends AbstractNodeTupleWritable<TValue>> {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeTupleOutputFormatTests.class);
 
     protected static final int EMPTY_SIZE = 0, SMALL_SIZE = 100, LARGE_SIZE = 10000, VERY_LARGE_SIZE = 100000;
@@ -110,7 +109,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      */
     protected final long countTuples(File f) {
         StreamRDFCounting counter = StreamRDFLib.count();
-        RDFDataMgr.parse(counter, f.getAbsolutePath(), this.getRdfLanguage(), null);
+        RDFDataMgr.parse(counter, f.getAbsolutePath(), this.getRdfLanguage());
         return counter.count();
     }
 

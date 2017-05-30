@@ -22,7 +22,7 @@ import java.io.Closeable ;
 
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.sparql.engine.ResultSetWrapper ;
+import org.apache.jena.sparql.resultset.ResultSetWrapper ;
 
 /** A {@link ResultSet} that closes the associated {@link QueryExecution} 
  * via {@link AutoCloseable}.

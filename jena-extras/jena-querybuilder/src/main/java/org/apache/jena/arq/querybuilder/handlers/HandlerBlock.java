@@ -35,6 +35,7 @@ public class HandlerBlock {
 	private final SelectHandler selectHandler;
 	private final SolutionModifierHandler modifierHandler;
 	private final WhereHandler whereHandler;
+	private final ValuesHandler valueHandler;
 
 	/**
 	 * Constructor.
@@ -48,6 +49,7 @@ public class HandlerBlock {
 		whereHandler = new WhereHandler(query);
 		datasetHandler = new DatasetHandler(query);
 		modifierHandler = new SolutionModifierHandler(query);
+		valueHandler = new ValuesHandler(query);
 		/*
 		 * selecthandler and constructhandler may be null so processthem
 		 * accordingly
@@ -59,7 +61,7 @@ public class HandlerBlock {
 		} else if (query.isAskType()) {
 			// nochange
 		} else if (query.isDescribeType()) {
-			// no change
+			sTemp = new SelectHandler(aggHandler);
 		} else if (query.isConstructType()) {
 			cTemp = new ConstructHandler(query);
 		}
@@ -130,6 +132,15 @@ public class HandlerBlock {
 		return whereHandler;
 	}
 
+	/**
+	 * Get the value handler.
+	 * 
+	 * @return the value handler.
+	 */
+	public ValuesHandler getValueHandler() {
+		return valueHandler;
+	}
+	
 	/**
 	 * Add the prolog handler contents to this prolog handler.
 	 * 
@@ -208,6 +219,16 @@ public class HandlerBlock {
 	}
 
 	/**
+	 * Add the values handler contents to this prolog handler.
+	 * 
+	 * @param handler
+	 *            The values handler to add to this one.
+	 */
+	public void addAll(ValuesHandler handler) {
+		valueHandler.addAll(handler);
+	}
+	
+	/**
 	 * Add all of the handlers in the handler block to this one. Any handler
 	 * that is null or is null in the handler argument are properly skipped.
 	 * 
@@ -222,6 +243,7 @@ public class HandlerBlock {
 		addAll(handler.modifierHandler);
 		addAll(handler.prologHandler);
 		addAll(handler.whereHandler);
+		addAll(handler.valueHandler);
 	}
 
 	/**
@@ -264,5 +286,6 @@ public class HandlerBlock {
 		modifierHandler.build();
 		whereHandler.build();
 		aggHandler.build();
+		valueHandler.build();
 	}
 }

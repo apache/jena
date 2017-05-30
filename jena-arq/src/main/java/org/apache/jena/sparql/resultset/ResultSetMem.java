@@ -25,14 +25,17 @@ import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.ResultBinding ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingUtils;
 
 /** A result set held in-memory. rewindable.  
  */
 
-public class ResultSetMem implements org.apache.jena.query.ResultSetRewindable, ResultSetPeekable
+public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 {
     protected List<Binding> rows = new ArrayList<>();
     protected List<String> varNames = null ;
@@ -83,8 +86,10 @@ public class ResultSetMem implements org.apache.jena.query.ResultSetRewindable, 
             this.varNames = qrm.varNames;
         } else {
             varNames = qr.getResultVars();
+            List<Var> vars = Var.varList(varNames);
             while (qr.hasNext()) {
                 Binding rb = qr.nextBinding();
+                BindingUtils.materialize(vars, rb);
                 rows.add(rb);
             }
         }

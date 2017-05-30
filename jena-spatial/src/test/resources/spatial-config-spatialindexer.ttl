@@ -10,7 +10,6 @@
 # Spatial
 [] ja:loadClass "org.apache.jena.query.spatial.SpatialQuery" .
 spatial:SpatialtDataset  rdfs:subClassOf  ja:RDFDataset .
-#spatial:SpatialIndexSolr  rdfs:subClassOf  spatial:SpatialIndex .
 spatial:SpatialIndexLucene  rdfs:subClassOf   spatial:SpatialIndex .
 
 ## ---------------------------------------------------------------
@@ -18,7 +17,6 @@ spatial:SpatialIndexLucene  rdfs:subClassOf   spatial:SpatialIndex .
 
 :spatial_dataset rdf:type     spatial:SpatialDataset ;
     spatial:dataset   <#dataset> ;
-    ##spaital:index   <#indexSolr> ;
     spatial:index     <#indexLucene> ;
     .
 

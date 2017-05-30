@@ -25,39 +25,31 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 
 public abstract class LangBase extends LangEngine implements LangRIOT
 {
-    protected final StreamRDF dest ; 
+    protected final StreamRDF dest;
+    protected final boolean isStrictMode; 
 
-    protected LangBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
-    {
-        super(tokens, profile) ;
-        this.dest = dest ;
+    protected LangBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
+        super(tokens, profile, profile.getErrorHandler());
+        this.dest = dest;
+        this.isStrictMode = profile.isStrictMode();
     }
 
     @Override
-    public void parse()
-    {
-        dest.base(profile.getPrologue().getBaseURI()) ;
-        dest.start() ;
-        try { 
-            runParser() ;
+    public void parse() {
+        dest.start();
+        try {
+            runParser();
         } finally {
-            dest.finish() ;
+            dest.finish();
             tokens.close();
         }
     }
-    
+
     /** Run the parser - events have been handled. */
-    protected abstract void runParser() ;
+    protected abstract void runParser();
 
     @Override
-    public ParserProfile getProfile()
-    {
-        return profile ;
-    }
-
-    @Override
-    public void setProfile(ParserProfile profile)
-    {
-        super.profile = profile ; 
+    public ParserProfile getProfile() {
+        return profile;
     }
 }

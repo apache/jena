@@ -28,7 +28,6 @@ import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
@@ -68,24 +67,35 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
-	}
-
-	@Override
 	public SelectBuilder clone() {
 		SelectBuilder qb = new SelectBuilder();
 		qb.handlerBlock.addAll(handlerBlock);
 		return qb;
 	}
 
-	@Override
+	/**
+	 * Set set the distinct flag.
+	 * 
+	 * Setting the select distinct will unset reduced if it was set.
+	 * 
+	 * @param state
+	 *            if true results will be distinct.
+	 * @return The builder for chaining.
+	 */
 	public SelectBuilder setDistinct(boolean state) {
 		getSelectHandler().setDistinct(state);
 		return this;
 	}
 
-	@Override
+	/**
+	 * Set set the reduced flag.
+	 * 
+	 * Setting the select reduced will unset distinct if it was set.
+	 * 
+	 * @param state
+	 *            if true results will be reduced.
+	 * @return The builder for chaining.
+	 */
 	public SelectBuilder setReduced(boolean state) {
 		getSelectHandler().setReduced(state);
 		return this;
@@ -334,11 +344,17 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public SelectBuilder addOptional(SelectBuilder t) {
+	public SelectBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
 
+	@Override
+	public SelectBuilder addFilter(Expr expr) {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+	
 	@Override
 	public SelectBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);
@@ -346,19 +362,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
-	public SelectBuilder addSubQuery(SelectBuilder subQuery) {
+	public SelectBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addUnion(SelectBuilder subQuery) {
+	public SelectBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public SelectBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public SelectBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
@@ -385,5 +401,10 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
 	}
-
+	
+	@Override
+	public SelectBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
+	}
 }

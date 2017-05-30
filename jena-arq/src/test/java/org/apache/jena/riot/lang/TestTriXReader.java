@@ -26,10 +26,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.util.IsoMatcher ;
@@ -80,7 +77,7 @@ public class TestTriXReader extends BaseTest {
     
     @Test
     public void trix_direct() {
-        ReaderRIOT r = new ReaderTriX() ;
+        ReaderRIOT r = new ReaderTriX(RiotLib.dftProfile(), ErrorHandlerFactory.errorHandlerNoWarnings);
         InputStream in = IO.openFile(fInput) ;
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         //StreamRDF stream = StreamRDFLib.writer(System.out) ;

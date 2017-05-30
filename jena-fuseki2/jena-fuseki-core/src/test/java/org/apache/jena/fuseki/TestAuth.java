@@ -58,7 +58,7 @@ public class TestAuth {
     
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
-    public static final int authPort             = ServerCtl.port()+10 ;
+    public static final int authPort             = FusekiLib.choosePort() ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
     public static final String authDatasetPath   = "/dataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 

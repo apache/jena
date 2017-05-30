@@ -53,9 +53,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TriGBlankNodeOutputTests extends StreamedTriGOutputTest {
 
-	static long $bs1 = RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE;
+	@SuppressWarnings("hiding")
+    static long $bs1 = RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE;
+	@SuppressWarnings("hiding")
 	static long $bs2 = 1000;
+	@SuppressWarnings("hiding")
 	static long $bs3 = 100;
+	@SuppressWarnings("hiding")
 	static long $bs4 = 1;
 
 	/**
@@ -80,7 +84,7 @@ public class TriGBlankNodeOutputTests extends StreamedTriGOutputTest {
 	@Override
 	protected Iterator<QuadWritable> generateTuples(int num) {
 		List<QuadWritable> qs = new ArrayList<QuadWritable>();
-		Node subject = NodeFactory.createAnon();
+		Node subject = NodeFactory.createBlankNode();
 		for (int i = 0; i < num; i++) {
 			Quad t = new Quad(
 					NodeFactory.createURI("http://example.org/graphs/" + i),

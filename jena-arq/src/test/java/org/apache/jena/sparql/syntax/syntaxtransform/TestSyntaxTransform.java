@@ -22,16 +22,16 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.Test ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
+import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps ;
-import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps ;
+import org.apache.jena.sparql.util.ModelUtils ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
+import org.junit.Test ;
 
 /** Test of variable replaced by value */
 public class TestSyntaxTransform extends BaseTest
@@ -95,8 +95,13 @@ public class TestSyntaxTransform extends BaseTest
         testQuery("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
                 "s", "<urn:x>");
     }
-
     
+    // Same except use the Model API.
+    @Test public void subst_query_31() {
+        testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s", "SELECT * { <urn:x> ?p ?o } ORDER BY (<urn:x>)",
+                       "s", "<urn:x>");
+    }
+
     @Test public void subst_update_01() { 
         testUpdate("DELETE { ?s <urn:p> ?x } WHERE {}", 
                    "DELETE { ?s <urn:p> <urn:x> } WHERE {}",
@@ -121,6 +126,12 @@ public class TestSyntaxTransform extends BaseTest
                    "x", "<urn:x>") ;
     }
 
+    @Test public void subst_update_10() { 
+        testUpdateModel("DELETE WHERE { ?s <urn:p> ?x }", 
+                        "DELETE WHERE { ?s <urn:p> <urn:x> }",
+                           "x", "<urn:x>") ;
+    }
+
     //static final String PREFIX = "PREFIX : <http://example/>\n" ;
     static final String PREFIX = "" ;
 
@@ -136,8 +147,20 @@ public class TestSyntaxTransform extends BaseTest
         assertEquals(qExpected, qTrans) ;
     }
 
-    private void testUpdate(String input, String output, String varStr, String valStr)
-    {
+    private void testQueryModel(String input, String output, String varStr, String valStr) {
+        Query q1 = QueryFactory.create(PREFIX+input) ;
+        Query qExpected = QueryFactory.create(PREFIX+output) ;
+        
+        Map<String, RDFNode> map = new HashMap<>() ;
+        Node n = SSE.parseNode(valStr);
+        RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
+        map.put(varStr, x);
+        
+        Query qTrans = QueryTransformOps.transformQuery(q1, map) ;
+        assertEquals(qExpected, qTrans) ;
+    }
+
+    private void testUpdate(String input, String output, String varStr, String valStr) {
         UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
         UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
         
@@ -152,6 +175,23 @@ public class TestSyntaxTransform extends BaseTest
         //assertEquals(reqExpected, reqTrans) ;
         assertEquals(x1, x2) ;
     }
-    
+
+    private void testUpdateModel(String input, String output, String varStr, String valStr) {
+        UpdateRequest req1 = UpdateFactory.create(PREFIX+input) ;
+        UpdateRequest reqExpected = UpdateFactory.create(PREFIX+output) ;
+        
+        Map<String, RDFNode> map = new HashMap<>() ;
+        Node n = SSE.parseNode(valStr);
+        RDFNode x = ModelUtils.convertGraphNodeToRDFNode(n);
+        map.put(varStr, x);
+        
+        UpdateRequest reqTrans = UpdateTransformOps.transformUpdate(req1, map) ;
+        
+        // Crude.
+        String x1 = reqExpected.toString().replaceAll("[ \n\t]", "") ;
+        String x2 = reqTrans.toString().replaceAll("[ \n\t]", "") ;
+        //assertEquals(reqExpected, reqTrans) ;
+        assertEquals(x1, x2) ;
+    }
 }
 

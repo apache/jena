@@ -25,7 +25,6 @@ import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
-
 class JSONParserBase
 {
     protected boolean VERBOSE = true ;
@@ -68,16 +67,12 @@ class JSONParserBase
         return t.hasType(tokenType) ;
     }
     
-    final protected boolean lookingAtString()
+    final protected boolean lookingAtKeyString()
     {
         Token t = peekTokens.peek() ;
         if ( t == null  )
             return false ;
-        if ( t.hasType(TokenType.STRING1) ) return true ;
-        if ( t.hasType(TokenType.STRING2) ) return true ;
-        if ( t.hasType(TokenType.LONG_STRING1) ) return true ;
-        if ( t.hasType(TokenType.LONG_STRING2) ) return true ;
-        return false ;
+        return t.hasType(TokenType.STRING) && ! t.isLongString();
     }
     
     final protected boolean lookingAtNumber()

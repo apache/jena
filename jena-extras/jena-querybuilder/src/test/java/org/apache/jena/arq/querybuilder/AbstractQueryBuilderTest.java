@@ -60,6 +60,7 @@ public class AbstractQueryBuilderTest {
 		public HandlerBlock getHandlerBlock() {
 			return handlerBlock;
 		}
+		
 	}
 
 	private class NodeFront implements FrontsNode {
@@ -102,36 +103,36 @@ public class AbstractQueryBuilderTest {
 
 	@Test
 	public void testMakeVar() {
-		Var v = builder.makeVar(null);
+		Var v = AbstractQueryBuilder.makeVar(null);
 		assertEquals(Var.ANON, v);
 
-		v = builder.makeVar("a");
+		v = AbstractQueryBuilder.makeVar("a");
 		assertEquals(Var.alloc("a"), v);
 
-		v = builder.makeVar("?a");
+		v = AbstractQueryBuilder.makeVar("?a");
 		assertEquals(Var.alloc("a"), v);
 
 		Node n = NodeFactory.createVariable("foo");
-		v = builder.makeVar(n);
+		v = AbstractQueryBuilder.makeVar(n);
 		assertEquals(Var.alloc("foo"), v);
 
 		NodeFront nf = new NodeFront(n);
-		v = builder.makeVar(nf);
+		v = AbstractQueryBuilder.makeVar(nf);
 		assertEquals(Var.alloc("foo"), v);
 
-		v = builder.makeVar(Node_RuleVariable.WILD);
+		v = AbstractQueryBuilder.makeVar(Node_RuleVariable.WILD);
 		assertNull(v);
 
 		ExprVar ev = new ExprVar("bar");
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.alloc("bar"), v);
 
 		ev = new ExprVar(n);
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.alloc("foo"), v);
 
 		ev = new ExprVar(Var.ANON);
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.ANON, v);
 
 	}

@@ -18,22 +18,17 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.StringReader ;
-
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
-/** Helper code for RIOT language parsing tests */
+/** Helper code for RIOT language parsing tests. */
 class ParserTestBaseLib {
     
     /** Parse for a language - convert errors.wranigns to ErrorHandlerEx */
@@ -55,14 +50,13 @@ class ParserTestBaseLib {
     /** Parse strings to destination (checking on, URI resolution off) - convert errors and warning to ErrorHandlerEx */ 
     static void parse(Lang lang, StreamRDF dest, String... strings) {
         String string = String.join("\n", strings) ;
-        StringReader reader = new StringReader(string) ;
         String baseIRI = "http://base/" ;
-        ReaderRIOT r = RDFDataMgr.createReader(lang) ;
-        //ParserProfile profile = RiotLib.profile(lang, baseIRI, new ErrorHandlerEx());
-        ParserProfile profile = RiotLib.profile(baseIRI, false, true, new ErrorHandlerEx());
-        r.setParserProfile(profile) ;
-        r.setErrorHandler(new ErrorHandlerEx()); // WHY?
-        r.read(reader, baseIRI, null, dest, null);
+        RDFParser.create()
+            .fromString(string)
+            .base(baseIRI)
+            .errorHandler(new ErrorHandlerEx())
+            .lang(lang)
+            .parse(dest);
     }
 
     /** Parse for a language - convert errors.wranigns to ErrorHandlerEx */

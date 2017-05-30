@@ -21,12 +21,12 @@
   <artifactId>jena-spatial</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Spatial Search</name>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.4.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
+    <version>20-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -43,21 +43,21 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Testing support -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -75,6 +75,11 @@
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-spatial-extras</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers-common</artifactId>
     </dependency>
 
@@ -84,40 +89,10 @@
     </dependency>
 
     <dependency>
-      <groupId>com.spatial4j</groupId>
+      <groupId>org.locationtech.spatial4j</groupId>
       <artifactId>spatial4j</artifactId>
     </dependency>
     
-    <dependency>
-      <artifactId>solr-solrj</artifactId>
-      <groupId>org.apache.solr</groupId>
-    </dependency>
-      <!--
-    <dependency>
-      <artifactId>solr-core</artifactId>
-      <groupId>org.apache.solr</groupId>
-      <version>${ver.solr}</version>
-      <type>jar</type>
-      <scope>test</scope>
-      <exclusions>
-      <exclusion>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      </exclusion>
-      <exclusion>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      </exclusion>
-      </exclusions>
-    </dependency>
-    
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-      <scope>test</scope>
-    </dependency>
-    -->
   </dependencies>
 
   <build>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,112 +18,21 @@
 
 package org.apache.jena.fuseki.validation;
 
-import java.io.StringReader ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.fuseki.validation.html.DataValidatorHTML;
+import org.apache.jena.fuseki.validation.json.DataValidatorJSON;
 
-public class DataValidator extends ValidatorBaseJson {
-    private static final long serialVersionUID = -7052864052858485344L;
+public class DataValidator extends ValidatorBase {
 
-    public DataValidator() { }
-  
-    static final String jInput           = "input" ;
-
-    static final String paramFormat           = "outputFormat" ;
-    static final String paramIndirection      = "url" ;
-    static final String paramData             = "data" ;
-    static final String paramSyntax           = "languageSyntax" ;
     @Override
-    protected JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-        
-        
-        String syntax = getArgOrNull(action, paramSyntax) ;
-        if ( syntax == null || syntax.equals("") )
-            syntax = RDFLanguages.NQUADS.getName() ;
-
-        Lang language = RDFLanguages.shortnameToLang(syntax) ;
-        if ( language == null ) {
-            ServletOps.errorBadRequest("Unknown syntax: " + syntax) ;
-            return null ;
-        }
-
-        String string = getArg(action, paramData) ;
-        StringReader sr = new StringReader(string) ;
-        obj.key(jInput).value(string) ;
-        StreamRDF dest = StreamRDFLib.sinkNull() ;
-        
-        try {
-            // Set error handler!
-            RDFDataMgr.parse(dest, sr, null, language) ;
-        } catch (RiotParseException ex) {
-            obj.key(jErrors) ;
-
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.key(jParseErrorLine).value(ex.getLine()) ;
-            obj.key(jParseErrorCol).value(ex.getCol()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
-        } catch (RiotException ex) {
-            obj.key(jErrors) ;
-
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
-        }
-
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
+    protected void executeJSON(HttpServletRequest request, HttpServletResponse response) {
+        executeJSON(request, response, DataValidatorJSON::execute);
     }
+
     @Override
-    protected String validatorName() {
-        return "RDF Data" ;
+    protected void executeHTML(HttpServletRequest request, HttpServletResponse response) {
+        DataValidatorHTML.executeHTML(request, response);
     }
-    
-//    /**
-//     * Error handler that records messages.
-//     */
-//    private static class ErrorHandlerMsg implements ErrorHandler
-//    {
-//        private List<String> messages = new ArrayList<>() ;
-//
-//        ErrorHandlerMsg(List<String> messages) { this.messages = messages; }
-//        
-//        @Override
-//        public void warning(String message, long line, long col)
-//        { output(message, line, col, "Warning", "warning") ; }
-//    
-//        // Attempt to continue.
-//        @Override
-//        public void error(String message, long line, long col)
-//        { output(message, line, col, "Error", "error") ; }
-//    
-//        @Override
-//        public void fatal(String message, long line, long col)
-//        { output(message, line, col, "Fatal", "error") ; throw new RiotException(fmtMessage(message, line, col)) ; }
-//        
-//        private void output(String message, long line, long col, String typeName, String className)
-//        {
-//            String str = fmtMessage(message, line, col) ;
-//            messages.add(str) ;
-//        }
-//    }
 }
-

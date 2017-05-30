@@ -36,6 +36,13 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 	/**
 	 * Add an ascending order by.
 	 * 
+	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+	 * methods to create the expression.
+	 * 
+	 * @see ExprFactory
+	 * @see org.apache.jena.sparql.expr.NodeValue
+	 * @see AbstractQueryBuilder#makeExpr(String) 
+	 * 
 	 * @param orderBy
 	 *            The expression to order by.
 	 * @return The builder for chaining.
@@ -131,6 +138,13 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
 	 * Add a having expression.
+	 * 
+	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+	 * methods to create the expression.
+	 * 
+	 * @see ExprFactory
+	 * @see org.apache.jena.sparql.expr.NodeValue
+	 * @see AbstractQueryBuilder#makeExpr(String)
 	 * 
 	 * @param expression
 	 *            Expression to evaluate for the having.

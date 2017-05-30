@@ -37,6 +37,11 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
     private static Logger[] getLoggers() {
         return new Logger[]{ Logger.getLogger(DatasetGraphInMemory.class) } ;
     }
+    
+    @Override
+    protected boolean supportsReadCommitted() {
+        return true ;
+    }
 
     @Override
     protected void setPromotion(boolean b) {

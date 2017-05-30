@@ -18,6 +18,8 @@
 
 package org.apache.jena.rdfconnection;
 
+import java.util.Objects;
+
 /** package-wide utilities etc */
 /*package*/ class RDFConn {
     private static String dftName =  "default" ;
@@ -26,15 +28,44 @@ package org.apache.jena.rdfconnection;
         return name == null || name.equals(dftName) ;
     }
     
-    /*package*/ static String queryStringForGraph(String graphName) {
+    private static String queryStringForGraph(String ch, String graphName) {
         return 
-            (RDFConn.isDefault(graphName) )
-            ? "?default"
-            : "?graph="+graphName ;
+            ch + 
+                (RDFConn.isDefault(graphName)
+                ? "default"
+                : "graph="+graphName) ;
     }
     
     /*package*/ static String urlForGraph(String graphStoreProtocolService, String graphName) {
-        return graphStoreProtocolService + queryStringForGraph(graphName) ;
+        // If query string
+        String ch = "?";
+        if ( graphStoreProtocolService.contains("?") )
+            // Already has a query string, append with "&"  
+            ch = "&";
+        return graphStoreProtocolService + queryStringForGraph(ch, graphName) ;
+    }
+
+    /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
+        Objects.requireNonNull(srvEndpoint, "Service Endpoint");
+        if ( destination == null )
+            return srvEndpoint;
+        // If the srvEndpoint looks like an absolute URL, use as given. 
+        if ( srvEndpoint.startsWith("http:/") || srvEndpoint.startsWith("https:/") )
+            return srvEndpoint;
+        String queryString = null;
+        String dest = destination;
+        if ( destination.contains("?") ) {
+            // query string : remove and append later.
+            int i = destination.indexOf('?');
+            queryString = destination.substring(i);
+            dest = destination.substring(0, i);
+        }
+        if ( dest.endsWith("/") )
+            dest = dest.substring(0, dest.length()-1);
+        dest = dest+"/"+srvEndpoint;
+        if ( queryString != null )
+           dest = dest+queryString; 
+        return dest;
     }
 
 }

@@ -65,7 +65,7 @@ public class JSONP extends JSONParserBase
         for(;;)
         {
             handler.startPair(currLine, currCol) ;
-            if ( ! lookingAt(KEYWORD) && ! lookingAtString() )
+            if ( ! lookingAt(KEYWORD) && ! lookingAtKeyString() )
                 exception("Not a key for a JSON object: "+peekToken()) ;
             String key = peekToken().getImage() ;
             nextToken() ;
@@ -102,11 +102,8 @@ public class JSONP extends JSONParserBase
             case DECIMAL:   { handler.valueDecimal(peekToken().getImage(), currLine, currCol) ; nextToken() ; return ; }
             case DOUBLE:    { handler.valueDouble(peekToken().getImage(), currLine, currCol) ; nextToken() ; return ; }
 
-            // String - liberal
-            case STRING1:
-            case STRING2:
-            case LONG_STRING1:
-            case LONG_STRING2:
+            // String - liberal - includes single quotes and triple quoted forms if the tokenizer supports them. 
+            case STRING:
             {
                 handler.valueString(peekToken().getImage(), currLine, currCol) ;
                 nextToken() ; 

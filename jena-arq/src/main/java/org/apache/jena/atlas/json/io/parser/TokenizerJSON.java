@@ -18,7 +18,26 @@
 
 package org.apache.jena.atlas.json.io.parser;
 
-import static org.apache.jena.atlas.lib.Chars.* ;
+import static org.apache.jena.atlas.lib.Chars.CH_COLON;
+import static org.apache.jena.atlas.lib.Chars.CH_COMMA;
+import static org.apache.jena.atlas.lib.Chars.CH_DOT;
+import static org.apache.jena.atlas.lib.Chars.CH_GT;
+import static org.apache.jena.atlas.lib.Chars.CH_HASH;
+import static org.apache.jena.atlas.lib.Chars.CH_LBRACE;
+import static org.apache.jena.atlas.lib.Chars.CH_LBRACKET;
+import static org.apache.jena.atlas.lib.Chars.CH_LPAREN;
+import static org.apache.jena.atlas.lib.Chars.CH_LT;
+import static org.apache.jena.atlas.lib.Chars.CH_MINUS;
+import static org.apache.jena.atlas.lib.Chars.CH_PLUS;
+import static org.apache.jena.atlas.lib.Chars.CH_QUOTE1;
+import static org.apache.jena.atlas.lib.Chars.CH_QUOTE2;
+import static org.apache.jena.atlas.lib.Chars.CH_RBRACE;
+import static org.apache.jena.atlas.lib.Chars.CH_RBRACKET;
+import static org.apache.jena.atlas.lib.Chars.CH_RPAREN;
+import static org.apache.jena.atlas.lib.Chars.CH_SEMICOLON;
+import static org.apache.jena.atlas.lib.Chars.CR;
+import static org.apache.jena.atlas.lib.Chars.EOF;
+import static org.apache.jena.atlas.lib.Chars.NL;
 
 import java.io.IOException ;
 import java.util.NoSuchElementException ;
@@ -26,6 +45,7 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.JsonParseException ;
+import org.apache.jena.riot.tokens.StringType;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -102,6 +122,7 @@ public class TokenizerJSON implements Tokenizer
         // ---- String
         // Support both "" and '' strings (only "" is legal JSON)
         if ( ch == CH_QUOTE1 || ch == CH_QUOTE2 ) {
+            token.setType(TokenType.STRING);
             reader.readChar() ;
             int ch2 = reader.peekChar() ;
             if ( ch2 == ch ) {
@@ -112,24 +133,19 @@ public class TokenizerJSON implements Tokenizer
                     // """-strings/'''-strings
                     reader.readChar() ;
                     token.setImage(readLong(ch, false)) ;
-                    TokenType tt = (ch == CH_QUOTE1) ? TokenType.LONG_STRING1 : TokenType.LONG_STRING2 ;
-                    token.setType(tt) ;
+                    StringType st = (ch == CH_QUOTE1) ? StringType.LONG_STRING1 : StringType.LONG_STRING2 ;
+                    token.setStringType(st) ;
                     return token ;
                 }
                 // Two quotes then a non-quote.
                 // Must be '' or ""
-
-                // No need to pushback characters as we know the lexical form is
-                // the empty string.
-                // if ( ch2 != EOF ) reader.pushbackChar(ch2) ;
-                // if ( ch1 != EOF ) reader.pushbackChar(ch1) ; // Must be '' or
-                // ""
                 token.setImage("") ;
             } else
                 // Single quote character.
                 token.setImage(allBetween(ch, ch, true, false)) ;
             // Single quoted string.
-            token.setType((ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2) ;
+            StringType st = (ch == CH_QUOTE1) ? StringType.STRING1 : StringType.STRING2 ;
+            token.setStringType(st) ;
             return token ;
         }
 

@@ -65,7 +65,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 
 	@After
-	public final void cleanupDatasetClauseTest() {
+	public final void cleanupWhereClauseTest() {
 		getProducer().cleanUp(); // clean up the producer for the next run
 	}
 
@@ -389,4 +389,20 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertContainsRegex(
 				 "_:b0"+SPACE+ uri("foo") + SPACE	+ uri("bar"), builder.buildString());
 	}
+	
+	@ContractTest
+	public void testAddMinus() {
+		SelectBuilder sb = new SelectBuilder();
+		sb.addPrefix("pfx", "uri").addVar("?x")
+				.addWhere("<one>", "<two>", "three");
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addMinus( sb );
+		
+		String str = builder.buildString();
+		
+		assertContainsRegex(MINUS + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
+				str);	
+
+	}
+
 }

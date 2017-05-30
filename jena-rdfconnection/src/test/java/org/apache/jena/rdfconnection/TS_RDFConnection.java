@@ -23,10 +23,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Other tests are in jena-integration-tests
+    // Other tests, especifically for RDFCommectionRemote are in jena-integration-tests
     TestRDFConnectionLocalTxnMem.class
     , TestRDFConnectionLocalMRSW.class
     , TestLocalIsolation.class
+    , TestRDFConn.class
 })
 
 public class TS_RDFConnection {}

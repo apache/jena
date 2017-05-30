@@ -56,11 +56,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
-	}
-
-	@Override
 	public ConstructHandler getConstructHandler() {
 		return handlerBlock.getConstructHandler();
 	}
@@ -227,7 +222,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public ConstructBuilder addOptional(SelectBuilder t) {
+	public ConstructBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -245,25 +240,31 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
+	public ConstructBuilder addFilter(Expr expr) {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+
+	@Override
 	public ConstructBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addSubQuery(SelectBuilder subQuery) {
+	public ConstructBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addUnion(SelectBuilder subQuery) {
+	public ConstructBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public ConstructBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
@@ -300,5 +301,11 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
+	}
+	
+	@Override
+	public ConstructBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
 	}
 }

@@ -40,11 +40,17 @@ public class WebContent
 
     public static final String      contentTypeRDFJSON           = "application/rdf+json" ;
     public static final ContentType ctRDFJSON                    = ContentType.create(contentTypeRDFJSON) ;
+    
+    /** @deprecated Use {@link #contentTypeRDFJSON} */
+    @Deprecated
+    public static final String      contentTypeRdfJson           = contentTypeRDFJSON ;
+    /** @deprecated Use {@link #ctRDFJSON} */
+    @Deprecated
+    public static final ContentType ctRrdfJson                   = ctRDFJSON ;
 
     public static final String      contentTypeJSONLD            = "application/ld+json" ;
     public static final ContentType ctJSONLD                     = ContentType.create(contentTypeJSONLD) ;
 
-    // MIME type for N-triple is text/plain (!!!)
     public static final String      contentTypeTextPlain         = "text/plain" ;
     public static final ContentType ctTextPlain                  = ContentType.create(contentTypeTextPlain) ;
 
@@ -98,9 +104,6 @@ public class WebContent
 
     public static final String      contentTypeMultiAlt          = "multipart/alternative" ;
     public static final ContentType ctMultiAlt                   = ContentType.create(contentTypeMultiAlt) ;
-
-    public static final String      contentTypeRdfJson           = "application/rdf+json" ;
-    public static final ContentType ctRdfJson                    = ContentType.create(contentTypeRdfJson) ;
 
     public static final String      contentTypeN3                = "text/rdf+n3" ;
     public static final ContentType ctTypeN3                     = ContentType.create("text/rdf+n3") ;

@@ -24,9 +24,7 @@ import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFFormat ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpOp ;
@@ -119,11 +117,15 @@ public class TestDatasetOps extends AbstractFusekiTest
     private void gsp_x_ct(String urlDataset, String acceptheader, String contentTypeResponse) {
         HttpEntity e = datasetToHttpEntity(data) ;
         HttpOp.execHttpPut(urlDataset(), e);
-        TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ;
-        assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        StreamRDF dest = StreamRDFLib.dataset(dsg) ;
-        RDFDataMgr.parse(dest, in) ;
+        
+        // Do manually so the test can validate the expected ContentType
+        try ( TypedInputStream in = HttpOp.execHttpGet(urlDataset, acceptheader) ) {
+            assertEqualsIgnoreCase(contentTypeResponse, in.getContentType()) ;
+            Lang lang = RDFLanguages.contentTypeToLang(in.getContentType());
+            DatasetGraph dsg = DatasetGraphFactory.create() ;
+            StreamRDF dest = StreamRDFLib.dataset(dsg) ;
+            RDFParser.source(in).lang(lang).parse(dest);
+        }
     }
 
     @Test 

@@ -37,12 +37,10 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
@@ -100,7 +98,6 @@ public abstract class CmdLangParse extends CmdGeneral
     protected interface PostParseHandler { void postParse(); }
     
     static class ParseRecord {
-        final String baseURI;
         final String filename;
         final boolean success;
         final long timeMillis;
@@ -108,10 +105,8 @@ public abstract class CmdLangParse extends CmdGeneral
         final long quads;
         final long tuples = 0;
         
-        public ParseRecord(String baseURI, String filename,
-                           boolean successful, long timeMillis,
+        public ParseRecord(String filename, boolean successful, long timeMillis,
                            long countTriples, long countQuads) {
-            this.baseURI = baseURI;
             this.filename = filename;
             this.success = successful;
             this.timeMillis = timeMillis;
@@ -122,6 +117,9 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected void exec() {
+        if ( modLangParse.skipOnBadTerm() )
+            throw new CmdException("Not supported : skip on bad term"); 
+        
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
@@ -150,6 +148,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         try {
+            // The actual parsing ... 
             if ( super.getPositional().isEmpty() ) {
                 ParseRecord parseRec = parseFile("-");
                 outcome(parseRec);
@@ -163,10 +162,12 @@ public abstract class CmdLangParse extends CmdGeneral
                     outcome(parseRec);
                 }
             }
+            // ... parsing done.
+
             if ( postParse != null )
                 postParse.postParse();
             // Post parse information.
-            // Total if more then one file.
+            // Total if more than one file.
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() ) {
                 long totalMillis = 0; 
                 long totalTriples = 0;
@@ -207,32 +208,35 @@ public abstract class CmdLangParse extends CmdGeneral
     
     public ParseRecord parseFile(String filename) {
         String baseURI = modLangParse.getBaseIRI() ;
+        RDFParserBuilder builder = RDFParser.create();
+        if ( baseURI != null )
+            builder.base(baseURI);
+        Lang lang = selectLang(null, null, RDFLanguages.NQUADS) ;
+        builder.lang(lang);
+
+        // Set the source.
         if ( filename.equals("-") ) {
-            if ( baseURI == null )
+            if ( baseURI == null ) {
                 baseURI = "http://base/";
-            TypedInputStream in = new TypedInputStream(System.in) ;
-            return parseRIOT(baseURI, "stdin", in) ;
-        } else {
-            try ( TypedInputStream in = RDFDataMgr.open(filename) ) {
-                return parseRIOT(baseURI, filename, in) ;    
-            } catch (RiotNotFoundException ex) {
-                System.err.println("Can't open '"+filename+"' "+ex.getMessage()) ;
-                return new ParseRecord(null, filename, false, -1, -1, -1);
+                builder.base(baseURI);
             }
+            builder.source(System.in);
+        } else {
+            builder.source(filename);
         }
+        return parseRIOT(builder, filename);
     }
 
     protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang  ) ;
 
-    protected ParseRecord parseRIOT(String baseURI, String filename, TypedInputStream in) {
-        ContentType ct = in.getMediaType() ;
-        
-        baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
-        
+    protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
         boolean checking = true ;
-        if ( modLangParse.explicitChecking() )  checking = true ;
-        if ( modLangParse.explicitNoChecking() ) checking = false ;
-        
+        if ( modLangParse.explicitChecking() )
+            checking = true;
+        if ( modLangParse.explicitNoChecking() )
+            checking = false;
+        builder.checking(checking);
+
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         if ( checking ) {
             if ( modLangParse.stopOnBadTerm() )
@@ -243,12 +247,8 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         if ( modLangParse.skipOnBadTerm() ) {
-            // TODO skipOnBadterm
+            // skipOnBadterm - this needs collaboration from the parser.
         }
-        
-        Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
-        if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
-            throw new CmdException("Undefined language: "+lang) ; 
         
         // Make a flag.
         // Input and output subflags.
@@ -256,44 +256,38 @@ public abstract class CmdLangParse extends CmdGeneral
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-
-        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
-        if ( labelsAsGiven )
-            labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
+//        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
+//        if ( labelsAsGiven )
+//            labels = NodeToLabel.createBNodeByLabelEncoded() ;
+        
+        if ( labelsAsGiven )
+            builder.labelToNode(LabelToNode.createUseLabelAsGiven());
+
         StreamRDF s = outputStream ; 
         if ( setup != null )
             s = InfFactory.inf(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
         
-        ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
         boolean successful = true;
-
-        if ( checking ) {
-            if ( lang == RDFLanguages.NTRIPLES || lang == RDFLanguages.NQUADS )
-                reader.setParserProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
-            else
-                reader.setParserProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
-        } else
-            reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
-
-        if ( labelsAsGiven ) {
-            FactoryRDF f = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
-            reader.getParserProfile().setFactoryRDF(f);
-        }
-
+        if ( checking ) 
+            SysRIOT.setStrictMode(true);
+        builder.errorHandler(errHandler);
+        
         modTime.startTimer() ;
         sink.start() ;
+        RDFParser parser = builder.build();
         try {
-            reader.read(in, baseURI, ct, sink, null);
+            parser.parse(sink);
             successful = true;
         } catch (RiotException ex) {
             successful = false;
         }
         sink.finish() ;
         long x = modTime.endTimer() ;
-        ParseRecord outcome = new ParseRecord(baseURI, filename, successful, x, sink.countTriples(), sink.countQuads());
+        // TEMP
+        ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads());
         return outcome;
     }
     

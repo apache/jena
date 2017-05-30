@@ -33,10 +33,10 @@ import org.apache.jena.rdf.model.ResourceFactory ;
 
 public class RDF{
 
-	/**
-	 * The namespace of the vocabulary as a string
-	 */
-	public static final String uri ="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    /**
+     * The namespace of the vocabulary as a string
+     */
+    public static final String uri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
     /** returns the URI for this schema
         @return the URI for this schema
@@ -53,35 +53,73 @@ public class RDF{
     public static Property li( int i )
         { return property( "_" + i ); }
 
-    public static final Resource Alt = resource( "Alt" );
-    public static final Resource Bag = resource( "Bag" );
-    public static final Resource Property = resource( "Property" );
-    public static final Resource Seq = resource( "Seq" );
-    public static final Resource Statement = resource( "Statement" );
-    public static final Resource List = resource( "List" );
-    public static final Resource nil = resource( "nil" );
+    public static final Resource    Alt          = Init.Alt();
+    public static final Resource    Bag          = Init.Bag();
+    public static final Resource    Property     = Init._Property();
+    public static final Resource    Seq          = Init.Seq();
+    public static final Resource    Statement    = Init.Statement();
+    public static final Resource    List         = Init.List();
+    public static final Resource    nil          = Init.nil();
 
-    public static final Property first = property( "first" );
-    public static final Property rest = property( "rest" );
-    public static final Property subject = property( "subject" );
-    public static final Property predicate = property( "predicate" );
-    public static final Property object = property( "object" );
-    public static final Property type = property( "type" );
-    public static final Property value = property( "value" );
-    
+    public static final Property    first        = Init.first();
+    public static final Property    rest         = Init.rest();
+    public static final Property    subject      = Init.subject();
+    public static final Property    predicate    = Init.predicate();
+    public static final Property    object       = Init.object();
+    public static final Property    type         = Init.type();
+    public static final Property    value        = Init.value();
+
     // RDF 1.1 - the datatypes of language strings
-    public static final Resource langString = ResourceFactory.createResource(RDFLangString.rdfLangString.getURI()) ;
-    
+    public static final Resource    langString   = Init.langString();
+
     // RDF 1.1 - rdf:HTML
-    public static final Resource HTML = ResourceFactory.createResource(RDFhtml.rdfHTML.getURI()) ;
+    public static final Resource    HTML         = Init.HTML();
 
     // rdf:XMLLiteral
-    public static final Resource xmlLiteral = ResourceFactory.createResource(XMLLiteralType.theXMLLiteralType.getURI()) ;
-    
-    public static final RDFDatatype dtRDFHTML    = RDFhtml.rdfHTML;
-    public static final RDFDatatype dtLangString = RDFLangString.rdfLangString;
-    public static final RDFDatatype dtXMLLiteral = XMLLiteralType.theXMLLiteralType;
+    public static final Resource    xmlLiteral   = Init.xmlLiteral();
 
+    public static final RDFDatatype dtRDFHTML    = Init.dtRDFHTML();
+    public static final RDFDatatype dtLangString = Init.dtLangString();
+    public static final RDFDatatype dtXMLLiteral = Init.dtXMLLiteral();
+
+    /** RDF constants are used during Jena initialization.
+     * <p>
+     * If that initialization is triggered by touching the RDF class,
+     * then the constants are null.
+     * <p>
+     * So for these cases, call this helper class: Init.function()   
+     */
+    public static class Init {
+        // JENA-1294
+        // Version that calculate the constant when called. 
+        public static Resource Alt()              { return resource( "Alt" ); }
+        public static Resource Bag()              { return resource( "Bag" ); }
+        // Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
+        // Can't have a methdo called Property() - it crashes the javadoc generation.
+        //  https://bugzilla.redhat.com/show_bug.cgi?id=1423421 ==>
+        //  https://bugs.openjdk.java.net/browse/JDK-8061305
+        public static Resource _Property()         { return resource( "Property" ); }
+        public static Resource Seq()              { return resource( "Seq" ); }
+        public static Resource Statement()        { return resource( "Statement" ); }
+        public static Resource List()             { return resource( "List" ); }
+        public static Resource nil()              { return resource( "nil" ); }
+        public static Property first()            { return property( "first" ); }
+        public static Property rest()             { return property( "rest" ); }
+        public static Property subject()          { return property( "subject" ); }
+        public static Property predicate()        { return property( "predicate" ); }
+        public static Property object()           { return property( "object" ); }
+        public static Property type()             { return property( "type" ); }
+        public static Property value()            { return property( "value" ); }
+        
+        public static Resource langString()       { return ResourceFactory.createResource(dtLangString().getURI()) ; }
+        public static Resource HTML()             { return ResourceFactory.createResource(dtRDFHTML().getURI()) ; }
+        public static Resource xmlLiteral()       { return ResourceFactory.createResource(dtXMLLiteral().getURI()) ; }
+        
+        public static RDFDatatype dtRDFHTML()     { return RDFhtml.rdfHTML; }
+        public static RDFDatatype dtLangString()  { return RDFLangString.rdfLangString; }
+        public static RDFDatatype dtXMLLiteral()  { return XMLLiteralType.theXMLLiteralType; }
+    }
+    
     /**
         The same items of vocabulary, but at the Node level, parked inside a
         nested class so that there's a simple way to refer to them.
@@ -89,22 +127,22 @@ public class RDF{
     @SuppressWarnings("hiding") 
     public static final class Nodes
     {
-        public static final Node Alt        = RDF.Alt.asNode();
-        public static final Node Bag        = RDF.Bag.asNode();
-        public static final Node Property   = RDF.Property.asNode();
-        public static final Node Seq        = RDF.Seq.asNode();
-        public static final Node Statement  = RDF.Statement.asNode();
-        public static final Node List       = RDF.List.asNode();
-        public static final Node nil        = RDF.nil.asNode();
-        public static final Node first      = RDF.first.asNode();
-        public static final Node rest       = RDF.rest.asNode();
-        public static final Node subject    = RDF.subject.asNode();
-        public static final Node predicate  = RDF.predicate.asNode();
-        public static final Node object     = RDF.object.asNode();
-        public static final Node type       = RDF.type.asNode();
-        public static final Node value      = RDF.value.asNode();
-        public static final Node langString = RDF.langString.asNode();
-        public static final Node HTML       = RDF.HTML.asNode();
-        public static final Node xmlLiteral = RDF.xmlLiteral.asNode();
+        public static final Node Alt        = Init.Alt().asNode();
+        public static final Node Bag        = Init.Bag().asNode();
+        public static final Node Property   = Init._Property().asNode();
+        public static final Node Seq        = Init.Seq().asNode();
+        public static final Node Statement  = Init.Statement().asNode();
+        public static final Node List       = Init.List().asNode();
+        public static final Node nil        = Init.nil().asNode();
+        public static final Node first      = Init.first().asNode();
+        public static final Node rest       = Init.rest().asNode();
+        public static final Node subject    = Init.subject().asNode();
+        public static final Node predicate  = Init.predicate().asNode();
+        public static final Node object     = Init.object().asNode();
+        public static final Node type       = Init.type().asNode();
+        public static final Node value      = Init.value().asNode();
+        public static final Node langString = Init.langString().asNode();
+        public static final Node HTML       = Init.HTML().asNode();
+        public static final Node xmlLiteral = Init.xmlLiteral().asNode();
     }
 }

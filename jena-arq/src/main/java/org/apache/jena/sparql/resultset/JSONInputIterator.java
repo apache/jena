@@ -202,7 +202,7 @@ public class JSONInputIterator extends QueryIteratorBase {
             nextToken();
             vars.clear();
             do {
-                if ( lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2) ) {
+                if ( lookingAt(TokenType.STRING) ) {
                     Token t = nextToken();
                     String var = t.getImage();
                     vars.add(var);
@@ -227,7 +227,7 @@ public class JSONInputIterator extends QueryIteratorBase {
                     // End of links
                     nextToken();
                     return;
-                } else if ( lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2) ) {
+                } else if ( lookingAt(TokenType.STRING) ) {
                     // Ignore link and continue
                     nextToken();
                 } else {
@@ -491,7 +491,7 @@ public class JSONInputIterator extends QueryIteratorBase {
     }
 
     private String parseNodeInfo(String name) {
-        if ( lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2) ) {
+        if ( lookingAt(TokenType.STRING) ) {
             Token t = nextToken();
             String value = t.getImage();
             checkComma(TokenType.RBRACE);
@@ -527,12 +527,12 @@ public class JSONInputIterator extends QueryIteratorBase {
     // JSON Parsing Helpers taken from LangRDFJSON
 
     private boolean isPropertyName() {
-        return lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2);
+        return lookingAt(TokenType.STRING);
     }
 
     private Token checkValidForStringProperty(String property) {
         Token t = null;
-        if ( lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2) ) {
+        if ( lookingAt(TokenType.STRING) ) {
             t = nextToken();
         } else {
             exception(peekToken(), "JSON Values given for property " + property + " must be Strings");

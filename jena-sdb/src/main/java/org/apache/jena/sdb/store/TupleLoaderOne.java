@@ -18,7 +18,6 @@
 
 package org.apache.jena.sdb.store;
 
-import static org.apache.jena.atlas.lib.StrUtils.strjoin ;
 import static org.apache.jena.sdb.util.StrUtils.sqlList ;
 
 import java.sql.SQLException;
@@ -177,7 +176,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
             String x = getTableDesc().getColNames().get(i)+"="+vals[i] ;
             rowValues.add(x) ; 
         }
-        return strjoin(" AND ", rowValues) ;
+        return String.join(" AND ", rowValues) ;
     }
     
     abstract public SqlConstant getRefForNode(Node node) throws SQLException ;

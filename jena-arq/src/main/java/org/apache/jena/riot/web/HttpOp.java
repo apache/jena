@@ -109,7 +109,7 @@ public class HttpOp {
     public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
     
     public static HttpClient createDefaultHttpClient() {
-        return createCachingHttpClient();
+        return createPoolingHttpClient();
     }
     
     /**
@@ -129,11 +129,15 @@ public class HttpOp {
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
-        String result;
+        private String result;
 
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
+            if ( entity == null ) {
+                result = null ;
+                return ;
+            }
             try(InputStream instream = entity.getContent()) {
                 result = IO.readWholeFileAsUTF8(instream);
             }
@@ -155,6 +159,10 @@ public class HttpOp {
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
+            if ( entity == null ) {
+                stream = new TypedInputStream(EOFInputStream.empty, (String)null);
+                return;
+            }
             String ct = (entity.getContentType() == null) ? null : entity.getContentType().getValue();
             stream = new TypedInputStream(entity.getContent(), ct);
         }
@@ -163,6 +171,16 @@ public class HttpOp {
         public TypedInputStream get() {
             return stream;
         }
+    }
+    
+    static class EOFInputStream extends InputStream {
+        static InputStream empty = new EOFInputStream();
+        
+        @Override
+        public int available() { return 0 ; }
+
+        @Override
+        public int read() { return -1 ; }
     }
 
     /**
@@ -195,6 +213,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
+            .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
@@ -209,6 +228,7 @@ public class HttpOp {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return CachingHttpClientBuilder.create()
+            .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
             .setMaxConnTotal(2*max)
@@ -347,7 +367,7 @@ public class HttpOp {
     }
 
     /**
-     * Convenience operation to execute a GET with no content negtotiation and
+     * Convenience operation to execute a GET with no content negotiation and
      * return the response as a string.
      * 
      * @param url

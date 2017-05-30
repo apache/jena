@@ -53,9 +53,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TurtleBlankNodeOutputTests extends StreamedTurtleOutputTest {
 
+    @SuppressWarnings("hiding")
 	static long $bs1 = RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE;
+    @SuppressWarnings("hiding")
 	static long $bs2 = 1000;
+    @SuppressWarnings("hiding")
 	static long $bs3 = 100;
+    @SuppressWarnings("hiding")
 	static long $bs4 = 1;
 
 	/**
@@ -80,7 +84,7 @@ public class TurtleBlankNodeOutputTests extends StreamedTurtleOutputTest {
 	@Override
 	protected Iterator<TripleWritable> generateTuples(int num) {
 		List<TripleWritable> ts = new ArrayList<TripleWritable>();
-		Node subject = NodeFactory.createAnon();
+		Node subject = NodeFactory.createBlankNode();
 		for (int i = 0; i < num; i++) {
 			Triple t = new Triple(subject,
 					NodeFactory.createURI("http://example.org/predicate"),

@@ -18,13 +18,15 @@
 
 package org.apache.jena.graph;
 
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
-import org.apache.jena.graph.impl.GraphWithPerform ;
-import org.apache.jena.util.IteratorCollection ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.jena.graph.impl.GraphWithPerform;
+import org.apache.jena.util.IteratorCollection;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
     An ad-hoc collection of useful code for graphs
@@ -100,73 +102,61 @@ public class GraphUtil
     }
     
     public static void add(Graph graph, Triple[] triples) {
-        if ( OldStyle && graph instanceof GraphWithPerform )
-        {
+        if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
             for (Triple t : triples )
                 g.performAdd(t) ;
             graph.getEventManager().notifyAddArray(graph, triples) ;
-        }
-        else
-        {
+        } else {
             for (Triple t : triples )
                 graph.add(t) ; 
         }
     }
         
     public static void add(Graph graph, List<Triple> triples) {
+        addIteratorWorkerDirect(graph, triples.iterator()) ;
         if ( OldStyle && graph instanceof GraphWithPerform )
-        {
-            GraphWithPerform g = (GraphWithPerform)graph ;
-            for (Triple t : triples)
-                g.performAdd(t) ;
             graph.getEventManager().notifyAddList(graph, triples) ;
-        } else
-        {
-            for (Triple t : triples)
-                graph.add(t) ;
-        }
     }
         
     public static void add(Graph graph, Iterator<Triple> it) {
-        // Materialize to avoid ConcurrentModificationException.
-        List<Triple> s = IteratorCollection.iteratorToList(it) ;
-        if ( OldStyle && graph instanceof GraphWithPerform )
-        {
-            GraphWithPerform g = (GraphWithPerform)graph ;
-            for (Triple t : s)
-                g.performAdd(t) ;
+        if ( OldStyle && graph instanceof GraphWithPerform ) {
+            // Materialize for the notify.
+            List<Triple> s = IteratorCollection.iteratorToList(it) ;
+            addIteratorWorkerDirect(graph, s.iterator());
             graph.getEventManager().notifyAddIterator(graph, s) ;
         } 
-        else
-        {
-            for (Triple t : s)
-                graph.add(t) ;
-        }
+        else 
+            addIteratorWorker(graph, it);
     }
     
     /** Add triples into the destination (arg 1) from the source (arg 2)*/
     public static void addInto(Graph dstGraph, Graph srcGraph ) {
+        if ( dstGraph == srcGraph && ! dstGraph.getEventManager().listening() )
+            return ;
         dstGraph.getPrefixMapping().setNsPrefixes(srcGraph.getPrefixMapping()) ;
-        addIteratorWorker(dstGraph, GraphUtil.findAll( srcGraph ));  
+        addIteratorWorker(dstGraph, findAll( srcGraph ));  
         dstGraph.getEventManager().notifyAddGraph( dstGraph, srcGraph );
     }
     
     private static void addIteratorWorker( Graph graph, Iterator<Triple> it ) { 
         List<Triple> s = IteratorCollection.iteratorToList( it );
-        if ( OldStyle && graph instanceof GraphWithPerform )
-        {
-            GraphWithPerform g = (GraphWithPerform)graph ;
-            for (Triple t : s )
-                g.performAdd(t) ;
-        }
-        else
-        {
-            for (Triple t : s )
-                graph.add(t) ;
+        addIteratorWorkerDirect(graph, s.iterator());
+    }
+    
+    private static void addIteratorWorkerDirect( Graph graph, Iterator<Triple> it ) {
+        if ( OldStyle && graph instanceof GraphWithPerform ) {
+            GraphWithPerform g = (GraphWithPerform)graph;
+            it.forEachRemaining(g::performAdd);
+        } else {
+            it.forEachRemaining(graph::add);
         }
     }
 
+    private static boolean requireEvents(Graph graph) {
+        return graph.getEventManager().listening() ;
+    }
+    
     public static void delete(Graph graph, Triple[] triples) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
@@ -179,49 +169,81 @@ public class GraphUtil
         }
     }
     
-    public static void delete(Graph graph, List<Triple> triples)
- {
-        if ( OldStyle && graph instanceof GraphWithPerform ) {
-            GraphWithPerform g = (GraphWithPerform)graph ;
-            for ( Triple t : triples )
-                g.performDelete(t) ;
+    public static void delete(Graph graph, List<Triple> triples) {
+        deleteIteratorWorkerDirect(graph, triples.iterator());
+        if ( OldStyle && graph instanceof GraphWithPerform )
             graph.getEventManager().notifyDeleteList(graph, triples) ;
-        } else {
-            for ( Triple t : triples )
-                graph.delete(t) ;
-        }
     }
     
-    public static void delete(Graph graph, Iterator<Triple> it)
-    {
-        // Materialize to avoid ConcurrentModificationException.
-        List<Triple> s = IteratorCollection.iteratorToList(it) ;
+    public static void delete(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
-            GraphWithPerform g = (GraphWithPerform)graph ;
-            for ( Triple t : s )
-                g.performDelete(t) ;
+            // Materialize for the notify.
+            List<Triple> s = IteratorCollection.iteratorToList(it) ;
+            deleteIteratorWorkerDirect(graph, s.iterator());
             graph.getEventManager().notifyDeleteIterator(graph, s) ;
-        } else {
-            for ( Triple t : s )
-                graph.delete(t) ;
-        }
+        } else
+            deleteIteratorWorker(graph, it);
     }
     
-    /** Delete triples the destination (arg 1) as given in the source (arg 2) */
+    private static int MIN_SRC_SIZE   = 1000 ;
+    private static int DST_SRC_RATIO  = 2 ;
+    
+    /** Delete triples in the destination (arg 1) as given in the source (arg 2) */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
-        deleteIteratorWorker(dstGraph, GraphUtil.findAll(srcGraph)) ;
+        boolean events = requireEvents(dstGraph);
+        
+        if ( dstGraph == srcGraph && ! events ) {
+            dstGraph.clear();
+            return;
+        }
+        
+        int dstSize = dstGraph.size();
+        int srcSize = srcGraph.size();
+        
+        // Whether to loop on dstGraph or srcGraph.
+        // Loop on src if:
+        // * srcGraph is below the threshold MIN_SRC_SIZE (a "Just Do it" number)
+        // * dstGraph is "much" larger than src where "much" is given by DST_SRC_RATIO
+        boolean loopOnSrc = (srcSize < MIN_SRC_SIZE || dstSize > DST_SRC_RATIO*srcSize) ;
+        
+        if ( loopOnSrc ) {
+            deleteIteratorWorker(dstGraph, findAll(srcGraph)) ;
+            dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
+            return;
+        }
+        // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
+        List<Triple> toBeDeleted = new ArrayList<>();
+        // Loop on dstGraph
+        Iterator<Triple> iter = findAll(dstGraph);
+        for( ; iter.hasNext() ; ) {
+           Triple t = iter.next();
+           if ( srcGraph.contains(t) )
+               toBeDeleted.add(t);
+        }
+        deleteIteratorWorkerDirect(dstGraph, toBeDeleted.iterator());
         dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
     }
 
+    /**
+     * Delete the triples supplied by an iterator. This function is "concurrent
+     * modification" safe - it internally takes a copy of the iterator.
+     */
     private static void deleteIteratorWorker(Graph graph, Iterator<Triple> it) {
         List<Triple> s = IteratorCollection.iteratorToList(it) ;
+        deleteIteratorWorkerDirect(graph, s.iterator());
+    }
+
+    /**
+     * Delete the triples supplied by an iterator. This function is not "concurrent
+     * modification" safe; it assumes it can use the iterator while deleting from the
+     * graph.
+     */
+    private static void deleteIteratorWorkerDirect(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph ;
-            for ( Triple t : s )
-                g.performDelete(t) ;
+            it.forEachRemaining(g::performDelete);
         } else {
-            for ( Triple t : s )
-                graph.delete(t) ;
+            it.forEachRemaining(graph::delete);
         }
     }
 

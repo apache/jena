@@ -30,7 +30,10 @@ public class SysRIOT
     public static final String riotLoggerName = "org.apache.jena.riot" ;
     private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
     
+    /** @deprecated Do not use - lexical forms are always strict. */
+    @Deprecated
     public static boolean StrictXSDLexicialForms      = false ;
+    
     public static boolean strictMode                  = false ;
     
     /** Some people argue that absolute URIs should not be normalized.
@@ -42,12 +45,29 @@ public class SysRIOT
     public static final boolean AbsURINoNormalization   = false ;
     public static final String BNodeGenIdPrefix         = "genid" ;
     
+    private static String riotBase = "http://jena.apache.org/riot/" ;
+
+    /**
+     * Context key for old style RDFWriter properties. The value of this in a
+     * {@link Context} must be a {@code Map<String, Object>}. The entries of the
+     * map are used to set writer properties before the Jena legalacy
+     * {@link RDFWriter} is called. Only has any effect on RDF/XML and
+     * RDF/XML-ABBREV.
+     */
+
     /** Context key for old style RDFWriter properties */ 
-    public static final Symbol rdfWriterProperties      = Symbol.create("riot.rdfWriter_properties") ;
+    public static final Symbol sysRdfWriterProperties      = Symbol.create(riotBase+"rdfWriter_properties") ;
+    
+    /** @deprecated Use {@link #sysRdfWriterProperties} */
+    @Deprecated
+    public static final Symbol rdfWriterProperties      = sysRdfWriterProperties ;
+    
+    /** Context key for the StreamManager */ 
+    public static Symbol sysStreamManager = Symbol.create(riotBase+"streamManager") ;
     
     public static void setStrictMode(boolean state) {
         SysRIOT.strictMode = state ;
-        SysRIOT.StrictXSDLexicialForms = state ;
+        //SysRIOT.StrictXSDLexicialForms = state ;
         //SysRIOT.AbsURINoNormalization = state ;
     }
 

@@ -307,7 +307,9 @@ public class TransactionManager
     public /*for testing only*/ static final boolean DEBUG = false ; 
     
     public DatasetGraphTxn begin(ReadWrite mode, String label) {
-        exclusivitylock.readLock().lock() ;
+        // The exclusivitylock surrounds the entire transaction cycle.
+        // Paired with notifyCommit, notifyAbort.
+        startNonExclusive();
         
         // Not synchronized (else blocking on semaphore will never wake up
         // because Semaphore.release is inside synchronized).
@@ -475,10 +477,9 @@ public class TransactionManager
 
     /* Signal a transaction has commited.  The journal has a commit record
      * and a sync to disk. The code here manages the inter-transaction stage
-     *  of deciding how to play the changes back to the base data
-     *  together with general recording of transaction details and status. 
+     * of deciding how to play the changes back to the base data
+     * together with general recording of transaction details and status. 
      */ 
-    synchronized
     /*package*/ void notifyCommit(Transaction transaction) {
         boolean excessiveQueue = false ;
         synchronized(this) {
@@ -496,12 +497,24 @@ public class TransactionManager
                     excessiveQueue = ( MaxQueueThreshold >= 0 && queue.size() > MaxQueueThreshold ) ;
                     releaseWriterLock();
             }
+            // Paired with begin()
+            finishNonExclusive();
         }
-        // Force the queue to flush because it is getting excessively long.
-        // Note that writers may happen between releaseWriterLock above and and startExclusiveMode.
+        // Force the queue to flush if it is getting excessively long.
+        // Note that writers may happen between releaseWriterLock above
+        // and exclusiveFlushQueue and so several writers may try to flush
+        // the queue; this is safe.        
+        
         if ( excessiveQueue ) {
-            startExclusiveMode(true) ;
-            finishExclusiveMode(); 
+            // Check again. This is an imperfect filter for multiple attempts to flush the queue
+            // and avoid going into exclusive mode.
+//            excessiveQueue = ( MaxQueueThreshold >= 0 && queue.size() > MaxQueueThreshold ) ;
+//            if ( excessiveQueue )
+                // Must have released the exclusivity lock (a read-MRSW lock) otherwise
+                // taking the exclusivity lock (a write-MRSW lock) in
+                // exclusiveFlushQueue->startExclusiveMode will block.
+                // Java MRSW locks do not allow "hold reader -> take writer".
+                exclusiveFlushQueue();
         }
     }
 
@@ -518,12 +531,17 @@ public class TransactionManager
             case READ: break ;
             case WRITE: releaseWriterLock();
         }
+        // Paired with begin()
+        finishNonExclusive();
     }
     
     synchronized
     /*package*/ void notifyClose(Transaction txn) {
+        // Caution - not called if "Transactional.end() is not called."
         if ( txn.getState() == TxnState.ACTIVE )
         {
+            // The application error case for begin(WRITE)...end() is handled in Trasnaction.close().
+            // This is internal checking.
             String x = txn.getBaseDataset().getLocation().getDirectoryPath() ;
             syslog.warn("close: Transaction not commited or aborted: Transaction: "+txn.getTxnId()+" @ "+x) ;
             // Force abort then close
@@ -588,6 +606,26 @@ public class TransactionManager
         releaseWriterLock();
     }
     
+    /** Force flushing the queue by entering exclusive mode.*/
+    private void exclusiveFlushQueue() {
+        startExclusiveMode(true) ;
+        finishExclusiveMode(); 
+    }
+
+    /** Start non-exclusive mode - this is the normal transaction mode.
+     * This does not relate to reader/writer. 
+     */
+    private void startNonExclusive() {
+        exclusivitylock.readLock().lock();
+    }
+    
+    /** Finish non-exclusive mode - this is the normal transaction mode.
+     * This does not relate to reader/writer. 
+     */
+    private void finishNonExclusive() {
+        exclusivitylock.readLock().unlock();
+    }
+
     /** Enter exclusive mode. 
      * <p>
      * There are no active transactions on return; new transactions will be held up in 'begin'.
@@ -797,7 +835,6 @@ public class TransactionManager
             case WRITE : writerCommits(transaction) ; break ;
         }
         transactionFinishes(transaction) ;
-        exclusivitylock.readLock().unlock() ;
     }
     
     private void noteTxnAbort(Transaction transaction) {
@@ -807,7 +844,6 @@ public class TransactionManager
             case WRITE : writerAborts(transaction) ; break ;
         }
         transactionFinishes(transaction) ;
-        exclusivitylock.readLock().unlock() ;
     }
     
     private void noteTxnClose(Transaction transaction) {

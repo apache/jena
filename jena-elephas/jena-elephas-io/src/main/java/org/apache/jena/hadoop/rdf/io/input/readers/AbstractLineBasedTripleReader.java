@@ -34,18 +34,16 @@ import org.apache.jena.riot.tokens.Tokenizer;
 public abstract class AbstractLineBasedTripleReader extends AbstractLineBasedNodeTupleReader<Triple, TripleWritable> {
 
     @Override
-    protected Iterator<Triple> getIterator(String line, ParserProfile profile) {
+    protected Iterator<Triple> getIterator(String line, ParserProfile maker) {
         Tokenizer tokenizer = getTokenizer(line);
-        return getTriplesIterator(tokenizer, profile);
+        return getTriplesIterator(tokenizer, maker);
     }
 
     @Override
     protected TripleWritable createInstance(Triple t) {
         return new TripleWritable(t);
     }
-    
-    protected abstract Tokenizer getTokenizer(String line);
 
-    protected abstract Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, ParserProfile profile);
+    protected abstract Iterator<Triple> getTriplesIterator(Tokenizer tokenizer, ParserProfile maker);
 
 }

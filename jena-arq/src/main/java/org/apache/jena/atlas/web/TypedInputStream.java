@@ -31,8 +31,17 @@ public class TypedInputStream extends FilterInputStream
     // May be different from the URI used to access the resource 
     // e.g. 303 redirection, mapped URI redirection 
     private String baseURI ;
+    private boolean isClosed = false ;
     
-    public TypedInputStream(InputStream in)
+    public static TypedInputStream wrap(InputStream in) {
+        //Sometimes this is used to intentional loose the content type (in tests).
+//        if ( in instanceof TypedInputStream ) {
+//            return (TypedInputStream)in;
+//        }
+        return new TypedInputStream(in);
+    }
+    
+    private TypedInputStream(InputStream in)
     { this(in, (ContentType)null, null) ; }
     
     public TypedInputStream(InputStream in, String contentType)
@@ -58,10 +67,14 @@ public class TypedInputStream extends FilterInputStream
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
     public String getBaseURI()              { return baseURI ; }
+    public InputStream getInputStream()     { return super.in ; }
     
     @Override
     public void close() {
-        try { super.close() ; }
-        catch (IOException ex) { IO.exception(ex) ; }
+        if ( isClosed )
+            return ;
+        isClosed = true;
+        try { super.close(); } 
+        catch (IOException ex) { IO.exception(ex); }
     }
 }

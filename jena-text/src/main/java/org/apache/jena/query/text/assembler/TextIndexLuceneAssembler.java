@@ -64,13 +64,13 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                     directory = new RAMDirectory() ;
                 } else {
                     File dir = new File(literalValue) ;
-                    directory = FSDirectory.open(dir) ;
+                    directory = FSDirectory.open(dir.toPath()) ;
                 }
             } else {
                 Resource x = n.asResource() ;
                 String path = IRILib.IRIToFilename(x.getURI()) ;
                 File dir = new File(path) ;
-                directory = FSDirectory.open(dir) ;
+                directory = FSDirectory.open(dir.toPath()) ;
             }
 
             Analyzer analyzer = null;

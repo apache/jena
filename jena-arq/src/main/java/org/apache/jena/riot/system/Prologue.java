@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.shared.PrefixMapping ;
 
-
 public class Prologue
 {
     protected boolean seenBaseURI = false ;     // Implicit or set.
@@ -153,8 +152,8 @@ public class Prologue
 
     /** Return the prefix map from the parsed query */ 
     public PrefixMap getPrefixMap() { return prefixMap ; }
-    /** Set the mapping */
-    public void setPrefixMapping(PrefixMap pmap ) { prefixMap = pmap ; }
+//    /** Set the mapping */
+//    public void setPrefixMapping(PrefixMap pmap ) { prefixMap = pmap ; }
 
 //    /** Reverse lookup of a URI to get a prefix */
 //    public String getPrefix(String uriStr)

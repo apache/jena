@@ -166,11 +166,16 @@ public class query extends CmdARQ
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
-    protected Dataset getDataset()  { 
+    /** Choose the dataset.
+     * <li> use the data as described on the comand line
+     * <li> else use FROM/FROM NAMED if present (pass null to ARQ)
+     * <li> else provided an empty dataset and hope the query has VALUES/BIND
+     */
+    protected Dataset getDataset(Query query)  { 
         try {
             Dataset ds = modDataset.getDataset();
             if ( ds == null )
-                ds = dealWithNoDataset();
+                ds = dealWithNoDataset(query);
             return ds;
         }
         catch (RiotNotFoundException ex) {
@@ -183,8 +188,11 @@ public class query extends CmdARQ
         }
     }
     
-    protected Dataset dealWithNoDataset()  {
-        return DatasetFactory.create() ;
+    // Policy for no command line dataset. null means "whatever" (use FROM) 
+    protected Dataset dealWithNoDataset(Query query)  {
+        if ( query.hasDatasetDescription() )
+            return null;
+        return DatasetFactory.createTxnMem();
         //throw new CmdException("No dataset provided") ; 
     }
     
@@ -202,13 +210,14 @@ public class query extends CmdARQ
             
             if ( isQuiet() )
                 LogCtl.setError(SysRIOT.riotLoggerName) ;
-            Dataset dataset = getDataset() ;
-            // Check there is a dataset
+            Dataset dataset = getDataset(query) ;
+            // Check there is a dataset. See dealWithNoDataset(query).
+            // The default policy is to create an empty one - convenience for VALUES and BIND providing the data.
             if ( dataset == null && !query.hasDatasetDescription() ) {
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 throw new TerminationException(1);
             }
-            Transactional transactional = (dataset.supportsTransactionAbort()) ? dataset : new TransactionalNull() ;
+            Transactional transactional = (dataset != null && dataset.supportsTransactionAbort()) ? dataset : new TransactionalNull() ;
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {

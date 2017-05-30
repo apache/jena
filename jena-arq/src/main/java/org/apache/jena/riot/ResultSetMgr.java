@@ -52,7 +52,7 @@ public class ResultSetMgr {
      * @return ResultSet
      */
     public static ResultSet read(InputStream in, Lang lang) {
-        return process(new TypedInputStream(in), null, lang, null) ;
+        return process(TypedInputStream.wrap(in), null, lang, null) ;
     }
     
     /** Read a result set from the URI */

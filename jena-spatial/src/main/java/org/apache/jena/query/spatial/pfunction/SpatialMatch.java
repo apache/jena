@@ -22,7 +22,7 @@ import org.apache.jena.query.spatial.DistanceUnitsUtils;
 import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.lucene.spatial.query.SpatialOperation;
 
-import com.spatial4j.core.shape.Shape;
+import org.locationtech.spatial4j.shape.Shape;
 
 public class SpatialMatch {
 
@@ -30,7 +30,8 @@ public class SpatialMatch {
 	private final int limit;
 	private final SpatialOperation operation;
 
-	public SpatialMatch(Double latitude, Double longitude, Double radius,
+	@SuppressWarnings("deprecation")
+    public SpatialMatch(Double latitude, Double longitude, Double radius,
 			String units, int limit, SpatialOperation operation) {
 
 		double degrees = DistanceUnitsUtils.dist2Degrees(radius, units);
@@ -40,7 +41,8 @@ public class SpatialMatch {
 		this.operation = operation;
 	}
 
-	public SpatialMatch(Double latitude1, Double longitude1, Double latitude2,
+	@SuppressWarnings("deprecation")
+    public SpatialMatch(Double latitude1, Double longitude1, Double latitude2,
 			Double longitude2, int limit, SpatialOperation operation) {
 		this.shape = SpatialQuery.ctx.makeRectangle(longitude1, longitude2, latitude1, latitude2);
 		this.limit = limit;

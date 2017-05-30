@@ -39,9 +39,13 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT ;
+import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterTriX ;
 import org.apache.jena.sparql.core.Quad ;
@@ -56,7 +60,14 @@ import org.apache.jena.vocabulary.RDF ;
  * @see StreamWriterTriX
  */
 public class ReaderTriX implements ReaderRIOT {
+    public static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language, ParserProfile profile) {
+            return new ReaderTriX(profile, profile.getErrorHandler());
+        }
+    }
 
+    
     // DTD for TrIX : The schema is a much longer.
 /*
 <!-- TriX: RDF Triples in XML -->
@@ -72,9 +83,14 @@ public class ReaderTriX implements ReaderRIOT {
 <!ATTLIST typedLiteral datatype CDATA #REQUIRED> 
      */
     
-    private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-    private ParserProfile parserProfile = null ;
+    private final ErrorHandler errorHandler;
+    private final ParserProfile profile;
     
+    public ReaderTriX(ParserProfile profile, ErrorHandler errorHandler) {
+        this.profile = profile;
+        this.errorHandler = errorHandler;
+    }
+
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
@@ -103,12 +119,6 @@ public class ReaderTriX implements ReaderRIOT {
     enum State { OUTER, TRIX, GRAPH, TRIPLE }
     
     private void read(XMLStreamReader parser, String baseURI, StreamRDF output) {
-        ParserProfile profile = parserProfile ;
-        if ( profile == null )
-            profile = RiotLib.profile(baseURI, false, false, errorHandler) ; 
-        if ( errorHandler == null )
-            setErrorHandler(profile.getHandler()) ;
-        
         State state = OUTER ;
         Node g = null ;
         List<Node> terms = new ArrayList<>() ; 
@@ -416,23 +426,7 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     private void staxError(int line, int col, String msg) {
-        getErrorHandler().error(msg, line, col) ;
+        errorHandler.error(msg, line, col) ;
     }
-
-    @Override
-    public ErrorHandler getErrorHandler() {
-        return errorHandler ;
-    }
-
-    @Override
-    public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
-
-    @Override
-    public ParserProfile getParserProfile() {
-        return parserProfile ;
-    }
-
-    @Override
-    public void setParserProfile(ParserProfile profile) { this.parserProfile = profile ; }
 }
 

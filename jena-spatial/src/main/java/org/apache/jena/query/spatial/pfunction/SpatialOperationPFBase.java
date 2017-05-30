@@ -53,14 +53,13 @@ public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 	}
 	
 	@Override
-	public void build(PropFuncArg argSubject, Node predicate,
-			PropFuncArg argObject, ExecutionContext execCxt) {
+	public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
 		super.build(argSubject, predicate, argObject, execCxt);
 		DatasetGraph dsg = execCxt.getDataset();
-		server = chooseTextIndex(dsg);
+		server = chooseTextIndex(execCxt,dsg);
 	}
 
-	protected SpatialIndex chooseTextIndex(DatasetGraph dsg) {
+	protected SpatialIndex chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
 		Object obj = dsg.getContext().get(SpatialQuery.spatialIndex);
 
 		if (obj != null) {

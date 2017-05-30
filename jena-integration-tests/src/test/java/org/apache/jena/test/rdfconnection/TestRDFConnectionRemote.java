@@ -37,7 +37,6 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     
     @BeforeClass
     public static void beforeClass() {
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
         server = FusekiEmbeddedServer.create()
             .setPort(2244)
             .add("/ds", serverdsg)
@@ -51,28 +50,26 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
         server.start() ;
     }
 
-    @AfterClass
-    public static void afterClass() {
-        server.stop(); 
-    }
-    
     @Before
     public void beforeTest() {
         // Clear server
         Txn.executeWrite(serverdsg, ()->serverdsg.clear()) ;
     }
-    
-//    @After
-//    public void afterTest() {}
-//    }
 
+//  @After
+//  public void afterTest() {}
+    
+    @AfterClass
+    public static void afterClass() {
+        server.stop(); 
+    }
+    
     @Override
     protected boolean supportsAbort() { return false ; }
 
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connect("http://localhost:2244/ds") ;
+        return RDFConnectionFactory.connect("http://localhost:2244/ds");
     }
-
 }
 

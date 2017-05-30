@@ -19,57 +19,39 @@
 package arq.examples.riot;
 
 import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
+import java.io.IOException ;
 import java.io.InputStream ;
 
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.ReaderRIOT ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.RDFParser ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 /** Example of using RIOT directly.
- * 
- * RDFDataMgr is the general place to read data.
  * 
  * The parsers produce a stream of triples and quads so processing does not need
  * to hold everything in memory at the same time. See also {@code ExRIOT_4}
  */
 public class ExRIOT_2
 {
-    public static void main(String...argv) throws FileNotFoundException
+    public static void main(String...argv) throws IOException
     {
         // ---- Parse to a Sink.
         StreamRDF noWhere = StreamRDFLib.sinkNull() ;
 
-        // RIOT controls the conversion from bytes to java chars.
-        InputStream in = new FileInputStream("data.trig") ;
-        
-        RDFDataMgr.parse(noWhere, in, "http://example/base", RDFLanguages.TRIG, null) ;
-        
-        // --- Or create a parser and do the parsing as separate steps.
+        // --- Or create a parser and do the parsing with detailed setup.
         String baseURI = "http://example/base" ;
-            
+        
         // It is always better to use an InputStream, rather than a Java Reader.
         // The parsers will do the necessary character set conversion.  
-        in = new FileInputStream("data.trig") ;
-        
-        ReaderRIOT parser = RDFDataMgr.createReader(RDFLanguages.TRIG) ;
-        
-        // Access the setup of the RIOT built-in parsers.
-        
-        // Parser to first error or warning.
-        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStrict ;
-
-        // Now enable stricter checking, even N-TRIPLES must have absolute URIs. 
-        ParserProfile profile = RiotLib.profile(baseURI, true, true, errHandler) ;
-
-        // Just set the error handler.
-        parser.setErrorHandler(errHandler) ;
-        
-        // Or replace the whole parser profile.
-        parser.setParserProfile(profile) ;
-
-        // Do the work.
-        parser.read(in, "http://example/base", null, noWhere, null);
+        try (InputStream in = new FileInputStream("data.trig")) {
+            RDFParser.create()
+                .source(in)
+                .lang(RDFLanguages.TRIG)
+                .errorHandler(ErrorHandlerFactory.errorHandlerStrict)
+                .base("http://example/base")
+                .parse(noWhere);
+        }
     }
 }

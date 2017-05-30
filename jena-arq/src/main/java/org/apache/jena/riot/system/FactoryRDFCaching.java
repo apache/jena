@@ -104,6 +104,12 @@ public class FactoryRDFCaching extends FactoryRDFStd {
         return super.createStringLiteral(lexical) ;
     }
 
+    // The cache is not reset.  It can be carried across parser runs.
+//    @Override
+//    public void reset() {
+//        super.reset();
+//    }
+    
     public CacheInfo stats() {
         CacheStats stats = cache.stats() ;
         if ( stats.missCount() == 0 && stats.hitCount() == 0 )

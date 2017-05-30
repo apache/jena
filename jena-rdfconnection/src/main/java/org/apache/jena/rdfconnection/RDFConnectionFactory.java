@@ -55,8 +55,7 @@ public class RDFConnectionFactory {
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
         return new RDFConnectionRemote(queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint);
-   }
-
+    }
     
     /** Create a connection to a remote location by URL.
      * This is the URL for the dataset.

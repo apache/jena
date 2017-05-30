@@ -25,13 +25,15 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses(
 { 
-    TestLangRIOT.class
+    TestSysRIOT.class
+    , TestLangRIOT.class
     , TestSyntaxDetermination.class
     , TestJenaReaderRIOT.class
     , TestReadData.class
     , TestRiotReader.class
+    , TestRDFParser.class
     , TestParserRegistry.class
-    , TestSysRIOT.class
+    , TestRDFWriter.class
 })
 
 public class TS_RiotGeneral

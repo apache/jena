@@ -18,16 +18,8 @@
 
 package org.apache.jena.propertytable.lang;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFParserRegistry ;
-
 public class CSV2RDF {
     
-    public static void init() { }
-    
-    static {
-        RDFParserRegistry.removeRegistration(Lang.CSV);
-        RDFParserRegistry.registerLangTriples(Lang.CSV, new ReaderRIOTFactoryCSV());
-    }
+    public static void init() { org.apache.jena.lang.csv.CSV2RDF.init(); }
 }
 

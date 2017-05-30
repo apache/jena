@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 
 /**
- * Tests blank node divergence when using the {@link RdfThriftInputFormat}
+ * Tests blank node divergence when using {@link RDFLanguages#THRIFT}
  */
 public class RdfThriftBlankNodeTest extends AbstractTripleBlankNodeTests {
 

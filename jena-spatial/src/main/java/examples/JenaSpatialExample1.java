@@ -47,15 +47,11 @@ public class JenaSpatialExample1 {
     private static final File LUCENE_INDEX_DIR = new File(LUCENE_INDEX_PATH);
     private static final String LUCENE_TDB_PATH = "target/test/TDB";
     private static final File LUCENE_TDB_DIR = new File(LUCENE_TDB_PATH);
-    // or Apache Solr for a large scale enterprise search application
-    private static final String  SOLR_DATA_PATH      = "src/test/resources/SolrHome/SolrARQCollection/data";
-    private static final File    SOLR_DATA_DIR       = new File(SOLR_DATA_PATH);
 
     public static void main(String... argv) throws IOException {
         Dataset spatialDataset = initInMemoryDatasetWithLuceneSpatialIndex(LUCENE_INDEX_DIR);
         //Dataset spatialDataset = initTDBDatasetWithLuceneSpatialIndex(indexDir, TDBDir);
         //Dataset spatialDataset = createLuceneAssembler() ;
-        //Dataset spatialDataset = createSolrAssembler() ;
         
         loadData(spatialDataset, "src/test/resources/geoarq-data-1.ttl");
         queryData(spatialDataset);
@@ -70,16 +66,7 @@ public class JenaSpatialExample1 {
             deleteOldFiles(LUCENE_INDEX_DIR);
             deleteOldFiles(LUCENE_TDB_DIR);
         }
-        
-//        else if (index instanceof SpatialIndexSolr){
-//            SolrServer server = ((SpatialIndexSolr)index).getServer();
-//            
-//            if (server instanceof EmbeddedSolrServer){
-//                server.shutdown();
-//                deleteOldFiles(SOLR_DATA_DIR);
-//            }
-//        } 
-        
+                
     }
     private static void emptyAndDeleteDirectory(File dir) {
         File[] contents = dir.listFiles() ;
@@ -140,7 +127,7 @@ public class JenaSpatialExample1 {
         
 
         // Lucene, index in File system.
-        Directory dir = FSDirectory.open(indexDir);
+        Directory dir = FSDirectory.open(indexDir.toPath());
 
         // Join together into a dataset
         Dataset ds = SpatialDatasetFactory.createLucene(baseDataset, dir, entDef);
@@ -158,14 +145,6 @@ public class JenaSpatialExample1 {
         return ds;
     }
     
-    public static Dataset createSolrAssembler() {
-        log.info("Construct solr spatial dataset using an assembler description");
-        
-        Dataset ds = DatasetFactory.assemble("src/test/resources/spatial-solr-config.ttl",
-                "http://localhost/jena_example/#spatial_dataset");
-        return ds;
-    }
-
     public static void loadData(Dataset spatialDataset, String file) {
         log.info("Start loading");
         long startTime = System.nanoTime();

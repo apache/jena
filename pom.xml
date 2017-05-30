@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.4.0-SNAPSHOT</version>
 
   <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
@@ -77,7 +77,8 @@
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         
-        <!--<module>jena-text</module>-->
+        <module>jena-text</module>
+        <!--<module>jena-text-es</module>-->
         <!--<module>jena-spatial</module>-->
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
@@ -105,7 +106,7 @@
            and does not include the longer running modules.
       -->
       
-      <id>boostrap</id>
+      <id>bootstrap</id>
       <modules>
         <module>jena-parent</module>
         <module>jena-shaded-guava</module>
@@ -113,16 +114,18 @@
         <module>jena-base</module>
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-rdfconnection</module>
         <module>jena-tdb</module> 
         <module>apache-jena-libs</module>
         <module>jena-cmds</module>
         <module>jena-text</module>
+        <!--<module>jena-text-es</module>-->
         <module>jena-spatial</module>
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
       </modules>
     </profile>
-      
+    
     <profile>
       <!--
           This is the complete profile, it builds everything including slow
@@ -150,6 +153,9 @@
         <module>jena-cmds</module>
 
         <module>jena-text</module>
+        <!-- Move later? -->
+        <module>jena-text-es</module>
+
         <module>jena-spatial</module>
         <module>jena-csv</module>
 

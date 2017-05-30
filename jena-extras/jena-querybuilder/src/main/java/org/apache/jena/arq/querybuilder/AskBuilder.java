@@ -25,7 +25,6 @@ import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
-import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -60,11 +59,6 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	@Override
 	public DatasetHandler getDatasetHandler() {
 		return handlerBlock.getDatasetHandler();
-	}
-
-	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
 	}
 
 	@Override
@@ -137,7 +131,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
-	public AskBuilder addOptional(SelectBuilder t) {
+	public AskBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -155,25 +149,31 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
+	public AskBuilder addFilter(Expr expr)  {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+	
+	@Override
 	public AskBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);
 		return this;
 	}
 
 	@Override
-	public AskBuilder addSubQuery(SelectBuilder subQuery) {
+	public AskBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public AskBuilder addUnion(SelectBuilder subQuery) {
+	public AskBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public AskBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public AskBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
@@ -283,5 +283,11 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
+	}
+	
+	@Override
+	public AskBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
 	}
 }

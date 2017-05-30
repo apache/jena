@@ -10,7 +10,7 @@ resolveLink() {
         # BSD style readlink behaves differently to GNU readlink
         # Have to manually follow links
         while [ -L "$NAME" ]; do
-          NAME=$(readlink "$NAME")
+          NAME=$( cd $NAME && pwd -P ) ;
         done
         ;;
       *)

@@ -25,7 +25,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** Common, simple case:
  *  <ul> 
- *  <li>subject arguments is not a list</li>
+ *  <li>subject argument is not a list</li>
  *  <li>object is a list</li>
  *  <li>call the implementation with one binding at a time</li>
  *  </ul> */
@@ -48,7 +48,7 @@ class PFuncSimpleAndList extends PropertyFunctionEval
      * @param binding   Current solution from previous query stage 
      * @param subject   Node in subject slot, after substitution if a bound variable in this binding
      * @param predicate This predicate
-     * @param object    List in object slot, after substitution if a bound variable in this binding
+     * @param object    List in object slot, after substitution of any bound variables in this binding
      * @param execCxt   Execution context
      * @return          QueryIterator
      */

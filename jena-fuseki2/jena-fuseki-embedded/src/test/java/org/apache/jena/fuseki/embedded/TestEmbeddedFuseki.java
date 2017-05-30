@@ -33,9 +33,9 @@ import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.FusekiEnv;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.QueryExecution;
@@ -94,7 +94,7 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_03() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds1", dsg) 
@@ -128,7 +128,7 @@ public class TestEmbeddedFuseki {
         dataService.addEndpoint(OperationName.Quads_RW, "");
         dataService.addEndpoint(OperationName.Query, "");
         dataService.addEndpoint(OperationName.Update, "");
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
         
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -168,7 +168,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_05() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds0", dsg) 
@@ -183,7 +183,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_06() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
             .add("/ds0", dsg)
@@ -199,7 +199,7 @@ public class TestEmbeddedFuseki {
     // Context path.
     @Test public void embedded_07() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
         
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -217,7 +217,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_08() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
 
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -231,7 +231,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_09() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
 
         FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
             .setPort(port)
@@ -252,7 +252,7 @@ public class TestEmbeddedFuseki {
 
     @Test public void embedded_20() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiEnv.choosePort() ;
+        int port = FusekiLib.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
         dSrv.addEndpoint(OperationName.Query, "q") ;
@@ -268,6 +268,31 @@ public class TestEmbeddedFuseki {
             assertNotNull(x1) ;
         } finally { server.stop() ; } 
     }
+    
+    @Test public void embedded_21() {
+        DatasetGraph dsg = dataset() ;
+        int port = FusekiLib.choosePort() ;
+
+        DataService dSrv = new DataService(dsg) ;
+        dSrv.addEndpoint(OperationName.Query, "q") ;
+        dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
+        FusekiEmbeddedServer server = FusekiEmbeddedServer.create()
+            .add("/dsrv1", dSrv)
+            .setStaticFileBase(DIR)
+            .setPort(port)
+            .build() ;
+        server.start() ;
+        
+        try {
+            query("http://localhost:"+port+"/dsrv1/q","ASK{}",x->{}) ;
+            String x1 = HttpOp.execHttpGetString("http://localhost:"+port+"/dsrv1/gsp") ;
+            assertNotNull(x1) ;
+            // Static
+            String x2 = HttpOp.execHttpGetString("http://localhost:"+port+"/test.txt");
+            assertNotNull(x2) ;
+        } finally { server.stop() ; } 
+    }
+
     
     /** Create an HttpEntity for the graph */  
     protected static HttpEntity graphToHttpEntity(final Graph graph) {

@@ -29,6 +29,7 @@ import java.util.PriorityQueue ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.QueryExecException ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -83,26 +84,39 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         super.requestCancel() ;
     }
 
+    @Override
+    protected void closeIterator() {
+        this.embeddedIterator.close();
+        super.closeIterator();
+    }
+
     private Iterator<Binding> sortTopN(final QueryIterator qIter, final Comparator<Binding> comparator) {
         return new IteratorDelayedInitialization<Binding>() {
             @Override
             protected Iterator<Binding> initializeIterator() {
-                while ( qIter.hasNext() ) {
-                    Binding binding = qIter.next() ;
-                    if ( heap.size() < limit )
-                        add(binding) ;
-                    else {
-                        Binding currentMaxLeastN = heap.peek() ;
-                        if ( comparator.compare(binding, currentMaxLeastN) < 0 )
-                            add(binding) ;
-                    }
-                }
-                qIter.close() ;
-                Binding[] y = heap.toArray(new Binding[]{}) ;
-                heap = null ;
-                Arrays.sort(y, comparator) ;
-                return asList(y).iterator() ;
-            }
+		try {
+	                while ( qIter.hasNext() ) {
+	                    Binding binding = qIter.next() ;
+	                    if ( heap.size() < limit )
+	                        add(binding) ;
+	                    else {
+	                        Binding currentMaxLeastN = heap.peek() ;
+	                        if ( comparator.compare(binding, currentMaxLeastN) < 0 )
+	                            add(binding) ;
+	                    }
+	                }
+	                qIter.close() ;
+	                Binding[] y = heap.toArray(new Binding[]{}) ;
+	                heap = null ;
+	                Arrays.sort(y, comparator) ;
+	                return asList(y).iterator() ;
+	            }
+		catch (QueryCancelledException e) {
+			QueryIterTopN.this.close();
+			this.close();
+			throw e;
+		}
+	        }
         } ;
     }
 

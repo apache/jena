@@ -72,7 +72,7 @@ public class SpatialIndexLuceneAssembler extends AssemblerBase
                 Resource x = n.asResource() ;
                 String path = IRILib.IRIToFilename(x.getURI()) ; 
                 File dir = new File(path) ; 
-                directory = FSDirectory.open(dir) ;
+                directory = FSDirectory.open(dir.toPath()) ;
             }
         
             Resource r = GraphUtils.getResourceValue(root, pDefinition) ;
