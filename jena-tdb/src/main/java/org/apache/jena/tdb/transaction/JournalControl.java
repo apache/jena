@@ -194,7 +194,6 @@ public class JournalControl
     private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
     {
         // See DatasetBuilderTxn - same name generation code.
-        // [TxTDB:TODO]
         
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;

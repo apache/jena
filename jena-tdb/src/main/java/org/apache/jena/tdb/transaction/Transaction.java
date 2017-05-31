@@ -129,7 +129,9 @@ public class Transaction
                     
                     try {
                         journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-                        journal.sync() ;        // Commit point.
+                        // **** COMMIT POINT
+                        journal.sync() ;
+                        // **** COMMIT POINT
                     } catch (RuntimeException ex) {
                         // It either did all commit or didn't but we don't know which.
                         // Some low level system error - probably a sign of something
@@ -203,7 +205,6 @@ public class Transaction
                     }
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.W_ABORTED ;
-                    // [TxTDB:TODO]
                     // journal.truncate to last commit
                     // Not need currently as the journal is only written in
                     // prepare.
