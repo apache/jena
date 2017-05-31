@@ -435,7 +435,7 @@ public class OpExecutor
     }
 
     public static QueryIterator createRootQueryIterator(ExecutionContext execCxt) {
-        return QueryIterRoot.createRoot(execCxt) ;
+        return QueryIterRoot.create(execCxt) ;
     }
 
     protected QueryIterator root() {

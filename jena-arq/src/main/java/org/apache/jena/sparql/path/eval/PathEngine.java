@@ -210,7 +210,7 @@ abstract public class PathEngine
         PropertyFunction pf = f.create(p.getURI()) ;
         PropFuncArg sv = arg(s, "S") ;
         PropFuncArg ov = arg(o, "O") ;
-        QueryIterator r = QueryIterRoot.createRoot(new ExecutionContext(context, graph, null, null)) ;
+        QueryIterator r = QueryIterRoot.create(new ExecutionContext(context, graph, null, null)) ;
         QueryIterator qIter = pf.exec(r, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
         if ( ! qIter.hasNext() )
             return Iter.nullIterator() ;

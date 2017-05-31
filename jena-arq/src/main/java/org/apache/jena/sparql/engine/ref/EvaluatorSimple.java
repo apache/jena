@@ -63,7 +63,7 @@ public class EvaluatorSimple implements Evaluator
     @Override
     public Table basicPattern(BasicPattern pattern)
     {
-        QueryIterator qIter = QC.executeDirect(pattern, QueryIterRoot.createRoot(execCxt), execCxt) ;
+        QueryIterator qIter = QC.executeDirect(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 
@@ -72,7 +72,7 @@ public class EvaluatorSimple implements Evaluator
     {
         // Shudder - this may well be expensive, but this is the simple evaluator, written for correctness. 
         QueryIterator qIter = new QueryIterPath(triplePath, 
-                                                QueryIterRoot.createRoot(execCxt),
+                                                QueryIterRoot.create(execCxt),
                                                 execCxt) ;
         return TableFactory.create(qIter) ;
     }
