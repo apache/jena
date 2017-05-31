@@ -66,7 +66,11 @@ public abstract class QueryIter1 extends QueryIter
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         // Linear form.
-        getInput().output(out, sCxt) ;
+        if ( getInput() != null )
+            // Closed
+            getInput().output(out, sCxt) ;
+        else
+            out.println("Closed");
         out.ensureStartOfLine() ;
         details(out, sCxt) ;
         out.ensureStartOfLine() ;
