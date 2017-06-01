@@ -115,12 +115,11 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
      */
     protected static UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {   
         action.beginWrite();
-        Target target = determineTarget(action) ;
-        boolean existedBefore = false ;
         try {
+            Target target = determineTarget(action) ;
             if ( action.log.isDebugEnabled() )
-                action.log.debug("  ->"+target) ;
-            existedBefore = target.exists() ;
+                action.log.debug(action.request.getMethod().toUpperCase()+"->"+target) ;
+            boolean existedBefore = target.exists() ;
             Graph g = target.graph() ;
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
