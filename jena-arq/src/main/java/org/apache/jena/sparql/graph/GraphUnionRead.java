@@ -80,7 +80,7 @@ public class GraphUnionRead extends GraphBase {
     protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
         IteratorConcat<Triple> iter = new IteratorConcat<>() ;
         forEachGraph((g) -> iter.add(g.find(m))) ;
-        return WrappedIterator.create(Iter.distinct(iter)) ;
+        return WrappedIterator.createNoRemove(Iter.distinct(iter)) ;
     }
     
     /** Execute action for each graph that exists */
