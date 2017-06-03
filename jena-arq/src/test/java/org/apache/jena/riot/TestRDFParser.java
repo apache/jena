@@ -168,7 +168,6 @@ public class TestRDFParser {
         assertEquals(3, graph.size());
     }
 
-
     private static class TestingFactoryRDF extends FactoryRDFStd {
         int counter = 0;
         @Override
