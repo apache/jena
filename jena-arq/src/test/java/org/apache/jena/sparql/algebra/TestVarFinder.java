@@ -54,6 +54,11 @@ public class TestVarFinder extends BaseTest
     @Test public void varfind_04_4() { varfindFilterOnly("(leftjoin (bgp (?x <q> <v>)) (filter (?Z) (bgp (?s <p> <o>))))", "Z") ; }
     @Test public void varfind_04_5() { varfindFilterOnly("(leftjoin (bgp (?x <q> <v>)) (bgp (?s <p> <o>)) ?Z)", "Z") ; }
 
+    @Test public void varfind_05_1() { varfindFixed("(propfunc :pf ?x (?y ?z) (table unit))", "x", "y", "z"); }
+    @Test public void varfind_05_2() { varfindFixed("(propfunc :pf ?x (?y ?z) (bgp (?x ?p ?o)))", "x", "y", "z", "p", "o"); }
+    @Test public void varfind_05_3() { varfindFixed("(propfunc :pf ?x (?y ?z) (leftjoin (table unit) (bgp (?x ?p ?o)) ))", "x", "y", "z"); }
+    @Test public void varfind_05_4() { varfindOpt(  "(propfunc :pf ?x (?y ?z) (leftjoin (table unit) (bgp (?x ?p ?o)) ))", "p", "o"); }
+    
     private static void varfindFixed(String string, String... vars) {
         varfind(string, vars, null, null, null) ;
     }
