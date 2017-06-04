@@ -229,7 +229,6 @@ public class UpdateBuilderExampleTests {
 		UpdateAction.execute(req, ds);
 
 		Model m2 = ds.getNamedModel(graphName.getURI());
-		m2.write(System.out, "TURTLE");
 		List<RDFNode> nodes = m2.listObjectsOfProperty(FOAF.givenname).toList();
 		assertEquals(1, nodes.size());
 		assertEquals("William", nodes.get(0).asLiteral().toString());
@@ -523,8 +522,6 @@ public class UpdateBuilderExampleTests {
 
 		builder.appendTo(req);
 
-		System.out.println(req);
-
 		UpdateAction.execute(req, ds);
 
 		m1 = ds.getNamedModel(graphName1.getURI());
@@ -624,36 +621,5 @@ public class UpdateBuilderExampleTests {
 		assertEquals(1, m2.listStatements().toList().size());
 		assertTrue(m2.contains(will, FOAF.mbox, willMail));
 	}
-
-	// /**
-	// * Example 13:
-	// *
-	// * @see https://www.w3.org/TR/sparql11-update/#example_13
-	// */
-	// @Test
-	// public void example13()
-	// {
-	// System.out.println( "COPY Not implemented");
-	// }
-	// /**
-	// * Example 14:
-	// *
-	// * @see https://www.w3.org/TR/sparql11-update/#example_14
-	// */
-	// @Test
-	// public void example14()
-	// {
-	// System.out.println( "MOVE Not implemented");
-	// }
-	//
-	// /**
-	// * Example 15:
-	// *
-	// * @see https://www.w3.org/TR/sparql11-update/#example_15
-	// */
-	// @Test
-	// public void example15()
-	// {
-	// System.out.println( "ADD Not implemented");
-	// }
+	
 }
