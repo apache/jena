@@ -49,6 +49,13 @@ public interface DatasetGraph extends Transactional, Closeable
     public Graph getGraph(Node graphNode) ;
     
     /**
+     * Return a {@link Graph} that is the union of all named graphs in this dataset. This
+     * union graph is read-only (its prefix mapping in the current JVM may be changed but
+     * that may not persist).
+     */
+    public Graph getUnionGraph();
+    
+    /**
      * Does the DatasetGraph contain a specific named graph? 
      * Whether a dataset contains a graph if there are no triples is
      * not defined - see the specifc implementation. Some datasets are "open" -
