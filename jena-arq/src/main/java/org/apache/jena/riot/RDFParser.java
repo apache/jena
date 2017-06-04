@@ -75,6 +75,8 @@ public class RDFParser {
     private final String       content;
     private final InputStream  inputStream;
     private final Reader       javaReader;
+    private final StreamManager streamManager;
+
     private final HttpClient   httpClient;
     private final Lang         hintLang;
     private final Lang         forceLang;
@@ -159,8 +161,9 @@ public class RDFParser {
         return RDFParserBuilder.create().source(input);
     }
     
-    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, HttpClient httpClient, Lang hintLang,
-                            Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking, boolean resolveURIs, boolean canonicalLiterals, IRIResolver resolver, FactoryRDF factory,
+    /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, StreamManager streamManager, 
+                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, 
+                            Optional<Boolean> checking, boolean resolveURIs, boolean canonicalLiterals, IRIResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
@@ -176,6 +179,7 @@ public class RDFParser {
         this.content = content;
         this.inputStream = inputStream;
         this.javaReader = javaReader;
+        this.streamManager = streamManager;
         this.httpClient = httpClient;
         this.hintLang = hintLang;
         this.forceLang = forceLang;
@@ -324,9 +328,7 @@ public class RDFParser {
             urlStr = StreamManager.get(context).mapURI(urlStr);
             in = HttpOp.execHttpGet(urlStr, null, httpClient, null);
         } else { 
-            // StreamManager and Locators, based on urlStr.
-            StreamManager sMgr = StreamManager.get(context);
-            in = sMgr.open(urlStr);
+            in = streamManager.open(urlStr);
         }
         if ( in == null )
             throw new RiotNotFoundException("Not found: "+urlStr);
