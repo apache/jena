@@ -15,58 +15,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.arq.querybuilder.handlers;
+package org.apache.jena.arq.querybuilder.updatebuilder;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
+import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.vocabulary.RDF;
 
 /**
- * The where handler. Generally handles GroupGraphPattern.
+ * The where processor. Generally handles update where clause.
  * 
  * @see <a href=
  *      "http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGroupGraphPattern">
  *      SPARQL 11 Query Language - Group Graph Pattern</a>
  *
  */
-public class WhereHandler implements Handler {
+public class WhereProcessor implements QuadHolder {
 
-	// the query to modify
-	private final Query query;
+	private Element whereClause;
+	private final PrefixHandler prefixHandler;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param query
-	 *            The query to manipulate.
+	 * @param prefixHandler
+	 *            the prefix handler to use.
 	 */
-	public WhereHandler(Query query) {
-		this.query = query;
-	}
-	
-	/**
-	 * Get the query pattern from this where handler.
-	 * @return the query pattern
-	 */
-	public Element getQueryPattern()
-	{
-		 return query.getQueryPattern();
+	public WhereProcessor(PrefixHandler prefixHandler) {
+		this.prefixHandler = prefixHandler;
 	}
 
+	/**
+	 * True if there are no elements in the where processor.
+	 * 
+	 * @return true if there are no elements.
+	 */
+	public boolean isEmpty() {
+		return whereClause == null || (whereClause instanceof ElementGroup && ((ElementGroup) whereClause).isEmpty());
+	}
+
+	@Override
+	public ExtendedIterator<Quad> getQuads() {
+		return getQuads( Quad.defaultGraphNodeGenerated);
+	}
+	
+	public ExtendedIterator<Quad> getQuads( Node defaultGraphName ) {
+		if (isEmpty())
+		{
+			return NiceIterator.emptyIterator();
+		}
+		QuadIteratorBuilder builder = new QuadIteratorBuilder(defaultGraphName);
+		whereClause.visit(builder);
+		return builder.iter;
+	}
 	/**
 	 * Add all where attributes from the Where Handler argument.
 	 * 
@@ -74,22 +92,23 @@ public class WhereHandler implements Handler {
 	 *            The Where Handler to copy from.
 	 */
 	public void addAll(WhereHandler whereHandler) {
-		Element e = whereHandler.query.getQueryPattern();
+
+		Element e = whereHandler.getQueryPattern();
 		if (e != null) {
 			// clone the Element
 			ElementRewriter rewriter = new ElementRewriter(Collections.emptyMap());
 			e.visit(rewriter);
 			Element clone = rewriter.getResult();
-			Element mine = query.getQueryPattern();
-			if (mine == null) {
-				query.setQueryPattern(clone);
+
+			if (whereClause == null) {
+				whereClause = clone;
 			} else {
 				ElementGroup eg = null;
-				if (mine instanceof ElementGroup) {
-					eg = (ElementGroup) mine;
+				if (whereClause instanceof ElementGroup) {
+					eg = (ElementGroup) whereClause;
 				} else {
 					eg = new ElementGroup();
-					eg.addElement(mine);
+					eg.addElement(whereClause);
 				}
 				if (clone instanceof ElementGroup) {
 					for (Element ele : ((ElementGroup) clone).getElements()) {
@@ -98,24 +117,9 @@ public class WhereHandler implements Handler {
 				} else {
 					eg.addElement(clone);
 				}
-				query.setQueryPattern(eg);
+				whereClause = eg;
 			}
 		}
-	}
-
-	/**
-	 * Get the base element from the where clause. If the clause does not
-	 * contain an element return the element group, otherwise return the
-	 * enclosed element.
-	 * 
-	 * @return the base element.
-	 */
-	private Element getElement() {
-		Element result = query.getQueryPattern();
-		if (result == null) {
-			result = getClause();
-		}
-		return result;
 	}
 
 	/**
@@ -127,10 +131,10 @@ public class WhereHandler implements Handler {
 	 * @return The element group.
 	 */
 	public ElementGroup getClause() {
-		Element e = query.getQueryPattern();
+		Element e = whereClause;
 		if (e == null) {
 			e = new ElementGroup();
-			query.setQueryPattern(e);
+			whereClause = e;
 		}
 		if (e instanceof ElementGroup) {
 			return (ElementGroup) e;
@@ -138,7 +142,7 @@ public class WhereHandler implements Handler {
 
 		ElementGroup eg = new ElementGroup();
 		eg.addElement(e);
-		query.setQueryPattern(eg);
+		whereClause = eg;
 		return eg;
 	}
 
@@ -154,14 +158,14 @@ public class WhereHandler implements Handler {
 		boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
 				|| t.getSubject().equals(Node.ANY);
 		boolean validPredicate;
-		
+
 		if (t.isTriple()) {
 			validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
 					|| t.getPredicate().equals(Node.ANY);
 		} else {
 			validPredicate = t.getPath() != null;
 		}
-				
+
 		boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
 				|| t.getObject().isVariable() || t.getObject().equals(Node.ANY);
 
@@ -172,8 +176,8 @@ public class WhereHandler implements Handler {
 						t.getSubject()));
 			}
 			if (!validPredicate) {
-				sb.append(
-						String.format("Predicate (%s) must be a Path, URI , variable, or a wildcard. %n", t.getPredicate()));
+				sb.append(String.format("Predicate (%s) must be a Path, URI , variable, or a wildcard. %n",
+						t.getPredicate()));
 			}
 			if (!validObject) {
 				sb.append(String.format("Object (%s) must be a URI, literal, blank, , variable, or a wildcard. %n",
@@ -192,7 +196,8 @@ public class WhereHandler implements Handler {
 	 * @param t
 	 *            The triple path to add.
 	 * @throws IllegalArgumentException
-	 *             If the triple path is not a valid triple path for a where clause.
+	 *             If the triple path is not a valid triple path for a where
+	 *             clause.
 	 */
 	public void addWhere(TriplePath t) throws IllegalArgumentException {
 		testTriple(t);
@@ -237,7 +242,9 @@ public class WhereHandler implements Handler {
 
 	/**
 	 * Add the contents of a where handler as an optional statement.
-	 * @param whereHandler The where handler to use as the optional statement.
+	 * 
+	 * @param whereHandler
+	 *            The where handler to use as the optional statement.
 	 */
 	public void addOptional(WhereHandler whereHandler) {
 		getClause().addElement(new ElementOptional(whereHandler.getClause()));
@@ -252,7 +259,14 @@ public class WhereHandler implements Handler {
 	 *             If the expression can not be parsed.
 	 */
 	public void addFilter(String expression) throws ParseException {
-		getClause().addElement(new ElementFilter(ExprUtils.parse(query, expression, true)));
+		getClause().addElement(new ElementFilter(parseExpr(expression)));
+	}
+
+	private Expr parseExpr(String expression) {
+		Query query = new Query();
+		query.setPrefixMapping(prefixHandler.getPrefixes());
+		return ExprUtils.parse(query, expression, true);
+
 	}
 
 	/**
@@ -272,40 +286,7 @@ public class WhereHandler implements Handler {
 	 *            The sub query to add.
 	 */
 	public void addSubQuery(AbstractQueryBuilder<?> subQuery) {
-		getClause().addElement(makeSubQuery(subQuery));
-	}
-
-	/**
-	 * Convert a subquery into a subquery element.
-	 * 
-	 * @param subQuery
-	 *            The sub query to convert
-	 * @return THe converted element.
-	 */
-	public ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
-		Query q = new Query();
-		SelectHandler sh = subQuery.getHandlerBlock().getSelectHandler();
-		if (sh != null)
-		{
-			if (! sh.getProject().isEmpty()) {
-				q.setQuerySelectType();
-			}
-		}
-		PrologHandler ph = new PrologHandler(query);
-		ph.addPrefixes( subQuery.getPrologHandler().getPrefixes() );
-		HandlerBlock handlerBlock = new HandlerBlock(q);
-		handlerBlock.addAll( subQuery.getHandlerBlock() );
-		// remove the prefix mappings from the sub query.
-		handlerBlock.getPrologHandler().clearPrefixes();
-
-		
-		//  make sure we have a query pattern before we start building.
-		if (q.getQueryPattern() == null)
-		{
-			q.setQueryPattern( new ElementGroup() );
-		}
-		handlerBlock.build();
-		return new ElementSubQuery(q);
+		getClause().addElement(subQuery.asSubQuery());
 	}
 
 	/**
@@ -327,7 +308,7 @@ public class WhereHandler implements Handler {
 				// side of the union.
 				union = new ElementUnion();
 				union.addElement(clause);
-				query.setQueryPattern(union);
+				whereClause = union;
 			}
 		} else {
 			// add the union as the first element in the clause.
@@ -336,11 +317,10 @@ public class WhereHandler implements Handler {
 		}
 		// if there are projected vars then do a full blown subquery
 		// otherwise just add the clause.
-		if (subQuery instanceof SelectClause && ((SelectClause<?>)subQuery).getVars().size() > 0) {
-			union.addElement(makeSubQuery(subQuery));
+		if (subQuery instanceof SelectClause && ((SelectClause<?>) subQuery).getVars().size() > 0) {
+			union.addElement(subQuery.asSubQuery());
 		} else {
-			PrologHandler ph = new PrologHandler(query);
-			ph.addPrefixes(subQuery.getPrologHandler().getPrefixes());
+			prefixHandler.addPrefixes(subQuery.getPrologHandler().getPrefixes());
 			union.addElement(subQuery.getWhereHandler().getClause());
 		}
 
@@ -355,7 +335,7 @@ public class WhereHandler implements Handler {
 	 *            The where handler that defines the graph.
 	 */
 	public void addGraph(Node graph, WhereHandler subQuery) {
-		getClause().addElement(new ElementNamedGraph(graph, subQuery.getElement()));
+		getClause().addElement(new ElementNamedGraph(graph, subQuery.getClause()));
 	}
 
 	/**
@@ -380,26 +360,34 @@ public class WhereHandler implements Handler {
 	 * @throws ParseException
 	 */
 	public void addBind(String expression, Var var) throws ParseException {
-		getClause().addElement(new ElementBind(var, ExprUtils.parse(query, expression, true)));
+		getClause().addElement(new ElementBind(var, parseExpr(expression)));
 	}
 
-	@Override
-	public void setVars(Map<Var, Node> values) {
-		if (values.isEmpty()) {
-			return;
+	/**
+	 * replace the vars in the expressions with the nodes in the values map.
+	 * Vars not listed in the values map are not changed.
+	 * 
+	 * Will return null if the whereClause is null.
+	 * 
+	 * @param values
+	 *            the value map to use
+	 * @return A new Element instance with the values changed.
+	 */
+	public Element setVars(Map<Var, Node> values) {
+		if (values.isEmpty() || whereClause == null) {
+			return whereClause;
 		}
+		ElementRewriter r = new ElementRewriter(values);
+		whereClause.visit(r);
+		return r.getResult();
 
-		Element e = query.getQueryPattern();
-		if (e != null) {
-			ElementRewriter r = new ElementRewriter(values);
-			e.visit(r);
-			query.setQueryPattern(r.getResult());
-		}
 	}
-
+	
 	@Override
-	public void build() {
-		// no special operations required.
+	public QuadHolder setValues(Map<Var, Node> values)
+	{
+		setVars( values );
+		return this;
 	}
 
 	/**
@@ -415,7 +403,7 @@ public class WhereHandler implements Handler {
 		Node retval = NodeFactory.createBlankNode();
 		Node lastObject = retval;
 		for (int i = 0; i < objs.length; i++) {
-			Node n = AbstractQueryBuilder.makeNode(objs[i], query.getPrefixMapping());
+			Node n = AbstractQueryBuilder.makeNode(objs[i], prefixHandler.getPrefixes());
 			addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
 			if (i + 1 < objs.length) {
 				Node nextObject = NodeFactory.createBlankNode();
@@ -429,17 +417,15 @@ public class WhereHandler implements Handler {
 
 		return retval;
 	}
-	
+
 	/**
 	 * Add a minus operation to the where clause.
-	 * The prolog will be updated with the prefixes from the abstract query builder.
+	 * The prefixes will be updated with the prefixes from the abstract query builder.
 	 * 
 	 * @param qb the abstract builder that defines the data to subtract.
 	 */
-	public void addMinus( AbstractQueryBuilder<?> qb )
-	{
-		PrologHandler ph = new PrologHandler(query);
-		ph.addPrefixes( qb.getPrologHandler().getPrefixes() );
+	public void addMinus(AbstractQueryBuilder<?> qb) {
+		prefixHandler.addPrefixes(qb.getPrologHandler().getPrefixes());
 		ElementGroup clause = getClause();
 		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
 		clause.addElement(minus);

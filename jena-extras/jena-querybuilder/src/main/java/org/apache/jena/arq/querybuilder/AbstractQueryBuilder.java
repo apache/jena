@@ -50,6 +50,7 @@ import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
@@ -132,6 +133,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
 	}
 		
+	public ElementSubQuery asSubQuery() {
+		return getWhereHandler().makeSubQuery( this );
+	}
+	
 	/**
 	 * Make a triple path from the objects.
 	 * 

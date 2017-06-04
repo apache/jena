@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
-import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -38,7 +37,6 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.Before;
 import org.junit.Test;
-import org.xenei.junit.contract.ContractTest;
 
 public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
