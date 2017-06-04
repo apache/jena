@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.graph ;
 
 import java.util.Collection ;
+import java.util.Iterator;
 import java.util.function.Consumer ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -78,6 +79,14 @@ public class GraphUnionRead extends GraphBase {
 
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
+        if ( graphs == null ) {
+            // This produces unique quads with the same graph node,
+            // hence the triples are distinct. 
+            Iterator<Quad> qIter = dataset.findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY);
+            Iterator<Triple> tIter = Iter.map(qIter, quad->quad.asTriple());
+            return WrappedIterator.createNoRemove(tIter) ;
+        }
+        // Only certain graphs.
         IteratorConcat<Triple> iter = new IteratorConcat<>() ;
         forEachGraph((g) -> iter.add(g.find(m))) ;
         return WrappedIterator.createNoRemove(Iter.distinct(iter)) ;
@@ -103,7 +112,7 @@ public class GraphUnionRead extends GraphBase {
     
     @Override
     public void performAdd(Triple t) {
-        throw new AddDeniedException("GraphUnionRead::performAdd - read-only graph") ;
+        throw new AddDeniedException("GraphUnionRead::performAdd - Read-only graph") ;
     }
 
     @Override
