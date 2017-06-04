@@ -83,6 +83,11 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public Model getUnionModel() {
+        return ModelFactory.createModelForGraph(dsg.getUnionGraph()) ;
+    }
+
+    @Override
     public Lock getLock() { return dsg.getLock() ; }
 
     @Override
