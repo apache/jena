@@ -82,7 +82,7 @@ public class GraphUnionRead extends GraphBase {
         if ( graphs == null ) {
             // This produces unique quads with the same graph node,
             // hence the triples are distinct. 
-            Iterator<Quad> qIter = dataset.findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY);
+            Iterator<Quad> qIter = dataset.findNG(Quad.unionGraph, m.getSubject(), m.getPredicate(), m.getObject());
             Iterator<Triple> tIter = Iter.map(qIter, quad->quad.asTriple());
             return WrappedIterator.createNoRemove(tIter) ;
         }
