@@ -93,8 +93,28 @@ function getFreeMem() {
     darwin*)
       # Have to get this from top
       FREE_MEM=$(top -l 1 | grep PhysMem | awk '{print $6}')
-      FREE_MEM=${FREE_MEM%M}
-      FREE_MEM=$(($FREE_MEM * 1024 * 1024))
+      MEM_UNIT=${FREE_MEM:${#FREE_MEM}-1:1}
+      FREE_MEM=${FREE_MEM%${MEM_UNIT}}
+      case "${MEM_UNIT}" in
+        K)
+          # Unlikely but let's cover our bases
+          FREE_MEM=$((${FREE_MEM} * 1024))
+          ;;
+        M)
+          FREE_MEM=$((${FREE_MEM} * 1024 * 1024))
+          ;;
+        G)
+          FREE_MEM=$((${FREE_MEM} * 1024 * 1024 * 1024))
+          ;;
+        T)
+          # Probably a ways off but let's be future proof
+          FREE_MEM=$((${FREE_MEM} * 1024 * 1024 * 1024 * 1024))
+          ;;
+        *)
+          # Unable to determine
+          FREE_MEM=-1
+          ;;
+        esac
       ;;
     linux*)
       # Try to use free if available
