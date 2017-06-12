@@ -20,14 +20,16 @@ package org.apache.jena.sparql.expr;
 
 import java.util.List ;
 
+import org.apache.commons.lang3.StringUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
 import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.Symbol ;
 
-/** Indirect to the choosen regular expression implementation */
+/** Indirect to the chosen regular expression implementation */
 
 public class E_Regex extends ExprFunctionN
 {
@@ -71,14 +73,16 @@ public class E_Regex extends ExprFunctionN
     
     private void init(Expr pattern, Expr flags)
     {
-        try {
-        if ( pattern.isConstant() && pattern.getConstant().isString() && ( flags==null || flags.isConstant() ) )
-            regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
-        } catch (ExprEvalException ex) {
-            // Here, we are doing static compilation of the pattern.
-            // ExprEvalException does not have a stacktrace. 
-            // We could throw a non-eval exception.
-            throw ex; //new ExprException(ex.getMessage(), ex.getCause());
+        if ( ! ARQ.isStrictMode() ) {
+            try {
+                if ( pattern.isConstant() && pattern.getConstant().isString() && ( flags==null || flags.isConstant() ) )
+                    regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
+            } catch (ExprEvalException ex) {
+                // Here, we are doing static compilation of the pattern.
+                // ExprEvalException does not have a stacktrace. 
+                // We could throw a non-eval exception.
+                throw ex; //new ExprException(ex.getMessage(), ex.getCause());
+            }
         }
     }
 
@@ -117,10 +121,20 @@ public class E_Regex extends ExprFunctionN
         if ( vFlags != null && ! vFlags.isString() )
             throw new ExprException("REGEX: Pattern flags are not a string: "+vFlags) ;
         String s = (vFlags==null)?null:vFlags.getString() ;
+        checkFlags(s);
         
         return makeRegexEngine(vPattern.getString(), s) ;
     }
     
+    private static void checkFlags(String flags) {
+        if ( flags == null )
+            return;
+        // F&O spec defines regex: Can only contain s, m, i, x, q
+        // Not all are supported by all regex engines.
+        if ( ! StringUtils.containsOnly(flags, "smixq") )
+            throw new ExprEvalException("REGEX: Only 'smixq' are legal as pattern flags: got \""+FmtUtils.stringEsc(flags)+"\"");
+    }
+
     public static RegexEngine makeRegexEngine(String pattern, String flags)
     {
         if ( regexImpl.equals(ARQ.xercesRegex))
