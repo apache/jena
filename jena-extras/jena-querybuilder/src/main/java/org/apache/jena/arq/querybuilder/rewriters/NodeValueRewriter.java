@@ -74,6 +74,11 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements
 		push(new NodeValueString(nv.getString(), changeNode(nv.getNode())));
 	}
 
+    @Override
+    public void visit(NodeValueSortKey nv) {
+        push(new NodeValueString(nv.getString(), changeNode(nv.getNode())));
+    }
+
 	@Override
 	public void visit(NodeValueDT nv) {
 		push(new NodeValueDT(nv.getDateTime().toXMLFormat(),

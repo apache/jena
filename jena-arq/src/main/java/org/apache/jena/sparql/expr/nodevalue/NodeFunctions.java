@@ -202,6 +202,12 @@ public class NodeFunctions {
         return "[undef]" ;
     }
 
+    // -------- sort key (collation)
+
+    public static NodeValue sortKey(NodeValue nv, String collation) {
+        return NodeValue.makeSortKey(str(nv.asNode()), collation) ;
+    }
+
     // -------- datatype
     public static NodeValue datatype(NodeValue nv) {
         return NodeValue.makeNode(datatype(nv.asNode())) ;

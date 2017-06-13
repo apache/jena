@@ -243,8 +243,11 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDouble(double d)
     { return new NodeValueDouble(d) ; }
 
-    public static NodeValue makeString(String s) 
+    public static NodeValue makeString(String s)
     { return new NodeValueString(s) ; }
+
+    public static NodeValue makeSortKey(String s, String collation)
+    { return new NodeValueSortKey(s, collation) ; }
 
     public static NodeValue makeLangString(String s, String lang) 
     { return new NodeValueLang(s, lang) ; }
@@ -730,6 +733,7 @@ public abstract class NodeValue extends ExprNode
             case VSPACE_NODE :
             case VSPACE_NUM :
             case VSPACE_STRING :
+            case VSPACE_SORTKEY :
             case VSPACE_UNKNOWN :
                 // Drop through.
         }
@@ -765,6 +769,13 @@ public abstract class NodeValue extends ExprNode
                 if ( dt2 == null && dt1 != null )
                     return Expr.CMP_GREATER ;
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
+            }
+            case VSPACE_SORTKEY :
+            {
+                if (!(nv1 instanceof NodeValueSortKey) || !(nv2 instanceof NodeValueSortKey)) {
+                    raise(new ExprNotComparableException("Can't compare (not node value sort keys) "+nv1+" and "+nv2)) ;
+                }
+                return ((NodeValueSortKey) nv1).compareTo((NodeValueSortKey) nv2);
             }
             case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
@@ -867,6 +878,7 @@ public abstract class NodeValue extends ExprNode
             return VSPACE_DATE ;
         
         if ( nv.isString())         return VSPACE_STRING ;
+        if ( nv.isSortKey())        return VSPACE_SORTKEY ;
         if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
         
         if ( ! nv.isLiteral() )     return VSPACE_NODE ;
@@ -910,6 +922,7 @@ public abstract class NodeValue extends ExprNode
     public boolean isBoolean()      { return false ; } 
     public boolean isString()       { return false ; } 
     public boolean isLangString()   { return false ; }
+    public boolean isSortKey()      { return false ; }
 
     public boolean isNumber()       { return false ; }
     public boolean isInteger()      { return false ; }
@@ -954,7 +967,7 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
-    
+
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }

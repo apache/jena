@@ -20,7 +20,10 @@ package org.apache.jena.sparql.expr;
 
 import java.math.BigDecimal ;
 import java.util.Calendar ;
+import java.util.Comparator;
 import java.util.GregorianCalendar ;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimeZone ;
 
 import org.apache.jena.JenaRuntime ;
@@ -28,6 +31,14 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
@@ -744,6 +755,119 @@ public class TestNodeValue extends BaseTest
             ? "\"string\"" : "\"string\"^^<" + XSDDatatype.XSDstring.getURI() + ">";
 
         assertEquals("Print form mismatch", rightAnswer, actualStr);
+    }
+
+    @Test
+    public void testNodeSortKey1() {
+        NodeValue nv = NodeValue.makeSortKey("Wagen", "de");
+        assertTrue("Not a sort key: " + nv, nv.isSortKey());
+        String actualStr = nv.asQuotedString();
+        String rightAnswer = "\"Wagen\"";
+        assertEquals("Print form mismatch", rightAnswer, actualStr);
+    }
+
+    @Test
+    public void testNodeSortKey2() {
+        final String[] unordered =
+                {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
+        final String[] ordered =
+                {"'Broager'", "'Brædstrup'", "'Børkop'", "'Wandsbek'", "'Ærøskøbing'", "'Åkirkeby'"};
+        // tests collation sort order for Danish
+        final String collation = "da";
+        List<NodeValue> nodeValues = new LinkedList<>();
+        for (String string : unordered) {
+            nodeValues.add(NodeValue.makeSortKey(string, collation));
+        }
+        nodeValues.sort(new Comparator<NodeValue>() {
+            @Override
+            public int compare(NodeValue o1, NodeValue o2) {
+                return NodeValue.compare(o1, o2);
+            }
+        });
+        List<String> result = new LinkedList<>();
+        for (NodeValue nv : nodeValues) {
+            String s = nv.toString();
+            result.add(s);
+        }
+        assertArrayEquals(ordered, result.toArray(new String[0]));
+    }
+
+    @Test
+    public void testNodeSortKey3() {
+        final String[] unordered = new String[]
+                {"Broager", "Åkirkeby", "Børkop", "Ærøskøbing", "Brædstrup", "Wandsbek"};
+        final String[] ordered = new String[]
+                {"'Ærøskøbing'", "'Åkirkeby'", "'Brædstrup'", "'Broager'", "'Børkop'", "'Wandsbek'"};
+        // tests collation sort order with Danish words, but New Zealand English collation rules
+        final String collation = "en-NZ";
+        List<NodeValue> nodeValues = new LinkedList<>();
+        for (String string : unordered) {
+            nodeValues.add(NodeValue.makeSortKey(string, collation));
+        }
+        nodeValues.sort(new Comparator<NodeValue>() {
+            @Override
+            public int compare(NodeValue o1, NodeValue o2) {
+                return NodeValue.compare(o1, o2);
+            }
+        });
+        List<String> result = new LinkedList<>();
+        for (NodeValue nv : nodeValues) {
+            String s = nv.toString();
+            result.add(s);
+        }
+        assertArrayEquals(ordered, result.toArray(new String[0]));
+    }
+
+    @Test
+    public void testNodeSortKey4() {
+        // Collation sort order for Finnish
+        final String collation = "fi";
+        String[] ordered = new String[]
+                {"tsahurin kieli", "tšekin kieli", "tulun kieli", "töyhtöhyyppä"};
+        // Query String
+        final String queryString = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX arq: <http://jena.apache.org/ARQ/function#>\n" +
+                "SELECT ?label WHERE {\n" +
+                "   VALUES ?label { \"tulun kieli\"@es \"tšekin kieli\" \"tsahurin kieli\"@en \"töyhtöhyyppä\"@fi }\n" +
+                "}\n" +
+                "ORDER BY arq:collation(\"" + collation + "\", ?label)";
+        Model model = ModelFactory.createDefaultModel();
+        Query query = QueryFactory.create(queryString);
+        List<String> result = new LinkedList<>();
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qExec.execSelect();
+            while (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                result.add(solution.getLiteral(solution.varNames().next()).getLexicalForm());
+            }
+        }
+        assertArrayEquals(ordered, result.toArray(new String[0]));
+    }
+
+    @Test
+    public void testNodeSortKey5() {
+     // Collation sort order for English from Belize
+        final String collation = "en-BZ";
+        String[] ordered = new String[]
+                {"töyhtöhyyppä", "tsahurin kieli", "tšekin kieli", "tulun kieli"};
+        // Query String
+        final String queryString = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX arq: <http://jena.apache.org/ARQ/function#>\n" +
+                "SELECT ?label WHERE {\n" +
+                "   VALUES ?label { \"tulun kieli\"@es \"tšekin kieli\" \"tsahurin kieli\"@en \"töyhtöhyyppä\"@fi }\n" +
+                "}\n" +
+                "ORDER BY arq:collation(\"" + collation + "\", ?label)";
+        Model model = ModelFactory.createDefaultModel();
+        Query query = QueryFactory.create(queryString);
+        List<String> result = new LinkedList<>();
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, model)) {
+            ResultSet results = qExec.execSelect();
+            while (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                result.add(solution.getLiteral(solution.varNames().next()).getLexicalForm());
+            }
+        }
+        assertArrayEquals(ordered, result.toArray(new String[0]));
     }
 
     // TODO testSameValueDecimal tests
