@@ -586,7 +586,9 @@ public abstract class NodeValue extends ExprNode
                 raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;
                 throw new ARQInternalErrorException("raise returned (sameValueAs)") ;
             }
-            
+            case VSPACE_SORTKEY:
+                return nv1.getSortKey().compareTo(nv2.getSortKey()) == 0 ;
+                
             case VSPACE_DIFFERENT:
                 // Known to be incompatible.
                 if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
@@ -771,13 +773,10 @@ public abstract class NodeValue extends ExprNode
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
             }
             case VSPACE_SORTKEY :
-            {
-                if (!(nv1 instanceof NodeValueSortKey) || !(nv2 instanceof NodeValueSortKey)) {
-                    raise(new ExprNotComparableException("Can't compare (not node value sort keys) "+nv1+" and "+nv2)) ;
-                }
-                return ((NodeValueSortKey) nv1).compareTo((NodeValueSortKey) nv2);
-            }
-            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
+                return nv1.getSortKey().compareTo(nv2.getSortKey());
+                
+            case VSPACE_BOOLEAN:
+                return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
             case VSPACE_LANG:
             {
@@ -878,7 +877,8 @@ public abstract class NodeValue extends ExprNode
             return VSPACE_DATE ;
         
         if ( nv.isString())         return VSPACE_STRING ;
-        if ( nv.isSortKey())        return VSPACE_SORTKEY ;
+        if ( SystemARQ.ValueExtensions && nv.isSortKey() )
+            return VSPACE_SORTKEY ;
         if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
         
         if ( ! nv.isLiteral() )     return VSPACE_NODE ;
@@ -967,6 +967,7 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
+    public NodeValueSortKey getSortKey()        { raise(new ExprEvalTypeException("Not a sort key: "+this)) ; return null ; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }

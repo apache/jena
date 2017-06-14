@@ -20,10 +20,12 @@ package org.apache.jena.sparql.expr.nodevalue;
 
 import java.text.Collator;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.FmtUtils;
 
@@ -56,6 +58,11 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
     @Override
     public boolean isSortKey() {
         return Boolean.TRUE;
+    }
+    
+    @Override
+    public NodeValueSortKey getSortKey() {
+        return this;
     }
 
     @Override
@@ -98,21 +105,18 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
 
     @Override
     public int compareTo(NodeValueSortKey other) {
-        int cmp = 0;
-        if (other != null) {
-            String c1 = this.getCollation();
-            String c2 = other.getCollation();
-            if (c1 != null && c2 != null && c1.equals(c2)) {
-                // locales are parsed. Here we could think about caching if necessary
-                Locale desiredLocale = Locale.forLanguageTag(c1);
-                // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>
-                Collator collator = Collator.getInstance(desiredLocale);
-                cmp = collator.compare(this.getString(), other.getString());
-            } else {
-                cmp = XSDFuncOp.compareString(this, other) ;
-            }
-        }
-        return cmp;
+        Objects.requireNonNull(other);
+        if ( this == other )
+            return Expr.CMP_EQUAL;
+        String c1 = this.getCollation();
+        String c2 = other.getCollation();
+        if (c1 == null || c2 == null || ! c1.equals(c2))
+            return XSDFuncOp.compareString(this, other) ;
+        // locales are parsed. Here we could think about caching if necessary
+        Locale desiredLocale = Locale.forLanguageTag(c1);
+        // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>
+        Collator collator = Collator.getInstance(desiredLocale);
+        return collator.compare(this.getString(), other.getString());
     }
 
 }
