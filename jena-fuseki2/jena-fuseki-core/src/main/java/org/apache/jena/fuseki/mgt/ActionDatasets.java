@@ -114,6 +114,14 @@ public class ActionDatasets extends ActionContainerItem {
         
         ContentType ct = FusekiLib.getContentType(action) ;
         
+        boolean hasParams = action.request.getParameterNames().hasMoreElements();
+        
+        if ( ct == null && ! hasParams ) {
+            ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
+            // Or do "GET over POST"
+            //return execGetContainer(action);
+        }
+        
         boolean committed = false ;
         // Also acts as a concurrency lock
         system.begin(ReadWrite.WRITE) ;
@@ -125,7 +133,7 @@ public class ActionDatasets extends ActionContainerItem {
             Model model = ModelFactory.createDefaultModel() ;
             StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
     
-            if ( WebContent.isHtmlForm(ct) )
+            if ( hasParams || WebContent.isHtmlForm(ct) )
                 assemblerFromForm(action, dest) ;
             else if ( WebContent.isMultiPartForm(ct) )
                 assemblerFromUpload(action, dest) ;
