@@ -37,6 +37,7 @@ import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
@@ -586,7 +587,9 @@ public abstract class NodeValue extends ExprNode
                 raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;
                 throw new ARQInternalErrorException("raise returned (sameValueAs)") ;
             }
-            
+            case VSPACE_SORTKEY:
+                return nv1.getSortKey().compareTo(nv2.getSortKey()) == 0 ;
+                
             case VSPACE_DIFFERENT:
                 // Known to be incompatible.
                 if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
@@ -708,8 +711,8 @@ public abstract class NodeValue extends ExprNode
             {
                 int x = XSDFuncOp.compareDuration(nv1, nv2) ;
                 // Fix up - Java (Oracle java7 at least) returns "equals" for 
-                // "D1Y"/"D365D" and "D1M"/"D28D", and others split over 
-                // YearMoth/DayTime.
+                // "P1Y"/"P365D" and "P1M"/"P28D", and others split over 
+                // YearMonth/DayTime.
                 
                 // OR return Expr.CMP_INDETERMINATE ??
                 if ( x == Expr.CMP_EQUAL ) {
@@ -721,12 +724,11 @@ public abstract class NodeValue extends ExprNode
                 }
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
-                // Indeterminate => can't compare as strict values.
                 compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
 
-            //default:
+            // No special cases.
             case VSPACE_BOOLEAN :
             case VSPACE_DIFFERENT :
             case VSPACE_LANG :
@@ -756,11 +758,18 @@ public abstract class NodeValue extends ExprNode
             {
                 int cmp = XSDFuncOp.compareString(nv1, nv2) ;
                 
-                // Split plain literals and xsd:strings for sorting purposes.
                 if ( ! sortOrderingCompare )
                     return cmp ;
                 if ( cmp != Expr.CMP_EQUAL )
                     return cmp ;
+                
+                // Equality.
+                if ( JenaRuntime.isRDF11 )
+                    // RDF 1.1 : No literals without datatype.
+                    return cmp ;
+                
+                // RDF 1.0
+                // Split plain literals and xsd:strings for sorting purposes.
                 // Same by string value.
                 String dt1 = nv1.asNode().getLiteralDatatypeURI() ;
                 String dt2 = nv2.asNode().getLiteralDatatypeURI() ;
@@ -771,13 +780,10 @@ public abstract class NodeValue extends ExprNode
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
             }
             case VSPACE_SORTKEY :
-            {
-                if (!(nv1 instanceof NodeValueSortKey) || !(nv2 instanceof NodeValueSortKey)) {
-                    raise(new ExprNotComparableException("Can't compare (not node value sort keys) "+nv1+" and "+nv2)) ;
-                }
-                return ((NodeValueSortKey) nv1).compareTo((NodeValueSortKey) nv2);
-            }
-            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
+                return nv1.getSortKey().compareTo(nv2.getSortKey());
+                
+            case VSPACE_BOOLEAN:
+                return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
             case VSPACE_LANG:
             {
@@ -864,30 +870,29 @@ public abstract class NodeValue extends ExprNode
     {
         if ( nv.isNumber() )        return VSPACE_NUM ;
         if ( nv.isDateTime() )      return VSPACE_DATETIME ;
+        if ( nv.isString())         return VSPACE_STRING ;
+        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
+        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
+
+        if ( ! SystemARQ.ValueExtensions )
+            return VSPACE_UNKNOWN ;
+        
+        // Datatypes and their value spaces that are an extension of strict SPARQL.
         if ( nv.isDate() )          return VSPACE_DATE ;
         if ( nv.isTime() )          return VSPACE_TIME ;
         if ( nv.isDuration() )      return VSPACE_DURATION ;
-        
+
         if ( nv.isGYear() )         return VSPACE_G_YEAR ;
         if ( nv.isGYearMonth() )    return VSPACE_G_YEARMONTH ;
         if ( nv.isGMonth() )        return VSPACE_G_MONTH ;
         if ( nv.isGMonthDay() )     return VSPACE_G_MONTHDAY ;
         if ( nv.isGDay() )          return VSPACE_G_DAY ;
         
-        if ( SystemARQ.ValueExtensions && nv.isDate() )
-            return VSPACE_DATE ;
+        if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
         
-        if ( nv.isString())         return VSPACE_STRING ;
-        if ( nv.isSortKey())        return VSPACE_SORTKEY ;
-        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
-        
-        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
-
-        if ( SystemARQ.ValueExtensions && nv.getNode() != null &&
-             nv.getNode().isLiteral() &&
-             ! nv.getNode().getLiteralLanguage().equals("") )
+        // Already a literal by this point.
+        if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;
-        
         return VSPACE_UNKNOWN ;
     }
         
@@ -967,6 +972,7 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
+    public NodeValueSortKey getSortKey()        { raise(new ExprEvalTypeException("Not a sort key: "+this)) ; return null ; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }

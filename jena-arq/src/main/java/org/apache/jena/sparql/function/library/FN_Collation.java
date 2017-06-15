@@ -45,7 +45,7 @@ import org.apache.jena.sparql.function.FunctionBase2;
  * be discarded, and only the literal string value (i.e. Casa) will be taken into account
  * for this function.</p>
  *
- * @see {@link NodeValueSortKey}
+ * @see NodeValueSortKey
  */
 public class FN_Collation extends FunctionBase2 {
 

@@ -34,7 +34,7 @@ public class TestNodeFunctions {
         NodeValue noveValue = NodeValue.makeString("Casa");
         NodeValue nv = NodeFunctions.sortKey(noveValue, "es");
         assertTrue(nv instanceof NodeValueSortKey);
-        assertEquals("es", ((NodeValueSortKey) nv).getCollation());
+        assertEquals("es", nv.getSortKey().getCollation());
     }
 
 }
