@@ -32,6 +32,7 @@ import org.apache.jena.sparql.serializer.FormatterElement ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.NodeToLabelMapBNode ;
 
 public class UpdateWriterVisitor implements UpdateVisitor
 {
@@ -212,7 +213,6 @@ public class UpdateWriterVisitor implements UpdateVisitor
         String $ = FmtUtils.stringForNode(node, sCxt) ;
         out.print($) ;
     }
-
     
     @Override
     public void visit(UpdateDeleteWhere update)
@@ -233,7 +233,6 @@ public class UpdateWriterVisitor implements UpdateVisitor
             output(update.getWithIRI()) ;
         }
         
-        
         if ( update.hasDeleteClause() )
         {
             List<Quad> deleteQuads = update.getDeleteQuads() ;
@@ -241,7 +240,6 @@ public class UpdateWriterVisitor implements UpdateVisitor
             out.print("DELETE ") ;
             outputQuadsBraced(deleteQuads) ;
         }
-        
         
         if ( update.hasInsertClause() )
         {
@@ -272,6 +270,7 @@ public class UpdateWriterVisitor implements UpdateVisitor
             output(x) ;
         }
          
+        // Wrong.
         Element el = update.getWherePattern() ;
         out.ensureStartOfLine() ;
         out.print("WHERE") ;
@@ -289,6 +288,9 @@ public class UpdateWriterVisitor implements UpdateVisitor
     }
 
     protected FormatterElement prepareElementFormatter() {
-        return new FormatterElement(out, sCxt);
+        SerializationContext sCxt1 = new  SerializationContext(sCxt);
+        // The label prefix is different to the template writer just for clarity.
+        sCxt1.setBNodeMap(new NodeToLabelMapBNode("x", false));
+        return new FormatterElement(out, sCxt1);
     }
 }
