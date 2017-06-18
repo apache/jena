@@ -268,7 +268,10 @@ public class FusekiCmd {
 
             if ( contains(argTDB) ) {
                 cmdLineConfig.reset();
-                cmdLineConfig.argTemplateFile = Template.templateTDBDirFN ;
+//                cmdLineConfig.argTemplateFile = 
+//                    cmdLineConfig.allowUpdate ? Template.templateTDBDirFN : Template.templateTDBDirReadFN;
+                // For a long time, "--update" did not apply here and so for compatibility ... 
+                cmdLineConfig.argTemplateFile = Template.templateTDBDirFN;
                 String dir = getValue(argTDB) ;
                 cmdLineConfig.params.put(Template.DIR, dir) ;
                 cmdLineConfig.datasetDescription = "TDB dataset: "+dir;
