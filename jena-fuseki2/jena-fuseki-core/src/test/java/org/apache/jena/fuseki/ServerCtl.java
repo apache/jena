@@ -229,7 +229,7 @@ public class ServerCtl {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
-        ServerInitialConfig params = new ServerInitialConfig() ;
+        FusekiInitialConfig params = new FusekiInitialConfig() ;
         dsgTesting = DatasetGraphFactory.createTxnMem() ;
         params.dsg = dsgTesting ;
         params.datasetPath = datasetPath ;

@@ -198,7 +198,7 @@ public class FusekiServer
         }
     }
 
-    public static void initializeDataAccessPoints(DataAccessPointRegistry registry, ServerInitialConfig initialSetup, String configDir) {
+    public static void initializeDataAccessPoints(DataAccessPointRegistry registry, FusekiInitialConfig initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup) ;
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
@@ -219,7 +219,7 @@ public class FusekiServer
         }
     }
 
-    private static List<DataAccessPoint> initServerConfiguration(ServerInitialConfig params) { 
+    private static List<DataAccessPoint> initServerConfiguration(FusekiInitialConfig params) { 
         // Has a side effect of global context setting
         // when processing a config file.
         // Compatibility.

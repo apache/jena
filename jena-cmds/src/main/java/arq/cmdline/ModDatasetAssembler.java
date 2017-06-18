@@ -62,4 +62,8 @@ public class ModDatasetAssembler extends ModDataset
     public void processArgs(CmdArgModule cmdLine) {
         modAssembler.processArgs(cmdLine);
     }
+    
+    public String getAssemblerFile() {
+        return modAssembler.getAssemblerFile() ;
+    }
 }
