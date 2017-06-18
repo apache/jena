@@ -78,7 +78,6 @@ public class FusekiInfo {
         //FmtLog.info(log, "Memory: max=%s  total=%s  used=%s  free=%s", f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
         FmtLog.info(log, "  Memory: max=%s", f.apply(maxMem));
         FmtLog.info(log, "  OS:     %s %s %s", System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
-        FmtLog.info(log, "  Java    %s", System.getProperty("java.runtime.version"));
     }
     
     public static void logDetailsVerbose(Logger log) {
