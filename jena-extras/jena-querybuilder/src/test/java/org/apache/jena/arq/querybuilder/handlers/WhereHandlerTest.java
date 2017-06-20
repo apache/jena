@@ -401,15 +401,9 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	public void testList() {
 		Node n = handler.list("<one>", "?var", "'three'");
 
-		assertContainsRegex(WHERE + OPEN_CURLY + "_:b0" + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + uri("one") + SEMI + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE + "_:b1" + DOT + SPACE + "_:b1" + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + var("var") + SEMI + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE + "_:b2" + DOT + SPACE + "_:b2" + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#first") + SPACE + quote("three") + SEMI + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#rest") + SPACE
-				+ uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") + CLOSE_CURLY, query.toString());
-
+		assertContainsRegex(WHERE + OPEN_CURLY + "("+SPACE+uri("one")+SPACE+var("var")+SPACE+quote("three")+")"+CLOSE_CURLY,
+		                    query.toString());
+		                    
 		assertTrue(n.isBlank());
 	}
 
