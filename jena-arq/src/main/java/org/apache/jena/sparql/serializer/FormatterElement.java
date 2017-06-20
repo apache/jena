@@ -246,13 +246,13 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
         if ( el.getElements().size() == 1 ) {
             // If this is an element of just one, just do it inplace
             // Can't happen from a parsed query in SPARQL.
+            //visitAsGroup(el.getElements().get(0));
+            // Same as OPTIONAL, MINUS
+            out.print("UNION");
+            out.incIndent(INDENT);
+            out.newline();
             visitAsGroup(el.getElements().get(0));
-//            // Same as OPTIONAL, MINUS
-//            out.print("UNION");
-//            out.incIndent(INDENT);
-//            out.newline();
-//            visitAsGroup(el.getElements().get(0));
-//            out.decIndent(INDENT);
+            out.decIndent(INDENT);
             return;
         }
 
