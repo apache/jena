@@ -25,6 +25,7 @@ import org.apache.jena.query.text.EntityDefinition;
 import org.apache.jena.query.text.TextIndex;
 import org.apache.jena.query.text.TextIndexConfig;
 import org.apache.jena.query.text.TextIndexException;
+import org.apache.jena.query.text.assembler.TextVocab;
 import org.apache.jena.query.text.es.*;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.util.graph.GraphUtils;
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.jena.query.text.assembler.TextVocab.*;
+import static org.apache.jena.query.text.es.TextVocabES.*;
 
 public class TextIndexESAssembler extends AssemblerBase {
 
@@ -96,7 +97,7 @@ public class TextIndexESAssembler extends AssemblerBase {
                 indexName = "jena-text";
             }
 
-            Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
+            Resource r = GraphUtils.getResourceValue(root, TextVocab.pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
 
