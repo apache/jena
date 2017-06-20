@@ -16,33 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph;
+package org.apache.jena.sparql.serializer;
 
-import java.util.Collection;
+import java.util.*;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.BasicPattern ;
 
+/** Internal record of list details. */
+/*package*/ class TriplesListBlock {
+    Map<Node, List<Node>> listElementsMap = new HashMap<>();
+    // Triples in lists.
+    Set<Triple>           triplesInLists  = new LinkedHashSet<>();
 
-public class GNode
-{
-    public final Findable findable ;
-    public final Node node ;
-    
-    public GNode(Graph graph, Node node)
-    { this.findable = new FindableGraph(graph) ; this.node = node ; }
-    
-    public GNode(BasicPattern triples, Node node)
-    { this.findable = new FindableCollection(triples.getList()) ; this.node = node ; }
-    
-    public GNode(Collection<Triple> triples, Node node)
-    { this.findable = new FindableCollection(triples) ; this.node = node ; }
-
-    public GNode(GNode other, Node node)
-    { this.findable = other.findable ; this.node = node ; }
-
+    /*package*/ void merge(TriplesListBlock other) {
+        listElementsMap.putAll(other.listElementsMap);
+        triplesInLists.addAll(other.triplesInLists);
+    }
+        
     @Override
-    public String toString() { return "gnode:"+node ; }
+    public String toString() {
+        return Iter.asString(listElementsMap.keySet(), ", ") + "\n" + "{"+ Iter.asString(triplesInLists.iterator(), "\n")+"}";
+            
+    }
 }
