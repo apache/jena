@@ -22,7 +22,7 @@ import org.apache.jena.system.JenaSubsystemLifecycle ;
 
 public class InitJenaText implements JenaSubsystemLifecycle {
 
-	// Subsystems of jena-text shoudl initailizae after jena-text.
+	// Subsystems of jena-text should initialize after jena-text.
     public static int LEVEL       = 50;
     public static int LEVEL_ES    = 52;
     public static int LEVEL_SOLR  = 52;
