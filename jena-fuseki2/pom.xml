@@ -72,6 +72,7 @@
     <module>jena-fuseki-embedded</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-server</module>
+    <module>jena-fuseki-basic</module>
     <module>apache-jena-fuseki</module>
   </modules>
   
