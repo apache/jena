@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text.es;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import static org.apache.jena.query.text.assembler.TextVocab.NS;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.tdb.assembler.Vocab;
 
-public class InitJenaText implements JenaSubsystemLifecycle {
-
-	// Subsystems of jena-text should initialize after jena-text.
-    public static int LEVEL       = 50;
-    public static int LEVEL_ES    = 52;
-    public static int LEVEL_SOLR  = 52;
+public class TextVocabES {
     
-    @Override
-    public void start() {
-        TextQuery.init() ;
-    }
-
-    @Override
-    public void stop() {
-    }
+    public static final Resource textIndexES        = Vocab.resource(NS, "TextIndexES") ;
     
-    @Override
-    public int level() {
-        return LEVEL;
-    }
+    public static final Property pServerList        = Vocab.property(NS, "serverList");
+    public static final Property pClusterName       = Vocab.property(NS, "clusterName");
+    public static final Property pShards            = Vocab.property(NS, "shards");
+    public static final Property pReplicas          = Vocab.property(NS, "replicas");
+    public static final Property pIndexName          = Vocab.property(NS, "indexName");
 }
-

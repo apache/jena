@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text.es.assembler;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.query.text.assembler.*;
+import org.apache.jena.query.text.es.TextVocabES;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 
-public class InitJenaText implements JenaSubsystemLifecycle {
-
-	// Subsystems of jena-text should initialize after jena-text.
-    public static int LEVEL       = 50;
-    public static int LEVEL_ES    = 52;
-    public static int LEVEL_SOLR  = 52;
+public class TextAssemblerES {
     
-    @Override
-    public void start() {
-        TextQuery.init() ;
-    }
+    public static void init()
+    {
+        AssemblerUtils.init() ;
+        TextAssembler.init();
 
-    @Override
-    public void stop() {
-    }
-    
-    @Override
-    public int level() {
-        return LEVEL;
+        // Register the index type used in: 
+        //    <#indexES> a text:TextIndexES
+        
+        AssemblerUtils.registerDataset(TextVocabES.textIndexES, new TextIndexESAssembler());
     }
 }
-

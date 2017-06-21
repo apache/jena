@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,30 @@
 
 package org.apache.jena.query.text.es;
 
-import org.apache.jena.query.text.InitJenaText ;
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.query.text.es.assembler.TextAssemblerES;
+import org.apache.jena.system.JenaSystem;
 
-public class InitJenaTextES implements JenaSubsystemLifecycle {
-    @Override
-    public void start() {
-        TextES.init() ;
-    }
-
-    @Override
-    public void stop() {
-    }
+public class TextES {
+    private static volatile boolean initialized = false ;
+    private static Object lock = new Object() ;
     
-    @Override
-    public int level() {
-        return InitJenaText.LEVEL_ES;
+    public static void init() 
+    {
+        if ( initialized ) 
+            return ;
+        synchronized(lock) {
+            if ( initialized ) {
+                JenaSystem.logLifecycle("TextES.init - skip") ;
+                return ; 
+            }
+            initialized = true ;
+            JenaSystem.logLifecycle("TextES.init - start") ;
+            TextAssemblerES.init() ;
+            
+//            SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
+//            SystemARQ.registerSubSystem(sysInfo) ;
+            
+            JenaSystem.logLifecycle("TextES.init - finish") ;
+        }
     }
 }
-
