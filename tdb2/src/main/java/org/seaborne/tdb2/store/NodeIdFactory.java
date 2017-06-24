@@ -34,7 +34,7 @@ final
 public class NodeIdFactory
 {
     // On-disk: may be shorter (controlled by get/set ByteBuffer and byte[]).
-    // In-emmeory - always int-long
+    // In-memory - always int-long
     
     // XXX Chance for a cache?
 
