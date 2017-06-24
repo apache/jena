@@ -23,6 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -31,8 +34,10 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.Before;
@@ -128,14 +133,34 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
 	@Test
 	public void testList() {
+		
 		builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
-		String query = builder.buildString();
+		Query query = builder.build();
 
-		assertContainsRegex(PAREN_OPEN + SPACE + uri("one") + SPACE + var("two") + SPACE + quote("three") + SPACE + PAREN_CLOSE,
-		                    builder.buildString());
-
-		assertContainsRegex(PAREN_CLOSE + "." + SPACE + uri("foo") + SPACE  + uri("bar") + SPACE + CLOSE_CURLY,
-		                    builder.buildString());
+		
+		Node one = NodeFactory.createURI("one");
+		Node two = Var.alloc("two").asNode();
+		Node three = NodeFactory.createLiteral( "three");
+		Node foo = NodeFactory.createURI("foo");
+		Node bar = NodeFactory.createURI("bar");
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		Node firstObject = NodeFactory.createBlankNode();		
+		Node secondObject = NodeFactory.createBlankNode();
+		Node thirdObject = NodeFactory.createBlankNode();
+		
+		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.first.asNode(), one)));
+		epb.addTriplePath( new TriplePath( new Triple( firstObject, RDF.rest.asNode(), secondObject)));
+		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.first.asNode(), two)));
+		epb.addTriplePath( new TriplePath( new Triple( secondObject, RDF.rest.asNode(), thirdObject)));
+		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.first.asNode(), three)));
+		epb.addTriplePath( new TriplePath( new Triple( thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+		epb.addTriplePath( new TriplePath( new Triple( firstObject, foo, bar)));
+		
+		
+		WhereValidator visitor = new WhereValidator( epb );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
 
 	@Test

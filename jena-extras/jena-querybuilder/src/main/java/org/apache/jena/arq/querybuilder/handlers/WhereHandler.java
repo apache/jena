@@ -399,7 +399,12 @@ public class WhereHandler implements Handler {
 
 	@Override
 	public void build() {
-		// no special operations required.
+		/*
+		 * cleanup unoin-of-one and other similar issues.
+		 */
+		BuildElementVisitor visitor = new BuildElementVisitor();
+		getElement().visit(visitor);
+		query.setQueryPattern( visitor.result );
 	}
 
 	/**
@@ -443,5 +448,188 @@ public class WhereHandler implements Handler {
 		ElementGroup clause = getClause();
 		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
 		clause.addElement(minus);
+	}
+	
+	/**
+	 * An element visitor that does an in-place modification of the elements to 
+	 * fix union-of-one and similar issues.
+	 *
+	 */
+	private static class BuildElementVisitor implements ElementVisitor {
+		private Element result;
+
+		@Override
+		public void visit(ElementTriplesBlock el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementPathBlock el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementFilter el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementAssign el) {
+			// no change
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementBind el) {
+			// no change
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementData el) {
+			// no change
+			result=el;
+		}
+
+		private void updateList( List<Element> lst )
+		{
+			 for (int i=0;i<lst.size();i++)
+        	 {
+        		 lst.get(i).visit( this );
+        		 lst.set(i, result);
+        	 }
+		}
+		
+		@Override
+		public void visit(ElementUnion el) {
+			List<Element> lst = el.getElements();
+	         if ( lst.size() <= 1 ) {
+	        	 ElementGroup eg = new ElementGroup();
+	             if ( lst.size() == 1)
+	             {
+	            	 el.getElements().get(0).visit( this );
+	        	   	 eg.addElement(result);
+	             }
+	        	 result = eg;
+	         } else {
+	        	 updateList( lst );
+	        	 result = el;
+	         }
+		}
+
+		@Override
+		public void visit(ElementOptional el) {
+			el.getOptionalElement().visit(this);
+			if (result == el.getOptionalElement())
+			{
+				result = el;
+			} else {
+				result = new ElementOptional( result );
+			}
+		}
+
+		@Override
+		public void visit(ElementGroup el) {
+			List<Element> lst = el.getElements();
+			if (lst.isEmpty())
+			{
+				// noting to do
+				result = el;
+			} else if (lst.size() == 1)
+			{
+				lst.get(0).visit( this );
+				// result is now set properly
+			} else {
+			updateList( lst );
+			result = el;
+			}
+		}
+		
+		@Override
+		public void visit(ElementDataset el) {
+			// noting to do
+			result = el;
+		}
+
+		@Override
+		public void visit(ElementNamedGraph el) {
+			el.getElement().visit( this );
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementNamedGraph( el.getGraphNameNode(), result);
+			}
+		}
+
+		@Override
+		public void visit(ElementExists el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementExists( result);
+			}			
+		}
+
+		@Override
+		public void visit(ElementNotExists el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementNotExists( result);
+			}
+		}
+
+		@Override
+		public void visit(ElementMinus el) {
+			el.getMinusElement().visit(this);
+			if (result == el.getMinusElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementMinus( result);
+			}
+		}
+
+		@Override
+		public void visit(ElementService el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementService( el.getServiceNode(), result, el.getSilent());
+			}
+			
+		}
+
+		@Override
+		public void visit(ElementSubQuery el) {
+			WhereHandler other = new WhereHandler( el.getQuery() );
+			other.build();
+			if (other.getElement() != el.getQuery().getQueryPattern())
+			{
+				el.getQuery().setQueryPattern( other.query.getQueryPattern() );
+			}
+			result = el;
+		}
+		
 	}
 }
