@@ -52,11 +52,11 @@ set --
 if [ "$BACKGROUND" = 0 ]
 then
     # Run in the foreground
-    exec java $JVM_ARGS $FUSEKI_LOG -jar $FUSEKI_JAR $SPARQLER_ARGS
+    exec java $JVM_ARGS $FUSEKI_LOG -jar "$FUSEKI_JAR" $SPARQLER_ARGS
 else
     # Run in the background
     # Linux / nohup
-    nohup java $JVM_ARGS $FUSEKI_LOG -jar $FUSEKI_JAR $SPARQLER_ARGS > nohup.log 2>&1 &
+    nohup java $JVM_ARGS $FUSEKI_LOG -jar "$FUSEKI_JAR" $SPARQLER_ARGS > nohup.log 2>&1 &
     # Process ID ... of the script.
     PROC=$!
     echo "Server process = $PROC"
