@@ -243,9 +243,15 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
 
     @Override
     public void visit(ElementUnion el) {
-        if ( el.getElements().size() <= 1 ) {
-        	// If this is an element of just one (or none), just do it in-place
+        if ( el.getElements().size() == 0 ) {
+        	// If this is a union of zero elements, do nothing.
             return ;
+        }
+        
+        if ( el.getElements().size() == 0 ) {
+            // If this is a union of one elements, put in a {}-group 
+            visitAsGroup(el.getElements().get(0));
+            return;
         }
 
         if ( UNION_MARKERS ) {
