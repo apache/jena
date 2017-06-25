@@ -46,6 +46,10 @@ public class IRIValidatorHTML
     {
         try {
             String[] args = httpRequest.getParameterValues(paramIRI) ;
+                
+            if ( args == null || args.length==0 )
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No ?iri= parameter") ;
+            
             ServletOutputStream outStream = httpResponse.getOutputStream() ;
             PrintStream stdout = System.out ;
             PrintStream stderr = System.err ;
@@ -59,7 +63,6 @@ public class IRIValidatorHTML
             outStream.println("<body>") ;
 
             outStream.println("<h1>IRI Report</h1>") ;
-
             startFixed(outStream) ;
 
             try {
