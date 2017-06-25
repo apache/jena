@@ -65,6 +65,9 @@ public class DataValidatorHTML
                 return ;
             }
             
+            // Take the charset provided even if it is wrong because 
+            // HTML input maybe have been written in some default.
+            // The HTML input and what the user typed should agree.
             Reader input = createInput(httpRequest, httpResponse) ;
 
             ServletOutputStream outStream = httpResponse.getOutputStream() ;
@@ -82,7 +85,7 @@ public class DataValidatorHTML
             outStream.println("<body>") ;
             
             outStream.println("<h1>RIOT Parser Report</h1>") ;
-            outStream.println("<p>Line and column numbers refer to original input</p>") ;
+            outStream.println("<p>Line and column numbers refer to the original input.</p>") ;
             outStream.println("<p>&nbsp;</p>") ;
 
             // Need to escape HTML. 
@@ -90,13 +93,14 @@ public class DataValidatorHTML
             StreamRDF output = StreamRDFWriter.getWriterStream(output1, Lang.NQUADS) ;
             try {
                 startFixed(outStream) ;
+                @SuppressWarnings("deprecation")
                 RDFParser parser = RDFParser.create()
+                    .source(input)
                     .lang(language)
                     .errorHandler(errorHandler)
                     .resolveURIs(false)
                     .build();
                 RiotException exception = null ;
-                startFixed(outStream) ;
                 try {
                     output.start();
                     parser.parse(output);
