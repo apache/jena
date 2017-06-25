@@ -41,6 +41,7 @@ import org.apache.jena.fuseki.embedded.FusekiEmbeddedServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
@@ -94,7 +95,9 @@ public class FusekiBasicCmd {
 
         // Allow there to be no registered datasets without it being an error.
         // which is "return  dsg==null && serverConfig==null;"
-        public boolean allowEmpty              = false ;
+        public boolean empty              = false ;
+        // Setup for SPARQLer - validators and gener query engine, some pages, no datasets, 
+        public boolean sparqler           = false ;
         public boolean loopback           = false;
         public String datasetDescription;
         public String contentDirectory    = null;
@@ -116,6 +119,7 @@ public class FusekiBasicCmd {
         private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
+        private static ArgDecl  argSparqler     = new ArgDecl(ArgDecl.HasValue, "sparqler");
         // private static ModLocation modLocation = new ModLocation();
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
@@ -145,8 +149,7 @@ public class FusekiBasicCmd {
                 "Create an in-memory, non-persistent dataset using TDB (testing only)");
 //            add(argEmpty, "--empty",
 //                "Run with no datasets and services (validators only)");
-            // Needs FusekiEmbeddedServer.Builder change.
-            add(argEmpty); // Hidden
+            add(argEmpty); // Hidden for now.
             add(argPort, "--port",
                 "Listen on this port number");
             add(argLocalhost, "--localhost",
@@ -161,6 +164,8 @@ public class FusekiBasicCmd {
                 "Enable GZip compression (HTTP Accept-Encoding) if request header set");
             add(argBase, "--base=DIR",
                 "Directory for static content");
+            add(argSparqler, "--sparqler=DIR",
+                "Run with SPARQLer services Directory for static content");
 
             super.modVersion.addClass(TDB.class);
             super.modVersion.addClass(Fuseki.class);
@@ -194,7 +199,8 @@ public class FusekiBasicCmd {
             if ( contains(argConfig) )
                 x++;
 
-            boolean allowEmpty = contains(argEmpty);
+            boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
+            
             
             if ( x == 0 && ! allowEmpty )
                 throw new CmdException("No dataset specified on the command line.");
@@ -244,7 +250,7 @@ public class FusekiBasicCmd {
             // Only one of these is choose from the checking above.
             
             if ( allowEmpty ) {
-                serverConfig.allowEmpty = true;
+                serverConfig.empty = true;
                 serverConfig.datasetDescription = "No dataset";
             }                
 
@@ -316,6 +322,14 @@ public class FusekiBasicCmd {
                 ARQ.getContext().set(ARQ.queryTimeout, str);
             }
             
+            if ( contains(argSparqler) ) {
+                String filebase = getValue(argSparqler);
+                if ( ! FileOps.exists(filebase) )
+                    throw new CmdException("File area not found: "+filebase); 
+                serverConfig.contentDirectory = filebase;
+                serverConfig.sparqler = true;
+            }
+            
             if ( contains(argBase) ) {
                 // Static files.
                 String filebase = getValue(argBase);
@@ -364,7 +378,15 @@ public class FusekiBasicCmd {
             builder.setPort(serverConfig.port);
             builder.setLoopback(serverConfig.loopback);
             
-            if ( ! serverConfig.allowEmpty ) {
+            if ( serverConfig.empty ) {
+                if ( serverConfig.sparqler )
+                    builder.addServlet("/sparql",  new SPARQL_QueryGeneral());
+                // Validators.
+                builder.addServlet("/validate/query",  new QueryValidator());
+                builder.addServlet("/validate/update", new UpdateValidator());
+                builder.addServlet("/validate/iri",    new IRIValidator());
+                builder.addServlet("/validate/data",   new DataValidator());
+            } else {
                 if ( serverConfig.serverConfig != null )
                     // Config file.
                     builder.parseConfigFile(serverConfig.serverConfig);
@@ -372,15 +394,10 @@ public class FusekiBasicCmd {
                     // One dataset.
                     builder.add(serverConfig.datasetPath, serverConfig.dsg, serverConfig.allowUpdate);
             }
+            
             if ( serverConfig.contentDirectory != null )
                 builder.setStaticFileBase(serverConfig.contentDirectory) ;
 
-            // Validators.
-            builder.addServlet("/validate/query",  new QueryValidator());
-            builder.addServlet("/validate/update", new UpdateValidator());
-            builder.addServlet("/validate/iri",    new IRIValidator());
-            builder.addServlet("/validate/data",   new DataValidator());
-            
             return builder.build();
         }
 
@@ -411,7 +428,7 @@ public class FusekiBasicCmd {
             // Dataset -> Endpoints
             Map<String, List<String>> z = description(DataAccessPointRegistry.get(server.getServletContext()));
             
-            if ( serverConfig.allowEmpty ) {
+            if ( serverConfig.empty ) {
                 FmtLog.info(log, "No SPARQL datasets services"); 
             } else {
                 if ( serverConfig.datasetPath == null && serverConfig.serverConfig == null )

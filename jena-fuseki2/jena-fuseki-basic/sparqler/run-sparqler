@@ -10,7 +10,8 @@ SPARQLER_DS="${SPARQLER_DS:-/books}"
 FUSEKI_JAR1="$(echo ../target/jena-fuseki-basic-*-server.jar)"
 ## Deployment
 FUSEKI_JAR2="fuseki-basic.jar"
-FUSEKI_JAR3="jena-fuseki-basic-*-server.jar"
+## sparql.org
+FUSEKI_JAR3="$(echo ../jena-fuseki-basic-*-server.jar)"
 
 # Choose which jar to run
 [[ -e $FUSEKI_JAR3 ]] && FUSEKI_JAR=$FUSEKI_JAR3
@@ -45,7 +46,7 @@ export JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 ##     exit 0
 ## fi
 
-SPARQLER_ARGS="--base $SPARQLER_PAGES --empty"
+SPARQLER_ARGS="--sparqler $SPARQLER_PAGES"
 
 set --
 
