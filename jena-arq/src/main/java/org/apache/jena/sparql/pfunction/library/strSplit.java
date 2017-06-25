@@ -39,11 +39,13 @@ import org.apache.jena.sparql.util.IterLib;
 import org.apache.jena.vocabulary.XSD;
 
 /**
- * Property function that requires the subject to be unbound, and the object to
+ * Property function that requires the object to
  * contain a list of two items, the first of which is a string to be split, and
- * the second is a regular expression denoting the split point. The subject
- * variable is bound for each result of the split, and each result has the
- * whitespace trimmed from it.
+ * the second is a regular expression denoting the split point. If the subject
+ * is an unbound variable, it is bound for each result of the split, and each result has the
+ * whitespace trimmed from it. If the subject is not an unbound variable, then
+ * the property function will match if and only if the subject is one of the
+ * split results.
  */
 public class strSplit extends PFuncSimpleAndList
 {
