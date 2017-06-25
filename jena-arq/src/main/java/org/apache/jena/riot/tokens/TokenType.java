@@ -25,7 +25,7 @@ public enum TokenType {
     // One kind of string - the seen form is record 
     STRING, 
 
-    LITERAL_LANG, LITERAL_DT, INTEGER, DECIMAL, DOUBLE,
+    LITERAL_LANG, LITERAL_DT, INTEGER, DECIMAL, DOUBLE, BOOLEAN,
 
     // Not RDF
     KEYWORD, VAR, HEX,   // Starts with *
