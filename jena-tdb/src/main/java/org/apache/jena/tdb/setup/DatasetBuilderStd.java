@@ -246,12 +246,10 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{params.getIndexPrefix()}, params) ;
         if ( prefixIndexes.length != 1 )
-            error(log, "Wrong number of triple table tuples indexes: " + prefixIndexes.length) ;
+            error(log, "Wrong number of prefix table tuples indexes: " + prefixIndexes.length) ;
 
         String pnNode2Id = params.getPrefixNode2Id() ;
         String pnId2Node = params.getPrefixId2Node() ;
-
-        
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTableNoCache(location, pnNode2Id, pnId2Node, params) ;
