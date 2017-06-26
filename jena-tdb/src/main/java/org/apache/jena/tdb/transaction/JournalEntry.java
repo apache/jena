@@ -88,16 +88,15 @@ public class JournalEntry
 
     static public String format(JournalEntryType type, ByteBuffer byteBuffer, Block block, FileRef fileRef)
     {
-        StringBuilder sbuff = new StringBuilder() ;
-        
-        sbuff.append("Entry: \n") ;
-        if ( byteBuffer != null )
-            sbuff.append("  "+byteBuffer) ;
-        if ( block != null )
-            sbuff.append("  "+block) ;
-        sbuff.append("  "+fileRef) ;
-        sbuff.append("  "+type) ;
-        return sbuff.toString() ;
+        return String.format("Entry: %-6s  blk=%d  %s", type, block.getId(), fileRef.getFilename());
+//        StringBuilder sbuff = new StringBuilder() ;
+//        sbuff.append("Entry: "+type+"\n") ;
+//        if ( byteBuffer != null )
+//            sbuff.append("  "+byteBuffer) ;
+//        if ( block != null )
+//            sbuff.append("  "+block) ;
+//        sbuff.append("  "+fileRef) ;
+//        return sbuff.toString() ;
     }
 
 }
