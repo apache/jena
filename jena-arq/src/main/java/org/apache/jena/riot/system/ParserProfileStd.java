@@ -218,6 +218,10 @@ public class ParserProfileStd implements ParserProfile
 
             case STRING :
                 return createStringLiteral(str, line, col);
+                
+            case BOOLEAN :
+                return createTypedLiteral(str, XSDDatatype.XSDboolean, line, col);
+                
             default : {
                 Node x = createNodeFromToken(currentGraph, token, line, col);
                 if ( x != null )

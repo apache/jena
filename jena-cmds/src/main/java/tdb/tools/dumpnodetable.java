@@ -19,11 +19,13 @@
 package tdb.tools ;
 
 import java.io.OutputStream ;
-import java.util.Arrays ;
+import java.nio.ByteBuffer ;
 import java.util.Iterator ;
-import java.util.List ;
+import java.util.function.Function ;
 
+import arq.cmdline.CmdARQ;
 import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
@@ -31,16 +33,14 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.tdb.StoreConnection ;
+import org.apache.jena.tdb.base.file.FileFactory ;
+import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.Build ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
+import org.apache.jena.tdb.base.objectfile.ObjectFile ;
+import org.apache.jena.tdb.lib.NodeLib ;
+import org.apache.jena.tdb.setup.StoreParams ;
 import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SystemTDB ;
-
-import arq.cmdline.CmdARQ;
 import tdb.cmdline.ModLocation ;
 
 public class dumpnodetable extends CmdARQ {
@@ -53,14 +53,20 @@ public class dumpnodetable extends CmdARQ {
 
     @Override
     protected void exec() {
-        List<String> tripleIndexes = Arrays.asList(Names.tripleIndexes) ;
-        List<String> quadIndexes = Arrays.asList(Names.quadIndexes) ;
         Location loc = modLocation.getLocation() ;
 
-        StoreConnection sConn = StoreConnection.make(loc) ;
-        DatasetGraphTDB dsg = sConn.getBaseDataset() ;
-        NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
-        dump(System.out, nodeTable) ;
+        ObjectFile objFile = determineNodeTable(loc);
+        dump(System.out, objFile) ;
+    }
+    
+    private ObjectFile determineNodeTable(Location loc) {
+        // Directly open the nodes.dat file.
+        StoreParams storeParams = StoreParams.getDftStoreParams();
+        FileSet fsId2Node = new FileSet(loc, storeParams.getIndexId2Node()) ;
+        
+        String file = fsId2Node.filename(Names.extNodeData);
+        ObjectFile objFile = FileFactory.createObjectFileDisk(file);
+        return objFile;
     }
 
     protected dumpnodetable(String[] argv) {
@@ -68,26 +74,22 @@ public class dumpnodetable extends CmdARQ {
         super.addModule(modLocation) ;
     }
 
-    public static void dumpNodes(OutputStream w, String location) {
-        dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
-             SystemTDB.NodeMissCacheSize) ;
+    // Taken from NodeTableNative.
+    private static Iterator<Pair<NodeId, Node>> all(ObjectFile objFile)
+    {
+        Iterator<Pair<Long, ByteBuffer>> objs = objFile.all() ; 
+        Function<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = item -> {
+            NodeId id = NodeId.create(item.car().longValue());
+            ByteBuffer bb = item.cdr();
+            Node n = NodeLib.decode(bb);
+            return new Pair<>(id, n);
+        };
+        return Iter.map(objs, transform) ;
     }
-
-    public static void dumpPrefixes(OutputStream w, String location) {
-        dump(w, location, Names.prefixNode2Id, 100, Names.prefixId2Node, 100, 10) ;
-    }
-
-    public static void dump(OutputStream w, String location, String indexNode2Id, int node2NodeIdCacheSize, String indexId2Node,
-                            int nodeId2NodeCacheSize, //
-
-                            int sizeNodeMissCacheSize) {
-        NodeTable nodeTable = Build.makeNodeTable(Location.create(location), indexNode2Id, node2NodeIdCacheSize, indexId2Node,
-                                                  nodeId2NodeCacheSize, sizeNodeMissCacheSize) ;
-    }
-
-    public static void dump(OutputStream w, NodeTable nodeTable) {
+    
+    public static void dump(OutputStream w, ObjectFile objFile) {
         // Better to hack the indexes?
-        Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
+        Iterator<Pair<NodeId, Node>> iter = all(objFile) ;
         long count = 0 ;
         try (IndentedWriter iw = new IndentedWriter(w)) {
             for ( ; iter.hasNext() ; ) {

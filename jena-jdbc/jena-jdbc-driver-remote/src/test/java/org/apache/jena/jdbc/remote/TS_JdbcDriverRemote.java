@@ -17,7 +17,7 @@
  */
 package org.apache.jena.jdbc.remote;
 
-import org.apache.jena.fuseki.ServerCtl ;
+import org.apache.jena.fuseki.embedded.FusekiTestServer ;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnection;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithAuth;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithGraphUris;
@@ -60,11 +60,11 @@ public class TS_JdbcDriverRemote {
 
     @BeforeClass
     public static void beforeClassAbstract1() {
-        ServerCtl.ctlBeforeTestSuite() ;
+        FusekiTestServer.ctlBeforeTestSuite() ;
     }
 
     @AfterClass
     public static void afterClassAbstract1() {
-        ServerCtl.ctlAfterTestSuite() ;
+        FusekiTestServer.ctlAfterTestSuite() ;
     }
 }

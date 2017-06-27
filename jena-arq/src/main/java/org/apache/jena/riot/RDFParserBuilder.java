@@ -33,6 +33,7 @@ import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
@@ -69,6 +70,7 @@ public class RDFParserBuilder {
     // The not reusable sources.
     private InputStream inputStream;
     private Reader javaReader = null;
+    private StreamManager streamManager = null;
 
     // HTTP
     private Map<String, String> httpHeaders = new HashMap<>(); 
@@ -196,6 +198,16 @@ public class RDFParserBuilder {
     public RDFParserBuilder source(Reader reader) {
         clearSource();
         this.javaReader = reader;
+        return this;
+    }
+    
+    /**
+     * Set the StreamManager to use when opening a URI (including files by name, but not by {@code Path}). 
+     * @param streamManager
+     * @return this
+     */
+    public RDFParserBuilder streamManager(StreamManager streamManager) {
+        this.streamManager = streamManager;
         return this;
     }
 
@@ -458,9 +470,13 @@ public class RDFParserBuilder {
         if ( path == null && baseUri == null && uri != null )
             baseUri = uri;
         
+        StreamManager sMgr = streamManager;
+        if ( sMgr == null )
+            sMgr = StreamManager.get(context);
+        
         // Can't build the profile here as it is Lang/conneg dependent.
-        return new RDFParser(uri, path, content, inputStream, javaReader, client,
-                             hintLang, forceLang,
+        return new RDFParser(uri, path, content, inputStream, javaReader, sMgr, 
+                             client, hintLang, forceLang,
                              baseUri, strict, checking, resolveURIs, canonicalLiterals,
                              resolver, factory$, errorHandler$, context);
     }

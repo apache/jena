@@ -355,8 +355,13 @@ public class VarFinder
 
         @Override
         public void visit(OpPropFunc opPropFunc) {
-            VarUtils.addVarNodes(defines, opPropFunc.getSubjectArgs().getArgList()) ;
-            VarUtils.addVarNodes(defines, opPropFunc.getObjectArgs().getArgList()) ;
+            VarUtils.addVars(defines, opPropFunc.getSubjectArgs()) ;
+            VarUtils.addVars(defines, opPropFunc.getObjectArgs()) ;
+            
+            mergeVars(opPropFunc.getSubOp());
+            
+            // If definite (from the property function), remove from optDefines. 
+            optDefines.removeAll(this.defines);
         }
 
         // Ops that add nothing to variable scoping.

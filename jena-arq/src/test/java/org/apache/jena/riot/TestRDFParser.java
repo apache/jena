@@ -33,6 +33,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.FactoryRDFStd;
+import org.apache.jena.riot.system.stream.LocatorFile;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Test;
 
@@ -154,6 +156,15 @@ public class TestRDFParser {
     public void source_uri_force_lang() {
         Graph graph = GraphFactory.createGraphMem();
         RDFParser.create().source("file:"+DIR+"data.rdf").forceLang(Lang.TTL).parse(graph);
+        assertEquals(3, graph.size());
+    }
+
+    @Test
+    public void source_streamManager() {
+        StreamManager sMgr = new StreamManager();
+        sMgr.addLocator(new LocatorFile(DIR)) ;
+        Graph graph = GraphFactory.createGraphMem();
+        RDFParser.create().streamManager(sMgr).source("file:data.rdf").forceLang(Lang.TTL).parse(graph);
         assertEquals(3, graph.size());
     }
 

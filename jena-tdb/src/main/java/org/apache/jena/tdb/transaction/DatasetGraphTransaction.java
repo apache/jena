@@ -202,10 +202,14 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
             TDB.logInfo.warn("Transaction already ended") ;
             return ;
         }
-        txn.get().end() ;
-        // May already be false due to .commit/.abort.
-        inTransaction.set(false) ;
-        txn.set(null) ;
+        try {
+            // begin(W)..end() throws an exception.
+            txn.get().end() ;
+        } finally {
+            // May already be false due to .commit/.abort.
+            inTransaction.set(false) ;
+            txn.set(null) ;
+        }
     }
 
     @Override

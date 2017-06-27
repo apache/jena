@@ -159,7 +159,7 @@ public class Eval
             if ( g == null )
                 return new TableEmpty() ;
             ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-            QueryIterator qIter = executeBGP(pattern, QueryIterRoot.createRoot(cxt2), cxt2) ;
+            QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2) ;
             return TableFactory.create(qIter) ;
         }
         else
@@ -180,7 +180,7 @@ public class Eval
                 // Eval the pattern, eval the variable, join.
                 // Pattern may be non-linear in the variable - do a pure execution.  
                 Table t1 = TableFactory.create(gVar, gn) ;
-                QueryIterator qIter = executeBGP(pattern, QueryIterRoot.createRoot(cxt2), cxt2) ;
+                QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2) ;
                 Table t2 = TableFactory.create(qIter) ;
                 Table t3 = evaluator.join(t1, t2) ;
                 concat.add(t3.iterator(cxt2)) ;

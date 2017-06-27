@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,9 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation;
+package org.apache.jena.sparql.expr.nodevalue;
 
-public class ValidationError {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.jena.sparql.expr.NodeValue;
+import org.junit.Test;
+
+/**
+ * Tests for {@link NodeFunctions}.
+ */
+public class TestNodeFunctions {
+
+    @Test
+    public void testSortKeyNodeValue() {
+        NodeValue noveValue = NodeValue.makeString("Casa");
+        NodeValue nv = NodeFunctions.sortKey(noveValue, "es");
+        assertTrue(nv instanceof NodeValueSortKey);
+        assertEquals("es", nv.getSortKey().getCollation());
+    }
 
 }
-

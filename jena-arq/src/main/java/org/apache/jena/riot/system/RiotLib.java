@@ -101,7 +101,7 @@ public class RiotLib
         return fixupPrefixIRI(prefix+":"+localPart);
     }
 
-    /** Convert an prefix name (qname) to an IRI, for when the prerix is nor defined.
+    /** Convert an prefix name (qname) to an IRI, for when the prefix is not defined.
      * @see ARQ#fixupUndefinedPrefixes
      */
     public static String fixupPrefixIRI(String prefixedName) {

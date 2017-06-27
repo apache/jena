@@ -24,8 +24,8 @@ import java.nio.charset.StandardCharsets ;
 import java.util.concurrent.* ;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
@@ -396,7 +396,7 @@ public class TestPipedRDFIterators {
                 Charset utf8 = StandardCharsets.UTF_8 ;
                 ByteArrayInputStream input = new ByteArrayInputStream(data.getBytes(utf8));
                 try {
-                    RDFDataMgr.parse(out, input, RDFLanguages.TURTLE);
+                    RDFParser.source(input).lang(Lang.TTL).parse(out);
                 } catch (Throwable t) {
                     // Ignore the error
                 }

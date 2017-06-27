@@ -68,12 +68,12 @@ public class Optimize
     }
 
     /** Set the global optimizer factory to one that does nothing.
-     * Applications probably wany {@link #basicOptimizer}  */
+     * Applications probably want {@link #basicOptimizer}  */
     public static void noOptimizer() {
         setFactory(noOptimizationFactory) ;
     }
 
-    /** Set the global optimizer factory to one that only does property functions and scaoped variables.
+    /** Set the global optimizer factory to one that only does property functions and scoped variables.
      * @see #minimalOptimizationFactory
      */
     public static void basicOptimizer() {

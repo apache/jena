@@ -16,141 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation ;
+package org.apache.jena.fuseki.validation;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class QueryValidator extends ValidatorBaseJson {
+import org.apache.jena.fuseki.validation.html.QueryValidatorHTML;
+import org.apache.jena.fuseki.validation.json.QueryValidatorJSON;
 
-    private static final long serialVersionUID = 5113754839333382031L;
-
-    public QueryValidator() {}
+public class QueryValidator extends ValidatorBase {
 
     @Override
-    protected String validatorName() {
-        return "SPARQL Query" ;
+    protected void executeJSON(HttpServletRequest request, HttpServletResponse response) {
+        executeJSON(request, response, QueryValidatorJSON::execute);
     }
-
-    static final String paramQuery       = "query" ;
-    static final String paramSyntax      = "languageSyntax" ;
-    
-    static final String jInput           = "input" ;
-    
-    static final String jFormatted       = "formatted" ;
-    static final String jAlgebra         = "algebra" ;
-    static final String jAlgebraQuads    = "algebra-quads" ;
-    static final String jAlgebraOpt      = "algebra-opt" ;
-    static final String jAlgebraOptQuads = "algebra-opt-quads" ;
 
     @Override
-    protected JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-
-        final String queryString = getArg(action, paramQuery) ;
-
-        String querySyntax = getArgOrNull(action, paramSyntax) ;
-        if ( querySyntax == null || querySyntax.equals("") )
-            querySyntax = "SPARQL" ;
-
-        Syntax language = Syntax.lookup(querySyntax) ;
-        if ( language == null ) {
-            ServletOps.errorBadRequest("Unknown syntax: " + querySyntax) ;
-            return null ;
-        }
-
-        boolean outputSPARQL = true ;
-        boolean outputAlgebra = true ;
-        boolean outputQuads = true ;
-        boolean outputOptimized = true ;
-        boolean outputOptimizedQuads = true ;
-
-        obj.key(jInput).value(queryString) ;
-
-        // Attempt to parse it.
-        Query query = null ;
-        try {
-            query = QueryFactory.create(queryString, "http://example/base/", language) ;
-        } catch (QueryParseException ex) {
-            obj.key(jErrors) ;
-            obj.startArray() ;      // Errors array
-            obj.startObject() ;
-            obj.key(jParseError).value(ex.getMessage()) ;
-            obj.key(jParseErrorLine).value(ex.getLine()) ;
-            obj.key(jParseErrorCol).value(ex.getColumn()) ;
-            obj.finishObject() ;
-            obj.finishArray() ;
-            
-            obj.finishObject() ; // Outer object
-            return obj.build().getAsObject() ;
-        }
-
-        if ( query != null ) {
-            
-            if ( outputSPARQL )
-                formatted(obj, query) ;
-
-            if ( outputAlgebra )
-                algebra(obj, query) ;
-
-            if ( outputQuads )
-                algebraQuads(obj, query) ;
-
-            if ( outputOptimized )
-                algebraOpt(obj, query) ;
-
-            if ( outputOptimizedQuads )
-                algebraOptQuads(obj, query) ;
-        }
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
-    }
-
-    private void formatted(JsonBuilder obj, Query query) {
-        IndentedLineBuffer out = new IndentedLineBuffer() ;
-        query.serialize(out) ;
-        obj.key(jFormatted).value(out.asString()) ;
-    }
-
-    private void algebra(JsonBuilder obj, Query query) {
-        Op op = Algebra.compile(query) ;
-        obj.key(jAlgebra).value(string(query, op)) ;
-    }
-
-    private void algebraQuads(JsonBuilder obj, Query query) {
-        Op op = Algebra.compile(query) ;
-        op = Algebra.toQuadForm(op) ;
-        obj.key(jAlgebraQuads).value(string(query, op)) ;
-    }
-
-    private void algebraOpt(JsonBuilder obj, Query query) {
-        Op op = Algebra.compile(query) ;
-        op = Algebra.optimize(op) ;
-        obj.key(jAlgebraOpt).value(string(query, op)) ;
-    }
-
-    private void algebraOptQuads(JsonBuilder obj, Query query) {
-        Op op = Algebra.compile(query) ;
-        op = Algebra.toQuadForm(op) ;
-        op = Algebra.optimize(op) ;
-        obj.key(jAlgebraOptQuads).value(string(query, op)) ;
-    }
-
-    private String string(Query query, Op op) {
-        final SerializationContext sCxt = new SerializationContext(query) ;
-        IndentedLineBuffer out = new IndentedLineBuffer() ;
-        op.output(out, sCxt) ;
-        return out.asString() ;
+    protected void executeHTML(HttpServletRequest request, HttpServletResponse response) {
+        QueryValidatorHTML.executeHTML(request, response);
     }
 }

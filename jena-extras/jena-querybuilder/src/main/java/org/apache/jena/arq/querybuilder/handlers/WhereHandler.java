@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -56,6 +56,15 @@ public class WhereHandler implements Handler {
 	 */
 	public WhereHandler(Query query) {
 		this.query = query;
+	}
+	
+	/**
+	 * Get the query pattern from this where handler.
+	 * @return the query pattern
+	 */
+	public Element getQueryPattern()
+	{
+		 return query.getQueryPattern();
 	}
 
 	/**
@@ -97,7 +106,7 @@ public class WhereHandler implements Handler {
 	/**
 	 * Get the base element from the where clause. If the clause does not
 	 * contain an element return the element group, otherwise return the
-	 * enclosed elelment.
+	 * enclosed element.
 	 * 
 	 * @return the base element.
 	 */
@@ -113,9 +122,11 @@ public class WhereHandler implements Handler {
 	 * Get the element group for the clause. if The element group is not set,
 	 * create and set it.
 	 * 
+	 * Public for ExprFactory use.
+	 * 
 	 * @return The element group.
 	 */
-	private ElementGroup getClause() {
+	public ElementGroup getClause() {
 		Element e = query.getQueryPattern();
 		if (e == null) {
 			e = new ElementGroup();
@@ -127,7 +138,6 @@ public class WhereHandler implements Handler {
 
 		ElementGroup eg = new ElementGroup();
 		eg.addElement(e);
-		;
 		query.setQueryPattern(eg);
 		return eg;
 	}
@@ -261,7 +271,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The sub query to add.
 	 */
-	public void addSubQuery(SelectBuilder subQuery) {
+	public void addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getClause().addElement(makeSubQuery(subQuery));
 	}
 
@@ -272,7 +282,7 @@ public class WhereHandler implements Handler {
 	 *            The sub query to convert
 	 * @return THe converted element.
 	 */
-	private ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
+	public ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
 		Query q = new Query();
 		SelectHandler sh = subQuery.getHandlerBlock().getSelectHandler();
 		if (sh != null)
@@ -304,7 +314,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The subquery to add as the union.
 	 */
-	public void addUnion(SelectBuilder subQuery) {
+	public void addUnion(AbstractQueryBuilder<?> subQuery) {
 		ElementUnion union = null;
 		ElementGroup clause = getClause();
 		// if the last element is a union make sure we add to it.
@@ -326,7 +336,7 @@ public class WhereHandler implements Handler {
 		}
 		// if there are projected vars then do a full blown subquery
 		// otherwise just add the clause.
-		if (subQuery.getVars().size() > 0) {
+		if (subQuery instanceof SelectClause && ((SelectClause<?>)subQuery).getVars().size() > 0) {
 			union.addElement(makeSubQuery(subQuery));
 		} else {
 			PrologHandler ph = new PrologHandler(query);
@@ -389,7 +399,12 @@ public class WhereHandler implements Handler {
 
 	@Override
 	public void build() {
-		// no special operations required.
+		/*
+		 * cleanup unoin-of-one and other similar issues.
+		 */
+		BuildElementVisitor visitor = new BuildElementVisitor();
+		getElement().visit(visitor);
+		query.setQueryPattern( visitor.result );
 	}
 
 	/**
@@ -418,5 +433,203 @@ public class WhereHandler implements Handler {
 		}
 
 		return retval;
+	}
+	
+	/**
+	 * Add a minus operation to the where clause.
+	 * The prolog will be updated with the prefixes from the abstract query builder.
+	 * 
+	 * @param qb the abstract builder that defines the data to subtract.
+	 */
+	public void addMinus( AbstractQueryBuilder<?> qb )
+	{
+		PrologHandler ph = new PrologHandler(query);
+		ph.addPrefixes( qb.getPrologHandler().getPrefixes() );
+		ElementGroup clause = getClause();
+		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
+		clause.addElement(minus);
+	}
+	
+	/**
+	 * An element visitor that does an in-place modification of the elements to 
+	 * fix union-of-one and similar issues.
+	 *
+	 */
+	private static class BuildElementVisitor implements ElementVisitor {
+		private Element result;
+
+		@Override
+		public void visit(ElementTriplesBlock el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementPathBlock el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementFilter el) {
+			// no changes
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementAssign el) {
+			// no change
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementBind el) {
+			// no change
+			result=el;
+		}
+
+		@Override
+		public void visit(ElementData el) {
+			// no change
+			result=el;
+		}
+
+		private void updateList( List<Element> lst )
+		{
+			 for (int i=0;i<lst.size();i++)
+        	 {
+        		 lst.get(i).visit( this );
+        		 lst.set(i, result);
+        	 }
+		}
+		
+		@Override
+		public void visit(ElementUnion el) {
+			List<Element> lst = el.getElements();
+	         if ( lst.size() <= 1 ) {
+	        	 ElementGroup eg = new ElementGroup();
+	             if ( lst.size() == 1)
+	             {
+	            	 el.getElements().get(0).visit( this );
+	        	   	 eg.addElement(result);
+	             }
+	        	 result = eg;
+	         } else {
+	        	 updateList( lst );
+	        	 result = el;
+	         }
+		}
+
+		@Override
+		public void visit(ElementOptional el) {
+			el.getOptionalElement().visit(this);
+			if (result == el.getOptionalElement())
+			{
+				result = el;
+			} else {
+				result = new ElementOptional( result );
+			}
+		}
+
+		@Override
+		public void visit(ElementGroup el) {
+			List<Element> lst = el.getElements();
+			if (lst.isEmpty())
+			{
+				// noting to do
+				result = el;
+			} else if (lst.size() == 1)
+			{
+				lst.get(0).visit( this );
+				// result is now set properly
+			} else {
+			updateList( lst );
+			result = el;
+			}
+		}
+		
+		@Override
+		public void visit(ElementDataset el) {
+			// noting to do
+			result = el;
+		}
+
+		@Override
+		public void visit(ElementNamedGraph el) {
+			el.getElement().visit( this );
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementNamedGraph( el.getGraphNameNode(), result);
+			}
+		}
+
+		@Override
+		public void visit(ElementExists el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementExists( result);
+			}			
+		}
+
+		@Override
+		public void visit(ElementNotExists el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementNotExists( result);
+			}
+		}
+
+		@Override
+		public void visit(ElementMinus el) {
+			el.getMinusElement().visit(this);
+			if (result == el.getMinusElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementMinus( result);
+			}
+		}
+
+		@Override
+		public void visit(ElementService el) {
+			el.getElement().visit(this);
+			if (result == el.getElement())
+			{
+				// nothing to do
+				result = el;
+			}
+			else {
+				result = new ElementService( el.getServiceNode(), result, el.getSilent());
+			}
+			
+		}
+
+		@Override
+		public void visit(ElementSubQuery el) {
+			WhereHandler other = new WhereHandler( el.getQuery() );
+			other.build();
+			if (other.getElement() != el.getQuery().getQueryPattern())
+			{
+				el.getQuery().setQueryPattern( other.query.getQueryPattern() );
+			}
+			result = el;
+		}
+		
 	}
 }

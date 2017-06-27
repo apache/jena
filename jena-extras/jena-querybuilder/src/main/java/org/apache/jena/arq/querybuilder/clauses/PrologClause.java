@@ -20,6 +20,7 @@ package org.apache.jena.arq.querybuilder.clauses;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Resource ;
@@ -37,6 +38,13 @@ public interface PrologClause<T extends AbstractQueryBuilder<T>> {
 	 * @return The PrologHandler this clause is using.
 	 */
 	public PrologHandler getPrologHandler();
+	
+	/**
+	 * Get the expression factory that works with the prefixes for this builder.
+	 * @return an ExprFactory for this builder.
+	 */
+	public ExprFactory getExprFactory();
+	
 
 	/**
 	 * Add a prefix.

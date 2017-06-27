@@ -82,8 +82,8 @@ public class Fuseki {
         return m ;
     }
 
-    /** The name of the Fuseki server. Set to the string <code>Fuseki</code> by default. */
-    static public final String        NAME              = "Fuseki" ;
+    /** The name of the Fuseki server.*/ 
+    static public final String        NAME              = "Apache Jena Fuseki" ;
 
     /** Version of this Fuseki instance */
     static public final String        VERSION           = metadata.get(PATH + ".version", "development") ;

@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedRDFStream ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
@@ -53,8 +53,7 @@ public class ExRIOT_6 {
 
             @Override
             public void run() {
-                // Call the parsing process.
-                RDFDataMgr.parse(inputStream, filename);
+                RDFParser.source(filename).parse(inputStream);
             }
         };
 

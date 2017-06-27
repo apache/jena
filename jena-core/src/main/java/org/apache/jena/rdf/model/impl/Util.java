@@ -203,6 +203,8 @@ public class Util extends Object {
      */
     public static boolean isSimpleString(Node n) {
         Objects.requireNonNull(n) ;
+        if ( ! n.isLiteral() )
+            return false ;
         RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt == null )
             return !isLangString(n) ;
@@ -217,6 +219,8 @@ public class Util extends Object {
      */
     public static boolean isLangString(Node n) {
         Objects.requireNonNull(n) ;
+        if ( ! n.isLiteral() )
+            return false ;
         String lang = n.getLiteralLanguage() ;
         if ( lang == null )
             return false ;

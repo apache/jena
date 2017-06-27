@@ -63,10 +63,14 @@ public class Quad implements Serializable
     public Quad(Node g, Node s, Node p, Node o)
     {
         // Null means it's a triple really.
-        //if ( g == null ) throw new UnsupportedOperationException("Quad: graph cannot be null");
-        if ( s == null ) throw new UnsupportedOperationException("Quad: subject cannot be null");
-        if ( p == null ) throw new UnsupportedOperationException("Quad: predicate cannot be null");
-        if ( o == null ) throw new UnsupportedOperationException("Quad: object cannot be null");
+//        if ( g == null )
+//            throw new UnsupportedOperationException("Quad: graph cannot be null");
+        if ( s == null )
+            throw new UnsupportedOperationException("Quad: subject cannot be null");
+        if ( p == null )
+            throw new UnsupportedOperationException("Quad: predicate cannot be null");
+        if ( o == null )
+            throw new UnsupportedOperationException("Quad: object cannot be null");
         this.graph = g ;
         this.subject = s ;
         this.predicate = p ;

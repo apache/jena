@@ -168,7 +168,7 @@ public class TextIndexES implements TextIndex {
      */
     public TextIndexES(TextIndexConfig config, Client client, String indexName) {
         this.docDef = config.getEntDef();
-        this.client = client;
+        TextIndexES.client = client;
         this.indexName = indexName;
     }
 

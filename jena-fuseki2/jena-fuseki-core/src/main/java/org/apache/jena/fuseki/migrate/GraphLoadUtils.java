@@ -19,13 +19,12 @@
 
 package org.apache.jena.fuseki.migrate;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
@@ -65,11 +64,8 @@ public class GraphLoadUtils
     // ** Worker.
     private static void readUtil(Graph graph, String uri, int limit)
     {
-        // We need to do this ourselves, not via riot, to use the webStreamManager
         StreamRDF sink = StreamRDFLib.graph(graph) ;
         sink = new StreamRDFLimited(sink, limit) ;
-
-        TypedInputStream input = Fuseki.webStreamManager.open(uri) ;
-        RDFDataMgr.parse(sink, input, uri) ;
+        RDFParser.source(uri).streamManager(Fuseki.webStreamManager).parse(sink);
     }
 }

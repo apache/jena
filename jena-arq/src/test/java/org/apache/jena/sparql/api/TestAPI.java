@@ -247,6 +247,18 @@ public class TestAPI extends BaseTest
         assertTrue(result);
     }
     
+    @Test public void testInitialBindings7() {
+        // JENA-1354
+        Query query = QueryFactory.create("SELECT DISTINCT ?x WHERE {}");
+        Dataset ds = DatasetFactory.create();
+        QuerySolutionMap initialBinding = new QuerySolutionMap();
+        initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, ds, initialBinding) ) {
+            assertFalse(qexec.execSelect().next().contains("a"));
+        }
+    }
+    
+
     @Test public void testReuseQueryObject1()
     {
         String queryString = "SELECT * {?s ?p ?o}";

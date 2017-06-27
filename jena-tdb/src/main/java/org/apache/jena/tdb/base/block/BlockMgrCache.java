@@ -19,7 +19,6 @@
 package org.apache.jena.tdb.base.block;
 
 import java.util.Iterator ;
-import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -29,7 +28,7 @@ import org.slf4j.LoggerFactory ;
 /** Caching block manager - this is an LRU cache */
 public class BlockMgrCache extends BlockMgrSync
 {
-    // Actually, this is two cache one on the read blocks and one on the write blocks.
+    // Actually, this is two caches, one on the read blocks and one on the write blocks.
     // The overridden public operations are sync'ed.
     // As sync is on "this", it also covers all the other operations via BlockMgrSync
     
@@ -67,10 +66,7 @@ public class BlockMgrCache extends BlockMgrSync
         else
         {
             writeCache = CacheFactory.createCache(writeSlots) ;
-            writeCache.setDropHandler(new BiConsumer<Long, Block>(){
-                @Override
-                public void accept(Long id, Block block)
-                { 
+            writeCache.setDropHandler((id, block) -> { 
                     // We're inside a synchronized operation at this point.
                     log("Cache spill: write block: %d", id) ;
                     if (block == null)
@@ -82,7 +78,7 @@ public class BlockMgrCache extends BlockMgrSync
                     // by sending it to the wrapped BlockMgr
                     BlockMgrCache.super.write(block) ;
                 }
-            }) ;
+            ) ;
         }
     }
     

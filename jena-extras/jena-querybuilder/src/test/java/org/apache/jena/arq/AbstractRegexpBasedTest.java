@@ -44,6 +44,7 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String CONSTRUCT = "CONSTRUCT" + SPACE;
 	protected static final String ASK = "ASK" + SPACE;
 	protected static final String SELECT = "SELECT" + SPACE;
+	protected static final String DESCRIBE = "DESCRIBE" + SPACE;
 	protected static final String UNION = "UNION" + SPACE;
 	protected static final String LIMIT = "LIMIT" + SPACE;
 	protected static final String OFFSET = "OFFSET" + SPACE;
@@ -51,6 +52,9 @@ public abstract class AbstractRegexpBasedTest {
 	protected static final String BIND = "BIND";
 	protected static final String SEMI = OPT_SPACE+"\\;";
 	protected static final String VALUES = "VALUES" + SPACE;
+	protected static final String MINUS = "MINUS" + SPACE;
+	protected static final String PAREN_OPEN = "\\(";
+    protected static final String PAREN_CLOSE = "\\)";
 
 	protected static String quote(String s) {
 		return String.format("%s%s%s", QUOTE, s, QUOTE);

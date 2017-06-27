@@ -31,10 +31,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -60,7 +57,7 @@ public class HttpResponseLib
                 Lang lang = RDFLanguages.contentTypeToLang(ct) ;
                 StreamRDF dest = StreamRDFLib.graph(g) ; 
                 try(InputStream in = entity.getContent()) {
-                    RDFDataMgr.parse(dest, in, baseIRI, lang) ;
+                    RDFParser.source(in).lang(lang).base(baseIRI).parse(dest);
                 }
                 this.graph = g ; 
             } catch (IOException ex) { IO.exception(ex) ; }

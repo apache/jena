@@ -33,8 +33,6 @@ public class JoinClassifier
     static /*final*/ public  boolean print = false ;
 
     static public boolean isLinear(OpJoin join) {
-        if ( print )
-            System.err.println(join) ;
         return isLinear(join.getLeft(), join.getRight()) ;
     }
 
@@ -83,7 +81,9 @@ public class JoinClassifier
     // Check left can stream into right
     static private boolean check(Op leftOp, Op rightOp) {
         if ( print ) {
+            System.err.println("Left::");
             System.err.println(leftOp) ;
+            System.err.println("Right::");
             System.err.println(rightOp) ;
         }
 

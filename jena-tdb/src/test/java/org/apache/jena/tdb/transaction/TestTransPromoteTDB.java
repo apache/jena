@@ -46,6 +46,11 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     @Override
+    protected boolean supportsReadCommitted() {
+        return true ;
+    }
+
+    @Override
     protected void setPromotion(boolean b) {
         DatasetGraphTransaction.promotion = b ;
     }
@@ -69,4 +74,5 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     protected Class<TDBTransactionException> getTransactionExceptionClass() {
         return TDBTransactionException.class ;
     }
+
 }

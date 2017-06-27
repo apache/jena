@@ -39,7 +39,7 @@ public class FusekiServerListener implements ServletContextListener {
 
     public FusekiServerListener() { }
     
-    public static ServerInitialConfig initialSetup = null ;
+    public static FusekiInitialConfig initialSetup = null ;
 
     private boolean initialized = false ;
 
@@ -79,7 +79,7 @@ public class FusekiServerListener implements ServletContextListener {
             // The command line code sets initialSetup.
             // In a non-commandline startup, initialSetup is null. 
             if ( initialSetup == null ) {
-                initialSetup = new ServerInitialConfig() ;
+                initialSetup = new FusekiInitialConfig() ;
                 String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
                 initialSetup.fusekiServerConfigFile = cfg ;
             }
@@ -95,6 +95,7 @@ public class FusekiServerListener implements ServletContextListener {
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
             throw th ;
         }
+        FusekiInfo.info(initialSetup, registry);
     }
 }
 

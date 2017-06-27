@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.expr;
 
 /** Interface to abstract away from specific regular expression systsms
- *  (ORO and java.util.regex) */
+ *  (Apache Xerces and java.util.regex) */
 
 public interface RegexEngine
 {

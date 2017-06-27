@@ -82,6 +82,10 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     { return getG().getDefaultGraph(); }
 
     @Override
+    public Graph getUnionGraph()
+    { return getG().getUnionGraph(); }
+
+    @Override
     public Graph getGraph(Node graphNode)
     { return getG().getGraph(graphNode) ; }
 

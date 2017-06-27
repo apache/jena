@@ -29,6 +29,7 @@ import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.arq.querybuilder.handlers.PrologHandler;
 import org.apache.jena.arq.querybuilder.handlers.ValuesHandler;
+import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -49,6 +50,7 @@ import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
@@ -131,6 +133,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
 	}
 		
+	public ElementSubQuery asSubQuery() {
+		return getWhereHandler().makeSubQuery( this );
+	}
+	
 	/**
 	 * Make a triple path from the objects.
 	 * 
@@ -191,7 +197,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * 
 	 * @return the quoted string. 
 	 */
-	public String quote(String q) {
+	public static String quote(String q) {
 		int qt = q.indexOf('"');
 		int sqt = q.indexOf("'");
 		
@@ -262,7 +268,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return the Var value.
 	 * @throws ARQInternalErrorException
 	 */
-	public Var makeVar(Object o) throws ARQInternalErrorException {
+	public static Var makeVar(Object o) throws ARQInternalErrorException {
 		if (o == null) {
 			return Var.ANON;
 		}
@@ -308,7 +314,14 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public ValuesHandler getValuesHandler() {
 		return getHandlerBlock().getValueHandler();
 	}
+	
+	public final WhereHandler getWhereHandler() {
+		return getHandlerBlock().getWhereHandler();
+	}
 
+	public final ExprFactory getExprFactory() {
+		return getHandlerBlock().getPrologHandler().getExprFactory();
+	}
 	/**
 	 * Set a variable replacement. During build all instances of var in the
 	 * query will be replaced with value. If value is null the replacement is

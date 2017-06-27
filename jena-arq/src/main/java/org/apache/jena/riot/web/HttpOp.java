@@ -109,7 +109,7 @@ public class HttpOp {
     public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
     
     public static HttpClient createDefaultHttpClient() {
-        return createCachingHttpClient();
+        return createPoolingHttpClient();
     }
     
     /**
@@ -367,7 +367,7 @@ public class HttpOp {
     }
 
     /**
-     * Convenience operation to execute a GET with no content negtotiation and
+     * Convenience operation to execute a GET with no content negotiation and
      * return the response as a string.
      * 
      * @param url

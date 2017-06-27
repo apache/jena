@@ -77,12 +77,9 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
         @Override
         public RecordBufferPage fromBlock(Block block)
         {
-            synchronized (block)    // [[TxTDB:TODO] needed? Right place?
+            synchronized (block)    // Needed? Right place?
             {
                 RecordBufferPage rb = RecordBufferPage.format(block, factory) ;
-//                int count = block.getByteBuffer().getInt(COUNT) ;
-//                int linkId = block.getByteBuffer().getInt(LINK) ;
-//                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, count) ;
                 return rb ;
             }
         }

@@ -54,6 +54,8 @@ public class UpdateWriter implements UpdateSerializer
         // To get legal syntax out, the serialization context 
         // has to be a bNode mapping that does ??N vars to bNodes
         if (sCxt == null)
+            // This is the one used for INSERT and DELETE templates.
+            // For the WHERE clause, see UpdateWriterVisitor.prepareElementFormatter
             sCxt = new SerializationContext((Prologue)null, new NodeToLabelMapBNode());
         
         this.out = out;

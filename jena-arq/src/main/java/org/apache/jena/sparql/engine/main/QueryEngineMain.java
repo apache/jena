@@ -27,7 +27,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.* ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
-import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck ;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorTiming ;
 import org.apache.jena.sparql.util.Context ;
@@ -51,9 +50,8 @@ public class QueryEngineMain extends QueryEngineBase
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         QueryIterator qIter1 = 
-            ( input.isEmpty() ) 
-            ? QueryIterRoot.createRoot(execCxt)
-            : QueryIterSingleton.create(input, execCxt);
+            ( input.isEmpty() ) ? QueryIterRoot.create(execCxt) 
+                                : QueryIterRoot.create(input, execCxt);
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;

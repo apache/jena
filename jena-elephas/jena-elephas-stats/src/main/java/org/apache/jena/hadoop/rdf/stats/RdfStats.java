@@ -37,6 +37,7 @@ import com.github.rvesse.airline.SingleCommand;
 import com.github.rvesse.airline.annotations.Arguments;
 import com.github.rvesse.airline.annotations.Command;
 import com.github.rvesse.airline.annotations.Option;
+import com.github.rvesse.airline.annotations.help.Examples;
 import com.github.rvesse.airline.annotations.restrictions.AllowedRawValues;
 import com.github.rvesse.airline.annotations.restrictions.Required;
 import com.github.rvesse.airline.help.Help;
@@ -50,7 +51,17 @@ import com.github.rvesse.airline.parser.errors.ParseException;
  * Entry point for the Hadoop job, handles launching all the relevant Hadoop
  * jobs
  */
-@Command(name = "hadoop jar PATH_TO_JAR org.apache.jena.hadoop.rdf.stats.RdfStats", description = "A command which computes statistics on RDF data using Hadoop")
+@Command(name = "rdf-stats", description = "A command which computes statistics on RDF data using Hadoop")
+//@formatter:off
+@Examples(examples = 
+        {
+            "hadoop jar PATH_TO_JAR org.apache.jena.hadoop.rdf.stats.RdfStats -n -o /example/node-counts /example/input.nt" 
+        }, 
+        descriptions = 
+        {
+            "Runs the JAR under Hadoop Map/Reduce calculating node counts for /example/input.nt and outputting them to /example/node-counts" 
+        })
+//@formatter:on
 public class RdfStats implements Tool {
     //@formatter:off
     private static final String DATA_TYPE_TRIPLES = "triples", 

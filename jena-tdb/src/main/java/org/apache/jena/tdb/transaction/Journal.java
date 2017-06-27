@@ -48,9 +48,6 @@ class Journal implements Sync, Closeable
 {
     private static Logger log = LoggerFactory.getLogger(Journal.class) ;
     
-    // Version 1 : issue might be excessive copying
-    // [TxTDB:TODO] Caching
-    
     // Why synchronized?
     // Object handling - avoid length twice. 
     
@@ -117,9 +114,6 @@ class Journal implements Sync, Closeable
         long posn = position ;
         int bufferCapacity = 0 ; 
         int len = 0 ;
-        
-        // [TxDEV:TODO] compress
-        // [TxDEV:TODO] Work in blocks - block asn remember, reset position/limit.
         
         if ( buffer != null )
         {

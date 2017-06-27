@@ -24,6 +24,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.FileRef ;
 import org.apache.jena.tdb.sys.SystemTDB ;
@@ -128,7 +129,9 @@ public class Transaction
                     
                     try {
                         journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-                        journal.sync() ;        // Commit point.
+                        // **** COMMIT POINT
+                        journal.sync() ;
+                        // **** COMMIT POINT
                     } catch (RuntimeException ex) {
                         // It either did all commit or didn't but we don't know which.
                         // Some low level system error - probably a sign of something
@@ -202,7 +205,6 @@ public class Transaction
                     }
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.W_ABORTED ;
-                    // [TxTDB:TODO]
                     // journal.truncate to last commit
                     // Not need currently as the journal is only written in
                     // prepare.
@@ -227,6 +229,8 @@ public class Transaction
     public void close() {
         //Log.info(this, "Peek = "+peekCount+" ; count = "+count) ; 
         
+        JenaTransactionException throwThis = null;
+        
         synchronized (this) {
             switch (state) {
                 case CLOSED :
@@ -236,8 +240,11 @@ public class Transaction
                         commit() ;
                         outcome = TxnOutcome.R_CLOSED ;
                     } else {
-                        SystemTDB.errlog.warn("Transaction not commited or aborted: " + this) ;
+                        // Application error: begin(WRITE)...end() with no commit() or abort(). 
                         abort() ;
+                        String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
+                        throwThis = new JenaTransactionException(msg);
+                        // Keep going to clear up.
                     }
                     break ;
                 default :
@@ -249,6 +256,8 @@ public class Transaction
         }
         // Called once.
         txnMgr.notifyClose(this) ;
+        if ( throwThis != null )
+            throw throwThis;
     }
     
     /** A write transaction has been processed and all chanages propagated back to the database */  

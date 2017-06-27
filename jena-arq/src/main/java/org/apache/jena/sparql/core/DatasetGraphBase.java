@@ -26,6 +26,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.mem.DatasetGraphInMemory ;
+import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -58,6 +59,15 @@ abstract public class DatasetGraphBase implements DatasetGraph
     
     @Override
     public abstract Graph getDefaultGraph() ;
+    
+    @Override
+    public Graph getUnionGraph() {
+        // Implementations are encouraged to implement an efficent
+        // {@code DatasetGraphBase.findQuadsInUnionGraph} or
+        // {@code findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)}
+        // for a distinct iterator (e.g. avoid calling "distinct()" by not creating duplicates).
+        return GraphOps.unionGraph(this);
+    }
 
     @Override
     public abstract Graph getGraph(Node graphNode) ;

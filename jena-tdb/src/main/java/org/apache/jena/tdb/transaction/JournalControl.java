@@ -66,10 +66,16 @@ public class JournalControl
         System.out.println("Size: "+journal.size()) ;
         Iterator<JournalEntry> iter = journal.entries() ; 
         
-        for (  ; iter.hasNext() ; )
+        for ( ; ; )
         {
+            long posn0 = journal.position();
+            if ( ! iter.hasNext() )
+                break;
             JournalEntry e = iter.next() ;
-            System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
+            long posn1 = journal.position();
+            long size = posn1 - posn0;
+            System.out.printf("Posn: (%d, %d) Len=%d  reverse %d\n", posn0, posn1, size, (journal.size()-journal.position())) ;
+            System.out.print("  ");
             System.out.println(JournalEntry.format(e)) ;
         }
     }
@@ -137,11 +143,12 @@ public class JournalControl
             recoverSegment(jrnl, posn, x, sConf) ;
             posn = x ;
         }
-
+        
+        // Sync database.
+        syncAll(sConf) ;
         // We have replayed the journals - clean up.
         jrnl.truncate(0) ;
         jrnl.sync() ;
-        syncAll(sConf) ;
         return true ;
     }
 
@@ -170,6 +177,8 @@ public class JournalControl
      */
     private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, StorageConfig sConf)
     {
+        //System.out.printf("Segment: %d %d\n", startPosn, endPosn);
+        
         Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
         iter = jrnl.entries(startPosn) ;
         try {
@@ -194,7 +203,6 @@ public class JournalControl
     private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
     {
         // See DatasetBuilderTxn - same name generation code.
-        // [TxTDB:TODO]
         
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;

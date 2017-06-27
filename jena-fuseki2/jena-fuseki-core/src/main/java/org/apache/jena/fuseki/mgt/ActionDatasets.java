@@ -41,7 +41,10 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.* ;
+import org.apache.jena.fuseki.build.DatasetDescriptionRegistry ;
+import org.apache.jena.fuseki.build.FusekiBuilder ;
+import org.apache.jena.fuseki.build.Template ;
+import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.graph.Node ;
@@ -49,10 +52,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.shared.uuid.JenaUUID ;
@@ -114,6 +114,14 @@ public class ActionDatasets extends ActionContainerItem {
         
         ContentType ct = FusekiLib.getContentType(action) ;
         
+        boolean hasParams = action.request.getParameterNames().hasMoreElements();
+        
+        if ( ct == null && ! hasParams ) {
+            ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
+            // Or do "GET over POST"
+            //return execGetContainer(action);
+        }
+        
         boolean committed = false ;
         // Also acts as a concurrency lock
         system.begin(ReadWrite.WRITE) ;
@@ -125,7 +133,7 @@ public class ActionDatasets extends ActionContainerItem {
             Model model = ModelFactory.createDefaultModel() ;
             StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
     
-            if ( WebContent.isHtmlForm(ct) )
+            if ( hasParams || WebContent.isHtmlForm(ct) )
                 assemblerFromForm(action, dest) ;
             else if ( WebContent.isMultiPartForm(ct) )
                 assemblerFromUpload(action, dest) ;
@@ -292,7 +300,7 @@ public class ActionDatasets extends ActionContainerItem {
             template = TemplateFunctions.templateFile(Template.templateTDBFN, params, Lang.TTL) ;
         if ( dbType.equalsIgnoreCase(tDatabasetMem))
             template = TemplateFunctions.templateFile(Template.templateMemFN, params, Lang.TTL) ;
-        RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
+        RDFParser.create().source(new StringReader(template)).base("http://base/").lang(Lang.TTL).parse(dest);
     }
 
     private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {

@@ -42,14 +42,17 @@ public class RegexJava implements RegexEngine
     {
         try { 
             int mask = 0 ;
-            if ( flags != null )
+            if ( flags != null ) {
                 mask = makeMask(flags) ;
+                if ( flags.contains("q") )
+                    patternStr = Pattern.quote(patternStr);
+            }
+            
             return Pattern.compile(patternStr, mask) ;
         } 
         catch (PatternSyntaxException pEx)
         { throw new ExprEvalException("Regex: Pattern exception: "+pEx) ; }
     }
-
 
     public static int makeMask(String modifiers)
     {
@@ -61,17 +64,17 @@ public class RegexJava implements RegexEngine
         {
             switch(modifiers.charAt(i))
             {
-                case 'i' : 
-                    // Need both (Java 1.4)
+                case 'i': 
                     newMask |= Pattern.UNICODE_CASE ;
                     newMask |= Pattern.CASE_INSENSITIVE;
                     break ;
-                case 'm' : newMask |= Pattern.MULTILINE ;           break ;
-                case 's' : newMask |= Pattern.DOTALL ;              break ;
-                //case 'x' : newMask |= Pattern.;  break ;
+                case 'm': newMask |= Pattern.MULTILINE ;           break ;
+                case 's': newMask |= Pattern.DOTALL ;              break ;
+                //case 'x': newMask |= Pattern.; break ;
+                case 'q': ; break ;
                 
                 default: 
-                    throw new ExprEvalException("Illegal flag in regex modifiers: "+modifiers.charAt(i)) ;
+                    throw new ExprEvalException("Unsupported flag in regex modifiers: "+modifiers.charAt(i)) ;
             }
         }
         return newMask ;

@@ -24,10 +24,15 @@ import java.util.Map ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
-public class ServerInitialConfig {
+public class FusekiInitialConfig {
+    public boolean quiet = false ;
+    public boolean verbose = false ;
+    
     // Priority order : --conf, templated  
     // through the command line processing should not allow --conf and a templated /dataset.
     
+    // Label for dataset setup (command line).
+    public String datasetDescription  = null ;
     // Either this ... command line ...
     public String    argTemplateFile  = null ;              // Command list args --mem, --loc, --memtdb
     public String    datasetPath      = null ;              // Dataset name on the command line.
@@ -43,7 +48,7 @@ public class ServerInitialConfig {
     // Additional information.
     public Map<String,String> params  = new HashMap<>() ;
     
-    public ServerInitialConfig() {}
+    public FusekiInitialConfig() {}
     
     public void reset() {
         argTemplateFile  = null ;

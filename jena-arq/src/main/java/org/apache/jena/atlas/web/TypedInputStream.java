@@ -31,6 +31,7 @@ public class TypedInputStream extends FilterInputStream
     // May be different from the URI used to access the resource 
     // e.g. 303 redirection, mapped URI redirection 
     private String baseURI ;
+    private boolean isClosed = false ;
     
     public static TypedInputStream wrap(InputStream in) {
         //Sometimes this is used to intentional loose the content type (in tests).
@@ -70,7 +71,10 @@ public class TypedInputStream extends FilterInputStream
     
     @Override
     public void close() {
-        try { super.close(); }
+        if ( isClosed )
+            return ;
+        isClosed = true;
+        try { super.close(); } 
         catch (IOException ex) { IO.exception(ex); }
     }
 }

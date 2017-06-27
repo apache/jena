@@ -121,7 +121,7 @@ public abstract class TurtleShell {
         private final Set<Node>             freeBnodes ;  
 
         // The head node in each well-formed list -> list elements
-        private /*final*/ Map<Node, List<Node>> lists ;   
+        private final Map<Node, List<Node>> lists ;   
 
         // List that do not have any incoming triples
         private final Map<Node, List<Node>> freeLists ; 
