@@ -37,6 +37,7 @@ import org.apache.jena.sparql.lang.TS_Lang ;
 import org.apache.jena.sparql.modify.TS_Update ;
 import org.apache.jena.sparql.negation.TS_Negation ;
 import org.apache.jena.sparql.path.TS_Path ;
+import org.apache.jena.sparql.pfunction.library.TS_PFunction ;
 import org.apache.jena.sparql.resultset.TS_ResultSet ;
 import org.apache.jena.sparql.solver.TS_Solver ;
 import org.apache.jena.sparql.syntax.TS_SSE ;
@@ -57,6 +58,7 @@ import org.junit.runners.Suite ;
     
     , TS_Expr.class
     , TS_UserFunctions.class
+    , TS_PFunction.class
     
     , TS_ResultSet.class
     , TS_Engine.class
