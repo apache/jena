@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -36,7 +37,6 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.IterLib;
-import org.apache.jena.vocabulary.XSD;
 
 /**
  * Property function that requires the object to
@@ -84,13 +84,9 @@ public class strSplit extends PFuncSimpleAndList
                             NodeFactory.createLiteral(item)));
             return new QueryIterPlainWrapper(it, execCxt);
             
-        } else if (subject.isLiteral() 
-                && XSD.xstring.getURI().equals(subject.getLiteralDatatypeURI()) 
-                && "".equals(subject.getLiteralLanguage())) {
-
+        } else if ( Util.isSimpleString(subject) ) {
             // Case: Subject is a plain literal.
             // Return input unchanged if it is one of the tokens, or nothing otherwise
-            
             if (tokens.contains(subject.getLiteralLexicalForm())) {
                 return IterLib.result(binding, execCxt);
             } else {
