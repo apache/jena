@@ -269,19 +269,6 @@ public final class StatsMatcher
         entry.add(pattern) ;
     }
     
-//    public void addPattern(Triple triple)
-//    {
-//        if ( triple.getSubject().isVariable() )
-//        {
-//            // PO, P and O
-//        }
-//        else
-//        {
-//            //SPO, SP and SO
-//        }
-//        throw new NotImplementedException("StatsMatcher.addPattern") ;
-//    }
-    
     private static void check(Pattern pattern)
     {
         check(pattern.subjItem) ;
