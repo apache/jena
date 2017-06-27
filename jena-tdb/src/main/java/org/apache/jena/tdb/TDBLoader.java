@@ -149,15 +149,6 @@ public class TDBLoader
     private Logger loaderLog  = TDB.logLoader ;
     private boolean checking ;
     
-    // XXX Context control block
-    // Checker
-    // Error handler
-    // verbose flag?
-    // logger
-    // generateStats
-    // checking flag
-    
-    
     // ---- The class itself.
     
     public TDBLoader() {}
