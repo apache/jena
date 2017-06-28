@@ -26,6 +26,7 @@ import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.text.*;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
@@ -114,6 +115,23 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                     throw new TextIndexException("text:multilingualSupport property must be a string : " + mlsNode);
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
+            }
+            
+            Statement defAnalyzersStatement = root.getProperty(pDefAnalyzers);
+            if (null != defAnalyzersStatement) {
+                RDFNode aNode = defAnalyzersStatement.getObject();
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("text:defineAnalyzers property is not a resource (list) : " + aNode);
+                }
+                boolean addedLangs = DefineAnalyzersAssembler.open(a, (Resource) aNode);
+                // if the text:defineAnalyzers added any analyzers to lang tags then ensure that
+                // multilingual support is enabled
+                if (addedLangs) {
+                    if (!isMultilingualSupport) {
+                        Log.warn(this,  "Multilingual support implicitly enabled by text:defineAnalyzers");
+                    }
+                    isMultilingualSupport = true;
+                }
             }
 
             boolean storeValues = false;

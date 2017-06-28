@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text.analyzer;
 
+import org.apache.jena.rdf.model.Resource;
 import org.apache.lucene.analysis.Analyzer;
 import java.lang.reflect.Constructor;
 import java.util.Hashtable;
@@ -26,6 +27,9 @@ public class Util {
 
     private static Hashtable<String, Class<?>> analyzersClasses; //mapping between ISO2-letter language and lucene existing analyzersClasses
     private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multi instantiation
+    
+    // cache of defined text:defineAnalyzers
+    private static Hashtable<String, Analyzer> definedAnalyzers = new Hashtable<>();
 
     static {
         initAnalyzerDefs();
@@ -50,6 +54,18 @@ public class Util {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public static void addAnalyzer(String lang, Analyzer analyzer) {
+        cache.put(lang, analyzer);
+    }
+    
+    public static Analyzer getDefinedAnalyzer(Resource key) {
+        return definedAnalyzers.get(key.getURI());
+    }
+    
+    public static void defineAnalyzer(Resource key, Analyzer analyzer) {
+        definedAnalyzers.put(key.getURI(), analyzer);
     }
 
     private static void initAnalyzerDefs() {
