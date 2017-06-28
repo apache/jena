@@ -413,7 +413,6 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
         private final Object value;
         private final Class<?> clazz;
 
-        @SuppressWarnings("unused")
         public ParamSpec(String key, Object value) {
             this(key, value, value.getClass());
         }
@@ -424,7 +423,6 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             this.clazz = clazz;
         }
 
-        @SuppressWarnings("unused")
         public String getKey() {
             return name;
         }
