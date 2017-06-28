@@ -33,9 +33,7 @@ import org.apache.jena.tdb.base.record.RecordFactory;
 import org.apache.jena.tdb.index.*;
 import org.apache.jena.tdb.setup.*;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
-import org.apache.jena.tdb.store.nodetable.NodeTableInline;
-import org.apache.jena.tdb.store.nodetable.NodeTableReadonly;
+import org.apache.jena.tdb.store.nodetable.*;
 import org.apache.jena.tdb.sys.FileRef ;
 import org.apache.jena.tdb.sys.Names;
 import org.apache.jena.tdb.sys.SystemTDB;
@@ -160,9 +158,10 @@ public class DatasetBuilderTxn
         }
     }
 
-    // Object files currently, don't need journalling. Because they aer apend only, they 
-    // are "self journalling" - can append to them which used read-only elsewhere if the
-    // index to access them is transactional.
+    // Object files currently don't need journalling. Because they are append only, they
+    // are "self journalling" - we can append to them while used read-only elsewhere if
+    // the index to access them is transactional and does not point into the appended new
+    // bytes.
 //    class ObjectFileBuilderTx implements ObjectFileBuilder
 //    {
 //        @Override
