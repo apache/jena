@@ -466,7 +466,7 @@ public class TransactionManager
             }
         }
         
-        DatasetGraphTxn dsgTxn = new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        DatasetGraphTxn dsgTxn = new DatasetBuilderTxn(this, dsg).build(txn, mode);
         if ( mode == ReadWrite.READ ) {
             // If a READ transaction, cache the storage view.
             // This is cleared when a WRITE commits

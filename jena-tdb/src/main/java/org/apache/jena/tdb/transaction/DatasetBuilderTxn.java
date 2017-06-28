@@ -25,53 +25,52 @@ import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.block.BlockMgrLogger ;
 import org.apache.jena.tdb.base.block.BlockMgrReadonly ;
-import org.apache.jena.tdb.base.file.FileFactory ;
+import org.apache.jena.tdb.base.file.FileFactory;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.Index ;
-import org.apache.jena.tdb.index.IndexMap ;
-import org.apache.jena.tdb.index.IndexParams ;
-import org.apache.jena.tdb.setup.BlockMgrBuilder ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.setup.NodeTableBuilder ;
-import org.apache.jena.tdb.setup.StoreParams ;
+import org.apache.jena.tdb.base.objectfile.ObjectFileReadonly;
+import org.apache.jena.tdb.base.record.RecordFactory;
+import org.apache.jena.tdb.index.*;
+import org.apache.jena.tdb.setup.*;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
-import org.apache.jena.tdb.store.nodetable.NodeTableInline ;
-import org.apache.jena.tdb.store.nodetable.NodeTableReadonly ;
+import org.apache.jena.tdb.store.nodetable.NodeTable;
+import org.apache.jena.tdb.store.nodetable.NodeTableInline;
+import org.apache.jena.tdb.store.nodetable.NodeTableReadonly;
 import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SystemTDB ;
+import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb.sys.SystemTDB;
 
 public class DatasetBuilderTxn
 {
     // Ideally, don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
     
     // Context for the build.
-    private TransactionManager txnMgr ;
-    private Map<FileRef, BlockMgr> blockMgrs ; 
-    private Map<FileRef, NodeTable> nodeTables ;
-    private Transaction txn ;
-    private DatasetGraphTDB dsg ;
+    private final TransactionManager txnMgr ;
+    private final Map<FileRef, BlockMgr> blockMgrs ; 
+    private final Map<FileRef, ObjectFile> objectFiles; 
+    private final Map<FileRef, NodeTable> nodeTables;
+    private final DatasetGraphTDB dsg ;
+    private Transaction txn;
 
-    public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
-    
-    public DatasetGraphTxn build(Transaction transaction, ReadWrite mode, DatasetGraphTDB dsg) {
+    public DatasetBuilderTxn(TransactionManager txnMgr, DatasetGraphTDB dsg) {
+        this.txnMgr = txnMgr ;
         this.blockMgrs = dsg.getConfig().blockMgrs ;
+        this.objectFiles = dsg.getConfig().objectFiles ;
         this.nodeTables = dsg.getConfig().nodeTables ;
-        this.txn = transaction ;
         this.dsg = dsg ;
-
+    }
+    
+    DatasetGraphTxn build(Transaction txn, ReadWrite mode) {
+        this.txn = txn;
         DatasetGraphTDB dsgTDB ;
-            
+
         switch(mode)
         {
-            case READ : dsgTDB = buildReadonly() ; break ;
-            case WRITE : dsgTDB = buildWritable() ;  break ;
-            default: dsgTDB = null ;  // Silly Java.
+            case READ :   dsgTDB = buildReadonly() ; break ;
+            case WRITE :  dsgTDB = buildWritable() ;  break ;
+            default:      dsgTDB = null ;
         }
-        
+
         DatasetGraphTxn dsgTxn = new DatasetGraphTxn(dsgTDB, txn) ;
         // Copy context. Changes not propagated back to the base dataset. 
         dsgTxn.getContext().putAll(dsg.getContext()) ;
@@ -79,17 +78,16 @@ public class DatasetBuilderTxn
     }
 
     private DatasetGraphTDB buildReadonly() {
-        BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly() ;
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly() ;
+        BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly();
+        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly();
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, false, dsg.getReorderTransform()) ;
-
         return dsg2 ;
     }
 
     private DatasetGraphTDB buildWritable() {
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
+        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx();
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, true, dsg.getReorderTransform()) ;
         dsg2.getContext().putAll(dsg.getContext()) ;
@@ -135,7 +133,10 @@ public class DatasetBuilderTxn
             else
                 objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
-            NodeTableTrans ntt = new NodeTableTrans(txn, fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
+            // Allow for a modified base NodeTable. 
+            NodeTable ntBaseTrans = ntBase;
+            
+            NodeTableTrans ntt = new NodeTableTrans(txn, fsObjectFile.getBasename(), ntBaseTrans, idx, objectFile) ;
             txn.addComponent(ntt) ;
 
             // Add inline wrapper.
@@ -159,6 +160,22 @@ public class DatasetBuilderTxn
         }
     }
 
+    // Object files currently, don't need journalling. Because they aer apend only, they 
+    // are "self journalling" - can append to them which used read-only elsewhere if the
+    // index to access them is transactional.
+//    class ObjectFileBuilderTx implements ObjectFileBuilder
+//    {
+//        @Override
+//        public ObjectFile buildObjectFile(FileSet fileSet, String ext) {
+//            FileRef ref = FileRef.create(fileSet, ext) ;
+//            ObjectFile baseObjFile = objectFiles.get(ref);
+//            if ( baseObjFile == null )
+//                throw new TDBException("No ObjectFile for " + ref) ;
+//            ObjectFileJournal objFile = new ObjectFileJournal(txn, ref, baseObjectFile); 
+//            return objFile;
+//        }
+//    }
+    
     // ---- Build passthrough versions for readonly access
     
     class BlockMgrBuilderReadonly implements BlockMgrBuilder
@@ -184,4 +201,18 @@ public class DatasetBuilderTxn
             return nt ;
         }
     }
+ 
+    class ObjectFileBuilderReadonly implements ObjectFileBuilder
+    {
+        @Override
+        public ObjectFile buildObjectFile(FileSet fileSet, String ext) {
+            FileRef ref = FileRef.create(fileSet, ext) ;
+            ObjectFile objFile = objectFiles.get(ref);
+            if ( objFile == null )
+                throw new TDBException("No ObjectFile for " + ref) ;
+            objFile = new ObjectFileReadonly(objFile) ;
+            return objFile;
+        }
+    }
+ 
 }
