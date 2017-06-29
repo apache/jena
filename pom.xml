@@ -79,7 +79,7 @@
         
         <module>jena-text</module>
         <!--<module>jena-text-es</module>-->
-        <!--<module>jena-spatial</module>-->
+        <module>jena-spatial</module>
         <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
 
@@ -153,9 +153,7 @@
         <module>jena-cmds</module>
 
         <module>jena-text</module>
-        <!-- Move later? -->
         <module>jena-text-es</module>
-
         <module>jena-spatial</module>
         <module>jena-csv</module>
 
@@ -173,6 +171,7 @@
         <module>jena-integration-tests</module>
 
         <module>jena-permissions</module>
+        <module>jena-extras</module>
 
         <module>jena-jdbc</module>
         <!-- Removed because this breaks the build after the 
@@ -184,7 +183,6 @@
         <module>apache-jena</module>
         <module>apache-jena-osgi</module>
 
-        <module>jena-extras</module>
       </modules>
     </profile>
   </profiles>
