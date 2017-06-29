@@ -58,12 +58,13 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private final String label ;
     private final Transaction txn ;     // Can be null (during recovery).
     
-    public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile objFile)
+    public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile journalObjFile)
     {
         this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
-        this.journalObjFile = objFile ;
+        // Workspace for 
+        this.journalObjFile = journalObjFile ;
         // Clear bytes from an old run
         // (a crash while writing means the old transaction did not commit
         //  any bytes in the file are junk)
@@ -280,6 +281,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
+        // The index "node2id", which is Node hash to NodeId, is done because it has a BlockMgr.
         debug("commitPrepare") ;
         
         // The node table is append-only so it can be written during prepare.
@@ -314,7 +316,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             warn(log, "Inconsistency: base.allocOffset() = %d : allocOffset = %d", expected, allocOffset) ;
         
         long newbase = -1 ; 
-        append() ;      // Calls all() which does a buffer flish.
+        // Copy to the base NodeTable. 
+        append() ;
         // Reset (in case we use this again)
         nodeIndex.clear() ;
         journalObjFile.truncate(journalObjFileStartOffset) ;    // Side effect is a buffer flush.

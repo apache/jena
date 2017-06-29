@@ -34,6 +34,7 @@ import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.objectfile.ObjectFile;
 import org.apache.jena.tdb.index.BuilderStdIndex ;
 import org.apache.jena.tdb.index.IndexBuilder ;
 import org.apache.jena.tdb.index.IndexParams ;
@@ -105,15 +106,18 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
     // Used by DatasetBuilderTxn
     public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
-        set(blockMgrBuilder, nodeTableBuilder) ;
+        setupRecord(blockMgrBuilder, nodeTableBuilder) ;
     }
 
-    protected void set(NodeTableBuilder nodeTableBuilder, TupleIndexBuilder tupleIndexBuilder) {
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
+    private void standardSetup() {
+        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
+        IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
+        setupRecord(blockMgrBuilder, nodeTableBuilder) ;
     }
-    
-    protected void set(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
+
+    protected void setupRecord(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
         recorder = new Recorder() ;
         BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
 
@@ -127,6 +131,11 @@ public class DatasetBuilderStd implements DatasetBuilder {
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
+    protected void set(NodeTableBuilder nodeTableBuilder, TupleIndexBuilder tupleIndexBuilder) {
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
+    }
+    
 
     private static void checkLocation(Location location) { 
         if ( location.isMem() )
@@ -142,14 +151,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
             error(log, "Directory not readable: "+dirname) ;
         if ( ! dir.canWrite() )
             error(log, "Directory not writeable: "+dirname) ;
-    }
-
-    private void standardSetup() {
-        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd() ;
-        BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
-        IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
-        set(blockMgrBuilder, nodeTableBuilder) ;
     }
 
     @Override
@@ -182,8 +183,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
         ReorderTransformation transform = (_transform == null) ? chooseReorderTransformation(location) : _transform ;
 
-        StorageConfig storageConfig = new StorageConfig(location, params, writeable, 
-                                                        recorder.blockMgrs, recorder.bufferChannels, recorder.nodeTables) ;
+        StorageConfig storageConfig = new StorageConfig(location, params, writeable,
+                                                        recorder.blockMgrs, recorder.objectFiles, recorder.bufferChannels, recorder.nodeTables) ;
         
         recorder.finish() ;
         
@@ -377,13 +378,17 @@ public class DatasetBuilderStd implements DatasetBuilder {
         void record(FileRef fileRef, BlockMgr blockMgr) ;
     }
 
+    interface RecordObjectFile {
+        void record(FileRef fileRef, ObjectFile objFile);
+    }
+
     interface RecordNodeTable {
         void record(FileRef fileRef, NodeTable nodeTable) ;
     }
 
     static class NodeTableBuilderRecorder implements NodeTableBuilder {
-        private NodeTableBuilder builder ;
-        private RecordNodeTable  recorder ;
+        private final NodeTableBuilder builder ;
+        private final RecordNodeTable  recorder ;
 
         NodeTableBuilderRecorder(NodeTableBuilder ntb, RecordNodeTable recorder) {
             this.builder = ntb ;
@@ -401,9 +406,27 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
     }
 
+    static class ObjectFileBuilderRecorder implements ObjectFileBuilder {
+        private final ObjectFileBuilder builder ;
+        private final RecordObjectFile  recorder ;
+        
+        ObjectFileBuilderRecorder(ObjectFileBuilder objFileBuilder, RecordObjectFile recorder) {
+            this.builder = objFileBuilder ;
+            this.recorder = recorder ;
+        }
+        
+        @Override
+        public ObjectFile buildObjectFile(FileSet fsObjectFile, String ext) {
+            ObjectFile objectFile = builder.buildObjectFile(fsObjectFile, ext);
+            FileRef ref = FileRef.create(fsObjectFile, ext) ;
+            recorder.record(ref, objectFile);
+            return objectFile;
+        }
+    }
+    
     static class BlockMgrBuilderRecorder implements BlockMgrBuilder {
-        private BlockMgrBuilder builder ;
-        private RecordBlockMgr  recorder ;
+        private final BlockMgrBuilder builder ;
+        private final RecordBlockMgr  recorder ;
 
         BlockMgrBuilderRecorder(BlockMgrBuilder blkMgrBuilder, RecordBlockMgr recorder) {
             this.builder = blkMgrBuilder ;
@@ -414,16 +437,19 @@ public class DatasetBuilderStd implements DatasetBuilder {
         public BlockMgr buildBlockMgr(FileSet fileSet, String ext, IndexParams params) {
             BlockMgr blkMgr = builder.buildBlockMgr(fileSet, ext, params) ;
             FileRef ref = FileRef.create(fileSet, ext) ;
+            //System.err.println("Record (BlockMgr)   = "+ref);
             recorder.record(ref, blkMgr) ;
             return blkMgr ;
         }
     }
 
-    static class Recorder implements RecordBlockMgr, RecordNodeTable {
+    static class Recorder implements RecordBlockMgr, RecordObjectFile, RecordNodeTable {
 
         Map<FileRef, BlockMgr>      blockMgrs      = null ;
+        Map<FileRef, ObjectFile>    objectFiles    = null ;
+        // Not used currently.
         Map<FileRef, BufferChannel> bufferChannels = null ;
-        Map<FileRef, NodeTable>     nodeTables     = null ;
+        Map<FileRef, NodeTable>     nodeTables = null ;
         boolean recording = false ;
 
         Recorder() { }
@@ -433,15 +459,18 @@ public class DatasetBuilderStd implements DatasetBuilder {
                 throw new TDBException("Recorder already recording") ;
             recording      = true ;
             blockMgrs      = new HashMap<>() ;
+            
+            objectFiles    = new HashMap<>() ;
             bufferChannels = new HashMap<>() ;
             nodeTables     = new HashMap<>() ;
         } 
         void finish() {
             if ( ! recording )
                 throw new TDBException("Recorder not recording") ;
+            // null out, not .clear.
             blockMgrs      = null ;
+            objectFiles    = null ;
             bufferChannels = null ;
-            nodeTables     = null ;
             recording      = false ;
         }
         
@@ -452,6 +481,13 @@ public class DatasetBuilderStd implements DatasetBuilder {
                 blockMgrs.put(fileRef, blockMgr) ;
         }
 
+        @Override
+        public void record(FileRef fileRef, ObjectFile objFile) {
+            if ( recording )
+                // log.info("ObjectTable: "+fileRef) ;
+                objectFiles.put(fileRef, objFile);
+        }
+        
         @Override
         public void record(FileRef fileRef, NodeTable nodeTable) {
             if ( recording )

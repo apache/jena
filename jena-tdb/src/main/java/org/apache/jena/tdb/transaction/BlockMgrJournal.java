@@ -42,7 +42,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /**
- * Block manager that keeps temporary copies of updated blocks, then writes then
+ * Block manager that keeps temporary copies of updated blocks, then writes them
  * to a journal when commitPrepare happens. No work is done in commitEnact
  * because the {@link TransactionManager} is responsible to writing 
  * the blocks to the main storage.
