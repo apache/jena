@@ -466,7 +466,7 @@ public class TransformEliminateAssignments extends TransformCopy {
 
             int i = getUsageCount(var);
             if (i > 2) {
-                this.assignments.remove(var);
+                this.assignments.remove(Var.alloc(var));
             }
         }
 

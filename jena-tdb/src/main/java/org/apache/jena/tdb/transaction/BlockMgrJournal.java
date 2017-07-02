@@ -273,7 +273,8 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     public boolean valid(int id)
     {
         checkIfClosed() ;
-        if ( writeBlocks.containsKey(id) ) return true ;
+        if ( writeBlocks.containsKey(Long.valueOf(id)))
+            return true ;
         return blockMgr.valid(id) ; 
     }
 

@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.* ;
-import java.util.HashSet ;
 import java.util.Set ;
 import java.util.zip.GZIPOutputStream ;
 
@@ -35,6 +34,7 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNull ;
+import org.eclipse.jetty.util.ConcurrentHashSet ;
 
 /** Perform a backup */ 
 public class Backup
@@ -56,9 +56,9 @@ public class Backup
         return filename ;
     }
     
-    // Rcord of all backups so we don't attempt to backup the
+    // Record of all backups so we don't attempt to backup the
     // same dataset multiple times at the same time. 
-    private static Set<DatasetGraph> activeBackups = new HashSet<>() ;
+    private static Set<DatasetGraph> activeBackups = new ConcurrentHashSet<>() ;
     
     /** Perform a backup.
      *  A backup is a dump of the datset in comrpessed N-Quads, done inside a transaction.
@@ -86,7 +86,7 @@ public class Backup
         // Per backup source lock. 
         synchronized(activeBackups) {
             // Atomically check-and-set
-            if ( activeBackups.contains(backupfile) )
+            if ( activeBackups.contains(dsg) )
                 Log.warn(Fuseki.serverLog, "Backup already in progress") ;
             activeBackups.add(dsg) ;
         }
