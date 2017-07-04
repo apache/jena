@@ -175,8 +175,10 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
+        // Eclispe Oxygen (July 2017) generates a warning on use of "this::equals" in filterDrop.  
+        OntClass ontClass = this;
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
-                .filterDrop( this::equals ).filterKeep( new UniqueFilter<OntClass>());
+                .filterDrop( ontClass::equals ).filterKeep( new UniqueFilter<>());
     }
 
     /**
@@ -365,8 +367,10 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
+        // Eclispe Oxygen (July 2017) generates a warning on use of "this::equals" in filterDrop.  
+        OntClass ontClass = this;
         return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
-                .filterDrop( this::equals ).filterKeep( new UniqueFilter<OntClass>());
+                .filterDrop( ontClass::equals ).filterKeep( new UniqueFilter<>());
     }
 
 

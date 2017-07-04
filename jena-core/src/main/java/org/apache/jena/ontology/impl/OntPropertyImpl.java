@@ -175,8 +175,10 @@ public class OntPropertyImpl
      */
     @Override
     public ExtendedIterator<OntProperty> listSuperProperties( boolean direct ) {
+        // Eclispe Oxygen (July 2017) generates a warning on use of "this::equals" in filterDrop.  
+        OntProperty op = this;
         return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, false )
-                        .filterDrop( this::equals );
+                        .filterDrop(op::equals);
     }
 
     /**
