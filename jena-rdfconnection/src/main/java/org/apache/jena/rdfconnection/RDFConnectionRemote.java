@@ -31,7 +31,6 @@ import org.apache.http.entity.EntityTemplate;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -43,7 +42,6 @@ import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
@@ -261,31 +259,29 @@ public class RDFConnectionRemote implements RDFConnection {
         checkGSP();
         delete(null);
     }
-
+    
     @Override
     public Dataset fetchDataset() {
-        if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URL provided"); 
-        Dataset ds = DatasetFactory.createTxnMem();
-        Txn.executeWrite(ds, ()->{
-            TypedInputStream s = exec(()->HttpOp.execHttpGet(destination, WebContent.defaultDatasetAcceptHeader));
-            Lang lang = RDFLanguages.contentTypeToLang(s.getContentType());
-            RDFDataMgr.read(ds, s, lang);
-        });
-        return ds;
+        checkDataset();
+        DatasetGraph dsg = fetchDataset$();
+        return DatasetFactory.wrap(dsg);
     }
 
+    private DatasetGraph fetchDataset$() {
+        HttpCaptureResponse<DatasetGraph> dsg = HttpResponseLib.datasetHandler();
+        exec(()->HttpOp.execHttpGet(destination, WebContent.defaultDatasetAcceptHeader, dsg, this.httpClient, this.httpContext));
+        return dsg.get();
+    }
+    
     @Override
     public void loadDataset(String file) { 
-        if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
+        checkDataset();
         doPutPostDataset(file, false); 
     }
     
     @Override
     public void loadDataset(Dataset dataset) {
-        if ( destination == null )
-            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
+        checkDataset();
         doPutPostDataset(dataset, false); 
     }
 
