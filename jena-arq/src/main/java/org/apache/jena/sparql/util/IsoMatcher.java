@@ -164,14 +164,14 @@ public class IsoMatcher
         return tuples ;
     }
 
-    private IsoMatcher(List<Tuple<Node>> g1, List<Tuple<Node>> g2, EqualityTest nodeTest) {
+    public IsoMatcher(List<Tuple<Node>> g1, List<Tuple<Node>> g2, EqualityTest nodeTest) {
         this.tuples1 = g1 ;
         this.tuples2 = g2 ;
         this.nodeTest = nodeTest ;
     }
 
     // May MUTATE tuples1 or tuples2
-    private boolean match() {
+    public boolean match() {
         return match(tuples1, tuples2, Mapping.rootMapping) ;
     }
 
