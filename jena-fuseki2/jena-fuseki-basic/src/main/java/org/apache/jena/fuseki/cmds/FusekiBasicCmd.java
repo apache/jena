@@ -37,7 +37,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiLogging;
-import org.apache.jena.fuseki.embedded.FusekiEmbeddedServer;
+import org.apache.jena.fuseki.embedded.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
@@ -357,7 +357,7 @@ public class FusekiBasicCmd {
         @Override
         protected void exec() {
             try {
-                FusekiEmbeddedServer server = buildServer(serverConfig);
+                FusekiServer server = buildServer(serverConfig);
                 info(server, serverConfig);
                 server.start();
                 server.join();
@@ -372,8 +372,8 @@ public class FusekiBasicCmd {
         }
 
         // ServerConfig -> Setup the builder.
-        private static FusekiEmbeddedServer buildServer(ServerConfig serverConfig) {
-            FusekiEmbeddedServer.Builder builder = FusekiEmbeddedServer.create();
+        private static FusekiServer buildServer(ServerConfig serverConfig) {
+            FusekiServer.Builder builder = FusekiServer.create();
             // Loopback.
             builder.setPort(serverConfig.port);
             builder.setLoopback(serverConfig.loopback);
@@ -401,7 +401,7 @@ public class FusekiBasicCmd {
             return builder.build();
         }
 
-        private void info(FusekiEmbeddedServer server, ServerConfig serverConfig) {
+        private void info(FusekiServer server, ServerConfig serverConfig) {
             if ( super.isQuiet() )
                 return;
 

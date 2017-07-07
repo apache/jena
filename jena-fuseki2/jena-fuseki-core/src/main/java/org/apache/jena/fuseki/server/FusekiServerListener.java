@@ -70,8 +70,8 @@ public class FusekiServerListener implements ServletContextListener {
         DataAccessPointRegistry.set(servletContext, registry);
         
         try {
-            FusekiServer.formatBaseArea() ; 
-            if ( ! FusekiServer.serverInitialized ) {
+            FusekiSystem.formatBaseArea() ; 
+            if ( ! FusekiSystem.serverInitialized ) {
                 Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
             }
@@ -80,13 +80,13 @@ public class FusekiServerListener implements ServletContextListener {
             // In a non-commandline startup, initialSetup is null. 
             if ( initialSetup == null ) {
                 initialSetup = new FusekiInitialConfig() ;
-                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
+                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiSystem.DFT_CONFIG).toAbsolutePath().toString() ;
                 initialSetup.fusekiServerConfigFile = cfg ;
             }
 
             if ( initialSetup != null ) {
-                FusekiServer.initializeDataAccessPoints(registry,
-                                                        initialSetup, FusekiServer.dirConfiguration.toString()) ;
+                FusekiSystem.initializeDataAccessPoints(registry,
+                                                        initialSetup, FusekiSystem.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;
                 throw new FusekiException("No configuration") ;

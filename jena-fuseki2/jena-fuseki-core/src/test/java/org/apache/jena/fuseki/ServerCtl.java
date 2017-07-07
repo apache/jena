@@ -248,7 +248,7 @@ public class ServerCtl {
         if ( server != null ) {
             // Clear out the registry.
             server.getDataAccessPointRegistry().clear() ;
-            FileOps.clearAll(FusekiServer.dirConfiguration.toFile()) ;
+            FileOps.clearAll(FusekiSystem.dirConfiguration.toFile()) ;
             server.stop() ;
         }
         server = null ;

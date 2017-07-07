@@ -110,7 +110,7 @@ public class ActionDatasets extends ActionContainerItem {
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
-        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry registry = FusekiSystem.registryForBuild() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
         
@@ -143,7 +143,7 @@ public class ActionDatasets extends ActionContainerItem {
             // ----
             // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            systemFileCopy = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
+            systemFileCopy = FusekiSystem.dirFileArea.resolve(uuid.asString()).toString() ;
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
@@ -191,8 +191,8 @@ public class ActionDatasets extends ActionContainerItem {
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             
-            configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
-            List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
+            configFile = FusekiSystem.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiSystem.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
                 ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists") ;
 
@@ -289,7 +289,7 @@ public class ActionDatasets extends ActionContainerItem {
             params.put(Template.NAME, dbName.substring(1)) ;
         else
             params.put(Template.NAME, dbName) ;
-        FusekiServer.addGlobals(params); 
+        FusekiSystem.addGlobals(params); 
         
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
         if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
@@ -340,7 +340,7 @@ public class ActionDatasets extends ActionContainerItem {
             action.getDataAccessPointRegistry().remove(name) ;
             // Delete configuration file.
             // Should be only one, undo damage if multiple.
-            FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
+            FusekiSystem.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
             
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
