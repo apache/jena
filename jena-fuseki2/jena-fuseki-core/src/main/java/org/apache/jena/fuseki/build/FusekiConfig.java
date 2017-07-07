@@ -108,7 +108,7 @@ public class FusekiConfig {
     
     private static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
-        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry dsDescMap = FusekiSystem.registryForBuild() ;
         // ---- Services
         ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
@@ -177,7 +177,7 @@ public class FusekiConfig {
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(pDir, filter)) {
             for ( Path p : stream ) {
-                DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+                DatasetDescriptionRegistry dsDescMap = FusekiSystem.registryForBuild() ;
                 String fn = IRILib.filenameToIRI(p.toString()) ;
                 log.info("Load configuration: "+fn);
                 Model m = readAssemblerFile(fn) ;
@@ -219,7 +219,7 @@ public class FusekiConfig {
     // ---- System database
     /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
-        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry dsDescMap = FusekiSystem.registryForBuild() ;
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,

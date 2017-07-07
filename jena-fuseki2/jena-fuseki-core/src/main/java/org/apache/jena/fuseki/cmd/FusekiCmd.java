@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiEnv ;
-import org.apache.jena.fuseki.server.FusekiServer ;
+import org.apache.jena.fuseki.server.FusekiSystem ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.FusekiInitialConfig ;
 import org.apache.jena.query.ARQ ;
@@ -220,7 +220,7 @@ public class FusekiCmd {
             if ( ! cmdlineConfigPresent && cmdLineConfig.fusekiCmdLineConfigFile == null ) {
                 // Turn command line argument into an absolute file name.
                 FusekiEnv.setEnvironment();
-                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath() ;
+                Path cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiSystem.DFT_CONFIG).toAbsolutePath() ;
                 if ( Files.exists(cfg) )
                     cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
             }

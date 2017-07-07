@@ -18,11 +18,14 @@
 
 package org.apache.jena.fuseki.server;
 
+import static java.lang.String.format ;
+
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.StringReader ;
 import java.net.URL ;
+import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
@@ -35,6 +38,7 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.build.* ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang ;
@@ -43,17 +47,17 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.sys.Names ;
 
-public class FusekiServer
+public class FusekiSystem
 {
     // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnv.setEnvironment()
     // so that the code is independent of any logging.  FusekiLogging can use
     // initialized values of FUSEKI_BASE while looking forlog4j configuration.
     
-    /** Root of the Fuseki installation for fixed files. 
+    /* * Root of the Fuseki installation for fixed files. 
      * This may be null (e.g. running inside a web application container) */ 
     //public static Path FUSEKI_HOME = null ;
     
-    /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
+    /* * Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
     //public static Path FUSEKI_BASE = null ;
@@ -185,7 +189,7 @@ public class FusekiServer
         } else {
             try {
                 // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
-                URL url = FusekiServer.class.getResource(fn) ;
+                URL url = FusekiSystem.class.getResource(fn) ;
                 if ( url == null )
                     throw new FusekiConfigException("Field to find resource '"+fn+"'") ; 
                 InputStream in = url.openStream() ;
@@ -258,7 +262,7 @@ public class FusekiServer
     
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
                                                       boolean allowUpdate, Map<String, String> params) {
-        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ; 
+        DatasetDescriptionRegistry registry = FusekiSystem.registryForBuild() ; 
         // ---- Setup
         if ( params == null ) {
             params = new HashMap<>() ;
@@ -415,6 +419,45 @@ public class FusekiServer
             case FILE :     return new DatasetDescriptionRegistry() ;
             case GLOBAL :   return globalDatasets ;
             default:        throw new InternalErrorException() ;
+        }
+    }
+    
+    /** Dataset set name to configuration file name. */
+    public static String datasetNameToConfigurationFile(HttpAction action, String dsName) {
+        List<String> existing = existingConfigurationFile(dsName) ;
+        if ( ! existing.isEmpty() ) {
+            if ( existing.size() > 1 ) {
+                action.log.warn(format("[%d] Multiple existing configuration files for %s : %s",
+                                       action.id, dsName, existing));
+                ServletOps.errorBadRequest("Multiple existing configuration files for "+dsName);
+                return null ;
+            }
+            return existing.get(0) ;
+        }
+        
+        return generateConfigurationFilename(dsName) ;
+    }
+
+    /** Choose a configuration file name - existing one or ".ttl" form if new */
+    public static String generateConfigurationFilename(String dsName) {
+        String filename = dsName ;
+        // Without "/"
+        if ( filename.startsWith("/"))
+            filename = filename.substring(1) ;
+        filename = FusekiSystem.dirConfiguration.resolve(filename).toString()+".ttl" ;
+        return filename ;
+    }
+
+    /** Return the filenames of all matching files in the configuration directory */  
+    public static List<String> existingConfigurationFile(String baseFilename) {
+        try { 
+            List<String> paths = new ArrayList<>() ;
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiSystem.dirConfiguration, baseFilename+"*") ) {
+                stream.forEach((p)-> paths.add(p.getFileName().toString())) ;
+            }
+            return paths ;
+        } catch (IOException ex) {
+            throw new InternalErrorException("Failed to read configuration directory "+FusekiSystem.dirConfiguration) ;
         }
     }
 }

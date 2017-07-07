@@ -18,26 +18,15 @@
 
 package org.apache.jena.fuseki.server;
 
-import static java.lang.String.format ;
-
-import java.io.IOException ;
-import java.nio.file.DirectoryStream ;
-import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
-import java.util.ArrayList ;
-import java.util.List ;
-
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
 
 /** 
  * Separate initialization for FUSEKI_HOME and FUSEKI_BASE so that 
- * Fusekilogging can use these values.
+ * FusekiLogging can use these values.
  * This code must not touch Jena.  
  * 
- * @see FusekiServer 
+ * @see FusekiSystem 
  */ 
 public class FusekiEnv {
     // Initialization logging happens via stdout/stderr directly.
@@ -175,45 +164,5 @@ public class FusekiEnv {
             x = System.getProperty(name) ;
         return x ;
     }
-    
-    /** Dataset set name to configuration file name. */
-    public static String datasetNameToConfigurationFile(HttpAction action, String dsName) {
-        List<String> existing = existingConfigurationFile(dsName) ;
-        if ( ! existing.isEmpty() ) {
-            if ( existing.size() > 1 ) {
-                action.log.warn(format("[%d] Multiple existing configuration files for %s : %s",
-                                       action.id, dsName, existing));
-                ServletOps.errorBadRequest("Multiple existing configuration files for "+dsName);
-                return null ;
-            }
-            return existing.get(0) ;
-        }
-        
-        return generateConfigurationFilename(dsName) ;
-    }
-
-    /** Choose a configuration file name - existing one or ".ttl" form if new */
-    public static String generateConfigurationFilename(String dsName) {
-        String filename = dsName ;
-        // Without "/"
-        if ( filename.startsWith("/"))
-            filename = filename.substring(1) ;
-        filename = FusekiServer.dirConfiguration.resolve(filename).toString()+".ttl" ;
-        return filename ;
-    }
-
-    /** Return the filenames of all matching files in the configuration directory */  
-    public static List<String> existingConfigurationFile(String baseFilename) {
-        try { 
-            List<String> paths = new ArrayList<>() ;
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServer.dirConfiguration, baseFilename+"*") ) {
-                stream.forEach((p)-> paths.add(p.getFileName().toString())) ;
-            }
-            return paths ;
-        } catch (IOException ex) {
-            throw new InternalErrorException("Failed to read configuration directory "+FusekiServer.dirConfiguration) ;
-        }
-    }
-
 }
 
