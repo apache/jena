@@ -98,7 +98,7 @@ public class FusekiTestAuth {
     public static final String serviceQuery()       { return "http://localhost:"+port()+datasetPath()+"/query" ; }
     public static final String serviceGSP()         { return "http://localhost:"+port()+datasetPath()+"/data" ; }
     
-    private static FusekiEmbeddedServer server ;
+    private static FusekiServer server ;
 
     /** Setup a testing server, using the given  Jetty {@link SecurityHandler} for authentication. 
      * The server will have an empty, in-emory transactional dataset.
@@ -111,7 +111,7 @@ public class FusekiTestAuth {
      */
     public static void setupServer(boolean updateable, SecurityHandler sh, DatasetGraph dsg) {
         dsgTesting = dsg;
-        server = FusekiEmbeddedServer.create()
+        server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
             .setPort(port())
             .setSecurityHandler(sh)

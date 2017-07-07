@@ -77,12 +77,12 @@ import org.apache.jena.update.UpdateProcessor ;
  * Much of this machinery is unnessecary for just running a sever in the background:
  * 
  * <pre>
- *   private static FusekiEmbeddedServer server ;
+ *   private static FusekiServer server ;
  *   private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
  *
  *   &#64;BeforeClass
  *   public static void beforeClass() {
- *       server = FusekiEmbeddedServer.create()
+ *       server = FusekiServer.create()
  *           .setPort(....)
  *           .add("/ds", serverdsg)
  *           .build()
@@ -215,7 +215,7 @@ public class FusekiTestServer {
     
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
-    private static FusekiEmbeddedServer server        = null ;
+    private static FusekiServer server        = null ;
     
     /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
@@ -229,7 +229,7 @@ public class FusekiTestServer {
     
     /*package*/ static void setupServer(boolean updateable) {
         dsgTesting = DatasetGraphFactory.createTxnMem();
-        server = FusekiEmbeddedServer.create()
+        server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
             .setPort(port())
             .build()
