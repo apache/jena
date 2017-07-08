@@ -260,7 +260,7 @@ public abstract class GraphBase implements GraphWithPerform
     /**
 		Answer <code>true</code> iff <code>t</code> is in the graph as revealed by 
         <code>find(t)</code> being non-empty. <code>t</code> may contain ANY
-        wildcards. Sub-classes may over-ride reifierContains and graphBaseContains
+        wildcards. Sub-classes may over-ride graphBaseContains
         for efficiency.
 	*/
 	@Override
@@ -283,7 +283,7 @@ public abstract class GraphBase implements GraphWithPerform
 	@Override
     public final boolean contains( Node s, Node p, Node o ) {
         checkOpen();
-		return contains( Triple.create( s, p, o ) );
+		return contains( Triple.createMatch( s, p, o ) );
 	}
     
     /**
