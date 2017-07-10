@@ -31,9 +31,9 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>20-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena-project</artifactId>
+    <version>3.4.0-SNAPSHOT</version>
+    <relativePath>../jena-project</relativePath>
   </parent>
 
   <licenses>
@@ -94,7 +94,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-embedded</artifactId>
-      <version>2.7.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     

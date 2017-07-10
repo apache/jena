@@ -21,9 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>20-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena-project</artifactId>
+    <version>3.4.0-SNAPSHOT</version>
+    <relativePath>../jena-project</relativePath>
   </parent>
   <artifactId>jena-shaded-guava</artifactId>
   <version>3.4.0-SNAPSHOT</version>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- Version number specified explicitly and not in jena-parent, 
+      <!-- Version number specified explicitly and not in jena-project, 
            as it should only be used here, and further shadowing/bundle/NOTICE
            consideration might be needed on upgrade. -->
       <version>21.0</version>

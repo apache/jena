@@ -25,7 +25,7 @@
   <url>http://jena.apache.org/</url>
   <version>3.4.0-SNAPSHOT</version>
 
-  <!-- The org.apache:apache version is also in jena-parent pom.xml -->
+  <!-- The org.apache:apache version is also in jena-project pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -65,7 +65,7 @@
       <id>dev</id>
       <!-- The maven artifacts of the basic modules -->
       <modules>
-        <module>jena-parent</module>
+        <module>jena-project</module>
         <!-- <module>jena-shaded-guava</module> -->
         <!-- <module>jena-iri</module> -->
         <module>jena-base</module>
@@ -108,7 +108,7 @@
       
       <id>bootstrap</id>
       <modules>
-        <module>jena-parent</module>
+        <module>jena-project</module>
         <module>jena-shaded-guava</module>
         <module>jena-iri</module> 
         <module>jena-base</module>
@@ -140,7 +140,7 @@
         </property>
       </activation>
       <modules>
-        <module>jena-parent</module>
+        <module>jena-project</module>
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
@@ -162,6 +162,8 @@
         <module>jena-fuseki1</module>
         <module>jena-fuseki2</module>
 
+        <module>apache-jena</module>
+
         <!--
             Tests of artifacts that require additional 
             modules built later in the build process.
@@ -173,14 +175,10 @@
         <module>jena-permissions</module>
         <module>jena-extras</module>
 
-        <module>jena-jdbc</module>
-        <!-- Removed because this breaks the build after the 
-             upgrade of Apache parent PM to v18 - see JENA-1184 
-        -->
-        <!-- <module>jena-maven-tools</module> -->
-        <module>jena-elephas</module>
+        <module>jena-maven-tools</module>
 
-        <module>apache-jena</module>
+        <module>jena-jdbc</module>
+        <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
 
       </modules>
