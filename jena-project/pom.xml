@@ -52,10 +52,14 @@
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
     <ver.libthrift>0.9.3</ver.libthrift>
-    <!-- the following three libraries must work together
-     consult jsonld-java's POM for the correct dependency versions -->
-    <ver.jsonldjava>0.9.0</ver.jsonldjava>
-    <ver.jackson>2.7.4</ver.jackson>
+
+    <!-- jsonld-java depends on depends on Jackson core
+         artifacts so the versions must align. Consult jsonld-java's 
+         POM for the correct dependency versions 
+    -->
+    <ver.jsonldjava>0.10.0</ver.jsonldjava>
+    <ver.jackson>2.8.9</ver.jackson>
+
     <ver.commonsio>2.5</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     
