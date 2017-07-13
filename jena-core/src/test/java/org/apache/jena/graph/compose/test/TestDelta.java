@@ -20,6 +20,7 @@ package org.apache.jena.graph.compose.test;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.compose.Delta ;
 import org.apache.jena.graph.test.AbstractTestGraph ;
 
@@ -132,5 +133,69 @@ public class TestDelta extends AbstractTestGraph
         assertIsomorphic(graphWith( "p S q" ), delta.getDeletions());
         assertIsomorphic(graphWith( "x R y ; x R z; a T b" ), delta);
     }
+    
+    public void testTerms1()
+    {
+        Triple t1 = triple("s p 1");
+        Triple t01 = triple("s p 01");
+        Graph base = newGraph();
+        base.add(t1);
+        Delta delta = new Delta( base ) ;
+        
+        delta.add(t01);
 
+        assertTrue(delta.getAdditions().contains(triple("s p 01")));
+        assertFalse(delta.getAdditions().contains(triple("s p 1")));
+        assertTrue(delta.contains(t1));
+        assertTrue(delta.contains(t01));
+    }
+    
+    public void testTerms2()
+    {
+        Triple t1 = triple("s p 1");
+        Triple t01 = triple("s p 01");
+        Graph base = newGraph();
+        base.add(t1);
+        Delta delta = new Delta( base ) ;
+     
+        delta.delete(t01);
+        
+        assertFalse(delta.getDeletions().contains(triple("s p 01")));
+        assertFalse(delta.getAdditions().contains(triple("s p 1")));
+    }
+    
+    public void testTerms3()
+    {
+        Triple t1 = triple("s p 1");
+        Triple t01 = triple("s p 01");
+        Graph base = newGraph();
+        base.add(t1);
+        Delta delta = new Delta( base ) ;
+        
+        delta.add(t01);
+        delta.delete(t01);
+        delta.delete(t1);
+        
+        assertFalse(delta.getDeletions().contains(t01));
+        assertTrue(delta.getDeletions().contains(t1));
+        assertFalse(delta.getDeletions().contains(t01));
+        assertFalse(delta.getAdditions().contains(t01));
+    }
+
+    public void testTerms4()
+    {
+        Triple t1 = triple("s p 1");
+        Triple t01 = triple("s p 01");
+        Graph base = newGraph();
+        Delta delta = new Delta( base ) ;
+     
+        delta.add(t1);
+        delta.delete(t01);
+        
+        assertFalse(delta.getDeletions().contains(triple("s p 01")));
+        assertTrue(delta.getDeletions().isEmpty());
+        
+        assertTrue(delta.getAdditions().contains(triple("s p 1")));
+        assertFalse(delta.getAdditions().isEmpty());
+    }
 }

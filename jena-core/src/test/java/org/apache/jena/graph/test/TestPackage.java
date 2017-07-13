@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.test;
 
+import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 
 /**
@@ -45,6 +46,7 @@ public class TestPackage extends TestSuite {
         addTest( TestDateTime.suite() );
         addTest( TestFactory.suite() );
         addTest( TestGraph.suite() );
+        addTest( new JUnit4TestAdapter(TestGraphPlain.class ) );
         addTest( TestSimpleGraphMaker.suite() );
         addTest( TestGraphExtract.suite() );
         addTest( TestCapabilities.suite() );
