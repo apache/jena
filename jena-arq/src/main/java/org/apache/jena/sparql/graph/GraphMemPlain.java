@@ -18,164 +18,18 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Locale ;
-import java.util.Set ;
-import java.util.function.Predicate;
-
-import org.apache.jena.graph.Capabilities ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.graph.impl.SimpleEventManager ;
-import org.apache.jena.util.iterator.ClosableIterator ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.impl.GraphPlain ;
+import org.apache.jena.mem.GraphMem ;
 
 /**
- * A version of Graph that does term equality only 
+ * A version of Graph that does term equality only
+ * @deprecated Do not use - see GraphPlain.
+ * @see GraphPlain
  */
-public class GraphMemPlain extends GraphBase
+@Deprecated
+public class GraphMemPlain extends GraphPlain
 {
-    private Set<Triple> triples = new HashSet<>() ;
-    
-    public GraphMemPlain() {}
-    
-    @Override
-	public Capabilities getCapabilities() {
-		return gmpCapabilities;
-	}
-    
-    @Override
-    public void performAdd( Triple t )
-    { triples.add(t) ; }
-
-    @Override
-    public void performDelete( Triple t ) 
-    { triples.remove(t) ; }
-    
-    @Override
-    public boolean graphBaseContains( Triple t ) 
-    {
-        if ( t.isConcrete() )
-            return triples.contains( t ) ;
-        
-        ClosableIterator<Triple> it = find( t );
-        try {
-            for ( ; it.hasNext() ; )
-            {
-                Triple t2 = it.next() ;
-                if ( tripleContained(t, t2) )
-                    return true ;
-            }
-        } finally { it.close(); }
-        return false ;
+    public GraphMemPlain() {
+        super(new GraphMem()) ;
     }
-    
-    @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
-    {
-        Iterator<Triple> iter = triples.iterator() ;
-        return 
-            SimpleEventManager.notifyingRemove( this, iter ) 
-            .filterKeep ( new TripleMatchFilterEquality( m ) );
-    }
-    
-    static boolean tripleContained(Triple patternTriple, Triple dataTriple)
-    {
-        return
-            equalNode(patternTriple.getSubject(),   dataTriple.getSubject()) &&
-            equalNode(patternTriple.getPredicate(), dataTriple.getPredicate()) &&
-            equalNode(patternTriple.getObject(),    dataTriple.getObject()) ;
-    }
-    
-    private static boolean equalNode(Node m, Node n)
-    {
-        // m should not be null unless .getMatchXXXX used to get the node.
-        // Language tag canonicalization
-        n = fixupNode(n) ;
-        m = fixupNode(m) ;
-        return (m==null) || (m == Node.ANY) || m.equals(n) ;
-    }
-    
-    private static Node fixupNode(Node node)
-    {
-        if ( node == null || node == Node.ANY )
-            return node ;
-
-        // RDF says ... language tags should be canonicalized to lower case.
-        if ( node.isLiteral() )
-        {
-            String lang = node.getLiteralLanguage() ;
-            if ( lang != null && ! lang.equals("") )
-                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(), lang.toLowerCase(Locale.ROOT)) ;
-        }
-        return node ; 
-    }
-    
-    static class TripleMatchFilterEquality implements Predicate<Triple>
-    {
-        final protected Triple tMatch;
-    
-        /** Creates new TripleMatchFilter */
-        public TripleMatchFilterEquality(Triple tMatch) 
-            { this.tMatch = tMatch; }
-        
-        @Override
-        public boolean test(Triple t)
-        {
-            return tripleContained(tMatch, t) ;
-        }
-        
-    }
-    
-    private static Capabilities gmpCapabilities = new Capabilities() {
-
-		@Override
-		public boolean sizeAccurate() {
-			return true;
-		}
-
-		@Override
-		public boolean addAllowed() {
-			return true;
-		}
-
-		@Override
-		public boolean addAllowed(boolean everyTriple) {
-			return true;
-		}
-
-		@Override
-		public boolean deleteAllowed() {
-			return true;
-		}
-
-		@Override
-		public boolean deleteAllowed(boolean everyTriple) {
-			return true;
-		}
-
-		@Override
-		public boolean iteratorRemoveAllowed() {
-			return true;
-		}
-
-		@Override
-		public boolean canBeEmpty() {
-			return true;
-		}
-
-		@Override
-		public boolean findContractSafe() {
-			return true;
-		}
-
-		@Override
-		public boolean handlesLiteralTyping() {
-			return false;
-		}
-		
-	};
 }

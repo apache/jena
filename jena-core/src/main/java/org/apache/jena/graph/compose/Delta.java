@@ -18,9 +18,13 @@
 
 package org.apache.jena.graph.compose ;
 
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.Capabilities ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphUtil ;
+import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.graph.impl.SimpleEventManager ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Graph operation for wrapping a base graph and leaving it unchanged while
@@ -40,9 +44,15 @@ public class Delta extends CompositionBase implements Graph
     public Delta(Graph base)
     {
         super() ;
-        this.base = base ;
-        this.additions = Factory.createGraphMem();
-        this.deletions = Factory.createGraphMem();
+        this.base = GraphPlain.plain(base);
+        this.additions = GraphPlain.plain();
+        this.deletions = GraphPlain.plain();
+    }
+
+    @Override
+    public Capabilities getCapabilities() {
+        // Not stricly accurate.
+        return base.getCapabilities();
     }
 
     /**
