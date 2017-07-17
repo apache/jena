@@ -24,7 +24,7 @@
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
   <version>3.5.0-SNAPSHOT</version>
-  <name>Apache Jena - Parent</name>
+  <name>Apache Jena - Project</name>
 
   <parent>
     <groupId>org.apache</groupId>
