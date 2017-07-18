@@ -55,10 +55,14 @@ public class PlatformInfo {
         long freeMem = Runtime.getRuntime().freeMemory();
         long usedMem = totalMem - freeMem;
         Function<Long, String> f = PlatformInfo::strNum2;
+
+        long pid = getProcessId();
         FmtLog.info(log, "%sMemory: %s", prefix, f.apply(maxMem));
         //FmtLog.info(log, "%sMemory: max=%s  total=%s  used=%s  free=%s", prefix, f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
         FmtLog.info(log, "%sJava:   %s", prefix, System.getProperty("java.version"));
         FmtLog.info(log, "%sOS:     %s %s %s", prefix, System.getProperty("os.name"), System.getProperty("os.version"), System.getProperty("os.arch"));
+        if ( pid != -1)
+            FmtLog.info(log, "%sPID:    %s", prefix, pid);
     }
 
     public static void logDetailsVerbose(Logger log) {
@@ -92,7 +96,16 @@ public class PlatformInfo {
             return String.format("%.1fG", x/(1024.0*1024*1024));
         return String.format("%.1fT", x/(1024.0*1024*1024*1024));
     }
-
+    
+    private static long getProcessId() {
+        // Java9
+        //long pid = ProcessHandle.current().getPid();
+        try { 
+            String x = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+            return Long.parseLong(x);
+        } catch (NumberFormatException ex) { return -1 ; }
+    }
+    
     /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 10) */
     public static String strNum10(long x) {
         if ( x < 1_000 )
