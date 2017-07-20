@@ -164,7 +164,7 @@ public class RDFFormat {
     public static final RDFFormat RDF_THRIFT            = new RDFFormat(THRIFT) ;
     /**
      * A variant of an an RDFFormat that uses value encoding (e.g. integers,
-     * doubles, decimals as binary). This does not preserve exact represenation
+     * doubles, decimals as binary). This does not preserve exact representation
      * (+001 is the same value as 1, +1 and 001) which may matter for database
      * dumps. It looses datatype for derived types (xsd;long, xsd:int, xsd:short
      * and xsd:byte become xsd:integer).
