@@ -96,8 +96,9 @@ public class FusekiBasicCmd {
         // Allow there to be no registered datasets without it being an error.
         // which is "return  dsg==null && serverConfig==null;"
         public boolean empty              = false ;
-        // Setup for SPARQLer - validators and gener query engine, some pages, no datasets, 
+        // Setup for SPARQLer - validators and general query engine, some pages. 
         public boolean sparqler           = false ;
+        public boolean validators         = false ;
         public boolean loopback           = false;
         public String datasetDescription;
         public String contentDirectory    = null;
@@ -120,6 +121,7 @@ public class FusekiBasicCmd {
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
         private static ArgDecl  argSparqler     = new ArgDecl(ArgDecl.HasValue, "sparqler");
+        private static ArgDecl  argValidators   = new ArgDecl(ArgDecl.NoValue,  "validators");
         // private static ModLocation modLocation = new ModLocation();
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
@@ -166,6 +168,7 @@ public class FusekiBasicCmd {
                 "Directory for static content");
             add(argSparqler, "--sparqler=DIR",
                 "Run with SPARQLer services Directory for static content");
+            add(argValidators, "--validators", "Install validators");
 
             super.modVersion.addClass(TDB.class);
             super.modVersion.addClass(Fuseki.class);
@@ -322,12 +325,17 @@ public class FusekiBasicCmd {
                 ARQ.getContext().set(ARQ.queryTimeout, str);
             }
             
+            if ( contains(argValidators) ) {
+                serverConfig.validators = true;
+            }
+                
             if ( contains(argSparqler) ) {
                 String filebase = getValue(argSparqler);
                 if ( ! FileOps.exists(filebase) )
                     throw new CmdException("File area not found: "+filebase); 
                 serverConfig.contentDirectory = filebase;
                 serverConfig.sparqler = true;
+                serverConfig.validators = true;
             }
             
             if ( contains(argBase) ) {
@@ -378,7 +386,7 @@ public class FusekiBasicCmd {
             builder.setPort(serverConfig.port);
             builder.setLoopback(serverConfig.loopback);
             
-            if ( serverConfig.empty ) {
+            if ( serverConfig.validators ) {
                 if ( serverConfig.sparqler )
                     builder.addServlet("/sparql",  new SPARQL_QueryGeneral());
                 // Validators.
@@ -386,7 +394,8 @@ public class FusekiBasicCmd {
                 builder.addServlet("/validate/update", new UpdateValidator());
                 builder.addServlet("/validate/iri",    new IRIValidator());
                 builder.addServlet("/validate/data",   new DataValidator());
-            } else {
+            } 
+            if ( ! serverConfig.empty ) {
                 if ( serverConfig.serverConfig != null )
                     // Config file.
                     builder.parseConfigFile(serverConfig.serverConfig);
@@ -426,7 +435,7 @@ public class FusekiBasicCmd {
             }
             
             // Dataset -> Endpoints
-            Map<String, List<String>> z = description(DataAccessPointRegistry.get(server.getServletContext()));
+            Map<String, List<String>> mapDatasetEndpoints = description(DataAccessPointRegistry.get(server.getServletContext()));
             
             if ( serverConfig.empty ) {
                 FmtLog.info(log, "No SPARQL datasets services"); 
@@ -436,16 +445,18 @@ public class FusekiBasicCmd {
             }
             
             if ( serverConfig.datasetPath != null ) {
-                if ( z.size() != 1 )
+                if ( mapDatasetEndpoints.size() != 1 ) {
+                    System.err.println(serverConfig.datasetPath);
                     log.error("Expected only one dataset");
-                List<String> endpoints = z.get(serverConfig.datasetPath); 
+                }
+                List<String> endpoints = mapDatasetEndpoints.get(serverConfig.datasetPath); 
                 FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
                 FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);
             }
             if ( serverConfig.serverConfig != null ) {
                 // May be many datasets and services.
                 FmtLog.info(log,  "Configuration file %s", serverConfig.serverConfig);
-                z.forEach((path, endpoints)->{
+                mapDatasetEndpoints.forEach((path, endpoints)->{
                     FmtLog.info(log,  "Path = %s; Services = %s", path, endpoints);
                 });
             }

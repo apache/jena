@@ -64,9 +64,7 @@ public abstract class ValidatorBase extends ServletBase {
     // JSON and framework.
     protected abstract void executeJSON(HttpServletRequest request, HttpServletResponse response);
 
-    protected void executeJSON(HttpServletRequest request, HttpServletResponse response, 
-                               JsonAction jsonAction
-        ) {
+    protected void executeJSON(HttpServletRequest request, HttpServletResponse response, JsonAction jsonAction) {
         long id = allocRequestId(request, response) ;
         ValidationAction action = new ValidationAction(id, vLog, request, response, false) ;
         printRequest(action) ;
