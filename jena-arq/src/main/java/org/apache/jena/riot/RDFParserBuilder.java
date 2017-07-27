@@ -26,7 +26,6 @@ import java.util.*;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
@@ -35,6 +34,7 @@ import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 
@@ -504,8 +504,10 @@ public class RDFParserBuilder {
             Header header = new BasicHeader(k, v);
             hdrs.add(header);
         });
-        HttpClient hc = CachingHttpClientBuilder.create().setDefaultHeaders(hdrs).build();
-        return hc;
+        HttpClient hc = HttpOp.createPoolingHttpClientBuilder()
+            .setDefaultHeaders(hdrs)
+            .build() ;
+        return hc ;
     }
 
     /**
