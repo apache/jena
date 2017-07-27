@@ -210,19 +210,26 @@ public class HttpOp {
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
     public static CloseableHttpClient createPoolingHttpClient() {
+        return createPoolingHttpClientBuilder().build() ;
+    }
+    
+    /**
+     * Create an HttpClientBuilder that performs connection pooling.
+     */
+    public static HttpClientBuilder createPoolingHttpClientBuilder() {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
             .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
-            .setMaxConnTotal(2*max)
-            .build() ;
+            .setMaxConnTotal(2*max);
     }
-    
+
     /**
-     * Create an HttpClient that performs client-side caching and conection pooling. This can be used
-     * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     * Create an HttpClient that performs client-side caching and connection pooling. 
+     * This can be used with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     * Beware that content is cached in this process, including across remote server restart. 
      */
     public static CloseableHttpClient createCachingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
