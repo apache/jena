@@ -497,8 +497,12 @@ public class RDFParserBuilder {
             return httpClient;
         if ( httpHeaders.isEmpty() )
             // System default.
-            // For complete compatibility, we have to let null pass through.
-            return null; // HttpOp.getDefaultHttpClient();
+            // In this case, RDFParser will use the current-at-parse-time,
+            // settings of HttpOp, not frozen here. The HTTP step operation will use a
+            // general purpose accept header, WebContent.defaultRDFAcceptHeader, that
+            // gets any syntax of triples or quads. To freeze now to HttpOp settings, 
+            // call httpClient(HttpOp.getDefaultHttpClient). 
+            return null;
         List<Header> hdrs = new ArrayList<>();
         httpHeaders.forEach((k,v)->{
             Header header = new BasicHeader(k, v);
