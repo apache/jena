@@ -320,13 +320,19 @@ public class RDFParser {
         }
         
         TypedInputStream in;
+        urlStr = StreamManager.get(context).mapURI(urlStr);
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
-            // For complete compatibility, we have to let null pass through.
-            // Pair with RDFParserBuilder.buildHttpClient
-            //   Objects.requireNonNull(httpClient);
-            // Remap.
-            urlStr = StreamManager.get(context).mapURI(urlStr);
-            in = HttpOp.execHttpGet(urlStr, null, httpClient, null);
+            // Need more control than LocatorURL provides. We could use it for the
+            // httpClient == null case.
+            //  
+            // HttpOp.execHttpGet(,acceptHeader,) overrides the HttpClient default setting.
+            // 
+            // If there is an explicitly set HttpClient use that as given, and do not override
+            // the accept header (i.e. pass null to arg accpetHeader in execHttpGet).
+            // Else, use httpOp as setup and set the accept header.
+            String acceptHeader = 
+                ( httpClient == null ) ? WebContent.defaultRDFAcceptHeader : null; 
+            in = HttpOp.execHttpGet(urlStr, acceptHeader, httpClient, null);
         } else { 
             in = streamManager.open(urlStr);
         }
