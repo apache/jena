@@ -26,18 +26,17 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.transaction.ObjectFileTrans ;
-import org.apache.jena.tdb.transaction.Transaction ;
-import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-public abstract class AbstractTestObjectFileTrans extends BaseTest
+/** Clone of AbstractTestObjectFileTrans that understands 2-file ObjectFileTransComplex */
+public abstract class AbstractTestObjectFileTransComplex extends BaseTest
 {
     static long count = 0 ;
     ObjectFile file1 ;
-    ObjectFileTrans file ;
+    ObjectFile file2 ;
+    ObjectFileTransComplex file ;
     Transaction txn ;
     
     abstract ObjectFile createFile(String basename) ;
@@ -50,7 +49,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     {
         txn = new Transaction(null, 5, ReadWrite.WRITE, ++count, null, tm) ;
         file1 = createFile("base") ;
-        //file2 = createFile("log") ;
+        file2 = createFile("log") ;
     }
 
     @After
@@ -83,8 +82,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     
 
     private void init() { 
-        //file = new ObjectFileTransComplex(null, file1, file2) ;
-        file = new ObjectFileTrans(null, file1) ;
+        file = new ObjectFileTransComplex(null, file1, file2) ;
     }
     
     static void fill(ObjectFile file, String... contents)
@@ -105,7 +103,8 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         init() ;
         
         file.begin(txn) ; 
-        //contains(file2) ;
+        // Test empty. 
+        contains(file2) ;
         file.commitPrepare(txn) ;
         file.commitEnact(txn) ;
         contains(file1, "ABC") ;

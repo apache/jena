@@ -31,8 +31,11 @@ import org.junit.runners.Suite ;
     , TestTransIterator.class
     , TestObjectFileTransMem.class
     , TestObjectFileTransStorage.class
-    , TestNodeTableTransMem.class
-    , TestNodeTableTransDisk.class
+    
+    // ObjectFileTransComplex is not used by TDB currently.
+    , TestObjectFileTransComplexMem.class
+    , TestObjectFileTransComplexStorage.class
+    
     , TestTransMem.class
     , TestTransDiskDirect.class
     , TestTransDiskMapped.class

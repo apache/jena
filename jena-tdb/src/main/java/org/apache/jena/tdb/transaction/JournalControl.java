@@ -29,23 +29,16 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelFile ;
-import org.apache.jena.tdb.base.file.FileFactory;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.base.objectfile.ObjectFile;
-import org.apache.jena.tdb.base.record.RecordFactory;
-import org.apache.jena.tdb.index.IndexMap;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.StorageConfig ;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
 import org.apache.jena.tdb.sys.FileRef ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SystemTDB;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -92,17 +85,13 @@ public class JournalControl
         if ( journal == null || journal.isEmpty() )
             return ;
         
-        
-        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
+        for ( FileRef fileRef : dsg.getConfig().objectFiles.keySet() )
             recoverNodeDat(dsg, fileRef) ;
-        // Not used currently.
-//        for ( FileRef fileRef : dsg.getConfig().objectFiles.keySet() )
-//            recoverObjectFile(dsg, fileRef) ;
         recoverFromJournal(dsg.getConfig(), journal) ;
         
         journal.close() ;
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
-        if ( journal.getFilename() != null )
+        if ( journal.getFilename() != null )  
         {
             if ( FileOps.exists(journal.getFilename()) )
                 FileOps.delete(journal.getFilename()) ;
@@ -201,35 +190,24 @@ public class JournalControl
         } finally { Iter.close(iter) ; }
     }
     
-    private static void recoverObjectFile(DatasetGraphTDB dsg, FileRef fileRef) {
-        FmtLog.warn(log, "Not recovered: recoverObjectFile[%s]", fileRef);
-    }
-
     /** Recover a node data file (".dat").
-     *  Node data files are append-only so recovering, then not using the data is safe.
-     *  Node data file is a precursor for full recovery that works from the master journal.
+     *  Node data files are append-only so recovering.
+     *  This code is only for ObjectFileTransComplex.
      */
     private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
     {
-        // See DatasetBuilderTxn - same name generation code.
-        
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;
-        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
-        objFilename = dsg.getLocation().absolute(objFilename) ;
-        File jrnlFile = new File(objFilename) ;
-        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
-        {
-            syslog.info("Recovering node data: "+fileRef.getFilename()) ;
-            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-            NodeTableTrans ntt = new NodeTableTrans(null, objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
-            ntt.append() ;
-            ntt.close() ;
-            dataJrnl.close() ;
-            baseNodeTable.sync() ;
-        }
-        if ( jrnlFile.exists() )
-            FileOps.delete(objFilename) ;
+//        // See DatasetBuilderTxn - same name generation code.
+//        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
+//        objFilename = dsg.getLocation().absolute(objFilename) ;
+//        File jrnlFile = new File(objFilename) ;
+//        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
+//        {
+//            syslog.info("Clearing node data: "+fileRef.getFilename()) ;
+//            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
+//            dataJrnl.truncate(0);
+//        }
+//        if ( jrnlFile.exists() )
+//            FileOps.delete(objFilename) ;
     }
     
     public static void replay(Transaction transaction)

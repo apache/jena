@@ -18,21 +18,36 @@
 
 package org.apache.jena.tdb.transaction;
 
-import org.apache.jena.tdb.base.file.FileFactory ;
-import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.file.BufferChannel ;
+import org.apache.jena.tdb.base.file.BufferChannelMem ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
+import org.apache.jena.tdb.base.objectfile.ObjectFileStorage ;
 
-public class TestNodeTableTransMem extends AbstractTestNodeTableTrans
+public class TestObjectFileTransComplexStorage extends AbstractTestObjectFileTransComplex
 {
     @Override
-    protected ObjectFile createObjectFile()
+    ObjectFile createFile(String basename)
     {
-        return FileFactory.createObjectFileMem("mem-trans") ;
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = Location.create(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.deleteSilent(fn) ;
+//        BufferChannel chan = new BufferChannelFile(fn) ;
+//        return new ObjectFileStorage(chan) ;
+        
+        BufferChannel chan = BufferChannelMem.create() ;
+        // Small buffer
+        return new ObjectFileStorage(chan,10) ;
+        
     }
 
+
     @Override
-    protected Location getLocation()
+    void deleteFile(String basename)
     {
-        return Location.mem() ;
+//        String dir = ConfigTest.getTestingDir() ;
+//        Location loc = Location.create(dir) ;
+//        String fn = loc.getPath(basename) ;
+//        FileOps.delete(fn) ;
     }
 }

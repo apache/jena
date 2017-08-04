@@ -23,30 +23,23 @@ import java.util.Map ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
-import org.apache.jena.tdb.base.block.BlockMgrLogger ;
 import org.apache.jena.tdb.base.block.BlockMgrReadonly ;
-import org.apache.jena.tdb.base.file.FileFactory;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.base.objectfile.ObjectFileReadonly;
-import org.apache.jena.tdb.base.record.RecordFactory;
-import org.apache.jena.tdb.index.*;
-import org.apache.jena.tdb.setup.*;
+import org.apache.jena.tdb.base.objectfile.ObjectFileReadonly ;
+import org.apache.jena.tdb.index.IndexParams ;
+import org.apache.jena.tdb.setup.BlockMgrBuilder ;
+import org.apache.jena.tdb.setup.DatasetBuilderStd ;
+import org.apache.jena.tdb.setup.ObjectFileBuilder ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.nodetable.*;
 import org.apache.jena.tdb.sys.FileRef ;
-import org.apache.jena.tdb.sys.Names;
-import org.apache.jena.tdb.sys.SystemTDB;
 
 public class DatasetBuilderTxn
 {
-    // Ideally, don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
-    
     // Context for the build.
     private final TransactionManager txnMgr ;
     private final Map<FileRef, BlockMgr> blockMgrs ; 
     private final Map<FileRef, ObjectFile> objectFiles; 
-    private final Map<FileRef, NodeTable> nodeTables;
     private final DatasetGraphTDB dsg ;
     private Transaction txn;
 
@@ -54,7 +47,6 @@ public class DatasetBuilderTxn
         this.txnMgr = txnMgr ;
         this.blockMgrs = dsg.getConfig().blockMgrs ;
         this.objectFiles = dsg.getConfig().objectFiles ;
-        this.nodeTables = dsg.getConfig().nodeTables ;
         this.dsg = dsg ;
     }
     
@@ -77,71 +69,22 @@ public class DatasetBuilderTxn
 
     private DatasetGraphTDB buildReadonly() {
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly();
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly();
-        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderReadonly();
+        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, objectFileBuilder) ;
         DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, false, dsg.getReorderTransform()) ;
         return dsg2 ;
     }
 
     private DatasetGraphTDB buildWritable() {
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
-        NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx();
-        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new ObjectFileBuilderTx();
+        DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, objectFileBuilder);
         DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, true, dsg.getReorderTransform()) ;
         dsg2.getContext().putAll(dsg.getContext()) ;
         return dsg2 ;
     }
 
-    // ---- Add logging to a BlockMgr when built.
-    static BlockMgrBuilder logging(BlockMgrBuilder other) { return new BlockMgrBuilderLogger(other) ; }
-    
-    static class BlockMgrBuilderLogger implements BlockMgrBuilder {
-        public BlockMgrBuilder other ;
-
-        public BlockMgrBuilderLogger(BlockMgrBuilder other) {
-            this.other = other ;
-        }
-
-        @Override
-        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, IndexParams params) {
-            BlockMgr blkMgr = other.buildBlockMgr(fileSet, ext, params) ;
-            blkMgr = new BlockMgrLogger(blkMgr.getLabel(), blkMgr, true) ;
-            return blkMgr ;
-        }
-    }
-
     // ---- Build transactional versions for update.
-    
-    class NodeTableBuilderTx implements NodeTableBuilder
-    {
-        @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
-            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
-            NodeTable ntBase = nodeTables.get(ref) ;
-            if ( ntBase == null )
-                throw new TDBException("No NodeTable for " + ref) ;
-
-            RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-            Index idx = new IndexMap(recordFactory) ;
-            String objFilename = fsObjectFile.filename(Names.extNodeData + "-" + Names.extJournal) ;
-            ObjectFile objectFile ;
-
-            if ( fsObjectFile.isMem() )
-                objectFile = FileFactory.createObjectFileMem(objFilename) ;
-            else
-                objectFile = FileFactory.createObjectFileDisk(objFilename) ;
-
-            // Allow for a modified base NodeTable. 
-            NodeTable ntBaseTrans = ntBase;
-            
-            NodeTableTrans ntt = new NodeTableTrans(txn, fsObjectFile.getBasename(), ntBaseTrans, idx, objectFile) ;
-            txn.addComponent(ntt) ;
-
-            // Add inline wrapper.
-            NodeTable nt = NodeTableInline.create(ntt) ;
-            return nt ;
-        }
-    }
     
     class BlockMgrBuilderTx implements BlockMgrBuilder
     {
@@ -150,33 +93,32 @@ public class DatasetBuilderTxn
             // Find from file ref.
             FileRef ref = FileRef.create(fileSet, ext) ;
             BlockMgr baseMgr = blockMgrs.get(ref) ;
-            if ( baseMgr == null )
-                throw new TDBException("No BlockMgr for " + ref) ;
+            if ( baseMgr == null ) {
+                //System.out.flush();
+                System.out.println("No BlockMgr for " + ref+" : "+blockMgrs.keySet());
+                //throw new TDBException("No BlockMgr for " + ref) ;
+            }
             BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr) ;
             txn.addComponent(blkMgr) ;
             return blkMgr ;
         }
     }
 
-    // Object files currently don't need journalling. Because they are append only, they
-    // are "self journalling" - we can append to them while used read-only elsewhere if
-    // the index to access them is transactional and does not point into the appended new
-    // bytes.
-//    class ObjectFileBuilderTx implements ObjectFileBuilder
-//    {
-//        @Override
-//        public ObjectFile buildObjectFile(FileSet fileSet, String ext) {
-//            FileRef ref = FileRef.create(fileSet, ext) ;
-//            ObjectFile baseObjFile = objectFiles.get(ref);
-//            if ( baseObjFile == null )
-//                throw new TDBException("No ObjectFile for " + ref) ;
-//            ObjectFileJournal objFile = new ObjectFileJournal(txn, ref, baseObjectFile); 
-//            return objFile;
-//        }
-//    }
-    
+    class ObjectFileBuilderTx implements ObjectFileBuilder
+    {
+        @Override
+        public ObjectFile buildObjectFile(FileSet fileSet, String ext) {
+            FileRef ref = FileRef.create(fileSet, ext) ;
+            ObjectFile base = objectFiles.get(ref) ;
+            // Just write to the (append only) ObjectFile and manage aborts.
+            ObjectFileTrans objFileTxn = new ObjectFileTrans(txn, base) ;
+            txn.addComponent(objFileTxn);
+            return objFileTxn;
+        }
+    }
+
     // ---- Build passthrough versions for readonly access
-    
+
     class BlockMgrBuilderReadonly implements BlockMgrBuilder
     {
         @Override
@@ -190,28 +132,14 @@ public class DatasetBuilderTxn
         }
     }
     
-    class NodeTableBuilderReadonly implements NodeTableBuilder
-    {
-        @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
-            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
-            NodeTable nt = nodeTables.get(ref) ;
-            nt = new NodeTableReadonly(nt) ;
-            return nt ;
-        }
-    }
- 
     class ObjectFileBuilderReadonly implements ObjectFileBuilder
     {
         @Override
         public ObjectFile buildObjectFile(FileSet fileSet, String ext) {
             FileRef ref = FileRef.create(fileSet, ext) ;
-            ObjectFile objFile = objectFiles.get(ref);
-            if ( objFile == null )
-                throw new TDBException("No ObjectFile for " + ref) ;
-            objFile = new ObjectFileReadonly(objFile) ;
-            return objFile;
+            ObjectFile file = objectFiles.get(ref) ;
+            return new ObjectFileReadonly(file);
         }
     }
- 
 }
+

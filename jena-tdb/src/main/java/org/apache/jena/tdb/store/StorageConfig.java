@@ -25,7 +25,6 @@ import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile;
 import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
 import org.apache.jena.tdb.sys.FileRef ;
 
 public class StorageConfig
@@ -34,22 +33,19 @@ public class StorageConfig
     public final Map<FileRef, BlockMgr> blockMgrs ;
     public final Map<FileRef, ObjectFile> objectFiles;
     public final Map<FileRef, BufferChannel> bufferChannels;
-    public final Map<FileRef, NodeTable> nodeTables;
     public final Location location ;
     public final boolean writeable ;
 
     public StorageConfig(Location location, StoreParams params, boolean writeable, 
                          Map<FileRef, BlockMgr> blockMgrs, 
                          Map<FileRef, ObjectFile> objectFiles,
-                         Map<FileRef, BufferChannel> bufferChannels, 
-                         Map<FileRef, NodeTable> nodeTables)
+                         Map<FileRef, BufferChannel> bufferChannels)
     {
         this.location = location ;
         this.params = params ;
         this.blockMgrs = blockMgrs ;
         this.objectFiles = objectFiles ;
         this.bufferChannels = bufferChannels ;
-        this.nodeTables = nodeTables;
         this.writeable = writeable ;
     }
     
