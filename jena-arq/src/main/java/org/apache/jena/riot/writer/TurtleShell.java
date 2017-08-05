@@ -605,7 +605,7 @@ public abstract class TurtleShell {
             writeClusterPredicateObjectList(INDENT_PREDICATE, cluster) ;
         }
 
-        // Write the PredicateObjectList fora subject already output.
+        // Write the PredicateObjectList for a subject already output.
         // The subject may have been a "[]" or a URI - the indentation is passed in.
         private void writeClusterPredicateObjectList(int indent, Collection<Triple> cluster) {
             write_S_P_Gap() ;
