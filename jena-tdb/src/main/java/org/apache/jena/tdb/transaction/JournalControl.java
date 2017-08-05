@@ -85,11 +85,9 @@ public class JournalControl
         if ( journal == null || journal.isEmpty() )
             return ;
         
-        for ( FileRef fileRef : dsg.getConfig().objectFiles.keySet() )
-            recoverNodeDat(dsg, fileRef) ;
         recoverFromJournal(dsg.getConfig(), journal) ;
         
-        journal.close() ;
+        journal.close();
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
         if ( journal.getFilename() != null )  
         {
@@ -120,6 +118,9 @@ public class JournalControl
     {
         if ( jrnl.isEmpty() )
             return false ;
+        
+        for ( FileRef fileRef : sConf.objectFiles.keySet() )
+            recoverNodeDat(sConf.location, fileRef) ;
 
         long posn = 0 ;
         for ( ;; )
@@ -194,20 +195,23 @@ public class JournalControl
      *  Node data files are append-only so recovering.
      *  This code is only for ObjectFileTransComplex.
      */
-    private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
+    private static void recoverNodeDat(Location loc, FileRef fileRef)
     {
-//        // See DatasetBuilderTxn - same name generation code.
-//        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
-//        objFilename = dsg.getLocation().absolute(objFilename) ;
-//        File jrnlFile = new File(objFilename) ;
-//        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
-//        {
-//            syslog.info("Clearing node data: "+fileRef.getFilename()) ;
-//            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-//            dataJrnl.truncate(0);
-//        }
-//        if ( jrnlFile.exists() )
-//            FileOps.delete(objFilename) ;
+        // See DatasetBuilderTxn (Jena 3.4.0 or earlier) - same name generation code.
+        String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
+        objFilename = loc.absolute(objFilename) ;
+        File jrnlFile = new File(objFilename) ;
+        if ( jrnlFile.exists() ) {
+            if ( jrnlFile.length() > 0 ) {
+                syslog.info("Found dat-jrnl file : earlier version of Jena"+fileRef.getFilename()) ;
+                syslog.info("  To clearup: run TDB from a version of Jena 3.0.0-3.4.0");
+                syslog.info("  dat-jrnl should then go away");
+                syslog.info("  See https://issues.apache.org/jira/browse/JENA-1379");
+                throw new TDBException("Manual recovery required - see log - see JENA-1379 <https://issues.apache.org/jira/browse/JENA-1379>");
+            }
+            //Empty - nothing to do anyway - clearup.
+            FileOps.delete(objFilename) ;
+        }
     }
     
     public static void replay(Transaction transaction)
