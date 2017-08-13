@@ -38,7 +38,7 @@ public class Transaction
     private final Journal journal ;
     private final ReadWrite mode ;
     
-    private final List<NodeTableTrans> nodeTableTrans = new ArrayList<>() ;
+    private final List<ObjectFileTrans> objectFileTrans = new ArrayList<>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
@@ -171,9 +171,9 @@ public class Transaction
 
     private void prepare() {
         state = TxnState.PREPARING ;
-        for ( BlockMgrJournal x : blkMgrs )
+        for ( TransactionLifecycle x : objectFileTrans )
             x.commitPrepare(this) ;
-        for ( NodeTableTrans x : nodeTableTrans )
+        for ( TransactionLifecycle x : blkMgrs )
             x.commitPrepare(this) ;
     }
 
@@ -189,10 +189,9 @@ public class Transaction
                         throw new TDBTransactionException("Transaction has already committed or aborted") ;
                     try {
                         // Clearup.
-                        for ( BlockMgrJournal x : blkMgrs )
+                        for ( TransactionLifecycle x : objectFileTrans )
                             x.abort(this) ;
-
-                        for ( NodeTableTrans x : nodeTableTrans )
+                        for ( TransactionLifecycle x : blkMgrs )
                             x.abort(this) ;
                     }
                     catch (RuntimeException ex) {
@@ -314,13 +313,13 @@ public class Transaction
     /** Return the list of items registered for the transaction lifecycle */ 
     public List<TransactionLifecycle> lifecycleComponents() {
         List<TransactionLifecycle> x = new ArrayList<>() ;
-        x.addAll(nodeTableTrans) ;
+        x.addAll(objectFileTrans) ;
         x.addAll(blkMgrs) ;
         return x ;
     }
     
-    /*package*/ void addComponent(NodeTableTrans ntt) {
-        nodeTableTrans.add(ntt) ;
+    /*package*/ void addComponent(ObjectFileTrans oft) {
+        objectFileTrans.add(oft);
     }
 
     /*package*/ void addComponent(BlockMgrJournal blkMgr) {

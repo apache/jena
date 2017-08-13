@@ -18,34 +18,19 @@
 
 package org.apache.jena.tdb.transaction;
 
-import org.apache.jena.tdb.ConfigTest ;
-import org.apache.jena.tdb.base.file.FileSet ;
-import org.apache.jena.tdb.base.file.Location ;
+import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.sys.SetupTDB ;
-import org.junit.Before ;
 
-public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
+public class TestObjectFileTransComplexMem extends AbstractTestObjectFileTransComplex
 {
-    Location loc = null ;
-    static int count = 0 ;
-    
-    @Before public void before()
-    {
-    	String dir = ConfigTest.getCleanDir() ;
-    	loc = Location.create(dir) ;
-    }
-    
     @Override
-    protected ObjectFile createObjectFile()
+    ObjectFile createFile(String basename)
     {
-        FileSet fs = new FileSet(loc, "data") ;
-        return SetupTDB.makeObjectFile(fs) ;
+        return FileFactory.createObjectFileMem("test") ;
     }
 
     @Override
-    protected Location getLocation()
-    {
-        return loc ;
-    }
+    void deleteFile(String basename)
+    {}
+
 }

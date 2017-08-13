@@ -35,17 +35,21 @@ import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.FileSet ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile;
-import org.apache.jena.tdb.index.BuilderStdIndex ;
-import org.apache.jena.tdb.index.IndexBuilder ;
-import org.apache.jena.tdb.index.IndexParams ;
-import org.apache.jena.tdb.index.RangeIndexBuilder ;
+import org.apache.jena.tdb.base.record.RecordFactory ;
+import org.apache.jena.tdb.index.* ;
+import org.apache.jena.tdb.index.bplustree.BPlusTree ;
+import org.apache.jena.tdb.index.bplustree.BPlusTreeParams ;
 import org.apache.jena.tdb.lib.ColumnMap ;
 import org.apache.jena.tdb.solver.OpExecutorTDB1 ;
 import org.apache.jena.tdb.store.* ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
+import org.apache.jena.tdb.store.nodetable.NodeTableCache ;
+import org.apache.jena.tdb.store.nodetable.NodeTableInline ;
+import org.apache.jena.tdb.store.nodetable.NodeTableNative ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTableConcrete ;
 import org.apache.jena.tdb.store.tupletable.TupleIndex ;
+import org.apache.jena.tdb.store.tupletable.TupleIndexRecord ;
 import org.apache.jena.tdb.sys.* ;
 import org.slf4j.Logger ;
 
@@ -54,15 +58,65 @@ import org.slf4j.Logger ;
  * BlockMgr/BufferChannel/NodeTable for use by the transaction builder.
  */
 
-public class DatasetBuilderStd implements DatasetBuilder {
+public class DatasetBuilderStd {
     private static final Logger log = TDB.logInfo ;
 
-    private NodeTableBuilder    nodeTableBuilder ;
-    private TupleIndexBuilder   tupleIndexBuilder ;
-    private Recorder            recorder = null ;   
+    private BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd();
+    private ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd(); 
+
+    private void setupRecord() {
+        if ( this.blockMgrBuilder instanceof BlockMgrBuilderRecorder)
+            throw new TDBException("Already recording (BlockMgrBuilder)");
+        if ( this.objectFileBuilder instanceof ObjectFileBuilderRecorder)
+            throw new TDBException("Already recording (ObjectFileBuilder)");
+        
+        this.blockMgrBuilder = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder);
+        this.objectFileBuilder= new ObjectFileBuilderRecorder(objectFileBuilder, recorder);
+    }
+    
+    private RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordFactory, IndexParams indexParams) {
+        int blkSize = indexParams.getBlockSize() ;
+        int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
+        RangeIndex rIndex = createBPTree(fileSet, order, blockMgrBuilder, blockMgrBuilder, recordFactory, indexParams) ;
+        return rIndex ;
+    }
+    
+    private Index buildIndex(FileSet fileSet, RecordFactory recordFactory, IndexParams indexParams) {
+        // Cheap.
+        return buildRangeIndex(fileSet, recordFactory, indexParams) ;
+    }
+    
+    /** Knowing all the parameters, create a B+Tree */
+    private RangeIndex createBPTree(FileSet fileset, int order, 
+                                    BlockMgrBuilder blockMgrBuilderNodes,
+                                    BlockMgrBuilder blockMgrBuilderRecords,
+                                    RecordFactory factory, IndexParams indexParams)
+    {
+        // ---- Checking
+        {
+            int blockSize = indexParams.getBlockSize() ;
+            if (blockSize < 0 )
+                throw new IllegalArgumentException("Negative blocksize: "+blockSize) ;
+            if (blockSize < 0 && order < 0) throw new IllegalArgumentException("Neither blocksize nor order specified") ;
+            if (blockSize >= 0 && order < 0) order = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+            if (blockSize >= 0 && order >= 0)
+            {
+                int order2 = BPlusTreeParams.calcOrder(blockSize, factory.recordLength()) ;
+                if (order != order2) 
+                    throw new IllegalArgumentException("Wrong order (" + order + "), calculated = " + order2) ;
+            }
+        }
+
+        BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
+        
+        BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
+        BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
+        return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
+    }
+    
+    private Recorder            recorder = new Recorder() ;  
     
     /**
-     * 
      * @param location
      * @return DatasetGraphTDB
      */
@@ -86,7 +140,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         boolean newArea = TDBInternal.isNewDatabaseArea(location) ;
         StoreParams params = Build.decideStoreParams(location, newArea, appParams, locParams, dftParams) ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
-        x.standardSetup() ;
         DatasetGraphTDB dsg = x.build(location, params) ;
         return dsg ;
     }
@@ -97,45 +150,29 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     public static DatasetBuilderStd stdBuilder() {
-        DatasetBuilderStd x = new DatasetBuilderStd() ;
-        x.standardSetup() ;
-        return x ;
+        return new DatasetBuilderStd() ;
     }
 
-    protected DatasetBuilderStd() { }
-
-    // Used by DatasetBuilderTxn
-    public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
-        setupRecord(blockMgrBuilder, nodeTableBuilder) ;
+    protected DatasetBuilderStd() { 
+        this(new BuilderStdIndex.BlockMgrBuilderStd(),
+             new BuilderStdDB.ObjectFileBuilderStd());
     }
 
-    private void standardSetup() {
-        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd() ;
-        BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
-        IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
-        setupRecord(blockMgrBuilder, nodeTableBuilder) ;
-    }
-
-    protected void setupRecord(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
-        recorder = new Recorder() ;
-        BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
-
-        IndexBuilder indexBuilder = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
-        RangeIndexBuilder rangeIndexBuilder = new BuilderStdIndex.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
-
-        this.nodeTableBuilder = nodeTableBuilder ;
-        nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
-
-        TupleIndexBuilder tupleIndexBuilder = new BuilderStdDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        set(nodeTableBuilder, tupleIndexBuilder) ;
-    }
-
-    protected void set(NodeTableBuilder nodeTableBuilder, TupleIndexBuilder tupleIndexBuilder) {
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
+    public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder, ObjectFileBuilder objectFileBuilder) {
+        this.blockMgrBuilder = blockMgrBuilder;
+        this.objectFileBuilder = objectFileBuilder; 
+        this.recorder = new Recorder() ;
+        // XXX YUK
+        setupRecord();
     }
     
+//    private void standardSetup() {
+//        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd() ;
+//        BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
+//        IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+//        NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
+//        setupRecord(blockMgrBuilder, nodeTableBuilder) ;
+//    }
 
     private static void checkLocation(Location location) { 
         if ( location.isMem() )
@@ -153,7 +190,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
             error(log, "Directory not writeable: "+dirname) ;
     }
 
-    @Override
     public DatasetGraphTDB build(Location location, StoreParams params) {
         // Ensure that there is global synchronization
         synchronized (DatasetBuilderStd.class) {
@@ -184,7 +220,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         ReorderTransformation transform = (_transform == null) ? chooseReorderTransformation(location) : _transform ;
 
         StorageConfig storageConfig = new StorageConfig(location, params, writeable,
-                                                        recorder.blockMgrs, recorder.objectFiles, recorder.bufferChannels, recorder.nodeTables) ;
+                                                        recorder.blockMgrs, recorder.objectFiles, recorder.bufferChannels) ;
         
         recorder.finish() ;
         
@@ -287,22 +323,42 @@ public class DatasetBuilderStd implements DatasetBuilder {
         // Commonly, name == indexOrder.
         FileSet fs = new FileSet(location, name) ;
         ColumnMap colMap = new ColumnMap(primary, indexOrder) ;
-        return tupleIndexBuilder.buildTupleIndex(fs, colMap, indexOrder, params) ;
+        return /*tupleIndexBuilder.*/buildTupleIndex(fs, colMap, indexOrder, params) ;
+    }
+    
+    //-------------
+    private TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name, StoreParams params) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.SizeOfNodeId * colMap.length(), 0) ;
+        RangeIndex rIdx = /*rangeIndexBuilder.*/buildRangeIndex(fileSet, recordFactory, params) ;
+        TupleIndex tIdx = new TupleIndexRecord(colMap.length(), colMap, name, recordFactory, rIdx) ;
+        return tIdx ;
     }
 
     public NodeTable makeNodeTable(Location location, StoreParams params) {
-        FileSet fsNodeToId = new FileSet(location, params.getIndexNode2Id()) ;
-        FileSet fsId2Node = new FileSet(location, params.getIndexId2Node()) ;
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
-        return nt ;
+        return makeNodeTable$(location, params.getIndexNode2Id(), params.getIndexId2Node(), params);
     }
     
     /** Make a node table overriding the node->id and id->node table names */ 
     private NodeTable makeNodeTable$(Location location, String indexNode2Id, String indexId2Node, StoreParams params) {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
+        NodeTable nt = /*nodeTableBuilder.*/buildNodeTable(fsNodeToId, fsId2Node, params) ;
         return nt ;
+    }
+    
+    //-------------
+    
+    private NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
+        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
+        Index idx = /*indexBuilder.*/buildIndex(fsIndex, recordFactory, params) ;
+        ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
+        NodeTable nodeTable = new NodeTableNative(idx, objectFile) ;
+        nodeTable = NodeTableCache.create(nodeTable, 
+                                          params.getNode2NodeIdCacheSize(),
+                                          params.getNodeId2NodeCacheSize(),
+                                          params.getNodeMissCacheSize()) ;
+        nodeTable = NodeTableInline.create(nodeTable) ;
+        return nodeTable ;
     }
     
     protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node, StoreParams params) {
@@ -384,26 +440,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
     interface RecordNodeTable {
         void record(FileRef fileRef, NodeTable nodeTable) ;
-    }
-
-    static class NodeTableBuilderRecorder implements NodeTableBuilder {
-        private final NodeTableBuilder builder ;
-        private final RecordNodeTable  recorder ;
-
-        NodeTableBuilderRecorder(NodeTableBuilder ntb, RecordNodeTable recorder) {
-            this.builder = ntb ;
-            this.recorder = recorder ;
-        }
-
-        @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
-            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, params) ;
-            // It just knows, right?
-            FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
-            recorder.record(ref, nt) ;
-            return nt ;
-        }
-
     }
 
     static class ObjectFileBuilderRecorder implements ObjectFileBuilder {
