@@ -38,7 +38,8 @@ public class Math_pow extends FunctionBase2 {
                 int y = v2.getInteger().intValue() ;
                 if ( y >= 0 )
                     return NodeValue.makeInteger( x.pow(y)) ;
-            // Anything else -> double
+                // Anything else -> double
+                //$FALL-THROUGH$
             case OP_DECIMAL:
             case OP_FLOAT:
             case OP_DOUBLE:

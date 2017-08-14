@@ -37,6 +37,7 @@ public class Math_exp10 extends FunctionBase1 {
                 if ( x >= 0 )
                     return NodeValue.makeInteger(BigInteger.TEN.pow(x)) ;
                 // Anything else -> double
+                //$FALL-THROUGH$
             case OP_DECIMAL:
             case OP_FLOAT:
             case OP_DOUBLE:
