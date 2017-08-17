@@ -20,28 +20,19 @@ package org.apache.jena.sparql.function.library;
 
 import static org.junit.Assert.assertArrayEquals;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.jena.sparql.expr.NodeValue;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for {@link FN_Collation}.
  */
 public class TestFunctionCollation {
-
-    private FN_Collation function = null;
-
-    @Before
-    public void setUp() {
-        function = new FN_Collation();
-    }
-
     @Test
     public void testFunctionCollationExec() {
+        FN_Collation function = new FN_Collation();
         NodeValue collation = NodeValue.makeString("fi");
         
         final String[] unordered = new String[]
@@ -54,12 +45,7 @@ public class TestFunctionCollation {
         for (String string : unordered) {
             nodeValues.add(function.exec(collation, NodeValue.makeString(string)));
         }
-        nodeValues.sort(new Comparator<NodeValue>() {
-            @Override
-            public int compare(NodeValue o1, NodeValue o2) {
-                return NodeValue.compare(o1, o2);
-            }
-        });
+        nodeValues.sort((NodeValue o1, NodeValue o2) -> NodeValue.compare(o1, o2) );
         List<String> result = new LinkedList<>();
         for (NodeValue nv : nodeValues) {
             String s = nv.toString();
