@@ -43,7 +43,6 @@ public final class Cache0<K, V> implements Cache<K, V> {
             return callable.call() ;
         }
         catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
