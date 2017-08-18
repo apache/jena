@@ -21,8 +21,8 @@ package org.apache.jena.sparql.function.library;
 import static org.apache.jena.sparql.function.library.LibTest.test;
 
 import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.VariableNotBoundException ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
 import org.apache.jena.system.JenaSystem ;
 import org.junit.Test ;
 
@@ -34,20 +34,20 @@ public class TestFnFunctions {
         test("fn:apply(math:sqrt, 9)", "3.0e0");
     }
     
-    // Under arity
+    // Under-arity
     @Test(expected=ExprEvalException.class)
     public void apply_2() {
         test("fn:apply(math:sqrt)", "3.0e0");
     }
 
-    // Over arity
+    // Over-arity
     @Test(expected=ExprEvalException.class)
     public void apply_3() {
         test("fn:apply(math:sqrt, 9, 10)", "3.0e0");
     }
 
     // Not a URI.
-    @Test(expected=ExprBuildException.class)
+    @Test(expected=ExprEvalException.class)
     public void apply_4() {
         test("fn:apply('bicycle', 9, 10)", "3.0e0");
     }
@@ -57,8 +57,29 @@ public class TestFnFunctions {
         test("fn:apply(?var)", "3.0e0");
     }
     
+    @Test(expected=ExprEvalException.class)
+    public void apply_6() {
+        test("fn:apply(<x:unregistered>)", "false");
+    }
+
+    @Test(expected=ExprException.class)
+    public void apply_7() {
+        test("fn:apply()", "false");
+    }
+
     @Test
     public void collationKey_1() {
         test("fn:collation-key('foo', 'en') = 'Zm9vQGVu'^^xsd:base64Binary");
     }
+    
+    @Test(expected=ExprEvalException.class)
+    public void collationKey_2() {
+        test("fn:collation-key('foo', 22) = 'Zm9vQGVu'^^xsd:base64Binary");
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void collationKey_3() {
+        test("fn:collation-key(<x:bar>, 'en') = 'Zm9vQGVu'^^xsd:base64Binary");
+    }
+
 }

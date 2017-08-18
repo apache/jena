@@ -24,13 +24,13 @@ import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionBase ;
 import org.apache.jena.sparql.function.FunctionFactory ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
-import org.apache.jena.sparql.sse.builders.ExprBuildException ;
 import org.apache.jena.sparql.util.Context ;
 
 /** XPath and XQuery Functions and Operators 3.1
@@ -44,28 +44,30 @@ public class FN_Apply extends FunctionBase {
     @Override
     public void checkBuild(String uri, ExprList args) {
         if ( args.isEmpty() )
-            throw new ExprBuildException("fn:apply: no function to call (minimum number of args is one)");
+            throw new ExprException("fn:apply: no function to call (minimum number of args is one)");
     }
     @Override
     public NodeValue exec(List<NodeValue> args) {
         if ( args.isEmpty() )
-            throw new ExprBuildException("fn:apply: no function to call (minimum number of args is one)");
+            throw new ExprException("fn:apply: no function to call (minimum number of args is one)");
         NodeValue functionId = args.get(0);
         List<NodeValue> argExprs = args.subList(1,args.size()) ; 
         ExprList exprs = new ExprList();
-        argExprs.forEach((a)->exprs.add(a));
+        argExprs.forEach(exprs::add);
         Node fnNode = functionId.asNode();
         
         if ( fnNode.isBlank() ) 
-            throw new ExprBuildException("fn:apply: function id is a blank node (must be a URI)");        
+            throw new ExprEvalException("fn:apply: function id is a blank node (must be a URI)");        
         if ( fnNode.isLiteral() )
-            throw new ExprBuildException("fn:apply: function id is a literal (must be a URI)");
+            throw new ExprEvalException("fn:apply: function id is a literal (must be a URI)");
         if ( fnNode.isVariable() )
             // Should not happen ... but ...
-            throw new ExprBuildException("fn:apply: function id is an unbound variable (must be a URI)");
+            throw new ExprEvalException("fn:apply: function id is an unbound variable (must be a URI)");
         if ( fnNode.isURI() ) {
             String functionIRI = fnNode.getURI();
             Function function = cache1.getOrFill(functionIRI, ()->buildFunction(functionIRI));
+            if ( function == null )
+                throw new ExprEvalException("fn:apply: Unknown function: <"+functionId+">");
             if ( function instanceof FunctionBase ) {
                 // Fast track.
                 return ((FunctionBase)function).exec(argExprs);
@@ -92,5 +94,4 @@ public class FN_Apply extends FunctionBase {
             registry = FunctionRegistry.get() ;
         return registry ;
     }
-    
 }
