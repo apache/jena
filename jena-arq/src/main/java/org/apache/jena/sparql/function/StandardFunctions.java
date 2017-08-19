@@ -232,6 +232,11 @@ public class StandardFunctions
         
         add(registry, math+"atan2",     Math_atan2.class) ;
         
+        // F&O 3.1
+        add(registry, xfn+"apply",           FN_Apply.class);
+        add(registry, xfn+"collation-key",   FN_CollationKey.class);
+
+        
         // And add op:'s
 //        4.2.1 op:numeric-add
 //        4.2.2 op:numeric-subtract
