@@ -413,6 +413,9 @@ public class TextIndexLucene implements TextIndex {
         if (graphClause != null)
             queryString = "(" + queryString + ") AND " + graphClause ;
 
+        if ( log.isDebugEnabled())
+            log.debug("Lucene query: {} ({})", queryString,limit) ;
+
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         Query query = parseQuery(queryString, queryAnalyzer) ;
         if ( limit <= 0 )
