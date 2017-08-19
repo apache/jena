@@ -29,6 +29,7 @@ import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
@@ -271,18 +272,18 @@ public class TextQueryPF extends PropertyFunctionBase {
     
     private String chooseGraphURI(ExecutionContext execCxt) {
         // use the graph information in the text index if possible
-        String graph = null;
-        if (textIndex.getDocDef().getGraphField() != null
-            && execCxt.getActiveGraph() instanceof GraphView) {
-            GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
-            if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
-                graph =
-                    activeGraph.getGraphName() != null 
-                    ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
-                    : Quad.defaultGraphNodeGenerated.getURI() ;
+        String graphURI = null;
+        Graph activeGraph = execCxt.getActiveGraph();
+        
+        if (textIndex.getDocDef().getGraphField() != null && activeGraph instanceof NamedGraph) {
+            NamedGraph namedGraph = (NamedGraph)activeGraph ;
+            if (!Quad.isUnionGraph(namedGraph.getGraphName())) {
+                graphURI = namedGraph.getGraphName() != null 
+                        ? TextQueryFuncs.graphNodeToString(namedGraph.getGraphName())
+                        : Quad.defaultGraphNodeGenerated.getURI() ;
             }
         }
-        return graph;
+        return graphURI;
     }
     
     private ListMultimap<String,TextHit> performQuery(Node property, String queryString, String graphURI, String lang, int limit) {
