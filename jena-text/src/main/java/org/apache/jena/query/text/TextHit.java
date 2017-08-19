@@ -44,4 +44,9 @@ public class TextHit
     public Node getLiteral() {
         return this.literal;
     }
+    
+    @Override
+    public String toString() {
+        return "TextHit[node="+node+" literal="+literal+ " score="+score+"]";
+    }
 }
