@@ -27,12 +27,12 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.Test;
 
 /**
- * Tests for {@link FN_Collation}.
+ * Tests for {@link collation}.
  */
 public class TestFunctionCollation {
     @Test
     public void testFunctionCollationExec() {
-        FN_Collation function = new FN_Collation();
+        collation function = new collation();
         NodeValue collation = NodeValue.makeString("fi");
         
         final String[] unordered = new String[]

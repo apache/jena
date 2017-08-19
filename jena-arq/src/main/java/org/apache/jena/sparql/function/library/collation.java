@@ -30,10 +30,14 @@ import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
 import org.apache.jena.sparql.function.FunctionBase2;
 
 /**
- * Collation function. Takes two parameters. First is the collation, second the
- * Node, that is an {@link Expr} (ExprVar, ExprFunctionN, NodeValue, etc).
+ * Access to a {@link NodeValue} which is a collection ({@link NodeValueSortKey}).
+ * 
+ * See {@link FN_CollationKey} for the Functions and Operators function.
+ * 
+ * This function takes two parameters. First is the collation (a string), second the
+ * {@link NodeValue} result of an {@link Expr} (ExprVar, ExprFunctionN, NodeValue, etc).
  *
- * <p>Called with a prefix @{code p}, e.g. {@code ORDER BY p:collation("fi", ?label);}.
+ * <p>If called with a prefix {@code afn}, e.g. {@code ORDER BY afn:collation("fi", ?label);}.
  * The first argument (in this case, "fi") is then resolved to a {@link Locale}, that is
  * used to build a {@link Collator}. If a locale does not match any known collator, then
  * a rule based collator ({@link RuleBasedCollator}) is returned, but with no rules,
@@ -46,10 +50,11 @@ import org.apache.jena.sparql.function.FunctionBase2;
  * for this function.</p>
  *
  * @see NodeValueSortKey
+ * @see FN_CollationKey
  */
-public class FN_Collation extends FunctionBase2 {
+public class collation extends FunctionBase2 {
 
-    public FN_Collation() {
+    public collation() {
         super();
     }
 

@@ -96,7 +96,7 @@ public class StandardFunctions
         addCastTemporal(registry, XSDDatatype.XSDgDay) ;
 
         // Using ARQ prefix http://jena.apache.org/ARQ/function#
-        add(registry, ARQConstants.ARQFunctionLibraryURI+"collation",        FN_Collation.class) ;
+        add(registry, ARQConstants.ARQFunctionLibraryURI+"collation",        collation.class) ;
 
         //TODO op:numeric-greater-than etc.
         //TODO sparql:* for all the SPARQL builtins.
