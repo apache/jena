@@ -130,7 +130,7 @@ public class GraphView extends GraphBase implements Sync
         Node g = graphNode(gn) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
-        // but assumes thing come back in a particular order
+        // but assumes things come back in a particular order
         Iterator<Quad> iterQuads = getDataset().find(g, s, p, o) ;
         Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
