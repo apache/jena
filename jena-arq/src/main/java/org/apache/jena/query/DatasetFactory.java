@@ -39,35 +39,22 @@ import org.apache.jena.util.FileManager;
  */
 public class DatasetFactory {
 
-    /** Create an in-memory, non-transactional Dataset.
+    /** Create an in-memory {@link Dataset}.
      * <p>
      * See also {@link #createTxnMem()} for a transactional dataset.
      * <p>
      * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
+     * <p>
+     * This implementation does not support serialized transactions (it only provides MRSW locking). 
+     * 
+     * @see #createTxnMem
      */
     public static Dataset create() {
         return wrap(DatasetGraphFactory.create()) ;
     }
     
-	/** Create an in-memory, non-transactional Dataset.
-	 * <p>
-	 * See also {@link #createTxnMem()} for a transactional dataset.
-	 * <p>
-	 * Use {@link #createGeneral()} when needing to add graphs with mixed charcateristics, 
-	 * e.g. inference graphs, specific graphs from TDB.
-	 * <p>    
-     * <em>This operation is marked "deprecated" because the general purpose "add named graph of any implementation"
-     * feature will be removed; this feature is now provided by {@link #createGeneral()}.
-     * </em>
-	 * @deprecated Prefer {@link #createGeneral()} or {@link #createTxnMem()} or {@link #create()}
-	 */
-	@Deprecated
-	public static Dataset createMem() {
-		return createGeneral() ;
-	}
-
 	/**
-     * Create an in-memory. transactional Dataset.
+     * Create an in-memory. transactional {@link Dataset}.
      * <p> 
      * This fully supports transactions, including abort to roll-back changes.
      * It provides "autocommit" if operations are performed
@@ -75,7 +62,7 @@ public class DatasetFactory {
      * (the implementation adds a begin/commit around each add or delete
      * so overheads can accumulate).
      * 
-     * @return a transactional, in-memory, modifiable Dataset which
+     * @return a transactional, in-memory, modifiable Dataset
      * 
      */
 	public static Dataset createTxnMem() {
@@ -83,20 +70,43 @@ public class DatasetFactory {
 	}
 
 	/**
-	 * Create a general-purpose Dataset.<br/>
+	 * Create a general-purpose  {@link Dataset}.<br/>
 	 * Any graphs needed are in-memory unless explciitly added with {@link Dataset#addNamedModel}.
 	 * </p>
-	 * This dataset can contain graphs from any source when added via {@link Dataset#addNamedModel}.
+	 * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
 	 * These are held as links to the supplied graph and not copied.
 	 * <p> 
-	 * This dataset does not support transactions. 
+	 * <em>This dataset does not support the graph indexing feature of jena-text.</em>
+     * <p>
+	 * This dataset does not support serialized transactions (it only provides MRSW locking). 
 	 * <p>
 	 * 
+	 * @see #createTxnMem
 	 * @return a general-purpose Dataset
 	 */
 	public static Dataset createGeneral() {
 		return wrap(DatasetGraphFactory.createGeneral()); 
 	}
+
+    /** Create an in-memory {@link Dataset}.
+     * <p>
+     * See also {@link #createTxnMem()} for a transactional dataset.
+     * <p>
+     * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics, 
+     * e.g. inference graphs, or specific graphs from TDB.
+     * <p>    
+     * <em>It does not support the graph indexing feature of jena-text.</em>
+     * <p>
+     * <em>This factory operation is marked "deprecated" because the general purpose "add named graph of any implementation"
+     * feature will be removed; this feature is now provided by {@link #createGeneral()}.
+     * </em>
+     * @deprecated Prefer {@link #createTxnMem()} or {@link #create()} or, for special cases, {@link #createGeneral()}.
+     * @see #createTxnMem
+     */
+    @Deprecated
+    public static Dataset createMem() {
+        return createGeneral() ;
+    }
 
     /**
 	 * @param model The model for the default graph

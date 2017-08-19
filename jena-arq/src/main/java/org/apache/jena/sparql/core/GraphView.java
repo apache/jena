@@ -44,7 +44,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  *  @see GraphUnionRead
  */ 
 
-public class GraphView extends GraphBase implements Sync
+public class GraphView extends GraphBase implements NamedGraph, Sync
 {
     // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
@@ -80,6 +80,7 @@ public class GraphView extends GraphBase implements Sync
      * Return the graph name for this graph in the dataset it is a view of.
      * Returns {@code null} for the default graph.
      */
+    @Override
     public Node getGraphName() {
         return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
     }

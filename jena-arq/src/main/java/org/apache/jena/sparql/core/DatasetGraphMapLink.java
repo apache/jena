@@ -106,7 +106,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * DatasetFactory.createGeneral.
      */
     /*package*/ DatasetGraphMapLink(GraphMaker graphMaker) {
-        this(graphMaker.create(), graphMaker) ;
+        this(graphMaker.create(null), graphMaker) ;
     }
 
     /** A {@code DatasetGraph} that uses the given graph for the default graph
@@ -146,6 +146,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     @Override
     public Graph getGraph(Node graphNode) {
+        // Same as DatasetMap.getGraph but we inherit differently.
         if ( Quad.isUnionGraph(graphNode) ) 
             return new GraphUnionRead(this) ;
         if ( Quad.isDefaultGraph(graphNode))
@@ -153,7 +154,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
-            g = getGraphCreate();
+            g = getGraphCreate(graphNode);
             if ( g != null )
                 graphs.put(graphNode, g);
         }
@@ -163,8 +164,8 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
     /** Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph"
      */
-    protected Graph getGraphCreate() { 
-        return graphMaker.create() ;
+    protected Graph getGraphCreate(Node graphNode) { 
+        return graphMaker.create(graphNode) ;
     }
 
     @Override
