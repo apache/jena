@@ -19,6 +19,7 @@ package org.seaborne.dboe.base.file ;
 
 import java.io.File ;
 import java.io.IOException ;
+import java.nio.file.Path;
 import java.util.Objects ;
 
 import org.seaborne.dboe.sys.Names ;
@@ -62,6 +63,15 @@ public class Location {
             // Fresh, anonymous, memory area 
             return mem() ; 
         Location loc = new Location(directoryName) ;
+        return loc ;
+    }
+
+    /** Return a location for a directory on disk */
+    static public Location create(Path directoryName) {
+        if ( directoryName == null )
+            // Fresh, anonymous, memory area 
+            return mem() ; 
+        Location loc = new Location(directoryName.toString()) ;
         return loc ;
     }
 
