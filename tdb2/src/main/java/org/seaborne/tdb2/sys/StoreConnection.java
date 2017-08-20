@@ -70,11 +70,6 @@ public class StoreConnection
         return cache.containsKey(location) ;
     }
 
-    /** Make a StoreConnection based on any StoreParams at the location or the system defaults. */
-    private static StoreConnection make(Location location) {
-        return make(location, null) ;
-    }
-
     /**
      * Return a {@code StoreConnection} for a particular location,
      * creating it if it does not exist in storage.
@@ -154,6 +149,7 @@ public class StoreConnection
     }
     
     private final DatasetGraphTDB   datasetGraph ;
+    // This is the location of the database itself, not the TDB2 container directory. 
     private final Location          location ;
     private final ProcessFileLock   lock ;
     private boolean                 isValid = true ;
