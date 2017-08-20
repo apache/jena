@@ -68,6 +68,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     private final boolean checkForChange = false ;
     private boolean closed = false ;
 
+    /** Application should not create a {@code DatasetGraphTDB} directly */
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
                            TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {

@@ -70,10 +70,6 @@ final public class BlockMgrFreeChain extends BlockMgrWrapper {
         return super.valid(id) ;
     }
 
-    private boolean isFree(int id) {
-        return freeBlocks.contains(id) ;
-    }
-
     @Override
     public void sync() {
         // Flush free blocks?

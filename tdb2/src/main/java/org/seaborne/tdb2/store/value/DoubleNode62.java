@@ -63,6 +63,10 @@ import org.apache.jena.atlas.lib.BitsLong;
  * (1-2^-52)*2^-254 = 3.4544674e-77
  * <p>
  * 0 is not a legal encoding because the high bit is the pointer/value bit.
+ * <p>
+ * "No encoding" is 0xFF00_0000_0000_0000L which would otherwise be the smallest (most negative) denormalized value: 
+ *  -3.5336941295567687E72
+ * <p>All unencodeable numbers wil endup in the node table in full lexical form.  
  */  
 public class DoubleNode62 {
     /**
@@ -121,7 +125,7 @@ public class DoubleNode62 {
     private static long encode11to9(long exp11) {
         if ( exp11 == 0 )
             return 0L;
-        else if ( exp11 == 0x7FF )
+        if ( exp11 == 0x7FF )
             return 0x3FFL;
         
         // Remove bias.

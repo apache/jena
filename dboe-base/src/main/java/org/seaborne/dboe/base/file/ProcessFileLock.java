@@ -69,7 +69,7 @@ public class ProcessFileLock {
         catch (IOException e) { IO.exception(e); return null; }
     }
     
-    /** Return the lock, unclokign the file if this process has it locked. */
+    /** Return the lock, unlocking the file if this process has it locked. */
     public static void release(ProcessFileLock lockFile) {
         if ( lockFile == null )
             return ;
