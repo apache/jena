@@ -65,4 +65,8 @@ public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
         return TDB2Factory.createDatasetGraph();
     }
 
+    @Override
+    protected boolean supportsReadCommitted() {
+        return true;
+    }
 }

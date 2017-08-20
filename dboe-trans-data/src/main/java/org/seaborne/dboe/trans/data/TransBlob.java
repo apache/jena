@@ -37,19 +37,22 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
 
     // The last commited state.
     // Immutable ByteBuffer.
-    // This must be replaced, not updated, by any writer committer
-   
     private final AtomicReference<ByteBuffer> blobRef = new AtomicReference<>() ;
     private final BufferChannel file ;
 
     static class BlobState {
+        boolean hasChanged = false; 
         ByteBuffer $txnBlob ;
+        
         BlobState(ByteBuffer bb) {
             setByteBuffer(bb) ;
         }
         void setByteBuffer(ByteBuffer bb) {
             $txnBlob = bb ;
+            // Could compare - seems like added complexity.
+            hasChanged = true;
         }
+
         ByteBuffer getByteBuffer() { return $txnBlob ; } 
     }
     
@@ -73,6 +76,7 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
         ByteBuffer blob = blobRef.get();
         blob.rewind() ;
         int x = blob.remaining() ;
+        file.truncate(0);
         int len = file.write(blob) ;
         if ( len != x )
             throw new RuntimeIOException("Short write: "+len+" of "+x) ;
@@ -172,11 +176,15 @@ public class TransBlob extends TransactionalComponentLifecycle<TransBlob.BlobSta
     
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, BlobState state) {
+        if ( ! state.hasChanged )
+            return null;
         return state.getByteBuffer() ;
     }
 
     @Override
     protected void _commit(TxnId txnId, BlobState state) {
+        if ( ! state.hasChanged )
+            return;
         // NB Change reference. 
         blobRef.set(state.getByteBuffer()) ;
         write() ;

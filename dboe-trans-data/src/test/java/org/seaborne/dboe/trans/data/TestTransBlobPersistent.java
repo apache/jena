@@ -24,6 +24,7 @@ import org.junit.* ;
 import org.seaborne.dboe.base.file.BufferChannel ;
 import org.seaborne.dboe.base.file.BufferChannelFile ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.dboe.jenax.Txn;
 import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
@@ -64,8 +65,30 @@ public class TestTransBlobPersistent extends Assert {
         assertEquals(str, s); 
     }
 
-    // restart.
     @Test public void transBlobFile_2() throws Exception {
+        Journal journal = Journal.create(Location.create(DIR)) ;
+        BufferChannel chan = BufferChannelFile.create(DATA) ;
+        ComponentId cid = ComponentId.allocLocal() ;
+        TransBlob transBlob = new TransBlob(cid, chan) ;
+        Transactional transactional = TransactionalFactory.createTransactional(journal, transBlob) ;   
+        String str = "Hello1" ; 
+
+        Txn.executeWrite(transactional, ()->{
+            transBlob.setString("one");
+        }) ;
+        
+        Txn.executeWrite(transactional, ()->{
+            transBlob.setString("two");
+        }) ;
+        
+        chan.close() ;
+        journal.close() ;
+        String s = FileUtils.readWholeFileAsUTF8(DATA) ;
+        assertEquals("two", s); 
+    }
+    
+    // restart.
+    @Test public void transBlobFile_3() throws Exception {
         String str = "Hello World" ; 
         // Write out.
         {

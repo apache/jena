@@ -27,8 +27,6 @@ import static org.junit.Assert.fail ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.transaction.AbstractTestTransPromote;
 import org.apache.log4j.Logger ;
 import org.junit.Ignore;
@@ -36,10 +34,6 @@ import org.junit.Test ;
 
 /** Tests for transactions that start read and then promote to write */
 public abstract class AbstractTestTransPromoteTDB2 extends AbstractTestTransPromote {
-
-    protected final static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
-    protected final static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
-    protected final static Quad q3 = SSE.parseQuad("(_ :s :p3 3)") ;
 
     protected AbstractTestTransPromoteTDB2(Logger[] loggers) {
         super(loggers);

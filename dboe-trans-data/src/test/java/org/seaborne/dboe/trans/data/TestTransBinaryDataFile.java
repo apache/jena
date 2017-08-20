@@ -17,10 +17,13 @@
 
 package org.seaborne.dboe.trans.data;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.After ;
-import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.* ;
@@ -31,7 +34,8 @@ import org.seaborne.dboe.transaction.TransactionalFactory ;
 import org.seaborne.dboe.transaction.txn.ComponentId ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
-public class TestTransBinaryDataFile extends Assert {
+
+public class TestTransBinaryDataFile {
     private Journal journal ;
     private BinaryDataFile baseBinData ;
     private TransBinaryDataFile transBinData ;
