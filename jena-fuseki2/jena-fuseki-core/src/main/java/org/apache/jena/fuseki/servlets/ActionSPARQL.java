@@ -23,6 +23,7 @@ import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
 import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
 import java.io.InputStream ;
+import java.nio.charset.CharacterCodingException;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -205,7 +206,11 @@ public abstract class ActionSPARQL extends ActionBase
                 .lang(lang)
                 .base(base)
                 .parse(dest);
-        } 
+        } catch (RuntimeIOException ex) {
+            if ( ex.getCause() instanceof CharacterCodingException )
+                throw new RiotException("Character Coding Error: "+ex.getMessage());
+            throw ex;
+        }
         catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
 }
