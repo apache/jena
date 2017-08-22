@@ -223,17 +223,17 @@ public class IO
         try { resource.close();  } catch (Exception ex) { }
     }
 
-    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
+    /** Throw a RuntimeIOException - this function is guaranteed not to return normally */
     public static void exception(String message) {
         throw new RuntimeIOException(message) ;
     }
 
-    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
+    /** Throw a RuntimeIOException - this function is guaranteed not to return normally */
     public static void exception(IOException ex) {
         throw new RuntimeIOException(ex) ;
     }
 
-    /** Throw a RuntimeIOException - this function is guaraentted not to return normally */
+    /** Throw a RuntimeIOException - this function is guaranteed not to return normally */
     public static void exception(String msg, IOException ex) {
         throw new RuntimeIOException(msg, ex) ;
     }

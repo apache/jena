@@ -128,13 +128,17 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             upload.setExistedBefore(existedBefore) ;
             action.commit() ;
             return upload ;
+        } catch (ActionErrorException ex) {
+            // Any ServletOps.error from calls in the try{} block.
+            action.abort() ;
+            throw ex;
         } catch (RiotException ex) { 
             // Parse error
             action.abort() ;
             ServletOps.errorBadRequest(ex.getMessage()) ;
             return null ;
         } catch (Exception ex) {
-            // Something else went wrong.  Backout.
+            // Something unexpected.
             action.abort() ;
             ServletOps.errorOccurred(ex.getMessage()) ;
             return null ;
