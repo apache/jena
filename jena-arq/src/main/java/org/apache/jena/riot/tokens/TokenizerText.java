@@ -454,7 +454,6 @@ public final class TokenizerText implements Tokenizer
     private static final boolean AllowSpacesInIRI = false;
     
     // [8]  IRIREF  ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
-    @SuppressWarnings("fallthrough")
     private String readIRI() {
         stringBuilder.setLength(0);
         for (;;) {
