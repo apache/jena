@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,37 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text ;
+package org.apache.jena.sparql.core;
 
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 
-/** Class representing a single hit from a jena-text index */ 
-public class TextHit
-{
-    private Node node;
-    private float score;
-    private Node literal;
+/**
+ * A graph with an associated name.
+ * <p>
+ * Sometimes there is an associated name with a graph, where it lives on the web,
+ * or the name in a dataset.
+ * <p>
+ * This interface is for graph that have one associated name.
+ * What "associated" means is left open.  
+ * 
+ * @see GraphView
+ * @see NamedGraphWrapper
+ */
 
-    public TextHit(Node node, float score, Node literal) {
-        this.node = node;
-        this.score = score;
-        this.literal = literal;
-    }
-
-    public Node getNode() {
-        return this.node;
-    }
-    
-    public float getScore() {
-        return this.score;
-    }
-
-    public Node getLiteral() {
-        return this.literal;
-    }
-    
-    @Override
-    public String toString() {
-        return "TextHit[node="+node+" literal="+literal+ " score="+score+"]";
-    }
+public interface NamedGraph extends Graph {
+    /**
+     * Return the graph name for this graph.
+     * Blank nodes can be used.
+     * <p>
+     * A named graph of "null" is discouraged - use {@link Quad#defaultGraphIRI} 
+     * for a default graph in the context of use.
+     */
+    public Node getGraphName();
 }

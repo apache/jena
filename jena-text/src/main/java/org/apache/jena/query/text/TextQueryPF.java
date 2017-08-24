@@ -29,6 +29,7 @@ import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
@@ -240,42 +241,57 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private ListMultimap<String,TextHit> query(Node property, String queryString, String lang, int limit, ExecutionContext execCxt) {
-        // use the graph information in the text index if possible
-        String graph = null;
-        if (textIndex.getDocDef().getGraphField() != null
-            && execCxt.getActiveGraph() instanceof GraphView) {
-            GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
-            if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
-                graph =
-                    activeGraph.getGraphName() != null 
-                    ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
-                    : Quad.defaultGraphNodeGenerated.getURI() ;
-            }
+        String graphURI = chooseGraphURI(execCxt);
+        
+        if ( graphURI == null ) {
+            Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
+            if ( log.isDebugEnabled())
+                log.debug("Text query: {} ({})", queryString,limit) ;
+        } else {
+            Explain.explain(execCxt.getContext(), "Text query <"+graphURI+">: "+queryString) ;
+            if ( log.isDebugEnabled())
+                log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
         }
-
-        Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
-        if ( log.isDebugEnabled())
-            log.debug("Text query: {} ({})", queryString,limit) ;
-
-        String cacheKey = limit + " " + property + " " + queryString ;
+        
+        // Cache-key does not matter if lang or graphURI are null
+        String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
         @SuppressWarnings("unchecked")
         Cache<String,ListMultimap<String,TextHit>> queryCache = 
             (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
-        if (queryCache == null) { /* doesn't yet exist, need to create it */
+        if (queryCache == null) {
+            /* doesn't yet exist, need to create it */
             queryCache = CacheFactory.createCache(CACHE_SIZE);
             execCxt.getContext().put(cacheSymbol, queryCache);
         }
 
-        final String queryStr = queryString; // final needed for the lambda function
-        final String graphURI = graph; // final needed for the lambda function
-        ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, () -> {
-            List<TextHit> resultList = textIndex.query(property, queryStr, graphURI, lang, limit) ;
-            ListMultimap<String,TextHit> resultMultimap = LinkedListMultimap.create();
-            for (TextHit result : resultList) {
-                resultMultimap.put(TextQueryFuncs.subjectToString(result.getNode()), result);
+        ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
+        // No cache.
+        //ListMultimap<String,TextHit> results = performQuery(property, queryString, graphURI, lang, limit);
+        return results;
+    }
+    
+    private String chooseGraphURI(ExecutionContext execCxt) {
+        // use the graph information in the text index if possible
+        String graphURI = null;
+        Graph activeGraph = execCxt.getActiveGraph();
+        
+        if (textIndex.getDocDef().getGraphField() != null && activeGraph instanceof NamedGraph) {
+            NamedGraph namedGraph = (NamedGraph)activeGraph ;
+            if (!Quad.isUnionGraph(namedGraph.getGraphName())) {
+                graphURI = namedGraph.getGraphName() != null 
+                        ? TextQueryFuncs.graphNodeToString(namedGraph.getGraphName())
+                        : Quad.defaultGraphNodeGenerated.getURI() ;
             }
-            return resultMultimap;
-        });
+        }
+        return graphURI;
+    }
+    
+    private ListMultimap<String,TextHit> performQuery(Node property, String queryString, String graphURI, String lang, int limit) {
+        List<TextHit> resultList = textIndex.query(property, queryString, graphURI, lang, limit) ;
+        ListMultimap<String,TextHit> results = LinkedListMultimap.create();
+        for (TextHit result : resultList) {
+            results.put(TextQueryFuncs.subjectToString(result.getNode()), result);
+        }
         return results;
     }
     

@@ -44,7 +44,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  *  @see GraphUnionRead
  */ 
 
-public class GraphView extends GraphBase implements Sync
+public class GraphView extends GraphBase implements NamedGraph, Sync
 {
     // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
@@ -80,6 +80,7 @@ public class GraphView extends GraphBase implements Sync
      * Return the graph name for this graph in the dataset it is a view of.
      * Returns {@code null} for the default graph.
      */
+    @Override
     public Node getGraphName() {
         return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
     }
@@ -130,7 +131,7 @@ public class GraphView extends GraphBase implements Sync
         Node g = graphNode(gn) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
-        // but assumes thing come back in a particular order
+        // but assumes things come back in a particular order
         Iterator<Quad> iterQuads = getDataset().find(g, s, p, o) ;
         Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.

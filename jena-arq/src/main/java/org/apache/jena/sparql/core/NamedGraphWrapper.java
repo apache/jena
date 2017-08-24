@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,37 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text ;
+package org.apache.jena.sparql.core;
 
+import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.graph.GraphWrapper ;
 
-/** Class representing a single hit from a jena-text index */ 
-public class TextHit
-{
-    private Node node;
-    private float score;
-    private Node literal;
+/**
+ * Add a name to a graph.
+ * 
+ * @see GraphView
+ */
 
-    public TextHit(Node node, float score, Node literal) {
-        this.node = node;
-        this.score = score;
-        this.literal = literal;
+public class NamedGraphWrapper extends GraphWrapper implements NamedGraph {
+
+    private final Node graphName ;
+
+    public NamedGraphWrapper(Node graphName, Graph graph) {
+        super(graph) ;
+        this.graphName = graphName;
     }
 
-    public Node getNode() {
-        return this.node;
-    }
-    
-    public float getScore() {
-        return this.score;
-    }
-
-    public Node getLiteral() {
-        return this.literal;
-    }
-    
     @Override
-    public String toString() {
-        return "TextHit[node="+node+" literal="+literal+ " score="+score+"]";
+    public Node getGraphName() {
+        return graphName ;
     }
 }

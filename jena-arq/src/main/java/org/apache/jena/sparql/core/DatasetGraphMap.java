@@ -52,17 +52,17 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     /**  DatasetGraphMap defaulting to storage in memory.
      */
     public DatasetGraphMap() {
-        this(DatasetGraphFactory.graphMakerMem) ; 
+        this(DatasetGraphFactory.graphMakerNamedGraphMem) ; 
     }
     
     /**  DatasetGraphMap with a specific policy for graph creation.
      *   This allows control over the storage. 
      */
     public DatasetGraphMap(GraphMaker graphMaker) {
-        this(graphMaker.create(), graphMaker) ;
+        this(graphMaker.create(null), graphMaker) ;
     }
     
-    public DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
+    private DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
         this.defaultGraph = defaultGraph ;
         this.graphMaker = graphMaker ;
     }
@@ -144,7 +144,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
-            g = getGraphCreate();
+            g = getGraphCreate(graphNode);
             if ( g != null )
                 graphs.put(graphNode, g);
         }
@@ -155,8 +155,8 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
      * Return null for "nothing created as a graph".
      * Sub classes can reimplement this.  
      */
-    protected Graph getGraphCreate() { 
-        Graph g = graphMaker.create() ;
+    protected Graph getGraphCreate(Node graphNode) { 
+        Graph g = graphMaker.create(graphNode) ;
         if ( g == null )
             throw new ARQException("Can't make new graphs") ;
         return g ;
