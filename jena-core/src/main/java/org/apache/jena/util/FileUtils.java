@@ -22,7 +22,11 @@ import java.io.* ;
 import java.net.URL ;
 import java.nio.charset.Charset ;
 import java.nio.charset.StandardCharsets ;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.WrappedIOException ;
@@ -374,8 +378,9 @@ public class FileUtils
      */
     
     public static String readWholeFileAsUTF8(String filename) throws IOException {
-        InputStream in = new FileInputStream(filename) ;
-        return readWholeFileAsUTF8(in) ;
+        Path path = Paths.get(filename);
+        byte b[] = Files.readAllBytes(path);
+        return new String(b, utf8);
     }
 
     /** Read a whole stream as UTF-8
@@ -384,33 +389,7 @@ public class FileUtils
      * @return      String
      * @throws IOException
      */
-    public static String readWholeFileAsUTF8(InputStream in) throws IOException
-    {
-        try ( Reader r = new BufferedReader(asUTF8(in),1024) ) {
-            return readWholeFileAsUTF8(r) ;
-        }
+    public static String readWholeFileAsUTF8(InputStream in) throws IOException {
+        return IOUtils.toString(in, utf8);
     }
-    
-    /** Read a whole file as UTF-8
-     * 
-     * @param r
-     * @return String The whole file
-     * @throws IOException
-     */
-    
-    // Private worker as we are trying to force UTF-8. 
-    private static String readWholeFileAsUTF8(Reader r) throws IOException
-    {
-        try ( StringWriter sw = new StringWriter(1024) ) {
-            char buff[] = new char[1024];
-            int l ; 
-            while ((l = r.read(buff))!=-1) {         // .ready does not work with HttpClient streams.
-                if (l <= 0)
-                    break;
-                sw.write(buff, 0, l);
-            }
-            return sw.toString();
-        }
-    }
-
 }

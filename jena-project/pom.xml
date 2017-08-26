@@ -166,6 +166,12 @@
       </dependency>
       
       <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${ver.commonsio}</version>
+      </dependency>
+      
+      <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
         <version>${ver.libthrift}</version>
@@ -197,7 +203,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.3.2</version>
+        <version>1.3.3</version>
       </dependency>
 
       <dependency>
