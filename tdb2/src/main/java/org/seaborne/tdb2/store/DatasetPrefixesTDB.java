@@ -36,11 +36,8 @@ import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
  */
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
-    /* 
-     * Almost everything is cached in the prefix map asociated with the
-     * graph or dataset so this table is the persistent form and
-     * does not need a cache of it's own.   
-     */
+    // Consider a cache - like PrefixMappingCache was - but needs to respect transactions.
+    // See getPrefixMapping.
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     static final String unamedGraphURI = "" ;
@@ -161,7 +158,6 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public PrefixMapping getPrefixMapping(String graphName) {
         PrefixMapping pm = new GraphPrefixesProjectionTDB(graphName, this) ;
-        pm = new PrefixMappingCache(pm) ;
         return pm ;
     }
     

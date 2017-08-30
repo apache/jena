@@ -459,6 +459,14 @@ public class TransactionCoordinator {
         Objects.nonNull(readWrite) ;
         checkActive() ;
         
+        // XXX Flag to bounce writers fpor long term "block writers"
+        if ( false /* bounceWritersAtTheMoment */) {
+            if ( readWrite == WRITE ) {
+                throw new TransactionException("Writers currently being rejected");
+            }
+        }
+            
+        
         if ( canBlock )
             exclusivitylock.readLock().lock() ;
         else {

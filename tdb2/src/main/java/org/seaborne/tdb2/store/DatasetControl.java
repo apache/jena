@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.sys;
+package org.seaborne.tdb2.store;
 
 import java.util.Iterator ;
 
@@ -39,6 +39,6 @@ public interface DatasetControl
     /** Signal the completion of an internal read operation */
     public void finishRead();
     
-    /** Notify an iterator being created. */
+    /** An iterator being created. */
     public <T> Iterator<T> iteratorControl(Iterator<T> iter) ;
 }

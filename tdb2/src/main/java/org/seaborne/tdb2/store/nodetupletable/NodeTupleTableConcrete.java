@@ -27,11 +27,11 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.TupleLib ;
+import org.seaborne.tdb2.store.DatasetControl ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 import org.seaborne.tdb2.store.tupletable.TupleTable ;
-import org.seaborne.tdb2.sys.DatasetControl ;
 
 /** Group a tuple table and node table together to provide a real NodeTupleTable */
 public class NodeTupleTableConcrete implements NodeTupleTable

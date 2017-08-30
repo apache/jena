@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.sys;
+package org.seaborne.tdb2.store;
 
 import static java.lang.String.format ;
 
@@ -92,20 +92,19 @@ public class DatasetControlMRSW implements DatasetControl
             this.startEpoch = eCount.get() ;
         }
 
-        private void checkCourrentModification() {
+        private void checkConcurrentModification() {
             if ( finished )
                 return ;
 
             long now = eCount.get() ;
             if ( now != startEpoch ) {
                 policyError(format("Iterator: started at %d, now %d", startEpoch, now)) ;
-
             }
         }
 
         @Override
         public boolean hasNext() {
-            checkCourrentModification() ;
+            checkConcurrentModification() ;
             boolean b = iter.hasNext() ;
             if ( !b )
                 close() ;
@@ -114,7 +113,7 @@ public class DatasetControlMRSW implements DatasetControl
 
         @Override
         public T next() {
-            checkCourrentModification() ;
+            checkConcurrentModification() ;
             try { return iter.next() ; }
             catch (NoSuchElementException ex) {
                 close() ;
@@ -124,7 +123,7 @@ public class DatasetControlMRSW implements DatasetControl
 
         @Override
         public void remove() {
-            checkCourrentModification() ;
+            checkConcurrentModification() ;
             iter.remove() ;
         }
 
@@ -142,5 +141,4 @@ public class DatasetControlMRSW implements DatasetControl
     private static void policyError(String message) {
         throw new ConcurrentModificationException(message) ;
     }    
-
 }

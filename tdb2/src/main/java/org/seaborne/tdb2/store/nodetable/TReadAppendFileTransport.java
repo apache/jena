@@ -22,7 +22,7 @@ import java.util.Objects ;
 import org.apache.thrift.transport.TTransport ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 
-/** A file transport that support random access read and
+/** A file transport that supports random access read and
  *  buffered append write.
  *  <p>
  *  Adapter TTransport -&gt; BinaryDataFile

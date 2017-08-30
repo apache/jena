@@ -17,45 +17,44 @@
 
 package org.seaborne.tdb2.graph;
 
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.impl.TransactionHandlerBase ;
-import org.seaborne.tdb2.TDB2 ;
+import org.apache.jena.query.ReadWrite;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator;
+import org.seaborne.tdb2.store.DatasetGraphTDB;
 import org.seaborne.tdb2.store.GraphTDB ;
-
-/** Support for when TDB is used non-transactionally. Does not support ACID transactions.  
- *  Flushes if commit is called although it denies supporting transactions
- */
 
 public class TransactionHandlerTDB extends TransactionHandlerBase //implements TransactionHandler 
 {
-    private final Graph graph ;
+    private final GraphTDB graph ;
+    private final DatasetGraphTDB dsg;
 
-    public TransactionHandlerTDB(GraphTDB graph)
-    {
-        this.graph = graph ;
-    }
-    
-    @Override
-    public void abort()
-    {
-        // Not the Jena old-style transaction interface
-        throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
-        //log.warn("'Abort' of a transaction not supported - ignored") ;
+    public TransactionHandlerTDB(GraphTDB graph) {
+        this.graph = graph;
+        this.dsg = graph.getDSG();
     }
 
     @Override
-    public void begin()
-    {}
-
-    @Override
-    public void commit()
-    {
-        TDB2.sync(graph) ;
+    public void abort() {
+        graph.getDSG().abort();
+        graph.getDSG().end();
     }
 
     @Override
-    public boolean transactionsSupported()
-    {
-        return false ;
+    public void begin() {
+        if ( TransactionCoordinator.promotion )
+            dsg.begin(ReadWrite.READ);
+        else
+            dsg.begin(ReadWrite.WRITE);
+    }
+
+    @Override
+    public void commit() {
+        dsg.commit();
+        dsg.end();
+    }
+
+    @Override
+    public boolean transactionsSupported() {
+        return true;
     }
 }

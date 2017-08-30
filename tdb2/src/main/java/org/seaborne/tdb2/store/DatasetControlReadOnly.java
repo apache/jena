@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.sys;
+package org.seaborne.tdb2.store;
 
 import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;

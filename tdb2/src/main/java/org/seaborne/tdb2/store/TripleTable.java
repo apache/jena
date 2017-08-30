@@ -26,7 +26,6 @@ import org.apache.jena.graph.Triple ;
 import org.seaborne.tdb2.lib.TupleLib ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
-import org.seaborne.tdb2.sys.DatasetControl ;
 
 /**
  * TripleTable - a collection of TupleIndexes for 3-tuples together with a node

@@ -18,17 +18,30 @@
 package org.seaborne.tdb2.repack;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.core.*;
+import org.seaborne.tdb2.store.DatasetGraphTDB;
 
-final // Encourage the JIT!
+final
 public class DatasetGraphSwitchable extends DatasetGraphWrapper
 {
+    // QueryEngineFactoryWrapper has a QueryEngineFactory that is always loaded that
+    // executes on the unwrapped DSG (recursively). Unwrapping is via getBase, calling
+    // getWrapped() which is implemented with get().
+    
+//    static { 
+//        // QueryEngineRegistry.addFactory(factory());
+//    }
+    
     private final AtomicReference<DatasetGraph> dsgx = new AtomicReference<>();
     // Null for in-memory datasets.
-    private final Path basePath; 
+    private final Path basePath;
     
     public DatasetGraphSwitchable(Path base, DatasetGraph dsg) {
         // Don't use the slot in datasetGraphWrapper - use the AtomicReference
@@ -37,6 +50,11 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         this.basePath = base;  
     }
 
+    /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
+     *  If so, it does not have a location on disk.
+     */
+    public boolean hasContainerPath() { return basePath != null; } 
+    
     public Path getContainerPath() { return basePath; }
     
     /** The dataset to use for redirection - can be overridden.
@@ -53,5 +71,144 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     public DatasetGraph set(DatasetGraph dsg) { 
         return dsgx.getAndSet(dsg);
     }
+    
+    /** If and only if the current value is the given old value, set the base {@link DatasetGraph}  
+     * Returns true if a swap happened.
+     */ 
+    public boolean change(DatasetGraph oldDSG, DatasetGraph newDSG) { 
+        return dsgx.compareAndSet(oldDSG, newDSG);
+    }
+
+    // Used directly, Does not get prefix mapping right.
+    // GraphView has a private, empty prefix mapping
+
+    Graph dft = new GraphView(this, Quad.defaultGraphNodeGenerated) {
+        @Override
+        protected PrefixMapping createPrefixMapping() {
+            return prefixMapping(null);
+        } 
+    };
+    
+    @Override
+    public Graph getDefaultGraph() {
+        // Via the switchable.
+        return new GraphView(this, Quad.defaultGraphNodeGenerated) {
+            @Override
+            protected PrefixMapping createPrefixMapping() {
+                return prefixMapping(null);
+            }
+        };
+    }
+    
+    @Override
+    public Graph getGraph(Node gn) {
+        if ( Quad.isUnionGraph(gn) )
+            return GraphView.createUnionGraph(get());
+        
+        return new GraphView(this, gn) {
+            @Override
+            protected PrefixMapping createPrefixMapping() {
+                return prefixMapping(gn);
+            }
+        };
+    }
+
+    // TDB2 specific.
+    // Does not cope with blank nodes.
+    // A PrefixMapping sending operations via the switchable.
+    private PrefixMapping prefixMapping(Node graphName) {
+        
+        String gn = (graphName == null) ? "" : graphName.getURI(); 
+        
+        return new PrefixMappingImpl() {
+            
+            DatasetPrefixStorage dps() {
+                return ((DatasetGraphTDB)dsgx.get()).getPrefixes();
+            }
+            
+            Graph graph() {
+                DatasetGraphTDB dsg = (DatasetGraphTDB)dsgx.get();
+                if ( gn == null )
+                    return dsg.getDefaultGraph();
+                else
+                    return dsg.getGraph(graphName);
+            }
+            
+            PrefixMapping prefixMapping() {
+                if ( gn == null )
+                    return dps().getPrefixMapping();
+                else
+                    return dps().getPrefixMapping(gn); 
+            }
+
+            @Override
+            protected void set(String prefix, String uri) {
+                dps().insertPrefix(gn, prefix, uri);
+                super.set(prefix, uri);
+            }
+
+            @Override
+            protected String get(String prefix) {
+                return dps().readPrefix(gn, prefix);
+            }
+
+            @Override
+            protected void remove(String prefix) {
+                dps().getPrefixMapping().removeNsPrefix(prefix);
+                super.remove(prefix);
+            }
+            
+            @Override
+            public Map<String, String> getNsPrefixMap() {
+                return prefixMapping().getNsPrefixMap();
+                //return graph().getPrefixMapping().getNsPrefixMap();
+            }
+        };
+    }
+    
+    //static { register() ; }
+    
+    
+//    static QueryEngineFactory factory() {
+//        return new QueryEngineFactory() {
+//            @Override
+//            public boolean accept(Op op, DatasetGraph dataset, Context context) {
+//                DatasetGraphSwitchable dsg = extract(dataset) ;
+//                if ( dsg == null ) return false;
+//                QueryEngineFactory f = QueryEngineRegistry.findFactory(op, dsg.get(), context);
+//                return f.accept(op, dataset, context);
+//            }
+//
+//            @Override
+//            public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context) {
+//                DatasetGraphSwitchable dsg = extract(dataset) ;
+//                if ( dsg == null ) return null;
+//                QueryEngineFactory f = QueryEngineRegistry.findFactory(op, dsg.get(), context);
+//                return f.create(op, dataset, inputBinding, context);
+//            }
+//
+//            private DatasetGraphSwitchable extract(DatasetGraph dataset) {
+//                if ( dataset instanceof DatasetGraphSwitchable )
+//                    return (DatasetGraphSwitchable)dataset;
+//                return null;
+//            }
+//
+//            @Override
+//            public boolean accept(Query query, DatasetGraph dataset, Context context) {
+//                DatasetGraphSwitchable dsg = extract(dataset) ;
+//                if ( dsg == null ) return false;
+//                QueryEngineFactory f = QueryEngineRegistry.findFactory(query, dsg.get(), context);
+//                return f.accept(query, dataset, context);
+//            }
+//
+//            @Override
+//            public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context) {
+//                DatasetGraphSwitchable dsg = extract(dataset) ;
+//                if ( dsg == null ) return null;
+//                QueryEngineFactory f = QueryEngineRegistry.findFactory(query, dsg.get(), context);
+//                return f.create(query, dataset, inputBinding, context);
+//            }
+//        };
+//    }
 }
 

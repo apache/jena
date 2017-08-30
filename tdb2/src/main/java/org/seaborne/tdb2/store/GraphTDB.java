@@ -87,7 +87,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         if ( iterQuads == null )
             return org.apache.jena.util.iterator.NullIterator.instance() ;
         // Can't be duplicates - fixed graph node..
-        Iterator<Triple> iterTriples = new ProjectQuadsToTriples(Quad.defaultGraphIRI, iterQuads) ;
+        Iterator<Triple> iterTriples = projectQuadsToTriples(Quad.defaultGraphIRI, iterQuads) ;
         return WrappedIterator.createNoRemove(iterTriples) ;
     }
 
@@ -97,12 +97,11 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         if ( isUnionGraph(gn) )
             gn = Node.ANY ;
 
-        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(),
-                                                          m.getMatchObject()) ;
+        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
         if ( iter == null )
             return org.apache.jena.util.iterator.NullIterator.instance() ;
 
-        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn), iter) ;
+        Iterator<Triple> iterTriples = projectQuadsToTriples((gn == Node.ANY ? null : gn), iter) ;
 
         if ( gn == Node.ANY )
             iterTriples = Iter.distinct(iterTriples) ;
@@ -142,93 +141,18 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
 			throw new TDBException("Expected a Tuple of 4, got: " + item);
 		return TupleFactory.tuple(item.get(1), item.get(2), item.get(3));
 	};
-
-    // Convert from Iterator<Quad> to Iterator<Triple>
-    static class ProjectQuadsToTriples implements Iterator<Triple> {
-        private final Iterator<Quad> iter ;
-        private final Node           graphNode ;
-
-        /**
-         * Project quads to triples - check the graphNode is as expected if not
-         * null
-         */
-        ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) {
-            this.graphNode = graphNode ;
-            this.iter = iter ;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return iter.hasNext() ;
-        }
-
-        @Override
-        public Triple next() {
-            Quad q = iter.next() ;
+	
+	private static Iterator<Triple> projectQuadsToTriples(Node graphNode, Iterator<Quad> iter) {
+	    // Checking.
+        Function<Quad, Triple> f = (q) -> {
             if ( graphNode != null && !q.getGraph().equals(graphNode) )
-                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode
-                                        + ", got=" + q.getGraph() + ")") ;
-            return q.asTriple() ;
-        }
-
-        @Override
-        public void remove() {
-            iter.remove() ;
-        }
-    }
-
-    @Override
-    public Capabilities getCapabilities() {
-        if ( capabilities == null )
-            capabilities = new Capabilities() {
-                @Override
-                public boolean sizeAccurate() {
-                    return true ;
-                }
-
-                @Override
-                public boolean addAllowed() {
-                    return true ;
-                }
-
-                @Override
-                public boolean addAllowed(boolean every) {
-                    return true ;
-                }
-
-                @Override
-                public boolean deleteAllowed() {
-                    return true ;
-                }
-
-                @Override
-                public boolean deleteAllowed(boolean every) {
-                    return true ;
-                }
-
-                @Override
-                public boolean canBeEmpty() {
-                    return true ;
-                }
-
-                @Override
-                public boolean iteratorRemoveAllowed() {
-                    return false ;
-                } /* ** */
-
-                @Override
-                public boolean findContractSafe() {
-                    return true ;
-                }
-
-                @Override
-                public boolean handlesLiteralTyping() {
-                    return false ;
-                } /* ** */
-            } ;
-
-        return super.getCapabilities() ;
-    }
+                throw new InternalError("projectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode + ", got=" + q.getGraph() + ")");
+            return q.asTriple();
+        };
+        // Without.
+        //Function<Quad, Triple> f = (q) -> q.asTriple();
+	    return Iter.map(iter, f);
+	}
 
     @Override
     public TransactionHandler getTransactionHandler() {

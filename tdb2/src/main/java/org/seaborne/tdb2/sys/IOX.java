@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.repack.sys;
+package org.seaborne.tdb2.sys;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -34,6 +34,7 @@ import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.seaborne.dboe.DBOpEnvException;
 import org.seaborne.dboe.base.file.Location;
+import org.seaborne.tdb2.repack.sys.Util ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,20 @@ public class IOX {
      */
     public static RuntimeIOException exception(IOException ioException) {
         return new RuntimeIOException(ioException);
+    }
+    
+    /** Convert an {@link IOException} into a {@link RuntimeIOException}.
+     * <p>
+     * Idiom:
+     * <pre>
+     *     catch(IOException ex) { throw new exception("Oh dear", ex); } 
+     * </pre>
+     * @param message
+     * @param ioException
+     * @return RuntimeIOException
+     */
+    public static RuntimeIOException exception(String message, IOException ioException) {
+        return new RuntimeIOException(message, ioException);
     }
     
     /** Write a file safely - the change happens (the function returns true) or

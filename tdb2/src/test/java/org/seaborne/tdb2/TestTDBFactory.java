@@ -37,35 +37,35 @@ public class TestTDBFactory extends BaseTest
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
     
-    @Before public void before()
-    {
-        FileOps.clearDirectory(DIRx) ; 
+    @Before
+    public void before() {
+        FileOps.clearDirectory(DIRx) ;
     }
-    
-    @After public void after()
-    {
-        FileOps.clearDirectory(DIRx) ; 
+
+    @After
+    public void after() {
+        FileOps.clearDirectory(DIRx) ;
     }
-    
-    @Test public void testTDBFactory1()
-    {
+
+    @Test
+    public void testTDBFactory1() {
         StoreConnection.reset() ;
-        DatasetGraph dg1 = TDB2Factory.connectDatasetGraph(Location.mem("FOO")) ;
-        DatasetGraph dg2 = TDB2Factory.connectDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.mem("FOO")) ;
         Txn.executeWrite(dg1, ()->{
-            dg1.add(quad1) ;    
+            dg1.add(quad1) ;
         }) ;
         Txn.executeRead(dg2, ()->{
             assertTrue(dg2.contains(quad1)) ;
         }) ;
     }
     
-    @Test public void testTDBFactory2()
-    {
+    @Test
+    public void testTDBFactory2() {
         StoreConnection.reset() ;
         // The unnamed location is unique each time.
-        DatasetGraph dg1 = TDB2Factory.connectDatasetGraph(Location.mem()) ;
-        DatasetGraph dg2 = TDB2Factory.connectDatasetGraph(Location.mem()) ;
+        DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(Location.mem()) ;
+        DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.mem()) ;
         Txn.executeWrite(dg1, ()->{
             dg1.add(quad1) ;    
         }) ;
@@ -74,16 +74,17 @@ public class TestTDBFactory extends BaseTest
         }) ;
     }
 
-    @Test public void testStoreConnectionTxn1()
-    {
+
+    @Test
+    public void testStoreConnectionTxn1() {
         StoreConnection.reset() ;
         DatasetGraph dg1 = StoreConnection.connectCreate(DIR).getDatasetGraph() ;
         DatasetGraph dg2 = StoreConnection.connectCreate(DIR).getDatasetGraph() ;
         assertSame(dg1, dg2) ;
     }
     
-    @Test public void testStoreConnectionTxn2()
-    {
+    @Test
+    public void testStoreConnectionTxn2() {
         // Named memory locations
         StoreConnection.reset() ;
         DatasetGraph dg1 = StoreConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
@@ -92,8 +93,8 @@ public class TestTDBFactory extends BaseTest
         assertSame(dg1, dg2) ;
     }
     
-    @Test public void testStoreConnectionTxn3()
-    {
+    @Test
+    public void testStoreConnectionTxn3() {
         // Un-named memory locations
         StoreConnection.reset() ;
         DatasetGraph dg1 = StoreConnection.connectCreate(Location.mem()).getDatasetGraph() ;
@@ -102,4 +103,19 @@ public class TestTDBFactory extends BaseTest
         assertNotSame(dg1, dg2) ;
     }
 
+    @Test
+    public void testTDBFactoryDisk() {
+        StoreConnection.reset() ;
+        // The named disk location
+        Location loc = DIR;
+        DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(loc) ;
+        DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.create(loc.getDirectoryPath()));
+        assertSame(dg1, dg2) ;
+        Txn.executeWrite(dg1, ()->{
+            dg1.add(quad1) ;    
+        }) ;
+        Txn.executeRead(dg2, ()->{
+            assertTrue(dg2.contains(quad1)) ;
+        }) ;
+    }
 }

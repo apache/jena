@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.seaborne.dboe.transaction.txn.Transaction;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator;
 import org.seaborne.dboe.transaction.txn.TransactionException;
-import org.seaborne.tdb2.TDB2Factory;
+import org.seaborne.tdb2.DatabaseMgr ;
 
 public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
 
@@ -62,7 +62,7 @@ public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
 
     @Override
     protected DatasetGraph create() {
-        return TDB2Factory.createDatasetGraph();
+        return DatabaseMgr.createDatasetGraph();
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
+import org.seaborne.tdb2.DatabaseMgr ;
 import org.seaborne.tdb2.TDB2Factory ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 import org.seaborne.tdb2.sys.SystemTDB ;
@@ -76,7 +77,7 @@ public class TL {
     }
 
     public static DatasetGraph createTestDatasetGraphMem() {
-        DatasetGraph dataset = TDB2Factory.createDatasetGraph() ;
+        DatasetGraph dataset = DatabaseMgr.createDatasetGraph() ;
         // Non-transactional tests
         dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;

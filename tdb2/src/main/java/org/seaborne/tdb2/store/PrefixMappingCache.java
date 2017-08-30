@@ -21,12 +21,13 @@ import java.util.Map ;
 import java.util.Optional ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
 
-// Non-transactional cache.
+// Unsafe. Non-transactional cache.
 public class PrefixMappingCache implements PrefixMapping {
 
     private final PrefixMapping other ;
@@ -121,6 +122,7 @@ public class PrefixMappingCache implements PrefixMapping {
 
     @Override
     public Map<String, String> getNsPrefixMap() {
+        // Ignore cache - get everything from the provider.
         return other.getNsPrefixMap() ;
     }
 
@@ -128,22 +130,21 @@ public class PrefixMappingCache implements PrefixMapping {
     // Libraryize?
     @Override
     public String expandPrefix(String prefixed) {
-        {
-            int colon = prefixed.indexOf(':') ;
-            if ( colon < 0 )
-                return prefixed ;
-            else {
-                String prefix = prefixed.substring(0, colon) ;
-                String uri = getNsPrefixURI(prefix) ;
-                return uri == null ? prefixed : uri + prefixed.substring(colon + 1) ;
-            }
+        int colon = prefixed.indexOf(':');
+        if ( colon < 0 )
+            return prefixed;
+        else {
+            String prefix = prefixed.substring(0, colon);
+            String uri = getNsPrefixURI(prefix);
+            return uri == null ? prefixed : uri + prefixed.substring(colon + 1);
         }
     }
 
     @Override
     public String qnameFor(String uri) {
         int split = Util.splitNamespaceXML(uri) ;
-        String ns = uri.substring(0, split), local = uri.substring(split) ;
+        String ns = uri.substring(0, split);
+        String local = uri.substring(split) ;
         if ( local.equals("") )
             return null ;
         String prefix = getNsURIPrefix(ns) ;
@@ -187,5 +188,15 @@ public class PrefixMappingCache implements PrefixMapping {
         return other.numPrefixes() ;
     }
 
+    private static String str(PrefixMapping pmap) {
+        return pmap.getNsPrefixMap().toString();
+    }
+    
+    @Override
+    public String toString() {
+        // Problem : only prints the cache.
+        String x = Iter.iter(prefixToUri.keys()).map(k->k+"->"+prefixToUri.getIfPresent(k)).asString(", ");
+        return "pm cache: ["+prefixToUri.size()+"] "+x+" : " + str(other);
+    }
 }
 

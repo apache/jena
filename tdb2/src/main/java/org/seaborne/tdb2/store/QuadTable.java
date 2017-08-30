@@ -27,7 +27,6 @@ import org.apache.jena.sparql.core.Quad ;
 import org.seaborne.tdb2.lib.TupleLib ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
-import org.seaborne.tdb2.sys.DatasetControl ;
 
 /**
  * Quad table - a collection of TupleIndexes for 4-tuples together with a node

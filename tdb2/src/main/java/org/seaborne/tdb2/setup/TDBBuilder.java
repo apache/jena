@@ -49,8 +49,6 @@ import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTableConcrete ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 import org.seaborne.tdb2.store.tupletable.TupleIndexRecord ;
-import org.seaborne.tdb2.sys.DatasetControl ;
-import org.seaborne.tdb2.sys.DatasetControlMRSW ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

@@ -36,8 +36,8 @@ import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.DatabaseMgr ;
 import org.seaborne.tdb2.TDB2 ;
-import org.seaborne.tdb2.TDB2Factory ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
@@ -55,7 +55,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = Location.create(dir) ;
-        DatasetGraph dsg = TDB2Factory.connectDatasetGraph(loc) ;
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(loc) ;
 
         if ( root.hasProperty(pUnionDefaultGraph) ) {
             Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode() ;

@@ -28,8 +28,8 @@ import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 public class GraphPrefixesProjectionTDB implements PrefixMapping {
     // Despite the name "TDB" this is general replacement for
     // PrefixMapping over DatasetPrefixStorage.
-    private String graphName ;
-    private DatasetPrefixStorage prefixes ; 
+    private final String graphName ;
+    private final DatasetPrefixStorage prefixes ; 
 
     public GraphPrefixesProjectionTDB(String graphName, DatasetPrefixStorage prefixes)
     { 
@@ -113,10 +113,11 @@ public class GraphPrefixesProjectionTDB implements PrefixMapping {
     @Override
     public String qnameFor(String uri) {
         int split = Util.splitNamespaceXML(uri) ;
-        String ns = uri.substring(0, split), local = uri.substring(split) ;
+        String ns = uri.substring(0, split); 
+        String local = uri.substring(split) ;
         if ( local.equals("") )
             return null ;
-        String prefix = prefixes.readByURI(graphName, uri) ;
+        String prefix = prefixes.readByURI(graphName, ns) ;
         return prefix == null ? null : prefix + ":" + local ;
     }
     
