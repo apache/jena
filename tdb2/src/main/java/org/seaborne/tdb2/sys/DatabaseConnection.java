@@ -21,7 +21,9 @@ package org.seaborne.tdb2.sys;
 import java.io.IOException ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
+import java.util.HashSet ;
 import java.util.Map ;
+import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -68,20 +70,19 @@ public class DatabaseConnection {
             return dbConn;
         }
         // Cached by Location. Named in-memory or on-disk.
+        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->buildForCache(loc, params));
+        return dbConn ;
+    }
+    
+    private static DatabaseConnection buildForCache(Location location, StoreParams params) {
+        if ( location.isMemUnique() ) {
+            throw new TDBException("Can't buildForCache a memory-unique location");
+        }
         ProcessFileLock lock = null;
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
             lock = lockForLocation(location);
             // Take the lock.  This is atomic.
             lock.lockEx();
-        }
-        final ProcessFileLock lock2 = lock;
-        DatabaseConnection dbConn = cache.computeIfAbsent(location, (loc)->buildForCache(loc, lock2, params));
-        return dbConn ;
-    }
-    
-    private static DatabaseConnection buildForCache(Location location,  ProcessFileLock lock, StoreParams params) {
-        if ( location.isMemUnique() ) {
-            throw new TDBException("Can't buildForCache a memory-unique location");
         }
         DatasetGraph dsg = DatabaseOps.create(location);
         return new DatabaseConnection(dsg, location, lock) ;
@@ -129,6 +130,21 @@ public class DatabaseConnection {
             ProcessFileLock.release(dbConn.lock);
         }
     }
+    
+    /** 
+     * Stop managing all locations. 
+     * Use with extreme care.
+     * This is intended to support internal testing.
+     */
+    public static synchronized void reset() {
+        // Copy to avoid potential CME.
+        Set<Location> x = new HashSet<>(cache.keySet()) ;
+        for (Location loc : x)
+            expel(loc, true) ;
+        cache.clear() ;
+        StoreConnection.reset();
+    }
+    
     
     // One of the other.
     private final DatasetGraphSwitchable   datasetGraphSwitchable;

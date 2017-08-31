@@ -26,6 +26,7 @@ import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
+import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** StoreConnection and transactions - basic wiring.
@@ -52,7 +53,7 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     
     @Before public void before()
     {
-        StoreConnection.reset() ;
+        DatabaseConnection.reset() ;
         location = getLocation() ;
     }
 

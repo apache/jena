@@ -18,14 +18,13 @@
 
 package org.seaborne.tdb2;
 
-import org.apache.commons.lang3.NotImplementedException ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.repack.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
+import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.DatabaseOps ;
-import org.seaborne.tdb2.sys.StoreConnection ;
 
 /** Operations for TDBS DatasetGraph, including admin operations 
  * See {@link TDB2Factory} for creating API-level {@link Dataset Datasets}.
@@ -36,10 +35,9 @@ public class DatabaseMgr {
 
     // All creation of DatasetGraph for TDB2 goes through this method.
     private static DatasetGraph DB_ConnectCreate(Location location) {
-        //return DatabaseOps.connectOrCreate(location);
-        // One level.
-        StoreConnection sConn = StoreConnection.connectCreate(location) ;
-        return sConn.getDatasetGraph() ; 
+        return DatabaseConnection.connectCreate(location).getDatasetGraph();
+//        // One level.
+//        return StoreConnection.connectCreate(location).getDatasetGraph() ; 
     }
 
     /** Create or connect to a TDB2-backed dataset */
@@ -73,10 +71,11 @@ public class DatabaseMgr {
      * and does not lock out other use of the dataset.
      * 
      * @param container
+     * @return File name of the backup.
      */
-    public static void backup(DatasetGraph container) {
+    public static String backup(DatasetGraph container) {
         DatasetGraphSwitchable dsg = requireSwitchable(container);
-        throw new NotImplementedException("DatasetGraph backup not implemented yet");
+        return DatabaseOps.backup(dsg);
     }
 
 

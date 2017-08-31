@@ -27,6 +27,7 @@ import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -42,6 +43,8 @@ import org.seaborne.tdb2.repack.sys.FilenameUtils;
 import org.seaborne.tdb2.repack.sys.Util;
 import org.seaborne.tdb2.setup.StoreParams;
 import org.seaborne.tdb2.store.DatasetGraphTDB;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** Operations on and about TDB2 databases. 
  * <p>
@@ -60,6 +63,7 @@ import org.seaborne.tdb2.store.DatasetGraphTDB;
  * </ul>
  */
 public class DatabaseOps {
+    private static Logger LOG = LoggerFactory.getLogger(DatabaseOps.class); 
     private static final String dbPrefix     = "Data";
     private static final String SEP          = "-";
     private static final String startCount   = "0001";
@@ -68,15 +72,15 @@ public class DatabaseOps {
     // Basename of the backup file. "backup_{DateTime}.nq.gz
     private static final String BACKUPS_FN   = "backup";
     
+    /** Create a fresh database - called by {@code DatabaseMgr}.
+     * It is important to go via {@code DatabaseConnection} to avoid
+     * duplicate {@code DatasetGraphSwitchable}s for the same location.
+     */
     /*package*/ static DatasetGraph create(Location location) {
         // Hide implementation class.
         return createSwitchable(location);
     }
     
-    /** Create a fresh database - called by {@code DatabaseMgr}.
-     * It is important to go via {@code DatabaseMgr} to avoid
-     * duplicate {@code DatasetGraphSwitchable}s for the same location.
-     */
     private static DatasetGraphSwitchable createSwitchable(Location location) {
         if ( location.isMem() ) {
             DatasetGraph dsg = StoreConnection.connectCreate(location).getDatasetGraph();
@@ -100,7 +104,7 @@ public class DatabaseOps {
        return appDSG;
     }
     
-    public static void backup(DatasetGraphSwitchable container) {
+    public static String backup(DatasetGraphSwitchable container) {
         checkSupportsAdmin(container);
         Path dbPath = container.getContainerPath();
         Path backupDir = dbPath.resolve(BACKUPS_DIR);
@@ -117,14 +121,15 @@ public class DatabaseOps {
 //      activeBackups.add(dsg) ;
 //  }
 
-        try (OutputStream out2 = openUniqueFileForWriting(backupDir, BACKUPS_FN, "nq.gz");
+        Pair<OutputStream, Path> x = openUniqueFileForWriting(backupDir, BACKUPS_FN, "nq.gz");
+        try (OutputStream out2 = x.getLeft();
              OutputStream out1 = new GZIPOutputStream(out2, 8 * 1024) ;
              OutputStream out = new BufferedOutputStream(out1)) {
             Txn.executeRead(dsg, ()->RDFDataMgr.write(out, dsg, Lang.NQUADS));
         } catch (IOException e) {
             throw IOX.exception(e) ;
-        } finally {
         }
+        return x.getRight().toString();
     }
     
     private static void checkSupportsAdmin(DatasetGraphSwitchable container) {
@@ -136,7 +141,7 @@ public class DatabaseOps {
     
     
     // --> IOX
-    private static OutputStream openUniqueFileForWriting(Path dirPath, String basename, String ext) {
+    private static Pair<OutputStream, Path> openUniqueFileForWriting(Path dirPath, String basename, String ext) {
         if ( ! Files.isDirectory(dirPath) )
             throw new IllegalArgumentException("Not a directory: "+dirPath);
         if ( basename.contains("/") || basename.contains("\\") )
@@ -148,7 +153,8 @@ public class DatabaseOps {
         int x = 0 ;
         for(;;) {
             try {
-                return Files.newOutputStream(p, StandardOpenOption.CREATE_NEW);
+                OutputStream out = Files.newOutputStream(p, StandardOpenOption.CREATE_NEW); 
+                return Pair.create(out, p);
             } catch (AccessDeniedException ex)  { 
                 throw IOX.exception("Access denied", ex);
             } catch (FileAlreadyExistsException ex) {
@@ -193,7 +199,7 @@ public class DatabaseOps {
             Path db2 = db1.getParent().resolve(next);
             IOX.createDirectory(db2);
             Location loc2 = IOX.asLocation(db2);
-            System.out.printf("Compact %s -> %s\n", db1.getFileName(), db2.getFileName());
+            LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
             
             compact(container, loc1, loc2);
         }

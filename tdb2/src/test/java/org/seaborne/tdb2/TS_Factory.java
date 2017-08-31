@@ -23,10 +23,13 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestTDBFactory.class
+    TestDatabaseMgr.class
+    , TestTDBFactory.class
+
+    // Move to TS_Sys
+    , TestDatabaseOps.class
+    , TestDatabaseConnection.class
 })
 
 public class TS_Factory
-{
-
-}
+{}

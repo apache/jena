@@ -96,7 +96,11 @@ public class StoreConnection
         return sConn ;
     }
     
-    /** Stop managing all locations. Use with great care. */
+    /** 
+     * Stop managing all locations. 
+     * Use with extreme care.
+     * This is intended to support internal testing.
+     */
     public static synchronized void reset() {
         // Copy to avoid potential CME.
         Set<Location> x = new HashSet<>(cache.keySet()) ;
