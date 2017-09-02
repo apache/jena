@@ -26,9 +26,6 @@ import org.junit.runners.Suite;
     TestDatabaseMgr.class
     , TestTDBFactory.class
 
-    // Move to TS_Sys
-    , TestDatabaseOps.class
-    , TestDatabaseConnection.class
 })
 
 public class TS_Factory

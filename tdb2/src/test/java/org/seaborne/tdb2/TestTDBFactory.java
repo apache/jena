@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.ResourceFactory ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Test of TDB2Factory - the Dataset level API to TDB2 **/
 public class TestTDBFactory extends BaseTest
@@ -41,21 +41,21 @@ public class TestTDBFactory extends BaseTest
     
     @Test
     public void testTDBFactory1() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         Dataset ds = TDB2Factory.connectDataset(Location.mem()) ;
         test(ds);
     }
     
     @Test
     public void testTDBFactory2() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         Dataset ds = TDB2Factory.connectDataset(Location.mem("MEMORY")) ;
         test(ds);
     }
     
     @Test
     public void testTDBFactory3() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         // Only do disk things for tests that need them (disk takes time!).
         String DIRx = ConfigTest.getCleanDir() ;
         Location DIR = Location.create(DIRx);
@@ -68,7 +68,7 @@ public class TestTDBFactory extends BaseTest
     
     @Test
     public void testTDBFactory2DS_1() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         Dataset ds1 = TDB2Factory.connectDataset(Location.mem("FOO")) ;
         Dataset ds2 = TDB2Factory.connectDataset(Location.mem("FOO")) ;
         Txn.executeWrite(ds1, ()->{
@@ -81,7 +81,7 @@ public class TestTDBFactory extends BaseTest
     
     @Test
     public void testTDBFactory2DS_2() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         // The unnamed location is unique each time.
         Dataset ds1 = TDB2Factory.connectDataset(Location.mem()) ;
         Dataset ds2 = TDB2Factory.connectDataset(Location.mem()) ;
@@ -95,8 +95,8 @@ public class TestTDBFactory extends BaseTest
     
     @Test
     public void testTDBFactory2DS_3() {
-        DatabaseConnection.reset() ;
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
+        TDBInternal.reset() ;
         String DIRx = ConfigTest.getCleanDir() ;
         Location DIR = Location.create(DIRx);
         try {

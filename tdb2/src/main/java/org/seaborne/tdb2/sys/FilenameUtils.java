@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.repack.sys;
+package org.seaborne.tdb2.sys;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

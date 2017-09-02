@@ -17,11 +17,14 @@
 
 package org.seaborne.tdb2.store;
 
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertTrue ;
+
 import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -31,7 +34,7 @@ import org.junit.Test ;
 import org.seaborne.tdb2.junit.TL ;
 
 /** Testing persistence  */ 
-public class TestDatasetTDBPersist extends BaseTest
+public class TestDatasetTDBPersist
 {
     static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
     static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
@@ -40,8 +43,8 @@ public class TestDatasetTDBPersist extends BaseTest
     @Test
     public void dataset1() {
         TL.exec((ds) -> {
-            assertTrue(ds.getDefaultModel().getGraph() instanceof GraphTDB) ;
-            assertTrue(ds.getNamedModel("http://example/").getGraph() instanceof GraphTDB) ;
+            assertTrue(ds.getDefaultModel().getGraph() instanceof GraphViewSwitchable) ;
+            assertTrue(ds.getNamedModel("http://example/").getGraph() instanceof GraphViewSwitchable) ;
         }) ;
     }
     

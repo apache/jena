@@ -15,21 +15,22 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2.repack;
+package org.seaborne.tdb2.store;
 
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.*;
-import org.seaborne.tdb2.store.DatasetGraphTDB;
 
 final
-public class DatasetGraphSwitchable extends DatasetGraphWrapper
+public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn /* Until ARQ catches up with promote */ 
 {
     // QueryEngineFactoryWrapper has a QueryEngineFactory that is always loaded that
     // executes on the unwrapped DSG (recursively). Unwrapping is via getBase, calling
@@ -76,41 +77,23 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
      * Returns true if a swap happened.
      */ 
     public boolean change(DatasetGraph oldDSG, DatasetGraph newDSG) { 
+        // No need to clear. ngCache.clear();
         return dsgx.compareAndSet(oldDSG, newDSG);
     }
 
-    // Used directly, Does not get prefix mapping right.
-    // GraphView has a private, empty prefix mapping
-
-    Graph dft = new GraphView(this, Quad.defaultGraphNodeGenerated) {
-        @Override
-        protected PrefixMapping createPrefixMapping() {
-            return prefixMapping(null);
-        } 
-    };
+    private Graph dftGraph = GraphViewSwitchable.createDefaultGraph(this);
     
     @Override
     public Graph getDefaultGraph() {
-        // Via the switchable.
-        return new GraphView(this, Quad.defaultGraphNodeGenerated) {
-            @Override
-            protected PrefixMapping createPrefixMapping() {
-                return prefixMapping(null);
-            }
-        };
+        return dftGraph;
     }
+    
+//    private Cache<Node, Graph> ngCache = CacheFactory.createCache(10);
+    private Cache<Node, Graph> ngCache = CacheFactory.createOneSlotCache();
     
     @Override
     public Graph getGraph(Node gn) {
-        if ( Quad.isUnionGraph(gn) )
-            return GraphView.createUnionGraph(get());
-        
-        return new GraphView(this, gn) {
-            @Override
-            protected PrefixMapping createPrefixMapping() {
-                return prefixMapping(gn);
-            }
-        };
+        return ngCache.getOrFill(gn, ()->GraphViewSwitchable.createNamedGraph(this, gn));
     }
 
     // TDB2 specific.

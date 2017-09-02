@@ -50,10 +50,10 @@ import org.seaborne.tdb2.sys.TS_Sys ;
     , TS_TDBSetup.class
     , TS_Store.class
     , TS_SolverTDB.class
-    , TS_Sys.class
     , TS_Graph.class
     , TS_Factory.class
     , TS_TDBAssembler.class
+    , TS_Sys.class
 } )
 
 public class TC_TDB

@@ -33,8 +33,8 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.ProcessFileLock ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.tdb2.TDBException ;
-import org.seaborne.tdb2.repack.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.setup.StoreParams ;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
 
 // StoreConnection, DatabaseConnection < Connection<X> 
 
@@ -108,15 +108,18 @@ public class DatabaseConnection {
         return ProcessFileLock.create(lockFilename);
     }
     
-    /** Stop managing a location. Use with great care (testing only). */
-    public static synchronized void expel(Location location, boolean force) {
+    /** Use via {@link TDBInternal#expel} wherever possible.
+     * <p>
+     * Stop managing a location. Use with great care (testing only).<br/>
+     * Does not expel from {@link StoreConnection}.
+     */
+    public static synchronized void internalExpel(Location location, boolean force) {
         DatabaseConnection dbConn = cache.get(location) ;
         if (dbConn == null) return ;
         cache.remove(location) ;
         dbConn.isValid = false;
         //dbConn.datasetGraph = null;
         //dbConn.datasetGraphSwitchable = null;
-        StoreConnection.expel(location, force);
         
         //    if (!force && sConn.transactionManager.activeTransactions()) 
         //        throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
@@ -136,13 +139,12 @@ public class DatabaseConnection {
      * Use with extreme care.
      * This is intended to support internal testing.
      */
-    public static synchronized void reset() {
+    public static synchronized void internalReset() {
         // Copy to avoid potential CME.
         Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
-            expel(loc, true) ;
+            internalExpel(loc, true) ;
         cache.clear() ;
-        StoreConnection.reset();
     }
     
     

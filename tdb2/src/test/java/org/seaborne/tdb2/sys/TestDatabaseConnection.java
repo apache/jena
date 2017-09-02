@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2;
+package org.seaborne.tdb2.sys;
 
 import static org.junit.Assert.assertNotSame ;
 import static org.junit.Assert.assertSame ;
@@ -25,13 +25,14 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.sys.DatabaseConnection ;
 
 public class TestDatabaseConnection {
     
     @Test
     public void testStoreConnectionTxn1() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         // Only do disk things for test that need them (disk takes time!).
         String DIRx = ConfigTest.getCleanDir() ;
         Location DIR = Location.create(DIRx);
@@ -49,7 +50,7 @@ public class TestDatabaseConnection {
     @Test
     public void testStoreConnectionTxn2() {
         // Named memory locations
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
         DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem("FOO")).getDatasetGraph() ;
         assertSame(dg1, dg2) ;
@@ -58,7 +59,7 @@ public class TestDatabaseConnection {
     @Test
     public void testStoreConnectionTxn3() {
         // Un-named memory locations
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         DatasetGraph dg1 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph() ;
         DatasetGraph dg2 = DatabaseConnection.connectCreate(Location.mem()).getDatasetGraph() ;
         assertNotSame(dg1, dg2) ;

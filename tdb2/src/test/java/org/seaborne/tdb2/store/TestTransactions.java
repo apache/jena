@@ -37,7 +37,6 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionException;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.sys.StoreConnection ;
 import org.seaborne.tdb2.sys.TDBInternal;
 
 /** Transactions and store connections - extended tests assuming the
@@ -84,7 +83,7 @@ public class TestTransactions extends BaseTest
 
     @After public void after() {
         dataset.close() ;
-        StoreConnection.expel(location, true);
+        TDBInternal.expel(location, true);
     }
 
     // Models across transactions
@@ -135,7 +134,7 @@ public class TestTransactions extends BaseTest
         load(data2);
         
         dataset.begin(ReadWrite.READ);
-        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        Iterator<Quad> iter = dataset.asDatasetGraph().find();
         dataset.end();
         iter.next();
     }
@@ -169,7 +168,7 @@ public class TestTransactions extends BaseTest
         load(data2);
         
         dataset.begin(ReadWrite.READ);
-        Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
+        Iterator<Quad> iter = dataset.asDatasetGraph().find();
         dataset.end();
         
         dataset.begin(ReadWrite.READ);

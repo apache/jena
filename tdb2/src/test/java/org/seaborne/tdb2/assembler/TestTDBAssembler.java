@@ -32,11 +32,9 @@ import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.assembler.VocabTDB2 ;
-import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.store.DatasetGraphTxn ;
-import org.seaborne.tdb2.store.GraphTDB ;
-import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
+import org.seaborne.tdb2.store.GraphViewSwitchable ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 public class TestTDBAssembler extends BaseTest
 {
@@ -52,13 +50,13 @@ public class TestTDBAssembler extends BaseTest
 
     @Before
     public void before() {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
 
     @AfterClass
     static public void afterClass() {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
 
@@ -76,7 +74,7 @@ public class TestTDBAssembler extends BaseTest
         Object thing = AssemblerUtils.build(filename, type) ;
         assertTrue(thing instanceof Dataset) ;
         Dataset ds = (Dataset)thing ;
-        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTxn) ;
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphSwitchable) ;
         assertTrue(ds.supportsTransactions()) ;
         ds.close() ;
     }
@@ -88,11 +86,6 @@ public class TestTDBAssembler extends BaseTest
 
     @Test
     public void createGraphEmbed() {
-        // Jena 3.1.0 needs ... remove for Jena 3.1.1 or later. 
-//        if ( true ) {
-//            System.err.println("TestTDBAssembler.createGraphEmbed disabled for Jena 3.1.0") ;
-//            return ;
-//        }
         String f = dirAssem + "/tdb-graph-embed.ttl" ;
         Object thing = null ;
         try {
@@ -105,9 +98,9 @@ public class TestTDBAssembler extends BaseTest
 
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
-        assertTrue(graph instanceof GraphTDB) ;
+        assertTrue(graph instanceof GraphViewSwitchable) ;
 
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDSG() ;
+        DatasetGraphSwitchable ds = ((GraphViewSwitchable)graph).getDataset() ;
         if ( ds != null )
             ds.close() ;
     }
@@ -140,10 +133,10 @@ public class TestTDBAssembler extends BaseTest
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
 
-        assertTrue(graph instanceof GraphTDB) ;
+        assertTrue(graph instanceof GraphViewSwitchable) ;
 
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDSG() ;
-        if ( ds != null )
-            ds.close() ;
+        DatasetGraphSwitchable dsg = ((GraphViewSwitchable)graph).getDataset();
+        if ( dsg != null )
+            dsg.close() ;
     }
 }

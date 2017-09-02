@@ -25,7 +25,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Test of DatabaseMgr - the DatasetGraph level API to TDB2 **/
 public class TestDatabaseMgr extends BaseTest
@@ -38,7 +38,7 @@ public class TestDatabaseMgr extends BaseTest
     
     @Test
     public void testDatabaseMgr1() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ; 
         DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(Location.mem("FOO")) ;
         DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.mem("FOO")) ;
         Txn.executeWrite(dg1, ()->{
@@ -51,7 +51,7 @@ public class TestDatabaseMgr extends BaseTest
     
     @Test
     public void testDatabaseMgr2() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         // The unnamed location is unique each time.
         DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(Location.mem()) ;
         DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.mem()) ;
@@ -65,7 +65,7 @@ public class TestDatabaseMgr extends BaseTest
 
     @Test
     public void testDatabaseMgrDisk() {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         // The named disk location
         String DIRx = ConfigTest.getCleanDir() ;
         Location LOC = Location.create(DIRx) ;

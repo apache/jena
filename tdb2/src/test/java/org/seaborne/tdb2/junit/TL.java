@@ -25,8 +25,8 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.DatabaseMgr ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.SystemTDB ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Execute a test with a fresh dataset in a write transaction */
 public class TL {
@@ -35,14 +35,14 @@ public class TL {
         Dataset dataset = createTestDataset() ;
         action.accept(dataset);
         releaseDataset(dataset) ;
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
     }
     
     public static void execMem(Consumer<Dataset> action) {
         Dataset dataset = createTestDatasetMem() ;
         action.accept(dataset);
         releaseDataset(dataset);
-        DatabaseConnection.reset();
+        TDBInternal.reset();
     }
 
     // Or use these for @Before, @After style.
@@ -58,7 +58,7 @@ public class TL {
     
     public static void releaseDataset(Dataset dataset) {
         dataset.abort() ;
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
     }
 
     public static Dataset createTestDataset() {

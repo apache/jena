@@ -34,7 +34,6 @@ import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.seaborne.dboe.DBOpEnvException;
 import org.seaborne.dboe.base.file.Location;
-import org.seaborne.tdb2.repack.sys.Util ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

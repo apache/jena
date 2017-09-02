@@ -20,14 +20,14 @@ package org.seaborne.tdb2.sys;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.seaborne.tdb2.sys.TestSys ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestSys.class
+    TestDatabaseOps.class
+    , TestDatabaseConnection.class
+    , TestSys.class
+    //, TestOps.class
 })
 
 public class TS_Sys
-{
-
-}
+{}

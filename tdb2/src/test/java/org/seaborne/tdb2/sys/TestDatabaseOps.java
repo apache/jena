@@ -15,9 +15,12 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.tdb2;
+package org.seaborne.tdb2.sys;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotEquals ;
+import static org.junit.Assert.assertTrue ;
 
 import org.apache.commons.io.FileUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
@@ -30,11 +33,10 @@ import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
-import org.seaborne.tdb2.repack.DatasetGraphSwitchable ;
+import org.seaborne.tdb2.ConfigTest ;
+import org.seaborne.tdb2.DatabaseMgr ;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
-import org.seaborne.tdb2.sys.IOX ;
-import org.seaborne.tdb2.sys.StoreConnection ;
 
 public class TestDatabaseOps
 {
@@ -52,7 +54,7 @@ public class TestDatabaseOps
 
     @After  
     public void after() {
-        DatabaseConnection.reset();
+        TDBInternal.reset();
         FileUtils.deleteQuietly(IOX.asFile(DIR));
     }
 
@@ -67,6 +69,9 @@ public class TestDatabaseOps
             dsg.add(quad2) ;
         }) ;
         DatabaseMgr.compact(dsg);
+        
+        assertFalse(StoreConnection.isSetup(loc1));
+
         DatasetGraph dsg2 = dsgs.get();
         Location loc2 = ((DatasetGraphTDB)dsg2).getLocation();
 
@@ -78,17 +83,15 @@ public class TestDatabaseOps
             assertTrue(dsg.contains(quad2)) ;
         }) ;
         
-        // Naughty!
-        // dsg1 was closed and expelled. We must reopen its storage only.
+        // dsg1 was closed and expelled. We must carefully reopen its storage only.
+        
         DatasetGraph dsgOld = StoreConnection.connectCreate(loc1).getDatasetGraph();
         
         Txn.executeWrite(dsgOld, ()->dsgOld.delete(quad1));
-
-        Txn.executeWrite(dsg, ()->assertTrue(dsg.contains(quad1)) );
-
-        Txn.executeWrite(dsg2, ()->assertTrue(dsg2.contains(quad1)) ) ;
+        Txn.executeRead(dsg,     ()->assertTrue(dsg.contains(quad1)) );
+        Txn.executeRead(dsg2,    ()->assertTrue(dsg2.contains(quad1)) ) ;
         
-        StoreConnection.expel(loc1, true);
+        TDBInternal.expel(loc1, true);
     }
 
 //    @Test public void compact_2() {

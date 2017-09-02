@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.repack.sys;
+package org.seaborne.tdb2.sys;
 
 import java.util.Iterator;
 import java.util.List;

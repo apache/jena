@@ -31,7 +31,9 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.ConfigTest ;
+import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /**
  * This test suite uses on-disk structures, does a lot of clean/create/sync
@@ -52,12 +54,12 @@ public class TestStoreParamsCreate extends BaseTest {
     
     @Before public void clearupTest() { 
         // Flush and clean.
-        StoreConnection.expel(loc, true) ;
+        DatabaseConnection.internalExpel(loc, true);
         FileOps.clearAll(DB_DIR);
     }
 
     @After public void expelDatabase() { 
-        StoreConnection.expel(loc, true) ;
+        TDBInternal.expel(loc, true) ;
     }
     
     @Test public void params_create_01() {
@@ -81,7 +83,7 @@ public class TestStoreParamsCreate extends BaseTest {
         // Create.
         StoreConnection.connectCreate(loc) ;
         // Drop.
-        StoreConnection.expel(loc, true) ;
+        TDBInternal.expel(loc, true) ;
         // Reconnect
         StoreConnection.connectCreate(loc, null) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
@@ -98,7 +100,7 @@ public class TestStoreParamsCreate extends BaseTest {
         // Create.
         StoreConnection.connectCreate(loc, null) ;
         // Drop.
-        StoreConnection.expel(loc, true) ;
+        TDBInternal.expel(loc, true) ;
         // Reconnect
         StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
@@ -123,7 +125,7 @@ public class TestStoreParamsCreate extends BaseTest {
         // Create.
         StoreConnection.connectCreate(loc, pApp) ;
         // Drop.
-        StoreConnection.expel(loc, true) ;
+        TDBInternal.expel(loc, true) ;
         // Reconnect
         StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;

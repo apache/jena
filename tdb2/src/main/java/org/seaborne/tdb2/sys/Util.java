@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.seaborne.tdb2.repack.sys;
+package org.seaborne.tdb2.sys;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +29,7 @@ public class Util {
      * @return T
      * @throws NoSuchElementException
      */
-    public static <T> T getLast(List<T> list) {
+    public static <T> T xgetLast(List<T> list) {
         T elt = getLastOrNull(list);
         if ( elt == null )
             throw new NoSuchElementException();

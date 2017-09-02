@@ -26,8 +26,8 @@ import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.jenax.Txn ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** StoreConnection and transactions - basic wiring.
  *  These tests are slow on rotational disk.
@@ -53,11 +53,11 @@ public abstract class AbstractTestStoreConnectionBasics extends BaseTest
     
     @Before public void before()
     {
-        DatabaseConnection.reset() ;
+        TDBInternal.reset() ;
         location = getLocation() ;
     }
 
-    @After public void after() {} 
+    @After public void after() { TDBInternal.reset() ; } 
 
     @Test
     public void store_01()

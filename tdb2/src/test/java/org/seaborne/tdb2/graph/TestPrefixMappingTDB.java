@@ -25,16 +25,16 @@ import org.junit.* ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.junit.BuildTestLib ;
-import org.seaborne.tdb2.sys.StoreConnection ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 {
     static DatasetPrefixStorage last = null ;
     
     @BeforeClass public static void beforeClass() {}
-    @AfterClass public static void afterClass()   { StoreConnection.reset() ; ConfigTest.deleteTestingDir() ; }
+    @AfterClass public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
 
-    @Before public void before() { StoreConnection.reset() ; }
+    @Before public void before() { TDBInternal.reset() ; }
     @After public  void after()  { }
 
     
@@ -78,7 +78,6 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     // Persistent.
     @Test
     public void persistent1() {
-        StoreConnection.reset();
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
 
@@ -93,7 +92,6 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     // Persistent.
     @Test
     public void persistent2() {
-        StoreConnection.reset();
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
 

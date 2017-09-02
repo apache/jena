@@ -20,12 +20,20 @@ package org.seaborne.tdb2.sys;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.seaborne.dboe.base.file.Location ;
+import org.seaborne.tdb2.TDBException ;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.store.DatasetGraphTDB;
 import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.nodetable.NodeTable;
 
 /**
- * A collection of helpers to abstract away from internal details of TDB. Use with care.
+ * A collection of helpers to abstract away from calling code knowing the 
+ * internal details of TDB. 
+ * <p>
+ * Use with care.
+ * <p>{@link DatabaseOps#compact Compaction} invalidates any previous objects.
+ * 
  */
 public class TDBInternal {
     /**
@@ -88,17 +96,59 @@ public class TDBInternal {
 
     /**
      * Return the DatasetGraphTDB for a Dataset, or null.
+     * Use the {@link DatasetGraphTDB} with care.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(Dataset ds) {
         return getDatasetGraphTDB(ds.asDatasetGraph());
     }
 
     /**
-     * Return the DatasetGraphTDB for a DatasetGraph, or null. May not be up-to-date.
+     * Return the DatasetGraphTDB for a DatasetGraph, or null.
+     * Use the {@link DatasetGraphTDB} with care.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg) {
+        return unwrap(dsg);
+    }
+    
+    /**
+     * Return the DatasetGraphTDB for a DatasetGraph, or throw an exception.
+     */
+    public static DatasetGraphTDB requireStorage(DatasetGraph dsg) {
+        DatasetGraphTDB dsgtdb = unwrap(dsg);
+        if ( dsgtdb == null )
+            throw new TDBException("Not a TDB database (argument is neither a switchable nor direct TDB DatasetGraph)");
+        return dsgtdb;
+    }
+    
+    private static DatasetGraphTDB unwrap(DatasetGraph datasetGraph) {
+        DatasetGraph dsg = datasetGraph;
+        if ( dsg instanceof DatasetGraphSwitchable )
+            dsg = ((DatasetGraphSwitchable)datasetGraph).get();
         if ( dsg instanceof DatasetGraphTDB )
-            return (DatasetGraphTDB)dsg;
+            return ((DatasetGraphTDB)dsg);
         return null;
+    }
+
+    /** Stop managing a location. Use with great care (testing only). */
+    public static synchronized void expel(Location location, boolean force) {
+        DatabaseConnection.internalExpel(location, force);
+        StoreConnection.internalExpel(location, force);
+    }
+    
+    /** 
+     * Reset the whole TDB system.      
+     * Use with great care.
+     */
+    public static void reset() {
+        DatabaseConnection.internalReset();
+        StoreConnection.internalReset();
+    }
+
+    public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
+        if ( datasetGraph instanceof DatasetGraphSwitchable )
+            return true;
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            return true;
+        return false;
     }
 }

@@ -40,8 +40,8 @@ import org.seaborne.tdb2.modify.UpdateEngineTDB ;
 import org.seaborne.tdb2.solver.QueryEngineTDB ;
 import org.seaborne.tdb2.solver.StageGeneratorDirectTDB ;
 import org.seaborne.tdb2.sys.EnvTDB ;
-import org.seaborne.tdb2.sys.StoreConnection ;
 import org.seaborne.tdb2.sys.SystemTDB ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -94,11 +94,11 @@ public class TDB2 {
     }
 
     /**
-     * Release any and all system resources held by TDB. This does NOT close or
-     * release datasets or graphs held by client code.
+     * Release any and all system resources held by TDB.
+     * All release datasets or graphs held by client code are no longer valid. 
      */
     public static void closedown() {
-        StoreConnection.reset() ;
+        TDBInternal.reset() ;
     }
 
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */

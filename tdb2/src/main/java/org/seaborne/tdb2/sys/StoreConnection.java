@@ -101,22 +101,26 @@ public class StoreConnection
      * Use with extreme care.
      * This is intended to support internal testing.
      */
-    public static synchronized void reset() {
+    public static synchronized void internalReset() {
         // Copy to avoid potential CME.
         Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
-            expel(loc, true) ;
+            internalExpel(loc, true) ;
         cache.clear() ;
         ChannelManager.reset(); 
     }
 
     /** Stop managing a location. There should be no transactions running. */
     public static synchronized void release(Location location) {
-        expel(location, false) ;
+        internalExpel(location, false) ;
     }
 
-    /** Stop managing a location. Use with great care (testing only). */
-    public static synchronized void expel(Location location, boolean force) {
+    /** Use via {@link TDBInternal#expel} wherever possible.
+     * <p>
+     * Stop managing a location.<br/> 
+     * Use with great care (testing only).
+     */
+    public static synchronized void internalExpel(Location location, boolean force) {
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
 

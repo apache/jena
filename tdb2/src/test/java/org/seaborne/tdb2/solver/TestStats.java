@@ -32,10 +32,11 @@ import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 public class TestStats extends BaseTest
 {
-    static DatasetGraphTDB dsg      = ((DatasetGraphTDB)TL.createTestDatasetGraphMem()) ;
+    static DatasetGraphTDB dsg      = TDBInternal.getDatasetGraphTDB(TL.createTestDatasetGraphMem()) ;
     static NodeTupleTable quads     = dsg.getQuadTable().getNodeTupleTable() ;
     static NodeTupleTable triples   = dsg.getTripleTable().getNodeTupleTable() ;
     static NodeTable nt             = quads.getNodeTable() ;

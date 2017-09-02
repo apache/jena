@@ -21,10 +21,11 @@ package org.seaborne.tdb2;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.tdb2.repack.DatasetGraphSwitchable ;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
 import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.DatabaseOps ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Operations for TDBS DatasetGraph, including admin operations 
  * See {@link TDB2Factory} for creating API-level {@link Dataset Datasets}.
@@ -86,10 +87,7 @@ public class DatabaseMgr {
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 
     public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
-        DatasetGraphTDB dsg = requireDirect(datasetGraph);
-        if ( dsg == null )
-            return false ;
-        return true;
+        return TDBInternal.isBackedByTDB(datasetGraph);
     }
 
     /** Return the location of a DatasetGraph if it is backed by TDB, else null */
@@ -107,12 +105,10 @@ public class DatabaseMgr {
     }
 
     static DatasetGraphTDB requireDirect(DatasetGraph datasetGraph) {
-        DatasetGraph dsg = datasetGraph;
-        if ( datasetGraph instanceof DatasetGraphSwitchable )
-            dsg = ((DatasetGraphSwitchable)datasetGraph).get();
-        if ( datasetGraph instanceof DatasetGraphTDB )
-            return ((DatasetGraphTDB)datasetGraph);
-        throw new TDBException("Not a TDB database (argument is neither a switchable nor direct TDB DatasetGraph)");
+        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(datasetGraph);
+        if ( dsg == null )
+            throw new TDBException("Not a TDB database (argument is neither a switchable nor direct TDB DatasetGraph)");
+        return dsg;
     }
 
 }
