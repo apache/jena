@@ -350,6 +350,14 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.6</version>
+            <!-- Does this interfer with external -Darguments=-Dgpg.keyname=
+                  i.e. is it additive?
+                  <configuration>
+              <gpgArguments>
+                <arg>- -digest-algo=SHA512</arg> <comment fix
+              </gpgArguments>
+            </configuration>
+            -->
             <executions>
               <execution>
                 <id>sign-artifacts</id>
