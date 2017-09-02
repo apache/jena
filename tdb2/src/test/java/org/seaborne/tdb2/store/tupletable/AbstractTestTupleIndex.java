@@ -23,7 +23,7 @@ import java.util.Iterator ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 import org.seaborne.tdb2.store.NodeId ;
@@ -31,7 +31,7 @@ import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 import static org.seaborne.tdb2.store.tupletable.NData.*;
 
 /** Test TupleIndexes (general) */
-public abstract class AbstractTestTupleIndex extends BaseTest
+public abstract class AbstractTestTupleIndex
 {
     protected abstract TupleIndex create(String description) ;
     

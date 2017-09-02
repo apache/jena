@@ -18,11 +18,11 @@
 package org.seaborne.tdb2.sys;
 
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.junit.Test ;
 import org.seaborne.tdb2.TDB2 ;
 
-public class TestSys extends BaseTest
+public class TestSys
 {
     @Test public void sys1()
     {

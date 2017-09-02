@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -34,7 +34,7 @@ import org.seaborne.tdb2.TDB2 ;
 import org.seaborne.tdb2.junit.TL ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
-public class TestDatasetTDB extends BaseTest
+public class TestDatasetTDB
 {
     private Dataset dataset ;
     

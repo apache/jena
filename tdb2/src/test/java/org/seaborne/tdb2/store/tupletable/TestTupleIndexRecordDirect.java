@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.junit.Test ;
@@ -37,7 +37,7 @@ import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
-public class TestTupleIndexRecordDirect extends BaseTest
+public class TestTupleIndexRecordDirect
 {
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
     

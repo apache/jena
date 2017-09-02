@@ -19,7 +19,7 @@ package org.seaborne.tdb2.solver;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Quad ;
@@ -34,7 +34,7 @@ import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
-public class TestStats extends BaseTest
+public class TestStats
 {
     static DatasetGraphTDB dsg      = TDBInternal.getDatasetGraphTDB(TL.createTestDatasetGraphMem()) ;
     static NodeTupleTable quads     = dsg.getQuadTable().getNodeTupleTable() ;

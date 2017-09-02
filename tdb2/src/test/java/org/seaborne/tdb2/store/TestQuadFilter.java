@@ -19,7 +19,7 @@ package org.seaborne.tdb2.store;
 
 import java.util.function.Predicate ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
@@ -36,7 +36,7 @@ import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 
 @Ignore("Quad filter tests not ready (transactions)")
-public class TestQuadFilter extends BaseTest
+public class TestQuadFilter
 {
     private static String graphToHide = "http://example/g2" ;
     private static Dataset ds = setup() ;  

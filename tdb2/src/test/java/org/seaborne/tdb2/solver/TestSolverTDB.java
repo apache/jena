@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -44,7 +44,7 @@ import org.junit.Test ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.junit.TL ;
 
-public class TestSolverTDB extends BaseTest
+public class TestSolverTDB
 {
     static String graphData = null ;
     static Graph graph = null ;

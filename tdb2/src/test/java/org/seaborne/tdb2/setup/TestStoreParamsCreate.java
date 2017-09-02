@@ -23,7 +23,7 @@ import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
@@ -39,7 +39,7 @@ import org.seaborne.tdb2.sys.TDBInternal ;
  * This test suite uses on-disk structures, does a lot of clean/create/sync
  * calls and can be noticably slow.
  */
-public class TestStoreParamsCreate extends BaseTest {
+public class TestStoreParamsCreate {
     private final String DB_DIR = ConfigTest.getCleanDir() ;
     private final Path db = Paths.get(DB_DIR) ;
     private final Path cfg = Paths.get(DB_DIR, Names.TDB_CONFIG_FILE) ;

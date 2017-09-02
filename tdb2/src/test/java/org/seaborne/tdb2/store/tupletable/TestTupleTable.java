@@ -23,7 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.record.RecordFactory ;
@@ -31,7 +31,7 @@ import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.sys.SystemTDB ;
 import static org.seaborne.tdb2.store.tupletable.NData.*;
 
-public class TestTupleTable extends BaseTest
+public class TestTupleTable
 {
     static RecordFactory factory = new RecordFactory(3*SystemTDB.SizeOfNodeId, 0) ;
     

@@ -19,7 +19,7 @@ package org.seaborne.tdb2.assembler;
 
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.AssemblerException ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.Dataset ;
@@ -36,7 +36,7 @@ import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
 import org.seaborne.tdb2.store.GraphViewSwitchable ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
-public class TestTDBAssembler extends BaseTest
+public class TestTDBAssembler
 {
     // Can be slow - explicitly closes the dataset.
     static String dirAssem      = null ;

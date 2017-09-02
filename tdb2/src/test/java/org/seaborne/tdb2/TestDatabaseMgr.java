@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -28,7 +28,7 @@ import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Test of DatabaseMgr - the DatasetGraph level API to TDB2 **/
-public class TestDatabaseMgr extends BaseTest
+public class TestDatabaseMgr
 {
 //    String DIRx = ConfigTest.getCleanDir() ;
 //    Location DIR = Location.create(DIRx);

@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.NodeFactory ;
@@ -35,7 +35,7 @@ import org.seaborne.tdb2.TDB2Factory ;
 /**
  * Test SPARQL
  */
-public class Test_SPARQL_TDB extends BaseTest
+public class Test_SPARQL_TDB
 {
     private static Dataset create() {
         return TDB2Factory.createDataset() ;

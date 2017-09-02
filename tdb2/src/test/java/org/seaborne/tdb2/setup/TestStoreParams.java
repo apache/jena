@@ -19,7 +19,7 @@ package org.seaborne.tdb2.setup;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.junit.Test ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.tdb2.TDBException ;
@@ -27,7 +27,7 @@ import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.StoreParamsBuilder ;
 import org.seaborne.tdb2.setup.StoreParamsCodec ;
 
-public class TestStoreParams extends BaseTest {
+public class TestStoreParams {
 
     @Test public void store_params_01() {
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), StoreParams.getDftStoreParams()) ; 

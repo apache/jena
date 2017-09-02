@@ -21,7 +21,7 @@ import java.io.StringReader ;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite;
@@ -48,7 +48,7 @@ import org.seaborne.tdb2.sys.TDBInternal;
  * @see TestStoreConnectionMapped
  * @see TestStoreConnectionMem
  */
-public class TestTransactions extends BaseTest
+public class TestTransactions
 {
     // Per-test unique-ish.
     static int count = 0 ;

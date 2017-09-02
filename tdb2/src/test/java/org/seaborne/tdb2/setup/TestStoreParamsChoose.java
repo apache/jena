@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2.setup;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
@@ -26,7 +26,7 @@ import org.seaborne.tdb2.ConfigTest ;
 
 //TestParamsCreate
 /** This test suite uses on-disk structures and can be slow */ 
-public class TestStoreParamsChoose extends BaseTest {
+public class TestStoreParamsChoose {
     private String DIR = ConfigTest.getCleanDir() ;
     
     static final StoreParams pApp = StoreParams.builder()

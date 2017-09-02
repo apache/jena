@@ -19,7 +19,7 @@ package org.seaborne.tdb2.store;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
@@ -30,7 +30,7 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.setup.TDBBuilder ;
 
-public class TestTripleTable extends BaseTest
+public class TestTripleTable
 {
     static {
         Logger.getLogger("org.apache.jena.tdb.info").setLevel(Level.WARN) ;

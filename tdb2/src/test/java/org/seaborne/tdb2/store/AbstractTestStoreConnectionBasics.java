@@ -17,7 +17,8 @@
 
 package org.seaborne.tdb2.store;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+
+import static org.junit.Assert.*;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
@@ -33,7 +34,7 @@ import org.seaborne.tdb2.sys.TDBInternal ;
  *  These tests are slow on rotational disk.
  *  Complet cleaning of file areas is done.
  */ 
-public abstract class AbstractTestStoreConnectionBasics extends BaseTest
+public abstract class AbstractTestStoreConnectionBasics
 {
     // Subclass to give direct and mapped versions.
     

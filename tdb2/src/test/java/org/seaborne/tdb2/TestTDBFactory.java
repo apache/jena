@@ -17,7 +17,7 @@
 
 package org.seaborne.tdb2;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.query.Dataset ;
@@ -31,7 +31,7 @@ import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
 /** Test of TDB2Factory - the Dataset level API to TDB2 **/
-public class TestTDBFactory extends BaseTest
+public class TestTDBFactory
 {
     static Resource s1 = ResourceFactory.createResource("http://example/s2");
     static Resource s2 = ResourceFactory.createResource();

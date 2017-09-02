@@ -17,13 +17,16 @@
 
 package org.seaborne.tdb2.store.nodetable;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertNotEquals ;
+import static org.junit.Assert.assertNotNull ;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 import org.seaborne.tdb2.store.NodeId ;
 
-public abstract class AbstractTestNodeTable extends BaseTest
+public abstract class AbstractTestNodeTable
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     

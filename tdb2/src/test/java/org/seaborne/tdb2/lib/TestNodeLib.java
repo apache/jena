@@ -18,12 +18,12 @@
 package org.seaborne.tdb2.lib;
 
 import static org.seaborne.tdb2.lib.NodeLib.hash ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
-public class TestNodeLib extends BaseTest
+public class TestNodeLib
 {
     // Tests of TDBs NodeLib
     @Test public void hash1() 
