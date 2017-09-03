@@ -143,7 +143,7 @@ public class TDBBuilder {
         return new TDBBuilder(txnCoord, location, params, new ComponentIdMgr(UUID.randomUUID())) ;
     }
 
-    private DatasetControl createPolicy() { return new DatasetControlMRSW() ; }
+    private DatasetControl createPolicy() { return new DatasetControlNone() ; }
 
     /** Look at a directory and see if it is a new area */
     private static boolean isNewDatabaseArea(Location location) {

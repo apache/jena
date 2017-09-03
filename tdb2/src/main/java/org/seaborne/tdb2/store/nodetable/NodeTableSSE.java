@@ -50,7 +50,7 @@ public class NodeTableSSE extends NodeTableNative {
     private ObjectFile objects ;
     //private final Index nodeToId ;
     
-    public NodeTableSSE(Index nodeToId, String filename)
+    private /*public*/ NodeTableSSE(Index nodeToId, String filename)
     {
         super(nodeToId);
         BufferChannel file = BufferChannelFile.create(filename) ;
