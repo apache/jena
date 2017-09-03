@@ -27,7 +27,9 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
-import org.apache.jena.sparql.core.*;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.seaborne.dboe.base.file.Location ;
 
 final
 public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn /* Until ARQ catches up with promote */ 
@@ -43,12 +45,14 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn /* Until ARQ 
     private final AtomicReference<DatasetGraph> dsgx = new AtomicReference<>();
     // Null for in-memory datasets.
     private final Path basePath;
+    private final Location location ;
     
-    public DatasetGraphSwitchable(Path base, DatasetGraph dsg) {
+    public DatasetGraphSwitchable(Path base, Location location, DatasetGraph dsg) {
         // Don't use the slot in datasetGraphWrapper - use the AtomicReference
         super(null) ;
         dsgx.set(dsg);
-        this.basePath = base;  
+        this.basePath = base;
+        this.location = location; 
     }
 
     /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
@@ -58,6 +62,8 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn /* Until ARQ 
     
     public Path getContainerPath() { return basePath; }
     
+    public Location getLocation() { return location; }
+
     /** The dataset to use for redirection - can be overridden.
      *  It is also guaranteed that this is called only once per
      *  delegated call.  Changes to the wrapped object can be

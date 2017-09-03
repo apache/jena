@@ -21,28 +21,37 @@ import java.util.function.Consumer ;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.system.Txn ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.tdb2.ConfigTest ;
 import org.seaborne.tdb2.DatabaseMgr ;
 import org.seaborne.tdb2.TDB2Factory ;
-import org.seaborne.tdb2.sys.SystemTDB ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
-/** Execute a test with a fresh dataset in a write transaction */
+/** Support for tests to be less "transaction-y" */
 public class TL {
     
     public static void exec(Consumer<Dataset> action) {
-        Dataset dataset = createTestDataset() ;
-        action.accept(dataset);
-        releaseDataset(dataset) ;
-        TDBInternal.reset() ;
+        Dataset dataset = createTestDataset();
+        try { 
+            Txn.executeWrite(dataset, ()->action.accept(dataset));
+            //TDBInternal.reset();
+            
+        } finally { expel(dataset); } 
     }
     
     public static void execMem(Consumer<Dataset> action) {
         Dataset dataset = createTestDatasetMem() ;
-        action.accept(dataset);
-        releaseDataset(dataset);
-        TDBInternal.reset();
+        Txn.executeWrite(dataset, ()->action.accept(dataset));
+        expel(dataset);
+    }
+    
+    public static void expel(Dataset dataset) {
+        expel(dataset.asDatasetGraph());
+    }
+
+    public static void expel(DatasetGraph dataset) {
+        TDBInternal.expel(dataset);
     }
 
     // Or use these for @Before, @After style.
@@ -56,30 +65,24 @@ public class TL {
         return location ;
     }
     
-    public static void releaseDataset(Dataset dataset) {
+    private static void releaseDataset(Dataset dataset) {
         dataset.abort() ;
-        TDBInternal.reset() ;
+        expel(dataset);
     }
 
-    public static Dataset createTestDataset() {
+    private static Dataset createTestDataset() {
         Location location = cleanLocation() ;
         Dataset dataset = TDB2Factory.connectDataset(location) ;
-        // Non-transactional tests
-        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
     
     public static Dataset createTestDatasetMem() {
         Dataset dataset = TDB2Factory.createDataset() ;
-        // Non-transactional tests
-        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
 
     public static DatasetGraph createTestDatasetGraphMem() {
         DatasetGraph dataset = DatabaseMgr.createDatasetGraph() ;
-        // Non-transactional tests
-        dataset = SystemTDB.setNonTransactional(dataset) ;
         return dataset ;
     }
 }

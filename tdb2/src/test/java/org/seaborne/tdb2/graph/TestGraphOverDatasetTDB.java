@@ -19,15 +19,33 @@ package org.seaborne.tdb2.graph;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.AbstractTestGraphOverDataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.junit.After ;
 import org.seaborne.tdb2.junit.TL ;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
 public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
 {
+    DatasetGraph dsg = null;
+    @After public void after2() {
+        if ( dsg == null )
+            return;
+        dsg.abort();
+        dsg.end();
+        TL.expel(dsg);
+    }
+    
     @Override
-    protected DatasetGraph createBaseDSG() { return TL.createTestDatasetGraphMem() ; }
+    protected DatasetGraph createBaseDSG() {
+        // Called in initialization.
+        if ( dsg == null ) {
+            dsg = TL.createTestDatasetGraphMem() ;
+            dsg.begin(ReadWrite.WRITE);
+        }
+        return dsg ;
+    }
     
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)

@@ -40,10 +40,14 @@ public class TestDatasetTDB
     
     @Before public void before() {
         dataset = TL.createTestDatasetMem() ;
+        dataset.begin(ReadWrite.WRITE);
     }
     
     @After public void after() {
-        TL.releaseDataset(dataset);
+        dataset.abort();
+        dataset.end();
+        TL.expel(dataset);
+        
     }
     
     private Dataset dataset() {

@@ -18,12 +18,25 @@
 package org.seaborne.tdb2.graph;
 
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.seaborne.tdb2.junit.TL ;
 
 public class TestGraphsTDB1 extends AbstractTestGraphsTDB
 {
+    Dataset ds = TL.createTestDatasetMem();
+    @Before public void before() {
+        ds.begin(ReadWrite.WRITE);
+    }
+    
+    @After public void after() {
+        ds.abort();
+        ds.end();
+        TL.expel(ds);
+    }
     @Override
     protected Dataset createDataset() {
-        return TL.createTestDatasetMem() ;
+        return ds ;
     }
 }

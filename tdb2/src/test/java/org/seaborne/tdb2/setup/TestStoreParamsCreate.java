@@ -17,13 +17,19 @@
 
 package org.seaborne.tdb2.setup;
 
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotEquals ;
+import static org.junit.Assert.assertNotNull ;
+import static org.junit.Assert.assertNull ;
+import static org.junit.Assert.assertTrue ;
+
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
@@ -31,7 +37,6 @@ import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.sys.Names;
 import org.seaborne.tdb2.ConfigTest ;
-import org.seaborne.tdb2.sys.DatabaseConnection ;
 import org.seaborne.tdb2.sys.StoreConnection ;
 import org.seaborne.tdb2.sys.TDBInternal ;
 
@@ -40,6 +45,7 @@ import org.seaborne.tdb2.sys.TDBInternal ;
  * calls and can be noticably slow.
  */
 public class TestStoreParamsCreate {
+    // Thse tests work on storage locations.
     private final String DB_DIR = ConfigTest.getCleanDir() ;
     private final Path db = Paths.get(DB_DIR) ;
     private final Path cfg = Paths.get(DB_DIR, Names.TDB_CONFIG_FILE) ;
@@ -52,14 +58,18 @@ public class TestStoreParamsCreate {
         .blockReadCacheSize(4)
         .build();
     
+    private void expel() {
+        StoreConnection.internalExpel(loc, true);
+    }
+    
     @Before public void clearupTest() { 
         // Flush and clean.
-        DatabaseConnection.internalExpel(loc, true);
-        FileOps.clearAll(DB_DIR);
+        TDBInternal.reset();
+        FileOps.clearAll(loc.getDirectoryPath());
     }
 
     @After public void expelDatabase() { 
-        TDBInternal.expel(loc, true) ;
+        expel();
     }
     
     @Test public void params_create_01() {
@@ -83,7 +93,7 @@ public class TestStoreParamsCreate {
         // Create.
         StoreConnection.connectCreate(loc) ;
         // Drop.
-        TDBInternal.expel(loc, true) ;
+        expel();
         // Reconnect
         StoreConnection.connectCreate(loc, null) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
@@ -100,7 +110,7 @@ public class TestStoreParamsCreate {
         // Create.
         StoreConnection.connectCreate(loc, null) ;
         // Drop.
-        TDBInternal.expel(loc, true) ;
+        expel();
         // Reconnect
         StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;
@@ -125,7 +135,7 @@ public class TestStoreParamsCreate {
         // Create.
         StoreConnection.connectCreate(loc, pApp) ;
         // Drop.
-        TDBInternal.expel(loc, true) ;
+        expel();
         // Reconnect
         StoreConnection.connectCreate(loc, pSpecial) ;
         //StoreParams pLoc = StoreParamsCodec.read(loc) ;

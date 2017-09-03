@@ -83,7 +83,7 @@ public class TestTransactions
 
     @After public void after() {
         dataset.close() ;
-        TDBInternal.expel(location, true);
+        TDBInternal.expel(dataset.asDatasetGraph());
     }
 
     // Models across transactions

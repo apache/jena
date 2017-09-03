@@ -18,17 +18,30 @@
 package org.seaborne.tdb2.graph;
 
 import org.apache.jena.query.DatasetAccessorFactory ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessor ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.seaborne.tdb2.junit.TL ;
 
 public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
+    DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
+    @Before public void before() {
+        dsg.begin(ReadWrite.WRITE);
+    }
+    
+    @After public void after() {
+        dsg.abort();
+        dsg.end();
+        TL.expel(dsg);
+    }
+
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()
     {
-        DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
         return DatasetAccessorFactory.make(dsg) ;
     }
 }

@@ -81,7 +81,7 @@ public class DatabaseOps {
     private static DatasetGraphSwitchable createSwitchable(Location location) {
         if ( location.isMem() ) {
             DatasetGraph dsg = StoreConnection.connectCreate(location).getDatasetGraph();
-            return new DatasetGraphSwitchable(null, dsg);
+            return new DatasetGraphSwitchable(null, location, dsg);
         }
         // Exists?
        if ( ! location.exists() )
@@ -97,7 +97,7 @@ public class DatabaseOps {
        }
        Location loc2 = IOX.asLocation(db);
        DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
-       DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, dsg);
+       DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
        return appDSG;
     }
     

@@ -17,18 +17,12 @@
 
 package org.seaborne.tdb2.store;
 
-import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertTrue ;
 
-import java.util.Arrays ;
-import java.util.List ;
-
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 import org.seaborne.tdb2.junit.TL ;
@@ -60,58 +54,58 @@ public class TestDatasetTDBPersist
         }) ;
     }
 
-    @Test
-    public void dataset3() {
-        TL.exec((ds) -> {
-            Graph g1 = ds.getDefaultModel().getGraph() ;
-            // Sometimes, under windows, deleting the files by
-            // clearDirectory does not work.
-            // Needed for safe tests on windows.
-            g1.clear() ;
-
-            Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
-            g2.add(new Triple(n0, n1, n2)) ;
-            assertTrue(g2.contains(n0, n1, n2)) ;
-            assertFalse(g1.contains(n0, n1, n2)) ;
-        }) ;
-    }
-
-    @Test
-    public void dataset4() {
-        String graphName = "http://example/" ;
-        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        Node gn = org.apache.jena.graph.NodeFactory.createURI(graphName) ;
-
-        TL.exec((ds) -> {
-            // ?? See TupleLib.
-            ds.asDatasetGraph().deleteAny(gn, null, null, null) ;
-
-            Graph g2 = ds.asDatasetGraph().getGraph(gn) ;
-
-            // Graphs only exists if they have a triple in them
-            assertFalse(ds.containsNamedModel(graphName)) ;
-
-            List<String> names = Iter.toList(ds.listNames()) ;
-            assertEquals(0, names.size()) ;
-            assertEquals(0, ds.asDatasetGraph().size()) ;
-        }) ;
-    }
-    
-    @Test
-    public void dataset5() {
-        String graphName = "http://example/" ;
-        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        TL.exec((ds) -> {
-            Graph g2 = ds.asDatasetGraph().getGraph(org.apache.jena.graph.NodeFactory.createURI(graphName)) ;
-            // Graphs only exists if they have a triple in them
-            g2.add(triple) ;
-
-            assertTrue(ds.containsNamedModel(graphName)) ;
-            List<String> x = Iter.toList(ds.listNames()) ;
-            List<String> y = Arrays.asList(graphName) ;
-            assertEquals(x, y) ;
-
-            assertEquals(1, ds.asDatasetGraph().size()) ;
-        }) ;
-        }
+//    @Test
+//    public void dataset3() {
+//        TL.exec((ds) -> {
+//            Graph g1 = ds.getDefaultModel().getGraph() ;
+//            // Sometimes, under windows, deleting the files by
+//            // clearDirectory does not work.
+//            // Needed for safe tests on windows.
+//            g1.clear() ;
+//
+//            Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
+//            g2.add(new Triple(n0, n1, n2)) ;
+//            assertTrue(g2.contains(n0, n1, n2)) ;
+//            assertFalse(g1.contains(n0, n1, n2)) ;
+//        }) ;
+//    }
+//
+//    @Test
+//    public void dataset4() {
+//        String graphName = "http://example/" ;
+//        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+//        Node gn = org.apache.jena.graph.NodeFactory.createURI(graphName) ;
+//
+//        TL.exec((ds) -> {
+//            // ?? See TupleLib.
+//            ds.asDatasetGraph().deleteAny(gn, null, null, null) ;
+//
+//            Graph g2 = ds.asDatasetGraph().getGraph(gn) ;
+//
+//            // Graphs only exists if they have a triple in them
+//            assertFalse(ds.containsNamedModel(graphName)) ;
+//
+//            List<String> names = Iter.toList(ds.listNames()) ;
+//            assertEquals(0, names.size()) ;
+//            assertEquals(0, ds.asDatasetGraph().size()) ;
+//        }) ;
+//    }
+//
+//    @Test
+//    public void dataset5() {
+//        String graphName = "http://example/" ;
+//        Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
+//        TL.exec((ds) -> {
+//            Graph g2 = ds.asDatasetGraph().getGraph(org.apache.jena.graph.NodeFactory.createURI(graphName)) ;
+//            // Graphs only exists if they have a triple in them
+//            g2.add(triple) ;
+//
+//            assertTrue(ds.containsNamedModel(graphName)) ;
+//            List<String> x = Iter.toList(ds.listNames()) ;
+//            List<String> y = Arrays.asList(graphName) ;
+//            assertEquals(x, y) ;
+//
+//            assertEquals(1, ds.asDatasetGraph().size()) ;
+//        }) ;
+//    }
 }

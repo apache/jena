@@ -20,6 +20,7 @@ package org.seaborne.tdb2.store;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.graph.AbstractTestGraph2 ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.After ;
@@ -36,14 +37,17 @@ public class TestGraphNamedTDB extends AbstractTestGraph2
     @Before
     public void before() {
         dataset = TL.createTestDatasetMem() ;
+        dataset.begin(ReadWrite.WRITE);
         graph = dataset.asDatasetGraph().getGraph(graphNode) ;
     }
 
     @After
     public void after() {
-        TL.releaseDataset(dataset) ;
+        dataset.abort();
+        dataset.end();
+        TL.expel(dataset) ;
     }
-
+    
     @Override
     protected Graph emptyGraph() {
         graph.clear() ;

@@ -114,16 +114,13 @@ public class DatabaseConnection {
      * Does not expel from {@link StoreConnection}.
      */
     public static synchronized void internalExpel(Location location, boolean force) {
+        // ** Check it is a container location 
         DatabaseConnection dbConn = cache.get(location) ;
-        if (dbConn == null) return ;
-        cache.remove(location) ;
+        if ( dbConn == null )
+            return ;
         dbConn.isValid = false;
         //dbConn.datasetGraph = null;
         //dbConn.datasetGraphSwitchable = null;
-        
-        //    if (!force && sConn.transactionManager.activeTransactions()) 
-        //        throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
-
         cache.remove(location) ;
         // Release the lock after the cache is emptied.
         if (SystemTDB.DiskLocationMultiJvmUsagePrevention && ! location.isMem() ) {
@@ -144,9 +141,10 @@ public class DatabaseConnection {
         Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
             internalExpel(loc, true) ;
+        if ( ! cache.isEmpty() )
+            System.err.println("DatabaseConnection: Cache not empty!");
         cache.clear() ;
     }
-    
     
     // One of the other.
     private final DatasetGraphSwitchable   datasetGraphSwitchable;

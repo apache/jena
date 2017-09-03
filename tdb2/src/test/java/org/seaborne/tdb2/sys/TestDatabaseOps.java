@@ -90,8 +90,6 @@ public class TestDatabaseOps
         Txn.executeWrite(dsgOld, ()->dsgOld.delete(quad1));
         Txn.executeRead(dsg,     ()->assertTrue(dsg.contains(quad1)) );
         Txn.executeRead(dsg2,    ()->assertTrue(dsg2.contains(quad1)) ) ;
-        
-        TDBInternal.expel(loc1, true);
     }
 
 //    @Test public void compact_2() {

@@ -17,14 +17,16 @@
 
 package org.seaborne.tdb2.solver;
 
+import static org.junit.Assert.assertEquals ;
+
 import java.util.Iterator ;
 
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
+import org.seaborne.dboe.jenax.Txn ;
 import org.seaborne.tdb2.junit.TL ;
 import org.seaborne.tdb2.solver.stats.StatsCollectorNodeId ;
 import org.seaborne.tdb2.solver.stats.StatsResults ;
@@ -46,42 +48,45 @@ public class TestStats
     static Quad q3 = SSE.parseQuad("(<g2> <s> <p> 9)") ; 
     static Quad q4 = SSE.parseQuad("(_    <s> <p> 1)") ; 
     static {
-        dsg.add(q1) ;
-        dsg.add(q2) ;
-        dsg.add(q3) ;
-        dsg.add(q4) ;
-    }
-
-    
-    private StatsResults statsForGraph(NodeId gid)
-    {
-        Iterator<Tuple<NodeId>> iter = quads.find(gid, null, null, null) ;
-        
-        StatsCollectorNodeId stats = new StatsCollectorNodeId(nt) ;
-        for ( ; iter.hasNext(); )
-        {
-            Tuple<NodeId> t = iter.next() ;
-            stats.record(t.get(0), t.get(1), t.get(2), t.get(3)) ;
-        }
-        
-        return stats.results() ;
+        Txn.executeWrite(dsg, ()->{
+            dsg.add(q1) ;
+            dsg.add(q2) ;
+            dsg.add(q3) ;
+            dsg.add(q4) ;
+        });
     }
     
-    private StatsResults statsForDftGraph()
-    {
-        Iterator<Tuple<NodeId>> iter = triples.findAll() ;
-        
-        StatsCollectorNodeId stats = new StatsCollectorNodeId(nt) ;
-        for ( ; iter.hasNext(); )
-        {
-            Tuple<NodeId> t = iter.next() ;
-            stats.record(null, t.get(0), t.get(1), t.get(2)) ;
-        }
-        
-        return stats.results() ;
+    private StatsResults statsForGraph(NodeId gid) {
+        // StatsCollectorNodeId writes nodes for rdf:type (this is not good).
+        return Txn.calculateWrite(dsg, ()-> {
+            Iterator<Tuple<NodeId>> iter = quads.find(gid, null, null, null) ;
+
+            StatsCollectorNodeId stats = new StatsCollectorNodeId(nt) ;
+            for ( ; iter.hasNext() ; ) {
+                Tuple<NodeId> t = iter.next() ;
+                stats.record(t.get(0), t.get(1), t.get(2), t.get(3)) ;
+            }
+
+            return stats.results() ;
+        }) ;
     }
 
-    @Test public void stats_01() { 
+    private StatsResults statsForDftGraph() {
+        // StatsCollectorNodeId writes nodes for rdf:type (this is not good).
+        return Txn.calculateWrite(dsg, ()-> {
+            Iterator<Tuple<NodeId>> iter = triples.findAll() ;
+
+            StatsCollectorNodeId stats = new StatsCollectorNodeId(nt) ;
+            for ( ; iter.hasNext() ; ) {
+                Tuple<NodeId> t = iter.next() ;
+                stats.record(null, t.get(0), t.get(1), t.get(2)) ;
+            }
+
+            return stats.results() ;
+        }) ;
+    }
+
+    @Test public void stats_01() {
         StatsResults r = statsForDftGraph() ;
         assertEquals(1, r.getCount()) ; 
         assertEquals(1, r.getPredicates().keySet().size()) ;

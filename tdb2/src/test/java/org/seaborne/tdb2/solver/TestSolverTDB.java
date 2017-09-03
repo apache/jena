@@ -54,6 +54,7 @@ public class TestSolverTDB
     @BeforeClass static public void beforeClass()
     { 
         dataset = TL.createTestDatasetMem() ;
+        dataset.begin(ReadWrite.WRITE);
         graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
         RDFDataMgr.read(dataset, graphData) ;
         graph = dataset.asDatasetGraph().getDefaultGraph() ;
@@ -63,7 +64,8 @@ public class TestSolverTDB
     
     
     @AfterClass static public void afterClass() {
-        TL.releaseDataset(dataset);
+        dataset.abort();
+        TL.expel(dataset);
     }
             
     static private void addAll(Graph srcGraph, Graph dstGraph)

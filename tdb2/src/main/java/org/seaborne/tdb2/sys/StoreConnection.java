@@ -32,6 +32,8 @@ import org.seaborne.dboe.base.file.ChannelManager ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.file.ProcessFileLock;
 import org.seaborne.dboe.sys.Names;
+import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionException ;
 import org.seaborne.tdb2.setup.StoreParams ;
 import org.seaborne.tdb2.setup.TDBBuilder ;
 import org.seaborne.tdb2.store.DatasetGraphTDB ;
@@ -124,14 +126,16 @@ public class StoreConnection
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
 
-        //    if (!force && sConn.transactionManager.activeTransactions()) 
-        //        throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
+        TransactionCoordinator txnCoord = sConn.getDatasetGraphTDB().getTxnSystem().getTxnMgr();
+        if (!force && txnCoord.countActive() > 0 ) 
+            throw new TransactionException("Can't expel: Active transactions for location: " + location) ;
 
         // No transactions at this point 
         // (or we don't care and are clearing up forcefully.)
         
-        sConn.getDatasetGraphTDB().getTxnSystem().getTxnMgr().shutdown();
         sConn.getDatasetGraphTDB().shutdown() ;
+        // Done by DatasetGraphTDB()
+        //txnCoord.shutdown();
         
         sConn.isValid = false ;
         cache.remove(location) ;

@@ -90,9 +90,9 @@ public class DatabaseMgr {
         return TDBInternal.isBackedByTDB(datasetGraph);
     }
 
-    /** Return the location of a DatasetGraph if it is backed by TDB, else null */
+    /** Return the location of a DatasetGraph if it is backed by TDB, else null. */
     public static Location location(DatasetGraph datasetGraph) {
-        DatasetGraphTDB dsg = requireDirect(datasetGraph);
+        DatasetGraphSwitchable dsg = requireSwitchable(datasetGraph);
         if ( dsg == null )
             return null ;
         return dsg.getLocation();

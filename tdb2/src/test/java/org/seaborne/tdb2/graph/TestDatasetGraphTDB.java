@@ -17,16 +17,32 @@
 
 package org.seaborne.tdb2.graph;
 
+import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.tdb2.junit.TL ;
 
 // Quad tests
 public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
 {
+    DatasetGraph dsg = TL.createTestDatasetGraphMem() ;
+    @Before public void before() {
+        dsg.begin(ReadWrite.WRITE);
+    }
+    
+    @After public void after() {
+        dsg.abort();
+        dsg.end();
+        TL.expel(dsg);
+    }
+    
     @Override
-    protected DatasetGraph emptyDataset() { return TL.createTestDatasetGraphMem() ; }
+    protected DatasetGraph emptyDataset() {
+        return dsg ;
+    }
 
     @Override
     // Empty graph tests: N/A
