@@ -33,42 +33,36 @@ public class ChannelManager
     // ChannelManager
     
     // FileBase ==> OpenFileRef, ChannelRef
-    
-    public static FileChannel acquire(String filename)
-    {
+
+    public static FileChannel acquire(String filename) {
         return acquire(filename, "rw") ;
     }
-    
-    public static FileChannel acquire(String filename, String mode)
-    {
+
+    public static FileChannel acquire(String filename, String mode) {
         return openref$(filename, mode) ;
     }
-    
+
     static private Map<String, FileChannel> name2channel = new HashMap<>() ;
     static private Map<FileChannel, String> channel2name = new HashMap<>() ;
-    
-    private static FileChannel openref$(String filename, String mode)
-    {
+
+    private static FileChannel openref$(String filename, String mode) {
         // Temp - for now, only journal files are tracked.
-        if ( ! filename.endsWith(".jrnl") )
-        {
+        if ( !filename.endsWith(".jrnl") ) {
             return open$(filename, mode) ;
         }
-        
+
         FileChannel chan = name2channel.get(filename) ;
-        if ( chan != null )
-        {
+        if ( chan != null ) {
             // Scream - it's currently open.
-            throw new FileException("Already open: "+filename) ;
+            throw new FileException("Already open: " + filename) ;
         }
         chan = open$(filename, mode) ;
         name2channel.put(filename, chan) ;
         channel2name.put(chan, filename) ;
         return chan ;
     }
-    
-    private static FileChannel open$(String filename, String mode)
-    {
+
+    private static FileChannel open$(String filename, String mode) {
         try {
             // "rwd" - Syncs only the file contents
             // "rws" - Syncs the file contents and metadata
@@ -81,36 +75,33 @@ public class ChannelManager
         } catch (IOException ex) { throw new FileException("Failed to open: "+filename+" (mode="+mode+")", ex) ; }
     }
     
-    public static void release(String filename)
-    {
+    public static void release(String filename) {
         FileChannel channel = name2channel.get(filename) ;
         if ( channel != null )
             release(channel) ;
     }
-    
-    public static void release(FileChannel chan)
-    {
+
+    public static void release(FileChannel chan) {
         // Always close even if not managed.
-        try { chan.close() ; } catch (Exception ex) {}
+        try {
+            chan.close() ;
+        }
+        catch (Exception ex) {}
         String name = channel2name.remove(chan) ;
         if ( name != null )
             name2channel.remove(name) ;
     }
-    
-    public static void reset()
-    {
+
+    public static void reset() {
         releaseAll(null) ;
     }
     
-    /** Shutdown all the files matching the prefix (typically a directory) */  
-    public static void releaseAll(String prefix)
-    {
+    /** Shutdown all the files matching the prefix (typically a directory) */
+    public static void releaseAll(String prefix) {
         // Use an iterator explicitly so we can remove from the map.
         List<FileChannel> x = new ArrayList<>() ;
-        for ( String fn : name2channel.keySet() )
-        {
-            if ( prefix == null || fn.startsWith(prefix) )
-            {
+        for ( String fn : name2channel.keySet() ) {
+            if ( prefix == null || fn.startsWith(prefix) ) {
                 x.add(name2channel.get(fn)) ;
                 // Don't call release here - potential CME problems.
                 // Could use an explicit iterator on teh keySet and .remove from that but
@@ -121,4 +112,3 @@ public class ChannelManager
             release(chan) ;
     }
 }
-

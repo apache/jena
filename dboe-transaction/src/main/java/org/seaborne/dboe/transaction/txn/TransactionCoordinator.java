@@ -465,7 +465,6 @@ public class TransactionCoordinator {
                 throw new TransactionException("Writers currently being rejected");
             }
         }
-            
         
         if ( canBlock )
             exclusivitylock.readLock().lock() ;
