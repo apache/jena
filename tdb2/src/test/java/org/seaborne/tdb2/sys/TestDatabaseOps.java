@@ -17,13 +17,15 @@
 
 package org.seaborne.tdb2.sys;
 
-import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.* ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.assertTrue ;
 
 import org.apache.commons.io.FileUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -43,8 +45,11 @@ public class TestDatabaseOps
     static String DIRx = ConfigTest.getCleanDir() ;
     static Location DIR = Location.create(DIRx);
     
-    static Quad quad1 = SSE.parseQuad("(_ _:a <p> 1)") ;
-    static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
+    static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
+    static Quad quad2 = SSE.parseQuad("(_ _:a <p> 2)") ;
+    static Triple triple1 = quad1.asTriple();
+    static Triple triple2 = quad2.asTriple();
+    static Triple triple3 = SSE.parseTriple("(<s> <q> 3)") ;
     
     @Before
     public void before() {
@@ -58,15 +63,15 @@ public class TestDatabaseOps
         FileUtils.deleteQuietly(IOX.asFile(DIR));
     }
 
-    @Test public void compact_1() {
+    @Test public void compact_dsg_1() {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
         
         Txn.executeWrite(dsg, ()-> {
-            dsg.add(quad1) ;
             dsg.add(quad2) ;
+            dsg.add(quad1) ;
         }) ;
         DatabaseMgr.compact(dsg);
         
@@ -79,32 +84,84 @@ public class TestDatabaseOps
         assertNotEquals(loc1, loc2);
 
         Txn.executeRead(dsg, ()-> {
-            assertTrue(dsg.contains(quad1)) ;
             assertTrue(dsg.contains(quad2)) ;
+            assertTrue(dsg.contains(quad1)) ;
         }) ;
         
         // dsg1 was closed and expelled. We must carefully reopen its storage only.
-        
         DatasetGraph dsgOld = StoreConnection.connectCreate(loc1).getDatasetGraph();
         
-        Txn.executeWrite(dsgOld, ()->dsgOld.delete(quad1));
-        Txn.executeRead(dsg,     ()->assertTrue(dsg.contains(quad1)) );
-        Txn.executeRead(dsg2,    ()->assertTrue(dsg2.contains(quad1)) ) ;
+        Txn.executeWrite(dsgOld, ()->dsgOld.delete(quad2));
+        Txn.executeRead(dsg,     ()->assertTrue(dsg.contains(quad2)) );
+        Txn.executeRead(dsg2,    ()->assertTrue(dsg2.contains(quad2)) ) ;
     }
 
-//    @Test public void compact_2() {
-//    }
+    @Test public void compact_graph_2() {
+        // graphs across compaction.
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        Graph g = dsg.getDefaultGraph();
+        
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        DatasetGraph dsg1 = dsgs.get();
+        Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
+        
+        Txn.executeWrite(dsg, ()-> {
+            dsg.add(quad2) ;
+            dsg.add(quad1) ;
+        }) ;
+        DatabaseMgr.compact(dsg);
+        Txn.executeRead(dsg, ()-> {
+            assertEquals(2, g.size());
+            assertTrue(g.contains(triple2));
+        }) ;
+        
+        // Check is not attached to the old graph.
+        DatasetGraph dsgOld = StoreConnection.connectCreate(loc1).getDatasetGraph();
+
+        Txn.executeWrite(dsgOld, ()->dsgOld.getDefaultGraph().delete(triple2));
+        Txn.executeRead(dsg,     ()->assertTrue(g.contains(triple2)) );
+        
+        Txn.executeWrite(dsg,    ()->g.add(triple3));
+        Txn.executeRead(dsgOld,  ()->assertFalse(dsgOld.getDefaultGraph().contains(triple3)) );
+    }
+    
+    @Test public void compact_prefixes_3() {
+        // prefixes axcross compaction.
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        Graph g = dsg.getDefaultGraph();
+        Txn.executeWrite(dsg, ()-> g.getPrefixMapping().setNsPrefix("ex", "http://example/") );
+        
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        DatasetGraph dsg1 = dsgs.get();
+        Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
+        
+        DatabaseMgr.compact(dsg);
+
+        Txn.executeRead(dsg, ()-> {
+            assertEquals("ex", g.getPrefixMapping().getNsURIPrefix("http://example/"));
+            assertEquals("http://example/", g.getPrefixMapping().getNsPrefixURI("ex"));
+        }) ;
+        
+        // Check is not attached to the old graph.
+        DatasetGraph dsgOld = StoreConnection.connectCreate(loc1).getDatasetGraph();
+
+        Txn.executeWrite(dsgOld, ()->dsgOld.getDefaultGraph().getPrefixMapping().removeNsPrefix("ex"));
+        Txn.executeRead(dsg,     ()->assertEquals("http://example/", g.getPrefixMapping().getNsPrefixURI("ex")));
+        
+        Txn.executeWrite(dsg,    ()->g.getPrefixMapping().setNsPrefix("ex2", "http://exampl2/") );
+        Txn.executeRead(dsgOld,  ()->assertNull(dsgOld.getDefaultGraph().getPrefixMapping().getNsPrefixURI("ex")));
+    }
 
     @Test public void backup_1() {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
         Txn.executeWrite(dsg, ()-> {
-            dsg.add(quad1) ;
             dsg.add(quad2) ;
+            dsg.add(quad1) ;
         }) ;
         String file1 = DatabaseMgr.backup(dsg);
         DatasetGraph dsg2 = RDFDataMgr.loadDatasetGraph(file1);
         Txn.executeRead(dsg, ()-> {
-            assertTrue(dsg.contains(quad2)) ;
+            assertTrue(dsg.contains(quad1)) ;
             assertEquals(2, dsg.getDefaultGraph().size());
             assertTrue(dsg2.getDefaultGraph().isIsomorphicWith(dsg.getDefaultGraph()));
         }) ;
