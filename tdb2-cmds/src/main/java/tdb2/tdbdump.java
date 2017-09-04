@@ -31,27 +31,23 @@ public class tdbdump extends CmdTDB
 {
     static ModLangOutput modLangOutput = new ModLangOutput() ;
     
-    static public void main(String... argv)
-    { 
+    static public void main(String... argv) {
         CmdTDB.init() ;
         new tdbdump(argv).mainRun() ;
     }
 
-    protected tdbdump(String[] argv)
-    {
+    protected tdbdump(String[] argv) {
         super(argv) ;
         addModule(modLangOutput) ;
     }
-    
+
     @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" : Write a dataset to stdout (defaults to N-Quads)" ;
+    protected String getSummary() {
+        return getCommandName() + " : Write a dataset to stdout (defaults to N-Quads)" ;
     }
 
     @Override
-    protected void exec()
-    {
+    protected void exec() {
         DatasetGraph dsg = getDatasetGraph() ;
         // Prefer stream over fully pretty output formats.
         RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
