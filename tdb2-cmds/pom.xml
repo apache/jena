@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>mantis</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
   </parent> 
 
   <dependencies>
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>tdb2</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.3.0</version>
     </dependency>
 
     <dependency>
