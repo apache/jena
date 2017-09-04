@@ -33,6 +33,7 @@ import org.seaborne.tdb2.store.DatasetGraphTDB;
 import org.seaborne.tdb2.store.NodeId;
 import org.seaborne.tdb2.store.nodetable.NodeTable;
 import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable;
+import org.seaborne.tdb2.sys.TDBInternal ;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
@@ -90,7 +91,7 @@ public class tdbstats extends CmdTDBGraph {
 
     @Override
     protected void exec() {
-        DatasetGraphTDB dsg = getDatasetGraphTDB();
+        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(getDatasetGraph());
         Node gn = getGraphName();
         StatsResults results = stats(dsg, gn);
         Stats.write(System.out, results);

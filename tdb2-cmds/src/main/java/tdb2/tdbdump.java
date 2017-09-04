@@ -52,8 +52,7 @@ public class tdbdump extends CmdTDB
     @Override
     protected void exec()
     {
-        DatasetGraph dsg = super.getDatasetGraphTDB() ;
-        
+        DatasetGraph dsg = getDatasetGraph() ;
         // Prefer stream over fully pretty output formats.
         RDFFormat fmt = modLangOutput.getOutputStreamFormat() ;
         // Stream writing happens naturally - no need to call StreamRDFWriter.

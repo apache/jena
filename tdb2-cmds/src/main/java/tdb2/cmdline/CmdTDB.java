@@ -28,9 +28,8 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.system.JenaSystem ;
 import org.seaborne.dboe.base.file.Location;
 import org.seaborne.tdb2.TDB2;
-import org.seaborne.tdb2.store.DatasetGraphTDB;
-import org.seaborne.tdb2.sys.TDBInternal;
-import tdb2.cmdline.ModTDBDataset;
+import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
+import org.seaborne.tdb2.sys.TDBInternal ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -70,9 +69,8 @@ public abstract class CmdTDB extends CmdARQ
         return getDataset().asDatasetGraph() ;
     }
 
-    protected DatasetGraphTDB getDatasetGraphTDB() {
-        DatasetGraph dsg = getDatasetGraph() ;
-        return TDBInternal.getDatasetGraphTDB(dsg) ;
+    protected DatasetGraphSwitchable getDatabaseContainer() {
+        return TDBInternal.getDatabaseContainer(getDatasetGraph());
     }
 
     protected Dataset getDataset() {

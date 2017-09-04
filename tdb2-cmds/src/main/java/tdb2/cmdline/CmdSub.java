@@ -24,37 +24,34 @@ import java.util.Map;
 
 import jena.cmd.CmdException;
 
-public class CmdSub
-{
-    public interface Exec { public void exec(String[] argv) ; }
-    Map<String, Exec> dispatch = new HashMap<>() ;
-    
-    String subCmd ;
-    String args[] ;
-    
-    public CmdSub(String ...argv)
-    {
+public class CmdSub {
+    public interface Exec {
+        public void exec(String[] argv) ;
+    }
+    private Map<String, Exec> dispatch = new HashMap<>() ;
+
+    private String    subCmd ;
+    private String    args[] ;
+
+    public CmdSub(String... argv) {
         subCmd = subCommand(argv) ;
         args = cmdline(argv) ;
     }
-    
-    protected void exec()
-    {
+
+    protected void exec() {
         Exec exec = dispatch.get(subCmd) ;
         if ( exec == null )
-            throw new CmdException("No subcommand: "+subCmd) ;
+            throw new CmdException("No subcommand: " + subCmd) ;
         exec.exec(args) ;
     }
 
-    protected static String[] cmdline(String ... argv)
-    {
-        String [] a = new String[argv.length-1] ;
-        System.arraycopy(argv, 1, a, 0, argv.length-1) ;
-        return a ; 
+    protected static String[] cmdline(String... argv) {
+        String[] a = new String[argv.length - 1] ;
+        System.arraycopy(argv, 1, a, 0, argv.length - 1) ;
+        return a ;
     }
 
-    protected static String subCommand(String ... argv)
-    {
+    protected static String subCommand(String... argv) {
         if ( argv.length == 0 )
             throw new CmdException("Missing subcommand") ;
 
@@ -63,14 +60,12 @@ public class CmdSub
             throw new CmdException("Argument found where subcommand expected") ;
         return subCmd ;
     }
-    
-    protected void addSubCommand(String subCmdName, Exec exec)
-    {
+
+    protected void addSubCommand(String subCmdName, Exec exec) {
         dispatch.put(subCmdName, exec) ;
     }
-    
-    protected Collection<String> subCommandNames()
-    {
+
+    protected Collection<String> subCommandNames() {
         return dispatch.keySet() ;
     }
 }

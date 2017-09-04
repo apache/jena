@@ -79,7 +79,7 @@ TDB2_PKG="tdb2"
 case $CMD in
     "")
     ;;
-    tdbbackup | tdbdump | tdbloader | tdbquery | tdbstats | tdbupdate)
+    tdbbackup | tdbdump | tdbloader | tdbquery | tdbstats | tdbupdate | tdbcompact)
 	CMD_CLS="$TDB2_PKG"."$CMD"
 	;;
 ##     tools.*)

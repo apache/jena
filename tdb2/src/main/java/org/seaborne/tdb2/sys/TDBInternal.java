@@ -106,10 +106,20 @@ public class TDBInternal {
      * Return the DatasetGraphTDB for a DatasetGraph, or null.
      * Use the {@link DatasetGraphTDB} with care.
      */
+    public static DatasetGraphSwitchable getDatabaseContainer(DatasetGraph dsg) {
+        if ( dsg instanceof DatasetGraphSwitchable )
+            return (DatasetGraphSwitchable)dsg;
+        throw new TDBException("Not a TDB database container");
+    }
+    
+    /**
+     * Return the DatasetGraphTDB for a DatasetGraph, or null.
+     * Use the {@link DatasetGraphTDB} with care.
+     */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg) {
         return unwrap(dsg);
     }
-    
+
     /**
      * Return the DatasetGraphTDB for a DatasetGraph, or throw an exception.
      */
