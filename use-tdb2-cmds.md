@@ -6,14 +6,13 @@ command has help message; the arguments are the mostly the same as TDB1.
 
 * `tdb2.tdbbackup`
 * `tdb2.tdbdump`
+* `tdb2.tdbcompact` (not in v 0.3.0)
 * `tdb2.tdbloader`
 * `tdb2.tdbquery`
 * `tdb2.tdbstats`
 * `tdb2.tdbupdate`
 
 [Command line jar (release builds)](http://central.maven.org/maven2/org/seaborne/mantis/tdb2-cmds/
-
-[Development builds (Sonatype snapshot repository)](https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/tdb2-cmds/)
 
 Example usage:
 

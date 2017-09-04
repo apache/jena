@@ -2,11 +2,11 @@ There is a combined Fuseki server jar:
 
 Release builds are available from the central maven repository:
 
-https://central.maven.org/maven2/org/seaborne/mantis/fuseki-tdb2/)
+https://central.maven.org/maven2/org/seaborne/mantis/fuseki-tdb2/
 
 and development builds at:
 
-https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/fuseki-tdb2/)
+https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/fuseki-tdb2/
 
 
 In addition, you will need a copy of Apache Jena Fuseki to get the web pages.
@@ -15,6 +15,7 @@ In addition, you will need a copy of Apache Jena Fuseki to get the web pages.
 ## Set the environment variable FUSEKI_HOME to the location of a
 ## Fuseki2 distribution to pick up the admin UI web pages.
 export FUSEKI_HOME=???? 
+export FUSEKI_BASE="$FUSEKI_HOME"
 # Alternatively, copy or link "webapp" in this directory
 # to the webapp of a distribution.
 
@@ -59,4 +60,6 @@ in `DB2` is:
 
 The key difference is the declared `rdf:type` of the dataset.
 
-Note that the Fuseki UI does not provide a way to create TDB2 databases; a configuration file must be used. Once setup, upload, query and graph editting will be routed to the TDB2 database.
+Note that the Fuseki UI does not provide a way to create TDB2 databases;
+a configuration file must be used. Once setup, upload, query and graph
+editting will be routed to the TDB2 database.
