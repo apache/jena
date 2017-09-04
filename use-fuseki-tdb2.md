@@ -2,12 +2,7 @@ There is a combined Fuseki server jar:
 
 Release builds are available from the central maven repository:
 
-https://central.maven.org/maven2/org/seaborne/mantis/fuseki-tdb2/
-
-and development builds at:
-
-https://oss.sonatype.org/content/repositories/snapshots/org/seaborne/mantis/fuseki-tdb2/
-
+http://central.maven.org/maven2/org/seaborne/mantis/fuseki-tdb2-server/
 
 In addition, you will need a copy of Apache Jena Fuseki to get the web pages.
 
