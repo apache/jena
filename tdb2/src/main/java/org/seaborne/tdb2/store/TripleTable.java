@@ -30,8 +30,7 @@ import org.seaborne.tdb2.store.tupletable.TupleIndex ;
 /**
  * TripleTable - a collection of TupleIndexes for 3-tuples together with a node
  * table. Normally, based on 3 indexes (SPO, POS, OSP) but other indexing
- * structures can be configured. The node table form can map to and from NodeIds
- * (longs)
+ * structures can be configured.
  */
 
 public class TripleTable extends TableBase {
