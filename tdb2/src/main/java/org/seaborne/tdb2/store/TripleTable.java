@@ -35,9 +35,8 @@ import org.seaborne.tdb2.store.tupletable.TupleIndex ;
  */
 
 public class TripleTable extends TableBase {
-    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy) {
-        super(3, indexes, nodeTable, policy) ;
-        // table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
+    public TripleTable(TupleIndex[] indexes, NodeTable nodeTable) {
+        super(3, indexes, nodeTable) ;
     }
 
     /** Add triple */

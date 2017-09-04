@@ -21,7 +21,6 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
-import org.seaborne.tdb2.store.DatasetControl ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleTable ;
@@ -76,10 +75,6 @@ public class NodeTupleTableWrapper implements NodeTupleTable
     public TupleTable getTupleTable()
     { return nodeTupleTable.getTupleTable() ; }
 
-    @Override
-    public DatasetControl getPolicy()
-    { return nodeTupleTable.getPolicy() ; }
-    
     @Override
     public boolean isEmpty()
     { return nodeTupleTable.isEmpty() ; }

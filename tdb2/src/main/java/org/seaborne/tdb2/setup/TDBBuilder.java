@@ -143,8 +143,6 @@ public class TDBBuilder {
         return new TDBBuilder(txnCoord, location, params, new ComponentIdMgr(UUID.randomUUID())) ;
     }
 
-    private DatasetControl createPolicy() { return new DatasetControlNone() ; }
-
     /** Look at a directory and see if it is a new area */
     private static boolean isNewDatabaseArea(Location location) {
         if ( location.isMem() )
@@ -188,7 +186,7 @@ public class TDBBuilder {
 
         if ( tripleIndexes.length != indexes.length )
             error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, createPolicy()) ;
+        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable) ;
         return tripleTable ;
     }
 
@@ -205,7 +203,7 @@ public class TDBBuilder {
 
         if ( tripleIndexes.length != indexes.length )
             error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        QuadTable tripleTable = new QuadTable(tripleIndexes, nodeTable, createPolicy()) ;
+        QuadTable tripleTable = new QuadTable(tripleIndexes, nodeTable) ;
         return tripleTable ;
     }
 
@@ -221,7 +219,7 @@ public class TDBBuilder {
         //NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1)  ;
         NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
                                                                 prefixIndexes,
-                                                                prefixNodes, createPolicy()) ;
+                                                                prefixNodes) ;
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
         log.debug("Prefixes: "+primary+" :: "+String.join(",", indexes)) ;
         return prefixes ;

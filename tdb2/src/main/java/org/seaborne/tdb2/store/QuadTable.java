@@ -34,8 +34,8 @@ import org.seaborne.tdb2.store.tupletable.TupleIndex ;
  */
 
 public class QuadTable extends TableBase {
-    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy) {
-        super(4, indexes, nodeTable, policy) ;
+    public QuadTable(TupleIndex[] indexes, NodeTable nodeTable) {
+        super(4, indexes, nodeTable) ;
     }
 
     /** Add a quad - return true if it was added, false if it already existed */

@@ -27,7 +27,6 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
 import org.seaborne.tdb2.TDBException ;
 import org.seaborne.tdb2.lib.TupleLib ;
-import org.seaborne.tdb2.store.DatasetControl ;
 import org.seaborne.tdb2.store.NodeId ;
 import org.seaborne.tdb2.store.nodetable.NodeTable ;
 import org.seaborne.tdb2.store.tupletable.TupleIndex ;
@@ -38,14 +37,13 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable  nodeTable ;
     protected final TupleTable tupleTable ;
-    private final DatasetControl dsPolicy ;
 
     /*
      * Concurrency checking: Everything goes through one of 
      * addRow, deleteRow or find*
      */
 
-    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl dsControl)
+    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable)
     {
         if (indexes.length == 0 || indexes[0] == null) throw new TDBException("A primary index is required") ;
         for (TupleIndex index : indexes)
@@ -55,23 +53,18 @@ public class NodeTupleTableConcrete implements NodeTupleTable
                                               N, index.getMappingStr(), index.getTupleLength())) ;
         }
 
-        this.dsPolicy = dsControl ;
         this.tupleTable = new TupleTable(N, indexes) ;
         this.nodeTable = nodeTable ;
     }
 
-    private void startWrite()   { dsPolicy.startUpdate() ; }
+    private void startWrite()   { }
 
-    private void finishWrite()  { dsPolicy.finishUpdate() ; }
+    private void finishWrite()  { }
 
-    private void startRead()    { dsPolicy.startRead() ; }
+    private void startRead()    { }
 
-    private void finishRead()   { dsPolicy.finishRead() ; }
+    private void finishRead()   { }
 
-    @Override
-    public DatasetControl getPolicy()
-    { return dsPolicy ; }
-    
     @Override
     public void addRow(Node... nodes)
     {
@@ -180,73 +173,61 @@ public class NodeTupleTableConcrete implements NodeTupleTable
 
     // ==== Node
 
-    protected final NodeId idForNode(Node node)
-    {
-        if (node == null || node == Node.ANY) return NodeId.NodeIdAny ;
-        if (node.isVariable()) throw new TDBException("Can't pass variables to NodeTupleTable.find*") ;
+    protected final NodeId idForNode(Node node) {
+        if ( node == null || node == Node.ANY )
+            return NodeId.NodeIdAny ;
+        if ( node.isVariable() )
+            throw new TDBException("Can't pass variables to NodeTupleTable.find*") ;
         return nodeTable.getNodeIdForNode(node) ;
     }
 
     // ==== Accessors
 
     /**
-     * Return the undelying tuple table - used with great care by tools that
-     * directly manipulate internal structures.
+     * Return the undelying tuple table - used with great care by tools that directly
+     * manipulate internal structures.
      */
     @Override
-    public final TupleTable getTupleTable()
-    {
+    public final TupleTable getTupleTable() {
         return tupleTable ;
     }
 
     /** Return the node table */
     @Override
-    public final NodeTable getNodeTable()
-    {
+    public final NodeTable getNodeTable() {
         return nodeTable ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return tupleTable.isEmpty() ;
     }
 
     /** Clear the tuple table - does not clear the node table */
     @Override
-    public void clear()
-    {
+    public void clear() {
         try {
             startWrite() ;
             tupleTable.clear() ;
-        } finally {
-            finishWrite() ;
-        }
+        } finally { finishWrite() ; }
     }
 
     @Override
-    public long size()
-    {
+    public long size() {
         return tupleTable.size() ;
     }
 
-    // @Override
     @Override
-    public final void close()
-    {
-        try
-        {
+    public final void close() {
+        try {
             startWrite() ;
             tupleTable.close() ;
             nodeTable.close() ;
-        } 
-        finally { finishWrite() ; }
+        } finally { finishWrite() ; }
     }
 
-    // @Override
     @Override
-    public final void sync()
-    {
+    public final void sync() {
         try {
             startWrite() ;
             tupleTable.sync() ;
@@ -254,5 +235,6 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         } finally { finishWrite() ; }
     }
 
-    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return dsPolicy.iteratorControl(iter) ; }
+    // Add any iterator checking.
+    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return iter; }
 }
