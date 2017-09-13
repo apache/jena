@@ -21,16 +21,11 @@ import java.io.RandomAccessFile ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.seaborne.dboe.base.objectfile.ObjectFile ;
 
-/** An append-only, read anywhere, binary file.
- *  
+/** An append-only, read-anywhere, binary file.
+ * A {@code BinaryDataFile} does not record the length and assumes the
+ * entries are self-defining.
  * 
- * An {@link ObjectFile} is a series of length+binary records.
- * A {@link BinaryDataFile} does not record the length and assumes the
- * entires are self-defining.
- * 
- *  @see ObjectFile
  *  @see RandomAccessFile
  */
 public interface BinaryDataFile extends Closeable, Sync {
@@ -39,11 +34,10 @@ public interface BinaryDataFile extends Closeable, Sync {
     //  
     // The choice seems to come down to ByteBuffers vs byte[]
     // which in turn is a small/large data (scattered data)
-    // issue.  We are currently expecting small I/O so byte[]
+    // issue.  We are currently expecting small(er) I/O so byte[]
     // and being like Thrift is better.
 
     // byte[] vs ByteBuffer
-    // Merge with BufferChannel?
     
     /** Open the file */
     public void open() ;

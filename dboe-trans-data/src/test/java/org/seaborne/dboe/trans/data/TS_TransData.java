@@ -23,8 +23,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    TestTransObjectFile.class
-    , TestTransIndexMem.class
+    TestTransIndexMem.class
     , TestTransBlob.class
     , TestTransBlobPersistent.class
     , TestTransBinaryDataFileGeneral.class

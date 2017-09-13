@@ -25,8 +25,8 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.seaborne.dboe.base.block.FileMode ;
 import org.seaborne.dboe.base.block.TS_Block ;
+import org.seaborne.dboe.base.buffer.TS_Buffer ;
 import org.seaborne.dboe.base.file.TS_File ;
-import org.seaborne.dboe.base.objectfile.TS_ObjectFile ;
 import org.seaborne.dboe.base.record.TS_Record ;
 import org.seaborne.dboe.base.recordfile.TS_RecordFile ;
 import org.seaborne.dboe.sys.SystemIndex ;
@@ -35,9 +35,9 @@ import org.seaborne.dboe.sys.SystemIndex ;
 @Suite.SuiteClasses( {
     TS_Block.class
     , TS_File.class
+    , TS_Buffer.class
     , TS_Record.class
     , TS_RecordFile.class
-    , TS_ObjectFile.class
 } )
 
 public class TC_DBOE_IO {

@@ -25,10 +25,9 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.query.ReadWrite ;
 import org.seaborne.dboe.base.file.BinaryDataFile ;
 import org.seaborne.dboe.base.file.BufferChannel ;
-import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.transaction.txn.* ;
 
-/** Transactional {@link ObjectFile}.
+/** Transactional {@link BinaryDataFile}.
  *  An binary file that is append-only and allows only one writer at a time.
  *  All readers see the file up to the last commit point at the time 
  *  they started.  The sole writer sees more of the file.
