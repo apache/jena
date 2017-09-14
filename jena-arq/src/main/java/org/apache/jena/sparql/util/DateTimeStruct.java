@@ -24,7 +24,9 @@ package org.apache.jena.sparql.util;
 
 public class DateTimeStruct
 {
-    public boolean xsdDateTime  ;
+//    public boolean isXsdDateTime ;
+//    public boolean isXsdDate ;
+//    public boolean isXsdTime ;
     public String neg = null ;         // Null if none. 
     public String year = null ;
     public String month = null ;
@@ -46,15 +48,27 @@ public class DateTimeStruct
     { 
         String ySep = "-" ;
         String tSep = ":" ;
-        String x = year+ySep+month+ySep+day ;
-        if ( xsdDateTime )
-            x = x + "T"+hour+tSep+minute+tSep+second ;
+        String x = "";
+        if ( hasDate() ) {
+            x = year+ySep+month+ySep+day ;
+            if ( hasTime() )
+                x = x+"T";
+        }
+        if ( hasTime() )
+            x = x + hour+tSep+minute+tSep+second ;
         if ( neg != null )
             x = neg+x ;
         if ( timezone != null )
             x = x+timezone ;
         return x ; 
     }
+    
+    public boolean hasDate() { return year != null && month != null && day != null; }
+    public boolean hasTime() { return hour != null && minute != null && second != null; }
+    public boolean hasTimezone() { return timezone != null; }
+
+    public boolean isDate()     { return hasDate() && ! hasTime(); };
+    public boolean isDateTime() { return hasDate() && hasTime(); };
     
     public static DateTimeStruct parseDateTime(String str)
     { return _parseYMD(str, true, true, true) ; }
@@ -117,8 +131,6 @@ public class DateTimeStruct
 
         if ( includeTime )
         {        
-            struct.xsdDateTime = true ;
-            // ---- 
             check(str, idx, 'T') ;
             idx += 1 ;
             idx = _parseTime(struct, idx, str) ;

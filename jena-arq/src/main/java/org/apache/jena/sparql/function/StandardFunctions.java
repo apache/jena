@@ -162,6 +162,7 @@ public class StandardFunctions
         
         add(registry, xfn+"encode-for-uri", FN_StrEncodeForURI.class) ;
 
+        add(registry, xfn+"dateTime",               FN_DateTime.class) ;
         add(registry, xfn+"year-from-dateTime",     FN_YearFromDateTime.class) ;
         add(registry, xfn+"month-from-dateTime",    FN_MonthFromDateTime.class) ;
         add(registry, xfn+"day-from-dateTime",      FN_DayFromDateTime.class) ;
