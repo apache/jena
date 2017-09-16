@@ -1346,6 +1346,32 @@ public class XSDFuncOp
         return dtGetSeconds(nv) ;
     }
 
+    private static int F_UNDEF = DatatypeConstants.FIELD_UNDEFINED; 
+    public static NodeValue dtDateTime(NodeValue nv1, NodeValue nv2) {
+        if ( ! nv1.isDate() )
+            throw new ExprEvalException("fn:dateTime: arg1: Not an xsd:date: "+nv1) ;
+        if ( ! nv2.isTime() )
+            throw new ExprEvalException("fn:dateTime: arg2: Not an xsd:time: "+nv2) ;
+        String lex1 = nv1.asNode().getLiteralLexicalForm() ;
+        String lex2 = nv2.asNode().getLiteralLexicalForm() ;
+        
+        DateTimeStruct dts1 = DateTimeStruct.parseDate(lex1);
+        DateTimeStruct dts2 = DateTimeStruct.parseTime(lex2);
+
+        if ( dts1.hasTimezone() && dts2.hasTimezone() ) {
+            if ( ! Objects.equals(dts1.timezone, dts2.timezone) )
+                throw new ExprEvalException("fn:dateTime: Two different timezones: ("+nv1+", "+nv2+")");
+        }
+        
+        // Merge the date into the time.  There are zero or one timezones, or two the same by this point.
+        dts2.year = dts1.year;
+        dts2.month = dts1.month;
+        dts2.day = dts1.day;
+        dts2.timezone = ( dts1.timezone != null ) ? dts1.timezone : dts2.timezone;
+        String lex = dts2.toString();
+        return NodeValue.makeDateTime(lex);
+    }
+    
     // Datetime accessors
     public static NodeValue dtGetYear(NodeValue nv) {
         if ( nv.isDateTime() || nv.isDate() || nv.isGYear() || nv.isGYearMonth() ) {
