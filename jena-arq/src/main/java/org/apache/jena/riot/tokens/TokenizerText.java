@@ -460,11 +460,11 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.readChar();
             switch(ch) {
                 case EOF:
-                    error("Broken IRI (End of file)");
+                    error("Broken IRI (End of file)"); return null;
                 case NL:
-                    error("Broken IRI (newline): %s", stringBuilder.toString());
+                    error("Broken IRI (newline): %s", stringBuilder.toString()); return null;
                 case CR:
-                    error("Broken IRI (CR): %s", stringBuilder.toString());
+                    error("Broken IRI (CR): %s", stringBuilder.toString()); return null;
                 case CH_GT:
                     // Done!
                     return stringBuilder.toString();
@@ -481,9 +481,9 @@ public final class TokenizerText implements Tokenizer
                     break;
                 case CH_LT:
                     // Probably a corrupt file so not a warning.
-                    error("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString());
+                    error("Bad character in IRI (bad character: '<'): <%s[<]...>", stringBuilder.toString()); return null;
                 case TAB:
-                    error("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString());
+                    error("Bad character in IRI (Tab character): <%s[tab]...>", stringBuilder.toString()); return null;
                 case '{': case '}': case '"': case '|': case '^': case '`' :
                     if ( ! VeryVeryLaxIRI )
                         warning("Illegal character in IRI (codepoint 0x%02X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch);
