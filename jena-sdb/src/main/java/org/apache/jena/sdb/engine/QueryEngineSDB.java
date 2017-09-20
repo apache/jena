@@ -33,7 +33,9 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.algebra.optimize.TransformFilterEquality ;
 import org.apache.jena.sparql.algebra.optimize.TransformPropertyFunction ;
+import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DynamicDatasets;
 import org.apache.jena.sparql.engine.* ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
@@ -80,12 +82,11 @@ public class QueryEngineSDB extends QueryEngineBase
     {
         if ( context == null )
             context = ARQ.getContext().copy() ;
-        // See "DynamicDatasets" -- this could be enabled.
-        if ( query != null )
-        {
-            if ( query.hasDatasetDescription() )
-                throw new SDBException("Queries with dataset descriptions (FROM/FROM NAMED) not supported" ) ;   
-        }
+
+        DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
+        if ( dsDesc != null )
+            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, context.isTrue(SDB.unionDefaultGraph) ) ;
+
         if ( context.isDefined(ARQConstants.sysDatasetDescription) )
             throw new SDBException("Queries with dataset descriptions set in the context not supported" ) ;
         
@@ -100,9 +101,11 @@ public class QueryEngineSDB extends QueryEngineBase
         // Do property functions.
         op = Transformer.transform(new TransformPropertyFunction(context), op) ;
         op = Transformer.transform(new TransformFilterEquality(), op) ;
-        
+
         // Quad it now so it can be passed to Compile.compile
-        op = Algebra.toQuadForm(op) ;
+        // Only apply if not a rewritten DynamicDataset
+        if ( dsDesc == null )
+            op = Algebra.toQuadForm(op) ;
         
         // Compile to SQL / extract parts to execute as SQL.
         op = SDBCompile.compile(store, op, initialBinding, context, request) ;
@@ -122,8 +125,8 @@ public class QueryEngineSDB extends QueryEngineBase
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
-        
-        // This pattern is common to QueryEngineMain - find a sharing pattern 
+
+        // This pattern is common to QueryEngineMain - find a sharing pattern
         if ( ! ( op instanceof OpSQL ) )
         {
             // Not top - invoke the main query engine as a framework to
