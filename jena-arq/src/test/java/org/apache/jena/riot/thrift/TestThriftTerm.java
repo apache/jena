@@ -326,5 +326,27 @@ public class TestThriftTerm extends BaseTest {
     @Test public void round_trip_03() {
         testTerm(NodeFactory.createVariable("x"), null, false);
     }
+    
+    // Round trip node->bytes->node.
+    @Test public void round_trip_bytes_01() {
+        testTermBytes(NodeFactory.createURI("http://example/"));
+    }
+        
+    @Test public void round_trip_bytes_02() {
+        testTermBytes(NodeFactory.createLiteral("value"));
+    }
+
+    @Test public void round_trip_bytes_03() {
+        testTermBytes(NodeFactory.createBlankNode("0123456"));
+    }
+
+    private void testTermBytes(Node node) {
+        RDF_Term rt = ThriftConvert.convert(node, false);
+        byte[] b = ThriftConvert.termToBytes(rt);
+        RDF_Term rt2 = ThriftConvert.termFromBytes(b);
+        Node node2 = ThriftConvert.convert(rt2);
+        assertEquals(node, node2);
+    }
+
 }
 

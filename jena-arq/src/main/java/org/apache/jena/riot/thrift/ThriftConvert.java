@@ -36,6 +36,10 @@ import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.thrift.wire.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
+import org.apache.thrift.TDeserializer;
+import org.apache.thrift.TException;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TCompactProtocol;
 
 /** Convert to and from Thrift wire objects.
  * See {@link StreamRDF2Thrift} and {@link Thrift2StreamRDF}
@@ -45,20 +49,178 @@ import org.apache.jena.sparql.core.Var ;
  */
 public class ThriftConvert
 {
+    /** Attempt to encode a node by value (integer, decimal, double) into an RDF_term.
+     * @param node
+     * @param term
+     * @return true if the term was set, else false.
+     */
+    
+    public static boolean toThriftValue(Node node, RDF_Term term) {
+        if ( ! node.isLiteral() ) 
+            return false ;
+        
+        // Value cases : Integer, Double, Decimal
+        String lex = node.getLiteralLexicalForm() ;
+        RDFDatatype rdt = node.getLiteralDatatype() ;
+            
+        if ( rdt == null ) 
+            return false ;
+        
+        if ( rdt.equals(XSDDatatype.XSDdecimal) ) {
+            if ( rdt.isValid(lex)) {
+                BigDecimal decimal = new BigDecimal(lex.trim()) ;
+                int scale = decimal.scale() ;
+                BigInteger bigInt = decimal.unscaledValue() ;
+                if ( bigInt.compareTo(MAX_I) <= 0 && bigInt.compareTo(MIN_I) >= 0 ) {
+                    // This check makes sure that bigInt.longValue() is safe
+                    RDF_Decimal d = new RDF_Decimal(bigInt.longValue(), scale) ;
+                    RDF_Term literal = new RDF_Term() ;
+                    term.setValDecimal(d) ;
+                    return true ;
+                }
+            }
+        } else if ( 
+            rdt.equals(XSDDatatype.XSDinteger) ||  
+            rdt.equals(XSDDatatype.XSDlong) ||
+            rdt.equals(XSDDatatype.XSDint) ||
+            rdt.equals(XSDDatatype.XSDshort) ||
+            rdt.equals(XSDDatatype.XSDbyte) 
+            ) {
+            // and 4 unsigned equivalents 
+            // and positive, negative, nonPostive nonNegativeInteger
+            
+            // Conservative - no derived types.
+            if ( rdt.isValid(lex)) {
+                try {
+                    long v = ((Number)node.getLiteralValue()).longValue() ;
+                    term.setValInteger(v) ;
+                    return true ;
+                }
+                // Out of range for the type, not a long etc etc.
+                catch (Throwable ex) { }
+            }
+        } else if ( rdt.equals(XSDDatatype.XSDdouble) ) {
+            // XSDfloat??
+            if ( rdt.isValid(lex)) {
+                try {
+                    double v = ((Double)node.getLiteralValue()).doubleValue() ;
+                    term.setValDouble(v) ;
+                    return true ;
+                }
+                // Out of range for the type, ...
+                catch (Throwable ex) { }
+            }
+        }
+        return false ;
+    }
+
+    /**
+     * Encode a {@link Node} into an {@link RDF_Term}, 
+     * using values (integer, decimal, double) if possible.
+     */
+    public static void toThrift(Node node, RDF_Term term) {
+        toThrift(node, emptyPrefixMap, term, true);
+    }
+    
+    /**
+     * Encode a {@link Node} into an {@link RDF_Term}. Control whether to use values
+     * (integer, decimal, double) if possible.
+     */
+    public static void toThrift(Node node, RDF_Term term, boolean allowValues) {
+        toThrift(node, emptyPrefixMap, term, allowValues);
+    }
+    
+    /** Encode a {@link Node} into an {@link RDF_Term} */
+    public static void toThrift(Node node, PrefixMap pmap, RDF_Term term, boolean allowValues) {
+        if ( node == null) {
+            term.setUndefined(TRDF.UNDEF);
+            return;
+        }
+        
+        if ( node.isURI() ) {
+            RDF_PrefixName prefixName = abbrev(node.getURI(), pmap) ;
+            if ( prefixName != null ) {
+                term.setPrefixName(prefixName) ;
+                return ;
+            }
+        }
+        
+        if ( node.isBlank() ) {
+            RDF_BNode b = new RDF_BNode(node.getBlankNodeLabel()) ;
+            term.setBnode(b) ;
+            return ;
+        }
+        
+        if ( node.isURI() ) {
+            RDF_IRI iri = new RDF_IRI(node.getURI()) ;
+            term.setIri(iri) ;
+            return ;
+        }
+        
+        if ( node.isLiteral() ) {
+            // Value cases : Integer, Double, Decimal
+            if ( allowValues) {
+                boolean b = toThriftValue(node, term) ;
+                if ( b /* term.isSet() */ )
+                    return ; 
+            }
+            
+            String lex = node.getLiteralLexicalForm() ;
+            String dt = node.getLiteralDatatypeURI() ;
+            String lang = node.getLiteralLanguage() ;
+            
+            // General encoding.
+            RDF_Literal literal = new RDF_Literal(lex) ;
+            if ( JenaRuntime.isRDF11 ) {
+                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) || 
+                     node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
+                    dt = null ;
+            }
+            
+            if ( dt != null ) {
+                RDF_PrefixName dtPrefixName = abbrev(dt, pmap) ;
+                if ( dtPrefixName != null )
+                    literal.setDtPrefix(dtPrefixName) ;
+                else
+                    literal.setDatatype(dt) ;
+            }
+            if ( lang != null && ! lang.isEmpty() )
+                literal.setLangtag(lang) ;
+            term.setLiteral(literal) ;
+            return ;
+        }
+        
+        if ( node.isVariable() ) {
+            RDF_VAR var = new RDF_VAR(node.getName()) ;
+            term.setVariable(var) ;
+            return ;
+        }
+        if ( Node.ANY.equals(node)) {
+            term.setAny(ANY) ;
+            return ;
+        }
+        throw new RiotThriftException("Node conversion not supported: "+node) ;
+    }
+
     private static final PrefixMap emptyPrefixMap = PrefixMapFactory.emptyPrefixMap() ;
     
+    /** Build a {@link Node} from an {@link RDF_Term}. */
     public static Node convert(RDF_Term term) {
-        return convert(term, emptyPrefixMap) ;
+        return convert(term, null) ;
     }
      
+    /**
+     * Build a {@link Node} from an {@link RDF_Term} using a prefix map which must agree
+     * with the map used to create the {@code RDF_Term} in the first place.
+     */
     public static Node convert(RDF_Term term, PrefixMap pmap) {
         if ( term.isSetPrefixName() ) {
             String x = expand(term.getPrefixName(), pmap) ;
             if ( x != null )
                 return NodeFactory.createURI(x) ;
             throw new RiotThriftException("Failed to expand "+term) ;
-            //                Log.warn(BinRDF.class, "Failed to expand "+term) ;
-            //                return NodeFactory.createURI(prefix+":"+localname) ; 
+            //Log.warn(BinRDF.class, "Failed to expand "+term) ;
+            //return NodeFactory.createURI(prefix+":"+localname) ; 
         }
         
         if ( term.isSetIri() )
@@ -146,143 +308,8 @@ public class ThriftConvert
     static final BigInteger MAX_I = BigInteger.valueOf(Long.MAX_VALUE) ;
     static final BigInteger MIN_I = BigInteger.valueOf(Long.MIN_VALUE) ;
     
-    /** Attempt to encode a node by value (integer, decimal, double) into an RDF_term.
-     * @param node
-     * @param term
-     * @return true if the term was set, else false.
-     */
-    
-    public static boolean toThriftValue(Node node, RDF_Term term) {
-        if ( ! node.isLiteral() ) 
-            return false ;
-        
-        // Value cases : Integer, Double, Decimal
-        String lex = node.getLiteralLexicalForm() ;
-        RDFDatatype rdt = node.getLiteralDatatype() ;
-            
-        if ( rdt == null ) 
-            return false ;
-        
-        if ( rdt.equals(XSDDatatype.XSDdecimal) ) {
-            if ( rdt.isValid(lex)) {
-                BigDecimal decimal = new BigDecimal(lex.trim()) ;
-                int scale = decimal.scale() ;
-                BigInteger bigInt = decimal.unscaledValue() ;
-                if ( bigInt.compareTo(MAX_I) <= 0 && bigInt.compareTo(MIN_I) >= 0 ) {
-                    // This check makes sure that bigInt.longValue() is safe
-                    RDF_Decimal d = new RDF_Decimal(bigInt.longValue(), scale) ;
-                    RDF_Term literal = new RDF_Term() ;
-                    term.setValDecimal(d) ;
-                    return true ;
-                }
-            }
-        } else if ( 
-            rdt.equals(XSDDatatype.XSDinteger) ||  
-            rdt.equals(XSDDatatype.XSDlong) ||
-            rdt.equals(XSDDatatype.XSDint) ||
-            rdt.equals(XSDDatatype.XSDshort) ||
-            rdt.equals(XSDDatatype.XSDbyte) 
-            ) {
-            // and 4 unsigned equivalents 
-            // and positive, negative, nonPostive nonNegativeInteger
-            
-            // Conservative - no derived types.
-            if ( rdt.isValid(lex)) {
-                try {
-                    long v = ((Number)node.getLiteralValue()).longValue() ;
-                    term.setValInteger(v) ;
-                    return true ;
-                }
-                // Out of range for the type, not a long etc etc.
-                catch (Throwable ex) { }
-            }
-        } else if ( rdt.equals(XSDDatatype.XSDdouble) ) {
-            // XSDfloat??
-            if ( rdt.isValid(lex)) {
-                try {
-                    double v = ((Double)node.getLiteralValue()).doubleValue() ;
-                    term.setValDouble(v) ;
-                    return true ;
-                }
-                // Out of range for the type, ...
-                catch (Throwable ex) { }
-            }
-        }
-        return false ;
-    }
-    
-    public static void toThrift(Node node, PrefixMap pmap, RDF_Term term, boolean allowValues) {
-        if ( node == null) {
-            term.setUndefined(TRDF.UNDEF);
-            return;
-        }
-        
-        if ( node.isURI() ) {
-            RDF_PrefixName prefixName = contract(node.getURI(), pmap) ;
-            if ( prefixName != null ) {
-                term.setPrefixName(prefixName) ;
-                return ;
-            }
-        }
-        
-        if ( node.isBlank() ) {
-            RDF_BNode b = new RDF_BNode(node.getBlankNodeLabel()) ;
-            term.setBnode(b) ;
-            return ;
-        }
-        
-        if ( node.isURI() ) {
-            RDF_IRI iri = new RDF_IRI(node.getURI()) ;
-            term.setIri(iri) ;
-            return ;
-        }
-        
-        if ( node.isLiteral() ) {
-            // Value cases : Integer, Double, Decimal
-            if ( allowValues) {
-                boolean b = toThriftValue(node, term) ;
-                if ( b /* term.isSet() */ )
-                    return ; 
-            }
-            
-            String lex = node.getLiteralLexicalForm() ;
-            String dt = node.getLiteralDatatypeURI() ;
-            String lang = node.getLiteralLanguage() ;
-            
-            // General encoding.
-            RDF_Literal literal = new RDF_Literal(lex) ;
-            if ( JenaRuntime.isRDF11 ) {
-                if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) || 
-                     node.getLiteralDatatype().equals(RDFLangString.rdfLangString) )
-                    dt = null ;
-            }
-            
-            if ( dt != null ) {
-                RDF_PrefixName dtPrefixName = contract(dt, pmap) ;
-                if ( dtPrefixName != null )
-                    literal.setDtPrefix(dtPrefixName) ;
-                else
-                    literal.setDatatype(dt) ;
-            }
-            if ( lang != null && ! lang.isEmpty() )
-                literal.setLangtag(lang) ;
-            term.setLiteral(literal) ;
-            return ;
-        }
-        
-        if ( node.isVariable() ) {
-            RDF_VAR var = new RDF_VAR(node.getName()) ;
-            term.setVariable(var) ;
-            return ;
-        }
-        if ( Node.ANY.equals(node)) {
-            term.setAny(ANY) ;
-            return ;
-        }
-        throw new RiotThriftException("Node converstion not supported: "+node) ;
-    }
-    
-    private static RDF_PrefixName contract(String uriStr, PrefixMap pmap) {
+    /** Produce a {@link RDF_PrefixName} is possible. */ 
+    private static RDF_PrefixName abbrev(String uriStr, PrefixMap pmap) {
         if ( pmap == null )
             return null ;
         Pair<String, String> p = pmap.abbrev(uriStr) ;
@@ -349,7 +376,46 @@ public class ThriftConvert
         return q ;
     }
 
-        // RDF_Tuple => RDF_row (for result sets) or List<RDFTerm>
+    /** 
+     * Serialize the {@link RDF_Term} into a byte array.
+     * <p>
+     * Where possible, to is better to serialize into a stream, directly using {@code term.write(TProtocol)}.     
+     */
+    public static byte[] termToBytes(RDF_Term term) {
+        TSerializer serializer = new TSerializer(new TCompactProtocol.Factory());
+        try {
+            return serializer.serialize(term);
+        }
+        catch (TException e) {
+            throw new RiotThriftException(e);
+        }
+    }
+    
+    /** 
+     * Deserialize from a byte array into an {@link RDF_Term}.
+     * <p>
+     * Where possible, to is better to deserialize from a stream, directly using {@code term.read(TProtocol)}.     
+     */
+    public static RDF_Term termFromBytes(byte[] bytes) {
+        RDF_Term term = new RDF_Term();
+        termFromBytes(term, bytes);
+        return term;
+    }
+    
+    /** 
+     * Deserialize from a byte array into an {@link RDF_Term}.
+     * <p>
+     * Where possible, to is better to deserialize from a stream, directly using {@code term.read(TProtocol)}.     
+     */
+    public static void termFromBytes(RDF_Term term, byte[] bytes) {
+        TDeserializer deserializer = new TDeserializer(new TCompactProtocol.Factory());
+        try {
+            deserializer.deserialize(term, bytes);
+        }
+        catch (TException e) { throw new RiotThriftException(e); }
+    }
+
+    // RDF_Tuple => RDF_row (for result sets) or List<RDFTerm>
     
 //    public static Tuple<Node> convert(RDF_Tuple row) {
 //        return convert(row, null) ; 
