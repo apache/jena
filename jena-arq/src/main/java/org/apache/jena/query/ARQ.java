@@ -350,6 +350,12 @@ public class ARQ
      */  
     public static final Symbol optTopNSorting = SystemARQ.allocSymbol("optTopNSorting") ;
     
+    /** Threshold for doing a top N sort for ORDER-LIMIT.
+     * The default is a limit of 1000.
+     * The context value should be a {@link java.lang.Number}.
+     */
+    public static final Symbol topNSortingThreshold = SystemARQ.allocSymbol("topNSortingThreshold") ;
+    
     /** 
      *  Context key controlling whether a DISTINCT-ORDER BY query is done by replacing the distinct with a reduced.
      *  Default is "true" - the reduced operator does not need to keep a data structure with all previously seen bindings.
