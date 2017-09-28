@@ -18,8 +18,8 @@
 
 package tdb2;
 
-import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
-import org.seaborne.tdb2.sys.DatabaseOps ;
+import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
+import org.apache.jena.tdb2.sys.DatabaseOps;
 import tdb2.cmdline.CmdTDB;
 
 public class tdbcompact extends CmdTDB {

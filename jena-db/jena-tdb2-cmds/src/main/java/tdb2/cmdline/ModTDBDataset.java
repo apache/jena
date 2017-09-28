@@ -27,17 +27,17 @@ import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.tdb2.assembler.VocabTDB2;
+import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.util.FileManager ;
-import org.seaborne.dboe.base.file.Location;
-import org.seaborne.tdb2.TDB2Factory;
-import org.seaborne.tdb2.assembler.VocabTDB2;
-import org.seaborne.tdb2.store.DatasetGraphTDB;
 
 public class ModTDBDataset extends ModDataset
 {

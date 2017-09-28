@@ -22,7 +22,7 @@ import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdGeneral;
 import jena.cmd.ModBase;
-import org.seaborne.dboe.base.file.Location;
+import org.apache.jena.dboe.base.file.Location;
 
 public class ModLocation extends ModBase
 {

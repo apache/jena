@@ -22,14 +22,14 @@ import arq.cmdline.CmdARQ ;
 import org.apache.jena.Jena ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.system.JenaSystem ;
-import org.seaborne.dboe.base.file.Location;
-import org.seaborne.tdb2.TDB2;
-import org.seaborne.tdb2.store.DatasetGraphSwitchable ;
-import org.seaborne.tdb2.sys.TDBInternal ;
+import org.apache.jena.tdb2.TDB2;
+import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
+import org.apache.jena.tdb2.sys.TDBInternal;
 
 public abstract class CmdTDB extends CmdARQ
 {

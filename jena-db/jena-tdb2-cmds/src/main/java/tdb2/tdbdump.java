@@ -20,11 +20,11 @@ package tdb2;
 
 import arq.cmdline.ModLangOutput ;
 import jena.cmd.CmdException ;
+import org.apache.jena.dboe.jenax.Txn;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.seaborne.dboe.jenax.Txn;
 import tdb2.cmdline.CmdTDB;
 
 public class tdbdump extends CmdTDB

@@ -22,18 +22,18 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.dboe.jenax.Txn;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Quad ;
-import org.seaborne.dboe.jenax.Txn;
-import org.seaborne.tdb2.solver.SolverLib;
-import org.seaborne.tdb2.solver.stats.Stats;
-import org.seaborne.tdb2.solver.stats.StatsCollectorNodeId;
-import org.seaborne.tdb2.solver.stats.StatsResults;
-import org.seaborne.tdb2.store.DatasetGraphTDB;
-import org.seaborne.tdb2.store.NodeId;
-import org.seaborne.tdb2.store.nodetable.NodeTable;
-import org.seaborne.tdb2.store.nodetupletable.NodeTupleTable;
-import org.seaborne.tdb2.sys.TDBInternal ;
+import org.apache.jena.tdb2.solver.SolverLib;
+import org.apache.jena.tdb2.solver.stats.Stats;
+import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
+import org.apache.jena.tdb2.solver.stats.StatsResults;
+import org.apache.jena.tdb2.store.DatasetGraphTDB;
+import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.nodetable.NodeTable;
+import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 

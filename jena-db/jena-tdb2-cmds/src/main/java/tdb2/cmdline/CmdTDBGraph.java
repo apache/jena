@@ -25,7 +25,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model ;
-import org.seaborne.tdb2.store.GraphTDB;
+import org.apache.jena.tdb2.store.GraphTDB;
 import tdb2.cmdline.CmdTDB;
 
 public abstract class CmdTDBGraph extends CmdTDB

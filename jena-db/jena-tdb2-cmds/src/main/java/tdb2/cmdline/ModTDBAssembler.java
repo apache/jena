@@ -23,7 +23,7 @@ import java.io.File;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
-import org.seaborne.dboe.base.file.Location;
+import org.apache.jena.dboe.base.file.Location;
 import tdb2.cmdline.ModLocation;
 import arq.cmdline.ModAssembler;
 

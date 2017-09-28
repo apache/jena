@@ -20,13 +20,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.jena</groupId>
   <artifactId>jena-db</artifactId>
   <packaging>pom</packaging>
-  <url>https://github.com/afs/mantis</url>
   <version>3.5.0-SNAPSHOT</version>
   <name>Mantis :: Database Operation Environment</name>
   <description>Mantis :: Database Operation Environment</description>
+  <url>http://jena.apache.org/</url>
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-project</artifactId>
+    <version>3.5.0-SNAPSHOT</version>
+    <relativePath>../jena-project</relativePath>
+  </parent>
 
   <licenses>
     <license>
@@ -35,31 +41,6 @@
     </license>
   </licenses>
 
-  <developers>
-     <developer>
-      <name>Andy Seaborne</name>
-    </developer>
-  </developers>
-  <!--
-      <contributors></contributors>
-      <mailingLists></mailingLists>
-  -->
-
-  <issueManagement>
-    <url>https://github.com/afs/mantis/issues</url>
-  </issueManagement>
-
-  <ciManagement>
-    <url>https://travis-ci.org/afs/mantis</url>
-  </ciManagement>
-
-  <scm>
-    <url>https://github.com/afs/mantis</url>
-    <connection>scm:git:https://github.com/afs/mantis</connection>
-    <developerConnection>scm:git:git@github.com:afs/mantis.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
@@ -108,20 +89,7 @@
            <version>${ver.jena}</version>
            </dependency>
       -->
-
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-arq</artifactId>
-        <version>${ver.jena}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-cmds</artifactId>
-        <version>${ver.jena}</version>
-      </dependency>
-
-      <!-- Tests -->
+      <!-- Tests
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-base</artifactId>
@@ -145,13 +113,14 @@
         <classifier>tests</classifier>
         <scope>test</scope>
       </dependency>
-
+      
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${ver.junit}</version>
         <scope>test</scope>
       </dependency>
+      -->
 
       <!-- Logging -->
     
@@ -217,315 +186,4 @@
 
   </dependencies>
   
-  <build>
-    <pluginManagement>
-      <plugins>
-        
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.0</version>
-          <configuration>
-            <encoding>UTF-8</encoding>
-            <debug>true</debug>
-            <debuglevel>source,lines,vars</debuglevel>
-            <optimize>true</optimize>
-            <source>1.8</source>
-            <target>1.8</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19</version> 
-          <!--
-          <configuration>
-            <includes>
-              <include>**/TS_*.java</include>
-            </includes>
-          </configuration>
-          -->
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-          <configuration>
-            <goals>deploy</goals>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-          </configuration> 
-        </plugin>
-        
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-            <encoding>UTF-8</encoding>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-            <overWriteReleases>false</overWriteReleases>
-            <overWriteIfNewer>true</overWriteIfNewer>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-          </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
-          <executions> 
-            <execution>
-              <id>attach-sources</id>
-              <!-- <phase>package</phase> package is the default -->
-              <goals>
-                <goal>jar-no-fork</goal> 
-              </goals>
-            </execution>
-            <execution>
-              <id>attach-sources-test</id>
-              <goals>
-                <goal>test-jar-no-fork</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-
-      </plugins> 
-
-    </pluginManagement>
-
-<plugins>
-      <!-- Run the RAT Plugin -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>0.12</version>
-        <executions>
-          <execution>
-            <id>rat-checks</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludeSubProjects>true</excludeSubProjects>
-          <excludes>
-            <exclude>**/hs_err_pid*.log</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/README.*</exclude>
-            <exclude>**/META-INF/services/*</exclude>
-            <!--
-                jena-core exclusions
-            -->
-            <exclude>**/src-examples/data/*</exclude>
-            
-            <!--
-                jena-fuseki exclusions
-            -->
-            <exclude>**/dist/ABOUT</exclude>
-            <exclude>**/SEE_FUSEKI2</exclude>
-            <!-- 
-                 Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
-                 e.g. Bootstrap, Qonsole
-                 
-            -->
-            <exclude>**/src/main/webapp/css/*</exclude>
-            <exclude>**/src/main/webapp/fonts/*</exclude>
-            <exclude>**/src/main/webapp/js/**/*</exclude>
-            
-            <!-- General exclusions -->
-            <!-- 
-                 Vocabularies are often just local copies of vocabularies
-                 published by others
-            -->
-            <exclude>**/vocabularies/*</exclude>
-            <exclude>**/Vocabularies/*</exclude>
-
-            <!--
-                Javadoc add-ons files are required to be simple and our javadoc configuration
-                will ensure appropriate license and copyright statements are inserted
-                into generated documentation anyway so no need to put license statements in these
-                files
-            -->
-            <exclude>**/src/main/**/*.html</exclude>
-            <exclude>**/src/**/package-info.java</exclude>
-            
-            <exclude>**/DEPENDENCIES</exclude>
-            
-            <!--
-                Text and Markdown files are typically used only for documentation purposes
-                and license declarations are usually spurious in these files since often they
-                will refer to the LICENSE/NOTICE for users to find the actual licenses
-            -->
-            <exclude>**/*.txt</exclude>
-            <exclude>**/*.md</exclude>
-            
-            <!--
-                META-INF services files can include comments but a license header would be
-                unecessarily clutter so we exclude these
-            -->
-            <exclude>**/META-INF/services/*</exclude>
-            
-            <!--
-                Jena historically has large numbers of small test file
-                with no license headers.  Such small files are not required 
-                to have headers. 
-
-                In addition, there are files with different Licenses
-                (e.g. W3C Software Licence, W3C Test Suite License) as
-                noted in the code tree.
-            -->
-            <exclude>**/src/test/resources/**/*</exclude>
-            <exclude>**/testing/**/*</exclude>
-
-            <exclude>**/log4j.properties</exclude>
-            <exclude>**/log4j-testing.properties</exclude>
-            <exclude>**/derby.log</exclude>
-            <exclude>**/DB/**/*</exclude>
-            <!-- TDB config files JSON - no comments allowed -->
-            <exclude>**/tdb*.cfg</exclude>
-            <!-- Fuseki2 server "run" area -->
-            <exclude>**/run/**/*</exclude>
-            <!-- Cached classpath for commands - autogenerated -->
-            <exclude>**/*.classpath</exclude>
-
-            <!-- Exclude anything created during the build (plugin generated files) ->-->
-            <exclude>**/target/**/*</exclude>
-            <!-- MSHADE-124 -->
-            <exclude>**/dependency-reduced-pom.xml</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
-    </plugins>
-
-  </build>
-
-  <profiles>
-    <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
-            <!-- Does this interfer with external -Darguments=-Dgpg.keyname=
-                  i.e. is it additive?
-                  <configuration>
-              <gpgArguments>
-                <arg>- -digest-algo=SHA512</arg> <comment fix </gpgArguments>
-            </configuration>
-            -->
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-  </profiles>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh.snapshots</id>
-      <name>Sonatype Snapshots Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh.releases</id>
-      <name>Sonatype Gateway to Maven Central</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
-  
-  <repositories>
-    <!-- Apache Snapshot Repository -->
-    <repository>
-      <id>apache-repository-snapshots</id>
-      <url>https://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-
-    <!-- Sonatype snapshot repository -->
-    <repository>
-      <id>sonatype.public</id>
-      <name>Sonatype Snapshots Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-    </repository>
-
-  </repositories>
-
 </project>
