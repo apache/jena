@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+## Usage: tdb2
+## Sets up the java enviroment to run Jena-based commands.
+
+CP=
+
+#JENA_CP="$(jena)"
+## If Jena development, this needs to be different.
+JENA_CP="$HOME/jlib/apache-jena/lib/"'*'
+
+## Log4j
+LOG4J_CP="/home/afs/.m2/repo/org/slf4j/slf4j-log4j12/1.7.25/slf4j-log4j12-1.7.25.jar:/home/afs/.m2/repo/log4j/log4j/1.2.17/log4j-1.2.17.jar"
+## JUL
+JUL_CP="/home/afs/.m2/repo/org/slf4j/slf4j-jdk14/1.7.25/slf4j-jdk14-1.7.25.jar"
+
+H="$HOME/Mantis"
+D=
+
+# modules
+# Not dboe-index-test
+read -r -d '' MODULES << EOM
+dboe-base 
+dboe-index 
+dboe-transaction
+dboe-trans-data
+tdb2
+tdb2-cmds
+EOM
+
+if true # if in development area ./
+then
+    for X in $MODULES
+    do
+	[[ $D = "" ]] || D="$D:"
+	D="${D}$H/$X/target/classes"
+    done
+else
+    ## @@ By artifacts ...
+    echo "Not implemented: classpath by artifacts" 2>&1
+    exit 9
+fi
+
+
+TDB2_CP="$D"
+
+if [[ -e logging.properties ]]
+then
+    LOGGING_JUL=-Djava.util.logging.config.file=logging.properties
+fi
+if [[ -e log4j.properties ]]
+then
+    LOGGING_LOG4J=-Dlog4j.configuration=file:log4j.properties
+fi
+
+if [[ $# = 0 ]]
+then
+    echo "Class path: $TDB2_CP:${JENA_CP}"
+    exit
+    #echo "No class to run" 1>&2
+    #exit 1
+else
+    CMD="$1"
+    shift
+fi
+
+# Map CMD to class name
+TDB2_PKG="tdb2"
+
+# Alternative names.
+## case $CMD in
+##     ???
+## 	CMD=tdb2.$CMD
+## 	;;
+##     *) ;;
+## esac
+
+# Map to class name.
+case $CMD in
+    "")
+    ;;
+    tdbbackup | tdbdump | tdbloader | tdbquery | tdbstats | tdbupdate | tdbcompact)
+	CMD_CLS="$TDB2_PKG"."$CMD"
+	;;
+##     tools.*)
+## 	CMD_CLS="${BASE_PKG}"."$CMD"
+## 	;;
+    *)
+	echo "Unknown command $CMD" 2>&1
+	exit 1
+    ;;
+
+esac
+
+## echo "TDB2_CP=$TDB2_CP"
+## echo "JENA_CP=$JENA_CP"
+#echo java $JVM_ARGS $LOGGING_LOG4J $LOGGING_JUL -cp "$TDB2_CP:${JENA_CP}" "$CMD_CLS" "$@"
+
+java $JVM_ARGS $LOGGING_LOG4J $LOGGING_JUL -cp "$TDB2_CP:${JENA_CP}" "$CMD_CLS" "$@"
