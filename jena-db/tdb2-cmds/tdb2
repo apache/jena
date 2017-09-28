@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 ## Usage: tdb2
 ## Sets up the java enviroment to run Jena-based commands.

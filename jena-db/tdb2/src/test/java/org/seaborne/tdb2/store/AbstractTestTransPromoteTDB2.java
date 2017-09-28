@@ -16,10 +16,6 @@
  * limitations under the License.
  */
 
-// **** COPIED from Jena 3.4.0 development.
-// After Mantis moves to 3.4.0 or later, this can be removed.
-
-//package org.apache.jena.sparql.transaction ;
 package org.seaborne.tdb2.store;
 
 import static org.junit.Assert.fail ;
