@@ -21,12 +21,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Mantis (${project.artifactId})</name>
-  <artifactId>fuseki-tdb2-server</artifactId>
+  <artifactId>jena-fuseki-tdb2-server</artifactId>
 
   <parent>
-    <groupId>org.seaborne.mantis</groupId>
-    <artifactId>mantis</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-db</artifactId>
+    <version>3.5.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
@@ -35,9 +35,9 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.seaborne.mantis</groupId>
-      <artifactId>tdb2</artifactId>
-      <version>0.3.1-SNAPSHOT</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>3.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

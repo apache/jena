@@ -19,14 +19,14 @@ H="$HOME/Mantis"
 D=
 
 # modules
-# Not dboe-index-test
+# Not jena-dboe-index-test
 read -r -d '' MODULES << EOM
-dboe-base 
-dboe-index 
-dboe-transaction
-dboe-trans-data
-tdb2
-tdb2-cmds
+jena-dboe-base 
+jena-dboe-index 
+jena-dboe-transaction
+jena-dboe-trans-data
+jena-tdb2
+jena-tdb2-cmds
 EOM
 
 if true # if in development area ./

@@ -18,28 +18,44 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>dboe-base</artifactId>
+  <artifactId>jena-tdb2</artifactId>
   <packaging>jar</packaging>
   <name>Mantis (${project.artifactId})</name>
 
   <parent>
-    <groupId>org.seaborne.mantis</groupId>
-    <artifactId>mantis</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-db</artifactId>
+    <version>3.5.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <artifactId>jena-dboe-trans-data</artifactId>
+      <version>3.5.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -59,6 +75,26 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
   

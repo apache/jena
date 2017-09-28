@@ -20,11 +20,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.seaborne.mantis</groupId>
-  <artifactId>mantis</artifactId>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-db</artifactId>
   <packaging>pom</packaging>
   <url>https://github.com/afs/mantis</url>
-  <version>0.3.1-SNAPSHOT</version>
+  <version>3.5.0-SNAPSHOT</version>
   <name>Mantis :: Database Operation Environment</name>
   <description>Mantis :: Database Operation Environment</description>
 
@@ -64,7 +64,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <ver.jena>3.4.0</ver.jena>
+    <ver.jena>3.5.0-SNAPSHOT</ver.jena>
     <ver.tdb>${ver.jena}</ver.tdb>
     <ver.fuseki>${ver.jena}</ver.fuseki>
     <ver.junit>4.12</ver.junit>
@@ -73,14 +73,14 @@
   </properties>
 
   <modules>
-    <module>dboe-base</module>
-    <module>dboe-transaction</module>
-    <module>dboe-index</module>
-    <module>dboe-index-test</module>
-    <module>dboe-trans-data</module>
-    <module>tdb2</module>
-    <module>tdb2-cmds</module>
-    <module>fuseki-tdb2</module>
+    <module>jena-dboe-base</module>
+    <module>jena-dboe-transaction</module>
+    <module>jena-dboe-index</module>
+    <module>jena-dboe-index-test</module>
+    <module>jena-dboe-trans-data</module>
+    <module>jena-tdb2</module>
+    <module>jena-tdb2-cmds</module>
+    <module>jena-fuseki-tdb2</module>
   </modules>
 
   <dependencyManagement>

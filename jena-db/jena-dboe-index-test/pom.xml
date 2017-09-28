@@ -19,22 +19,35 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>dboe-transaction</artifactId>
+
+  <artifactId>jena-dboe-index-test</artifactId>
   <packaging>jar</packaging>
   <name>Mantis (${project.artifactId})</name>
 
   <parent>
-    <groupId>org.seaborne.mantis</groupId>
-    <artifactId>mantis</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-db</artifactId>
+    <version>3.5.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
 
     <dependency>
-      <groupId>org.seaborne.mantis</groupId>
-      <artifactId>dboe-base</artifactId>
-      <version>0.3.1-SNAPSHOT</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-dboe-index</artifactId>
+      <version>3.5.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+    </dependency>
+
+    <dependency>
+      <!--  Bring junit into scope-compile -->
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
     </dependency>
 
   </dependencies>
