@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-dboe-trans-data</artifactId>
   <packaging>jar</packaging>
-  <name>Mantis (${project.artifactId})</name>
+  <name>Apache Jena (${project.artifactId})</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>

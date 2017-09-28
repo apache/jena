@@ -23,7 +23,7 @@
 
   <artifactId>jena-tdb2-cmds</artifactId>
   <packaging>jar</packaging>
-  <name>Mantis (${project.artifactId})</name>
+  <name>Apache Jena (${project.artifactId})</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>

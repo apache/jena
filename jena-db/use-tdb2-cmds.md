@@ -12,8 +12,6 @@ command has help message; the arguments are the mostly the same as TDB1.
 * `tdb2.tdbstats`
 * `tdb2.tdbupdate`
 
-[Command line jar (release builds)](http://central.maven.org/maven2/org/seaborne/mantis/tdb2-cmds/
-
 Example usage:
 
 ```

@@ -23,8 +23,7 @@
   <artifactId>jena-db</artifactId>
   <packaging>pom</packaging>
   <version>3.5.0-SNAPSHOT</version>
-  <name>Mantis :: Database Operation Environment</name>
-  <description>Mantis :: Database Operation Environment</description>
+  <name>Apache Jena :: Database Operation Environment</name>
   <url>http://jena.apache.org/</url>
 
   <parent>
