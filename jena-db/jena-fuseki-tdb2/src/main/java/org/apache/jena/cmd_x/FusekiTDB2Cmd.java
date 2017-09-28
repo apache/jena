@@ -20,14 +20,17 @@ package org.apache.jena.cmd_x;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiLogging;
-import org.apache.jena.fuseki.cmd.FusekiCmd;
 
 public class FusekiTDB2Cmd {
 
     public static void main(String... args) {
         FusekiLogging.setLogging() ;
         Fuseki.serverLog.info("Fuseki-TDB2 integration");
-        FusekiCmd.main(args);
+        
+        // Full server.
+        //org.apache.jena.fuseki.cmd.FusekiCmd.main(args);
+        // Basic server
+        org.apache.jena.fuseki.cmds.FusekiBasicCmd.main(args);
     }
 
 }

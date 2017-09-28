@@ -42,8 +42,8 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-core</artifactId>
-       <version>3.5.0-SNAPSHOT</version>
+      <artifactId>jena-fuseki-basic</artifactId>
+      <version>3.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -76,8 +76,7 @@
           <shadedArtifactAttached>false</shadedArtifactAttached>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <!--<mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>-->
-              <mainClass>org.apache.fuseki.cmd_x.FusekiTDB2Cmd</mainClass>
+              <mainClass>org.apache.jena.fuseki.cmds.FusekiBasicCmd</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
