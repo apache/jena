@@ -19,7 +19,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  
   <artifactId>jena-db</artifactId>
   <packaging>pom</packaging>
   <version>3.5.0-SNAPSHOT</version>
@@ -32,26 +32,14 @@
     <version>3.5.0-SNAPSHOT</version>
     <relativePath>../jena-project</relativePath>
   </parent>
-
+  
   <licenses>
     <license>
       <name>Apache License 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <ver.jena>3.5.0-SNAPSHOT</ver.jena>
-    <ver.tdb>${ver.jena}</ver.tdb>
-    <ver.fuseki>${ver.jena}</ver.fuseki>
-    <ver.junit>4.12</ver.junit>
-    <ver.slf4j>1.7.25</ver.slf4j>
-    <ver.log4j>1.2.17</ver.log4j>
-  </properties>
-
+  
   <modules>
     <module>jena-dboe-base</module>
     <module>jena-dboe-transaction</module>
@@ -62,107 +50,6 @@
     <module>jena-tdb2-cmds</module>
     <module>jena-fuseki-tdb2</module>
   </modules>
-
-  <dependencyManagement>
-
-    <dependencies>
-      <!-- For clarity, Jena dependencies do not incldue TDB -->
-      <!-- For now, use more precise control
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>apache-jena-libs</artifactId>
-        <version>${ver.jena}</version>
-        <exclusions> 
-          <exclusion>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      -->
-
-      <!-- ARQ is essential anyway.
-           <dependency>
-           <groupId>org.apache.jena</groupId>
-           <artifactId>jena-core</artifactId>
-           <version>${ver.jena}</version>
-           </dependency>
-      -->
-      <!-- Tests
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-base</artifactId>
-        <version>${ver.jena}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-core</artifactId>
-        <version>${ver.jena}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-arq</artifactId>
-        <version>${ver.jena}</version>
-        <classifier>tests</classifier>
-        <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${ver.junit}</version>
-        <scope>test</scope>
-      </dependency>
-      -->
-
-      <!-- Logging -->
-    
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${ver.slf4j}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>${ver.slf4j}</version>
-        <optional>true</optional>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${ver.slf4j}</version>
-        <optional>true</optional>
-      </dependency>
-
-      <!-- And intercept any uses of Jakarta Commons Logging 
-           e.g. Apache Common HTTP client. 
-      -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>${ver.slf4j}</version>
-        <optional>true</optional>
-      </dependency>
-
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${ver.log4j}</version>
-        <optional>true</optional>
-      </dependency>
-
-    </dependencies>
-    
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
