@@ -40,15 +40,22 @@
       <version>3.5.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- Include commands as well! -->
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-basic</artifactId>
+      <artifactId>jena-tdb2-cmds</artifactId>
       <version>3.5.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
+      <version>3.5.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-basic</artifactId>
       <version>3.5.0-SNAPSHOT</version>
     </dependency>
 

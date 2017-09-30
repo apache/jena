@@ -115,14 +115,12 @@
               <goal>jar-no-fork</goal>
             </goals>
           </execution>
-          <!--
           <execution>
             <id>attach-sources-test</id>
             <goals>
               <goal>test-jar</goal>
             </goals>
           </execution>
-          -->
         </executions>
       </plugin>
 
