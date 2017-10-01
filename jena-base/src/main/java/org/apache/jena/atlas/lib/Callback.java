@@ -18,8 +18,14 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
-public interface Callback<T> extends Function<T, Void>
+/**
+ * Use {@link Consumer} instead.
+ *
+ * @param <T>
+ */
+@Deprecated
+public interface Callback<T> extends Consumer<T>
 {
 }

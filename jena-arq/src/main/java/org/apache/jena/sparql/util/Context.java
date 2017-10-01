@@ -20,8 +20,8 @@ package org.apache.jena.sparql.util ;
 
 import java.util.* ;
 import java.util.concurrent.ConcurrentHashMap ;
+import java.util.function.Consumer;
 
-import org.apache.jena.atlas.lib.Callback ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -37,7 +37,7 @@ public class Context {
     public static final Context      emptyContext = new Context(true) ;
 
     protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>() ;
-    protected List<Callback<Symbol>> callbacks    = new ArrayList<>() ;
+    protected List<Consumer<Symbol>> callbacks    = new ArrayList<>() ;
     protected boolean                readonly     = false ;
 
     /** Create an empty context */
@@ -316,22 +316,20 @@ public class Context {
     }
 
     // ---- Callbacks
-    public synchronized void addCallback(Callback<Symbol> m) {
+    public synchronized void addCallback(Consumer<Symbol> m) {
         callbacks.add(m) ;
     }
 
-    public synchronized void removeCallback(Callback<Symbol> m) {
+    public synchronized void removeCallback(Consumer<Symbol> m) {
         callbacks.remove(m) ;
     }
 
-    public synchronized List<Callback<Symbol>> getCallbacks() {
+    public synchronized List<Consumer<Symbol>> getCallbacks() {
         return Collections.unmodifiableList(callbacks) ;
     }
 
     private synchronized void doCallbacks(Symbol symbol) {
-        for ( Callback<Symbol> c : callbacks ) {
-            c.apply(symbol) ;
-        }
+        callbacks.forEach(c -> c.accept(symbol));
     }
 
     @Override
