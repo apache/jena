@@ -120,7 +120,9 @@ public abstract class PrefixMapBase implements PrefixMap {
     protected boolean isSafeLocalPart(String ln) {
         // This test isn't complete but covers the common issues that arise. 
         // Does not consider possible escaping.
-        return (strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':'));
+        // There needs to be a further, stronger check for output.
+        // About ':' -- Turtle RDF 1.1 allows this in a local part of a prefix name. 
+        return strSafeFor(ln, '/') && strSafeFor(ln, '#');
     }
     
     @Override

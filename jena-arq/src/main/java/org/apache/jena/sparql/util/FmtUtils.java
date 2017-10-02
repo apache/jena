@@ -535,6 +535,7 @@ public class FmtUtils
     {
         if ( Character.isLetterOrDigit(ch) ) return true ;
         if ( ch == '.' )    return true ;
+        if ( ch == ':' )    return true ;
         if ( ch == '-' )    return true ;
         if ( ch == '_' )    return true ;
         return false ;
