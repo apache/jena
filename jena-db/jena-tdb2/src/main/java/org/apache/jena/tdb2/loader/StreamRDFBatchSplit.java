@@ -39,13 +39,10 @@ import org.apache.jena.tdb2.store.tupletable.TupleTable;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/**
+/** Batch by size.
  * @see BatchedStreamRDF BatchedStreamRDF, which batches by subject
  */
 public class StreamRDFBatchSplit implements StreamRDF {
-    // Need to handle transactions?
-    // Lizard des (TxnClient) 
-    
     private static Logger log = LoggerFactory.getLogger(StreamRDFBatchSplit.class) ;
     protected static NodeId placeholder = NodeIdFactory.genUnique();
     protected final List<Triple> triples ;
@@ -69,7 +66,7 @@ public class StreamRDFBatchSplit implements StreamRDF {
     @Override
     public void start() {
         log.info("Batch size: "+batchSize);
-        // Multiple starts in one trnasaciton are possible.
+        // Multiple starts in one transaction are possible.
         if ( txn == null )
             txn = dsg.getTxnSystem().getThreadTransaction() ;
         if ( txn == null )
