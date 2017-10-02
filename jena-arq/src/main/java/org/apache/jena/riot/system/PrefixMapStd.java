@@ -133,6 +133,9 @@ public class PrefixMapStd extends PrefixMapBase {
         index = iriString.lastIndexOf('/');
         if (index > -1)
             return iriString.substring(0, index + 1);
+        // We could add ':' here, it is used as a separater in URNs.
+        // But it is a multiple use character and always present in the scheme name.
+        // This is a fast-track guess so don't try guessing based on ':'.
         return null;
     }
 

@@ -36,6 +36,7 @@ public class TestNodeFmt extends BaseTest
     static {
         prefixMap.add(":", "http://example/p") ;
         prefixMap.add("ex", "http://example/ex/") ;
+        prefixMap.add("ns", "urn:test:") ;
     }
     private static NodeFormatter nodeFormatterNTutf8 = new NodeFormatterNT(CharSpace.UTF8) ;
     private static NodeFormatter nodeFormatterNTascii = new NodeFormatterNT(CharSpace.ASCII) ;
@@ -120,9 +121,15 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_18()  { test(nodeFormatterTTL, "<http://example.org/base#bar>", "<#bar>") ; }
 
     // Trailing DOT
-    @Test public void nodefmt_ttl_19()  { test(nodeFormatterTTL, "<http://example/ex/abc.>", "<http://example/ex/abc.>") ; } 
+    @Test public void nodefmt_ttl_19()  { test(nodeFormatterTTL, "<http://example/ex/abc.>", "<http://example/ex/abc.>") ; }
+    
     @Test public void nodefmt_ttl_20()  { test(nodeFormatterTTL, "<http://example/ex/abc.x>", "ex:abc.x") ; }
     @Test public void nodefmt_ttl_21()  { test(nodeFormatterTTL, "<http://example/ex/abc456.123>", "ex:abc456.123") ; }
+    @Test public void nodefmt_ttl_22()  { test(nodeFormatterTTL, "<http://example/ex/abc:x>", "ex:abc:x") ; }
+    @Test public void nodefmt_ttl_23()  { test(nodeFormatterTTL, "<http://example/ex/001234>", "ex:001234") ; }
+    @Test public void nodefmt_ttl_24()  { test(nodeFormatterTTL, "<urn:test:abc:x>", "ns:abc:x") ; }
+    @Test public void nodefmt_ttl_25()  { test(nodeFormatterTTL, "<urn:test:00:1234>", "ns:00:1234") ; }
+    @Test public void nodefmt_ttl_26()  { test(nodeFormatterTTL, "<http://example/ex/::>", "ex:::") ; }
     
     @Test public void nodefmt_ttl_29()  { test(nodeFormatterTTL, "'Ω'", "\"Ω\"") ; }
     
