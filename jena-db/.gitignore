@@ -1,0 +1,46 @@
+*.class
+
+## Package Files
+*.jar
+*.war
+*.ear
+
+hs_err_pid*
+tmp/
+*.bak
+
+## From https://www.gitignore.io
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+### Gradle ###
+**/.gradle/
+build/
+# Ignore Gradle GUI config
+gradle-app.setting
+# Don't ignore the Gradle wrapper jar file
+!gradle-wrapper.jar
+# Cache of project
+.gradletasknamecache
+
+
+## Eclipse
+.classpath
+.project
+.settings/
+.recommenders
+.metadata
+
+## Database files.
+DB*/
+## Fuseki area
+run/

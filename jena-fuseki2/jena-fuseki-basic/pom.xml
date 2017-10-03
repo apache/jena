@@ -176,80 +176,29 @@
           </execution>
         </executions>
       </plugin>
-
       
-
       <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>rat-checks</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludeSubProjects>true</excludeSubProjects>
-          <excludes>
-            <exclude>**/sparqler/**</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>**/README.*</exclude>
-            <exclude>**/META-INF/services/*</exclude>
-            <!--
-                Javadoc add-ons files are required to be simple and our javadoc configuration
-                will ensure appropriate license and copyright statements are inserted
-                into generated documentation anyway so no need to put license statements in these
-                files
-            -->
-            <exclude>**/src/main/**/*.html</exclude>
-            <exclude>**/DEPENDENCIES</exclude>
-            <!--
-                Text and Markdown files are typically used only for documentation purposes
-                and license declarations are usually spurious in these files since often they
-                will refer to the LICENSE/NOTICE for users to find the actual licenses
-            -->
-            <exclude>**/*.txt</exclude>
-            <exclude>**/*.md</exclude>
-            <exclude>**/*.mdtext</exclude>
-            
-            <!--
-                META-INF services files can include comments but a license header would be
-                unecessarily clutter so we exclude these
-            -->
-            <exclude>**/META-INF/services/*</exclude>
-            
-            <!--
-                Jena historically has large numbers of small test file
-                with no license headers.  Such small files are not required 
-                to have headers. 
+       <groupId>org.apache.rat</groupId>
+       <artifactId>apache-rat-plugin</artifactId>
+       <executions>
+         <execution>
+           <id>rat-checks</id>
+           <phase>validate</phase>
+           <goals>
+             <goal>check</goal>
+           </goals>
+         </execution>
+       </executions>
+       <configuration>
+         <excludeSubProjects>true</excludeSubProjects>
+         <excludes>
+           <exclude>**/sparqler/**</exclude>
+           <exclude>**/dependency-reduced-pom.xml</exclude>
+         </excludes>
+       </configuration>
+     </plugin>
 
-                In addition, there are files with different Licenses
-                (e.g. W3C Software Licence, W3C Test Suite License) as
-                noted in the code tree.
-            -->
-            <exclude>**/testing/**/*</exclude>
-
-            <exclude>**/log4j.properties</exclude>
-            <exclude>**/log4j-testing.properties</exclude>
-            <exclude>**/DB/**/*</exclude>
-            <!-- TDB config files JSON - no comments allowed -->
-            <exclude>**/tdb*.cfg</exclude>
-            <!-- Exclude anything created during the build (plugin generated files) ->-->
-            <exclude>**/target/**/*</exclude>
-            <!-- MSHADE-124 -->
-            <exclude>**/dependency-reduced-pom.xml</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-
-
-    </plugins>
+   </plugins>
 
   </build>
 
