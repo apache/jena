@@ -1,4 +1,0 @@
-PREFIX :  <http://example/>
-
-SELECT * 
-{ :x1a ?p ?z }
