@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.trans.bplustree.soak;
+package dboe;
 
 import org.apache.jena.dboe.base.file.BlockAccessMem;
-import org.apache.jena.dboe.index.test.BaseSoakTest;
 import org.apache.jena.dboe.index.test.IndexTestLib;
 import org.apache.jena.dboe.sys.Sys;
 import org.apache.jena.dboe.sys.SystemIndex;

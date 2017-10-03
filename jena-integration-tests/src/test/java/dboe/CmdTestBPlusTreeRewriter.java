@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.trans.bplustree.soak;
+package dboe;
 
 import org.apache.jena.dboe.base.record.RecordFactory;
-import org.apache.jena.dboe.index.test.BaseSoakTest;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.trans.bplustree.BPT;
 import org.apache.jena.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.index.test;
+package dboe;
 
 import java.util.List ;
 
