@@ -23,7 +23,7 @@
 
   <artifactId>jena-tdb2</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena (${project.artifactId})</name>
+  <name>Apache Jena - TDB2</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>

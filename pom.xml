@@ -63,49 +63,57 @@
           It only builds the modules shipped in apache-jena binaries.
       -->
       <id>dev</id>
-      <!-- The maven artifacts of the basic modules -->
+      <!-- The maven artifacts of the core development modules 
+           See profile bootstrap for a first build from empty.
+      -->
       <modules>
         <module>jena-project</module>
-        <!-- <module>jena-shaded-guava</module> -->
-        <!-- <module>jena-iri</module> -->
+        <!-- <module>jena-shaded-guava</module>   -->
+        <!-- <module>jena-iri</module>            -->
         <module>jena-base</module>
         
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
-        <module>apache-jena-libs</module>
-        <module>jena-cmds</module>
         <module>jena-db</module> 
+        <module>apache-jena-libs</module>
+
         <module>jena-text</module>
-        <!--<module>jena-text-es</module>-->
-        <module>jena-spatial</module>
-        <!--<module>jena-fuseki1</module>-->
+        <!-- <module>jena-text-es</module>        -->
+        <!-- <module>jena-spatial</module>        -->
+
+        <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
         <module>jena-integration-tests</module>
 
-        <module>jena-permissions</module>
-
-        <!-- Slow to build - exclude from dev build -->
-        <!-- <module>jena-jdbc</module>           -->
-        <!-- <module>jena-maven-tools</module>    -->
-        <!-- <module>apache-jena-libs</module>    -->
+        <!-- Binary distribution -->
         <!-- <module>apache-jena</module>         -->
-        <!-- <module>jena-elephas</module> -->
-        <!-- <module>jena-extras</module> -->
+
+        <!-- <module>jena-fuseki1</module>        -->
+        <!-- <module>jena-csv</module>            -->
+        <!-- <module>jena-sdb</module>            -->
+        <!-- <module>jena-maven-tools</module>    -->
+
+        <!-- <module>jena-permissions</module>    -->
+        <!-- <module>jena-extras</module>         -->
+        <!-- <module>jena-jdbc</module>           -->
+        <!-- <module>jena-elephas</module>        -->
+        <!-- <module>apache-jena-osgi</module>    -->
+
       </modules>
     </profile>
 
     <profile>
-      <!-- From the start, up until profile "dev".
+      <!-- Build to get started, up to Fuseki2.
+           Includes modules skipped by "dev".
            Use this (or a full build) when building locally
            and there are no SNAPSHOTs in the "snapshots" repository.
            This profile does a more complete "dev" build,
            does not assume anything is already built,
            and does not include the longer running modules.
       -->
-      
       <id>bootstrap</id>
       <modules>
         <module>jena-project</module>
@@ -115,15 +123,17 @@
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
-        <module>jena-tdb</module> 
+        <module>jena-tdb</module>
+        <module>jena-db</module>
         <module>apache-jena-libs</module>
-        <module>jena-cmds</module>
-        <module>jena-db</module> 
         <module>jena-text</module>
         <!--<module>jena-text-es</module>-->
         <module>jena-spatial</module>
-        <!--<module>jena-fuseki1</module>-->
+
+        <module>jena-cmds</module>
         <module>jena-fuseki2</module>
+
+        <module>jena-integration-tests</module>
       </modules>
     </profile>
     
@@ -141,29 +151,28 @@
         </property>
       </activation>
       <modules>
+        <!-- Parent - maven setup -->
         <module>jena-project</module>
+
+        <!-- Basic modules -->
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
 
+        <!-- Main modules -->
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
+        <module>jena-db</module>
         <module>apache-jena-libs</module>
-        <module>jena-cmds</module>
 
         <module>jena-text</module>
         <module>jena-text-es</module>
         <module>jena-spatial</module>
-        <module>jena-csv</module>
 
-        <module>jena-sdb</module>
-
-        <module>jena-fuseki1</module>
+        <module>jena-cmds</module>
         <module>jena-fuseki2</module>
-
-        <module>apache-jena</module>
 
         <!--
             Tests of artifacts that require additional 
@@ -172,12 +181,21 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
+        
+        <!-- Binary distribution -->
+        <module>apache-jena</module>
 
+        <!-- Old modules -->
+        <module>jena-fuseki1</module>
+        <module>jena-csv</module>
+        <module>jena-sdb</module>
+        <module>jena-maven-tools</module>
+
+        <!-- Other -->
         <module>jena-permissions</module>
         <module>jena-extras</module>
 
-        <module>jena-maven-tools</module>
-
+        <!-- Slow building modules -->
         <module>jena-jdbc</module>
         <module>jena-elephas</module>
         <module>apache-jena-osgi</module>

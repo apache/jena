@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-dboe-transaction</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena (${project.artifactId})</name>
+  <name>Apache Jena - DBOE Transactions</name>
 
   <parent>
     <groupId>org.apache.jena</groupId>
