@@ -98,4 +98,4 @@ case "$#" in
     *) CMD="$1" ; shift ;;
 esac
 
-java $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.sparql "$@" 
+java $JVM_ARGS $LOGGING -cp "$JENA_CP" "$CMD" "$@" 
