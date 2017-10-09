@@ -65,6 +65,8 @@ public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
     }
     
     private static void setProperties(RDFWriter w, Context context) {
+        if ( context == null )
+            return;
         try { 
             @SuppressWarnings("unchecked")
             Map<String, Object> p = (Map<String, Object>)(context.get(SysRIOT.sysRdfWriterProperties)) ;
@@ -74,7 +76,5 @@ public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
             Log.warn(AdapterRDFWriter.class, "Problem setting properties", ex);
         }
     }
-
-
 }
 
