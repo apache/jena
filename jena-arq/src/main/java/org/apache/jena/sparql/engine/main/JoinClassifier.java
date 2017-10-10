@@ -161,7 +161,7 @@ public class JoinClassifier
         if ( print )
             System.err.println("Case 1 = " + bad1) ;
 
-        // Case 3 : a filter in the RHS is uses a variable from the LHS (whether
+        // Case 2 : a filter in the RHS is uses a variable from the LHS (whether
         // fixed or optional)
         // Scoping means we must hide the LHS value form the RHS
         // Could mask (??). For now, we stop linearization of this join.
@@ -172,7 +172,7 @@ public class JoinClassifier
         if ( print )
             System.err.println("Case 2 = " + bad2) ;
 
-        // Case 4 : an assign in the RHS uses a variable not introduced
+        // Case 3 : an assign in the RHS uses a variable not introduced
         // Scoping means we must hide the LHS value from the RHS
 
         // Think this may be slightly relaxed, using variables in an
