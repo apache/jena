@@ -76,14 +76,22 @@ public class FOAF {
     /** <p>A thing depicted in this representation.</p> */
     public static final Property depicts = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/depicts" );
 
-    /** <p>A checksum for the DNA of some thing. Joke.</p> */
+    /**
+     * <p>A checksum for the DNA of some thing. Joke.</p>
+     *
+     * @deprecated  Archaic term. No replacement.
+     */
     @Deprecated
     public static final Property dnaChecksum = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/dnaChecksum" );
 
     /** <p>The family name of some person.</p> */
     public static final Property familyName = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/familyName" );
 
-    /** <p>The family name of some person.</p> */
+    /**
+     * <p>The family name of some person.</p>
+     *
+     * @deprecated  Archaic term. Replaced by {@link #familyName}.
+     */
     @Deprecated
     public static final Property family_name = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/family_name" );
 
@@ -93,11 +101,19 @@ public class FOAF {
     /** <p>The underlying or 'focal' entity associated with some SKOS-described concept.</p> */
     public static final Property focus = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/focus" );
 
-    /** <p>An organization funding a project or person.</p> */
+    /**
+     * <p>An organization funding a project or person.</p>
+     *
+     * @deprecated  Archaic term. No replacement.
+     */
     @Deprecated
     public static final Property fundedBy = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/fundedBy" );
 
-    /** <p>A textual geekcode for this person, see http://www.geekcode.com/geek.html</p> */
+    /**
+     * <p>A textual geekcode for this person, see http://www.geekcode.com/geek.html</p>
+     *
+     * @deprecated  Archaic term. No replacement.
+     */
     @Deprecated
     public static final Property geekcode = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/geekcode" );
 
@@ -107,11 +123,19 @@ public class FOAF {
     /** <p>The given name of some person.</p> */
     public static final Property givenName = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/givenName" );
 
-    /** <p>The given name of some person.</p> */
+    /**
+     * <p>The given name of some person.</p>
+     *
+     * @deprecated  Archaic term. Replaced by {@link #givenName}.
+     */
     @Deprecated
     public static final Property givenname = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/givenname" );
 
-    /** <p>Indicates an account held by this agent.</p> */
+    /**
+     * <p>Indicates an account held by this agent.</p>
+     *
+     * @deprecated  Archaic term. Replaced by {@link #account}
+     */
     @Deprecated
     public static final Property holdsAccount = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/holdsAccount" );
 
@@ -219,11 +243,19 @@ public class FOAF {
      */
     public static final Property status = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/status" );
 
-    /** <p>The surname of some person.</p> */
+    /**
+     * <p>The surname of some person.</p>
+     *
+     * @deprecated  Archaic term. Replaced by {@link #familyName}.
+     */
     @Deprecated
     public static final Property surname = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/surname" );
 
-    /** <p>A theme.</p> */
+    /**
+     * <p>A theme.</p>
+     *
+     * @deprecated  Archaic term. No replacement.
+     */
     @Deprecated
     public static final Property theme = M_MODEL.createProperty( "http://xmlns.com/foaf/0.1/theme" );
 
