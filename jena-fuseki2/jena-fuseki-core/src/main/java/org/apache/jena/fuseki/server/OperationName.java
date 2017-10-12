@@ -18,9 +18,6 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /** 
  * Names (symbols) for operations.
  * An {@code OperationName} is not related to the service name used to invoke the operation.
@@ -29,24 +26,16 @@ import java.util.Map;
 public class OperationName {
     
     // Create intern'ed symbols. 
-    static private Map<String, OperationName> registered = new HashMap<>();
+    static private NameMgr<OperationName> mgr = new NameMgr<>(); 
+    static public OperationName register(String name) { return mgr.register(name, (x)->new OperationName(x)); }
     
-    /**
-     * Create an intern'ed {@code OperationName}. That is, if the object has already been
-     * created, return the original. There is only ever one object for a given name.
-     * (It is an extensible enum without subclassing).
-     */
-    static public OperationName register(String name) {
-        return registered.computeIfAbsent(name, (n)->new OperationName(n));
-    }
-    
-    public static OperationName Query    = register("SPARQL Query");
-    public static OperationName Update   = register("SPARQL Update");
-    public static OperationName Upload   = register("File Upload");
-    public static OperationName GSP_RW   = register("Graph Store Protocol");
-    public static OperationName GSP_R    = register("Graph Store Protocol (Read)");
-    public static OperationName Quads_RW = register("HTTP Quads");
-    public static OperationName Quads_R  = register("HTTP Quads (Read)");
+    public static final OperationName Query    = register("SPARQL Query");
+    public static final OperationName Update   = register("SPARQL Update");
+    public static final OperationName Upload   = register("File Upload");
+    public static final OperationName GSP_RW   = register("Graph Store Protocol");
+    public static final OperationName GSP_R    = register("Graph Store Protocol (Read)");
+    public static final OperationName Quads_RW = register("HTTP Quads");
+    public static final OperationName Quads_R  = register("HTTP Quads (Read)");
     
     private final String name ;
     private OperationName(String name) { this.name = name ; }
