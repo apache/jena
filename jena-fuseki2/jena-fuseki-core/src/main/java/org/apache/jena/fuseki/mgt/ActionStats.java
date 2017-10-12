@@ -108,8 +108,8 @@ public class ActionStats extends ActionContainerItem
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);
-                builder.key(JsonConst.operation).value(operName.name()) ;
-                builder.key(JsonConst.description).value(operName.getDescription()) ;
+                builder.key(JsonConst.operation).value(operName.getName()) ;
+                builder.key(JsonConst.description).value(operName.getName()) ;
                 
                 builder.finishObject() ;
             }

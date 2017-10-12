@@ -18,20 +18,68 @@
 
 package org.apache.jena.fuseki.server;
 
-public enum OperationName {
-    // Fixed names give the codebase some resilience.
-    Query("SPARQL Query"),
-    Update("SPARQL Update"),
-    Upload("File Upload"),
-    GSP_RW("Graph Store Protocol"),
-    GSP_R("Graph Store Protocol (Read)"),
-    Quads_RW("HTTP Quads"),
-    Quads_R("HTTP Quads (Read)")
-    ;
+import java.util.HashMap;
+import java.util.Map;
+
+/** 
+ * Names (symbols) for operations.
+ * An {@code OperationName} is not related to the service name used to invoke the operation.
+ * That is determined by the {@link Endpoint}. 
+ */
+public class OperationName {
     
-    private final String description ;
-    private OperationName(String description) { this.description = description ; }
-    public String getDescription() { return description ; }
+    // Create intern'ed symbols. 
+    static private Map<String, OperationName> registered = new HashMap<>();
+    
+    /**
+     * Create an intern'ed {@code OperationName}. That is, if the object has already been
+     * created, return the original. There is only ever one object for a given name.
+     * (It is an extensible enum without subclassing).
+     */
+    static public OperationName register(String name) {
+        return registered.computeIfAbsent(name, (n)->new OperationName(n));
+    }
+    
+    public static OperationName Query    = register("SPARQL Query");
+    public static OperationName Update   = register("SPARQL Update");
+    public static OperationName Upload   = register("File Upload");
+    public static OperationName GSP_RW   = register("Graph Store Protocol");
+    public static OperationName GSP_R    = register("Graph Store Protocol (Read)");
+    public static OperationName Quads_RW = register("HTTP Quads");
+    public static OperationName Quads_R  = register("HTTP Quads (Read)");
+    
+    private final String name ;
+    private OperationName(String name) { this.name = name ; }
+    
+    public String getName() { return name ; }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+    
+    // Could be this == obj
+    // because we intern'ed the object
+    
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        OperationName other = (OperationName)obj;
+        if ( name == null ) {
+            if ( other.name != null )
+                return false;
+        } else if ( !name.equals(other.name) )
+            return false;
+        return true;
+    }
     
 }
 
