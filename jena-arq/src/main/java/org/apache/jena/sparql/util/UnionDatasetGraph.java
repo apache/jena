@@ -14,32 +14,24 @@ import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-public class UnionDatasetGraph implements DatasetGraph {
-
-    private final DatasetGraph left, right;
+public class UnionDatasetGraph extends org.apache.jena.atlas.lib.Union<DatasetGraph> implements DatasetGraph {
 
     private final Lock lock;
 
+    private final Context context;
+
     public UnionDatasetGraph(DatasetGraph left, DatasetGraph right) {
-        this.left = left;
-        this.right = right;
+        this(left, right, Context.emptyContext);
+    }
+
+    public UnionDatasetGraph(DatasetGraph left, DatasetGraph right, Context context) {
+        super(left, right);
+        this.context = context;
         this.lock = new UnionLock(left.getLock(), right.getLock());
     }
 
-    static Graph union(Graph left, Graph right) {
-        return new Union(left, right);
-    }
-
-    Graph union(Function<DatasetGraph, Graph> op) {
-        return union(op.apply(left), op.apply(right));
-    }
-
-    boolean both(Function<DatasetGraph, Boolean> op) {
-        return op.apply(left) && op.apply(right);
-    }
-
-    boolean either(Function<DatasetGraph, Boolean> op) {
-        return op.apply(left) || op.apply(right);
+    private Graph union(Function<DatasetGraph, Graph> op) {
+        return new Union(op.apply(left), op.apply(right));
     }
 
     <T> Iterator<T> fromEach(Function<DatasetGraph, Iterator<T>> op) {
@@ -49,8 +41,7 @@ public class UnionDatasetGraph implements DatasetGraph {
     @Override
     public void begin(ReadWrite readWrite) {
         if (readWrite.equals(WRITE)) throw new UnsupportedOperationException();
-        left.begin(readWrite);
-        right.begin(readWrite);
+        forEach(dsg -> dsg.begin(readWrite));
     }
 
     @Override
@@ -65,8 +56,7 @@ public class UnionDatasetGraph implements DatasetGraph {
 
     @Override
     public void end() {
-        left.end();
-        right.end();
+        forEach(DatasetGraph::end);
     }
 
     @Override
@@ -186,8 +176,7 @@ public class UnionDatasetGraph implements DatasetGraph {
 
     @Override
     public Context getContext() {
-        // TODO Auto-generated method stub
-        return null;
+        return context;
     }
 
     @Override
@@ -210,34 +199,20 @@ public class UnionDatasetGraph implements DatasetGraph {
         return both(DatasetGraph::supportsTransactionAbort);
     }
 
-    private static class UnionLock implements Lock {
+    private static class UnionLock extends org.apache.jena.atlas.lib.Union<Lock> implements Lock {
 
         public UnionLock(Lock left, Lock right) {
-            this.left = left;
-            this.right = right;
+            super(left, right);
         }
-
-        private final Lock left, right;
 
         @Override
         public void enterCriticalSection(boolean readLockRequested) {
-            left.enterCriticalSection(readLockRequested);
-            right.enterCriticalSection(readLockRequested);
+            forEach(lock -> lock.enterCriticalSection(readLockRequested));
         }
 
         @Override
         public void leaveCriticalSection() {
-            left.leaveCriticalSection();
-            right.leaveCriticalSection();
+            forEach(Lock::leaveCriticalSection);
         }
-    }
-
-    private static class UnionContext extends Context {
-
-        UnionContext(Context left, Context right) {
-            this.context = left.context;
-        }
-        
-
     }
 }

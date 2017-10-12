@@ -20,8 +20,6 @@ package org.apache.jena.sparql.util ;
 
 import java.util.* ;
 import java.util.concurrent.ConcurrentHashMap ;
-import java.util.function.Consumer;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -37,7 +35,7 @@ public class Context {
     public static final Context      emptyContext = new Context(true) ;
 
     protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>() ;
-    protected List<Consumer<Symbol>> callbacks    = new ArrayList<>() ;
+
     protected boolean                readonly     = false ;
 
     /** Create an empty context */
@@ -86,13 +84,11 @@ public class Context {
     /** Store a named value - overwrites any previous set value */
     public void put(Symbol property, Object value) {
         _put(property, value) ;
-        doCallbacks(property) ;
     }
 
     /** Store a named value - overwrites any previous set value */
     public void set(Symbol property, Object value) {
         _put(property, value) ;
-        doCallbacks(property) ;
     }
 
     private void _put(Symbol property, Object value) {
@@ -125,13 +121,11 @@ public class Context {
     /** Remove any value associated with a property */
     public void remove(Symbol property) {
         context.remove(property) ;
-        doCallbacks(property) ;
     }
 
     /** Remove any value associated with a property - alternative method name */
     public void unset(Symbol property) {
         context.remove(property) ;
-        doCallbacks(property) ;
     }
 
     // ---- Helpers
@@ -199,13 +193,12 @@ public class Context {
         }
     }
     
-    public void putAll(Context other) {
+    public Context putAll(Context other) {
         if ( readonly )
             throw new ARQException("Context is readonly") ;
-        if ( other != null ) {
-            for ( Map.Entry<Symbol, Object> e : other.context.entrySet() )
-                put(e.getKey(), e.getValue()) ;
-        }
+        if ( other != null )
+            other.context.forEach(this::put);
+        return this;
     }
 
     // -- true/false
@@ -313,23 +306,6 @@ public class Context {
     /** Return the number of context items */
     public int size() {
         return context.size() ;
-    }
-
-    // ---- Callbacks
-    public synchronized void addCallback(Consumer<Symbol> m) {
-        callbacks.add(m) ;
-    }
-
-    public synchronized void removeCallback(Consumer<Symbol> m) {
-        callbacks.remove(m) ;
-    }
-
-    public synchronized List<Consumer<Symbol>> getCallbacks() {
-        return Collections.unmodifiableList(callbacks) ;
-    }
-
-    private synchronized void doCallbacks(Symbol symbol) {
-        callbacks.forEach(c -> c.accept(symbol));
     }
 
     @Override
