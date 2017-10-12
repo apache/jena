@@ -113,4 +113,11 @@ public interface Dataset extends Transactional
      *  The dataset can not be used for query after this call.
      */
     public void close() ;
+    
+    /**
+     * @return Whether this {@code Dataset} is empty of graphs. Be aware of the semantic looseness inherent in
+     * <a href="https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/#h_note_4">the definition
+     * of RDF Datasets</a>; whether a named graph exists if nothing is in it is implementation-specific.
+     */
+    boolean isEmpty();
 }

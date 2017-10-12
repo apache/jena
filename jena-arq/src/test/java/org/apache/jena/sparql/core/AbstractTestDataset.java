@@ -108,4 +108,12 @@ public abstract class AbstractTestDataset extends BaseTest
         assertFalse(model1.isIsomorphicWith(ds.getNamedModel(graphName))) ;
         assertTrue(model2.isIsomorphicWith(ds.getNamedModel(graphName))) ;
     }
+    
+    @Test public void dataset_06()
+    {
+        String graphName = "http://example/" ;
+        Dataset ds = createDataset() ;
+        ds.addNamedModel(graphName, model1) ;
+        assertFalse("Dataset should not be empty after a named graph has been added!", ds.isEmpty());
+    }
 }

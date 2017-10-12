@@ -209,4 +209,9 @@ public class DatasetImpl implements Dataset
         if ( uri == null )
             throw new ARQException("null for graph name");
     }
+
+    @Override
+    public boolean isEmpty() {
+        return dsg.isEmpty();
+    }
 }
