@@ -31,7 +31,7 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;
 
-/** A task that kicks off a asynchornous operation that simply waits and exits.  For testing. */
+/** A task that kicks off a asynchronous operation that simply waits and exits.  For testing. */
 public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a container-item based.c */
 {
     private static final long serialVersionUID = 1925107412069359647L;
@@ -55,12 +55,8 @@ public class ActionSleep extends ActionCtl /* Not ActionAsyncTask - that is a co
 
     protected Runnable createRunnable(HttpAction action) {
         String name = action.getDatasetName() ;
-        if ( name == null ) {
-//            action.log.error("Null for dataset name in item request") ;  
-//            ServletOps.errorOccurred("Null for dataset name in item request");
-//            return null ;
+        if ( name == null )
             name = "''" ;
-        }
         
         String interval = action.request.getParameter("interval") ;
         int sleepMilli = 5000 ;
