@@ -24,7 +24,7 @@ package org.apache.jena.fuseki.servlets ;
  * dataset URI.
  */
 
-public abstract class REST_Quads extends SPARQL_GSP
+public abstract class REST_Quads extends ActionREST
 {
     private static final long serialVersionUID = 5366276922758465169L;
 
