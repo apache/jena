@@ -93,9 +93,9 @@ public class ActionStats extends ActionContainerItem
         DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
-        builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
-        builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
-        builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
+        builder.key(CounterName.Requests.getName()).value(dSrv.getCounters().value(CounterName.Requests)) ;
+        builder.key(CounterName.RequestsGood.getName()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
+        builder.key(CounterName.RequestsBad.getName()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
         
         builder.key(JsonConst.endpoints).startObject("endpoints") ;
         
@@ -108,8 +108,8 @@ public class ActionStats extends ActionContainerItem
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);
-                builder.key(JsonConst.operation).value(operName.name()) ;
-                builder.key(JsonConst.description).value(operName.getDescription()) ;
+                builder.key(JsonConst.operation).value(operName.getName()) ;
+                builder.key(JsonConst.description).value(operName.getName()) ;
                 
                 builder.finishObject() ;
             }
@@ -121,7 +121,7 @@ public class ActionStats extends ActionContainerItem
     private static void operationCounters(JsonBuilder builder, Endpoint operation) {
         for (CounterName cn : operation.getCounters().counters()) {
             Counter c = operation.getCounters().get(cn) ;
-            builder.key(cn.name()).value(c.value()) ;
+            builder.key(cn.getName()).value(c.value()) ;
         }
     }
 
