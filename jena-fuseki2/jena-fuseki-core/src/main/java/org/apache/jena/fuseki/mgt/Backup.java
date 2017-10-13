@@ -19,7 +19,9 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.* ;
+import java.util.Collections;
 import java.util.Set ;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -34,7 +36,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalNull ;
-import org.eclipse.jetty.util.ConcurrentHashSet ;
 
 /** Perform a backup */ 
 public class Backup
@@ -58,23 +59,29 @@ public class Backup
     
     // Record of all backups so we don't attempt to backup the
     // same dataset multiple times at the same time. 
-    private static Set<DatasetGraph> activeBackups = new ConcurrentHashSet<>() ;
+    private static Set<DatasetGraph> activeBackups = Collections.newSetFromMap(new ConcurrentHashMap<>());
     
     /** Perform a backup.
-     *  A backup is a dump of the datset in comrpessed N-Quads, done inside a transaction.
+     *  A backup is a dump of the dataset in comrpessed N-Quads, done inside a transaction.
      */
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
+
+        Log.info(Fuseki.serverLog, "Backup("+backupfile+"):1");
+
         if ( transactional == null )
             transactional = new TransactionalNull() ;
         transactional.begin(ReadWrite.READ);
         try {
             Backup.backup(dsg, backupfile) ;
+        } catch (Exception ex) {
+            Log.warn(Fuseki.serverLog, "Exception in backup", ex);
         }
         finally {
             transactional.end() ;
         }
+        Log.info(Fuseki.serverLog, "Backup("+backupfile+"):2");
     }
-    
+
     /** Perform a backup.
      * 
      * @see #backup(Transactional, DatasetGraph, String)

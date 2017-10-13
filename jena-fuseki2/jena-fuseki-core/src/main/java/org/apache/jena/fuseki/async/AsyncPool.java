@@ -51,7 +51,13 @@ public class AsyncPool
         synchronized(mutex) {
             String taskId = Long.toString(++counter) ;
             Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName)) ;
-            Callable<Object> c = Executors.callable(task) ;
+            Callable<Object> c = ()->{
+                try { task.run(); } 
+                catch (Throwable th) {
+                    Fuseki.serverLog.warn(format("Exception in task %s execution", taskId), th);
+                }
+                return null; 
+            };
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService, requestId) ;
             /* Future<Object> future = */ executor.submit(asyncTask);
             runningTasks.put(taskId, asyncTask) ;
