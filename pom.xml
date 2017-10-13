@@ -81,7 +81,7 @@
 
         <module>jena-text</module>
         <!-- <module>jena-text-es</module>        -->
-        <!-- <module>jena-spatial</module>        -->
+        <module>jena-spatial</module>
 
         <module>jena-cmds</module>
         <module>jena-fuseki2</module>
