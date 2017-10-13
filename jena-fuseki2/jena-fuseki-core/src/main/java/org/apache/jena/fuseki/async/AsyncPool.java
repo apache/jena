@@ -54,7 +54,7 @@ public class AsyncPool
             Callable<Object> c = ()->{
                 try { task.run(); } 
                 catch (Throwable th) {
-                    Fuseki.serverLog.warn(format("Exception in task %s execution", taskId), th);
+                    Fuseki.serverLog.error(format("Exception in task %s execution", taskId), th);
                 }
                 return null; 
             };
