@@ -60,11 +60,11 @@
     <ver.jsonldjava>0.11.1</ver.jsonldjava>
     <ver.jackson>2.9.0</ver.jackson>
 
-    <ver.commonsio>2.5</ver.commonsio>
+    <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     
     <ver.commonslang3>3.4</ver.commonslang3>
-    <ver.commonscsv>1.4</ver.commonscsv>
+    <ver.commonscsv>1.5</ver.commonscsv>
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
     <ver.httpclient>4.5.3</ver.httpclient>
@@ -75,7 +75,7 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
-    <ver.commons-codec>1.10</ver.commons-codec>
+    <ver.commons-codec>1.11</ver.commons-codec>
     <ver.lucene>6.4.1</ver.lucene>
 
     <ver.elasticsearch>5.2.2</ver.elasticsearch>
