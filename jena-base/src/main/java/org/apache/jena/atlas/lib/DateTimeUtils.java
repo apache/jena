@@ -89,7 +89,8 @@ public class DateTimeUtils {
     }
 
     private static String calendarToXSDString(Calendar cal, FastDateFormat fmt) {
-        String lex = fmt.format(cal) ;
+        FastDateFormat zonedFmt = FastDateFormat.getInstance(fmt.getPattern(), cal.getTimeZone());
+        String lex = zonedFmt.format(cal) ;
         // lex = lex + calcTimezone(cal) ;
         return lex ;
     }
