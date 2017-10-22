@@ -33,7 +33,7 @@ import org.apache.jena.sdb.store.* ;
  *  
  *  A store consists of a number of handlers for different aspects of
  *  the process of setting up and querying a database-backed Store.  This
- *  means Store for new databases can be assmelbed from those standard
+ *  means Store for new databases can be assembled from those standard
  *  components that work, with database-specific code only where necessary.
  *  A common case if the formatting of the database - this is often DB-specific
  *  yet SQL generation of query is more standard.       

@@ -20,7 +20,7 @@ package org.apache.jena.sparql.engine;
 
 import org.apache.jena.query.ResultSet ;
 
-/** @derpecated Use {@link org.apache.jena.sparql.resultset.ResultSetWrapper} */
+/** @deprecated Use {@link org.apache.jena.sparql.resultset.ResultSetWrapper} */
 @Deprecated
 public class ResultSetWrapper extends org.apache.jena.sparql.resultset.ResultSetWrapper {
     public ResultSetWrapper(ResultSet rs) {

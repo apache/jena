@@ -87,6 +87,6 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Perform checks on this index */
     public void check() ;
     
-    /** Return size if known else return -1 : does not count the peristent storage */
+    /** Return size if known else return -1 : does not count the persistent storage */
     public long size() ;
 }

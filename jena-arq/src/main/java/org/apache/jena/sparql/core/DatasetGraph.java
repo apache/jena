@@ -43,7 +43,7 @@ public interface DatasetGraph extends Transactional, Closeable
     public Graph getDefaultGraph() ;
 
     /** Get the graph named by graphNode : returns null on no graph 
-     * NB Whether a dataset contains a graph if there are no triples is not defined - see the specifc implementation.
+     * NB Whether a dataset contains a graph if there are no triples is not defined - see the specific implementation.
      * Some datasets are "open" - they have all graphs even if no triples,
      */
     public Graph getGraph(Node graphNode) ;
@@ -58,8 +58,8 @@ public interface DatasetGraph extends Transactional, Closeable
     /**
      * Does the DatasetGraph contain a specific named graph? 
      * Whether a dataset contains a graph if there are no triples is
-     * not defined - see the specifc implementation. Some datasets are "open" -
-     * they have all graphs even if no triples and thsi returns true always.
+     * not defined - see the specific implementation. Some datasets are "open" -
+     * they have all graphs even if no triples and this returns true always.
      * 
      * @param graphNode
      * @return boolean
@@ -151,10 +151,10 @@ public interface DatasetGraph extends Transactional, Closeable
     public void close() ;
 
     /**
-     * A {@code DatasetGraph} supports tranactions if it provides {@link #begin}/
+     * A {@code DatasetGraph} supports transactions if it provides {@link #begin}/
      * {@link #commit}/{@link #end}. There core storage {@code DatasetGraph} that
      * provide fully serialized transactions.  {@code DatasetGraph} that provide
-     * functionality acorss independent systems can not provide such strong guarantees.
+     * functionality across independent systems can not provide such strong guarantees.
      * For example, they may use MRSW locking and some isolation control.
      * Specifically, they do not necessarily provide {@link #abort}.
      * <p>

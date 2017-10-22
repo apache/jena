@@ -25,7 +25,7 @@ public interface BlankNodeAllocator
 {
     /** Allocate based on a non-null label.
      * Calling this twice, with the same label will generate equivalent nodes
-     * but they may not be identicial (i.e they are .equals but may not be ==) 
+     * but they may not be identical (i.e they are .equals but may not be ==) 
      */
     public Node alloc(String label) ;
     

@@ -82,7 +82,7 @@ public class ExprLib
     }
     
     /** Attempt to fold any sub-expressions of the Expr.
-     * Return an expression that is euqivalent to the argument but maybe simpler.    
+     * Return an expression that is equivalent to the argument but maybe simpler.    
      * @param expr
      * @return Expression
      */
@@ -110,7 +110,7 @@ public class ExprLib
         { return eAgg.getAggVar()  ; }
     } ;
     
-    /** Decide whether an expression is safe for using a a graph substitution.
+    /** Decide whether an expression is safe for using a graph substitution.
      * Need to be careful about value-like tests when the graph is not 
      * matched in a value fashion.
      */

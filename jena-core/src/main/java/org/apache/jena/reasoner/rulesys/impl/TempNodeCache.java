@@ -46,7 +46,7 @@ public class TempNodeCache {
     protected Map<Node, Node> classMap = new HashMap<>();
     
     /**
-     * Cosntructor.
+     * Constructor.
      * @param infgraph Parent inference graph, used to be needed for synchronization, don't think
      * we need it any more 
      */

@@ -181,7 +181,7 @@ public class LangTag {
      * constants for the array contents. Parts not present cause a null in
      * the return array.
      * 
-     * @return Langtag parts, or null if the input string does not poarse as a lang tag.
+     * @return Langtag parts, or null if the input string does not parse as a lang tag.
      */
     public static String[] parse(String languageTag) {
         String[] parts = new String[partsLength] ;
@@ -224,7 +224,7 @@ public class LangTag {
         return parts ;
     }
 
-    /** Canonicalize with the rules of RFC 4646, or RFC5646 without replacement of perferred form. */
+    /** Canonicalize with the rules of RFC 4646, or RFC5646 without replacement of preferred form. */
     public static String canonical(String str) {
         if ( str == null )
             return null ;

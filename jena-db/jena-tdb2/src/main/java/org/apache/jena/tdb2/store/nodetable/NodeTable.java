@@ -28,7 +28,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb2.store.NodeId;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 
- *  where Nodes can be staored and a NodeId allocated
+ *  where Nodes can be stored and a NodeId allocated
  *  @see NodeId
  */ 
 

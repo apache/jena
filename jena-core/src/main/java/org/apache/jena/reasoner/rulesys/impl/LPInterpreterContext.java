@@ -25,7 +25,7 @@ package org.apache.jena.reasoner.rulesys.impl;
  */
 public interface LPInterpreterContext extends LPInterpreterState {
 
-    /** Notify this context that a branch was suspended awaiting futher
+    /** Notify this context that a branch was suspended awaiting further
      *  results for the given choice point. */
     public void notifyBlockedOn(ConsumerChoicePointFrame ccp);
     

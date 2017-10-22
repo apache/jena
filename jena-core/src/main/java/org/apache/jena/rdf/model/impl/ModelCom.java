@@ -46,7 +46,7 @@ import org.apache.jena.vocabulary.RDF ;
  *
  * <P>This class implements common methods, mainly convenience methods, for
  *    model implementations.  It is intended use is as a base class from which
- *    model implemenations can be derived.</P>
+ *    model implementations can be derived.</P>
  */
 
 public class ModelCom extends EnhGraph

@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.Context ;
 /**
  * Adapter providing RIOT interface {@link WriterGraphRIOT} over an old-style
  * Jena {@link RDFWriter}. Subclasses of this class are used for RDF/XML
- * (basic and abbrevated) in RIOT.
+ * (basic and abbreviated) in RIOT.
  * <p>
  * See {@link RDFWriterRIOT} for the class plugged into RIOT that provides the
  * {@link RDFWriter} interface to Jena core operations. It is {@link RDFWriter} over

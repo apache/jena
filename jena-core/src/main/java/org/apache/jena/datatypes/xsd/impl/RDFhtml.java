@@ -23,7 +23,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 
 /** rdf:html.
- * This only implements syntacic equality, not value equality (parsed HTML5, DOM normalized)    
+ * This only implements syntactic equality, not value equality (parsed HTML5, DOM normalized)    
  */
 
 public class RDFhtml extends BaseDatatype implements RDFDatatype {

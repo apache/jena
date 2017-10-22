@@ -306,7 +306,7 @@ public final class StatsMatcher
     }
     
     /** Return the matching weight for the first triple match found, 
-     * else apply default value for fixed, unknnown predciate,
+     * else apply default value for fixed, unknown predicate,
      * else return NOMATCH
      */
     public double match(Item subj, Item pred, Item obj)

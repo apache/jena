@@ -46,7 +46,7 @@ import org.apache.jena.system.JenaSystem ;
  *  There are two ways of creating a query - use the parser to turn
  *  a string description of the query into the executable form, and
  *  the programmatic way (the parser is calling the programmatic
- *  operations driven by the quyery string).  The declarative approach
+ *  operations driven by the query string).  The declarative approach
  *  of passing in a string is preferred.
  *
  * Once a query is built, it can be passed to the QueryFactory to produce a query execution engine.
@@ -765,7 +765,7 @@ public class Query extends Prologue implements Cloneable, Printable
      * <b>not</b> mean the queries do different things.  
      * 
      * For example, reordering a group or union
-     * means that that a query is different.
+     * means that a query is different.
      *  
      * Two instances of a query parsed from the same string are equal. 
      */

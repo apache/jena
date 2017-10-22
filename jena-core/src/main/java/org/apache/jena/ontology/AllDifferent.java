@@ -93,7 +93,7 @@ public interface AllDifferent
     /**
      * <p>Answer true if this AllDifferent declaration includes <code>res</code> as one of the distinct individuals.</p>
      * @param res A resource to test against
-     * @return True if <code>res</code> is declared to be distinct from the other individuals in this declation.
+     * @return True if <code>res</code> is declared to be distinct from the other individuals in this declaration.
      * @exception ProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
     public boolean hasDistinctMember( Resource res );

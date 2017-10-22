@@ -20,7 +20,7 @@ package org.apache.jena.shared;
 
 /**
      This exception is thrown when a putative namespace (for a PrefixMapping)
-     ends with a name character, which we disallow because its an invitation
+     ends with a name character, which we disallow because it is an invitation
      to errors. Typically a namespace URI will end with "/" or "#".
 */
 public class NamespaceEndsWithNameCharException extends JenaException

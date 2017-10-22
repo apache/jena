@@ -371,7 +371,7 @@ public class JdbcNodeUtils {
     }
 
     /**
-     * Tries to convert a noew to a string
+     * Tries to convert a now to a string
      * 
      * @param n
      *            Node

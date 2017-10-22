@@ -98,7 +98,7 @@ public class XSDDouble extends XSDDatatype {
      
     /**
      * Parse a validated lexical form. Subclasses which use the default
-     * parse implementation and are not convered by the explicit convertValidatedData
+     * parse implementation and are not converted by the explicit convertValidatedData
      * cases should override this.
      */
     @Override

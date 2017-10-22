@@ -59,7 +59,7 @@ public interface MinCardinalityQRestriction
     public int getMinCardinalityQ();
 
     /**
-     * <p>Answer true if this property restriction has the given minimum qualifed cardinality.</p>
+     * <p>Answer true if this property restriction has the given minimum qualified cardinality.</p>
      * @param minCardinality The cardinality to test against 
      * @return True if the given cardinality is the minimum qualified cardinality of the restricted property in this restriction
      * @exception ProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   

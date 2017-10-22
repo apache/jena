@@ -28,7 +28,7 @@ import org.apache.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 
 /** Iterate over a stream of records, packing them into RecordBufferPage -- the leaf of a B+Tree 
  *  This class does not write the blocks back to the block manager.
- *  This cleass does allocate block ids and blocks.
+ *  This class does allocate block ids and blocks.
  *  @see RecordBufferPageLinker
  */
 

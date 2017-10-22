@@ -165,7 +165,7 @@ public class JournalControl
     }
     
     /** Recover one transaction from the start position given.
-     *  Scan to see if theer is a commit; if found, play the
+     *  Scan to see if there is a commit; if found, play the
      *  journal from the start point to the commit.
      *  Return true is a commit was found.
      *  Leave journal positioned just after commit or at end if none found.

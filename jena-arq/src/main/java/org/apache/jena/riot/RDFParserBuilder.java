@@ -316,11 +316,11 @@ public class RDFParserBuilder {
     public RDFParserBuilder canonicalLiterals(boolean flag) { this.canonicalLiterals = flag ; return this; }
     
     /** Set whether to perform checking, 
-     * NTriples and NQuads default to no checking, olther langauges to checking.
+     * NTriples and NQuads default to no checking, other languages to checking.
      * <p>
      * Checking adds warnings over and above basic syntax errors.
      * <ul>
-     * <li>URIs - whether IRs confrm to all the rules of the URI scheme
+     * <li>URIs - whether IRs confirm to all the rules of the URI scheme
      * <li>Literals: whether the lexical form conforms to the rules for the datatype. 
      * <li>Triples and quads: check slots have a valid kind of RDF term (parsers usually make this a syntax error anyway).
      * </ul> 
@@ -421,7 +421,7 @@ public class RDFParserBuilder {
      * Parse the source, sending the results to a {@link Graph}. The source must be for
      * triples; any quads are discarded. 
      * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends tripes and prfixes to the {@code Graph}.
+     * where {@code stream} sends triples and prefixes to the {@code Graph}.
      * 
      * @param graph
      */
@@ -432,7 +432,7 @@ public class RDFParserBuilder {
     /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
      * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends tripes and prefixes to the {@code DatasetGraph}.
+     * where {@code stream} sends triples and prefixes to the {@code DatasetGraph}.
      * 
      * @param dataset
      */

@@ -567,7 +567,7 @@ public class UpdateBuilder {
 	/**
 	 * Get an ExprFactory that uses the prefixes from this builder.
 	 * 
-	 * @return the EpxressionFactory.
+	 * @return the ExpressionFactory.
 	 */
 	public ExprFactory getExprFactory() {
 		return prefixHandler.getExprFactory();

@@ -22,7 +22,7 @@ import org.apache.jena.hadoop.rdf.io.input.readers.AbstractWholeFileQuadReader;
 import org.apache.jena.riot.Lang;
 
 /**
- * A record record for NQuads
+ * A record for NQuads
  * <p>
  * Unlike the {@link NQuadsReader} this processes files as a whole rather than
  * individual lines. This has the advantage of less parser setup overhead but

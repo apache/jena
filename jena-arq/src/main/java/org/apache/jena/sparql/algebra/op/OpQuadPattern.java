@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 /** The main Op used in converting SPARQL algebra to quad form.
  * OpQuadPattern reflects the fact that quads come in per-GRAPH units. 
  * {@link OpQuadBlock} is for a general containers of quads
- * without any contract on the quads sharing the same garph node.   
+ * without any contract on the quads sharing the same graph node.   
  */
 public class OpQuadPattern extends Op0
 {
@@ -78,7 +78,7 @@ public class OpQuadPattern extends Op0
     public BasicPattern getBasicPattern()   { return triples ; }
     public boolean isEmpty()                { return triples.size() == 0 ; }
     
-    /** Is this quad pattern referring to the default graph by quad transformation or explict naming? */ 
+    /** Is this quad pattern referring to the default graph by quad transformation or explicit naming? */ 
     public boolean isDefaultGraph()         { return Quad.isDefaultGraph(graphNode) ; }
 
     /** Is this quad pattern explicitly naming the union graph? */

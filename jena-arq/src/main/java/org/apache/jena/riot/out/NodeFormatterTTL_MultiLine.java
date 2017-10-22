@@ -31,7 +31,7 @@ import org.apache.jena.riot.system.PrefixMap ;
 
 /** 
  * Node formatter for pretty-printed Turtle.
- *  This {@link NodeFormatter} switches between " and ' quotes to avoid ecapes.
+ *  This {@link NodeFormatter} switches between " and ' quotes to avoid escapes.
  *  This code writes multiline literals with """ or '''. 
  */
 public class NodeFormatterTTL_MultiLine extends NodeFormatterTTL {

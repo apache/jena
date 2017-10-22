@@ -23,7 +23,7 @@ import org.apache.jena.graph.TripleBoundary ;
 
 /**
     StatementBoundaryBase - a base class for StatementBoundarys, with
-    built-in converstion to triples and a continueWith as well as a stopAt.
+    built-in conversation to triples and a continueWith as well as a stopAt.
 */
 public abstract class StatementBoundaryBase implements StatementBoundary
     {

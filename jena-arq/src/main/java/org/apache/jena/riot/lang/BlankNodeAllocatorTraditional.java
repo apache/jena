@@ -24,7 +24,7 @@ import java.util.Map ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 
-/** Allocate blank ndoes according to the traditional policy (up to jena 2.10.0)
+/** Allocate blank nodes according to the traditional policy (up to jena 2.10.0)
  *  This allocator has arbitrary sized state. 
  *  Create a fresh one for each parser run.
  */

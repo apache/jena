@@ -27,7 +27,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * <p>RDF iterators are standard Java iterators, except that they
  *    have an extra method that returns specifically typed objects,
  *    in this case RDF nodes, and have a <CODE>close()</CODE> method. 
- *    thatshould be called to free resources if the application does
+ *    that should be called to free resources if the application does
  *    not complete the iteration.</p>
  */
 public interface NodeIterator extends ExtendedIterator<RDFNode>

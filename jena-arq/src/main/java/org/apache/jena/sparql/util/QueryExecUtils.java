@@ -338,7 +338,7 @@ public class QueryExecUtils {
 
     /**
      * Execute, expecting the result to be one row, one column. Return that one
-     * RDFNode or null Throw excpetion if more than one.
+     * RDFNode or null Throw exception if more than one.
      */
     public static RDFNode getOne(QueryExecution qExec, String varname) {
         try {

@@ -30,7 +30,7 @@ import java.nio.ByteBuffer ;
 * Transactions were either were properly committed by the previous coordinator,
 * and hence redo actions (finalization) should be done,
 * or they were not, in which case undo actions may be needed.
-* Transctions to discard are not notified, only fully commited transaction are
+* Transctions to discard are not notified, only fully committed transaction are
 * notified during recovery. The component may need to keepit's own record of
 * undo actions needed across restarts.
 * <p><br/>
@@ -38,7 +38,7 @@ import java.nio.ByteBuffer ;
 * <ul>
 * <li>{@link #startRecovery}
 * <li>{@link #recover} for each commited/durable transaction (redo actions)
-* <li>{@link #finishRecovery}, discarding any othe transactions (undo actions).
+* <li>{@link #finishRecovery}, discarding any other transactions (undo actions).
 * </ul>
 * <p><br/>
 * Lifecycle of a read transaction:
@@ -101,7 +101,7 @@ public interface TransactionalComponent
      */
     public void recover(ByteBuffer ref) ;
     
-    /** End of the receovery phase */
+    /** End of the recovery phase */
     public void finishRecovery() ;
 
     /** Indicate that no recovery is being done (the journal thinks everything was completed last time) */

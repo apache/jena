@@ -97,7 +97,7 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	 * The order in which variables 
 	 * are added to the values table is preserved.
 	 * 
-	 * Each item in the value collectionis converted into a node using makeNode() strategy except that null values are converted 
+	 * Each item in the value collection is converted into a node using makeNode() strategy except that null values are converted 
 	 * to UNDEF.
 	 * 
 	 * If there are already values in the value statement the data table is adds as follows:

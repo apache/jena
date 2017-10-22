@@ -28,7 +28,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
-/** A muatable mapping from a name to a value such that we can create a tree of levels
+/** A mutable mapping from a name to a value such that we can create a tree of levels
  *  with higher (earlier levels) being shared.
  *  Looking up a name is done by looking in the current level,
  *  then trying the parent is not found. */

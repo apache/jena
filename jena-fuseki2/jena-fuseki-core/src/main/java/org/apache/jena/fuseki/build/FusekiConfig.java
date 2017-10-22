@@ -199,7 +199,7 @@ public class FusekiConfig {
     }
     
     /** Read a configuration in a model.
-     * Allow dataset descriptions to be carried over from anothe rplace.
+     * Allow dataset descriptions to be carried over from another place.
      * Add to a list. 
      */
     private static void readConfiguration(Model m, DatasetDescriptionRegistry dsDescMap, List<DataAccessPoint> dataServiceRef) {

@@ -28,7 +28,7 @@ import org.apache.jena.sparql.engine.QueryEngineRegistry ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 
-/** Same as QueryEngineMain except tranform to quads */
+/** Same as QueryEngineMain except transform to quads */
 public class QueryEngineMainQuad extends QueryEngineMain
 {
     public QueryEngineMainQuad(Op op, DatasetGraph dataset, Binding input, Context context)

@@ -83,7 +83,7 @@ public class NodeLib
     
     /**
      * Encode a node - it is better to use encodeStore which may avoid
-     * anadditional copy in getting the node into the ObjectFile
+     * an additional copy in getting the node into the ObjectFile
      */
     public static ByteBuffer encode(Node node)
     {

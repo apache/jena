@@ -89,7 +89,7 @@ public class BuilderGraph
      *    (graph IRIa ...))
      *    (graph IRIb ...))
      *    )
-     * (graph ...) is an abbrevaition for a dataset with a default graph and no named graphs.
+     * (graph ...) is an abbreviation for a dataset with a default graph and no named graphs.
      */
 
     public static DatasetGraph buildDataset(Item item)

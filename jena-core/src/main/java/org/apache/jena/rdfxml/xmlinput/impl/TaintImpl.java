@@ -18,7 +18,7 @@
 
 package org.apache.jena.rdfxml.xmlinput.impl;
 /**
- * Minimal implemantation of {@link Taint}
+ * Minimal implementation of {@link Taint}
  */
 public class TaintImpl implements Taint {
 

@@ -173,7 +173,7 @@ public class TDB2 {
     /**
      * Sync a TDB synchronizable object (model, graph, dataset). If force is
      * true, synchronize as much as possible (e.g. file metadata) else make a
-     * reasonable attenpt at synchronization but does not gauarantee disk state.
+     * reasonable attempt at synchronization but does not guarantee disk state.
      * Do nothing otherwise
      */
     private static void syncObject(Object object) {

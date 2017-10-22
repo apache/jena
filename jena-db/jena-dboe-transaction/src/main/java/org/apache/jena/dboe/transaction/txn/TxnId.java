@@ -20,7 +20,7 @@ package org.apache.jena.dboe.transaction.txn;
 
 
 /**
- * {@code TxnId} is a identfier for a transaction.
+ * {@code TxnId} is a identifier for a transaction.
  * A component in a transaction can use it as a unique key.
  * The {@code TxnId}
  * <ul>

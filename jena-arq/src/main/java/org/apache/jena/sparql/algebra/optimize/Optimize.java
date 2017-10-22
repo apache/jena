@@ -89,7 +89,7 @@ public class Optimize
         return f.create(context) ;
     }
     
-    /** Globably set the factory for making optimizers */ 
+    /** Globally set the factory for making optimizers */ 
     public static void setFactory(RewriteFactory aFactory)
     { factory = aFactory ; }
 

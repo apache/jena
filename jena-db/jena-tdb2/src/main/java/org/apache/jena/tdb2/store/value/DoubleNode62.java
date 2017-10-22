@@ -66,7 +66,7 @@ import org.apache.jena.atlas.lib.BitsLong;
  * <p>
  * "No encoding" is 0xFF00_0000_0000_0000L which would otherwise be the smallest (most negative) denormalized value: 
  *  -3.5336941295567687E72
- * <p>All unencodeable numbers wil endup in the node table in full lexical form.  
+ * <p>All unencodeable numbers will endup in the node table in full lexical form.  
  */  
 public class DoubleNode62 {
     /**

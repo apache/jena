@@ -223,8 +223,8 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
     /** What to do if the {@link weight} comes back as "not found".
      * Choices are:
      *    ZERO      Assume the weight is zero (the rules were complete over the data so this is a pattern that will not match the data. 
-     *    LAST      Place after all explciitly weighted triple patterns
-     *    FIRST     Place before all explciitly weighted triple patterns
+     *    LAST      Place after all explicitly weighted triple patterns
+     *    FIRST     Place before all explicitly weighted triple patterns
      *    NUMERIC   Use value returned by {@link defaultWeight}
      * The default, default choice is LAST.   
      */

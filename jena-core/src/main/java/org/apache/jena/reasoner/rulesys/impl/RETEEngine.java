@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A RETE version of the the forward rule system engine. It neeeds to reference
+ * A RETE version of the forward rule system engine. It needs to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  */
 public class RETEEngine implements FRuleEngineI {
@@ -222,7 +222,7 @@ public class RETEEngine implements FRuleEngineI {
     }
     
     /**
-     * Set the internal rule from from a precomputed state.
+     * Set the internal rule from a precomputed state.
      */
     @Override
     public void setRuleStore(Object ruleStore) {

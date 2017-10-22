@@ -138,7 +138,7 @@ public class BlockUTF8
             }
             else if ( (x & 0xF8) == 0xF0 ) 
             {
-                // Looking like 4 byte charcater.
+                // Looking like 4 byte character.
                 // 11110zzz => 4 bytes.
                 int ch = readMultiBytes(bb, x & 0x08, 4) ;
                 char chars[] = Character.toChars(ch) ;
@@ -251,7 +251,7 @@ public class BlockUTF8
         return x ;
     }
 
-    /** Put bytes to the output ByteBuffer for charcater ch.
+    /** Put bytes to the output ByteBuffer for character ch.
      * The first byte is in x1 and already has the needed bits set. 
      */
     private static void outputBytes(ByteBuffer bb, int x1, int byteLength, int ch)

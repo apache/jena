@@ -29,7 +29,7 @@ package org.apache.jena.rdf.model;
  *
  * <p>When a member is deleted from an Alternative using this interface, or an
  * iterator returned through this interface, all the other members with
- * higher ordinals are renumbered using an implementation dependendent
+ * higher ordinals are renumbered using an implementation dependent
  * algorithm.</p>
  *
  * <p>This interface provides methods supporting typed literals.  This means

@@ -248,7 +248,7 @@ class GraphNode {
 	}
 	
 	/**
-	 * Assert an inferred indirect link from this node to the given traget
+	 * Assert an inferred indirect link from this node to the given target
 	 */
 	public void assertIndirectLinkTo(GraphNode target) {
 //            if (this == target) return;

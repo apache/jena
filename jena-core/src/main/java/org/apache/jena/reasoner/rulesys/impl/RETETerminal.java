@@ -39,7 +39,7 @@ public class RETETerminal implements RETESinkNode {
      * Constructor.
      * @param rule the rule which this terminal should fire.
      * @param engine the parent rule engine through which the deductions and recursive network can be reached.
-     * @param graph the wider encompasing infGraph needed to for the RuleContext
+     * @param graph the wider encompassing infGraph needed to for the RuleContext
      */
     public RETETerminal(Rule rule, RETEEngine engine, ForwardRuleInfGraphI graph) {
         context = new RETERuleContext(graph, engine);
@@ -50,7 +50,7 @@ public class RETETerminal implements RETESinkNode {
      * Constructor. Used internally for cloning.
      * @param rule the rule which this terminal should fire.
      * @param engine the parent rule engine through which the deductions and recursive network can be reached.
-     * @param graph the wider encompasing infGraph needed to for the RuleContext
+     * @param graph the wider encompassing infGraph needed to for the RuleContext
      */
     protected RETETerminal(RETERuleContext context) {
         this.context = context;

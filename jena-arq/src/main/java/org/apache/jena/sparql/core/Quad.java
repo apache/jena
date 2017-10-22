@@ -123,7 +123,7 @@ public class Quad implements Serializable
     }
 
 
-    /** Default, concrete graph via generated URI (not explciitly named) */
+    /** Default, concrete graph via generated URI (not explicitly, named) */
     public boolean isDefaultGraphExplicit()
     { return isDefaultGraphExplicit(getGraph()) ; }
     

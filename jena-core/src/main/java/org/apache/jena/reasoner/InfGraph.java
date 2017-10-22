@@ -69,11 +69,11 @@ public interface InfGraph extends Graph {
     
     /**
      * Perform any initial processing and caching. This call is optional. Most
-     * engines either have negligable set up work or will perform an implicit
+     * engines either have negligible set up work or will perform an implicit
      * "prepare" if necessary. The call is provided for those occasions where
      * substantial preparation work is possible (e.g. running a forward chaining
      * rule system) and where an application might wish greater control over when
-     * this prepration is done.
+     * this preparation is done.
      */
     public void prepare();
     
@@ -127,14 +127,14 @@ public interface InfGraph extends Graph {
     public ExtendedIterator<Triple> find(Node subject, Node property, Node object, Graph param);
     
     /**
-     * Switch on/off drivation logging
+     * Switch on/off derivation logging
      */
     public void setDerivationLogging(boolean logOn);
    
     /**
      * Return the derivation of the given triple (which is the result of
      * some previous find operation).
-     * Not all reasoneers will support derivations.
+     * Not all reasoners will support derivations.
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */

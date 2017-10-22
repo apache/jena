@@ -54,10 +54,10 @@ import org.apache.jena.vocabulary.RDFS ;
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more direct way to implement property functions is to extend
  *  one of the helper classes and have the custom code called on each solution from the
- *  the previosu query stage.
+ *  the previous query stage.
  *  
  *  See examples {@link localname} for a general predicate that allows for any of
- *  subject or object to be a variable of boudn value, or see {@link uppercase} for a simple
+ *  subject or object to be a variable of bound value, or see {@link uppercase} for a simple
  *  implementation that transforms on graph node into a new node. 
  *    
  *  This is a more complicated example which  uses the PropertyFunction interface directly.

@@ -274,10 +274,10 @@ public final class BPTreeNode extends BPTreePage
     }
 
     /** Iterator over the pages below that have records between minRec (inclusive) and maxRec(exclusive).
-     *  There may be other records as as well.
+     *  There may be other records as well.
      * @param minRec
      * @param maxRec
-     * @return Iterator&lt;BPTreePage>
+     * @return Iterator&lt;BPTreePage&gt;
      */
     Iterator<BPTreePage> iterator(Record minRec, Record maxRec) {
         if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )

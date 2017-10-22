@@ -65,7 +65,7 @@ public abstract class BlockAccessBase implements BlockAccess {
             throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
     }
 
-    /** Find path compoent, with extension */
+    /** Find path component, with extension */
     private static String label(String filename) {
         int j = filename.lastIndexOf('/') ;
         if ( j < 0 )

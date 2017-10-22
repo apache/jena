@@ -30,7 +30,7 @@ import org.apache.jena.sparql.util.Context ;
  * evaluation of a basic graph pattern (BGP).  Matching BGPs is an extension
  * point of SPARQL; different entailment regimes plug in at this point.
  * They are also an extension point in ARQ to connect to any datasource,
- * the most common case being connectinbg to a Jena graph.     
+ * the most common case being connecting to a Jena graph.     
  * 
  * The StageBuilder finds the registered StageGenerator, and calls it to
  * evaluate a basic graph pattern that has any bound variables

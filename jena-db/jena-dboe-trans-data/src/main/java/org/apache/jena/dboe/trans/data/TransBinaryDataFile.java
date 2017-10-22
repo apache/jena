@@ -198,7 +198,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     /** 
      * Truncate only supported for an abort - this transactional version of
-     * BinaryDataFile will not truncate to earlier than the commited length.
+     * BinaryDataFile will not truncate to earlier than the committed length.
      */
     @Override
     public void truncate(long size) {

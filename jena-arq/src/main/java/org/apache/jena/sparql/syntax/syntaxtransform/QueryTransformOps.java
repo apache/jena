@@ -64,7 +64,7 @@ public class QueryTransformOps {
     }
 
     /** Transform a query using {@link ElementTransform} and {@link ExprTransform}.
-     *  It is the responsibility of these transforms to transofmr to a legal SPARQL query.
+     *  It is the responsibility of these transforms to transform to a legal SPARQL query.
      */ 
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);

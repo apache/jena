@@ -211,7 +211,7 @@ public class TxnCounter implements Transactional {
     // This is a potential memory leak.
     // Use "isInTransaction" to read and clear.
 
-    /** Is this a write transaction? Shoudl be called inside a transaction. */
+    /** Is this a write transaction? Should be called inside a transaction. */
     private boolean isWriteTxn() {
         ReadWrite rw = txnMode.get() ;
         if ( rw == null )

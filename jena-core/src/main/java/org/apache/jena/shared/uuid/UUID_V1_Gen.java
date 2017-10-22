@@ -117,7 +117,7 @@ public class UUID_V1_Gen implements UUIDFactory
         reset() ;
     }
 
-    /** (Re)set the network id (a random number) and the timstamp */
+    /** (Re)set the network id (a random number) and the timestamp */
 
     @Override
     public void reset() {

@@ -245,7 +245,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements
 
 	/**
 	 * Test that two literals are semantically equivalent. In some cases this
-	 * may be the sames as equals, in others equals is stricter. For example,
+	 * may be the same as equals, in others equals is stricter. For example,
 	 * two xsd:int literals with the same value but different language tag are
 	 * semantically equivalent but distinguished by the java equality function
 	 * in order to support round tripping.

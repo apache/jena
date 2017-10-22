@@ -99,7 +99,7 @@ public class CheckerIRI implements NodeChecker
      *  Assumes error handler throws exceptions on errors if needbe
      *  @param iri  IRI to check
      *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
+     *  @param allowRelativeIRIs Allow relative URIs (discouraged)
      */
     private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs) {
         iriViolations(iri, errorHandler, allowRelativeIRIs, -1, -1) ;
@@ -110,7 +110,7 @@ public class CheckerIRI implements NodeChecker
      *  Assumes error handler throws exceptions on errors if needbe
      *  @param iri  IRI to check
      *  @param errorHandler The error handler to call on each warning or error.
-     *  @param allowRelativeIRIs Allow realtive URIs (discouraged)
+     *  @param allowRelativeIRIs Allow relative URIs (discouraged)
      */
     private static void iriViolations(IRI iri, ErrorHandler errorHandler, boolean allowRelativeIRIs, long line, long col) {
         iriViolations(iri, errorHandler, allowRelativeIRIs, true, line, col) ;

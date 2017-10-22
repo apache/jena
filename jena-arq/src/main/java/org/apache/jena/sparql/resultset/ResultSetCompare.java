@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.sparql.util.NodeUtils.EqualityTest ;
 
 /** Comparison of ResultSets.
- *  Note that reading ResultSets is destructive so consiuder using {@link ResultSetRewindable}
+ *  Note that reading ResultSets is destructive so consider using {@link ResultSetRewindable}
  *  from {@link ResultSetFactory#makeRewindable} 
  */
 
@@ -78,7 +78,7 @@ public class ResultSetCompare
     // This code does not do compare/isomorphism combined with value testing.
     // It drops to graph isomorphism, which is term based.
     
-    /** Compare two result sets for equivalence.  Equivalance means:
+    /** Compare two result sets for equivalence.  Equivalence means:
      * A row rs1 has one matching row in rs2, and vice versa.
      * A row is only matched once.
      * Rows match if they have the same variables with the same values. 
@@ -113,7 +113,7 @@ public class ResultSetCompare
     }
 
 
-    /** compare two result sets for equivalence.  Equivalance means:
+    /** compare two result sets for equivalence.  Equivalence means:
      * A row rs1 has one matching row in rs2, and vice versa.
      * A row is only matched once.
      * Rows match if they have the same variables with the same values, 
@@ -142,7 +142,7 @@ public class ResultSetCompare
     }
 
     
-    /** Compare two result sets for equivalence.  Equivalance means:
+    /** Compare two result sets for equivalence.  Equivalence means:
      * Each row in rs1 matches the same index row in rs2.
      * Rows match if they have the same variables with the same values, 
      * bNodes must map to a consistent other bNodes.  
@@ -160,7 +160,7 @@ public class ResultSetCompare
         return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
     }
 
-    /** compare two result sets for equivalence.  Equivalance means:
+    /** compare two result sets for equivalence.  Equivalence means:
      * Each row in rs1 matchs the same index row in rs2.
      * Rows match if they have the same variables with the same values, 
      * bNodes must map to a consistent other bNodes.  

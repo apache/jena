@@ -58,7 +58,7 @@ public class ProgressMonitor {
     /**
      * @param label      
      *      Label added to output strings. 
-     *      Usually related to the kind of things bening monitored.
+     *      Usually related to the kind of things being monitored.
      *      e.g "tuples 
      * @param tickPoint
      *      Frequent of output messages 

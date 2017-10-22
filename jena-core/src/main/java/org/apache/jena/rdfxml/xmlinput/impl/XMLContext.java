@@ -31,7 +31,7 @@ import org.xml.sax.SAXParseException ;
 /**
  * 
  * Both the baseURI and the lang may be tainted with errors. They should not be
- * accessed without providing a taint object to propogate such tainting.
+ * accessed without providing a taint object to propagate such tainting.
  */
 public class XMLContext extends AbsXMLContext implements ARPErrorNumbers
 {

@@ -348,7 +348,7 @@ public class ResultSetFormatter {
     /** Output a result set in the XML format, inserting a style sheet in the XMl output
      * 
      * @param qresults      result set
-     * @param stylesheet    The URL of the stylsheet
+     * @param stylesheet    The URL of the stylesheet
      */
     
     static public void outputAsXML(ResultSet qresults, String stylesheet)
@@ -358,7 +358,7 @@ public class ResultSetFormatter {
      * 
      * @param outStream     output stream
      * @param qresults      result set
-     * @param stylesheet    The URL of the stylsheet
+     * @param stylesheet    The URL of the stylesheet
      */
     
     static public void outputAsXML(OutputStream outStream, ResultSet qresults, String stylesheet)
@@ -443,7 +443,7 @@ public class ResultSetFormatter {
         return xOut.asString(qresults) ;
     }
     
-    /** Return a string that has the result set serilized as XML (not RDF)
+    /** Return a string that has the result set serialized as XML (not RDF)
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
      *  for large results.  It is generally better to use the 
@@ -459,7 +459,7 @@ public class ResultSetFormatter {
         return asXMLString(booleanResult, null) ;
     }
 
-    /** Return a string that has the result set serilized as XML (not RDF)
+    /** Return a string that has the result set serialized as XML (not RDF)
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
      *  for large results.  It is generally better to use the 
@@ -596,7 +596,7 @@ public class ResultSetFormatter {
     static public void outputAsCSV(boolean booleanResult)
     { outputAsCSV(System.out, booleanResult ) ; }
     
-    /** Output a boolean result in in CSV format
+    /** Output a boolean result in CSV format
      *  
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
@@ -636,7 +636,7 @@ public class ResultSetFormatter {
     static public void outputAsTSV(boolean booleanResult)
     { outputAsTSV(System.out, booleanResult ) ; }
     
-    /** Output a boolean result in in TSV format
+    /** Output a boolean result in TSV format
      *  
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
@@ -667,7 +667,7 @@ public class ResultSetFormatter {
     }
     
     /** Output a result set in BIO format 
-     * @deprecated Exprimental - may be removed
+     * @deprecated Experimental - may be removed
      */
     @Deprecated
     public static void outputAsBIO(OutputStream out, ResultSet results)

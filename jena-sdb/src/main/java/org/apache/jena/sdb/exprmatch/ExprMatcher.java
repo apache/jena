@@ -38,7 +38,7 @@ public class ExprMatcher
     /** Match an expression against a pattern.  If the pattern has variables
      * in it, these are checked, by name, in the MapAction and the registered action
      * invoked to determine whether the variable matches; if the pattern has a named
-     * funcion, the MapCallout is used to find a registered operation.
+     * function, the MapCallout is used to find a registered operation.
      * Return a map of results, recording the bindings of variables   
      */
     

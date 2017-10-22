@@ -940,7 +940,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             reification existed
 	 * @sec.triple Create Triple( result, RDF.subject, s.getSubject() ) if
 	 *             reification did not exist.
-	 * @sec.triple Create Triple( result, RDF.redicate, s.getPredicate() ) if
+	 * @sec.triple Create Triple( result, RDF.predicate, s.getPredicate() ) if
 	 *             reification did not exist
 	 * @sec.triple Create Triple( result, RDF.object, s.getObject() ) if
 	 *             reification did not exist
@@ -1030,7 +1030,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	/**
 	 * . If the PropertyNotFoundException was thrown by the enclosed
 	 * securedModel and the user can not read Triple(s, p, SecNode.ANY)
-	 * AccessDeniedExcepiton is thrown, otherwise the PropertyNotFoundException
+	 * AccessDeniedException is thrown, otherwise the PropertyNotFoundException
 	 * will be thrown.
 	 * 
 	 * @sec.graph Read
@@ -1049,7 +1049,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	/**
 	 * . If the PropertyNotFoundException was thrown by the enclosed
 	 * securedModel and the user can not read Triple(s, p, SecNode.ANY)
-	 * AccessDeniedExcepiton is thrown, otherwise the PropertyNotFoundException
+	 * AccessDeniedException is thrown, otherwise the PropertyNotFoundException
 	 * will be thrown.
 	 * 
 	 * @sec.graph Read
@@ -1622,7 +1622,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @sec.triple Delete on every statement in statments.
+	 * @sec.triple Delete on every statement in statements.
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
 	 * @throws AuthenticationRequiredException
@@ -1661,7 +1661,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @sec.triple Delete on statment.
+	 * @sec.triple Delete on statement.
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
 	 * @throws AuthenticationRequiredException
@@ -1674,7 +1674,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @sec.triple Delete on every statement in statments.
+	 * @sec.triple Delete on every statement in statements.
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
 	 * @throws AuthenticationRequiredException
@@ -1727,7 +1727,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 * 
 	 * @sec.graph Update
 	 * @sec.triple Delete on every reification statement for each statement in
-	 *             statments.
+	 *             statements.
 	 * @throws UpdateDeniedException
 	 * @throws DeleteDeniedException
 	 * @throws AuthenticationRequiredException

@@ -36,7 +36,7 @@ public class WriterBasePrefix
     public static interface Fmt { void format() ; }
     //public static Fmt fmt = new Fmt(){ public void format() {}} ;
 
-    /** Output, write the thing with formater fmt */
+    /** Output, write the thing with formatter fmt */
     public static void output(IndentedWriter iWriter, Fmt fmt, Prologue prologue)
     {
         boolean printBase = false ;

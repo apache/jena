@@ -28,7 +28,7 @@ import org.apache.jena.riot.out.NodeToLabel ;
 
 /**
  * Allocate blank nodes according to the label given. 
- * This alloctor reconstructs labels made by
+ * This allocator reconstructs labels made by
  * {@link NodeToLabel#createBNodeByLabelEncoded()}
  */
 

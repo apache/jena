@@ -90,7 +90,7 @@ public class RuleDerivation implements Derivation {
      * @param bindings set to true to print intermediate variable bindings for
      * each stage in the derivation
      * @param indent the number of indent spaces to use
-     * @param seen a HashSet of derviations that have already been listed
+     * @param seen a HashSet of derivations that have already been listed
      */
     protected void printTrace(PrintWriter out, boolean bindings, int indent, HashSet<RuleDerivation> seen) {
         PrintUtil.printIndent(out, indent);

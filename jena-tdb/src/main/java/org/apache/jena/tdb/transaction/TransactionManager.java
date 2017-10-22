@@ -570,7 +570,7 @@ public class TransactionManager
     
     /** Block until no writers are active.
      *  When this returns, it guarantees that the database is not changing
-     *  and the jounral is flush to disk.
+     *  and the journal is flush to disk.
      * <p> 
      * The application must call {@link #enableWriters} later.
      * <p> 

@@ -25,7 +25,7 @@ import org.apache.jena.graph.Node_Variable ;
  * A variation on the normal Node_Variable which support for value bindings.
  * Currently the forward rule system stores the values externally but requires
  * variables to have an offset index in the rule environment vector. The
- * variables can also suport prolog-like reference chains and trails but these
+ * variables can also support prolog-like reference chains and trails but these
  * are not yet used.
  * <p>
  * Note that this should not be used in a real Triple, in particular

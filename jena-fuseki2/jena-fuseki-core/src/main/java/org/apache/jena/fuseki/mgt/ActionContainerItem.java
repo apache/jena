@@ -80,7 +80,7 @@ public abstract class ActionContainerItem extends ActionCtl {
     
     /** GET request on the container - respond with JSON, or null for plain 200 */  
     protected abstract JsonValue execGetContainer(HttpAction action) ;
-    /** GET request on an item in the container - repond with JSON, or null for plain 200 */  
+    /** GET request on an item in the container - respond with JSON, or null for plain 200 */  
     protected abstract JsonValue execGetItem(HttpAction action) ;
 
     protected void execPost(HttpAction action) {

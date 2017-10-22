@@ -132,7 +132,7 @@ public class BFRuleContext implements RuleContext {
     /**
      * Add a triple to a temporary "pending" store, ready to be added to added to the
      * deductions graph and the processing stack later.
-     * <p>This is needed to prevent concurrrent modification exceptions which searching
+     * <p>This is needed to prevent concurrent modification exceptions which searching
      * the deductions for matches to a given rule.
      */
     @Override
@@ -218,7 +218,7 @@ public class BFRuleContext implements RuleContext {
     }
     
     /**
-     * Reset the binding environemnt back to empty.
+     * Reset the binding environment back to empty.
      * @param newSize the number of variables needed for processing the new rule
      */
     public void resetEnv(int newSize) {

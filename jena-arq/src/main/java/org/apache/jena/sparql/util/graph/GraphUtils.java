@@ -50,7 +50,7 @@ public class GraphUtils {
         return triples2quads(Quad.defaultGraphIRI, iter) ;
     }
 
-    /** Convert an iterator of triples into quads for the specificed graph name. */
+    /** Convert an iterator of triples into quads for the specified graph name. */
     public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
         return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
     }

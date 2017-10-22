@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb.transaction;
 
-/** Interface that components of the transaction system implmement.  
+/** Interface that components of the transaction system implement.  
  * This is not the public/application interface to transactions.
  */ 
 public interface TransactionLifecycle

@@ -91,7 +91,7 @@ public class TDB2Factory
 //        _release(location(dataset)) ;
 //    }
 
-    /** Tes whether a dataset is backed by TDB or not. */ 
+    /** Test whether a dataset is backed by TDB or not. */ 
     public static boolean isBackedByTDB(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return DatabaseMgr.isBackedByTDB(dsg) ;

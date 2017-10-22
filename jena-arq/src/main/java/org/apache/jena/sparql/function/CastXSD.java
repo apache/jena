@@ -77,7 +77,7 @@ public class CastXSD extends FunctionBase1 implements FunctionFactory {
     }
     
     /** Cast a NodeValue to an XSD datatype.
-     * This includes "by value" so 1e0 (an xsd:double) casts to 1 (an xsd:intger) 
+     * This includes "by value" so 1e0 (an xsd:double) casts to 1 (an xsd:integer) 
      * @param nv
      * @param castType
      * @return NodeValue

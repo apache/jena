@@ -66,7 +66,7 @@ public class NodeFunctions {
     }
 
     /**
-     * Check for string operations with primary first arg and second second arg
+     * Check for string operations with primary first arg and second arg
      * (e.g. CONTAINS).  The arguments are not used in the same way and the check
      * operation is not symmetric. 
      * <li> "abc"@en is compatible with "abc"

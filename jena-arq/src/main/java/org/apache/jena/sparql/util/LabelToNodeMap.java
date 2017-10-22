@@ -41,7 +41,7 @@ public class LabelToNodeMap
     boolean generateVars = false ;
     VarAlloc allocator = null ;
     
-    /** Create blank nodes, with the same blank node returned for thre same label.  
+    /** Create blank nodes, with the same blank node returned for the same label.  
      * 
      * @return LabelToNodeMap
      */

@@ -116,7 +116,7 @@ public class TupleMap {
      * Construct a mapping - the elements are the mappings of a tuple
      * originally in the order 0,1,2,... so SPO->POS is 2,0,1 (SPO->POS so S->2,
      * P->0, O->1) and not 1,2,0 (which is the extraction mapping). The label is
-     * just a label and is not interpretted here.
+     * just a label and is not interpreted here.
      */
     private TupleMap(String label, int... elements) {
         this.len = elements.length ; 
@@ -316,7 +316,7 @@ public class TupleMap {
         return tuple[putSlotIdx(idx)] ;
     }
 
-    /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
+    /** Compile a mapping encoded as single characters e.g. "SPO", "POS" */
     private static int[] compileMapping(String domain, String range) {
         List<Character> input = StrUtils.toCharList(domain);
         List<Character> output = StrUtils.toCharList(range);

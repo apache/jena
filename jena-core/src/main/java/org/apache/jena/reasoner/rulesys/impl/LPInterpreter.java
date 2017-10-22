@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Bytecode interpeter engine for the LP version of the backward
+ * Bytecode interpreter engine for the LP version of the backward
  * chaining rule system. An instance of this is forked off for each
  * parallel query.
  */
@@ -144,7 +144,7 @@ public class LPInterpreter {
     }
 
     /**
-     * Called by top level interpeter to set to execution context for this interpeter to be
+     * Called by top level interpreter to set to execution context for this interpreter to be
      * top level instead of an internal generator.
      */
     public void setTopInterpreter(LPInterpreterContext context) {
@@ -186,9 +186,9 @@ public class LPInterpreter {
     public Object next() {
         boolean traceOn = engine.isTraceOn();
         
-//        System.out.println("next() on interpeter for goal " + goal); 
+//        System.out.println("next() on interpreter for goal " + goal); 
         StateFlag answer = run();
-//        System.out.println("end next() on interpeter for goal " + goal);
+//        System.out.println("end next() on interpreter for goal " + goal);
         
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
@@ -697,7 +697,7 @@ public class LPInterpreter {
     
     /**
      * Unify two nodes. Current implementation does not support functors.
-     * @return true if the unifcation succeeds
+     * @return true if the unification succeeds
      */
     public boolean unify(Node n1, Node n2) {
         Node nv1 = n1;
@@ -743,7 +743,7 @@ public class LPInterpreter {
     }
     
     /**
-     * Derefernce a node, following any binding trail.
+     * Dereference a node, following any binding trail.
      */
     public static Node deref(Node node) {
         if (node instanceof Node_RuleVariable) {
@@ -769,7 +769,7 @@ public class LPInterpreter {
     }
     
     /**
-     * Derefernce a node which may be a functor node
+     * Dereference a node which may be a functor node
      */
     public static Node derefPossFunctor(Node node) {
         if (node instanceof Node_RuleVariable) {

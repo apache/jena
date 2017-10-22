@@ -53,7 +53,7 @@ public class PrefixHandler {
 	 * Removes ':' from the end of the name if present.
 	 * 
 	 * @param x The prefix name
-	 * @return The prefix name with the trialing ':' removed.
+	 * @return The prefix name with the trailing ':' removed.
 	 */
 	private static String canonicalPfx(String x) {
 		if (x.endsWith(":"))
@@ -106,7 +106,7 @@ public class PrefixHandler {
 
 	/**
 	 * Add prefixes from a prefix mapping.
-	 * @param prefixes THe prefix mapping to add from.
+	 * @param prefixes The prefix mapping to add from.
 	 */
 	public void addPrefixes(PrefixMapping prefixes) {
 		pMap.setNsPrefixes(prefixes);

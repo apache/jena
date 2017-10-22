@@ -43,7 +43,7 @@ import org.apache.jena.util.iterator.NiceIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
 /**
- * If the triple size within a BasicePattern is greater than 1 (i.e. at least 2 triples), it's turned into a row querying.
+ * If the triple size within a BasicPattern is greater than 1 (i.e. at least 2 triples), it's turned into a row querying.
  *
  */
 public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{

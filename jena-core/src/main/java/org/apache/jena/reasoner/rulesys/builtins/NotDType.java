@@ -22,7 +22,7 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.reasoner.rulesys.* ;
 
 /**
- * Tests wheter the first argument is not an instance of the datatype defined
+ * Tests whether the first argument is not an instance of the datatype defined
  * by the resource in the second argument.
  */
 public class NotDType extends BaseBuiltin {

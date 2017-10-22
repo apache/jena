@@ -21,7 +21,7 @@ package org.apache.jena.query;
 import org.apache.jena.rdf.model.Model ;
 
 /** Accessor to a dataset as a collection of models, providing 
- * whole model operations. Models can be added, remopve and replaced.   
+ * whole model operations. Models can be added, removed and replaced.   
  *  This interface provides a uniform interface to local and remote datasets and is based on 
  *  <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a>.
  *  The factory methods in {@link DatasetAccessorFactory} provides creators for 

@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.mgt;
 
-/** Various contants used in the admin functions */ 
+/** Various constants used in the admin functions */ 
 public class MgtConst {
     public static final String  opDump          = "dump" ;  
     public static final String  opPing          = "ping" ;

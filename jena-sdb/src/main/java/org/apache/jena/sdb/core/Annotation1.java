@@ -20,7 +20,7 @@ package org.apache.jena.sdb.core;
 
 import org.apache.jena.sdb.core.sqlnode.SqlNode ;
 
-/** Collect some notes into a single annoation.
+/** Collect some notes into a single annotation.
  */
 public class Annotation1
 {

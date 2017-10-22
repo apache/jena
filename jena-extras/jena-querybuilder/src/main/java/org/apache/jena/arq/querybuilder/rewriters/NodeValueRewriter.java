@@ -25,7 +25,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.* ;
 
 /**
- * A rewriter that implements NoveValueVisitor
+ * A rewriter that implements NodeValueVisitor
  *
  */
 class NodeValueRewriter extends AbstractRewriter<NodeValue> implements

@@ -22,7 +22,7 @@ import java.util.*;
 
 /**
     The component of a graph responsible for managing events and listeners.
-    The interface extends GraphListener because most of the notificiations are
+    The interface extends GraphListener because most of the notifications are
     the same; the special case to note is that an event manager expects to be
     handed iterator events as lists, not as iterators. 
     

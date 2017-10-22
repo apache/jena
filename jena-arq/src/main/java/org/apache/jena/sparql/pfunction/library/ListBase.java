@@ -35,7 +35,7 @@ import org.apache.jena.sparql.pfunction.PropFuncArgType ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionEval ;
 import org.apache.jena.sparql.util.graph.GraphList ;
 
-/** Base class for list realted operations */ 
+/** Base class for list related operations */ 
 public abstract class ListBase extends PropertyFunctionEval
 {
     private PropFuncArgType objFuncArgType ;

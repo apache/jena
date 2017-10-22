@@ -86,7 +86,7 @@ public interface ModelChangedListener
     /**
         Method to call when a list of statements has been deleted from the attached
         model. NOTE. This list need not be == to the list added using 
-        Model::remov(List).
+        Model::remove(List).
         @param statements the list of statements that have been removed.
     */
     void removedStatements( List<Statement> statements );

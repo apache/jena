@@ -102,7 +102,7 @@ public class FusekiEnv {
         resetEnvironment();
     }
     
-    /** Reset environment - use with care and bfore server start up */ 
+    /** Reset environment - use with care and before server start up */ 
     public static synchronized void resetEnvironment() {
         initialized = true ;
         logInit("FusekiEnv:Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s : MODE = %s", FUSEKI_HOME, FUSEKI_BASE, mode) ;

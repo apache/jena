@@ -119,7 +119,7 @@ public class DatasetFactory {
 
 	/**
 	 * @param dataset Dataset to clone structure from.
-	 * @return a dataset: clone the dataset structure of named graohs, and share the graphs themselves.
+	 * @return a dataset: clone the dataset structure of named graphs, and share the graphs themselves.
 	 * @deprecated This operation may be removed.
 	 */
 	@Deprecated
@@ -184,7 +184,7 @@ public class DatasetFactory {
 	 * (Jena calls graphs "Models" and triples "Statements")
 	 *
 	 * @param uriList graphs to be loaded into the unnamed, default graph
-	 * @param namedSourceList graphs to be atatched as named graphs
+	 * @param namedSourceList graphs to be attached as named graphs
 	 * @return Dataset
 	 */
 
@@ -214,7 +214,7 @@ public class DatasetFactory {
 	 * (Jena calls graphs "Models" and triples "Statements")
 	 *
 	 * @param uri graph to be loaded into the unnamed, default graph
-	 * @param namedSourceList graphs to be atatched as named graphs
+	 * @param namedSourceList graphs to be attached as named graphs
 	 * @param baseURI baseURI for relative URI expansion
 	 * @return Dataset
 	 */
@@ -230,7 +230,7 @@ public class DatasetFactory {
 	 * (Jena calls graphs "Models" and triples "Statements")
 	 *
 	 * @param uriList graphs to be loaded into the unnamed, default graph
-	 * @param namedSourceList graphs to be atatched as named graphs
+	 * @param namedSourceList graphs to be attached as named graphs
 	 * @param baseURI baseURI for relative URI expansion
 	 * @return Dataset
 	 */

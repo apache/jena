@@ -94,7 +94,7 @@ public class DatasetGraphFactory
     public static DatasetGraph createMem() { return createGeneral() ; }
     
     /** Create a DatasetGraph based on an existing one;
-     *  this is a structure copy of the dataset struture
+     *  this is a structure copy of the dataset structure
      *  but graphs are shared
      *  @deprecated Use {@link #cloneStructure}
      */

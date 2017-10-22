@@ -136,6 +136,6 @@ public class PageBlockMgr<T extends Page>
     /** Signal the start of an update operation */
     public void startRead()         { blockMgr.beginRead() ; }
     
-    /** Signal the completeion of an update operation */
+    /** Signal the completion of an update operation */
     public void finishRead()        { blockMgr.endRead() ; }
 }

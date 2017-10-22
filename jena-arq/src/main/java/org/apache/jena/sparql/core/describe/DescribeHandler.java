@@ -45,7 +45,7 @@ public interface DescribeHandler
     
     public void describe(Resource resource) ;
 
-    /** Finish the description process for thsis query execution
+    /** Finish the description process for this query execution
      */
     public void finish() ;
 }

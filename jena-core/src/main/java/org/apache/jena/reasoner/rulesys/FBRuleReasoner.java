@@ -299,7 +299,7 @@ public class FBRuleReasoner implements RuleReasoner {
     }
        
     /**
-     * Switch on/off drivation logging.
+     * Switch on/off derivation logging.
      * If set to true then the InfGraph created from the bind operation will start
      * life with recording of derivations switched on. This is currently only of relevance
      * to rule-based reasoners.
@@ -406,7 +406,7 @@ public class FBRuleReasoner implements RuleReasoner {
     }
 
     /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
+     * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
     @Override

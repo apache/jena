@@ -55,7 +55,7 @@ import org.slf4j.Logger ;
  * and the journal is flushed to disk.
  * <p>
  * See {@link #blockWriters()}, {@link #enableWriters()}, {@link #execAsWriter(Runnable)}
- * <h3>Excluisve mode</h3>
+ * <h3>Exclusive mode</h3>
  * Exclusive mode is when the current thread is the only active code : no readers, no writers.
  * <p>
  * See {@link #startExclusiveMode()}/{@link #tryExclusiveMode()} {@link #finishExclusiveMode()}, {@link #execExclusive(Runnable)}
@@ -127,7 +127,7 @@ public class TransactionCoordinator {
     
     /** Add a {@link TransactionalComponent}.
      * Safe to call at any time but it is good practice is to add all the
-     * compoents before any transactions start.
+     * components before any transactions start.
      * Internally, the coordinator ensures the add will safely happen but it
      * does not add the component to existing transactions.
      * This must be setup before recovery is attempted. 
@@ -564,7 +564,7 @@ public class TransactionCoordinator {
     /** Whether to wait for writers when trying to promote */
     private static final boolean promotionWaitForWriters = true;
 
-    /** Attempt to promote a tranasaction from READ to WRITE.
+    /** Attempt to promote a transaction from READ to WRITE.
      * No-op for a transaction already a writer.
      * Throws {@link TransactionException} if the promotion
      * can not be done.

@@ -41,7 +41,7 @@ public interface ReaderRIOT
      *                   parser will have already been done so this only useful to get
      *                   addition Content-Type information or if this ReaderRIOT can
      *                   handle multiple media types.  
-     * @param output    Destintation for the parser output.
+     * @param output    Destination for the parser output.
      * @param context   Environment settings.
      */
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) ;
@@ -53,7 +53,7 @@ public interface ReaderRIOT
      *                   parser will have already been done so this only useful to get
      *                   addition Content-Type information or if this ReaderRIOT can
      *                   handle multiple media types.  
-     * @param output    Destintation for the parser output.
+     * @param output    Destination for the parser output.
      * @param context   Environment settings.
      */
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) ;

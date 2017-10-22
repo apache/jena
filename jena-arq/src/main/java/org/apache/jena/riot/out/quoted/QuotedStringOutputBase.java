@@ -22,7 +22,7 @@ import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.CharSpace ;
 import org.apache.jena.atlas.lib.EscapeStr ;
 
-/** Quoted strign output - single line, settable quote character and char space. */
+/** Quoted string output - single line, settable quote character and char space. */
 public class QuotedStringOutputBase implements QuotedStringOutput {
     protected final CharSpace charSpace ;
     protected final char quoteChar;

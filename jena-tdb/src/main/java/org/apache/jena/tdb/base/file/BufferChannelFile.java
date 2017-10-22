@@ -39,7 +39,7 @@ public class BufferChannelFile implements BufferChannel
         return new BufferChannelFile(base) ;
     } 
 
-    /** Create a BufferChannelFile with unmangaged file resources - use with care */
+    /** Create a BufferChannelFile with unmanaged file resources - use with care */
     public static BufferChannelFile createUnmanaged(String filename, String mode)
     { 
         try

@@ -123,7 +123,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     
     /** A {@code StoreParams} that provides a smaller
      * in-JVM foot print.  This is compatible with
-     * any database but it it is wise to use this consistently,
+     * any database but it is wise to use this consistently,
      * that is, use when created and when opened later.
      * It reduces cache sizes and runs the database in "direct"
      * file mode so as not to use memory mapped files
