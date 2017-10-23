@@ -105,7 +105,8 @@ public class SqlProject extends SqlNodeBase1
     public SqlProject asProject() { return this ; }
     
     @Override 
-    public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
+    public boolean usesColumn(SqlColumn c)
+    { return cols.stream().filter((a)-> a.getColumn().equals(c)).findAny().isPresent(); }
 
     public List<ColAlias> getCols() { return cols ; }
 
