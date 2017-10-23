@@ -40,6 +40,7 @@ import java.text.NumberFormat ;
 import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
+import java.util.regex.PatternSyntaxException ;
 
 import javax.xml.datatype.DatatypeConstants ;
 import javax.xml.datatype.DatatypeConstants.Field ;
@@ -471,7 +472,11 @@ public class XSDFuncOp
             String flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm() ;
             flags = RegexJava.makeMask(flagsStr) ;
         }
-        return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
+        try {
+            return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
+        } catch (PatternSyntaxException ex){
+            throw new ExprEvalException("PatternSyntaxException", ex) ;
+        } 
     }
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
