@@ -32,10 +32,11 @@ public class E_StrReplace extends ExprFunctionN {
         super(symbol, expr1, expr2, expr3, expr4) ;
 
         if ( isString(expr2) && (expr4 == null || isString(expr4)) ) {
-            int flags = 0 ;
+            String flags = null;
             if ( expr4 != null && expr4.isConstant() && expr4.getConstant().isString() )
-                flags = RegexJava.makeMask(expr4.getConstant().getString()) ;
-            pattern = Pattern.compile(expr2.getConstant().getString(), flags) ;
+                flags = expr4.getConstant().getString();
+            String patternStr = expr2.getConstant().getString();
+            pattern = RegexJava.makePattern("REPLACE", patternStr, flags);
         }
     }
 

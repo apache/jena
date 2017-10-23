@@ -319,7 +319,24 @@ public class TestFunctions
     @Test public void exprFnReplace06()  { test("fn:replace('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
 
     // Bad group
-    @Test public void exprReplace13()  { testEvalException("REPLACE('abc', '.*', '$1')") ; }
+    @Test
+    public void exprReplace13() {
+        testEvalException("REPLACE('abc', '.*', '$1')");
+    }
+    
+    // Bad pattern ; static (parse or build time) compilation.
+    @Test(expected = ExprException.class)
+    public void exprReplace14() {
+        ExprUtils.parse("REPLACE('abc', '^(a){-9}', 'ABC')");
+    }
+    
+    // Bad pattern : dynamic (eval time) exception. 
+    // The pattern for fn:replace is not compiled on build - if that changes, this test will fail.
+    // See exprReplace14.
+    @Test
+    public void exprReplace15() {
+        testEvalException("fn:replace('abc', '^(a){-9}', 'ABC')");
+    }
 
     @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE) ; }
     @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE) ; }

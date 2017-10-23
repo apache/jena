@@ -854,6 +854,15 @@ public class TestXSDFuncOp extends BaseTest
         assertNotNull(result.asNode()) ;
     }
     
+    @Test(expected=ExprEvalException.class)
+    public void testStrReplace() {
+        //test invalid pattern 
+        NodeValue wrong = NodeValue.makeString("^(?:-*[^-]){-9}");
+        NodeValue nvStr= NodeValue.makeString("AGIKLAKLMTUARAR");
+        NodeValue empty= NodeValue.makeString("");
+        XSDFuncOp.strReplace(nvStr, wrong, empty);
+    }
+    
     // All compatible - no timezone.
     private static NodeValue nv_dt = NodeValue.makeNode("2010-03-22T20:31:54.5", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_d = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
