@@ -40,7 +40,6 @@ import java.text.NumberFormat ;
 import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
-import java.util.regex.PatternSyntaxException ;
 
 import javax.xml.datatype.DatatypeConstants ;
 import javax.xml.datatype.DatatypeConstants.Field ;
@@ -58,7 +57,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -466,18 +465,12 @@ public class XSDFuncOp
     }
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue nvFlags) {
-        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm() ;
-        int flags = 0 ;
-        if ( nvFlags != null ) {
-            String flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm() ;
-            flags = RegexJava.makeMask(flagsStr) ;
-        }
-        try {
-            return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
-        } catch (PatternSyntaxException ex){
-            throw new ExprEvalException("PatternSyntaxException", ex) ;
-        } 
-    }
+        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm();
+        String flagsStr = null;
+        if ( nvFlags != null )
+            flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
+        return strReplace(nvStr, RegexJava.makePattern("replace", pat, flagsStr), nvReplacement);
+    }    
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
         String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm() ;

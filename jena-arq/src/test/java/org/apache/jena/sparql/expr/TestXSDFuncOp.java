@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
@@ -857,17 +854,15 @@ public class TestXSDFuncOp extends BaseTest
         assertNotNull(result.asNode()) ;
     }
     
-    @Test public void testStrReplace()
-    {
+    @Test(expected=ExprEvalException.class)
+    public void testStrReplace() {
         //test invalid pattern 
         NodeValue wrong = NodeValue.makeString("^(?:-*[^-]){-9}");
         NodeValue nvStr= NodeValue.makeString("AGIKLAKLMTUARAR");
         NodeValue empty= NodeValue.makeString("");
-        try {
-        	XSDFuncOp.strReplace(nvStr, wrong, empty);
-        	fail("Should have thrown an exception as the regex is not valid.");
-        } catch (ExprEvalException ex) {}        
+        XSDFuncOp.strReplace(nvStr, wrong, empty);
     }
+    
     // All compatible - no timezone.
     private static NodeValue nv_dt = NodeValue.makeNode("2010-03-22T20:31:54.5", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_d = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
