@@ -30,7 +30,7 @@ import org.apache.jena.sparql.modify.request.UpdateLoad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.update.* ;
 
-/** Build an update request up out of indvidiual Update objects, not by parsing.
+/** Build an update request up out of individual Update objects, not by parsing.
  *  This is quite low-level.
  *  See UpdateExecuteOperations for ways to build the request up from strings. 
  *  These two approaches can be mixed.

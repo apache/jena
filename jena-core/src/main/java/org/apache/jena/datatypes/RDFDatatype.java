@@ -76,13 +76,13 @@ public interface RDFDatatype {
     
     /**
          Gets the hash code of a given value. This defaults to
-         lit.getValue().hashCode(), but datatypes can overide this, and array types 
+         lit.getValue().hashCode(), but datatypes can override this, and array types 
          must.
     */
     public int getHashCode( LiteralLabel lit );
     
     /**
-     * If this datatype is used as the cannonical representation
+     * If this datatype is used as the canonical representation
      * for a particular java datatype then return that java type,
      * otherwise returns null.
      */

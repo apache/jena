@@ -30,7 +30,7 @@ import org.apache.jena.tdb.base.file.FileException ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 
 /**
- * This version works with two files - the main, base file and a per-transction journal
+ * This version works with two files - the main, base file and a per-transaction journal
  * file. It writes to the journal side.
  * 
  * To flush, it writes the journal to the base file.

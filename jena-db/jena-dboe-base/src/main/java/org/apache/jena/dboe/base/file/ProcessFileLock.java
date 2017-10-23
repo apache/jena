@@ -59,7 +59,7 @@ public class ProcessFileLock {
     private enum NoLockAction { EXCEPTION, RETURN, WAIT }
 
     /** Create a {@code ProcessFileLock} using the named file.
-     *  Locks are JVM-wide; each filename is assocauted with one lock object.  
+     *  Locks are JVM-wide; each filename is associated with one lock object.  
      */
     public static ProcessFileLock create(String filename) {
         try {

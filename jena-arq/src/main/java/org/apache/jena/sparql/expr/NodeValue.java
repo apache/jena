@@ -630,7 +630,7 @@ public abstract class NodeValue extends ExprNode
      *  
      * @param nv1
      * @param nv2
-     * @return negative, 0, or postive for less than, equal, greater than.  
+     * @return negative, 0, or positive for less than, equal, greater than.  
      */
 
     public static int compareAlways(NodeValue nv1, NodeValue nv2)

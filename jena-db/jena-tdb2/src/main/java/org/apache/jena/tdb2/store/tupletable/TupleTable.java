@@ -201,7 +201,7 @@ public class TupleTable implements Sync, Closeable
     /** Get i'th index */ 
     public TupleIndex getIndex(int i)                   { return indexes[i] ; }
     
-    /** Get all indexes - for code that maipulates internal structures directly - use with care */ 
+    /** Get all indexes - for code that manipulates internal structures directly - use with care */ 
     public TupleIndex[] getIndexes()                    { return indexes ; }
     
     /** Get the width of tuples in indexes in this table */

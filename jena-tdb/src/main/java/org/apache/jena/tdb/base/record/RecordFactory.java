@@ -74,7 +74,7 @@ public class RecordFactory
         return create(key, v) ;
     }
     
-    /** Create a record, allocaing space for the key and value (if any) */
+    /** Create a record, allocating space for the key and value (if any) */
     public Record create()
     { return create(new byte[keyLength], 
                     (valueLength > 0) ? new byte[valueLength] : null) ;

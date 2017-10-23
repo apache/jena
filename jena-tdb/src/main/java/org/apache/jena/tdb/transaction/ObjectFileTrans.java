@@ -22,10 +22,10 @@ import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 import org.apache.jena.tdb.base.objectfile.ObjectFileWrapper ;
 
 /** Add transactionality control to an ObjectFile.
- * ObjectFiles are "append only" so with a single rwiter environment, 
+ * ObjectFiles are "append only" so with a single writer environment, 
  * we just need to manage a reset on abort.
  * A crash in a transaction will accumulate some junk in the file.
- * This is now a trandeoff of speed and space.
+ * This is now a tradeoff of speed and space.
  * 
  * Speed : append to the original file directly and tolerate junk.
  * 

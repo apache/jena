@@ -109,7 +109,7 @@ public class OntologyImpl
 
     /**
      * <p>Add a resource representing an ontology that this ontology
-     * (strictly, the ontology reprsented by this node) imports.</p>
+     * (strictly, the ontology represented by this node) imports.</p>
      * @param res Represents a resource that this ontology imports.
      * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
@@ -131,7 +131,7 @@ public class OntologyImpl
 
     /**
      * <p>Answer an iterator over all of the resources representing ontologies imported by this ontology.
-     * Each elemeent of the iterator will be an {@link OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the ontology import resources
      * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
@@ -177,7 +177,7 @@ public class OntologyImpl
 
     /**
      * <p>Add a resource representing an ontology that this ontology
-     * (strictly, the ontology reprsented by this node) is backwards compatible with.</p>
+     * (strictly, the ontology represented by this node) is backwards compatible with.</p>
      * @param res Represents a resource that this ontology is compatible with.
      * @exception ProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
@@ -247,7 +247,7 @@ public class OntologyImpl
 
     /**
      * <p>Add a resource representing an ontology that this ontology
-     * (strictly, the ontology reprsented by this node) supercedes.</p>
+     * (strictly, the ontology represented by this node) supercedes.</p>
      * @param res Represents a resource that this ontology supercedes.
      * @exception ProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
@@ -316,7 +316,7 @@ public class OntologyImpl
 
     /**
      * <p>Add a resource representing an ontology that this ontology
-     * (strictly, the ontology reprsented by this node) is incompatible with.</p>
+     * (strictly, the ontology represented by this node) is incompatible with.</p>
      * @param res Represents a resource that this ontology is incompatible with.
      * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
@@ -326,7 +326,7 @@ public class OntologyImpl
     }
 
     /**
-     * <p>Answer a resource that represents an ontology that is is incompatible with this ontology. If there is
+     * <p>Answer a resource that represents an ontology that is incompatible with this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An ont resource representing an ontology that this ontology is incompatible with
      * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.

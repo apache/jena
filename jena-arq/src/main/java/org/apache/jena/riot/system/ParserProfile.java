@@ -72,7 +72,7 @@ public interface ParserProfile {
 
     /**
      * Make a node from a token - called after all else has been tried to handle
-     * special cases Return null for "no special node recoginzed"
+     * special cases Return null for "no special node recognized"
      */
     public Node createNodeFromToken(Node scope, Token token, long line, long col);
 

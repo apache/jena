@@ -123,7 +123,7 @@ public class DataRangeImpl
     }
 
     /**
-     * <p>Add each literal from the given iteratation to the
+     * <p>Add each literal from the given iteration to the
      * enumeration that defines the permissible values of this datarange.</p>
      * @param literals An iterator over literals
      * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.

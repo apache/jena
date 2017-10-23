@@ -88,7 +88,7 @@ public class IteratorWithHistory<T> implements Iterator<T>
     }
 
     /**
-     * Return the current size of the histiory. This can be used to tell the
+     * Return the current size of the history. This can be used to tell the
      * difference between an iterator returning null and an iterator that is
      * just short.
      */

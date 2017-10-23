@@ -26,7 +26,7 @@ import org.apache.jena.reasoner.rulesys.RuleContext ;
 /**
  * Builtin which concatenates a set of strings. It binds the last argument to 
  * a plain literal which is the concatenation of all the preceeding arguments.
- * For a literal argument we use its lexcical form, for a URI argument its URI,
+ * For a literal argument we use its lexical form, for a URI argument its URI,
  * for a bNode argument its internal ID.
  */
 public class StrConcat extends BaseBuiltin {

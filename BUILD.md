@@ -7,7 +7,7 @@ It is not normally necessary to build from source. Apache Jena provides already-
 
 See http://jena.apache.org/download/
 
-For most usage, there is no requirment to build from source. Use maven
+For most usage, there is no requirement to build from source. Use maven
 or other build system that can download from the central repositories.
 
     <dependency>

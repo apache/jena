@@ -63,7 +63,7 @@ public class BindingVector implements BindingEnvironment {
     
     /**
      * Return the current array of bindings. Useful for fast access to
-     * serveral bindings, not useful for doing updates.
+     * several bindings, not useful for doing updates.
      */
     public Node[] getEnvironment() {
         return environment;
@@ -107,7 +107,7 @@ public class BindingVector implements BindingEnvironment {
     
     /**
      * Return the most ground version of the node. If the node is not a variable
-     * just return it, if it is a varible bound in this enviroment return the binding,
+     * just return it, if it is a variable bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
     @Override
@@ -121,7 +121,7 @@ public class BindingVector implements BindingEnvironment {
     }
     
     /**
-     * Bind the ith variable in the current envionment to the given value.
+     * Bind the ith variable in the current environment to the given value.
      * Checks that the new binding is compatible with any current binding.
      * Handles aliased variables.
      * @return false if the binding fails
@@ -140,7 +140,7 @@ public class BindingVector implements BindingEnvironment {
     }
     
     /**
-     * Bind a variable in the current envionment to the given value.
+     * Bind a variable in the current environment to the given value.
      * Checks that the new binding is compatible with any current binding.
      * @param var a Node_RuleVariable defining the variable to bind
      * @param value the value to bind
@@ -159,7 +159,7 @@ public class BindingVector implements BindingEnvironment {
      * Bind the variables in a goal pattern using the binding environment, to
      * generate a more specialized goal
      * @param goal the TriplePattern to be instantiated
-     * @return a TriplePattern obtained from the goal by substituting current bindinds
+     * @return a TriplePattern obtained from the goal by substituting current bindings
      */
     public TriplePattern partInstantiate(TriplePattern goal) {
         return new TriplePattern(
@@ -185,7 +185,7 @@ public class BindingVector implements BindingEnvironment {
     
     /**
      * Instantiate a triple pattern against the current environment.
-     * This version handles unbound varibles by turning them into bNodes.
+     * This version handles unbound variables by turning them into bNodes.
      * @param pattern the triple pattern to match
      * @return a new, instantiated triple
      */
@@ -223,7 +223,7 @@ public class BindingVector implements BindingEnvironment {
         
     /**
      * Unify a goal with the head of a rule. This is a poor-man's unification,
-     * we should try swtiching to a more conventional global-variables-with-trail
+     * we should try switching to a more conventional global-variables-with-trail
      * implementation in the future.
      * @param goal the goal pattern which it being matched to a rule
      * @param head the head pattern of the rule which is being instantiated

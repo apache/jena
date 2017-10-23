@@ -49,7 +49,7 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Get the Record factory associated with this index */
     public RecordFactory getRecordFactory() ;
     
-    /** Close the index - can't not be used again through this object */
+    /** Close the index - can not be used again through this object */
     @Override
     public void close() ;
     
@@ -62,6 +62,6 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     /** Perform checks on this index */
     public void check() ;
     
-    /** Return size if known else return -1 : does not count the peristent storage */
+    /** Return size if known else return -1 : does not count the persistent storage */
     public long size() ;
 }

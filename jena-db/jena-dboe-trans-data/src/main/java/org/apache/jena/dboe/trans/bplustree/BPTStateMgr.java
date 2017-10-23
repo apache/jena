@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory ;
 
 /** Manage the persistent state of the tree
  * 
- * This consists of last commited root, and the limits on the blocks for both
+ * This consists of last committed root, and the limits on the blocks for both
  * nodes and records. 
  * 
  * (rootId/int-as-long, nodeAllocLimit/long, recordsAllocLimit/long) 

@@ -39,7 +39,7 @@ public class GraphUtil
     private GraphUtil()
     {}
 
-    /** Return an iterator over the unique subjects with predciate p and object o.
+    /** Return an iterator over the unique subjects with predicate p and object o.
      * p and o can be wildcards (Node.ANY)
      * @param g Graph  
      * @param p Predicate - may be Node.ANY
@@ -79,7 +79,7 @@ public class GraphUtil
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
     
-    /** Does the graph use the node anywhere as a subject, predciate or object? */
+    /** Does the graph use the node anywhere as a subject, predicate or object? */
     public static boolean containsNode(Graph graph, Node node) {
         return
             graph.contains(node, Node.ANY, Node.ANY) ||

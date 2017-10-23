@@ -84,7 +84,7 @@ public class RDFDataMgr
     public static Symbol streamManagerSymbol = SysRIOT.sysStreamManager;
 
     /** Read triples into a Model from the given location. 
-     *  The syntax is detemined from input source URI (content negotiation or extension). 
+     *  The syntax is determined from input source URI (content negotiation or extension). 
      * @param model Destination for the RDF read.
      * @param uri   URI to read from (includes file: and a plain file name).
      * @throws RiotNotFoundException if the location is not found - the model is unchanged.
@@ -93,7 +93,7 @@ public class RDFDataMgr
     public static void read(Model model, String uri)                    { read(model.getGraph(), uri) ; }
     
     /** Read triples into a Model from the given location. 
-     *  The syntax is detemined from input source URI (content negotiation or extension). 
+     *  The syntax is determined from input source URI (content negotiation or extension). 
      * @param graph Destination for the RDF read.
      * @param uri   URI to read from (includes file: and a plain file name).
      * @throws RiotNotFoundException if the location is not found - the graph is unchanged.
@@ -132,7 +132,7 @@ public class RDFDataMgr
     
     /** Read triples into a Model from the given location, with hint of language and the with some parameters for the reader 
      * @see #read(Graph,String,String,Lang,Context) 
-     * Throws parse errors depending on the language and reader; the Model model may be partially updated.
+     * Throws parse errors depending on the language and reader; the model may be partially updated.
      * @param graph     Destination for the RDF read.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param base      Base URI (defaults to uri).
@@ -223,7 +223,7 @@ public class RDFDataMgr
 
     /** Read triples into a Model with bytes from an InputStream.
      *  A base URI and a syntax can be provided.
-     *  The base URI defualts to "no base" in which case the data should have no relative URIs.
+     *  The base URI defaults to "no base" in which case the data should have no relative URIs.
      *  The lang gives the syntax of the stream. 
      * @param model     Destination for the RDF read.
      * @param in        InputStream
@@ -233,7 +233,7 @@ public class RDFDataMgr
         
     /** Read triples into a Model with bytes from an InputStream.
      *  A base URI and a syntax can be provided.
-     *  The base URI defualts to "no base" in which case the data should have no relative URIs.
+     *  The base URI defaults to "no base" in which case the data should have no relative URIs.
      *  The lang gives the syntax of the stream. 
      * @param graph     Destination for the RDF read.
      * @param in        InputStream
@@ -243,7 +243,7 @@ public class RDFDataMgr
 
     /** Read triples into a Model with bytes from an InputStream.
      *  A base URI and a syntax can be provided.
-     *  The base URI defualts to "no base" in which case the data should have no relative URIs.
+     *  The base URI defaults to "no base" in which case the data should have no relative URIs.
      *  The lang gives the syntax of the stream. 
      * @param model     Destination for the RDF read.
      * @param in        InputStream
@@ -255,7 +255,7 @@ public class RDFDataMgr
 
     /** Read triples into a Model with bytes from an InputStream.
      *  A base URI and a syntax can be provided.
-     *  The base URI defualts to "no base" in which case the data should have no relative URIs.
+     *  The base URI defaults to "no base" in which case the data should have no relative URIs.
      *  The lang gives the syntax of the stream. 
      * @param graph     Destination for the RDF read.
      * @param in        InputStream
@@ -758,7 +758,7 @@ public class RDFDataMgr
      * @param sink      Destination for the RDF read.
      * @param in        Reader
      * @param lang      Syntax for the stream.
-     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferrable. Use {@code RDFParser.create().source(in).lang(hintLang).parse()}
+     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferable. Use {@code RDFParser.create().source(in).lang(hintLang).parse()}
      */
     @Deprecated
     public static void parse(StreamRDF sink, Reader in, Lang lang) {
@@ -770,7 +770,7 @@ public class RDFDataMgr
      * @param in        Reader
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
-     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferrable. Use {@code RDFParser.create().source(in).lang(hintLang).context(context).parse(sink)}
+     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferable. Use {@code RDFParser.create().source(in).lang(hintLang).context(context).parse(sink)}
      */
     @Deprecated
     public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang) {
@@ -783,7 +783,7 @@ public class RDFDataMgr
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
-     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferrable. Use {@code RDFParser.create().source(in).lang(hintLang).base(base).context(context).parse(sink)}
+     * @deprecated     To be removed. An {@code InputStream} or {@code StringReader} is preferable. Use {@code RDFParser.create().source(in).lang(hintLang).base(base).context(context).parse(sink)}
      */
     @Deprecated
     public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context) {
@@ -950,7 +950,7 @@ public class RDFDataMgr
         return uri ;
     }
     
-    /** Default lang - usually left as unknown so that extended content negotation happens */ 
+    /** Default lang - usually left as unknown so that extended content negotiation happens */ 
     private static Lang defaultLang(String uri) {
         return null;
     }
@@ -979,7 +979,7 @@ public class RDFDataMgr
     /** Write the model to the output stream in the default serialization for the language.
      * @param out       OutputStream
      * @param model     Graph to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(OutputStream out, Model model, Lang lang) {
         write(out, model.getGraph(), lang);
@@ -1037,7 +1037,7 @@ public class RDFDataMgr
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out       OutputStream
      * @param graph     Graph to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(OutputStream out, Graph graph, Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
@@ -1098,7 +1098,7 @@ public class RDFDataMgr
     /** Write the Dataset to the output stream in the default serialization for the language.
      * @param out       OutputStream
      * @param dataset   Dataset to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(OutputStream out, Dataset dataset, Lang lang) {
         write(out, dataset.asDatasetGraph(), lang);
@@ -1125,7 +1125,7 @@ public class RDFDataMgr
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out           StringWriter
      * @param dataset       Dataset to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(StringWriter out, Dataset dataset, Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
@@ -1146,7 +1146,7 @@ public class RDFDataMgr
     /** Write the DatasetGraph to the output stream in the default serialization for the language.
      * @param out       OutputStream
      * @param dataset   DatasetGraph to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(OutputStream out, DatasetGraph dataset, Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
@@ -1165,7 +1165,7 @@ public class RDFDataMgr
     /** Write the DatasetGraph to the output stream in the default serialization for the language.
      * @param out       StringWriter
      * @param dataset   DatasetGraph to write
-     * @param lang      Language for the seralization.
+     * @param lang      Language for the serialization.
      */
     public static void write(StringWriter out, DatasetGraph dataset, Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
@@ -1209,7 +1209,7 @@ public class RDFDataMgr
     }
 
     /** Create a writer for an RDF language
-     * @param lang   Language for the seralization.
+     * @param lang   Language for the serialization.
      * @return WriterGraphRIOT
      */
     public static WriterGraphRIOT createGraphWriter(Lang lang) {
@@ -1226,7 +1226,7 @@ public class RDFDataMgr
     }
 
     /** Create a writer for an RDF language
-     * @param lang   Language for the seralization.
+     * @param lang   Language for the serialization.
      * @return WriterGraphRIOT
      */
     public static WriterDatasetRIOT createDatasetWriter(Lang lang) {

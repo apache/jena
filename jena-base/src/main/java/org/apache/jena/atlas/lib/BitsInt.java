@@ -80,7 +80,7 @@ public final class BitsInt
         return Integer.parseInt(s, 16) ;
     }
 
-    /** Set the bits specificied.
+    /** Set the bits specified.
      * 
      * @param bits      Pattern
      * @param bitIndex 

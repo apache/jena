@@ -29,7 +29,7 @@ import org.apache.jena.util.iterator.* ;
 // Purely syntactic: Uses .equals, not .sameVAlueAs (see the one note at "PURE SYNTAX" below and "containsSameTerm") 
 
 /**
- * An implemantation of graph isomorphism for Graph equality.
+ * An implementation of graph isomorphism for Graph equality.
  * The underlying algorithm is exponential but will only enter
  * a non-deterministic polynomial part when there are a lot of difficult to
  * distinguish anonymous nodes

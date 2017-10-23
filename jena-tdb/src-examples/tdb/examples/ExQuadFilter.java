@@ -33,7 +33,7 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBInternal ;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
- * Can be used to exclude daat from specific graphs.   
+ * Can be used to exclude data from specific graphs.   
  * This mechanism is not limited to graphs - it works for properties or anything
  * where the visibility of otherwise is determined by the elements of the quad. 
  * See <a href="http://incubator.apache.org/jena/documentation/tdb/quadfilter.html">QuadFiltering</a>

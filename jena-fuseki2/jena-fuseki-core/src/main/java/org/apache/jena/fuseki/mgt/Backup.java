@@ -62,7 +62,7 @@ public class Backup
     private static Set<DatasetGraph> activeBackups = Collections.newSetFromMap(new ConcurrentHashMap<>());
     
     /** Perform a backup.
-     *  A backup is a dump of the dataset in comrpessed N-Quads, done inside a transaction.
+     *  A backup is a dump of the dataset in compressed N-Quads, done inside a transaction.
      */
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
 

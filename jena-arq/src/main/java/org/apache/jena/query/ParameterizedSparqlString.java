@@ -898,7 +898,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Sets a positional arameter to a typed literal
+     * Sets a positional parameter to a typed literal
      * <p>
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index

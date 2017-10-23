@@ -27,7 +27,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.store.NodeId ;
 
 /** Node table - conceptually a two way mapping of Node<->NodeId 
- *  where Nodes can be staored and a NodeId allocated
+ *  where Nodes can be stored and a NodeId allocated
  *  @see NodeId
  */ 
 
@@ -51,7 +51,7 @@ public interface NodeTable extends Sync, Closeable
     /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;
     
-    /** The offset needed to predicate allocation difference between peristent tables - internal function */  
+    /** The offset needed to predicate allocation difference between persistent tables - internal function */  
     public NodeId allocOffset() ;
     
     /** Anything there? */  

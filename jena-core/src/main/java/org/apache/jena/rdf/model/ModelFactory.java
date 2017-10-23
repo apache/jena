@@ -104,7 +104,7 @@ public class ModelFactory extends ModelFactoryBase
         { return AssemblerHelp.findAssemblerRoots( m ); }
 
     /**
-        Answer a Model as described the the Assembler specification rooted
+        Answer a Model as described the Assembler specification rooted
         at the Resource <code>root</code> in its Model. <code>Resource</code>
         must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
         is the prefix of Jena Assembler objects.

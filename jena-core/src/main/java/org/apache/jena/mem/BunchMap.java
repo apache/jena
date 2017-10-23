@@ -54,7 +54,7 @@ public interface BunchMap
     
     /**
       Get the <code>key</code> and return the value found there; if nothing,
-      cacluate the <code>value</code> and insert. Return the value now the slot.  
+      calculate the <code>value</code> and insert. Return the value now the slot.  
      */
     public TripleBunch getOrSet( Object key, Function<Object, TripleBunch> setter );
 

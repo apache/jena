@@ -127,7 +127,7 @@ public class PropertyUtils {
         inconsistent(properties, key, x, expected) ;
     }
 
-    /** Check property has the vakue given - throw exception if not. */
+    /** Check property has the value given - throw exception if not. */
     public void checkMetadata(Properties properties, String key, String expected) {
         String value = properties.getProperty(key) ;
 

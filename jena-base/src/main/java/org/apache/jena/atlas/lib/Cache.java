@@ -43,7 +43,7 @@ public interface Cache<Key, Value>
     /** Remove from cache - return true if key referenced an entry */
     public void remove(Key key) ;
     
-    /** Iterate over all keys. Iteratering over the keys requires the caller be thread-safe. */ 
+    /** Iterate over all keys. Iterating over the keys requires the caller be thread-safe. */ 
     public Iterator<Key> keys() ;
     
     public boolean isEmpty() ;

@@ -40,7 +40,7 @@ public class BufferChannelFile implements BufferChannel {
         return new BufferChannelFile(filename, base) ;
     }
 
-    /** Create a BufferChannelFile with unmangaged file resources - use with care */
+    /** Create a BufferChannelFile with unmanaged file resources - use with care */
     public static BufferChannelFile createUnmanaged(String filename, String mode) {
         FileChannel channel = FileLib.openUnmanaged(filename, mode) ;
         return new BufferChannelFile(filename, channel) ;

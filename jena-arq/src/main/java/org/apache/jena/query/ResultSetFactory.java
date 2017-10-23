@@ -363,7 +363,7 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
+     * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
      * 
@@ -375,7 +375,7 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
+     * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set which is rewindable (has a
      * .reset()operation). The result set formed is a copy in memory.
      * 
@@ -388,7 +388,7 @@ public class ResultSetFactory {
 
     /**
      * Turn an existing result set into a rewindable one.
-     * May take a copy but this is not guarantted
+     * May take a copy but this is not guaranteed
      * Uses up the result set passed in which is no longer valid as a ResultSet.
      * 
      * @param resultSet

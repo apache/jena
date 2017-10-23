@@ -74,7 +74,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Set set the distinct flag.
+	 * Set the distinct flag.
 	 * 
 	 * Setting the select distinct will unset reduced if it was set.
 	 * 
@@ -88,7 +88,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	/**
-	 * Set set the reduced flag.
+	 * Set the reduced flag.
 	 * 
 	 * Setting the select reduced will unset distinct if it was set.
 	 * 

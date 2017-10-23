@@ -40,7 +40,7 @@ import org.apache.jena.sparql.util.Context ;
  * <li>{@link DatasetGraphInMemory} provides full transactions for an in-memory {@code DatasetGraph}.</li>
  * <li>{@link DatasetGraphTriplesQuads} that adds mutating quad operations.</li>
  * <li>{@link DatasetGraphMap} provides for operations working over a collection of in-memory graphs.</li>
- * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provived by the application.</li>
+ * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provided by the application.</li>
  * <li>{@link DatasetGraphCollection} that provides for operations working over a collection of graphs.</li>
  * </ul> 
  */

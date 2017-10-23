@@ -27,7 +27,7 @@ import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.shared.LockMutex ;
 import org.apache.jena.sparql.JenaTransactionException ;
 
-/** An implementation of Tranactional that provides MRSW locking but no abort.
+/** An implementation of Transactional that provides MRSW locking but no abort.
  *  This is often the best you can do for a system that does not itself provide transactions.
  *  @apiNote
  *  To use with implementation inheritance, for when you don't inherit:

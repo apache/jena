@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory ;
  *  required by level setting. 
  *  
  *  An odd effect is order of the arguments - vararg arguments must be last
- *  so the order is Logger/Thorwable?/Format/args.
+ *  so the order is Logger/Throwable?/Format/args.
  *  
  *  Also support: Class object instead of logger to help ad hoc usage. 
  */

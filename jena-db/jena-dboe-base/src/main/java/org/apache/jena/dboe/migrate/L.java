@@ -112,8 +112,8 @@ public class L {
     
 
     /** Execute. Preform the "before" action, then main action.
-     *  Always call the "after" runnable if the "bafore" succeeded.
-     *  Becareful about argument order. 
+     *  Always call the "after" runnable if the "before" succeeded.
+     *  Be careful about argument order. 
      * @param action
      * @param before
      * @param after
@@ -125,8 +125,8 @@ public class L {
     }
 
     /** Execute. Preform the "before" action, then main action.
-     *  Always call the "after" runnable if the "bafore" succeeded.
-     *  Becareful about argument order. 
+     *  Always call the "after" runnable if the "before" succeeded.
+     *  Be careful about argument order. 
      * @param action
      * @param before
      * @param after
@@ -163,7 +163,7 @@ public class L {
     
     /** Write a string to a file as UTF-8. The file is closed after the operation.
      * @param filename
-     * @param content String to be writtem
+     * @param content String to be written
      * @throws IOException
      */
     

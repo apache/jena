@@ -26,7 +26,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.syntax.* ;
 
-/** Create a copy if the Element(s) below has chanaged.
+/** Create a copy if the Element(s) below has changed.
  * This is a common base class for writing recursive {@link ElementTransform}
  * in conjunction with being applied by {@link ElementTransformer}.
  */

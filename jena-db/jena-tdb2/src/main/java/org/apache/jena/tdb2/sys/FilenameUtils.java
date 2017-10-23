@@ -75,7 +75,7 @@ public class FilenameUtils {
     }
 
     /**
-     * Extract the inde from a version-ed filename. (Base-NNNN format). 
+     * Extract the index from a version-ed filename. (Base-NNNN format). 
      * @param name
      * @param namebase
      * @param nameSep

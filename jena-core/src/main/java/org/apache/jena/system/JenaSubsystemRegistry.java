@@ -25,7 +25,7 @@ import java.util.List ;
  */
 public interface JenaSubsystemRegistry {
     
-    /** Load - peform some kinds of search for {@link JenaSubsystemLifecycle} implementations.
+    /** Load - perform some kinds of search for {@link JenaSubsystemLifecycle} implementations.
      * This is called once in the initialization process.
      */
     public void load();

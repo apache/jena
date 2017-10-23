@@ -36,7 +36,7 @@ import org.apache.jena.sdb.store.DatasetStore ;
 import org.apache.jena.sdb.store.LayoutType ;
 import org.apache.jena.sdb.store.StoreFactory ;
 
-/** Managed JDBC connections : creat */ 
+/** Managed JDBC connections : create */ 
 
 public class ExJdbcConnection
 {

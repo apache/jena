@@ -20,7 +20,7 @@ package org.apache.jena.graph;
 
 /**
     The Highlander Node_NULL exists for the database code (as a Node that
-    coresponds to a null in database tables for the reification code).
+    corresponds to a null in database tables for the reification code).
 
 */
 @Deprecated

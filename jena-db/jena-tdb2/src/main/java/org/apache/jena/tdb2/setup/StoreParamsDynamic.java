@@ -21,7 +21,7 @@ package org.apache.jena.tdb2.setup;
 import org.apache.jena.dboe.base.block.FileMode;
 
 /** Store parameters that can be adjusted after a store has been created,
- *  and given different values when the JVM attachs to a store area. 
+ *  and given different values when the JVM attaches to a store area. 
  *  (They are still fixed for any given database once created in a JVM.) 
  */
 

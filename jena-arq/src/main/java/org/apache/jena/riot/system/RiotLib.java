@@ -382,7 +382,7 @@ public class RiotLib
         return nodeMaxWidth;
     }
 
-    /** IndentedWriter over a jaav.io.Writer (better to use an IndentedWriter over an OutputStream) */
+    /** IndentedWriter over a java.io.Writer (better to use an IndentedWriter over an OutputStream) */
     public static IndentedWriter create(Writer writer)  { return new IndentedWriterWriter(writer); }
 
     public static PrefixMap prefixMap(Graph graph)      { return PrefixMapFactory.create(graph.getPrefixMapping()); }

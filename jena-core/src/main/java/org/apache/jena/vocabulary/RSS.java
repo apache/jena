@@ -21,7 +21,7 @@ package org.apache.jena.vocabulary;
 import org.apache.jena.rdf.model.* ;
 
 /**
-    The standard RSS vocavulary.
+    The standard RSS vocabulary.
 */
 public class RSS extends Object {
 

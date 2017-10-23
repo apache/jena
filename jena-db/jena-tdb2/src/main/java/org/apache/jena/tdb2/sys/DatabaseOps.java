@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory ;
  * Directory and files on disk:
  * <ul>
  * <li> {@code Data-NNNN/} -- databases by version. Compacting creates a new directory, leaving 
- * <li> store params, static (disk layout related - can not chnage once created) and dynamic (settings related to in-memory).
+ * <li> store params, static (disk layout related - can not change once created) and dynamic (settings related to in-memory).
  * <li> {@code Backups/} -- backups.
  * <li> External indexes like {@code TextIndex/} -- the text index only applies to the current, latest database.
  * </ul>

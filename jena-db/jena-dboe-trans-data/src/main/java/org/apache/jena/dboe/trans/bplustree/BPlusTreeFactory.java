@@ -160,7 +160,7 @@ public class BPlusTreeFactory {
 
     /**
      * Create the in-memory structures to correspond to the supplied block
-     * managers for the persistent storage. Does not initalize the B+Tree - it
+     * managers for the persistent storage. Does not initialize the B+Tree - it
      * assumes the block managers correspond to an existing B+Tree.
      */
     private static BPlusTree attach(ComponentId cid, BPlusTreeParams params,

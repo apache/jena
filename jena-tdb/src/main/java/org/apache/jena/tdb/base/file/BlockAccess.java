@@ -27,7 +27,7 @@ import org.apache.jena.tdb.base.block.Block ;
  * Suitable for memory mapped I/O (returns
  * internally allocated space for read, not provided from outside; write() can
  * insist the block written comes from allocate()).
- * This interfce can also be backed by an in-memory implemntation 
+ * This interface can also be backed by an in-memory implementation 
  * ({@link BlockAccessMem}, {@link BlockAccessByteArray}).
  * 
  * This is wrapped in a BlockMgr to provide a higher level abstraction.

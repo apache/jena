@@ -29,7 +29,7 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.builders.BuilderPrefixMapping ;
 
-/** Resolve syntacic forms like (base ...) and (prefix...)
+/** Resolve syntactic forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
  *  
  *  

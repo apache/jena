@@ -77,7 +77,7 @@ public class IOX {
     }
     
     /** Write a file safely - the change happens (the function returns true) or
-     * somthing went wrong (the function throws a runtime exception) and the file is not changed.
+     * something went wrong (the function throws a runtime exception) and the file is not changed.
      * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.  
      */
     public static boolean safeWrite(Path file, IOConsumer<OutputStream> writerAction) {
@@ -86,7 +86,7 @@ public class IOX {
     }
 
     /** Write a file safely - the change happens (the function returns true) or
-     * somthing went wrong (the function throws a runtime exception) and the file is not changed.
+     * something went wrong (the function throws a runtime exception) and the file is not changed.
      * Note that the tempfile must be in the same direct as the actual file so an OS-atomic rename can be done.  
      */
     public static boolean safeWrite(Path file, Path tmpFile, IOConsumer<OutputStream> writerAction) {
@@ -138,7 +138,7 @@ public class IOX {
         }
     }
     
-    /** Create a directory - thgrow a runtime exception if theer are any problems.
+    /** Create a directory - thgrow a runtime exception if there are any problems.
      * This function wraps {@code Files.createDirectory}.
      */
     public static void createDirectory(Path dir) {
@@ -224,7 +224,7 @@ public class IOX {
     }
     
     /** Generate a unique place related to path; 
-     * Optionally, provide a mapping of old name to new nae base.
+     * Optionally, provide a mapping of old name to new namebase.
      * This method always adds "-1", "-2" etc. 
      */  
     public static Path uniqueDerivedPath(Path path, Function<String, String> basenameMapping) {

@@ -23,7 +23,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.reasoner.Finder ;
 
 /**
- * Implementors of this interface can be used as proprocessing passes
+ * Implementors of this interface can be used as preprocessing passes
  * during intialization of (hybrid) rule systems. They are typically
  * used to generate additional data-dependent rules or additional
  * deductions (normally from comprehension axioms) which are cheaper

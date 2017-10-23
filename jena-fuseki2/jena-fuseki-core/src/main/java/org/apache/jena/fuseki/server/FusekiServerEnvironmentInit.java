@@ -24,7 +24,7 @@ import javax.servlet.ServletContextListener ;
 import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.system.JenaSystem ;
 
-/** Setup the enviroment and logging.
+/** Setup the environment and logging.
  *  Runs before the {@link ShiroEnvironmentLoader}.
  *  The main configuration happens in {@link FusekiServerListener} which runs after {@link ShiroEnvironmentLoader}.
  */

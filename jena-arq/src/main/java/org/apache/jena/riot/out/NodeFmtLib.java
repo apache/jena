@@ -35,7 +35,7 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Quad ;
 
-/** Presentation utilitiles for Nodes, Triples, Quads and more.
+/** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
  * Methods <tt>str</tt> generate a reparsable string.
  * <p>

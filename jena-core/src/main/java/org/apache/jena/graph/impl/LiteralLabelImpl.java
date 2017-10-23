@@ -115,7 +115,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	
 	/**
 	 * Build a typed literal label from its value form. If the value is a string we
-     * assume this is inteded to be a lexical form after all.
+     * assume this is intended to be a lexical form after all.
 	 * 
 	 * @param value the value of the literal
 	 * @param lang the optional language tag, only relevant for plain literals
@@ -127,7 +127,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	
 	/**
 	 * Build a typed literal label from its value form using
-	 * whatever datatype is currently registered as the the default
+	 * whatever datatype is currently registered as the default
 	 * representation for this java class. No language tag is supplied.
 	 * @param value the literal value to encapsulate
 	 */

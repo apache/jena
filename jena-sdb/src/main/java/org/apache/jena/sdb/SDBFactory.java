@@ -108,7 +108,7 @@ public class SDBFactory
     
     /**
      * Connect to a store, based on store and connection descriptions in a file. 
-     * @param configFile        Filename for assembler for Store and SDBConenction
+     * @param configFile        Filename for assembler for Store and SDBConnection
      * @return Store
      */
     public static Store connectStore(String configFile) 
@@ -263,7 +263,7 @@ public class SDBFactory
      * @param jdbcConnection    JDBC connection
      * @param desc              Store description object
      * @return GraphStore
-     * @deprected Use connectDatasetGraph(Connection, StoreDesc)
+     * @deprecated Use connectDatasetGraph(Connection, StoreDesc)
      */
     @Deprecated
     public static GraphStore connectGraphStore(Connection jdbcConnection, StoreDesc desc)

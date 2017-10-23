@@ -211,7 +211,7 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(url, file, lang, replace);
     }
 
-    /** Send a file to named graph (or "default" or null for the defaultl graph).
+    /** Send a file to named graph (or "default" or null for the default graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
@@ -230,7 +230,7 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    /** Send a model to named graph (or "default" or null for the defaultl graph).
+    /** Send a model to named graph (or "default" or null for the default graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
@@ -318,7 +318,7 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    /** Do a PUT or POST to a dataset, sending the contents of a daatsets.
+    /** Do a PUT or POST to a dataset, sending the contents of a datasets.
      * The Content-Type is {@code application/n-quads}.
      * <p>
      * "Replace" implies PUT, otherwise a POST is used.

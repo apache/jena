@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 
-/** The ping servlet provides a low costy, uncached endpoint that can be used
+/** The ping servlet provides a low cost, uncached endpoint that can be used
  * to determine if this component is running and responding.  For example,
  * a nagios check should use this endpoint.    
  */

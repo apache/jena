@@ -38,7 +38,7 @@ public class Timer {
         inTimer = true ;
     }
 
-    /** Return time in millisecods */
+    /** Return time in milliseconds */
     public long endTimer() {
         if ( !inTimer )
             throw new AtlasException("Not in timer") ;

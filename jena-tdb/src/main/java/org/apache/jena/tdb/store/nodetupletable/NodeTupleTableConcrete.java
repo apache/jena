@@ -192,7 +192,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     // ==== Accessors
 
     /**
-     * Return the undelying tuple table - used with great care by tools that
+     * Return the underlying tuple table - used with great care by tools that
      * directly manipulate internal structures.
      */
     @Override

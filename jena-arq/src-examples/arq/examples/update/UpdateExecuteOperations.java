@@ -28,8 +28,8 @@ import org.apache.jena.update.UpdateAction ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;
 
-/** Build an update request up out of indvidiual Updates specified as strings.
- *  See UpdatePorgrammatic for another way to build up a request. 
+/** Build an update request up out of individual Updates specified as strings.
+ *  See UpdateProgrammatic for another way to build up a request. 
  *  These two approaches can be mixed.
  */
 

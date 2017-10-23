@@ -148,7 +148,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /**
      * Instantiate the forward rule engine to use.
-     * Subclasses can override this to switch to, say, a RETE imlementation.
+     * Subclasses can override this to switch to, say, a RETE implementation.
      * @param rules the rule set or null if there are not rules bound in yet.
      */
     @Override
@@ -236,7 +236,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     }
     
     /**
-     * Adds a new Backward rule as a rusult of a forward rule process. Only some
+     * Adds a new Backward rule as a result of a forward rule process. Only some
      * infgraphs support this.
      */
     @Override
@@ -371,7 +371,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * "prepare" if necessary. The call is provided for those occasions where
      * substantial preparation work is possible (e.g. running a forward chaining
      * rule system) and where an application might wish greater control over when
-     * this prepration is done.
+     * this preparation is done.
      */
     @Override
     public synchronized void prepare() {

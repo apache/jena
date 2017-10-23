@@ -184,7 +184,7 @@ public class TDBLoader
         loadDataset$(dataset, urls, showProgress, generateStats) ;
     }
     
-    /** Load a dataset from an input steram which must be in N-Quads form */
+    /** Load a dataset from an input stream which must be in N-Quads form */
     public void loadDataset(DatasetGraphTDB dataset, InputStream input)
     {
         // Triples languages are quads languages so no test for quad-ness needed.

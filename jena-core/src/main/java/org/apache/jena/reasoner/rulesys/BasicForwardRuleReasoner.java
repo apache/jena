@@ -168,7 +168,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
     } 
    
     /**
-     * Switch on/off drivation logging.
+     * Switch on/off derivation logging.
      * If set to true then the InfGraph created from the bind operation will start
      * life with recording of derivations switched on. This is currently only of relevance
      * to rule-based reasoners.
@@ -192,8 +192,8 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Set a configuration paramter for the reasoner. The supported parameters
      * are:
      * <ul>
-     * <li>BasicForwaredRuleReasoner.PROPderivationLogging - set to true to enable recording all rule derivations</li>
-     * <li>BasicForwaredRuleReasoner.PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
+     * <li>BasicForwardedRuleReasoner.PROPderivationLogging - set to true to enable recording all rule derivations</li>
+     * <li>BasicForwardedRuleReasoner.PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
      * </ul> 
      * 
      * @param parameter the property identifying the parameter to be changed
@@ -213,7 +213,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
 
 
     /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
+     * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
     @Override

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** * A registry for mapping functor names on java objects (instances 
- * of subclasses of Builtin) which implement their behvaiour.
+ * of subclasses of Builtin) which implement their behaviour.
  * <p>
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.

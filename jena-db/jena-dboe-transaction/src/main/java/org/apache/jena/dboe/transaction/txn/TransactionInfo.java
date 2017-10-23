@@ -48,7 +48,7 @@ public interface TransactionInfo {
     /** Has the transaction gone through all lifecycle states? */ 
     public boolean hasFinalised() ; 
 
-    /** Get the trasnaction id for this transaction. Unique within this OS process (JVM) at least . */
+    /** Get the transaction id for this transaction. Unique within this OS process (JVM) at least . */
     public TxnId getTxnId() ; 
 
     /** What mode is this transaction?

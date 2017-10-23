@@ -36,7 +36,7 @@ public interface RDFNode extends FrontsNode
     public String toString();
     
     /** 
-        Answer true iff this RDFNode is an anonynous resource. Useful for
+        Answer true iff this RDFNode is an anonymous resource. Useful for
         one-off tests: see also visitWith() for making literal/anon/URI choices.
     */
     public boolean isAnon();
@@ -54,7 +54,7 @@ public interface RDFNode extends FrontsNode
     public boolean isURIResource();
     
     /**
-        Answer true iff this RDFNode is a URI resource or an anonynous
+        Answer true iff this RDFNode is a URI resource or an anonymous
         resource (ie is not a literal). Useful for one-off tests: see also 
         visitWith() for making literal/anon/URI choices.
     */

@@ -35,7 +35,7 @@ public interface Dataset extends Transactional
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     
-    /** Get the graph which is teh unionof all named graphs as a Jena Model */
+    /** Get the graph which is the unionof all named graphs as a Jena Model */
     public Model getUnionModel() ;
 
     /** Set the default graph.  Can be set to null for none. */ 

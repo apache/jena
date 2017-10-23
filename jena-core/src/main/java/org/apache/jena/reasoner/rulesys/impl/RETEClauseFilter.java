@@ -27,7 +27,7 @@ import org.apache.jena.reasoner.rulesys.* ;
 /**
  * Checks a triple against the grounded matches and intra-triple matches
  * for a single rule clause. If the match passes it creates a binding
- * environment token and passes it on the the RETE network itself. The checks
+ * environment token and passes it on the RETE network itself. The checks
  * and bindings are implemented using a simple byte-coded interpreter.
  */
 public class RETEClauseFilter implements RETESourceNode {
@@ -73,7 +73,7 @@ public class RETEClauseFilter implements RETESourceNode {
     public static final byte ADDRFunctorNode = 0x40;
         
     /**
-     * Contructor.
+     * Constructor.
      * @param instructions the set of byte-coded instructions and argument pointers.
      * @param args the object arguments referenced from the instructions array.
      */
@@ -231,7 +231,7 @@ public class RETEClauseFilter implements RETESourceNode {
     }
     
     /**
-     * Helperful function. Return the node from the argument triple
+     * Helpful function. Return the node from the argument triple
      * corresponding to the byte code address.
      */
     private Node getTripleValue(Triple triple, byte address, Functor lastFunctor) {

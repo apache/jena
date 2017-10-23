@@ -151,7 +151,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     }
 
     
-    /** Promote a page to be writable in-place (block id does not change, hnce page does not change id). */
+    /** Promote a page to be writable in-place (block id does not change, hence page does not change id). */
     public void promoteInPlace(Page page) {
         Block block = page.getBackingBlock() ;
         block.getByteBuffer().rewind() ;
@@ -205,7 +205,7 @@ public class PageBlockMgr<T extends Page> implements Closeable
     /** Signal the start of an update operation */
     public void startRead()         { blockMgr.beginRead() ; }
     
-    /** Signal the completeion of an update operation */
+    /** Signal the completion of an update operation */
     public void finishRead()        { blockMgr.endRead() ; }
 
     @Override

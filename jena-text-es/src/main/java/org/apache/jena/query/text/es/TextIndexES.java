@@ -199,7 +199,7 @@ public class TextIndexES implements TextIndex {
     }
 
     /**
-     * We don't have resources that need to be closed explicitely
+     * We don't have resources that need to be closed explicitly
      */
     @Override
     public void close() {
@@ -208,7 +208,7 @@ public class TextIndexES implements TextIndex {
     }
 
     /**
-     * Update an Entity. Since we are doing Upserts in add entity anyways, we simply call {@link #addEntity(Entity)}
+     * Update an Entity. Since we are doing Upserts in add entity anyway, we simply call {@link #addEntity(Entity)}
      * method that takes care of updating the Entity as well.
      * @param entity the entity to update.
      */

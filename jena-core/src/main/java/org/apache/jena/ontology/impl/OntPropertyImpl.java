@@ -747,7 +747,7 @@ public class OntPropertyImpl
 
     /**
      * <p>Answer the property that is the inverse of this property.  If no such property is defined,
-     * return null.  If more than one inverse is defined, return an abritrary selection.</p>
+     * return null.  If more than one inverse is defined, return an arbitrary selection.</p>
      * @return The property that is the inverse of this property, or null.
      */
     @Override

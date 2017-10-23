@@ -146,7 +146,7 @@ public class BindingStack implements BindingEnvironment {
     
     /**
      * Return the most ground version of the node. If the node is not a variable
-     * just return it, if it is a varible bound in this enviroment return the binding,
+     * just return it, if it is a variable bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
     @Override
@@ -202,7 +202,7 @@ public class BindingStack implements BindingEnvironment {
     
     /**
      * Instantiate a triple pattern against the current environment.
-     * This version handles unbound varibles by turning them into bNodes.
+     * This version handles unbound variables by turning them into bNodes.
      * @param pattern the triple pattern to match
      * @return a new, instantiated triple
      */

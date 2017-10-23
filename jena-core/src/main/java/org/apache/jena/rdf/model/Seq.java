@@ -299,7 +299,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -312,7 +312,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -325,7 +325,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -338,7 +338,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -351,7 +351,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -364,7 +364,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -377,7 +377,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -390,7 +390,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
@@ -404,7 +404,7 @@ public interface Seq extends Container {
     
     /** Return the index of a given member of the sequence.
      *
-     * <p>If more the the same value appears more than once in the sequence,
+     * <p>If more the same value appears more than once in the sequence,
      * it is undefined which of the indexes will be returned.</p>
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>

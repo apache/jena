@@ -20,7 +20,7 @@ package org.apache.jena.sparql.sse.lang;
 
 import org.apache.jena.sparql.sse.Item ;
 
-/** Warpper parser handler with pass-through for all operations.
+/** Wrapper parser handler with pass-through for all operations.
  *  Calls both, first one first. */
 
 public class ParseHandlerWrapper implements ParseHandler

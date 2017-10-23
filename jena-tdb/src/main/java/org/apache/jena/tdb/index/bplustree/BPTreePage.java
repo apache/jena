@@ -61,7 +61,7 @@ abstract public class BPTreePage implements Page
      */
     abstract Record shiftLeft(BPTreePage other, Record splitKey) ;
     
-    /** Merge this (left) and the page imemdiately to it's right other into a single block
+    /** Merge this (left) and the page immediately to it's right other into a single block
      */
     abstract BPTreePage merge(BPTreePage right, Record splitKey) ;
     //* Return the new page (may be left or right)
@@ -90,10 +90,10 @@ abstract public class BPTreePage implements Page
 //    /** Find the first page (supports iterators) */
 //    abstract BPTreeRecords findFirstPage() ;
 
-    /** Insert a record - return existing value if any, else null - put back modifed blocks */
+    /** Insert a record - return existing value if any, else null - put back modified blocks */
     abstract Record internalInsert(Record record) ;
     
-    /** Delete a record - return the old value if there was one, else null - put back modifed blocks */
+    /** Delete a record - return the old value if there was one, else null - put back modified blocks */
     abstract Record internalDelete(Record record) ;
 
     /** Least in page */

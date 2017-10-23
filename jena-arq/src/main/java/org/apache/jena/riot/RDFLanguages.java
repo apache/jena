@@ -243,7 +243,7 @@ public class RDFLanguages
      * To create a {@link Lang} object use {@link LangBuilder}.
      * See also 
      * {@link RDFParserRegistry#registerLang}
-     * for registering a language and it's RDF parser fatory.
+     * for registering a language and it's RDF parser factory.
      * 
      * @see RDFParserRegistry
      */
@@ -297,7 +297,7 @@ public class RDFLanguages
                 error("Language overlap: " +lang+" and "+mapFileExtToLang.get(ext)+" on file extension type "+ext) ;
     }
 
-    /** Remove a regsitration of a language - this also removes all recorded mapping
+    /** Remove a registration of a language - this also removes all recorded mapping
      * of content types and file extensions. 
      */
     

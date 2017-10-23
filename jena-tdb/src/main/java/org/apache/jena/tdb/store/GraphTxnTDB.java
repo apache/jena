@@ -27,7 +27,7 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /**
  * Transaction version of {@link GraphTDB}.
- * Valid across transactions excep where noted.
+ * Valid across transactions except where noted.
  * 
  * @see GraphTDB  
  * @see GraphTxnTDB  

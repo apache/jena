@@ -20,10 +20,10 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
 
-/** Interface that encapulsated begin/abort|commit/close.
- * <p>The read lifcycle is:
+/** Interface that encapsulated begin/abort|commit/close.
+ * <p>The read lifecycle is:
  * <pre>  begin(READ) ... end()</pre>
- * <p>The write lifcycle is:
+ * <p>The write lifecycle is:
  * <pre>  begin(WRITE) ... abort() or commit() [end()]</pre>
  * <p>{@code end()} is optional, but encouraged; it performs checks and can be called multiple times.
  * 

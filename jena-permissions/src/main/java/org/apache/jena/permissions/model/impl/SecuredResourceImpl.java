@@ -185,7 +185,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 	/**
 	 * Add the property <code>p</code> with the pre-constructed Literal value
 	 * <code>o</code> to this resource, <i>ie</i> add (this, p, o) to this's
-	 * securedModel. Answer this resource. <b>NOTE</b> thjat this is distinct
+	 * securedModel. Answer this resource. <b>NOTE</b> that this is distinct
 	 * from the other addLiteral methods in that the Literal is not turned into
 	 * a Literal.
 	 * 
@@ -396,7 +396,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
 	}
 
 	/**
-	 * Returns an a unique identifier for anonymous resources.
+	 * Returns a unique identifier for anonymous resources.
 	 * 
 	 * <p>
 	 * The id is unique within the scope of a particular implementation. All

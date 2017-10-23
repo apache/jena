@@ -90,7 +90,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     /** Create an RDF Tuples parser.
      *  No need to pass in a buffered InputStream; the code 
-     *  will do it's own buffering.
+     *  will do its own buffering.
      */
     
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)

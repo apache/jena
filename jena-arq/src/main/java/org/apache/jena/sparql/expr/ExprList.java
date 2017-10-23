@@ -33,7 +33,7 @@ public class ExprList implements Iterable<Expr>
     /** Create a copy which does not share the list of expressions with the original */ 
     public static ExprList copy(ExprList other) { return new ExprList(other) ; }
     
-    /** Create an ExprList that contaisn the expressions */
+    /** Create an ExprList that contains the expressions */
     public static ExprList create(Collection<Expr> exprs) {
         ExprList exprList = new ExprList() ;
         exprs.forEach(exprList::add) ;

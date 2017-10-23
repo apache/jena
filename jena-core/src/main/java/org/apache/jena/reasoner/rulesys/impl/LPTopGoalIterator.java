@@ -118,7 +118,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
         }
     }
 
-    /** Notify this context that a brach was suspended awaiting futher
+    /** Notify this context that a branch was suspended awaiting further
      *  results from the given generator. */
     @Override
     public void notifyBlockedOn(ConsumerChoicePointFrame ccp) {

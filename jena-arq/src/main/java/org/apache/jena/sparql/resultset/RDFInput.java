@@ -168,7 +168,7 @@ public class RDFInput extends ResultSetMem {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
+     * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
      * 

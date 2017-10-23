@@ -26,24 +26,24 @@ import org.apache.commons.lang3.NotImplementedException ;
  * @see TxnId
  */
 public class TxnIdFactory {
-    /** Generator for {@link TxnId}s for the counter based implemention. */
+    /** Generator for {@link TxnId}s for the counter based implementation. */
     public static final TxnIdGenerator txnIdGenSimple = ()->TxnIdSimple.create() ;
-    /** Generator for {@link TxnId}s for the UUID based implemention. */
+    /** Generator for {@link TxnId}s for the UUID based implementation. */
     public static final TxnIdGenerator txnIdGenUuid   = ()->TxnIdUuid.create() ;
     
     /** Return the default, good enough for one JVM
-     * (usually the simple counter based implemention) 
+     * (usually the simple counter based implementation) 
      */
     public static TxnId create() {
         return createSimple() ;
     }
     
-    /** Return a TxnId from the counter based implemention. */
+    /** Return a TxnId from the counter based implementation. */
     public static TxnId createSimple() {
         return txnIdGenSimple.generate() ; 
     }
     
-    /** Return a TxnId from the UUID based implemention. */
+    /** Return a TxnId from the UUID based implementation. */
     public static TxnId createUuid() {
         return txnIdGenUuid.generate() ; 
     }

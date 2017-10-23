@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory ;
  * of HTTP. The expectation is that the simplified operations in this class can
  * be used by other code to generate more application specific HTTP interactions
  * (e.g. SPARQL queries). For more complicated requirements of HTTP, then the
- * application wil need to use org.apache.http.client directly.
+ * application will need to use org.apache.http.client directly.
  * 
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a

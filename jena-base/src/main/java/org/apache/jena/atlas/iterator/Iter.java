@@ -279,7 +279,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Transform a list of elements to a new list of the function applied to each element.
-     * Using a stream is often better.  This operation preseves the order of the list.
+     * Using a stream is often better.  This operation preserves the order of the list.
      * @deprecated Use Java8 Streams
      */
     @Deprecated
@@ -332,7 +332,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Return an iterator that will see each element of the underlying iterator only once.
-     * Note that this need working memory to remember the elements alreadey seen.
+     * Note that this need working memory to remember the elements already seen.
      */
     public static <T> Iterator<T> distinct(Iterator<T> iter) {
         return filter(iter, new FilterUnique<T>()) ;
@@ -381,7 +381,7 @@ public class Iter<T> implements Iterator<T> {
     /** Create an iterator such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
      *  are iterated over.  
-     *  The first element where the predicte becomes true is the first element of the
+     *  The first element where the predicted becomes true is the first element of the
      *  returned iterator.    
      */
     public static <T> Iterator<T> dropWhile(Iterator<T> iter, Predicate<T> predicate) {
@@ -816,7 +816,7 @@ public class Iter<T> implements Iterator<T> {
     /** Create an {@code Iter} such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
      *  are iterated over.  
-     *  The first element where the predicte becomes true is the first element of the
+     *  The first element where the predicted becomes true is the first element of the
      *  returned iterator.    
      */
     public Iter<T> dropWhile(Predicate<T> predicate) {
@@ -849,7 +849,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Return an {:@code Iter} that will see each element of the underlying iterator only once.
-     * Note that this need working memory to remember the elements alreadey seen.
+     * Note that this need working memory to remember the elements already seen.
      */
     public Iter<T> distinct() {
         return iter((distinct(iterator))) ;

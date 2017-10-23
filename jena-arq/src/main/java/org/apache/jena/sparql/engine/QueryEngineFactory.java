@@ -60,7 +60,7 @@ public interface QueryEngineFactory {
 	public boolean accept(Query query, DatasetGraph dataset, Context context);
 
 	/**
-	 *  Call to create a {@link Plan} : the companion {@link #accept} wil have returned {@code true}.
+	 *  Call to create a {@link Plan} : the companion {@link #accept} will have returned {@code true}.
 	 * @param query
 	 * @param dataset
 	 * @param inputBinding

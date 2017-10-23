@@ -22,7 +22,7 @@ import java.io.OutputStream;
 /** RDFWriter is an interface to RDF serializers.
  *
  * <p>An <code>RDFWriter</code> is a class which serializes an RDF model
- * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
+ * to some RDF serialization language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  */
 public interface RDFWriter {
@@ -66,7 +66,7 @@ public interface RDFWriter {
  * properties can be changed by calling this method.  </p>
  *
  * <p>No standard properties are defined.  For the properties recognised
- * by any particular writer implementation, see the the documentation for
+ * by any particular writer implementation, see the documentation for
  * that implementation.  </p>
  * <p>
  * The built-in RDFWriters have properties as defined by:

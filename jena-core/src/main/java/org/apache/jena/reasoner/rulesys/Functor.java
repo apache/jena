@@ -31,7 +31,7 @@ import java.util.function.Predicate;
  * A functor comprises a functor name and a list of 
  * arguments. The arguments are Nodes of any type except functor nodes
  * (there is no functor nesting).  Functors play three roles in rules -
- * in heads they represent actions (procedural attachement); in bodies they
+ * in heads they represent actions (procedural attachment); in bodies they
  * represent builtin predicates; in TriplePatterns they represent embedded
  * structured literals that are used to cache matched subgraphs such as
  * restriction specifications.
@@ -122,7 +122,7 @@ public class Functor implements ClauseEntry {
     }
     
     /**
-     * Return the functor aguments as an array of nodes
+     * Return the functor arguments as an array of nodes
      */
     public Node[] getArgs() {
         return args;

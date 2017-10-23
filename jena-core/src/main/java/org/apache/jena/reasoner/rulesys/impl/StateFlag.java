@@ -20,7 +20,7 @@ package org.apache.jena.reasoner.rulesys.impl;
 
 /**
  * A set of constants used to record state information in the
- * backchaining rule interepreter. 
+ * backchaining rule interpreter. 
  */
 public class StateFlag {
     

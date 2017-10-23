@@ -169,7 +169,7 @@ public class Context {
         return x.toString() ;
     }
     
-    /** Get the value as a a long value. The context entry can be a string, Integer or Long. */
+    /** Get the value as a long value. The context entry can be a string, Integer or Long. */
     public int getInt(Symbol symbol, int defaultValue) {
         if (  isUndef(symbol) )
             return defaultValue ; 
@@ -183,7 +183,7 @@ public class Context {
         }
     }
 
-    /** Get the value as a a long value. The context entry can be a string, Integer or Long. */
+    /** Get the value as a long value. The context entry can be a string, Integer or Long. */
     public long getLong(Symbol symbol, long defaultValue) {
         if (  isUndef(symbol) )
             return defaultValue ; 
@@ -210,12 +210,12 @@ public class Context {
 
     // -- true/false
 
-    /** Set propety value to be true */
+    /** Set property value to be true */
     public void setTrue(Symbol property) {
         set(property, Boolean.TRUE) ;
     }
 
-    /** Set propety value to be false */
+    /** Set property value to be false */
     public void setFalse(Symbol property) {
         set(property, Boolean.FALSE) ;
     }

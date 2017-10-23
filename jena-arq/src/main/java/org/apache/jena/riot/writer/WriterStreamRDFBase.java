@@ -34,7 +34,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** Core engine for output of triples / quads that is streaming.
- *  Handles prefixes and base, toegther with the environment for processing. 
+ *  Handles prefixes and base, together with the environment for processing. 
  *  If fed quads, the output is valid TriG. 
  *  If fed only triples, the output is valid Turtle.
  *  Not for N-Quads and N-triples. 

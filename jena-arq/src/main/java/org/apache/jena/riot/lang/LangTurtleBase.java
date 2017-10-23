@@ -316,7 +316,7 @@ public abstract class LangTurtleBase extends LangBase {
         return n ;
     }
 
-    /** Check raw token to see if it might be a predciate */
+    /** Check raw token to see if it might be a predicate */
     protected final boolean peekPredicate() {
         if ( lookingAt(TokenType.KEYWORD) ) {
             String image = peekToken().getImage() ;

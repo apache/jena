@@ -45,7 +45,7 @@ import org.apache.jena.vocabulary.RDFS ;
  * An RDF utility that takes its name from the Unix utility <em>cat</em>, and
  * is used to generate serialisations of the contents of zero or more
  * input model serialisations. <strong>Note</strong> In a change from previous
- * versions, but to ensure compatability with standard argument handling
+ * versions, but to ensure compatibility with standard argument handling
  * practice, the input language options are <em>no longer sticky</em>. In
  * previous versions, <code>rdfcat -n A B C</code> would ensure that A, B
  * and C were all read as N3. From Jena 2.5.2 onwards, this requires:

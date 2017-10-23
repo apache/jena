@@ -223,12 +223,12 @@ public class LPBRuleEngine {
         return ruleStore;
     }
 
-    /** Return the parent infernce graph associated with this engine */
+    /** Return the parent inference graph associated with this engine */
     public BackwardRuleInfGraphI getInfGraph() {
         return infGraph;
     }
 
-    /** Detatch the given engine from the list of active engines for this inf graph */
+    /** Detach the given engine from the list of active engines for this inf graph */
     public synchronized void detach(LPInterpreter engine) {
         activeInterpreters.remove(engine);
     }

@@ -65,7 +65,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 
 	/**
 	 * This is our internal check to see if the user may access the resource.
-	 * This method is called from the evauate(Object,Node) method.
+	 * This method is called from the evaluate(Object,Node) method.
 	 * A user may only access the resource if they are authenticated, and are either the
 	 * sender or the recipient.
 	 * Additionally the admin can always see the messages.
@@ -204,7 +204,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 	/**
 	 * As per our design, users can access any triple from a message that is from or to them.  
 	 * So for an update they can only change triples they have access to into other triples 
-	 * they have access to. (e.g. they can not remvoe themself from the messsage). 
+	 * they have access to. (e.g. they can not remove themselves from the message). 
 	 */
 	@Override
 	public boolean evaluateUpdate(Object principal, Node graphIRI, Triple from, Triple to) {

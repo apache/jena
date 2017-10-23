@@ -21,7 +21,7 @@ package org.apache.jena.dboe.base.file;
 
 /** Add synchronization to all BinaryDataFile operations.
  *  This gives the correct thread-safe operation 
- *  but isn'tnecessarily the best way to do it.
+ *  but isn't necessarily the best way to do it.
  */
 public class BinaryDataFileSync implements BinaryDataFile {
     private final BinaryDataFile other ;

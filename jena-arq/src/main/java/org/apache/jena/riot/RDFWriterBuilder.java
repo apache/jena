@@ -38,7 +38,7 @@ public class RDFWriterBuilder {
      */
     RDFWriterBuilder () {}
 
-    /** Set the source of wriing to the graph argument.
+    /** Set the source of writing to the graph argument.
      * <p>
      * Any prrvious source setting is cleared.
      * @param graph A {@link Graph}.
@@ -50,7 +50,7 @@ public class RDFWriterBuilder {
         return this;
     }
 
-    /** Set the source of wriing to the {@code DatasetGraph} argument.
+    /** Set the source of writing to the {@code DatasetGraph} argument.
      * <p>
      * Any prrvious source setting is cleared.
      * @param dataset A {@link DatasetGraph}.

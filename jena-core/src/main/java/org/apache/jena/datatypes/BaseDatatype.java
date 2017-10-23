@@ -117,7 +117,7 @@ public class BaseDatatype implements RDFDatatype {
     
     /**
      * Test whether the given LiteralLabel is a valid instance
-     * of this datatype. This takes into accound typing information
+     * of this datatype. This takes into account typing information
      * as well as lexical form - for example an xsd:string is
      * never considered valid as an xsd:integer (even if it is
      * lexically legal like "1").
@@ -155,7 +155,7 @@ public class BaseDatatype implements RDFDatatype {
     
     
     /** 
-     * Equality for datatypes based solely on lexcial form, 
+     * Equality for datatypes based solely on lexical form, 
      * i.e. there value space is equivalent to their lexical space. 
      */  
     protected static boolean isEqualByTerm(LiteralLabel value1, LiteralLabel value2) {

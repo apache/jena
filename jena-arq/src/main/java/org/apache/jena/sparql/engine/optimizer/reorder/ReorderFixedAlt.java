@@ -27,8 +27,8 @@ import org.apache.jena.sparql.sse.Item ;
 
 /**
  * Alternative fixed reorder function. This corresponds to the algorithm prior
- * to Jena 2.11.2. It is susceptable to picking bad orders when there are lots
- * of non-characterstic (non-selective) rdf:type triples.
+ * to Jena 2.11.2. It is susceptible to picking bad orders when there are lots
+ * of non-characteristic (non-selective) rdf:type triples.
  * <p>
  * The default "ReorderFixed" is better in most cases because it avoids
  * "? rdf:type T" which can be very unselective. Being data independent, that is

@@ -176,7 +176,7 @@ public class SPARQL_Upload extends ActionSPARQL
          }
      }
 
-    /** Process an HTTP file upload of RDF with additiona name field for the graph name.
+    /** Process an HTTP file upload of RDF with additional name field for the graph name.
      *  We can't stream straight into a dataset because the graph name can be after the data.
      *  @return graph name and count
      */

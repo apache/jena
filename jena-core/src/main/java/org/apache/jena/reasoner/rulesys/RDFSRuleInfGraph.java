@@ -25,7 +25,7 @@ import org.apache.jena.reasoner.* ;
 
 /**
  * Customization of the generic rule inference graph for RDFS inference.
- * In fact all the rule processing is unchanged, the only extenstion is
+ * In fact all the rule processing is unchanged, the only extension is
  * the validation support.
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {

@@ -181,7 +181,7 @@ public class NodeUtils
     }
 
     /** Compare literals by kind - not by value.
-     *  Gives a determinitics, stable, arbitrary ordering between unrelated literals.
+     *  Gives a deterministic, stable, arbitrary ordering between unrelated literals.
      * 
      * Ordering:
      *  <ol> 
@@ -191,7 +191,7 @@ public class NodeUtils
      *       <li>  RDF 1.0 : simple literal < literal by lang < literal with type
      *       <li>  RDF 1.1 : xsd:string < rdf:langString < other dataypes.<br/>
      *             This is the closest to SPARQL 1.1: treat xsd:string as a simple literal</ul></li>
-     *  <li> Lang by sorting on language tag (first case insensistive then case sensitive)
+     *  <li> Lang by sorting on language tag (first case insensitive then case sensitive)
      *  <li> Datatypes by URI
      *  </ol>
      */

@@ -296,7 +296,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
     
     /** Deconstruct the node or list object argument and make a StrMatch 
-     * The 'executionTime' flag indciates whether this is for a build time
+     * The 'executionTime' flag indicates whether this is for a build time
      * static check, or for runtime execution.
      */
     private StrMatch objectToStruct(PropFuncArg argObject, boolean executionTime) {

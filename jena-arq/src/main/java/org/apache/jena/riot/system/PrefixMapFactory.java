@@ -230,7 +230,7 @@ public class PrefixMapFactory {
     
     /** Return an immutable view of the prefix map.
      * Throws {@link UnsupportedOperationException} on 
-     * attempts to update it.  Refelcts hcnages mad to the underlying map.
+     * attempts to update it.  Reflects changes made to the underlying map.
      * @param pmap  PrefixMap
      * @return Prefix Map
      */

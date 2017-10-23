@@ -50,7 +50,7 @@ public class FusekiEmbeddedServer {
     
     /** 
      * Return the port begin used.  
-     * This will be the give port, which defauls to 3330, or
+     * This will be the give port, which defaults to 3330, or
      * the one actually allocated if the port was 0 ("choose a free port").
      */
     public int getPort() {

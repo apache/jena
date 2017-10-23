@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-/** Fatory to create accumulators. An Accumulator is
+/** Factory to create accumulators. An Accumulator is
  * processor for one group key for one execution.
  */
 public interface AccumulatorFactory {

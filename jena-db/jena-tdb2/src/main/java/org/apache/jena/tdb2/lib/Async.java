@@ -22,7 +22,7 @@ import java.util.concurrent.* ;
 
 import org.apache.jena.tdb2.TDBException;
 
-/** Asyncrhonous operations support
+/** Asynchronous operations support
  *  This class provides a simple framework for asynchronous operations.
  *  There is a thread pool and a pending queue. 
  *  <p>
@@ -57,7 +57,7 @@ public final class Async {
         this.outstanding = new ArrayBlockingQueue<>(BlockingQueueSize) ;
     }
     
-    /** Block until all pending oeprations has been completed */
+    /** Block until all pending operations has been completed */
     public void completeAsyncOperations() {
         reduceAsyncQueue(0) ;
     }

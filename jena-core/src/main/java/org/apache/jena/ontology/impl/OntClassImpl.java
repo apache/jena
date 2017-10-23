@@ -351,7 +351,7 @@ public class OntClassImpl
      * since this can be inferred from the closure of the graph.
      * </p>
      * <p>
-     * <strong>Note:</strong> This is is a change from the behaviour of Jena 1, which took a
+     * <strong>Note:</strong> This is a change from the behaviour of Jena 1, which took a
      * parameter <code>closed</code> to compute the closure over transitivity and equivalence
      * of sub-classes.  The closure capability in Jena2 is determined by the inference engine
      * that is wrapped with the ontology model.  The direct parameter is provided to allow,
@@ -917,7 +917,7 @@ public class OntClassImpl
     }
 
     /**
-     * <p>Answer a view of this class as an resriction on the given property.</p>
+     * <p>Answer a view of this class as an restriction on the given property.</p>
      * @param prop A property this is the subject of a property restriction class expression
      * @return This ontology class, converted to a restriction on the given property
      */

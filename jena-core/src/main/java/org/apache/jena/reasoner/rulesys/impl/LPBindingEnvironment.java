@@ -41,7 +41,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
     
     /**
      * Return the most ground version of the node. If the node is not a variable
-     * just return it, if it is a varible bound in this environment return the binding,
+     * just return it, if it is a variable bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
     @Override
@@ -50,7 +50,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
     }
     
     /**
-     * Bind a variable in the current envionment to the given value.
+     * Bind a variable in the current environment to the given value.
      * Checks that the new binding is compatible with any current binding.
      * @param var a Node_RuleVariable defining the variable to bind
      * @param value the value to bind
@@ -72,7 +72,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
      
     /**
      * Instantiate a triple pattern against the current environment.
-     * This version handles unbound varibles by turning them into bNodes.
+     * This version handles unbound variables by turning them into bNodes.
      * @param pattern the triple pattern to match
      * @return a new, instantiated triple
      */

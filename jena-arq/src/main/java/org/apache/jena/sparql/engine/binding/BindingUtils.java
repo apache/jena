@@ -105,7 +105,7 @@ public class BindingUtils {
     }
     
     /** Touch every var/value in case that makes the binding do retrieval work.
-     *  Use the given vars - does no matter if a variable is no tpresent in the binding. */
+     *  Use the given vars - does no matter if a variable is not present in the binding. */
     public static void materialize(List<Var> vars, Binding binding) {
         vars.forEach(binding::get);
     }

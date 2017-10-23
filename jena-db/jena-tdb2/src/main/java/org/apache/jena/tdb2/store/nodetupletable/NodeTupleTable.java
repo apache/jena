@@ -49,7 +49,7 @@ public interface NodeTupleTable extends Sync, Closeable
     /** Find all tuples */ 
     public Iterator<Tuple<NodeId>> findAll() ;
 
-    /** Return the undelying tuple table - used with great care by tools
+    /** Return the underlying tuple table - used with great care by tools
      * that directly manipulate internal structures. 
      */
     public TupleTable getTupleTable() ;

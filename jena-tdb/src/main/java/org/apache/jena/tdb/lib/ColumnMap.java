@@ -70,7 +70,7 @@ public class ColumnMap
      * mappings of a tuple originally in the order 0,1,2,...
      * so SPO->POS is 2,0,1 (SPO->POS so S->2, P->0, O->1)   
      * and not 1,2,0 (which is the extraction mapping).
-     * The label is just a lable and is not interpretted.
+     * The label is just a label and is not interpreted.
      */
     public ColumnMap(String label, int...elements)
     {

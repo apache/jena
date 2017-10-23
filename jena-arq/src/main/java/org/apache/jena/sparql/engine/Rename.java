@@ -31,7 +31,7 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.graph.NodeTransformLib ;
 
-/** Support for renaming all the variables in an algebra expession
+/** Support for renaming all the variables in an algebra expression
  *  except for a fixed set to leave alone */
 public class Rename
 {

@@ -32,7 +32,7 @@ import org.apache.jena.sdb.util.Pair ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.util.FileManager ;
 
-/** Java description of a command - class and arguments. The assmbler build one of these */
+/** Java description of a command - class and arguments. The assembler build one of these */
 
 public class CmdDesc
 {

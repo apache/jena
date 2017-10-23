@@ -222,7 +222,7 @@ public class ParserBase
         return s.substring(3, s.length() - 3) ;
     }
 
-    /** remove the first n charcacters from the string */
+    /** remove the first n characters from the string */
     public static String stripChars(String s, int n) {
         return s.substring(n, s.length()) ;
     }

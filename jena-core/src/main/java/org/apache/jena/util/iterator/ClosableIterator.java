@@ -30,7 +30,7 @@ import java.util.Iterator;
      true).If they do not, resources may leak or be reclaimed unpredictably or 
      much later than convenient. It is unnecessary but harmless to close the
      iterator once it has become exhausted. [<b>note</b>: previous versions
-     of this documention specified a close regardless of exhaustion, but this
+     of this documentation specified a close regardless of exhaustion, but this
      was never the contract applied internally.]
 <p>
     Implementors are encouraged to dispose of resources as soon as is convenient.

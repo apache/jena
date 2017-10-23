@@ -173,7 +173,7 @@ public class NodeFactory {
 
     /** Create a Node based on the value
      * If the value is a string we
-     * assume this is inteded to be a lexical form after all.
+     * assume this is intended to be a lexical form after all.
      * @param value
      *          The value, mapped according to registered types. 
      * @param dtype

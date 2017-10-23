@@ -259,7 +259,7 @@ public class Transaction
             throw throwThis;
     }
     
-    /** A write transaction has been processed and all chanages propagated back to the database */  
+    /** A write transaction has been processed and all changes propagated back to the database */  
     /*package*/ void signalEnacted()
     {
         synchronized (this)

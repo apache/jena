@@ -271,7 +271,7 @@ public class HandlerBlock {
 	}
 
 	/**
-	 * Build all the the enclosed handlers in the proper order.
+	 * Build all the enclosed handlers in the proper order.
 	 */
 	public void build() {
 		prologHandler.build();

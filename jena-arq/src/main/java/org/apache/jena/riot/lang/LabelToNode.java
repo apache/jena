@@ -31,7 +31,7 @@ import org.apache.jena.riot.system.SyntaxLabels ;
  * Various different policies.
  * See {@link SyntaxLabels#createLabelToNode} for getting a default setup; 
  * some of the others are for testing and debugging and may not generate
- * legal RDF overall (e.g. reparsign the same file gets the same bNodes) 
+ * legal RDF overall (e.g. reparsing the same file gets the same bNodes) 
  */  
 
 public class LabelToNode extends MapWithScope<String, Node, Node>
@@ -66,7 +66,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelAsGiven()}
      * but the pair is <em>unsafe</em> for output-input.  Use encoded labels for that.
      * 
-     * The main pupose of this LabelToNode is to preserve the used label for debugging. 
+     * The main purpose of this LabelToNode is to preserve the used label for debugging. 
      */
     public static LabelToNode createUseLabelAsGiven()
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorRawLabel()) ; }

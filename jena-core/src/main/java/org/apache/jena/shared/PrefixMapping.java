@@ -25,7 +25,7 @@ import org.apache.jena.shared.impl.* ;
 import org.apache.jena.vocabulary.* ;
 
 /**
-    Methods for recording namepsace prefix mappings and applying and
+    Methods for recording namespace prefix mappings and applying and
     unapplying them to URIs.
 <p>
     Note that a Model *is* a PrefixMapping, so all the PrefixMapping
@@ -49,7 +49,7 @@ public interface PrefixMapping
         should end with a non-NCName character has been removed.
    <p>        
          
-        Note, in particular, that the a prefix mapping can only be used 
+        Note, in particular, that the prefix mapping can only be used 
         if it includes the URI up to any '#' character because '#' is not legal
         in the local part of an NCName.
 

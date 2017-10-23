@@ -47,7 +47,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
     
     /**
      * Return the raw RDF model being processed (i.e. the argument
-     * to the Reasonder.bind call that created this InfModel).
+     * to the Reasoner.bind call that created this InfModel).
      */
     @Override
     public Model getRawModel() {
@@ -80,7 +80,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * "prepare" if necessary. The call is provided for those occasions where
      * substantial preparation work is possible (e.g. running a forward chaining
      * rule system) and where an application might wish greater control over when
-     * this prepration is done rather than just leaving to be done at first query time.
+     * this preparation is done rather than just leaving to be done at first query time.
      */
     @Override
     public void prepare() {

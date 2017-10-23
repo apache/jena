@@ -52,7 +52,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
- * Embedded Fuseki server. This is a Fuseki server running with a precofigured set of
+ * Embedded Fuseki server. This is a Fuseki server running with a preconfigured set of
  * datasets and services. There is no admin UI and no security.
  * <p>
  * To create a embedded sever, use {@link FusekiServer} ({@link #make} is a
@@ -110,7 +110,7 @@ public class FusekiServer {
     
     /** 
      * Return the port begin used.  
-     * This will be the give port, which defauls to 3330, or
+     * This will be the give port, which defaults to 3330, or
      * the one actually allocated if the port was 0 ("choose a free port").
      */
     public int getPort() {

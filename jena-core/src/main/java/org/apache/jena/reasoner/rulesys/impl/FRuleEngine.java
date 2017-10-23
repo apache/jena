@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The processing engine for forward production rules. It neeeds to reference
+ * The processing engine for forward production rules. It needs to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  */
 public class FRuleEngine implements FRuleEngineI {
@@ -200,7 +200,7 @@ public class FRuleEngine implements FRuleEngineI {
     }
     
     /**
-     * Set the internal rule from from a precomputed state.
+     * Set the internal rule from a precomputed state.
      */
     @Override
     public void setRuleStore(Object ruleStore) {

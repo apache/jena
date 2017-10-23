@@ -29,7 +29,7 @@ import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.Var ;
 
 /**
- * The proglog handler
+ * The prolog handler
  *
  */
 public class PrologHandler implements Handler {
@@ -51,7 +51,7 @@ public class PrologHandler implements Handler {
 	 * Removes ':' from the end of the name if present.
 	 * 
 	 * @param x The prefix name
-	 * @return The prefix name with the trialing ':' removed.
+	 * @return The prefix name with the trailing ':' removed.
 	 */
 	private static String canonicalPfx(String x) {
 		if (x.endsWith(":"))
@@ -94,7 +94,7 @@ public class PrologHandler implements Handler {
 
 	/**
 	 * Add the map of prefixes to the query prefixes.
-	 * @param prefixes The map of prefixs to URIs.
+	 * @param prefixes The map of prefixes to URIs.
 	 */
 	public void addPrefixes(Map<String, String> prefixes) {
 		for (Map.Entry<String, String> e : prefixes.entrySet()) {
