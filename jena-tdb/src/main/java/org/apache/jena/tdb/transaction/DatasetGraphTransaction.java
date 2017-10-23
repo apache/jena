@@ -38,7 +38,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
  * 
- * {@link DatasetGraphTxn} holds the {~link Transaction} object.
+ * {@link DatasetGraphTxn} holds the {@link Transaction} object.
  *
  * This is analogous to a "connection" in JDBC. 
  * It is a holder of a {@link StoreConnection} combined with the machinary from
