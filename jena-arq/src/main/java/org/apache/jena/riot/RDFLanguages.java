@@ -32,6 +32,7 @@ import static org.apache.jena.riot.WebContent.contentTypeRDFJSON;
 import static org.apache.jena.riot.WebContent.contentTypeRDFThrift;
 import static org.apache.jena.riot.WebContent.contentTypeRDFXML;
 import static org.apache.jena.riot.WebContent.contentTypeTextCSV;
+import static org.apache.jena.riot.WebContent.contentTypeTextTSV;
 import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
 import static org.apache.jena.riot.WebContent.contentTypeTriG;
 import static org.apache.jena.riot.WebContent.contentTypeTriGAlt1;
@@ -65,6 +66,7 @@ public class RDFLanguages
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
     public static final String strLangCSV        = "CSV";
+    public static final String strLangTSV        = "TSV";
     public static final String strLangTriX       = "TriX";
     public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
     
@@ -137,13 +139,6 @@ public class RDFLanguages
     /** Alternative constant {@link #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
-    /** CSV data.  This can be read into an RDF model with simple conversion */
-    @Deprecated
-    public static final Lang CSV        = LangBuilder.create(strLangCSV, contentTypeTextCSV)
-                                                     .addAltNames("csv")   
-                                                     .addFileExtensions("csv")
-                                                     .build() ;
-
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
     public static final Lang THRIFT     = LangBuilder.create(strLangRDFTHRIFT, contentTypeRDFThrift)
                                                      .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
@@ -204,8 +199,20 @@ public class RDFLanguages
         Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
         Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
-        Lang.CSV        = RDFLanguages.CSV ;
-    }
+        
+        // Used for result sets, not RDF syntaxes.
+        
+        Lang.CSV = LangBuilder.create(strLangCSV, contentTypeTextCSV)
+            .addAltNames("csv")   
+            .addFileExtensions("csv")
+            .build() ;
+        Lang.TSV = LangBuilder.create(strLangTSV, contentTypeTextTSV)
+            .addAltNames("tsv")
+            .addFileExtensions("tsv")
+            .build() ;
+
+        
+   }
     // ----------------------
     
     /** Standard built-in languages */  
@@ -220,7 +227,6 @@ public class RDFLanguages
         register(TRIG) ;
         register(NQUADS) ;
         register(THRIFT) ;
-        register(CSV) ;
         register(TRIX) ;
         register(RDFNULL) ;
         

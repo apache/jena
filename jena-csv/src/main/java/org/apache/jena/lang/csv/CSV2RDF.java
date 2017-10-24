@@ -28,8 +28,6 @@ public class CSV2RDF {
     /** CSV data.  This can be read into an RDF model with simple conversion */
     public static final Lang CSV = Lang.CSV;
     
-//    public static final Lang CSV = Lang.CSV;
-    
     static {
         RDFParserRegistry.removeRegistration(CSV);
         RDFParserRegistry.registerLangTriples(CSV, new ReaderRIOTFactoryCSV());
