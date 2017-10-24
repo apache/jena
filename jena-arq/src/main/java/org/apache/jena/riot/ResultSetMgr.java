@@ -36,9 +36,6 @@ import org.apache.jena.sparql.util.Context ;
  * @see ResultSetFormatter 
  */
 public class ResultSetMgr {
-    static { 
-        ResultSetLang.init() ;
-    }
     
     /**
      * Read from an {@code InputStream} and produce a {@link ResultSet};

@@ -37,7 +37,6 @@ public class ResultSetLang {
                      .addFileExtensions("srj")
                      .build() ;
     
-    @SuppressWarnings("deprecation")
     public static final Lang SPARQLResultSetCSV = Lang.CSV;
     
 //    public static final Lang SPARQLResultSetCSV 

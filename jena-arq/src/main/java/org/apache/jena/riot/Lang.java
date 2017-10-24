@@ -81,10 +81,7 @@ public class Lang
     //** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
     public static Lang RDFTHRIFT ;
     
-    /** "CSV" - CSV data read into an RDF model with simple conversion : See Jena-625.
-     *  @deprecated Use jena-csv {@code org.apache.jena.lang.csv.CSVRDF.CSV}
-     */
-    @Deprecated
+    /** "CSV" - Used in various ways. */
     public static Lang CSV ;
 
     /** <a href="http://www.hpl.hp.com/techreports/2004/HPL-2004-56.html">TriX</a> */

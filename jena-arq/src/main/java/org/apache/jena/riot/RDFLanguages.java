@@ -64,7 +64,6 @@ public class RDFLanguages
     public static final String strLangJSONLD     = "JSON-LD" ;
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
-    @Deprecated
     public static final String strLangCSV        = "CSV";
     public static final String strLangTriX       = "TriX";
     public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
@@ -188,9 +187,7 @@ public class RDFLanguages
     public static void init() {}
     static { init$() ; }
     
-    @SuppressWarnings("deprecation")
-    private static synchronized void init$()
-    {
+    private static synchronized void init$() {
         initStandard() ;
         // Needed to avoid a class initialization loop. 
         Lang.RDFXML     = RDFLanguages.RDFXML ; 
