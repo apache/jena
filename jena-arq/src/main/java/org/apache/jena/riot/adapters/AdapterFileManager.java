@@ -21,6 +21,7 @@ package org.apache.jena.riot.adapters;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
@@ -288,8 +289,7 @@ public class AdapterFileManager extends org.apache.jena.util.FileManager
         try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
             if ( in == null )
             {
-                if ( log.isDebugEnabled() )
-                    log.debug("Failed to locate '"+mappedURI+"'") ;
+                FmtLog.debug(log, "Failed to locate '%s'", mappedURI);
                 throw new NotFoundException("Not found: "+filenameOrURI) ;
             }
             Lang lang2 = RDFDataMgr.determineLang(mappedURI, in.getContentType(), lang);
