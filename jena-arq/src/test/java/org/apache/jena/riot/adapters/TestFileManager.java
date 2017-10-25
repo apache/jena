@@ -27,9 +27,11 @@ import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.stream.TestLocationMapper ;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.LocationMapper ;
+import org.junit.Assert;
 import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -69,6 +71,20 @@ public class TestFileManager extends BaseTest
             closeInputStream(in) ;
             assertNull("Found non-existant file: "+filenameNonExistent, in) ;
         } catch (NotFoundException ex) {}
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void testFileManagerNoFile2() {
+        FileManager fileManager = new FileManager() ;
+        fileManager.addLocatorFile() ;
+        fileManager.readModel(ModelFactory.createDefaultModel(), filenameNonExistent);
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void testFileManagerNoFile3() {
+        FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.stream.LocationMapper()) ;
+        fileManager.addLocatorFile() ;
+        fileManager.readModel(ModelFactory.createDefaultModel(), filenameNonExistent);
     }
     
     @Test public void testFileManagerLocatorClassLoader() {
