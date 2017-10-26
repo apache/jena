@@ -33,7 +33,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
@@ -42,12 +41,16 @@ import org.apache.jena.tdb2.sys.StoreConnection;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;
+import org.junit.Rule;
 import org.junit.Test ;
+import org.junit.rules.TemporaryFolder;
 
 public class TestDatabaseOps
 {
-    static String DIRx = ConfigTest.getCleanDir() ;
-    static Location DIR = Location.create(DIRx);
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
+    private Location dir = null;
     
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ _:a <p> 2)") ;
@@ -57,18 +60,19 @@ public class TestDatabaseOps
     
     @Before
     public void before() {
-        FileUtils.deleteQuietly(IOX.asFile(DIR));
-        FileOps.ensureDir(DIR.getDirectoryPath());
+        dir = Location.create(tempFolder.toString());
+        FileUtils.deleteQuietly(IOX.asFile(dir));
+        FileOps.ensureDir(dir.getDirectoryPath());
     }
 
     @After  
     public void after() {
         TDBInternal.reset();
-        FileUtils.deleteQuietly(IOX.asFile(DIR));
+        FileUtils.deleteQuietly(IOX.asFile(dir));
     }
 
     @Test public void compact_dsg_1() {
-        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
@@ -102,7 +106,7 @@ public class TestDatabaseOps
 
     @Test public void compact_graph_2() {
         // graphs across compaction.
-        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         Graph g = dsg.getDefaultGraph();
         
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
@@ -131,7 +135,7 @@ public class TestDatabaseOps
     
     @Test public void compact_prefixes_3() {
         // prefixes axcross compaction.
-        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         Graph g = dsg.getDefaultGraph();
         Txn.executeWrite(dsg, ()-> g.getPrefixMapping().setNsPrefix("ex", "http://example/") );
         
@@ -157,7 +161,7 @@ public class TestDatabaseOps
     }
 
     @Test public void backup_1() {
-        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         Txn.executeWrite(dsg, ()-> {
             dsg.add(quad2) ;
             dsg.add(quad1) ;
