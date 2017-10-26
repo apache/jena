@@ -31,7 +31,6 @@ import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.LocationMapper ;
-import org.junit.Assert;
 import org.junit.Test ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -60,7 +59,6 @@ public class TestFileManager extends BaseTest
         assertNotNull(in) ;
         closeInputStream(in) ;
     }
-
 
     @Test public void testFileManagerNoFile() {
         FileManager fileManager = new FileManager() ;
