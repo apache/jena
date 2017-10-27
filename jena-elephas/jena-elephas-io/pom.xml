@@ -67,7 +67,7 @@
     </dependency>
   </dependencies>
   
-    <build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -85,6 +85,14 @@
             <link>http://jena.apache.org/documentation/javadoc/arq/</link>
             <link>http://jena.apache.org/documentation/javadoc/elephas/common/</link>
           </links>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <parallel>classes</parallel>
+          <threadCount>2</threadCount>
         </configuration>
       </plugin>
     </plugins>
