@@ -15,7 +15,8 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -30,7 +31,7 @@
   <!-- Note that versions are managed by parent POMs -->
   <dependencies>
     <!-- Internal Project Dependencies -->
-    
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-elephas-common</artifactId>
@@ -66,8 +67,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
-    <build>
+
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -85,6 +86,34 @@
             <link>http://jena.apache.org/documentation/javadoc/arq/</link>
             <link>http://jena.apache.org/documentation/javadoc/elephas/common/</link>
           </links>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>get-cpu-count</id>
+            <goals>
+              <goal>cpu-count</goal>
+            </goals>
+            <configuration>
+              <cpuCount>system.numCores</cpuCount>
+              <!-- Use 50% of available cores -->
+              <factor>0.5</factor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <parallel>classes</parallel>
+          <threadCount>${system.numCores}</threadCount>
         </configuration>
       </plugin>
     </plugins>
