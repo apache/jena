@@ -88,6 +88,22 @@ void Directive() : { Token t ; String iri ; }
     { setBase(iri, t.beginLine, t.beginColumn) ; }
 }
 
+// ------- turtle star
+Node TripleX() : { Node n = null; Node s ; Node p ; Node o ; }
+{
+    (
+        <LEMB>
+        s = VarOrTerm()
+        p = Verb()
+        o = GraphNode()
+        <REMB>
+    )
+    {
+        return createReified(s, p, o, token) ;
+    }
+}
+
+
 // -------- PATH
 TOKEN:
 {
@@ -221,7 +237,7 @@ Node GraphNode() : { Node n ; }
 
 Node VarOrTerm() : {Node n = null ; }
 {
-  ( n = Var() | n = GraphTerm() | n = Formula() )
+  ( n = Var() | n = GraphTerm() | n = Formula() | n = TripleX() )
   { return n ; }
 }
 
@@ -447,6 +463,10 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA:     "," >
 | < DOT:       "." >
+
+//embedding (for turtle-star)
+| < LEMB:       "<<" >
+| < REMB:       ">>" >
 }
 
 // Operator

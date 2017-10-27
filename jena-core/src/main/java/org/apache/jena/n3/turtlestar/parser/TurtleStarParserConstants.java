@@ -115,43 +115,47 @@ public interface TurtleStarParserConstants {
   /** RegularExpression Id. */
   int DOT = 48;
   /** RegularExpression Id. */
-  int EQ = 49;
+  int LEMB = 49;
   /** RegularExpression Id. */
-  int ARROW = 50;
+  int REMB = 50;
   /** RegularExpression Id. */
-  int DOLLAR = 51;
+  int EQ = 51;
   /** RegularExpression Id. */
-  int QMARK = 52;
+  int ARROW = 52;
   /** RegularExpression Id. */
-  int TILDE = 53;
+  int DOLLAR = 53;
   /** RegularExpression Id. */
-  int COLON = 54;
+  int QMARK = 54;
   /** RegularExpression Id. */
-  int STAR = 55;
+  int TILDE = 55;
   /** RegularExpression Id. */
-  int SLASH = 56;
+  int COLON = 56;
   /** RegularExpression Id. */
-  int RSLASH = 57;
+  int STAR = 57;
   /** RegularExpression Id. */
-  int BOM = 58;
+  int SLASH = 58;
   /** RegularExpression Id. */
-  int DATATYPE = 59;
+  int RSLASH = 59;
   /** RegularExpression Id. */
-  int AT = 60;
+  int BOM = 60;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 61;
+  int DATATYPE = 61;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 62;
+  int AT = 62;
   /** RegularExpression Id. */
-  int PN_CHARS = 63;
+  int PN_CHARS_BASE = 63;
   /** RegularExpression Id. */
-  int PN_PREFIX = 64;
+  int PN_CHARS_U = 64;
   /** RegularExpression Id. */
-  int PN_LOCAL = 65;
+  int PN_CHARS = 65;
   /** RegularExpression Id. */
-  int VARNAME = 66;
+  int PN_PREFIX = 66;
   /** RegularExpression Id. */
-  int UNKNOWN = 67;
+  int PN_LOCAL = 67;
+  /** RegularExpression Id. */
+  int VARNAME = 68;
+  /** RegularExpression Id. */
+  int UNKNOWN = 69;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -207,6 +211,8 @@ public interface TurtleStarParserConstants {
     "\";\"",
     "\",\"",
     "\".\"",
+    "\"<<\"",
+    "\">>\"",
     "\"=\"",
     "\"=>\"",
     "\"$\"",
