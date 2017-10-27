@@ -18,17 +18,18 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.dboe.base.file.AlreadyLocked;
-import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.sys.Names;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +41,6 @@ public class TestProcessFileLock {
     private static final String DIR  = "target/locktest";
     private static final String lockfile = DIR+"/"+Names.TDB_LOCK_FILE;
     
-    
     @BeforeClass public static void beforeClass() {
         FileOps.ensureDir(DIR);
     }
@@ -48,12 +48,14 @@ public class TestProcessFileLock {
     @Before public void beforeTest() {
         File f = new File(lockfile);
         try {
-            f.delete();
+            if ( FileOps.exists(lockfile) ) { 
+                boolean b = f.delete();
+                if ( !b )
+                    throw new RuntimeIOException("Failed to delete "+lockfile);
+            }
             f.createNewFile();
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        catch (IOException e) { IO.exception(e); }
     }
 
     @Test public void process_lock_1() {
