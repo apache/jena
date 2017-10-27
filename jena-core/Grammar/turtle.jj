@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-// Turtle & N3 for Jena 
+// Turtle & N3 for Jena
 
 // N3 compatible:
 // All legal Turtle documents are acceped by this grammar.
@@ -54,10 +54,10 @@ PARSER_BEGIN(TurtleParser)
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtle.parser ;
 
-import com.hp.hpl.jena.n3.turtle.ParserBase ;
-import com.hp.hpl.jena.graph.* ;
+import org.apache.jena.n3.turtle.ParserBase ;
+import org.apache.jena.graph.* ;
 
 public class TurtleParser extends ParserBase
 {
@@ -90,7 +90,7 @@ void Directive() : { Token t ; String iri ; }
 }
 
 // -------- PATH
-TOKEN: 
+TOKEN:
 {
    < PLING:    "!" >
  | < VBAR:     "|" >
@@ -101,10 +101,10 @@ TOKEN:
 
 // ---- TRIPLES
 
-void TriplesSameSubject() : { Node s ; } 
+void TriplesSameSubject() : { Node s ; }
 {
   s = VarOrTerm()       // Emit Triple checks it's a valid triple.
-  PropertyListNotEmpty(s) 
+  PropertyListNotEmpty(s)
 |
   // Any of the triple generating syntax elements
   s = TriplesNode()
@@ -126,7 +126,7 @@ void PropertyListNotEmpty(Node s) : { Node p ; }
 }
 
 // Non-recursive for Turtle long PropertyList tests
-void ObjectList(Node s, Node p): { Node o ; } 
+void ObjectList(Node s, Node p): { Node o ; }
 {
   Object(s, p)
   ( <COMMA> Object(s, p) )*
@@ -134,9 +134,9 @@ void ObjectList(Node s, Node p): { Node o ; }
 
 void Object(Node s, Node p): { Node o ; }
 {
-  o = GraphNode() 
-  { Triple t = new Triple(s,p,o) ; 
-    emitTriple(token.beginLine, token.beginColumn, t) ; }  
+  o = GraphNode()
+  { Triple t = new Triple(s,p,o) ;
+    emitTriple(token.beginLine, token.beginColumn, t) ; }
 }
 
 Node Verb() : { Node p ; String iri ;}
@@ -149,7 +149,7 @@ Node Verb() : { Node p ; String iri ;}
           throwParseException("= (owl:sameAs) not legal in Turtle",
                           token.beginLine, token.beginColumn ) ;
      }
-   | <ARROW> 
+   | <ARROW>
       { p = nLogImplies ;
         if ( strictTurtle )
           throwParseException("=> (log:implies) not legal in Turtle",
@@ -173,7 +173,7 @@ Node TriplesNode() : { Node n ; }
 
 Node BlankNodePropertyList() : { }
 {
-  <LBRACKET> 
+  <LBRACKET>
     { Node n = createBNode() ; }
   PropertyListNotEmpty(n)
   <RBRACKET>
@@ -184,10 +184,10 @@ Node BlankNodePropertyList() : { }
 // ------- RDF collections
 
 // Code not as SPARQL/ARQ because of output ordering.
-Node Collection() : 
+Node Collection() :
     { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; }
 {
-  <LPAREN> 
+  <LPAREN>
   (
     { Node cell = createBNode() ;
       if ( listHead == nRDFnil )
@@ -199,7 +199,7 @@ Node Collection() :
     n = GraphNode()
     {
       emitTriple(token.beginLine, token.beginColumn,
-                 new Triple(cell, nRDFfirst,  n)) ;      
+                 new Triple(cell, nRDFfirst,  n)) ;
       lastCell = cell ;
     }
   ) +
@@ -237,14 +237,14 @@ Node Formula() : {Token t ; }
 
 Node Var() : { Token t ;}
 {
-    t = <VAR> 
+    t = <VAR>
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 Node GraphTerm() : { Node n ; String iri ; }
 {
   iri = IRIref()    { return createNode(iri) ; }
-| 
+|
   n = RDFLiteral()      { return n ; }
 |
   // Cleaner sign handling in Turtle.
@@ -252,7 +252,7 @@ Node GraphTerm() : { Node n ; String iri ; }
 |
   n = BooleanLiteral()  { return n ; }
 |
-  n = BlankNode()       { return n ; }   
+  n = BlankNode()       { return n ; }
 |
 //  <LPAREN> <RPAREN>     { return nRDFnil ; }
   <NIL>  { return nRDFnil ; }
@@ -277,7 +277,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
     ( <DATATYPE> dt = IRIref() )
   )?
     { return createLiteral(lex, lang, dt) ; }
-} 
+}
 
 String Langtag() : { Token t ; }
 {
@@ -330,7 +330,7 @@ String PrefixedName() : { Token t ; }
 Node BlankNode() :  { Token t = null ; }
 {
   t = <BLANK_NODE_LABEL>
-    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
+    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }
 |
 //  <LBRACKET> <RBRACKET> { return createBNode() ; }
   <ANON> { return createBNode() ; }
@@ -358,9 +358,9 @@ SPECIAL_TOKEN :
 // -------------------------------------------------
 // Keywords : directives before LANGTAG
 
-TOKEN : 
-{ 
-  <KW_A:  "a" > 
+TOKEN :
+{
+  <KW_A:  "a" >
 // Prologue
 | < PREFIX:      "@prefix" >
 | < BASE:        "@base" >
@@ -376,13 +376,13 @@ TOKEN [IGNORE_CASE] :
 
 |   < INTEGER: (["-","+"])? <DIGITS> >
 |
-   < DECIMAL: (["-","+"])? 
+   < DECIMAL: (["-","+"])?
               ((<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+)
    >
       // Required exponent.
 |  < DOUBLE:
       (["+","-"])?
-      ( 
+      (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
         | "." (["0"-"9"])+ (<EXPONENT>)
         | (["0"-"9"])+ <EXPONENT>
@@ -391,25 +391,25 @@ TOKEN [IGNORE_CASE] :
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-// "u" done by javacc input stream.  
+// "u" done by javacc input stream.
 // "U" escapes not supported yet for Java strings
 | <ECHAR: "\\" ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
 
-| < STRING_LITERAL1: 
+| < STRING_LITERAL1:
       // Single quoted string
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
 
 | < STRING_LITERAL2:
     // Double quoted string
       "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
 
 | < STRING_LITERAL_LONG1:
-     <QUOTE_3S> 
+     <QUOTE_3S>
       ( ~["'","\\"] | <ECHAR> | ("'" ~["'"]) | ("''" ~["'"]))*
      <QUOTE_3S> >
 
-| < STRING_LITERAL_LONG2: 
-     <QUOTE_3D> 
+| < STRING_LITERAL_LONG2:
+     <QUOTE_3D>
       ( ~["\"","\\"] | <ECHAR> | ("\"" ~["\""]) | ("\"\"" ~["\""]))*
      <QUOTE_3D> >
 | < DIGITS: (["0"-"9"])+>
@@ -506,7 +506,7 @@ TOKEN:
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 }
 
-// Catch-all tokens.  Must be last.  
+// Catch-all tokens.  Must be last.
 // Any non-whitespace.  Causes a parser exception, rather than a
 // token manager error (with hidden line numbers).
 // Only bad IRIs (e.g. spaces) now give unhelpful parse errors.
