@@ -18,44 +18,40 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.dboe.base.file.AlreadyLocked;
-import org.apache.jena.dboe.base.file.ProcessFileLock;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.sys.Names;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class TestProcessFileLock {
-    // TestLocationLockStoreConnection
     
-    private static final String DIR  = "target/locktest";
-    private static final String lockfile = DIR+"/"+Names.TDB_LOCK_FILE;
+    private String lockfile;
     
-    
-    @BeforeClass public static void beforeClass() {
-        FileOps.ensureDir(DIR);
-    }
+    //Using a per-test rule is "doubly-safe" because we clear the process state.
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
     
     @Before public void beforeTest() {
-        File f = new File(lockfile);
         try {
-            f.delete();
-            f.createNewFile();
+            File f = tempFolder.newFile(Names.TDB_LOCK_FILE);
+            lockfile = f.getCanonicalPath();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            IO.exception(e);
         }
     }
-
+    
     @Test public void process_lock_1() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         String fn = new File(lockfile).getAbsolutePath();
