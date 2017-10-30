@@ -351,6 +351,7 @@
             <phase>package</phase>
             <goals><goal>single</goal></goals>
             <configuration>
+              <tarLongFileMode>posix</tarLongFileMode>
               <descriptors>
                 <descriptor>assembly-dist.xml</descriptor>
               </descriptors>

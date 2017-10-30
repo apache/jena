@@ -185,6 +185,7 @@
             </goals>
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
+              <tarLongFileMode>posix</tarLongFileMode>
               <descriptors>
                 <descriptor>assembly-jena-zip.xml</descriptor>
               </descriptors>
