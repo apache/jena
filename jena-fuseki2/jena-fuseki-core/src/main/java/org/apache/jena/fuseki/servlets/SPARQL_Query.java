@@ -308,7 +308,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @return
      */
     protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
-        setAnyTimeouts(queryExecution, action) ;
+        setAnyProtocolTimeouts(queryExecution, action) ;
 
         if ( query.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect() ;
@@ -349,7 +349,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return null ;
     }
 
-    private void setAnyTimeouts(QueryExecution qexec, HttpAction action) {
+    private void setAnyProtocolTimeouts(QueryExecution qexec, HttpAction action) {
 //        if ( !(action.getDataService().allowTimeoutOverride) )
 //            return ;
 
