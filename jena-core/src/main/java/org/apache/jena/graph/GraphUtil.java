@@ -212,8 +212,7 @@ public class GraphUtil
             return;
         }
         // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
-        List<Triple> toBeDeleted = new ArrayList<>();
-        // Loop on dstGraph
+        List<Triple> toBeDeleted = new ArrayList<>(dstSize);
         Iterator<Triple> iter = findAll(dstGraph);
         for( ; iter.hasNext() ; ) {
            Triple t = iter.next();
