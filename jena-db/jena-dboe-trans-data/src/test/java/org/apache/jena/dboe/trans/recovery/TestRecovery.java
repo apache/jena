@@ -18,6 +18,10 @@
 
 package org.apache.jena.dboe.trans.recovery;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.nio.ByteBuffer ;
 import java.util.Arrays ;
 
@@ -33,30 +37,35 @@ import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
 import org.junit.* ;
+import org.junit.rules.TemporaryFolder;
 
 // We need something to recover io order to test recovery.
 
-public class TestRecovery extends Assert {
-    private final static String DIR   = "target/recovery" ;
-    private final static String JRNL  = DIR + "/journal.jrnl" ;
-    private final static String DATA  = DIR + "/blob.data" ;
-    private final static String DATA1 = DIR + "/blob.data-1" ;
-    private final static String DATA2 = DIR + "/blob.data-2" ;
+public class TestRecovery {
 
-    @BeforeClass public static void beforeClass() {
-        FileOps.ensureDir(DIR);
-    }
-    
+    @Rule
+    public TemporaryFolder dir = new TemporaryFolder();
+
+    private String journal ;
+    private String data ;
+    private String data1 ;
+    private String data2 ;
+
     @Before public void before() {
-        FileOps.deleteSilent(JRNL) ;
-        FileOps.deleteSilent(DATA) ;
-        FileOps.deleteSilent(DATA1) ;
-        FileOps.deleteSilent(DATA2) ;
+        journal  = dir.getRoot().getAbsolutePath() + "/journal.jrnl" ;
+        data  = dir.getRoot().getAbsolutePath() + "/blob.data" ;
+        data1 = dir.getRoot().getAbsolutePath() + "/blob.data-1" ;
+        data2 = dir.getRoot().getAbsolutePath() + "/blob.data-2" ;
+        FileOps.ensureDir(dir.getRoot().getAbsolutePath());
+        FileOps.deleteSilent(journal) ;
+        FileOps.deleteSilent(data) ;
+        FileOps.deleteSilent(data1) ;
+        FileOps.deleteSilent(data2) ;
     }
     
-    @AfterClass public static void afterClass() {
-        FileOps.deleteSilent(JRNL) ;
-        FileOps.deleteSilent(DATA) ;
+    @After public void after() {
+        FileOps.deleteSilent(journal) ;
+        FileOps.deleteSilent(data) ;
     }
     
     // Fake journal recovery.
@@ -68,14 +77,14 @@ public class TestRecovery extends Assert {
         
         // Write out a journal.
         {
-            Journal journal = Journal.create(Location.create(DIR)) ;
+            Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath())) ;
             journal.write(JournalEntryType.REDO, cid, L.stringToByteBuffer(str)) ;
             journal.writeJournal(JournalEntry.COMMIT) ;
             journal.close(); 
         }
         
-        TransactionCoordinator coord = new TransactionCoordinator(Location.create(DIR)) ;
-        BufferChannel chan = BufferChannelFile.create(DATA) ;
+        TransactionCoordinator coord = new TransactionCoordinator(Location.create(dir.getRoot().getAbsolutePath())) ;
+        BufferChannel chan = BufferChannelFile.create(data) ;
         TransBlob tBlob = new TransBlob(cid, chan) ;
         coord.add(tBlob) ;
         coord.start();
@@ -95,15 +104,15 @@ public class TestRecovery extends Assert {
         
         // Write out a journal for two components.
         {
-            Journal journal = Journal.create(Location.create(DIR)) ;
+            Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath())) ;
             journal.write(JournalEntryType.REDO, cid1, L.stringToByteBuffer(str1)) ;
             journal.write(JournalEntryType.REDO, cid2, L.stringToByteBuffer(str2)) ;
             journal.writeJournal(JournalEntry.COMMIT) ;
             journal.close(); 
         }
         
-        Journal journal = Journal.create(Location.create(DIR)) ;
-        BufferChannel chan = BufferChannelFile.create(DATA) ;
+        Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath())) ;
+        BufferChannel chan = BufferChannelFile.create(data) ;
         TransBlob tBlob1 = new TransBlob(cid1, chan) ;
         TransBlob tBlob2 = new TransBlob(cid2, chan) ;
 

@@ -60,7 +60,7 @@ public class TestDatabaseOps
     
     @Before
     public void before() {
-        dir = Location.create(tempFolder.toString());
+        dir = Location.create(tempFolder.getRoot().getAbsolutePath());
         FileUtils.deleteQuietly(IOX.asFile(dir));
         FileOps.ensureDir(dir.getDirectoryPath());
     }
