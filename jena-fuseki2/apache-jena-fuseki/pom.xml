@@ -62,6 +62,7 @@
             <goals><goal>single</goal></goals>
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
+              <tarLongFileMode>posix</tarLongFileMode>
               <descriptors>
                 <descriptor>assembly-dist.xml</descriptor>
               </descriptors>
