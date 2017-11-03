@@ -144,7 +144,7 @@ public class DatabaseOps {
         if ( basename.contains("/") || basename.contains("\\") )
             throw new IllegalArgumentException("Basename must not contain a file path separator (\"/\" or \"\\\")");
         
-        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH:mm:ss") ;
+        String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HHmmss") ;
         String filename = basename + "_" + timestamp ;
         Path p = dirPath.resolve(filename+"."+ext);
         int x = 0 ;
