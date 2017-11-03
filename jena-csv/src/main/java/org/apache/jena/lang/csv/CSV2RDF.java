@@ -18,12 +18,7 @@
 
 package org.apache.jena.lang.csv;
 
-import static org.apache.jena.riot.WebContent.contentTypeTextCSV;
-
-import org.apache.jena.lang.csv.ReaderRIOTFactoryCSV;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.LangBuilder;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParserRegistry ;
 
 public class CSV2RDF {
@@ -31,13 +26,7 @@ public class CSV2RDF {
     public static void init() { }
     
     /** CSV data.  This can be read into an RDF model with simple conversion */
-    public static final Lang CSV = LangBuilder.create("CSV", contentTypeTextCSV)
-                                              .addAltNames("csv")   
-                                              .addFileExtensions("csv")
-                                              .build() ;
-    static { RDFLanguages.register(CSV); }
-    
-//    public static final Lang CSV = Lang.CSV;
+    public static final Lang CSV = Lang.CSV;
     
     static {
         RDFParserRegistry.removeRegistration(CSV);

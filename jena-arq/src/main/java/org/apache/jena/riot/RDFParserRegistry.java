@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.CSV;
 import static org.apache.jena.riot.RDFLanguages.JSONLD;
 import static org.apache.jena.riot.RDFLanguages.N3;
 import static org.apache.jena.riot.RDFLanguages.NQUADS;
@@ -76,7 +75,6 @@ public class RDFParserRegistry
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
     private static ReaderRIOTFactory parserFactoryTriX      = new ReaderTriX.ReaderRIOTFactoryTriX() ;
     private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRDFNULL.Factory() ;
-    private static ReaderRIOTFactory parserFactoryCSV       = new ReaderRIOTCSV.Factory() ;
         
     private static boolean initialized = false ;
     static { init() ; }
@@ -87,7 +85,6 @@ public class RDFParserRegistry
         initStandard() ;
     }
     
-    @SuppressWarnings("deprecation")
     private static void initStandard()
     {
         // Make sure the constants are initialized.
@@ -99,7 +96,6 @@ public class RDFParserRegistry
         registerLangTriples(RDFJSON,    parserFactory) ;
         registerLangTriples(RDFXML,     parserFactoryRDFXML) ;
         registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
-        registerLangTriples(CSV,        parserFactoryCSV) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
         registerLangTriples(TRIX,       parserFactoryTriX) ;
         registerLangTriples(RDFNULL,    parserFactoryRDFNULL) ;

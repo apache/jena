@@ -64,13 +64,6 @@ public class ResultSetWriterRegistry {
             return ;
         initialized = true ;
 
-//        RDFLanguages.register(SPARQLResultSetXML) ;
-//        RDFLanguages.register(SPARQLResultSetJSON) ;
-//        RDFLanguages.register(SPARQLResultSetCSV) ;
-//        RDFLanguages.register(SPARQLResultSetTSV) ;
-//        RDFLanguages.register(SPARQLResultSetThrift) ;
-//        // Not text. 
-        
         ResultSetWriterFactory factory = new ResultSetWriterFactoryStd() ;
         register(SPARQLResultSetXML,    factory) ;
         register(SPARQLResultSetJSON,   factory) ;
@@ -80,8 +73,6 @@ public class ResultSetWriterRegistry {
         register(SPARQLResultSetText,   factory) ;
     }
  
-    static { ResultSetLang.init(); }
-    
     private static ResultSetWriter writerXML = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) { 
             XMLOutput xOut = new XMLOutput(null) ;

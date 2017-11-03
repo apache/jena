@@ -19,7 +19,7 @@
 package org.apache.jena.propertytable.graph;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.propertytable.lang.CSV2RDF ;
+import org.apache.jena.lang.csv.CSV2RDF;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;

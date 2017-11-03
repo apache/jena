@@ -37,20 +37,9 @@ public class ResultSetLang {
                      .addFileExtensions("srj")
                      .build() ;
     
-    @SuppressWarnings("deprecation")
     public static final Lang SPARQLResultSetCSV = Lang.CSV;
     
-//    public static final Lang SPARQLResultSetCSV 
-//        = LangBuilder.create("SPARQL-Results-CSV", contentTypeTextCSV)
-//                     .addAltNames("CSV")   
-//                     .addFileExtensions("csv")
-//                     .build() ;
-    
-    public static final Lang SPARQLResultSetTSV
-        = LangBuilder.create("SPARQL-Results-TSV", WebContent.contentTypeTextTSV)
-                     .addAltNames("TSV")
-                     .addFileExtensions("tsv")
-                     .build() ;
+    public static final Lang SPARQLResultSetTSV = Lang.TSV;
     
     public static final Lang SPARQLResultSetThrift
         = LangBuilder.create("SPARQL-Results-Thrift", WebContent.contentTypeResultsThrift)

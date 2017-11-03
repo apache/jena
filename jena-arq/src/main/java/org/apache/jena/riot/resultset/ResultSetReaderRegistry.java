@@ -72,8 +72,6 @@ public class ResultSetReaderRegistry {
         register(SPARQLResultSetThrift, factory) ;
     }
     
-    static { ResultSetLang.init(); }
-
     private static class ResultSetReaderFactoryStd implements ResultSetReaderFactory {
         @Override
         public ResultSetReader create(Lang lang) {
