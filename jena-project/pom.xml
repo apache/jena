@@ -656,7 +656,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.xenei</groupId>
                     <artifactId>contract-test-maven-plugin</artifactId>
-                    <versionRange>[${ver.contract.tests}},)</versionRange>
+                    <versionRange>[${ver.contract.tests},)</versionRange>
                     <goals>
                       <goal>contract-test</goal>
                     </goals>
