@@ -75,6 +75,8 @@
     -->
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
+    
+    <ver.shiro>1.2.4</ver.shiro>
 
     <ver.lucene>6.4.1</ver.lucene>
 
@@ -170,7 +172,19 @@
         <artifactId>commons-io</artifactId>
         <version>${ver.commonsio}</version>
       </dependency>
-      
+
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-web</artifactId>
+        <version>${ver.shiro}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
