@@ -12,10 +12,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 public class DifferenceDatasetGraph extends ViewDatasetGraph {
 
-	public DifferenceDatasetGraph(DatasetGraph left, DatasetGraph right) {
-		this(left, right, Context.emptyContext);
-	}
-
 	public DifferenceDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
 		super(left, right, c);
 	}

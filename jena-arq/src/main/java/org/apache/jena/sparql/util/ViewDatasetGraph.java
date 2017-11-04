@@ -25,10 +25,6 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
 
 	private final Lock lock;
 
-	public ViewDatasetGraph(DatasetGraph left, DatasetGraph right) {
-		this(left, right, Context.emptyContext);
-	}
-
 	public ViewDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
 		super(left, right);
 		this.context = c;

@@ -12,12 +12,8 @@ import org.apache.jena.sparql.core.Quad;
 
 public class UnionDatasetGraph extends ViewDatasetGraph {
 
-    public UnionDatasetGraph(DatasetGraph left, DatasetGraph right) {
-        this(left, right, Context.emptyContext);
-    }
-
-    public UnionDatasetGraph(DatasetGraph left, DatasetGraph right, Context context) {
-        super(left, right);
+    public UnionDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
+        super(left, right, c);
     }
 
     private Graph union(Function<DatasetGraph, Graph> op) {

@@ -12,10 +12,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 public class IntersectionDatasetGraph extends ViewDatasetGraph {
 
-	public IntersectionDatasetGraph(DatasetGraph left, DatasetGraph right) {
-		super(left, right);
-	}
-
 	public IntersectionDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
 		super(left, right, c);
 	}
