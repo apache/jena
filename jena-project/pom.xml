@@ -668,8 +668,8 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -740,8 +740,8 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.0.2</version>
           <configuration>
             <overWriteReleases>false</overWriteReleases>
             <overWriteIfNewer>true</overWriteIfNewer>
@@ -749,9 +749,8 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-eclipse-plugin</artifactId>
-          <version>2.9</version>
+          <version>2.10</version>
           <configuration>
             <!-- By default, have separate Eclipse and maven build areas -->
             <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
@@ -791,16 +790,23 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>2.5.4</version>
           <extensions>true</extensions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>2.4.3</version>
+          <version>3.0.0</version>
         </plugin>
-
-
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -813,7 +819,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.18.1</version>
+        <version>2.20.1</version>
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
@@ -833,9 +839,8 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.15</version>
+        <version>2.17</version>
       </plugin>
 
       <plugin>
@@ -845,9 +850,8 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.4</version>
+        <version>3.8</version>
         <configuration>
           <linkXref>true</linkXref>
           <sourceEncoding>utf-8</sourceEncoding>
