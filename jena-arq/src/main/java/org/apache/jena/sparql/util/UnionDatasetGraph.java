@@ -54,16 +54,6 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
     }
 
     @Override
-    public Iterator<Quad> find() {
-        return fromEach(DatasetGraph::find);
-    }
-
-    @Override
-    public Iterator<Quad> find(Quad quad) {
-        return fromEach(dsg -> dsg.find(quad));
-    }
-
-    @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
         return fromEach(dsg -> dsg.find(g, s, p, o));
     }
@@ -76,11 +66,6 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
     @Override
     public boolean contains(Node g, Node s, Node p, Node o) {
         return either(dsg -> dsg.contains(g, s, p, o));
-    }
-
-    @Override
-    public boolean contains(Quad quad) {
-        return either(dsg -> dsg.contains(quad));
     }
 
     @Override
