@@ -51,7 +51,7 @@
     <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.12</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
-    <ver.libthrift>0.9.3</ver.libthrift>
+    <ver.libthrift>0.10.0</ver.libthrift>
 
     <!-- jsonld-java depends on depends on Jackson core
          artifacts so the versions must align. Consult jsonld-java's 
