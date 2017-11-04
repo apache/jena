@@ -76,7 +76,7 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
     
-    <ver.shiro>1.2.4</ver.shiro>
+    <ver.shiro>1.4.0</ver.shiro>
 
     <ver.lucene>6.4.1</ver.lucene>
 
