@@ -80,7 +80,7 @@
 
     <ver.elasticsearch>5.2.2</ver.elasticsearch>
     <!-- elasticsearch uses this by reflection -->
-    <ver.log4j2>2.7</ver.log4j2>
+    <ver.log4j2>2.9.1</ver.log4j2>
 
     <ver.spatial4j>0.6</ver.spatial4j>
 
