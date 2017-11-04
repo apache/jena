@@ -9,5 +9,4 @@ public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
     default Function<A, A> finisher() {
         return Function.identity();
     }
-
 }

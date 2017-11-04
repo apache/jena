@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import org.apache.jena.atlas.lib.IdentityFinishCollector;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.sparql.util.Context;
 
 public interface DatasetCollector<Input> extends IdentityFinishCollector<Input, Dataset> {
 
@@ -16,6 +17,10 @@ public interface DatasetCollector<Input> extends IdentityFinishCollector<Input, 
 
     @Override
     default BinaryOperator<Dataset> combiner() {
-        return DatasetLib::union;
+        return DatasetCollector::union;
     }
+    
+	static Dataset union(final Dataset d1, final Dataset d2) {
+		return DatasetLib.union(d1, d2, Context.emptyContext);
+	}
 }
