@@ -68,8 +68,8 @@
       -->
       <modules>
         <module>jena-project</module>
-        <!-- <module>jena-shaded-guava</module>   -->
-        <!-- <module>jena-iri</module>            -->
+        <module>jena-shaded-guava</module>
+        <module>jena-iri</module>
         <module>jena-base</module>
         
         <module>jena-core</module>
@@ -105,38 +105,6 @@
       </modules>
     </profile>
 
-    <profile>
-      <!-- Build to get started, up to Fuseki2.
-           Includes modules skipped by "dev".
-           Use this (or a full build) when building locally
-           and there are no SNAPSHOTs in the "snapshots" repository.
-           This profile does a more complete "dev" build,
-           does not assume anything is already built,
-           and does not include the longer running modules.
-      -->
-      <id>bootstrap</id>
-      <modules>
-        <module>jena-project</module>
-        <module>jena-shaded-guava</module>
-        <module>jena-iri</module> 
-        <module>jena-base</module>
-        <module>jena-core</module>
-        <module>jena-arq</module>
-        <module>jena-rdfconnection</module>
-        <module>jena-tdb</module>
-        <module>jena-db</module>
-        <module>apache-jena-libs</module>
-        <module>jena-text</module>
-        <!--<module>jena-text-es</module>-->
-        <module>jena-spatial</module>
-
-        <module>jena-cmds</module>
-        <module>jena-fuseki2</module>
-
-        <module>jena-integration-tests</module>
-      </modules>
-    </profile>
-    
     <profile>
       <!--
           This is the complete profile, it builds everything including slow
