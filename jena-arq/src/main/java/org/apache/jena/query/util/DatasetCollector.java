@@ -8,7 +8,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.util.Context;
 
-public interface DatasetCollector<Input> extends IdentityFinishCollector<Input, Dataset> {
+public interface DatasetCollector<T> extends IdentityFinishCollector<T, Dataset> {
 
     @Override
     default Supplier<Dataset> supplier() {

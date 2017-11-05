@@ -7,7 +7,7 @@ import org.apache.jena.atlas.lib.IdentityFinishCollector;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
-public interface ModelCollector<Input> extends IdentityFinishCollector<Input, Model> {
+public interface ModelCollector<T> extends IdentityFinishCollector<T, Model> {
 
     @Override
     default Supplier<Model> supplier() {
