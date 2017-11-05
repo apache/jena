@@ -39,25 +39,25 @@ public class Pair<A, B>
     public A car() { return a ; }
     public B cdr() { return b ; }
     
-	public static class OfSameType<T> extends Pair<T, T> {
+    public static class OfSameType<T> extends Pair<T, T> {
 
-		public OfSameType(T a, T b) {
-			super(a, b);
-		}
+        public OfSameType(T a, T b) {
+            super(a, b);
+        }
 
-		public void forEach(Consumer<T> op) {
-			op.accept(a);
-			op.accept(b);
-		}
-		
-		public boolean both(Function<T, Boolean> op) {
-	        return op.apply(a) && op.apply(b);
-	    }
+        public void forEach(Consumer<T> op) {
+            op.accept(a);
+            op.accept(b);
+        }
 
-		public boolean either(Function<T, Boolean> op) {
-	        return op.apply(a) || op.apply(b);
-	    }
-	}
+        public boolean both(Function<T, Boolean> op) {
+            return op.apply(a) && op.apply(b);
+        }
+
+        public boolean either(Function<T, Boolean> op) {
+            return op.apply(a) || op.apply(b);
+        }
+    }
     
     @Override
     public int hashCode()

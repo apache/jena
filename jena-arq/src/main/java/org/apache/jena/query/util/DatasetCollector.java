@@ -19,8 +19,8 @@ public interface DatasetCollector<Input> extends IdentityFinishCollector<Input, 
     default BinaryOperator<Dataset> combiner() {
         return DatasetCollector::union;
     }
-    
-	static Dataset union(final Dataset d1, final Dataset d2) {
-		return DatasetLib.union(d1, d2, Context.emptyContext);
-	}
+
+    static Dataset union(final Dataset d1, final Dataset d2) {
+        return DatasetLib.union(d1, d2, Context.emptyContext);
+    }
 }
