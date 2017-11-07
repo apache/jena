@@ -27,20 +27,31 @@ public class OperationName {
     
     // Create intern'ed symbols. 
     static private NameMgr<OperationName> mgr = new NameMgr<>(); 
-    static public OperationName register(String name) { return mgr.register(name, (x)->new OperationName(x)); }
+    static public OperationName register(String name, String description) { return mgr.register(name, (x)->new OperationName(x, description)); }
     
-    public static final OperationName Query    = register("SPARQL Query");
-    public static final OperationName Update   = register("SPARQL Update");
-    public static final OperationName Upload   = register("File Upload");
-    public static final OperationName GSP_RW   = register("Graph Store Protocol");
-    public static final OperationName GSP_R    = register("Graph Store Protocol (Read)");
-    public static final OperationName Quads_RW = register("HTTP Quads");
-    public static final OperationName Quads_R  = register("HTTP Quads (Read)");
+    public static final OperationName Query    = register("Query", "SPARQL Query");
+    public static final OperationName Update   = register("Update", "SPARQL Update");
+    public static final OperationName Upload   = register("Upload", "File Upload");
+    public static final OperationName GSP_RW   = register("GSP_RW", "Graph Store Protocol");
+    public static final OperationName GSP_R    = register("GSP_R", "Graph Store Protocol (Read)");
+    public static final OperationName Quads_RW = register("Quads_RW", "HTTP Quads");
+    public static final OperationName Quads_R  = register("Quads_R", "HTTP Quads (Read)");
     
+    private final String description ;
     private final String name ;
-    private OperationName(String name) { this.name = name ; }
+
+    private OperationName(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
     
-    public String getName() { return name ; }
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
     
     @Override
     public int hashCode() {
