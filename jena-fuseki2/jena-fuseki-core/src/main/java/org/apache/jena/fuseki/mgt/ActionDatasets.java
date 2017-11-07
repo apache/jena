@@ -273,6 +273,64 @@ public class ActionDatasets extends ActionContainerItem {
         return null ;
     }
 
+    // ---- DELETE
+    
+    @Override
+    protected void execDeleteItem(HttpAction action) {
+        // Does not exist?
+        String name = action.getDatasetName() ;
+        if ( name == null )
+            name = "" ;
+        action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
+
+        if ( ! action.getDataAccessPointRegistry().isRegistered(name) )
+            ServletOps.errorNotFound("No such dataset registered: "+name);
+
+        systemDSG.begin(ReadWrite.WRITE) ;
+        boolean committed = false ;
+        try {
+            // Here, go offline.
+            // Need to reference count operations when they drop to zero
+            // or a timer goes off, we delete the dataset.
+
+            DataAccessPoint ref = action.getDataAccessPointRegistry().get(name) ;
+            // Redo check inside transaction.
+            if ( ref == null )
+                ServletOps.errorNotFound("No such dataset registered: "+name);
+
+            // Make it invisible to the outside.
+            action.getDataAccessPointRegistry().remove(name);
+            // Delete configuration file.
+            // Should be only one, undo damage if multiple.
+            String filename = name.startsWith("/") ? name.substring(1) : name;
+            FusekiSystem.existingConfigurationFile(filename).stream().forEach(FileOps::deleteSilent);
+            // Leave the database in place. if it is in /databases/, recreating the
+            // configuration will make the database reappear. This is intentional.
+            // Deleting a large database by accident is a major mistake.
+
+            // Find graph associated with this dataset name.
+            // (Statically configured databases aren't in the system database.)
+            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
+//            if ( q == null )
+//                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
+            if ( q != null ) {
+                Node gn = q.getGraph() ;
+                //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
+                systemDSG.deleteAny(gn, null, null, null) ;
+            }
+            systemDSG.commit() ;
+            committed = true ;
+            ServletOps.success(action) ;
+        } finally { 
+            if ( ! committed ) systemDSG.abort() ; 
+            systemDSG.end() ; 
+        }
+
+        // Remove the configuration file (if any).
+        action.getDataAccessPointRegistry().remove(name) ;
+    }
+
     private static void assemblerFromBody(HttpAction action, StreamRDF dest) {
         bodyAsGraph(action, dest) ;
     }
@@ -305,65 +363,6 @@ public class ActionDatasets extends ActionContainerItem {
 
     private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
         Upload.fileUploadWorker(action, dest);
-    }
-
-    // ---- DELETE
-
-    @Override
-    protected void execDeleteItem(HttpAction action) {
-//      if ( isContainerAction(action) ) {
-//      ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
-//      return ;
-//  }
-        // Does not exist?
-        String name = action.getDatasetName() ;
-        if ( name == null )
-            name = "" ;
-        action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
-
-        if ( ! action.getDataAccessPointRegistry().isRegistered(name) )
-            ServletOps.errorNotFound("No such dataset registered: "+name);
-
-        systemDSG.begin(ReadWrite.WRITE) ;
-        boolean committed = false ;
-        try {
-            // Here, go offline.
-            // Need to reference count operations when they drop to zero
-            // or a timer goes off, we delete the dataset.
-            
-            DataAccessPoint ref = action.getDataAccessPointRegistry().get(name) ;
-            // Redo check inside transaction.
-            if ( ref == null )
-                ServletOps.errorNotFound("No such dataset registered: "+name);
-
-            // Make it invisible to the outside.
-            action.getDataAccessPointRegistry().remove(name) ;
-            // Delete configuration file.
-            // Should be only one, undo damage if multiple.
-            FusekiSystem.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
-            
-            // Find graph associated with this dataset name.
-            // (Statically configured databases aren't in the system database.)
-            
-            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
-            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
-//            if ( q == null )
-//                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
-            if ( q != null ) {
-                Node gn = q.getGraph() ;
-                //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
-                systemDSG.deleteAny(gn, null, null, null) ;
-            }
-            systemDSG.commit() ;
-            committed = true ;
-            ServletOps.success(action) ;
-        } finally { 
-            if ( ! committed ) systemDSG.abort() ; 
-            systemDSG.end() ; 
-        }
-        
-        // Remove the configuration file (if any).
-        action.getDataAccessPointRegistry().remove(name) ;
     }
 
     // Persistent state change.

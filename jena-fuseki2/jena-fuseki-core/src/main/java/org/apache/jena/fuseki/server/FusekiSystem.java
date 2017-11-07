@@ -422,7 +422,10 @@ public class FusekiSystem
         }
     }
     
-    /** Dataset set name to configuration file name. */
+    /**
+     * Dataset set name to configuration file name. Return a configuration file name -
+     * existing one or ".ttl" form if new
+     */
     public static String datasetNameToConfigurationFile(HttpAction action, String dsName) {
         List<String> existing = existingConfigurationFile(dsName) ;
         if ( ! existing.isEmpty() ) {
@@ -432,28 +435,28 @@ public class FusekiSystem
                 ServletOps.errorBadRequest("Multiple existing configuration files for "+dsName);
                 return null ;
             }
-            return existing.get(0) ;
+            return existing.get(0).toString() ;
         }
         
         return generateConfigurationFilename(dsName) ;
     }
 
-    /** Choose a configuration file name - existing one or ".ttl" form if new */
+    /** New configuration file name - absiolute filename */
     public static String generateConfigurationFilename(String dsName) {
         String filename = dsName ;
         // Without "/"
         if ( filename.startsWith("/"))
             filename = filename.substring(1) ;
-        filename = FusekiSystem.dirConfiguration.resolve(filename).toString()+".ttl" ;
-        return filename ;
+        Path p = FusekiSystem.dirConfiguration.resolve(filename+".ttl") ;
+        return p.toString();
     }
 
-    /** Return the filenames of all matching files in the configuration directory */  
+    /** Return the filenames of all matching files in the configuration directory (absolute paths returned ). */  
     public static List<String> existingConfigurationFile(String baseFilename) {
         try { 
             List<String> paths = new ArrayList<>() ;
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiSystem.dirConfiguration, baseFilename+"*") ) {
-                stream.forEach((p)-> paths.add(p.getFileName().toString())) ;
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiSystem.dirConfiguration, baseFilename+".*") ) {
+                stream.forEach((p)-> paths.add(FusekiSystem.dirConfiguration.resolve(p).toString() ));
             }
             return paths ;
         } catch (IOException ex) {
