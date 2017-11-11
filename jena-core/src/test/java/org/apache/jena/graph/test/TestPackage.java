@@ -20,6 +20,7 @@ package org.apache.jena.graph.test;
 
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
+import org.apache.jena.graph.TestGraphUtil;
 
 /**
     Collected test suite for the .graph package.
@@ -55,5 +56,8 @@ public class TestPackage extends TestSuite {
         addTest( TestGraphMatchWithInference.suite());
         addTestSuite( TestGraphEvents.class );
         addTestSuite( TestGraphBaseToString.class );
+        
+        // Has to be in a different package.
+        addTest( new JUnit4TestAdapter(TestGraphUtil.class ) );
     }
 }
