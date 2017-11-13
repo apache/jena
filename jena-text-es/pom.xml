@@ -209,17 +209,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <!-- By default, have separate Eclipse and maven build areas -->
-          <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>false</downloadJavadocs>
-        </configuration>
-      </plugin>
-
     </plugins>
     
   </build>
