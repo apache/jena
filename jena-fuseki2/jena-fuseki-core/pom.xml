@@ -111,13 +111,11 @@
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <!-- Logging :  Needed because the Fuseki command line manages logging -->
