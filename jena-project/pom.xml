@@ -60,11 +60,12 @@
     <ver.jsonldjava>0.11.1</ver.jsonldjava>
     <ver.jackson>2.9.0</ver.jackson>
 
-    <ver.commonsio>2.5</ver.commonsio>
+    <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
-    
     <ver.commonslang3>3.4</ver.commonslang3>
-    <ver.commonscsv>1.4</ver.commonscsv>
+    <ver.commonscsv>1.5</ver.commonscsv>
+    <ver.commons-codec>1.11</ver.commons-codec>
+
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
     <ver.httpclient>4.5.3</ver.httpclient>
@@ -75,7 +76,6 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
-    <ver.commons-codec>1.10</ver.commons-codec>
     <ver.lucene>6.4.1</ver.lucene>
 
     <ver.elasticsearch>5.2.2</ver.elasticsearch>
@@ -92,7 +92,7 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <ver.contract.tests>0.1.5</ver.contract.tests>
+    <ver.contract.tests>0.1.7</ver.contract.tests>
   </properties>
 
   <profiles>
@@ -659,7 +659,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.xenei</groupId>
                     <artifactId>contract-test-maven-plugin</artifactId>
-                    <versionRange>[0.1.5,)</versionRange>
+                    <versionRange>${ver.contract.tests}</versionRange>
                     <goals>
                       <goal>contract-test</goal>
                     </goals>
@@ -767,18 +767,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-eclipse-plugin</artifactId>
-          <version>2.9</version>
-          <configuration>
-            <!-- By default, have separate Eclipse and maven build areas -->
-            <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
-            <downloadSources>true</downloadSources>
-            <downloadJavadocs>false</downloadJavadocs>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
           <executions>
             <execution>
@@ -814,7 +802,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>2.4.3</version>
+          <version>3.0.0</version>
         </plugin>
 
 
@@ -830,7 +818,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.18.1</version>
+        <version>2.20.1</version>
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
@@ -852,7 +840,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.15</version>
+        <version>2.17</version>
       </plugin>
 
       <plugin>
@@ -864,7 +852,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.4</version>
+        <version>3.8</version>
         <configuration>
           <linkXref>true</linkXref>
           <sourceEncoding>utf-8</sourceEncoding>
