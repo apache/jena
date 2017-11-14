@@ -36,6 +36,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.process.normalize.StreamCanonicalLangTag;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLiterals;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
@@ -70,27 +71,30 @@ import org.apache.jena.sparql.util.Context;
  */
 
 public class RDFParser {
-    private final String       uri;
-    private final Path         path;
-    private final String       content;
-    private final InputStream  inputStream;
-    private final Reader       javaReader;
-    private final StreamManager streamManager;
+    /*package*/ enum LangTagForm { NONE, LOWER_CASE, CANONICAL }  
 
-    private final HttpClient   httpClient;
-    private final Lang         hintLang;
-    private final Lang         forceLang;
-    private final String       baseUri;
-    private final boolean      strict;
-    private final boolean      resolveURIs;
-    private final boolean      canonicalLiterals;
-    private final Optional<Boolean> checking ;
-    private final IRIResolver  resolver;
-    private final FactoryRDF   factory;
-    private final ErrorHandler errorHandler;
-    private final Context      context;
+    private final String            uri;
+    private final Path              path;
+    private final String            content;
+    private final InputStream       inputStream;
+    private final Reader            javaReader;
+    private final StreamManager     streamManager;
 
-    private boolean            canUse = true;
+    private final HttpClient        httpClient;
+    private final Lang              hintLang;
+    private final Lang              forceLang;
+    private final String            baseUri;
+    private final boolean           strict;
+    private final boolean           resolveURIs;
+    private final boolean           canonicalLexicalValues;
+    private final LangTagForm       langTagForm;
+    private final Optional<Boolean> checking;
+    private final IRIResolver       resolver;
+    private final FactoryRDF        factory;
+    private final ErrorHandler      errorHandler;
+    private final Context           context;
+
+    private boolean                 canUse = true;
 
     // ---- Builder creation
     
@@ -162,8 +166,9 @@ public class RDFParser {
     }
     
     /* package */ RDFParser(String uri, Path path, String content, InputStream inputStream, Reader javaReader, StreamManager streamManager, 
-                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, 
-                            Optional<Boolean> checking, boolean resolveURIs, boolean canonicalLiterals, IRIResolver resolver, FactoryRDF factory,
+                            HttpClient httpClient, Lang hintLang, Lang forceLang, String baseUri, boolean strict, Optional<Boolean> checking, 
+                            boolean canonicalLexicalValues, LangTagForm langTagForm,  
+                            boolean resolveURIs, IRIResolver resolver, FactoryRDF factory,
                             ErrorHandler errorHandler, Context context) {
         int x = countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
@@ -186,7 +191,8 @@ public class RDFParser {
         this.baseUri = baseUri;
         this.strict = strict;
         this.resolveURIs = resolveURIs;
-        this.canonicalLiterals = canonicalLiterals;
+        this.canonicalLexicalValues = canonicalLexicalValues;
+        this.langTagForm = langTagForm;
         this.checking = checking;
         this.resolver = resolver;
         this.factory = factory;
@@ -230,8 +236,19 @@ public class RDFParser {
         // NB FactoryRDFCaching does not need to reset its cache.
         factory.reset() ;
         
-        if ( canonicalLiterals )
+        if ( canonicalLexicalValues )
             destination = new StreamCanonicalLiterals(destination);
+        switch(langTagForm) {
+            case NONE :
+                break;
+            case CANONICAL :
+                destination = StreamCanonicalLangTag.toCanonical(destination);
+                break;
+            case LOWER_CASE :
+                destination = StreamCanonicalLangTag.toLC(destination);
+                break;
+            default : throw new InternalErrorException("langTagForm = "+langTagForm);
+        }
 
         if ( isNonNull(content, inputStream, javaReader) ) {
             parseNotUri(destination);
