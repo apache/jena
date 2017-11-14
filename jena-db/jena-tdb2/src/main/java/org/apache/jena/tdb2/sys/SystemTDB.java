@@ -79,13 +79,8 @@ public class SystemTDB
     /** Size, in bytes, of a quad index record. */
     public static final int LenIndexQuadRecord      = 4 * NodeId.SIZE ;
     
-    /** Size, in bytes, of a Node hash.
-     * In TDB 0.7.X and before this was 8 bytes (64/8).
-     * In TDB 0.8.0 and above it is 16 bytes (128/8).
-     * These two systems are not compatible.
-     */
-    //public static final int LenNodeHash             = SizeOfLong ; // TDB <= 0.7.X
-    public static final int LenNodeHash             = 128/8 ; // TDB >= 0.8.0
+    /** Size, in bytes, of a Node hash. */
+    public static final int LenNodeHash             = 128/8 ;
 
     // ---- Symbols and similar
     
@@ -94,19 +89,25 @@ public class SystemTDB
     public final static RecordFactory indexRecordQuadFactory = new RecordFactory(LenIndexQuadRecord, 0) ;
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
 
-    // Test show no visable effect.
-//    /** Unit of flushing the data when loading - data phase.  -1 means off, sync at end of load only.  */
-//    public final static long LoadFlushTickPrimary   = -1 ; // 10*1000*1000 ;
-//    /** Unit of flushing the data when loading - index phase  -1 means off, sync at end of load only.  */
-//    public final static long LoadFlushTickSecondary = -1 ; // 10*1000*1000 ;
-
-    /** Root of TDB-defined parameter names */
-    public static final String symbolNamespace      = "http://jena.hpl.hp.com/TDB#" ;
-
-    /** Root of TDB-defined parameter short names */  
-    public static final String tdbSymbolPrefix      = "tdb" ;
+    /** TDB1 symbol space */ 
+    public static final String symbolNamespace1     = "http://jena.hpl.hp.com/TDB#" ;
+    /** TDB2 symbol space */ 
+    public static final String symbolNamespace2     = "http://jena.apache.org/TDB#" ;
     
-    /** Root of any TDB-defined Java system properties */   
+    /** Root of TDB-defined parameter names. */
+    public static final String symbolNamespace      = symbolNamespace2 ;
+    
+    /** Root of TDB-defined parameter short names.
+     * <p>
+     * Note: this is different for TDB1 and TDB2.
+     */
+    public static final String tdbSymbolPrefix      = "tdb2" ;
+    
+    /** 
+     * Root of any TDB-defined Java system properties.
+     * <p>
+     * Note: this is different for TDB1 and TDB2.
+     */   
     public static final String tdbPropertyRoot      = "org.apache.jena.tdb" ;
 
     /** Log duplicates during loading */
@@ -233,10 +234,10 @@ public class SystemTDB
     /** FillByte value for NullOut */
     public static final byte FillByte = (byte)0xFF ;
 
-    public static boolean Checking = false ;       // This isn't used enough!
+    public static final boolean Checking = false ;       // This isn't used enough!
     
     /**
-     * When enabled, a {@link ProcessFileLock} is used to block over rpcoesses oening this database.
+     * When enabled, a {@link ProcessFileLock} is used to block other processes opening this database.
      */
     public static boolean DiskLocationMultiJvmUsagePrevention = true;
 
@@ -255,7 +256,7 @@ public class SystemTDB
         return allocSymbol(SystemTDB.symbolNamespace, shortName) ;
     }
     
-    private static Symbol allocSymbol(String namespace, String shortName)
+    public static Symbol allocSymbol(String namespace, String shortName)
     {
         return Symbol.create(namespace+shortName) ;
     }

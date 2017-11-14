@@ -18,13 +18,7 @@
 
 package org.apache.jena.tdb2 ;
 
-import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.impl.OntModelImpl ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
@@ -51,11 +45,11 @@ public class TDB2 {
     public static final String  tdbIRI                           = "http://jena.apache.org/#tdb" ;
 
     /** Root of TDB-defined parameter names */
-    public static final String  tdbParamNS                       = "http://jena.apache.org/TDB#" ;
+    public static final String  tdbParamNS                       = SystemTDB.symbolNamespace;
 
     /** Prefix for TDB-defined parameter names */
-    public static final String  tdbSymbolPrefix                  = "tdb" ;
-
+    public static final String  tdbSymbolPrefix                  = SystemTDB.tdbSymbolPrefix;
+    
     // Internal logging
     private static final Logger log                              = LoggerFactory.getLogger(TDB2.class) ;
 
@@ -70,25 +64,29 @@ public class TDB2 {
     public static final Logger  logInfo                          = LoggerFactory.getLogger(logInfoName) ;
 
     // /** Logger for execution information */
-    // public static final String logExecName = "org.apache.jena.tdb.exec" ;
+    // public static final String logExecName = "org.apache.jena.tdb.exec";
     // /** Logger for execution information */
-    // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
-    // ;
+    // public static final Logger logExec = LoggerFactory.getLogger(logExecName);
 
     public final static String  namespace                        = "http://jena.apache.org/2016/tdb#" ;
 
-    /** Symbol to use the union of named graphs as the default graph of a query */
-    public static final Symbol  symUnionDefaultGraph             = SystemTDB.allocSymbol("unionDefaultGraph") ;
-
+    // Union default graph symbols for context setting.
+    // Used in QueryEngineTDB.
+    
+    // This is not the name of the union graph which is 
+    // "urn:x-arq:UnionGraph".
+    // See Quad.unionGraph = "urn:x-arq:UnionGraph"
+    
+    /** TDB1 namespace version of the context symbol for union default graph */
+    public static final Symbol  symUnionDefaultGraph1            = SystemTDB.allocSymbol(SystemTDB.symbolNamespace1, "unionDefaultGraph") ;
+    /** TDB2 namespace version of the context symbol for union default graph */
+    public static final Symbol  symUnionDefaultGraph2            = SystemTDB.allocSymbol(SystemTDB.symbolNamespace2, "unionDefaultGraph") ;
+    
     /**
-     * A String enum Symbol that specifies the type of temporary storage for
-     * transaction journal write blocks.
-     * <p/>
-     * "mem" = Java heap memory (default) <br>
-     * "direct" = Process heap memory <br>
-     * "mapped" = Memory mapped temporary file <br>
+     * Symbol to use the union of named graphs as the default graph of a query.
+     * This must use the TDB1 compatible namespace.
      */
-    public static final Symbol  transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
+    public static final Symbol  symUnionDefaultGraph             = symUnionDefaultGraph2;
 
     public static Context getContext() {
         return ARQ.getContext() ;
@@ -100,87 +98,6 @@ public class TDB2 {
      */
     public static void closedown() {
         TDBInternal.reset() ;
-    }
-
-    /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
-    public static void sync(Model model) {
-        if ( model instanceof OntModelImpl ) {
-            OntModelImpl ontModel = (OntModelImpl)model ;
-            sync(ontModel.getBaseGraph()) ;
-            return ;
-        }
-        // This never happens (there is only one OntModel implementation)
-        if ( model instanceof OntModel ) {
-            OntModel ontModel = (OntModel)model ;
-            sync(ontModel.getBaseModel()) ;
-            return ;
-        }
-
-        sync(model.getGraph()) ;
-    }
-
-    /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
-    public static void sync(Graph graph) {
-        if ( graph == null )
-            return ;
-
-        if ( graph instanceof InfGraph ) {
-            InfGraph infGraph = (InfGraph)graph ;
-            sync(infGraph.getRawGraph()) ;
-            return ;
-        }
-        syncObject(graph) ;
-    }
-
-//    /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
-//    public static void sync(Dataset dataset) {
-//        if ( dataset == null )
-//            return ;
-//        DatasetGraph ds = dataset.asDatasetGraph() ;
-//        sync(ds) ;
-//    }
-//
-//    /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
-//    public static void sync(DatasetGraph dataset) {
-//        if ( dataset == null )
-//            return ;
-//        
-//        // Should be: SystemARQ.sync(dataset) ;
-//        if ( dataset instanceof DatasetGraphTDB ) {
-//            syncObject(dataset) ;
-//            return ;
-//        }
-//
-//        if ( dataset instanceof DatasetGraphTransaction ) {
-//            DatasetGraphTransaction dsgt = (DatasetGraphTransaction)dataset ;
-//            // This only sync if the dataset has not been used transactionally.
-//            // Can't sync transactional datasets (it's meaningless)
-//            dsgt.syncIfNotTransactional() ;
-//            return ;
-//        }
-//
-//        // May be a general purpose dataset with TDB objects in it.
-//        sync(dataset.getDefaultGraph()) ;
-//        Iterator<Node> iter = dataset.listGraphNodes() ;
-//        iter = Iter.toList(iter).iterator() ; // Avoid iterator concurrency.
-//        for (; iter.hasNext();) {
-//            Node n = iter.next() ;
-//            Graph g = dataset.getGraph(n) ;
-//            sync(g) ;
-//        }
-//    }
-
-    /**
-     * Sync a TDB synchronizable object (model, graph, dataset). If force is
-     * true, synchronize as much as possible (e.g. file metadata) else make a
-     * reasonable attempt at synchronization but does not guarantee disk state.
-     * Do nothing otherwise
-     */
-    private static void syncObject(Object object) {
-        if ( object == null )
-            return ;
-        if ( object instanceof Sync )
-            ((Sync)object).sync() ;
     }
 
     private static final Object initLock = new Object() ;
