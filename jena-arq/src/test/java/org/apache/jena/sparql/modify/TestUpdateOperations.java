@@ -28,14 +28,21 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.update.* ;
+import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateException;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
@@ -45,6 +52,19 @@ public class TestUpdateOperations extends BaseTest
     private static final String DIR = "testing/Update" ;
     private DatasetGraph graphStore() { return DatasetGraphFactory.create() ; }
     private Node gName = SSE.parseNode("<http://example/g>") ;
+    
+    private static ErrorHandler eh;
+    
+    // Silence parser output.
+    @BeforeClass public static void beforeClass() {
+        eh = ErrorHandlerFactory.getDefaultErrorHandler();
+        ErrorHandler silent = ErrorHandlerFactory.errorHandlerStrictSilent();
+        ErrorHandlerFactory.setDefaultErrorHandler(silent);
+    }
+    
+    @AfterClass public static void afterClass() {
+        ErrorHandlerFactory.setDefaultErrorHandler(eh);
+    }
     
     @Test public void load1() {
         DatasetGraph gs = graphStore() ;
@@ -82,6 +102,81 @@ public class TestUpdateOperations extends BaseTest
     @Test public void load5() {
         DatasetGraph gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test(expected=UpdateException.class)
+    public void load6() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nq>") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test public void load7() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test(expected=UpdateException.class)
+    public void load8() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test public void load9() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test(expected=UpdateException.class)
+    public void load10() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test public void load11() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test(expected=UpdateException.class) 
+    public void load12() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt>") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+
+    @Test public void load13() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt>") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+
+    @Test(expected=UpdateException.class)
+    public void load14() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">") ;
+        UpdateAction.execute(req, gs) ;
+        assertEquals(0, Iter.count(gs.find())) ;
+    }
+
+    @Test public void load15() {
+        DatasetGraph gs = graphStore() ;
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
     }

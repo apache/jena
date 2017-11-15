@@ -33,15 +33,14 @@ import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecutionFactory ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RDFParser ;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
@@ -137,30 +136,48 @@ public class UpdateEngineWorker implements UpdateVisitor
         // LOAD SILENT? iri ( INTO GraphRef )? 
         String source = update.getSource();
         Node dest = update.getDest();
+        Graph graph = graph(datasetGraph, dest);
+        // We must load buffered if silent so that the dataset graph sees
+        // all or no triples/quads when there is a parse error
+        // (no nested transaction abort). 
+        boolean loadBuffered = update.getSilent() || ! datasetGraph.supportsTransactionAbort() ;
         try {
-            // Read into temporary storage to protect against parse errors.
-            if ( dest != null ) {
-                Lang lang = RDFLanguages.filenameToLang(source);
-                // load-to-graph - must be triples. 
-                if ( ! RDFLanguages.isTriples(lang) )
-                    throw new UpdateException("Attempt to load quads into a graph");
-                // LOAD-INTO graph ... must be triples.
-                Graph g = GraphFactory.createGraphMem();
-                RDFParser.source(source).parse(g);
-                Graph g2 = graph(datasetGraph, dest);
-                GraphUtil.addInto(g2, g);
-            } else {
-                // LOAD <iri> -- allow quads.
-                DatasetGraph dsg = DatasetGraphFactory.create();
-                RDFParser.source(source).parse(dsg);
-                Iterator<Quad> iter = dsg.find();
-                for ( ; iter.hasNext() ; ) {
-                    Quad q = iter.next();
-                    datasetGraph.add(q);
+            if ( dest == null ) {
+                // LOAD SILENT? iri
+                // Quads accepted (extension).
+                if ( loadBuffered ) {
+                    DatasetGraph dsg2 = DatasetGraphFactory.create();
+                    RDFDataMgr.read(dsg2, source);
+                    dsg2.find().forEachRemaining(datasetGraph::add);
+                } else {
+                    RDFDataMgr.read(datasetGraph, source);
                 }
+                return ;
             }
-        }
-        catch (RuntimeException ex) {
+            // LOAD SILENT? iri INTO GraphRef
+            // Load triples. To give a decent error message and also not have the usual
+            // parser behaviour of just selecting default graph triples when the
+            // destination is a graph, we need to do the same steps as RDFParser.parseURI,
+            // with different checking.
+            TypedInputStream input = RDFDataMgr.open(source);
+            String contentType = input.getContentType();
+            Lang lang = RDFDataMgr.determineLang(source, contentType, Lang.TTL); 
+            if ( lang == null )
+                throw new UpdateException("Failed to determine the syntax for '"+source+"'");
+            if ( ! RDFLanguages.isTriples(lang) )
+                throw new UpdateException("Attempt to load quads into a graph");
+            RDFParser parser = RDFParser
+                .source(input.getInputStream())
+                .forceLang(lang)
+                .build();
+            if ( loadBuffered ) {
+                Graph g = GraphFactory.createGraphMem();
+                parser.parse(g);
+                GraphUtil.addInto(graph, g);
+            } else {
+                parser.parse(graph);
+            }
+        } catch (RuntimeException ex) {
             if ( !update.getSilent() ) {
                 if ( ex instanceof UpdateException )
                     throw ex;
