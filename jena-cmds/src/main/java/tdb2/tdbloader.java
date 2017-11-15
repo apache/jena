@@ -23,7 +23,6 @@ import java.util.List;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.lib.ProgressMonitor;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
@@ -142,13 +141,16 @@ public class tdbloader extends CmdTDBGraph {
     static class TDBLoader {
 
         public static void load(DatasetGraph dsg, List<String> urls, boolean showProgress, boolean generateStats) {
-            Txn.executeWrite(dsg, ()->{
-                urls.forEach((x)->loadOne(dsg, x, showProgress));
-            });
+            StreamRDF dest = StreamRDFLib.dataset(dsg);
+            Txn.executeWrite(dsg, ()->urls.forEach( (x)->loadOne(dest, x, showProgress) ));
         }
 
-        private static void loadOne(DatasetGraph dsg, String x, boolean showProgress) {
-            StreamRDF dest = StreamRDFLib.dataset(dsg);
+        public static void load(Graph graph, List<String> urls, boolean showProgress) {
+            StreamRDF dest = StreamRDFLib.graph(graph);
+            graph.getTransactionHandler().execute(()->urls.forEach((x) -> loadOne(dest, x, showProgress)));
+        }
+        
+        private static void loadOne(StreamRDF dest, String x, boolean showProgress) {
             StreamRDF sink = dest;
             ProgressMonitor monitor = null;
             if ( showProgress ) { 
@@ -165,10 +167,6 @@ public class tdbloader extends CmdTDBGraph {
                 monitor.finish();
                 monitor.finishMessage();
             }
-        }
-
-        public static void load(Graph graph, List<String> urls, boolean showProgress) {
-            throw new NotImplemented();
         }
     }
 }
