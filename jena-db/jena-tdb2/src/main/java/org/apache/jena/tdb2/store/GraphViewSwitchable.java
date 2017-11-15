@@ -97,7 +97,7 @@ public class GraphViewSwitchable extends GraphView {
 
         @Override
         public boolean transactionsSupported() {
-            return true;
+            return dsg.supportsTransactions();
         }
     }
     
@@ -107,7 +107,7 @@ public class GraphViewSwitchable extends GraphView {
         if ( gn == Quad.defaultGraphNodeGenerated )
             gn = null;
         if ( Quad.isUnionGraph(gn) ) {
-            // Read-only wrapper would be better that a copy.
+            // Read-only wrapper would be better than a copy.
             PrefixMapping pmap = new PrefixMappingImpl();
             pmap.setNsPrefixes(prefixMapping(null));
             return pmap; 
@@ -176,5 +176,4 @@ public class GraphViewSwitchable extends GraphView {
             }
         };
     }
-    
 }

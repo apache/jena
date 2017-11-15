@@ -27,6 +27,7 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphTDB.class
     , TestGraphsTDB1.class
     , TestGraphsTDB2.class
+    , TestGraphViewSwitchable.class
     , TestDatasetGraphAccessorTDB.class
     , TestGraphOverDatasetTDB.class
 })

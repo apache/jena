@@ -59,6 +59,5 @@ public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
     {
         return  dsg.getDefaultGraph() ;
     }
-
 }
 
