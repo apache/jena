@@ -65,7 +65,7 @@ public class Upload {
         try { input = action.request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
     
-        int len = action.request.getContentLength() ;
+        long len = action.request.getContentLengthLong();
 
         StreamRDFCounting countingDest = StreamRDFLib.count(dest) ;
         try {
