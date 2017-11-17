@@ -22,6 +22,7 @@ import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.atlas.lib.StrUtils.str ;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -51,11 +52,15 @@ public class Pair<A, B>
         }
 
         public boolean both(Function<T, Boolean> op) {
-            return op.apply(a) && op.apply(b);
+            return join(Boolean::logicalAnd, op);
         }
 
         public boolean either(Function<T, Boolean> op) {
-            return op.apply(a) || op.apply(b);
+            return join(Boolean::logicalOr, op);
+        }
+        
+        public <S, X> S join(BiFunction<X, X, S> f, Function<T, X> op) {
+            return f.apply(op.apply(a), op.apply(b));
         }
     }
     

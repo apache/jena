@@ -3,7 +3,7 @@ package org.apache.jena.sparql.util;
 import java.util.Iterator;
 import java.util.function.Function;
 
-import org.apache.jena.ext.com.google.common.collect.Iterators;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.Union;
@@ -17,11 +17,11 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
     }
 
     private Graph union(Function<DatasetGraph, Graph> op) {
-        return new Union(op.apply(getLeft()), op.apply(getRight()));
+        return join(Union::new, op);
     }
 
-    <T> Iterator<T> fromEach(Function<DatasetGraph, Iterator<T>> op) {
-        return Iterators.concat(op.apply(getLeft()), op.apply(getRight()));
+    <T> Iter<T> fromEach(Function<DatasetGraph, Iterator<T>> op) {
+        return join(Iter::concat, op).distinct();
     }
 
     @Override
@@ -67,10 +67,5 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
     @Override
     public boolean isEmpty() {
         return both(DatasetGraph::isEmpty);
-    }
-
-    @Override
-    public long size() {
-        return getLeft().size() + getRight().size();
     }
 }

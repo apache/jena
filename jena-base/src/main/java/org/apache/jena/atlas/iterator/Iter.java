@@ -614,11 +614,11 @@ public class Iter<T> implements Iterator<T> {
     /** An {@code Iterator} of 2 {@code Iterator}'s.
      * See also {@link IteratorConcat}.
      */
-    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
+    public static <T> Iter<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
         if ( iter1 == null )
-            return iter2 ;
+            return iter(iter2) ;
         if ( iter2 == null )
-            return iter1 ;
+            return iter(iter1) ;
         return iter(iter1).append(iter(iter2)) ;
     }
 

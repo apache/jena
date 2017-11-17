@@ -16,8 +16,8 @@ public class IntersectionDatasetGraph extends ViewDatasetGraph {
 		super(left, right, c);
 	}
 
-	Graph intersect(Function<DatasetGraph, Graph> mapping) {
-		return new Intersection(mapping.apply(getLeft()), mapping.apply(getRight()));
+	Graph intersect(Function<DatasetGraph, Graph> op) {
+	    return join(Intersection::new, op);
 	}
 
 	@Override

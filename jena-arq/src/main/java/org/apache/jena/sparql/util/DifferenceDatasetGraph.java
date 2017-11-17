@@ -4,6 +4,7 @@ import static org.apache.jena.sparql.core.Quad.ANY;
 import static org.apache.jena.sparql.core.Quad.isDefaultGraph;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -15,10 +16,14 @@ public class DifferenceDatasetGraph extends ViewDatasetGraph {
 	public DifferenceDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
 		super(left, right, c);
 	}
+	
+	private Graph difference(Function<DatasetGraph, Graph> op) {
+	    return join(Difference::new, op);
+	}
 
 	@Override
 	public Graph getDefaultGraph() {
-		return new Difference(getRight().getDefaultGraph(), getLeft().getDefaultGraph());
+		return difference(DatasetGraph::getDefaultGraph);
 	}
 
 	@Override
@@ -26,7 +31,7 @@ public class DifferenceDatasetGraph extends ViewDatasetGraph {
 		return isDefaultGraph(graphNode)
 				? getDefaultGraph()
 				: getRight().containsGraph(graphNode)
-						? new Difference(getLeft().getGraph(graphNode), getRight().getGraph(graphNode))
+						? difference(dsg -> dsg.getGraph(graphNode))
 						: getLeft().getGraph(graphNode);
 	}
 
@@ -42,7 +47,7 @@ public class DifferenceDatasetGraph extends ViewDatasetGraph {
 
 	@Override
 	public boolean contains(Node g, Node s, Node p, Node o) {
-		return getLeft().contains(g, s, p, o) && !getRight().contains(g, s, p, o);
+	    return both(dsg -> dsg.contains(g, s, p, o));
 	}
 
 	@Override
