@@ -30,6 +30,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.RDFParser.LangTagForm;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.stream.StreamManager;
@@ -81,7 +82,10 @@ public class RDFParserBuilder {
     private Lang forceLang = null;
     
     private String baseUri = null;
-    private boolean canonicalLiterals = false;
+    
+    private boolean           canonicalValues = false;
+    private LangTagForm  langTagForm = LangTagForm.NONE;
+    
     private Optional<Boolean> checking = Optional.empty();
     
     // ---- Unused but left in case required in the future.
@@ -280,10 +284,34 @@ public class RDFParserBuilder {
 
     /**
      * Convert the lexical form of literals to a canonical form.
+     * @deprecated Use {@link #canonicalValues} and one of {@link #langTagCanonical} and {@link #langTagLowerCase} 
+     * <p>
+     * This operation is equivalent to 
+     * <pre>
+     *   this.canonicalValues(flag);
+     *    if ( flag )
+     *        this.langTagCanonical();
+     *    else
+     *        this.langTagAsGiven();
+     *    return this;
+     * </pre>
+     */
+    @Deprecated
+    public RDFParserBuilder canonicalLiterals(boolean flag) {
+        this.canonicalValues(flag);
+        if ( flag )
+            this.langTagCanonical();
+        else
+            this.langTagAsGiven();
+        return this;
+    }
+    
+    /**
+     * Convert the lexical form of literals to a canonical form.
      * <p>
      * Two literals can be different RDF terms for the same value.
      * <p>
-     * Examples include (first shows of the pair is the canonical form):
+     * Examples include (first shown of the pair is the canonical form):
      * 
      * <pre>
      *    {@code "1"^^xsd:integer} and {@code "+01"^^xsd:integer} 
@@ -298,11 +326,6 @@ public class RDFParserBuilder {
      * "https://www.w3.org/TR/xmlschema-2/#decimal-canonical-representation">3.2.3.2
      * Canonical representation</a>
      * <p>
-     * Language tags are case-normalized as defined by
-     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>. Example: {@code en-GB}
-     * not {@code en-gb}. This does not affect the RDF 1.1 requirement that the
-     * value-space of language tags is lower-case.
-     * <p>
      * The effect on literals where the lexical form does not represent a
      * valid value (for example, {@code "3000"^^xsd:byte}) is undefined.
      * <p>
@@ -312,8 +335,66 @@ public class RDFParserBuilder {
      * <p>
      * For consistent loading of data, it is recommended that data is cleaned and
      * canonicalized before loading so the conversion is done once.
+     * 
+     * @see #langTagLowerCase
+     * @see #langTagCanonical
      */
-    public RDFParserBuilder canonicalLiterals(boolean flag) { this.canonicalLiterals = flag ; return this; }
+    public RDFParserBuilder canonicalValues(boolean flag) {
+        this.canonicalValues = flag;
+        return this; 
+    }
+    
+    /**
+     * Convert language tags to lower case.
+     * <p>
+     * This is the suggested form in RDF 1.1 for comparsions. 
+     * However, this is not the recommended canonical form in
+     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
+     * <p>
+     * Providing all data is converted consistently, language tag equality 
+     * is maintained for either lower case or RFC canonicalization styles.
+     * <p>
+     * This option can slow parsing down.
+     * <p>
+     * @see #langTagCanonical
+     */
+    public RDFParserBuilder langTagLowerCase() {
+        return langTagForm(LangTagForm.LOWER_CASE);
+    }
+
+    /**
+     * Language tags are case-normalized as defined by
+     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
+     * Example: {@code en-GB}, not {@code en-gb}.
+     * <p>
+     * This does not affect the RDF 1.1 requirement that the
+     * value-space of language tags is lower-case.
+     * <p>
+     * Providing all data is converted consistently, lang tag equality is maintained for either
+     * lower case or RFC canonicalization.
+     * <p>
+     * This option can slow parsing down.
+     * <p>
+     * @see #langTagLowerCase
+     */
+    public RDFParserBuilder langTagCanonical() {
+        return langTagForm(LangTagForm.CANONICAL);
+    }
+
+    /**
+     * The form of the language tags as given in the data is preserved.
+     * This is the default behaviour of parsing.
+     * @see #langTagLowerCase
+     * @see #langTagCanonical
+     */
+    public RDFParserBuilder langTagAsGiven() {
+        return langTagForm(LangTagForm.NONE);
+    }
+
+    private RDFParserBuilder langTagForm(LangTagForm form) {
+        this.langTagForm = form;
+        return this;
+    }
     
     /** Set whether to perform checking, 
      * NTriples and NQuads default to no checking, other languages to checking.
@@ -477,8 +558,9 @@ public class RDFParserBuilder {
         // Can't build the profile here as it is Lang/conneg dependent.
         return new RDFParser(uri, path, content, inputStream, javaReader, sMgr, 
                              client, hintLang, forceLang,
-                             baseUri, strict, checking, resolveURIs, canonicalLiterals,
-                             resolver, factory$, errorHandler$, context);
+                             baseUri, strict, checking, 
+                             canonicalValues, langTagForm,
+                             resolveURIs, resolver, factory$, errorHandler$, context);
     }
 
     private FactoryRDF buildFactoryRDF() {
@@ -532,7 +614,8 @@ public class RDFParserBuilder {
         builder.forceLang =         this.forceLang;
         builder.baseUri =           this.baseUri;
         builder.checking =          this.checking;
-        builder.canonicalLiterals = this.canonicalLiterals;
+        builder.canonicalValues =   this.canonicalValues;
+        builder.langTagForm =       this.langTagForm;
         builder.strict =            this.strict;
         builder.resolveURIs =       this.resolveURIs;
         builder.resolver =          this.resolver;

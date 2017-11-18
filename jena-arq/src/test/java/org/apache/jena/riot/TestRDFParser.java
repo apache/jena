@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -36,6 +37,8 @@ import org.apache.jena.riot.system.FactoryRDFStd;
 import org.apache.jena.riot.system.stream.LocatorFile;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.Test;
 
 public class TestRDFParser {
@@ -204,5 +207,49 @@ public class TestRDFParser {
             .parse(graph);
         assertEquals(1, graph.size());
         assertNotEquals(0, f.counter);
+    }
+    
+    // Canonical literals.
+    
+    @Test public void canonical_value_1() { 
+        testNormalization("0123", "0123", builder().canonicalValues(false));
+    }
+
+    @Test public void canonical_value_2() {
+        testNormalization("+123", "123", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_value_3() {
+        testNormalization("+123.00", "123.0", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_value_4() {
+        testNormalization("+123.00e0", "1.23E2", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_langTag_1() {
+        testNormalization("'abc'@En-gB", "'abc'@En-gB", builder().langTagAsGiven());
+    }
+
+    @Test public void canonical_langTag_2() {
+        testNormalization("'abc'@En-gB", "'abc'@en-gb", builder().langTagLowerCase());
+    }
+
+    @Test public void canonical_langTag_3() {
+        testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
+    }
+    
+    private static String PREFIX = "PREFIX : <http://example/>\n ";
+    private static Node s = SSE.parseNode(":s");
+    private static Node p = SSE.parseNode(":p");
+    
+    private void testNormalization(String input, String output, RDFParserBuilder builder) {
+        Graph graph = GraphFactory.createGraphMem();
+        String x = PREFIX+":s :p "+input;
+        builder.source(new StringReader(x)).parse(graph);
+        assertEquals(1, graph.size());
+        Node objExpected = SSE.parseNode(output);
+        Node objObtained = graph.find(s, p, null).next().getObject();
+        assertEquals(objExpected, objObtained);
     }
 }
