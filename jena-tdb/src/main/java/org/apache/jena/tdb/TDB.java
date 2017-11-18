@@ -68,11 +68,12 @@ public class TDB {
     /** IRI for TDB */
     public static final String  tdbIRI                           = "http://jena.hpl.hp.com/#tdb" ;
 
+    
     /** Root of TDB-defined parameter names */
-    public static final String  tdbParamNS                       = "http://jena.hpl.hp.com/TDB#" ;
+    public static final String  tdbParamNS                       = SystemTDB.symbolNamespace;
 
     /** Prefix for TDB-defined parameter names */
-    public static final String  tdbSymbolPrefix                  = "tdb" ;
+    public static final String  tdbSymbolPrefix                  = SystemTDB.tdbSymbolPrefix;
 
     // Internal logging
     private static final Logger log                              = LoggerFactory.getLogger(TDB.class) ;
@@ -246,12 +247,11 @@ public class TDB {
             JenaSystem.logLifecycle("TDB.init - start") ;
             ReaderRIOTRDFXML.RiotUniformCompatibility = true ;
             EnvTDB.processGlobalSystemProperties() ;
-
+            
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
             AssemblerTDB.init() ;
             QueryEngineTDB.register() ;
             UpdateEngineTDB.register() ;
-            MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
             wireIntoExecution() ;
             JenaSystem.logLifecycle("TDB.init - finish") ;

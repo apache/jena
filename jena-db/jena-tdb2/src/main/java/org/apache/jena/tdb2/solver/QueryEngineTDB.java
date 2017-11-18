@@ -45,7 +45,7 @@ import org.apache.jena.tdb2.sys.TDBInternal;
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
 // then to make the quad form.
-// TDB also uses a custom OpExecutor to intercept certain part 
+// TDB also uses a custom OpExecutor to intercept certain parts 
 // of the Op evaluations
 
 public class QueryEngineTDB extends QueryEngineMain
@@ -74,9 +74,13 @@ public class QueryEngineTDB extends QueryEngineMain
         if ( dsDesc != null )
         {
             doingDynamicDatasetBySpecialDataset = true ;
-            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB2.symUnionDefaultGraph) ) ;
+            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, isUnionDefaultGraph(cxt) ) ;
         }
         this.initialInput = input ; 
+    }
+    
+    private static boolean isUnionDefaultGraph(Context cxt) {
+        return cxt.isTrue(TDB2.symUnionDefaultGraph1) || cxt.isTrue(TDB2.symUnionDefaultGraph2);
     }
     
     // Choose the algebra-level optimizations to invoke. 
@@ -104,7 +108,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
         // Fix DatasetGraph for global union.
-        if ( context.isTrue(TDB2.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
+        if ( isUnionDefaultGraph(context) && ! doingDynamicDatasetBySpecialDataset ) 
         {
             op = A2.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
