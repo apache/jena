@@ -123,6 +123,10 @@ public class AbstractRewriter<T> {
 	 * @return the rewritten node.
 	 */
 	protected final Node changeNode(Node n) {
+		if (n == null)
+		{
+			return n;
+		}
 		if (n.isVariable()) {
 			Var v = Var.alloc(n);
 
