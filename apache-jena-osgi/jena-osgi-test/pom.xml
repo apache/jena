@@ -37,17 +37,6 @@
     <pax.exam.version>4.4.0</pax.exam.version>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>       
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>

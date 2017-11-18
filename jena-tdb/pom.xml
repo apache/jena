@@ -30,18 +30,6 @@
     <relativePath>..</relativePath>
   </parent> 
 
-  <!-- Need if the parent is a snapshot -->
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
   <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
 
   <properties>
