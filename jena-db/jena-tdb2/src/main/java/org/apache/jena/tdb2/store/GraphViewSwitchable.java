@@ -20,10 +20,15 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Map ;
 
+import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.graph.impl.TransactionHandlerBase;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
@@ -47,18 +52,54 @@ public class GraphViewSwitchable extends GraphView {
     { return new GraphViewSwitchable(dsg, Quad.unionGraph) ; }
     
     private final DatasetGraphSwitchable dsgx;
+    private final TransactionHandlerDSG transactionHandler;
     protected DatasetGraphSwitchable getx() { return dsgx; }
     
     protected GraphViewSwitchable(DatasetGraphSwitchable dsg, Node gn) {
         super(dsg, gn) ;
         this.dsgx = dsg;
+        this.transactionHandler = new TransactionHandlerDSG(dsg); 
     }
 
-//    @Override
-//    public TransactionHandler getTransactionHandler() {
-//        // XXX Awiting for promote to be enabled.
-//        return super.getTransactionHandler();
-//    }
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return transactionHandler;
+    }
+    
+    // Remove TDB2 TransactionHandlerTDB
+    // To GraphView?
+    static class TransactionHandlerDSG extends TransactionHandlerBase implements TransactionHandler {
+        private final DatasetGraph dsg;
+
+        public TransactionHandlerDSG(DatasetGraph dsg) {
+            this.dsg = dsg;
+        }
+
+        @Override
+        public void abort() {
+            dsg.abort();
+            dsg.end();
+        }
+
+        @Override
+        public void begin() {
+            if ( TransactionCoordinator.promotion )
+                dsg.begin(ReadWrite.READ);
+            else
+                dsg.begin(ReadWrite.WRITE);
+        }
+
+        @Override
+        public void commit() {
+            dsg.commit();
+            dsg.end();
+        }
+
+        @Override
+        public boolean transactionsSupported() {
+            return dsg.supportsTransactions();
+        }
+    }
     
     @Override
     protected PrefixMapping createPrefixMapping() {
@@ -66,7 +107,7 @@ public class GraphViewSwitchable extends GraphView {
         if ( gn == Quad.defaultGraphNodeGenerated )
             gn = null;
         if ( Quad.isUnionGraph(gn) ) {
-            // Read-only wrapper would be better that a copy.
+            // Read-only wrapper would be better than a copy.
             PrefixMapping pmap = new PrefixMappingImpl();
             pmap.setNsPrefixes(prefixMapping(null));
             return pmap; 
@@ -135,5 +176,4 @@ public class GraphViewSwitchable extends GraphView {
             }
         };
     }
-    
 }

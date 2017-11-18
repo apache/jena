@@ -27,6 +27,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.system.Txn;
 
 public class DatasetGraphWrapper implements DatasetGraph, Sync 
 {
@@ -174,7 +175,10 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     { getW().close() ; }
     
     @Override
-    public String toString() { return getR().toString() ; }
+    public String toString() {
+        DatasetGraph dsg = getR();
+        return Txn.calculateRead(dsg, ()->dsg.toString() );
+    }
 
     @Override
     public void sync() {
