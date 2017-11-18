@@ -38,7 +38,6 @@ import org.apache.jena.riot.system.stream.LocatorFile;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.vocabulary.XSD;
 import org.junit.Test;
 
 public class TestRDFParser {
