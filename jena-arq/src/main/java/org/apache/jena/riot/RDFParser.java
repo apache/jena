@@ -227,6 +227,25 @@ public class RDFParser {
         return true;
     }
     
+    /**
+     * Parse the source, sending the results to a {@link Graph}. The source must be for
+     * triples; any quads are discarded. 
+     */
+    public void parse(Graph graph) {
+        parse(StreamRDFLib.graph(graph));
+    }
+    
+
+    /**
+     * Parse the source, sending the results to a {@link DatasetGraph}.
+     */
+    public void parse(DatasetGraph dataset) {
+        parse(StreamRDFLib.dataset(dataset));
+    }
+    
+    /** 
+     * Parse the source, sending the results to a {@link StreamRDF}.
+     */
     public void parse(StreamRDF destination) {
         if ( !canUse )
             throw new RiotException("Parser has been used once and can not be used again");

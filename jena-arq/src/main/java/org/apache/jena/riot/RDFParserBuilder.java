@@ -499,26 +499,26 @@ public class RDFParserBuilder {
     }
 
     /**
-     * Parse the source, sending the results to a {@link Graph}. The source must be for
-     * triples; any quads are discarded. 
-     * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends triples and prefixes to the {@code Graph}.
+     * Parse the source, sending the results to a {@link Graph}.
+     * The source must be for triples; any quads are discarded. 
+     * Short form for {@code build().parse(graph)}
+     * which sends triples and prefixes to the {@code Graph}.
      * 
      * @param graph
      */
     public void parse(Graph graph) {
-        parse(StreamRDFLib.graph(graph));
+        build().parse(graph);
     }
 
     /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
-     * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends triples and prefixes to the {@code DatasetGraph}.
+     * Short form for {@code build().parse(dataset)}
+     * which sends triples and prefixes to the {@code DatasetGraph}.
      * 
      * @param dataset
      */
     public void parse(DatasetGraph dataset) {
-        parse(StreamRDFLib.dataset(dataset));
+        build().parse(dataset);
     }
 
     /** Build an {@link RDFParser}. The parser takes it's configuration from this builder and can not then be changed.
