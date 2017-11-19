@@ -12,8 +12,6 @@ import org.apache.jena.ext.com.google.common.collect.ImmutableSet;
 
 public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
 
-    static Set<Characteristics> CHARACTERISTICS = ImmutableSet.of(IDENTITY_FINISH);
-
     @Override
     default Function<A, A> finisher() {
         return Function.identity();
@@ -21,17 +19,23 @@ public interface IdentityFinishCollector<T, A> extends Collector<T, A, A> {
 
     @Override
     default Set<Characteristics> characteristics() {
-        return CHARACTERISTICS;
+        return ImmutableSet.of(IDENTITY_FINISH);
     }
 
     public interface UnorderedIdentityFinishCollector<T, A> extends IdentityFinishCollector<T, A> {
 
-        static Set<Characteristics> CHARACTERISTICS = ImmutableSet.of(UNORDERED, IDENTITY_FINISH);
+        @Override
+        default Set<Characteristics> characteristics() {
+            return ImmutableSet.of(UNORDERED, IDENTITY_FINISH);
+        }
     }
 
     public interface ConcurrentUnorderedIdentityFinishCollector<T, A> extends UnorderedIdentityFinishCollector<T, A> {
 
-        static Set<Characteristics> CHARACTERISTICS = ImmutableSet.of(UNORDERED, IDENTITY_FINISH);
+        @Override
+        default Set<Characteristics> characteristics() {
+            return ImmutableSet.of(CONCURRENT, UNORDERED, IDENTITY_FINISH);
+        }
 
     }
 }
