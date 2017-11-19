@@ -45,6 +45,8 @@ public class EntityDefinition {
     private String                           langField ;
     private String                           uidField ;
 
+    private boolean                          cacheQueries;
+
     /**
      * @param entityField
      *            The entity being indexed (e.g. it's URI).
@@ -188,6 +190,14 @@ public class EntityDefinition {
         if ( collection.size() != 1 )
             return null ;
         return collection.iterator().next() ;
+    }
+
+    public boolean areQueriesCached() {
+        return cacheQueries;
+    }
+    
+    public void setCacheQueries(boolean cacheQueries) {
+        this.cacheQueries = cacheQueries;
     }
     
     @Override

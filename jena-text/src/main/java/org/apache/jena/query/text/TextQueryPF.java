@@ -252,24 +252,34 @@ public class TextQueryPF extends PropertyFunctionBase {
             if ( log.isDebugEnabled())
                 log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
         }
+
+        ListMultimap<String,TextHit> results;
         
-        // Cache-key does not matter if lang or graphURI are null
-        String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
-        @SuppressWarnings("unchecked")
-        Cache<String,ListMultimap<String,TextHit>> queryCache = 
-            (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
-        if (queryCache == null) {
-            /* doesn't yet exist, need to create it */
-            queryCache = CacheFactory.createCache(CACHE_SIZE);
-            execCxt.getContext().put(cacheSymbol, queryCache);
+        if (textIndex.getDocDef().areQueriesCached()) {
+            // Cache-key does not matter if lang or graphURI are null
+            String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
+            @SuppressWarnings("unchecked")
+            Cache<String,ListMultimap<String,TextHit>> queryCache = 
+                (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
+            if (queryCache == null) {
+                /* doesn't yet exist, need to create it */
+                queryCache = CacheFactory.createCache(CACHE_SIZE);
+                execCxt.getContext().put(cacheSymbol, queryCache);
+            }
+
+            if ( log.isDebugEnabled())
+                log.debug("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+
+            results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
+        } else {
+            if ( log.isDebugEnabled())
+                log.debug("Executing w/o cache Text query: {}", queryString) ;
+            results = performQuery(property, queryString, graphURI, lang, limit);
         }
 
-        ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
-        // No cache.
-        //ListMultimap<String,TextHit> results = performQuery(property, queryString, graphURI, lang, limit);
         return results;
     }
-    
+
     private String chooseGraphURI(ExecutionContext execCxt) {
         // use the graph information in the text index if possible
         String graphURI = null;

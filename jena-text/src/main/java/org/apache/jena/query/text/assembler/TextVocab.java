@@ -102,5 +102,8 @@ public class TextVocab
     public static final Property pDefAnalyzer       = Vocab.property(NS, "defineAnalyzer");
     public static final Property pAddLang           = Vocab.property(NS, "addLang");
     public static final Property pUseAnalyzer       = Vocab.property(NS, "useAnalyzer");
+    
+    // Query Cache
+    public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");
 }
 

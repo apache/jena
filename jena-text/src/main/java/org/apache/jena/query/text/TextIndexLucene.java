@@ -216,6 +216,8 @@ public class TextIndexLucene implements TextIndex {
         Document doc = doc(entity);
         Term term = new Term(docDef.getEntityField(), entity.getId());
         indexWriter.updateDocument(term, doc);
+        if ( log.isDebugEnabled() )
+            log.debug("updated: "+doc) ;
     }
 
     @Override
@@ -233,6 +235,8 @@ public class TextIndexLucene implements TextIndex {
     protected void addDocument(Entity entity) throws IOException {
         Document doc = doc(entity) ;
         indexWriter.addDocument(doc) ;
+        if ( log.isDebugEnabled() )
+            log.debug("added: "+doc) ;
     }
 
     @Override
@@ -426,6 +430,8 @@ public class TextIndexLucene implements TextIndex {
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
+            if ( log.isDebugEnabled() )
+                log.debug("query$ found: "+doc) ;
             String[] values = doc.getValues(docDef.getEntityField()) ;
 
             Node literal = null;
