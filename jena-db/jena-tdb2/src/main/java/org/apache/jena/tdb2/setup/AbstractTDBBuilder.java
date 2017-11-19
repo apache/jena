@@ -168,12 +168,12 @@ public abstract class AbstractTDBBuilder {
             error(log(), "Wrong number of quad table indexes: "+String.join(",", indexes));
         log().debug("Quad table: "+primary+" :: "+String.join(",", indexes));
 
-        TupleIndex tripleIndexes[] = makeTupleIndexes(primary, indexes);
+        TupleIndex quadIndexes[] = makeTupleIndexes(primary, indexes);
 
-        if ( tripleIndexes.length != indexes.length )
-            error(log(), "Wrong number of triple table tuples indexes: "+tripleIndexes.length);
-        QuadTable tripleTable = new QuadTable(tripleIndexes, nodeTable);
-        return tripleTable;
+        if ( quadIndexes.length != indexes.length )
+            error(log(), "Wrong number of quad table tuples indexes: "+quadIndexes.length);
+        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable);
+        return quadTable;
     }
 
     public DatasetPrefixesTDB buildPrefixTable(NodeTable prefixNodes) {
