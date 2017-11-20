@@ -29,9 +29,11 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.iterator.SingletonIterator ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
+import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.atlas.lib.tuple.TupleMap ;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
+import org.apache.jena.dboe.base.record.RecordMapper;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.lib.TupleLib;
@@ -41,9 +43,10 @@ import org.apache.jena.tdb2.store.NodeIdFactory;
 public class TupleIndexRecord extends TupleIndexBase
 {
     private static final boolean Check = false ;
-    private RangeIndex index ; 
-    private RecordFactory factory ;
-    
+    private final RangeIndex index ; 
+    private final RecordFactory factory ;
+    private final RecordMapper<Tuple<NodeId>> recordMapper;
+
     public TupleIndexRecord(int N,  TupleMap tupleMapping, String name, RecordFactory factory, RangeIndex index)
     {
         super(N, tupleMapping, name) ;
@@ -52,6 +55,36 @@ public class TupleIndexRecord extends TupleIndexBase
         
         if ( factory.keyLength() != N*SizeOfNodeId)
             throw new TDBException(format("Mismatch: TupleIndex of length %d is not comparative with a factory for key length %d", N, factory.keyLength())) ;
+        
+        // Calculate once.
+        final int keyLen = factory.keyLength();
+        final int numNodeIds = factory.keyLength() / NodeId.SIZE;
+        recordMapper = (bb, entryIdx, key, recFactory) -> {
+            // Version one. (Skipped) : index-order Tuple<NodeId>, then remap.
+            // Version two.
+            //   Straight to right order.
+            // Version three
+            //   Straight to right order. Delay creation.
+            
+            int bbStart = entryIdx*recFactory.recordLength();
+            // Extract the bytes, index order for the key test.. 
+            if ( key != null ) {
+                bb.position(bbStart);
+                bb.get(key, 0, keyLen);
+            }
+            
+            // Now directly create NodeIds, no Record.
+            NodeId[] nodeIds = new NodeId[numNodeIds];
+            for ( int i = 0 ; i < numNodeIds ; i++ ) {
+                int j = i;
+                if ( tupleMap != null )
+                    j = tupleMap.unmapIdx(i);
+                // Get data. It is faster to get from the ByteBuffer than from the key byte[]. 
+                NodeId id = NodeIdFactory.get(bb, bbStart+j*NodeId.SIZE);
+                nodeIds[i] = id;
+            }
+            return TupleFactory.create(nodeIds);
+        };
     }
     
     /** Insert a tuple */
@@ -151,6 +184,35 @@ public class TupleIndexRecord extends TupleIndexBase
                 return new NullIterator<>() ;
         }
         
+        // ---- Retrieval.
+        
+        if ( true ) {
+            Iterator<Tuple<NodeId>> tuples;
+            if ( leadingIdx < 0 ) {
+                if ( ! fullScanAllowed )
+                    return null ;
+                // Full scan necessary
+                tuples = index.iterator(null, null, recordMapper);
+            } else {
+                // Adjust the maxRec.
+                NodeId X = pattern.get(leadingIdx) ;
+                // Set the max Record to the leading NodeIds, +1.
+                // Example, SP? inclusive to S(P+1)? exclusive where ? is zero. 
+                NodeIdFactory.setNext(X, maxRec.getKey(), leadingIdx*SizeOfNodeId) ;
+                tuples = index.iterator(minRec, maxRec, recordMapper) ;
+            }
+            if ( leadingIdx < numSlots-1 ) {
+                if ( ! partialScanAllowed )
+                    return null ;
+                // Didn't match all defined slots in request.  
+                // Partial or full scan needed.
+                //pattern.unmap(colMap) ;
+                tuples = scan(tuples, patternNaturalOrder) ;
+            }
+            
+            return tuples ;
+        }
+        
         Iterator<Record> iter = null ;
         
         if ( leadingIdx < 0 ) {
@@ -185,6 +247,10 @@ public class TupleIndexRecord extends TupleIndexBase
     @Override
     public Iterator<Tuple<NodeId>> all()
     {
+        if ( true ) {
+            return index.iterator(null, null, recordMapper);
+        }
+        
         Iterator<Record> iter = index.iterator() ;
         return Iter.map(iter, item -> TupleLib.tuple(item, tupleMap)) ;
     }

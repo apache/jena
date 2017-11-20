@@ -133,6 +133,10 @@ final public class RecordBuffer extends BufferBase {
         return new RecordBufferIterator(this, min, max) ;
     }
 
+    public <X> Iterator<X> iterator(Record min, Record max, RecordMapper<X> mapper) {
+        return new RecordBufferIteratorMapper<>(this, min, max, factory.keyLength(), mapper) ;
+    }
+
     public Record findGet(Record k) {
         int x = find(k) ;
         if ( x >= 0 )
