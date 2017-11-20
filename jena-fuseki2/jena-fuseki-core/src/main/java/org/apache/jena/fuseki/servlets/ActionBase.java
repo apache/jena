@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryCancelledException ;
@@ -97,6 +98,12 @@ public abstract class ActionBase extends ServletBase
                     ServletOps.responseSendError(response, ex.getRC(), ex.getMessage()) ;
                 else
                     ServletOps.responseSendError(response, ex.getRC()) ;
+            } catch (HttpException ex) {
+                // Some code is passing up its own HttpException.
+                if ( ex.getMessage() == null )
+                    ServletOps.responseSendError(response, ex.getResponseCode());
+                else
+                    ServletOps.responseSendError(response, ex.getResponseCode(), ex.getMessage());
             } catch (RuntimeIOException ex) {
                 log.warn(format("[%d] Runtime IO Exception (client left?) RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
