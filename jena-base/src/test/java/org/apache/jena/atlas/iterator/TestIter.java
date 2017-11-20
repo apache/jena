@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue ;
 
 import java.util.* ;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 import org.junit.Test ;
 
@@ -320,6 +321,48 @@ public class TestIter
         List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
         assertEquals(-1, Iter.lastIndex(data, filter)) ;
     }
+    
+    
+    private static Iterator<?> iterator(int n) { 
+        return IntStream.range(1, n+1).iterator();
+    }
+
+    @Test public void iteratorStep_1() {
+        Iterator<?> iter = iterator(0); 
+        int x = Iter.step(iter, 0);
+        assertEquals(0,x);
+    }
+    
+    @Test public void iteratorStep_2() {
+        Iterator<?> iter = iterator(0); 
+        int x = Iter.step(iter, 1);
+        assertEquals(0,x);
+    }
+
+    @Test public void iteratorStep_3() {
+        Iterator<?> iter = iterator(5); 
+        int x = Iter.step(iter, 1);
+        assertEquals(1,x);
+    }
+
+    @Test public void iteratorStep_4() {
+        Iterator<?> iter = iterator(5); 
+        int x = Iter.step(iter, 4);
+        assertEquals(4,x);
+    }
+    
+    @Test public void iteratorStep_5() {
+        Iterator<?> iter = iterator(5); 
+        int x = Iter.step(iter, 5);
+        assertEquals(5,x);
+    }
+    
+    @Test public void iteratorStep_6() {
+        Iterator<?> iter = iterator(5); 
+        int x = Iter.step(iter, 6);
+        assertEquals(5,x);
+    }
+
     
     @Test
     public void take_01()

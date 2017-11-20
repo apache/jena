@@ -351,6 +351,22 @@ public class Iter<T> implements Iterator<T> {
         return filter(iter, Objects::nonNull) ;
     }
 
+    /** Step forward up to {@code steps} places.
+     * <br/>Return number of steps taken.
+     * 
+     * @apiNote
+     * The iterator is moved at most {@code steps} places with no overshoot.
+     * The iterator can be used afterwards.
+     */ 
+    public static int step(Iterator<?> iter, int steps) {
+        for ( int i = 0 ; i < steps; i++) {
+            if ( ! iter.hasNext() ) 
+                return i;
+            iter.next();
+        }
+        return steps;
+    }
+
     /** Take the first N elements of an iterator - stop early if too few */
     public static <T> List<T> take(Iterator<T> iter, int N) {
         iter = new IteratorN<>(iter, N) ;
