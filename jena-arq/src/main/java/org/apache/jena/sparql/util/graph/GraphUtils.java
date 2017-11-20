@@ -66,6 +66,24 @@ public class GraphUtils {
         }
         return values ;
     }
+    
+    /** Get a list of the URIs (as strings) and strings
+     *  @see #getAsStringValue
+     */
+    public static List<String> multiValueAsString(Resource r, Property p) {
+        List<RDFNode> nodes = multiValue(r, p) ;
+        List<String> values = new ArrayList<>() ;
+
+        for ( RDFNode n : nodes ) {
+            if ( n.isLiteral() ) {
+                values.add(((Literal)n).getString()) ;
+            }
+            if ( n.isURIResource() ) {
+                values.add(((Resource)n).getURI());
+            }
+        }
+        return values ;
+    }
 
     public static List<RDFNode> multiValue(Resource r, Property p) {
         List<RDFNode> values = new ArrayList<>() ;
