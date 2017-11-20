@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.core.assembler ;
 
+import static org.apache.jena.assembler.JA.data;
+import static org.apache.jena.riot.RDFDataMgr.read;
+import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueAsString;
+
 import java.util.List ;
 
 import org.apache.jena.assembler.Assembler ;
@@ -32,6 +36,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.system.Txn;
 
 public class DatasetAssembler extends AssemblerBase implements Assembler {
     public static Resource getType() {
@@ -39,12 +44,13 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
     }
 
     @Override
-    public Object open(Assembler a, Resource root, Mode mode) {
+    public Dataset open(Assembler a, Resource root, Mode mode) {
         Dataset ds = createDataset(a, root, mode) ;
         return ds ;
     }
 
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
+        checkType(root, DatasetAssemblerVocab.tDataset);
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
         Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
@@ -58,27 +64,33 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
             // Assembler description did not define one.
             dftModel = GraphFactory.makeDefaultModel() ;
         Dataset ds = DatasetFactory.create(dftModel) ;
-        // -------- Named graphs
-        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
-        for ( RDFNode n : nodes ) {
-            if ( !(n instanceof Resource) )
-                throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
-            Resource r = (Resource)n;
-
-            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
-            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
-            if ( g == null ) {
-                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
-                if ( g != null ) {
-                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
-                } else {
-                    throw new DatasetAssemblerException(root, "no graph for: " + gName);
+        Txn.executeWrite(ds, () -> {
+            // Load data into the default graph or quads into the dataset.
+            multiValueAsString(root, data)
+                .forEach(dataURI -> read(ds, dataURI));
+    
+            // -------- Named graphs
+            List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
+            for ( RDFNode n : nodes ) {
+                if ( !(n instanceof Resource) )
+                    throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
+                Resource r = (Resource)n;
+    
+                String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
+                Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
+                if ( g == null ) {
+                    g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
+                    if ( g != null ) {
+                        Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
+                    } else {
+                        throw new DatasetAssemblerException(root, "no graph for: " + gName);
+                    }
                 }
+    
+                Model m = a.openModel(g);
+                ds.addNamedModel(gName, m);
             }
-
-            Model m = a.openModel(g);
-            ds.addNamedModel(gName, m);
-        }
+        });
         AssemblerUtils.setContext(root, ds.getContext()) ;
         return ds ;
     }
