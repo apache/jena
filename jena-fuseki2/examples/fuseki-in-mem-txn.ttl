@@ -8,7 +8,7 @@
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 
 <#serviceInMemory> rdf:type fuseki:Service;
-    rdfs:label                   "In-memory, trasnactioal dataset.";
+    rdfs:label                   "In-memory transactional dataset.";
     fuseki:name                  "ds";
     fuseki:serviceQuery          "query";
     fuseki:serviceQuery          "sparql";
@@ -19,6 +19,6 @@
     fuseki:dataset <#dataset> ;
 .
 
-<#dataset> rdf:type ja:DatasetTxnMem;
+<#dataset> rdf:type ja:MemoryDataset;
    ja:data <file:data.trig>;
 .
