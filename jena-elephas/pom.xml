@@ -22,9 +22,9 @@ limitations under the License.
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-project</artifactId>
+    <artifactId>jena</artifactId>
     <version>3.6.0-SNAPSHOT</version>
-    <relativePath>../jena-project</relativePath>
+    <relativePath>..</relativePath>
   </parent>
 
   <name>Apache Jena - Elephas</name>

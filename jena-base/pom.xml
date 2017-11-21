@@ -21,9 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-project</artifactId>
+    <artifactId>jena</artifactId>
     <version>3.6.0-SNAPSHOT</version>
-    <relativePath>../jena-project</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>jena-base</artifactId>
   <version>3.6.0-SNAPSHOT</version>
@@ -153,9 +153,6 @@
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
-      
     </plugins>
   </build>
-  
-  
 </project>

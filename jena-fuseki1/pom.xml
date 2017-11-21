@@ -27,22 +27,10 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-project</artifactId>
+    <artifactId>jena</artifactId>
     <version>3.6.0-SNAPSHOT</version>
-    <relativePath>../jena-project</relativePath>
+    <relativePath>..</relativePath>
   </parent> 
-
-  <!-- Need if the parent is a snapshot -->
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <organization>
     <name>Apache Jena</name>
