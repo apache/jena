@@ -22,7 +22,6 @@ import static java.nio.file.Files.createTempFile;
 import static org.apache.jena.assembler.JA.MemoryModel ;
 import static org.apache.jena.assembler.JA.data ;
 import static org.apache.jena.assembler.Mode.DEFAULT;
-import static org.apache.jena.query.DatasetFactory.createTxnMem;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
 import static org.apache.jena.riot.Lang.NQUADS;
 import static org.apache.jena.riot.RDFDataMgr.write;
@@ -45,7 +44,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.IsoMatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -113,7 +115,7 @@ public class TestInMemDatasetAssembler extends Assert {
 	}
 
 	@Test
-	public void directDataLinkToQuads() throws IOException {
+	public void directDataQuadsURI() throws IOException {
 		// first make a file of quads to load later
 		final Model model = createDefaultModel();
 		final Path quads = createTempFile("quadExample", ".nq");
@@ -122,7 +124,7 @@ public class TestInMemDatasetAssembler extends Assert {
 		simpleExample.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
 		simpleExample.addProperty(data, quadsURI);
 
-		final DatasetGraph dsg = createTxnMem().asDatasetGraph();
+		final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 		model.listStatements().mapWith(Statement::asTriple).mapWith(t -> new Quad(quadsURI.asNode(), t))
 				.forEachRemaining(dsg::add);
 		try (OutputStream out = new FileOutputStream(quads.toFile())) {
@@ -136,7 +138,29 @@ public class TestInMemDatasetAssembler extends Assert {
 		assertTrue(assembledNamedModel.contains(assembledNamedModel.createStatement(simpleExample, data, quadsURI)));
 	}
 
-	@Test(expected = CannotConstructException.class)
+    @Test
+    public void directDataQuadsString() throws IOException {
+        // first make a file of quads to load later
+        DatasetGraph dsgData = DatasetGraphFactory.createTxnMem();
+        dsgData.add(SSE.parseQuad("(_ :s1 :p1 :o1)"));
+        dsgData.add(SSE.parseQuad("(:gn :s2 :p2 :o2)"));
+        Path quads = createTempFile("quadExample2", ".nq");
+        String dataFileName = quads.toFile().toURI().toString();
+        try (OutputStream out = new FileOutputStream(quads.toFile())) {
+            write(out, dsgData, NQUADS);
+        }
+        
+        Model assemblerModel = createDefaultModel();
+        Resource simpleExample2 = assemblerModel.createResource("test:simpleExample2");
+        simpleExample2.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem) ;
+        simpleExample2.addProperty(data, dataFileName);
+        
+        final Dataset dataset = assemble(simpleExample2);
+        
+        assertTrue(IsoMatcher.isomorphic(dsgData, dataset.asDatasetGraph()));
+    }
+
+    @Test(expected = CannotConstructException.class)
 	public void wrongKindOfAssemblerDefinition() {
 		final Model model = createDefaultModel();
 		final Resource badExample = model.createResource("test:badExample");
