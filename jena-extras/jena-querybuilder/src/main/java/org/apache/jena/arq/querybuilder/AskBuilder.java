@@ -18,6 +18,7 @@
 package org.apache.jena.arq.querybuilder;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
@@ -118,6 +119,40 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 	}
 
 	@Override
+	public AskBuilder addWhereValueVar(Object var) {
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var);
+		return this;
+	}
+	
+	@Override
+	public AskBuilder addWhereValueVar(Object var, Object... values)
+	{
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
+		return this;
+	}
+	
+	
+	@Override
+	public <K extends Collection<?>> AskBuilder addWhereValueVars(Map<?,K> dataTable)
+	{
+		getWhereHandler().addValueVars(getPrologHandler().getPrefixes(), dataTable);
+		return this;
+	}
+	
+	@Override
+	public AskBuilder addWhereValueRow(Object... values)
+	{
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+
+	@Override
+	public AskBuilder addWhereValueRow(Collection<?> values) {
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+	
+	@Override
 	public AskBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);
 		return this;
@@ -178,7 +213,27 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
-
+	@Override
+	public AskBuilder addGraph(Object graph, FrontsTriple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+		return this;
+	}
+	@Override
+	public AskBuilder addGraph(Object graph, Object subject, Object predicate, Object object)
+	{
+		getWhereHandler().addGraph(makeNode(graph), makeTriplePath( subject, predicate, object ));
+		return this;
+	}
+	@Override
+	public AskBuilder addGraph(Object graph, Triple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+		return this;
+	}
+	@Override
+	public AskBuilder addGraph(Object graph, TriplePath triplePath) {
+		getWhereHandler().addGraph(makeNode(graph), triplePath );
+		return this;
+	}
 	@Override
 	public AskBuilder addBind(Expr expression, Object var) {
 		getWhereHandler().addBind(expression, makeVar(var));

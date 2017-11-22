@@ -26,12 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingHashMap;
+import org.apache.jena.sparql.syntax.ElementData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -396,5 +399,58 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 				fail( "Wrong data in table");
 			}
 		}
+	}
+	
+	@Test
+	public void testAsElement() {
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+		final Node one = NodeFactory.createURI( "one");
+		final Node two = NodeFactory.createURI( "two");
+		final Node three = NodeFactory.createLiteral( "three");
+		final Node four = NodeFactory.createLiteral( "four");
+		
+		Map<Object,List<?>> map = new HashMap();
+		
+		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+		
+		handler.addValueVar( v, Arrays.asList( one, two ));
+		handler.addValueVar( x, Arrays.asList( three, four ));
+			
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		handler.asElement().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+
+	@Test
+	public void testisEmpty() {
+		assertTrue( handler.isEmpty());
+	}
+	
+	@Test
+	public void testisEmpty_NoNodes() {
+		handler.addValueVar( Var.alloc("v"), Collections.emptyList());
+		assertFalse( handler.isEmpty());
+	}
+	
+	@Test
+	public void testisEmpty_NodeValues() {
+		handler.addValueVar( Var.alloc("v"), Arrays.asList( Node.ANY));
+		assertFalse( handler.isEmpty());
 	}
 }

@@ -18,9 +18,15 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
+import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -30,11 +36,15 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementBind;
+import org.apache.jena.sparql.syntax.ElementData;
+import org.apache.jena.sparql.syntax.ElementMinus;
+import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementOptional;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
@@ -465,11 +475,240 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addMinus( sb );
 		
-		String str = builder.buildString();
+		Query query = builder.build();
 		
-		assertContainsRegex(MINUS + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
-				str);	
-
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementMinus minus = new ElementMinus(epb);
+		epb.addTriplePath( new TriplePath( new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three"))));
+		WhereValidator visitor = new WhereValidator( minus );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
+
+	@ContractTest
+	public void testAddGraph_frontsTriple()
+	{
+		final Node s = NodeFactory.createURI( "s");
+		final Node p = NodeFactory.createURI( "p");
+		final Node o = NodeFactory.createURI( "o");
+
+		FrontsTriple ft = new FrontsTriple(){
+
+			@Override
+			public Triple asTriple() {
+				return new Triple( s, p, o );
+			}};
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addGraph( "<g>", ft );
+		Query query = builder.build();
+
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementNamedGraph eng = new ElementNamedGraph( NodeFactory.createURI("g"), epb );
+		epb.addTriplePath( new TriplePath( new Triple( s, p, o)));
+		
+		WhereValidator visitor = new WhereValidator( eng );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+
+	public void addGraph_GSPO() {
+		final Node g = NodeFactory.createURI( "g");
+		final Node s = NodeFactory.createURI( "s");
+		final Node p = NodeFactory.createURI( "p");
+		final Node o = NodeFactory.createURI( "o");
+
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addGraph( "<g>", s, p, o );
+		Query query = builder.build();
+
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementNamedGraph eng = new ElementNamedGraph( NodeFactory.createURI("g"), epb );
+		epb.addTriplePath( new TriplePath( new Triple( s, p, o)));
+		
+		WhereValidator visitor = new WhereValidator( eng );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+
+	@ContractTest
+	public void testAddGraph_triple()
+	{
+		final Node s = NodeFactory.createURI( "s");
+		final Node p = NodeFactory.createURI( "p");
+		final Node o = NodeFactory.createURI( "o");
+
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addGraph( "<g>", new Triple( s, p, o ) );
+		Query query = builder.build();
+
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementNamedGraph eng = new ElementNamedGraph( NodeFactory.createURI("g"), epb );
+		epb.addTriplePath( new TriplePath( new Triple( s, p, o)));
+		
+		WhereValidator visitor = new WhereValidator( eng );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+	
+	@ContractTest
+	public void testAddGraph_triplePath()
+	{
+		final Node s = NodeFactory.createURI( "s");
+		final Node p = NodeFactory.createURI( "p");
+		final Node o = NodeFactory.createURI( "o");
+		TriplePath tp = new TriplePath( new Triple( s, p, o));
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addGraph( "<g>", tp );
+		Query query = builder.build();
+
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementNamedGraph eng = new ElementNamedGraph( NodeFactory.createURI("g"), epb );
+		epb.addTriplePath( new TriplePath( new Triple( s, p, o)));
+		
+		WhereValidator visitor = new WhereValidator( eng );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+
+	@ContractTest
+	public void testAddWhereValueVar_var()
+	{
+		final Var v = Var.alloc("v");
+				
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVar( "?v" );
+				
+		Query query = builder.build();
+
+		ElementData edat = new ElementData();
+		edat.add( v );
+		
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}		
+
+	@ContractTest
+	public void testAddWhereValueVar_var_values()
+	{
+		final Var v = Var.alloc("v");
+				
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVar( "?v", "<one>" );
+				
+		Query query = builder.build();
+
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		ElementData edat = new ElementData();
+		edat.add( v );
+		edat.add( binding );
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+
+	@ContractTest
+	public void testAddWhereValueVars()
+	{
+		final Var v = Var.alloc("v");
+		Map<Object,List<?>> map = new HashMap();
+		
+		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVars( map );
+				
+		Query query = builder.build();
+
+		Var x = Var.alloc("x");
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( x );
+		edat.add( v );		
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+
+	@ContractTest
+	public void testAddWhereValueRow_array()
+	{
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( v );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( x );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueRow( "<one>", "three" );
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueRow( "<two>", "four" );
+		
+		Query query = builder.build();
+
+		
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+	
+	@ContractTest
+	public void testAddWhereValueRow_collection()
+	{
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( v );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( x );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueRow( Arrays.asList("<one>", "three") );
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueRow( Arrays.asList("<two>", "four") );
+		
+		Query query = builder.build();
+
+		
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
 
 }

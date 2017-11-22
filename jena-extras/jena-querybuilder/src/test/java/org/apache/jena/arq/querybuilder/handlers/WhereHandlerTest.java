@@ -17,14 +17,19 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
+import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -36,10 +41,13 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
+import org.apache.jena.sparql.syntax.ElementData;
+import org.apache.jena.sparql.syntax.ElementMinus;
 import org.apache.jena.sparql.syntax.ElementOptional;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
@@ -591,9 +599,194 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
 		handler.addMinus(sb);
+		handler.build();	
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementMinus minus = new ElementMinus(epb);
+		epb.addTriplePath( new TriplePath( new Triple( NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createLiteral("three"))));
+		WhereValidator visitor = new WhereValidator( minus );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	
+	@Test
+	public void testAddValueVar_pfx_obj() {
+		handler.addValueVar( query.getPrefixMapping(), "?v" );
 		handler.build();
 		
-		assertContainsRegex(MINUS + OPEN_CURLY + uri("one") + SPACE + uri("two") + SPACE + quote("three") + CLOSE_CURLY,
-				query.toString());		
+		Var v = Var.alloc("v");
+		ElementData edat = new ElementData();
+		edat.add( v );
+		
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 	}
+	
+	@Test
+	public void testAddValueVar_pfx_obj_array()
+	{
+		
+		Node two = NodeFactory.createURI( "two" );
+		handler.addValueVar( query.getPrefixMapping(), "?v", "<one>", two );
+		handler.build();
+		
+		Var v = Var.alloc("v");
+		ElementData edat = new ElementData();
+		edat.add( v );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, two);
+		edat.add( binding );
+		
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	@Test
+	public void testAddValueVars() {
+		final Var v = Var.alloc("v");
+		Map<Object,List<?>> map = new HashMap();
+		
+		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+		
+		handler.addValueVars( query.getPrefixMapping(), map );
+		handler.build();
+
+		Var x = Var.alloc("x");
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( x );
+		edat.add( v );		
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+
+	@Test
+	public void testAddValueRow_pfx_array()
+	{
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+
+		handler.addValueVar( query.getPrefixMapping(), v );
+		handler.addValueVar( query.getPrefixMapping(), x );
+		handler.addValueRow( query.getPrefixMapping(), "<one>", "three" );
+		handler.addValueRow( query.getPrefixMapping(), "<two>", "four" );	
+		handler.build();
+		
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	@Test
+	public void testAddValueRow_pfx_collection() {
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+
+		handler.addValueVar( query.getPrefixMapping(), v );
+		handler.addValueVar( query.getPrefixMapping(), x );
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));	
+		handler.build();
+		
+		ElementData edat = new ElementData();
+		// FIXME should not be order dependent
+		edat.add( v );
+		edat.add( x );
+	
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	@Test
+	public void testGetValuesVars() {
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+
+		handler.addValueVar( query.getPrefixMapping(), v );
+		handler.addValueVar( query.getPrefixMapping(), "?x" );
+		List<Var> lst = handler.getValuesVars();
+		assertEquals( 2, lst.size() );
+		assertTrue( lst.contains( v ));
+		assertTrue( lst.contains( x ));
+	}
+
+	@Test
+	public void testGetValuesMap() {
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+	
+		handler.addValueVar( query.getPrefixMapping(), v );
+		handler.addValueVar( query.getPrefixMapping(), x );
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));
+		
+		Map<Var,List<Node>> map = handler.getValuesMap();
+		assertEquals( 2, map.keySet().size());
+		assertTrue( map.keySet().contains( v ));
+		assertTrue( map.keySet().contains( x ));
+		List<Node> lst = map.get(v);
+		assertEquals(2, lst.size() );
+		assertTrue( lst.contains( NodeFactory.createURI( "one")));
+		assertTrue( lst.contains( NodeFactory.createURI( "two")));
+		lst = map.get(x);
+		assertEquals(2, lst.size() );
+		assertTrue( lst.contains( NodeFactory.createLiteral( "three")));
+		assertTrue( lst.contains( NodeFactory.createLiteral( "four")));
+	}
+
+	@Test
+	public void testClearValues()
+	{
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+	
+		handler.addValueVar( query.getPrefixMapping(), v );
+		handler.addValueVar( query.getPrefixMapping(), x );
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<one>", "three"));
+		handler.addValueRow( query.getPrefixMapping(), Arrays.asList("<two>", "four" ));
+		handler.clearValues();
+		Map<Var,List<Node>> map = handler.getValuesMap();
+		assertTrue( map.isEmpty());	
+	}
+
 }

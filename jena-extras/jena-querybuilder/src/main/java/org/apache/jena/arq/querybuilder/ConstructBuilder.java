@@ -18,6 +18,7 @@
 package org.apache.jena.arq.querybuilder;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
@@ -209,6 +210,40 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		return this;
 	}
 
+
+	@Override
+	public ConstructBuilder addWhereValueVar(Object var) {
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var);
+		return this;
+	}
+	
+	@Override
+	public ConstructBuilder addWhereValueVar(Object var, Object... values)
+	{
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
+		return this;
+	}
+	
+	
+	@Override
+	public <K extends Collection<?>> ConstructBuilder addWhereValueVars(Map<?,K> dataTable)
+	{
+		getWhereHandler().addValueVars(getPrologHandler().getPrefixes(), dataTable);
+		return this;
+	}
+	
+	@Override
+	public ConstructBuilder addWhereValueRow(Object... values)
+	{
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addWhereValueRow(Collection<?> values) {
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
 	@Override
 	public ConstructBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);
@@ -267,6 +302,27 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	public ConstructBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, FrontsTriple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, Object subject, Object predicate, Object object)
+	{
+		getWhereHandler().addGraph(makeNode(graph), makeTriplePath( subject, predicate, object ));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, Triple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, TriplePath triplePath) {
+		getWhereHandler().addGraph(makeNode(graph), triplePath );
 		return this;
 	}
 
