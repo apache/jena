@@ -74,28 +74,28 @@ public class TestDatasetAssembler extends Assert {
 
     @Test
     public void directDataQuadsURI() throws IOException {
-    	// first make a file of quads to load later
-    	final Model model = createDefaultModel();
-    	final Path quads = createTempFile("quadExample", ".nq");
-    	final Resource quadsURI = model.createResource(quads.toFile().toURI().toString());
-    	final Resource simpleExample = model.createResource("test:simpleExample");
-    	simpleExample.addProperty(type, assemblerType());
-    	simpleExample.addProperty(data, quadsURI);
-    
-    	final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        Txn.executeWrite(dsg, () ->
-            model.listStatements().mapWith(Statement::asTriple)
-                .mapWith(t -> new Quad(quadsURI.asNode(), t)).forEachRemaining(dsg::add));
-    
-    	try (OutputStream out = new FileOutputStream(quads.toFile())) {
-    		write(out, dsg, NQUADS);
-    	}
-    
-    	final Dataset dataset = assemble(simpleExample);
-    	final Model assembledDefaultModel = dataset.getDefaultModel();
-    	final Model assembledNamedModel = dataset.getNamedModel(quadsURI.getURI());
-    	assertTrue(assembledDefaultModel.isEmpty());
-    	assertTrue(assembledNamedModel.contains(assembledNamedModel.createStatement(simpleExample, data, quadsURI)));
+        	// first make a file of quads to load later
+        	final Model model = createDefaultModel();
+        	final Path quads = createTempFile("quadExample", ".nq");
+        	final Resource quadsURI = model.createResource(quads.toFile().toURI().toString());
+        	final Resource simpleExample = model.createResource("test:simpleExample");
+        	simpleExample.addProperty(type, assemblerType());
+        	simpleExample.addProperty(data, quadsURI);
+        
+        	final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+            Txn.executeWrite(dsg, () ->
+                model.listStatements().mapWith(Statement::asTriple)
+                    .mapWith(t -> new Quad(quadsURI.asNode(), t)).forEachRemaining(dsg::add));
+        
+        	try (OutputStream out = new FileOutputStream(quads.toFile())) {
+        		write(out, dsg, NQUADS);
+        	}
+        
+        	final Dataset dataset = assemble(simpleExample);
+        	final Model assembledDefaultModel = dataset.getDefaultModel();
+        	final Model assembledNamedModel = dataset.getNamedModel(quadsURI.getURI());
+        	assertTrue(assembledDefaultModel.isEmpty());
+        	assertTrue(assembledNamedModel.contains(assembledNamedModel.createStatement(simpleExample, data, quadsURI)));
     }
 
     @Test

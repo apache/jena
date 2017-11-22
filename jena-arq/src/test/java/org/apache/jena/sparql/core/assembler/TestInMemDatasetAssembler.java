@@ -53,6 +53,15 @@ public class TestInMemDatasetAssembler extends TestDatasetAssembler {
     protected DatasetAssembler createAssembler() {
         return new InMemDatasetAssembler();
     }
+    
+    @Test
+    public void shouldAccept_tDataset_type() {
+        final Model model = createDefaultModel();
+        final Resource empty = model.createResource("test:empty");
+        empty.addProperty(type, DatasetAssemblerVocab.tDataset) ;
+        Dataset dataset = assemble(empty) ;
+        assertFalse(dataset.asDatasetGraph().find().hasNext()) ;
+    }
 
 	@Test
 	public void directDataLinkForDefaultAndNamedGraphs() throws IOException {
@@ -92,5 +101,4 @@ public class TestInMemDatasetAssembler extends TestDatasetAssembler {
 		assertEquals(namedGraphName.asNode(), graphNodes.next());
 		assertFalse(graphNodes.hasNext());
 	}
-
 }

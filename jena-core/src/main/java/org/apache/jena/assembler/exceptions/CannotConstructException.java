@@ -18,6 +18,9 @@
 
 package org.apache.jena.assembler.exceptions;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
+
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.rdf.model.Resource ;
 
@@ -28,23 +31,22 @@ import org.apache.jena.rdf.model.Resource ;
 */
 public class CannotConstructException extends AssemblerException
     {
-    protected final Resource type;
+    protected final Resource[] types;
     protected final Class<?> assemblerClass;
     
-    public CannotConstructException( Class<?> assemblerClass, Resource root, Resource type )
+    public CannotConstructException( Class<?> assemblerClass, Resource root, Resource... types )
         {
-        super( root, constructMessage( assemblerClass, root, type ) );
-        this.type = type; 
+        super( root, constructMessage( assemblerClass, root, types ) );
+        this.types = types; 
         this.assemblerClass = assemblerClass;
         }
 
-    private static String constructMessage( Class<?>assemblerClass, Resource root, Resource type )
+    private static String constructMessage( Class<?>assemblerClass, Resource root, Resource... types )
         {
         return 
             "the assembler " + getClassName( assemblerClass )
             + " cannot construct the object named " + nice( root )
-            + " because it is not of rdf:type " + nice( type ) 
-            ;
+            + " because it is not any rdf:type of " + stream(types).map(AssemblerException::nice).collect(joining(", or "));
         }
     
     private static final String rootPrefix = getPackagePrefix( Assembler.class.getName() );
@@ -68,9 +70,9 @@ public class CannotConstructException extends AssemblerException
         { return assemblerClass; }
 
     /**
-        Answer the (alleged most-specific) type of the object that could not be
+        Answer the types of the object that could not be
         constructed.
     */
-    public Resource getType()
-        { return type; }
+    public Resource[] getTypes()
+        { return types; }
     }

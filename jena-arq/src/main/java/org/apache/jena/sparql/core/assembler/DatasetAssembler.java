@@ -19,8 +19,8 @@
 package org.apache.jena.sparql.core.assembler ;
 
 import static org.apache.jena.assembler.JA.data;
-import static org.apache.jena.riot.RDFDataMgr.read;
-import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueAsString;
+import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
+import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 
 import java.util.List ;
 
@@ -30,9 +30,7 @@ import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
@@ -51,6 +49,10 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
 
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
         checkType(root, DatasetAssemblerVocab.tDataset);
+        // use TIM if quads are loaded or if all named Graphs are loaded via data property
+        final boolean allNamedGraphsLoadViaData = multiValueResource(root, pNamedGraph).stream().allMatch(g -> g.hasProperty(data));
+        if (root.hasProperty(data) || allNamedGraphsLoadViaData) return new InMemDatasetAssembler().open(a, root, mode);
+
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
         Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
@@ -63,12 +65,9 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
         else
             // Assembler description did not define one.
             dftModel = GraphFactory.makeDefaultModel() ;
-        Dataset ds = DatasetFactory.create(dftModel) ;
+        Dataset ds = DatasetFactory.create(dftModel);
+
         Txn.executeWrite(ds, () -> {
-            // Load data into the default graph or quads into the dataset.
-            multiValueAsString(root, data)
-                .forEach(dataURI -> read(ds, dataURI));
-    
             // -------- Named graphs
             List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
             for ( RDFNode n : nodes ) {
