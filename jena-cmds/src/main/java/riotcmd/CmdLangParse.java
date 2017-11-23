@@ -239,11 +239,16 @@ public abstract class CmdLangParse extends CmdGeneral
 
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
         if ( checking ) {
-            if ( modLangParse.stopOnBadTerm() )
-                errHandler = ErrorHandlerFactory.errorHandlerStd  ;
-            else
+            if ( modLangParse.stopOnBadTerm() ) {
+                if ( modLangParse.stopOnWarnings() ) {
+                    errHandler = ErrorHandlerFactory.errorHandlerStrict ;
+                } else {
+                    errHandler = ErrorHandlerFactory.errorHandlerStd ;
+                }
+            } else {
                 // Try to go on if possible.  This is the default behaviour.
                 errHandler = ErrorHandlerFactory.errorHandlerWarn ;
+            }
         }
         
         if ( modLangParse.skipOnBadTerm() ) {
