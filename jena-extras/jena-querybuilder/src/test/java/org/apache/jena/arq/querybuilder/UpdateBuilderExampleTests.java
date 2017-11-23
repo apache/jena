@@ -209,30 +209,30 @@ public class UpdateBuilderExampleTests {
 		Resource p27 = ResourceFactory.createResource("http://example/president27");
 		Resource p42 = ResourceFactory.createResource("http://example/president42");
 		m.setNsPrefix("foaf", FOAF.NS);
-		m.add(p25, FOAF.givenname, "Bill");
-		m.add(p25, FOAF.family_name, "McKinley");
-		m.add(p27, FOAF.givenname, "Bill");
-		m.add(p27, FOAF.family_name, "Taft");
-		m.add(p42, FOAF.givenname, "Bill");
-		m.add(p42, FOAF.family_name, "Clinton");
+		m.add(p25, FOAF.givenName, "Bill");
+		m.add(p25, FOAF.familyName, "McKinley");
+		m.add(p27, FOAF.givenName, "Bill");
+		m.add(p27, FOAF.familyName, "Taft");
+		m.add(p42, FOAF.givenName, "Bill");
+		m.add(p42, FOAF.familyName, "Clinton");
 
 		Node graphName = NodeFactory.createURI("http://example/addresses");
 		Dataset ds = DatasetFactory.create();
 		ds.addNamedModel(graphName.getURI(), m);
 
 		UpdateBuilder builder = new UpdateBuilder().addPrefix("foaf", FOAF.NS).with(graphName)
-				.addDelete("?person", FOAF.givenname, "Bill").addInsert("?person", FOAF.givenname, "William")
-				.addWhere("?person", FOAF.givenname, "Bill");
+				.addDelete("?person", FOAF.givenName, "Bill").addInsert("?person", FOAF.givenName, "William")
+				.addWhere("?person", FOAF.givenName, "Bill");
 
 		UpdateRequest req = builder.buildRequest();
 
 		UpdateAction.execute(req, ds);
 
 		Model m2 = ds.getNamedModel(graphName.getURI());
-		List<RDFNode> nodes = m2.listObjectsOfProperty(FOAF.givenname).toList();
+		List<RDFNode> nodes = m2.listObjectsOfProperty(FOAF.givenName).toList();
 		assertEquals(1, nodes.size());
 		assertEquals("William", nodes.get(0).asLiteral().toString());
-		List<Resource> subjects = m2.listSubjectsWithProperty(FOAF.givenname).toList();
+		List<Resource> subjects = m2.listSubjectsWithProperty(FOAF.givenName).toList();
 		assertEquals(3, subjects.size());
 	}
 
@@ -304,11 +304,11 @@ public class UpdateBuilderExampleTests {
 		Node graphName = NodeFactory.createURI("http://example/addresses");
 
 		m.add(will, RDF.type, FOAF.Person);
-		m.add(will, FOAF.givenname, "William");
+		m.add(will, FOAF.givenName, "William");
 		m.add(will, FOAF.mbox, willMail);
 
 		m.add(fred, RDF.type, FOAF.Person);
-		m.add(fred, FOAF.givenname, "Fred");
+		m.add(fred, FOAF.givenName, "Fred");
 		m.add(fred, FOAF.mbox, fredMail);
 
 		Dataset ds = DatasetFactory.create();
@@ -316,14 +316,14 @@ public class UpdateBuilderExampleTests {
 
 		UpdateBuilder builder = new UpdateBuilder().addPrefix("foaf", FOAF.NS).with(graphName)
 				.addDelete("?person", "?property", "?value").addWhere("?person", "?property", "?value")
-				.addWhere("?person", FOAF.givenname, "'Fred'");
+				.addWhere("?person", FOAF.givenName, "'Fred'");
 
 		UpdateAction.execute(builder.build(), ds);
 
 		Model m2 = ds.getNamedModel(graphName.getURI());
 
 		assertTrue(m2.contains(will, RDF.type, FOAF.Person));
-		assertTrue(m2.contains(will, FOAF.givenname, "William"));
+		assertTrue(m2.contains(will, FOAF.givenName, "William"));
 		assertTrue(m2.contains(will, FOAF.mbox, willMail));
 		assertEquals(3, m2.listStatements().toList().size());
 	}
@@ -556,21 +556,21 @@ public class UpdateBuilderExampleTests {
 		Resource fredMail = ResourceFactory.createResource("mailto:fred@example");
 
 		m.add(will, RDF.type, FOAF.Person);
-		m.add(will, FOAF.givenname, "William");
+		m.add(will, FOAF.givenName, "William");
 		m.add(will, FOAF.mbox, willMail);
 
 		m.add(fred, RDF.type, FOAF.Person);
-		m.add(fred, FOAF.givenname, "Fred");
+		m.add(fred, FOAF.givenName, "Fred");
 		m.add(fred, FOAF.mbox, fredMail);
 
-		UpdateBuilder builder = new UpdateBuilder().addWhere("?person", FOAF.givenname, "Fred").addWhere("?person",
+		UpdateBuilder builder = new UpdateBuilder().addWhere("?person", FOAF.givenName, "Fred").addWhere("?person",
 				"?property", "?value");
 
 		UpdateAction.execute(builder.buildDeleteWhere(), m);
 
 		assertEquals(3, m.listStatements().toList().size());
 		assertTrue(m.contains(will, RDF.type, FOAF.Person));
-		assertTrue(m.contains(will, FOAF.givenname, "William"));
+		assertTrue(m.contains(will, FOAF.givenName, "William"));
 		assertTrue(m.contains(will, FOAF.mbox, willMail));
 	}
 
@@ -592,9 +592,9 @@ public class UpdateBuilderExampleTests {
 
 		Model m1 = ModelFactory.createDefaultModel();
 		m1.add(will, RDF.type, FOAF.Person);
-		m1.add(will, FOAF.givenname, "William");
+		m1.add(will, FOAF.givenName, "William");
 		m1.add(fred, RDF.type, FOAF.Person);
-		m1.add(fred, FOAF.givenname, "Fred");
+		m1.add(fred, FOAF.givenName, "Fred");
 
 		Model m2 = ModelFactory.createDefaultModel();
 		m2.add(will, FOAF.mbox, willMail);
@@ -606,7 +606,7 @@ public class UpdateBuilderExampleTests {
 
 		UpdateBuilder builder = new UpdateBuilder()
 				.addGraph(graphName1,
-						new SelectBuilder().addWhere("?person", FOAF.givenname, "Fred").addWhere("?person", "?property",
+						new SelectBuilder().addWhere("?person", FOAF.givenName, "Fred").addWhere("?person", "?property",
 								"?value1"))
 				.addGraph(graphName2, new SelectBuilder().addWhere("?person", "?property2", "?value2"));
 
@@ -615,7 +615,7 @@ public class UpdateBuilderExampleTests {
 		m1 = ds.getNamedModel(graphName1.getURI());
 		assertEquals(2, m1.listStatements().toList().size());
 		assertTrue(m1.contains(will, RDF.type, FOAF.Person));
-		assertTrue(m1.contains(will, FOAF.givenname, "William"));
+		assertTrue(m1.contains(will, FOAF.givenName, "William"));
 
 		m2 = ds.getNamedModel(graphName2.getURI());
 		assertEquals(1, m2.listStatements().toList().size());

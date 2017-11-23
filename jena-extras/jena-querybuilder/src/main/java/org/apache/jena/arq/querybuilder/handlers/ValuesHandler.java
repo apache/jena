@@ -30,9 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingHashMap;
-import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementData;
 
 public class ValuesHandler implements Handler {

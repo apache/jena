@@ -17,11 +17,8 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
-import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementAssign;
 import org.apache.jena.sparql.syntax.ElementBind;
@@ -41,7 +38,6 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.sparql.syntax.ElementVisitor;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
-import org.apache.jena.sparql.util.NodeUtils;
 
 /**
  * Class to validate that an element exists in another element structure.

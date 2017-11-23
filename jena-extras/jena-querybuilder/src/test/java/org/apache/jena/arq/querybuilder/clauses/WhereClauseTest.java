@@ -18,13 +18,11 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.AskBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.FrontsTriple;
@@ -53,7 +51,6 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -517,7 +514,6 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	
 
 	public void addGraph_GSPO() {
-		final Node g = NodeFactory.createURI( "g");
 		final Node s = NodeFactory.createURI( "s");
 		final Node p = NodeFactory.createURI( "p");
 		final Node o = NodeFactory.createURI( "o");
@@ -619,7 +615,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	public void testAddWhereValueVars()
 	{
 		final Var v = Var.alloc("v");
-		Map<Object,List<?>> map = new HashMap();
+		Map<Object,List<?>> map = new HashMap<Object, List<?>>();
 		
 		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
 		map.put( "?x", Arrays.asList( "three", "four"));

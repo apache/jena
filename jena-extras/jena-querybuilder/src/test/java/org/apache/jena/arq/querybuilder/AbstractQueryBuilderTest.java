@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
@@ -32,7 +31,6 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.vocabulary.RDF ;

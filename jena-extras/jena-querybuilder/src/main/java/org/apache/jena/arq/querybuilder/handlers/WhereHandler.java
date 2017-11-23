@@ -498,7 +498,6 @@ public class WhereHandler implements Handler {
 		clause.addElement(minus);
 	}
 	
-	@SuppressWarnings("unchecked")	
 	public void addValueVar(PrefixMapping prefixMapping, Object var) {
 		if (var == null)
 		{
@@ -519,7 +518,6 @@ public class WhereHandler implements Handler {
 		}		
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addValueVar(PrefixMapping prefixMapping, Object var, Object... objects) {
 		
 		Collection<Node> values = null;
@@ -531,7 +529,6 @@ public class WhereHandler implements Handler {
 		valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), values );
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <K extends Collection<?>> void addValueVars(PrefixMapping prefixMapping, Map<?,K> dataTable) {
 		ValuesHandler hdlr = new ValuesHandler();
 		for (Map.Entry<?, K> entry : dataTable.entrySet())
@@ -546,12 +543,10 @@ public class WhereHandler implements Handler {
 		valuesHandler.addAll( hdlr );
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addValueRow(PrefixMapping prefixMapping, Object... values) {
 		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addValueRow(PrefixMapping prefixMapping, Collection<?> values) {
 		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( values.iterator(), prefixMapping));
 	}

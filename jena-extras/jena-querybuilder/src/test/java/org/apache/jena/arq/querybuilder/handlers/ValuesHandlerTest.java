@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -39,7 +37,6 @@ import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.junit.Before;
 import org.junit.Test;
-import org.xenei.junit.contract.ContractTest;
 
 public class ValuesHandlerTest extends AbstractHandlerTest {
 
