@@ -355,6 +355,22 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
+	public List<Var> getWhereValuesVars() {
+		return getWhereHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var, List<Node>> getWhereValuesMap() {
+		return getWhereHandler().getValuesMap();
+	}
+
+	@Override
+	public SelectBuilder clearWhereValues() {
+		getWhereHandler().clearValues();
+		return this;
+	}
+	
+	@Override
 	public SelectBuilder addOptional(TriplePath t)
 	{
 		getWhereHandler().addOptional( t );
@@ -463,4 +479,6 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		getWhereHandler().addMinus( t );
 		return this;
 	}
+
+	
 }

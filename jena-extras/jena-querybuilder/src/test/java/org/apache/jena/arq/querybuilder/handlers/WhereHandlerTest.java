@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -650,7 +651,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testAddValueVars() {
 		final Var v = Var.alloc("v");
-		Map<Object,List<?>> map = new HashMap();
+		Map<Object,List<?>> map = new LinkedHashMap<Object,List<?>>();
 		
 		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
 		map.put( "?x", Arrays.asList( "three", "four"));
@@ -660,9 +661,9 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
 		Var x = Var.alloc("x");
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
+		
+		edat.add( v );
 		edat.add( x );
-		edat.add( v );		
 		BindingHashMap binding = new BindingHashMap();
 		binding.add( v, NodeFactory.createURI( "one" ));
 		binding.add( x, NodeFactory.createLiteral("three"));
@@ -690,7 +691,6 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.build();
 		
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
 		edat.add( v );
 		edat.add( x );
 		BindingHashMap binding = new BindingHashMap();
@@ -719,7 +719,6 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		handler.build();
 		
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
 		edat.add( v );
 		edat.add( x );
 	
@@ -789,4 +788,69 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 		assertTrue( map.isEmpty());	
 	}
 
+
+	@Test
+	public void testSetVarsInWhereValues() throws ParseException {
+		Var v = Var.alloc("v");
+		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+		Map<Var, Node> values = new HashMap<>();
+		values.put(v, value);
+
+		handler.addValueVar( query.getPrefixMapping(), "?x", "<one>", "?v");
+		handler.setVars(values);
+		handler.build();
+		
+		ElementData edat = new ElementData();
+		Var x = Var.alloc("x");
+		edat.add( x );
+	
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( x, NodeFactory.createURI( "one" ));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( x, value);
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
+	@Test
+	public void testWhereDataQuery() {
+		// test that the getVars getMap and clear methods work.
+		Var x = Var.alloc("x");
+		Var y = Var.alloc("y");
+		Node foo = NodeFactory.createURI( "foo" );
+		Node bar = NodeFactory.createLiteral( "bar" );
+		
+		assertTrue(handler.getValuesVars().isEmpty());
+		
+		handler.addValueVar(query.getPrefixMapping(), x, foo);
+		handler.addValueVar(query.getPrefixMapping(), y, bar);
+	
+		assertFalse(handler.getValuesVars().isEmpty());
+		
+		
+		List<Var> lst = handler.getValuesVars();
+		assertEquals(2, lst.size());
+		assertEquals(x, lst.get(0));
+		assertEquals(y, lst.get(1));
+
+		Map<Var, List<Node>> map = handler.getValuesMap();
+		assertEquals(2, map.keySet().size());
+		List<Node> nodes = map.get(x);
+		assertEquals(1, nodes.size());
+		assertEquals(foo, nodes.get(0));
+
+		nodes = map.get(y);
+		assertEquals(1, nodes.size());
+		assertEquals(bar, nodes.get(0));
+
+		handler.clearValues();
+
+		assertTrue(handler.getValuesVars().isEmpty());
+		assertTrue(handler.getValuesMap().isEmpty());
+
+	}
 }

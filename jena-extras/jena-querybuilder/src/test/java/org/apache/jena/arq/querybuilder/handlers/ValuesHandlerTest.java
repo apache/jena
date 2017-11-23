@@ -23,9 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -37,6 +39,7 @@ import org.apache.jena.sparql.engine.binding.BindingHashMap;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.junit.Before;
 import org.junit.Test;
+import org.xenei.junit.contract.ContractTest;
 
 public class ValuesHandlerTest extends AbstractHandlerTest {
 
@@ -410,17 +413,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		final Node three = NodeFactory.createLiteral( "three");
 		final Node four = NodeFactory.createLiteral( "four");
 		
-		Map<Object,List<?>> map = new HashMap();
-		
-		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
-		map.put( "?x", Arrays.asList( "three", "four"));
-		
 		handler.addValueVar( v, Arrays.asList( one, two ));
 		handler.addValueVar( x, Arrays.asList( three, four ));
 			
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
-		
 		edat.add( v );
 		edat.add( x );
 		BindingHashMap binding = new BindingHashMap();
@@ -453,4 +449,44 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 		handler.addValueVar( Var.alloc("v"), Arrays.asList( Node.ANY));
 		assertFalse( handler.isEmpty());
 	}
+	
+	@Test
+	public void testDataQuery() {
+		// test that the getVars getMap and clear methods work.
+		Var x = Var.alloc("x");
+		Var y = Var.alloc("y");
+		Node foo = NodeFactory.createURI( "foo" );
+		Node bar = NodeFactory.createLiteral( "bar" );
+		
+		assertTrue(handler.getValuesVars().isEmpty());
+		
+		handler.addValueVar(x, Arrays.asList(foo));
+		handler.addValueVar(y, Arrays.asList(bar));
+	
+		assertFalse(handler.getValuesVars().isEmpty());
+		
+		
+		List<Var> lst = handler.getValuesVars();
+		assertEquals(2, lst.size());
+		assertEquals(x, lst.get(0));
+		assertEquals(y, lst.get(1));
+
+		Map<Var, List<Node>> map = handler.getValuesMap();
+		assertEquals(2, map.keySet().size());
+		List<Node> nodes = map.get(x);
+		assertEquals(1, nodes.size());
+		assertEquals(foo, nodes.get(0));
+
+		nodes = map.get(y);
+		assertEquals(1, nodes.size());
+		assertEquals(bar, nodes.get(0));
+
+		handler.clear();
+
+		assertTrue(handler.getValuesVars().isEmpty());
+		assertTrue(handler.getValuesMap().isEmpty());
+		assertTrue(handler.isEmpty());
+
+	}
+
 }

@@ -206,8 +206,7 @@ DatasetClause<DescribeBuilder>,
 		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
 		return this;
 	}
-	
-	
+		
 	@Override
 	public <K extends Collection<?>> DescribeBuilder addWhereValueVars(Map<?,K> dataTable)
 	{
@@ -228,6 +227,22 @@ DatasetClause<DescribeBuilder>,
 		return this;
 	}
 
+	@Override
+	public List<Var> getWhereValuesVars() {
+		return getWhereHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var, List<Node>> getWhereValuesMap() {
+		return getWhereHandler().getValuesMap();
+	}
+
+	@Override
+	public DescribeBuilder clearWhereValues() {
+		getWhereHandler().clearValues();
+		return this;
+	}
+	
 	@Override
 	public DescribeBuilder addOptional(Triple t) {
 		getWhereHandler().addOptional( new TriplePath( t ) );

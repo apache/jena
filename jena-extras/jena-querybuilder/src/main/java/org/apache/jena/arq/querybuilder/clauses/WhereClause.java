@@ -18,6 +18,7 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
@@ -26,6 +27,7 @@ import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
@@ -128,8 +130,12 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 * Add a data table to the value statement.
 	 * 
 	 * Each key in the map is used converted into a variable using the makeVar strategy.
-	 * The order in which variables 
-	 * are added to the values table is preserved.
+	 * The order in which variables are added to the values table is preserved.
+	 * 
+	 * Variables are added in the iteration order for the map.  It may be advisable to 
+	 * use a LinkedHashMap to preserver the insert order.
+	 * 
+	 * @see java.util.LinkedHashMap
 	 * 
 	 * Each item in the value collection is converted into a node using makeNode() strategy except that null values are converted 
 	 * to UNDEF.
@@ -180,6 +186,28 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 	 */
 	public T addWhereValueRow(Collection<?> values);
 
+	/**
+	 * Get an unmodifiable list of vars from the where clause values in the order that they appear 
+	 * in the values table.
+	 * @return an unmodifiable list of vars.
+	 */
+	public List<Var> getWhereValuesVars();
+	
+	/**
+	 * Get an unmodifiable map of vars from the where clause values and their values.
+	 * 
+	 * Null values are considered as UNDEF values.
+	 * 
+	 * @return an unmodifiable map of vars and their values.
+	 */
+	public Map<Var,List<Node>> getWhereValuesMap();
+	
+	/**
+	 * Reset the values table in the where clause to the initial 
+	 * undefined state.  Used primarily to reset the builder values 
+	 * table to a known state. 
+	 */
+	public T clearWhereValues();
 
 	/**
 	 * Adds an optional triple to the where clause.

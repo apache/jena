@@ -18,6 +18,7 @@
 package org.apache.jena.arq.querybuilder;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
@@ -30,6 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
@@ -244,6 +246,23 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
 		return this;
 	}
+	
+	@Override
+	public List<Var> getWhereValuesVars() {
+		return getWhereHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var, List<Node>> getWhereValuesMap() {
+		return getWhereHandler().getValuesMap();
+	}
+
+	@Override
+	public ConstructBuilder clearWhereValues() {
+		getWhereHandler().clearValues();
+		return this;
+	}
+	
 	@Override
 	public ConstructBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);

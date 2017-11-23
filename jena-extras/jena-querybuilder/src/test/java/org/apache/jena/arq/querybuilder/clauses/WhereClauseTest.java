@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.AskBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.FrontsTriple;
@@ -52,6 +53,8 @@ import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.syntax.ElementUnion;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import org.xenei.junit.contract.Contract;
@@ -628,7 +631,6 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 
 		Var x = Var.alloc("x");
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
 		edat.add( x );
 		edat.add( v );		
 		BindingHashMap binding = new BindingHashMap();
@@ -659,9 +661,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		
 		Query query = builder.build();
 
-		
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
 		edat.add( v );
 		edat.add( x );
 		BindingHashMap binding = new BindingHashMap();
@@ -692,9 +692,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		
 		Query query = builder.build();
 
-		
 		ElementData edat = new ElementData();
-		// FIXME should not be order dependent
 		edat.add( v );
 		edat.add( x );
 		BindingHashMap binding = new BindingHashMap();
@@ -710,5 +708,71 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}	
+	
+	@ContractTest
+	public void testSetVarsInWhereValues() throws ParseException {
+		Var v = Var.alloc("v");
+		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+		Map<Var, Node> values = new HashMap<>();
+		values.put(v, value);
+
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addWhereValueVar( "?x", "<one>", "?v");
+		
+		builder.setVar(v, value );
+		
+		Query query = builder.build();
+		
+		ElementData edat = new ElementData();
+		Var x = Var.alloc("x");
+		edat.add( x );
+	
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( x, NodeFactory.createURI( "one" ));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( x, value);
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+
+	@ContractTest
+	public void testDataQuery() {
+		// test that the getVars getMap and clear methods work.
+		Object o = "?x";
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause = (WhereClause<?>) whereClause.addWhereValueVar(o);
+		whereClause = (WhereClause<?>) whereClause.addWhereValueVar("?y");
+		whereClause = (WhereClause<?>) whereClause.addWhereValueRow("foo", "bar");
+		whereClause = (WhereClause<?>) whereClause.addWhereValueRow("fu", null);
+
+		assertFalse(whereClause.getWhereValuesVars().isEmpty());
+		List<Var> lst = whereClause.getWhereValuesVars();
+		assertEquals(2, lst.size());
+		assertEquals(Var.alloc("x"), lst.get(0));
+		assertEquals(Var.alloc("y"), lst.get(1));
+
+		Map<Var, List<Node>> map = whereClause.getWhereValuesMap();
+		assertEquals(2, map.keySet().size());
+		List<Node> nodes = map.get(Var.alloc("x"));
+		assertEquals(2, nodes.size());
+		assertEquals(NodeFactory.createLiteral("foo"), nodes.get(0));
+		assertEquals(NodeFactory.createLiteral("fu"), nodes.get(1));
+
+		nodes = map.get(Var.alloc("y"));
+		assertEquals(2, nodes.size());
+		assertEquals(NodeFactory.createLiteral("bar"), nodes.get(0));
+		assertNull(nodes.get(1));
+
+		whereClause.clearWhereValues();
+
+		assertTrue(whereClause.getWhereValuesVars().isEmpty());
+		assertTrue(whereClause.getWhereValuesMap().isEmpty());
+
+	}
 
 }
