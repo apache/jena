@@ -44,7 +44,7 @@ public class ModLangParse extends ModBase
     private ArgDecl argSkip     = new ArgDecl(ArgDecl.NoValue, "skip") ;
     private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
-    private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings")
+    private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings") ;
     
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
     
