@@ -18,21 +18,20 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.CounterName.Requests ;
 import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
 import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
-import java.io.InputStream ;
-import java.nio.charset.CharacterCodingException;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.query.QueryCancelledException ;
-import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.web.HttpSC;
 
 /** SPARQL request lifecycle */
 public abstract class ActionSPARQL extends ActionBase
@@ -62,10 +61,9 @@ public abstract class ActionSPARQL extends ActionBase
                 ServletOps.errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;
             }
-            //dataAccessPoint.
             dSrv = dataAccessPoint.getDataService() ;
             if ( ! dSrv.isAcceptingRequests() ) {
-                ServletOps.errorNotFound("Dataset not active: "+datasetUri) ;
+                ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
                 return ;
             }
         } else {
@@ -73,16 +71,69 @@ public abstract class ActionSPARQL extends ActionBase
             dSrv = DataService.serviceOnlyDataService() ;
         }
 
-        String operationName = mapRequestToOperation(action, dataAccessPoint) ;
         action.setRequest(dataAccessPoint, dSrv) ;
+        String endpointName = mapRequestToOperation(action, dataAccessPoint) ;
         
-        //operationName = ""
+        if ( true ) {
+            // New dispatch
+            OperationName opName = null;
+            if ( ! endpointName.isEmpty() ) {
+                 opName = chooseEndpoint(action, dSrv, endpointName);
+                if ( opName == null )
+                    ServletOps.errorNotFound(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
+                
+            } else {
+                opName = chooseEndpoint(action, dSrv);
+                if ( opName == null )
+                    ServletOps.errorBadRequest(format("dataset=%s",  dataAccessPoint.getName()));
+            }
+            
+            ActionSPARQL handler = Dispatch.OpNameToHandler.get(opName);
+            // XXX -- replace action.setEndpoint
+            Endpoint ep = dSrv.getEndpoint(endpointName) ;
+            //List<Endpoint> endpoints = dSrv.getOperation(opName);
+            action.setEndpoint(ep, endpointName);
+            handler.executeLifecycle(action);
+            return ;
+        }
         
-        Endpoint op = dSrv.getOperation(operationName) ;
-        action.setEndpoint(op, operationName);
+        // Old dispatch via SPARQL_UberServlet.executeAction override.
+        Endpoint op = dSrv.getEndpoint(endpointName) ;
+        action.setEndpoint(op, endpointName);
         executeAction(action) ;
     }
 
+    // These are overridden by the ServiceRouterServlet.
+    protected OperationName chooseEndpoint(HttpAction action, DataService dataService, String serviceName) {
+        Endpoint ep = dataService.getEndpoint(serviceName) ;
+        OperationName opName = ep.getOperationName();
+        return opName;
+    }
+    
+    protected OperationName chooseEndpoint(HttpAction action, DataService dataService) {
+        // No default implementation for directly bound services operation servlets.
+        return null;
+    }
+
+    private void executeRequest(HttpAction action, ActionSPARQL servlet) {
+        if ( true ) {
+            // Execute an ActionSPARQL.
+            // Bypasses HttpServlet.service to doMethod dispatch.
+            servlet.executeLifecycle(action) ;
+            return ;
+        }
+        if ( false )  {
+            // Execute by calling the whole servlet mechanism.
+            // This causes HttpServlet.service to call the appropriate doMethod.
+            // but the action, and the id, are not passed on and a ne one is created.
+            try { servlet.service(action.request, action.response) ; }
+            catch (ServletException | IOException e) {
+                ServletOps.errorOccurred(e);
+            }
+        }
+    }
+
+    
     /** Execute a SPARQL request. Statistics have not been adjusted at this point.
      * 
      * @param action
@@ -193,24 +244,5 @@ public abstract class ActionSPARQL extends ActionBase
         } catch (Exception ex) {
             Fuseki.serverLog.warn("Exception on counter dec", ex) ;
         }
-    }
-
-    public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
-        try {
-            if ( ! RDFParserRegistry.isRegistered(lang) )
-                ServletOps.errorBadRequest("No parser for language '"+lang.getName()+"'") ;
-            ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log);
-            RDFParser.create()
-                .errorHandler(errorHandler)
-                .source(input)
-                .lang(lang)
-                .base(base)
-                .parse(dest);
-        } catch (RuntimeIOException ex) {
-            if ( ex.getCause() instanceof CharacterCodingException )
-                throw new RiotException("Character Coding Error: "+ex.getMessage());
-            throw ex;
-        }
-        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
 }

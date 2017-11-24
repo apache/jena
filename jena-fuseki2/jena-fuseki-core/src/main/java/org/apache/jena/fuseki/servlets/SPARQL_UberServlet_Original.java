@@ -37,13 +37,17 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.web.HttpNames ;
 
+// NOT USED
+//   Retained during migration to the new router servlet.
+//   Delete when that is stable.
+
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
  *  (query, update, graph store, both direct and
  *  indirect naming, quads operations on a dataset and
  *  ?query and ?update directly on a dataset.)
  */
-public abstract class SPARQL_UberServlet extends ActionSPARQL
+public abstract class SPARQL_UberServlet_Original extends ActionSPARQL
 {
     private static final long serialVersionUID = -491895535163680509L;
 
@@ -54,7 +58,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     protected abstract boolean allowQuadsR(HttpAction action) ;
     protected abstract boolean allowQuadsW(HttpAction action) ;
 
-    public static class ReadOnly extends SPARQL_UberServlet
+    public static class ReadOnly extends SPARQL_UberServlet_Original
     {
         private static final long serialVersionUID = -3486969173228213955L;
 
@@ -67,7 +71,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return false ; }
     }
 
-    public static class ReadWrite extends SPARQL_UberServlet
+    public static class ReadWrite extends SPARQL_UberServlet_Original
     {
         private static final long serialVersionUID = 1383389566691599382L;
 
@@ -80,7 +84,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return true ; }
     }
 
-    public static class AccessByConfig extends SPARQL_UberServlet
+    public static class AccessByConfig extends SPARQL_UberServlet_Original
     {
         private static final long serialVersionUID = 5078964040391977778L;
 
@@ -118,7 +122,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private final ActionSPARQL restQuads_R     = new REST_Quads_R() ;
     private final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
 
-    public SPARQL_UberServlet() { super(); }
+    public SPARQL_UberServlet_Original() { super(); }
 
     private String getEPName(String dsname, List<String> endpoints) {
         if (endpoints == null || endpoints.size() == 0)

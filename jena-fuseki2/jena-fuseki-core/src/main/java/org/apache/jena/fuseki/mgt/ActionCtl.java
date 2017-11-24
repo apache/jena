@@ -59,8 +59,7 @@ public abstract class ActionCtl extends ActionBase
         return extractItemName(action) ;
     }
 
-    // Execute - no stats.
-    // Intercept point for the UberServlet 
+    // Possible intercept point 
     protected void executeAction(HttpAction action) {
         executeLifecycle(action) ;
     }

@@ -73,9 +73,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     // Choose REST verbs to support.
-
-    // doMethod : Not used with UberServlet dispatch.
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response) ;

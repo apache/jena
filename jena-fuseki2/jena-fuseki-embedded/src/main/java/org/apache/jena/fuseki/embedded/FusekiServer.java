@@ -239,7 +239,7 @@ public class FusekiServer {
         
         /** Add the dataset with given name and a default set of services. */  
         public Builder add(String name, DatasetGraph dsg, boolean allowUpdate) {
-            DataService dSrv = FusekiBuilder.buildDataService(dsg, allowUpdate) ; 
+            DataService dSrv = FusekiBuilder.buildDataServiceStd(dsg, allowUpdate) ; 
             return add(name, dSrv) ;
         }
         
