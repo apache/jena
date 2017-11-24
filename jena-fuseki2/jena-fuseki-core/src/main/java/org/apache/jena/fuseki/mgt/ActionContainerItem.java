@@ -29,8 +29,6 @@ import org.apache.jena.web.HttpSC ;
 /** Base for actions that are container and also have action on items */ 
 public abstract class ActionContainerItem extends ActionCtl {
     
-    private static final long serialVersionUID = 2824158659375951964L;
-
     public ActionContainerItem() { super() ; }
 
     // Redirect operations so they dispatch to perform(HttpAction)

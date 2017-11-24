@@ -43,8 +43,6 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
  */
 public class ActionBackupList extends ActionCtl {
 
-    private static final long serialVersionUID = -802856229813346198L;
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         doCommon(req, resp);

@@ -49,8 +49,6 @@ import org.apache.jena.riot.web.HttpNames ;
  */
 public abstract class SPARQL_UberServlet_Original extends ActionSPARQL
 {
-    private static final long serialVersionUID = -491895535163680509L;
-
     protected abstract boolean allowQuery(HttpAction action) ;
     protected abstract boolean allowUpdate(HttpAction action) ;
     protected abstract boolean allowREST_R(HttpAction action) ;
@@ -60,9 +58,7 @@ public abstract class SPARQL_UberServlet_Original extends ActionSPARQL
 
     public static class ReadOnly extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = -3486969173228213955L;
-
-        public ReadOnly()    { super() ; }
+            public ReadOnly()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return false ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
@@ -73,9 +69,7 @@ public abstract class SPARQL_UberServlet_Original extends ActionSPARQL
 
     public static class ReadWrite extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = 1383389566691599382L;
-
-        public ReadWrite()    { super() ; }
+            public ReadWrite()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return true ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
@@ -86,9 +80,7 @@ public abstract class SPARQL_UberServlet_Original extends ActionSPARQL
 
     public static class AccessByConfig extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = 5078964040391977778L;
-
-        public AccessByConfig()    { super() ; }
+            public AccessByConfig()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action, OperationName.Query) ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action, OperationName.Update) ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP_RW) ; }

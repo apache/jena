@@ -38,8 +38,6 @@ import org.apache.jena.web.HttpSC ;
 /** The WRITE operations added to the READ operations */
 public class SPARQL_GSP_RW extends SPARQL_GSP_R
 {
-    private static final long serialVersionUID = 6406692451479514797L;
-
     public SPARQL_GSP_RW()
     { super() ; }
 

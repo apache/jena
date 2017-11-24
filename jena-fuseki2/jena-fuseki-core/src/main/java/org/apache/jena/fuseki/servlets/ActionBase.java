@@ -40,8 +40,6 @@ import org.slf4j.Logger ;
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
-    private static final long serialVersionUID = -8235479824229554685L;
-
     protected final Logger log ;
 
     protected ActionBase(Logger log) {

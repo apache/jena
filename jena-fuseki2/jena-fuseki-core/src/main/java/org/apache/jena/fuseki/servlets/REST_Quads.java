@@ -26,8 +26,6 @@ package org.apache.jena.fuseki.servlets ;
 
 public abstract class REST_Quads extends ActionREST
 {
-    private static final long serialVersionUID = 5366276922758465169L;
-
     public REST_Quads() {
         super() ;
     }
