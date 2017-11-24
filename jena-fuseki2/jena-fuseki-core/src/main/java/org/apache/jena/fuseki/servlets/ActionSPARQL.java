@@ -36,8 +36,6 @@ import org.apache.jena.web.HttpSC;
 /** SPARQL request lifecycle */
 public abstract class ActionSPARQL extends ActionBase
 {
-    private static final long serialVersionUID = 8655400764034493574L;
-
     protected ActionSPARQL() { super(Fuseki.actionLog) ; }
     
     protected abstract void validate(HttpAction action) ;

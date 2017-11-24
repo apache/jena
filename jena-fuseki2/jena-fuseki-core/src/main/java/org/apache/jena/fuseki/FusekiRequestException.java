@@ -23,8 +23,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class FusekiRequestException extends FusekiException
 {
-    private static final long serialVersionUID = 5851755307160508151L;
-
     public static FusekiRequestException create(int code, String msg)
     {
         if ( code == HttpSC.NOT_FOUND_404 )

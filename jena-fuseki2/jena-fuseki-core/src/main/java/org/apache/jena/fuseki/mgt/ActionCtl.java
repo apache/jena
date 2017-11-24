@@ -25,9 +25,7 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 
 /** Control/admin request lifecycle */
-public abstract class ActionCtl extends ActionBase
-{
-    private static final long serialVersionUID = 3129123436565022299L;
+public abstract class ActionCtl extends ActionBase {
 
     protected ActionCtl() { super(Fuseki.adminLog) ; }
     

@@ -28,8 +28,6 @@ import org.apache.jena.fuseki.server.CounterName ;
 /** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
 public abstract class ActionREST extends ActionSPARQL
 {
-    private static final long serialVersionUID = 7202577783034128479L;
-
     public ActionREST()
     { super() ; }
 

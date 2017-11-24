@@ -64,8 +64,6 @@ import org.apache.jena.web.HttpSC ;
  */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
-    private static final long serialVersionUID = 6670547318463759949L;
-
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
     public SPARQL_Query() {

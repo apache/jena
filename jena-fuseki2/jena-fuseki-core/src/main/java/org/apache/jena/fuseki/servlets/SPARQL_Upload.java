@@ -51,8 +51,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class SPARQL_Upload extends ActionSPARQL
 {
-    private static final long serialVersionUID = -8762461819710807201L;
-
     public SPARQL_Upload() {
         super() ;
     }

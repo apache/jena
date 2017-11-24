@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory ;
 
 public class ActionBackup extends ActionAsyncTask
 {
-    private static final long serialVersionUID = -8749893367585603207L;
-
     public ActionBackup() { super() ; }
 
     @Override

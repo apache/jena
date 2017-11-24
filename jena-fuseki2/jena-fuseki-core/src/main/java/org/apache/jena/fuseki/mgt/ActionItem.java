@@ -26,8 +26,6 @@ import org.apache.jena.web.HttpSC ;
 /** Action on items in a container, but not the container itself */ 
 public abstract class ActionItem extends ActionContainerItem
 {
-    private static final long serialVersionUID = 2383436292454272466L;
-
     public ActionItem() { super() ; }
     
     @Override

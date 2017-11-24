@@ -34,8 +34,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionTasks extends ActionBase //ActionContainerItem
 {
-    private static final long serialVersionUID = 21567238976872928L;
-
     private static AsyncPool[] pools = { AsyncPool.get() } ; 
     
     public ActionTasks() { super(Fuseki.serverLog) ; }

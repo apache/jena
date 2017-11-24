@@ -39,8 +39,6 @@ import org.apache.jena.web.HttpSC ;
  */
 public class ActionPing extends HttpServlet
 {
-    private static final long serialVersionUID = -7784830233939700895L;
-
     // Ping is special.
     // To avoid excessive logging and id allocation for a "noise" operation,
     // this is a raw servlet.

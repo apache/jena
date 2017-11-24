@@ -39,8 +39,6 @@ import org.apache.jena.sparql.core.DatasetDescription ;
  */
 public abstract class SPARQL_Protocol extends ActionSPARQL {
 
-    private static final long serialVersionUID = -5083114105751562449L;
-
     protected SPARQL_Protocol() {
         super() ;
     }
