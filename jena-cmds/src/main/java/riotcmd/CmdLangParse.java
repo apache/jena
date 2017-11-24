@@ -244,7 +244,9 @@ public abstract class CmdLangParse extends CmdGeneral
             checking = false;
         builder.checking(checking);
 
-        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger, modLangParse.stopOnBadTerm(), modLangParse.stopOnWarnings());
+        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger, 
+                                                                                   modLangParse.stopOnBadTerm(), 
+                                                                                   modLangParse.stopOnWarnings());
         
         if ( modLangParse.skipOnBadTerm() ) {
             // skipOnBadterm - this needs collaboration from the parser.
