@@ -42,7 +42,7 @@ import org.apache.jena.riot.system.StreamRDF;
 
 public class ActionLib {
     /**
-     * A possible implementation for {@link ActionSPARQL#mapRequestToDataset}
+     * A possible implementation for {@link ActionService#mapRequestToDataset}
      * that assumes the form /dataset/service.
      * @param action the request
      * @return the dataset
@@ -169,8 +169,7 @@ public class ActionLib {
     }
 
     /** Negotiate the content-type and set the response headers */ 
-    public static MediaType contentNegotation(HttpAction action, AcceptList myPrefs,
-                                              MediaType defaultMediaType) {
+    public static MediaType contentNegotation(HttpAction action, AcceptList myPrefs, MediaType defaultMediaType) {
         MediaType mt = ConNeg.chooseContentType(action.request, myPrefs, defaultMediaType) ;
         if ( mt == null )
             return null ;
@@ -190,7 +189,6 @@ public class ActionLib {
     public static MediaType contentNegotationQuads(HttpAction action) {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads) ;
     }
-    
 
     /** 
      * Parse RDF content

@@ -49,7 +49,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
 
-public class SPARQL_Upload extends ActionSPARQL
+public class SPARQL_Upload extends ActionService
 {
     public SPARQL_Upload() {
         super() ;

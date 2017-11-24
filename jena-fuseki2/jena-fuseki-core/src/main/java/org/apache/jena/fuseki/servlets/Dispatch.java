@@ -22,41 +22,41 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.OperationName;
+import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.riot.WebContent;
 
-/** The global mapping of content-type to OperationName. */
+/** The global mapping of content-type to Operation. */
 
 public class Dispatch {
-    /** Map ContentType (lowercase, no charset) to the {@code OperationName} for handling it. */  
-    public static Map<String, OperationName> contentTypeToOpName = new ConcurrentHashMap<>();
+    /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */  
+    public static Map<String, Operation> contentTypeToOperation = new ConcurrentHashMap<>();
     static {
-        contentTypeToOpName.put(WebContent.contentTypeSPARQLQuery, OperationName.Query);
-        contentTypeToOpName.put(WebContent.contentTypeSPARQLUpdate, OperationName.Update);
+        contentTypeToOperation.put(WebContent.contentTypeSPARQLQuery, Operation.Query);
+        contentTypeToOperation.put(WebContent.contentTypeSPARQLUpdate, Operation.Update);
     }
     
-    /** Map {@link OperationName} to servlet handler.
-     * {@code OperartionNames} are the internal symbol identifying an operation,
-     * not the name used in the configuration file, which is mapped by {@link DataService#getOperation}. 
-     *   
-     *  */  
-    public static Map<OperationName, ActionSPARQL> OpNameToHandler = new ConcurrentHashMap<>();
+    /** Map {@link Operation} to servlet handler.
+     * {@code Operation}s are the internal symbol identifying an operation,
+     * not the name used in the configuration file, 
+     * which is mapped by {@link DataService#getEndpoint(String)}. 
+     */  
+    public static Map<Operation, ActionService> operationToHandler = new ConcurrentHashMap<>();
     
-    public static final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
-    public static final ActionSPARQL updateServlet   = new SPARQL_Update() ;
-    public static final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
-    public static final ActionSPARQL gspServlet_R    = new SPARQL_GSP_R() ;
-    public static final ActionSPARQL gspServlet_RW   = new SPARQL_GSP_RW() ;
-    public static final ActionSPARQL restQuads_R     = new REST_Quads_R() ;
-    public static final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
+    public static final ActionService queryServlet    = new SPARQL_QueryDataset() ;
+    public static final ActionService updateServlet   = new SPARQL_Update() ;
+    public static final ActionService uploadServlet   = new SPARQL_Upload() ;
+    public static final ActionService gspServlet_R    = new SPARQL_GSP_R() ;
+    public static final ActionService gspServlet_RW   = new SPARQL_GSP_RW() ;
+    public static final ActionService restQuads_R     = new REST_Quads_R() ;
+    public static final ActionService restQuads_RW    = new REST_Quads_RW() ;
 
     static {
-        OpNameToHandler.put(OperationName.Query,    queryServlet);
-        OpNameToHandler.put(OperationName.Update,   updateServlet);
-        OpNameToHandler.put(OperationName.Upload,   uploadServlet);
-        OpNameToHandler.put(OperationName.GSP_R,    gspServlet_R);
-        OpNameToHandler.put(OperationName.GSP_RW,   gspServlet_RW);
-        OpNameToHandler.put(OperationName.Quads_R,  restQuads_R);
-        OpNameToHandler.put(OperationName.Quads_RW, restQuads_RW);
+        operationToHandler.put(Operation.Query,    queryServlet);
+        operationToHandler.put(Operation.Update,   updateServlet);
+        operationToHandler.put(Operation.Upload,   uploadServlet);
+        operationToHandler.put(Operation.GSP_R,    gspServlet_R);
+        operationToHandler.put(Operation.GSP_RW,   gspServlet_RW);
+        operationToHandler.put(Operation.Quads_R,  restQuads_R);
+        operationToHandler.put(Operation.Quads_RW, restQuads_RW);
     }
 }
