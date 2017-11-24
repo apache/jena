@@ -97,7 +97,7 @@ public abstract class ActionService extends ActionBase {
                 ServletOps.errorBadRequest(format("dataset=%s", dataAccessPoint.getName()));
         }
 
-        ActionService handler = Dispatch.operationToHandler.get(operation);
+        ActionService handler = action.getServiceDispatchRegistry().findHandler(operation);
         if ( handler == null )
             ServletOps.errorBadRequest(format("dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
         // XXX -- replace action.setEndpoint

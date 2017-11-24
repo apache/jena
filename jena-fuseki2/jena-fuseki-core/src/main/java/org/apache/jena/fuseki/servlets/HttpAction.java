@@ -91,7 +91,8 @@ public class HttpAction
     public HttpServletResponseTracker response ;
     private final String actionURI ;
     private final String contextPath ;
-    // Currently, global.
+
+    private final ServiceDispatchRegistry serviceDispatchRegistry;
     private final DataAccessPointRegistry dataAccessPointRegistry ;
     
     /**
@@ -113,6 +114,7 @@ public class HttpAction
         this.verbose = verbose ;
         this.contextPath = request.getServletContext().getContextPath() ;
         this.actionURI = ActionLib.actionURI(request) ;
+        this.serviceDispatchRegistry = ServiceDispatchRegistry.get(request.getServletContext()) ;
         this.dataAccessPointRegistry = DataAccessPointRegistry.get(request.getServletContext()) ;
     }
 
@@ -226,6 +228,13 @@ public class HttpAction
         return contextPath ;
     }
     
+    /**
+     * Get the ServiceRegistry for this action
+     */
+    public ServiceDispatchRegistry getServiceDispatchRegistry() {
+        return serviceDispatchRegistry ;
+    }
+
     /**
      * Get the DataAccessPointRegistry for this action
      */

@@ -37,6 +37,7 @@ import org.apache.jena.fuseki.mgt.ActionStats ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.WebContent;
@@ -134,6 +135,13 @@ public class FusekiServer {
      */ 
     public DataAccessPointRegistry getDataAccessPointRegistry() {
         return DataAccessPointRegistry.get(getServletContext()) ;
+    }
+
+    /** Get the {@link DataAccessPointRegistry}.
+     * This method is intended for inspecting the registry.
+     */ 
+    public ServiceDispatchRegistry getServiceDispatchRegistry() {
+        return ServiceDispatchRegistry.get(getServletContext()) ;
     }
 
     /** Start the server - the server continues to run after this call returns.
@@ -283,17 +291,22 @@ public class FusekiServer {
         
         /** Build a server according to the current description */ 
         public FusekiServer build() {
+            ServiceDispatchRegistry serviceRegistry = new ServiceDispatchRegistry(true);            
             DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
+            
             map.forEach((name, dSrv) -> {
                 DataAccessPoint dap = new DataAccessPoint(name, dSrv) ;
                 registry.put(name, dap) ;
             }) ;
             ServletContextHandler handler = buildServletContext(contextPath, registry) ;
+
+            ServiceDispatchRegistry.set(handler.getServletContext(), serviceRegistry);
             
             setMimeTypes(handler);
             servlets(handler);
             
             DataAccessPointRegistry.set(handler.getServletContext(), registry) ;
+
             Server server = jettyServer(port, loopback) ;
             server.setHandler(handler);
             return new FusekiServer(port, server) ;
