@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.server.*;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.web.HttpSC;
 
-/** SPARQL request lifecycle */
+/** Service request lifecycle */
 public abstract class ActionService extends ActionBase {
     protected ActionService() {
         super(Fuseki.actionLog);
@@ -48,9 +48,6 @@ public abstract class ActionService extends ActionBase {
      * the dataset into the HTTP action, and retrieving the service for the dataset
      * requested. Finally, it calls the {@link #executeAction(HttpAction)} method, which
      * executes the HTTP Action life cycle.
-     * 
-     * @param action
-     *            HTTP Action
      */
     @Override
     protected void execCommonWorker(HttpAction action) {
