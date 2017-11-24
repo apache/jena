@@ -247,7 +247,7 @@ public abstract class ServiceRouter extends ActionService {
         // This does no have the ";charset="
         String ct = request.getContentType();
         if ( ct != null ) {
-            Operation operation = Dispatch.contentTypeToOperation.get(ct);
+            Operation operation = action.getServiceDispatchRegistry().findOperation(ct);
             if ( operation != null )
                 return operation;
         }

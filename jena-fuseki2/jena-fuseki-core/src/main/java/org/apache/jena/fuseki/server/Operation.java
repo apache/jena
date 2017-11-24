@@ -18,10 +18,10 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.servlets.Dispatch;
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 
 /**
- * Operations are symbol to look up in the {@link Dispatch#operationToHandler} map. The name
+ * Operations are symbol to look up in the {@link ServiceDispatchRegistry#operationToHandler} map. The name
  * of an {@code Operation} is not related to the service name used to invoke the operation
  * which is determined by the {@link Endpoint}.
  */

@@ -54,11 +54,10 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
     
     private static final String attrNameRegistry = "jena-fuseki:dataAccessPointRegistry" ;
-    // Policy for the location of the server-wide DataAccessPointRegistry 
     public static DataAccessPointRegistry get(ServletContext cxt) {
         DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(attrNameRegistry) ;
         if ( registry == null )
-            Log.warn(DataAccessPointRegistry.class, "No registry for ServletContext") ;
+            Log.warn(DataAccessPointRegistry.class, "No data access point registry for ServletContext") ;
         return registry ;
     }
     
