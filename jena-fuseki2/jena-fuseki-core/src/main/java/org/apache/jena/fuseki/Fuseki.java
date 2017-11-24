@@ -102,10 +102,14 @@ public class Fuseki {
      *  quite sensitive to request route.
      *  <p>
      *  The following places use this switch:
+     *  <ul>
      *  <li>{@code FusekiFilter} for the "clearly not a service" case
-     *  <li>{@code SPARQL_UberServlet}, end of dispatch (after checking for http://server/dataset/service)
+     *  <li>{@code ServiceRouterServlet}, end of dispatch (after checking for http://server/dataset/service)
      *  <li>{@code SPARQL_GSP.determineTarget} This is all-purpose code - should not get there because of other checks.
-     *
+     *  </ul>
+     *  <p>
+     * <b>Note</b><br/>
+     * GSP Direct Naming was implemented to provide two implementations for the SPARQL 1.1 implementation report.  
      */
     static public final boolean       GSP_DIRECT_NAMING = false ;
 

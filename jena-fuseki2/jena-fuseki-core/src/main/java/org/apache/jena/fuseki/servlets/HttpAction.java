@@ -82,8 +82,8 @@ public class HttpAction
     // Outcome.
     public int statusCode = -1 ;
     public String message = null ;
-    public int contentLength = -1 ;
-    public String contentType = null ;
+    public int responseContentLength = -1 ;
+    public String responseContentType = null ;
     
     // Cleared to archive:
     public Map <String, String> headers = new HashMap<>() ;
@@ -143,6 +143,16 @@ public class HttpAction
         setDataset(dService.getDataset()) ;
     }
     
+    public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
+        this.dataAccessPoint = dataAccessPoint ;
+        this.dataService = null ;
+        if ( dataAccessPoint != null )
+            this.dataService = dataAccessPoint.getDataService() ;
+        this.datasetName = datasetUri ;
+        if ( dataService != null )
+            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
+    }
+
     /** Minimum initialization using just a dataset.
      * <p>
      * the HTTP Action will change its transactional state and
@@ -180,16 +190,6 @@ public class HttpAction
         return dsg ;
     }
 
-    public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
-        this.dataAccessPoint = dataAccessPoint ;
-        this.dataService = null ;
-        if ( dataAccessPoint != null )
-            this.dataService = dataAccessPoint.getDataService() ;
-        this.datasetName = datasetUri ;
-        if ( dataService != null )
-            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
-    }
-    
     /**
      * Return the "Transactional" for this HttpAction.
      */

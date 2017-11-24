@@ -29,13 +29,17 @@ public class OperationName {
     static private NameMgr<OperationName> mgr = new NameMgr<>(); 
     static public OperationName register(String name, String description) { return mgr.register(name, (x)->new OperationName(x, description)); }
     
-    public static final OperationName Query    = register("Query", "SPARQL Query");
-    public static final OperationName Update   = register("Update", "SPARQL Update");
-    public static final OperationName Upload   = register("Upload", "File Upload");
-    public static final OperationName GSP_RW   = register("GSP_RW", "Graph Store Protocol");
-    public static final OperationName GSP_R    = register("GSP_R", "Graph Store Protocol (Read)");
-    public static final OperationName Quads_RW = register("Quads_RW", "HTTP Quads");
-    public static final OperationName Quads_R  = register("Quads_R", "HTTP Quads (Read)");
+    public static final OperationName Query          = register("Query", "SPARQL Query");
+    public static final OperationName Update         = register("Update", "SPARQL Update");
+    public static final OperationName Upload         = register("Upload", "File Upload");
+    public static final OperationName GSP_RW         = register("GSP_RW", "Graph Store Protocol");
+    public static final OperationName GSP_R          = register("GSP_R", "Graph Store Protocol (Read)");
+    public static final OperationName Quads_RW       = register("Quads_RW", "HTTP Quads");
+    public static final OperationName Quads_R        = register("Quads_R", "HTTP Quads (Read)");
+    
+    // Dummy "operation" used to mark that datasets accept request made directly on them. 
+    public static final OperationName DatasetRequest_RW = Quads_RW; //register("Dataset", "HTTP Request");
+    public static final OperationName DatasetRequest_R = Quads_R; //register("Dataset", "HTTP Request");
     
     private final String description ;
     private final String name ;
@@ -80,6 +84,10 @@ public class OperationName {
             return false;
         return true;
     }
-    
+ 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
 

@@ -71,6 +71,10 @@ public class SPARQL_Upload extends ActionSPARQL
     }
 
     @Override
+    protected void validate(HttpAction action)
+    {}
+
+    @Override
     protected void perform(HttpAction action) {
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
@@ -258,7 +262,7 @@ public class SPARQL_Upload extends ActionSPARQL
 
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp) ;
                     StreamRDFCounting dest = StreamRDFLib.count(x) ;
-                    ActionSPARQL.parse(action, dest, stream, lang, base) ;
+                    ActionLib.parse(action, dest, stream, lang, base) ;
                     count = dest.count() ;
                 }
             }
@@ -272,8 +276,4 @@ public class SPARQL_Upload extends ActionSPARQL
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
     }
-
-    @Override
-    protected void validate(HttpAction action)
-    {}
 }

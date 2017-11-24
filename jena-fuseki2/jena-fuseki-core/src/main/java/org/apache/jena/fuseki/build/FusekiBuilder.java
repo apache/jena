@@ -46,7 +46,7 @@ public class FusekiBuilder
 {
     private static Logger log = Fuseki.builderLog ;
     
-    /** Build a DataAccessPoint, including DataService at Resource svc */ 
+    /** Build a DataAccessPoint, including DataService, from the description at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
@@ -58,13 +58,13 @@ public class FusekiBuilder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = FusekiBuilder.buildDataService(svc, dsDescMap) ;
+        DataService dataService = buildDataServiceCustom(svc, dsDescMap) ;
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
-    /** Build a DatasetRef starting at Resource svc */
-    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
+    /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
+    private static DataService buildDataServiceCustom(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
         Dataset ds = getDataset(datasetDesc, dsDescMap);
@@ -83,13 +83,19 @@ public class FusekiBuilder
         
         // Quads - actions directly on the dataset URL are different.
         // In the config file they are also implicit when using GSP.
+        
         if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() || ! dataService.getOperation(OperationName.Quads_RW).isEmpty() ) {
-            dataService.addEndpoint(OperationName.Quads_RW, "") ;
+            // ReadWrite available.
+            // Dispatch needs introspecting on the HTTP request.
+            dataService.addEndpoint(OperationName.DatasetRequest_RW, "") ;
         } else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() || ! dataService.getOperation(OperationName.Quads_R).isEmpty() ) {
-            dataService.addEndpoint(OperationName.Quads_R, "") ;
+            // Read-only available.
+            // Dispatch needs introspecting on the HTTP request.
+            dataService.addEndpoint(OperationName.DatasetRequest_R, "") ;
         }
         
         // XXX 
+        // This needs sorting out -- here, it is only on the whole server, not per dataset or even per service.
 //        // Extract timeout overriding configuration if present.
 //        if ( svc.hasProperty(FusekiVocab.pAllowTimeoutOverride) ) {
 //            sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean() ;
@@ -116,21 +122,22 @@ public class FusekiBuilder
     	return ds;
     }
     
-    /** Build a DataService starting at Resource svc */
-    public static DataService buildDataService(DatasetGraph dsg, boolean allowUpdate) {
+    /** Build a DataService starting at Resource svc, with the standard (default) set of services */
+    public static DataService buildDataServiceStd(DatasetGraph dsg, boolean allowUpdate) {
         DataService dataService = new DataService(dsg) ;
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
             addServiceEP(dataService, OperationName.GSP_R,      "data") ;
-            addServiceEP(dataService, OperationName.Quads_R,    "") ;
+            addServiceEP(dataService, OperationName.DatasetRequest_R,    "") ;
             return dataService ;
         }
         addServiceEP(dataService, OperationName.GSP_RW,     "data") ;
         addServiceEP(dataService, OperationName.GSP_R,      "get") ;
         addServiceEP(dataService, OperationName.Update,     "update") ;
         addServiceEP(dataService, OperationName.Upload,     "upload") ;
-        addServiceEP(dataService, OperationName.Quads_RW,   "") ;
+        // Dispatch needs introspecting on the HTTP request.
+        addServiceEP(dataService, OperationName.DatasetRequest_RW, "") ;
         return dataService ;
     }
 

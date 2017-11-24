@@ -68,18 +68,13 @@ public class TestDatasetOps extends AbstractFusekiTest
         gsp_x(serviceGSP(), urlDataset()) ;
     }
 
-    @Test public void gsp_x_04() {
-        gsp_x(serviceGSP(), urlDataset()) ;
-    }
-
     private void gsp_x(String outward, String inward) {
         HttpEntity e = datasetToHttpEntity(data) ;
+        int expectedSize = data.getDefaultGraph().size();
         HttpOp.execHttpPut(outward, e);
         DatasetGraph dsg = DatasetGraphFactory.create() ;
-        RDFDataMgr.read(dsg, inward) ;
-//        String x = HttpOp.execHttpGetString(inward, "application/n-quads") ;
-//        RDFDataMgr.read(dsg, new StringReader(x), null, Lang.NQUADS) ;
-        assertEquals(2, dsg.getDefaultGraph().size()) ;
+        RDFDataMgr.read(dsg, inward, Lang.NQUADS);
+        assertEquals(expectedSize, dsg.getDefaultGraph().size()) ;
     }
 
     // Get dataset.  Tests conneg.

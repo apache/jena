@@ -92,7 +92,7 @@ public class DataService { //implements DatasetMXBean {
         operations.put(operationName, endpoint);
     }
     
-    public Endpoint getOperation(String endpointName) {
+    public Endpoint getEndpoint(String endpointName) {
         return endpoints.get(endpointName) ;
     }
 
@@ -113,17 +113,22 @@ public class DataService { //implements DatasetMXBean {
     //@Override
     public boolean allowUpdate()    { return true ; }
 
-    public void goOffline()         { 
-        offlineInProgress.set(true) ;
-        acceptingRequests.set(false) ;
-        state = DatasetStatus.OFFLINE ; 
+    public void goOffline() {
+        offlineInProgress.set(true);
+        acceptingRequests.set(false);
+        state = DatasetStatus.OFFLINE;
     }
-    
-    public void goActive()         { 
-        offlineInProgress.set(false) ;
-        acceptingRequests.set(true) ;
-        state = DatasetStatus.ACTIVE ; 
+
+    public void goActive() {
+        offlineInProgress.set(false);
+        acceptingRequests.set(true);
+        state = DatasetStatus.ACTIVE;
     }
+
+    // Due to concurrency, call isAcceptingRequests().
+//    public boolean isActive() {
+//        return state != DatasetStatus.ACTIVE;
+//    }
 
     public boolean isAcceptingRequests() {
         return acceptingRequests.get() ;

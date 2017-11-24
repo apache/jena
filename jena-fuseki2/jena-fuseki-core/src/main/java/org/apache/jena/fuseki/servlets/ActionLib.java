@@ -18,14 +18,25 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.io.InputStream;
+import java.nio.charset.CharacterCodingException;
+
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserRegistry;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.StreamRDF;
 
 /** Operations related to servlets */
 
@@ -35,7 +46,8 @@ public class ActionLib {
      * that assumes the form /dataset/service.
      * @param action the request
      * @return the dataset
-     */    public static String mapRequestToDataset(HttpAction action) {
+     */
+    public static String mapRequestToDataset(HttpAction action) {
          String uri = action.getActionURI() ;
          return mapActionRequestToDataset(uri) ;
      }
@@ -62,7 +74,7 @@ public class ActionLib {
         return uri.substring(0, i) ;
     }
 
-    /** Calculate the operation , given action and data access point */ 
+    /** Calculate the operation, given action and data access point */ 
     public static String mapRequestToOperation(HttpAction action, DataAccessPoint dsRef) {
         if ( dsRef == null )
             return "" ;
@@ -134,9 +146,12 @@ public class ActionLib {
         return actionURI(action.request) ;
     }
     
+    /**
+     * @return the URI without context path of the webapp.
+     */
     public static String actionURI(HttpServletRequest request) {
 //      Log.info(this, "URI                     = '"+request.getRequestURI()) ;
-//      Log.info(this, "Context path            = '"+request.getContextPath()+"'") ;
+//      Log.info(this, "Context Path            = '"+request.getContextPath()+"'") ;
 //      Log.info(this, "Servlet path            = '"+request.getServletPath()+"'") ;
 //      ServletContext cxt = this.getServletContext() ;
 //      Log.info(this, "ServletContext path     = '"+cxt.getContextPath()+"'") ;
@@ -150,7 +165,6 @@ public class ActionLib {
         String x = uri ;
         if ( uri.startsWith(contextPath) )
             x = uri.substring(contextPath.length()) ;
-        //log.info("uriWithoutContextPath: uri = "+uri+" contextPath="+contextPath+ "--> x="+x) ;
         return x ;
     }
 
@@ -175,6 +189,29 @@ public class ActionLib {
     /** Negotiate the content-type for an RDF quads syntax and set the response headers */ 
     public static MediaType contentNegotationQuads(HttpAction action) {
         return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads) ;
+    }
+    
+
+    /** 
+     * Parse RDF content
+     */
+    public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
+        try {
+            if ( ! RDFParserRegistry.isRegistered(lang) )
+                ServletOps.errorBadRequest("No parser for language '"+lang.getName()+"'") ;
+            ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log);
+            RDFParser.create()
+                .errorHandler(errorHandler)
+                .source(input)
+                .lang(lang)
+                .base(base)
+                .parse(dest);
+        } catch (RuntimeIOException ex) {
+            if ( ex.getCause() instanceof CharacterCodingException )
+                throw new RiotException("Character Coding Error: "+ex.getMessage());
+            throw ex;
+        }
+        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
 }
 

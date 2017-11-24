@@ -74,8 +74,6 @@ public class SPARQL_Update extends SPARQL_Protocol
     public SPARQL_Update()
     { super() ; }
 
-    // doMethod : Not used with UberServlet dispatch.
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
