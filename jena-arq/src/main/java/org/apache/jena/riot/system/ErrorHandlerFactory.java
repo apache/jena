@@ -270,11 +270,11 @@ public class ErrorHandlerFactory
         }
         
         public boolean hadErrors() {
-            return this.errorCount > 1;
+            return this.errorCount > 0;
         }
         
         public boolean hadWarnings() {
-            return this.warningCount > 1;
+            return this.warningCount > 0;
         }
         
         public boolean hadIssues() {
