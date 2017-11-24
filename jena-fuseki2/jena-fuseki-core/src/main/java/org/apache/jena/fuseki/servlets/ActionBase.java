@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -131,7 +130,7 @@ public abstract class ActionBase extends ServletBase
      */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, log, request, response, Fuseki.verboseLogging) ;
+        return new HttpAction(id, log, request, response);
     }
 
     /**

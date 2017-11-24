@@ -102,16 +102,15 @@ public class HttpAction
      * @param log Logger for this action 
      * @param request HTTP request
      * @param response HTTP response
-     * @param verbose verbose flag
      */
-    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
+    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response) {
         this.id = id ;
         this.log = log ;
         this.request = request ;
         this.response = new HttpServletResponseTracker(this, response) ;
         // Should this be set when setDataset is called from the dataset context?
         // Currently server-wide, e.g. from the command line.
-        this.verbose = verbose ;
+        this.verbose = Fuseki.getVerbose(request.getServletContext()); 
         this.contextPath = request.getServletContext().getContextPath() ;
         this.actionURI = ActionLib.actionURI(request) ;
         this.serviceDispatchRegistry = ServiceDispatchRegistry.get(request.getServletContext()) ;
