@@ -36,7 +36,7 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.fuseki.server.Operation ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -125,9 +125,9 @@ public class TestEmbeddedFuseki {
         // A service with just being able to do quads operations
         // That is, GET, POST, PUT on  "/data" in N-quads and TriG. 
         DataService dataService = new DataService(dsg) ;
-        dataService.addEndpoint(OperationName.Quads_RW, "");
-        dataService.addEndpoint(OperationName.Query, "");
-        dataService.addEndpoint(OperationName.Update, "");
+        dataService.addEndpoint(Operation.Quads_RW, "");
+        dataService.addEndpoint(Operation.Query, "");
+        dataService.addEndpoint(Operation.Update, "");
         int port = FusekiLib.choosePort() ;
         
         FusekiServer server = FusekiServer.create()
@@ -255,8 +255,8 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
-        dSrv.addEndpoint(OperationName.Query, "q") ;
-        dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
+        dSrv.addEndpoint(Operation.Query, "q") ;
+        dSrv.addEndpoint(Operation.GSP_R, "gsp") ;
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
             .setPort(port)
@@ -274,8 +274,8 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
-        dSrv.addEndpoint(OperationName.Query, "q") ;
-        dSrv.addEndpoint(OperationName.GSP_R, "gsp") ;
+        dSrv.addEndpoint(Operation.Query, "q") ;
+        dSrv.addEndpoint(Operation.GSP_R, "gsp") ;
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
             .setStaticFileBase(DIR)

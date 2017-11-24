@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.server.CounterName ;
 
 /** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
-public abstract class ActionREST extends ActionSPARQL
+public abstract class ActionREST extends ActionService
 {
     public ActionREST()
     { super() ; }

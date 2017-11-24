@@ -41,7 +41,7 @@ import org.slf4j.Logger ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the
- * {@link ActionSPARQL#executeAction(HttpAction)} method.
+ * {@link ActionService#executeAction(HttpAction)} method.
  */
 public class HttpAction
 {

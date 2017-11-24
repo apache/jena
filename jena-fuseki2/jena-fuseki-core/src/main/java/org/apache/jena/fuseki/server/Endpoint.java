@@ -22,15 +22,15 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 
 public class Endpoint implements Counters {
     
-    public final OperationName opName ;
+    public final Operation operation ;
     public final String endpointName ;
     // Endpoint-level counters.
     private final CounterSet counters           = new CounterSet() ;
 
-    public Endpoint(OperationName opName, String endpointName) {
-        this.opName = opName ;
-        if ( opName == null )
-            throw new InternalErrorException("opName is null") ;
+    public Endpoint(Operation operation, String endpointName) {
+        this.operation = operation ;
+        if ( operation == null )
+            throw new InternalErrorException("operation is null") ;
         this.endpointName = endpointName ;
         // Standard counters - there may be others
         counters.add(CounterName.Requests) ;
@@ -42,11 +42,11 @@ public class Endpoint implements Counters {
     public  CounterSet getCounters()    { return counters ; }
 
     //@Override
-    public OperationName getOperationName()      { return opName ; }
+    public Operation getOperation()     { return operation ; }
     
     //@Override
-    public boolean isType(OperationName operationName) { 
-        return opName.equals(operationName) ;
+    public boolean isType(Operation operation) { 
+        return operation.equals(operation) ;
     }
 
     public String getEndpoint()         { return endpointName ; }

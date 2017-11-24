@@ -35,7 +35,7 @@ import org.slf4j.Logger ;
  */
 public class FusekiFilter implements Filter {
     private static Logger log = Fuseki.serverLog ;
-    private static ServiceRouterServlet routerServlet = new ServiceRouterServlet.AccessByConfig() ;
+    private static ServiceRouter routerServlet = new ServiceRouter.AccessByConfig() ;
     
     @Override
     public void init(FilterConfig filterConfig) {

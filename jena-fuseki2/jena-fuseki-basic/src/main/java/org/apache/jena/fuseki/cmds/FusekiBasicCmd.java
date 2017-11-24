@@ -476,8 +476,8 @@ public class FusekiBasicCmd {
                 List<String> endpoints = new ArrayList<>();
                 desc.put(ds, endpoints);
                 DataService dSrv = dap.getDataService();
-                dSrv.getOperations().forEach((opName)->{
-                    dSrv.getOperation(opName).forEach(ep-> {
+                dSrv.getOperations().forEach((op)->{
+                    dSrv.getEndpoints(op).forEach(ep-> {
                         String x = ep.getEndpoint();
                         if ( x.isEmpty() )
                             x = "quads";

@@ -23,7 +23,7 @@
  * <li><em>DataAccessPointRegistry</em> :: Per server registry of {@code DataAccessPoint}s</li>
  * <li><em>DataAccessPoint</em> :: Name to DataService binding</li>
  * <li><em>DataService</em> :: RDF Dataset, counters, endpoints</li>
- * <li><em>OperationName</em> :: Internal name of a service, not the name used in a configuration file.</li>
+ * <li><em>Operation</em> :: Internal name of a service, not the name used in a configuration file.</li>
  * <li><em>Endpoint</em> :: Instance of an operation, toether with its counters.</li>
  * <li><em>DataAccessPointRegistry</em> :: Per server registry of DataAccessPoint</li>
  * </ul>
@@ -31,17 +31,17 @@
  * <li><b>Servlets</b>
  * <p>
  * <ul>
- * <li><em>FusekiFilter</em> :: Routes requests to Fuseki (handles the dynamic nature dataset naming).</li>
+ * <li><em>FusekiFilter</em> :: Routes requests to Fuseki (handles the dynamic nature dataset naming) by calling ServiceRouter.</li>
  * <li><em>ServiceRouterServlet</em> :: Routes requests to the appropriate service (i.e. implementing servlet).</li>
  * <li><em>ActionBase</em> :: Creates a basic {@code HttpAction} and defines {@code execCommonWorker}.</li>
- * <li><em>ActionSPARQL</em> :: Fills in {@code HttpAction} with dataset and endpoint. Calls {@code setRequest} on an {@code HttpAction}. 
+ * <li><em>ActionService</em> :: Fills in {@code HttpAction} with dataset and endpoint. Calls {@code setRequest} on an {@code HttpAction}. 
  * It implements {@code execCommonWorker} as a lifecycle => {@code executeAction} => {@code executeLifecycle} => {@code validate - perform}
- * <li><em>SPARQL_UberServlet</em> :: Routing of erquest to the cocrete servlet implementations.
+ * <li><em>ServiceRouter</em> :: Routing of request to the cocrete servlet implementations.
  * </ul> 
  * <p>
  * <pre>
- * ServiceDispatchServlet &lt; ActionSPARQL &lt; ActionBase 
- * Services               &lt; ActionSPARQL &lt; ActionBase
+ * ServiceDispatchServlet &lt; ActionService &lt; ActionBase 
+ * Services               &lt; ActionService &lt; ActionBase
  * Admin operations       &lt; ActionCtl    &lt; ActionBase
  * Task management        &lt; ActionTasks  &lt; ActionBase
  * </pre>
@@ -50,12 +50,12 @@
  * <p>Located in {@code FusekiRegistries}.
  * <p>
  * <ul>
- * <li><em>ContentTypeToOperation</em>:: Map&lt;content-type, OperationName&gt;</li>
- * <li><em>ContentTypeToOperation</em>:: Map&lt;String, OperationName&gt;</li>
- * <li><em>Dispatch</em> :: Map<OperationName, ActionSPARQL</li> 
+ * <li><em>ContentTypeToOperation</em>:: Map&lt;content-type, Operation&gt;</li>
+ * <li><em>ContentTypeToOperation</em>:: Map&lt;String, Operation&gt;</li>
+ * <li><em>Dispatch</em> :: Map<Operation, ActionService</li> 
  * </ul>
  * <p>
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki;
 
