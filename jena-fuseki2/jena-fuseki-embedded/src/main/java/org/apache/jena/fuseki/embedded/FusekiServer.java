@@ -176,6 +176,7 @@ public class FusekiServer {
         private int                      port               = 3330 ;
         private boolean                  loopback           = false ;
         private boolean                  withStats          = false ;
+        private boolean                  verbose            = false ;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> other = new ArrayList<>();
         private String                   contextPath        = "/" ;
@@ -219,6 +220,12 @@ public class FusekiServer {
          */
         public Builder setSecurityHandler(SecurityHandler securityHandler) {
             this.securityHandler = securityHandler;
+            return this;
+        }
+        
+        /** Set verbose logging */
+        public Builder setVerbose(boolean verbose) {
+            this.verbose = verbose;
             return this;
         }
 
@@ -300,6 +307,8 @@ public class FusekiServer {
             }) ;
             ServletContextHandler handler = buildServletContext(contextPath, registry) ;
 
+            Fuseki.setVerbose(handler.getServletContext(), verbose);
+            
             ServiceDispatchRegistry.set(handler.getServletContext(), serviceRegistry);
             
             setMimeTypes(handler);
@@ -374,7 +383,6 @@ public class FusekiServer {
                 staticContent.setInitParameter("resourceBase", staticContentDir) ;
                 context.addServlet(staticContent, "/");
             }
-                
         }
 
         private static void addServlet(ServletContextHandler context, String pathspec, HttpServlet httpServlet) {

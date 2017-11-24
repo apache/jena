@@ -47,12 +47,9 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.vocabulary.RDF ;
-import org.slf4j.Logger ;
 
 public class FusekiBuilder
 {
-    private static Logger log = Fuseki.builderLog ;
-    
     /** Build a DataAccessPoint, including DataService, from the description at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
@@ -72,7 +69,6 @@ public class FusekiBuilder
 
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
     private static DataService buildDataServiceCustom(Resource svc, DatasetDescriptionRegistry dsDescMap) {
-        if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
         Dataset ds = getDataset(datasetDesc, dsDescMap);
  
@@ -132,24 +128,29 @@ public class FusekiBuilder
     /** Build a DataService starting at Resource svc, with the standard (default) set of services */
     public static DataService buildDataServiceStd(DatasetGraph dsg, boolean allowUpdate) {
         DataService dataService = new DataService(dsg) ;
-        addServiceEP(dataService, Operation.Query, "query") ;
-        addServiceEP(dataService, Operation.Query, "sparql") ;
+        populateStdServices(dataService, allowUpdate);
+        return dataService ;
+    }        
+        
+    /** Convenience operation to populate a {@link DataService} with the conventional default services. */ 
+    public static void populateStdServices(DataService dataService, boolean allowUpdate) {
+        addServiceEP(dataService, Operation.Query,      "query") ;
+        addServiceEP(dataService, Operation.Query,      "sparql") ;
         if ( ! allowUpdate ) {
             addServiceEP(dataService, Operation.GSP_R,      "data") ;
             addServiceEP(dataService, Operation.DatasetRequest_R,    "") ;
-            return dataService ;
+            return;
         }
         addServiceEP(dataService, Operation.GSP_RW,     "data") ;
         addServiceEP(dataService, Operation.GSP_R,      "get") ;
         addServiceEP(dataService, Operation.Update,     "update") ;
         addServiceEP(dataService, Operation.Upload,     "upload") ;
-        // Dispatch needs introspecting on the HTTP request.
         addServiceEP(dataService, Operation.DatasetRequest_RW, "") ;
-        return dataService ;
     }
 
-    private static void addServiceEP(DataService dataService, Operation operation, String epName) {
-        dataService.addEndpoint(operation, epName) ; 
+    /** Add an operation to a {@link DataService} with a given endpoint name */
+    public static void addServiceEP(DataService dataService, Operation operation, String endpointName) {
+        dataService.addEndpoint(operation, endpointName) ; 
     }
 
     public static RDFNode getOne(Resource svc, String property) {

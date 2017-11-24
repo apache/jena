@@ -88,13 +88,13 @@ public class FusekiServerListener implements ServletContextListener {
                 initialSetup.fusekiServerConfigFile = cfg ;
             }
 
-            if ( initialSetup != null ) {
-                FusekiSystem.initializeDataAccessPoints(dataAccessPointRegistry,
-                                                        initialSetup, FusekiSystem.dirConfiguration.toString()) ;
-            } else {
+            if ( initialSetup == null ) {
                 Fuseki.serverLog.error("No configuration") ;
                 throw new FusekiException("No configuration") ;
-            }
+            }                
+            Fuseki.setVerbose(servletContext, initialSetup.verbose);
+            FusekiSystem.initializeDataAccessPoints(dataAccessPointRegistry,
+                                                    initialSetup, FusekiSystem.dirConfiguration.toString()) ;
         } catch (Throwable th) { 
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
             throw th ;
