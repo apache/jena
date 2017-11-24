@@ -403,7 +403,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	
 	// --- VALUES
 	
-	private Collection<Node> makeValueNodes( Iterator<?> iter )
+	public static Collection<Node> makeValueNodes( Iterator<?> iter, PrefixMapping prefixMapping )
 	{
 		if (iter == null || !iter.hasNext())
 		{
@@ -419,12 +419,17 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 				values.add( null );
 			} else 
 			{
-				values.add( makeNode( o ));
+				values.add( makeNode( o, prefixMapping ));
 			}
 		}
 		return values;
 	}
 
+	public Collection<Node> makeValueNodes( Iterator<?> iter )
+	{
+		return makeValueNodes( iter, getPrologHandler().getPrefixes() );
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addValueVar(Object var) {

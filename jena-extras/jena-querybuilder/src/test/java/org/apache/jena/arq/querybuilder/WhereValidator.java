@@ -41,7 +41,20 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /**
  * Class to validate that an element exists in another element structure.
- *
+ * 
+ * The WhereValidator traverses the element tree that it is attempting to match.
+ * Once it finds a node that matches the target element an attempt is made to match
+ * all elements enclosed by the target.  If a match is found the matcher stops and
+ * the <code>matching</code> variable will be <code>true</code>.  if a match is not
+ * the matcher continues to scan for the next candidate until a match is found or all
+ * candidates are exhausted.
+ * 
+ * Usage:
+ * <code> <pre>
+ *  WhereValidator wv = new WhereValidator( target );
+ *  query.getQueryPattern().visit( wv );
+ *  assertTrue( wv.matching );
+ *  </pre></code>
  */
 public class WhereValidator implements ElementVisitor {
 	
@@ -49,6 +62,10 @@ public class WhereValidator implements ElementVisitor {
 	public boolean matching = false;
 	private NodeIsomorphismMap nim;
 	
+	/**
+	 * Constructor.
+	 * @param target The target element to locate.
+	 */
 	public WhereValidator( Element target )
 	{
 		this.target = target;

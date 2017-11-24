@@ -19,6 +19,7 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
@@ -320,6 +321,56 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 	}
 
 	@Override
+	public SelectBuilder addWhereValueVar(Object var) {
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var);
+		return this;
+	}
+	
+	@Override
+	public SelectBuilder addWhereValueVar(Object var, Object... values)
+	{
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
+		return this;
+	}
+	
+	
+	@Override
+	public <K extends Collection<?>> SelectBuilder addWhereValueVars(Map<?,K> dataTable)
+	{
+		getWhereHandler().addValueVars(getPrologHandler().getPrefixes(), dataTable);
+		return this;
+	}
+	
+	@Override
+	public SelectBuilder addWhereValueRow(Object... values)
+	{
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+
+	@Override
+	public SelectBuilder addWhereValueRow(Collection<?> values) {
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+
+	@Override
+	public List<Var> getWhereValuesVars() {
+		return getWhereHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var, List<Node>> getWhereValuesMap() {
+		return getWhereHandler().getValuesMap();
+	}
+
+	@Override
+	public SelectBuilder clearWhereValues() {
+		getWhereHandler().clearValues();
+		return this;
+	}
+	
+	@Override
 	public SelectBuilder addOptional(TriplePath t)
 	{
 		getWhereHandler().addOptional( t );
@@ -379,6 +430,27 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
 		return this;
 	}
+	@Override
+	public SelectBuilder addGraph(Object graph, FrontsTriple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+		return this;
+	}
+	@Override
+	public SelectBuilder addGraph(Object graph, Object subject, Object predicate, Object object)
+	{
+		getWhereHandler().addGraph(makeNode(graph), makeTriplePath( subject, predicate, object ));
+		return this;
+	}
+	@Override
+	public SelectBuilder addGraph(Object graph, Triple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+		return this;
+	}
+	@Override
+	public SelectBuilder addGraph(Object graph, TriplePath triplePath) {
+		getWhereHandler().addGraph(makeNode(graph), triplePath );
+		return this;
+	}
 
 	@Override
 	public SelectBuilder addBind(Expr expression, Object var) {
@@ -407,4 +479,6 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 		getWhereHandler().addMinus( t );
 		return this;
 	}
+
+	
 }

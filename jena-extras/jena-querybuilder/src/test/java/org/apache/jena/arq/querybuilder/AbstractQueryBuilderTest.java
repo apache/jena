@@ -20,6 +20,10 @@ package org.apache.jena.arq.querybuilder;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
@@ -137,4 +141,26 @@ public class AbstractQueryBuilderTest {
 
 	}
 
+	@Test
+	public void testMakeValueNodes()
+	{
+		List<Object> list = new ArrayList<Object>();
+		list.add( null);
+		list.add( RDF.type );
+		Node n2 = NodeFactory.createBlankNode();
+		list.add( n2 );
+		builder.addPrefix("demo", "http://example.com/");
+		list.add( "demo:type" );
+		list.add( "<one>" );
+		list.add( builder );
+		
+		Collection<Node> result = builder.makeValueNodes(list.iterator());
+		
+		assertTrue( result.contains( null ));
+		assertTrue( result.contains( RDF.type.asNode()));
+		assertTrue( result.contains( n2 ));
+		assertTrue( result.contains(NodeFactory.createURI("http://example.com/type") ));
+		assertTrue( result.contains(NodeFactory.createURI("one")));
+
+	}
 }

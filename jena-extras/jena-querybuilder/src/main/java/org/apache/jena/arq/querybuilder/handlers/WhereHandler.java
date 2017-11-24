@@ -17,7 +17,10 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
@@ -27,6 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
@@ -47,6 +51,8 @@ public class WhereHandler implements Handler {
 
 	// the query to modify
 	private final Query query;
+	
+	private final ValuesHandler valuesHandler;
 
 	/**
 	 * Constructor.
@@ -56,6 +62,7 @@ public class WhereHandler implements Handler {
 	 */
 	public WhereHandler(Query query) {
 		this.query = query;
+		this.valuesHandler = new ValuesHandler();
 	}
 	
 	/**
@@ -101,6 +108,7 @@ public class WhereHandler implements Handler {
 				query.setQueryPattern(eg);
 			}
 		}
+		valuesHandler.addAll( whereHandler.valuesHandler);
 	}
 
 	/**
@@ -219,6 +227,17 @@ public class WhereHandler implements Handler {
 		}
 	}
 
+	/**
+	 * Add the triple path to the where clause
+	 * 
+	 * @param values
+	 *            The values to add to this where clause.
+	 * @throws IllegalArgumentException
+	 *             If the triple path is not a valid triple path for a where clause.
+	 */
+	public void addWhere(ValuesHandler values) throws IllegalArgumentException {
+		valuesHandler.addAll(values);
+	}
 	/**
 	 * Add an optional triple to the where clause
 	 * 
@@ -359,6 +378,22 @@ public class WhereHandler implements Handler {
 	}
 
 	/**
+	 * Add a graph to the where clause.
+	 * 
+	 * Short hand for graph { s, p, o }
+	 * 
+	 * @param graph
+	 *            The name of the graph.
+	 * @param subQuery
+	 *            A triple path to add to the graph.
+	 */
+	public void addGraph(Node graph, TriplePath subQuery) {
+		ElementPathBlock epb = new ElementPathBlock();
+		epb.addTriple(subQuery);		
+		getClause().addElement(new ElementNamedGraph(graph, epb));
+	}
+	
+	/**
 	 * Add a binding to the where clause.
 	 * 
 	 * @param expr
@@ -395,15 +430,28 @@ public class WhereHandler implements Handler {
 			e.visit(r);
 			query.setQueryPattern(r.getResult());
 		}
+		valuesHandler.setVars(values);
 	}
 
 	@Override
 	public void build() {
 		/*
-		 * cleanup unoin-of-one and other similar issues.
+		 * cleanup union-of-one and other similar issues.
 		 */
 		BuildElementVisitor visitor = new BuildElementVisitor();
 		getElement().visit(visitor);
+		if (! valuesHandler.isEmpty())
+		{
+			if (visitor.result instanceof ElementGroup) {
+				((ElementGroup)visitor.result).addElement( valuesHandler.asElement());;
+			}
+			else {					
+				ElementGroup eg = new ElementGroup();
+				eg.addElement(visitor.result);
+				eg.addElement( valuesHandler.asElement());
+				visitor.result = eg;
+			}
+		}
 		query.setQueryPattern( visitor.result );
 	}
 
@@ -450,6 +498,76 @@ public class WhereHandler implements Handler {
 		clause.addElement(minus);
 	}
 	
+	public void addValueVar(PrefixMapping prefixMapping, Object var) {
+		if (var == null)
+		{
+			throw new IllegalArgumentException( "var must not be null.");
+		}
+		if (var instanceof Collection<?>)
+		{
+			Collection<?> column = (Collection<?>)var;
+			if (column.size() == 0)
+			{
+				throw new IllegalArgumentException( "column must have at least one entry.");
+			}
+			Iterator<?> iter = column.iterator();
+			Var v = AbstractQueryBuilder.makeVar( iter.next() );
+			valuesHandler.addValueVar(v, AbstractQueryBuilder.makeValueNodes(iter,prefixMapping));
+		} else {
+			valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), null );
+		}		
+	}
+
+	public void addValueVar(PrefixMapping prefixMapping, Object var, Object... objects) {
+		
+		Collection<Node> values = null;
+		if (objects != null)
+		{
+			values = AbstractQueryBuilder.makeValueNodes( Arrays.asList(objects).iterator(), prefixMapping);
+		}
+		
+		valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), values );
+	}
+	
+	public <K extends Collection<?>> void addValueVars(PrefixMapping prefixMapping, Map<?,K> dataTable) {
+		ValuesHandler hdlr = new ValuesHandler();
+		for (Map.Entry<?, K> entry : dataTable.entrySet())
+		{
+			Collection<Node> values = null;
+			if (entry.getValue() != null)
+			{
+				values = AbstractQueryBuilder.makeValueNodes( entry.getValue().iterator(), prefixMapping );
+			}
+			hdlr.addValueVar(AbstractQueryBuilder.makeVar(entry.getKey()), values );
+		}
+		valuesHandler.addAll( hdlr );
+	}
+	
+	public void addValueRow(PrefixMapping prefixMapping, Object... values) {
+		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
+	}
+
+	public void addValueRow(PrefixMapping prefixMapping, Collection<?> values) {
+		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( values.iterator(), prefixMapping));
+	}
+	
+	
+	public List<Var> getValuesVars() {
+		return valuesHandler.getValuesVars();
+	}
+
+
+	public Map<Var,List<Node>> getValuesMap() {
+		return valuesHandler.getValuesMap();
+	}
+	
+
+	public  void clearValues() {
+		valuesHandler.clear();
+	}
+
+
+
 	/**
 	 * An element visitor that does an in-place modification of the elements to 
 	 * fix union-of-one and similar issues.
