@@ -28,6 +28,10 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
     public DataAccessPointRegistry() {}
     
+    public DataAccessPointRegistry(DataAccessPointRegistry other) {
+        other.forEach((name, accessPoint)->register(name, accessPoint));
+    }
+    
     // Add error checking.
     public void register(String name, DataAccessPoint accessPt) {
         if ( isRegistered(name) )

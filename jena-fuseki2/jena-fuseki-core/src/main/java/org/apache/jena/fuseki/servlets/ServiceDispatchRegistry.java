@@ -53,6 +53,11 @@ public class ServiceDispatchRegistry {
      */  
     private final Map<Operation, ActionService> operationToHandler = new ConcurrentHashMap<>();
     
+    public ServiceDispatchRegistry(ServiceDispatchRegistry other) {
+        contentTypeToOperation.putAll(other.contentTypeToOperation);
+        operationToHandler.putAll(other.operationToHandler);
+    }
+    
     public ServiceDispatchRegistry(boolean includeStdConfig) {
         if ( includeStdConfig ) {
             register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServlet);
@@ -79,6 +84,10 @@ public class ServiceDispatchRegistry {
         return operationToHandler.get(operation);
     }
     
+    public boolean isRegistered(Operation operation) {
+        return operationToHandler.containsKey(operation);
+    }
+
     /**
      * Register a new {@link Operation}, with its {@code Content-Type} (may be null,
      * meaning no dispatch by content type), and the implementation handler.
