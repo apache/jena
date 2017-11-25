@@ -32,10 +32,12 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
+import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.util.FileManager ;
 
@@ -78,9 +80,11 @@ public class ModTDBDataset extends ModDataset
             // (which may go wrong later if TDB2 directly is needed).
             try {
                 thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), VocabTDB2.tDatasetTDB);
-                if ( thing != null && !(thing.asDatasetGraph() instanceof DatasetGraphTDB) )
-                    Log.warn(this, "Unexpected: Not a TDB2 dataset for type DatasetTDB2");
-
+                if ( thing != null ) {
+                    DatasetGraph dsg = thing.asDatasetGraph();
+                    if( ! ( dsg instanceof DatasetGraphSwitchable ) && ! ( dsg instanceof DatasetGraphTDB ) )
+                        Log.warn(this, "Unexpected: Not a TDB2 dataset for type DatasetTDB2");
+                }
                 if ( thing == null )
                     // Should use assembler inheritance but how do we assert
                     // the subclass relationship in a program?
