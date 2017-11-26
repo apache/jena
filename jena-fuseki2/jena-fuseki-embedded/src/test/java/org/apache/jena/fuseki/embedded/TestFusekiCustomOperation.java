@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.embedded;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -68,7 +68,7 @@ public class TestFusekiCustomOperation {
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", dataService)
                 .build();
-        testServer(server, true);
+        testServer(server, true, true);
     }
         
     @Test
@@ -80,7 +80,7 @@ public class TestFusekiCustomOperation {
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addOperation("/ds", endpointName, newOp)
                 .build();
-        testServer(server, true);
+        testServer(server, true, true);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class TestFusekiCustomOperation {
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addOperation("/ds", endpointName, newOp)
                 .build();
-        testServer(server, false);
+        testServer(server, true, false);
     }
     
     @Test(expected=FusekiConfigException.class)
@@ -114,28 +114,51 @@ public class TestFusekiCustomOperation {
         .addOperation("/ds", endpointName, newOp);
         //.build();
     }
+    
+    public void cfg_bad_ct_not_enabkled_here() {
+        FusekiServer server = FusekiServer.create()
+            .setPort(port)
+            .registerOperation(newOp, "app/special", customHandler)
+            .add("/ds", DatasetGraphFactory.createTxnMem(), true)
+            // Unregistered.
+            .addOperation("/ds", endpointName, newOp)
+            .build();
+        testServer(server, false, false);
+    }
 
-    private void testServer(FusekiServer server, boolean withContentType) {
+
+    private void testServer(FusekiServer server, boolean withEndpoint, boolean withContentType) {
         try { 
             server.start();
-            // Try  query (no extension required)
+            // Try query (no extension required)
             try(RDFConnection rconn = RDFConnectionFactory.connect(url+"/ds")) {
                 try(QueryExecution qExec = rconn.query("ASK {}")) {
                     qExec.execAsk();
                 }
             }
 
-            // Service endpoint name : GET
-            String s1 = HttpOp.execHttpGetString(url+"/ds/"+endpointName);
-
-            // Service endpoint name : POST
-            try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds/"+endpointName, "ignored", "", "text/plain") ) {
-                String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                assertNotNull(x);
-            } catch (IOException ex) {
-                IO.exception(ex);
+            if ( withEndpoint ) {
+                // Service endpoint name : GET
+                String s1 = HttpOp.execHttpGetString(url+"/ds/"+endpointName);
+    
+                // Service endpoint name : POST
+                try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds/"+endpointName, "ignored", "", "text/plain") ) {
+                    String x = IOUtils.toString(stream, StandardCharsets.UTF_8);
+                    assertNotNull(x);
+                } catch (IOException ex) {
+                    IO.exception(ex);
+                }
+            } else {
+                // No endpoint so we expect a 404.
+                try {
+                    // Service endpoint name : GET
+                    HttpOp.execHttpGet(url+"/ds/"+endpointName);
+                    fail("Expected to fail HTTP GET");
+                } catch (HttpException ex) {
+                    assertEquals(404, ex.getResponseCode());   
+                }   
             }
-            
+             
             if ( withContentType ) {
                 // Content-type
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
@@ -147,7 +170,7 @@ public class TestFusekiCustomOperation {
             } else {
                 // No Content-Type
                 try ( TypedInputStream stream = HttpOp.execHttpPostStream(url+"/ds", contentType, "", "text/plain") ) {
-                    fail("Managed to use Content-Type");
+                    fail("Expected to fail HTTP POST using Content-Type");
                 } catch (HttpException ex) {} 
 
                 // Service endpoint name. DELETE -> fails 405

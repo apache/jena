@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -242,12 +244,19 @@ public abstract class ServiceRouter extends ActionService {
         // We don't wire in all the RDF syntaxes.
         // Instead, "Quads" drops through to the default operation.
 
-        // This does no have the ";charset="
+        // This does not have the ";charset="
         String ct = request.getContentType();
         if ( ct != null ) {
             Operation operation = action.getServiceDispatchRegistry().findOperation(ct);
-            if ( operation != null )
+            if ( operation != null ) {
+                // Check there is a service for this dataset.
+                List<Endpoint> x = action.getDataService().getEndpoints(operation);
+                if ( x.isEmpty() )
+                    ServletOps.errorBadRequest("Malformed request: Content-Type not enabled by an endpoint for this dataset: " 
+                            + action.getActionURI() + " : Content-Type: "+ct);
                 return operation;
+            }
+            // operation == null : include drop-through for quads/triples on the dataset.
         }
 
         // ---- GET and Accept
