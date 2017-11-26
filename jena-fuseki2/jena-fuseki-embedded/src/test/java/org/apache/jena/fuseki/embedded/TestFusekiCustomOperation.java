@@ -78,7 +78,7 @@ public class TestFusekiCustomOperation {
                 .setPort(port)
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addOperation("/ds", newOp, endpointName)
+                .addOperation("/ds", endpointName, newOp)
                 .build();
         testServer(server, true);
     }
@@ -90,7 +90,7 @@ public class TestFusekiCustomOperation {
                 .setPort(port)
                 .registerOperation(newOp, null, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-                .addOperation("/ds", newOp, endpointName)
+                .addOperation("/ds", endpointName, newOp)
                 .build();
         testServer(server, false);
     }
@@ -100,7 +100,7 @@ public class TestFusekiCustomOperation {
         FusekiServer.create()
         .setPort(port)
         .registerOperation(newOp, null, customHandler)
-        .addOperation("/UNKNOWN", newOp, endpointName);
+        .addOperation("/UNKNOWN", endpointName, newOp);
         //.build();
     }
     
@@ -111,7 +111,7 @@ public class TestFusekiCustomOperation {
         //.registerOperation(newOp, null, customHandler)
         .add("/ds", DatasetGraphFactory.createTxnMem(), true)
         // Unregistered.
-        .addOperation("/ds", newOp, endpointName);
+        .addOperation("/ds", endpointName, newOp);
         //.build();
     }
 

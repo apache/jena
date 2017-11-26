@@ -40,7 +40,7 @@ import org.apache.jena.riot.web.HttpNames;
  * for operations by service endpoint.
  * <p>
  * Normal use is to route all service operations to this servlet via {@link ActionService}.
- * It wil route for operations on teh dataset and the
+ * It will route for operations on the dataset and the
  * <p>
  * It be attached to a dataset location and acts as a router for all SPARQL operations
  * (query, update, graph store, both direct and indirect naming, quads operations on a
@@ -63,27 +63,25 @@ public abstract class ServiceRouter extends ActionService {
 
     protected abstract boolean allowQuads_RW(HttpAction action);
 
-// public static class ReadOnly extends ServiceRouterServlet
-// {
-// public ReadOnly() { super() ; }
-// @Override protected boolean allowQuery(HttpAction action) { return true ; }
-// @Override protected boolean allowUpdate(HttpAction action) { return false ; }
-// @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
-// @Override protected boolean allowGSP_RW(HttpAction action) { return false ; }
-// @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
-// @Override protected boolean allowQuads_RW(HttpAction action) { return false ; }
-// }
+//    public static class ReadOnly extends ServiceRouterServlet {
+//        public ReadOnly() { super() ; }
+//        @Override protected boolean allowQuery(HttpAction action) { return true ; }
+//        @Override protected boolean allowUpdate(HttpAction action) { return false ; }
+//        @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
+//        @Override protected boolean allowGSP_RW(HttpAction action) { return false ; }
+//        @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
+//        @Override protected boolean allowQuads_RW(HttpAction action) { return false ; }
+//    }
 //
-// public static class ReadWrite extends ServiceRouterServlet
-// {
-// public ReadWrite() { super() ; }
-// @Override protected boolean allowQuery(HttpAction action) { return true ; }
-// @Override protected boolean allowUpdate(HttpAction action) { return true ; }
-// @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
-// @Override protected boolean allowGSP_RW(HttpAction action) { return true ; }
-// @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
-// @Override protected boolean allowQuads_RW(HttpAction action) { return true ; }
-// }
+//    public static class ReadWrite extends ServiceRouterServlet {
+//        public ReadWrite() { super() ; }
+//        @Override protected boolean allowQuery(HttpAction action) { return true ; }
+//        @Override protected boolean allowUpdate(HttpAction action) { return true ; }
+//        @Override protected boolean allowGSP_R(HttpAction action) { return true ; }
+//        @Override protected boolean allowGSP_RW(HttpAction action) { return true ; }
+//        @Override protected boolean allowQuads_R(HttpAction action) { return true ; }
+//        @Override protected boolean allowQuads_RW(HttpAction action) { return true ; }
+//    }
 
     public static class AccessByConfig extends ServiceRouter {
         public AccessByConfig() {

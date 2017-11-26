@@ -45,6 +45,7 @@ public class ServiceDispatchRegistry {
     
     /** Map ContentType (lowercase, no charset) to the {@code Operation} for handling it. */  
     private final Map<String, Operation> contentTypeToOperation = new ConcurrentHashMap<>();
+    public Map<String, Operation> contentTypeToOperation() { return contentTypeToOperation; } 
     
     /** Map {@link Operation} to servlet handler.
      * {@code Operation}s are the internal symbol identifying an operation,
@@ -52,6 +53,7 @@ public class ServiceDispatchRegistry {
      * which is mapped by {@link DataService#getEndpoint(String)}. 
      */  
     private final Map<Operation, ActionService> operationToHandler = new ConcurrentHashMap<>();
+    public Map<Operation, ActionService> operationToHandler() { return operationToHandler; } 
     
     public ServiceDispatchRegistry(ServiceDispatchRegistry other) {
         contentTypeToOperation.putAll(other.contentTypeToOperation);
@@ -99,7 +101,7 @@ public class ServiceDispatchRegistry {
             contentTypeToOperation.put(contentType, operation);
         operationToHandler.put(operation, action);
     }
-
+    
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
     
     private static final String attrServiceRegistry = "jena-fuseki:ServiceDispatchRegistry" ;
