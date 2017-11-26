@@ -316,6 +316,20 @@ public class FusekiServer {
         }
         
         /**
+         * Add an operation and handler to the server. This does not enable it for any dataset.
+         * <p>
+         * To associate an operation with a dataset, call {@link #addOperation} after adding the dataset. 
+         * <p>
+         * (Advanced and experimental option: see 
+         * <a href="http://jena.apache.org/documentation/fuseki2/extend.html>Extending Fuseki</a>)
+         * @see #addOperation 
+         */
+        public Builder registerOperation(Operation operation, ActionService handler) {
+            registerOperation(operation, null, handler);
+            return this;
+        }
+
+        /**
          * Add an operation to the server, together with its triggering Content-Type (may be null) and servlet handler.
          * <p>
          * To associate an operation with a daatsets, call {@link #addOperation} after adding the dataset. 
@@ -334,12 +348,12 @@ public class FusekiServer {
         }
         
         /** 
-         * Create an endpoint on the dataset. The operation must already be registered with the builder.
-         * @see #registerOperation 
+         * Create an endpoint on the dataset. 
+         * The operation must already be registered with the builder.
+         * @see #registerOperation(Operation, ActionService) 
          */
-        public Builder addOperation(String datasetName, Operation operation, String endpointName) {
+        public Builder addOperation(String datasetName, String endpointName, Operation operation) {
             Objects.requireNonNull(datasetName, "datasetName");
-            Objects.requireNonNull(operation, "operation");
             Objects.requireNonNull(endpointName, "endpointName");
             
             String name = DataAccessPoint.canonical(datasetName);
