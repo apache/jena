@@ -318,10 +318,8 @@ public class FusekiServer {
         /**
          * Add an operation and handler to the server. This does not enable it for any dataset.
          * <p>
-         * To associate an operation with a dataset, call {@link #addOperation} after adding the dataset. 
-         * <p>
-         * (Advanced and experimental option: see 
-         * <a href="http://jena.apache.org/documentation/fuseki2/extend.html>Extending Fuseki</a>)
+         * To associate an operation with a dataset, call {@link #addOperation} after adding the dataset.
+         * 
          * @see #addOperation 
          */
         public Builder registerOperation(Operation operation, ActionService handler) {
@@ -333,9 +331,7 @@ public class FusekiServer {
          * Add an operation to the server, together with its triggering Content-Type (may be null) and servlet handler.
          * <p>
          * To associate an operation with a daatsets, call {@link #addOperation} after adding the dataset. 
-         * <p>
-         * (Advanced and experimental option: see 
-         * <a href="http://jena.apache.org/documentation/fuseki2/extend.html>Extending Fuseki</a>)
+         *
          * @see #addOperation 
          */
         public Builder registerOperation(Operation operation, String contentType, ActionService handler) {

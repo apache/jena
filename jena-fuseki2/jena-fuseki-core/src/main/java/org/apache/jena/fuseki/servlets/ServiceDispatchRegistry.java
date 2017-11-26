@@ -93,6 +93,8 @@ public class ServiceDispatchRegistry {
     /**
      * Register a new {@link Operation}, with its {@code Content-Type} (may be null,
      * meaning no dispatch by content type), and the implementation handler.
+     * <p>
+     * The application needs to enable an operation on a service endpoint. 
      */
     public void register(Operation operation, String contentType, ActionService action) {
         Objects.requireNonNull(operation);
