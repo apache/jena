@@ -36,7 +36,7 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
 
 /**
- * Create custom endpoint names.
+ * Create custom endpoint names, dispatch by {@code Content-Type}.
  * See also {@link ExtendFuseki_AddService_1} for more details.
  */
 

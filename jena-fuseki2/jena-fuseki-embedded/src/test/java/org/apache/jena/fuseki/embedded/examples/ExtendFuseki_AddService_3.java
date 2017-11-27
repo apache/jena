@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.embedded.FusekiServer;
@@ -31,53 +30,17 @@ import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.util.FileUtils;
-import org.apache.jena.web.HttpSC;
 
 /**
- * This example show adding a custom operation to Fuseki.
+ * This example show adding a custom operation to Fuseki, with dispatch by {@code Content-Type}.
  * <p>
- * There are two ways operations are routed: for a datset {@code /dataset}:
- * <ol>
- * <li>By endpoint name: {@code /dataset/endpoint}</li>
- * <li>By content type, when a POST is made on the {@code /dataset}.</li>
- * </ol>
- * The first is the usual way; the second is not a common pattern.
- * <p>
- * The second way is in addition to the endpoint; an endpoint is always required to
- * enabled routing by {@code Content-Type}.
- * <p>
- * The process for adding an operation is:
- * <ul>
- * <li>Register the operation with the server, with its implmementation.</li>
- * <li>Add the operation to a datasets.</li>
- * </ul>
- * <pre>
- *   // Register operation.
- *   Operation myOperation = Operation.register("Special", "Custom operation");
- *   // An implementation to call
- *   ActionService customHandler = new SpecialService();
- *   // Builder pattern ...
- *   FusekiServer server = 
- *       FusekiServer.create().port (1122)
- *          // Register the operation with the server, together with implementation. 
- *          .registerOperation(myOperation, customHandler)
- *          // Add a dataset
- *          .add("/dataset", DatasetGraphFactory.createTxnMem(), true)
- *          // Add operation by endpoint
- *          .addOperation("/dataset", "endpoint", myOperation)
- *          .build();
- * </pre>
+ * See {@link ExtendFuseki_AddService_1} fior a geenral description of the routing process.
  * @see SpecialService
  */
 
-public class ExtendFuseki_AddService_1 {
+public class ExtendFuseki_AddService_3 {
     static { LogCtl.setLog4j(); }
 
-    // Endpoint dispatch only.
-    
-    // Choose free port for the example
-    // Normally, this is fixed and published, and fixed in URLs.
-    // To make the example portable, we ask the OS for a free port.
     static int PORT             = FusekiLib.choosePort();
     
     // The server
@@ -97,6 +60,7 @@ public class ExtendFuseki_AddService_1 {
         // c.f. {@code fuseki:serviceQuery}
         
         String endpointName = "special";
+        String contentType = "application/special";
 
         // The handled for the new operation.
         
@@ -106,14 +70,15 @@ public class ExtendFuseki_AddService_1 {
             FusekiServer.create().setPort(PORT)
                 .setVerbose(true)
 
-                // Register the new operation, and it's handler, but no Content-Type
-                .registerOperation(myOperation, customHandler)
+                // Register the new operation, with content type and handler
+                .registerOperation(myOperation, contentType, customHandler)
                 
                 // Add a dataset with the normal, default naming services 
                 // (/sparql, /query, /update, /upload, /data, /get)  
                 .add(DATASET, DatasetGraphFactory.createTxnMem(), true)
                 
                 // Add the custom service, mapping from endpoint to operation for a specific dataset.
+                // Required when when routing via Content-Type. 
                 .addOperation(DATASET, endpointName, myOperation)
                 
                 // And build the server.
@@ -122,35 +87,19 @@ public class ExtendFuseki_AddService_1 {
         // Start the server. This does not block this thread.
         server.start();
         
-        // Try some operations on the server using the service URL. 
-        String customOperationURL = SERVER_URL + DATASET + "/" + endpointName;
+        // Try some operations on the server using the service URL.
+        String datasetURL = SERVER_URL + DATASET;
+        //String customOperationURL = SERVER_URL + DATASET + "/" + endpointName;
         
         try {
 
-            // Service endpoint name : GET
-            String s1 = HttpOp.execHttpGetString(customOperationURL);
-            System.out.print(s1);
-            if ( s1 == null )
-                System.out.println();
-
-            // Service endpoint name : POST
-            try ( TypedInputStream stream = HttpOp.execHttpPostStream(customOperationURL, null, "text/plain") ) {
+            // Dataset endpoint name : POST, with Content-type.
+            try ( TypedInputStream stream = HttpOp.execHttpPostStream(datasetURL, contentType, "", "text/plain") ) {
                 String s2 = FileUtils.readWholeFileAsUTF8(stream);
                 System.out.print(s2);
                 if ( s2 == null )
                     System.out.println();
             } catch (IOException ex) { IO.exception(ex); }
-
-            // Service endpoint name. DELETE -> fails 405
-            try { 
-                HttpOp.execHttpDelete(customOperationURL);
-                throw new IllegalStateException("DELETE succeeded");
-            } catch (HttpException ex) {
-                if ( ex.getResponseCode() != HttpSC.METHOD_NOT_ALLOWED_405 )
-                    System.err.println("Unexpected HTTP Response Code: "+ex.getMessage());
-                else
-                    System.out.println("DELETE rejected correctly: "+ex.getMessage());
-            }
         } finally {
             server.stop();
         }
