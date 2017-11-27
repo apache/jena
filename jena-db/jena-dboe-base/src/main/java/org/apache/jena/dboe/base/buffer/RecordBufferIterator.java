@@ -27,6 +27,7 @@ import org.apache.jena.dboe.base.record.Record;
 
 public class RecordBufferIterator implements Iterator<Record>
 {
+    private static final int END = -99;
     private RecordBuffer rBuff ;
     private int nextIdx ;
     private Record slot = null ;
@@ -54,7 +55,7 @@ public class RecordBufferIterator implements Iterator<Record>
     private void finish()
     {
         rBuff = null ;
-        nextIdx = -99 ;
+        nextIdx = END ;
         slot = null ;
     }
     

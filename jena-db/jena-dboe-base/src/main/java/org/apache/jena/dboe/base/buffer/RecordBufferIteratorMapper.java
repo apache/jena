@@ -30,6 +30,7 @@ import org.apache.jena.dboe.base.record.RecordMapper;
 // Iterate over one RecordBuffer
 public class RecordBufferIteratorMapper<X> implements Iterator<X>
 {
+    private static final int END = -99;
     private RecordBuffer rBuff ;
     private int nextIdx ;
     private X slot = null ;
@@ -61,7 +62,7 @@ public class RecordBufferIteratorMapper<X> implements Iterator<X>
     private void finish()
     {
         rBuff = null ;
-        nextIdx = -99 ;
+        nextIdx = END ;
         slot = null ;
     }
     
