@@ -508,9 +508,11 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		return getValuesHandler().getValuesMap();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public  void clearValues() {
+	public  T clearValues() {
 		getValuesHandler().clear();
+		return (T) this;
 	}
 
 	@Override

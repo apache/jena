@@ -149,8 +149,10 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	/**
 	 * Reset the values table to the initial undefined state.  Used primarily to reset the builder values table
 	 * to a known state. 
+	 * 
+	 * @return The builder for chaining.
 	 */
-	public void clearValues();
+	public T clearValues();
 	
 	/**
 	 * Get an unmodifiable list of vars in the order that they appear in the values table.

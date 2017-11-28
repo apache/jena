@@ -407,7 +407,7 @@ public class RDFParserBuilder {
      * </ul> 
      * <p>
      * See also {@link #errorHandler(ErrorHandler)} to control the output. The default is to log.
-     * Thsi can also be used to turn warnings into exceptions. 
+     * This can also be used to turn warnings into exceptions. 
      */
     public RDFParserBuilder checking(boolean flag) { this.checking = Optional.of(flag) ; return this; }
     
