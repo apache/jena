@@ -509,8 +509,9 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	}
 	
 	@Override
-	public  void clearValues() {
+	public  T clearValues() {
 		getValuesHandler().clear();
+		return (T) this;
 	}
 
 	@Override
