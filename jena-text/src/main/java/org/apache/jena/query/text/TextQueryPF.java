@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.function.Function ;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -147,6 +148,13 @@ public class TextQueryPF extends PropertyFunctionBase {
     @Override
     public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) {
+        if (log.isTraceEnabled()) {
+            IndentedLineBuffer subjBuff = new IndentedLineBuffer() ;
+            argSubject.output(subjBuff, null) ;
+            IndentedLineBuffer objBuff = new IndentedLineBuffer() ;
+            argObject.output(objBuff, null) ;
+            log.trace("exec: {} text:query {}", subjBuff, objBuff) ;
+        }
         if (textIndex == null) {
             if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no text search performed") ;
@@ -201,6 +209,8 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Collection<TextHit> results, ExecutionContext execCxt) {
+        if (log.isTraceEnabled())
+            log.trace("resultsToQueryIterator: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
@@ -224,12 +234,16 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+        if (log.isTraceEnabled())
+            log.trace("variableSubject: {}", match) ;
         ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), execCxt) ;
         Collection<TextHit> r = results.values();
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+        if (log.isTraceEnabled())
+            log.trace("concreteSubject: {}", match) ;
         ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
@@ -267,13 +281,13 @@ public class TextQueryPF extends PropertyFunctionBase {
                 execCxt.getContext().put(cacheSymbol, queryCache);
             }
 
-            if ( log.isDebugEnabled())
-                log.debug("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+            if (log.isTraceEnabled())
+                log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
 
             results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
         } else {
-            if ( log.isDebugEnabled())
-                log.debug("Executing w/o cache Text query: {}", queryString) ;
+            if (log.isTraceEnabled())
+                log.trace("Executing w/o cache Text query: {}", queryString) ;
             results = performQuery(property, queryString, graphURI, lang, limit);
         }
 
@@ -425,6 +439,11 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         public float getScoreLimit() {
             return scoreLimit ;
+        }
+        
+        @Override
+        public String toString() {
+            return "( property: " + property + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + " )";
         }
     }
 }
