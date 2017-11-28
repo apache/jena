@@ -144,6 +144,17 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 storeValues = svNode.asLiteral().getBoolean();
             }
 
+            // use query cache by default
+            boolean cacheQueries = true;
+            Statement cacheQueriesStatement = root.getProperty(pCacheQueries);
+            if (null != cacheQueriesStatement) {
+                RDFNode cqNode = cacheQueriesStatement.getObject();
+                if (! cqNode.isLiteral()) {
+                    throw new TextIndexException("text:cacheQueries property must be a string : " + cqNode);
+                }
+                cacheQueries = cqNode.asLiteral().getBoolean();
+            }
+
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
@@ -152,6 +163,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
+            docDef.setCacheQueries(cacheQueries);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

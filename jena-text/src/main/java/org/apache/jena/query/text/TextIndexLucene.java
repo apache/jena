@@ -204,7 +204,10 @@ public class TextIndexLucene implements TextIndex {
 
     @Override public void updateEntity(Entity entity) {
         if ( log.isDebugEnabled() )
-            log.debug("Update entity: " + entity) ;
+            if (log.isTraceEnabled() && entity != null)
+                log.trace("Update entity: " + entity.toStringDetail()) ;
+            else
+                log.debug("Update entity: " + entity) ;
         try {
             updateDocument(entity);
         } catch (IOException e) {
@@ -216,12 +219,17 @@ public class TextIndexLucene implements TextIndex {
         Document doc = doc(entity);
         Term term = new Term(docDef.getEntityField(), entity.getId());
         indexWriter.updateDocument(term, doc);
+        if ( log.isTraceEnabled() )
+            log.trace("updated: "+doc) ;
     }
 
     @Override
     public void addEntity(Entity entity) {
         if ( log.isDebugEnabled() )
-            log.debug("Add entity: " + entity) ;
+            if (log.isTraceEnabled() && entity != null)
+                log.trace("Add entity: " + entity.toStringDetail()) ;
+            else
+                log.debug("Add entity: " + entity) ;
         try {
             addDocument(entity);
         }
@@ -233,6 +241,8 @@ public class TextIndexLucene implements TextIndex {
     protected void addDocument(Entity entity) throws IOException {
         Document doc = doc(entity) ;
         indexWriter.addDocument(doc) ;
+        if ( log.isTraceEnabled() )
+            log.trace("added: "+doc) ;
     }
 
     @Override
@@ -241,7 +251,10 @@ public class TextIndexLucene implements TextIndex {
             return;
 
         if ( log.isDebugEnabled() )
-            log.debug("Delete entity: "+entity) ;
+            if (log.isTraceEnabled() && entity != null)
+                log.trace("Delete entity: " + entity.toStringDetail()) ;
+            else
+                log.debug("Delete entity: "+entity) ;
         try {
             Map<String, Object> map = entity.getMap();
             String property = map.keySet().iterator().next();
@@ -426,16 +439,20 @@ public class TextIndexLucene implements TextIndex {
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
-            String[] values = doc.getValues(docDef.getEntityField()) ;
+            if ( log.isTraceEnabled() )
+                log.trace("query$ found: "+doc) ;
+            String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;
+            // the following is why no literal is bound when the field is included directly
+            // in the query string rather than explicitly as the property argument, except
+            // when the field is the primaryField. There would need to be an analysis of the
+            // query string in order to extract the field name (if any)
             String field = (property != null) ? docDef.getField(property) : docDef.getPrimaryField();
-            String[] lexicals = doc.getValues(field) ;
-            if (lexicals.length > 0) {
-                String lexical = lexicals[0];
-                String[] langs = doc.getValues(docDef.getLangField()) ;
-                if (langs.length > 0) {
-                    String doclang = langs[0];
+            String lexical = doc.get(field) ;
+            if (lexical != null) {
+                String doclang = doc.get(docDef.getLangField()) ;
+                if (doclang != null) {
                     if (doclang.startsWith(DATATYPE_PREFIX)) {
                         String datatype = doclang.substring(DATATYPE_PREFIX.length());
                         TypeMapper tmap = TypeMapper.getInstance();
@@ -448,11 +465,9 @@ public class TextIndexLucene implements TextIndex {
                 }
             }
 
-            for ( String v : values ) {
-                Node n = TextQueryFuncs.stringToNode(v) ;
-                TextHit hit = new TextHit(n, sd.score, literal);
-                results.add(hit) ;
-            }
+            Node subject = TextQueryFuncs.stringToNode(entity) ;
+            TextHit hit = new TextHit(subject, sd.score, literal);
+            results.add(hit) ;
         }
         return results ;
     }
