@@ -18,11 +18,15 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.Objects;
+
 /** Names for all counters */ 
 public class CounterName {
  // Create intern'ed symbols. 
     static private NameMgr<CounterName> mgr = new NameMgr<>();
     static public CounterName register(String name, String hierarchicalName) {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(hierarchicalName, "hierarchicalName");
         return mgr.register(name, (n)->new CounterName(name, hierarchicalName));
     }
     
@@ -62,7 +66,7 @@ public class CounterName {
 
     public static final CounterName HTTPget          = register("HTTPget", "http.get.requests");
     public static final CounterName HTTPgetGood      = register("HTTPgetGood", "http.get.requests.good");
-    public static final CounterName HTTPGetBad       = register("HTTPGetBad", "http.get.requests.bad");
+    public static final CounterName HTTPgetBad       = register("HTTPGetBad", "http.get.requests.bad");
 
     public static final CounterName HTTPpost         = register("HTTPpost", "http.post.requests");
     public static final CounterName HTTPpostGood     = register("HTTPpostGood", "http.post.requests.good");
