@@ -169,11 +169,12 @@ public class ActionStats extends ActionContainerItem
         out.println("    Bad           = "+counter(dSrv, Operation.Upload, CounterName.RequestsBad)) ;
         
         out.println("  SPARQL Graph Store Protocol:") ;
-        out.println("    GETs          = "+gspValue(dSrv, CounterName.HTTPget)+ " (good="+gspValue(dSrv, CounterName.HTTPgetGood)+"/bad="+gspValue(dSrv, CounterName.HTTPGetBad)+")") ;
-        out.println("    PUTs          = "+gspValue(dSrv, CounterName.HTTPput)+ " (good="+gspValue(dSrv, CounterName.HTTPputGood)+"/bad="+gspValue(dSrv, CounterName.HTTPputBad)+")") ;
-        out.println("    POSTs         = "+gspValue(dSrv, CounterName.HTTPpost)+ " (good="+gspValue(dSrv, CounterName.HTTPpostGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpostBad)+")") ;
-        out.println("    DELETEs       = "+gspValue(dSrv, CounterName.HTTPdelete)+ " (good="+gspValue(dSrv, CounterName.HTTPdeleteGood)+"/bad="+gspValue(dSrv, CounterName.HTTPdeleteBad)+")") ;
-        out.println("    HEADs         = "+gspValue(dSrv, CounterName.HTTPhead)+ " (good="+gspValue(dSrv, CounterName.HTTPheadGood)+"/bad="+gspValue(dSrv, CounterName.HTTPheadBad)+")") ;
+        out.println("    GETs          = "+gspValue(dSrv, CounterName.HTTPget)      + " (good="+gspValue(dSrv, CounterName.HTTPgetGood)+"/bad="+gspValue(dSrv, CounterName.HTTPgetBad)+")") ;
+        out.println("    PUTs          = "+gspValue(dSrv, CounterName.HTTPput)      + " (good="+gspValue(dSrv, CounterName.HTTPputGood)+"/bad="+gspValue(dSrv, CounterName.HTTPputBad)+")") ;
+        out.println("    POSTs         = "+gspValue(dSrv, CounterName.HTTPpost)     + " (good="+gspValue(dSrv, CounterName.HTTPpostGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpostBad)+")") ;
+        out.println("    PATCHs        = "+gspValue(dSrv, CounterName.HTTPpatch)    + " (good="+gspValue(dSrv, CounterName.HTTPpatchGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpatchBad)+")") ;
+        out.println("    DELETEs       = "+gspValue(dSrv, CounterName.HTTPdelete)   + " (good="+gspValue(dSrv, CounterName.HTTPdeleteGood)+"/bad="+gspValue(dSrv, CounterName.HTTPdeleteBad)+")") ;
+        out.println("    HEADs         = "+gspValue(dSrv, CounterName.HTTPhead)     + " (good="+gspValue(dSrv, CounterName.HTTPheadGood)+"/bad="+gspValue(dSrv, CounterName.HTTPheadBad)+")") ;
     }
     
     private long counter(DataService dSrv, Operation operation, CounterName cName) {

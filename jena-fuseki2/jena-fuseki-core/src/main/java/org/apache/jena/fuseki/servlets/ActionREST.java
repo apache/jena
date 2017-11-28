@@ -76,7 +76,7 @@ public abstract class ActionREST extends ActionService
             doGet(action) ;
             incCounter(action.getEndpoint(), CounterName.HTTPgetGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPGetBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPgetBad) ;
             throw ex ;
         }
     }
