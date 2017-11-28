@@ -44,6 +44,7 @@ import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerTracking;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -104,14 +105,16 @@ public abstract class CmdLangParse extends CmdGeneral
         final long triples; 
         final long quads;
         final long tuples = 0;
+        final ErrorHandlerTracking errHandler;
         
         public ParseRecord(String filename, boolean successful, long timeMillis,
-                           long countTriples, long countQuads) {
+                           long countTriples, long countQuads, ErrorHandlerTracking errHandler) {
             this.filename = filename;
             this.success = successful;
             this.timeMillis = timeMillis;
             this.triples = countTriples;
             this.quads = countQuads;
+            this.errHandler = errHandler;
         }
     }
 
@@ -173,6 +176,8 @@ public abstract class CmdLangParse extends CmdGeneral
                 long totalTriples = 0;
                 long totalQuads = 0;
                 long totalTuples = 0;
+                long totalErrors = 0;
+                long totalWarnings = 0;
                 boolean allSuccessful = true;
                 
                 for ( ParseRecord pRec : outcomes ) {
@@ -181,9 +186,11 @@ public abstract class CmdLangParse extends CmdGeneral
                     totalTriples += pRec.triples;
                     totalQuads += pRec.quads;
                     totalTuples += pRec.tuples;
+                    totalErrors += pRec.errHandler.getErrorCount();
+                    totalWarnings += pRec.errHandler.getWarningCount();
                     allSuccessful = allSuccessful & pRec.success;
                 }
-                output("Total", true, totalTriples, totalQuads, totalTuples, totalMillis);
+                output("Total", true, totalTriples, totalQuads, totalTuples, totalMillis, totalErrors, totalWarnings);
             }
         } finally {
             if ( outputWrite != System.out )
@@ -195,7 +202,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
         // exit(1) if there were any errors.
         for ( ParseRecord pr : outcomes ) {
-            if ( ! pr.success )
+            if ( ! pr.success || pr.errHandler.hadIssues() )
                 throw new CmdException();
         }
     }
@@ -237,14 +244,9 @@ public abstract class CmdLangParse extends CmdGeneral
             checking = false;
         builder.checking(checking);
 
-        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
-        if ( checking ) {
-            if ( modLangParse.stopOnBadTerm() )
-                errHandler = ErrorHandlerFactory.errorHandlerStd  ;
-            else
-                // Try to go on if possible.  This is the default behaviour.
-                errHandler = ErrorHandlerFactory.errorHandlerWarn ;
-        }
+        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger, 
+                                                                                   modLangParse.stopOnBadTerm(), 
+                                                                                   modLangParse.stopOnWarnings());
         
         if ( modLangParse.skipOnBadTerm() ) {
             // skipOnBadterm - this needs collaboration from the parser.
@@ -287,7 +289,7 @@ public abstract class CmdLangParse extends CmdGeneral
         sink.finish() ;
         long x = modTime.endTimer() ;
         // TEMP
-        ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads());
+        ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads(), errHandler);
         return outcome;
     }
     
@@ -336,10 +338,11 @@ public abstract class CmdLangParse extends CmdGeneral
     protected void output(ParseRecord rtn) {
         output(rtn.filename, rtn.success,
                rtn.triples, rtn.quads, rtn.tuples,
-               rtn.timeMillis) ;
+               rtn.timeMillis, rtn.errHandler.getErrorCount(),
+               rtn.errHandler.getWarningCount()) ;
     }
     
-    protected void output(String label, boolean success, long numberTriples, long numberQuads, long numberTuples, long timeMillis) {
+    protected void output(String label, boolean success, long numberTriples, long numberQuads, long numberTuples, long timeMillis, long errorCount, long warningCount) {
         double timeSec = timeMillis/1000.0 ;
         long total = numberTriples + numberQuads + numberTuples;
         StringBuilder sb = new StringBuilder();
@@ -354,6 +357,10 @@ public abstract class CmdLangParse extends CmdGeneral
                 appendFmt(sb," : %,.2f %s", numberTriples/timeSec, "per second");
         } else {
             appendFmt(sb, "%s :  (No Output)", label) ;
+        }
+        if ( errorCount > 0 || warningCount > 0 ) {
+            appendFmt(sb," : %,d %s", errorCount, "errors");
+            appendFmt(sb," : %,d %s", warningCount, "warnings");
         }
         System.err.println(sb.toString());
     }
