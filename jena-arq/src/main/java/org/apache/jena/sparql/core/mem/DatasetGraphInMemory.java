@@ -277,9 +277,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void setDefaultGraph(final Graph g) {
         mutate(graph -> {
             defaultGraph().clear();
-            graph.find(ANY, ANY, ANY)
-            .forEachRemaining(t -> addToDftGraph(t.getSubject(), t.getPredicate(), t.getObject()));
-        } , g);
+            graph.find().forEachRemaining(defaultGraph()::add);
+        }, g);
     }
 
     @Override
@@ -293,10 +292,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     private Consumer<Graph> addGraph(final Node name) {
-        return g -> g.find(ANY, ANY, ANY).forEachRemaining(t -> add(new Quad(name, t)));
+        return g -> g.find().mapWith(t -> new Quad(name, t)).forEachRemaining(this::add);
     }
 
-    private final Consumer<Graph> removeGraph = g -> g.find(ANY, ANY, ANY).forEachRemaining(g::delete);
+    private final Consumer<Graph> removeGraph = g -> g.find().forEachRemaining(g::delete);
 
     @Override
     public void addGraph(final Node graphName, final Graph graph) {
