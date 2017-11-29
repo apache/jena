@@ -390,7 +390,7 @@ public class TextIndexLucene implements TextIndex {
             String langField = getDocDef().getLangField();
             if (lang != null) {
                 if (this.isMultilingual && !lang.equals("none")) {
-                    textField = textField + "_" + lang;
+                    textField = (textField == null ? docDef.getPrimaryField() : textField)  + "_" + lang;
                 }
                 langClause = !"none".equals(lang)?
                         langField + ":" + lang : "-" + langField + ":*";
