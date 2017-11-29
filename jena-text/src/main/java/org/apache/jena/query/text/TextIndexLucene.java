@@ -219,8 +219,7 @@ public class TextIndexLucene implements TextIndex {
         Document doc = doc(entity);
         Term term = new Term(docDef.getEntityField(), entity.getId());
         indexWriter.updateDocument(term, doc);
-        if ( log.isTraceEnabled() )
-            log.trace("updated: "+doc) ;
+        log.trace("updated: {}", doc) ;
     }
 
     @Override
@@ -241,8 +240,7 @@ public class TextIndexLucene implements TextIndex {
     protected void addDocument(Entity entity) throws IOException {
         Document doc = doc(entity) ;
         indexWriter.addDocument(doc) ;
-        if ( log.isTraceEnabled() )
-            log.trace("added: "+doc) ;
+        log.trace("added: {}", doc) ;
     }
 
     @Override
@@ -426,8 +424,7 @@ public class TextIndexLucene implements TextIndex {
         if (graphClause != null)
             queryString = "(" + queryString + ") AND " + graphClause ;
 
-        if ( log.isDebugEnabled())
-            log.debug("Lucene query: {} ({})", queryString,limit) ;
+        log.debug("Lucene query: {} ({})", queryString, limit) ;
 
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         Query query = parseQuery(queryString, queryAnalyzer) ;
@@ -439,8 +436,7 @@ public class TextIndexLucene implements TextIndex {
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
-            if ( log.isTraceEnabled() )
-                log.trace("query$ found: "+doc) ;
+            log.trace("query$ found: {}", doc) ;
             String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;

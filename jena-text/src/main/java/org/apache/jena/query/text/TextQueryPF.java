@@ -209,8 +209,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Collection<TextHit> results, ExecutionContext execCxt) {
-        if (log.isTraceEnabled())
-            log.trace("resultsToQueryIterator: {}", results) ;
+        log.trace("resultsToQueryIterator: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
@@ -234,16 +233,14 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        if (log.isTraceEnabled())
-            log.trace("variableSubject: {}", match) ;
+        log.trace("variableSubject: {}", match) ;
         ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), execCxt) ;
         Collection<TextHit> r = results.values();
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
-        if (log.isTraceEnabled())
-            log.trace("concreteSubject: {}", match) ;
+        log.trace("concreteSubject: {}", match) ;
         ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
@@ -259,12 +256,10 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         if ( graphURI == null ) {
             Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
-            if ( log.isDebugEnabled())
-                log.debug("Text query: {} ({})", queryString,limit) ;
+            log.debug("Text query: {} ({})", queryString, limit) ;
         } else {
             Explain.explain(execCxt.getContext(), "Text query <"+graphURI+">: "+queryString) ;
-            if ( log.isDebugEnabled())
-                log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
+            log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
         }
 
         ListMultimap<String,TextHit> results;
@@ -281,13 +276,11 @@ public class TextQueryPF extends PropertyFunctionBase {
                 execCxt.getContext().put(cacheSymbol, queryCache);
             }
 
-            if (log.isTraceEnabled())
-                log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
 
             results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
         } else {
-            if (log.isTraceEnabled())
-                log.trace("Executing w/o cache Text query: {}", queryString) ;
+            log.trace("Executing w/o cache Text query: {}", queryString) ;
             results = performQuery(property, queryString, graphURI, lang, limit);
         }
 
