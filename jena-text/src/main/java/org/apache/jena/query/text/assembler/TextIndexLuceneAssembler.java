@@ -112,7 +112,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if (null != mlSupportStatement) {
                 RDFNode mlsNode = mlSupportStatement.getObject();
                 if (! mlsNode.isLiteral()) {
-                    throw new TextIndexException("text:multilingualSupport property must be a string : " + mlsNode);
+                    throw new TextIndexException("text:multilingualSupport property must be a boolean : " + mlsNode);
                 }
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
             }
@@ -139,7 +139,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if (null != storeValuesStatement) {
                 RDFNode svNode = storeValuesStatement.getObject();
                 if (! svNode.isLiteral()) {
-                    throw new TextIndexException("text:storeValues property must be a string : " + svNode);
+                    throw new TextIndexException("text:storeValues property must be a boolean : " + svNode);
                 }
                 storeValues = svNode.asLiteral().getBoolean();
             }
@@ -150,7 +150,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             if (null != cacheQueriesStatement) {
                 RDFNode cqNode = cacheQueriesStatement.getObject();
                 if (! cqNode.isLiteral()) {
-                    throw new TextIndexException("text:cacheQueries property must be a string : " + cqNode);
+                    throw new TextIndexException("text:cacheQueries property must be a boolean : " + cqNode);
                 }
                 cacheQueries = cqNode.asLiteral().getBoolean();
             }
