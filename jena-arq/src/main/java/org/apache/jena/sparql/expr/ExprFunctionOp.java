@@ -84,12 +84,12 @@ public abstract class ExprFunctionOp extends ExprFunction
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         // Call the per-operation functionality.
-        NodeValue v = eval(binding, qIter, env) ;
-        qIter.close() ;
-        return v ;
+        try { 
+            return eval(binding, qIter, env) ;
+        } finally { qIter.close() ; }
     }
     
-    protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
+    protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env); 
     
     public abstract ExprFunctionOp copy(ExprList args, Op x) ;
     public abstract ExprFunctionOp copy(ExprList args, Element elPattern) ;
