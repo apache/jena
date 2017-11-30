@@ -295,14 +295,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         return results;
     }
     
-    private boolean noLang(String lang) {
-        return (lang == null || lang.isEmpty() || " ".equals(lang));
-    }
-    
-    private String fixLang(String lang) {
-        return lang.isEmpty() || " ".equals(lang) ? null : lang;
-    }
-    
     /** Deconstruct the node or list object argument and make a StrMatch 
      * The 'executionTime' flag indicates whether this is for a build time
      * static check, or for runtime execution.
@@ -319,13 +311,13 @@ public class TextQueryPF extends PropertyFunctionBase {
 
             String lang = o.getLiteralLanguage();
             RDFDatatype dt = o.getLiteralDatatype() ;
-            if (noLang(lang)) {
+            if (lang.isEmpty()) {
                 if (dt != null && dt != XSDDatatype.XSDstring) {
                     log.warn("Object to text query is not a string") ;
                     return null ;
                 }
             }
-            lang = fixLang(lang);
+            lang = lang.isEmpty() ? null : lang;
 
             String qs = o.getLiteralLexicalForm() ;
             return new StrMatch(null, qs, lang, -1, 0) ;
@@ -360,13 +352,13 @@ public class TextQueryPF extends PropertyFunctionBase {
             return null ;
         }
         String lang = x.getLiteralLanguage();
-        if (noLang(lang)) {
+        if (lang.isEmpty()) {
             if (x.getLiteralDatatype() != null && !x.getLiteralDatatype().equals(XSDDatatype.XSDstring)) {
                 log.warn("Text query is not a string " + list) ;
                 return null ;
             }
         }
-        lang = fixLang(lang);
+        lang = lang.isEmpty() ? null : lang;
 
         String queryString = x.getLiteralLexicalForm() ;
         idx++ ;
