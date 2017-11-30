@@ -31,6 +31,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.ext.com.google.common.base.Strings;
 import org.apache.jena.ext.com.google.common.collect.LinkedListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.query.QueryBuildException ;
@@ -317,7 +318,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                     return null ;
                 }
             }
-            lang = lang.isEmpty() ? null : lang;
+            lang = Strings.emptyToNull(lang);
 
             String qs = o.getLiteralLexicalForm() ;
             return new StrMatch(null, qs, lang, -1, 0) ;
@@ -358,7 +359,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                 return null ;
             }
         }
-        lang = lang.isEmpty() ? null : lang;
+        lang = Strings.emptyToNull(lang);
 
         String queryString = x.getLiteralLexicalForm() ;
         idx++ ;
