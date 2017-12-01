@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.function.Function ;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
@@ -147,6 +148,13 @@ public class TextQueryPF extends PropertyFunctionBase {
     @Override
     public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) {
+        if (log.isTraceEnabled()) {
+            IndentedLineBuffer subjBuff = new IndentedLineBuffer() ;
+            argSubject.output(subjBuff, null) ;
+            IndentedLineBuffer objBuff = new IndentedLineBuffer() ;
+            argObject.output(objBuff, null) ;
+            log.trace("exec: {} text:query {}", subjBuff, objBuff) ;
+        }
         if (textIndex == null) {
             if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no text search performed") ;
@@ -201,6 +209,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Collection<TextHit> results, ExecutionContext execCxt) {
+        log.trace("resultsToQueryIterator: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
@@ -224,12 +233,14 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+        log.trace("variableSubject: {}", match) ;
         ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), execCxt) ;
         Collection<TextHit> r = results.values();
         return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
     }
 
     private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+        log.trace("concreteSubject: {}", match) ;
         ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, execCxt) ;
         
         if ( x == null ) // null return value - empty result
@@ -245,31 +256,37 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         if ( graphURI == null ) {
             Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
-            if ( log.isDebugEnabled())
-                log.debug("Text query: {} ({})", queryString,limit) ;
+            log.debug("Text query: {} ({})", queryString, limit) ;
         } else {
             Explain.explain(execCxt.getContext(), "Text query <"+graphURI+">: "+queryString) ;
-            if ( log.isDebugEnabled())
-                log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
-        }
-        
-        // Cache-key does not matter if lang or graphURI are null
-        String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
-        @SuppressWarnings("unchecked")
-        Cache<String,ListMultimap<String,TextHit>> queryCache = 
-            (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
-        if (queryCache == null) {
-            /* doesn't yet exist, need to create it */
-            queryCache = CacheFactory.createCache(CACHE_SIZE);
-            execCxt.getContext().put(cacheSymbol, queryCache);
+            log.debug("Text query: {} <{}> ({})", queryString, graphURI, limit) ;
         }
 
-        ListMultimap<String,TextHit> results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
-        // No cache.
-        //ListMultimap<String,TextHit> results = performQuery(property, queryString, graphURI, lang, limit);
+        ListMultimap<String,TextHit> results;
+        
+        if (textIndex.getDocDef().areQueriesCached()) {
+            // Cache-key does not matter if lang or graphURI are null
+            String cacheKey = limit + " " + property + " " + queryString + " " + lang + " " + graphURI ;
+            @SuppressWarnings("unchecked")
+            Cache<String,ListMultimap<String,TextHit>> queryCache = 
+                (Cache<String,ListMultimap<String,TextHit>>) execCxt.getContext().get(cacheSymbol);
+            if (queryCache == null) {
+                /* doesn't yet exist, need to create it */
+                queryCache = CacheFactory.createCache(CACHE_SIZE);
+                execCxt.getContext().put(cacheSymbol, queryCache);
+            }
+
+            log.trace("Caching Text query: {} with key: >>{}<< in cache: {}", queryString, cacheKey, queryCache) ;
+
+            results = queryCache.getOrFill(cacheKey, ()->performQuery(property, queryString, graphURI, lang, limit));
+        } else {
+            log.trace("Executing w/o cache Text query: {}", queryString) ;
+            results = performQuery(property, queryString, graphURI, lang, limit);
+        }
+
         return results;
     }
-    
+
     private String chooseGraphURI(ExecutionContext execCxt) {
         // use the graph information in the text index if possible
         String graphURI = null;
@@ -415,6 +432,11 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         public float getScoreLimit() {
             return scoreLimit ;
+        }
+        
+        @Override
+        public String toString() {
+            return "( property: " + property + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + " )";
         }
     }
 }
