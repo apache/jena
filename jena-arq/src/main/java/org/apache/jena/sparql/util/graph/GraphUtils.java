@@ -18,11 +18,7 @@
 
 package org.apache.jena.sparql.util.graph ;
 
-import java.util.ArrayList ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
@@ -33,7 +29,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
-import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.vocabulary.RDF ;
@@ -181,9 +177,9 @@ public class GraphUtils {
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
 
-        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm) ;
-        Resource r = (Resource)QueryExecUtils.getOne(qExec, "root") ;
-        return r ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
+            return (Resource)QueryExecUtils.getAtMostOne(qExec, "root") ;
+        }
     }
 
     public static String fmtURI(Resource r) {

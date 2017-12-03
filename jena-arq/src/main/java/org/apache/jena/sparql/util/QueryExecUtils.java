@@ -310,58 +310,50 @@ public class QueryExecUtils {
         if ( q.getResultVars().size() != 1 )
             throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
         String varname = q.getResultVars().get(0) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
-        return getExactlyOne(qExec, varname) ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
+            return getExactlyOne(qExec, varname) ;
+        }
     }
 
     /**
-     * Execute, expecting the result to be one row, one column. Return that one
-     * RDFNode or throw an exception
+     * Execute, expecting the result to be one row, one column. Return that one.
+     * RDFNode or throw an exception.
+     * Use with {@code try ( QueryExecution qExec = ....)}.
      */
     public static RDFNode getExactlyOne(QueryExecution qExec, String varname) {
-        try {
-            ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect() ;
 
-            if ( !rs.hasNext() )
-                throw new ARQException("Not found: var ?" + varname) ;
+        if ( !rs.hasNext() )
+            throw new ARQException("Not found: var ?" + varname) ;
 
-            QuerySolution qs = rs.nextSolution() ;
-            RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?" + varname) ;
-            return r ;
-        }
-        finally {
-            qExec.close() ;
-        }
+        QuerySolution qs = rs.nextSolution() ;
+        RDFNode r = qs.get(varname) ;
+        if ( rs.hasNext() )
+            throw new ARQException("More than one: var ?" + varname) ;
+        return r ;
     }
 
     /**
      * Execute, expecting the result to be one row, one column. Return that one
-     * RDFNode or null Throw exception if more than one.
+     * RDFNode or null. Throw exception if more than one.
+     * Use with {@code try ( QueryExecution qExec = ....)}.
      */
-    public static RDFNode getOne(QueryExecution qExec, String varname) {
-        try {
-            ResultSet rs = qExec.execSelect() ;
+    public static RDFNode getAtMostOne(QueryExecution qExec, String varname) {
+        ResultSet rs = qExec.execSelect() ;
 
-            if ( !rs.hasNext() )
-                return null ;
+        if ( !rs.hasNext() )
+            return null ;
 
-            QuerySolution qs = rs.nextSolution() ;
-            RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() ) {
-                QuerySolution qs2 = rs.next() ;
-                RDFNode r2 = qs2.get(varname) ;
-                if ( rs.hasNext() )
-                    throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
-                else
-                    throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
-            }
-            return r ;
+        QuerySolution qs = rs.nextSolution() ;
+        RDFNode r = qs.get(varname) ;
+        if ( rs.hasNext() ) {
+            QuerySolution qs2 = rs.next() ;
+            RDFNode r2 = qs2.get(varname) ;
+            if ( rs.hasNext() )
+                throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
+            else
+                throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
         }
-        finally {
-            qExec.close() ;
-        }
+        return r ;
     }
-
 }
