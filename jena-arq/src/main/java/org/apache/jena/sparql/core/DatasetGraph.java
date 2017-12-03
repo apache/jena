@@ -152,11 +152,11 @@ public interface DatasetGraph extends Transactional, Closeable
 
     /**
      * A {@code DatasetGraph} supports transactions if it provides {@link #begin}/
-     * {@link #commit}/{@link #end}. There core storage {@code DatasetGraph} that
-     * provide fully serialized transactions.  {@code DatasetGraph} that provide
+     * {@link #commit}/{@link #end}. The core storage {@code DatasetGraph}s 
+     * provide fully serialized transactions. A {@code DatasetGraph} that provides
      * functionality across independent systems can not provide such strong guarantees.
-     * For example, they may use MRSW locking and some isolation control.
-     * Specifically, they do not necessarily provide {@link #abort}.
+     * For example, it may use MRSW locking and some isolation control.
+     * Specifically, it would not necessarily provide {@link #abort}.
      * <p>
      * See {@link #supportsTransactionAbort()} for {@link #abort}.
      * In addition, check details of a specific implementation.

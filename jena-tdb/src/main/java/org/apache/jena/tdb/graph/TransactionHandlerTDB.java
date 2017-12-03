@@ -23,7 +23,7 @@ import org.apache.jena.graph.impl.TransactionHandlerBase ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.store.GraphTDB ;
 
-/** Support for when TDB is used non-transactionally.does not support ACID transactions.  
+/** Support for when TDB is used non-transactionally. Does not support ACID transactions.  
  *  Flushes if commit is called although it denies supporting transactions
  */
 

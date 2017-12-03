@@ -21,6 +21,8 @@ package org.apache.jena.tdb.store ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.tdb.graph.TransactionHandlerTDB;
 
 /**
  * Non-transactional version of {@link GraphTDB}. Handed out by DatasetGraphTDB when used
@@ -45,5 +47,10 @@ public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
     @Override
     protected DatasetGraphTDB getBaseDatasetGraphTDB() {
         return dataset ;
+    }
+    
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerTDB(this) ;
     }
 }

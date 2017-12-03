@@ -76,7 +76,6 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
 
     @Override
     protected PrefixMapping createPrefixMapping() {
-        // [TXN] Make transactional.
         DatasetPrefixStorage dsgPrefixes = getDatasetGraphTDB().getPrefixes() ;
         if ( isDefaultGraph() )
             return dsgPrefixes.getPrefixMapping() ;

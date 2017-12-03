@@ -21,8 +21,6 @@ package org.apache.jena.tdb.store ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.TransactionHandler ;
-import org.apache.jena.tdb.graph.TransactionHandlerTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /**
@@ -34,8 +32,6 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
  */
 public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
-    // [TXN] ??
-    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
 
     private final DatasetGraphTransaction dataset ;
 
@@ -47,13 +43,6 @@ public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
     @Override
     public DatasetGraphTDB getDatasetGraphTDB() {
         return dataset.getDatasetGraphToQuery() ;
-    }
-
-    // [TXN] Transaction prefixes.
-    
-    @Override
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler ;
     }
 
     @Override
