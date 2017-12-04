@@ -101,16 +101,18 @@ public class RecordFactory
         byte[] key = new byte[keyLength] ;
         byte[] value = (hasValue() ? new byte[valueLength] :null ) ;
 
+        // Slightly slower. (2017)
+        // Avoid using position() so we can avoid needing synchronized.
+        // Inlined or copyInto -- both the same time.
+        // Slower than the synchronized(bb) by ~10%.
 //        int posnKey = idx*slotLen ;
-//        // Avoid using position() so we can avoid needing synchronized.
 //        copyInto(key, bb, posnKey, keyLength) ;
-//        if ( value != null )
-//        {
-//            int posnValue = idx*slotLen+keyLength ;
+//        if ( value != null ) {
+//            int posnValue = posnKey+keyLength ;
 //            copyInto(value, bb, posnValue, valueLength) ;
 //        }
         
-        // Using bb.get(byte[],,) may be potentially faster but requires the synchronized
+        // Using bb.get(byte[],,) is slightly faster, including the required synchronized.
         // There's no absolute version.
         synchronized(bb)
         {
@@ -127,9 +129,6 @@ public class RecordFactory
         // Thread safe.
         for ( int i = 0 ; i < length ; i++ )
             dst[i] = src.get(start+i) ;
-        // Would otherwise be ...
-//        src.position(start) ;
-//        src.get(dst, 0, length) ;
     }
     
     public boolean hasValue()   { return valueLength > 0 ; }

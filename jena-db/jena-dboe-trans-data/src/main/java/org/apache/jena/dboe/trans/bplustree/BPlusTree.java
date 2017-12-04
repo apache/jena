@@ -316,11 +316,46 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
     }
     
+    /*
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
-        throw new NotImplementedException("Mapping iterator") ;
+        startReadBlkMgr() ;
+        BPTreeNode root = getRoot() ;
+        Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
+        releaseRoot(root) ;
+        finishReadBlkMgr() ;
+        // Note that this end the read-part (find the start), not the iteration.
+        // Iterator read blocks still get handled.
+        return iter ;
+    }
+
+    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper)
+    {
+        // Look for starting RecordsBufferPage id.
+        int id = BPTreeNode.recordsPageId(node, fromRec) ; 
+        if ( id < 0 )
+            return Iter.nullIter() ;
+        RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
+        // No pages are active at this point.
+        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
+    }
+ 
+     */
+    
+    @Override
+    public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
+        startReadBlkMgr() ;
+        BPTreeNode root = getRootRead() ;
+        releaseRootRead(root) ;
+        finishReadBlkMgr() ;
+        return iterator(root, minRec, maxRec, mapper);
     }
     
+    private <X> Iterator<X> iterator(BPTreeNode node, Record minRec, Record maxRec, RecordMapper<X> mapper) {
+        int keyLen = recordsMgr.getRecordBufferPageMgr().getRecordFactory().keyLength();
+        return BPTreeRangeIteratorMapper.create(node, minRec, maxRec, keyLen, mapper) ;
+    }
+
     // Internal calls.
     void startReadBlkMgr() {
         nodeManager.startRead() ;

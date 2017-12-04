@@ -23,23 +23,30 @@ import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.record.Record;
+import org.apache.jena.dboe.base.record.RecordMapper;
 
-public class RecordBufferIterator implements Iterator<Record>
+// Iterate over one RecordBuffer
+public class RecordBufferIteratorMapper<X> implements Iterator<X>
 {
     private static final int END = -99;
     private RecordBuffer rBuff ;
     private int nextIdx ;
-    private Record slot = null ;
+    private X slot = null ;
+    private final byte[] keySlot ;
     private final Record maxRec ;
     private final Record minRec ;
+    private final RecordMapper<X> mapper;
     
-    RecordBufferIterator(RecordBuffer rBuff)
-    { this(rBuff, null, null); }
+//    RecordBufferIteratorMapper(RecordBuffer rBuff)
+//    { this(rBuff, null, null); }
     
-    RecordBufferIterator(RecordBuffer rBuff, Record minRecord, Record maxRecord)
+    RecordBufferIteratorMapper(RecordBuffer rBuff, Record minRecord, Record maxRecord, int keyLen, RecordMapper<X> mapper)
     {
         this.rBuff = rBuff ;
+        this.mapper = mapper ;
+        this.keySlot = (maxRecord==null) ? null : new byte[keyLen];
         nextIdx = 0 ;
         minRec = minRecord ;
         if ( minRec != null )
@@ -72,8 +79,8 @@ public class RecordBufferIterator implements Iterator<Record>
             return false ;
         }
         
-        slot = rBuff.get(nextIdx) ;
-        if ( maxRec != null && Record.keyGE(slot, maxRec) )
+        slot = rBuff.access(nextIdx, keySlot, mapper);
+        if ( maxRec != null && Bytes.compare(keySlot, maxRec.getKey()) >= 0 ) 
         {
             // Finished - now to large
             finish() ;
@@ -84,11 +91,11 @@ public class RecordBufferIterator implements Iterator<Record>
     }
 
     @Override
-    public Record next()
+    public X next()
     {
         if ( ! hasNext() )
             throw new NoSuchElementException("RecordBufferIterator") ;
-        Record r = slot ;
+        X r = slot ;
         slot = null ;
         return r ;
     }

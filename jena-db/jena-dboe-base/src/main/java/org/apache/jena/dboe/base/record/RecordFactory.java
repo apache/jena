@@ -89,39 +89,35 @@ public class RecordFactory
             bb.put(record.getValue(), 0, valueLength);
     }
 
-    public static final RecordMapper<Record> mapperRecord = new RecordMapper<Record>() {
-        /*
-         * RecordRangeIterator calls getRecordBuffer().get(slotidx);
-         */
-        @Override
-        public Record map(ByteBuffer bb, int idx, byte[] keyBytes, RecordFactory factory) {
-            byte[] key = new byte[factory.keyLength];
-            byte[] value = (factory.hasValue() ? new byte[factory.valueLength] :null );
-            // Is it better to avoid the synchronize needed for bb.position./bb.get
-            // but not use a (relative) bulk bb.get(byte[],,) which may be a native operation?
-            
-//            int posnKey = idx*slotLen;
-//            // Avoid using position() so we can avoid needing synchronized.
-//            copyInto(key, bb, posnKey, keyLength);
-//            if ( value != null )
-//            {
-//                int posnValue = idx*slotLen+keyLength;
-//                copyInto(value, bb, posnValue, valueLength);
-//            }
-            
-            // Using bb.get(byte[],,) may be potentially faster but requires the synchronized
-            // There's no absolute version.
-            synchronized(bb)
-            {
-                bb.position(idx*factory.slotLen);
-                bb.get(key, 0, factory.keyLength);
-                if ( value != null )
-                    bb.get(value, 0, factory.valueLength);
-            }
-            if ( keyBytes != null )
-                System.arraycopy(key, 0, keyBytes, 0, factory.keyLength);
-            return factory.create(key, value);
+    
+    public static final RecordMapper<Record> mapperRecord = (bb, idx, keyBytes, factory) -> {
+        byte[] key = new byte[factory.keyLength];
+        byte[] value = (factory.hasValue() ? new byte[factory.valueLength] :null );
+
+        // 2017
+        // It is better use synchronize and bulk get. (~10% faster)
+
+//        int slotLen = factory.recordLength();
+//        int posnKey = idx*slotLen;
+//        // Avoid using position() so we can avoid needing synchronized.
+//        copyInto(key, bb, posnKey, factory.keyLength);
+//        if ( value != null ) {
+//            int posnValue = idx*slotLen+factory.keyLength;
+//            copyInto(value, bb, posnValue, factory.valueLength);
+//        }
+
+        // Using bb.get(byte[],,) may be potentially faster but requires the synchronized
+        // There's no absolute version.
+        synchronized(bb)
+        {
+            bb.position(idx*factory.slotLen);
+            bb.get(key, 0, factory.keyLength);
+            if ( value != null )
+                bb.get(value, 0, factory.valueLength);
         }
+        if ( keyBytes != null )
+            System.arraycopy(key, 0, keyBytes, 0, factory.keyLength);
+        return factory.create(key, value);
     };
     
     public <X> X access(ByteBuffer bb, int idx, byte[] keyBytes, RecordMapper<X> mapper) {
@@ -129,16 +125,15 @@ public class RecordFactory
     }
     
     public Record buildFrom(ByteBuffer bb, int idx) {
-        return access(bb, idx, null, mapperRecord); 
+        // Switchover when working. Fornow, assis breakpointing "access" leaf calls.
+        return mapperRecord.map(bb, idx, null, this);
+        //return access(bb, idx, null, mapperRecord); 
     }
     
-    private final void copyInto(byte[] dst, ByteBuffer src, int start, int length) {
+    private final static void copyInto(byte[] dst, ByteBuffer src, int start, int length) {
         // Thread safe.
         for ( int i = 0; i < length; i++ )
             dst[i] = src.get(start+i);
-        // Would otherwise be ...
-//        src.position(start);
-//        src.get(dst, 0, length);
     }
     
     public boolean hasValue()   { return valueLength > 0; }

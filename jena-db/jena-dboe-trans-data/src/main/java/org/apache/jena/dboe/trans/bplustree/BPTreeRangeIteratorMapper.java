@@ -20,6 +20,8 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import java.util.* ;
 
+import org.apache.jena.dboe.base.record.RecordMapper;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.dboe.base.record.Record;
@@ -27,29 +29,38 @@ import org.apache.jena.dboe.trans.bplustree.AccessPath.AccessStep;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** Iterator over records that does not assume records block linkage */ 
-class BPTreeRangeIterator implements Iterator<Record> {
-    static Logger log = LoggerFactory.getLogger(BPTreeRangeIterator.class) ;
+// Temp - merge back into BPTreeRangeIterator
+
+// What about RecordRangeIterator
+
+/** Iterator that converts to X directly */ 
+class BPTreeRangeIteratorMapper<X> implements Iterator<X> {
+    static Logger log = LoggerFactory.getLogger(BPTreeRangeIteratorMapper.class) ;
     
-    public static Iterator<Record> create(BPTreeNode node, Record minRec, Record maxRec) {
+    public static <X> Iterator<X> create(BPTreeNode node, Record minRec, Record maxRec, int keyLength, RecordMapper<X> mapper) {
         if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
             return Iter.nullIter();
-        return new BPTreeRangeIterator(node, minRec, maxRec) ;
+        return new BPTreeRangeIteratorMapper<>(node, minRec, maxRec, keyLength, mapper) ;
     }
     
     // Convert path to a stack of iterators
-    private final Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
+    final private Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
     final private Record minRecord ;
     final private Record maxRecord ;
-    private Iterator<Record> current ;
-    private Record slot = null ;
+    final private RecordMapper<X> mapper ;
+    private Iterator<X> current ;
+    private X slot = null ;
+    final private byte[] keySlot ;
     private boolean finished = false ;
     
-    BPTreeRangeIterator(BPTreeNode node, Record minRec, Record maxRec ) {
+    BPTreeRangeIteratorMapper(BPTreeNode node, Record minRec, Record maxRec, int keyLength, RecordMapper<X> mapper) {
         this.minRecord = minRec ;
         this.maxRecord = maxRec ;
+        this.mapper = mapper ;
+        this.keySlot = new byte[keyLength] ;
+        
         BPTreeRecords r = loadStack(node) ;
-        current = getRecordsIterator(r, minRecord, maxRecord) ;
+        current = getRecordsIterator(r, minRecord, maxRecord, mapper) ;
     }
 
     @Override
@@ -70,7 +81,7 @@ class BPTreeRangeIterator implements Iterator<Record> {
     }
     
     // Move across the head of the stack until empty - then move next level. 
-    private Iterator<Record> moveOnCurrent() {
+    private Iterator<X> moveOnCurrent() {
         Iterator<BPTreePage> iter = null ;
         while(!stack.isEmpty()) { 
             iter = stack.peek() ;
@@ -89,14 +100,14 @@ class BPTreeRangeIterator implements Iterator<Record> {
         else {
             r = (BPTreeRecords)p ;
         }
-        return getRecordsIterator(r, minRecord, maxRecord) ;
+        return getRecordsIterator(r, minRecord, maxRecord, mapper) ;
     }
     
     // ---- Places we touch blocks. 
     
-    private static Iterator<Record> getRecordsIterator(BPTreeRecords records, Record minRecord, Record maxRecord) {
+    private static<X>  Iterator<X> getRecordsIterator(BPTreeRecords records, Record minRecord, Record maxRecord, RecordMapper<X> mapper) {
         records.bpTree.startReadBlkMgr();
-        Iterator<Record> iter = records.getRecordBuffer().iterator(minRecord, maxRecord) ;
+        Iterator<X> iter = records.getRecordBuffer().iterator(minRecord, maxRecord, mapper);
         records.bpTree.finishReadBlkMgr();
         return iter ;
     }
@@ -140,10 +151,10 @@ class BPTreeRangeIterator implements Iterator<Record> {
     }
 
     @Override
-    public Record next() {
+    public X next() {
         if ( ! hasNext() )
             throw new NoSuchElementException() ;
-        Record r = slot ;
+        X r = slot ;
         if ( r == null )
             throw new InternalErrorException("Null slot after hasNext is true") ;
         slot = null ;
