@@ -24,14 +24,11 @@ import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
-import org.apache.jena.sparql.core.GraphView ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.core.*;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
  */
@@ -65,39 +62,19 @@ public class GraphViewSwitchable extends GraphView {
     public TransactionHandler getTransactionHandler() {
         return transactionHandler;
     }
-    
-    // Remove TDB2 TransactionHandlerTDB
-    // To GraphView?
-    static class TransactionHandlerDSG extends TransactionHandlerBase implements TransactionHandler {
-        private final DatasetGraph dsg;
 
+    // Remove when promotion is in the DatasetGraph API.
+    static class TransactionHandlerDSG extends TransactionHandlerView {
         public TransactionHandlerDSG(DatasetGraph dsg) {
-            this.dsg = dsg;
-        }
-
-        @Override
-        public void abort() {
-            dsg.abort();
-            dsg.end();
+            super(dsg);
         }
 
         @Override
         public void begin() {
             if ( TransactionCoordinator.promotion )
-                dsg.begin(ReadWrite.READ);
+                getDSG().begin(ReadWrite.READ);
             else
-                dsg.begin(ReadWrite.WRITE);
-        }
-
-        @Override
-        public void commit() {
-            dsg.commit();
-            dsg.end();
-        }
-
-        @Override
-        public boolean transactionsSupported() {
-            return dsg.supportsTransactions();
+                getDSG().begin(ReadWrite.WRITE);
         }
     }
     
@@ -126,54 +103,66 @@ public class GraphViewSwitchable extends GraphView {
     // A PrefixMapping sending operations via the switchable.
     // Long term, rework as PrefixMapping over PrefixMap over DatasetPrefixStorage
     private PrefixMapping prefixMapping(Node graphName) {
-        
-        String gn = (graphName == null) ? "" : graphName.getURI(); 
-        
-        return new PrefixMappingImpl() {
-            
-            DatasetPrefixStorage dps() {
-                return ((DatasetGraphTDB)(getx().get())).getPrefixes();
-            }
-            
-            Graph graph() {
-                DatasetGraphTDB dsg = (DatasetGraphTDB)getx().get();
-                if ( gn == null )
-                    return dsg.getDefaultGraph();
-                else
-                    return dsg.getGraph(graphName);
-            }
-            
-            PrefixMapping prefixMapping() {
-                if ( gn == null )
-                    return dps().getPrefixMapping();
-                else
-                    return dps().getPrefixMapping(gn); 
-            }
-
-            @Override
-            protected void set(String prefix, String uri) {
-                dps().insertPrefix(gn, prefix, uri);
-                super.set(prefix, uri);
-            }
-
-            @Override
-            protected String get(String prefix) {
-                //Ignore. String x = super.get(prefix);
-                // (Ignore more?)
-                return dps().readPrefix(gn, prefix);
-            }
-
-            @Override
-            protected void remove(String prefix) {
-                dps().getPrefixMapping().removeNsPrefix(prefix);
-                super.remove(prefix);
-            }
-            
-            @Override
-            public Map<String, String> getNsPrefixMap() {
-                return prefixMapping().getNsPrefixMap();
-                //return graph().getPrefixMapping().getNsPrefixMap();
-            }
-        };
+        return new PrefixMappingImplTDB2(graphName); 
     }
+
+    class PrefixMappingImplTDB2 extends PrefixMappingImpl {
+
+        private final String gn;
+        private final Node graphName;
+
+        PrefixMappingImplTDB2(Node graphName) {
+            this.graphName = graphName;
+            if ( graphName != null ) {
+                graphName = NodeFunctions.blankNodeToIri(graphName);
+                gn = graphName.getURI();
+            } else
+                gn = "";
+        }                    
+
+        DatasetPrefixStorage dps() {
+            return ((DatasetGraphTDB)(getx().get())).getPrefixes();
+        }
+
+        Graph graph() {
+            DatasetGraphTDB dsg = (DatasetGraphTDB)getx().get();
+            if ( gn == null )
+                return dsg.getDefaultGraph();
+            else
+                return dsg.getGraph(graphName);
+        }
+
+        PrefixMapping prefixMapping() {
+            if ( gn == null )
+                return dps().getPrefixMapping();
+            else
+                return dps().getPrefixMapping(gn); 
+        }
+
+        @Override
+        protected void set(String prefix, String uri) {
+            dps().insertPrefix(gn, prefix, uri);
+            super.set(prefix, uri);
+        }
+
+        @Override
+        protected String get(String prefix) {
+            //Ignore. String x = super.get(prefix);
+            // (Ignore more?)
+            return dps().readPrefix(gn, prefix);
+        }
+
+        @Override
+        protected void remove(String prefix) {
+            dps().getPrefixMapping().removeNsPrefix(prefix);
+            super.remove(prefix);
+        }
+
+        @Override
+        public Map<String, String> getNsPrefixMap() {
+            return prefixMapping().getNsPrefixMap();
+            //return graph().getPrefixMapping().getNsPrefixMap();
+        }
+    }
+
 }

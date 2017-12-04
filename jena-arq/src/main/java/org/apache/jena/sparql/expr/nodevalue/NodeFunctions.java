@@ -352,30 +352,36 @@ public class NodeFunctions {
     public static boolean           warningsForIRIs = false ;
 
     // -------- IRI
+    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
+    public static Node blankNodeToIri(Node node) {
+        if ( node.isBlank() ) {
+            String x = node.getBlankNodeLabel() ;
+            return NodeFactory.createURI("_:" + x) ;
+        }
+        return node;
+    }
+
+    /** NodeValue to NodeValue, skolemizing, and converting strings to URIs. */
     public static NodeValue iri(NodeValue nv, String baseIRI) {
         if ( isIRI(nv.asNode()) )
             return nv ;
         Node n2 = iri(nv.asNode(), baseIRI) ;
         return NodeValue.makeNode(n2) ;
     }
-
-    public static Node iri(Node nv, String baseIRI) {
-        if ( nv.isURI() )
-            return nv ;
-
-        if ( nv.isBlank() ) {
-            // Skolemization of blank nodes to IRIs : Don't ask, just don't ask.
-            String x = nv.getBlankNodeLabel() ;
-            return NodeFactory.createURI("_:" + x) ;
-        }
-
+    
+    /** Node to Node, skolemizing, and converting strings to URIs. */
+    public static Node iri(Node n, String baseIRI) {
+        Node node = blankNodeToIri(n);
+        if ( node.isURI() )
+            return node ;
+        // Literals.
         // Simple literal or xsd:string
-        String str = simpleLiteralOrXSDString(nv) ;
+        String str = simpleLiteralOrXSDString(node) ;
         if ( str == null )
-            throw new ExprEvalException("Can't make an IRI from " + nv) ;
+            throw new ExprEvalException("Can't make an IRI from " + node) ;
 
         IRI iri = null ;
-        String iriStr = nv.getLiteralLexicalForm() ;
+        String iriStr = node.getLiteralLexicalForm() ;
 
         // Level of checking?
         if ( baseIRI != null ) {
@@ -398,7 +404,7 @@ public class NodeFunctions {
         return NodeFactory.createURI(iri.toString()) ;
     }
 
-    // The Jena version can vbe slow to inityailise (but is pure java)
+    // The Jena version can be slow to inityailise (but is pure java)
 
     // private static UUIDFactory factory = new UUID_V4_Gen() ;
     // private static UUIDFactory factory = new UUID_V1_Gen() ;

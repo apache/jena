@@ -26,13 +26,14 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.GraphEvents;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.other.GLib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.tdb2.TDBException;
-import org.apache.jena.tdb2.graph.TransactionHandlerTDB;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
@@ -42,9 +43,6 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  * named graphs)
  */
 public class GraphTDB extends GraphView implements Closeable, Sync {
-    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
-
-    // Switch this to DatasetGraphTransaction
     private final DatasetGraphTDB    dataset ;
 
     public GraphTDB(DatasetGraphTDB dataset, Node graphName) {
@@ -150,15 +148,10 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
                 throw new InternalError("projectQuadsToTriples: Quads from unexpected graph (expected=" + graphNode + ", got=" + q.getGraph() + ")");
             return q.asTriple();
         };
-        // Without.
+        // Without checking
         //Function<Quad, Triple> f = (q) -> q.asTriple();
 	    return Iter.map(iter, f);
 	}
-
-    @Override
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler ;
-    }
 
     @Override
     public void clear() {

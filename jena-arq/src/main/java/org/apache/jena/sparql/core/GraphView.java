@@ -24,6 +24,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.GLib ;
@@ -58,7 +59,9 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     }
     
     private final DatasetGraph dsg ;
-    private final Node gn ;                 // null for default graph.
+    // null for default graph.
+    private final Node gn ;                 
+    private final TransactionHandlerView transactionHandler;
 
     // Factory style.
     public static GraphView createDefaultGraph(DatasetGraph dsg)
@@ -70,10 +73,10 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     public static GraphView createUnionGraph(DatasetGraph dsg)
     { return new GraphView(dsg, Quad.unionGraph) ; }
 
-    // If inherited.
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
         this.gn = gn ;
+        this.transactionHandler = new TransactionHandlerView(dsg);
     }
 
     /**
@@ -164,6 +167,11 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     @Override
     public void sync() {
         SystemARQ.sync(dsg);
+    }
+    
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerView(dsg);
     }
     
     @Override

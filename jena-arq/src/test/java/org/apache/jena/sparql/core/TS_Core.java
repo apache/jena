@@ -32,6 +32,7 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphCopyAdd.class
     , TestGraphOverDatasetMem.class
     , TestDatasetGraphViewGraphs.class
+    , TestGraphView.class
     , TestDatasetMonitor.class
     , TestDatasetGraphWithLock.class
     

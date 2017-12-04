@@ -16,46 +16,45 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.graph;
+package org.apache.jena.sparql.core;
 
-import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-import org.apache.jena.graph.impl.TransactionHandlerBase ;
+import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.store.GraphTDB;
 
-public class TransactionHandlerTDB extends TransactionHandlerBase //implements TransactionHandler 
+/** A graph TransactionHandler that for a graph view of a {@link DatasetGraph}*/  
+public class TransactionHandlerView extends TransactionHandlerBase 
 {
-    private final GraphTDB graph ;
-    private final DatasetGraphTDB dsg;
+    private final DatasetGraph dsg;
 
-    public TransactionHandlerTDB(GraphTDB graph) {
-        this.graph = graph;
-        this.dsg = graph.getDSG();
+    public TransactionHandlerView(DatasetGraph dsg) {
+        this.dsg = dsg;
     }
+
+    protected DatasetGraph getDSG() { return dsg; }    
 
     @Override
     public void abort() {
-        graph.getDSG().abort();
-        graph.getDSG().end();
+        getDSG().abort();
+        getDSG().end();
     }
 
     @Override
     public void begin() {
-        if ( TransactionCoordinator.promotion )
-            dsg.begin(ReadWrite.READ);
+        if ( false /* dsg.supportPromotion */)
+            getDSG().begin(ReadWrite.READ);
         else
-            dsg.begin(ReadWrite.WRITE);
+            getDSG().begin(ReadWrite.WRITE);
     }
 
     @Override
     public void commit() {
-        dsg.commit();
-        dsg.end();
+        getDSG().commit();
+        getDSG().end();
     }
 
     @Override
     public boolean transactionsSupported() {
-        return true;
+        // Abort required.
+        return getDSG().supportsTransactionAbort();
     }
 }

@@ -57,7 +57,7 @@ import org.junit.runners.Suite ;
     , TS_Sys.class
 } )
 
-public class TC_TDB
+public class TC_TDB2
 {
     static {
         if ( false )
