@@ -63,11 +63,16 @@ public abstract class AssemblerBase implements Assembler
         throw new NotUniqueException( root, property );
         }
 
-    protected void checkType( Resource root, Resource type )
-        {
-        if (!root.hasProperty( RDF.type, type ))
-            throw new CannotConstructException( this.getClass(), root, type );
-        }
+    /**
+     * Throws {@link CannotConstructException} if the offered resource isn't any of the offered types.
+     * 
+     * @param root resource to check
+     * @param types types for which to check
+     */
+    protected void checkType( Resource root, Resource... types ) {
+        for (Resource type : types) if (root.hasProperty( RDF.type, type )) return;
+        throw new CannotConstructException( this.getClass(), root, types );
+    }
 
     @Override
     public Model openModel( Resource root, Mode mode )

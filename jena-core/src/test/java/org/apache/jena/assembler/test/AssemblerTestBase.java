@@ -18,6 +18,7 @@
 
 package org.apache.jena.assembler.test;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.assembler.exceptions.CannotConstructException ;
@@ -125,7 +126,7 @@ public class AssemblerTestBase extends ModelTestBase
         catch (CannotConstructException e)
             {
             assertEquals( getAssemblerClass(), e.getAssemblerClass() );
-            assertEquals( type, e.getType() ); 
+            assertTrue( ArrayUtils.contains(e.getTypes(), type) ); 
             assertEquals( resource( "x" ), e.getRoot() );
             }
         }
