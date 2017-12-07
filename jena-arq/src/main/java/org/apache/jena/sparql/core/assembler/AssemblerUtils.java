@@ -51,14 +51,16 @@ public class AssemblerUtils
     
     static { JenaSystem.init() ; } 
     
+    @SuppressWarnings("deprecation")
     static public void init()
     {
         if ( initialized )
             return ;
         initialized = true ;
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
-        registerDataset(InMemDatasetAssembler.getType(),    new InMemDatasetAssembler()) ;
+        // Wire in the datasets assemblers
+        registerDataset(DatasetAssembler.getType(),             new DatasetAssembler()) ;
+        registerDataset(InMemDatasetAssembler.getType(),        new InMemDatasetAssembler()) ;
+        registerDataset(DatasetAssemblerVocab.tDatasetTxnMem,   new InMemDatasetAssembler()) ;
     }
     
     private static Model modelExtras = ModelFactory.createDefaultModel() ;

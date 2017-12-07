@@ -31,7 +31,10 @@ public class DatasetAssemblerVocab
     // General dataset
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
     // In-memory dataset
+    
     public static final Resource tMemoryDataset      = ResourceFactory.createResource(NS+"MemoryDataset") ;
+    /** @deprecated use {@link #tMemoryDataset} */
+    public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"") ;
     public static final Resource tDatasetNull        = ResourceFactory.createResource(NS+"DatasetNull") ;
     
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
