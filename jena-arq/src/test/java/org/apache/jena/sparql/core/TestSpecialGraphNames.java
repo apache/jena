@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.apache.jena.sparql.core.TestSpecialGraphs.Mode.QUADS ;
-import static org.apache.jena.sparql.core.TestSpecialGraphs.Mode.TRIPLES ;
+import static org.apache.jena.sparql.core.TestSpecialGraphNames.Mode.QUADS ;
+import static org.apache.jena.sparql.core.TestSpecialGraphNames.Mode.TRIPLES ;
 import static org.junit.Assert.assertEquals ;
 
 import java.util.Arrays ;
@@ -43,9 +43,9 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
-/** Test special graphs */
+/** Test special graph names. */
 @RunWith(Parameterized.class)
-public class TestSpecialGraphs {
+public class TestSpecialGraphNames {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
         Creator<DatasetGraph> datasetGeneralMaker = ()-> DatasetGraphFactory.createGeneral() ; 
@@ -68,7 +68,7 @@ public class TestSpecialGraphs {
                                           ")") ;
     private DatasetGraph dsg ;
     
-    public TestSpecialGraphs(String label, Creator<DatasetGraph> maker) {
+    public TestSpecialGraphNames(String label, Creator<DatasetGraph> maker) {
         this.dsg = BuilderGraph.buildDataset(maker.create(), SSE.parse(x1)) ;
     }
 

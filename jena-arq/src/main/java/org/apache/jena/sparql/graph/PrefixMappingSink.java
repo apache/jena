@@ -16,20 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph;
+package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NullIterator ;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-/** Black hole for triples */
-public class GraphSink extends GraphBase
-{
+/** Sink PrefixMapping. Accepts chnages but does not retain state. */ 
+public class PrefixMappingSink extends PrefixMappingImpl {
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Triple triple)
-    { return NullIterator.instance() ; }
+    protected void set(String prefix, String uri) { }
+
+    @Override
+    protected String get(String prefix) { return null; }
+
+    @Override
+    protected void remove(String prefix) { }
     
-    @Override
-    public void performAdd( Triple t ) {}
 }

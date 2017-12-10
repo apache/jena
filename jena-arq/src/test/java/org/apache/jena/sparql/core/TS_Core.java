@@ -42,7 +42,8 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphBaseFindPattern_General.class
     , TestDatasetGraphBaseFindPattern_Mem.class
     
-    , TestSpecialGraphs.class
+    , TestSpecialGraphNames.class
+    , TestSpecials.class
 })
 
 public class TS_Core

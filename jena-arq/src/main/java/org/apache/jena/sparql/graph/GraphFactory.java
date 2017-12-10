@@ -26,7 +26,6 @@ import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.util.graph.GraphSink ;
 import org.apache.jena.system.JenaSystem ;
 
 /** Ways to make graphs and models */
