@@ -129,7 +129,6 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private String extractArg(String prefix, List<Node> objArgs) {
         String value = null;
-        int pos = 0;
         for (Node node : objArgs) {
             if (node.isLiteral()) {
                 String arg = node.getLiteral().toString();
@@ -138,10 +137,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                     break;
                 }
             }
-            pos++;
         }
-        if (value != null)
-            objArgs.remove(pos);
 
         return value;
     }
