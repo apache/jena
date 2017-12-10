@@ -18,10 +18,6 @@
 
 package org.apache.jena.sparql.core.assembler ;
 
-import static org.apache.jena.assembler.JA.data;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
-import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
-
 import java.util.List ;
 
 import org.apache.jena.assembler.Assembler ;
@@ -30,11 +26,12 @@ import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.jena.system.Txn;
 
 public class DatasetAssembler extends AssemblerBase implements Assembler {
     public static Resource getType() {
@@ -42,17 +39,12 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
     }
 
     @Override
-    public Dataset open(Assembler a, Resource root, Mode mode) {
+    public Object open(Assembler a, Resource root, Mode mode) {
         Dataset ds = createDataset(a, root, mode) ;
         return ds ;
     }
 
     public Dataset createDataset(Assembler a, Resource root, Mode mode) {
-        checkType(root, DatasetAssemblerVocab.tDataset);
-        // use TIM if quads are loaded or if all named Graphs are loaded via data property
-        final boolean allNamedGraphsLoadViaData = multiValueResource(root, pNamedGraph).stream().allMatch(g -> g.hasProperty(data));
-        if (root.hasProperty(data) || allNamedGraphsLoadViaData) return new InMemDatasetAssembler().open(a, root, mode);
-
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
         Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
@@ -65,31 +57,28 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
         else
             // Assembler description did not define one.
             dftModel = GraphFactory.makeDefaultModel() ;
-        Dataset ds = DatasetFactory.create(dftModel);
+        Dataset ds = DatasetFactory.create(dftModel) ;
+        // -------- Named graphs
+        List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
+        for ( RDFNode n : nodes ) {
+            if ( !(n instanceof Resource) )
+                throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
+            Resource r = (Resource)n;
 
-        Txn.executeWrite(ds, () -> {
-            // -------- Named graphs
-            List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
-            for ( RDFNode n : nodes ) {
-                if ( !(n instanceof Resource) )
-                    throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n));
-                Resource r = (Resource)n;
-    
-                String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
-                Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
-                if ( g == null ) {
-                    g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
-                    if ( g != null ) {
-                        Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
-                    } else {
-                        throw new DatasetAssemblerException(root, "no graph for: " + gName);
-                    }
+            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName);
+            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph);
+            if ( g == null ) {
+                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt);
+                if ( g != null ) {
+                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData");
+                } else {
+                    throw new DatasetAssemblerException(root, "no graph for: " + gName);
                 }
-    
-                Model m = a.openModel(g);
-                ds.addNamedModel(gName, m);
             }
-        });
+
+            Model m = a.openModel(g);
+            ds.addNamedModel(gName, m);
+        }
         AssemblerUtils.setContext(root, ds.getContext()) ;
         return ds ;
     }

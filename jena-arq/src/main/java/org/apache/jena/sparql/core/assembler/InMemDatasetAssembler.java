@@ -20,45 +20,54 @@ package org.apache.jena.sparql.core.assembler;
 
 import static org.apache.jena.assembler.JA.data;
 import static org.apache.jena.query.DatasetFactory.createTxnMem;
+import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.riot.RDFDataMgr.read;
 import static org.apache.jena.sparql.core.assembler.AssemblerUtils.setContext;
-import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
-import static org.apache.jena.sparql.util.graph.GraphUtils.*;
+import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
+import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
+import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
+import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.system.Txn;
 
 /**
  * An {@link Assembler} that creates in-memory {@link Dataset}s.
  */
-public class InMemDatasetAssembler extends DatasetAssembler {
+public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
 
     public static Resource getType() {
-        return DatasetAssemblerVocab.tMemoryDataset ;
+        return DatasetAssemblerVocab.tDatasetTxnMem ;
     }
     
 	@Override
 	public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
-		checkType(root, getType(), tDataset);
+		checkType(root, DatasetAssemblerVocab.tDatasetTxnMem);
 		final Dataset dataset = createTxnMem();
 		setContext(root, dataset.getContext());
 
-		Txn.executeWrite(dataset, ()->{ 
-        		// Load data into the default graph or quads into the dataset.
-        		multiValueAsString(root, data)
-        		    .forEach(dataURI -> read(dataset, dataURI));
-        
-        		// load data into named graphs
-        		multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
-        			final String graphName = getAsStringValue(namedGraphResource, pGraphName);
-        			if (namedGraphResource.hasProperty(data))
-        			    multiValueAsString(namedGraphResource, data)
-        			        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
-        		});
+		dataset.begin(WRITE);
+
+		// load data into the default graph
+		if (root.hasProperty(data)) {
+		    multiValueResource(root, data)
+				.forEach(defaultGraphDocument -> read(dataset, defaultGraphDocument.getURI()));
+		}
+
+		// load data into named graphs
+		multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
+			final String graphName = getAsStringValue(namedGraphResource, pGraphName);
+			if (namedGraphResource.hasProperty(data)) {
+			    multiValueResource(namedGraphResource, data)
+			        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData.getURI()));
+			}
 		});
+
+		dataset.commit();
+		dataset.end();
 		return dataset;
 	}
 }
