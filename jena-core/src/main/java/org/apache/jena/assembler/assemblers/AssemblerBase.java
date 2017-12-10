@@ -18,22 +18,10 @@
 
 package org.apache.jena.assembler.assemblers;
 
-import static java.util.Arrays.stream;
 import java.util.List;
-
-import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.AssemblerHelp;
-import org.apache.jena.assembler.Mode;
-import org.apache.jena.assembler.exceptions.CannotConstructException;
-import org.apache.jena.assembler.exceptions.CannotLoadClassException;
-import org.apache.jena.assembler.exceptions.NotUniqueException;
-import org.apache.jena.assembler.exceptions.PropertyRequiredException;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.assembler.* ;
+import org.apache.jena.assembler.exceptions.* ;
+import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.RDF ;
@@ -82,9 +70,7 @@ public abstract class AssemblerBase implements Assembler
      * @param types types for which to check
      */
     protected void checkType( Resource root, Resource... types ) {
-        boolean hasType = stream(types).anyMatch(t->root.hasProperty( RDF.type, t ));
-        if ( hasType )
-            return;
+        for (Resource type : types) if (root.hasProperty( RDF.type, type )) return;
         throw new CannotConstructException( this.getClass(), root, types );
     }
 

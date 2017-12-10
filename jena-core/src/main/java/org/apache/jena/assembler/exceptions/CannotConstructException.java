@@ -43,13 +43,6 @@ public class CannotConstructException extends AssemblerException
 
     private static String constructMessage( Class<?>assemblerClass, Resource root, Resource... types )
         {
-        if ( types.length == 1) {
-            return 
-                "the assembler " + getClassName( assemblerClass )
-                + " cannot construct the object named " + nice( root )
-                + " because it is not of rdf:type " + nice(types[0]);
-        }
-        
         return 
             "the assembler " + getClassName( assemblerClass )
             + " cannot construct the object named " + nice( root )

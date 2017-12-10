@@ -39,27 +39,26 @@ public class InMemDatasetAssembler extends DatasetAssembler {
     public static Resource getType() {
         return DatasetAssemblerVocab.tMemoryDataset ;
     }
+    
+	@Override
+	public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
+		checkType(root, getType(), tDataset);
+		final Dataset dataset = createTxnMem();
+		setContext(root, dataset.getContext());
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
-        checkType(root, getType(), tDataset, DatasetAssemblerVocab.tDatasetTxnMem);
-        final Dataset dataset = createTxnMem();
-        setContext(root, dataset.getContext());
-
-        Txn.executeWrite(dataset, ()->{ 
-            // Load data into the default graph or quads into the dataset.
-            multiValueAsString(root, data)
-            .forEach(dataURI -> read(dataset, dataURI));
-
-            // load data into named graphs
-            multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
-                final String graphName = getAsStringValue(namedGraphResource, pGraphName);
-                if (namedGraphResource.hasProperty(data))
-                    multiValueAsString(namedGraphResource, data)
-                    .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
-            });
-        });
-        return dataset;
-    }
+		Txn.executeWrite(dataset, ()->{ 
+        		// Load data into the default graph or quads into the dataset.
+        		multiValueAsString(root, data)
+        		    .forEach(dataURI -> read(dataset, dataURI));
+        
+        		// load data into named graphs
+        		multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
+        			final String graphName = getAsStringValue(namedGraphResource, pGraphName);
+        			if (namedGraphResource.hasProperty(data))
+        			    multiValueAsString(namedGraphResource, data)
+        			        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
+        		});
+		});
+		return dataset;
+	}
 }
