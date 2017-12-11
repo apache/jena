@@ -56,9 +56,9 @@ public class AssemblerUtils
         if ( initialized )
             return ;
         initialized = true ;
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        registerDataset(DatasetAssembler.getType(),         new DatasetAssembler()) ;
-        registerDataset(InMemDatasetAssembler.getType(),    new InMemDatasetAssembler()) ;
+        registerDataset(DatasetAssemblerVocab.tDataset,         new DatasetAssembler()) ;
+        registerDataset(DatasetAssemblerVocab.tMemoryDataset,   new InMemDatasetAssembler()) ;
+        registerDataset(DatasetAssemblerVocab.tDatasetTxnMem,   new InMemDatasetAssembler()) ;
     }
     
     private static Model modelExtras = ModelFactory.createDefaultModel() ;

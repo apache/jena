@@ -34,6 +34,7 @@ import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.system.Txn;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * An {@link Assembler} that creates in-memory {@link Dataset}s.
@@ -41,30 +42,32 @@ import org.apache.jena.system.Txn;
 public class InMemDatasetAssembler extends AssemblerBase implements Assembler {
 
     public static Resource getType() {
-        return DatasetAssemblerVocab.tDatasetTxnMem ;
+        return DatasetAssemblerVocab.tMemoryDataset ;
     }
-    
-	@Override
-	public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
-		checkType(root, DatasetAssemblerVocab.tDatasetTxnMem);
-		final Dataset dataset = createTxnMem();
-		setContext(root, dataset.getContext());
 
-		Txn.executeWrite(dataset, ()->{ 
-    		// Load data into the default graph
-		    // This also loads quads into the dataset.
-    		multiValueAsString(root, data)
-    		    .forEach(dataURI -> read(dataset, dataURI));
-    
-    		// load data into named graphs
-    		multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
-    			final String graphName = getAsStringValue(namedGraphResource, pGraphName);
-    			if (namedGraphResource.hasProperty(data)) {
-    			    multiValueAsString(namedGraphResource, data)
-    			        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
-    			}
-    		});
-		});
-		return dataset;
-	}
+    @Override
+    public Dataset open(final Assembler assembler, final Resource root, final Mode mode) {
+        // Old name : bypass.
+        if ( ! root.hasProperty( RDF.type, DatasetAssemblerVocab.tDatasetTxnMem ) )
+            checkType(root, DatasetAssemblerVocab.tMemoryDataset);
+        final Dataset dataset = createTxnMem();
+        setContext(root, dataset.getContext());
+
+        Txn.executeWrite(dataset, ()->{ 
+            // Load data into the default graph
+            // This also loads quads into the dataset.
+            multiValueAsString(root, data)
+                .forEach(dataURI -> read(dataset, dataURI));
+
+            // load data into named graphs
+            multiValueResource(root, pNamedGraph).forEach(namedGraphResource -> {
+                final String graphName = getAsStringValue(namedGraphResource, pGraphName);
+                if (namedGraphResource.hasProperty(data)) {
+                    multiValueAsString(namedGraphResource, data)
+                        .forEach(namedGraphData -> read(dataset.getNamedModel(graphName), namedGraphData));
+                }
+            });
+        });
+        return dataset;
+    }
 }
