@@ -68,7 +68,6 @@ public class OpVars
 
     public static void fixedVars(Op op, Set<Var> acc) {
         OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
-        // Does not work yet for new walker.
         OpWalker.walk(new OpWalkerVisitorFixed(visitor, acc), op) ;
     }
     
@@ -192,6 +191,11 @@ public class OpVars
         }
     }
 
+    /** Collect variables.
+     * What to collect from is controlled by the walker e.g. 
+     * OpWalkerVisitorFixed, OpWalkerVisitorVisible
+     * and for OpVarsMentioned, the full geenral walker.
+     */
     private static class OpVarsPattern extends OpVisitorBase
     {
         // The possibly-set-vars
@@ -218,11 +222,16 @@ public class OpVars
         public void visit(OpQuadPattern quadPattern) {
             addVar(acc, quadPattern.getGraphNode()) ;
             VarUtils.addVars(acc, quadPattern.getBasicPattern()) ;
-//            // Pure quading
-//            for (Iterator<Quad> iter = quadPattern.getQuads().iterator(); iter.hasNext();) {
-//                Quad quad = iter.next() ;
-//                addVarsFromQuad(acc, quad) ;
-//            }
+        }
+
+        @Override
+        public void visit(OpTriple opTriple) {
+            VarUtils.addVarsFromTriple(acc, opTriple.getTriple());
+        }
+
+        @Override
+        public void visit(OpQuad opQuad) {
+            VarUtils.addVarsFromQuad(acc, opQuad.getQuad());
         }
 
         @Override
@@ -237,9 +246,8 @@ public class OpVars
 
         @Override
         public void visit(OpTable opTable) {
-            // Only the variables with values in the tables
-            // (When building, undefs didn't get into bindings so no variable
-            // mentioned)
+            // Only the variables with values in the tables (When building,
+            // undefs didn't get into bindings so no variable mentioned)
             Table t = opTable.getTable() ;
             acc.addAll(t.getVars()) ;
         }
@@ -247,8 +255,10 @@ public class OpVars
         @Override
         public void visit(OpProject opProject) {
             // The walker (WalkerVisitorVisible) handles this
-            // for visible variables, not mentioned variable colelcting.
+            // for visible variables, not mentioned variable collecting.
             // The visibleOnly/clear is simply to be as general as possible.
+            // visible: OpWalkerVisitorFixed, OpWalkerVisitorVisible,   
+            // all (visibleOnly==false) for OpVarsMentioned
             if (visibleOnly)
                 acc.clear() ;
             acc.addAll(opProject.getVars()) ;
@@ -274,7 +284,6 @@ public class OpVars
         public void visit(OpProcedure opProc) {
             ExprVars.varsMentioned(acc, opProc.getArgs()) ;
         }
-
     }
     
     private static class OpVarsPatternWithPositions extends OpVisitorBase
