@@ -1,0 +1,24 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+
+<#serviceInMemory> rdf:type fuseki:Service;
+    rdfs:label                   "In-memory, transactional dataset.";
+    fuseki:name                  "ds";
+    fuseki:serviceQuery          "query";
+    fuseki:serviceQuery          "sparql";
+    fuseki:serviceUpdate         "update";
+    fuseki:serviceUpload         "upload" ;
+    fuseki:serviceReadGraphStore "data" ;
+    fuseki:serviceReadGraphStore "get" ;
+    fuseki:dataset <#dataset> ;
+.
+
+<#dataset> rdf:type ja:MemoryDataset;
+   ja:data "data.trig";
+.

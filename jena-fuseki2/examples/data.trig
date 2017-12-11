@@ -1,0 +1,7 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX : <http://example/>
+
+:s :p :o .
+
+GRAPH :g1 { :s1 :p :o1 }
