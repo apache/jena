@@ -33,6 +33,7 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+    <es.startup.timeout>90</es.startup.timeout>
   </properties>
 
   <dependencies>
@@ -133,7 +134,7 @@
           <clusterName>elasticsearch</clusterName>
           <transportPort>9500</transportPort>
           <httpPort>9400</httpPort>
-          <timeout>60</timeout>
+          <timeout>${es.startup.timeout}</timeout>
         </configuration>
         <executions>
           <!--
