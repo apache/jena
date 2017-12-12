@@ -21,6 +21,7 @@ package org.apache.jena.sparql.core;
 import java.util.Iterator ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.Lock ;
@@ -147,6 +148,10 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return g == null || g == Node.ANY;
     }
 
+    protected static void unsupportedMethod(Object object, String method) {
+        throw new UnsupportedOperationException(Lib.className(object)+"."+method) ;
+    }
+    
     @Override
     public void clear() {
         deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);

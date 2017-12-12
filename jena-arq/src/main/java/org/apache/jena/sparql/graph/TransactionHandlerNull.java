@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.sparql.graph;
 
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.sparql.JenaTransactionException;
 
-/**
- * A null action {@link Transactional}.
- * Does not protect anything but does track the transaction status.
- * It does provide "abort".   
- */
-public class TransactionalNull implements Transactional {
-    public static TransactionalNull create() { return new TransactionalNull(); }
+/** Implementation of {@link TransactionHandler} that does nothing but track the transction state. */
+public class TransactionHandlerNull extends TransactionHandlerBase {
+ 
+    private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(()->Boolean.FALSE);
     
-    private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
-
     @Override
-    public void begin(ReadWrite readWrite) {
+    public boolean transactionsSupported() {
+        return true;
+    }
+    
+    @Override
+    public void begin() {
         if ( inTransaction.get() )
             throw new JenaTransactionException("Already in transaction"); 
         inTransaction.set(true);
@@ -51,21 +52,6 @@ public class TransactionalNull implements Transactional {
             throw new JenaTransactionException("Not in transaction"); 
         inTransaction.set(false);
     }
-
-    @Override
-    public boolean isInTransaction() {
-        return inTransaction.get();
-    }
-
-    @Override
-    public void end() {
-        inTransaction.set(false);
-    }
-
-//    @Override
-//    public boolean promote() {
-//        return true;
-//    }
 
     public void remove() {
         inTransaction.remove();

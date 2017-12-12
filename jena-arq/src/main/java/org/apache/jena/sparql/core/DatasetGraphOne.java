@@ -27,27 +27,58 @@ import org.apache.jena.atlas.iterator.NullIterator;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.ReadWrite;
 
-/**
- * DatasetGraph of a single graph as default graph. Fixed as one graph (the
- * default) - can not add named graphs.
+/** DatasetGraph of a single graph as default graph.
+ * <p>
+ *  Fixed as one graph (the default) - can not add named graphs.
+ *  <p>
+ *  Passes transactions down to a nominated backing {@link DatasetGraph}
+ *  
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Graph graph;
+    private final DatasetGraph backingDGS;
+    private final Transactional txn;
+    private final boolean supportsAbort;
 
-    public DatasetGraphOne(Graph graph) {
+    public DatasetGraphOne(Graph graph, DatasetGraph backing) {
         this.graph = graph;
+        backingDGS = backing;
+        supportsAbort = backing.supportsTransactionAbort();
+        txn = backing;
     }
     
-    private final Transactional txn                     = TransactionalLock.createMRSW() ;
+    public DatasetGraphOne(Graph graph) {
+        this.graph = graph;
+        if ( graph instanceof GraphView ) {
+            backingDGS = ((GraphView)graph).getDataset();
+            txn = backingDGS;
+            supportsAbort = backingDGS.supportsTransactionAbort();
+        } else {
+            txn = TransactionalLock.createMRSW();
+            backingDGS = null;
+            supportsAbort = false;
+        }
+    }
+    
+    public DatasetGraphOne(Graph graph, Transactional transactional) {
+        this.graph = graph;
+        backingDGS = null;
+        if ( transactional == null )
+            txn = TransactionalLock.createMRSW();
+        else
+            txn = transactional;
+        supportsAbort = false; 
+    }
+    
     @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
     @Override public void commit()                      { txn.commit() ; }
     @Override public void abort()                       { txn.abort() ; }
     @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
     @Override public void end()                         { txn.end(); }
     @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public boolean supportsTransactionAbort() { return supportsAbort ; }
 
     @Override
     public boolean containsGraph(Node graphNode) {
@@ -83,7 +114,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         if ( Quad.isDefaultGraph(g) )
             graph.add(new Triple(s, p, o));
         else
-            throw new UnsupportedOperationException("DatasetGraphOne.add/named graph");
+            unsupportedMethod(this, "add(named graph)");
     }
 
     @Override
@@ -91,7 +122,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         if ( isDefaultGraph(quad) )
             graph.add(quad.asTriple());
         else
-            throw new UnsupportedOperationException("DatasetGraphOne.add/named graph");
+            unsupportedMethod(this, "add(named graph)");
     }
 
     @Override
@@ -99,7 +130,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         if ( Quad.isDefaultGraph(g) )
             graph.delete(new Triple(s, p, o));
         else
-            throw new UnsupportedOperationException("DatasetGraphOne.delete/named graph");
+            unsupportedMethod(this, "delete(named graph)");
     }
 
     @Override
@@ -107,22 +138,22 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         if ( isDefaultGraph(quad) )
             graph.delete(quad.asTriple());
         else
-            throw new UnsupportedOperationException("DatasetGraphOne.delete/named graph");
+            unsupportedMethod(this, "delete(named graph)");
     }
 
     @Override
     public void setDefaultGraph(Graph g) {
-        throw new UnsupportedOperationException("DatasetGraphOne.setDefaultGraph");
+        unsupportedMethod(this, "setDefaultGraph");
     }
 
     @Override
     public void addGraph(Node graphName, Graph graph) {
-        throw new UnsupportedOperationException("DatasetGraphOne.addGraph");
+        unsupportedMethod(this, "addGraph");
     }
 
     @Override
     public void removeGraph(Node graphName) {
-        throw new UnsupportedOperationException("DatasetGraphOne.removeGraph");
+        unsupportedMethod(this, "removeGraph");
     }
 
     // -- Not needed -- implement find(g,s,p,o) directly.

@@ -16,23 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph;
+package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NullIterator ;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-/** Black hole for triples.
- * @deprecated [Dec 2017] Use {@link org.apache.jena.sparql.graph.GraphSink}. To be removed.
- */
-@Deprecated
-public class GraphSink extends GraphBase
-{
+/** Immutable empty PrefixMapping. */
+public class PrefixMappingZero extends PrefixMappingImpl {
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Triple triple)
-    { return NullIterator.instance() ; }
-    
+    protected void set(String prefix, String uri) {
+        throw new UnsupportedOperationException("set prefix");
+    }
+
     @Override
-    public void performAdd( Triple t ) {}
+    protected String get(String prefix) { return null; }
+
+    @Override
+    protected void remove(String prefix) { 
+        throw new UnsupportedOperationException("remove prefix");
+    }
 }

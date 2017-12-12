@@ -16,23 +16,44 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util.graph;
+package org.apache.jena.sparql.graph;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
-/** Black hole for triples.
- * @deprecated [Dec 2017] Use {@link org.apache.jena.sparql.graph.GraphSink}. To be removed.
+/** 
+ * Black hole graph - adds and deletes are silently ignored.
+ * @see GraphZero
  */
-@Deprecated
 public class GraphSink extends GraphBase
 {
+    private static Graph graph = new GraphSink();
+    public static Graph instance() {
+        return graph;
+    }
+    
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple triple)
     { return NullIterator.instance() ; }
     
     @Override
     public void performAdd( Triple t ) {}
+    
+    @Override
+    public void performDelete( Triple t ) {}
+    
+    @Override
+    protected PrefixMapping createPrefixMapping() { 
+        return new PrefixMappingSink() ;
+    }
+    
+    @Override 
+    public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerNull(); 
+    }
 }
