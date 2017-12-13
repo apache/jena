@@ -947,5 +947,27 @@ public class TestXSDFuncOp extends BaseTest
     @Test public void cast_time_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDtime, nv_t_tz1) ; }
     @Test public void cast_time_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDtime, nv_t_tz2) ; }
     @Test public void cast_time_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDtime, nv_t_tz3) ; }
+    
+    @Test
+    public void fn_error_01() {
+        try {
+            LibTestExpr.eval("fn:error()");
+            fail("No exception");
+        }
+        catch (ExprEvalException ex) {
+            assertNull(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void fn_error_02() {
+        try {
+            LibTestExpr.eval("fn:error('MESSAGE')");
+            fail("No exception");
+        }
+        catch (ExprEvalException ex) {
+            assertEquals("MESSAGE", ex.getMessage());
+        }
+    }
 }
 

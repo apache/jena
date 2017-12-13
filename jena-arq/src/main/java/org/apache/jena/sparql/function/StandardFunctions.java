@@ -104,6 +104,10 @@ public class StandardFunctions
         // Sections refer to XQ/XP Expression 3.1
         // https://www.w3.org/TR/xpath-functions-3/
 
+        // 3.1.1 fn:error
+        add(registry, xfn+"error",         FN_Error.class) ;
+
+        
 //      5.4.1 fn:concat
 //      5.4.3 fn:substring
 //      5.4.4 fn:string-length
