@@ -1,5 +1,6 @@
 package org.apache.jena.sparql.util;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.jena.atlas.iterator.Iter.count;
 import static org.apache.jena.atlas.iterator.Iter.map;
 import static org.apache.jena.ext.com.google.common.collect.Iterators.concat;
@@ -26,8 +27,8 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
     private final Lock lock;
 
     public ViewDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
-        super(left, right);
-        this.context = c;
+        super(requireNonNull(left), requireNonNull(right));
+        this.context = requireNonNull(c);
         this.lock = new PairLock(left.getLock(), right.getLock());
     }
 
@@ -56,7 +57,7 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
 
     @Override
     public void abort() {
-        throwNoMutationAllowed();
+        end();
     }
 
     @Override
