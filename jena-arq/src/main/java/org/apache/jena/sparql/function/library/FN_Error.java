@@ -49,8 +49,6 @@ public class FN_Error extends FunctionBase {
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase1: Null args list") ;
         
-        int size = args.size();
-        
         switch(args.size()) {
             case 0:
                 throw new ExprEvalException();
