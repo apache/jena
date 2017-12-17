@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.tdb.StoreConnection ;
 
 /** Setup configuration.
@@ -66,8 +67,11 @@ public class FusekiServerListener implements ServletContextListener {
             return ;
         initialized = true ;
 
-        DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
-        DataAccessPointRegistry.set(servletContext, registry);
+        ServiceDispatchRegistry serviceDispatchRegistry = new ServiceDispatchRegistry(true);
+        ServiceDispatchRegistry.set(servletContext, serviceDispatchRegistry);
+        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry() ;
+        DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
+        
         
         try {
             FusekiSystem.formatBaseArea() ; 
@@ -84,18 +88,18 @@ public class FusekiServerListener implements ServletContextListener {
                 initialSetup.fusekiServerConfigFile = cfg ;
             }
 
-            if ( initialSetup != null ) {
-                FusekiSystem.initializeDataAccessPoints(registry,
-                                                        initialSetup, FusekiSystem.dirConfiguration.toString()) ;
-            } else {
+            if ( initialSetup == null ) {
                 Fuseki.serverLog.error("No configuration") ;
                 throw new FusekiException("No configuration") ;
-            }
+            }                
+            Fuseki.setVerbose(servletContext, initialSetup.verbose);
+            FusekiSystem.initializeDataAccessPoints(dataAccessPointRegistry,
+                                                    initialSetup, FusekiSystem.dirConfiguration.toString()) ;
         } catch (Throwable th) { 
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
             throw th ;
         }
-        FusekiInfo.info(initialSetup, registry);
+        FusekiInfo.info(initialSetup, dataAccessPointRegistry);
     }
 }
 

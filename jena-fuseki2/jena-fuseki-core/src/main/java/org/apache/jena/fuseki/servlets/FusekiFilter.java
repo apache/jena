@@ -35,7 +35,7 @@ import org.slf4j.Logger ;
  */
 public class FusekiFilter implements Filter {
     private static Logger log = Fuseki.serverLog ;
-    private static SPARQL_UberServlet überServlet = new SPARQL_UberServlet.AccessByConfig() ;
+    private static ServiceRouter routerServlet = new ServiceRouter.AccessByConfig() ;
     
     @Override
     public void init(FilterConfig filterConfig) {
@@ -70,7 +70,7 @@ public class FusekiFilter implements Filter {
                 if ( registry.isRegistered(datasetUri) ) {
                     if ( LogFilter )
                         log.info("Filter: dispatch") ;
-                    überServlet.doCommon(req, resp) ;
+                    routerServlet.doCommon(req, resp) ;
                     return ;
                 }
 
@@ -85,7 +85,7 @@ public class FusekiFilter implements Filter {
                         if ( datasetUri.startsWith(dsName) ) {
                             if ( LogFilter )
                                 log.info("Filter: dispatch (GSP direct name)") ;
-                            überServlet.doCommon(req, resp) ;
+                            routerServlet.doCommon(req, resp) ;
                             return ;
                         }
                     }

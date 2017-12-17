@@ -66,15 +66,12 @@ import org.apache.jena.web.HttpSC ;
 
 public class SPARQL_Update extends SPARQL_Protocol
 {
-    private static final long serialVersionUID = 6136544994836781248L;
     // Base URI used to isolate parsing from the current directory of the server.
     private static final String UpdateParseBase = Fuseki.BaseParserSPARQL ;
     private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
 
     public SPARQL_Update()
     { super() ; }
-
-    // doMethod : Not used with UberServlet dispatch.
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

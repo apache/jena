@@ -28,6 +28,10 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
     public DataAccessPointRegistry() {}
     
+    public DataAccessPointRegistry(DataAccessPointRegistry other) {
+        other.forEach((name, accessPoint)->register(name, accessPoint));
+    }
+    
     // Add error checking.
     public void register(String name, DataAccessPoint accessPt) {
         if ( isRegistered(name) )
@@ -43,9 +47,9 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         System.out.println("== "+string) ;
         this.forEach((k,ref)->{
             System.out.printf("  (key=%s, ref=%s)\n", k, ref.getName()) ;
-            ref.getDataService().getOperations().forEach((opName)->{
-                ref.getDataService().getOperation(opName).forEach(ep->{
-                    System.out.printf("     %s : %s\n", opName, ep.getEndpoint()) ;
+            ref.getDataService().getOperations().forEach((op)->{
+                ref.getDataService().getEndpoints(op).forEach(ep->{
+                    System.out.printf("     %s : %s\n", op, ep.getEndpoint()) ;
                 });
             });
         }) ;
@@ -54,11 +58,10 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
     
     private static final String attrNameRegistry = "jena-fuseki:dataAccessPointRegistry" ;
-    // Policy for the location of the server-wide DataAccessPointRegistry 
     public static DataAccessPointRegistry get(ServletContext cxt) {
         DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(attrNameRegistry) ;
         if ( registry == null )
-            Log.warn(DataAccessPointRegistry.class, "No registry for ServletContext") ;
+            Log.warn(DataAccessPointRegistry.class, "No data access point registry for ServletContext") ;
         return registry ;
     }
     

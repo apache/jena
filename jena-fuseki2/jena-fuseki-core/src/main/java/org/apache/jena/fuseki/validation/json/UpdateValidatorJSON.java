@@ -36,8 +36,6 @@ import org.apache.jena.update.UpdateRequest ;
 
 public class UpdateValidatorJSON {
 
-    private static final long serialVersionUID = 8656799942497464291L;
-
     public UpdateValidatorJSON() {}
     
     static final String paramUpdate           = "update" ;

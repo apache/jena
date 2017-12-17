@@ -18,29 +18,35 @@
 
 package org.apache.jena.fuseki.server;
 
-/** 
- * Names (symbols) for operations.
- * An {@code OperationName} is not related to the service name used to invoke the operation.
- * That is determined by the {@link Endpoint}. 
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+
+/**
+ * Operations are symbol to look up in the {@link ServiceDispatchRegistry#operationToHandler} map. The name
+ * of an {@code Operation} is not related to the service name used to invoke the operation
+ * which is determined by the {@link Endpoint}.
  */
-public class OperationName {
+public class Operation {
     
     // Create intern'ed symbols. 
-    static private NameMgr<OperationName> mgr = new NameMgr<>(); 
-    static public OperationName register(String name, String description) { return mgr.register(name, (x)->new OperationName(x, description)); }
+    static private NameMgr<Operation> mgr = new NameMgr<>(); 
+    static public Operation register(String name, String description) { return mgr.register(name, (x)->new Operation(x, description)); }
     
-    public static final OperationName Query    = register("Query", "SPARQL Query");
-    public static final OperationName Update   = register("Update", "SPARQL Update");
-    public static final OperationName Upload   = register("Upload", "File Upload");
-    public static final OperationName GSP_RW   = register("GSP_RW", "Graph Store Protocol");
-    public static final OperationName GSP_R    = register("GSP_R", "Graph Store Protocol (Read)");
-    public static final OperationName Quads_RW = register("Quads_RW", "HTTP Quads");
-    public static final OperationName Quads_R  = register("Quads_R", "HTTP Quads (Read)");
+    public static final Operation Query          = register("Query", "SPARQL Query");
+    public static final Operation Update         = register("Update", "SPARQL Update");
+    public static final Operation Upload         = register("Upload", "File Upload");
+    public static final Operation GSP_R          = register("GSP_R", "Graph Store Protocol (Read)");
+    public static final Operation GSP_RW         = register("GSP_RW", "Graph Store Protocol");
+    public static final Operation Quads_R        = register("Quads_R", "HTTP Quads (Read)");
+    public static final Operation Quads_RW       = register("Quads_RW", "HTTP Quads");
+    
+    // Plain REST operations on the datset URL 
+    public static final Operation DatasetRequest_R  = Quads_R;
+    public static final Operation DatasetRequest_RW = Quads_RW;
     
     private final String description ;
     private final String name ;
 
-    private OperationName(String name, String description) {
+    private Operation(String name, String description) {
         this.name = name;
         this.description = description;
     }
@@ -72,7 +78,7 @@ public class OperationName {
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        OperationName other = (OperationName)obj;
+        Operation other = (Operation)obj;
         if ( name == null ) {
             if ( other.name != null )
                 return false;
@@ -80,6 +86,10 @@ public class OperationName {
             return false;
         return true;
     }
-    
+ 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
 

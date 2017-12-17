@@ -18,10 +18,17 @@
 
 package org.apache.jena.fuseki.build;
 
-import static org.apache.jena.fuseki.server.FusekiVocab.* ;
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.FusekiLib.nodeLabel ;
 import static org.apache.jena.fuseki.FusekiLib.query ;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceQueryEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadGraphStoreEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadQuadsEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadWriteGraphStoreEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadWriteQuadsEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceUpdateEP;
+import static org.apache.jena.fuseki.server.FusekiVocab.pServiceUploadEP;
+
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -29,8 +36,7 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.fuseki.server.Operation ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
@@ -41,12 +47,10 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.vocabulary.RDF ;
-import org.slf4j.Logger ;
+
 public class FusekiBuilder
 {
-    private static Logger log = Fuseki.builderLog ;
-    
-    /** Build a DataAccessPoint, including DataService at Resource svc */ 
+    /** Build a DataAccessPoint, including DataService, from the description at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
@@ -58,38 +62,43 @@ public class FusekiBuilder
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
 
-        DataService dataService = FusekiBuilder.buildDataService(svc, dsDescMap) ;
+        DataService dataService = buildDataServiceCustom(svc, dsDescMap) ;
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
 
-    /** Build a DatasetRef starting at Resource svc */
-    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
-        if ( log.isDebugEnabled() ) log.debug("Service: " + nodeLabel(svc)) ;
+    /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
+    private static DataService buildDataServiceCustom(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
         Dataset ds = getDataset(datasetDesc, dsDescMap);
  
         // In case the assembler included ja:contents
         DataService dataService = new DataService(ds.asDatasetGraph()) ;
 
-        addServiceEP(dataService, OperationName.Query,  svc,    pServiceQueryEP) ;
-        addServiceEP(dataService, OperationName.Update, svc,    pServiceUpdateEP) ;
-        addServiceEP(dataService, OperationName.Upload, svc,    pServiceUploadEP);
-        addServiceEP(dataService, OperationName.GSP_R,  svc,    pServiceReadGraphStoreEP) ;
-        addServiceEP(dataService, OperationName.GSP_RW, svc,    pServiceReadWriteGraphStoreEP) ;
+        addServiceEP(dataService, Operation.Query,  svc,    pServiceQueryEP) ;
+        addServiceEP(dataService, Operation.Update, svc,    pServiceUpdateEP) ;
+        addServiceEP(dataService, Operation.Upload, svc,    pServiceUploadEP);
+        addServiceEP(dataService, Operation.GSP_R,  svc,    pServiceReadGraphStoreEP) ;
+        addServiceEP(dataService, Operation.GSP_RW, svc,    pServiceReadWriteGraphStoreEP) ;
 
-        addServiceEP(dataService, OperationName.Quads_R, svc,   pServiceReadQuadsEP) ;
-        addServiceEP(dataService, OperationName.Quads_RW, svc,  pServiceReadWriteQuadsEP) ;
+        addServiceEP(dataService, Operation.Quads_R, svc,   pServiceReadQuadsEP) ;
+        addServiceEP(dataService, Operation.Quads_RW, svc,  pServiceReadWriteQuadsEP) ;
         
         // Quads - actions directly on the dataset URL are different.
         // In the config file they are also implicit when using GSP.
-        if ( ! dataService.getOperation(OperationName.GSP_RW).isEmpty() || ! dataService.getOperation(OperationName.Quads_RW).isEmpty() ) {
-            dataService.addEndpoint(OperationName.Quads_RW, "") ;
-        } else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() || ! dataService.getOperation(OperationName.Quads_R).isEmpty() ) {
-            dataService.addEndpoint(OperationName.Quads_R, "") ;
+        
+        if ( ! dataService.getEndpoints(Operation.GSP_RW).isEmpty() || ! dataService.getEndpoints(Operation.Quads_RW).isEmpty() ) {
+            // ReadWrite available.
+            // Dispatch needs introspecting on the HTTP request.
+            dataService.addEndpoint(Operation.DatasetRequest_RW, "") ;
+        } else if ( ! dataService.getEndpoints(Operation.GSP_R).isEmpty() || ! dataService.getEndpoints(Operation.Quads_R).isEmpty() ) {
+            // Read-only available.
+            // Dispatch needs introspecting on the HTTP request.
+            dataService.addEndpoint(Operation.DatasetRequest_R, "") ;
         }
         
         // XXX 
+        // This needs sorting out -- here, it is only on the whole server, not per dataset or even per service.
 //        // Extract timeout overriding configuration if present.
 //        if ( svc.hasProperty(FusekiVocab.pAllowTimeoutOverride) ) {
 //            sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean() ;
@@ -116,26 +125,32 @@ public class FusekiBuilder
     	return ds;
     }
     
-    /** Build a DataService starting at Resource svc */
-    public static DataService buildDataService(DatasetGraph dsg, boolean allowUpdate) {
+    /** Build a DataService starting at Resource svc, with the standard (default) set of services */
+    public static DataService buildDataServiceStd(DatasetGraph dsg, boolean allowUpdate) {
         DataService dataService = new DataService(dsg) ;
-        addServiceEP(dataService, OperationName.Query, "query") ;
-        addServiceEP(dataService, OperationName.Query, "sparql") ;
-        if ( ! allowUpdate ) {
-            addServiceEP(dataService, OperationName.GSP_R,      "data") ;
-            addServiceEP(dataService, OperationName.Quads_R,    "") ;
-            return dataService ;
-        }
-        addServiceEP(dataService, OperationName.GSP_RW,     "data") ;
-        addServiceEP(dataService, OperationName.GSP_R,      "get") ;
-        addServiceEP(dataService, OperationName.Update,     "update") ;
-        addServiceEP(dataService, OperationName.Upload,     "upload") ;
-        addServiceEP(dataService, OperationName.Quads_RW,   "") ;
+        populateStdServices(dataService, allowUpdate);
         return dataService ;
+    }        
+        
+    /** Convenience operation to populate a {@link DataService} with the conventional default services. */ 
+    public static void populateStdServices(DataService dataService, boolean allowUpdate) {
+        addServiceEP(dataService, Operation.Query,      "query") ;
+        addServiceEP(dataService, Operation.Query,      "sparql") ;
+        if ( ! allowUpdate ) {
+            addServiceEP(dataService, Operation.GSP_R,      "data") ;
+            addServiceEP(dataService, Operation.DatasetRequest_R,    "") ;
+            return;
+        }
+        addServiceEP(dataService, Operation.GSP_RW,     "data") ;
+        addServiceEP(dataService, Operation.GSP_R,      "get") ;
+        addServiceEP(dataService, Operation.Update,     "update") ;
+        addServiceEP(dataService, Operation.Upload,     "upload") ;
+        addServiceEP(dataService, Operation.DatasetRequest_RW, "") ;
     }
 
-    private static void addServiceEP(DataService dataService, OperationName opName, String epName) {
-        dataService.addEndpoint(opName, epName) ; 
+    /** Add an operation to a {@link DataService} with a given endpoint name */
+    public static void addServiceEP(DataService dataService, Operation operation, String endpointName) {
+        dataService.addEndpoint(operation, endpointName) ; 
     }
 
     public static RDFNode getOne(Resource svc, String property) {
@@ -149,15 +164,14 @@ public class FusekiBuilder
         return x ;
     }
 
-    private static void addServiceEP(DataService dataService, OperationName opName, Resource svc, Property property) {
+    private static void addServiceEP(DataService dataService, Operation operation, Resource svc, Property property) {
         String p = "<"+property.getURI()+">" ;
         ResultSet rs = query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
-            Endpoint operation = new Endpoint(opName, epName) ;
-            addServiceEP(dataService, opName, epName); 
-            //log.info("  " + opName.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
+            addServiceEP(dataService, operation, epName); 
+            //log.info("  " + operation.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }
     }
 

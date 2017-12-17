@@ -83,13 +83,13 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
 
     @Override
     public void setContentLength(int len) {
-        action.contentLength = len;
+        action.responseContentLength = len;
         super.setContentLength(len);
     }
 
     @Override
     public void setContentType(String type) {
-        action.contentType = type;
+        action.responseContentType = type;
         super.setContentType(type);
     }
       

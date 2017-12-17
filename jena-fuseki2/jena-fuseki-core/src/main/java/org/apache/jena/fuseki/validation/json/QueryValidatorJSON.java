@@ -39,8 +39,6 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 
 public class QueryValidatorJSON {
 
-    private static final long serialVersionUID = 5113754839333382031L;
-
     public QueryValidatorJSON() {}
 
     static final String paramQuery       = "query" ;

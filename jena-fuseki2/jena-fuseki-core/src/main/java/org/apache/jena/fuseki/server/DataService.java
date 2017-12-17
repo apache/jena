@@ -45,13 +45,13 @@ public class DataService { //implements DatasetMXBean {
     static {
         DatasetGraph dsg = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
         dummy = new DataService(dsg) ;
-        dummy.addEndpoint(OperationName.Query, DEF.ServiceQuery) ;
-        dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
+        dummy.addEndpoint(Operation.Query, DEF.ServiceQuery) ;
+        dummy.addEndpoint(Operation.Query, DEF.ServiceQueryAlt) ;
     }
     
     private DatasetGraph dataset ;
 
-    private ListMultimap<OperationName, Endpoint> operations    = ArrayListMultimap.create() ;
+    private ListMultimap<Operation, Endpoint> operations    = ArrayListMultimap.create() ;
     private Map<String, Endpoint> endpoints                     = new HashMap<>() ;
     
     private volatile DatasetStatus state = UNINITIALIZED ;
@@ -86,44 +86,49 @@ public class DataService { //implements DatasetMXBean {
         return dataset ; 
     }
     
-    public void addEndpoint(OperationName operationName, String endpointName) {
-        Endpoint endpoint = new Endpoint(operationName, endpointName) ;
+    public void addEndpoint(Operation operation, String endpointName) {
+        Endpoint endpoint = new Endpoint(operation, endpointName) ;
         endpoints.put(endpointName, endpoint) ;
-        operations.put(operationName, endpoint);
+        operations.put(operation, endpoint);
     }
     
-    public Endpoint getOperation(String endpointName) {
+    public Endpoint getEndpoint(String endpointName) {
         return endpoints.get(endpointName) ;
     }
 
-    public List<Endpoint> getOperation(OperationName opName) {
-        List<Endpoint> x = operations.get(opName) ;
+    public List<Endpoint> getEndpoints(Operation operation) {
+        List<Endpoint> x = operations.get(operation) ;
         if ( x == null )
             x = Collections.emptyList() ;
         return x ;  
     }
 
-    /** Return the OperationNames available here.
-     *  @see #getOperation(OperationName) to get the endpoint list
+    /** Return the operations available here.
+     *  @see #getEndpoints(Operation) to get the endpoint list
      */
-    public Collection<OperationName> getOperations() {
+    public Collection<Operation> getOperations() {
         return operations.keySet() ;
     }
 
     //@Override
     public boolean allowUpdate()    { return true ; }
 
-    public void goOffline()         { 
-        offlineInProgress.set(true) ;
-        acceptingRequests.set(false) ;
-        state = DatasetStatus.OFFLINE ; 
+    public void goOffline() {
+        offlineInProgress.set(true);
+        acceptingRequests.set(false);
+        state = DatasetStatus.OFFLINE;
     }
-    
-    public void goActive()         { 
-        offlineInProgress.set(false) ;
-        acceptingRequests.set(true) ;
-        state = DatasetStatus.ACTIVE ; 
+
+    public void goActive() {
+        offlineInProgress.set(false);
+        acceptingRequests.set(true);
+        state = DatasetStatus.ACTIVE;
     }
+
+    // Due to concurrency, call isAcceptingRequests().
+//    public boolean isActive() {
+//        return state != DatasetStatus.ACTIVE;
+//    }
 
     public boolean isAcceptingRequests() {
         return acceptingRequests.get() ;

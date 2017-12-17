@@ -37,16 +37,18 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.web.HttpNames ;
 
+// NOT USED
+//   Retained during migration to the new router servlet.
+//   Delete when that is stable.
+
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
  *  (query, update, graph store, both direct and
  *  indirect naming, quads operations on a dataset and
  *  ?query and ?update directly on a dataset.)
  */
-public abstract class SPARQL_UberServlet extends ActionSPARQL
+public abstract class SPARQL_UberServlet_Original extends ActionService
 {
-    private static final long serialVersionUID = -491895535163680509L;
-
     protected abstract boolean allowQuery(HttpAction action) ;
     protected abstract boolean allowUpdate(HttpAction action) ;
     protected abstract boolean allowREST_R(HttpAction action) ;
@@ -54,10 +56,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     protected abstract boolean allowQuadsR(HttpAction action) ;
     protected abstract boolean allowQuadsW(HttpAction action) ;
 
-    public static class ReadOnly extends SPARQL_UberServlet
+    public static class ReadOnly extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = -3486969173228213955L;
-
         public ReadOnly()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return false ; }
@@ -67,10 +67,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return false ; }
     }
 
-    public static class ReadWrite extends SPARQL_UberServlet
+    public static class ReadWrite extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = 1383389566691599382L;
-
         public ReadWrite()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return true ; }
@@ -80,27 +78,25 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return true ; }
     }
 
-    public static class AccessByConfig extends SPARQL_UberServlet
+    public static class AccessByConfig extends SPARQL_UberServlet_Original
     {
-        private static final long serialVersionUID = 5078964040391977778L;
-
         public AccessByConfig()    { super() ; }
-        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action, OperationName.Query) ; }
-        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action, OperationName.Update) ; }
-        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) || isEnabled(action, OperationName.GSP_RW) ; }
-        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action, OperationName.GSP_RW) ; }
-        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.Quads_R) || isEnabled(action, OperationName.Quads_RW) ; }
-        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.Quads_RW) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action, Operation.Query) ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action, Operation.Update) ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action, Operation.GSP_R) || isEnabled(action, Operation.GSP_RW) ; }
+        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action, Operation.GSP_RW) ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, Operation.Quads_R) || isEnabled(action, Operation.Quads_RW) ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, Operation.Quads_RW) ; }
 
         // Test whether there is a configuration that allows this action as the operation given.
         // Ignores the operation in the action (set due to parsing - it might be "quads"
         // which is the generic operation when just the dataset is specificed.
-        private boolean isEnabled(HttpAction action, OperationName opName) {
+        private boolean isEnabled(HttpAction action, Operation operation) {
             // Disregard the operation name of the action
             DataService dSrv = action.getDataService() ;
             if ( dSrv == null )
                 return false;
-            return ! dSrv.getOperation(opName).isEmpty() ;
+            return ! dSrv.getEndpoints(operation).isEmpty() ;
         }
     }
 
@@ -110,15 +106,15 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
      * This takes precedence over direct naming.
      */
 
-    private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
-    private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
-    private final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
-    private final ActionSPARQL gspServlet_R    = new SPARQL_GSP_R() ;
-    private final ActionSPARQL gspServlet_RW   = new SPARQL_GSP_RW() ;
-    private final ActionSPARQL restQuads_R     = new REST_Quads_R() ;
-    private final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
+    private final ActionService queryServlet    = new SPARQL_QueryDataset() ;
+    private final ActionService updateServlet   = new SPARQL_Update() ;
+    private final ActionService uploadServlet   = new SPARQL_Upload() ;
+    private final ActionService gspServlet_R    = new SPARQL_GSP_R() ;
+    private final ActionService gspServlet_RW   = new SPARQL_GSP_RW() ;
+    private final ActionService restQuads_R     = new REST_Quads_R() ;
+    private final ActionService restQuads_RW    = new REST_Quads_RW() ;
 
-    public SPARQL_UberServlet() { super(); }
+    public SPARQL_UberServlet_Original() { super(); }
 
     private String getEPName(String dsname, List<String> endpoints) {
         if (endpoints == null || endpoints.size() == 0)
@@ -268,19 +264,19 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             // There is a trailing part.
             // Check it's not the same name as a registered service.
             // If so, dispatch to that service.
-            if ( serviceDispatch(action, OperationName.Query, queryServlet) ) return ;
-            if ( serviceDispatch(action, OperationName.Update, updateServlet) ) return ;
-            if ( serviceDispatch(action, OperationName.Upload, uploadServlet) ) return ;
+            if ( serviceDispatch(action, Operation.Query, queryServlet) ) return ;
+            if ( serviceDispatch(action, Operation.Update, updateServlet) ) return ;
+            if ( serviceDispatch(action, Operation.Upload, uploadServlet) ) return ;
             if ( hasParams ) {
-                if ( serviceDispatch(action, OperationName.GSP_R, gspServlet_R) ) return ;
-                if ( serviceDispatch(action, OperationName.GSP_RW, gspServlet_RW) ) return ;
+                if ( serviceDispatch(action, Operation.GSP_R, gspServlet_R) ) return ;
+                if ( serviceDispatch(action, Operation.GSP_RW, gspServlet_RW) ) return ;
             } else {
                 // No parameters - do as a quads operation on the dataset.
-                if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
-                if ( serviceDispatch(action, OperationName.GSP_RW, restQuads_RW) ) return ;
+                if ( serviceDispatch(action, Operation.GSP_R, restQuads_R) ) return ;
+                if ( serviceDispatch(action, Operation.GSP_RW, restQuads_RW) ) return ;
             }
-            if ( serviceDispatch(action, OperationName.Quads_RW, restQuads_RW) ) return ;
-            if ( serviceDispatch(action, OperationName.Quads_R, restQuads_R) ) return ;
+            if ( serviceDispatch(action, Operation.Quads_RW, restQuads_RW) ) return ;
+            if ( serviceDispatch(action, Operation.Quads_R, restQuads_R) ) return ;
         }
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
@@ -300,11 +296,11 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     /** See if the operation is enabled for this setup.
      * Return true if dispatched
      */
-    private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
-        Endpoint operation = action.getEndpoint() ;
-        if ( operation == null )
+    private boolean serviceDispatch(HttpAction action, Operation operation, ActionService servlet) {
+        Endpoint endpoint = action.getEndpoint() ;
+        if ( endpoint == null )
             return false ;
-        if ( ! operation.isType(opName) )
+        if ( ! endpoint.isType(operation) )
             return false ;
         // Handle OPTIONS specially.
 //        if ( action.getRequest().getMethod().equals(HttpNames.METHOD_OPTIONS) ) {
@@ -349,9 +345,9 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         return ;
     }
 
-    private void executeRequest(HttpAction action, ActionSPARQL servlet) {
+    private void executeRequest(HttpAction action, ActionService servlet) {
         if ( true ) {
-            // Execute an ActionSPARQL.
+            // Execute an ActionService.
             // Bypasses HttpServlet.service to doMethod dispatch.
             servlet.executeLifecycle(action) ;
             return ;

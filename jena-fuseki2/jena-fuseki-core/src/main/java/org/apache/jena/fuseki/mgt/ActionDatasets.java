@@ -46,7 +46,10 @@ import org.apache.jena.fuseki.build.FusekiBuilder ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.servlets.Upload;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
@@ -67,8 +70,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionDatasets extends ActionContainerItem {
     
-    private static final long serialVersionUID = 5171975468398320835L;
-
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     
@@ -431,8 +432,11 @@ public class ActionDatasets extends ActionContainerItem {
         try { input = request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
 
+        // Don't log - assemblers are typically small.
+        // Adding this to the log confuses things.
+        // Reserve logging for data uploads. 
 //        int len = request.getContentLength() ;
-//        if ( verbose ) {
+//        if ( action.verbose ) {
 //            if ( len >= 0 )
 //                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
 //                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
@@ -441,6 +445,6 @@ public class ActionDatasets extends ActionContainerItem {
 //                                ct.getCharset(), lang.getName())) ;
 //        }
         dest.prefix("root", base+"#");
-        ActionSPARQL.parse(action, dest, input, lang, base) ;
+        ActionLib.parse(action, dest, input, lang, base) ;
     }
 }

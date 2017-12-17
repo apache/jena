@@ -22,6 +22,8 @@ import java.util.Calendar ;
 import java.util.TimeZone ;
 import java.util.concurrent.TimeUnit ;
 
+import javax.servlet.ServletContext;
+
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
@@ -102,10 +104,14 @@ public class Fuseki {
      *  quite sensitive to request route.
      *  <p>
      *  The following places use this switch:
+     *  <ul>
      *  <li>{@code FusekiFilter} for the "clearly not a service" case
-     *  <li>{@code SPARQL_UberServlet}, end of dispatch (after checking for http://server/dataset/service)
+     *  <li>{@code ServiceRouterServlet}, end of dispatch (after checking for http://server/dataset/service)
      *  <li>{@code SPARQL_GSP.determineTarget} This is all-purpose code - should not get there because of other checks.
-     *
+     *  </ul>
+     *  <p>
+     * <b>Note</b><br/>
+     * GSP Direct Naming was implemented to provide two implementations for the SPARQL 1.1 implementation report.  
      */
     static public final boolean       GSP_DIRECT_NAMING = false ;
 
@@ -172,8 +178,22 @@ public class Fuseki {
     /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName) ;
 
-    /** Instance of log for config server message s */
+    /** Instance of log for config server messages.
+     * This is the global default used to set attribute
+     * in each server created.
+     */
     public static boolean             verboseLogging    = false ;
+
+    /** ServletContext attibute for "verbose" - the value of the attirbiye is a Boolean */
+    public static String attrVerbose = "jena-fuseki:verbose" ;
+
+    public static void setVerbose(ServletContext cxt, boolean verbose) {
+        cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));
+    }
+
+    public static boolean getVerbose(ServletContext cxt) {
+        return (Boolean)cxt.getAttribute(attrVerbose);
+    }
 
     /**
      * An instance of management for stream opening, including redirecting

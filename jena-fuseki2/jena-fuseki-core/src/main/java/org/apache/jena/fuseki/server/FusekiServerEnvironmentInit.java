@@ -43,7 +43,7 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         // Stop handling requests.
         
-        // ActionSPARQL uses DataAccessPointRegistry to map URI to services (DataAccessPoint)
+        // ActionService uses DataAccessPointRegistry to map URI to services (DataAccessPoint)
         
         // DataService -> DataService
 //        DataAccessPointRegistry.shutdown() ;

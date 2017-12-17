@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -40,8 +39,6 @@ import org.slf4j.Logger ;
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
-    private static final long serialVersionUID = -8235479824229554685L;
-
     protected final Logger log ;
 
     protected ActionBase(Logger log) {
@@ -133,7 +130,7 @@ public abstract class ActionBase extends ServletBase
      */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, log, request, response, Fuseki.verboseLogging) ;
+        return new HttpAction(id, log, request, response);
     }
 
     /**
@@ -234,15 +231,15 @@ public abstract class ActionBase extends ServletBase
 
         HttpServletResponseTracker response = action.response ;
         if ( action.verbose ) {
-            if ( action.contentType != null )
-                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.contentType)) ;
-            if ( action.contentLength != -1 )
-                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.contentLength)) ;
+            if ( action.responseContentType != null )
+                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.responseContentType)) ;
+            if ( action.responseContentLength != -1 )
+                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.responseContentLength)) ;
             for (Map.Entry<String, String> e : action.headers.entrySet()) {
                 // Skip already printed.
-                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.contentType != null)
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.responseContentType != null)
                     continue;
-                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.contentLength != -1)
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.responseContentLength != -1)
                     continue;
                 log.info(format("[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue())) ;
             }

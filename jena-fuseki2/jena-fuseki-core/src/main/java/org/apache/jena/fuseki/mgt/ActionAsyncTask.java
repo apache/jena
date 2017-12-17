@@ -28,8 +28,6 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 /** Base helper class for creating async tasks on "items", based on POST  */ 
 public abstract class ActionAsyncTask extends ActionItem
 {
-    private static final long serialVersionUID = 4522916022736091383L;
-
     public ActionAsyncTask() { super() ; }
     
     @Override
