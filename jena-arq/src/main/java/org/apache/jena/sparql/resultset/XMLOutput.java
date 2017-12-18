@@ -20,8 +20,12 @@ package org.apache.jena.sparql.resultset;
 
 import java.io.OutputStream ;
 
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet ;
-
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
+import org.apache.jena.sparql.util.Context;
 
 public class XMLOutput extends OutputBase
 {
@@ -45,11 +49,14 @@ public class XMLOutput extends OutputBase
 
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
-        XMLOutputResultSet xOut = new XMLOutputResultSet(out);
-        xOut.setStylesheetURL(stylesheetURL);
-        xOut.setXmlInst(includeXMLinst);
-        ResultSetApply a = new ResultSetApply(resultSet, xOut);
-        a.apply();
+        Context cxt = ARQ.getContext().copy();
+        if ( stylesheetURL != null )
+            cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
+        cxt.set(ResultSetWriterXML.xmlInstruction, includeXMLinst);
+        ResultsWriter.create()
+            .context(cxt)
+            .lang(ResultSetLang.SPARQLResultSetXML)
+            .write(out, resultSet);
     }
 
     /** @return Returns the includeXMLinst. */
@@ -70,7 +77,14 @@ public class XMLOutput extends OutputBase
     
     @Override
     public void format(OutputStream out, boolean booleanResult) {
-        XMLOutputASK xOut = new XMLOutputASK(out);
-        xOut.exec(booleanResult);
+        Context cxt = ARQ.getContext().copy();
+        if ( stylesheetURL != null )
+            cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
+        cxt.set(ResultSetWriterXML.xmlInstruction, includeXMLinst);
+        ResultsWriter.create()
+            .context(cxt)
+            .lang(ResultSetLang.SPARQLResultSetXML)
+            .build()
+            .write(out, booleanResult);
     }
 }

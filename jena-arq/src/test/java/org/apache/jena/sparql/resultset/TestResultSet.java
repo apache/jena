@@ -20,6 +20,7 @@ package org.apache.jena.sparql.resultset;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
+import java.io.InputStream;
 import java.util.ArrayList ;
 import java.util.List ;
 import java.util.NoSuchElementException;
@@ -45,12 +46,15 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.ResultSetUtils ;
+import org.apache.jena.system.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test ;
 
 public class TestResultSet extends BaseTest
 {
+    static { JenaSystem.init(); }
+    
     @BeforeClass
     public static void setup() {
         // Disable warnings these tests will produce
@@ -80,7 +84,8 @@ public class TestResultSet extends BaseTest
         ResultSetRewindable rs1 = new ResultSetMem() ;
         String x = ResultSetFormatter.asXMLString(rs1) ;
         rs1.reset() ;
-        ResultSet rs2 = ResultSetFactory.fromXML(x) ;
+        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
+        ResultSet rs2 = ResultSetFactory.fromXML(in) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
@@ -100,7 +105,8 @@ public class TestResultSet extends BaseTest
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
         String x = ResultSetFormatter.asXMLString(rs1) ;
         rs1.reset() ;
-        ResultSet rs2 = ResultSetFactory.fromXML(x) ;
+        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
+        ResultSet rs2 = ResultSetFactory.fromXML(in) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
