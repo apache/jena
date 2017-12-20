@@ -114,6 +114,17 @@ public class TestGraphUnionRead extends BaseTest
         assertEquals(2, x) ;
     }
 
+    @Test public void gr_union_of_one_1()
+    {
+        List<Node> gnodes = list(gn2) ;
+        Graph g = new GraphUnionRead(dsg, gnodes) ;
+        long x1 = Iter.count(g.find(null, null, null)) ;
+        assertEquals(2, x1) ;
+        Node o = NodeFactory.createLiteral("g2") ; 
+        long x2 = Iter.count(g.find(null, null, o)) ;
+        assertEquals(1, x2) ;
+    }
+
     static <T> List<T> list(@SuppressWarnings("unchecked") T...x)
     {
         return Arrays.asList(x) ;
