@@ -116,4 +116,24 @@ public abstract class AbstractTestDataset extends BaseTest
         ds.addNamedModel(graphName, model1) ;
         assertFalse("Dataset should not be empty after a named graph has been added!", ds.isEmpty());
     }
+    
+    @Test public void dataset_07()
+    {
+        String graphName = "http://example/" ;
+        Dataset ds = createDataset() ;
+        ds.addNamedModel(graphName, model1) ;
+        assertTrue("Named graph not found", ds.containsNamedModel(graphName));
+    }
+    
+    // Even if empty, union and named default graph exist (sort of).
+
+    @Test public void dataset_08() {
+        Dataset ds = createDataset();
+        assertTrue("Union named graph not found", ds.containsNamedModel(Quad.unionGraph.getURI()));
+    }
+
+    @Test public void dataset_09() {
+        Dataset ds = createDataset();
+        assertTrue("Default graph not found using '<"+Quad.defaultGraphIRI.getURI()+">'", ds.containsNamedModel(Quad.defaultGraphIRI.getURI()));
+    }
 }

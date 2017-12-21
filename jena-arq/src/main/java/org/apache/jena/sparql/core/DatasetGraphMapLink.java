@@ -136,6 +136,8 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     @Override
     public boolean containsGraph(Node graphNode) {
+        if ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode) )
+            return true;
         return graphs.containsKey(graphNode);
     }
 

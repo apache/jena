@@ -53,8 +53,13 @@ abstract public class DatasetGraphBase implements DatasetGraph
     protected DatasetGraphBase() {}
     
     @Override
-    public boolean containsGraph(Node graphNode)
-    { return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ; }
+    public boolean containsGraph(Node graphNode) { 
+        if ( Quad.isDefaultGraph(graphNode) )
+            return true;
+        if ( Quad.isUnionGraph(graphNode) )
+            return true;
+        return contains(graphNode, Node.ANY, Node.ANY, Node.ANY);
+    }
     
     // Explicit record of what's not provided here.
     
