@@ -20,10 +20,17 @@ package org.apache.jena.atlas.lib;
 
 import java.util.Collection ;
 
+import org.apache.jena.atlas.iterator.Iter;
+
 public class CollectionUtils
 {   
     /** Test for same elements, regardless of cardinality */ 
     public static <T> boolean sameElts(Collection<T> left, Collection<T> right) {
         return right.containsAll(left) && left.containsAll(right) ;
+    }
+
+    /** Return an element from a collection. */ 
+    public static <T> T oneElt(Collection<T> collection) {
+        return Iter.first(collection.iterator());
     }
 }
