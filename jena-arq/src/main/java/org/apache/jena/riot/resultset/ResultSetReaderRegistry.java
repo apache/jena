@@ -31,6 +31,7 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.resultset.rw.ResultSetReaderJSON;
+import org.apache.jena.riot.resultset.rw.ResultSetReaderThrift;
 import org.apache.jena.riot.resultset.rw.ResultSetReaderXML;
 import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.sparql.resultset.CSVInput ;
@@ -70,9 +71,9 @@ public class ResultSetReaderRegistry {
         ResultSetReaderFactory factory = new ResultSetReaderFactoryStd() ;
         register(SPARQLResultSetXML,    ResultSetReaderXML.factory) ;
         register(SPARQLResultSetJSON,   ResultSetReaderJSON.factory) ;
+        register(SPARQLResultSetThrift, ResultSetReaderThrift.factory) ;
         register(SPARQLResultSetCSV,    factory) ;
         register(SPARQLResultSetTSV,    factory) ;
-        register(SPARQLResultSetThrift, factory) ;
     }
     
     private static class ResultSetReaderFactoryStd implements ResultSetReaderFactory {

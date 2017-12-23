@@ -29,11 +29,12 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.ResultSetFormatter ;
-import org.apache.jena.query.ResultSetRewindable ;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultsReader;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
@@ -44,6 +45,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderResultSet ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sparql.util.ResultSetUtils ;
 import org.apache.jena.system.JenaSystem;
@@ -514,6 +516,50 @@ public class TestResultSet extends BaseTest
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }
 
+    // -- BNode preservation
+    
+    static Context cxt;
+    static{ 
+        cxt = new Context();
+        cxt.set(ARQ.inputGraphBNodeLabels, true);
+        cxt.set(ARQ.outputGraphBNodeLabels, true);
+    }
+    
+    @Test public void preserve_bnodes_1() {
+        preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, cxt, true);
+        preserve_bnodes(ResultSetLang.SPARQLResultSetJSON, ARQ.getContext(), false);
+    }
+        
+    @Test public void preserve_bnodes_2() {
+        preserve_bnodes(ResultSetLang.SPARQLResultSetXML, cxt, true);
+        preserve_bnodes(ResultSetLang.SPARQLResultSetXML, ARQ.getContext(), false);
+    }
+
+    @Test public void preserve_bnodes_3() {
+        preserve_bnodes(ResultSetLang.SPARQLResultSetThrift, cxt, true);
+        preserve_bnodes(ResultSetLang.SPARQLResultSetThrift, ARQ.getContext(), true);
+    }
+
+    private static void preserve_bnodes(Lang sparqlresultlang, Context cxt, boolean same) {
+
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(BuilderResultSet.build(SSE.parseItem(StrUtils.strjoinNL(rs1$)))) ;
+        ByteArrayOutputStream x = new ByteArrayOutputStream();
+        
+        ResultsWriter.create().context(cxt).lang(sparqlresultlang).write(x, rs1);
+        ByteArrayInputStream y = new ByteArrayInputStream(x.toByteArray());
+        
+        ResultSetRewindable rs2 = ResultSetFactory.copyResults(
+            ResultsReader.create().context(cxt).lang(sparqlresultlang).read(y)
+            );
+        rs1.reset();
+        rs2.reset();
+        if ( same )
+            assertTrue(ResultSetCompare.equalsExact(rs1, rs2));
+        else
+            assertFalse(ResultSetCompare.equalsExact(rs1, rs2));
+    }
+    
+    
     // -------- Support functions
     
     private ResultSet make(String var, Node val)
