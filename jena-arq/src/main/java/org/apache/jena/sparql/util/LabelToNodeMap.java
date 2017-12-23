@@ -31,7 +31,6 @@ import org.apache.jena.sparql.core.VarAlloc ;
 /** Map from _:* form to bNodes or variables. */
 public class LabelToNodeMap
 {
-    // Wil be replaced by LabelToNode in RIOT
     Map<String, Node> bNodeLabels = new HashMap<>() ;
     
     // Variables or bNodes?

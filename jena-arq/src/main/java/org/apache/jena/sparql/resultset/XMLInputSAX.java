@@ -46,7 +46,7 @@ import org.xml.sax.* ;
 import org.xml.sax.helpers.XMLReaderFactory ;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same. */
-
+// UNUSED
 class XMLInputSAX extends SPARQLResult {
     // See also XMLInputStAX, which is preferred.
     // SAX is not a streaming API - the SAX handler is called as fast as the

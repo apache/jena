@@ -29,4 +29,5 @@
 ##     # Query timeout on this dataset (milliseconds)
 ##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
 ##     # Default graph for query is the (read-only) union of all named graphs.
+       tdb:unionDefaultGraph true ;
      .

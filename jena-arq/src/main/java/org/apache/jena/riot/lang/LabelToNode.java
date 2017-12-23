@@ -50,8 +50,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorHash(seed)) ; }
 
     /** The policy up to jena 2.10.0 - problems at very large scale */
-    public static LabelToNode createScopeByDocumentOld()
-    { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorTraditional()) ; }
+    public static LabelToNode createScopeGlobal()
+    { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorGlobal()) ; }
 
     /** Allocation scoped by graph and label. */
     public static LabelToNode createScopeByGraph() {
@@ -101,8 +101,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         return new Alloc(new BlankNodeAllocatorLabel()) ; 
     } 
     
-    private static Allocator<String, Node, Node> nodeAllocatorTraditional() { 
-        return new Alloc(new BlankNodeAllocatorTraditional()) ; 
+    private static Allocator<String, Node, Node> nodeAllocatorGlobal() { 
+        return new Alloc(new BlankNodeAllocatorGlobal()) ; 
     } 
     
     private static Allocator<String, Node, Node> nodeAllocatorEncoded() { 

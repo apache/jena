@@ -24,6 +24,7 @@ import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames ;
 
 public class ResponseOps
@@ -90,5 +91,25 @@ public class ResponseOps
         return value ;
     }
 
+    /** Basic settings, including Content-Type, for a response. */
+    public static void setHttpResponse(HttpAction action, String contentType, String charset) {
+        // ---- Set up HTTP Response
+        // Stop caching (not that ?queryString URLs are cached anyway)
+        if ( true )
+            ServletOps.setNoCache(action);
+        // See: http://www.w3.org/International/O-HTTP-charset.html
+        if ( contentType != null ) {
+            if ( charset != null && !isXML(contentType) )
+                contentType = contentType + "; charset=" + charset;
+            action.log.trace("Content-Type for response: " + contentType);
+            action.response.setContentType(contentType);
+        }
+    }
+    
+    public static boolean isXML(String contentType) {
+        return contentType.equals(WebContent.contentTypeRDFXML)
+            || contentType.equals(WebContent.contentTypeResultsXML)
+            || contentType.equals(WebContent.contentTypeXML) ;
+    }
 }
 

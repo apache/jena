@@ -26,6 +26,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
@@ -33,14 +34,13 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.ItemLocation ;
 import org.apache.jena.sparql.sse.SSEParseException ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 
 public class ParseHandlerPlain implements ParseHandler 
 {
     private ListStack      listStack   = new ListStack() ;
     private Item           currentItem = null ;
     private int            depth       = 0 ;
-    private LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
+    private LabelToNode    bNodeLabels = LabelToNode.createScopeGlobal();
     
     // Allocation of fresh variables.
     private VarAlloc       varAlloc        = new VarAlloc(ARQConstants.allocSSEUnamedVars) ;
@@ -163,7 +163,7 @@ public class ParseHandlerPlain implements ParseHandler
             // Fresh anonymous bNode
             n = NodeFactory.createBlankNode() ; 
         else
-            n = bNodeLabels.asNode(label) ;
+            n = bNodeLabels.get(null, label) ;
         Item item = Item.createNode(n, line, column) ;
         listAdd(item) ;
     }

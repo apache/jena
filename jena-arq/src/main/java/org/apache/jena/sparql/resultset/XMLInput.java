@@ -29,6 +29,8 @@ import org.apache.jena.sparql.SystemARQ;
 
 /**
  * Code that reads an XML Result Set and builds the ARQ structure for the same.
+ * 
+ * @deprecated Use {@code ResultSetMgr.read}
  */
 @Deprecated
 public class XMLInput {

@@ -25,7 +25,7 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 
 /**
- * @deprecated Use ResultSetMgr.write(,,ResultSetLang.SPARQLResultSetJSON) 
+ * @deprecated Use {@code ResultSetMgr.write(??,??,ResultSetLang.SPARQLResultSetJSON)} 
  */
 @Deprecated
 public class JSONOutput extends OutputBase {

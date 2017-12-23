@@ -88,7 +88,7 @@ public class QueryExecutionBase implements QueryExecution
     
     private void init() {
         DatasetGraph dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
-        context = Context.setupContext(context, dsg) ;
+        context = Context.setupContextExec(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
         // NB: Setting timeouts via the context after creating a QueryExecutionBase 

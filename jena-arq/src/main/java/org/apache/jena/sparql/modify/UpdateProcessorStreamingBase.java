@@ -36,7 +36,7 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Binding inputBinding, Context context, UpdateEngineFactory factory)
     {
         this.datasetGraph = datasetGraph ;
-        this.context = Context.setupContext(context, datasetGraph) ;
+        this.context = Context.setupContextExec(context, datasetGraph) ;
         proc = factory.create(datasetGraph, inputBinding, context) ;
     }
     

@@ -26,7 +26,7 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.rw.ResultsReader;
 
 /**
- * @deprecated Use ResultSetMgr.read 
+ * @deprecated Use {@code ResultSetMgr.read} 
  */
 @Deprecated
 public class JSONInput extends SPARQLResult {

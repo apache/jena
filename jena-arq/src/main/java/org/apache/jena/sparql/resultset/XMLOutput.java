@@ -29,8 +29,25 @@ import org.apache.jena.sparql.util.Context;
 
 public class XMLOutput extends OutputBase
 {
-    String stylesheetURL = null ;
-    boolean includeXMLinst = true ;
+    /** Set the XML style sheet processing instruction {@code <?xml-stylesheet...>}.
+     *  Set to null to not use a stylesheet. */ 
+    public static void setStylesheetURL(Context cxt, String stylesheetURL) {
+        cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
+    }
+
+    /** Set whether to include {@code <?xml ...>}.
+     *  Set to null for "default" behaviour. */
+    public static void setXMLinstruction(Context cxt, Boolean value) {
+        if ( value != null )
+            cxt.set(ResultSetWriterXML.xmlInstruction, value.booleanValue());
+        else
+            cxt.unset(ResultSetWriterXML.xmlInstruction);
+    }
+
+    // -- Older
+    
+    protected String stylesheetURL = null ;
+    protected boolean includeXMLinst = true ;
     
     public XMLOutput() {}
 
@@ -46,13 +63,10 @@ public class XMLOutput extends OutputBase
         setStylesheetURL(stylesheetURL);
         setIncludeXMLinst(includeXMLinst);
     }
-
+    
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
-        Context cxt = ARQ.getContext().copy();
-        if ( stylesheetURL != null )
-            cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
-        cxt.set(ResultSetWriterXML.xmlInstruction, includeXMLinst);
+        Context cxt = setup();
         ResultsWriter.create()
             .context(cxt)
             .lang(ResultSetLang.SPARQLResultSetXML)
@@ -77,14 +91,18 @@ public class XMLOutput extends OutputBase
     
     @Override
     public void format(OutputStream out, boolean booleanResult) {
-        Context cxt = ARQ.getContext().copy();
-        if ( stylesheetURL != null )
-            cxt.set(ResultSetWriterXML.xmlStylesheet, stylesheetURL);
-        cxt.set(ResultSetWriterXML.xmlInstruction, includeXMLinst);
+        Context cxt = setup();
         ResultsWriter.create()
             .context(cxt)
             .lang(ResultSetLang.SPARQLResultSetXML)
             .build()
             .write(out, booleanResult);
+    }
+    
+    private Context setup() {
+        Context cxt = ARQ.getContext().copy();
+        setStylesheetURL(cxt, stylesheetURL);
+        setXMLinstruction(cxt, includeXMLinst);
+        return cxt;
     }
 }

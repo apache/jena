@@ -41,8 +41,9 @@ import org.apache.jena.util.FileManager ;
 /** ResultSetFactory - make result sets from places other than a query. */
 
 public class ResultSetFactory {
-    // See also ResultSetMgr -- this post-dates this code.
+    // See also ResultSetMgr - which post-dates this code.
     // Ideally, read operations here should call ResultSetMgr.
+    // The exception is XML from a string and the arcachic RDF to ResultSet forms.
     
     /**
      * Load a result set from file or URL into a result set (memory backed).
