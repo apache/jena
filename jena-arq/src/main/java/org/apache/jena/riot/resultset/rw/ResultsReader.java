@@ -19,6 +19,7 @@
 package org.apache.jena.riot.resultset.rw;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -106,28 +107,37 @@ public class ResultsReader {
         return lang;
     }
     
-    public ResultSet read(String url) {
-        // Remap?
-        TypedInputStream in = StreamManager.get(context).open(url);
-        Lang lang = determinLang(in, url);
-        return readResultSet(in.getInputStream(), lang);
+    /** Read a result set from a URL or filename. */
+    public ResultSet read(String urlOrFilename) {
+        Objects.nonNull(urlOrFilename);
+        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+            Lang lang = determinLang(in, urlOrFilename);
+            return readResultSet(in.getInputStream(), lang);
+        }
     }
     
+    /** Read a result set from an {@code InputStream}. */
     public ResultSet read(InputStream input) {
-        Lang lang = forceLang!=null ? forceLang : hintLang;
+        Objects.nonNull(input);
+        Lang lang = (forceLang!=null) ? forceLang : hintLang;
         if ( lang == null )
             throw new RiotException("Need a syntax to read a result set from an InputStream");
         return readResultSet(input, lang);
     }
     
-    public SPARQLResult readAny(String url) {
-        TypedInputStream in = StreamManager.get(context).open(url);
-        Lang lang = determinLang(in, url);
-        return readAny(in.getInputStream(), lang);
+    /** Read a result set or boolean from a URL or filename. */
+    public SPARQLResult readAny(String urlOrFilename) {
+        Objects.nonNull(urlOrFilename);
+        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+            Lang lang = determinLang(in, urlOrFilename);
+            return readAny(in.getInputStream(), lang);
+        }
     }
 
+    /** Read a result set or boolean from an {@code InputStream}. */
     public SPARQLResult readAny(InputStream input) {
-        Lang lang = forceLang!=null ? forceLang : hintLang;
+        Objects.nonNull(input);
+        Lang lang = (forceLang!=null) ? forceLang : hintLang;
         if ( lang == null )
             throw new RiotException("Need a syntax to read a result set from an InputStream");
         return readAny(input, lang);

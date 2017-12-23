@@ -18,9 +18,11 @@
 
 package org.apache.jena.riot.resultset.rw;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
-import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
@@ -77,19 +79,33 @@ public class ResultsWriter {
         this.context = context;
     }
 
-    public void write(String url, ResultSet resultSet) {
-        throw new NotImplemented();
+    /** Write a result set, using the configurartion of the {@code ResultWriter}, to a file */ 
+    public void write(String filename, ResultSet resultSet) {
+        Objects.requireNonNull(filename);
+        Objects.requireNonNull(resultSet);
+        try ( OutputStream out = openURL(filename) ) {
+            write(out, resultSet);
+        } catch (IOException ex) { IO.exception(ex); }
     }
     
+    /** Write a result set, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */ 
     public void write(OutputStream output, ResultSet resultSet) {
+        Objects.requireNonNull(output);
+        Objects.requireNonNull(resultSet);
         write(output, resultSet, null, lang);
     }
     
-    public void write(String url, boolean booleanResult) {
-        throw new NotImplemented();
+    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to a file */ 
+    public void write(String filename, boolean booleanResult) {
+        Objects.requireNonNull(booleanResult);
+        try ( OutputStream out = openURL(filename) ) {
+            write(out, booleanResult);
+        } catch (IOException ex) { IO.exception(ex); }
     }
     
+    /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */ 
     public void write(OutputStream output, boolean booleanResult) {
+        Objects.requireNonNull(output);
         write(output, null, booleanResult, lang);
     }
     
@@ -109,5 +125,9 @@ public class ResultsWriter {
             writer.write(output, resultSet, context);
         else
             writer.write(output, result, context);
+    }
+
+    private OutputStream openURL(String filename) {
+        return IO.openOutputFile(filename);
     }
 }

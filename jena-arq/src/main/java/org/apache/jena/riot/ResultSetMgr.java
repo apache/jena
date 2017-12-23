@@ -210,6 +210,7 @@ public class ResultSetMgr {
      * @param lang
      */
     public static void write(OutputStream output, ResultSet resultSet, Lang lang) {
+        Objects.requireNonNull(lang);
         ResultsWriter.create()
             .lang(lang)
             .write(output, resultSet);
@@ -221,6 +222,7 @@ public class ResultSetMgr {
      * @param lang
      */
     public static void write(OutputStream output, boolean result, Lang lang) {
+        Objects.requireNonNull(lang);
         ResultsWriter.create()
             .lang(lang)
             .build()
@@ -232,6 +234,7 @@ public class ResultSetMgr {
      * @param lang
      */
     public static String asString(ResultSet resultSet, Lang lang) {
+        Objects.requireNonNull(lang);
         ByteArrayOutputStream output = new ByteArrayOutputStream(1000); 
         ResultsWriter.create()
             .lang(lang)
@@ -244,6 +247,7 @@ public class ResultSetMgr {
      * @param lang
      */
     public static String asString(boolean result, Lang lang) {
+        Objects.requireNonNull(lang);
         ByteArrayOutputStream output = new ByteArrayOutputStream(1000); 
         ResultsWriter.create()
             .lang(lang)
