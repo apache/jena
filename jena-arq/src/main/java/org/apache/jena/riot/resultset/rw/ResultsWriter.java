@@ -97,7 +97,7 @@ public class ResultsWriter {
     
     /** Write a boolean result, using the configurartion of the {@code ResultWriter}, to a file */ 
     public void write(String filename, boolean booleanResult) {
-        Objects.requireNonNull(booleanResult);
+        Objects.requireNonNull(filename);
         try ( OutputStream out = openURL(filename) ) {
             write(out, booleanResult);
         } catch (IOException ex) { IO.exception(ex); }
