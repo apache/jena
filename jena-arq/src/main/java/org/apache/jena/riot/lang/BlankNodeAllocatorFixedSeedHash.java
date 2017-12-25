@@ -39,9 +39,6 @@ public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
 
     /**
      * Creates a new allocator which will use a fixed seed
-     * 
-     * @param seed
-     *            Seed
      */
     public BlankNodeAllocatorFixedSeedHash(UUID seed) {
         super();
