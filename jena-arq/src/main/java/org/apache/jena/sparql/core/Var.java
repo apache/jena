@@ -141,7 +141,7 @@ public class Var extends Node_Variable
         if ( node instanceof Var )
             return true;
         if ( node != null && node.isVariable() )
-            throw new NotAVariableException("Node_variable (not a Var) found");
+            throw new NotAVariableException("Node_Variable (not a Var) found");
         return false;
     }
     
