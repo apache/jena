@@ -224,7 +224,7 @@ public class UpdateBuilder {
 			}
 		}
 		
-		retval.setElement(whereProcessor.setVars(values));
+		retval.setElement(whereProcessor.setVars(values).build());
 		
 		return retval;
 

@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
 import org.apache.jena.arq.querybuilder.clauses.ValuesClause;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
@@ -61,12 +62,12 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
  *            The derived class type. Used for return types.
  */
 public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
-		implements Cloneable, PrologClause<T>, ValuesClause<T> {
+implements Cloneable, PrologClause<T>, ValuesClause<T> {
 
 	// the query this builder is building
 	protected Query query;
 	// a map of vars to nodes for replacement during build.
-	private Map<Var, Node> values;
+	private final Map<Var, Node> values;
 
 	/**
 	 * Make a Node from an object.
@@ -89,12 +90,12 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public Node makeNode(Object o) {
 		return makeNode( o, query.getPrefixMapping() );
 	}
-	
+
 	private Object makeNodeOrPath(Object o)
 	{
 		return makeNodeOrPath(o, query.getPrefixMapping() );
 	}
-	
+
 	private Object makeNodeOrPath(Object o, PrefixMapping pMapping)
 	{
 		if (o == null) {
@@ -113,18 +114,18 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		}
 		if (o instanceof String) {
 			try {			
-				Path p = PathParser.parse((String) o, pMapping);
+				final Path p = PathParser.parse((String) o, pMapping);
 				if (p instanceof P_Link)
 				{
 					return ((P_Link)p).getNode();
 				}
 				return p;
 			}
-			catch (QueryParseException e)
+			catch (final QueryParseException e)
 			{	// try to parse vars
 				return makeNode( o, pMapping );		
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				// expected in some cases -- do nothing
 			}
@@ -132,11 +133,11 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		}
 		return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(o));
 	}
-		
+
 	public ElementSubQuery asSubQuery() {
 		return getWhereHandler().makeSubQuery( this );
 	}
-	
+
 	/**
 	 * Make a triple path from the objects.
 	 * 
@@ -161,7 +162,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return a TriplePath
 	 */
 	public TriplePath makeTriplePath(Object s, Object p, Object o) {
-		Object po = makeNodeOrPath( p );
+		final Object po = makeNodeOrPath( p );
 		if (po instanceof Path)
 		{
 			return new TriplePath(makeNode(s), (Path)po, makeNode(o));
@@ -169,10 +170,10 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		{
 			return new TriplePath( new Triple( makeNode(s), (Node)po, makeNode(o)));
 		}
-		
+
 	}
 
-	
+
 	/**
 	 * A convenience method to make an expression from a string.  Evaluates the 
 	 * expression with respect to the current query.
@@ -185,7 +186,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	{
 		return ExprUtils.parse(query, expression, true);
 	}
-	
+
 	/**
 	 * A convenience method to quote a string.
 	 * @param q the string to quote.
@@ -198,16 +199,30 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return the quoted string. 
 	 */
 	public static String quote(String q) {
-		int qt = q.indexOf('"');
-		int sqt = q.indexOf("'");
-		
+		final int qt = q.indexOf('"');
+		final int sqt = q.indexOf("'");
+
 		if (sqt == -1 || qt<sqt)
 		{
 			return String.format( "'%s'", q);
 		}
 		return String.format( "\"%s\"", q);
 	}
-	
+
+	/**
+	 * Verify that any Node_Variable nodes are returned as Var nodes.
+	 * @param n the node to check
+	 * @return the node n or a new Var if n is an instance of Node_Variable
+	 */
+	public static Node checkVar(Node n )
+	{
+		if (n.isVariable())
+		{
+			return Var.alloc( n );
+		}
+		return n;
+	}
+
 	/**
 	 * Make a node from an object while using the associated prefix mapping.
 	 * <ul>
@@ -228,17 +243,17 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 			return Node.ANY;
 		}
 		if (o instanceof FrontsNode) {
-			return ((FrontsNode) o).asNode();
+			return checkVar(((FrontsNode) o).asNode());
 		}
 
 		if (o instanceof Node) {
-			return (Node) o;
+			return checkVar( (Node) o );
 		}
 		if (o instanceof String) {
 			try {
-				return NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
-						.createForInput(pMapping));
-			} catch (RiotException e) {
+				return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory
+						.createForInput(pMapping)));
+			} catch (final RiotException e) {
 				// expected in some cases -- do nothing
 			}
 
@@ -298,13 +313,13 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		query = new Query();
 		values = new HashMap<Var, Node>();
 	}
-	
+
 	/**
 	 * Get the HandlerBlock for this query builder.
 	 * @return The associated handler block.
 	 */
 	public abstract HandlerBlock getHandlerBlock();
-	
+
 	@Override
 	public final PrologHandler getPrologHandler() {
 		return getHandlerBlock().getPrologHandler();
@@ -314,11 +329,12 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public ValuesHandler getValuesHandler() {
 		return getHandlerBlock().getValueHandler();
 	}
-	
+
 	public final WhereHandler getWhereHandler() {
 		return getHandlerBlock().getWhereHandler();
 	}
 
+	@Override
 	public final ExprFactory getExprFactory() {
 		return getHandlerBlock().getPrologHandler().getExprFactory();
 	}
@@ -400,19 +416,19 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		setBase(makeNode(base).getURI());
 		return (T) this;
 	}
-	
+
 	// --- VALUES
-	
+
 	public static Collection<Node> makeValueNodes( Iterator<?> iter, PrefixMapping prefixMapping )
 	{
 		if (iter == null || !iter.hasNext())
 		{
 			return null;
 		}
-		List<Node> values = new ArrayList<Node>();
+		final List<Node> values = new ArrayList<Node>();
 		while (iter.hasNext())
 		{
-			Object o = iter.next();
+			final Object o = iter.next();
 			// handle null as UNDEF
 			if (o == null)
 			{
@@ -429,7 +445,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	{
 		return makeValueNodes( iter, getPrologHandler().getPrefixes() );
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addValueVar(Object var) {
@@ -439,13 +455,13 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		}
 		if (var instanceof Collection<?>)
 		{
-			Collection<?> column = (Collection<?>)var;
+			final Collection<?> column = (Collection<?>)var;
 			if (column.size() == 0)
 			{
 				throw new IllegalArgumentException( "column must have at least one entry.");
 			}
-			Iterator<?> iter = column.iterator();
-			Var v = makeVar( iter.next() );
+			final Iterator<?> iter = column.iterator();
+			final Var v = makeVar( iter.next() );
 			getValuesHandler().addValueVar(v, makeValueNodes(iter));
 		} else {
 			getValuesHandler().addValueVar(makeVar(var), null );
@@ -456,22 +472,22 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addValueVar(Object var, Object... objects) {
-		
+
 		Collection<Node> values = null;
 		if (objects != null)
 		{
 			values = makeValueNodes( Arrays.asList(objects).iterator());
 		}
-		
+
 		getValuesHandler().addValueVar(makeVar(var), values );
 		return (T) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <K extends Collection<?>> T addValueVars(Map<?,K> dataTable) {
-		ValuesHandler hdlr = new ValuesHandler( null );
-		for (Map.Entry<?, K> entry : dataTable.entrySet())
+		final ValuesHandler hdlr = new ValuesHandler( null );
+		for (final Map.Entry<?, K> entry : dataTable.entrySet())
 		{
 			Collection<Node> values = null;
 			if (entry.getValue() != null)
@@ -483,7 +499,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		getValuesHandler().addAll( hdlr );
 		return (T) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T addValueRow(Object... values) {
@@ -497,7 +513,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 		getValuesHandler().addValueRow( makeValueNodes( values.iterator()));
 		return (T) this;
 	}
-	
+
 	@Override
 	public List<Var> getValuesVars() {
 		return getValuesHandler().getValuesVars();
@@ -507,7 +523,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	public Map<Var,List<Node>> getValuesMap() {
 		return getValuesHandler().getValuesMap();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public  T clearValues() {
@@ -536,40 +552,43 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return The query.
 	 */
 	public final Query build() {
-		Query q = new Query();
-		
+		final Query q = new Query();
+
 		// set the query type
 		switch (query.getQueryType())
 		{
-		case Query.QueryTypeAsk:
-			q.setQueryAskType();
-			break;
-		case Query.QueryTypeConstruct:
-			q.setQueryConstructType();
-			break;
-		case Query.QueryTypeDescribe:
-			q.setQueryDescribeType();
-			break;
-		case Query.QueryTypeSelect:
-			q.setQuerySelectType();
-			break;
-		default:
-			throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
+			case Query.QueryTypeAsk:
+				q.setQueryAskType();
+				break;
+			case Query.QueryTypeConstruct:
+				q.setQueryConstructType();
+				break;
+			case Query.QueryTypeDescribe:
+				q.setQueryDescribeType();
+				break;
+			case Query.QueryTypeSelect:
+				q.setQuerySelectType();
+				break;
+			case Query.QueryTypeUnknown:
+				// do nothing
+				break;
+			default:
+				throw new IllegalStateException( "Internal query is not a known type: "+q.getQueryType());			
 		}
-		
+
 		// use the HandlerBlock implementation to copy the data.
-		HandlerBlock handlerBlock = new HandlerBlock(q);
+		final HandlerBlock handlerBlock = new HandlerBlock(q);
 		handlerBlock.addAll( getHandlerBlock() );
-		
+
 		// set the vars
 		handlerBlock.setVars(values);
-		
+
 		//  make sure we have a query pattern before we start building.
 		if (q.getQueryPattern() == null)
 		{
 			q.setQueryPattern( new ElementGroup() );
 		}
-		
+
 		handlerBlock.build();
 
 		return q;
@@ -586,27 +605,27 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return A clone of the q2 param.
 	 */
 	public static Query clone(Query q2) {
-		Query retval = new Query();
-		
+		final Query retval = new Query();
+
 		// set the query type
-	    if (q2.isSelectType())
-	    {
-	    	retval.setQuerySelectType();
-	    } else if (q2.isAskType()) {
-	    	retval.setQueryAskType();
-	    } else if (q2.isDescribeType())
-	    {
-	    	retval.setQueryDescribeType();
-	    } else if (q2.isConstructType()) 
-	    {
-	    	retval.setQueryConstructType();
-	    }
-	    
-	    // use the handler block to clone the data
-	    HandlerBlock hb = new HandlerBlock( retval );
-	    HandlerBlock hb2 = new HandlerBlock( q2 );
-	    hb.addAll(hb2);
-		
+		if (q2.isSelectType())
+		{
+			retval.setQuerySelectType();
+		} else if (q2.isAskType()) {
+			retval.setQueryAskType();
+		} else if (q2.isDescribeType())
+		{
+			retval.setQueryDescribeType();
+		} else if (q2.isConstructType()) 
+		{
+			retval.setQueryConstructType();
+		}
+
+		// use the handler block to clone the data
+		final HandlerBlock hb = new HandlerBlock( retval );
+		final HandlerBlock hb2 = new HandlerBlock( q2 );
+		hb.addAll(hb2);
+
 		return retval;
 	}
 
@@ -620,7 +639,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 	 * @return The new query with the specified vars replaced.
 	 */
 	public static Query rewrite(Query q2, Map<Var, Node> values) {
-		HandlerBlock hb = new HandlerBlock(q2);
+		final HandlerBlock hb = new HandlerBlock(q2);
 		hb.setVars(values);
 		return q2;
 	}

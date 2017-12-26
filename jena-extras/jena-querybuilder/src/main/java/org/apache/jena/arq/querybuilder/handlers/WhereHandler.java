@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
+import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -66,12 +67,26 @@ public class WhereHandler implements Handler {
 	}
 	
 	/**
+	 * Creates a where handler with a new query.
+	 */
+	public WhereHandler() {
+		this( new Query() );
+	}
+	
+	/**
 	 * Get the query pattern from this where handler.
 	 * @return the query pattern
 	 */
 	public Element getQueryPattern()
 	{
 		 return query.getQueryPattern();
+	}
+	
+	/**
+	 * @return The query this where handler is using.
+	 */
+	public Query getQuery() {
+		return query;
 	}
 
 	/**
@@ -118,7 +133,7 @@ public class WhereHandler implements Handler {
 	 * 
 	 * @return the base element.
 	 */
-	private Element getElement() {
+	public Element getElement() {
 		Element result = query.getQueryPattern();
 		if (result == null) {
 			result = getClause();
@@ -442,17 +457,17 @@ public class WhereHandler implements Handler {
 		getElement().visit(visitor);
 		if (! valuesHandler.isEmpty())
 		{
-			if (visitor.result instanceof ElementGroup) {
-				((ElementGroup)visitor.result).addElement( valuesHandler.asElement());;
+			if (visitor.getResult() instanceof ElementGroup) {
+				((ElementGroup)visitor.getResult()).addElement( valuesHandler.asElement());;
 			}
 			else {					
 				ElementGroup eg = new ElementGroup();
-				eg.addElement(visitor.result);
+				eg.addElement(visitor.getResult());
 				eg.addElement( valuesHandler.asElement());
-				visitor.result = eg;
+				visitor.setResult( eg );
 			}
 		}
-		query.setQueryPattern( visitor.result );
+		query.setQueryPattern( visitor.getResult() );
 	}
 
 	/**
@@ -564,190 +579,5 @@ public class WhereHandler implements Handler {
 
 	public  void clearValues() {
 		valuesHandler.clear();
-	}
-
-
-
-	/**
-	 * An element visitor that does an in-place modification of the elements to 
-	 * fix union-of-one and similar issues.
-	 *
-	 */
-	private static class BuildElementVisitor implements ElementVisitor {
-		private Element result;
-
-		@Override
-		public void visit(ElementTriplesBlock el) {
-			// no changes
-			result=el;
-		}
-
-		@Override
-		public void visit(ElementPathBlock el) {
-			// no changes
-			result=el;
-		}
-
-		@Override
-		public void visit(ElementFilter el) {
-			// no changes
-			result=el;
-		}
-
-		@Override
-		public void visit(ElementAssign el) {
-			// no change
-			result=el;
-		}
-
-		@Override
-		public void visit(ElementBind el) {
-			// no change
-			result=el;
-		}
-
-		@Override
-		public void visit(ElementData el) {
-			// no change
-			result=el;
-		}
-
-		private void updateList( List<Element> lst )
-		{
-			 for (int i=0;i<lst.size();i++)
-        	 {
-        		 lst.get(i).visit( this );
-        		 lst.set(i, result);
-        	 }
-		}
-		
-		@Override
-		public void visit(ElementUnion el) {
-			List<Element> lst = el.getElements();
-	         if ( lst.size() <= 1 ) {
-	        	 ElementGroup eg = new ElementGroup();
-	             if ( lst.size() == 1)
-	             {
-	            	 el.getElements().get(0).visit( this );
-	        	   	 eg.addElement(result);
-	             }
-	        	 result = eg;
-	         } else {
-	        	 updateList( lst );
-	        	 result = el;
-	         }
-		}
-
-		@Override
-		public void visit(ElementOptional el) {
-			el.getOptionalElement().visit(this);
-			if (result == el.getOptionalElement())
-			{
-				result = el;
-			} else {
-				result = new ElementOptional( result );
-			}
-		}
-
-		@Override
-		public void visit(ElementGroup el) {
-			List<Element> lst = el.getElements();
-			if (lst.isEmpty())
-			{
-				// noting to do
-				result = el;
-			} else if (lst.size() == 1)
-			{
-				lst.get(0).visit( this );
-				// result is now set properly
-			} else {
-			updateList( lst );
-			result = el;
-			}
-		}
-		
-		@Override
-		public void visit(ElementDataset el) {
-			// noting to do
-			result = el;
-		}
-
-		@Override
-		public void visit(ElementNamedGraph el) {
-			el.getElement().visit( this );
-			if (result == el.getElement())
-			{
-				// nothing to do
-				result = el;
-			}
-			else {
-				result = new ElementNamedGraph( el.getGraphNameNode(), result);
-			}
-		}
-
-		@Override
-		public void visit(ElementExists el) {
-			el.getElement().visit(this);
-			if (result == el.getElement())
-			{
-				// nothing to do
-				result = el;
-			}
-			else {
-				result = new ElementExists( result);
-			}			
-		}
-
-		@Override
-		public void visit(ElementNotExists el) {
-			el.getElement().visit(this);
-			if (result == el.getElement())
-			{
-				// nothing to do
-				result = el;
-			}
-			else {
-				result = new ElementNotExists( result);
-			}
-		}
-
-		@Override
-		public void visit(ElementMinus el) {
-			el.getMinusElement().visit(this);
-			if (result == el.getMinusElement())
-			{
-				// nothing to do
-				result = el;
-			}
-			else {
-				result = new ElementMinus( result);
-			}
-		}
-
-		@Override
-		public void visit(ElementService el) {
-			el.getElement().visit(this);
-			if (result == el.getElement())
-			{
-				// nothing to do
-				result = el;
-			}
-			else {
-				result = new ElementService( el.getServiceNode(), result, el.getSilent());
-			}
-			
-		}
-
-		@Override
-		public void visit(ElementSubQuery el) {
-			WhereHandler other = new WhereHandler( el.getQuery() );
-			other.build();
-			if (other.getElement() != el.getQuery().getQueryPattern())
-			{
-				el.getQuery().setQueryPattern( other.query.getQueryPattern() );
-			}
-			result = el;
-		}
-		
 	}
 }

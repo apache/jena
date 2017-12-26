@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -373,14 +374,16 @@ public class WhereProcessor implements QuadHolder {
 	 *            the value map to use
 	 * @return A new Element instance with the values changed.
 	 */
-	public Element setVars(Map<Var, Node> values) {
-		if (values.isEmpty() || whereClause == null) {
-			return whereClause;
-		}
+	public WhereProcessor setVars(Map<Var, Node> values) {
+		if ( whereClause != null) {
+		/* process when values are empty as rewriter handles Node_Variable to Var translation.
+		 * 
+		 */
 		ElementRewriter r = new ElementRewriter(values);
 		whereClause.visit(r);
-		return r.getResult();
-
+		whereClause = r.getResult();
+		}
+		return this;
 	}
 	
 	@Override
@@ -429,5 +432,18 @@ public class WhereProcessor implements QuadHolder {
 		ElementGroup clause = getClause();
 		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
 		clause.addElement(minus);
+	}
+	
+	
+	/**
+	 * @return Build the whereClause and return the element.
+	 */
+	public Element build() {
+		/*
+		 * cleanup union-of-one and other similar issues.
+		 */
+		BuildElementVisitor visitor = new BuildElementVisitor();
+		whereClause.visit(visitor);
+		return whereClause;
 	}
 }

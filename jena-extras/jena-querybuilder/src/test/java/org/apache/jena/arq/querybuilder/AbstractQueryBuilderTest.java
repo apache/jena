@@ -102,6 +102,11 @@ public class AbstractQueryBuilderTest {
 		n = builder.makeNode(builder);
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(builder);
 		assertEquals(NodeFactory.createLiteral(ll), n);
+		
+		n = builder.makeNode( NodeFactory.createVariable("foo"));
+		assertTrue( n.isVariable());
+		assertEquals( "foo", n.getName());
+		assertTrue( n instanceof Var );
 
 	}
 

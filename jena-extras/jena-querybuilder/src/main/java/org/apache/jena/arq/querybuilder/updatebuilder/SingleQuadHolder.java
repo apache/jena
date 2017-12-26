@@ -18,6 +18,8 @@
 package org.apache.jena.arq.querybuilder.updatebuilder;
 
 import java.util.Map;
+
+import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
@@ -39,7 +41,16 @@ public class SingleQuadHolder implements QuadHolder{
 	 */
 	public SingleQuadHolder( Quad quad )
 	{
-		this.quad = quad;
+		if (quad.getGraph().isVariable() || quad.getSubject().isVariable() || quad.getPredicate().isVariable() ||
+				quad.getObject().isVariable())
+		{
+			this.quad = new Quad( AbstractQueryBuilder.checkVar( quad.getGraph()),
+					AbstractQueryBuilder.checkVar( quad.getSubject() ),
+					AbstractQueryBuilder.checkVar( quad.getPredicate()),
+					AbstractQueryBuilder.checkVar( quad.getObject()));
+		} else {
+			this.quad = quad;
+		}
 	}
 
 	/**
@@ -51,10 +62,16 @@ public class SingleQuadHolder implements QuadHolder{
 	 */
 	public SingleQuadHolder( Triple triple )
 	{
-		this.quad = new Quad( Quad.defaultGraphNodeGenerated, triple );
+		this.quad = new Quad( Quad.defaultGraphNodeGenerated, 
+				AbstractQueryBuilder.checkVar( triple.getSubject()),
+				AbstractQueryBuilder.checkVar( triple.getPredicate()),
+				AbstractQueryBuilder.checkVar( triple.getObject())				
+				);
 	}
 
-	
+
+
+
 	/**
 	 * Constructor from a triple
 	 * @param graph the graph name to use for the  triple 
@@ -64,7 +81,7 @@ public class SingleQuadHolder implements QuadHolder{
 	{
 		this.quad = new Quad( graph, triple );
 	}
-	
+
 	@Override
 	public ExtendedIterator<Quad> getQuads() {
 		return new SingletonIterator<Quad>(updated==null?quad:updated);
@@ -76,12 +93,12 @@ public class SingleQuadHolder implements QuadHolder{
 		Node retval = null;
 		if (n.isVariable())
 		{
-			Var v = Var.alloc(n);
+			final Var v = Var.alloc(n);
 			retval = values.get(v);
 		}
 		return retval==null?n:retval;
 	}
-	
+
 	@Override
 	public QuadHolder setValues(Map<Var, Node> values) {
 		updated = new Quad( 
@@ -93,5 +110,5 @@ public class SingleQuadHolder implements QuadHolder{
 		return this;
 	}
 
-	
+
 }

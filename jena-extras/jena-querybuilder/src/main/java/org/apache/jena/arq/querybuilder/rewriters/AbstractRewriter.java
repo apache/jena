@@ -133,6 +133,7 @@ public class AbstractRewriter<T> {
 			if (values.containsKey(v)) {
 				return values.get(v);
 			}
+			return v;
 		}
 		return n;
 	}

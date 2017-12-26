@@ -307,7 +307,7 @@ public class UpdateBuilderTest {
 	}
 	
 	@Test
-	public  void testInsertAndDeleteWithVar()
+	public  void testInsertAndDeleteWithVarReplacement()
 	{
 		UpdateBuilder builder = new UpdateBuilder();
 		Var v = Var.alloc("v");
@@ -346,6 +346,88 @@ public class UpdateBuilderTest {
 		assertEquals( builder.makeNode("foo"), t.getObject());
 	}
 	
+	@Test
+	public  void testInsertAndDeleteWithVariableNodeReplacement()
+	{
+		UpdateBuilder builder = new UpdateBuilder();
+		Node v = NodeFactory.createVariable("v");
+
+		builder.addInsert( new Quad( g, s, v, o) );
+		builder.addDelete( new Triple( s, v, o) );
+		builder.addWhere( null, v, "foo");
+		builder.setVar( v, p );
+		Update update = builder.build();
+		assertTrue( update instanceof UpdateModify);
+		UpdateModify um = (UpdateModify)update;
+		List<Quad> quads = um.getInsertQuads();
+		assertEquals( 1, quads.size());
+		Quad q = quads.get(0);
+		assertEquals( g, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( p, q.getPredicate());
+		assertEquals( o, q.getObject());
+		
+		quads = um.getDeleteQuads();
+		assertEquals( 1, quads.size());
+		q = quads.get(0);
+		assertEquals( Quad.defaultGraphNodeGenerated, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( p, q.getPredicate());
+		assertEquals( o, q.getObject());
+		
+		Element e = um.getWherePattern();
+		assertTrue( e instanceof ElementGroup );
+		ElementGroup eg = (ElementGroup) e;
+		assertEquals( 1, eg.getElements().size());
+		ElementPathBlock epb = (ElementPathBlock)eg.getElements().get(0);
+		Triple t = epb.getPattern().get(0).asTriple();
+		assertEquals( Node.ANY, t.getSubject());
+		assertEquals( p, t.getPredicate());
+		assertEquals( builder.makeNode("foo"), t.getObject());
+	}
+	
+	@Test
+	public  void testInsertAndDeleteWithVariableNode()
+	{
+		UpdateBuilder builder = new UpdateBuilder();
+		Node v = NodeFactory.createVariable("v");
+
+		builder.addInsert( new Quad( g, s, v, o) );
+		builder.addDelete( new Triple( s, v, o) );
+		builder.addWhere( null, v, "foo");
+		
+		Update update = builder.build();
+		assertTrue( update instanceof UpdateModify);
+		UpdateModify um = (UpdateModify)update;
+		List<Quad> quads = um.getInsertQuads();
+		assertEquals( 1, quads.size());
+		Quad q = quads.get(0);
+		assertEquals( g, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( v, q.getPredicate());
+		assertEquals( o, q.getObject());
+		assertTrue( Var.isVar(q.getPredicate()));
+		
+		quads = um.getDeleteQuads();
+		assertEquals( 1, quads.size());
+		q = quads.get(0);
+		assertEquals( Quad.defaultGraphNodeGenerated, q.getGraph());
+		assertEquals( s, q.getSubject());
+		assertEquals( v, q.getPredicate());
+		assertEquals( o, q.getObject());
+		assertTrue( Var.isVar(q.getPredicate()));
+		
+		Element e = um.getWherePattern();
+		assertTrue( e instanceof ElementGroup );
+		ElementGroup eg = (ElementGroup) e;
+		assertEquals( 1, eg.getElements().size());
+		ElementPathBlock epb = (ElementPathBlock)eg.getElements().get(0);
+		Triple t = epb.getPattern().get(0).asTriple();
+		assertEquals( Node.ANY, t.getSubject());
+		assertEquals( v, t.getPredicate());
+		assertEquals( builder.makeNode("foo"), t.getObject());
+		assertTrue( Var.isVar(t.getPredicate()));
+	}
 	// testsbased on the examples
 
 	/*

@@ -36,12 +36,16 @@ import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.BindingHashMap;
+import org.apache.jena.sparql.expr.E_LessThan;
 import org.apache.jena.sparql.expr.E_Random;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.ElementBind;
 import org.apache.jena.sparql.syntax.ElementData;
+import org.apache.jena.sparql.syntax.ElementFilter;
 import org.apache.jena.sparql.syntax.ElementMinus;
 import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementOptional;
@@ -200,15 +204,49 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertTrue( visitor.matching );
 		
 	}
+	
+	@ContractTest
+	public void testAddOptionalGroupPattern_VariableNode() throws ParseException {
+		
+		Node s = NodeFactory.createVariable("s");
+		Node q = NodeFactory.createURI( "urn:q" );
+		Node v = NodeFactory.createURI( "urn:v" );
+		Var x = Var.alloc("x");
+		Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));	
+		
+		SelectBuilder pattern = new SelectBuilder();
+		pattern.addWhere( new Triple( s, q,  n123 ) );
+		pattern.addWhere( new Triple( s, v, x));
+
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addOptional( pattern );
+
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( new Triple(Var.alloc(s), q, n123));
+		epb.addTriplePath( tp );
+		 tp = new TriplePath( new Triple(Var.alloc(s), v, x));
+		epb.addTriplePath( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+	}
 
 	@ContractTest
 	public void testAddFilter() throws ParseException {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addFilter("?one<10");
 
-		assertContainsRegex(WHERE + OPEN_CURLY + "FILTER" + OPT_SPACE
-				+ OPEN_PAREN + var("one") + OPT_SPACE + LT + OPT_SPACE + "10"
-				+ CLOSE_PAREN + CLOSE_CURLY, builder.buildString());
+		E_LessThan lt = new E_LessThan( new ExprVar( Var.alloc( "one")), new NodeValueInteger( 10 ));
+		ElementFilter ef = new ElementFilter(lt);
+		
+		WhereValidator visitor = new WhereValidator( ef );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 	}
 
 	@ContractTest
@@ -257,30 +295,99 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	@ContractTest
 	public void testSetVarsInTriple() {
 		Var v = Var.alloc("v");
+		Node one = NodeFactory.createURI( "one");
+		Node two = NodeFactory.createURI( "two");
+		Node three = NodeFactory.createURI( "three");
+		Node four = NodeFactory.createURI( "four");
+		
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
-				NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
+				one, two, v));
+		
+		TriplePath tp = new TriplePath( new Triple( one, two, v ));
+		ElementPathBlock epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		WhereValidator visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+		builder.setVar(v, three);
 
-		builder.setVar(v, NodeFactory.createURI("three"));
+		tp = new TriplePath( new Triple( one, two, three ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("three") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
+		builder.setVar(v, four);
 
-		builder.setVar(v, NodeFactory.createURI("four"));
-
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + uri("four") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
+		tp = new TriplePath( new Triple( one, two, four ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
 
 		builder.setVar(v, null);
 
-		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
-				+ uri("two") + SPACE + var("v") + OPT_SPACE
-				+ CLOSE_CURLY, builder.buildString());
+		tp = new TriplePath( new Triple( one, two, v ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+
+	@ContractTest
+	public void testSetVarsInTriple_Node_Variable() {
+		Node v = NodeFactory.createVariable("v");
+		Node one = NodeFactory.createURI( "one");
+		Node two = NodeFactory.createURI( "two");
+		Node three = NodeFactory.createURI( "three");
+		Node four = NodeFactory.createURI( "four");
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(
+				one, two, v));
+		
+		TriplePath tp = new TriplePath( new Triple( one, two, Var.alloc(v) ));
+		ElementPathBlock epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		WhereValidator visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+		builder.setVar(v, three);
+
+		tp = new TriplePath( new Triple( one, two, three ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+
+		builder.setVar(v, four);
+
+		tp = new TriplePath( new Triple( one, two, four ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+
+		builder.setVar(v, null);
+
+		tp = new TriplePath( new Triple( one, two, Var.alloc("v") ));
+		epb = new ElementPathBlock();
+		epb.addTriple(tp);
+		visitor = new WhereValidator( epb );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
 
 	}
 
@@ -320,10 +427,60 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 				+ uri("three") + OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY,
 				builder.buildString());
 	}
+	
+	@ContractTest
+	public void testSetVarsInOptional_Node_Variable() {
+		Node v = NodeFactory.createVariable("v");
+		Node one = NodeFactory.createURI("one");
+		Node two = NodeFactory.createURI("two");
+		Node three = NodeFactory.createURI("three");
+		
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(
+				one, two, v));
+		
+		ElementPathBlock epb = new ElementPathBlock();
+		ElementOptional optional = new ElementOptional(epb);
+		TriplePath tp = new TriplePath( new Triple(one, two, Var.alloc(v)));
+		epb.addTriplePath( tp );
+		
+		WhereValidator visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+
+		builder.setVar(v, three);
+		epb = new ElementPathBlock();
+		optional = new ElementOptional(epb);
+		tp = new TriplePath( new Triple(one, two, three));
+		epb.addTriplePath( tp );
+		
+		visitor = new WhereValidator( optional );
+		builder.build().getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+
+	}
 
 	@ContractTest
 	public void testSetVarsInSubQuery() {
 		Var v = Var.alloc("v");
+		SelectBuilder sb = new SelectBuilder();
+		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addSubQuery(sb);
+
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + var("v") + CLOSE_CURLY,
+				builder.buildString());
+
+		builder.setVar(v, NodeFactory.createURI("three"));
+		assertContainsRegex(WHERE + OPEN_CURLY + uri("one") + SPACE
+				+ uri("two") + SPACE + uri("three") + CLOSE_CURLY,
+				builder.buildString());
+	}
+	
+	@ContractTest
+	public void testSetVarsInSubQuery_Node_Variable() {
+		Node v = NodeFactory.createVariable("v");
 		SelectBuilder sb = new SelectBuilder();
 		sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
 		WhereClause<?> whereClause = getProducer().newInstance();
@@ -387,6 +544,55 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 			assertTrue( visitor.matching );
 
 	}
+	
+	@ContractTest
+	public void testSetVarsInUnion_Node_Variable() {
+		Node v = NodeFactory.createVariable("v");
+		SelectBuilder sb1 = new SelectBuilder()
+		.addPrefix("pfx", "uri").addWhere("<one>", "<two>", v);
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause.addUnion(sb1);		
+		SelectBuilder sb2 = new SelectBuilder().addWhere("<uno>", "<dos>", "<tres>");
+		AbstractQueryBuilder<?> builder = whereClause.addUnion(sb2);
+		Query query = builder.build();
+		
+		Node one = NodeFactory.createURI("one");
+		Node two = NodeFactory.createURI("two");
+		Node three = NodeFactory.createURI("three");
+		Node uno = NodeFactory.createURI("uno");
+		Node dos = NodeFactory.createURI("dos");
+		Node tres = NodeFactory.createURI("tres");
+		
+		ElementUnion union = new ElementUnion();
+		ElementPathBlock epb = new ElementPathBlock();
+		Triple t = new Triple( one, two, Var.alloc(v));
+		epb.addTriple(t);
+		union.addElement(epb);
+		ElementPathBlock epb2 = new ElementPathBlock();
+		t = new Triple( uno, dos, tres);
+		epb2.addTriple(t);
+		union.addElement(epb2);
+		WhereValidator visitor = new WhereValidator( union );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+
+		builder.setVar(v, NodeFactory.createURI("three"));
+		query = builder.build();
+		
+		union = new ElementUnion();
+		 epb = new ElementPathBlock();
+		 t = new Triple( one, two, three);
+		epb.addTriple(t);
+		union.addElement(epb);
+		 epb2 = new ElementPathBlock();
+		t = new Triple( uno, dos, tres);
+		epb2.addTriple(t);
+		union.addElement(epb2);
+		 visitor = new WhereValidator( union );
+			query.getQueryPattern().visit( visitor );
+			assertTrue( visitor.matching );
+
+	}
 
 	@ContractTest
 	public void testBindStringVar() throws ParseException {
@@ -396,6 +602,28 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		Query query = builder.build();
 		
 		ElementBind bind = new ElementBind( v, new E_Random());
+		WhereValidator visitor = new WhereValidator( bind );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+		Node three = NodeFactory.createURI("three");
+		builder.setVar(v, three );
+		query = builder.build();
+		
+		visitor = new WhereValidator( new ElementTriplesBlock() );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+
+	}
+	
+	@ContractTest
+	public void testBindStringVar_Node_Variable() throws ParseException {
+		Node v = NodeFactory.createVariable("foo");
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addBind("rand()", v);
+		Query query = builder.build();
+		
+		ElementBind bind = new ElementBind( Var.alloc(v), new E_Random());
 		WhereValidator visitor = new WhereValidator( bind );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
@@ -434,6 +662,28 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}
 	
 	@ContractTest
+	public void testBindExprVar_Node_Variable() {
+		Node v = NodeFactory.createVariable("foo");
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause
+				.addBind(new E_Random(), v);
+		Query query = builder.build();
+		
+
+		WhereValidator visitor = new WhereValidator( new ElementBind( Var.alloc("foo"), new E_Random() ) );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+		
+		builder.setVar(v, NodeFactory.createURI("three"));
+		query = builder.build();
+		
+		visitor = new WhereValidator( new ElementTriplesBlock() );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+		
+	}
+	@ContractTest
 	public void testList() {
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = whereClause.addWhere(whereClause.list( "<one>", "?two", "'three'"),
@@ -442,7 +692,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		Query query = builder.build();
 
 		Node one = NodeFactory.createURI("one");
-		Node two = Var.alloc("two").asNode();
+		Var two = Var.alloc("two");
 		Node three = NodeFactory.createLiteral( "three");
 		Node foo = NodeFactory.createURI("foo");
 		Node bar = NodeFactory.createURI("bar");
@@ -576,7 +826,6 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	@ContractTest
 	public void testAddWhereValueVar_var()
 	{
-		final Var v = Var.alloc("v");
 				
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVar( "?v" );
@@ -584,17 +833,17 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		Query query = builder.build();
 
 		ElementData edat = new ElementData();
-		edat.add( v );
+		edat.add( Var.alloc("v") );
 		
 		WhereValidator visitor = new WhereValidator( edat );
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
-	}		
+	}
 
 	@ContractTest
 	public void testAddWhereValueVar_var_values()
 	{
-		final Var v = Var.alloc("v");
+		
 				
 		WhereClause<?> whereClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVar( "?v", "<one>" );
@@ -602,6 +851,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		Query query = builder.build();
 
 		BindingHashMap binding = new BindingHashMap();
+		final Var v = Var.alloc("v");
 		binding.add( v, NodeFactory.createURI( "one" ));
 		ElementData edat = new ElementData();
 		edat.add( v );
@@ -644,6 +894,38 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}	
 
 	@ContractTest
+	public void testAddWhereValueVars_Node_Variable()
+	{
+		
+		Map<Object,List<?>> map = new HashMap<Object, List<?>>();
+		
+		map.put( NodeFactory.createVariable("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVars( map );
+				
+		Query query = builder.build();
+
+		Var x = Var.alloc("x");
+		Var v = Var.alloc("v");
+		ElementData edat = new ElementData();
+		edat.add( x );
+		edat.add( v );		
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	@ContractTest
 	public void testAddWhereValueRow_array()
 	{
 		final Var v = Var.alloc("v");
@@ -658,6 +940,37 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		Query query = builder.build();
 
 		ElementData edat = new ElementData();
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+	
+	@ContractTest
+	public void testAddWhereValueRow_array_Node_Variable()
+	{
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( NodeFactory.createVariable("v") );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( NodeFactory.createVariable("x") );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueRow( "<one>", "three" );
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueRow( "<two>", "four" );
+		
+		Query query = builder.build();
+
+		ElementData edat = new ElementData();
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
 		edat.add( v );
 		edat.add( x );
 		BindingHashMap binding = new BindingHashMap();
@@ -706,6 +1019,37 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 	}	
 	
 	@ContractTest
+	public void testAddWhereValueRow_collection_Node_Variable()
+	{
+		WhereClause<?> whereClause = getProducer().newInstance();
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( NodeFactory.createVariable("v") );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueVar( NodeFactory.createVariable("x") );
+		whereClause =  (WhereClause<?>) whereClause.addWhereValueRow( Arrays.asList("<one>", "three") );
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueRow( Arrays.asList("<two>", "four") );
+		
+		Query query = builder.build();
+
+		ElementData edat = new ElementData();
+		final Var v = Var.alloc("v");
+		final Var x = Var.alloc("x");
+			
+		edat.add( v );
+		edat.add( x );
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}	
+	
+	@ContractTest
 	public void testSetVarsInWhereValues() throws ParseException {
 		Var v = Var.alloc("v");
 		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
@@ -735,6 +1079,34 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		assertTrue( visitor.matching );
 	}
 
+	@ContractTest
+	public void testSetVarsInWhereValues_NodeVariable() throws ParseException {
+		Node v = NodeFactory.createVariable("v");
+		Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+
+		WhereClause<?> whereClause = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = whereClause.addWhereValueVar( "?x", "<one>", "?v");
+		
+		builder.setVar(v, value );
+		
+		Query query = builder.build();
+		
+		ElementData edat = new ElementData();
+		Var x = Var.alloc("x");
+		edat.add( x );
+	
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( x, NodeFactory.createURI( "one" ));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( x, value);
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
+	
 	@ContractTest
 	public void testDataQuery() {
 		// test that the getVars getMap and clear methods work.
