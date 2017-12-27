@@ -85,9 +85,6 @@ public class TextQueryFuncs {
         String language = o.getLiteral().language() ;
         RDFDatatype datatype = o.getLiteral().getDatatype() ;
         Entity entity = new Entity(x, graphText, language, datatype) ;
-        String graphField = defn.getGraphField() ;
-        if ( defn.getGraphField() != null )
-            entity.put(graphField, graphText) ;
     
         entity.put(field, o.getLiteralLexicalForm()) ;
         return entity ;
