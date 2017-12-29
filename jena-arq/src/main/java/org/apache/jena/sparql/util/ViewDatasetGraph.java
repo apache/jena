@@ -32,7 +32,7 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
         this.lock = new PairLock(left.getLock(), right.getLock());
     }
 
-    private static void throwNoMutationAllowed() {
+    protected static void throwNoMutationAllowed() {
         throw new UnsupportedOperationException("This view does not allow mutation!");
     }
 
@@ -47,12 +47,8 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
         case WRITE:
             throwNoMutationAllowed();
         case READ:
-            forEach(ViewDatasetGraph::beginRead);
+            forEach(dsg -> dsg.begin(READ));
         }
-    }
-    
-    private static void beginRead(DatasetGraph dsg) {
-        dsg.begin(READ);
     }
 
     @Override

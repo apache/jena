@@ -17,7 +17,6 @@ public class TestUnionDatasetGraph extends TestViewDatasetGraph<UnionDatasetGrap
 
     @Test
     public void testUnion() {
-
         final Graph g1 = parseGraph("(graph (triple <s1> <p1> <o1> ))");
         final DatasetGraph dsg1 = DatasetGraphFactory.create(g1);
         final Node graphName1 = NodeFactory.createBlankNode();
