@@ -31,6 +31,7 @@ import static org.apache.jena.testing_framework.GraphHelper.triple ;
 import static org.apache.jena.testing_framework.GraphHelper.tripleArray ;
 import static org.apache.jena.testing_framework.GraphHelper.tripleSet ;
 import static org.apache.jena.testing_framework.GraphHelper.txnBegin ;
+import static org.apache.jena.testing_framework.GraphHelper.txnRun ;
 import static org.apache.jena.testing_framework.GraphHelper.txnCommit ;
 import static org.apache.jena.testing_framework.GraphHelper.txnRollback ;
 import static org.apache.jena.testing_framework.TestUtils.assertDiffer ;
@@ -64,6 +65,7 @@ import org.apache.jena.testing_framework.NodeCreateUtils ;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.After ;
+import org.junit.Assert;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import org.xenei.junit.contract.Contract ;
@@ -102,8 +104,15 @@ public class GraphContractTest<T extends Graph>  {
 		graph.add(triple("S P O"));
 		txnCommit(graph);
 		GL.assertHasStart("add", graph, triple("S P O"));
-		assertTrue("Graph should contain <S P O>",
-				graph.contains(triple("S P O")));
+		txnRun( graph, new Runnable() {
+
+			@Override
+			public void run()
+			{
+				assertTrue("Graph should contain <S P O>",
+						graph.contains(triple("S P O")));		
+			}});
+		
 	}
 
 	/**
@@ -142,26 +151,53 @@ public class GraphContractTest<T extends Graph>  {
 	 * that expected ~= initialContent + addedStuff - removed - initialContent.
 	 */
 	@ContractTest
-	public void testClear() {
+	public void testClear_Empty() {
 		Graph graph = producer.newInstance();
 		Graph base = copy(graph);
 
 		graph.getEventManager().register(GL);
-		txnBegin(graph);
-		graph.clear();
-		txnCommit(graph);
-		assertEmpty(graph, base);
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				graph.clear();
+			}});
+		
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				assertEmpty(graph, base);
+			}});
 		GL.assertHasStart("someEvent", graph, GraphEvents.removeAll);
 		GL.clear();
-
+	}
+	
+	@ContractTest
+	public void testClear() {
+		Graph graph = producer.newInstance();
+		Graph base = copy(graph);
 		// test after adding
-		graph = graphWith(producer.newInstance(),
+		graphWith(graph,
 				"S P O; S e:ff 27; _1 P P3; S4 P4 'en'");
 		graph.getEventManager().register(GL);
-		txnBegin(graph);
-		graph.clear();
-		txnCommit(graph);
-		assertEmpty(graph, base);
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				graph.clear();
+			}});
+		
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				assertEmpty(graph, base);
+			}});
 		if (GL.contains("delete")) {
 			// deletes are listed -- ensure all deletes are listed
 			GL.assertContains("delete", graph, triple("S P O"));
@@ -180,8 +216,15 @@ public class GraphContractTest<T extends Graph>  {
 				"S P O; S P2 O2; S3 P P3");
 		graph.getEventManager().register(GL);
 		assertFalse("Graph was constructed closed", graph.isClosed());
-
-		graph.close();
+		
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				graph.close();
+			}});
+		
 		assertTrue("Graph should be closed", graph.isClosed());
 
 		// exception may be thrown on begin or on execution.
@@ -314,14 +357,20 @@ public class GraphContractTest<T extends Graph>  {
 		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
 
-		assertTrue(graph.contains(node("S"), node("P"), node("O")));
-		assertFalse(graph.contains(node("S"), node("P"), node("O2")));
-		assertFalse(graph.contains(node("S"), node("P2"), node("O")));
-		assertFalse(graph.contains(node("S2"), node("P"), node("O")));
-		assertTrue(graph.contains(Node.ANY, Node.ANY, Node.ANY));
-		assertTrue(graph.contains(Node.ANY, Node.ANY, node("O")));
-		assertTrue(graph.contains(Node.ANY, node("P"), Node.ANY));
-		assertTrue(graph.contains(node("S"), Node.ANY, Node.ANY));
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{	
+				assertTrue(graph.contains(node("S"), node("P"), node("O")));
+				assertFalse(graph.contains(node("S"), node("P"), node("O2")));
+				assertFalse(graph.contains(node("S"), node("P2"), node("O")));
+				assertFalse(graph.contains(node("S2"), node("P"), node("O")));
+				assertTrue(graph.contains(Node.ANY, Node.ANY, Node.ANY));
+				assertTrue(graph.contains(Node.ANY, Node.ANY, node("O")));
+				assertTrue(graph.contains(Node.ANY, node("P"), Node.ANY));
+				assertTrue(graph.contains(node("S"), Node.ANY, Node.ANY));
+			}});
 	}
 
 	@ContractTest
@@ -334,36 +383,63 @@ public class GraphContractTest<T extends Graph>  {
 		Node Q = node("Q");
 		Node r = node("r");
 		Node any = node("??");
-		assertTrue(g.contains(s, P, o));
-		assertTrue(g.contains(s, Q, r));
-		assertTrue(g.contains(any, P, o));
-		assertTrue(g.contains(any, Q, r));
-		assertTrue(g.contains(any, P, any));
-		assertTrue(g.contains(any, Q, any));
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+				assertTrue(g.contains(s, P, o));
+				assertTrue(g.contains(s, Q, r));
+				assertTrue(g.contains(any, P, o));
+				assertTrue(g.contains(any, Q, r));
+				assertTrue(g.contains(any, P, any));
+				assertTrue(g.contains(any, Q, any));
+			}});
 	}
 
 	@ContractTest
 	public void testContains_Node_Node_Node_ByValue() {
 		Node x = node("x");
 		Node P = node("P");
-		if (producer.newInstance().getCapabilities()
+		Graph g1 = producer.newInstance();
+		if (g1.getCapabilities()
 				.handlesLiteralTyping()) {
-			Graph g1 = graphWith(producer.newInstance(),
+			graphWith(g1,
 					"x P '1'xsd:integer");
-			assertTrue(
-					String.format(
-							"literal type equality failed, does %s really implement literal typing",
-							g1.getClass()), g1.contains(x, P,
-							node("'01'xsd:int")));
+			txnRun( g1, new Runnable() {
+				
+				@Override
+				public void run()
+				{
+					assertTrue(
+							String.format(
+									"literal type equality failed, does %s really implement literal typing",
+									g1.getClass()), g1.contains(x, P,
+											node("'01'xsd:int")));
+				}});
 			//
 			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
-			assertTrue("Literal equality with '1'xsd:integer failed",
+			txnRun( g2, new Runnable() {
+				
+				@Override
+				public void run()
+				{
+				
+					assertTrue("Literal equality with '1'xsd:integer failed",
 					g2.contains(x, P, node("'1'xsd:integer")));
+				}});
 			//
 			Graph g3 = graphWith(producer.newInstance(),
 					"x P '123'xsd:string");
-			assertTrue("Literal equality with '123' failed",
+			txnRun( g3, new Runnable() {
+				
+				@Override
+				public void run()
+				{
+				
+					assertTrue("Literal equality with '123' failed",
 					g3.contains(x, P, node("'123'")));
+				}});
 		}
 	}
 
@@ -374,17 +450,23 @@ public class GraphContractTest<T extends Graph>  {
 		Node o = node("o");
 
 		Node _x = node("_x");
-		Node _R = node("_R");
+		Node R = node("R");
 		Node _y = node("_y");
 
 		Node x = node("x");
 		Node S = node("S");
 
 		Graph g = graphWith(producer.newInstance(),
-				"s P o; _x _R _y; x S 0");
+				"s P o; _x R _y; x S 0");
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+			
 		assertTrue("Graph should have contained s P o", g.contains(s, P, o));
 		assertTrue("Graph should have contained _x _R _y",
-				g.contains(_x, _R, _y));
+				g.contains(_x, R, _y));
 		assertTrue("Graph should have contained x S 'O'",
 				g.contains(x, S, node("0")));
 		/* */
@@ -393,7 +475,35 @@ public class GraphContractTest<T extends Graph>  {
 		assertFalse(g.contains(s, node("p"), o));
 		assertFalse(g.contains(_x, node("_r"), _y));
 		assertFalse(g.contains(x, S, node("1")));
+			}});
 	}
+
+		@ContractTest
+		public void testContains_Node_Node_Node_Concrete_BlankPredicate() {
+			Node s = node("s");
+			Node P = node("P");
+			Node o = node("o");
+
+			Node _x = node("_x");
+			Node _R = node("_R");
+			Node _y = node("_y");
+
+			Node x = node("x");
+			Node S = node("S");
+
+			Graph g = graphWith(producer.newInstance(),
+					"s P o; _x _R _y; x S 0");
+			txnRun( g, new Runnable() {
+				
+				@Override
+				public void run()
+				{
+				
+			assertTrue("Graph should have contained _x _R _y",
+					g.contains(_x, _R, _y));
+			assertFalse(g.contains(_x, node("_r"), _y));
+				}});
+		}
 
 	@ContractTest
 	public void testContains_Node_Node_Node_Fluid() {
@@ -404,6 +514,12 @@ public class GraphContractTest<T extends Graph>  {
 		Node a = node("a");
 		Node b = node("b");
 		Graph g = graphWith(producer.newInstance(), "x R y; a P b");
+		
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertTrue(g.contains(Node.ANY, R, y));
 		assertTrue(g.contains(x, Node.ANY, y));
 		assertTrue(g.contains(x, R, Node.ANY));
@@ -418,13 +534,18 @@ public class GraphContractTest<T extends Graph>  {
 		assertFalse(g.contains(Node.ANY, R, x));
 		assertFalse(g.contains(x, Node.ANY, R));
 		assertFalse(g.contains(a, node("S"), Node.ANY));
+			}});
 	}
 
 	@ContractTest
 	public void testContains_Triple() {
 		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
-
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertTrue(graph.contains(triple("S P O")));
 		assertFalse(graph.contains(triple("S P O2")));
 		assertFalse(graph.contains(triple("S P2 O")));
@@ -433,6 +554,7 @@ public class GraphContractTest<T extends Graph>  {
 		assertTrue(graph.contains(new Triple(Node.ANY, Node.ANY, node("O"))));
 		assertTrue(graph.contains(new Triple(Node.ANY, node("P"), Node.ANY)));
 		assertTrue(graph.contains(new Triple(node("S"), Node.ANY, Node.ANY)));
+			}});
 
 	}
 
@@ -440,42 +562,91 @@ public class GraphContractTest<T extends Graph>  {
 	public void testContains_Triple_RepeatedSubjectDoesNotConceal() {
 
 		Graph g = graphWith(producer.newInstance(), "s P o; s Q r");
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertTrue(g.contains(triple("s P o")));
 		assertTrue(g.contains(triple("s Q r")));
 		assertTrue(g.contains(triple("?? P o")));
 		assertTrue(g.contains(triple("?? Q r")));
 		assertTrue(g.contains(triple("?? P ??")));
 		assertTrue(g.contains(triple("?? Q ??")));
+			}});
 	}
 
 	@ContractTest
 	public void testContains_Triple_ByValue() {
-
-		if (producer.newInstance().getCapabilities()
+		Graph g1 = producer.newInstance();
+		if (g1.getCapabilities()
 				.handlesLiteralTyping()) {
-			Graph g1 = graphWith(producer.newInstance(),
-					"x P '1'xsd:integer");
+			graphWith(g1, "x P '1'xsd:integer");
+			txnRun( g1, new Runnable() {
+				
+				@Override
+				public void run()
+				{
 			assertTrue(
 					String.format(
 							"did not find x P '01'xsd:int, does %s really implement literal typing",
 							g1.getClass()),
 					g1.contains(triple("x P '01'xsd:int")));
+				}});
 			//
 			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
+			txnRun( g2, new Runnable() {
+				
+				@Override
+				public void run()
+				{
 			assertTrue("did not find x P '1'xsd:integer",
 					g2.contains(triple("x P '1'xsd:integer")));
+				}});
 			//
 			Graph g3 = graphWith(producer.newInstance(),
 					"x P '123'xsd:string");
+			txnRun( g3, new Runnable() {
+				
+				@Override
+				public void run()
+				{
 			assertTrue("did not find x P '123'xsd:string",
 					g3.contains(triple("x P '123'")));
+				}});
 		}
 	}
 
 	@ContractTest
 	public void testContains_Triple_Concrete() {
 		Graph g = graphWith(producer.newInstance(),
+				"s P o; _x R _y; x S 0");
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+		assertTrue(g.contains(triple("s P o")));
+		assertTrue(g.contains(triple("_x R _y")));
+		assertTrue(g.contains(triple("x S 0")));
+		/* */
+		assertFalse(g.contains(triple("s P Oh")));
+		assertFalse(g.contains(triple("S P O")));
+		assertFalse(g.contains(triple("s p o")));
+		assertFalse(g.contains(triple("_x _r _y")));
+		assertFalse(g.contains(triple("x S 1")));
+			}});
+	}
+
+	@ContractTest
+	public void testContains_Triple_Concrete_BlankPredicate() {
+		Graph g = graphWith(producer.newInstance(),
 				"s P o; _x _R _y; x S 0");
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertTrue(g.contains(triple("s P o")));
 		assertTrue(g.contains(triple("_x _R _y")));
 		assertTrue(g.contains(triple("x S 0")));
@@ -485,11 +656,18 @@ public class GraphContractTest<T extends Graph>  {
 		assertFalse(g.contains(triple("s p o")));
 		assertFalse(g.contains(triple("_x _r _y")));
 		assertFalse(g.contains(triple("x S 1")));
+			}});
 	}
-
+	
 	@ContractTest
 	public void testContains_Triple_Fluid() {
 		Graph g = graphWith(producer.newInstance(), "x R y; a P b");
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+		
 		assertTrue(g.contains(triple("?? R y")));
 		assertTrue(g.contains(triple("x ?? y")));
 		assertTrue(g.contains(triple("x R ??")));
@@ -504,6 +682,7 @@ public class GraphContractTest<T extends Graph>  {
 		assertFalse(g.contains(triple("?? R x")));
 		assertFalse(g.contains(triple("x ?? R")));
 		assertFalse(g.contains(triple("a S ??")));
+			}});
 	}
 
 	/**
@@ -515,10 +694,23 @@ public class GraphContractTest<T extends Graph>  {
 				"S P O; S2 P2 O2; S3 P3 O3");
 		Graph base = producer.newInstance();
 		graph.getEventManager().register(GL);
-		txnBegin(graph);
+		
+		try {
+			txnBegin(graph);
 		graph.delete(triple("S P O"));
 		txnCommit(graph);
+		} catch (DeleteDeniedException expected) {
+			txnRollback(graph);
+			fail( "delete( S P O ) failed: "+ expected.getMessage());
+		}
+		
 		GL.assertContains("delete", graph, triple("S P O"));
+		
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertFalse("Graph should not contain <S P O>",
 				graph.contains(triple("S P O")));
 		assertNotEmpty(graph, base);
@@ -526,7 +718,15 @@ public class GraphContractTest<T extends Graph>  {
 				graph.contains(triple("S2 P2 O2")));
 		assertTrue("Graph should contain <S3 P3 O3>",
 				graph.contains(triple("S3 P3 O3")));
-
+			}});
+	}
+	@ContractTest
+	public void testDelete_Triple_Wildcard() {
+		Graph graph = graphWith(producer.newInstance(),
+				"S P O; S2 P2 O2; S3 P3 O3");
+		Graph base = producer.newInstance();
+		graph.getEventManager().register(GL);
+		
 		// should not modify anything on wildcard delete
 		GL.clear();
 		try {
@@ -534,12 +734,19 @@ public class GraphContractTest<T extends Graph>  {
 			graph.delete(new Triple(node("S2"), node("P2"), Node.ANY));
 			txnCommit(graph);
 		} catch (DeleteDeniedException expected) {
-			txnRollback(graph);
+			txnRollback(graph);			
 		}
+		txnRun( graph, new Runnable() {
+			
+			@Override
+			public void run()
+			{
+		
 		assertTrue("Graph should contain <S2 P2 O2>",
 				graph.contains(triple("S2 P2 O2")));
 		assertTrue("Graph should contain <S3 P3 O3>",
 				graph.contains(triple("S3 P3 O3")));
+			}});
 		GL.assertHas("delete", graph, new Triple(node("S2"), node("P2"),
 				Node.ANY));
 	}
@@ -578,6 +785,7 @@ public class GraphContractTest<T extends Graph>  {
 	public void testFind_Node_Node_Node() {
 		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
+		txnBegin( graph );
 		List<Triple> s = graph.find(Node.ANY, Node.ANY, Node.ANY).toList();
 		assertEquals(3, s.size());
 		List<Triple> expected = Arrays.asList(new Triple[] { triple("S P O"),
@@ -612,7 +820,7 @@ public class GraphContractTest<T extends Graph>  {
 
 		s = graph.find(node("S3"), node("P2"), Node.ANY).toList();
 		assertEquals(0, s.size());
-
+		txnRollback(graph);
 	}
 
 	@ContractTest
@@ -622,9 +830,11 @@ public class GraphContractTest<T extends Graph>  {
 		Node z = node("z");
 		Graph g = graphWith(producer.newInstance(), "x y z ");
 		Set<Triple> expect = tripleSet("x y z");
+		txnBegin( g );
 		assertEquals(expect, g.find(Node.ANY, y, z).toSet());
 		assertEquals(expect, g.find(x, Node.ANY, z).toSet());
 		assertEquals(expect, g.find(x, y, Node.ANY).toSet());
+		txnRollback(g);
 	}
 
 	@ContractTest
@@ -657,6 +867,7 @@ public class GraphContractTest<T extends Graph>  {
 				fail(e.getMessage());
 			}
 			txnCommit(g);
+			txnBegin(g);
 			assertEquals(
 					String.format(
 							"Should have found 4 elements, does %s really implement literal typing",
@@ -665,33 +876,38 @@ public class GraphContractTest<T extends Graph>  {
 					iteratorToSet(
 							g.find(Node.ANY, P, NodeCreateUtils.create("42")))
 							.size());
+			txnRollback(g);
 		}
 	}
 
 	@ContractTest
 	public void testFind_Node_Node_Node_MatchLanguagedLiteralCaseInsensitive() {
-		Graph m = graphWith(producer.newInstance(), "a p 'chat'en");
-		if (m.getCapabilities().handlesLiteralTyping()) {
+		Graph g = graphWith(producer.newInstance(), "a p 'chat'en");
+		if (g.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 			assertDiffer(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			assertEquals(1, m.find(Node.ANY, Node.ANY, chaten).toList().size());
-			assertEquals(1, m.find(Node.ANY, Node.ANY, chatEN).toList().size());
+			txnBegin( g );
+			assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
+			assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
+			txnRollback(g);
 		}
 	}
 
 	@ContractTest
 	public void testFind_Node_Node_Node_NoMatchAgainstUnlanguagesLiteral() {
-		Graph m = graphWith(producer.newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"a p 'chat'en; a p 'chat'");
-		if (m.getCapabilities().handlesLiteralTyping()) {
+		if (g.getCapabilities().handlesLiteralTyping()) {
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 			assertDiffer(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			assertEquals(1, m.find(Node.ANY, Node.ANY, chaten).toList().size());
-			assertEquals(1, m.find(Node.ANY, Node.ANY, chatEN).toList().size());
+			txnBegin( g );
+			assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
+			assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
+			txnRollback(g);
 		}
 	}
 
@@ -699,6 +915,7 @@ public class GraphContractTest<T extends Graph>  {
 	public void testFind_Triple() {
 		Graph graph = graphWith(producer.newInstance(),
 				"S P O; S2 P2 O2; S3 P3 O3");
+		txnBegin(graph);
 		List<Triple> s = graph.find(Triple.ANY).toList();
 		assertEquals(3, s.size());
 		List<Triple> expected = Arrays.asList(new Triple[] { triple("S P O"),
@@ -732,16 +949,18 @@ public class GraphContractTest<T extends Graph>  {
 
 		s = graph.find(new Triple(node("S3"), node("P2"), Node.ANY)).toList();
 		assertEquals(0, s.size());
-
+		txnRollback( graph );
 	}
 
 	@ContractTest
 	public void testFind_Triple_ByFluidTriple() {
 		Graph g = graphWith(producer.newInstance(), "x y z ");
 		Set<Triple> expect = tripleSet("x y z");
+		txnBegin( g );
 		assertEquals(expect, g.find(triple("?? y z")).toSet());
 		assertEquals(expect, g.find(triple("x ?? z")).toSet());
 		assertEquals(expect, g.find(triple("x y ??")).toSet());
+		txnRollback( g );
 	}
 
 	@ContractTest
@@ -774,6 +993,7 @@ public class GraphContractTest<T extends Graph>  {
 				fail(e.getMessage());
 			}
 			txnCommit(g);
+			txnBegin(g);
 			assertEquals(
 					String.format(
 							"Should have found 4 elements, does %s really implement literal typing",
@@ -782,30 +1002,39 @@ public class GraphContractTest<T extends Graph>  {
 					iteratorToSet(
 							g.find(new Triple(Node.ANY, P, NodeCreateUtils
 									.create("42")))).size());
+			txnRollback(g);
 		}
 	}
 
 	@ContractTest
 	public void testFind_Triple_MatchLanguagedLiteralCaseInsensitive() {
-		Graph m = graphWith(producer.newInstance(), "a p 'chat'en");
+		Graph g = graphWith(producer.newInstance(), "a p 'chat'en");
+		if (g.getCapabilities().handlesLiteralTyping()) {
 		Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 		assertDiffer(chaten, chatEN);
 		assertTrue(chaten.sameValueAs(chatEN));
 		assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
-		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
+		txnBegin( g );
+		assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
+		assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
+		txnRollback( g );
+		}
 	}
 
 	@ContractTest
 	public void testFind_Triple_NoMatchAgainstUnlanguagesLiteral() {
-		Graph m = graphWith(producer.newInstance(),
+		Graph g = graphWith(producer.newInstance(),
 				"a p 'chat'en; a p 'chat'");
+		if (g.getCapabilities().handlesLiteralTyping()) {
 		Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
 		assertDiffer(chaten, chatEN);
 		assertTrue(chaten.sameValueAs(chatEN));
 		assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
-		assertEquals(1, m.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
+		txnBegin( g );
+		assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten)).toList().size());
+		assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN)).toList().size());
+		txnRollback( g );
+		}
 	}
 
 	@ContractTest
@@ -839,18 +1068,20 @@ public class GraphContractTest<T extends Graph>  {
 	@ContractTest
 	public void testGetPrefixMapping() {
 		Graph g = producer.newInstance();
+		txnBegin( g );
 		PrefixMapping pm = g.getPrefixMapping();
 		assertNotNull("Must return prefix mapping", pm);
 		assertSame("getPrefixMapping must always return the same object", pm,
 				g.getPrefixMapping());
-
-	
+		txnRollback( g );	
 		pm.setNsPrefix("pfx1", "http://example.com/");
 		pm.setNsPrefix("pfx2", "scheme:rope/string#");
-
+		
+		txnBegin( g );
 		// assert same after adding to other mapl
 		assertSame("getPrefixMapping must always return the same object", pm,
 				g.getPrefixMapping());
+		txnRollback( g );
 
 	}
 
@@ -876,31 +1107,46 @@ public class GraphContractTest<T extends Graph>  {
 	public void testIsClosed() {
 		Graph g = producer.newInstance();
 		assertFalse("Graph created in closed state", g.isClosed());
+		txnBegin(g);
 		g.close();
+		txnCommit(g);
+		txnBegin(g);
 		assertTrue("Graph does not report closed state after close called",
 				g.isClosed());
+		txnRollback(g);
 	}
 
 	@ContractTest
 	public void testIsEmpty() {
 		Graph g = producer.newInstance();
+		txnBegin( g );
 		if (!g.isEmpty()) {
 			LOG.warn(String.format(
 					"Graph type %s can not be empty (Empty test skipped)",
 					g.getClass()));
+			txnRollback(g);
 		} else {
+			txnRollback(g);
 			graphAddTxn(g, "S P O");
+			txnBegin(g);
 			assertFalse("Graph reports empty after add", g.isEmpty());
+			txnRollback(g);
+			
 			txnBegin(g);
 			g.add(NodeCreateUtils.createTriple("Foo B C"));
 			g.delete(NodeCreateUtils.createTriple("S P O"));
 			txnCommit(g);
+			txnBegin(g);
 			assertFalse("Should not report empty", g.isEmpty());
+			txnRollback(g);
+			
 			txnBegin(g);
 			g.delete(NodeCreateUtils.createTriple("Foo B C"));
 			txnCommit(g);
+			txnBegin(g);
 			assertTrue("Should report empty after all entries deleted",
 					g.isEmpty());
+			txnRollback(g);
 		}
 	}
 
@@ -908,13 +1154,16 @@ public class GraphContractTest<T extends Graph>  {
 	public void testIsIsomorphicWith_Graph() {
 		Graph graph = producer.newInstance();
 		Graph g2 = memGraph();
+		txnBegin( graph );
 		assertTrue("Empty graphs should be isomorphic",
 				graph.isIsomorphicWith(g2));
-
-		graph = graphWith(producer.newInstance(),
+		txnRollback( graph );
+		graphWith(graph,
 				"S P O; S2 P2 O2; S3 P3 O3");
 		g2 = graphWith("S3 P3 O3; S2 P2 O2; S P O");
+		txnBegin( graph );
 		assertTrue("Should be isomorphic", graph.isIsomorphicWith(g2));
+		txnRollback( graph );
 		txnBegin(graph);
 		graph.add(triple("_1, P4 S4"));
 		txnCommit(graph);
@@ -922,9 +1171,11 @@ public class GraphContractTest<T extends Graph>  {
 		txnBegin(g2);
 		g2.add(triple("_2, P4 S4"));
 		txnCommit(g2);
+		txnBegin( graph );
 		assertTrue("Should be isomorphic after adding anonymous nodes",
 				graph.isIsomorphicWith(g2));
-
+		txnRollback( graph );
+		
 		txnBegin(graph);
 		graph.add(triple("_1, P3 S4"));
 		txnCommit(graph);
@@ -932,7 +1183,9 @@ public class GraphContractTest<T extends Graph>  {
 		txnBegin(g2);
 		g2.add(triple("_2, P4 S4"));
 		txnCommit(g2);
+		txnBegin( graph );
 		assertFalse("Should not be isomorphic", graph.isIsomorphicWith(g2));
+		txnRollback( graph );
 	}
 
 	private Graph copy(Graph g) {
@@ -989,7 +1242,9 @@ public class GraphContractTest<T extends Graph>  {
 
 				content.getEventManager().unregister(GL);
 				Graph finalContent = remove(copy(content), baseContent);
+				txnBegin(finalContent);
 				assertIsomorphic(cases[i][1], expected, finalContent);
+				txnRollback(finalContent);
 			}
 	}
 
@@ -1009,8 +1264,10 @@ public class GraphContractTest<T extends Graph>  {
 
 	private void testRemove(String findRemove, String findCheck) {
 		Graph g = graphWith(producer.newInstance(), "S P O");
+		txnBegin(g);
 		ExtendedIterator<Triple> it = g.find(NodeCreateUtils
 				.createTriple(findRemove));
+		txnRollback(g);
 		try {
 			it.next();
 			it.remove();
@@ -1035,11 +1292,13 @@ public class GraphContractTest<T extends Graph>  {
 		try {
 			g.add(Triple.create(r, p, s));
 			txnCommit(g);
+			txnBegin(g);
 			assertTrue(g.contains(r, p, Node.ANY));
 			assertEquals(1, g.find(r, p, Node.ANY).toList().size());
 		} catch (Exception e) {
-			txnRollback(g);
 			fail(e.getMessage());
+		} finally {
+			txnRollback(g);
 		}
 	}
 
@@ -1051,19 +1310,25 @@ public class GraphContractTest<T extends Graph>  {
 	public void testAGraph() {
 		String title = this.getClass().getName();
 		Graph g = producer.newInstance();
+		txnBegin(g);
 		int baseSize = g.size();
+		txnRollback(g);
 		graphAddTxn(g, "x R y; p S q; a T b");
 		/* */
+		txnBegin(g);
 		assertContainsAll(title + ": simple graph", g, "x R y; p S q; a T b");
 		assertEquals(title + ": size", baseSize + 3, g.size());
-
+		txnRollback(g);
+		
 		graphAddTxn(g,
 				"spindizzies lift cities; Diracs communicate instantaneously");
-		assertEquals(title + ": size after adding", baseSize + 5, g.size());
 		txnBegin(g);
+		assertEquals(title + ": size after adding", baseSize + 5, g.size());
+
 		g.delete(triple("x R y"));
 		g.delete(triple("a T b"));
 		txnCommit(g);
+		txnBegin(g);
 		assertEquals(title + ": size after deleting", baseSize + 3, g.size());
 		assertContainsAll(title + ": modified simple graph", g,
 				"p S q; spindizzies lift cities; Diracs communicate instantaneously");
@@ -1074,6 +1339,7 @@ public class GraphContractTest<T extends Graph>  {
 		assertEquals(title + ": finds a 'lift' triple",
 				triple("spindizzies lift cities"), it.next());
 		assertFalse(title + ": finds exactly one triple", it.hasNext());
+		txnRollback(g);
 		it.close();
 	}
 
@@ -1083,7 +1349,9 @@ public class GraphContractTest<T extends Graph>  {
 		txnBegin(g);
 		xSPO(g);
 		txnCommit(g);
+		txnBegin(g);
 		assertFalse(g.isEmpty());
+		txnRollback(g);
 	}
 
 	protected void xSPOyXYZ(Graph g) {
@@ -1107,6 +1375,7 @@ public class GraphContractTest<T extends Graph>  {
 	    final Graph g = producer.newInstance();
 	    try {
 	        graphAddTxn(g, "c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'");
+	        txnBegin(g);
 	        Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)) {
 	            @Override
 	            public void remove() {
@@ -1114,11 +1383,14 @@ public class GraphContractTest<T extends Graph>  {
 	                g.delete(current); // no-op.
 	            }
 	        };
+	        txnRollback(g);
 	        while (it.hasNext()) {
 	            it.next();
 	            it.remove();
 	        }
+	        txnBegin(g);
 	        assertTrue(g.isEmpty());
+	        txnRollback(g);
 	    } catch (UnsupportedOperationException e) {
 	        // No Iterator.remove
 	    }
@@ -1182,11 +1454,17 @@ public class GraphContractTest<T extends Graph>  {
 		Model m1 = ModelFactory.createModelForGraph(g1);
 		Model m2 = ModelFactory.createModelForGraph(g2);
 
+		txnBegin(g1);
 		m1.read(getInputStream(n, 1, suffix), "http://www.example.org/", lang);
-
+		txnCommit(g1);
+		
+		txnBegin(g2);
 		m2.read(getInputStream(n, 2, suffix), "http://www.example.org/", lang);
+		txnCommit(g2);
 
+		txnBegin(g1);
 		boolean rslt = g1.isIsomorphicWith(g2) == result;
+		txnRollback(g1);
 		if (!rslt) {
 			System.out.println("g1:");
 			m1.write(System.out, "N-TRIPLE");
@@ -1280,11 +1558,25 @@ public class GraphContractTest<T extends Graph>  {
 	public void testPartialUpdate() {
 		Graph source = graphWith(producer.newInstance(), "a R b; b S e");
 		Graph dest = graphWith(producer.newInstance(), "b R d");
-		GraphExtract e = new GraphExtract(TripleBoundary.stopNowhere);
-		e.extractInto(dest, node("a"), source);
+		txnBegin(source);
+		try {
+			GraphExtract e = new GraphExtract(TripleBoundary.stopNowhere);
+			e.extractInto(dest, node("a"), source);
+			txnCommit(source);
+		}
+		catch (RuntimeException e)
+		{
+			txnRollback(source);
+			e.printStackTrace();
+			fail( e.getMessage() );
+			
+		}
+		txnBegin(source);
 		assertIsomorphic(
-				graphWith(producer.newInstance(), "a R b; b S e; b R d"),
+				graphWith( "a R b; b S e; b R d"),
 				dest);
+		txnRollback(source);
+		
 	}
 
 	/**
@@ -1294,13 +1586,13 @@ public class GraphContractTest<T extends Graph>  {
 	@ContractTest
 	public void testIterator_Remove() {
 	    Graph graph = graphWith(producer.newInstance(), "a R b; b S e");
-	    try {
-	        graph.getEventManager().register(GL);
-	        txnBegin(graph);
-
-	        Triple toRemove = triple("a R b");
-	        ExtendedIterator<Triple> rtr = graph.find(toRemove);
-	        assertTrue("ensure a(t least) one triple", rtr.hasNext());
+	    graph.getEventManager().register(GL);
+        txnBegin(graph);
+        Triple toRemove = triple("a R b");
+        ExtendedIterator<Triple> rtr = graph.find(toRemove);
+        assertTrue("ensure a(t least) one triple", rtr.hasNext());
+        txnRollback(graph);
+	    try {	        
 	        rtr.next();
 	        rtr.remove();
 	        rtr.close();
@@ -1315,19 +1607,22 @@ public class GraphContractTest<T extends Graph>  {
 	public void testTransactionHandler_Commit() {
 		Graph g = producer.newInstance();
 		if (g.getTransactionHandler().transactionsSupported()) {
-			Graph initial = graphWith(producer.newInstance(),
+			Graph initial = graphWith(
 					"initial hasValue 42; also hasURI hello");
-			Graph extra = graphWith(producer.newInstance(),
+			Graph extra = graphWith(
 					"extra hasValue 17; also hasURI world");
-
+			g.getTransactionHandler().begin();			
 			GraphUtil.addInto(g, initial);
+			g.getTransactionHandler().commit();
 			g.getTransactionHandler().begin();
 			GraphUtil.addInto(g, extra);
 			g.getTransactionHandler().commit();
 			Graph union = memGraph();
 			GraphUtil.addInto(union, initial);
 			GraphUtil.addInto(union, extra);
+			g.getTransactionHandler().begin();
 			assertIsomorphic(union, g);
+			g.getTransactionHandler().abort();
 			// Model inFiIProducer<TransactionHandler>le =
 			// ModelFactory.createDefaultModel();
 			// inFile.read( "file:///" + foo, "N-TRIPLES" );
@@ -1343,11 +1638,17 @@ public class GraphContractTest<T extends Graph>  {
 					"initial hasValue 42; also hasURI hello");
 			Graph extra = graphWith(producer.newInstance(),
 					"extra hasValue 17; also hasURI world");
+			g.getTransactionHandler().begin();
 			GraphUtil.addInto(g, initial);
+			g.getTransactionHandler().commit();
+
 			g.getTransactionHandler().begin();
 			GraphUtil.addInto(g, extra);
 			g.getTransactionHandler().abort();
+			
+			g.getTransactionHandler().begin();
 			assertIsomorphic(initial, g);
+			g.getTransactionHandler().abort();
 		}
 	}
 
@@ -1365,7 +1666,9 @@ public class GraphContractTest<T extends Graph>  {
 			g.getTransactionHandler().begin();
 			GraphUtil.addInto(g, extra);
 			g.getTransactionHandler().abort();
+			g.getTransactionHandler().begin();
 			assertIsomorphic(initial, g);
+			g.getTransactionHandler().abort();
 			// Model inFile = ModelFactory.createDefaultModel();
 			// inFile.read( "file:///" + foo, "N-TRIPLES" );
 			// assertIsomorphic( initial, inFile.getGraph() );
@@ -1395,10 +1698,12 @@ public class GraphContractTest<T extends Graph>  {
 
 			Node literal = NodeCreateUtils.create(search);
 			//
+			txnBegin(g);
 			assertEquals("graph has wrong size", size, g.size());
 			Set<Node> got = g.find(Node.ANY, Node.ANY, literal)
 					.mapWith(getObject).toSet();
 			assertEquals(nodeSet(results), got);
+			txnRollback(g);
 		}
 	}
 
@@ -1457,7 +1762,9 @@ public class GraphContractTest<T extends Graph>  {
 	@ContractTest
 	public void testQuadRemove() {
 		Graph g = producer.newInstance();
+		txnBegin(g);
 		assertEquals(0, g.size());
+		txnRollback(g);
 		Triple s = triple("x rdf:subject s");
 		Triple p = triple("x rdf:predicate p");
 		Triple o = triple("x rdf:object o");
@@ -1468,23 +1775,31 @@ public class GraphContractTest<T extends Graph>  {
 		g.add(o);
 		g.add(t);
 		txnCommit(g);
+		txnBegin(g);
 		assertEquals(4, g.size());
+		txnRollback(g);
 		txnBegin(g);
 		g.delete(s);
 		g.delete(p);
 		g.delete(o);
 		g.delete(t);
 		txnCommit(g);
+		txnBegin(g);
 		assertEquals(0, g.size());
+		txnRollback(g);
 	}
 
 	@ContractTest
 	public void testSizeAfterRemove() {
 	    Graph g = graphWith(producer.newInstance(), "x p y");
 	    try {
+	    	txnBegin(g);
 	        ExtendedIterator<Triple> it = g.find(triple("x ?? ??"));
+	        txnRollback(g);
 	        it.removeNext();
+	        txnBegin(g);
 	        assertEquals(0, g.size());
+	        txnRollback(g);
 	    } catch (UnsupportedOperationException e) {
 	        // No Iterator.remove
 	    }
@@ -1581,13 +1896,17 @@ public class GraphContractTest<T extends Graph>  {
 	public void testBrokenIndexes() {
 	    Graph g = graphWith(producer.newInstance(), "x R y; x S z");
 	    try {
+	    	txnBegin(g);
 	        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY,
 	                                             Node.ANY);
+	        txnRollback(g);
 	        it.removeNext();
 	        it.removeNext();
+	        txnBegin(g);
 	        assertFalse(g.find(node("x"), Node.ANY, Node.ANY).hasNext());
 	        assertFalse(g.find(Node.ANY, node("R"), Node.ANY).hasNext());
 	        assertFalse(g.find(Node.ANY, Node.ANY, node("y")).hasNext());
+	        txnRollback(g);
 	    } catch (UnsupportedOperationException e) {
 	        // No Iterator.remove
 	    }
@@ -1597,9 +1916,13 @@ public class GraphContractTest<T extends Graph>  {
 	public void testBrokenSubject() {
 		Graph g = graphWith(producer.newInstance(), "x brokenSubject y");
 		try {
+	    	txnBegin(g);
 		    ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY, Node.ANY);
+	        txnRollback(g);
 		    it.removeNext();
+	    	txnBegin(g);
 		    assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+	        txnRollback(g);
 		} catch (UnsupportedOperationException e) {
 		    // No Iterator.remove
 		}
@@ -1609,9 +1932,13 @@ public class GraphContractTest<T extends Graph>  {
 	public void testBrokenPredicate() {
 		Graph g = graphWith(producer.newInstance(), "x brokenPredicate y");
 		try {
+	    	txnBegin(g);
 		    ExtendedIterator<Triple> it = g.find(Node.ANY, node("brokenPredicate"), Node.ANY);
+	        txnRollback(g);
 		    it.removeNext();
+	    	txnBegin(g);
 		    assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+	        txnRollback(g);
 		} catch (UnsupportedOperationException e) {
 		    // No Iterator.remove
 		}
@@ -1622,9 +1949,13 @@ public class GraphContractTest<T extends Graph>  {
 	    Graph g = graphWith(producer.newInstance(), "x brokenObject y");
 
 	    try {
+	    	txnBegin(g);
 	        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, node("y"));
+	        txnRollback(g);
 	        it.removeNext();
+	    	txnBegin(g);
 	        assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+	    	txnRollback(g);
 
 	    } catch (UnsupportedOperationException e) {
 	        // No Iterator.remove

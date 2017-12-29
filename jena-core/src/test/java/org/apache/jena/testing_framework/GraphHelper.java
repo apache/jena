@@ -493,6 +493,14 @@ public class GraphHelper extends TestUtils {
 			g.getTransactionHandler().commit();
 		}
 	}
+	
+	public static void txnRun( Graph g, Runnable r ) {
+		if (g.getTransactionHandler().transactionsSupported()) {
+			g.getTransactionHandler().execute( r );
+		} else {
+			r.run();
+		}
+	}
 
 	/**
 	 * Rollback (abort) the transaction on the graph if transactions are

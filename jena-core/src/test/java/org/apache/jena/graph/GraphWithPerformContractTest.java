@@ -22,7 +22,7 @@ import static org.apache.jena.testing_framework.GraphHelper.graphWith;
 import static org.apache.jena.testing_framework.GraphHelper.triple;
 import static org.apache.jena.testing_framework.GraphHelper.txnBegin;
 import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
-
+import static org.apache.jena.testing_framework.GraphHelper.txnRun;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -68,7 +68,13 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> {
 		g.performAdd(triple("S3 P3 O3"));
 		txnCommit(g);
 		GL.assertEmpty();
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertTrue(g.contains(triple("S3 P3 O3")));
+			}});
 	}
 
 	@ContractTest
@@ -80,7 +86,14 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> {
 		g.performDelete(triple("S2 P2 O2"));
 		txnCommit(g);
 		GL.assertEmpty();
+		txnRun( g, new Runnable() {
+			
+			@Override
+			public void run()
+			{
 		assertFalse(g.contains(triple("S2 P2 O2")));
+			}});
+		
 	}
 
 }

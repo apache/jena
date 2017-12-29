@@ -72,7 +72,9 @@ public abstract class AbstractGraphProducer<T extends Graph> implements
 	final public void cleanUp() {
 		for (Graph g : graphList) {
 			if (!g.isClosed()) {
+				GraphHelper.txnBegin(g);
 				g.close();
+				GraphHelper.txnCommit(g);
 			}
 			afterClose(g);
 		}
