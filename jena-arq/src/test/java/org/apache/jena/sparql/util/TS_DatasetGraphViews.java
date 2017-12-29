@@ -18,18 +18,11 @@
 
 package org.apache.jena.sparql.util;
 
-import org.apache.jena.atlas.lib.TestDateTimeUtils ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( {
-    TestDateTimeParsing.class ,
-    TestList.class ,
-    TestDateTimeUtils.class ,
-    TestFmtUtils.class,
-    TS_DatasetGraphViews.class
-})
-public class TS_Util
-{ }
+@SuiteClasses({ TestIntersectionDatasetGraph.class, TestDifferenceDatasetGraph.class, TestUnionDatasetGraph.class })
+
+public class TS_DatasetGraphViews {}
