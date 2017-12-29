@@ -77,8 +77,8 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
-            if (size > 4) {
-                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, greater than 4: "+argSubject);
+            if (size == 0 || size > 4) {
+                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, must be at least 1 and not greater than 4: "+argSubject);
             }
         }
 
