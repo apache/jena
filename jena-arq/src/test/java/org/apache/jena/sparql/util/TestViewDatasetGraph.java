@@ -1,9 +1,30 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.jena.sparql.util;
 
+import static org.apache.jena.sparql.core.DatasetGraphFactory.createTxnMem;
+
 import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphZero;
+import org.apache.jena.sparql.core.*;
 import org.junit.Test;
 
 public abstract class TestViewDatasetGraph extends BaseTest {
@@ -11,7 +32,7 @@ public abstract class TestViewDatasetGraph extends BaseTest {
     public abstract DatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c);
 
     private DatasetGraph emptyDsg() {
-        return testInstance(new DatasetGraphZero(), new DatasetGraphZero(), Context.emptyContext);
+        return testInstance(createTxnMem(), createTxnMem(), Context.emptyContext);
     }
 
     @Test(expected = NullPointerException.class)
@@ -62,6 +83,45 @@ public abstract class TestViewDatasetGraph extends BaseTest {
     @Test(expected = UnsupportedOperationException.class)
     public void noClearing() {
         emptyDsg().clear();
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noAddingToDefaultGraph() {
+        emptyDsg().getDefaultGraph().add(null);
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noDeletingFromDefaultGraph() {
+        emptyDsg().getDefaultGraph().delete(null);
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noAddingToANamedGraph() {
+        Node graphName = NodeFactory.createBlankNode();
+        emptyDsg().getGraph(graphName).add(null);
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noDeletingFromANamedGraph() {
+        Node graphName = NodeFactory.createBlankNode();
+        emptyDsg().getGraph(graphName).delete(null);
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noClearingDefaultGraph() {
+        emptyDsg().getDefaultGraph().clear();
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noClearingANamedGraph() {
+        Node graphName = NodeFactory.createBlankNode();
+        emptyDsg().getGraph(graphName).clear();
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void noRemovingFromANamedGraph() {
+        Node graphName = NodeFactory.createBlankNode();
+        emptyDsg().getGraph(graphName).remove(null, null, null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
