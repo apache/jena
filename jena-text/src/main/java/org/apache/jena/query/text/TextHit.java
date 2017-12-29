@@ -28,6 +28,13 @@ public class TextHit
     private Node literal;
     private Node graph;
 
+    public TextHit(Node node, float score, Node literal) {
+        this.node = node;
+        this.score = score;
+        this.literal = literal;
+        this.graph = null;
+    }
+
     public TextHit(Node node, float score, Node literal, Node graph) {
         this.node = node;
         this.score = score;
