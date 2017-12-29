@@ -20,10 +20,11 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.lang.ThreadLocal.withInitial;
 import static org.apache.jena.graph.Node.ANY;
-import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+import static org.apache.jena.system.Txn.calculateRead;
+import static org.apache.jena.system.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
@@ -33,9 +34,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
@@ -315,15 +314,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
-        if (!isInTransaction()) {
-            begin(READ);
-            try {
-                return source.get();
-            } finally {
-                end();
-            }
-        }
-        return source.get();
+        return isInTransaction() ? source.get() : calculateRead(this, source::get);
     }
 
     @Override
@@ -390,33 +381,23 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
      * @param payload
      */
     private <T> void mutate(final Consumer<T> mutator, final T payload) {
-        if (!isInTransaction()) {
-            begin(WRITE);
-            try {
-                mutator.accept(payload);
-                commit();
-            } finally {
-                end();
-            }
-            return ;
-        }
-        if ( !transactionMode().equals(WRITE) ) {
-            TxnType mode = transactionType.get();
-            switch(mode) {
-                case WRITE :
+        if (isInTransaction()) {
+            if (!transactionMode().equals(WRITE)) {
+                TxnType mode = transactionType.get();
+                switch (mode) {
+                case WRITE:
                     break;
-                case READ :
+                case READ:
                     throw new JenaTransactionException("Tried to write inside a READ transaction!");
-                case READ_COMMITTED_PROMOTE :
-                case READ_PROMOTE :
-                {
+                case READ_COMMITTED_PROMOTE:
+                case READ_PROMOTE:
                     boolean readCommitted = (mode == TxnType.READ_COMMITTED_PROMOTE);
                     _promote(readCommitted);
                     break;
                 }
             }
-        }
-        mutator.accept(payload);
+            mutator.accept(payload);
+        } else executeWrite(this, () -> mutator.accept(payload));
     }
 
     /**

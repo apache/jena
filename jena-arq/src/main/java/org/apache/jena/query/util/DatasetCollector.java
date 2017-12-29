@@ -35,7 +35,7 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
 
     @Override
     public Supplier<Dataset> supplier() {
-        return DatasetFactory::createGeneral;
+        return DatasetFactory::createTxnMem;
     }
 
     public ConcurrentDatasetCollector concurrent() {
@@ -77,7 +77,10 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
             return (d1, d2) -> {
                 d1.getDefaultModel().add(d2.getDefaultModel());
                 d2.listNames().forEachRemaining(
-                        name -> d1.replaceNamedModel(name, d1.getNamedModel(name).union(d2.getNamedModel(name))));
+                        name -> {
+                            Model union = d1.getNamedModel(name).union(d2.getNamedModel(name));
+                            d1.replaceNamedModel(name, union);
+                        });
             };
         }
     }
