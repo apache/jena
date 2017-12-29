@@ -26,11 +26,11 @@ import static org.junit.Assert.assertTrue ;
 
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicInteger ;
-
+import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.system.ThreadAction;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.jenax.Txn;
 import org.apache.jena.dboe.migrate.L;
-import org.apache.jena.dboe.transaction.ThreadTxn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
@@ -65,7 +65,7 @@ public class TestTransactionCoordinatorControl {
         AtomicInteger counter2 = new AtomicInteger(0) ;
 
         txnMgr.blockWriters();
-        ThreadTxn threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
+        ThreadAction threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
         threadTxn1.run() ;
         assertEquals(1, counter1.get()) ;
     }
@@ -126,7 +126,7 @@ public class TestTransactionCoordinatorControl {
     @Test public void txn_coord_exclusive_2() {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         Semaphore finalSema = new Semaphore(0) ;
-        ThreadTxn ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
+        ThreadAction ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
             counter1.incrementAndGet() ;
         }) ;
         boolean b = txnMgr.tryExclusiveMode(false);

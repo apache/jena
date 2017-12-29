@@ -32,7 +32,6 @@ import org.apache.jena.sparql.core.Transactional ;
  * will cause deadlock.
  */ 
 public class ThreadTxn {
-    // ---- Thread
 
     /** Create a thread-backed delayed READ transaction action. 
      * Call {@link ThreadAction#run} to perform the read transaction.

@@ -23,7 +23,8 @@ import static org.junit.Assert.fail ;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.jenax.Txn;
-import org.apache.jena.dboe.transaction.ThreadTxn;
+import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.system.ThreadAction;
 import org.apache.jena.dboe.transaction.TransInteger;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
@@ -97,7 +98,7 @@ public class TestTxnSwitching {
         integer.inc();
         assertEquals(z+3, integer.get()) ;
         
-        ThreadTxn threadTxn = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())) ;
+        ThreadAction threadTxn = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z+1, integer.get())) ;
         threadTxn.run() ;
         
         transactional.commit() ;
@@ -140,8 +141,8 @@ public class TestTxnSwitching {
         transactional.begin(ReadWrite.READ);
         TransactionCoordinatorState txnStateR1 = transactional.detach() ;
         
-        ThreadTxn t1 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
-        ThreadTxn t2 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+        ThreadAction t1 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
+        ThreadAction t2 = ThreadTxn.threadTxnRead(transactional, ()->assertEquals(z, integer.get() )) ;
 
         transactional.begin(ReadWrite.WRITE);
         integer.inc();
