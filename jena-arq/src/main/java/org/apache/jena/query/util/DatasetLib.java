@@ -48,8 +48,25 @@ public class DatasetLib {
     public static Dataset difference(final Dataset d1, final Dataset d2, Context c) {
         return DatasetFactory.wrap(new DifferenceDatasetGraph(d1.asDatasetGraph(), d2.asDatasetGraph(), c));
     }
-    
+
     public static Dataset difference(final Dataset d1, final Dataset d2) {
         return DatasetFactory.wrap(new DifferenceDatasetGraph(d1.asDatasetGraph(), d2.asDatasetGraph(), emptyContext));
+    }
+
+    public static Collectors collectors() {
+        return Collectors.instance;
+    }
+
+    static class Collectors {
+
+        static Collectors instance = new Collectors();
+
+        public DatasetCollector union() {
+            return DatasetCollector.union();
+        }
+
+        public DatasetCollector intersect() {
+            return DatasetCollector.intersect();
+        }
     }
 }

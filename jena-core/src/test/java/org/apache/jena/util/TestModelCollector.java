@@ -80,10 +80,6 @@ public class TestModelCollector extends BaseTest {
         assertTrue(Stream.<Model>empty().collect(testCollector).isEmpty());
     }
 
-    private static ArrayList<ModelCollector> concurrentCollectors() {
-        return newArrayList(new UnionModelCollector().concurrent(), new IntersectionModelCollector().concurrent());
-    }
-
     private static ArrayList<ModelCollector> collectors() {
         return newArrayList(new UnionModelCollector(), new IntersectionModelCollector());
     }

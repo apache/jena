@@ -100,4 +100,12 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
             };
         }
     }
+    
+    static DatasetCollector union() { 
+        return new UnionDatasetCollector();
+    }
+    
+    static DatasetCollector intersect() { 
+        return new IntersectionDatasetCollector();
+    }
 }
