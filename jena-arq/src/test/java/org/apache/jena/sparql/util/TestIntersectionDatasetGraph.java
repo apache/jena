@@ -7,7 +7,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.junit.Test;
 
-public class TestIntersectionDatasetGraph extends TestViewDatasetGraph<IntersectionDatasetGraph> {
+public class TestIntersectionDatasetGraph extends TestViewDatasetGraph {
 
     @Override
     public IntersectionDatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c) {

@@ -6,11 +6,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.junit.Test;
 
-public abstract class TestViewDatasetGraph<T extends ViewDatasetGraph> extends BaseTest {
+public abstract class TestViewDatasetGraph extends BaseTest {
 
-    public abstract T testInstance(DatasetGraph left, DatasetGraph right, Context c);
+    public abstract DatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c);
 
-    private T emptyDsg() {
+    private DatasetGraph emptyDsg() {
         return testInstance(new DatasetGraphZero(), new DatasetGraphZero(), Context.emptyContext);
     }
 
