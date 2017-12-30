@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Transactional ;
@@ -256,6 +257,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(TxnType type)           { txn.begin(type) ; }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
     @Override public void commit()                      { txn.commit() ; }
     @Override public void abort()                       { txn.abort() ; }

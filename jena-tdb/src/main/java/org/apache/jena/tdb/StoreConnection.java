@@ -24,6 +24,7 @@ import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.mgt.ARQMgt ;
 import org.apache.jena.tdb.base.file.ChannelManager ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -87,16 +88,32 @@ public class StoreConnection
         return transactionManager.state();
     }
 
+    /*
+     * @deprecated Use {@link #begin(TxnType)}
+     */
+    //@Deprecated
+    public DatasetGraphTxn begin(ReadWrite mode) {
+        return begin(TxnType.convert(mode));
+    }
+
     /**
      * Begin a transaction. Terminate a write transaction with
-     * {@link Transaction#commit()} or {@link Transaction#abort()}. Terminate a
-     * write transaction with {@link Transaction#close()}.
+     * {@link Transaction#commit()} or {@link Transaction#abort()}. 
+     * Terminate a write transaction with {@link Transaction#close()}.
      */
-    public DatasetGraphTxn begin(ReadWrite mode) {
+    public DatasetGraphTxn begin(TxnType mode) {
         checkValid();
         checkTransactional();
         haveUsedInTransaction = true;
-        return transactionManager.begin(mode);
+        return transactionManager.begin(mode, null);
+    }
+
+    /**
+     * @deprecated Use {@link #begin(TxnType, String)}
+     */
+    @Deprecated
+    public DatasetGraphTxn begin(ReadWrite mode, String label) {
+        return begin(TxnType.convert(mode), label);
     }
 
     /**
@@ -104,7 +121,7 @@ public class StoreConnection
      * with {@link Transaction#commit()} or {@link Transaction#abort()}.
      * Terminate a write transaction with {@link Transaction#close()}.
      */
-    public DatasetGraphTxn begin(ReadWrite mode, String label) {
+    public DatasetGraphTxn begin(TxnType mode, String label) {
         checkValid();
         checkTransactional();
         return transactionManager.begin(mode, label);

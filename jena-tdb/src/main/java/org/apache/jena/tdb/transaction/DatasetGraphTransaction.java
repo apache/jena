@@ -23,13 +23,14 @@ import static java.lang.ThreadLocal.withInitial ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb.TDBException;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.GraphNonTxnTDB ;
@@ -86,18 +87,24 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         return sConn.getBaseDataset() ;
     }
 
-    /*private*/public/*for development*/ static boolean promotion               = false ; 
-    /*private*/public/*for development*/ static boolean readCommittedPromotion   = true ;
-    
     @Override public DatasetGraph getW() {
         if ( isInTransaction() ) {
-            if ( promotion ) {
-                DatasetGraphTxn dsgTxn = txn.get() ;
-                if ( dsgTxn.getTransaction().isRead() ) {
-                    TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
-                    DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, readCommittedPromotion) ;
-                    txn.set(dsgTxn2); 
+            DatasetGraphTxn dsgTxn = txn.get() ;
+            if ( dsgTxn.getTransaction().isRead() ) {
+                TxnType txnType = dsgTxn.getTransaction().getTxnType();
+                switch(txnType) {
+                    case READ : 
+                        throw new JenaTransactionException("Attempt to update in a read transaction"); 
+                    case WRITE :
+                        // Impossible. We're in read-mode.
+                        throw new TDBException("Internal inconsistency: read-mode write transaction");
+                    case READ_COMMITTED_PROMOTE :
+                    case READ_PROMOTE : 
                 }
+                // Promotion.
+                TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
+                DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, txnType) ;
+                txn.set(dsgTxn2);
             }
         }
         return super.getW() ;
@@ -172,11 +179,17 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected void _begin(ReadWrite readWrite) {
+    protected void _begin(TxnType txnType) {
         checkNotClosed() ;
-        DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
+        DatasetGraphTxn dsgTxn = sConn.begin(txnType) ;
         txn.set(dsgTxn) ;
         inTransaction.set(true) ;
+    }
+
+    @Override
+    protected boolean _promote() {
+        checkNotClosed() ;
+        return txn.get().promote();
     }
 
     @Override

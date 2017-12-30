@@ -24,10 +24,7 @@ import static org.apache.jena.tdb.transaction.TransactionManager.TxnPoint.BEGIN 
 import static org.apache.jena.tdb.transaction.TransactionManager.TxnPoint.CLOSE ;
 
 import java.io.File ;
-import java.util.ArrayList ;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.*;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.LinkedBlockingDeque ;
 import java.util.concurrent.Semaphore ;
@@ -39,6 +36,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
@@ -300,13 +298,27 @@ public class TransactionManager
         journal.close() ;
     }
 
-    public DatasetGraphTxn begin(ReadWrite mode) {
-        return begin(mode, null) ;
-    }
+    public /*for testing only*/ static final boolean DEBUG = false ;
     
-    public /*for testing only*/ static final boolean DEBUG = false ; 
+    // TIM
+//    @Override
+//    public void begin(TxnMode txnMode) {
+//        if (isInTransaction()) 
+//            throw new JenaTransactionException("Transactions cannot be nested!");
+//        transactionMode.set(txnMode);
+//        ReadWrite initial = txnMode.equals(TxnMode.WRITE) ? WRITE : READ;
+//        _begin(initial);
+//    }
+//    
+//    @Override
+//    public void begin(final ReadWrite readWrite) {
+//        if (isInTransaction()) 
+//            throw new JenaTransactionException("Transactions cannot be nested!");
+//        transactionMode.set(TxnMode.convert(readWrite));
+//        _begin(readWrite) ;
+//    }
     
-    public DatasetGraphTxn begin(ReadWrite mode, String label) {
+    public DatasetGraphTxn begin(TxnType mode, String label) {
         // The exclusivitylock surrounds the entire transaction cycle.
         // Paired with notifyCommit, notifyAbort.
         startNonExclusive();
@@ -314,7 +326,7 @@ public class TransactionManager
         // Not synchronized (else blocking on semaphore will never wake up
         // because Semaphore.release is inside synchronized).
         // Allow only one active writer. 
-        if ( mode == ReadWrite.WRITE ) {
+        if ( mode == TxnType.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
@@ -339,7 +351,7 @@ public class TransactionManager
      * "read committed" will always succeed but the app needs to be aware that data access before the promotion
      * is no longer valid. It may need to check it.   
      */
-    /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, boolean readCommited) throws TDBTransactionException {
+    /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, TxnType txnType) throws TDBTransactionException {
         Transaction txn = dsgtxn.getTransaction() ;
         if ( txn.getState() != TxnState.ACTIVE )
             throw new TDBTransactionException("promote: transaction is not active") ;
@@ -349,8 +361,8 @@ public class TransactionManager
         // Read commit - pick up whatever is current at the point setup.
         // Can also promote - may need to wait for active writers. 
         // Go through begin for the writers lock. 
-        if ( readCommited ) {
-            DatasetGraphTxn dsgtxn2 = begin(ReadWrite.WRITE, txn.getLabel()) ;
+        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
+            DatasetGraphTxn dsgtxn2 = begin(TxnType.WRITE, txn.getLabel()) ;
             // Junk the old one.
             return dsgtxn2 ;
         }
@@ -376,11 +388,11 @@ public class TransactionManager
         acquireWriterLock(true) ;
 
         // Do the synchronized stuff.
-        return promote2$(dsgtxn, readCommited) ; 
+        return promote2$(dsgtxn) ; 
     }
     
     synchronized
-    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn, boolean readCommited) {
+    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn) {
         Transaction txn = dsgtxn.getTransaction() ;
         // Writers may have happened between the first check of the active writers may have committed.  
         if ( txn.getVersion() != version.get() ) {
@@ -388,36 +400,39 @@ public class TransactionManager
             throw new TDBTransactionException("Active writer changed the dataset - can't promote") ;
         }
         // Use begin$ - we have the writers lock.
-        DatasetGraphTxn dsgtxn2 = begin$(ReadWrite.WRITE, txn.getLabel()) ;
+        DatasetGraphTxn dsgtxn2 = begin$(TxnType.WRITE, txn.getLabel()) ;
         return dsgtxn2 ;
     }
 
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
-    // of the low level object directly so we'll play safe.  
+    // of the low level objects directly so we'll play safe.  
     
     synchronized
-    private DatasetGraphTxn begin$(ReadWrite mode, String label) {
-        if ( mode == ReadWrite.WRITE && activeWriters.get() > 0 )    // Guard
+    private DatasetGraphTxn begin$(TxnType txnType, String label) {
+        Objects.requireNonNull(txnType);
+        if ( txnType == TxnType.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
         if ( DEBUG ) 
-            switch ( mode )
+            switch ( txnType )
             {
                 case READ : System.out.print("r") ; break ;
                 case WRITE : System.out.print("w") ; break ;
+                case READ_COMMITTED_PROMOTE : System.out.print("r(cp)") ; break ;
+                case READ_PROMOTE : System.out.print("rp") ; break ;
             }
         
         DatasetGraphTDB dsg = determineBaseDataset() ;
-        Transaction txn = createTransaction(dsg, mode, label) ;
+        Transaction txn = createTransaction(dsg, txnType, label) ;
         
         log("begin$", txn) ;
         
-        DatasetGraphTxn dsgTxn = createDSGTxn(dsg, txn, mode) ;
-
+        ReadWrite mode = initialMode(txnType);
+        DatasetGraphTxn dsgTxn = createDSGTxn(dsg, txn, mode);
         txn.setActiveDataset(dsgTxn) ;
 
-        // Empty for READ ; only WRITE transactions have components that need notifiying.
+        // Empty for READ ; only WRITE transactions have components that need notifying.
         List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
         
         if ( mode == ReadWrite.READ ) {
@@ -446,11 +461,16 @@ public class TransactionManager
               dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size() - 1).getActiveDataset().getView() ;
           return dsg ;
       }
-    private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label) {
-        Transaction txn = new Transaction(dsg, version.get(), mode, transactionId.getAndIncrement(), label, this) ;
+    private Transaction createTransaction(DatasetGraphTDB dsg, TxnType txnType, String label) {
+        Transaction txn = new Transaction(dsg, version.get(), txnType, initialMode(txnType), transactionId.getAndIncrement(), label, this) ;
         return txn ;
     }
 
+    // State.
+    private static ReadWrite initialMode(TxnType txnType) {
+        return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
+    }
+    
     private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode) {
         // A read transaction (if it has no lifecycle components) can be shared over all
         // read transactions at the same commit level. 

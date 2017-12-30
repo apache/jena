@@ -84,18 +84,28 @@ public abstract class AbstractTestTransPromote {
     
     /** Enable transaction promotion (it does not need to be the defaukl bahvaiour of the system under test.
      * A call of setPromotion(true) is made before each test.
-     * The original setting is retored at the end of the test.   
+     * The original setting is retored at the end of the test.
+     * @deprecated Redundant - remove.   
      */
+    @Deprecated
     protected abstract void setPromotion(boolean b) ;
-    /** Whether promotion is active */ 
+    /** 
+     *  @deprecated Redundant - remove.   
+     */
+    @Deprecated
     protected abstract boolean getPromotion() ;
     
     /**
      * If {@link #supportsReadCommitted} is true (whether by default or not),
      * then set/reset the state aroudn tests that test its behaviour.
+     * @deprecated Redundant - remove.   
      */
+    @Deprecated
     protected abstract void setReadCommitted(boolean b) ;
-    /** Whether read committed promotion is active */
+    /**
+     * @deprecated Redundant - remove.   
+     */
+    @Deprecated
     protected abstract boolean getReadCommitted() ;
     
     // The exact class used by exceptions of the system under test.
