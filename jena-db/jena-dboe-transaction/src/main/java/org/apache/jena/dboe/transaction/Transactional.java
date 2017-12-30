@@ -79,6 +79,7 @@ public interface Transactional extends org.apache.jena.sparql.core.Transactional
     * 
     * @return boolean indicating whether the transaction is now a write transaction or not.
     */
+   @Override
    public boolean promote() ;
 
    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */

@@ -35,7 +35,7 @@ import org.junit.runners.Suite.SuiteClasses;
     TestDatasetGraphInMemoryBasic.class,
     TestDatasetGraphInMemoryViews.class,
     TestDatasetGraphInMemoryLock.class, 
-    TestDatasetGraphInMemoryThreading.class,
+    //TestDatasetGraphInMemoryThreading.class,
     TestDatasetGraphInMemoryTransactions.class,
     
     TestDatasetGraphInMemoryFind.class,

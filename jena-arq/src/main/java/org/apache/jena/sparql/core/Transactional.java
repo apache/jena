@@ -19,17 +19,109 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnMode;
+import org.apache.jena.sparql.JenaTransactionException;
+import org.apache.jena.system.Txn;
 
-/** Interface that encapsulated begin/abort|commit/close.
+/** Interface that encapsulates the  begin/abort|commit/end operations.
  * <p>The read lifecycle is:
- * <pre>  begin(READ) ... end()</pre>
+ * <pre> begin(READ) ... end()</pre>
+ * <p>{@code commit} and {@code abort} are allowed. 
  * <p>The write lifecycle is:
- * <pre>  begin(WRITE) ... abort() or commit() [end()]</pre>
- * <p>{@code end()} is optional, but encouraged; it performs checks and can be called multiple times.
- * 
+ * <pre> begin(WRITE) ... abort() or commit()</pre>
+ * <p>{@code end()} is optional but preferred.
+ * <p>
+ * Helper code is available {@link Txn} so, for example:
+ * <pre>Txn.executeRead(dataset, ()-> { ... sparql query ... });</pre> 
+ * <pre>Txn.executeWrite(dataset, ()-> { ... sparql update ... });</pre>
+ * or use one of <tt>Txn.calculateRead</tt> and <tt>Txn.executeWrite</tt>
+ * to return a value for the transaction block.
+ * <p>
+ * Directly called, code might look like:
+ * <pre>
+ *     Transactional object = ...
+ *     object.begin(TxnMode.READ) ;
+ *     try {
+ *       ... actions inside a read transaction ...
+ *     } finally { object.end() ; }
+ * </pre>
+ * or
+ * <pre>
+ *     Transactional object = ...
+ *     object.begin(TxnMode.WRITE) ;
+ *     try {
+ *        ... actions inside a write transaction ...
+ *        object.commit() ;
+ *     } finally {
+ *        // This causes an abort if {@code commit} has not been called.
+ *        object.end() ;
+ *     }
+ * </pre>
  */
+
 public interface Transactional 
 {
+    /**
+     * Start a transaction.<br/>
+     * READ or WRITE transactions start in that state and do not chnage for the
+     * lifetime of the transaction.
+     * <ul>
+     * 
+     * <li>{@code WRITE}: this gaurantees a WRITE will complete if {@code commit()} is
+     * called. The same as {@code begin(ReadWrite.WRITE)}.
+     * 
+     * <li>{@code READ}: the transaction can not promote to WRITE,ensuring read-only
+     * access to the data. The same as {@code begin(ReadWrite.READ)}.
+     * 
+     * <li>{@code READ_PROMOTE}: the transaction will go from "read" to "write" if an
+     * update is attempted and if the dataset has not been changed by another write
+     * transaction. See also {@link #promote}.
+     * 
+     * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will
+     * succeed but changes from oher transactions become visible.
+     * 
+     * </ul>
+     * 
+     * Read committed: at the point transaction attempts promotion from "read" to
+     * "write", the sytem checks if the datset has chnage since the trsnaction started
+     * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
+     * changed; if {@code READ_COMMITTED_PROMOTE} anyh intermediate changes are
+     * visible but the application can not assume any data it has read in the
+     * transaction is the same as it was at the point the transaction started.
+     */
+    //public void begin(TxnMode mode);
+    public default void begin(TxnMode mode) { begin(TxnMode.convert(mode)); }
+    
+    /**
+     * Start a transaction which is READ mode and which will switch to WRITE if an update
+     * is attempted but only if no intermdiate transaction has performed an update. 
+     * <p>
+     * See {@link #begin(TxnMode)} for more details an options.
+     * <p>
+     * May not be implemented. See {@link #begin(ReadWrite)} is guaranted to be provided.
+     */
+    public default void begin() { begin(TxnMode.READ_PROMOTE); }
+    
+    /**
+     * Attempt to promote a transaction from "read" to "write" and the transaction
+     * start with a "promote" mode. Always succeeeds of the transaction is already
+     * "write". Returns true if it succeeds or false if it does not (the transaction
+     * is still valid and in "read").
+     */
+    
+    // XXX OR JenaTransactionException if promote not possible.
+    
+    //public void promote();
+    public default boolean promote() { throw new JenaTransactionException("Not implemented"); }
+    
+    /** Return the current state of the transaction - "read" or "write" */ 
+    //public ReadWrite transactionRW();
+    public default ReadWrite transactionRW() { throw new JenaTransactionException("Not implemented"); }
+    
+    /** Return the transaction mode used in {@code begin(TxnMode)}. */ 
+    //public TxnMode transactionMode();
+    public default TxnMode transactionMode() { throw new JenaTransactionException("Not implemented"); }
+    
     /** Start either a READ or WRITE transaction */ 
     public void begin(ReadWrite readWrite) ;
     

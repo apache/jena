@@ -37,6 +37,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnMode;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -83,16 +84,28 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         isInTransaction.set(b);
     }
 
+    private final ThreadLocal<TxnMode> transactionMode = withInitial(() -> null);
+    // Current state.
     private final ThreadLocal<ReadWrite> transactionType = withInitial(() -> null);
 
     /**
      * @return the type of transaction in progress
      */
-    public ReadWrite transactionType() {
+    private ReadWrite transactionType() {
         return transactionType.get();
     }
 
-    protected void transactionType(final ReadWrite readWrite) {
+    @Override
+    public ReadWrite transactionRW() { 
+        return transactionType.get();
+    }
+    
+    @Override
+    public TxnMode transactionMode() {
+        return transactionMode.get();
+    }
+
+    private void transactionType(final ReadWrite readWrite) {
         transactionType.set(readWrite);
     }
 
@@ -130,14 +143,24 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public boolean supportsTransactionAbort()   { return true; }
 
     @Override
+    public void begin(TxnMode txnMode) {
+        if (isInTransaction()) 
+            throw new JenaTransactionException("Transactions cannot be nested!");
+        transactionMode.set(txnMode);
+        ReadWrite initial = txnMode.equals(TxnMode.WRITE) ? WRITE : READ;
+        _begin(initial);
+    }
+    
+    @Override
     public void begin(final ReadWrite readWrite) {
         if (isInTransaction()) 
             throw new JenaTransactionException("Transactions cannot be nested!");
-        startTransaction(readWrite) ;
+        transactionMode.set(TxnMode.convert(readWrite));
         _begin(readWrite) ;
     }
 
     private void _begin(ReadWrite readWrite) {
+        startTransaction(readWrite);
         withLock(systemLock, () ->{
             quadsIndex().begin(readWrite);
             defaultGraph().begin(readWrite);
@@ -147,7 +170,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     
     /** Called transaction start code at most once per transaction. */ 
     private void startTransaction(ReadWrite mode) {
-        transactionLock.enterCriticalSection(mode.equals(READ)); // get the dataset write lock, if needed.
+        transactionLock.enterCriticalSection(mode.equals(ReadWrite.READ)); // get the dataset write lock, if needed.
         transactionType(mode);
         isInTransaction(true);
     }
@@ -155,11 +178,76 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     /** Called transaction ending code at most once per transaction. */ 
     private void finishTransaction() {
         isInTransaction.remove();
+        transactionMode.remove();
         transactionType.remove();
         version.remove();
         transactionLock.leaveCriticalSection();
     }
      
+    @Override
+    public boolean promote() {
+        if (!isInTransaction())
+            throw new JenaTransactionException("Tried to promote outside a transaction!");
+        if ( transactionType().equals(ReadWrite.WRITE) )
+            return true;
+
+        boolean readCommitted;
+        // Initial state
+        switch(transactionMode.get()) {
+            case WRITE :
+                return true;
+            case READ :
+                return false ;
+            case READ_COMMITTED_PROMOTE :
+                readCommitted = true;
+            case READ_PROMOTE :
+                readCommitted = false;
+                // Maybe!
+                break;
+            default:
+                throw new NullPointerException();
+        }
+        
+        // XXX Check "mutate".
+        mutate(null, null);
+        
+        try {
+            _promote(readCommitted);
+            return true;
+        } catch (JenaTransactionException ex) {
+            return false ;
+        }
+    }
+    
+    /*private*/public/*for development*/ static boolean promotion               = false ;
+
+    /*private*/public/*for development*/ static boolean readCommittedPromotion  = true ;
+
+    private void _promote(boolean readCommited) {
+        //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
+        
+        // Outside lock.
+        if ( ! readCommited && version.get() != generation.get() )  {
+            // This tests for any commited writers since this transaction started.
+            // This does not catch the case of a currently active writer
+            // that has not gone to commit or abort yet.
+            // The final test is after we obtain the transactionLock.
+            throw new JenaTransactionException("Dataset changed - can't promote") ;
+        }
+    
+        // Blocking on other writers.
+        transactionLock.enterCriticalSection(false);
+        // Check again now we are inside the lock. 
+        if ( ! readCommited && version.get() != generation.get() )  {
+                // Can't promote - release the lock.
+                transactionLock.leaveCriticalSection();
+                throw new JenaTransactionException("Concurrent writer changed the dataset : can't promote") ;
+            }
+        // We have the lock and we have promoted!
+        transactionType(WRITE);
+        _begin(WRITE) ;
+    }
+
     @Override
     public void commit() {
         if (!isInTransaction())
@@ -326,39 +414,22 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             return ;
         }
         if ( !transactionType().equals(WRITE) ) {
-            if ( ! promotion )
-                throw new JenaTransactionException("Tried to write inside a READ transaction!");
-            promote(readCommittedPromotion) ;
+            TxnMode mode = transactionMode.get();
+            switch(mode) {
+                case WRITE :
+                    break;
+                case READ :
+                    throw new JenaTransactionException("Tried to write inside a READ transaction!");
+                case READ_COMMITTED_PROMOTE :
+                case READ_PROMOTE :
+                {
+                    boolean readCommitted = (mode == TxnMode.READ_COMMITTED_PROMOTE);
+                    _promote(readCommitted);
+                    break;
+                }
+            }
         }
         mutator.accept(payload);
-    }
-
-    /*private*/public/*for development*/ static boolean promotion               = false ;
-    /*private*/public/*for development*/ static boolean readCommittedPromotion  = true ;
-    
-    private void promote(boolean readCommited) {
-        //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
-        
-        // Outside lock.
-        if ( ! readCommited && version.get() != generation.get() )  {
-            // This tests for any commited writers since this transaction started.
-            // This does not catch the case of a currently active writer
-            // that has not gone to commit or abort yet.
-            // The final test is after we obtain the transactionLock.
-            throw new JenaTransactionException("Dataset changed - can't promote") ;
-        }
-       
-        // Blocking on other writers.
-        transactionLock.enterCriticalSection(false);
-        // Check again now we are inside the lock. 
-        if ( ! readCommited && version.get() != generation.get() )  {
-                // Can't promote - release the lock.
-                transactionLock.leaveCriticalSection();
-                throw new JenaTransactionException("Concurrent writer changed the dataset : can't promote") ;
-            }
-        // We have the lock and we have promoted!
-        transactionType(WRITE);
-        _begin(WRITE) ;
     }
 
     /**
