@@ -20,7 +20,7 @@ package org.apache.jena.query;
 
 import org.apache.jena.sparql.JenaTransactionException;
 
-public enum TxnMode {
+public enum TxnType {
     /** Transaction mode:
      * <ul>
      * <li>{@code WRITE}: this gaurantees a WRITE will complete if {@code commit()} is
@@ -47,14 +47,14 @@ public enum TxnMode {
     READ, WRITE, READ_PROMOTE, READ_COMMITTED_PROMOTE
     ;
     
-    public static TxnMode convert(ReadWrite rw) {
+    public static TxnType convert(ReadWrite rw) {
         switch(rw) {
             case READ: return READ;
             case WRITE: return WRITE;
             default: throw new NullPointerException();
         }
     }
-    public static ReadWrite convert(TxnMode mode) {
+    public static ReadWrite convert(TxnType mode) {
         switch(mode) {
             case READ: return ReadWrite.READ;
             case WRITE: return ReadWrite.WRITE;

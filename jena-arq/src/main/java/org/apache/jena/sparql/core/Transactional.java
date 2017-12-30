@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.query.TxnMode;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.system.Txn;
 
@@ -62,6 +62,16 @@ import org.apache.jena.system.Txn;
 public interface Transactional 
 {
     /**
+     * Start a transaction which is READ mode and which will switch to WRITE if an update
+     * is attempted but only if no intermdiate transaction has performed an update. 
+     * <p>
+     * See {@link #begin(TxnType)} for more details an options.
+     * <p>
+     * May not be implemented. See {@link #begin(ReadWrite)} is guaranted to be provided.
+     */
+    public default void begin() { begin(TxnType.READ_PROMOTE); }
+    
+    /**
      * Start a transaction.<br/>
      * READ or WRITE transactions start in that state and do not chnage for the
      * lifetime of the transaction.
@@ -88,19 +98,17 @@ public interface Transactional
      * changed; if {@code READ_COMMITTED_PROMOTE} anyh intermediate changes are
      * visible but the application can not assume any data it has read in the
      * transaction is the same as it was at the point the transaction started.
+     * <p>
+     * This operation is optional and some implementations may throw
+     * a {@link JenaTransactionException} exception for some or all {@link TxnType} values
+     * <p> 
+     * See {@link #begin(ReadWrite)} for a form that is required of implementations.
      */
-    //public void begin(TxnMode mode);
-    public default void begin(TxnMode mode) { begin(TxnMode.convert(mode)); }
+    //public void begin(TxnType type);
+    public default void begin(TxnType type) { begin(TxnType.convert(type)); }
     
-    /**
-     * Start a transaction which is READ mode and which will switch to WRITE if an update
-     * is attempted but only if no intermdiate transaction has performed an update. 
-     * <p>
-     * See {@link #begin(TxnMode)} for more details an options.
-     * <p>
-     * May not be implemented. See {@link #begin(ReadWrite)} is guaranted to be provided.
-     */
-    public default void begin() { begin(TxnMode.READ_PROMOTE); }
+    /** Start either a READ or WRITE transaction. */ 
+    public void begin(ReadWrite readWrite) ;
     
     /**
      * Attempt to promote a transaction from "read" to "write" and the transaction
@@ -109,22 +117,9 @@ public interface Transactional
      * is still valid and in "read").
      */
     
-    // XXX OR JenaTransactionException if promote not possible.
-    
     //public void promote();
     public default boolean promote() { throw new JenaTransactionException("Not implemented"); }
-    
-    /** Return the current state of the transaction - "read" or "write" */ 
-    //public ReadWrite transactionRW();
-    public default ReadWrite transactionRW() { throw new JenaTransactionException("Not implemented"); }
-    
-    /** Return the transaction mode used in {@code begin(TxnMode)}. */ 
-    //public TxnMode transactionMode();
-    public default TxnMode transactionMode() { throw new JenaTransactionException("Not implemented"); }
-    
-    /** Start either a READ or WRITE transaction */ 
-    public void begin(ReadWrite readWrite) ;
-    
+
     /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;
     
@@ -133,6 +128,14 @@ public interface Transactional
 
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
     public void end() ;
+
+    /** Return the current mode of the transaction - "read" or "write" */ 
+    //public ReadWrite transactionMode();
+    public default ReadWrite transactionMode() { throw new JenaTransactionException("Not implemented"); }
+
+    /** Return the transaction type used in {@code begin(TxnType)}. */ 
+    //public TxnMode transactionMode();
+    public default TxnType transactionType() { throw new JenaTransactionException("Not implemented"); }
 
     /** Say whether inside a transaction. */ 
     public boolean isInTransaction() ;

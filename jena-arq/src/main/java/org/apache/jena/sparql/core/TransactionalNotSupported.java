@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /** Implementation for "un-Transactional" interface.
  * 
@@ -38,7 +39,9 @@ public class TransactionalNotSupported implements Transactional
     // As an included component. 
     /*
     private final Transactional txn                     = new TransactionalNotSupported() ;
+    @Override public void begin(TxnType txnType)        { txn.begin(type) ; }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    @Override public boolean promote()                  {  returntxn.promote() ; }
     @Override public void commit()                      { txn.commit() ; }
     @Override public void abort()                       { txn.abort() ; }
     @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
@@ -48,9 +51,20 @@ public class TransactionalNotSupported implements Transactional
     */
     
     @Override
-    public void begin(ReadWrite readWrite)
-    { throw new UnsupportedOperationException("Transactional.begin") ; }
+    public void begin()
+    { throw new UnsupportedOperationException("Transactional.begin()") ; }
 
+    @Override
+    public void begin(TxnType txnType)
+    { throw new UnsupportedOperationException("Transactional.begin(TxnType") ; }
+
+    @Override
+    public void begin(ReadWrite readWrite)
+    { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
+
+    @Override public boolean promote()
+    { throw new UnsupportedOperationException("Transactional.promote") ; }
+    
     @Override
     public void commit()
     { throw new UnsupportedOperationException("Transactional.commit") ; }

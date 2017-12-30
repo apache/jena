@@ -21,6 +21,7 @@ package org.apache.jena.sparql.core;
 import java.util.Objects ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRPlusSW ;
 import org.apache.jena.shared.LockMRSW ;
@@ -33,7 +34,9 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *  To use with implementation inheritance, for when you don't inherit:
  *  <pre>
  *      private final Transactional txn                     = TransactionalLock.createMRSW() ;
+ *      {@literal @}Override public void begin(TxnType txnType)        { txn.begin(txnType) ; }
  *      {@literal @}Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+ *      {@literal @}Override public boolean promote()                  { return txn.promote() ; }
  *      {@literal @}Override public void commit()                      { txn.commit() ; }
  *      {@literal @}Override public void abort()                       { txn.abort() ; }
  *      {@literal @}Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
@@ -83,12 +86,31 @@ public class TransactionalLock implements Transactional {
 
     @Override
     public void begin(ReadWrite readWrite) {
+        begin(TxnType.convert(readWrite));
+    }
+    
+    @Override
+    public void begin(TxnType txnType) {
         if ( isInTransaction() )
             error("Already in a transaction") ;
+        switch(txnType) {
+            case READ_PROMOTE:
+            case READ_COMMITTED_PROMOTE:
+                throw new UnsupportedOperationException("begin("+txnType+")");
+            default:
+        }
+        ReadWrite readWrite = TxnType.convert(txnType);  
         boolean isRead = readWrite.equals(ReadWrite.READ) ;
         lock.enterCriticalSection(isRead) ;
         txnMode.set(readWrite) ;
     }
+
+    // Lock propmotion required (Ok for mutex) 
+    
+//    @Override
+//    public boolean promote() { 
+//        return ??;
+//    }
 
     @Override
     public void commit() {

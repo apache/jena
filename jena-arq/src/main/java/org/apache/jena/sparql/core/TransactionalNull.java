@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
 
 /**
@@ -31,13 +32,22 @@ public class TransactionalNull implements Transactional {
     
     private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
+
     @Override
-    public void begin(ReadWrite readWrite) {
+    public void begin(TxnType type) {
         if ( inTransaction.get() )
             throw new JenaTransactionException("Already in transaction"); 
         inTransaction.set(true);
     }
 
+    @Override
+    public void begin(ReadWrite readWrite) {
+        begin(TxnType.convert(readWrite));
+    }
+
+    @Override
+    public boolean promote() { return true; } 
+    
     @Override
     public void commit() {
         if ( ! inTransaction.get() )

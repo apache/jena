@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.query.TxnMode;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -139,68 +139,68 @@ public abstract class AbstractTestTransPromote {
 
     // Subclass / parameterized
     
-    @Test public void promote_snapshot_01()         { run_01(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_01()    { run_01(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_01()         { run_01(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_01()    { run_01(TxnType.READ_COMMITTED_PROMOTE) ; }
     
     // READ-add
-    private void run_01(TxnMode txnMode) {
+    private void run_01(TxnType txnType) {
         Assume.assumeTrue( supportsReadCommitted() );
         DatasetGraph dsg = create() ;
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
     
-    @Test public void promote_snapshot_02()         { run_02(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_02()    { run_02(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_02()         { run_02(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_02()    { run_02(TxnType.READ_COMMITTED_PROMOTE) ; }
     
     // Previous transaction then READ-add
-    private void run_02(TxnMode txnMode) {
+    private void run_02(TxnType txnType) {
         DatasetGraph dsg = create() ;
         
-        dsg.begin(txnMode) ;dsg.end() ;
+        dsg.begin(txnType) ;dsg.end() ;
         
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
     
-    @Test public void promote_snapshot_03()         { run_03(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_03()    { run_03(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_03()         { run_03(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_03()    { run_03(TxnType.READ_COMMITTED_PROMOTE) ; }
 
-    private void run_03(TxnMode txnMode) {
+    private void run_03(TxnType txnType) {
         DatasetGraph dsg = create() ;
         
-        dsg.begin(TxnMode.WRITE) ;dsg.commit() ; dsg.end() ;
+        dsg.begin(TxnType.WRITE) ;dsg.commit() ; dsg.end() ;
         
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
     
-    @Test public void promote_snapshot_04()         { run_04(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_04()    { run_04(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_04()         { run_04(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_04()    { run_04(TxnType.READ_COMMITTED_PROMOTE) ; }
 
-    private void run_04(TxnMode txnMode) {
+    private void run_04(TxnType txnType) {
         DatasetGraph dsg = create() ;
         
         dsg.begin(ReadWrite.WRITE) ;dsg.abort() ; dsg.end() ;
         
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.commit() ;
         dsg.end() ;
     }
 
-    @Test public void promote_snapshot_05()         { run_05(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_05()    { run_05(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_05()         { run_05(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_05()    { run_05(TxnType.READ_COMMITTED_PROMOTE) ; }
     
-    private void run_05(TxnMode txnMode) {
+    private void run_05(TxnType txnType) {
         DatasetGraph dsg = create() ;
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         
         try {
@@ -216,7 +216,7 @@ public abstract class AbstractTestTransPromote {
     //@Test public void promote_readCommitted_06()    { run_06(TxnMode.READ_COMMITTED_PROMOTE) ; }
     
     // Async writer after promotion.
-    private void run_06(TxnMode txnMode) {
+    private void run_06(TxnType txnType) {
         DatasetGraph dsg = create() ;
         AtomicInteger a = new AtomicInteger(0) ;
 
@@ -227,7 +227,7 @@ public abstract class AbstractTestTransPromote {
             sema.release() ;
         }) ;
 
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         // Promote
         dsg.add(q1) ;
         t.start() ;
@@ -243,11 +243,11 @@ public abstract class AbstractTestTransPromote {
         assertCount(3, dsg) ;
     }
 
-    @Test public void promote_snapshot_07()         { run_07(TxnMode.READ_PROMOTE) ; }
-    @Test public void promote_readCommitted_07()    { run_07(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_07()         { run_07(TxnType.READ_PROMOTE) ; }
+    @Test public void promote_readCommitted_07()    { run_07(TxnType.READ_COMMITTED_PROMOTE) ; }
     
     // Async writer after promotion.
-    private void run_07(TxnMode txnMode) {
+    private void run_07(TxnType txnType) {
         DatasetGraph dsg = create() ;
         // Start long running reader.
         ThreadAction tt = ThreadTxn.threadTxnRead(dsg, () -> {
@@ -257,7 +257,7 @@ public abstract class AbstractTestTransPromote {
         }) ;
 
         // Start R->W here
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.add(q2) ;
         dsg.commit() ;
@@ -265,14 +265,14 @@ public abstract class AbstractTestTransPromote {
         tt.run() ;
     }
     
-    @Test public void promote_snapshot_08()         { run_08(TxnMode.READ_PROMOTE); }
-    @Test public void promote_readCommitted_08()    { run_08(TxnMode.READ_COMMITTED_PROMOTE) ; }
+    @Test public void promote_snapshot_08()         { run_08(TxnType.READ_PROMOTE); }
+    @Test public void promote_readCommitted_08()    { run_08(TxnType.READ_COMMITTED_PROMOTE) ; }
     
     // Async writer after promotion trasnaction ends.
-    private void run_08(TxnMode txnMode) {
+    private void run_08(TxnType txnType) {
         DatasetGraph dsg = create() ;
         // Start R->W here
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         dsg.add(q1) ;
         dsg.add(q2) ;
         dsg.commit() ;
@@ -284,14 +284,14 @@ public abstract class AbstractTestTransPromote {
     }
 
     @Test
-    public void promote_10() { promote_readCommit_txnCommit(TxnMode.READ_COMMITTED_PROMOTE, true) ; }
+    public void promote_10() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, true) ; }
 
     @Test
-    public void promote_11() { promote_readCommit_txnCommit(TxnMode.READ_COMMITTED_PROMOTE, false) ; }
+    public void promote_11() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, false) ; }
     
     @Test
     public void promote_12() { 
-        expect(()->promote_readCommit_txnCommit(TxnMode.READ_PROMOTE, true) ,
+        expect(()->promote_readCommit_txnCommit(TxnType.READ_PROMOTE, true) ,
                getTransactionExceptionClass()) ;
     }
     
@@ -310,22 +310,22 @@ public abstract class AbstractTestTransPromote {
     }
 
     @Test
-    public void promote_13() { promote_readCommit_txnCommit(TxnMode.READ_PROMOTE, false) ; }
+    public void promote_13() { promote_readCommit_txnCommit(TxnType.READ_PROMOTE, false) ; }
 
-    private void promote_readCommit_txnCommit(TxnMode txnMode, boolean asyncCommit) {
+    private void promote_readCommit_txnCommit(TxnType txnType, boolean asyncCommit) {
         DatasetGraph dsg = create() ;
         
         ThreadAction tt = asyncCommit?
             ThreadTxn.threadTxnWrite(dsg, () -> dsg.add(q3) ) :
             ThreadTxn.threadTxnWriteAbort(dsg, () -> dsg.add(q3)) ;
 
-        dsg.begin(txnMode) ;
+        dsg.begin(txnType) ;
         // Other runs
         tt.run() ;
         // Can promote if readCommited
         // Can't promote if not readCommited
         dsg.add(q1) ;
-        if ( txnMode == TxnMode.READ_PROMOTE && asyncCommit )
+        if ( txnType == TxnType.READ_PROMOTE && asyncCommit )
             fail("Should not be here") ;
         // read commited - we should see the ThreadAction change.
         assertEquals(asyncCommit, dsg.contains(q3)) ;
@@ -387,7 +387,7 @@ public abstract class AbstractTestTransPromote {
         semaActiveWriterStart.acquireUninterruptibly(); 
 
         Callable<RuntimeException> attemptedPromote = ()->{
-            dsg.begin(TxnMode.READ_PROMOTE) ;
+            dsg.begin(TxnType.READ_PROMOTE) ;
             semaPromoteTxnStart.release(1) ;
             // (*2)
             semaPromoteTxnContinue.acquireUninterruptibly();

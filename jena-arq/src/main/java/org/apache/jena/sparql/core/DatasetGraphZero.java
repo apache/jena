@@ -24,6 +24,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.graph.GraphZero;
 
 /** An always empty {@link DatasetGraph}. 

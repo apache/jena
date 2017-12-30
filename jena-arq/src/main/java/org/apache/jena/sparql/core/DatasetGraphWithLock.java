@@ -21,6 +21,7 @@ package org.apache.jena.sparql.core ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.util.Context ;
@@ -92,12 +93,18 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     }
 
     @Override
-    protected void _begin(ReadWrite readWrite) {
-        transactional.begin(readWrite);
+    protected void _begin(TxnType txnType) {
+        ReadWrite readWrite = TxnType.convert(txnType);
+        transactional.begin(txnType);
         writeTxn.set(readWrite.equals(ReadWrite.WRITE));
         if ( dsChanges != null )
             // Replace by transactional state.
             dsChanges.start() ;
+    }
+
+    @Override
+    protected boolean _promote() {
+        throw new JenaTransactionException("promote not supported");
     }
 
     @Override

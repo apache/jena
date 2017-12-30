@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock ;
 
 /** Transactional by mutual exclusion. */
@@ -27,14 +28,24 @@ public class TransactionalMutex implements Transactional
     private final Lock lock;
     private ThreadLocal<Boolean> isInTransaction = ThreadLocal.withInitial(()->false) ;
     
-    public TransactionalMutex(Lock lock) {
+    private TransactionalMutex(Lock lock) {
         this.lock = lock ;
     }
     
     @Override
     public void begin(ReadWrite readWrite) {
+        begin(TxnType.convert(readWrite));
+    }
+    
+    @Override
+    public void begin(TxnType txnType) {
         lock.enterCriticalSection(false);       // Always take a write lock - i.e. exclusive.
         isInTransaction.set(true); 
+    }
+
+    @Override
+    public boolean promote() {
+        return true;
     }
 
     @Override
@@ -59,5 +70,6 @@ public class TransactionalMutex implements Transactional
             lock.leaveCriticalSection();
         }
         isInTransaction.remove();
+        isInTransaction = null;
     }
 }

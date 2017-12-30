@@ -239,4 +239,9 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
     @Override
     public void close()
     {}
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return false;
+    }
 }

@@ -32,6 +32,13 @@ import org.apache.jena.sparql.util.Context ;
 
 public interface Dataset extends Transactional 
 {
+    // TEMP
+
+    @Override
+    public default void begin(TxnType type) { throw new UnsupportedOperationException("Dataset.begin(TxnType)"); }
+
+    
+    
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     

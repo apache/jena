@@ -37,7 +37,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.TxnMode;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -84,29 +84,25 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         isInTransaction.set(b);
     }
 
-    private final ThreadLocal<TxnMode> transactionMode = withInitial(() -> null);
+    private final ThreadLocal<TxnType> transactionType = withInitial(() -> null);
     // Current state.
-    private final ThreadLocal<ReadWrite> transactionType = withInitial(() -> null);
+    private final ThreadLocal<ReadWrite> transactionMode = withInitial(() -> null);
 
     /**
-     * @return the type of transaction in progress
+     * @return the current mode of the transaction in progress
      */
-    private ReadWrite transactionType() {
-        return transactionType.get();
-    }
-
     @Override
-    public ReadWrite transactionRW() { 
-        return transactionType.get();
+    public ReadWrite transactionMode() { 
+        return transactionMode.get();
     }
     
     @Override
-    public TxnMode transactionMode() {
-        return transactionMode.get();
+    public TxnType transactionType() {
+        return transactionType.get();
     }
 
     private void transactionType(final ReadWrite readWrite) {
-        transactionType.set(readWrite);
+        transactionMode.set(readWrite);
     }
 
     private final QuadTable quadsIndex;
@@ -143,11 +139,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public boolean supportsTransactionAbort()   { return true; }
 
     @Override
-    public void begin(TxnMode txnMode) {
+    public void begin(TxnType txnType) {
         if (isInTransaction()) 
             throw new JenaTransactionException("Transactions cannot be nested!");
-        transactionMode.set(txnMode);
-        ReadWrite initial = txnMode.equals(TxnMode.WRITE) ? WRITE : READ;
+        transactionType.set(txnType);
+        ReadWrite initial = txnType.equals(TxnType.WRITE) ? WRITE : READ;
         _begin(initial);
     }
     
@@ -155,7 +151,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void begin(final ReadWrite readWrite) {
         if (isInTransaction()) 
             throw new JenaTransactionException("Transactions cannot be nested!");
-        transactionMode.set(TxnMode.convert(readWrite));
+        transactionType.set(TxnType.convert(readWrite));
         _begin(readWrite) ;
     }
 
@@ -178,8 +174,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     /** Called transaction ending code at most once per transaction. */ 
     private void finishTransaction() {
         isInTransaction.remove();
-        transactionMode.remove();
         transactionType.remove();
+        transactionMode.remove();
         version.remove();
         transactionLock.leaveCriticalSection();
     }
@@ -188,12 +184,12 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public boolean promote() {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to promote outside a transaction!");
-        if ( transactionType().equals(ReadWrite.WRITE) )
+        if ( transactionMode().equals(ReadWrite.WRITE) )
             return true;
 
         boolean readCommitted;
         // Initial state
-        switch(transactionMode.get()) {
+        switch(transactionType.get()) {
             case WRITE :
                 return true;
             case READ :
@@ -252,7 +248,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void commit() {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to commit outside a transaction!");
-        if (transactionType().equals(WRITE))
+        if (transactionMode().equals(WRITE))
             _commit();
         finishTransaction();
     }
@@ -264,7 +260,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             quadsIndex().end();
             defaultGraph().end();
 
-            if ( transactionType().equals(WRITE) ) {
+            if ( transactionMode().equals(WRITE) ) {
                 if ( version.get() != generation.get() )
                     throw new InternalErrorException(String.format("Version=%d, Generation=%d",version.get(),generation.get())) ;
                 generation.incrementAndGet() ;
@@ -276,7 +272,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void abort() {
         if (!isInTransaction()) 
             throw new JenaTransactionException("Tried to abort outside a transaction!");
-        if (transactionType().equals(WRITE))
+        if (transactionMode().equals(WRITE))
             _abort();
         finishTransaction();
     }
@@ -299,7 +295,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void end() {
         if (isInTransaction()) {
-            if (transactionType().equals(WRITE)) {
+            if (transactionMode().equals(WRITE)) {
                 String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
                 // _abort does _end actions inside the lock. 
                 _abort() ;
@@ -413,8 +409,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             }
             return ;
         }
-        if ( !transactionType().equals(WRITE) ) {
-            TxnMode mode = transactionMode.get();
+        if ( !transactionMode().equals(WRITE) ) {
+            TxnType mode = transactionType.get();
             switch(mode) {
                 case WRITE :
                     break;
@@ -423,7 +419,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
                 case READ_COMMITTED_PROMOTE :
                 case READ_PROMOTE :
                 {
-                    boolean readCommitted = (mode == TxnMode.READ_COMMITTED_PROMOTE);
+                    boolean readCommitted = (mode == TxnType.READ_COMMITTED_PROMOTE);
                     _promote(readCommitted);
                     break;
                 }
