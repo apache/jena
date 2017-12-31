@@ -18,10 +18,12 @@
 
 package org.apache.jena.query.util;
 
+import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
 
-import org.apache.jena.graph.Graph;
+import java.util.stream.Stream;
+
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
@@ -36,9 +38,25 @@ public class TestIntersectionDatasetCollector extends TestDatasetCollector {
 
     @Test
     public void testIntersection() {
-        Graph graph = parseGraph("(graph (triple <s1> <p1> <o1> ))");
-        Model model = createModelForGraph(graph);
-        Dataset dataset = DatasetFactory.create(model);
+        final Model m1 = createModelForGraph(parseGraph("(graph (triple <s1> <p1> <o1> ))"));
+        final Dataset ds1 = DatasetFactory.create(m1);
+        final String graphName1 = createBlankNode().toString();
+        ds1.addNamedModel(graphName1, m1);
+        final Model m2 = createModelForGraph(parseGraph("(graph (triple <s2> <p2> <o2> ))"));
+        final Dataset ds2 = DatasetFactory.create(m2);
+        final String graphName2 = createBlankNode().toString();
+        ds2.addNamedModel(graphName2, m2);
+        final Model m3 = createModelForGraph(parseGraph("(graph (triple <s3> <p3> <o3> ))"));
+        final String graphName3 = createBlankNode().toString();
+        ds1.addNamedModel(graphName3, m3);
+        ds2.addNamedModel(graphName3, m3);
+        
+        Dataset ds = Stream.<Dataset>builder().add(ds1).add(ds2).build().collect(testInstance());
+        
+        assertTrue(ds.getDefaultModel().isEmpty());
+        assertTrue(ds.getNamedModel(graphName1).isEmpty());
+        assertTrue(ds.getNamedModel(graphName2).isEmpty());
+        assertTrue(m3.isIsomorphicWith(ds.getNamedModel(graphName3)));
     }
 
 }

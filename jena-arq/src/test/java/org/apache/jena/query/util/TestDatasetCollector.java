@@ -5,7 +5,6 @@ import static org.apache.jena.sparql.sse.SSE.parseGraph;
 
 import java.util.stream.Stream;
 
-import org.apache.jena.ext.com.google.common.collect.Maps;
 import org.apache.jena.graph.*;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;

@@ -18,13 +18,10 @@
 
 package org.apache.jena.query.util;
 
-import static org.apache.jena.atlas.iterator.Iter.filter;
 import static org.apache.jena.system.Txn.executeRead;
 import static org.apache.jena.system.Txn.executeWrite;
 
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import org.apache.jena.atlas.lib.IdentityFinishCollector.UnorderedIdentityFinishCollector;
 import org.apache.jena.query.Dataset;
@@ -87,8 +84,9 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
     public static class IntersectionDatasetCollector extends DatasetCollector {
 
         /**
-         * The first element is treated differently because {@link DatasetCollector#supplier()} does
-         * not provide an identity element for intersection.
+         * The first element is treated differently because
+         * {@link DatasetCollector#supplier()} does not provide an identity element for
+         * intersection.
          */
         boolean afterFirstElement = false;
 
@@ -102,13 +100,16 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
             return (d1, d2) -> {
                 if (afterFirstElement) {
                     d1.setDefaultModel(d1.getDefaultModel().intersection(d2.getDefaultModel()));
-                    filter(d1.listNames(), d2::containsNamedModel).forEachRemaining(name -> {
-                        Model intersection = d1.getNamedModel(name).intersection(d2.getNamedModel(name));
-                        d1.replaceNamedModel(name, intersection);
+                    d1.listNames().forEachRemaining(name -> {
+                        if (d2.containsNamedModel(name)) {
+                            Model intersection = d1.getNamedModel(name).intersection(d2.getNamedModel(name));
+                            d1.replaceNamedModel(name, intersection);
+                        } else d1.removeNamedModel(name);
                     });
                 } else {
+                    // first element of the stream
                     d1.setDefaultModel(d2.getDefaultModel());
-                    d2.listNames().forEachRemaining(name -> d1.addNamedModel(name, d2.getNamedModel(name)));
+                    d2.listNames().forEachRemaining(name -> d1.replaceNamedModel(name, d2.getNamedModel(name)));
                     afterFirstElement = true;
                 }
             };
