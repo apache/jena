@@ -59,7 +59,7 @@ public class DatasetLib {
 
     static class Collectors {
 
-        static Collectors instance = new Collectors();
+        private static final Collectors instance = new Collectors();
 
         public DatasetCollector union() {
             return DatasetCollector.union();
