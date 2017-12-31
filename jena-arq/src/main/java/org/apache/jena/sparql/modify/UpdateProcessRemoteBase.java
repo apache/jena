@@ -75,7 +75,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
         this.request = request;
         this.endpoint = endpoint;
-        this.context = Context.setupContext(context, null);
+        this.context = Context.setupContextExec(context, null);
 
         // Apply service configuration if applicable
         UpdateProcessRemoteBase.applyServiceConfig(endpoint, this);

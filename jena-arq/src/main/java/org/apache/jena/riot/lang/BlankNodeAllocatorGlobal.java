@@ -24,16 +24,15 @@ import java.util.Map ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 
-/** Allocate blank nodes according to the traditional policy (up to jena 2.10.0)
+/** Allocate blank nodes by creating a randomly generated blank node.
  *  This allocator has arbitrary sized state. 
- *  Create a fresh one for each parser run.
  */
 
-public class BlankNodeAllocatorTraditional implements BlankNodeAllocator
+public class BlankNodeAllocatorGlobal implements BlankNodeAllocator
 {
     Map<String, Node> map = new HashMap<>() ;
     
-    public BlankNodeAllocatorTraditional()  {}
+    public BlankNodeAllocatorGlobal()  {}
 
     @Override
     public void reset()         { map.clear() ; }

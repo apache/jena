@@ -35,18 +35,14 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.resultset.CSVInput ;
-import org.apache.jena.sparql.resultset.JSONInput ;
-import org.apache.jena.sparql.resultset.TSVInput ;
-import org.apache.jena.sparql.resultset.XMLInput ;
+import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -367,16 +363,16 @@ public class QueryEngineHTTP implements QueryExecution {
             actualContentType = selectContentType;
         }
 
-        if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
-            return ResultSetFactory.fromXML(in);
-        if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
-            return ResultSetFactory.fromJSON(in);
-        if (actualContentType.equals(WebContent.contentTypeTextTSV))
-            return ResultSetFactory.fromTSV(in);
-        if (actualContentType.equals(WebContent.contentTypeTextCSV))
-            return CSVInput.fromCSV(in);
-        throw new QueryException("Endpoint returned Content-Type: " + actualContentType
-                + " which is not currently supported for SELECT queries");
+        // Map to lang, with pragmatic alternatives. 
+        Lang lang = WebContent.contentTypeToLangResultSet(actualContentType);
+        if ( lang == null )
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not rcognized for SELECT queries");
+        if ( !ResultSetReaderRegistry.isRegistered(lang) )
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
+        // This returns a streaming result set for some formats.
+        // Do not close the InputStream at this point. 
+        ResultSet result = ResultSetMgr.read(in, lang);
+        return result;
     }
 
     @Override
@@ -499,18 +495,23 @@ public class QueryEngineHTTP implements QueryExecution {
                 actualContentType = askContentType;
             }
 
-            // Parse the result appropriately depending on the
-            // selected content type.
-            if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
-                return XMLInput.booleanFromXML(in);
-            if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
-                return JSONInput.booleanFromJSON(in);
-            if (actualContentType.equals(WebContent.contentTypeTextTSV))
-                return TSVInput.booleanFromTSV(in);
-            if (actualContentType.equals(WebContent.contentTypeTextCSV))
-                return CSVInput.booleanFromCSV(in);
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType
-                    + " which is not currently supported for ASK queries");
+            Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
+            if ( lang == null ) {
+                // Any specials :
+                // application/xml for application/sparql-results+xml
+                // application/json for application/sparql-results+json
+                if (actualContentType.equals(WebContent.contentTypeXML))
+                    lang = ResultSetLang.SPARQLResultSetXML;
+                else if ( actualContentType.equals(WebContent.contentTypeJSON))
+                    lang = ResultSetLang.SPARQLResultSetJSON;
+            }
+            if ( lang == null )
+                throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries");
+            Boolean result = ResultSetMgr.readBoolean(in, lang);
+            return result;
+        } catch (ResultSetException e) {
+            log.warn("Returned content is not a boolean result", e);
+            throw e;
         } catch (QueryExceptionHTTP e) { 
             throw e ;
         }

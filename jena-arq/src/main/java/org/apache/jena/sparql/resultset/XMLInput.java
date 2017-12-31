@@ -20,15 +20,19 @@ package org.apache.jena.sparql.resultset;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.resultset.rw.ResultsStAX;
 import org.apache.jena.sparql.SystemARQ;
 
 /**
  * Code that reads an XML Result Set and builds the ARQ structure for the same.
+ * 
+ * @deprecated Use {@code ResultSetMgr.read}
  */
-
+@Deprecated
 public class XMLInput {
     public static ResultSet fromXML(InputStream in) {
         return fromXML(in, null);
@@ -71,7 +75,7 @@ public class XMLInput {
     public static SPARQLResult make(InputStream in, Model model) {
         if ( SystemARQ.UseSAX )
             return new XMLInputSAX(in, model);
-        return new XMLInputStAX(in, model);
+        return ResultsStAX.read(in, model, null);
     }
 
     public static SPARQLResult make(Reader in) {
@@ -81,7 +85,7 @@ public class XMLInput {
     public static SPARQLResult make(Reader in, Model model) {
         if ( SystemARQ.UseSAX )
             return new XMLInputSAX(in, model);
-        return new XMLInputStAX(in, model);
+        return ResultsStAX.read(in, model, null);
     }
 
     public static SPARQLResult make(String str) {
@@ -91,7 +95,7 @@ public class XMLInput {
     public static SPARQLResult make(String str, Model model) {
         if ( SystemARQ.UseSAX )
             return new XMLInputSAX(str, model);
-        return new XMLInputStAX(str, model);
+        return ResultsStAX.read(new StringReader(str), model, null);
     }
 
 }

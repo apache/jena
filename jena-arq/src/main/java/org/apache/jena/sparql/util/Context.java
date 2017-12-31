@@ -344,27 +344,40 @@ public class Context {
         return x ;
     }
 
-    // Put any per-dataset execution global configuration state here.
-    public static Context setupContext(Context context, DatasetGraph dataset) {
-        if ( context == null )
-            context = ARQ.getContext() ; // Already copied?
-        context = context.copy() ;
-
-        if ( dataset != null && dataset.getContext() != null )
-            // Copy per-dataset settings.
-            context.putAll(dataset.getContext()) ;
+    /** Setup a context using anouter context and a dataset.
+     *  This adds the current time.
+     */
+    public static Context setupContextExec(Context globalContext, DatasetGraph dataset) {
+        if ( globalContext == null )
+            globalContext = ARQ.getContext();
+        // Copy per-dataset settings.
+        Context dsgCxt = ( dataset != null && dataset.getContext() != null ) 
+            ? dataset.getContext()
+            : null;
+        
+        Context context = mergeCopy(globalContext, dsgCxt); 
 
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
 
         // Allocators.
-        // context.set(ARQConstants.sysVarAllocNamed, new
-        // VarAlloc(ARQConstants.allocVarMarkerExec)) ;
-        // context.set(ARQConstants.sysVarAllocAnon, new
-        // VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
+        // context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
+        // context.set(ARQConstants.sysVarAllocAnon, new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
         // Add VarAlloc for variables and bNodes (this is not the parse name).
-        // More added later e.g. query (if there is a query), algebra form (in
-        // setOp)
+        // More added later e.g. query (if there is a query), algebra form (in setOp)
 
+        return context;
+    }
+
+    /** Merge an outer (fglobal) and local context to produce a new context
+     * The new context is always a separate copy.  
+     */
+    public static Context mergeCopy(Context contextGlobal, Context contextLocal) {
+        if ( contextGlobal == null )
+            contextGlobal = ARQ.getContext();
+        Context context = contextGlobal.copy();
+        if ( contextLocal != null )
+            // Copy per-dataset settings.
+            context.putAll(contextLocal);
         return context ;
     }
 

@@ -23,31 +23,50 @@ import java.io.Reader ;
 
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context ;
 
 public interface ResultSetReader {
     
     /**
      * Read from an {@code InputStream} and produce a {@link ResultSet}.
-     * Note that return result may stream and so the input stream be read
-     * while the ResultSet is used.
+     * Note that return result may stream and so the input stream may be read
+     * while the {@link ResultSet} is used.
      * See {@link ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
      * @param in InputStream to read from.
      * @param context
      * @return ResultSet
      */
-    public ResultSet read(InputStream in, Context context) ;
+    public default ResultSet read(InputStream in, Context context) {
+        return readAny(in, context).getResultSet();
+    }
     
     /**
-     * Using {@link #read(InputStream, Context)} is preferred.
+     * Read from an {@code InputStream} and produce a {@link SPARQLResult}.
+     * Note that return result may stream and so the input stream may be read
+     * while the {@link ResultSet} is used.
+     * See {@link #read(InputStream, Context)} for more details
+     * @param in InputStream to read from.
+     * @param context
+     * @return SPARQLResult
+     */
+    public SPARQLResult readAny(InputStream in, Context context) ;
+    
+    /**
+     * <em>Using {@link #read(InputStream, Context)} is preferred.</em>
+     * <p>
+     * Notall formast support reading from a {@code java.io.Reader}.
+     * <p>
      * Read from an {@code Reader} and produce a {@link ResultSet}.
-     * Note that return result may stream and so the reader be read
+     * Note that return result may stream and so the reader may be read
      * while the ResultSet is used.
      * See {@link ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
      * @param in Reader
      * @param context
      * @return ResultSet
      */
-    public ResultSet read(Reader in, Context context) ;
+    public default ResultSet read(Reader in, Context context) {
+        throw new UnsupportedOperationException("ResultSetReader.read - input from a Java Reader not supported.  Use an InputStream.");
+    }
 }
 

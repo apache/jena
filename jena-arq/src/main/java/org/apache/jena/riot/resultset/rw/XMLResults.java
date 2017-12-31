@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.resultset;
+package org.apache.jena.riot.resultset.rw;
 
 import org.apache.jena.sparql.ARQConstants ;
 

@@ -18,6 +18,11 @@
 
 package org.apache.jena.query;
 
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML;
+
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
 import java.io.UnsupportedEncodingException ;
@@ -28,16 +33,17 @@ import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.ARQNotImplemented ;
 import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
-import org.apache.jena.sparql.engine.binding.BindingUtils ;
-import org.apache.jena.sparql.resultset.* ;
+import org.apache.jena.sparql.resultset.RDFOutput;
+import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.apache.jena.sparql.resultset.TextOutput;
+import org.apache.jena.sparql.resultset.XMLOutput;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
@@ -261,9 +267,6 @@ public class ResultSetFormatter {
         }
     }
     
-    // ----------------------------------------------------------------
-    // As RDF
-    
     /** Output a ResultSet in some format.
      * 
      * @param resultSet Result set
@@ -282,31 +285,13 @@ public class ResultSetFormatter {
      */
     
     static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt) {
-        if ( rFmt.equals(ResultsFormat.FMT_RS_XML) ) {
-            outputAsXML(outStream, resultSet) ;
+        
+        Lang lang = ResultsFormat.convert(rFmt);
+        if ( lang != null ) {
+            output(outStream, resultSet, lang);
             return ;
         }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) ) {
-            outputAsJSON(outStream, resultSet) ;
-            return ;
-        }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RS_CSV) ) {
-            outputAsCSV(outStream, resultSet) ;
-            return ;
-        }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RS_TSV) ) {
-            outputAsTSV(outStream, resultSet) ;
-            return ;
-        }
-
-        if ( rFmt.equals(ResultsFormat.FMT_RS_BIO) ) {
-            outputAsBIO(outStream, resultSet) ;
-            return ;
-        }
-
+        
         if ( rFmt.equals(ResultsFormat.FMT_RDF_XML) ) {
             RDFOutput.outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
             return ;
@@ -324,13 +309,29 @@ public class ResultSetFormatter {
         throw new ARQException("Unknown ResultSet format: " + rFmt) ;
     }
     
-    // ---- XML Output
+    // ---- General Output
 
+    public static void output(ResultSet resultSet, Lang resultFormat) {
+        output(System.out, resultSet, resultFormat);
+    }
+    public static void output(OutputStream outStream, ResultSet resultSet, Lang resultFormat) {
+        ResultsWriter.create().lang(resultFormat).write(outStream, resultSet);
+    }
+    public static void output(boolean result, Lang resultFormat) {
+        output(System.out, result, resultFormat);
+    }
+    // ---- General Output
+    
+    public static void output(OutputStream outStream, boolean result, Lang resultFormat) {
+        ResultsWriter.create().lang(resultFormat).build().write(outStream, result);
+    }
     /** Output a result set in the XML format
      * 
      * @param qresults      result set
      */
     
+    // ---- XML Output
+
     static public void outputAsXML(ResultSet qresults)
     { outputAsXML(System.out, qresults) ; }
 
@@ -341,20 +342,18 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsXML(OutputStream outStream, ResultSet qresults)
-    {
-        outputAsXML(outStream, qresults, (String)null) ;
-    }
+    { output(outStream, qresults, SPARQLResultSetXML); }
     
-    /** Output a result set in the XML format, inserting a style sheet in the XMl output
+    /** Output a result set in the XML format, inserting a style sheet in the XML output
      * 
      * @param qresults      result set
      * @param stylesheet    The URL of the stylesheet
      */
     
     static public void outputAsXML(ResultSet qresults, String stylesheet)
-    { outputAsXML(System.out, qresults, stylesheet) ; }
+    { outputAsXML(System.out, qresults, stylesheet); }
 
-    /** Output a result set in the XML format, inserting a style sheet in the XMl output
+    /** Output a result set in the XML format, inserting a style sheet in the XML output
      * 
      * @param outStream     output stream
      * @param qresults      result set
@@ -384,9 +383,7 @@ public class ResultSetFormatter {
      */
     
     public static void outputAsXML(OutputStream outStream, boolean booleanResult)
-    {
-        outputAsXML(outStream, booleanResult, null) ;
-    }
+    { output(outStream, booleanResult, SPARQLResultSetXML); }
 
     /** Output a boolean result in the XML format
      * 
@@ -403,10 +400,9 @@ public class ResultSetFormatter {
      * @param stylesheet    The URL of the stylesheet
      */
     
-    public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet)
-    {
-        XMLOutputASK fmt = new XMLOutputASK(outStream, stylesheet) ;
-        fmt.exec(booleanResult) ;
+    public static void outputAsXML(OutputStream outStream, boolean booleanResult, String stylesheet) {  
+        XMLOutput xOut = new XMLOutput(stylesheet);
+        xOut.format(outStream, booleanResult);
     }
 
     /** Return a string that has the result set serialized as XML (not RDF)
@@ -477,7 +473,7 @@ public class ResultSetFormatter {
         return xOut.asString(booleanResult) ;
     }
     
-    // ---- JSON (and YAML)
+    // ---- JSON
     
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
@@ -485,7 +481,7 @@ public class ResultSetFormatter {
      * @param resultSet     result set
      */
     
-    static public void outputAsJSON(ResultSet resultSet)
+    static public void outputAsJSON(ResultSet resultSet) 
     { outputAsJSON(System.out, resultSet) ; }
     
     /** Output a result set in the JSON format
@@ -497,10 +493,7 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsJSON(OutputStream outStream, ResultSet resultSet)
-    {
-        JSONOutput jOut = new JSONOutput() ;
-        jOut.format(outStream, resultSet) ; 
-    }
+    { output(outStream, resultSet, SPARQLResultSetJSON) ; }
 
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
@@ -510,7 +503,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(boolean booleanResult)
-    { outputAsJSON(System.out, booleanResult ) ; }
+    { outputAsJSON(System.out, booleanResult) ; }
     
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a> 
@@ -521,10 +514,7 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsJSON(OutputStream outStream, boolean booleanResult)
-    {
-        JSONOutput jOut = new JSONOutput() ;
-        jOut.format(outStream, booleanResult) ; 
-    }
+    { output(outStream, booleanResult, SPARQLResultSetJSON) ; }
     
     // ---- SSE
     
@@ -603,10 +593,7 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsCSV(OutputStream outStream, boolean booleanResult)
-    {
-        CSVOutput fmt = new CSVOutput() ;
-        fmt.format(outStream, booleanResult) ;
-    }
+    { output(outStream, booleanResult, SPARQLResultSetCSV); }
 
     /** Output a result set in CSV format
      *  @param resultSet     result set
@@ -621,10 +608,7 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsCSV(OutputStream outStream, ResultSet resultSet)
-    {
-        CSVOutput fmt = new CSVOutput() ;
-        fmt.format(outStream, resultSet) ;
-    }
+    { output(outStream, resultSet, SPARQLResultSetCSV); }
 
     // ---- TSV
     
@@ -643,10 +627,7 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsTSV(OutputStream outStream, boolean booleanResult)
-    {
-        TSVOutput fmt = new TSVOutput() ;
-        fmt.format(outStream, booleanResult) ;
-    }
+    { output(outStream, booleanResult, SPARQLResultSetTSV); }
 
     /** Output a result set in TSV format
      *  @param resultSet     result set
@@ -661,25 +642,5 @@ public class ResultSetFormatter {
      */
     
     static public void outputAsTSV(OutputStream outStream, ResultSet resultSet)
-    {
-        TSVOutput fmt = new TSVOutput() ;
-        fmt.format(outStream, resultSet) ;
-    }
-    
-    /** Output a result set in BIO format 
-     * @deprecated Experimental - may be removed
-     */
-    @Deprecated
-    public static void outputAsBIO(OutputStream out, ResultSet results)
-    {
-        List<Var> vars = Var.varList(results.getResultVars()) ;
-        
-        BindingOutputStream bout = new BindingOutputStream(out, vars) ;
-        for ( ; results.hasNext() ; )
-        {
-            Binding b = BindingUtils.asBinding(results.next()) ;
-            bout.write(b) ;
-        }
-        bout.flush() ;
-    }
+    { output(outStream, resultSet, SPARQLResultSetTSV); }
 }

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.resultset;
+package org.apache.jena.riot.resultset.rw;
 
 //Keywords for JSON:
 //Taken from:
@@ -33,6 +33,7 @@ public class JSONResultsKW
     public static String kUri           = "uri"  ;
     public static String kValue         = "value" ;
     public static String kLiteral       = "literal" ;
+    public static String kUnbound       = "undef" ;
     // Legacy.
     public static String kTypedLiteral  = "typed-literal" ;
     public static String kXmlLang       = "xml:lang" ;

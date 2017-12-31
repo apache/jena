@@ -76,7 +76,9 @@ public class E_BNode extends ExprFunctionN // 0 or one
         LabelToNodeMap mapper = mapping.get(binding) ;
         if ( mapper == null )
         {
-            mapper = LabelToNodeMap.createBNodeMap() ;
+            @SuppressWarnings("deprecation")
+            LabelToNodeMap mapper_ = LabelToNodeMap.createBNodeMap() ; 
+            mapper = mapper_;
             mapping.put(binding, mapper) ;
         }
 

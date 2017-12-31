@@ -104,7 +104,6 @@ public class QueryExecUtils {
         outputResultSet(results, null, outputFormat) ;
     }
 
-    @SuppressWarnings("deprecation")
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
         // Proper ResultSet formats.
         Lang lang = ResultsFormat.convert(outputFormat) ;
@@ -173,11 +172,6 @@ public class QueryExecUtils {
 
         if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV) ) {
             ResultSetFormatter.outputAsTSV(System.out, results) ;
-            done = true ;
-        }
-
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO) ) {
-            ResultSetFormatter.outputAsBIO(System.out, results) ;
             done = true ;
         }
 

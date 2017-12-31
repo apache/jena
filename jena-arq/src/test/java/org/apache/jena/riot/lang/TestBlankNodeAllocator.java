@@ -42,7 +42,7 @@ public class TestBlankNodeAllocator extends BaseTest
         } ;
 
         Factory fUIDAlloc = new Factory() {
-            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorTraditional() ; }
+            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorGlobal() ; }
             @Override public String toString() { return "UID" ; }
         } ;
 

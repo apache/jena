@@ -18,15 +18,20 @@
 
 package org.apache.jena.riot;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream ;
 import java.io.OutputStream ;
+import java.util.Objects;
 
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetFormatter ;
-import org.apache.jena.riot.resultset.* ;
+import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
+import org.apache.jena.riot.resultset.rw.ResultsReader;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
+import org.apache.jena.sparql.resultset.ResultSetException;
+import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context ;
 
 /** 
@@ -36,7 +41,61 @@ import org.apache.jena.sparql.util.Context ;
  * @see ResultSetFormatter 
  */
 public class ResultSetMgr {
-    
+    /**
+     * Read from a {@code URL} (including filenames) and produce a {@link ResultSet}.
+     * Note that returned result set may stream and so the input stream be read
+     * while the ResultSet is used.
+     * <p>
+     * See {@link ResultSetFactory#copyResults(ResultSet)}
+     * for a ResultSet that is detached from the {@code InputStream}.
+     * 
+     * @param urlOrFilename
+     * @return ResultSet
+     */
+    public static ResultSet read(String urlOrFilename) {
+        ResultSet rs = readAny(urlOrFilename).getResultSet();
+        if ( rs == null )
+            throw new ResultSetException("Not a result set"); 
+        return rs;
+    }
+
+
+    /**
+     * Read from a {@code URL} (including filenames) and produce a {@link ResultSet};
+     * the stream is expect to use syntax {@code lang}.  Note that returned
+     * result set may stream and so the input stream be read while the ResultSet is used.
+     * See {@link ResultSetFactory#copyResults(ResultSet)}
+     * for a ResultSet that is detached from the {@code InputStream}.
+     * 
+     * @param urlOrFilename
+     * @param lang
+     * @return ResultSet
+     */
+    public static ResultSet read(String urlOrFilename, Lang lang) {
+        ResultSet rs = readAny(urlOrFilename, lang).getResultSet();
+        if ( rs == null )
+            throw new ResultSetException("Not a result set"); 
+        return rs;
+    }
+
+    /**
+     * Read from a {@code URL} (including filenames) and produce a {@link ResultSet}.
+     * Note that returned result set may stream and so the input stream be read
+     * while the ResultSet is used.
+     * <p>
+     * See {@link ResultSetFactory#copyResults(ResultSet)}
+     * for a ResultSet that is detached from the {@code InputStream}.
+     * 
+     * @param input
+     * @return ResultSet
+     */
+    public static ResultSet read(InputStream input) {
+        ResultSet rs = readAny(input).getResultSet();
+        if ( rs == null )
+            throw new ResultSetException("Not a result set"); 
+        return rs;
+    }
+
     /**
      * Read from an {@code InputStream} and produce a {@link ResultSet};
      * the stream is expect to use syntax {@code lang}.  Note that returned
@@ -44,115 +103,158 @@ public class ResultSetMgr {
      * See {@link ResultSetFactory#copyResults(ResultSet)}
      * for a ResultSet that is detached from the {@code InputStream}.
      * 
-     * @param in
+     * @param input
      * @param lang
      * @return ResultSet
      */
-    public static ResultSet read(InputStream in, Lang lang) {
-        return process(TypedInputStream.wrap(in), null, lang, null) ;
-    }
-    
-    /** Read a result set from the URI */
-    public static ResultSet read(String uri) {
-        return read(uri, null) ;
-    }
-    
-    /** Read a result set from the URI, in the specified syntax */ 
-    public static ResultSet read(String uri, Lang lang) {
-        return parse(uri, lang, null) ;
+    public static ResultSet read(InputStream input, Lang lang) {
+        ResultSet rs = readAny(input, lang).getResultSet();
+        if ( rs == null )
+            throw new ResultSetException("Not a result set"); 
+        return rs;
     }
 
+    private static void checkLang(Lang lang) {
+        Objects.requireNonNull(lang);
+        if ( ! ResultSetReaderRegistry.isRegistered(lang) ) {
+            throw new ResultSetException("Not a result set syntax: "+lang);
+        }
+    }
+    
+    /** Read a boolean result from the URI
+     * 
+     * @param urlOrFilename
+     * @return boolean
+     */
+    public static boolean readBoolean(String urlOrFilename) {
+        Boolean b = readAny(urlOrFilename).getBooleanResult();
+        return b;
+    }
+    
+    /** Read a boolean result from the URI;
+     * the input is expect to use syntax {@code lang}
+     * 
+     * @param urlOrFilename
+     * @param lang
+     * @return boolean
+     */
+    public static boolean readBoolean(String urlOrFilename, Lang lang) {
+        Boolean b = readAny(urlOrFilename, lang).getBooleanResult();
+        return b;
+    }
+    
+    /** Read a boolean result from the URI
+     * 
+     * @param input
+     * @return boolean
+     */
+    public static boolean readBoolean(InputStream input) {
+        Boolean b = readAny(input).getBooleanResult();
+        return b;
+    }
+    
+    /** Read a boolean result from the URI;
+     * the input is expect to use syntax {@code lang}
+     * 
+     * @param input
+     * @param lang
+     * @return boolean
+     */
+    public static boolean readBoolean(InputStream input, Lang lang) {
+        Boolean b = readAny(input, lang).getBooleanResult();
+        return b;
+    }
+
+    private static SPARQLResult readAny(String url) {
+        return ResultsReader.create().build().readAny(url);
+    }
+
+    private static SPARQLResult readAny(String url, Lang lang) {
+        checkLang(lang);
+        return ResultsReader.create()
+            .lang(lang)
+            .build()
+            .readAny(url);
+    }
+    
+    private static SPARQLResult readAny(InputStream input) {
+        return ResultsReader.create().build().readAny(input);
+    }
+
+    private static SPARQLResult readAny(InputStream input, Lang lang) {
+        checkLang(lang);
+        return ResultsReader.create()
+            .lang(lang)
+            .build()
+            .readAny(input);
+    }
+    // -------------------------------
+    
     /** Read ResultSet.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static ResultSet parse(String uri, Lang hintLang, Context context)
-    {
-        // Conneg
-        if ( uri == null )
-            throw new IllegalArgumentException("URI to read from is null") ;
-        if ( hintLang == null )
-            hintLang = RDFLanguages.filenameToLang(uri) ;
-        TypedInputStream in = RDFDataMgr.open(uri, context) ;
-        if ( in == null )
-            throw new RiotException("Not found: "+uri) ;
-        return process(in, uri, hintLang, context) ;
+    public static ResultSet parse(String uri, Lang hintLang, Context context) {
+        ResultSet rs = ResultsReader.create().lang(hintLang).context(context).read(uri);
+        if ( rs == null )
+            throw new ResultSetException("Not a result set"); 
+        return rs;
     }
-        
-    private static ResultSet process(TypedInputStream in, String srcURI, Lang hintLang, Context context) {
-        ContentType ct = WebContent.determineCT(in.getContentType(), hintLang, srcURI) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+srcURI+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
-        ResultSetReader reader = getReader(ct) ;
-        if ( reader == null )
-            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
-        return reader.read(in, context) ;
-    }
-    
-    private static ResultSetReader getReader(ContentType ct)
-    {
-        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        if ( lang == null )
-            return null ;
-        ResultSetReaderFactory r = ResultSetReaderRegistry.getFactory(lang) ;
-        if ( r == null )
-            return null ;
-        return r.create(lang) ;
-    }
-    
-    // -------------------------------
 
+    // -------------------------------
+    
     /** Write a SPARQL result set to the output stream in the specified language/syntax.
-     * @param out
+     * @param output
      * @param resultSet
      * @param lang
      */
-    public static void write(OutputStream out, ResultSet resultSet, Lang lang) { 
-        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-        if ( f == null )
-            throw new RiotException("No resultSet writer for "+lang) ;
-        f.create(lang).write(out, resultSet, null) ;
+    public static void write(OutputStream output, ResultSet resultSet, Lang lang) {
+        Objects.requireNonNull(lang);
+        ResultsWriter.create()
+            .lang(lang)
+            .write(output, resultSet);
     }
-    
+
     /** Write a SPARQL boolean result to the output stream in the specified language/syntax.
-     * @param out
+     * @param output
      * @param result
      * @param lang
      */
-    public static void write(OutputStream out, boolean result, Lang lang) {
-        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-        if ( f == null )
-            throw new RiotException("No resultSet writer for "+lang) ;
-        f.create(lang).write(out, result, null) ;
+    public static void write(OutputStream output, boolean result, Lang lang) {
+        Objects.requireNonNull(lang);
+        ResultsWriter.create()
+            .lang(lang)
+            .build()
+            .write(output, result);
     }
     
-//    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
-//     * Using {@link OutputStream}s is better because the charcater encoding will match the
-//     * requirements of the language.   
-//     * @param out
-//     * @param resultSet
-//     * @param lang
-//     */
-//    @Deprecated
-//    public static void write(Writer out, ResultSet resultSet, Lang lang) { 
-//        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-//        if ( f == null )
-//            throw new RiotException("No resultSet writer for "+lang) ;
-//        f.create(lang).write(out, resultSet, null) ;
-//    }
-//
-//    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
-//     * @param out
-//     * @param resultSet
-//     * @param lang
-//     */
-//    public static void write(StringWriter out, ResultSet resultSet, Lang lang) { 
-//        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-//        if ( f == null )
-//            throw new RiotException("No resultSet writer for "+lang) ;
-//        f.create(lang).write(out, resultSet, null) ;
-//    }
+    /** Generate a string in the specified language/syntax for a SPARQL result set.
+     * @param resultSet
+     * @param lang
+     */
+    public static String asString(ResultSet resultSet, Lang lang) {
+        Objects.requireNonNull(lang);
+        ByteArrayOutputStream output = new ByteArrayOutputStream(1000); 
+        ResultsWriter.create()
+            .lang(lang)
+            .write(output, resultSet);
+        return StrUtils.fromUTF8bytes(output.toByteArray());
+    }
+
+    /** Generate a string in the specified language/syntax for a SPARQL boolean result.
+     * @param result
+     * @param lang
+     */
+    public static String asString(boolean result, Lang lang) {
+        Objects.requireNonNull(lang);
+        ByteArrayOutputStream output = new ByteArrayOutputStream(1000); 
+        ResultsWriter.create()
+            .lang(lang)
+            .build()
+            .write(output, result);
+        return StrUtils.fromUTF8bytes(output.toByteArray());
+    }
 
 }
 

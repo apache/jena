@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.resultset.ResultSetLang;
 
 
 public class WebContent
@@ -269,5 +270,19 @@ public class WebContent
             ct = RDFLanguages.guessContentType(target) ;
         
         return ct ;
+    }
+    
+    /** Map content-type to lang for SPARQL results, with pragmatic adapters. */   
+    public static Lang contentTypeToLangResultSet(String contentType) {
+        if ( contentType == null )
+            return null;
+        // Special cases : use of application/xml and application/json
+        if ( contentType.equals(WebContent.contentTypeXML) )
+            return ResultSetLang.SPARQLResultSetXML;
+        else if ( contentType.equals(WebContent.contentTypeJSON) )
+            return ResultSetLang.SPARQLResultSetJSON;
+        Lang lang = RDFLanguages.contentTypeToLang(contentType);
+        // May not be a reader/write result set language. 
+        return lang;
     }
 }
