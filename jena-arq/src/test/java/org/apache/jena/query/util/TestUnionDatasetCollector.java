@@ -21,6 +21,7 @@ package org.apache.jena.query.util;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -29,6 +30,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Statement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,13 +53,19 @@ public class TestUnionDatasetCollector extends TestDatasetCollector {
         final Model m2 = createModelForGraph(g2);
         final String graphName2 = NodeFactory.createBlankNode().toString();
         dsg2.addNamedModel(graphName2, m2);
-        Dataset dataset = Stream.<Dataset>builder().add(dsg1).add(dsg2).build().collect(testInstance());
+        final Stream<Dataset> stream = Stream.<Dataset>builder().add(dsg1).add(dsg2).build();
+        Dataset dataset = stream.collect(testInstance());
 
         assertEquals(2, Iter.count(dataset.listNames()));
         assertTrue(m1.isIsomorphicWith(dataset.getNamedModel(graphName1)));
         assertTrue(m2.isIsomorphicWith(dataset.getNamedModel(graphName2)));
+        // all statements in any input should be present in the union
         m1.listStatements().mapWith(dataset.getDefaultModel()::contains).forEachRemaining(Assert::assertTrue);
         m2.listStatements().mapWith(dataset.getDefaultModel()::contains).forEachRemaining(Assert::assertTrue);
+        // all statements in the union should be present in an input
+        List<Statement> leftovers = dataset.getDefaultModel().listStatements()
+                .filterDrop(m1::contains)
+                .filterDrop(m2::contains).toList();
+        assertTrue(leftovers.isEmpty());
     }
-    
 }

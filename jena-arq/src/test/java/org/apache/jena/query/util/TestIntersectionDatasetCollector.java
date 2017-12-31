@@ -51,7 +51,8 @@ public class TestIntersectionDatasetCollector extends TestDatasetCollector {
         ds1.addNamedModel(graphName3, m3);
         ds2.addNamedModel(graphName3, m3);
         
-        Dataset ds = Stream.<Dataset>builder().add(ds1).add(ds2).build().collect(testInstance());
+        final Stream<Dataset> stream = Stream.<Dataset>builder().add(ds1).add(ds2).build();
+        Dataset ds = stream.collect(testInstance());
         
         assertTrue(ds.getDefaultModel().isEmpty());
         assertTrue(ds.getNamedModel(graphName1).isEmpty());
