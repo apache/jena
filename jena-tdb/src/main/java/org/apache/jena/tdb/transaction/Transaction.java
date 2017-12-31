@@ -38,6 +38,7 @@ public class Transaction
     private final TransactionManager txnMgr ;
     private final Journal journal ;
     private final TxnType txnType ;
+    private final TxnType originalTxnType ;
     private final ReadWrite mode ;
     
     private final List<ObjectFileTrans> objectFileTrans = new ArrayList<>() ;
@@ -56,7 +57,7 @@ public class Transaction
     
     private boolean changesPending ;
     
-    public Transaction(DatasetGraphTDB dsg, long version, TxnType txnType, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
+    public Transaction(DatasetGraphTDB dsg, long version, TxnType txnType, ReadWrite mode, long id,  TxnType originalTxnType, String label, TransactionManager txnMgr) {
         this.id = id ;
         if (label == null )
             label = "Txn" ;
@@ -71,6 +72,7 @@ public class Transaction
         this.basedsg = dsg ;
         this.version = version ;
         this.txnType = txnType ;
+        this.originalTxnType = originalTxnType ; 
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
@@ -273,8 +275,9 @@ public class Transaction
         }
     }
 
-    public TxnType   getTxnType()                   { return txnType ; }
-    public ReadWrite getMode()                      { return mode ; }
+    public TxnType   getTxnType()                   { return originalTxnType ; }
+    public TxnType   getCurrentTxnType()            { return txnType ; }
+    public ReadWrite getTxnMode()                   { return mode ; }
     public boolean   isRead()                       { return mode == ReadWrite.READ ; }
     public boolean   isWrite()                      { return mode == ReadWrite.WRITE ; }
 

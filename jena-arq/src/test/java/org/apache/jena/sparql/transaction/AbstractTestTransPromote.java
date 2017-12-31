@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.transaction ;
 
-import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.* ;
 import static org.junit.Assert.fail ;
 
 import java.util.concurrent.* ;
@@ -172,7 +172,7 @@ public abstract class AbstractTestTransPromote {
         assertCount(0, dsg) ;
     }
 
-    // XXX LOCK UP
+    // LOCK UP
     //@Test public void promote_snapshot_06()         { run_06(TxnMode.READ_PROMOTE) ; }
     //@Test public void promote_readCommitted_06()    { run_06(TxnMode.READ_COMMITTED_PROMOTE) ; }
     
@@ -387,4 +387,51 @@ public abstract class AbstractTestTransPromote {
                 throw e ;
         } catch (InterruptedException | ExecutionException e1) { throw new RuntimeException(e1) ; }
     }
+    
+    // This would locks up because of a WRITE-WRITE deadly embrace.
+    //  @Test(expected=JenaTransactionException.class)
+    //  public void promote11() { test2(TxnMode.WRITE); }
+      
+    @Test
+    public void promote_thread_writer_1() { test_thread_writer(TxnType.READ_COMMITTED_PROMOTE); }
+      
+    @Test(expected=JenaTransactionException.class)
+    public void promote_thread_writer_2() { test_thread_writer(TxnType.READ_PROMOTE); }
+    
+    private void test_thread_writer(TxnType txnType) {
+        DatasetGraph dsg = create();
+        ThreadAction a = ThreadTxn.threadTxnWrite(dsg, ()->dsg.add(q1));
+        dsg.begin(txnType);
+        assertEquals(txnType, dsg.transactionType());
+        a.run();
+        dsg.add(q2);
+        // TDB1 does not keep the the original TxnType.
+        assertEquals(txnType, dsg.transactionType());
+        assertEquals(ReadWrite.WRITE, dsg.transactionMode());
+        dsg.commit();
+        dsg.end();
+    }
+    
+    // With explicit "promote()"
+    private void test_promote_thread_writer(TxnType txnType) {
+        DatasetGraph dsg = create();
+        ThreadAction a = ThreadTxn.threadTxnWrite(dsg, ()->dsg.add(q1));
+        dsg.begin(txnType);
+        assertEquals(txnType, dsg.transactionType());
+        a.run();
+        
+        boolean b = dsg.promote();
+        
+        if ( txnType == TxnType.READ_PROMOTE )
+            assertFalse(b);
+        if ( txnType == TxnType.READ_COMMITTED_PROMOTE )
+            assertTrue(b);
+
+        dsg.add(q2);
+        assertEquals(txnType, dsg.transactionType());
+        assertEquals(ReadWrite.WRITE, dsg.transactionMode());
+        dsg.commit();
+        dsg.end();
+    }
+
 }

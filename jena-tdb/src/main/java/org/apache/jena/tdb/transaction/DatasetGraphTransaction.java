@@ -23,6 +23,7 @@ import static java.lang.ThreadLocal.withInitial ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -61,7 +62,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
      */
 
     // Transaction per thread per DatasetGraphTransaction object.
-    private ThreadLocal<DatasetGraphTxn> txn           = withInitial(() -> null);
+    private ThreadLocal<DatasetGraphTxn> dsgtxn        = withInitial(() -> null);
     private ThreadLocal<Boolean>         inTransaction = withInitial(() -> false);
 
     private final StoreConnection        sConn;
@@ -89,7 +90,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 
     @Override public DatasetGraph getW() {
         if ( isInTransaction() ) {
-            DatasetGraphTxn dsgTxn = txn.get() ;
+            DatasetGraphTxn dsgTxn = dsgtxn.get() ;
             if ( dsgTxn.getTransaction().isRead() ) {
                 TxnType txnType = dsgTxn.getTransaction().getTxnType();
                 switch(txnType) {
@@ -104,7 +105,9 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
                 // Promotion.
                 TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
                 DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, txnType) ;
-                txn.set(dsgTxn2);
+                if ( dsgTxn2 == null )
+                    throw new JenaTransactionException("Can't promote "+txnType+"- dataset has been written to");
+                dsgtxn.set(dsgTxn2);
             }
         }
         return super.getW() ;
@@ -114,7 +117,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     @Override
     public DatasetGraphTDB get() {
         if ( isInTransaction() ) {
-            DatasetGraphTxn dsgTxn = txn.get() ;
+            DatasetGraphTxn dsgTxn = dsgtxn.get() ;
             if ( dsgTxn == null )
                 throw new TDBTransactionException("In a transaction but no transactional DatasetGraph") ;
             return dsgTxn.getView() ;
@@ -152,6 +155,22 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         checkNotClosed() ;
         return inTransaction.get() ;
     }
+    
+    @Override
+    public ReadWrite transactionMode() {
+        checkNotClosed() ;
+        if ( ! isInTransaction() )
+            return null;
+        return dsgtxn.get().getTransaction().getTxnMode();      
+    }
+
+    @Override
+    public TxnType transactionType() {
+        checkNotClosed() ;
+        if ( ! isInTransaction() )
+            return null;
+        return dsgtxn.get().getTransaction().getTxnType();
+    }
 
     public boolean isClosed() {
         return isClosed ;
@@ -182,34 +201,41 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     protected void _begin(TxnType txnType) {
         checkNotClosed() ;
         DatasetGraphTxn dsgTxn = sConn.begin(txnType) ;
-        txn.set(dsgTxn) ;
+        dsgtxn.set(dsgTxn) ;
         inTransaction.set(true) ;
     }
 
     @Override
     protected boolean _promote() {
+        // Promotion (TDB1) is a reset of the DatasetGraphTxn.
         checkNotClosed() ;
-        return txn.get().promote();
+        DatasetGraphTxn dsgTxn = dsgtxn.get();
+        Transaction transaction = dsgTxn.getTransaction();
+        DatasetGraphTxn dsgTxn2 = transaction.getTxnMgr().promote(dsgTxn, transaction.getTxnType());
+        if ( dsgTxn2 == null )
+            return false;
+        dsgtxn.set(dsgTxn2) ;
+        return true;
     }
-
+    
     @Override
     protected void _commit() {
         checkNotClosed() ;
-        txn.get().commit() ;
+        dsgtxn.get().commit() ;
         inTransaction.set(false) ;
     }
 
     @Override
     protected void _abort() {
         checkNotClosed() ;
-        txn.get().abort() ;
+        dsgtxn.get().abort() ;
         inTransaction.set(false) ;
     }
 
     @Override
     protected void _end() {
         checkNotClosed() ;
-        DatasetGraphTxn dsg = txn.get() ;
+        DatasetGraphTxn dsg = dsgtxn.get() ;
         // It's null if end() already called.
         if ( dsg == null ) {
             TDB.logInfo.warn("Transaction already ended") ;
@@ -217,11 +243,11 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         }
         try {
             // begin(W)..end() throws an exception.
-            txn.get().end() ;
+            dsgtxn.get().end() ;
         } finally {
             // May already be false due to .commit/.abort.
             inTransaction.set(false) ;
-            txn.set(null) ;
+            dsgtxn.set(null) ;
         }
     }
 
@@ -272,7 +298,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
             TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
             return ;
         }
-        txn.remove() ;
+        dsgtxn.remove() ;
         inTransaction.remove() ;
         isClosed = true ;
     }

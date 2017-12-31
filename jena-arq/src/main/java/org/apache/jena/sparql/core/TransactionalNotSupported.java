@@ -39,15 +39,21 @@ public class TransactionalNotSupported implements Transactional
     // As an included component. 
     /*
     private final Transactional txn                     = new TransactionalNotSupported() ;
-    @Override public void begin(TxnType txnType)        { txn.begin(type) ; }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public boolean promote()                  {  returntxn.promote() ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    
+     For DatasetGraphs:
+     
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
     */
     
     @Override
@@ -76,6 +82,13 @@ public class TransactionalNotSupported implements Transactional
     @Override
     public boolean isInTransaction()
     { return false ; }
+    
+    @Override public ReadWrite transactionMode()
+    { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
+    
+    @Override public TxnType transactionType()
+    { throw new UnsupportedOperationException("Transactional.transactionType") ; }
+
 
     @Override
     public void end()
@@ -85,9 +98,6 @@ public class TransactionalNotSupported implements Transactional
         return false ;
     }
     
-    /** Declare whether {@link #abort} is supported.
-     *  This goes along with clearing up after exceptions inside application transaction code.
-     */
     public boolean supportsTransactionAbort() {
         return false;
     }

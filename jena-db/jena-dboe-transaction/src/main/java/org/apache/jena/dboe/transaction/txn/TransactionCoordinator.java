@@ -21,10 +21,7 @@ package org.apache.jena.dboe.transaction.txn;
 import static org.apache.jena.dboe.transaction.txn.journal.JournalEntryType.UNDO;
 
 import java.nio.ByteBuffer ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Objects ;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
@@ -501,8 +498,9 @@ public class TransactionCoordinator {
     
     // A read transaction can be promoted if writer does not start
     // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution.  With no item locking, a read can only be promoted
-    // if no writer started since the reader started.
+    // execution. With no item locking, a read can only be promoted
+    // if no writer started since the reader started or if it is "read committed",
+    // seeing changes made since it started and comitted at the poiont of promotion.
 
     /* The version of the data - incremented when transaction commits.
      * This is the version with repest to the last commited transaction.
@@ -542,7 +540,7 @@ public class TransactionCoordinator {
     
     // Detemine ReadWrite for the transaction start from initial TxnType.
     private static ReadWrite initialMode(TxnType txnType) {
-        return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
+        return TxnType.initial(txnType);
     }
     
     private ComponentGroup chooseComponents(ComponentGroup components, TxnType txnType) {
@@ -620,6 +618,7 @@ public class TransactionCoordinator {
                     releaseWriterLock();
                     return false ;
                 }
+                promoteActiveTransaction(transaction);
             }
             return true;
         }
@@ -659,6 +658,7 @@ public class TransactionCoordinator {
                 releaseWriterLock();
                 return false ;
             }
+            promoteActiveTransaction(transaction);
         }
         return true ;
     }
@@ -736,9 +736,8 @@ public class TransactionCoordinator {
         notifyAbortFinish(transaction) ;
     }
     
-    // Active transactions: this is (the missing) ConcurrentHashSet
-    private final static Object dummy                   = new Object() ;    
-    private ConcurrentHashMap<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
+    // Active transactions.
+    private Set<Transaction> activeTransactions = ConcurrentHashMap.newKeySet();
     private AtomicLong activeTransactionCount = new AtomicLong(0) ;
     private AtomicLong activeReadersCount = new AtomicLong(0) ;
     private AtomicLong activeWritersCount = new AtomicLong(0) ;
@@ -753,8 +752,15 @@ public class TransactionCoordinator {
                 case WRITE: countBeginWrite.incrementAndGet() ; activeWritersCount.incrementAndGet() ; break ;
             }
             activeTransactionCount.incrementAndGet() ;
-            activeTransactions.put(transaction, dummy) ;
+            activeTransactions.add(transaction) ;
         }
+    }
+    
+    
+    private void promoteActiveTransaction(Transaction transaction) {
+        // Called for a real promote as READ-> WRITE
+        activeReadersCount.decrementAndGet();
+        activeWritersCount.incrementAndGet();
     }
     
     private void finishActiveTransaction(Transaction transaction) {

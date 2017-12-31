@@ -101,7 +101,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         return transactionType.get();
     }
 
-    private void transactionType(final ReadWrite readWrite) {
+    private void transactionMode(final ReadWrite readWrite) {
         transactionMode.set(readWrite);
     }
 
@@ -139,24 +139,21 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public boolean supportsTransactionAbort()   { return true; }
 
     @Override
+    public void begin(final ReadWrite readWrite) {
+        begin(TxnType.convert(readWrite));
+    }
+
+    @Override
     public void begin(TxnType txnType) {
         if (isInTransaction()) 
             throw new JenaTransactionException("Transactions cannot be nested!");
         transactionType.set(txnType);
-        ReadWrite initial = txnType.equals(TxnType.WRITE) ? WRITE : READ;
-        _begin(initial);
+        _begin(txnType, TxnType.initial(txnType));
     }
     
-    @Override
-    public void begin(final ReadWrite readWrite) {
-        if (isInTransaction()) 
-            throw new JenaTransactionException("Transactions cannot be nested!");
-        transactionType.set(TxnType.convert(readWrite));
-        _begin(readWrite) ;
-    }
-
-    private void _begin(ReadWrite readWrite) {
-        startTransaction(readWrite);
+    private void _begin(TxnType txnType, ReadWrite readWrite) {
+        // Takes transactionLock
+        startTransaction(txnType, readWrite);
         withLock(systemLock, () ->{
             quadsIndex().begin(readWrite);
             defaultGraph().begin(readWrite);
@@ -165,9 +162,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     /** Called transaction start code at most once per transaction. */ 
-    private void startTransaction(ReadWrite mode) {
+    private void startTransaction(TxnType txnType, ReadWrite mode) {
         transactionLock.enterCriticalSection(mode.equals(ReadWrite.READ)); // get the dataset write lock, if needed.
-        transactionType(mode);
+        transactionType.set(txnType);
+        transactionMode(mode);
         isInTransaction(true);
     }
 
@@ -193,7 +191,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             case WRITE :
                 return true;
             case READ :
-                return false ;
+                throw new JenaTransactionException("Tried to promote READ transaction");
             case READ_COMMITTED_PROMOTE :
                 readCommitted = true;
             case READ_PROMOTE :
@@ -204,9 +202,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
                 throw new NullPointerException();
         }
         
-        // XXX Check "mutate".
-        mutate(null, null);
-        
         try {
             _promote(readCommitted);
             return true;
@@ -215,10 +210,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         }
     }
     
-    /*private*/public/*for development*/ static boolean promotion               = false ;
-
-    /*private*/public/*for development*/ static boolean readCommittedPromotion  = true ;
-
     private void _promote(boolean readCommited) {
         //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
         
@@ -240,8 +231,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
                 throw new JenaTransactionException("Concurrent writer changed the dataset : can't promote") ;
             }
         // We have the lock and we have promoted!
-        transactionType(WRITE);
-        _begin(WRITE) ;
+        transactionMode(WRITE);
+        _begin(transactionType(), ReadWrite.WRITE) ;
     }
 
     @Override

@@ -88,10 +88,10 @@ public class StoreConnection
         return transactionManager.state();
     }
 
-    /*
+    /**
      * @deprecated Use {@link #begin(TxnType)}
      */
-    //@Deprecated
+    @Deprecated
     public DatasetGraphTxn begin(ReadWrite mode) {
         return begin(TxnType.convert(mode));
     }
@@ -197,8 +197,8 @@ public class StoreConnection
     /** Stop managing a location. Use with great care (testing only). */
     public static synchronized void expel(Location location, boolean force) {
         StoreConnection sConn = cache.get(location) ;
-        if (sConn == null) return ;
-        
+        if (sConn == null)
+            return ;
         if (!force && sConn.transactionManager.activeTransactions()) 
             throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 

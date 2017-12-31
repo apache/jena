@@ -31,7 +31,10 @@ import org.apache.jena.sparql.util.Context ;
  * behaviour, that is the application see transaction but they are not durable.
  * Only provides multiple-reader OR single-writer, and no write-transaction
  * abort.
+ * @deprecated Will be removed.
  */
+// NOT USED
+@Deprecated
 public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync {
     private final ThreadLocal<Boolean> writeTxn = ThreadLocal.withInitial(()->false) ;
     private final DatasetGraph dsg ;

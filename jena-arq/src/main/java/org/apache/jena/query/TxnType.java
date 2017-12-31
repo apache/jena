@@ -18,6 +18,8 @@
 
 package org.apache.jena.query;
 
+import java.util.Objects;
+
 import org.apache.jena.sparql.JenaTransactionException;
 
 public enum TxnType {
@@ -46,7 +48,7 @@ public enum TxnType {
      */
     READ, WRITE, READ_PROMOTE, READ_COMMITTED_PROMOTE
     ;
-    
+    /** Convert a {@link ReadWrite} mode to {@code TxnType} */
     public static TxnType convert(ReadWrite rw) {
         switch(rw) {
             case READ: return READ;
@@ -54,11 +56,22 @@ public enum TxnType {
             default: throw new NullPointerException();
         }
     }
-    public static ReadWrite convert(TxnType mode) {
-        switch(mode) {
+    /** Convert a {@code TxnType} mode to {@link ReadWrite} : "promote" not supported.  */
+    public static ReadWrite convert(TxnType txnType) {
+        Objects.requireNonNull(txnType);
+        switch(txnType) {
             case READ: return ReadWrite.READ;
             case WRITE: return ReadWrite.WRITE;
-            default: throw new JenaTransactionException("Incompatible mode: "+mode);
+            default: throw new JenaTransactionException("Incompatible mode: "+txnType);
         }
     }
+    /** 
+     * Translate a {@code TxnType} to it's initial {@link ReadWrite} mode.
+     * {@code WRITE -> WRITE}, {@code READ* -> READ} regardless of promotion setting. 
+     */ 
+    public static ReadWrite initial(TxnType txnType) {
+        Objects.requireNonNull(txnType);
+        return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
+    }
+
 }

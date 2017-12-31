@@ -20,6 +20,7 @@ package org.apache.jena.dboe.transaction.txn;
 
 import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
@@ -156,7 +157,7 @@ public class TransactionalBase implements TransactionalSystem {
     @Override
     public ReadWrite transactionMode() {
         checkRunning() ;
-        Transaction txn = getTxn() ;
+        Transaction txn = Lib.readThreadLocal(theTxn) ;
         if ( txn != null )
             return txn.getMode() ;
         return null ; 
@@ -165,7 +166,7 @@ public class TransactionalBase implements TransactionalSystem {
     @Override
     public TxnType transactionType() {
         checkRunning() ;
-        Transaction txn = getTxn() ;
+        Transaction txn = Lib.readThreadLocal(theTxn) ;
         if ( txn != null )
             return txn.getTxnType() ;
         return null ;
@@ -173,18 +174,9 @@ public class TransactionalBase implements TransactionalSystem {
 
     @Override
     public boolean isInTransaction() {
-        return getTxn() != null;
+        return Lib.readThreadLocal(theTxn) != null;
     }
 
-    private Transaction getTxn() {
-        // tricky - touching theTxn causes it to initialize.
-        Transaction txn = theTxn.get() ;
-        if ( txn != null )
-            return txn;
-        theTxn.remove() ;
-        return null ;
-    }
-    
     @Override
     final
     public TransactionInfo getTransactionInfo() {
@@ -194,12 +186,7 @@ public class TransactionalBase implements TransactionalSystem {
     @Override
     final
     public Transaction getThreadTransaction() {
-        Transaction txn = theTxn.get() ;
-        // XXX Use getTxn() ??
-        // Touched the thread local so it is defined now.
-//        if ( txn == null )
-//            theTxn.remove() ;
-        return txn ;
+        return  Lib.readThreadLocal(theTxn);
     }
 
     /** Get the transaction, checking there is one */  

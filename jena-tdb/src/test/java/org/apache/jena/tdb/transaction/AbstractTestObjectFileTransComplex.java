@@ -48,7 +48,7 @@ public abstract class AbstractTestObjectFileTransComplex extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, 5, TxnType.WRITE, ReadWrite.WRITE, ++count, null, tm) ;
+        txn = new Transaction(null, 5, TxnType.WRITE, ReadWrite.WRITE, ++count, TxnType.WRITE, null, tm) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }

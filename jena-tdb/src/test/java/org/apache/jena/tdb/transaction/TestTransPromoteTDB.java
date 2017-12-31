@@ -18,6 +18,7 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
 import org.apache.jena.tdb.TDB ;
@@ -44,7 +45,7 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     @Override
-    protected Class<TDBTransactionException> getTransactionExceptionClass() {
-        return TDBTransactionException.class ;
+    protected Class<JenaTransactionException> getTransactionExceptionClass() {
+        return JenaTransactionException.class ;
     }
 }

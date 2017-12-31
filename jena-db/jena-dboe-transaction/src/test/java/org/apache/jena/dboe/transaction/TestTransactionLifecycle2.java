@@ -36,16 +36,12 @@ import org.junit.Test ;
 
 /**
  * Details tests of the transaction lifecycle in one JVM
- * including tests beyond the TransactionalComponentLifecycle 
- * 
- * Journal independent.
+ * including tests beyond the TransactionalComponentLifecycle
+ * Tests directly on the TransactionCoordinator. 
  */
 public class TestTransactionLifecycle2 {
     // org.junit.rules.ExternalResource ?
     protected TransactionCoordinator txnMgr ;
-//    protected TransInteger counter1 = new TransInteger(0) ; 
-//    protected TransInteger counter2 = new TransInteger(0) ;
-//    protected TransMonitor monitor  = new TransMonitor() ;
     
     @Before public void setup() {
         Journal jrnl = Journal.create(Location.mem()) ;

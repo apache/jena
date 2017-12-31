@@ -257,12 +257,16 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     private final Transactional txn                     = new TransactionalNotSupported() ;
-    @Override public void begin(TxnType type)           { txn.begin(type) ; }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
 }

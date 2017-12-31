@@ -26,6 +26,7 @@ import static org.apache.jena.tdb.transaction.TransactionManager.TxnPoint.CLOSE 
 import java.io.File ;
 import java.util.*;
 import java.util.concurrent.BlockingQueue ;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
@@ -48,7 +49,7 @@ public class TransactionManager
     private static boolean checking = true ;
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
-    private Set<Transaction> activeTransactions = new HashSet<>() ;
+    private Set<Transaction> activeTransactions = ConcurrentHashMap.newKeySet();
     synchronized public boolean activeTransactions() { return !activeTransactions.isEmpty() ; }
     
     // Setting this true cause the TransactionManager to keep lists of transactions
@@ -162,6 +163,7 @@ public class TransactionManager
         void transactionCloses(Transaction txn) ;
         void readerStarts(Transaction txn) ;
         void readerFinishes(Transaction txn) ;
+        void transactionPromotes(Transaction txn) ;
         void writerStarts(Transaction txn) ;
         void writerCommits(Transaction txn) ;
         void writerAborts(Transaction txn) ;
@@ -173,6 +175,7 @@ public class TransactionManager
         @Override public void transactionCloses(Transaction txn)    {}
         @Override public void readerStarts(Transaction txn)         {}
         @Override public void readerFinishes(Transaction txn)       {}
+        @Override public void transactionPromotes(Transaction txn)  {}
         @Override public void writerStarts(Transaction txn)         {}
         @Override public void writerCommits(Transaction txn)        {}
         @Override public void writerAborts(Transaction txn)         {}
@@ -182,6 +185,7 @@ public class TransactionManager
         TSM_Logger() {}
         @Override public void readerStarts(Transaction txn)         { log("start", txn) ; }
         @Override public void readerFinishes(Transaction txn)       { log("finish", txn) ; }
+        @Override public void transactionPromotes(Transaction txn)  { log("promote", txn) ; }
         @Override public void writerStarts(Transaction txn)         { log("begin", txn) ; }
         @Override public void writerCommits(Transaction txn)        { log("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { log("abort", txn) ; }
@@ -192,12 +196,12 @@ public class TransactionManager
         TSM_LoggerDebug() {}
         @Override public void readerStarts(Transaction txn)         { logInternal("start",  txn) ; }
         @Override public void readerFinishes(Transaction txn)       { logInternal("finish", txn) ; }
+        @Override public void transactionPromotes(Transaction txn)  { logInternal("promote", txn) ; }
         @Override public void writerStarts(Transaction txn)         { logInternal("begin",  txn) ; }
         @Override public void writerCommits(Transaction txn)        { logInternal("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { logInternal("abort",  txn) ; }
     }
     
-    // Mixes stats and state variables :-(
     class TSM_Counters implements TSM {
         TSM_Counters() {}
         @Override public void transactionStarts(Transaction txn)    { activeTransactions.add(txn) ; }
@@ -205,6 +209,7 @@ public class TransactionManager
         @Override public void transactionCloses(Transaction txn)    { }
         @Override public void readerStarts(Transaction txn)         { inc(activeReaders) ; }
         @Override public void readerFinishes(Transaction txn)       { dec(activeReaders) ; inc(finishedReaders); }
+        @Override public void transactionPromotes(Transaction txn)  { dec(activeReaders) ; inc(finishedReaders); inc(activeWriters); }
         @Override public void writerStarts(Transaction txn)         { inc(activeWriters) ; }
         @Override public void writerCommits(Transaction txn)        { dec(activeWriters) ; inc(committedWriters) ; }
         @Override public void writerAborts(Transaction txn)         { dec(activeWriters) ; inc(abortedWriters) ; }
@@ -318,7 +323,11 @@ public class TransactionManager
 //        _begin(readWrite) ;
 //    }
     
-    public DatasetGraphTxn begin(TxnType mode, String label) {
+    public DatasetGraphTxn begin(TxnType txnType, String label) {
+        return beginInternal(txnType, txnType, label);
+    }
+    
+    private DatasetGraphTxn beginInternal(TxnType txnType, TxnType originalTxnType, String label) {   
         // The exclusivitylock surrounds the entire transaction cycle.
         // Paired with notifyCommit, notifyAbort.
         startNonExclusive();
@@ -326,14 +335,14 @@ public class TransactionManager
         // Not synchronized (else blocking on semaphore will never wake up
         // because Semaphore.release is inside synchronized).
         // Allow only one active writer. 
-        if ( mode == TxnType.WRITE ) {
+        if ( txnType == TxnType.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
             acquireWriterLock(true) ;
         }
         // entry synchronized part
-        return begin$(mode, label) ;
+        return begin$(txnType, originalTxnType, label) ;
     }
     
     /** Ensure a DatasetGraphTxn is for a write transaction.
@@ -349,23 +358,29 @@ public class TransactionManager
      * There is no point retrying - later committed changes have been made and will remain.
      * <p>
      * "read committed" will always succeed but the app needs to be aware that data access before the promotion
-     * is no longer valid. It may need to check it.   
+     * is no longer valid. It may need to check it. 
+     * <p>
+     * Return null for "no promote" due to intermediate commits.  
      */
     /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, TxnType txnType) throws TDBTransactionException {
         Transaction txn = dsgtxn.getTransaction() ;
         if ( txn.getState() != TxnState.ACTIVE )
             throw new TDBTransactionException("promote: transaction is not active") ;
-        if ( txn.getMode() == ReadWrite.WRITE )
+        if ( txn.getTxnMode() == ReadWrite.WRITE )
             return dsgtxn ;
-        if ( txn.getTxnType() == TxnType.READ )
-            throw new TDBTransactionException("promote: transaction is a read transaction") ;
+        if ( txn.getTxnType() == TxnType.READ ) {
+            txn.abort();
+            throw new TDBTransactionException("promote: transaction is a READ transaction") ;
+        }
         
         // Read commit - pick up whatever is current at the point setup.
         // Can also promote - may need to wait for active writers. 
         // Go through begin for the writers lock. 
         if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
-            DatasetGraphTxn dsgtxn2 = begin(TxnType.WRITE, txn.getLabel()) ;
+            // Full begin cycle.
+            DatasetGraphTxn dsgtxn2 = beginInternal(TxnType.WRITE, txnType, txn.getLabel()) ;
             // Junk the old one.
+            noteTxnPromote(txn, dsgtxn2.getTransaction());
             return dsgtxn2 ;
         }
         
@@ -377,9 +392,8 @@ public class TransactionManager
         // acquireWriterLock returning. It catches many cases without needing
         // to acquire the writer lock.
         
-        if ( txn.getVersion() != version.get() ) {
-            throw new TDBTransactionException("Dataset changed - can't promote") ;
-        }
+        if ( txn.getVersion() != version.get() )
+            return null;
 
         // Put ourselves in the serialization timeline of the dataset - that, is grab a writer
         // lock as a step toward promotion. We can then test properly because no other writer
@@ -390,19 +404,20 @@ public class TransactionManager
         acquireWriterLock(true) ;
 
         // Do the synchronized stuff.
-        return promote2$(dsgtxn) ; 
+        return promote2$(dsgtxn, txnType) ; 
     }
     
     synchronized
-    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn) {
+    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn, TxnType originalTxnType) {
         Transaction txn = dsgtxn.getTransaction() ;
         // Writers may have happened between the first check of the active writers may have committed.  
         if ( txn.getVersion() != version.get() ) {
             releaseWriterLock();
-            throw new TDBTransactionException("Active writer changed the dataset - can't promote") ;
+            return null;
         }
-        // Use begin$ - we have the writers lock.
-        DatasetGraphTxn dsgtxn2 = begin$(TxnType.WRITE, txn.getLabel()) ;
+        // Use begin$ (not beginInternal) - we have the writers lock.
+        DatasetGraphTxn dsgtxn2 = begin$(TxnType.WRITE, originalTxnType, txn.getLabel()) ;
+        noteTxnPromote(txn, dsgtxn2.getTransaction());
         return dsgtxn2 ;
     }
 
@@ -411,7 +426,7 @@ public class TransactionManager
     // of the low level objects directly so we'll play safe.  
     
     synchronized
-    private DatasetGraphTxn begin$(TxnType txnType, String label) {
+    private DatasetGraphTxn begin$(TxnType txnType, TxnType originalTxnType, String label) {
         Objects.requireNonNull(txnType);
         if ( txnType == TxnType.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
@@ -426,7 +441,7 @@ public class TransactionManager
             }
         
         DatasetGraphTDB dsg = determineBaseDataset() ;
-        Transaction txn = createTransaction(dsg, txnType, label) ;
+        Transaction txn = createTransaction(dsg, txnType, originalTxnType, label) ;
         
         log("begin$", txn) ;
         
@@ -446,7 +461,7 @@ public class TransactionManager
         for ( TransactionLifecycle component : components )
             component.begin(dsgTxn.getTransaction()) ;
 
-        noteStartTxn(txn) ;
+        noteTxnStart(txn) ;
         return dsgTxn ;
     }
     
@@ -463,14 +478,16 @@ public class TransactionManager
               dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size() - 1).getActiveDataset().getView() ;
           return dsg ;
       }
-    private Transaction createTransaction(DatasetGraphTDB dsg, TxnType txnType, String label) {
-        Transaction txn = new Transaction(dsg, version.get(), txnType, initialMode(txnType), transactionId.getAndIncrement(), label, this) ;
+    private Transaction createTransaction(DatasetGraphTDB dsg, TxnType txnType, TxnType originalTxnType, String label) {
+        if ( originalTxnType == null )
+            originalTxnType = txnType;
+        Transaction txn = new Transaction(dsg, version.get(), txnType, initialMode(txnType), transactionId.getAndIncrement(), originalTxnType, label, this) ;
         return txn ;
     }
 
     // State.
     private static ReadWrite initialMode(TxnType txnType) {
-        return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
+        return TxnType.initial(txnType);
     }
     
     private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode) {
@@ -510,7 +527,7 @@ public class TransactionManager
 
             noteTxnCommit(transaction) ;
 
-            switch ( transaction.getMode() ) {
+            switch ( transaction.getTxnMode() ) {
                 case READ: break ;
                 case WRITE:
                     version.incrementAndGet() ;
@@ -548,7 +565,7 @@ public class TransactionManager
         
         noteTxnAbort(transaction) ;
         
-        switch ( transaction.getMode() )
+        switch ( transaction.getTxnMode() )
         {
             case READ: break ;
             case WRITE: releaseWriterLock();
@@ -801,7 +818,7 @@ public class TransactionManager
 
             try {
                 Transaction txn2 = queue.take() ;
-                if ( txn2.getMode() == ReadWrite.READ )
+                if ( txn2.getTxnMode() == ReadWrite.READ )
                     continue ;
                 if ( log() )
                     log("  Flush delayed commit of "+txn2.getLabel(), txn) ;
@@ -841,8 +858,8 @@ public class TransactionManager
             log.error("There are now active transactions") ;
     }
     
-    private void noteStartTxn(Transaction transaction) {
-        switch (transaction.getMode())
+    private void noteTxnStart(Transaction transaction) {
+        switch (transaction.getTxnMode())
         {
             case READ : readerStarts(transaction) ; break ;
             case WRITE : writerStarts(transaction) ; break ;
@@ -850,8 +867,15 @@ public class TransactionManager
         transactionStarts(transaction) ;
     }
 
+    private void noteTxnPromote(Transaction transaction, Transaction transaction2) {
+        activeTransactions.remove(transaction);
+        activeTransactions.add(transaction2);
+        transactionPromotes(transaction) ;
+    }
+
+
     private void noteTxnCommit(Transaction transaction) {
-        switch (transaction.getMode())
+        switch (transaction.getTxnMode())
         {
             case READ : readerFinishes(transaction) ; break ;
             case WRITE : writerCommits(transaction) ; break ;
@@ -860,7 +884,7 @@ public class TransactionManager
     }
     
     private void noteTxnAbort(Transaction transaction) {
-        switch (transaction.getMode())
+        switch (transaction.getTxnMode())
         {
             case READ : readerFinishes(transaction) ; break ;
             case WRITE : writerAborts(transaction) ; break ;
@@ -985,6 +1009,12 @@ public class TransactionManager
         for ( TSM tsm : actions )
             if ( tsm != null )
                 tsm.readerFinishes(txn) ;
+    }
+    
+    private void transactionPromotes(Transaction txn) {
+        for ( TSM tsm : actions )
+            if ( tsm != null )
+                tsm.transactionPromotes(txn);
     }
 
     private void writerStarts(Transaction txn) {

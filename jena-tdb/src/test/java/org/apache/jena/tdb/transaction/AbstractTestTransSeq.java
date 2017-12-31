@@ -162,8 +162,6 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
     }
-
-
     
     @Test public void trans_readBlock_01()
     {
@@ -180,10 +178,6 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertFalse(dsgR1.contains(q)) ;
         dsgR1.end() ;
 
-        //**** Not hitting the queue ****
-        // Order of tweaking counters?
-        // also writer and counters?
-        
         DatasetGraphTxn dsgR2 = sConn.begin(TxnType.READ) ;
         assertTrue(dsgR2.contains(q)) ;
         dsgR2.end() ;

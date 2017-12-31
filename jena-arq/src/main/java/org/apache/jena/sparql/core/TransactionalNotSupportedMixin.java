@@ -20,11 +20,9 @@ package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.shared.LockMutex ;
 
 /** Mixin interface for the "un-Transactional" interface.
- * Use with {@link LockMutex}.
- * @see TransactionalNotSupportedMixin
+ * @see TransactionalNotSupported
  */ 
 public interface TransactionalNotSupportedMixin extends Transactional
 {
@@ -52,12 +50,19 @@ public interface TransactionalNotSupportedMixin extends Transactional
     { throw new UnsupportedOperationException("Transactional.abort") ; }
 
     @Override
-    public default boolean isInTransaction()
-    { return false ; }
-
-    @Override
     public default void end()
     { throw new UnsupportedOperationException("Transactional.end") ; }
+
+    @Override
+    public default boolean isInTransaction()
+    { return false ; }
+    
+    @Override default public ReadWrite transactionMode()
+    { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
+    
+    @Override default public TxnType transactionType()
+    { throw new UnsupportedOperationException("Transactional.transactionType") ; }
+
     
     public default boolean supportsTransactions()
     { return false ; }

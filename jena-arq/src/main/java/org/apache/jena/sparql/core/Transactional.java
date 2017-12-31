@@ -130,8 +130,8 @@ public interface Transactional
     public void end() ;
 
     /** Return the current mode of the transaction - "read" or "write" */ 
-    //public ReadWrite transactionMode();
-    public default ReadWrite transactionMode() { throw new JenaTransactionException("Not implemented"); }
+    public ReadWrite transactionMode();
+    //public default ReadWrite transactionMode()  { throw new JenaTransactionException("Not implemented"); }
 
     /** Return the transaction type used in {@code begin(TxnType)}. */ 
     //public TxnMode transactionMode();

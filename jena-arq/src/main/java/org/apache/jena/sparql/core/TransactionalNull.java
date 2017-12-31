@@ -28,16 +28,33 @@ import org.apache.jena.sparql.JenaTransactionException;
  * It does provide "abort".   
  */
 public class TransactionalNull implements Transactional {
+    /*
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
+    @Override public void end()                         { txn.end(); }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+ 
+     For DatasetGraphs:
+     
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
+    */
+    
     public static TransactionalNull create() { return new TransactionalNull(); }
     
     private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
-
+    private ThreadLocal<TxnType> txnType = ThreadLocal.withInitial(() -> null);
+    private ThreadLocal<ReadWrite> txnMode = ThreadLocal.withInitial(() -> null);
 
     @Override
-    public void begin(TxnType type) {
-        if ( inTransaction.get() )
-            throw new JenaTransactionException("Already in transaction"); 
-        inTransaction.set(true);
+    public ReadWrite transactionMode() {
+        return txnMode.get();
     }
 
     @Override
@@ -46,7 +63,21 @@ public class TransactionalNull implements Transactional {
     }
 
     @Override
-    public boolean promote() { return true; } 
+    public void begin(TxnType type) {
+        if ( inTransaction.get() )
+            throw new JenaTransactionException("Already in transaction"); 
+        inTransaction.set(true);
+        txnType.set(type);
+        txnMode.set(TxnType.initial(type));
+    }
+
+    @Override
+    public boolean promote() {
+        if ( ! inTransaction.get() )
+            throw new JenaTransactionException("Not in transaction"); 
+        txnMode.set(ReadWrite.WRITE);
+        return true;
+    }
     
     @Override
     public void commit() {
@@ -69,14 +100,16 @@ public class TransactionalNull implements Transactional {
 
     @Override
     public void end() {
-        inTransaction.set(false);
+        clearup();
     }
 
-//    @Override
-//    public boolean promote() {
-//        return true;
-//    }
-
+    private void clearup() {
+        inTransaction.set(false);
+        inTransaction.remove();
+        txnType.set(null);
+        txnType.remove();
+    }
+    
     public void remove() {
         inTransaction.remove();
     }

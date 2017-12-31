@@ -18,8 +18,7 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Objects ;
-
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock ;
@@ -35,29 +34,40 @@ import org.apache.jena.sparql.JenaTransactionException ;
  *  <pre>
  *      private final Transactional txn                     = TransactionalLock.createMRSW() ;
  *      {@literal @}Override public void begin(TxnType txnType)        { txn.begin(txnType) ; }
- *      {@literal @}Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
- *      {@literal @}Override public boolean promote()                  { return txn.promote() ; }
- *      {@literal @}Override public void commit()                      { txn.commit() ; }
- *      {@literal @}Override public void abort()                       { txn.abort() ; }
- *      {@literal @}Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+ *      {@literal @}Override public void begin()                       { txn.begin(); }
+ *      {@literal @}Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+ *      {@literal @}Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+ *      {@literal @}Override public boolean promote()                  { return txn.promote(); }
+ *      {@literal @}Override public void commit()                      { txn.commit(); }
+ *      {@literal @}Override public void abort()                       { txn.abort(); }
+ *      {@literal @}Override public boolean isInTransaction()          { return txn.isInTransaction(); }
  *      {@literal @}Override public void end()                         { txn.end(); }
- *      {@literal @}Override public boolean supportsTransactions()     { return true ; }
- *      {@literal @}Override public boolean supportsTransactionAbort() { return false ; }
+ *      {@literal @}Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+ *      {@literal @}Override public TxnType transactionType()          { return txn.transactionType(); }
+ *      {@literal @}Override public boolean supportsTransactions()     { return true; }
+ *      {@literal @}Override public boolean supportsTransactionAbort() { return true; }
  *   </pre>
  */ 
 public class TransactionalLock implements Transactional {
 /*
-       private final Transactional txn                     = TransactionalLock.createMRSW() ;
-       @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-       @Override public void commit()                      { txn.commit() ; }
-       @Override public void abort()                       { txn.abort() ; }
-       @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
-       @Override public void end()                         { txn.end(); }
-       @Override public boolean supportsTransactions()     { return true ; }
-       @Override public boolean supportsTransactionAbort() { return false ; }
+    private final Transactional txn                     = TransactionalLock.createMRSW() ;
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
+    @Override public void end()                         { txn.end(); }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
  */
     
-    private final ThreadLocal<ReadWrite> txnMode  = ThreadLocal.withInitial( ()->null ) ;
+    private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
+    private ThreadLocal<TxnType> txnType = ThreadLocal.withInitial(() -> null);
+    private ThreadLocal<ReadWrite> txnMode = ThreadLocal.withInitial(() -> null);
     private final Lock lock ;
 
     /** Create a Transactional using the given lock */
@@ -101,16 +111,24 @@ public class TransactionalLock implements Transactional {
         }
         ReadWrite readWrite = TxnType.convert(txnType);  
         boolean isRead = readWrite.equals(ReadWrite.READ) ;
-        lock.enterCriticalSection(isRead) ;
-        txnMode.set(readWrite) ;
+        lock.enterCriticalSection(isRead);
+        txnMode.set(readWrite);
     }
 
+    @Override public ReadWrite transactionMode() {
+        return Lib.readThreadLocal(txnMode) ;
+    }
+
+    @Override public TxnType transactionType() {
+        return Lib.readThreadLocal(txnType) ;
+    }
+    
     // Lock propmotion required (Ok for mutex) 
     
-//    @Override
-//    public boolean promote() { 
-//        return ??;
-//    }
+    @Override
+    public boolean promote() { 
+        return false;
+    }
 
     @Override
     public void commit() {
@@ -130,11 +148,7 @@ public class TransactionalLock implements Transactional {
     }
 
     public boolean isTransactionType(ReadWrite mode) {
-        return Objects.equals(mode, txnMode.get()) ;
-    }
-
-    private ReadWrite getTransactionType(ReadWrite mode) {
-        return txnMode.get() ;
+        return Lib.readThreadLocal(txnMode) == mode;
     }
 
     @Override
