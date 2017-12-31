@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.graph.impl.TransactionHandlerBase;
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 
 /** A graph TransactionHandler that for a graph view of a {@link DatasetGraph}*/  
 public class TransactionHandlerView extends TransactionHandlerBase 
@@ -40,10 +40,7 @@ public class TransactionHandlerView extends TransactionHandlerBase
 
     @Override
     public void begin() {
-        if ( false /* dsg.supportPromotion */)
-            getDSG().begin(ReadWrite.READ);
-        else
-            getDSG().begin(ReadWrite.WRITE);
+        getDSG().begin(TxnType.READ_PROMOTE);
     }
 
     @Override

@@ -20,17 +20,17 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Map ;
 
-import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.core.*;
+import org.apache.jena.sparql.core.DatasetPrefixStorage;
+import org.apache.jena.sparql.core.GraphView;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
-/** A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
+/** 
+ * A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
  */
 public class GraphViewSwitchable extends GraphView {
     // Fixups for GraphView
@@ -49,35 +49,13 @@ public class GraphViewSwitchable extends GraphView {
     { return new GraphViewSwitchable(dsg, Quad.unionGraph) ; }
     
     private final DatasetGraphSwitchable dsgx;
-    private final TransactionHandlerDSG transactionHandler;
     protected DatasetGraphSwitchable getx() { return dsgx; }
     
     protected GraphViewSwitchable(DatasetGraphSwitchable dsg, Node gn) {
         super(dsg, gn) ;
         this.dsgx = dsg;
-        this.transactionHandler = new TransactionHandlerDSG(dsg); 
     }
 
-    @Override
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler;
-    }
-
-    // Remove when promotion is in the DatasetGraph API.
-    static class TransactionHandlerDSG extends TransactionHandlerView {
-        public TransactionHandlerDSG(DatasetGraph dsg) {
-            super(dsg);
-        }
-
-        @Override
-        public void begin() {
-            if ( TransactionCoordinator.promotion )
-                getDSG().begin(ReadWrite.READ);
-            else
-                getDSG().begin(ReadWrite.WRITE);
-        }
-    }
-    
     @Override
     protected PrefixMapping createPrefixMapping() {
         Node gn = super.getGraphName();

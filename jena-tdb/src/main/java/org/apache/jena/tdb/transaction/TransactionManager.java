@@ -357,6 +357,8 @@ public class TransactionManager
             throw new TDBTransactionException("promote: transaction is not active") ;
         if ( txn.getMode() == ReadWrite.WRITE )
             return dsgtxn ;
+        if ( txn.getTxnType() == TxnType.READ )
+            throw new TDBTransactionException("promote: transaction is a read transaction") ;
         
         // Read commit - pick up whatever is current at the point setup.
         // Can also promote - may need to wait for active writers. 

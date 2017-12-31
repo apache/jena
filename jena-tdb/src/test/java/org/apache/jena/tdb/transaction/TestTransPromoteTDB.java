@@ -44,31 +44,6 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     @Override
-    protected boolean supportsReadCommitted() {
-        return true ;
-    }
-
-    // Redundant
-    
-    @Override
-    protected void setPromotion(boolean b) {
-    }
-
-    @Override
-    protected boolean getPromotion() {
-        return true;
-    }
-
-    @Override
-    protected void setReadCommitted(boolean b) {
-    }
-
-    @Override
-    protected boolean getReadCommitted() {
-        return false;
-    }
-
-    @Override
     protected Class<TDBTransactionException> getTransactionExceptionClass() {
         return TDBTransactionException.class ;
     }

@@ -19,7 +19,6 @@
 package org.apache.jena.dboe.transaction.txn;
 
 import org.apache.jena.dboe.transaction.Transactional;
-import org.apache.jena.query.ReadWrite ;
 
 /** Implementation side of a {@link Transactional}.
  *  {@link Transactional} presents the application facing view
@@ -60,14 +59,6 @@ public interface TransactionalSystem extends Transactional {
 
     /** Get the associated {@link TransactionCoordinator} */
     public TransactionCoordinator getTxnMgr() ; 
-    
-    /**  Return the Read/Write state from the point of view of the caller.
-     * Return null when not in a transaction.
-     */
-    public ReadWrite getState() ;
-    
-    @Override
-    public default boolean isInTransaction() { return getState() != null ; }  
     
     /** Return an information view of the transaction for this thread, if any.
      *  Returns null when there is no active transaction for this tread. 

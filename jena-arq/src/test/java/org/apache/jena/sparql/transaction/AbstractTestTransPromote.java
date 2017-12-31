@@ -38,7 +38,6 @@ import org.apache.jena.system.Txn ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.After ;
-import org.junit.Assume ;
 import org.junit.Before ;
 import org.junit.Test ;
 
@@ -75,57 +74,10 @@ public abstract class AbstractTestTransPromote {
         }
     }
 
-    /**
-     * Return true if this implement supports transaction promotion (i.e. a read
-     * transaction can beome a write transaction if an update is attempted.
-     * This need not be the default mode - see {@link #setPromotion(boolean)}.
-     */
-    protected abstract boolean supportsReadCommitted() ;
-    
-    /** Enable transaction promotion (it does not need to be the defaukl bahvaiour of the system under test.
-     * A call of setPromotion(true) is made before each test.
-     * The original setting is retored at the end of the test.
-     * @deprecated Redundant - remove.   
-     */
-    @Deprecated
-    protected abstract void setPromotion(boolean b) ;
-    /** 
-     *  @deprecated Redundant - remove.   
-     */
-    @Deprecated
-    protected abstract boolean getPromotion() ;
-    
-    /**
-     * If {@link #supportsReadCommitted} is true (whether by default or not),
-     * then set/reset the state aroudn tests that test its behaviour.
-     * @deprecated Redundant - remove.   
-     */
-    @Deprecated
-    protected abstract void setReadCommitted(boolean b) ;
-    /**
-     * @deprecated Redundant - remove.   
-     */
-    @Deprecated
-    protected abstract boolean getReadCommitted() ;
-    
     // The exact class used by exceptions of the system under test.
     // TDB transctions are in the TDBException hierarchy
     // so can't be JenaTransactionException.
     protected abstract Class<? extends Exception> getTransactionExceptionClass() ;
-    
-    @Before
-    public void before() {
-        stdPromotion = getPromotion() ;
-        stdReadCommitted = getReadCommitted() ;
-        setPromotion(true);
-        setReadCommitted(true);
-    }
-
-    @After
-    public void after() {
-        setPromotion(stdPromotion);
-        setReadCommitted(stdReadCommitted);
-    }
     
     protected AbstractTestTransPromote(Logger[] loggers) {
         this.loggers = loggers ;
@@ -154,7 +106,6 @@ public abstract class AbstractTestTransPromote {
     
     // READ-add
     private void run_01(TxnType txnType) {
-        Assume.assumeTrue( supportsReadCommitted() );
         DatasetGraph dsg = create() ;
         dsg.begin(txnType) ;
         dsg.add(q1) ;
@@ -369,7 +320,6 @@ public abstract class AbstractTestTransPromote {
     }
     
     private void promote_clash_active_writer(ExecutorService executor, boolean activeWriterCommit) {
-        setReadCommitted(false) ;
         Semaphore semaActiveWriterStart     = new Semaphore(0) ;
         Semaphore semaActiveWriterContinue  = new Semaphore(0) ;
         Semaphore semaPromoteTxnStart       = new Semaphore(0) ;
