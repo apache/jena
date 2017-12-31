@@ -76,16 +76,21 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
         public BiConsumer<Dataset, Dataset> accumulator() {
             return (d1, d2) -> {
                 d1.getDefaultModel().add(d2.getDefaultModel());
-                d2.listNames().forEachRemaining(
-                        name -> {
-                            Model union = d1.getNamedModel(name).union(d2.getNamedModel(name));
-                            d1.replaceNamedModel(name, union);
-                        });
+                d2.listNames().forEachRemaining(name -> {
+                    Model union = d1.getNamedModel(name).union(d2.getNamedModel(name));
+                    d1.replaceNamedModel(name, union);
+                });
             };
         }
     }
 
     public static class IntersectionDatasetCollector extends DatasetCollector {
+
+        /**
+         * The first element is treated differently because {@link DatasetCollector#supplier()} does
+         * not provide an identity element for intersection.
+         */
+        boolean afterFirstElement = false;
 
         @Override
         public BinaryOperator<Dataset> combiner() {
@@ -95,20 +100,26 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
         @Override
         public BiConsumer<Dataset, Dataset> accumulator() {
             return (d1, d2) -> {
-                d1.setDefaultModel(d1.getDefaultModel().intersection(d2.getDefaultModel()));
-                filter(d2.listNames(), d1::containsNamedModel).forEachRemaining(name -> {
-                    Model intersection = d1.getNamedModel(name).intersection(d2.getNamedModel(name));
-                    d1.replaceNamedModel(name, intersection);
-                });
+                if (afterFirstElement) {
+                    d1.setDefaultModel(d1.getDefaultModel().intersection(d2.getDefaultModel()));
+                    filter(d1.listNames(), d2::containsNamedModel).forEachRemaining(name -> {
+                        Model intersection = d1.getNamedModel(name).intersection(d2.getNamedModel(name));
+                        d1.replaceNamedModel(name, intersection);
+                    });
+                } else {
+                    d1.setDefaultModel(d2.getDefaultModel());
+                    d2.listNames().forEachRemaining(name -> d1.addNamedModel(name, d2.getNamedModel(name)));
+                    afterFirstElement = true;
+                }
             };
         }
     }
-    
-    static DatasetCollector union() { 
+
+    static DatasetCollector union() {
         return new UnionDatasetCollector();
     }
-    
-    static DatasetCollector intersect() { 
+
+    static DatasetCollector intersect() {
         return new IntersectionDatasetCollector();
     }
 }
