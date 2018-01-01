@@ -94,17 +94,17 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
 
         @Override
         public void performAdd(Triple t) {
-            UnionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
 
         @Override
         public void performDelete(Triple t) {
-            UnionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
         
         @Override
         public void clear() {
-            UnionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
     }
 }

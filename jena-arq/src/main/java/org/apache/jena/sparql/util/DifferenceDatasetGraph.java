@@ -82,17 +82,17 @@ public class DifferenceDatasetGraph extends ViewDatasetGraph {
 
         @Override
         public void performAdd(Triple t) {
-            DifferenceDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
 
         @Override
         public void performDelete(Triple t) {
-            DifferenceDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
         
         @Override
         public void clear() {
-            DifferenceDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
 
         @Override

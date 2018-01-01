@@ -75,17 +75,17 @@ public class IntersectionDatasetGraph extends ViewDatasetGraph {
 
         @Override
         public void performAdd(Triple t) {
-            IntersectionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
 
         @Override
         public void performDelete(Triple t) {
-            IntersectionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
         
         @Override
         public void clear() {
-            IntersectionDatasetGraph.throwNoMutationAllowed();
+            throwNoMutationAllowed();
         }
 
         @Override
