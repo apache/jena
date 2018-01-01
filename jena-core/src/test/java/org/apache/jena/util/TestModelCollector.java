@@ -45,7 +45,13 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.util.ModelCollector.*;
 import org.junit.Test;
 
+import junit.framework.JUnit4TestAdapter;
+
 public class TestModelCollector extends BaseTest {
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(TestModelCollector.class) ;
+    }
 
     private static final Model EMPTY_MODEL = ModelFactory.createDefaultModel();
     private static final Node PREDICATE = NodeFactory.createURI("p");
