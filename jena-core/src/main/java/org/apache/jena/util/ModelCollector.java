@@ -53,7 +53,7 @@ public abstract class ModelCollector implements UnorderedIdentityFinishCollector
 
         @Override
         public BinaryOperator<Model> combiner() {
-            return collector.combiner();
+            return (m1, m2) -> m2.calculateInTxn(() -> m1.calculateInTxn(() -> collector.combiner().apply(m1, m2)));
         }
     }
 

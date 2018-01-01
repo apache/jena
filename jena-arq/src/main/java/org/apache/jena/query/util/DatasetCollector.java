@@ -18,8 +18,7 @@
 
 package org.apache.jena.query.util;
 
-import static org.apache.jena.system.Txn.executeRead;
-import static org.apache.jena.system.Txn.executeWrite;
+import static org.apache.jena.system.Txn.*;
 
 import java.util.function.*;
 
@@ -53,7 +52,7 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
 
         @Override
         public BinaryOperator<Dataset> combiner() {
-            return collector.combiner();
+            return (d1, d2) ->  calculateRead(d2, () -> calculateWrite(d1, () -> collector.combiner().apply(d1, d2)));
         }
 
         @Override

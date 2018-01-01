@@ -56,10 +56,7 @@ public class IntersectionDatasetGraph extends ViewDatasetGraph {
 
     @Override
     public Iterator<Node> listGraphNodes() {
-        return iter(getLeft().listGraphNodes())
-                .filter(graphName -> !getGraph(graphName).isEmpty())
-                .filter(getRight()::containsGraph)
-                .filter(graphName -> !getRight().getGraph(graphName).isEmpty());
+        return iter(getLeft().listGraphNodes()).filter(getRight()::containsGraph);
     }
 
     @Override
