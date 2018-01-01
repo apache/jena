@@ -87,7 +87,7 @@ public abstract class DatasetCollector implements UnorderedIdentityFinishCollect
          * {@link DatasetCollector#supplier()} does not provide an identity element for
          * intersection.
          */
-        boolean afterFirstElement = false;
+        private volatile boolean afterFirstElement = false;
 
         @Override
         public BinaryOperator<Dataset> combiner() {
