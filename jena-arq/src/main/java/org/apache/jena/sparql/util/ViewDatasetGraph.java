@@ -71,7 +71,7 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
 
     @Override
     public void abort() {
-        end();
+        forEach(DatasetGraph::abort);
     }
 
     @Override
@@ -193,7 +193,7 @@ public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> imp
 
     @Override
     public boolean supportsTransactionAbort() {
-        return false;
+        return both(DatasetGraph::supportsTransactionAbort);
     }
 
     @Override
