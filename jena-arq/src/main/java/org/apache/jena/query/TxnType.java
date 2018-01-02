@@ -25,7 +25,7 @@ import org.apache.jena.sparql.JenaTransactionException;
 public enum TxnType {
     /** Transaction mode:
      * <ul>
-     * <li>{@code WRITE}: this gaurantees a WRITE will complete if {@code commit()} is
+     * <li>{@code WRITE}: this guarantees a WRITE will complete if {@code commit()} is
      * called. The same as {@code begin(ReadWrite.WRITE)}.
      * 
      * <li>{@code READ}: the transaction can not promote to WRITE,ensuring read-only
@@ -42,7 +42,7 @@ public enum TxnType {
      * Read committed: at the point transaction attempts promotion from "read" to
      * "write", the sytem checks if the datset has chnage since the trsnaction started
      * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
-     * changed; if {@code READ_COMMITTED_PROMOTE} anyh intermediate changes are
+     * changed; if {@code READ_COMMITTED_PROMOTE} any intermediate changes are
      * visible but the application can not assume any data it has read in the
      * transaction is the same as it was at the point the transaction started.
      */
