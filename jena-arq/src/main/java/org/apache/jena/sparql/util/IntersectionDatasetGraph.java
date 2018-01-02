@@ -29,7 +29,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 
-public class IntersectionDatasetGraph extends ViewDatasetGraph {
+public class IntersectionDatasetGraph extends DyadicDatasetGraph {
   
     public IntersectionDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
         super(left, right, c);

@@ -38,13 +38,13 @@ import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-public abstract class ViewDatasetGraph extends Pair.OfSameType<DatasetGraph> implements DatasetGraph {
+public abstract class DyadicDatasetGraph extends Pair.OfSameType<DatasetGraph> implements DatasetGraph {
 
     private Context context;
 
     private final Lock lock;
 
-    public ViewDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
+    public DyadicDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
         super(requireNonNull(left), requireNonNull(right));
         this.context = requireNonNull(c);
         this.lock = new PairLock(left.getLock(), right.getLock());

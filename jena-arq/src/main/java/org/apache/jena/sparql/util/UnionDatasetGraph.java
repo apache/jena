@@ -27,7 +27,7 @@ import org.apache.jena.graph.compose.Union;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-public class UnionDatasetGraph extends ViewDatasetGraph {
+public class UnionDatasetGraph extends DyadicDatasetGraph {
 
     public UnionDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
         super(left, right, c);
