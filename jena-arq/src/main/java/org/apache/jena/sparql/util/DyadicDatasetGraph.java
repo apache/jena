@@ -29,7 +29,7 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads;
 
 import java.util.Iterator;
 
-import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.PairOfSameType;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.MultiUnion;
@@ -38,13 +38,13 @@ import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
-public abstract class DyadicDatasetGraph extends Pair.OfSameType<DatasetGraph> implements DatasetGraph {
+public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> implements DatasetGraph {
 
     private Context context;
 
     private final Lock lock;
 
-    public DyadicDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
+    protected DyadicDatasetGraph(DatasetGraph left, DatasetGraph right, Context c) {
         super(requireNonNull(left), requireNonNull(right));
         this.context = requireNonNull(c);
         this.lock = new PairLock(left.getLock(), right.getLock());
@@ -60,7 +60,7 @@ public abstract class DyadicDatasetGraph extends Pair.OfSameType<DatasetGraph> i
     }
 
     @Override
-    public void begin(ReadWrite readWrite) {
+    public synchronized void begin(ReadWrite readWrite) {
         switch (readWrite) {
         case WRITE:
             throwNoMutationAllowed();
@@ -206,7 +206,7 @@ public abstract class DyadicDatasetGraph extends Pair.OfSameType<DatasetGraph> i
         return listGraphNodes().hasNext();
     }
 
-    private static class PairLock extends Pair.OfSameType<Lock> implements Lock {
+    private static class PairLock extends PairOfSameType<Lock> implements Lock {
 
         public PairLock(Lock left, Lock right) {
             super(left, right);

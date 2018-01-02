@@ -22,9 +22,6 @@ import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.apache.jena.atlas.lib.StrUtils.str ;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Pair<A, B>
 {
@@ -39,30 +36,6 @@ public class Pair<A, B>
     
     public A car() { return a ; }
     public B cdr() { return b ; }
-    
-    public static class OfSameType<T> extends Pair<T, T> {
-
-        public OfSameType(T a, T b) {
-            super(a, b);
-        }
-
-        public void forEach(Consumer<T> op) {
-            op.accept(a);
-            op.accept(b);
-        }
-
-        public boolean both(Function<T, Boolean> op) {
-            return apply(Boolean::logicalAnd, op);
-        }
-
-        public boolean either(Function<T, Boolean> op) {
-            return apply(Boolean::logicalOr, op);
-        }
-        
-        public <S, X> S apply(BiFunction<X, X, S> f, Function<T, X> op) {
-            return f.apply(op.apply(a), op.apply(b));
-        }
-    }
     
     @Override
     public int hashCode()
