@@ -21,6 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.obfuscate.config.DefaultObfuscationConfig;
+import org.apache.jena.obfuscate.config.ObfuscationConfiguration;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 
@@ -32,6 +34,18 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
  */
 public abstract class AbstractObfuscationProvider implements ObfuscationProvider {
 
+    private ObfuscationConfiguration config;
+
+    @Override
+    public ObfuscationConfiguration getConfiguration() {
+        return config;
+    }
+
+    @Override
+    public void setConfiguration(ObfuscationConfiguration config) {
+        this.config = config;
+    }
+
     @Override
     public Node obfuscateNode(Node n) {
         // This is a fairly simplistic implementation, it reduces everything to
@@ -39,21 +53,27 @@ public abstract class AbstractObfuscationProvider implements ObfuscationProvider
         // method which derived implementations can provide their obfuscation
         // logic in
 
-        if (n.isBlank()) {
+        // Grab the config, using the default if not specified
+        ObfuscationConfiguration conf = this.config != null ? this.config : DefaultObfuscationConfig.INSTANCE;
+
+        if (n.isBlank() && conf.shouldObscureBlankNodes()) {
             return NodeFactory.createBlankNode(new BlankNodeId(obfuscate(n.getBlankNodeLabel())));
-        } else if (n.isVariable()) {
+        } else if (n.isVariable() && conf.shouldObscureVariables()) {
             return Var.alloc(obfuscate(n.getName()));
-        } else if (n.isLiteral()) {
+        } else if (n.isLiteral() && conf.shouldObscureLiterals()) {
+            String value = conf.shouldObscureLiteralValue(n) ? obfuscate(n.getLiteralLexicalForm())
+                    : n.getLiteralLexicalForm();
+
             if (StringUtils.isNotEmpty(n.getLiteralLanguage())) {
-                return NodeFactory.createLiteral(obfuscate(n.getLiteralLexicalForm()),
-                        obfuscate(n.getLiteralLanguage()));
+                return NodeFactory.createLiteral(value, conf.shouldObscureLiteralLanguages(n)
+                        ? obfuscate(n.getLiteralLanguage()) : n.getLiteralLanguage());
             } else if (StringUtils.isNotEmpty(n.getLiteralDatatypeURI())) {
-                return NodeFactoryExtra.createLiteralNode(obfuscate(n.getLiteralLexicalForm()), null,
-                        obfuscate(n.getLiteralDatatypeURI()));
+                return NodeFactoryExtra.createLiteralNode(value, null, conf.shouldObscureLiteralDatatype(n)
+                        ? obfuscate(n.getLiteralDatatypeURI()) : n.getLiteralDatatypeURI());
             } else {
-                return NodeFactory.createLiteral(obfuscate(n.getLiteralLexicalForm()));
+                return NodeFactory.createLiteral(value);
             }
-        } else if (n.isURI()) {
+        } else if (n.isURI() && conf.shouldObscureURIs()) {
             return NodeFactory.createURI(obfuscate(n.getURI()));
         } else {
             return n;

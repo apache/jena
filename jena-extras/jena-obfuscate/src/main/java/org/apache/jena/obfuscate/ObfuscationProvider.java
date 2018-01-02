@@ -19,6 +19,7 @@
 package org.apache.jena.obfuscate;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.obfuscate.config.ObfuscationConfiguration;
 
 /**
  * Interface for obfuscation providers
@@ -37,8 +38,22 @@ public interface ObfuscationProvider {
      * @return Original node or obfuscated version
      */
     public abstract Node obfuscateNode(Node n);
-    
+
     // TODO: Allow indicating if the obfuscation can be reversed
     // TODO: Allow resetting state
-    // TODO: Allow providing a more detailed configuration for what things are obfuscated
+
+    /**
+     * Gets the configuration used to drive the obfuscation process
+     * 
+     * @return Configuration, or {@code null} if the default should be used
+     */
+    public ObfuscationConfiguration getConfiguration();
+
+    /**
+     * Sets the configuration used to drive the obfuscation process
+     * 
+     * @param config
+     *            Configuration, or {@code null} if the default should be used
+     */
+    public void setConfiguration(ObfuscationConfiguration config);
 }

@@ -18,6 +18,7 @@
 package org.apache.jena.obfuscate;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.obfuscate.config.ObfuscationConfiguration;
 
 /**
  * A decorator around another obfuscator that applies it multiple times for
@@ -27,7 +28,7 @@ public class MultiplePassObfuscationProvider implements ObfuscationProvider {
 
     private final ObfuscationProvider obfuscator;
     private final int passes;
-
+    
     public MultiplePassObfuscationProvider(ObfuscationProvider provider, int passes) {
         if (provider == null)
             throw new NullPointerException("Obfuscation Provider cannot be null");
@@ -39,11 +40,22 @@ public class MultiplePassObfuscationProvider implements ObfuscationProvider {
 
     @Override
     public Node obfuscateNode(Node n) {
+        
         Node obfuscated = n;
         for (int i = 1; i <= this.passes; i++) {
             obfuscated = this.obfuscator.obfuscateNode(obfuscated);
         }
         return obfuscated;
+    }
+
+    @Override
+    public ObfuscationConfiguration getConfiguration() {
+        return this.obfuscator.getConfiguration();
+    }
+
+    @Override
+    public void setConfiguration(ObfuscationConfiguration config) {
+        this.obfuscator.setConfiguration(config);
     }
 
 }
