@@ -100,25 +100,30 @@ public interface Transactional
      * transaction is the same as it was at the point the transaction started.
      * <p>
      * This operation is optional and some implementations may throw
-     * a {@link JenaTransactionException} exception for some or all {@link TxnType} values
+     * a {@link JenaTransactionException} exception for some or all {@link TxnType} values.
      * <p> 
      * See {@link #begin(ReadWrite)} for a form that is required of implementations.
      */
-    //public void begin(TxnType type);
-    public default void begin(TxnType type) { begin(TxnType.convert(type)); }
+    public void begin(TxnType type);
     
     /** Start either a READ or WRITE transaction. */ 
     public void begin(ReadWrite readWrite) ;
     
     /**
      * Attempt to promote a transaction from "read" to "write" and the transaction
-     * start with a "promote" mode. Always succeeeds of the transaction is already
-     * "write". Returns true if it succeeds or false if it does not (the transaction
-     * is still valid and in "read").
+     * start with a "promote" mode ({@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE}).
+     * <p>
+     * Returns "true" if the transction is in write mode after the call.
+     * The method always succeeeds of the transaction is already
+     * "write".
+     * <p>
+     * This method returns true if a {@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE} is promoted.
+     * <p>
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the transaction is stil valid and in "read" mode. 
+     * <p>
+     * This method throws an exception if there is an attempt to promote a "READ" transaction. 
      */
-    
-    //public void promote();
-    public default boolean promote() { throw new JenaTransactionException("Not implemented"); }
+    public boolean promote();
 
     /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;
@@ -131,11 +136,10 @@ public interface Transactional
 
     /** Return the current mode of the transaction - "read" or "write" */ 
     public ReadWrite transactionMode();
-    //public default ReadWrite transactionMode()  { throw new JenaTransactionException("Not implemented"); }
 
     /** Return the transaction type used in {@code begin(TxnType)}. */ 
-    //public TxnMode transactionMode();
-    public default TxnType transactionType() { throw new JenaTransactionException("Not implemented"); }
+    public TxnType transactionType();
+    //public default TxnType transactionType() { throw new JenaTransactionException("Not implemented"); }
 
     /** Say whether inside a transaction. */ 
     public boolean isInTransaction() ;

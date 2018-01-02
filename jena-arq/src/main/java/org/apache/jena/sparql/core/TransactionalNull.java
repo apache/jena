@@ -56,6 +56,11 @@ public class TransactionalNull implements Transactional {
     public ReadWrite transactionMode() {
         return txnMode.get();
     }
+    
+    @Override 
+    public TxnType transactionType() {
+        return txnType.get();
+    }
 
     @Override
     public void begin(ReadWrite readWrite) {

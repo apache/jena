@@ -95,6 +95,11 @@ public class TransactionalBase implements TransactionalSystem {
             Log.info(this,  "<< attach");
     } 
     
+  @Override
+  public final void begin(ReadWrite readWrite) { 
+      begin(TxnType.convert(readWrite));
+  }
+    
     @Override
     public final void begin(TxnType txnType) {
         Objects.nonNull(txnType) ;
@@ -105,7 +110,7 @@ public class TransactionalBase implements TransactionalSystem {
     }
     
     @Override
-    public boolean promote() {
+    public final boolean promote() {
         checkActive() ;
         Transaction txn = getValidTransaction() ;
         return txn.promote() ;

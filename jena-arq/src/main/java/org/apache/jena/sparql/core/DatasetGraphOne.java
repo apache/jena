@@ -76,6 +76,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
     @Override public void commit()                      { txn.commit(); }
+    @Override public boolean promote()                  { return txn.promote(); }
     @Override public void abort()                       { txn.abort(); }
     @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
@@ -84,6 +85,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     @Override public boolean supportsTransactions()     { return true; }
     // Because there are never any changes, abort() means "finish".  
     @Override public boolean supportsTransactionAbort() { return true; }
+    
     @Override
     public boolean containsGraph(Node graphNode) {
         if ( isDefaultGraph(graphNode) )
