@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.util;
+package org.apache.jena.sparql.util.compose;
 
 import static org.apache.jena.system.Txn.*;
 

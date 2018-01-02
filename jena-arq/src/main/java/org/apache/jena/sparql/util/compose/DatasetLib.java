@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.util;
+package org.apache.jena.sparql.util.compose;
 
 import static org.apache.jena.sparql.util.Context.emptyContext;
 
@@ -57,7 +57,7 @@ public class DatasetLib {
         return Collectors.instance;
     }
 
-    static class Collectors {
+    public static class Collectors {
 
         private static final Collectors instance = new Collectors();
 

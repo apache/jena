@@ -16,22 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util;
+package org.apache.jena.sparql.util.compose;
 
-import org.apache.jena.atlas.lib.TestDateTimeUtils ;
-import org.apache.jena.sparql.util.compose.TS_DatasetCollectors;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( {
-    TestDateTimeParsing.class ,
-    TestList.class ,
-    TestDateTimeUtils.class ,
-    TestFmtUtils.class,
-    TS_DatasetGraphViews.class,
-    TS_DatasetCollectors.class
-})
-public class TS_Util
-{ }
+@SuiteClasses({ TestIntersectionDatasetCollector.class, TestUnionDatasetCollector.class })
+public class TS_DatasetCollectors {
+}
