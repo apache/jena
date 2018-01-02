@@ -65,8 +65,8 @@ public class TransactionalLock implements Transactional {
     @Override public boolean supportsTransactionAbort() { return false; }
  */
     
-    private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
-    private ThreadLocal<TxnType> txnType = ThreadLocal.withInitial(() -> null);
+    private ThreadLocal<Boolean>   inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
+    private ThreadLocal<TxnType>   txnType = ThreadLocal.withInitial(() -> null);
     private ThreadLocal<ReadWrite> txnMode = ThreadLocal.withInitial(() -> null);
     private final Lock lock ;
 
@@ -112,7 +112,9 @@ public class TransactionalLock implements Transactional {
         ReadWrite readWrite = TxnType.convert(txnType);  
         boolean isRead = readWrite.equals(ReadWrite.READ) ;
         lock.enterCriticalSection(isRead);
-        txnMode.set(readWrite);
+        this.inTransaction.set(true);
+        this.txnMode.set(readWrite);
+        this.txnType.set(txnType);
     }
 
     @Override public ReadWrite transactionMode() {
@@ -144,10 +146,12 @@ public class TransactionalLock implements Transactional {
 
     @Override
     public boolean isInTransaction() {
-        return txnMode.get() != null ;
+        return inTransaction.get();
     }
 
     public boolean isTransactionType(ReadWrite mode) {
+        if ( ! isInTransaction() )
+            return false;
         return Lib.readThreadLocal(txnMode) == mode;
     }
 
@@ -161,7 +165,12 @@ public class TransactionalLock implements Transactional {
     private void endOnce() {
         if ( isInTransaction() ) {
             lock.leaveCriticalSection() ;
+            txnMode.set(null);
+            txnType.set(null);
+            inTransaction.set(false);
             txnMode.remove();
+            txnType.remove();
+            inTransaction.remove();
         }
     }
     

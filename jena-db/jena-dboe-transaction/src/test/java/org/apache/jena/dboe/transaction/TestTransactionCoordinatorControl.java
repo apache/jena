@@ -24,7 +24,7 @@ import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.migrate.L;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;

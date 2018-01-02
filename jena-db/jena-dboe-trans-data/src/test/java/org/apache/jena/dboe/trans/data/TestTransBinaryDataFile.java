@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotEquals;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.dboe.base.file.*;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;

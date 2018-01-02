@@ -24,7 +24,7 @@ import static org.junit.Assert.fail ;
 
 import org.apache.jena.system.ThreadTxn;
 import org.apache.jena.system.ThreadAction;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.Test ;
 
