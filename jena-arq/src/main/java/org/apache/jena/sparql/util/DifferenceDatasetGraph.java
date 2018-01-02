@@ -36,7 +36,7 @@ public class DifferenceDatasetGraph extends ViewDatasetGraph {
 	}
 	
 	private Graph difference(Function<DatasetGraph, Graph> op) {
-	    return join(DifferenceView::new, op);
+	    return apply(DifferenceView::new, op);
 	}
 
 	@Override

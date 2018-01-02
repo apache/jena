@@ -36,7 +36,7 @@ public class IntersectionDatasetGraph extends ViewDatasetGraph {
     }
 
     Graph intersect(Function<DatasetGraph, Graph> op) {
-        return join(IntersectionView::new, op);
+        return apply(IntersectionView::new, op);
     }
 
     @Override

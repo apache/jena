@@ -34,11 +34,11 @@ public class UnionDatasetGraph extends ViewDatasetGraph {
     }
 
     private Graph union(Function<DatasetGraph, Graph> op) {
-        return join(UnionView::new, op);
+        return apply(UnionView::new, op);
     }
 
     <T> Iter<T> fromEach(Function<DatasetGraph, Iterator<T>> op) {
-        return join(Iter::concat, op).distinct();
+        return apply(Iter::concat, op).distinct();
     }
 
     @Override

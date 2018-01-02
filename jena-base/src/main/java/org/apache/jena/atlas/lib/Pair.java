@@ -52,14 +52,14 @@ public class Pair<A, B>
         }
 
         public boolean both(Function<T, Boolean> op) {
-            return join(Boolean::logicalAnd, op);
+            return apply(Boolean::logicalAnd, op);
         }
 
         public boolean either(Function<T, Boolean> op) {
-            return join(Boolean::logicalOr, op);
+            return apply(Boolean::logicalOr, op);
         }
         
-        public <S, X> S join(BiFunction<X, X, S> f, Function<T, X> op) {
+        public <S, X> S apply(BiFunction<X, X, S> f, Function<T, X> op) {
             return f.apply(op.apply(a), op.apply(b));
         }
     }
