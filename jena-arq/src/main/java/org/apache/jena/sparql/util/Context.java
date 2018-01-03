@@ -193,12 +193,11 @@ public class Context {
         }
     }
     
-    public Context putAll(Context other) {
+    public void putAll(Context other) {
         if ( readonly )
             throw new ARQException("Context is readonly") ;
         if ( other != null )
             other.context.forEach(this::put);
-        return this;
     }
 
     // -- true/false
