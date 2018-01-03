@@ -28,6 +28,7 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.Test ;
 
+/** Txn with DBOE transactions */ 
 public class TestTxnLib extends AbstractTestTxn {
 
     @Test public void libTxn_1() {
@@ -184,7 +185,7 @@ public class TestTxnLib extends AbstractTestTxn {
     }
 
     @Test public void libTxnThread_12() {
-        long x1 = counter1.get() ;  
+        long x1 = counter1.get() ; 
         ThreadAction t = ThreadTxn.threadTxnRead(unit, () -> {
             long z1 = counter1.get() ;
             assertEquals("Thread", x1, z1) ;
@@ -192,9 +193,6 @@ public class TestTxnLib extends AbstractTestTxn {
         Txn.executeWrite(unit, ()->counter1.inc()) ;
         t.run() ;
         long x2 = counter1.get() ;
-        assertEquals("after", x1+1, x2) ;
+        assertEquals("after::", x1+1, x2) ;
     }
-
 }
-
- 

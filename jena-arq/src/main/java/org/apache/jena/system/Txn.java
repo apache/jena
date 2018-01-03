@@ -46,7 +46,7 @@ public class Txn {
      * change from "read" to "write"; the {@link Transactional#promote promote} method
      * returns a boolean indicating whether the promotion was possible or not. 
      */
-    public static <T extends Transactional> void exec(T txn, Runnable r) {
+    public static <T extends Transactional> void execute(T txn, Runnable r) {
         exec(txn, TxnType.READ_PROMOTE, r);
     }
 
@@ -64,7 +64,7 @@ public class Txn {
      * change from "read" to "write"; the {@link Transactional#promote promote} method
      * returns a boolean indicating whether the promotion was possible or not. 
      */
-    public static <T extends Transactional, X> X calc(T txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X calculate(T txn, Supplier<X> r) {
         return calc(txn, TxnType.READ_PROMOTE, r);
     }
 

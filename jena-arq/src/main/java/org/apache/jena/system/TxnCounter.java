@@ -73,7 +73,7 @@ public class TxnCounter implements Transactional {
     // The kind of transaction.
     private ThreadLocal<ReadWrite>    transactionMode  = ThreadLocal.withInitial(()->null);
     private ThreadLocal<TxnType>      transactionType  = ThreadLocal.withInitial(()->null);
-    private ThreadLocal<Long>         transactionEpoch         = ThreadLocal.withInitial(()->null);
+    private ThreadLocal<Long>         transactionEpoch = ThreadLocal.withInitial(()->null);
     
     // Synchronization for making changes.  
     private Object txnLifecycleLock   = new Object(); 
@@ -108,8 +108,8 @@ public class TxnCounter implements Transactional {
         synchronized(txnLifecycleLock) {
             if ( transactionMode.get() != null )
                 throw new JenaTransactionException("Already in a transaction");
-            long thisEpoch = epoch.incrementAndGet(); 
-            transactionEpoch.set(thisEpoch) ;
+            // Set transaction to current epoch - writes advance this in commit().
+            transactionEpoch.set(epoch.get()) ;
             IntegerState state = new IntegerState(value.get());
             transactionValue.set(state);
             transactionMode.set(TxnType.initial(txnType));
@@ -132,7 +132,7 @@ public class TxnCounter implements Transactional {
             transactionValue.set(state);
             return true;
         }
-        // READ no committed.
+        // READ_PROMOTE
         acquireWriterLock(true);
         synchronized(txnLifecycleLock) {
             long nowEpoch = epoch.get();
@@ -146,13 +146,14 @@ public class TxnCounter implements Transactional {
         }
         return true;
     }
-
     
     @Override
     public void commit() {
         checkTxn(); 
         if ( isWriteTxn() ) {
-            // Set global.
+            // Theer is only one writer - we are inside the writer lock. 
+            // Advance the epoch.
+            long thisEpoch = epoch.incrementAndGet();
             value.set(getDataState().txnValue);
             transactionValue.set(null);
             releaseWriterLock();

@@ -207,6 +207,8 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, IntegerState state) {
+        if ( isReadTxn() )
+            return null;
         ByteBuffer x = ByteBuffer.allocate(Long.BYTES) ;
         x.putLong(state.txnValue) ;
         return x ;
@@ -214,11 +216,15 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
 
     @Override
     protected void _commit(TxnId txnId, IntegerState state) {
+        if ( isReadTxn() )
+            return ;
         writeLocation(state.txnValue) ;
     }
 
     @Override
     protected void _commitEnd(TxnId txnId, IntegerState state) {
+        if ( isReadTxn() )
+            return ;
         value.set(state.txnValue) ;
     }
     @Override
