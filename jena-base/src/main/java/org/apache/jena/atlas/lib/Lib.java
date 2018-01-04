@@ -101,6 +101,17 @@ public class Lib
     }
     
     /** 
+     * Read thread local, assuming that "null" means it does not exist for this thread.
+     * If null is read, the thread local is removed.
+     */
+    public static <X> X readThreadLocal(ThreadLocal<X> threadLocal) {
+        X x = threadLocal.get();
+        if ( x == null )
+            threadLocal.remove();
+        return x ;
+    }
+    
+    /** 
      * @see CRC32
      */
     public static long crc32(byte[] bytes)

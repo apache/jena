@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.ConfigTest ;
@@ -37,7 +37,6 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.sys.TDBMaker ;
-import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -86,7 +85,7 @@ public class TestTransRestart extends BaseTest {
         StoreConnection.release(location) ;
         FileOps.clearDirectory(path);
         StoreConnection sc = StoreConnection.make(location) ;
-        DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE);
+        DatasetGraphTxn dsg = sc.begin(TxnType.WRITE);
         dsg.add(quad1) ; 
         dsg.commit() ;
         dsg.end() ;
@@ -105,7 +104,7 @@ public class TestTransRestart extends BaseTest {
     public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
         StoreConnection sc = StoreConnection.make(location) ; 
-        DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsg = sc.begin(TxnType.WRITE) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ; 
         dsg.commit() ; 
@@ -138,5 +137,4 @@ public class TestTransRestart extends BaseTest {
         objects.close() ;
         return count ;
     }
-    
 }

@@ -24,6 +24,7 @@ import java.util.List ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.* ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
@@ -105,6 +106,17 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         return results.iterator() ;
     }
 
+    @Override
+    public void begin(TxnType txnType) {
+        switch(txnType) {
+            case READ_PROMOTE:
+            case READ_COMMITTED_PROMOTE:
+                throw new UnsupportedOperationException("begin("+txnType+")");
+            default:
+        }
+        begin(TxnType.convert(txnType));
+    }
+    
     @Override
     public void begin(ReadWrite readWrite) {
         // Do not synchronized(txnLock) here. It will deadlock because if there

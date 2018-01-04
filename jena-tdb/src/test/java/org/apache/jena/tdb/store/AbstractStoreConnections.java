@@ -21,7 +21,7 @@ package org.apache.jena.tdb.store;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -70,7 +70,7 @@ public abstract class AbstractStoreConnections extends BaseTest
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         assertTrue(sConn.isValid());
-        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.commit() ;
         dsgW1.end() ;
         StoreConnection.release(sConn.getLocation()) ;
@@ -81,8 +81,8 @@ public abstract class AbstractStoreConnections extends BaseTest
     public void store_1() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
-        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
+        DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
@@ -101,7 +101,7 @@ public abstract class AbstractStoreConnections extends BaseTest
     public void store_2() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
         StoreConnection.release(sConn.getLocation()) ;
     }
 
@@ -109,15 +109,15 @@ public abstract class AbstractStoreConnections extends BaseTest
     public void store_3() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.WRITE) ;
         StoreConnection.release(sConn.getLocation()) ;
     }
 
     @Test
     public void store_4() {
         StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
-        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
+        DatasetGraphTxn dsgW1 = sConn.begin(TxnType.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
         dsgW1.end() ;
@@ -127,12 +127,12 @@ public abstract class AbstractStoreConnections extends BaseTest
         sConn = null ;
 
         StoreConnection sConn2 = getStoreConnection() ;
-        DatasetGraphTxn dsgW2 = sConn2.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgW2 = sConn2.begin(TxnType.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
         dsgW2.end() ;
 
-        DatasetGraphTxn dsgR2 = sConn2.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgR2 = sConn2.begin(TxnType.READ) ;
         long x = Iter.count(dsgR2.find()) ;
         assertEquals(2, x) ;
     }
@@ -160,7 +160,7 @@ public abstract class AbstractStoreConnections extends BaseTest
         StoreConnection sConn = getStoreConnection() ;
         Location loc = sConn.getLocation() ;
 
-        DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgTxn = sConn.begin(TxnType.WRITE) ;
 
         dsgTxn.add(q1) ;
         assertTrue(dsgTxn.contains(q1)) ;
@@ -175,7 +175,7 @@ public abstract class AbstractStoreConnections extends BaseTest
         DatasetGraph dsg2 = sConn.getBaseDataset() ;
         assertTrue(dsg2.contains(q1)) ;
 
-        DatasetGraphTxn dsgTxn2 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgTxn2 = sConn.begin(TxnType.READ) ;
         assertTrue(dsgTxn2.contains(q1)) ;
         dsgTxn2.end() ;
     }
@@ -196,7 +196,7 @@ public abstract class AbstractStoreConnections extends BaseTest
             assertTrue(dsg.contains(q)) ;
         }
 
-        DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
+        DatasetGraphTxn dsgTxn = sConn.begin(TxnType.WRITE) ;
         if ( nonTxnData )
             assertTrue(dsgTxn.contains(q)) ;
         dsgTxn.add(q1) ;
@@ -224,7 +224,7 @@ public abstract class AbstractStoreConnections extends BaseTest
             assertTrue(dsg2.contains(q)) ;
         assertTrue(dsg2.contains(q1)) ;
 
-        DatasetGraphTxn dsgTxn2 = sConn2.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgTxn2 = sConn2.begin(TxnType.READ) ;
         if ( nonTxnData )
             assertTrue(dsgTxn2.contains(q)) ;
         assertTrue(dsgTxn2.contains(q1)) ;
@@ -232,7 +232,7 @@ public abstract class AbstractStoreConnections extends BaseTest
 
         // Check API methods work.
         Dataset ds = TDBFactory.createDataset(loc) ;
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         Model m = (q.isDefaultGraph() ? ds.getDefaultModel() : ds.getNamedModel("g")) ;
         assertEquals(nonTxnData ? 2 : 1, m.size()) ;
         ds.end() ;

@@ -121,7 +121,7 @@ public class HttpAction
             isTransactional = false ;
         } else {
             // Nothing to build on.  Be safe.
-            transactional = new TransactionalMutex(dsg.getLock()) ;
+            transactional = TransactionalLock.create(dsg.getLock()) ;
             isTransactional = false ;
         }
     }

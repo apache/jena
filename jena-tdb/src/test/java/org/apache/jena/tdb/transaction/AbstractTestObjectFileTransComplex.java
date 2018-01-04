@@ -25,6 +25,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 import org.junit.After ;
 import org.junit.Before ;
@@ -47,7 +48,7 @@ public abstract class AbstractTestObjectFileTransComplex extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, 5, ReadWrite.WRITE, ++count, null, tm) ;
+        txn = new Transaction(null, 5, TxnType.WRITE, ReadWrite.WRITE, ++count, TxnType.WRITE, null, tm) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }

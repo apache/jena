@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /** Implementation for "un-Transactional" interface.
  * 
@@ -38,19 +39,38 @@ public class TransactionalNotSupported implements Transactional
     // As an included component. 
     /*
     private final Transactional txn                     = new TransactionalNotSupported() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    
+     For DatasetGraphs:
+     
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
     */
     
     @Override
-    public void begin(ReadWrite readWrite)
-    { throw new UnsupportedOperationException("Transactional.begin") ; }
+    public void begin()
+    { throw new UnsupportedOperationException("Transactional.begin()") ; }
 
+    @Override
+    public void begin(TxnType txnType)
+    { throw new UnsupportedOperationException("Transactional.begin(TxnType") ; }
+
+    @Override
+    public void begin(ReadWrite readWrite)
+    { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
+
+    @Override public boolean promote()
+    { throw new UnsupportedOperationException("Transactional.promote") ; }
+    
     @Override
     public void commit()
     { throw new UnsupportedOperationException("Transactional.commit") ; }
@@ -62,6 +82,13 @@ public class TransactionalNotSupported implements Transactional
     @Override
     public boolean isInTransaction()
     { return false ; }
+    
+    @Override public ReadWrite transactionMode()
+    { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
+    
+    @Override public TxnType transactionType()
+    { throw new UnsupportedOperationException("Transactional.transactionType") ; }
+
 
     @Override
     public void end()
@@ -71,9 +98,6 @@ public class TransactionalNotSupported implements Transactional
         return false ;
     }
     
-    /** Declare whether {@link #abort} is supported.
-     *  This goes along with clearing up after exceptions inside application transaction code.
-     */
     public boolean supportsTransactionAbort() {
         return false;
     }

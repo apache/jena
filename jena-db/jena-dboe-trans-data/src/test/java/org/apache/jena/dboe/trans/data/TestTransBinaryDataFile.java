@@ -25,17 +25,16 @@ import static org.junit.Assert.assertNotEquals;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.dboe.base.file.*;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.trans.data.TransBinaryDataFile;
-import org.apache.jena.dboe.transaction.ThreadTxn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
+import org.apache.jena.system.ThreadTxn;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-
 
 public class TestTransBinaryDataFile {
     private Journal journal ;
@@ -210,7 +209,7 @@ public class TestTransBinaryDataFile {
     @Test public void transObjectFile_7() {
         ThreadTxn.threadTxnWriteAbort(transactional, ()->{
             long x1 = transBinData.write(bytes1) ;
-        }) ;
+        }).run() ;
         
         Txn.executeRead(transactional, ()->{
             assertEquals(0L, transBinData.length()) ;

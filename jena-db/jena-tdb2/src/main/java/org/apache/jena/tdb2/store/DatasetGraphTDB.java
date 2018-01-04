@@ -38,6 +38,7 @@ import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb2.TDBException;
@@ -176,7 +177,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
             
         if ( txn.isWriteTxn() )
             return ;
-        // Transaction.promoteOrException
         boolean b = txn.promote() ;
         if ( !b )
             throw new TransactionException("Can't write") ;
@@ -410,13 +410,28 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     public boolean isInTransaction() {
         return txnSystem.isInTransaction() ;
     }
+    
+    @Override
+    public ReadWrite transactionMode() {
+        return txnSystem.transactionMode(); 
+    }
+
+    @Override
+    public TxnType transactionType() {
+        return txnSystem.transactionType();
+    }
 
     // txnSystem with monitor?
     @Override
+    public void begin(TxnType txnType) {
+        if ( txnMonitor != null ) txnMonitor.startBegin(txnType); 
+        txnSystem.begin(txnType);
+        if ( txnMonitor != null ) txnMonitor.finishBegin(txnType);
+    }
+    
+    @Override
     public void begin(ReadWrite readWrite) {
-        if ( txnMonitor != null ) txnMonitor.startBegin(readWrite); 
-        txnSystem.begin(readWrite) ;
-        if ( txnMonitor != null ) txnMonitor.finishBegin(readWrite); 
+        begin(TxnType.convert(readWrite));
     }
 
     @Override
@@ -424,20 +439,22 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         if ( txnMonitor != null ) txnMonitor.startPromote();
         try { 
             return txnSystem.promote() ;
-        } finally { if ( txnMonitor != null ) txnMonitor.finishPromote(); }
+        } finally { 
+            if ( txnMonitor != null ) txnMonitor.finishPromote();
+        }
     }
 
     @Override
     public void commit() {
         if ( txnMonitor != null ) txnMonitor.startCommit();
-        txnSystem.commit() ;
+        txnSystem.commit();
         if ( txnMonitor != null ) txnMonitor.finishCommit();  
     }
 
     @Override
     public void abort() {
         if ( txnMonitor != null ) txnMonitor.startAbort() ; 
-        txnSystem.abort() ;
+        txnSystem.abort();
         if ( txnMonitor != null ) txnMonitor.finishAbort() ;  
     }
 

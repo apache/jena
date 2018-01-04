@@ -21,6 +21,7 @@ package org.apache.jena.dboe.transaction.txn;
 import static org.apache.jena.dboe.transaction.txn.TxnState.INACTIVE;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /** 
  * A view that provides information about a transaction
@@ -51,18 +52,24 @@ public interface TransactionInfo {
     /** Get the transaction id for this transaction. Unique within this OS process (JVM) at least . */
     public TxnId getTxnId() ; 
 
+    /**
+     * What type is this transaction? This is the initial TxnType
+     * and does not change during a transaction's lifetime.  
+     */
+    public TxnType getTxnType() ;
+
     /** What mode is this transaction?
      *  This may change from {@code READ} to {@code WRITE} in a transactions lifetime.  
      */
     public ReadWrite getMode() ;
     
-    /** Is this a view of a READ transaction?
-     * Convenience operation equivalent to {@code (getMode() == READ)}
+    /** Is this currently a READ transaction? Promotion may chnage the mode.
+     * Convenience operation equivalent to {@code (getMode() == ReadWrite.READ)}
      */
     public default boolean isReadTxn()  { return getMode() == ReadWrite.READ ; }
     
-    /** Is this a view of a WRITE transaction?
-     * Convenience operation equivalent to {@code (getMode() == WRITE)}
+    /** Is this a currently a WRITE transaction?
+     * Convenience operation equivalent to {@code (getMode() == ReadWrite.WRITE)}
      */
     public default boolean isWriteTxn()  { return getMode() == ReadWrite.WRITE ; }
     

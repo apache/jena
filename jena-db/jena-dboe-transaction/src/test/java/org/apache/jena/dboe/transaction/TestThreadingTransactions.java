@@ -21,8 +21,9 @@ package org.apache.jena.dboe.transaction;
 import java.util.concurrent.Semaphore ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
-import org.apache.jena.dboe.transaction.ThreadTxn;
+import org.apache.jena.system.Txn;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.ThreadTxn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;
@@ -56,7 +57,7 @@ public class TestThreadingTransactions {
         Assert.assertEquals(label, expected, x); 
     }
 
-    ThreadTxn threadRead(String label, TransactionalInteger trans, long expectedValue) {
+    ThreadAction threadRead(String label, TransactionalInteger trans, long expectedValue) {
         return ThreadTxn.threadTxnRead(trans, ()->{
             read(label, trans, expectedValue) ;
         }) ;
@@ -77,8 +78,8 @@ public class TestThreadingTransactions {
     @Test public void threadTrans_03() {
         Semaphore semaBefore = new Semaphore(0, true) ;
         Semaphore semaAfter  = new Semaphore(0, true) ;
-        ThreadTxn async1 = threadRead("[03/1]", transInt, InitValue);
-        ThreadTxn async2 = threadRead("[03/2]", transInt, InitValue);
+        ThreadAction async1 = threadRead("[03/1]", transInt, InitValue);
+        ThreadAction async2 = threadRead("[03/2]", transInt, InitValue);
         
         transInt.begin(ReadWrite.WRITE) ;
         read("[03/3]", transInt, InitValue) ;
@@ -100,13 +101,13 @@ public class TestThreadingTransactions {
         Semaphore semaBefore2 = new Semaphore(0, true) ;
         Semaphore semaAfter  = new Semaphore(0, true) ;
         
-        ThreadTxn async1 = threadRead("[04/1]", transInt, InitValue);
-        ThreadTxn async2 = threadRead("[04/2]", transInt, InitValue);
-        ThreadTxn async3 = threadRead("[04/3]", transInt, InitValue);
+        ThreadAction async1 = threadRead("[04/1]", transInt, InitValue);
+        ThreadAction async2 = threadRead("[04/2]", transInt, InitValue);
+        ThreadAction async3 = threadRead("[04/3]", transInt, InitValue);
         
         Txn.executeWrite(transInt, transInt::inc);
 
-        ThreadTxn async4 = threadRead("[04/3]", transInt, InitValue+1);
+        ThreadAction async4 = threadRead("[04/3]", transInt, InitValue+1);
         async1.run() ;
 
         Txn.executeWrite(transInt, transInt::inc);  // ++

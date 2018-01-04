@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;

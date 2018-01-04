@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntity;
@@ -42,6 +41,7 @@ import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
@@ -416,64 +416,17 @@ public class RDFConnectionRemote implements RDFConnection {
         throw ex;
     }
 
-    /** Engine for the transaction lifecycle. MR+SW */
-    static class TxnLifecycle implements Transactional {
-        private ReentrantLock lock = new ReentrantLock();
-        private ThreadLocal<ReadWrite> mode = ThreadLocal.withInitial(()->null);
-        @Override
-        public void begin(ReadWrite readWrite) {
-            if ( readWrite == ReadWrite.WRITE )
-                lock.lock();
-            mode.set(readWrite);
-        }
-
-        @Override
-        public void commit() {
-            if ( mode.get() == ReadWrite.WRITE)
-                lock.unlock();
-            mode.set(null);
-        }
-
-        @Override
-        public void abort() {
-            if ( mode.get() == ReadWrite.WRITE )
-                lock.unlock();
-            mode.set(null);
-        }
-
-        @Override
-        public boolean isInTransaction() {
-            return mode.get() != null;
-        }
-
-        @Override
-        public void end() {
-            ReadWrite rw = mode.get();
-            if ( rw == null )
-                return;
-            if ( rw == ReadWrite.WRITE ) {
-                abort();
-                return;
-            }
-            mode.set(null);
-        }
-    }
+    private final Transactional txn = TransactionalLock.createMRPlusSW();
     
-    private TxnLifecycle inner = new TxnLifecycle();
-    
-    @Override
-    public void begin(ReadWrite readWrite)  { inner.begin(readWrite); }
-
-    @Override
-    public void commit()                    { inner.commit(); }
-            
-    @Override
-    public void abort()                     { inner.abort(); }
-
-    @Override
-    public boolean isInTransaction()        { return inner.isInTransaction(); }
-
-    @Override
-    public void end()                       { inner.end(); }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
+    @Override public void end()                         { txn.end(); }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
 }
 

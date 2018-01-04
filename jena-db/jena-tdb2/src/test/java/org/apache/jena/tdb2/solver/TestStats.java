@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;

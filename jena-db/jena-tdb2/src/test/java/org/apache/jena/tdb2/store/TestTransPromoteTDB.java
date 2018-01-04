@@ -19,13 +19,13 @@
 package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.transaction.txn.Transaction;
-import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.transaction.AbstractTestTransPromote;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.log4j.Logger;
 
-public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
+public class TestTransPromoteTDB extends AbstractTestTransPromote {
 
     public TestTransPromoteTDB() {
         super(getLoggers());
@@ -36,26 +36,6 @@ public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
     }
     
     @Override
-    protected void setPromotion(boolean b) {
-        TransactionCoordinator.promotion = b ;
-    }
-
-    @Override
-    protected boolean getPromotion() {
-        return TransactionCoordinator.promotion ;
-    }
-
-    @Override
-    protected void setReadCommitted(boolean b) {
-        TransactionCoordinator.readCommittedPromotion = b ;
-    }
-
-    @Override
-    protected boolean getReadCommitted() {
-        return TransactionCoordinator.readCommittedPromotion ;
-    }
-
-    @Override
     protected Class<? extends Exception> getTransactionExceptionClass() {
         return TransactionException.class;
     }
@@ -63,10 +43,5 @@ public class TestTransPromoteTDB extends AbstractTestTransPromoteTDB2 {
     @Override
     protected DatasetGraph create() {
         return DatabaseMgr.createDatasetGraph();
-    }
-
-    @Override
-    protected boolean supportsReadCommitted() {
-        return true;
     }
 }

@@ -18,10 +18,7 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.update.UpdateRequest;
@@ -37,18 +34,16 @@ public class RDFConnectionModular implements RDFConnection {
     private final RDFDatasetConnection datasetConnection;
     private final Transactional transactional;
     
-    @Override
-    public void begin(ReadWrite readWrite) { transactional.begin(readWrite); }
-    @Override
-    public void commit() { transactional.commit(); }
-    @Override
-    public void abort() { transactional.abort(); }
-    @Override
-    public void end() { transactional.end(); }
-    @Override
-    public boolean isInTransaction() { 
-        return transactional.isInTransaction();
-    }
+    @Override public void begin()                       { transactional.begin(); }
+    @Override public void begin(TxnType txnType)        { transactional.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { transactional.begin(mode); }
+    @Override public boolean promote()                  { return transactional.promote(); }
+    @Override public void commit()                      { transactional.commit(); }
+    @Override public void abort()                       { transactional.abort(); }
+    @Override public boolean isInTransaction()          { return transactional.isInTransaction(); }
+    @Override public void end()                         { transactional.end(); }
+    @Override public ReadWrite transactionMode()        { return transactional.transactionMode(); }
+    @Override public TxnType transactionType()          { return transactional.transactionType(); }
     
     public RDFConnectionModular(SparqlQueryConnection queryConnection ,
                                 SparqlUpdateConnection updateConnection ,

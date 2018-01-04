@@ -25,6 +25,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.shared.Lock ;
@@ -96,19 +97,46 @@ public class DatasetImpl implements Dataset
     }
     
     @Override
-    public boolean supportsTransactions() {
-        return dsg.supportsTransactions() ;
+    public void begin() {
+        checkTransactional();
+        transactional.begin();
     }
 
     @Override
-    public boolean supportsTransactionAbort() {
-        return dsg.supportsTransactionAbort() ;
+    public void begin(TxnType txnType) {
+        checkTransactional();
+        transactional.begin(txnType);
     }
 
     @Override
     public void begin(ReadWrite mode) {
         checkTransactional();
         transactional.begin(mode);
+    }
+
+    @Override
+    public boolean promote() {
+        return transactional.promote();
+    }
+
+    @Override
+    public ReadWrite transactionMode() {
+        return transactional.transactionMode();
+    }
+
+    @Override
+    public TxnType transactionType() {
+        return transactional.transactionType();
+    }
+
+    @Override
+    public boolean supportsTransactions() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return false;
     }
     
     /** Say whether a transaction is active */ 

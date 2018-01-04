@@ -23,14 +23,15 @@ import java.util.concurrent.atomic.AtomicReference ;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.trans.data.TransBlob;
-import org.apache.jena.dboe.transaction.ThreadTxn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.ThreadTxn;
 import org.junit.After ;
 import org.junit.Assert ;
 import org.junit.Before ;
@@ -112,7 +113,7 @@ public class TestTransBlob extends Assert {
         assertEquals(str1, s2) ;
         
         // Start now.
-        ThreadTxn tt = ThreadTxn.threadTxnRead(transactional, ()-> {
+        ThreadAction tt = ThreadTxn.threadTxnRead(transactional, ()-> {
             String sr = transBlob.getString() ;
             Assert.assertEquals(str1, sr) ;
         }) ;

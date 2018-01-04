@@ -22,11 +22,13 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.fail ;
 
-import org.apache.jena.dboe.jenax.Txn;
-import org.apache.jena.dboe.transaction.ThreadTxn;
+import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.Txn;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.Test ;
 
+/** Txn with DBOE transactions */ 
 public class TestTxnLib extends AbstractTestTxn {
 
     @Test public void libTxn_1() {
@@ -145,23 +147,23 @@ public class TestTxnLib extends AbstractTestTxn {
     // Tests for thread transactions.
     
     @Test public void libTxnThread_1() {
-        ThreadTxn t = ThreadTxn.threadTxnRead(unit, ()->{}) ;
+        ThreadAction t = ThreadTxn.threadTxnRead(unit, ()->{}) ;
         t.run();
     }
     
     @Test public void libTxnThread_2() {
-        ThreadTxn t = ThreadTxn.threadTxnWrite(unit, ()-> fail("")) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(unit, ()-> fail("")) ;
     }
 
     @Test(expected=AssertionError.class)
     public void libTxnThread_3() {
-        ThreadTxn t = ThreadTxn.threadTxnWrite(unit, ()-> fail("")) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(unit, ()-> fail("")) ;
         t.run() ;
     }
 
     @Test public void libTxnThread_10() {
         long x1 = counter1.get() ;  
-        ThreadTxn t = ThreadTxn.threadTxnWrite(unit, ()->{ counter1.inc() ;}) ;
+        ThreadAction t = ThreadTxn.threadTxnWrite(unit, ()->{ counter1.inc() ;}) ;
         long x2 = counter1.get() ;
         assertEquals("x2", x1, x2) ;
         t.run() ;
@@ -174,7 +176,7 @@ public class TestTxnLib extends AbstractTestTxn {
         Txn.executeWrite(unit, ()->{
             counter1.inc();
             // Read the "before" state
-            ThreadTxn t = ThreadTxn.threadTxnRead(unit, ()->{ long z1 = counter1.get() ; assertEquals("Thread read", x1, z1) ; }) ;
+            ThreadAction t = ThreadTxn.threadTxnRead(unit, ()->{ long z1 = counter1.get() ; assertEquals("Thread read", x1, z1) ; }) ;
             counter1.inc();
             t.run(); 
         }) ;
@@ -183,17 +185,14 @@ public class TestTxnLib extends AbstractTestTxn {
     }
 
     @Test public void libTxnThread_12() {
-        long x1 = counter1.get() ;  
-        ThreadTxn t = ThreadTxn.threadTxnRead(unit, () -> {
+        long x1 = counter1.get() ; 
+        ThreadAction t = ThreadTxn.threadTxnRead(unit, () -> {
             long z1 = counter1.get() ;
             assertEquals("Thread", x1, z1) ;
         }) ;
         Txn.executeWrite(unit, ()->counter1.inc()) ;
         t.run() ;
         long x2 = counter1.get() ;
-        assertEquals("after", x1+1, x2) ;
+        assertEquals("after::", x1+1, x2) ;
     }
-
 }
-
- 

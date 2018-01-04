@@ -20,7 +20,7 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.index.test.IndexTestLib;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.test.RecordLib;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;

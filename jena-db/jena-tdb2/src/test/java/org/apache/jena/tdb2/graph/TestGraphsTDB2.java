@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.graph;
 
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.tdb2.TDB2Factory;
