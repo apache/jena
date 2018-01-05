@@ -36,11 +36,11 @@ public enum TxnType {
      * exception.
      * 
      * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will succeed but 
-     * changes from oher transactions become visible.
+     * changes from other transactions become visible.
      * </ul>
      * 
      * Read committed: at the point transaction attempts promotion from "read" to
-     * "write", the sytem checks if the datset has chnage since the trsnaction started
+     * "write", the system checks if the dataset has changed since the transaction started
      * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
      * changed; if {@code READ_COMMITTED_PROMOTE} any intermediate changes are
      * visible but the application can not assume any data it has read in the

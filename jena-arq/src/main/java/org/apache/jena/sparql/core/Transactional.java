@@ -63,21 +63,21 @@ public interface Transactional
 {
     /**
      * Start a transaction which is READ mode and which will switch to WRITE if an update
-     * is attempted but only if no intermdiate transaction has performed an update. 
+     * is attempted but only if no intermediate transaction has performed an update. 
      * <p>
      * See {@link #begin(TxnType)} for more details an options.
      * <p>
-     * May not be implemented. See {@link #begin(ReadWrite)} is guaranted to be provided.
+     * May not be implemented. See {@link #begin(ReadWrite)} is guaranteed to be provided.
      */
     public default void begin() { begin(TxnType.READ_PROMOTE); }
     
     /**
      * Start a transaction.<br/>
-     * READ or WRITE transactions start in that state and do not chnage for the
+     * READ or WRITE transactions start in that state and do not change for the
      * lifetime of the transaction.
      * <ul>
      * 
-     * <li>{@code WRITE}: this gaurantees a WRITE will complete if {@code commit()} is
+     * <li>{@code WRITE}: this guarantees a WRITE will complete if {@code commit()} is
      * called. The same as {@code begin(ReadWrite.WRITE)}.
      * 
      * <li>{@code READ}: the transaction can not promote to WRITE,ensuring read-only
@@ -88,14 +88,14 @@ public interface Transactional
      * transaction. See also {@link #promote}.
      * 
      * <li>{@code READ_COMMITTED_PROMOTE}: Use this with care. The promotion will
-     * succeed but changes from oher transactions become visible.
+     * succeed but changes from other transactions become visible.
      * 
      * </ul>
      * 
      * Read committed: at the point transaction attempts promotion from "read" to
-     * "write", the sytem checks if the datset has chnage since the trsnaction started
+     * "write", the system checks if the dataset has change since the transaction started
      * (called {@code begin}). If {@code READ_PROMOTE}, the dataset must not have
-     * changed; if {@code READ_COMMITTED_PROMOTE} anyh intermediate changes are
+     * changed; if {@code READ_COMMITTED_PROMOTE} any intermediate changes are
      * visible but the application can not assume any data it has read in the
      * transaction is the same as it was at the point the transaction started.
      * <p>
@@ -113,13 +113,13 @@ public interface Transactional
      * Attempt to promote a transaction from "read" to "write" and the transaction
      * start with a "promote" mode ({@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE}).
      * <p>
-     * Returns "true" if the transction is in write mode after the call.
-     * The method always succeeeds of the transaction is already
+     * Returns "true" if the transaction is in write mode after the call.
+     * The method always succeeds of the transaction is already
      * "write".
      * <p>
      * This method returns true if a {@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE} is promoted.
      * <p>
-     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the transaction is stil valid and in "read" mode. 
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the transaction is still valid and in "read" mode. 
      * <p>
      * This method throws an exception if there is an attempt to promote a "READ" transaction. 
      */

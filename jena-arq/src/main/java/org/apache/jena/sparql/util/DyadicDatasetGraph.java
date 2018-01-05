@@ -34,6 +34,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -57,6 +58,31 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
     @Override
     public void commit() {
         throwNoMutationAllowed();
+    }
+
+    @Override
+    public void begin(TxnType type) {
+        switch (type) {
+        case WRITE:
+            throwNoMutationAllowed();
+        default:
+            forEach(dsg -> dsg.begin(type));
+        }
+    }
+
+    @Override
+    public boolean promote() {
+        return false;
+    }
+
+    @Override
+    public ReadWrite transactionMode() {
+        return apply((rw1, rw2) -> rw1 == rw2 ? rw1 : null, DatasetGraph::transactionMode);
+    }
+
+    @Override
+    public TxnType transactionType() {
+        return apply((t1, t2) -> t1 == t2 ? t1 : null, DatasetGraph::transactionType);
     }
 
     @Override
