@@ -27,7 +27,7 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.*;
 import org.junit.Test;
 
-public abstract class TestViewDatasetGraph extends BaseTest {
+public abstract class TestDyadicDatasetGraph extends BaseTest {
 
     public abstract DatasetGraph testInstance(DatasetGraph left, DatasetGraph right, Context c);
 
