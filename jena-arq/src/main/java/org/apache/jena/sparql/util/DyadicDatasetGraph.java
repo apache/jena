@@ -23,7 +23,7 @@ import static org.apache.jena.atlas.iterator.Iter.count;
 import static org.apache.jena.atlas.iterator.Iter.map;
 import static org.apache.jena.ext.com.google.common.collect.Iterators.concat;
 import static org.apache.jena.graph.Node.ANY;
-import static org.apache.jena.query.ReadWrite.READ;
+import static org.apache.jena.query.TxnType.READ;
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads;
 
@@ -63,36 +63,33 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
     @Override
     public void begin(TxnType type) {
         switch (type) {
-        case WRITE:
-            throwNoMutationAllowed();
-        default:
+        case READ:
             forEach(dsg -> dsg.begin(type));
+            break;
+        default:
+            throwNoMutationAllowed();
         }
     }
 
     @Override
     public boolean promote() {
+        // no mutation allowed
         return false;
     }
 
     @Override
     public ReadWrite transactionMode() {
-        return apply((rw1, rw2) -> rw1 == rw2 ? rw1 : null, DatasetGraph::transactionMode);
+        return TxnType.convert(transactionType());
     }
 
     @Override
     public TxnType transactionType() {
-        return apply((t1, t2) -> t1 == t2 ? t1 : null, DatasetGraph::transactionType);
+        return both(dsg -> dsg.transactionType() == READ) ? READ : null;
     }
 
     @Override
     public synchronized void begin(ReadWrite readWrite) {
-        switch (readWrite) {
-        case WRITE:
-            throwNoMutationAllowed();
-        case READ:
-            forEach(dsg -> dsg.begin(READ));
-        }
+        begin(TxnType.convert(readWrite));
     }
 
     @Override
