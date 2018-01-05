@@ -24,6 +24,7 @@ import org.apache.jena.atlas.junit.BaseTest;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.*;
 import org.junit.Test;
 
@@ -125,8 +126,23 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void noWriting() {
+    public void noWriting1() {
         emptyDsg().begin(ReadWrite.WRITE);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void noWriting2() {
+        emptyDsg().begin(TxnType.WRITE);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void noWriting3() {
+        emptyDsg().begin(TxnType.READ_PROMOTE);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void noWriting4() {
+        emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE);
     }
 
     @Test(expected = UnsupportedOperationException.class)
