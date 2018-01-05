@@ -25,7 +25,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.sparql.core.*;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.junit.Test;
 
 public abstract class TestDyadicDatasetGraph extends BaseTest {
@@ -144,6 +145,11 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
     public void noWriting4() {
         emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE);
     }
+    
+    @Test
+    public void noPromoting() {
+        assertFalse(emptyDsg().promote());
+    }
 
     @Test(expected = UnsupportedOperationException.class)
     public void noCommitting() {
@@ -153,12 +159,27 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
         assertTrue(dsg.isInTransaction());
         dsg.commit();
     }
+    
+    @Test
+    public void testTransactionTypeAndMode() {
+        final DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        try {
+            dsg.begin(TxnType.READ);
+            assertTrue(dsg.isInTransaction());
+            assertEquals(TxnType.READ, dsg.transactionType());
+            assertEquals(ReadWrite.READ, dsg.transactionMode());
+        } finally {
+            dsg.end();
+        }
+        assertFalse(dsg.isInTransaction());
+    }
 
     @Test
-    public void canUseEndToFinishTransaction() {
+    public void canUseEndToFinishTransaction1() {
+        DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
         try {
-            DatasetGraph dsg = emptyDsg();
-            assertFalse(dsg.isInTransaction());
             dsg.begin(ReadWrite.READ);
             assertTrue(dsg.isInTransaction());
             dsg.end();
@@ -169,10 +190,24 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
     }
 
     @Test
-    public void canUseAbortToFinishTransaction() {
+    public void canUseEndToFinishTransaction2() {
+        DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
         try {
-            DatasetGraph dsg = emptyDsg();
+            dsg.begin(TxnType.READ);
+            assertTrue(dsg.isInTransaction());
+            dsg.end();
             assertFalse(dsg.isInTransaction());
+        } catch (UnsupportedOperationException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void canUseAbortToFinishTransaction1() {
+        DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        try {
             dsg.begin(ReadWrite.READ);
             assertTrue(dsg.isInTransaction());
             dsg.abort();
@@ -182,4 +217,17 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
         }
     }
 
+    @Test
+    public void canUseAbortToFinishTransaction2() {
+        DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        try {
+            dsg.begin(TxnType.READ);
+            assertTrue(dsg.isInTransaction());
+            dsg.abort();
+            assertFalse(dsg.isInTransaction());
+        } catch (UnsupportedOperationException e) {
+            fail();
+        }
+    }
 }

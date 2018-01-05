@@ -37,7 +37,7 @@ public class Txn {
      * <p>
      * Such a transaction may abort if an update is executed
      * by another thread before this one is promoted to "write" mode.
-     * If so, the data protected by {@code txn} is unchanaged.
+     * If so, the data protected by {@code txn} is unchanged.
      * <p>
      * If the application knows updates will be needed, consider using {@link #executeWrite}
      * which starts in "write" mode.
@@ -55,7 +55,7 @@ public class Txn {
      * <p>
      * Such a transaction may abort if an update is executed
      * by another thread before this one is promoted to "write" mode.
-     * If so, the data protected by {@code txn} is unchanaged.
+     * If so, the data protected by {@code txn} is unchanged.
      * <p>
      * If the application knows updates will be needed, consider using {@link #executeWrite}
      * which starts in "write" mode.
