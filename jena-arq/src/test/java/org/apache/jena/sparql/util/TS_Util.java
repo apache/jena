@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestList.class ,
     TestDateTimeUtils.class ,
     TestFmtUtils.class,
-    TS_DatasetGraphViews.class,
+    TS_DyadicDatasetGraphs.class,
     TS_DatasetCollectors.class
 })
 public class TS_Util

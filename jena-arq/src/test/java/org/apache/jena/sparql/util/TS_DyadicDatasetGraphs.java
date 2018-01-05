@@ -25,4 +25,4 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ TestIntersectionDatasetGraph.class, TestDifferenceDatasetGraph.class, TestUnionDatasetGraph.class })
 
-public class TS_DatasetGraphViews {}
+public class TS_DyadicDatasetGraphs {}
