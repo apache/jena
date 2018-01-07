@@ -77,6 +77,7 @@ public class TextIndexLucene implements TextIndex {
     private static final String    RIGHT_ARROW = "\u21a6";
     private static final String    LEFT_ARROW  = "\u21a4";
     private static final String    DIVIDES  =    "\u2223";
+    private static final String    Z_MORE_SEPS = "([\\p{Z}\u0f0b\0f0c\0f0d\180e]*?)";
 
     public static final FieldType  ftIRI ;
     static {
@@ -462,6 +463,7 @@ public class TextIndexLucene implements TextIndex {
         String start = RIGHT_ARROW;
         String end = LEFT_ARROW;
         String fragSep = DIVIDES;
+        boolean join = true;
         
         public HighlightOpts(String optStr) {
             String[] opts = optStr.trim().split("\\|");
@@ -477,6 +479,11 @@ public class TextIndexLucene implements TextIndex {
                     end = opt.substring(2);
                 } else if (opt.startsWith("f:")) {
                     fragSep = opt.substring(2);
+                } else if (opt.startsWith("j:")) {
+                    String v = opt.substring(2);
+                    if ("n".equals(v)) {
+                        join = false;
+                    }
                 }
             }
         }
@@ -487,7 +494,8 @@ public class TextIndexLucene implements TextIndex {
         String rez = "";
         
         for (TextFragment f : frags) {
-            rez += sep + f;
+            String s = opts.join ? f.toString().replaceAll(opts.end+Z_MORE_SEPS+opts.start, "$1") : f.toString();
+            rez += sep + s;
             sep = opts.fragSep;
         }
         
