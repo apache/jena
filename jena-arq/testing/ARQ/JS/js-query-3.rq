@@ -1,0 +1,4 @@
+PREFIX js: <http://jena/apache.org/ARQ/jsFunction#>
+PREFIX : <http://example/>
+
+SELECT (js:inc(js:inc(8)) AS ?X) {}

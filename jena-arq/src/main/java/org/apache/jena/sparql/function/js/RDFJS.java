@@ -16,16 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.library;
+package org.apache.jena.sparql.function.js;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+/**
+ * The <a href="https://github.com/rdfjs/representation-task-force/">rdfjs/representation-task-force</a>
+ * API for RDF terms.
+ * 
+ */
 
-@RunWith(Suite.class)
-@SuiteClasses( {
-    // A lot of the test are in TestFunctions and TestFunctions2.
-    TestFunctionCollation.class
-    , TestFnFunctions.class
-})
-public class TS_LibraryFunctions {}
+
+public interface RDFJS {
+    public String getTermType();
+    public String getValue();
+    
+//    public interface RDFJS_NamedNode {}
+//    public interface RDFJS_BlankNode {}
+//    public interface RDFJS_Literal {}
+}
