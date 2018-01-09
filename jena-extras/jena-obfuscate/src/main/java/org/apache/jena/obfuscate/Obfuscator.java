@@ -20,11 +20,14 @@ package org.apache.jena.obfuscate;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.obfuscate.transform.ExprTransformObfuscate;
 import org.apache.jena.obfuscate.transform.TransformObfuscate;
+import org.apache.jena.query.Query;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprTransformCopy;
+import org.apache.jena.sparql.expr.ExprTransformer;
 
 /**
  * Utilities for obfuscation
@@ -47,5 +50,23 @@ public class Obfuscator {
         // where that happens to address it
         op = Transformer.transform(new TransformCopy(), new ExprTransformCopy(), op);
         return Transformer.transform(new TransformObfuscate(provider), new ExprTransformObfuscate(provider), op);
+    }
+
+    public static Query obfuscate(ObfuscationProvider provider, Query query) {
+        Query q = query.cloneQuery();
+
+        // TODO Obfuscate the query
+
+        return q;
+    }
+
+    /**
+     * @param provider
+     * @param e
+     * @return
+     */
+    public static Expr obfuscate(ObfuscationProvider provider, Expr e) {
+        e = e.deepCopy();
+        return ExprTransformer.transform(new ExprTransformObfuscate(provider), e);
     }
 }

@@ -20,8 +20,10 @@ package org.apache.jena.obfuscate;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.obfuscate.config.ValuesOnlyConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -82,5 +84,67 @@ public abstract class AbstractObfuscationProviderTest {
         }
         
         Assert.assertEquals(9, outputs.size());
+    }
+    
+    @Test
+    public void defaults_01() {
+        Node input = NodeFactory.createLiteral("example", "en-gb");
+        ObfuscationProvider provider = createInstance();
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+        Assert.assertNotEquals(input.getLiteralLanguage(), output.getLiteralLanguage());
+    }
+    
+    @Test
+    public void defaults_02() {
+        Node input = NodeFactory.createLiteral("example", TypeMapper.getInstance().getSafeTypeByName("http://example.org/type"));
+        ObfuscationProvider provider = createInstance();
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+        Assert.assertNotEquals(input.getLiteralDatatypeURI(), output.getLiteralDatatypeURI());
+    }
+    
+    @Test
+    public void value_only_01() {
+        Node input = NodeFactory.createURI("http://example.org");
+        ObfuscationProvider provider = createInstance();
+        provider.setConfiguration(new ValuesOnlyConfig());
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+    }
+    
+    @Test
+    public void value_only_02() {
+        Node input = NodeFactory.createLiteral("example");
+        ObfuscationProvider provider = createInstance();
+        provider.setConfiguration(new ValuesOnlyConfig());
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+    }
+    
+    @Test
+    public void value_only_03() {
+        Node input = NodeFactory.createLiteral("example", "en-gb");
+        ObfuscationProvider provider = createInstance();
+        provider.setConfiguration(new ValuesOnlyConfig());
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+        Assert.assertEquals(input.getLiteralLanguage(), output.getLiteralLanguage());
+    }
+    
+    @Test
+    public void value_only_04() {
+        Node input = NodeFactory.createLiteral("example", TypeMapper.getInstance().getSafeTypeByName("http://example.org/type"));
+        ObfuscationProvider provider = createInstance();
+        provider.setConfiguration(new ValuesOnlyConfig());
+        
+        Node output = provider.obfuscateNode(input);
+        Assert.assertNotEquals(input, output);
+        Assert.assertEquals(input.getLiteralDatatypeURI(), output.getLiteralDatatypeURI());
     }
 }
