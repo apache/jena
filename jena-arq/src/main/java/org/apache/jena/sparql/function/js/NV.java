@@ -53,7 +53,7 @@ public class NV implements RDFJS {
     private final static boolean narrowDoubles = true;
     /**
      * Map an ARQ {@link NodeValue} to java/Nashorn representation of a JavaScript object.
-     * Native JaavScript types supported are null, string, number and boolean.
+     * Native JavaScript types supported are null, string, number and boolean.
      * Otherwise a {@link NV} is returned.
      */
     public static Object fromNodeValue(NodeValue nv) {

@@ -70,7 +70,7 @@ public class ARQConstants
     /** The URI prefix that triggers JavaScript functions */ 
     public static final String JavaScriptURI = "http://jena.apache.org/ARQ/jsFunction#" ;
     
-    /** Function called when JaavScript is initialized. */ 
+    /** Function called when JavaScript is initialized. */ 
     public static final String JavaScriptInitFunction = "arqJSinit";
 
     /** URI scheme that triggers the loader to load a java class */ 
