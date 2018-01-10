@@ -50,6 +50,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithComplexPhraseQueryParser.class
     , TestGenericAnalyzerAssembler.class
     , TestTextGraphIndexExtra.class
+    , TestTextGraphIndexExtra2.class
 })
 
 public class TS_Text

@@ -273,7 +273,7 @@ public class TextIndexLucene implements TextIndex {
 
         String graphField = docDef.getGraphField() ;
         if ( graphField != null ) {
-            Field gField = new Field(graphField, entity.getGraph(), ftString) ;
+            Field gField = new Field(graphField, entity.getGraph(), ftIRI) ;
             doc.add(gField) ;
         }
 
@@ -461,8 +461,11 @@ public class TextIndexLucene implements TextIndex {
                 }
             }
 
+            String graf = docDef.getGraphField() != null ? doc.get(docDef.getGraphField()) : null ;
+            Node graph = graf != null ? TextQueryFuncs.stringToNode(graf) : null;
+
             Node subject = TextQueryFuncs.stringToNode(entity) ;
-            TextHit hit = new TextHit(subject, sd.score, literal);
+            TextHit hit = new TextHit(subject, sd.score, literal, graph);
             results.add(hit) ;
         }
         return results ;

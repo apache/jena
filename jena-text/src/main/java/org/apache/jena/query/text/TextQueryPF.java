@@ -77,8 +77,8 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
-            if (size != 2 && size != 3) {
-                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2 or 3: "+argSubject);
+            if (size == 0 || size > 4) {
+                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, must be at least 1 and not greater than 4: "+argSubject);
             }
         }
 
@@ -167,19 +167,28 @@ public class TextQueryPF extends PropertyFunctionBase {
         Node s = null;
         Node score = null;
         Node literal = null;
+        Node graph = null;
 
         if (argSubject.isList()) {
             // Length checked in build()
             s = argSubject.getArg(0);
-            score = argSubject.getArg(1);
-            
-            if (!score.isVariable())
-                throw new QueryExecException("Hit score is not a variable: "+argSubject) ;
+
+            if (argSubject.getArgListSize() > 1) {
+                score = argSubject.getArg(1);          
+                if (!score.isVariable())
+                    throw new QueryExecException("Hit score is not a variable: "+argSubject) ;
+            }
 
             if (argSubject.getArgListSize() > 2) {
                 literal = argSubject.getArg(2);
                 if (!literal.isVariable())
                     throw new QueryExecException("Hit literal is not a variable: "+argSubject) ;
+            }
+
+            if (argSubject.getArgListSize() > 3) {
+                graph = argSubject.getArg(3);
+                if (!graph.isVariable())
+                    throw new QueryExecException("Hit graph is not a variable: "+argSubject) ;
             }
         } else {
             s = argSubject.getArg() ;
@@ -198,18 +207,19 @@ public class TextQueryPF extends PropertyFunctionBase {
         // ----
 
         QueryIterator qIter = (Var.isVar(s)) 
-            ? variableSubject(binding, s, score, literal, match, execCxt)
-            : concreteSubject(binding, s, score, literal, match, execCxt) ;
+            ? variableSubject(binding, s, score, literal, graph, match, execCxt)
+            : concreteSubject(binding, s, score, literal, graph, match, execCxt) ;
         if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Collection<TextHit> results, ExecutionContext execCxt) {
+    private QueryIterator resultsToQueryIterator(Binding binding, Node s, Node score, Node literal, Node graph, Collection<TextHit> results, ExecutionContext execCxt) {
         log.trace("resultsToQueryIterator: {}", results) ;
         Var sVar = Var.isVar(s) ? Var.alloc(s) : null ;
         Var scoreVar = (score==null) ? null : Var.alloc(score) ;
         Var literalVar = (literal==null) ? null : Var.alloc(literal) ;
+        Var graphVar = (graph==null) ? null : Var.alloc(graph) ;
 
         Function<TextHit,Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null)
@@ -221,6 +231,8 @@ public class TextQueryPF extends PropertyFunctionBase {
                 bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
             if (literalVar != null)
                 bmap.add(literalVar, hit.getLiteral());
+            if (graphVar != null && hit.getGraph() != null)
+                bmap.add(graphVar, hit.getGraph());
             return bmap;
         } ;
         
@@ -229,14 +241,14 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+    private QueryIterator variableSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
         log.trace("variableSubject: {}", match) ;
         ListMultimap<String,TextHit> results = query(match.getProperty(), match.getQueryString(), match.getLang(), match.getLimit(), execCxt) ;
         Collection<TextHit> r = results.values();
-        return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
+        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
     }
 
-    private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, StrMatch match, ExecutionContext execCxt) {
+    private QueryIterator concreteSubject(Binding binding, Node s, Node score, Node literal, Node graph, StrMatch match, ExecutionContext execCxt) {
         log.trace("concreteSubject: {}", match) ;
         ListMultimap<String,TextHit> x = query(match.getProperty(), match.getQueryString(), match.getLang(), -1, execCxt) ;
         
@@ -245,7 +257,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         
         List<TextHit> r = x.get(TextQueryFuncs.subjectToString(s));
 
-        return resultsToQueryIterator(binding, s, score, literal, r, execCxt);
+        return resultsToQueryIterator(binding, s, score, literal, graph, r, execCxt);
     }
 
     private ListMultimap<String,TextHit> query(Node property, String queryString, String lang, int limit, ExecutionContext execCxt) {
