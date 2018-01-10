@@ -31,7 +31,8 @@ import org.apache.jena.sparql.util.Symbol;
 /** Environment for executing a JavaScript function.
  * <p>
  * Functions are loaded from the file named in context setting
- * {@link EnvJavaScript#symJavaScriptLibFile}.
+ * {@link EnvJavaScript#symJavaScriptLibFile}. 
+ * The file must be UTF-8 encoded.
  * <p>
  * Function are loaded from a string value in context setting
  * {@link EnvJavaScript#symJavaScriptLib}.

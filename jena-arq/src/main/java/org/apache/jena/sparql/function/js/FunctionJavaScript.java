@@ -45,7 +45,7 @@ import org.apache.jena.sparql.function.FunctionBase;
  * attempt to reconstruct the datatype of the result of the function into
  * {@code xsd:integer} and {@code xsd:double}.
  * <p>
- * Functions that return null or undefined will resutl in a {@link ExprEvalException}.
+ * Functions that return null or undefined will result in a {@link ExprEvalException}.
  * 
  * @see EnvJavaScript
  * @see NV
