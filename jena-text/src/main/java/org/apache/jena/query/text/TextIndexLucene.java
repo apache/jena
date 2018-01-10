@@ -61,6 +61,7 @@ import org.apache.lucene.search.ScoreDoc ;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleFragmenter;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.apache.lucene.search.highlight.TextFragment ;
 import org.apache.lucene.store.Directory ;
@@ -460,10 +461,12 @@ public class TextIndexLucene implements TextIndex {
 
     class HighlightOpts {
         int maxFrags = 3;
+        int fragSize = 128;
         String start = RIGHT_ARROW;
         String end = LEFT_ARROW;
         String fragSep = DIVIDES;
-        boolean join = true;
+        boolean joinHi = true;
+        boolean joinFrags = true;
         
         public HighlightOpts(String optStr) {
             String[] opts = optStr.trim().split("\\|");
@@ -473,16 +476,25 @@ public class TextIndexLucene implements TextIndex {
                     try {
                         maxFrags = Integer.parseInt(opt.substring(2));
                     } catch (Exception ex) { }
+                } else if (opt.startsWith("z:")) {
+                    try {
+                        fragSize = Integer.parseInt(opt.substring(2));
+                    } catch (Exception ex) { }
                 } else if (opt.startsWith("s:")) {
                     start = opt.substring(2);
                 } else if (opt.startsWith("e:")) {
                     end = opt.substring(2);
                 } else if (opt.startsWith("f:")) {
                     fragSep = opt.substring(2);
-                } else if (opt.startsWith("j:")) {
-                    String v = opt.substring(2);
+                } else if (opt.startsWith("jh:")) {
+                    String v = opt.substring(3);
                     if ("n".equals(v)) {
-                        join = false;
+                        joinHi = false;
+                    }
+                } else if (opt.startsWith("jf:")) {
+                    String v = opt.substring(3);
+                    if ("n".equals(v)) {
+                        joinFrags = false;
                     }
                 }
             }
@@ -494,7 +506,7 @@ public class TextIndexLucene implements TextIndex {
         String rez = "";
         
         for (TextFragment f : frags) {
-            String s = opts.join ? f.toString().replaceAll(opts.end+Z_MORE_SEPS+opts.start, "$1") : f.toString();
+            String s = opts.joinHi ? f.toString().replaceAll(opts.end+Z_MORE_SEPS+opts.start, "$1") : f.toString();
             rez += sep + s;
             sep = opts.fragSep;
         }
@@ -510,6 +522,7 @@ public class TextIndexLucene implements TextIndex {
 
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter(opts.start, opts.end);
         Highlighter highlighter = new Highlighter(formatter, new QueryScorer(query));
+        highlighter.setTextFragmenter(new SimpleFragmenter(opts.fragSize));
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
@@ -521,7 +534,7 @@ public class TextIndexLucene implements TextIndex {
             if (lexical != null) {
                 String docLang = doc.get(docDef.getLangField()) ;
                 TokenStream tokenStream = analyzer.tokenStream(field, lexical);
-                TextFragment[] frags = highlighter.getBestTextFragments(tokenStream, lexical, false, opts.maxFrags);
+                TextFragment[] frags = highlighter.getBestTextFragments(tokenStream, lexical, opts.joinFrags, opts.maxFrags);
                 String rez = frags2string(frags, opts);
                 
                 literal = NodeFactory.createLiteral(rez, docLang);
