@@ -48,7 +48,7 @@ import org.apache.jena.sparql.function.FunctionBase;
  * Functions that return null or undefined will resutl in a {@link ExprEvalException}.
  * 
  * @see EnvJavaScript
- * @see NV 
+ * @see NV
  */
 public class FunctionJavaScript extends FunctionBase {
 
@@ -76,9 +76,10 @@ public class FunctionJavaScript extends FunctionBase {
             Object[] a = new Object[args.size()];
             for ( int i = 0 ; i < args.size(); i++ )
                 a[i] = NV.fromNodeValue(args.get(i));
-            Object r = envJS.invoc().invokeFunction(functionName, a);
+            Object r = envJS.call(functionName, a);
             if ( r == null )
-                // Or string "undefined". 
+                // null is used used to signal an ExprEvalException.
+                // NV.throwExprEvalException(....);
                 throw new ExprEvalException(functionName);
             NodeValue nv = NV.toNodeValue(r);
             return nv;
