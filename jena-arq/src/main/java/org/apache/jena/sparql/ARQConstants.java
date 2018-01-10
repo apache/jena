@@ -68,7 +68,7 @@ public class ARQConstants
     public static final String XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema#" ;
     
     /** The URI prefix that triggers JavaScript functions */ 
-    public static final String JavaScriptURI = "http://jena/apache.org/ARQ/jsFunction#" ;
+    public static final String JavaScriptURI = "http://jena.apache.org/ARQ/jsFunction#" ;
     
     /** Function called when JaavScript is initialized. */ 
     public static final String JavaScriptInitFunction = "arqJSinit";
