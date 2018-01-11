@@ -34,6 +34,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFParser.class
     , TestParserRegistry.class
     , TestRDFWriter.class
+    , TestParseURISchemeBases.class
 })
 
 public class TS_RiotGeneral

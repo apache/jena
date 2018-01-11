@@ -1,0 +1,1 @@
+<org.apache.jena.test://foo/nested/foo.txt> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <org.apache.jena.test://foo/bar.txt> .

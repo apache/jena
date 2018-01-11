@@ -1,0 +1,1 @@
+<ssh://example.com/nested/foo.txt> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <ssh://example.com/bar.txt> .
