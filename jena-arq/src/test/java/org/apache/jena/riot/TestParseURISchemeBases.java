@@ -248,6 +248,21 @@ public class TestParseURISchemeBases {
 	}
 
 	@Test
+	public void fileBaseRDF() throws Exception {
+		RDFDataMgr.read(m, load("file-base.rdf"), Lang.RDFXML);
+		dumpModelWithMessage("fileRDF");
+		assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+	}
+
+	@Test
+	public void fileBaseTTL() throws Exception {
+		RDFDataMgr.read(m, load("file-base.ttl"), Lang.TURTLE);
+		dumpModelWithMessage("fileTTL");
+		assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+	}
+	
+	
+	@Test
 	public void httpNT() throws Exception {
 		RDFDataMgr.read(m, load("http.nt"), Lang.NTRIPLES);
 		dumpModelWithMessage("httpNT");
