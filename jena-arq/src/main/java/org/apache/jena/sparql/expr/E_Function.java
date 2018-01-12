@@ -64,6 +64,10 @@ public class E_Function extends ExprFunctionN
         if ( javaScriptFunction != null ) {
             // JavaScript 
             EnvJavaScript jsEnv = EnvJavaScript.get();
+            if ( jsEnv == null ) {
+                ARQ.getExecLogger().warn("JavaScript function found '"+javaScriptFunction+"' but no JavaScript library installed");
+                throw new ExprUndefFunction("No JavaScript function library", javaScriptFunction) ;
+            }
             // FunctionJavaScript : functions only : no special forms.
             function = new FunctionJavaScript(javaScriptFunction, jsEnv);
             try {

@@ -46,7 +46,7 @@ public class TestJavaScriptFunctions {
 
     private static EnvJavaScript setupJS() {
         Context cxt = ARQ.getContext().copy();
-        cxt.set(EnvJavaScript.symJavaScriptLib, CamelCaseJS);
+        cxt.set(EnvJavaScript.symJavaScriptFunctions, CamelCaseJS);
         cxt.set(EnvJavaScript.symJavaScriptLibFile, JS_LIB_FILE);
         return EnvJavaScript.create(cxt);
     }
@@ -160,7 +160,7 @@ public class TestJavaScriptFunctions {
         NodeValue nv = eval("no_such_function()");
     }
     
-    // Wrong number of argument is OK in JavaScript- except "null" return becomes ExprEvalException.   
+    // Wrong number of argument is OK in JavaScript - "null" return becomes ExprEvalException.   
     @Test(expected=ExprEvalException.class)
     public void js_err_2() {
         NodeValue nv = eval("identity");

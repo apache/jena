@@ -18,6 +18,10 @@
 
 package org.apache.jena.sparql.function.js;
 
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.expr.E_Function;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -28,4 +32,18 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestJavaScriptFunctions.class
     , TestSPARQL_JS.class
 })
-public class TS_FunctionJS {}
+public class TS_FunctionJS {
+    static boolean b = false;
+    
+    @BeforeClass public static void beforeClass() {
+        b = E_Function.WarnOnUnknownFunction;
+        E_Function.WarnOnUnknownFunction = false ;
+    }
+    
+    @AfterClass public static void afterClass() {
+        ARQ.getContext().unset(ARQ.symJavaScriptFunctions);
+        ARQ.getContext().unset(ARQ.symJavaScriptLibFile);
+        E_Function.WarnOnUnknownFunction = b ;
+    }
+
+}

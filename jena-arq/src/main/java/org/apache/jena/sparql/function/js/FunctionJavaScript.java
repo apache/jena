@@ -67,9 +67,6 @@ public class FunctionJavaScript extends FunctionBase {
 
     @Override
     public NodeValue exec(List<NodeValue> args) {
-        if ( ! initialized )
-            checkBuild(null, null);
-        
         try {
             // Convert NodeValues to types more akin to Javascript. 
             // Pass strings as string, and numbers as Number.

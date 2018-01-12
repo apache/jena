@@ -24,7 +24,6 @@ import org.apache.jena.atlas.lib.Pool;
 import org.apache.jena.atlas.lib.PoolBase;
 import org.apache.jena.atlas.lib.PoolSync;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -35,16 +34,16 @@ import org.apache.jena.sparql.util.Symbol;
  * The file must be UTF-8 encoded.
  * <p>
  * Function are loaded from a string value in context setting
- * {@link EnvJavaScript#symJavaScriptLib}.
+ * {@link EnvJavaScript#symJavaScriptFunctions}.
  * <p>
  * If both are present, the file named by {@code EnvJavaScript.symJavaScriptLibFile} is loaded
  * then the string from {@code EnvJavaScript.symJavaScriptLib}.
  */
 public class EnvJavaScript {
     /** JavaScript functions as a string value which is evaluated. */ 
-    public static Symbol symJavaScriptLib = SystemARQ.allocSymbol("js-functions");
+    public static Symbol symJavaScriptFunctions = ARQ.symJavaScriptFunctions;
     /** JavaScript library of functions in a file. */ 
-    public static Symbol symJavaScriptLibFile = SystemARQ.allocSymbol("js-library");
+    public static Symbol symJavaScriptLibFile = ARQ.symJavaScriptLibFile;
     
     private final String scriptLib;
     private final String scriptLibFile;
@@ -63,7 +62,7 @@ public class EnvJavaScript {
         if ( global == null ) {
             synchronized(EnvJavaScript.class) {
                 Context context = ARQ.getContext();
-                if ( context.isDefined(symJavaScriptLib) || context.isDefined(symJavaScriptLibFile) )
+                if ( context.isDefined(symJavaScriptFunctions) || context.isDefined(symJavaScriptLibFile) )
                     global = create(ARQ.getContext());
             }
         }
@@ -94,7 +93,7 @@ public class EnvJavaScript {
     private Pool<JSEngine> pool = PoolSync.create(new PoolBase<JSEngine>());
     
     private EnvJavaScript(Context context) {
-        this.scriptLib = context.getAsString(symJavaScriptLib);
+        this.scriptLib = context.getAsString(symJavaScriptFunctions);
         this.scriptLibFile = context.getAsString(symJavaScriptLibFile);
         // Put one in the pool.
         pool.put(build());

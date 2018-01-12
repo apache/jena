@@ -33,8 +33,8 @@ public class TestSPARQL_JS {
     
     private static void setupJS() {
         Context cxt = ARQ.getContext();
-        cxt.set(EnvJavaScript.symJavaScriptLibFile, JS_LIB_FILE);
-        cxt.set(EnvJavaScript.symJavaScriptLib, "function inc(x) { return x+1 }");
+        cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
+        cxt.set(ARQ.symJavaScriptFunctions, "function inc(x) { return x+1 }");
         EnvJavaScript.reset();
     }
     

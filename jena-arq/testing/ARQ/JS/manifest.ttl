@@ -47,4 +47,10 @@
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-4.srj>
       ]
+      [  mf:name    "JS Call: FILTER functions" ;
+         mf:action
+            [ qt:query  <js-query-5.rq> ;
+              qt:data   <data.ttl> ] ;
+         mf:result  <js-query-5.srj>
+      ]
     ).
