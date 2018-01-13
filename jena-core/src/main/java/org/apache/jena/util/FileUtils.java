@@ -177,23 +177,28 @@ public class FileUtils
         return sbuff.toString();
     }
     
-    
-    /** Turn a plain filename into a "file:" URL */
+    /** Turn a plain filename into a "file:" URL
+     * Use IRILib.filenameToIRI
+     * This remains only for legacy compatibility.
+     */
+    @Deprecated
     public static String toURL(String filename)
     {
         if ( filename.length()>5
         		&& filename.substring(0,5).equalsIgnoreCase("file:") )
             return filename ;
         
+        if ( filename.equals(".") )
+            filename = "" ;
+        
         /**
-         * Convert a File, note java.net.URI appears to do the right thing.
+         * Convert a File, note java.net.URI does the right thing.
          * viz:
          *   Convert to absolute path.
          *   Convert all % to %25.
          *   then convert all ' ' to %20.
          *   It quite probably does more e.g. ? #
-         * But has bug in only having one / not three at beginning
-           
+         * But has one /, not three, at beginning
          */
 		return "file://" + new File(filename).toURI().toString().substring(5);
     }

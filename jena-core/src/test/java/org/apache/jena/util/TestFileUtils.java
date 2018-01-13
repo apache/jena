@@ -213,7 +213,8 @@ public class TestFileUtils extends TestCase {
 		checkToURL("ü","ü");
 	}
 	private void checkToURL(String fn, String match) {
-		String r = FileUtils.toURL(fn);
+		@SuppressWarnings("deprecation")
+        String r = FileUtils.toURL(fn);
 		if (!r.matches("^.*/[^/]*" + match + "[^/]*$"))
 			fail("Converted \"" + fn + "\" to <" + r
 					+ "> which did not match /" + match + "/");
