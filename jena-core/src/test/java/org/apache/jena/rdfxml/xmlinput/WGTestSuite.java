@@ -46,7 +46,7 @@ import org.apache.jena.reasoner.test.WGReasonerTester ;
 import org.apache.jena.shared.BrokenException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.shared.wg.TestInputStreamFactory ;
+import org.apache.jena.shared.wg.InputStreamFactoryTests ;
 import org.apache.jena.vocabulary.OWLResults ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
@@ -185,7 +185,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		  }
     };
     
-    TestInputStreamFactory factory;
+    InputStreamFactoryTests factory;
     
     static private Collection<String> misc =
         Arrays.asList(
@@ -236,7 +236,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
     }
 
-    private Model loadRDF(final TestInputStreamFactory fact, 
+    private Model loadRDF(final InputStreamFactoryTests fact, 
       final String file) {
         Model m = null;
         String base = fact.getBase().toString();
@@ -270,7 +270,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
      */
     String createMe;
     
-    WGTestSuite(TestInputStreamFactory fact, String name, boolean dynamic) {
+    WGTestSuite(InputStreamFactoryTests fact, String name, boolean dynamic) {
         super(name);
         factory = fact;
         testDir = fact.getBase();
@@ -334,14 +334,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
     static TestSuite suite(IRI testDir, String d, String nm) {
         return new WGTestSuite(
-            new TestInputStreamFactory(testDir, d),
+            new InputStreamFactoryTests(testDir, d),
             nm,
             true);
     }
 
     static TestSuite suite(IRI testDir, IRI d, String nm) {
         return new WGTestSuite(
-            new TestInputStreamFactory(testDir, d),
+            new InputStreamFactoryTests(testDir, d),
             nm,
             true);
     }

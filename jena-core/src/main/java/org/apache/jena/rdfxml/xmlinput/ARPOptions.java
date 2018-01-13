@@ -67,6 +67,12 @@ public class ARPOptions implements ARPErrorNumbers {
     private boolean embedding = false;
     private int errorMode[] = defaultErrorMode.clone();
     
+    // Note: This is the legacy setup for jena-core only.
+    // When used normally, with RIOT, the IRIFcatory is 
+    // org.apache.jena.riot.system.IRIResolver.iriFactory
+    // which is RDF 1.1 and also the IRIfcatory used by all
+    // RIOT parsing.
+ 
     @SuppressWarnings("deprecation")
     private static IRIFactory defaultIriFactory = IRIFactory.jenaImplementation() ;
     private IRIFactory iriFactory = defaultIriFactory ;
