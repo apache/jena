@@ -21,12 +21,15 @@ package org.apache.jena.sparql.expr;
 import java.util.List ;
 
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.function.FunctionFactory ;
 import org.apache.jena.sparql.function.FunctionRegistry ;
+import org.apache.jena.sparql.function.js.EnvJavaScript;
+import org.apache.jena.sparql.function.js.FunctionJavaScript;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.FmtUtils ;
@@ -38,6 +41,7 @@ public class E_Function extends ExprFunctionN
     private static final String name = "function" ;
     public static boolean WarnOnUnknownFunction = true ;
     private String functionIRI ;
+    private String javaScriptFunction = null; 
     
     private Function function = null ;
     private boolean functionBound = false ;
@@ -45,16 +49,37 @@ public class E_Function extends ExprFunctionN
     public E_Function(String functionIRI, ExprList args) {
         super(name, args) ;
         this.functionIRI = functionIRI ;
+        if ( functionIRI.startsWith(ARQConstants.JavaScriptURI) )
+            javaScriptFunction = functionIRI.substring(ARQConstants.JavaScriptURI.length());
     }
 
     @Override
     public String getFunctionIRI() { return functionIRI ; }
     
     // The Function subsystem takes over evaluation via SpecialForms.
-    // This allows a "function" to behave as special forms (this is discouraged).
+    // This allows a "function" to behave as a special form (this is discouraged).
     
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        if ( javaScriptFunction != null ) {
+            // JavaScript 
+            EnvJavaScript jsEnv = EnvJavaScript.get();
+            if ( jsEnv == null ) {
+                ARQ.getExecLogger().warn("JavaScript function found '"+javaScriptFunction+"' but no JavaScript library installed");
+                throw new ExprUndefFunction("No JavaScript function library", javaScriptFunction) ;
+            }
+            // FunctionJavaScript : functions only : no special forms.
+            function = new FunctionJavaScript(javaScriptFunction, jsEnv);
+            try {
+                return function.exec(binding, args, getFunctionIRI(), env);
+            } catch (ExprUndefFunction ex) {
+                // Or check if there is a Java function registered - allows java replacement.
+                if ( WarnOnUnknownFunction )
+                    ARQ.getExecLogger().warn("JavaScript function not found: "+ex.getFunctionName());
+                throw ex;
+            }
+        }
+        
         // Only needed because some tests call straight in.
         // Otherwise, the buildFunction() calls should have done everything
         if ( !functionBound )
@@ -72,23 +97,28 @@ public class E_Function extends ExprFunctionN
     }
 
     public void buildFunction(Context cxt) {
+        if ( javaScriptFunction != null )
+            return;
         try { bindFunction(cxt) ; }
-        catch (ExprException ex) {
+        catch (ExprUndefFunction ex) {
             if ( WarnOnUnknownFunction )
                 ARQ.getExecLogger().warn("URI <"+functionIRI+"> has no registered function factory") ;
         }
     }
     
+    private FunctionFactory functionFactory(Context cxt) {
+        FunctionRegistry registry = chooseRegistry(cxt) ;
+        FunctionFactory ff = registry.get(functionIRI) ;
+        return ff;
+    }
+    
     private void bindFunction(Context cxt) {
         if ( functionBound )
             return ;
-
-        FunctionRegistry registry = chooseRegistry(cxt) ;
-        FunctionFactory ff = registry.get(functionIRI) ;
-
+        FunctionFactory ff = functionFactory(cxt);
         if ( ff == null ) {
             functionBound = true ;
-            throw new ExprEvalException("URI <" + functionIRI + "> not found as a function") ;
+            throw new ExprUndefFunction("URI <" + functionIRI + "> not found as a function", functionIRI) ;
         }
         function = ff.create(functionIRI) ;
         function.build(functionIRI, args) ;

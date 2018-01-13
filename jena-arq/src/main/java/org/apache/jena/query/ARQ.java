@@ -485,6 +485,16 @@ public class ARQ
      * Expression evaluation without extension types (e.g. xsd:date, language tags)
      */
     public static final Symbol extensionValueTypes = SystemARQ.allocSymbol("extensionValueTypesExpr") ;
+    
+    /** 
+     * Context symbol for JavaScript functions as a string value which is evaluated.
+     */ 
+    public static Symbol symJavaScriptFunctions = SystemARQ.allocSymbol("js-functions");
+    
+    /**
+     * Context symbol for JavaScript library of functions defined in a file.
+     */
+    public static Symbol symJavaScriptLibFile = SystemARQ.allocSymbol("js-library");
 
     /**
      * Generate the ToList operation in the algebra (as ARQ is stream based, ToList is a non-op).

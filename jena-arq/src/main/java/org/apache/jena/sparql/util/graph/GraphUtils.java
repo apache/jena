@@ -173,13 +173,16 @@ public class GraphUtils {
             return null ;
         return s.getResource() ;
     }
+    
+    public static List<Resource> listResourcesByType(Model model, Resource type) {
+        return Iter.toList(model.listSubjectsWithProperty(RDF.type, type)) ;
+    }
 
     public static Resource getResourceByType(Model model, Resource type) {
-        // See also
-        StmtIterator sIter = model.listStatements(null, RDF.type, type) ;
+        ResIterator sIter = model.listSubjectsWithProperty(RDF.type, type) ;
         if ( !sIter.hasNext() )
             return null ;
-        Resource r = sIter.nextStatement().getSubject() ;
+        Resource r = sIter.next();
         if ( sIter.hasNext() )
             throw new TypeNotUniqueException(r) ;
         return r ;
