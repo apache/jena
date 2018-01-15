@@ -30,12 +30,13 @@ import java.util.zip.ZipFile;
 import org.apache.jena.iri.*;
 import org.apache.jena.shared.JenaException ;
 
-/**
+/** In support of the RDF 2004 Working Group tests.
+ *
  * This class provides input streams that:
  * 1: can be from a URL or from a zip
  * 2: do not actually open until the first read
  */
-public class TestInputStreamFactory {
+public class InputStreamFactoryTests {
     @SuppressWarnings("deprecation")
     final IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
@@ -48,7 +49,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param getBaseDir Replace the baseDir into getBaseDir before opening any URL.
 	 */
-	public TestInputStreamFactory(IRI baseDir, IRI getBaseDir) {
+	public InputStreamFactoryTests(IRI baseDir, IRI getBaseDir) {
 		base = baseDir;
 		mapBase = getBaseDir;
 		zip = null;
@@ -57,14 +58,14 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	public TestInputStreamFactory(IRI baseDir, ZipFile zip) {
+	public InputStreamFactoryTests(IRI baseDir, ZipFile zip) {
 		base = baseDir;
 		mapBase = null;
 		this.zip = zip;
 		property = null;
 	}
 
-	public TestInputStreamFactory(IRI baseDir, String propDir) {
+	public InputStreamFactoryTests(IRI baseDir, String propDir) {
         createMe = "new TestInputStreamFactory(URI.create(\""+baseDir.toString()
         +"\"),\""+propDir+"\")";
 		base = baseDir;
@@ -160,13 +161,13 @@ public class TestInputStreamFactory {
 		if (zip != null)
 			return new LazyZipEntryInputStream(zip,relPath );
 		else
-			return TestInputStreamFactory.getInputStream(property + relPath );
+			return InputStreamFactoryTests.getInputStream(property + relPath );
 
 	}
 
 	private static InputStream getInputStream(String prop) {
 	    // System.err.println(prop);
-	    ClassLoader loader = TestInputStreamFactory.class.getClassLoader();
+	    ClassLoader loader = InputStreamFactoryTests.class.getClassLoader();
 	    if (loader == null)
 	        throw new SecurityException("Cannot access class loader");
 	    InputStream in =

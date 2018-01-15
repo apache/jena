@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    // A lot of the test ate in TestFunctions and TestFunctions2.
+    // A lot of the test are in TestFunctions and TestFunctions2.
     TestFunctionCollation.class
     , TestFnFunctions.class
 })

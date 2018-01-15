@@ -241,6 +241,16 @@ public class QueryExecUtils {
             return ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
+            model.write(System.out, "N-QUADS", null) ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
+            model.write(System.out, "TriG", null) ;
+            return ;
+        }
+
         System.err.println("Unknown format: " + outputFormat) ;
     }
 

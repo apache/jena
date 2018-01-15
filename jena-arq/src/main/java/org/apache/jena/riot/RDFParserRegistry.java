@@ -59,7 +59,7 @@ public class RDFParserRegistry
     private static Map<String, Lang> mapJenaNameToLang                 = new HashMap<>() ;
 
     /** map language to a parser factory */ 
-    private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = new HashMap<>() ;
+    private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>() ;
     
     /** Known triples languages */
     private static Set<Lang> langTriples  = new HashSet<>() ;
@@ -67,9 +67,9 @@ public class RDFParserRegistry
     /** Known quads languages */
     private static Set<Lang> langQuads    = new HashSet<>() ;
 
-    /** General parser factory for parsers implementned by "Lang" */
-    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;
-    
+    /** General parser factory for parsers implemented by "Lang" */
+    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTLangFactory() ;
+    // Others
     private static ReaderRIOTFactory parserFactoryRDFXML    = new ReaderRIOTRDFXML.Factory(); 
     private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
@@ -162,7 +162,7 @@ public class RDFParserRegistry
 
     // Parser factories
     
-    private static class ReaderRIOTFactoryImpl implements ReaderRIOTFactory
+    private static class ReaderRIOTLangFactory implements ReaderRIOTFactory
     {
         @Override
         public ReaderRIOT create(Lang lang, ParserProfile parserProfile) {
@@ -174,10 +174,6 @@ public class RDFParserRegistry
     {
         private final Lang lang ;
         private ParserProfile parserProfile = null ;
-
-        ReaderRIOTLang(Lang lang) {
-            this.lang = lang ;
-        }
 
         ReaderRIOTLang(Lang lang, ParserProfile parserProfile) {
             this.lang = lang ;

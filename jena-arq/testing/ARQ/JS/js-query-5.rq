@@ -1,0 +1,7 @@
+PREFIX js: <http://jena.apache.org/ARQ/jsFunction#>
+PREFIX : <http://example/>
+
+SELECT * {
+   ?s ?p ?o
+   FILTER(js:nosuchFunction())
+}

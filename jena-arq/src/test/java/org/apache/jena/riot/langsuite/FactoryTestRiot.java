@@ -150,5 +150,4 @@ public class FactoryTestRiot extends TestFactoryManifest
         baseIRI = baseIRI+x ;
         return baseIRI ;
     }
-    
 }

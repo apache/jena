@@ -111,7 +111,7 @@ public class ActionDatasets extends ActionContainerItem {
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
-        DatasetDescriptionRegistry registry = FusekiSystem.registryForBuild() ;
+        DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
         

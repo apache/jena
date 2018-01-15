@@ -37,8 +37,7 @@ public class IRIValidator extends ValidatorBase
     { }
   
     static final String paramIRI      = "iri" ;
-    //static IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-    static IRIFactory iriFactory = IRIResolver.iriFactory ;
+    static IRIFactory iriFactory = IRIResolver.iriFactory() ;
     
     @Override
     protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)

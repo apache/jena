@@ -40,7 +40,7 @@ public class TestPrefixMapOther extends BaseTest
     {
         PrefixMap pmap = PrefixMapFactory.create() ;
         pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap) ;
-        pmap.getMapping().put("ex", IRIResolver.iriFactory.construct("http://example/"))  ;
+        pmap.getMapping().put("ex", IRIResolver.iriFactory().construct("http://example/"))  ;
     }
     
 
@@ -55,7 +55,7 @@ public class TestPrefixMapOther extends BaseTest
     public void other_11()
     {
         PrefixMap pmap = PrefixMapFactory.emptyPrefixMap() ;
-        pmap.getMapping().put("ex", IRIResolver.iriFactory.construct("http://example/"))  ;
+        pmap.getMapping().put("ex", IRIResolver.iriFactory().construct("http://example/"))  ;
     }
     
 }

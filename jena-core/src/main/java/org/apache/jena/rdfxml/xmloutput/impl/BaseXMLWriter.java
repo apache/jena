@@ -490,6 +490,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
     
     @SuppressWarnings("deprecation")
+    // Testing.
+    // Agrees with ARPOptions.defaultIriFactory.
     static IRIFactory factory = IRIFactory.jenaImplementation();
 
    

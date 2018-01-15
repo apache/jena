@@ -28,6 +28,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -348,7 +349,7 @@ public class NodeFunctions {
         return node.isLiteral() ;
     }
 
-    private static final IRIFactory iriFactory      = IRIFactory.iriImplementation() ;
+    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
     public static boolean           warningsForIRIs = false ;
 
     // -------- IRI

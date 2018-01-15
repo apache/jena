@@ -24,7 +24,6 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 
 /**
  * Default implementation of a {@link PrefixMap}, this implementation
@@ -66,7 +65,7 @@ public class PrefixMapStd extends PrefixMapBase {
     @Override
     public void add(String prefix, String iriString) {
         prefix = canonicalPrefix(prefix);
-        IRI iri = IRIFactory.iriImplementation().create(iriString);
+        IRI iri = IRIResolver.iriFactory().create(iriString);
         prefixes.put(prefix, iri);
         uriToPrefix.put(iriString, prefix) ;
     }
