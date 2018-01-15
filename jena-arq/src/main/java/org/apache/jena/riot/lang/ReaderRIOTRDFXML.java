@@ -30,7 +30,6 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
@@ -126,7 +125,7 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         }
         
         if ( JenaRuntime.isRDF11 )
-            arp.getOptions().setIRIFactory(IRIFactory.iriImplementation());
+            arp.getOptions().setIRIFactory(IRIResolver.iriFactory);
 
         try {
             if ( reader != null )

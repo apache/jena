@@ -19,19 +19,25 @@
 package org.apache.jena.n3;
 
 
+import java.io.File;
+
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.iri.ViolationCodes;
 
 /** A simple class to access IRI resolution.
+ * 
  * Replaced by {@code org.apache.jena.riot.system.IRIResolver}
+ * 
+ * Only exists for jena-core tests  
  */
 
 @Deprecated
 public class N3IRIResolver {
 	/**
 	 * The current working directory, as a string.
+	 * Ends in "/".
 	 */
 	static private String globalBase = "http://localhost/LocalHostBase/" ;
 	
@@ -39,9 +45,24 @@ public class N3IRIResolver {
 	// Security (e.g. Tomcat) may prevent this in which case we
 	// use a common default set above.
 	static {
-	    try { globalBase = FileUtils.toURL("."); }
-	    catch (Throwable th) {  }
+	    try { globalBase = cwdURL(); }
+	    catch (Throwable th) {}
 	}
+	
+	/** The current directory as a "file:" URL */
+    private static String cwdURL()
+    {
+        /**
+         * Convert a File, note java.net.URI does the right thing.
+         * viz:
+         *   Convert to absolute path.
+         *   Convert all % to %25.
+         *   then convert all ' ' to %20.
+         *   It quite probably does more e.g. ? #
+         * But has one /, not three, at beginning
+         */
+        return "file://" + new File("").toURI().toString().substring(5);
+    }
 	    
 	/**
 	 * The current working directory, as an IRI.
@@ -51,9 +72,12 @@ public class N3IRIResolver {
 	/**
 	 * An IRIFactory appropriately configuired.
 	 */
-	static final IRIFactory factory = new IRIFactory(IRIFactory
-			.jenaImplementation());
+	static final IRIFactory factory = new IRIFactory(IRIFactory.jenaImplementation());
 	static {
+	    factory.shouldViolation(false,false);
+	    factory.securityViolation(false,false);
+        factory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME, false);
+        factory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME, false);
 		factory.setSameSchemeRelativeReferences("file");
 	}
 

@@ -52,6 +52,8 @@ public class URITests
 	}
 
     @SuppressWarnings("deprecation")
+    // Testing.
+    // Agrees with ARPOptions.defaultIriFactory.
     static IRIFactory factory = IRIFactory.jenaImplementation();
 //    static {
 //        factory.useSpecificationRDF(false);

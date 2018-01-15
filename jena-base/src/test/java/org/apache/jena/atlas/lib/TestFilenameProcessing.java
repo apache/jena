@@ -65,8 +65,11 @@ public class TestFilenameProcessing extends BaseTest
 
     @Test
     public void fileIRI_3() {
-        String uri = testFileIRI("file://D.ttl") ;
-        assertTrue(uri.endsWith("D.ttl")) ;
+        String fn = "file://some.host/D.ttl" ;
+        String uri1 = IRILib.filenameToIRI(fn) ;
+        assertEquals(fn, uri1);
+        String uri2 = IRILib.filenameToIRI(uri1) ;
+        assertEquals(uri1, uri2) ;
     }
 
     @Test

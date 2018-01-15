@@ -192,14 +192,14 @@ public class IRILib
             return plainFilenameToURL(fn2) ;
         }
         
-        // Starts file:///
+        // Starts file:// or file:/// 
         if ( fn.startsWith("file:///") )
             // Assume it's good and return as-is.
             return fn ;
 
         if ( fn.startsWith("file://") ) {
-            String fn2 = fn.substring("file:/".length()) ;  // Leave one "/"
-            return plainFilenameToURL(fn2) ;
+            // file: URL with host name (maybe!)
+            return fn ;
         }
 
         // Must be file:/

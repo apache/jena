@@ -31,7 +31,7 @@ import org.apache.jena.rdfxml.xmlinput.AResource ;
 import org.apache.jena.rdfxml.xmlinput.NTriple ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPResource ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
-import org.apache.jena.shared.wg.TestInputStreamFactory ;
+import org.apache.jena.shared.wg.InputStreamFactoryTests ;
 import org.junit.Assert ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -42,20 +42,20 @@ import org.xml.sax.SAXParseException ;
  * Jena N-triple writer.
  */
 class NTripleTestSuite extends WGTestSuite {
-	NTripleTestSuite(TestInputStreamFactory fact, String name, boolean b) {
+	NTripleTestSuite(InputStreamFactoryTests fact, String name, boolean b) {
 		super(fact, name, b);
 	}
 
 	static TestSuite suite(IRI testDir, String d, String nm) {
 		return new NTripleTestSuite(
-			new TestInputStreamFactory(testDir, d),
+			new InputStreamFactoryTests(testDir, d),
 			nm,
 			true);
 	}
 
 	static TestSuite suite(IRI testDir, IRI d, String nm) {
 		return new NTripleTestSuite(
-			new TestInputStreamFactory(testDir, d),
+			new InputStreamFactoryTests(testDir, d),
 			nm,
 			true);
 	}

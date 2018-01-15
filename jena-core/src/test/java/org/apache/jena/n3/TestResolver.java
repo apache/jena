@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.n3.N3IRIResolver ;
 import org.apache.jena.n3.JenaURIException ;
 @SuppressWarnings("deprecation")
+// Tests the old N3IRIResolver which is now only used for tests. 
 public class TestResolver extends TestCase
 {
     public static TestSuite suite()
@@ -90,7 +91,8 @@ public class TestResolver extends TestCase
     
     public void testURI_1()   { execTest("", "http://example.org/", "http://example.org/"); }
     public void testURI_2()   { execTest("", "http://example.org/xyz_2007", "http://example.org/xyz_2007"); }
-    public void testURI_3()   { execTest("", "http://example.org/xyz 2007", "http://example.org/xyz 2007"); }
+    // RDF URI References - space in URI.  Not IRIs.
+    //public void testURI_3()   { execTest("", "http://example.org/xyz 2007", "http://example.org/xyz 2007"); }
     public void testURI_4()   { execTest("", "http://example.org/xyz__2007", "http://example.org/xyz__2007"); }
     public void testURI_5()   { execTest("", "http://example.org/xyz__abc", "http://example.org/xyz__abc"); }
     
@@ -222,7 +224,8 @@ public class TestResolver extends TestCase
     
     public void testURI_file_7()   { execTestMatch("file:foo", "file:xyz", "^file:///.*foo$") ; }
 
-    public void testURI_file_8()   { execTestMatch("file:foo", "file:a b", "^file:///.*foo$") ; }
+    // RDF URI References - space in URI.  Not IRIs.
+    //public void testURI_file_8()   { execTestMatch("file:foo", "file:a b", "^file:///.*foo$") ; }
     
     
     // File URLs - test aren't exact as the depend where they are run.
