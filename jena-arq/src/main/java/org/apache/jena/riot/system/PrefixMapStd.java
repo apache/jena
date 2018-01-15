@@ -65,7 +65,7 @@ public class PrefixMapStd extends PrefixMapBase {
     @Override
     public void add(String prefix, String iriString) {
         prefix = canonicalPrefix(prefix);
-        IRI iri = IRIResolver.iriFactory.create(iriString);
+        IRI iri = IRIResolver.iriFactory().create(iriString);
         prefixes.put(prefix, iri);
         uriToPrefix.put(iriString, prefix) ;
     }

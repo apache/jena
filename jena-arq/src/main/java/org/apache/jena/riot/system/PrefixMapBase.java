@@ -64,7 +64,7 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public void add(String prefix, String iriString) {
-        this.add(prefix, IRIResolver.iriFactory.create(iriString));
+        this.add(prefix, IRIResolver.iriFactory().create(iriString));
     }
     
     @Override

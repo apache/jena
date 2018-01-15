@@ -349,7 +349,7 @@ public class NodeFunctions {
         return node.isLiteral() ;
     }
 
-    private static final IRIFactory iriFactory      = IRIResolver.iriFactory;
+    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
     public static boolean           warningsForIRIs = false ;
 
     // -------- IRI

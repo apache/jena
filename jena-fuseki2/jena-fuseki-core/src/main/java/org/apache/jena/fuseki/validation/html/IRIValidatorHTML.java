@@ -40,7 +40,7 @@ public class IRIValidatorHTML
   
     static final String paramIRI      = "iri" ;
     //static IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-    static IRIFactory iriFactory = IRIResolver.iriFactory ;
+    static IRIFactory iriFactory = IRIResolver.iriFactory() ;
     
     public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {

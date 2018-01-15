@@ -462,7 +462,7 @@ public class FmtUtils
     {
         if ( hasScheme(uri) )
             return uri ;
-        IRI baseIRI = IRIResolver.iriFactory.construct(base) ;
+        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
         IRI rel = baseIRI.relativize(uri, relFlags) ;
         String r = rel.toString() ;
         return r ;

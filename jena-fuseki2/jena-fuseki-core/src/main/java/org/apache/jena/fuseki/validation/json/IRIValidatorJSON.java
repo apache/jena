@@ -35,7 +35,7 @@ public class IRIValidatorJSON {
 
     public IRIValidatorJSON() { }
     
-    static IRIFactory iriFactory = IRIResolver.iriFactory ;
+    static IRIFactory iriFactory = IRIResolver.iriFactory() ;
     
     static final String paramIRI           = "iri" ;
 

@@ -125,7 +125,7 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         }
         
         if ( JenaRuntime.isRDF11 )
-            arp.getOptions().setIRIFactory(IRIResolver.iriFactory);
+            arp.getOptions().setIRIFactory(IRIResolver.iriFactory());
 
         try {
             if ( reader != null )

@@ -38,7 +38,7 @@ public class CheckerIRI implements NodeChecker
     private IRIFactory iriFactory ;
 
     public CheckerIRI() {
-        this(ErrorHandlerFactory.getDefaultErrorHandler(), IRIResolver.iriFactory) ;
+        this(ErrorHandlerFactory.getDefaultErrorHandler(), IRIResolver.iriFactory()) ;
     }
 
     public CheckerIRI(ErrorHandler handler, IRIFactory iriFactory) {

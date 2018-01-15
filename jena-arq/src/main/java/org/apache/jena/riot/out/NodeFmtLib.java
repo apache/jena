@@ -219,7 +219,7 @@ public class NodeFmtLib
     {
         if ( base == null )
             return null ;
-        IRI baseIRI = IRIResolver.iriFactory.construct(base) ;
+        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
         IRI rel = baseIRI.relativize(uri, relFlags) ;
         String r = null ;
         try { r = rel.toASCIIString() ; }

@@ -52,7 +52,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         this.prefixMap = prefixMap ;
         this.baseIRI = baseIRI ;
         this.iriResolver = 
-            baseIRI != null ? IRIResolver.iriFactory.construct(baseIRI) : null ;
+            baseIRI != null ? IRIResolver.iriFactory().construct(baseIRI) : null ;
     }
 
     @Override

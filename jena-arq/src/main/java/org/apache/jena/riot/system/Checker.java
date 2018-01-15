@@ -49,7 +49,7 @@ public final class Checker
         
         checkLiterals = new CheckerLiterals(handler) ;
        
-        checkURIs = new CheckerIRI(handler, IRIResolver.iriFactory) ;
+        checkURIs = new CheckerIRI(handler, IRIResolver.iriFactory()) ;
         checkBlankNodes = new CheckerBlankNodes(handler) ;
         checkVars = new CheckerVar(handler) ;        
     }

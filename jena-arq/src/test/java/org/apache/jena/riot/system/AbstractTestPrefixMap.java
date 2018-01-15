@@ -27,7 +27,7 @@ import org.junit.Test ;
  * 
  */
 public abstract class AbstractTestPrefixMap extends BaseTest {
-    protected IRIFactory factory = IRIResolver.iriFactory;
+    protected IRIFactory factory = IRIResolver.iriFactory();
 
     /**
      * Gets the prefix map implementation to test, each call should result in a

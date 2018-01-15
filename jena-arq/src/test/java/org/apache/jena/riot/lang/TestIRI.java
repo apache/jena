@@ -36,7 +36,7 @@ public class TestIRI extends BaseTest
     static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
     static protected final Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
     
-    static IRIFactory factory = IRIResolver.iriFactory;
+    static IRIFactory factory = IRIResolver.iriFactory();
     
     @Test public void iri1()  { testIRI("http://example/") ; }
     
