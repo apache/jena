@@ -143,13 +143,6 @@ public class TestParseURISchemeBases {
 	}
 
 	@Test
-	public void appNT() throws Exception {
-		RDFDataMgr.read(m, load("app.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("appNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
-	}
-
-	@Test
 	public void appRDF() throws Exception {
 		RDFDataMgr.read(m, load("app.rdf"), Lang.RDFXML);
 		dumpModelWithMessage("appRDF");
@@ -178,13 +171,6 @@ public class TestParseURISchemeBases {
 	}
 
 	@Test
-	public void exampleNT() throws Exception {
-		RDFDataMgr.read(m, load("example.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("exampleNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
-	}
-
-	@Test
 	public void exampleRDF() throws Exception {
 		RDFDataMgr.read(m, load("example.rdf"), Lang.RDFXML);
 		dumpModelWithMessage("exampleRDF");
@@ -210,13 +196,6 @@ public class TestParseURISchemeBases {
 		RDFDataMgr.read(m, load("example.ttl"), Lang.TURTLE);
 		dumpModelWithMessage("exampleTTL");
 		assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
-	}
-
-	@Test
-	public void fileNT() throws Exception {
-		RDFDataMgr.read(m, load("file.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("fileNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
 	}
 
 	@Test
@@ -261,14 +240,6 @@ public class TestParseURISchemeBases {
 		assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
 	}
 	
-	
-	@Test
-	public void httpNT() throws Exception {
-		RDFDataMgr.read(m, load("http.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("httpNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
-	}
-
 	@Test
 	public void httpRDF() throws Exception {
 		RDFDataMgr.read(m, load("http.rdf"), Lang.RDFXML);
@@ -309,13 +280,6 @@ public class TestParseURISchemeBases {
 		RDFDataMgr.read(m, load("http.ttl"), Lang.TURTLE);
 		dumpModelWithMessage("httpTTL");
 		assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
-	}
-
-	@Test
-	public void jenaNT() throws Exception {
-		RDFDataMgr.read(m, load("jena.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("jenaNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(JENA_BASE)));
 	}
 
 	@Test
@@ -361,13 +325,6 @@ public class TestParseURISchemeBases {
 	}
 
 	@Test
-	public void sshNT() throws Exception {
-		RDFDataMgr.read(m, load("ssh.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("sshNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
-	}
-
-	@Test
 	public void sshRDF() throws Exception {
 		RDFDataMgr.read(m, load("ssh.rdf"), Lang.RDFXML);
 		dumpModelWithMessage("sshRDF");
@@ -393,13 +350,6 @@ public class TestParseURISchemeBases {
 		RDFDataMgr.read(m, load("ssh.ttl"), Lang.TURTLE);
 		dumpModelWithMessage("sshTTL");
 		assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
-	}
-
-	@Test
-	public void xMadeupNT() throws Exception {
-		RDFDataMgr.read(m, load("x-madeup.nt"), Lang.NTRIPLES);
-		dumpModelWithMessage("xMadeupNT");
-		assertTrue("Can't find statement", m.contains(expectedStatement(X_MADEUP_BASE)));
 	}
 
 	@Test
