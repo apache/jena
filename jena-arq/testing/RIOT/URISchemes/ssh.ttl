@@ -1,0 +1,2 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+<ssh://example.com/nested/foo.txt> rdfs:seeAlso <ssh://example.com/bar.txt> .
