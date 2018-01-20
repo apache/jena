@@ -71,7 +71,6 @@
       <groupId>org.xenei</groupId>
       <artifactId>junit-contracts</artifactId>
       <scope>test</scope>
-      <version>0.1.8-SNAPSHOT</version>
     </dependency>
 
     <dependency>

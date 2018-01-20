@@ -100,7 +100,7 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <ver.contract.tests>0.1.7</ver.contract.tests>
+    <ver.contract.tests>0.2.0</ver.contract.tests>
   </properties>
 
   <issueManagement>
