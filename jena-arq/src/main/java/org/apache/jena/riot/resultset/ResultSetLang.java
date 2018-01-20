@@ -24,7 +24,7 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 
 public class ResultSetLang {
-    // Add SSE!
+
     public static final Lang SPARQLResultSetXML
         = LangBuilder.create("SPARQL-Results-XML", WebContent.contentTypeResultsXML)
                      .addAltNames("SRX")

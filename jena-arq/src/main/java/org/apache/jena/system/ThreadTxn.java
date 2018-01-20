@@ -18,7 +18,7 @@
 
 package org.apache.jena.system;
 
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.Transactional ;
 
 /**
@@ -32,13 +32,20 @@ import org.apache.jena.sparql.core.Transactional ;
  * will cause deadlock.
  */ 
 public class ThreadTxn {
-    // ---- Thread
+
+    /** Create a thread-backed delayed transaction action. 
+     * Call {@link ThreadAction#run} to perform the read transaction.
+     */
+    public static ThreadAction threadTxn(Transactional trans, TxnType txnType, Runnable action) {
+        return create(trans, txnType, action, true, true) ;
+    }
+
 
     /** Create a thread-backed delayed READ transaction action. 
      * Call {@link ThreadAction#run} to perform the read transaction.
      */
     public static ThreadAction threadTxnRead(Transactional trans, Runnable action) {
-        return create(trans, ReadWrite.READ, action, false) ;
+        return threadTxn(trans, TxnType.READ, action) ;
     }
 
     /** Create a thread-backed delayed WRITE action.
@@ -47,30 +54,33 @@ public class ThreadTxn {
      * this will deadlock.)
      */
     public static ThreadAction threadTxnWrite(Transactional trans, Runnable action) {
-        return create(trans, ReadWrite.WRITE, action, true) ;
+        return threadTxn(trans, TxnType.WRITE, action) ;
     }
    
     /** Create a thread-backed delayed WRITE-abort action (mainly for testing). */
     public static ThreadAction threadTxnWriteAbort(Transactional trans, Runnable action) {
-        return create(trans, ReadWrite.WRITE, action, false) ;
+        return create(trans, TxnType.WRITE, action, true, false) ;
     }
 
-    /*package*/ static ThreadAction create(Transactional trans, ReadWrite mode, Runnable action, boolean isCommit) {
+    private static ThreadAction create(Transactional trans, TxnType txnType, Runnable action, boolean isCommitBefore,  boolean isCommitAfter) {
         return ThreadAction.create
-            ( beforeAction(trans, mode, isCommit)
+            ( beforeAction(trans, txnType, isCommitBefore)
             , action
-            , afterAction(trans, mode, isCommit) ) ;
+            , afterAction(trans, txnType, isCommitAfter) ) ;
     }
     
-    private static Runnable beforeAction(Transactional trans, ReadWrite mode, boolean isCommit) {
-        return ()-> trans.begin(mode) ;
+    private static Runnable beforeAction(Transactional trans, TxnType txnType, boolean isCommit) {
+        return ()-> trans.begin(txnType) ;
     }
     
-    private static Runnable afterAction(Transactional trans, ReadWrite mode, boolean isCommit) {
+    private static Runnable afterAction(Transactional trans, TxnType txnType, boolean isCommit) {
         return () -> {
             // Finish transaction (if no throwable)
-            switch (mode) {
-                case WRITE : {
+            switch (txnType) {
+                case WRITE :
+                case READ_COMMITTED_PROMOTE :
+                case READ_PROMOTE :
+                {
                     if ( isCommit )
                         trans.commit() ;
                     else

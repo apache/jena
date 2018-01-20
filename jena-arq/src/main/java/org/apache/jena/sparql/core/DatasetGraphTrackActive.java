@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /** Check the transactional state of a DatasetGraph */ 
 public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
@@ -35,9 +36,21 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
     protected abstract void checkNotActive() ;
     
     @Override
+    public final void begin(TxnType txnType) {
+        checkNotActive();
+        _begin(txnType);
+    }
+
+    @Override
     public final void begin(ReadWrite readWrite) {
         checkNotActive();
-        _begin(readWrite);
+        _begin(TxnType.convert(readWrite));
+    }
+
+    @Override
+    public final boolean promote() {
+        checkActive();
+        return _promote();
     }
 
     @Override
@@ -60,7 +73,8 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
     
     @Override
     public abstract boolean isInTransaction() ;
-    protected abstract void _begin(ReadWrite readWrite) ;
+    protected abstract void _begin(TxnType txnType);
+    protected abstract boolean _promote() ;
     protected abstract void _commit() ;
     protected abstract void _abort() ;
     protected abstract void _end() ;

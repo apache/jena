@@ -63,7 +63,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         // Ensure context setup - usually done in QueryExecutionBase
         // so it can be changed after initialization.
         if ( context == null )
-            context = Context.setupContext(context, dataset) ;
+            context = Context.setupContextExec(context, dataset) ;
         this.query = null ;
         setOp(op) ;
     }

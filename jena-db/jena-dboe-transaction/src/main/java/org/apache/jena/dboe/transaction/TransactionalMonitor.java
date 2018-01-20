@@ -18,12 +18,12 @@
 
 package org.apache.jena.dboe.transaction;
 
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
-/** Interface for the Transactional interface */
+/** Interface for the Transactional transitions. */
 public interface TransactionalMonitor {
-    default void startBegin(ReadWrite mode)     {}
-    default void finishBegin(ReadWrite mode)    {}
+    default void startBegin(TxnType txnType)     {}
+    default void finishBegin(TxnType txnType)    {}
 
     default void startPromote()     {}
     default void finishPromote()    {}

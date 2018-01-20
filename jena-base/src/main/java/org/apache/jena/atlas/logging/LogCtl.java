@@ -282,10 +282,27 @@ public class LogCtl {
     
     public static void setJavaLogging() {
         Path p = Paths.get(JUL_LOGGING) ;
-        if ( Files.exists(p) )
+        if ( Files.exists(p) ) {
             setJavaLogging(JUL_LOGGING) ;
-        else
-            setJavaLoggingDft();
+            return ;
+        }
+        if ( setJavaLoggingClasspath(JUL_LOGGING) )
+            return ;
+        setJavaLoggingDft();
+    }
+
+    private static boolean setJavaLoggingClasspath(String resourceName) {
+        // Not "LogCtl.class.getResourceAsStream(resourceName)" which monkeys around with the resourceName.
+        InputStream in = LogCtl.class.getClassLoader().getResourceAsStream(resourceName);
+        if ( in != null ) {
+            try {
+                java.util.logging.LogManager.getLogManager().readConfiguration(in) ;
+                return true; 
+            } catch (Exception ex) {
+                throw new AtlasException(ex) ;
+            }
+        }
+        return false;
     }
 
     public static void setJavaLogging(String file) {
@@ -307,6 +324,4 @@ public class LogCtl {
             throw new AtlasException(ex) ;
         }
     }
-
 }
-

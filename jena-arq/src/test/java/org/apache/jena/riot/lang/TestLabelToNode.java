@@ -51,7 +51,7 @@ public class TestLabelToNode extends BaseTest
         } ;
 
         LabelToNodeFactory fScopeByDocumentOld = new LabelToNodeFactory() {
-                @Override public LabelToNode create() { return LabelToNode.createScopeByDocumentOld() ; }
+                @Override public LabelToNode create() { return LabelToNode.createScopeGlobal() ; }
                 @Override public String toString() { return "ScopeByDocumentOld" ; }
         } ;
         LabelToNodeFactory fScopeByGraph = new LabelToNodeFactory() {

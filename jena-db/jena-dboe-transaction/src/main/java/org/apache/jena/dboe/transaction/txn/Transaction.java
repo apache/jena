@@ -33,6 +33,7 @@ import java.util.Objects ;
 import java.util.concurrent.atomic.AtomicReference ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /** 
  * A transaction as the composition of actions on components. 
@@ -58,25 +59,27 @@ public class Transaction implements TransactionInfo {
     // It also allow for multithreaded transactions (later). 
     private final AtomicReference<TxnState> state = new AtomicReference<>() ;
     //private TxnState state ;
-    private long dataVersion ;
+    private final long dataVersion ;
+    private final TxnType txnType ;
     private ReadWrite mode ;
     
-    public Transaction(TransactionCoordinator txnMgr, TxnId txnId, ReadWrite readWrite, long dataVersion, List<SysTrans> components) {
+    public Transaction(TransactionCoordinator txnMgr, TxnType txnType, ReadWrite readWrite, TxnId txnId, long dataVersion, List<SysTrans> components) {
         Objects.requireNonNull(txnMgr) ;
         Objects.requireNonNull(txnId) ;
         Objects.requireNonNull(readWrite) ;
         Objects.requireNonNull(components) ;
         this.txnMgr = txnMgr ;
         this.txnId = txnId ;
+        this.txnType = txnType ;
         this.mode = readWrite ;
         this.dataVersion = dataVersion ;
         this.components = components ;
         setState(INACTIVE) ;
     }
     
-    /*package*/ void resetDataVersion(long dataVersion) {
-        this.dataVersion = dataVersion;
-    }
+//    /*package*/ void resetDataVersion(long dataVersion) {
+//        this.dataVersion = dataVersion;
+//    }
 
     /*package*/ void setState(TxnState newState) {
         state.set(newState) ;
@@ -139,7 +142,7 @@ public class Transaction implements TransactionInfo {
     }
     
     public void commit() { 
-        // Split into READ and WRITE forms.
+        // XXX Split into READ and WRITE forms.
         TxnState s = getState();
         if ( s == ACTIVE ) 
             // Auto exec prepare().
@@ -178,10 +181,11 @@ public class Transaction implements TransactionInfo {
     public void end() {
         txnMgr.notifyEndStart(this) ;
         if ( isWriteTxn() && getState() == ACTIVE ) {
-            throw new TransactionException("Write transaction with no commit or abort") ;
             //Log.warn(this, "Write transaction with no commit() or abort() before end()");
             // Just the abort process.
-            //abort$() ;
+            abort$() ;
+            endInternal() ;
+            throw new TransactionException("Write transaction with no commit() or abort() before end() - forced abort") ;
         }
         endInternal() ;
         txnMgr.notifyEndFinish(this) ;
@@ -242,10 +246,13 @@ public class Transaction implements TransactionInfo {
     }
 
     @Override
-    public TxnId getTxnId()     { return txnId ; } 
+    public TxnId getTxnId()         { return txnId ; } 
 
     @Override
-    public ReadWrite getMode()  { return mode ; }
+    public TxnType   getTxnType()   { return txnType ; }
+
+    @Override
+    public ReadWrite getMode()      { return mode ; }
     
     /** Is this a READ transaction?
      * Convenience operation equivalent to {@code (getMode() == READ)}

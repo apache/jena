@@ -20,7 +20,7 @@ package org.apache.jena.tdb2.loader;
 
 import org.apache.jena.atlas.lib.ProgressMonitor ;
 import org.apache.jena.atlas.logging.FmtLog ;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.ProgressStreamRDF ;

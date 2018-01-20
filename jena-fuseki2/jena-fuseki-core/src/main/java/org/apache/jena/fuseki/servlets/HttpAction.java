@@ -37,6 +37,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
+import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger ;
 
 /**
@@ -70,6 +71,7 @@ public class HttpAction
     private DataService dataService         = null ;
     private String datasetName              = null ;        // Dataset URI used (e.g. registry)
     private DatasetGraph dsg                = null ;
+    private Context context                 = null ;
 
     // ----
     
@@ -165,6 +167,7 @@ public class HttpAction
      */
     private void setDataset(DatasetGraph dsg) {
         this.dsg = dsg ;
+        this.context = Context.mergeCopy(Fuseki.getContext(), dsg.getContext());
         if ( dsg == null )
             return ;
         setTransactionalPolicy(dsg) ;
@@ -189,6 +192,11 @@ public class HttpAction
     /** Return the dataset, if any (may be null) */
     public DatasetGraph getDataset() {
         return dsg ;
+    }
+
+    /** Return the Context for this {@code HttpAction}. */
+    public Context getContext() {
+        return context ;
     }
 
     /**

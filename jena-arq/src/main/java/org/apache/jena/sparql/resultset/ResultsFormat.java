@@ -63,7 +63,8 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
     static public ResultsFormat FMT_RDF_TURTLE   = new ResultsFormat(contentTypeTurtle) ;
     static public ResultsFormat FMT_RDF_NT       = new ResultsFormat(contentTypeNTriples) ;
-    static public ResultsFormat FMT_TRIG         = new ResultsFormat(contentTypeTriG) ;
+    static public ResultsFormat FMT_RDF_TRIG     = new ResultsFormat(contentTypeTriG) ;
+    static public ResultsFormat FMT_RDF_NQ       = new ResultsFormat(contentTypeNQuads) ;
     static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
     
     // ---- Compatibility
@@ -97,8 +98,12 @@ public class ResultsFormat extends Symbol
         names.put("graph",       FMT_RDF_TTL) ;
         names.put("nt",          FMT_RDF_NT) ;
         names.put("n-triples",   FMT_RDF_NT) ;
+        names.put("ntriples",    FMT_RDF_NT) ;
         
-        names.put("trig",        FMT_TRIG) ;
+        names.put("nq",          FMT_RDF_NQ) ;
+        names.put("nquads",      FMT_RDF_NQ) ;
+        names.put("n-quads",     FMT_RDF_NQ) ;
+        names.put("trig",        FMT_RDF_TRIG) ;
 
     }
 
@@ -119,7 +124,9 @@ public class ResultsFormat extends Symbol
     }
 
     public static boolean isDatasetSyntax(ResultsFormat fmt) {
-        if ( FMT_TRIG.equals(fmt) )
+        if ( FMT_RDF_TRIG.equals(fmt) )
+            return true;
+        if ( FMT_RDF_NQ.equals(fmt) )
             return true;
         return false;
     }
@@ -164,9 +171,11 @@ public class ResultsFormat extends Symbol
         if ( url.endsWith(".tsv") )
             return FMT_RS_TSV;
 
-        // Trig for Dataset
+        // -- Dataset
         if ( url.endsWith(".trig") )
-            return FMT_TRIG;
+            return FMT_RDF_TRIG;
+        if ( url.endsWith(".nq") )
+            return FMT_RDF_NQ;
 
         return defaultFormat;
     }

@@ -60,5 +60,5 @@ public class Pair<A, B>
     }
     
     @Override 
-    public String toString() { return "("+str(a)+", "+str(b)+")" ; }  
+    public String toString() { return "("+str(a)+", "+str(b)+")" ; }
 }

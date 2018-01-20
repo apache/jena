@@ -20,9 +20,9 @@ package org.apache.jena.sparql.core.mem;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.core.TestDatasetGraphWithLock ;
+import org.apache.jena.sparql.core.AbstractTestDataset;
 
-public class TestDatasetGraphInMemoryLock extends TestDatasetGraphWithLock {
+public class TestDatasetGraphInMemoryLock extends AbstractTestDataset {
 	@Override
 	protected Dataset createDataset() {
 		return DatasetFactory.createTxnMem();

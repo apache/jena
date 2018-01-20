@@ -21,7 +21,7 @@ package org.apache.jena.tdb2;
 import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;

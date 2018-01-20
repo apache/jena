@@ -1,0 +1,3 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+<org.apache.jena.test://foo/nested/foo.txt> rdfs:seeAlso <org.apache.jena.test://foo/bar.txt> .
+

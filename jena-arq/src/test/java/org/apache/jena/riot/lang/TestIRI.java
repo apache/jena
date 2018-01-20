@@ -27,6 +27,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.system.Checker ;
 import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 
@@ -35,7 +36,7 @@ public class TestIRI extends BaseTest
     static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
     static protected final Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
     
-    static IRIFactory factory = IRIFactory.iriImplementation() ;
+    static IRIFactory factory = IRIResolver.iriFactory();
     
     @Test public void iri1()  { testIRI("http://example/") ; }
     

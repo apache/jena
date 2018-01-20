@@ -292,21 +292,15 @@ public class RDFConnectionLocal implements RDFConnection {
             throw new ARQException("closed");
     }
 
-    @Override
-    public void begin(ReadWrite readWrite)  { dataset.begin(readWrite); }
-
-    @Override
-    public void commit()                    { dataset.commit(); }
-
-    @Override
-    public void abort()                     { dataset.abort(); }
-
-    @Override
-    public boolean isInTransaction()        { return dataset.isInTransaction(); }
-
-    @Override
-    public void end()                       { dataset.end(); }
-    
-   
+    @Override public void begin()                       { dataset.begin(); }
+    @Override public void begin(TxnType txnType)        { dataset.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { dataset.begin(mode); }
+    @Override public boolean promote()                  { return dataset.promote(); }
+    @Override public void commit()                      { dataset.commit(); }
+    @Override public void abort()                       { dataset.abort(); }
+    @Override public boolean isInTransaction()          { return dataset.isInTransaction(); }
+    @Override public void end()                         { dataset.end(); }
+    @Override public ReadWrite transactionMode()        { return dataset.transactionMode(); }
+    @Override public TxnType transactionType()          { return dataset.transactionType(); }
 }
 

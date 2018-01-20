@@ -25,6 +25,7 @@ import java.util.Map ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
@@ -119,7 +120,6 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     // ----
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
 
     @Override
     public void commit() {
@@ -127,11 +127,18 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         txn.commit() ;
     }
 
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote()                  { return txn.promote(); }
+    //@Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
     // ----
 
     @Override

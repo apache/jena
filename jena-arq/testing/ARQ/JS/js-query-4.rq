@@ -1,0 +1,9 @@
+PREFIX js: <http://jena.apache.org/ARQ/jsFunction#>
+PREFIX : <http://example/>
+
+SELECT * {
+   ?s ?p ?o
+   FILTER(js:identity(?s) = ?s)
+   FILTER(js:identity(?p) = :p1 )
+   FILTER(sameTerm(js:identity(?o),1) )
+}

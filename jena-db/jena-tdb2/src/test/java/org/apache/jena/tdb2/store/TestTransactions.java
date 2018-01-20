@@ -25,7 +25,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite;

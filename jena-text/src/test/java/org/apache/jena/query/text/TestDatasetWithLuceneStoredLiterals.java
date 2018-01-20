@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -162,8 +162,7 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet results = qexec.execSelect() ;
-            int count;
-            for (count=0; results.hasNext(); count++) {
+            while (results.hasNext()) {
                 QuerySolution soln = results.nextSolution();
                 String entityURI = soln.getResource("s").getURI();
                 assertEquals(expectedEntityURI, entityURI);

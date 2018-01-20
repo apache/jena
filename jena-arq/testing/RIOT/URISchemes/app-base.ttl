@@ -1,0 +1,5 @@
+@base <app://2dee5b0a-6100-470a-a67f-1399518cb470/nested/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<foo.txt> rdfs:seeAlso </bar.txt> .
+

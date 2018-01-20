@@ -19,25 +19,23 @@
 package org.apache.jena.dboe.transaction.txn;
 
 import static org.apache.jena.dboe.transaction.txn.journal.JournalEntryType.UNDO;
-import static org.apache.jena.query.ReadWrite.WRITE ;
 
 import java.nio.ByteBuffer ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Objects ;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.locks.ReadWriteLock ;
 import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Sys;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.slf4j.Logger ;
 
 /**
@@ -446,23 +444,26 @@ public class TransactionCoordinator {
     }
     
     /** Start a transaction. This may block. */
-    public Transaction begin(ReadWrite readWrite) {
-        return begin(readWrite, true) ;
+    public Transaction begin(TxnType txnType) {
+        return begin(txnType, true) ;
     }
     
     /** 
-     * Start a transaction.  Returns null if this operation would block.
+     * Start a transaction.  
+     * Returns null if this operation would block.
      * Readers can start at any time.
-     * A single writer policy is currently imposed so a "begin(WRITE)"
-     * may block.  
+     * A single writer policy is currently imposed so a "begin(WRITE)" may block.  
      */
-    public Transaction begin(ReadWrite readWrite, boolean canBlock) {
-        Objects.nonNull(readWrite) ;
+    public Transaction begin(TxnType txnType, boolean canBlock) {
+        Objects.nonNull(txnType) ;
         checkActive() ;
         
-        // XXX Flag to bounce writers fpor long term "block writers"
+        // XXX Flag to bounce writers for long term "block writers"
         if ( false /* bounceWritersAtTheMoment */) {
-            if ( readWrite == WRITE ) {
+            // Is this stil needed?
+            // Switching happens as copy, not in-place compaction (at the moment).
+            // so we don't need a write-reject mode currently.
+            if ( txnType == TxnType.WRITE ) {
                 throw new TransactionException("Writers currently being rejected");
             }
         }
@@ -475,7 +476,7 @@ public class TransactionCoordinator {
         }
         
         // Readers never block.
-        if ( readWrite == WRITE ) {
+        if ( txnType == TxnType.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
@@ -486,7 +487,7 @@ public class TransactionCoordinator {
                 return null ;
             }
         }
-        Transaction transaction = begin$(readWrite) ;
+        Transaction transaction = begin$(txnType) ;
         startActiveTransaction(transaction) ;
         transaction.begin();
         return transaction;
@@ -497,8 +498,9 @@ public class TransactionCoordinator {
     
     // A read transaction can be promoted if writer does not start
     // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution.  With no item locking, a read can only be promoted
-    // if no writer started since the reader started.
+    // execution. With no item locking, a read can only be promoted
+    // if no writer started since the reader started or if it is "read committed",
+    // seeing changes made since it started and comitted at the poiont of promotion.
 
     /* The version of the data - incremented when transaction commits.
      * This is the version with repest to the last commited transaction.
@@ -507,15 +509,15 @@ public class TransactionCoordinator {
      */ 
     private final AtomicLong dataVersion = new AtomicLong(0) ;
     
-    private Transaction begin$(ReadWrite readWrite) {
+    private Transaction begin$(TxnType txnType) {
         synchronized(coordinatorLock) {
             // Thread safe part of 'begin'
             // Allocate the transaction serialization point.
             TxnId txnId = txnIdGenerator.generate() ;
             List<SysTrans> sysTransList = new ArrayList<>() ;
-            Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion.get(), sysTransList) ;
+            Transaction transaction = new Transaction(this, txnType, initialMode(txnType), txnId, dataVersion.get(), sysTransList) ;
             
-            ComponentGroup txnComponents = chooseComponents(this.components, readWrite) ;
+            ComponentGroup txnComponents = chooseComponents(this.components, txnType) ;
             
             try {
                 txnComponents.forEachComponent(elt -> {
@@ -536,10 +538,15 @@ public class TransactionCoordinator {
         }
     }
     
-    private ComponentGroup chooseComponents(ComponentGroup components, ReadWrite readWrite) {
+    // Detemine ReadWrite for the transaction start from initial TxnType.
+    private static ReadWrite initialMode(TxnType txnType) {
+        return TxnType.initial(txnType);
+    }
+    
+    private ComponentGroup chooseComponents(ComponentGroup components, TxnType txnType) {
         if ( quorumGenerator == null )
             return components ;
-        ComponentGroup cg = quorumGenerator.genQuorum(readWrite) ;
+        ComponentGroup cg = quorumGenerator.genQuorum(txnType) ;
         if ( cg == null )
             return components ;
         cg.forEach((id, c) -> {
@@ -548,33 +555,34 @@ public class TransactionCoordinator {
                 log.warn("TransactionalComponent not in TransactionCoordinator's ComponentGroup") ; 
         }) ;
         if ( log.isDebugEnabled() )
-            log.debug("Custom ComponentGroup for transaction "+readWrite+": size="+cg.size()+" of "+components.size()) ;
+            log.debug("Custom ComponentGroup for transaction "+txnType+": size="+cg.size()+" of "+components.size()) ;
         return cg ;
     }
 
-    /** Is promotion of transactions enabled? */ 
-    /*private*/public/*for development*/ static boolean promotion               = true ;
-    
-    /** Control of whether a transaction promotion can see any commits that
-     *  happened between this transaction starting and it promoting.
-     *  A form of "ReadCommitted".   
-     */
-    /*private*/public/*for development*/ static boolean readCommittedPromotion  = false ;
+//    /** Is promotion of transactions enabled? */ 
+//    /*private*/public/*for development*/ static boolean promotion               = true ;
+//    
+//    /** Control of whether a transaction promotion can see any commits that
+//     *  happened between this transaction starting and it promoting.
+//     *  A form of "ReadCommitted".   
+//     */
+//    /*private*/public/*for development*/ static boolean readCommittedPromotion  = false ;
     
     /** Whether to wait for writers when trying to promote */
     private static final boolean promotionWaitForWriters = true;
 
     /** Attempt to promote a transaction from READ to WRITE.
-     * No-op for a transaction already a writer.
-     * Throws {@link TransactionException} if the promotion
-     * can not be done.
+     * Return true for a No-op for a transaction already a writer.
      */
     /*package*/ boolean promoteTxn(Transaction transaction) {
-        if ( ! promotion )
-            return false;
-
-        if ( transaction.getMode() == WRITE )
+        if ( transaction.getMode() == ReadWrite.WRITE )
             return true ;
+        if ( transaction.getTxnType() == TxnType.READ )
+            throw new TransactionException("promote: can't promote a READ transaction") ;
+        
+        if ( transaction.getTxnType() != TxnType.READ_COMMITTED_PROMOTE && 
+             transaction.getTxnType() != TxnType.READ_PROMOTE )
+            throw new InternalErrorException("Transaction type is "+transaction.getTxnType());
         
         // Has there been an writer active since the transaction started?
         // Do a test outside the lock - only dataVaersion can change and that increases.
@@ -583,20 +591,14 @@ public class TransactionCoordinator {
         // If this test fails outside the lock it will fail inside.
         // If it passes, we have to test again in case there is an active writer.
         
-        if ( ! readCommittedPromotion ) {
-            long txnEpoch = transaction.getDataVersion() ;      // The transaction-start point.
-            long currentEpoch = dataVersion.get() ;             // The data serialization point.
-            
-            if ( txnEpoch < currentEpoch )
-                // The data has changed and "read committed" not allowed.
-                // We can reject now.
-                return false ;
-        }
+        //boolean readCommittedPromotion = transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE;
         
         // Once we have acquireWriterLock, we are single writer.
         // We may have to discard writer status because eocne we can make the defintite
         // decision on promotion, we find we can't promote after all.
-        if ( readCommittedPromotion ) {
+        
+        // == Read committed path.
+        if ( transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE ) {
             /*
              * acquireWriterLock(true) ;
              * synchronized(coordinatorLock) {
@@ -609,31 +611,39 @@ public class TransactionCoordinator {
             synchronized(coordinatorLock) {
                 try { 
                     transaction.promoteComponents() ;
-                    // Because we want to see the new state of the data.s
-                    //transaction.resetDataVersion(dataVersion.get());
+                    // Because we want to see the new state of the data.
+                    // transaction.resetDataVersion(dataVersion.get());
                 } catch (TransactionException ex) {
                     try { transaction.abort(); } catch(RuntimeException ex2) {}
                     releaseWriterLock();
                     return false ;
                 }
+                promoteActiveTransaction(transaction);
             }
             return true;
         }
         
+        // == Read with no committed allowed
+        // Check epoch is current - no "read committed". 
+        // Check now outside synchronized (will need to check again to confirm) for speed
+        // and to allow for "no wait for writes".
+        
+        if ( ! checkNoInterveningCommits(transaction) )
+            return false;
+
+        // Take writer lock.
         if ( ! waitForWriters() )
             // Failed to become a writer.
             return false;
-        // Now a proto-writer.
         
+        // Now a proto-writer. We need to confirm when inside the synchronized. 
         synchronized(coordinatorLock) {
             // Not read commited.
             // Need to check the data version once we are the writer and all previous
             // writers have commited or aborted.
             // Has there been an writer active since the transaction started?
-            long txnEpoch = transaction.getDataVersion() ;    // The transaction-start point.
-            long currentEpoch = dataVersion.get() ;         // The data serialization point.
-
-            if ( txnEpoch != currentEpoch ) {
+            
+            if ( ! checkNoInterveningCommits(transaction) ) {
                 // Failed to promote.
                 releaseWriterLock();
                 return false ;
@@ -648,10 +658,22 @@ public class TransactionCoordinator {
                 releaseWriterLock();
                 return false ;
             }
+            promoteActiveTransaction(transaction);
         }
         return true ;
     }
         
+    private boolean checkNoInterveningCommits(Transaction transaction) {
+        long txnEpoch = transaction.getDataVersion() ;      // The transaction-start point.
+        long currentEpoch = dataVersion.get() ;             // The current data serialization point.
+
+        if ( txnEpoch < currentEpoch )
+            // The data has changed and "read committed" not allowed.
+            // We can reject now.
+            return false ;
+        return true;
+    }
+    
     private boolean waitForWriters() {
         if ( promotionWaitForWriters )
             return acquireWriterLock(true) ;
@@ -680,8 +702,14 @@ public class TransactionCoordinator {
         notifyPrepareFinish(transaction);
     }
 
-    /*package*/ void executeCommit(Transaction transaction,  Runnable commit, Runnable finish) {
-        // This is the commit point. 
+    /*package*/ void executeCommit(Transaction transaction, Runnable commit, Runnable finish) {
+        if ( transaction.getMode() == ReadWrite.READ ) {
+            finish.run();
+            notifyCommitFinish(transaction);
+            return;
+        }
+        
+        // This is the commit for a write transaction  
         synchronized(coordinatorLock) {
             // *** COMMIT POINT
             journal.sync() ;
@@ -691,9 +719,8 @@ public class TransactionCoordinator {
             journal.truncate(0) ;
             // and tell the Transaction it's finished. 
             finish.run() ;
-            // Bump global serialization point if necessary.
-            if ( transaction.getMode() == WRITE )
-                advanceDataVersion() ;
+            // Bump global serialization point
+            advanceDataVersion() ;
             notifyCommitFinish(transaction) ;
         }
     }
@@ -709,9 +736,8 @@ public class TransactionCoordinator {
         notifyAbortFinish(transaction) ;
     }
     
-    // Active transactions: this is (the missing) ConcurrentHashSet
-    private final static Object dummy                   = new Object() ;    
-    private ConcurrentHashMap<Transaction, Object> activeTransactions = new ConcurrentHashMap<>() ;
+    // Active transactions.
+    private Set<Transaction> activeTransactions = ConcurrentHashMap.newKeySet();
     private AtomicLong activeTransactionCount = new AtomicLong(0) ;
     private AtomicLong activeReadersCount = new AtomicLong(0) ;
     private AtomicLong activeWritersCount = new AtomicLong(0) ;
@@ -726,8 +752,15 @@ public class TransactionCoordinator {
                 case WRITE: countBeginWrite.incrementAndGet() ; activeWritersCount.incrementAndGet() ; break ;
             }
             activeTransactionCount.incrementAndGet() ;
-            activeTransactions.put(transaction, dummy) ;
+            activeTransactions.add(transaction) ;
         }
+    }
+    
+    
+    private void promoteActiveTransaction(Transaction transaction) {
+        // Called for a real promote as READ-> WRITE
+        activeReadersCount.decrementAndGet();
+        activeWritersCount.incrementAndGet();
     }
     
     private void finishActiveTransaction(Transaction transaction) {
@@ -763,14 +796,14 @@ public class TransactionCoordinator {
     private void notifyCommitStart(Transaction transaction) {}
     
     private void notifyCommitFinish(Transaction transaction) {
-        if ( transaction.getMode() == WRITE )
+        if ( transaction.getMode() == ReadWrite.WRITE )
             releaseWriterLock();
     }
     
     private void notifyAbortStart(Transaction transaction) { }
     
     private void notifyAbortFinish(Transaction transaction) {
-        if ( transaction.getMode() == WRITE )
+        if ( transaction.getMode() == ReadWrite.WRITE )
             releaseWriterLock();
     }
 

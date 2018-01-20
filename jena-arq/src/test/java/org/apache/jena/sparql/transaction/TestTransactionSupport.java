@@ -24,6 +24,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Assert ;
 import org.junit.Test ;
@@ -50,7 +51,10 @@ public class TestTransactionSupport {
         x.add(new Object[] {"createOneGraph" ,
             (Creator<DatasetGraph>)()->
                 DatasetGraphFactory.createOneGraph(GraphFactory.createDefaultGraph()),
-            true, false}) ;
+            true, true}) ;
+        x.add(new Object[] {"createZeroGraph" ,
+            (Creator<DatasetGraph>)()->new DatasetGraphZero(),
+            true, true}) ;
         x.add(new Object[] {"create(Graph)",
             (Creator<DatasetGraph>)()->
                 DatasetGraphFactory.create(GraphFactory.createDefaultGraph()),

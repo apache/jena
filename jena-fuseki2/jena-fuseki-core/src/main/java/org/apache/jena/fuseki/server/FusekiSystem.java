@@ -45,6 +45,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.tdb.sys.Names ;
 
 public class FusekiSystem
@@ -257,12 +258,17 @@ public class FusekiSystem
             return Collections.emptyList(); 
         }
         Fuseki.configLog.info("Configuration file: " + configFilename) ;
-        return FusekiConfig.readServerConfigFile(configFilename) ;
+        //return FusekiConfig.readServerConfigFile(configFilename);
+        Model model = AssemblerUtils.readAssemblerFile(configFilename) ;
+        if ( model.size() == 0 )
+            return Collections.emptyList() ;
+        FusekiConfig.processServerConfig(model);
+        return FusekiConfig.servicesAndDatasets(model) ;
     }
     
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
                                                       boolean allowUpdate, Map<String, String> params) {
-        DatasetDescriptionRegistry registry = FusekiSystem.registryForBuild() ; 
+        DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ; 
         // ---- Setup
         if ( params == null ) {
             params = new HashMap<>() ;
@@ -403,25 +409,6 @@ public class FusekiSystem
         return path ;
     }
 
-    /**
-     * <ul>
-     * <li>GLOBAL: sharing across all descriptions
-     * <li>FILE: sharing within files but not across files.
-     * </ul>
-     */
-    enum DatasetDescriptionScope { GLOBAL, FILE }
-    private static DatasetDescriptionRegistry globalDatasets = new DatasetDescriptionRegistry() ;
-    private static DatasetDescriptionScope policyDatasetDescriptionScope = DatasetDescriptionScope.FILE ;
-    
-    /** Call this once per configuration file. */
-    public static DatasetDescriptionRegistry registryForBuild() {
-        switch (policyDatasetDescriptionScope) {
-            case FILE :     return new DatasetDescriptionRegistry() ;
-            case GLOBAL :   return globalDatasets ;
-            default:        throw new InternalErrorException() ;
-        }
-    }
-    
     /**
      * Dataset set name to configuration file name. Return a configuration file name -
      * existing one or ".ttl" form if new

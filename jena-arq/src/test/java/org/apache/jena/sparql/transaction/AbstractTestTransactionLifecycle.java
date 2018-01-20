@@ -18,8 +18,9 @@
 
 package org.apache.jena.sparql.transaction;
 
-import static org.apache.jena.query.ReadWrite.READ ;
-import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.TxnType.READ ;
+import static org.apache.jena.query.TxnType.WRITE ;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -30,15 +31,20 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.JenaTransactionException ;
-import static org.junit.Assume.* ;
 import org.junit.Test ;
 
+/**
+ * Dataset transaction lifecycle. 
+ */
 public abstract class AbstractTestTransactionLifecycle extends BaseTest
 {
     protected abstract Dataset create() ;
     
-    protected boolean supportsAbort() { return true ; } 
+    protected boolean supportsAbort()   { return true ; } 
+    protected boolean supportsPromote() { return true ; }
 
     @Test
     public void transaction_00() {
@@ -49,7 +55,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test
     public void transaction_r01() {
         Dataset ds = create() ;
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         assertTrue(ds.isInTransaction()) ;
         ds.end() ;
         assertFalse(ds.isInTransaction()) ;
@@ -58,7 +64,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test
     public void transaction_r02() {
         Dataset ds = create() ;
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
@@ -69,10 +75,19 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test
     public void transaction_r03() {
         Dataset ds = create() ;
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_r04() {
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ;
         ds.end() ;
         assertFalse(ds.isInTransaction()) ;
     }
@@ -80,40 +95,37 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test
     public void transaction_w01() {
         Dataset ds = create() ;
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
     }
-
+    
     @Test
     public void transaction_w02() {
-        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
-        ds.abort() ;
+        ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
     }
 
     @Test
     public void transaction_w03() {
+        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
-        ds.commit() ;
-        assertFalse(ds.isInTransaction()) ;
-        ds.end() ;
+        ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
     }
 
     @Test
     public void transaction_w04() {
-        assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
-        ds.abort() ;
+        ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
         ds.end() ;
         assertFalse(ds.isInTransaction()) ;
@@ -122,18 +134,119 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     @Test
     public void transaction_w05() {
         assumeTrue(supportsAbort()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.WRITE) ;
+        assertTrue(ds.isInTransaction()) ;
+        ds.abort() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_w06() {
+        assumeTrue(supportsAbort()) ;
         // .end is not necessary
         Dataset ds = create() ;
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
 
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
     }
+
+//    TxnType.READ_PROMOTE
+//    TxnType.READ_COMMITTED_PROMOTE
+    
+    @Test
+    public void transaction_p01() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ_PROMOTE) ;
+        assertEquals(TxnType.READ_PROMOTE, ds.transactionType());
+        assertTrue(ds.isInTransaction()) ;
+        assertEquals(ReadWrite.READ, ds.transactionMode());
+        ds.promote();
+        assertEquals(ReadWrite.WRITE, ds.transactionMode());
+        ds.commit();
+        ds.end();
+    }
+    
+    @Test
+    public void transaction_p02() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ_COMMITTED_PROMOTE) ;
+        assertEquals(TxnType.READ_COMMITTED_PROMOTE, ds.transactionType());
+        assertTrue(ds.isInTransaction()) ;
+        assertEquals(ReadWrite.READ, ds.transactionMode());
+        boolean b = ds.promote();
+        assertTrue(b) ;
+        assertEquals(ReadWrite.WRITE, ds.transactionMode());
+        ds.commit();
+        ds.end();
+    }
+    
+    @Test
+    public void transaction_p03() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ_PROMOTE) ;
+        assertTrue(ds.isInTransaction()) ;
+        assertEquals(ReadWrite.READ, ds.transactionMode());
+        boolean b = ds.promote();
+        assertTrue(b) ;
+        assertEquals(ReadWrite.WRITE, ds.transactionMode());
+        ds.abort();
+        ds.end();
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_p04() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ_COMMITTED_PROMOTE) ;
+        assertTrue(ds.isInTransaction()) ;
+        assertEquals(ReadWrite.READ, ds.transactionMode());
+        boolean b = ds.promote();
+        assertTrue(b) ;
+        assertEquals(ReadWrite.WRITE, ds.transactionMode());
+        ds.abort();
+        ds.end();
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test
+    public void transaction_p05() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ_COMMITTED_PROMOTE) ;
+        assertTrue(ds.isInTransaction()) ;
+        boolean b1 = ds.promote();
+        assertTrue(b1) ;
+        boolean b2 = ds.promote();
+        assertTrue(b2) ;
+        ds.commit();
+        ds.end();
+    }
+    
+    @Test(expected=JenaException.class)
+    public void transaction_err_read_promote() {
+        assumeTrue(supportsPromote()) ;
+        Dataset ds = create() ;
+        ds.begin(TxnType.READ) ;
+        boolean b = ds.promote();   // Illgeal.
+        assertFalse(b) ;
+        ds.commit();
+        ds.end();
+    }
+    
+    // XXX READ_PROMOTE -> update -> fail promote/boolean. 
 
     // Patterns.
     @Test
@@ -253,7 +366,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     public void transaction_err_12()    { testAbortCommit(WRITE) ; }
 
     private void read1(Dataset ds) {
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
@@ -261,14 +374,14 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     }
 
     private void read2(Dataset ds) {
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(TxnType.READ) ;
         assertTrue(ds.isInTransaction()) ;
         ds.end() ;
         assertFalse(ds.isInTransaction()) ;
     }
 
     private void write(Dataset ds) {
-        ds.begin(ReadWrite.WRITE) ;
+        ds.begin(TxnType.WRITE) ;
         assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
@@ -281,67 +394,67 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
     
     // Error conditions that should be detected.
 
-    private void testBeginBegin(ReadWrite mode1, ReadWrite mode2) {
+    private void testBeginBegin(TxnType txnType1, TxnType txnType2) {
         Dataset ds = create() ;
-        ds.begin(mode1) ;
+        ds.begin(txnType1) ;
         try {
-            ds.begin(mode2) ;
-            fail("Expected transaction exception - begin-begin (" + mode1 + ", " + mode2 + ")") ;
+            ds.begin(txnType2) ;
+            fail("Expected transaction exception - begin-begin (" + txnType1 + ", " + txnType2 + ")") ;
         }
         catch (JenaTransactionException ex) {
             safeEnd(ds) ;
         }
     }
     
-    private void testCommitCommit(ReadWrite mode) {
+    private void testCommitCommit(TxnType txnType) {
         Dataset ds = create() ;
-        ds.begin(mode) ;
+        ds.begin(txnType) ;
         ds.commit() ;
         try {
             ds.commit() ;
-            fail("Expected transaction exception - commit-commit(" + mode + ")") ;
+            fail("Expected transaction exception - commit-commit(" + txnType + ")") ;
         }
         catch (JenaTransactionException ex) {
             safeEnd(ds) ;
         }
     }
 
-    private void testCommitAbort(ReadWrite mode) {
+    private void testCommitAbort(TxnType txnType) {
         assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
-        ds.begin(mode) ;
+        ds.begin(txnType) ;
         ds.commit() ;
         try {
             ds.abort() ;
-            fail("Expected transaction exception - commit-abort(" + mode + ")") ;
+            fail("Expected transaction exception - commit-abort(" + txnType + ")") ;
         }
         catch (JenaTransactionException ex) {
             safeEnd(ds) ;
         }
     }
 
-    private void testAbortAbort(ReadWrite mode) {
+    private void testAbortAbort(TxnType txnType) {
         assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
-        ds.begin(mode) ;
+        ds.begin(txnType) ;
         ds.abort() ;
         try {
             ds.abort() ;
-            fail("Expected transaction exception - abort-abort(" + mode + ")") ;
+            fail("Expected transaction exception - abort-abort(" + txnType + ")") ;
         }
         catch (JenaTransactionException ex) {
             ds.end() ;
         }
     }
 
-    private void testAbortCommit(ReadWrite mode) {
+    private void testAbortCommit(TxnType txnType) {
         assumeTrue(supportsAbort()) ;
         Dataset ds = create() ;
-        ds.begin(mode) ;
+        ds.begin(txnType) ;
         ds.abort() ;
         try {
             ds.commit() ;
-            fail("Expected transaction exception - abort-commit(" + mode + ")") ;
+            fail("Expected transaction exception - abort-commit(" + txnType + ")") ;
         }
         catch (JenaTransactionException ex) {
             safeEnd(ds) ;
@@ -360,7 +473,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
 
                 @Override
                 public Boolean call() {
-                    ds.begin(ReadWrite.WRITE);
+                    ds.begin(TxnType.WRITE);
                     long x = counter.incrementAndGet() ;
                     // Hold the lock for a short while.
                     // The W threads will take the sleep serially.
@@ -394,7 +507,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
             Callable<Boolean> callable = new Callable<Boolean>() {
                 @Override
                 public Boolean call() {
-                    ds.begin(ReadWrite.READ);
+                    ds.begin(TxnType.READ);
                     long x = counter.incrementAndGet() ;
                     // Hold the lock for a few seconds - these should be in parallel.
                     Lib.sleep(1000) ;

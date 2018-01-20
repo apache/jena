@@ -18,25 +18,21 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertNull ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.*;
 
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.jenax.Txn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.migrate.L;
-import org.apache.jena.dboe.transaction.ThreadTxn;
-import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.dboe.transaction.txn.TransactionalBase;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.ThreadTxn;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -65,28 +61,28 @@ public class TestTransactionCoordinatorControl {
         AtomicInteger counter2 = new AtomicInteger(0) ;
 
         txnMgr.blockWriters();
-        ThreadTxn threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
+        ThreadAction threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet()) ;
         threadTxn1.run() ;
         assertEquals(1, counter1.get()) ;
     }
 
     @Test public void txn_coord_disable_writers_2() {
         txnMgr.blockWriters();
-        Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.WRITE, false)) ;
+        Transaction txn = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
         assertNull(txn) ;
         txnMgr.enableWriters();
-        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(ReadWrite.WRITE, false)) ;
+        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
         assertNotNull(txn1) ;
     }
     
     @Test public void txn_coord_disable_writers_3() {
         txnMgr.blockWriters();
-        Transaction txn = L.syncCallThread(()->txnMgr.begin(ReadWrite.READ, false)) ;
+        Transaction txn = L.syncCallThread(()->txnMgr.begin(TxnType.READ, false)) ;
         assertNotNull(txn) ;
         txnMgr.enableWriters();
-        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(ReadWrite.WRITE, false)) ;
+        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
         assertNotNull(txn1) ;
-        Transaction txn2 = L.syncCallThread(()->txnMgr.begin(ReadWrite.READ, false)) ;
+        Transaction txn2 = L.syncCallThread(()->txnMgr.begin(TxnType.READ, false)) ;
         assertNotNull(txn2) ;
     }
     
@@ -108,17 +104,17 @@ public class TestTransactionCoordinatorControl {
     @Test public void txn_coord_exclusive_1() {
         txnMgr.startExclusiveMode();
         L.syncOtherThread(()->{
-            Transaction txn1 = txnMgr.begin(ReadWrite.WRITE, false) ;
+            Transaction txn1 = txnMgr.begin(TxnType.WRITE, false) ;
             assertNull(txn1) ;
-            Transaction txn2 = txnMgr.begin(ReadWrite.READ, false) ;
+            Transaction txn2 = txnMgr.begin(TxnType.READ, false) ;
             assertNull(txn2) ;
         }) ;
         
         txnMgr.finishExclusiveMode();
         L.syncOtherThread(()->{
-            Transaction txn1 = txnMgr.begin(ReadWrite.WRITE, false) ;
+            Transaction txn1 = txnMgr.begin(TxnType.WRITE, false) ;
             assertNotNull(txn1) ;
-            Transaction txn2 = txnMgr.begin(ReadWrite.READ, false) ;
+            Transaction txn2 = txnMgr.begin(TxnType.READ, false) ;
             assertNotNull(txn2) ;
         }) ;
     }
@@ -126,7 +122,7 @@ public class TestTransactionCoordinatorControl {
     @Test public void txn_coord_exclusive_2() {
         AtomicInteger counter1 = new AtomicInteger(0) ;
         Semaphore finalSema = new Semaphore(0) ;
-        ThreadTxn ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
+        ThreadAction ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
             counter1.incrementAndGet() ;
         }) ;
         boolean b = txnMgr.tryExclusiveMode(false);

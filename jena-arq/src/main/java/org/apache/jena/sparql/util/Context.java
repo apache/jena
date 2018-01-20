@@ -20,8 +20,6 @@ package org.apache.jena.sparql.util ;
 
 import java.util.* ;
 import java.util.concurrent.ConcurrentHashMap ;
-import java.util.function.Consumer;
-
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -37,7 +35,7 @@ public class Context {
     public static final Context      emptyContext = new Context(true) ;
 
     protected Map<Symbol, Object>    context      = new ConcurrentHashMap<>() ;
-    protected List<Consumer<Symbol>> callbacks    = new ArrayList<>() ;
+
     protected boolean                readonly     = false ;
 
     /** Create an empty context */
@@ -86,13 +84,11 @@ public class Context {
     /** Store a named value - overwrites any previous set value */
     public void put(Symbol property, Object value) {
         _put(property, value) ;
-        doCallbacks(property) ;
     }
 
     /** Store a named value - overwrites any previous set value */
     public void set(Symbol property, Object value) {
         _put(property, value) ;
-        doCallbacks(property) ;
     }
 
     private void _put(Symbol property, Object value) {
@@ -125,13 +121,11 @@ public class Context {
     /** Remove any value associated with a property */
     public void remove(Symbol property) {
         context.remove(property) ;
-        doCallbacks(property) ;
     }
 
     /** Remove any value associated with a property - alternative method name */
     public void unset(Symbol property) {
         context.remove(property) ;
-        doCallbacks(property) ;
     }
 
     // ---- Helpers
@@ -202,10 +196,8 @@ public class Context {
     public void putAll(Context other) {
         if ( readonly )
             throw new ARQException("Context is readonly") ;
-        if ( other != null ) {
-            for ( Map.Entry<Symbol, Object> e : other.context.entrySet() )
-                put(e.getKey(), e.getValue()) ;
-        }
+        if ( other != null )
+            other.context.forEach(this::put);
     }
 
     // -- true/false
@@ -315,23 +307,6 @@ public class Context {
         return context.size() ;
     }
 
-    // ---- Callbacks
-    public synchronized void addCallback(Consumer<Symbol> m) {
-        callbacks.add(m) ;
-    }
-
-    public synchronized void removeCallback(Consumer<Symbol> m) {
-        callbacks.remove(m) ;
-    }
-
-    public synchronized List<Consumer<Symbol>> getCallbacks() {
-        return Collections.unmodifiableList(callbacks) ;
-    }
-
-    private synchronized void doCallbacks(Symbol symbol) {
-        callbacks.forEach(c -> c.accept(symbol));
-    }
-
     @Override
     public String toString() {
         String x = "" ;
@@ -344,27 +319,40 @@ public class Context {
         return x ;
     }
 
-    // Put any per-dataset execution global configuration state here.
-    public static Context setupContext(Context context, DatasetGraph dataset) {
-        if ( context == null )
-            context = ARQ.getContext() ; // Already copied?
-        context = context.copy() ;
-
-        if ( dataset != null && dataset.getContext() != null )
-            // Copy per-dataset settings.
-            context.putAll(dataset.getContext()) ;
+    /** Setup a context using anouter context and a dataset.
+     *  This adds the current time.
+     */
+    public static Context setupContextExec(Context globalContext, DatasetGraph dataset) {
+        if ( globalContext == null )
+            globalContext = ARQ.getContext();
+        // Copy per-dataset settings.
+        Context dsgCxt = ( dataset != null && dataset.getContext() != null ) 
+            ? dataset.getContext()
+            : null;
+        
+        Context context = mergeCopy(globalContext, dsgCxt); 
 
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
 
         // Allocators.
-        // context.set(ARQConstants.sysVarAllocNamed, new
-        // VarAlloc(ARQConstants.allocVarMarkerExec)) ;
-        // context.set(ARQConstants.sysVarAllocAnon, new
-        // VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
+        // context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
+        // context.set(ARQConstants.sysVarAllocAnon, new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
         // Add VarAlloc for variables and bNodes (this is not the parse name).
-        // More added later e.g. query (if there is a query), algebra form (in
-        // setOp)
+        // More added later e.g. query (if there is a query), algebra form (in setOp)
 
+        return context;
+    }
+
+    /** Merge an outer (fglobal) and local context to produce a new context
+     * The new context is always a separate copy.  
+     */
+    public static Context mergeCopy(Context contextGlobal, Context contextLocal) {
+        if ( contextGlobal == null )
+            contextGlobal = ARQ.getContext();
+        Context context = contextGlobal.copy();
+        if ( contextLocal != null )
+            // Copy per-dataset settings.
+            context.putAll(contextLocal);
         return context ;
     }
 

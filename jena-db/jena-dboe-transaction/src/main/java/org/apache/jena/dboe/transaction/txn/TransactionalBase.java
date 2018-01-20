@@ -20,8 +20,10 @@ package org.apache.jena.dboe.transaction.txn;
 
 import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 
 /**
  * Framework for implementing a Transactional.
@@ -93,17 +95,22 @@ public class TransactionalBase implements TransactionalSystem {
             Log.info(this,  "<< attach");
     } 
     
+  @Override
+  public final void begin(ReadWrite readWrite) { 
+      begin(TxnType.convert(readWrite));
+  }
+    
     @Override
-    public final void begin(ReadWrite readWrite) {
-        Objects.nonNull(readWrite) ;
+    public final void begin(TxnType txnType) {
+        Objects.nonNull(txnType) ;
         checkRunning() ;
         checkNotActive() ;
-        Transaction transaction = txnMgr.begin(readWrite) ;
+        Transaction transaction = txnMgr.begin(txnType) ;
         theTxn.set(transaction) ;
     }
     
     @Override
-    public boolean promote() {
+    public final boolean promote() {
         checkActive() ;
         Transaction txn = getValidTransaction() ;
         return txn.promote() ;
@@ -152,21 +159,29 @@ public class TransactionalBase implements TransactionalSystem {
         _end() ;
     }
 
-    /**
-     * Return the Read/write state (or null when not in a transaction)
-     */
     @Override
-    final
-    public ReadWrite getState() {
+    public ReadWrite transactionMode() {
         checkRunning() ;
-        // tricky - touching theTxn causes it to initialize.
-        Transaction txn = theTxn.get() ;
+        Transaction txn = Lib.readThreadLocal(theTxn) ;
         if ( txn != null )
             return txn.getMode() ;
-        theTxn.remove() ;
         return null ; 
     }
-    
+
+    @Override
+    public TxnType transactionType() {
+        checkRunning() ;
+        Transaction txn = Lib.readThreadLocal(theTxn) ;
+        if ( txn != null )
+            return txn.getTxnType() ;
+        return null ;
+    }
+
+    @Override
+    public boolean isInTransaction() {
+        return Lib.readThreadLocal(theTxn) != null;
+    }
+
     @Override
     final
     public TransactionInfo getTransactionInfo() {
@@ -176,11 +191,7 @@ public class TransactionalBase implements TransactionalSystem {
     @Override
     final
     public Transaction getThreadTransaction() {
-        Transaction txn = theTxn.get() ;
-        // Touched the thread local so it is defined now.
-//        if ( txn == null )
-//            theTxn.remove() ;
-        return txn ;
+        return  Lib.readThreadLocal(theTxn);
     }
 
     /** Get the transaction, checking there is one */  

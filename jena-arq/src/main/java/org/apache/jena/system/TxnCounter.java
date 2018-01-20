@@ -18,15 +18,14 @@
 
 package org.apache.jena.system;
 
-import static org.apache.jena.query.ReadWrite.WRITE ;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 
-import java.util.concurrent.Semaphore ;
-import java.util.concurrent.atomic.AtomicLong ;
-
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.JenaTransactionException ;
-import org.apache.jena.sparql.core.Transactional ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.JenaTransactionException;
+import org.apache.jena.sparql.core.Transactional;
 
 /** A MR+SW transactional Counter */ 
 public class TxnCounter implements Transactional {
@@ -35,148 +34,199 @@ public class TxnCounter implements Transactional {
     
     // Semaphore to implement "Single Active Writer" - independent of readers
     // This is not reentrant.
-    private Semaphore writersWaiting = new Semaphore(1, true) ;
+    private Semaphore writersWaiting = new Semaphore(1, true);
     
     private void releaseWriterLock() {
-        int x = writersWaiting.availablePermits() ;
+        int x = writersWaiting.availablePermits();
         if ( x != 0 )
-            throw new JenaTransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls") ;
-        writersWaiting.release() ;
+            throw new JenaTransactionException("TransactionCoordinator: Probably mismatch of enable/disableWriter calls");
+        writersWaiting.release();
     }
     
     private boolean acquireWriterLock(boolean canBlock) {
         if ( ! canBlock )
-            return writersWaiting.tryAcquire() ;
+            return writersWaiting.tryAcquire();
         try { 
-            writersWaiting.acquire() ; 
+            writersWaiting.acquire(); 
             return true;
-        } catch (InterruptedException e) { throw new JenaTransactionException(e) ; }
+        } catch (InterruptedException e) { throw new JenaTransactionException(e); }
     }
     // ---- TransactionCoordinator.
     
     // Transaction state.
     static class IntegerState {
-        long txnValue ;
-        public IntegerState(long v) { this.txnValue = v ; }
+        long txnValue;
+        public IntegerState(long v) { this.txnValue = v; }
     }
     
     // Global state - the exterally visible value and the starting point for any
     // transaction. This is set to a new value when a write transaction commits.
     
-    private final AtomicLong value = new AtomicLong(-1712) ; 
+    private final AtomicLong value = new AtomicLong(-1712); 
+    private final AtomicLong epoch = new AtomicLong(1);
 
     // ---- Transaction state.
     
     // The per-transaction state (inside a transaction). Null outside a transaction
     // cleared by commit or abort in a write transaction.
-    private ThreadLocal<IntegerState> txnValue = ThreadLocal.withInitial(()->null) ;
+    private ThreadLocal<IntegerState> transactionValue = ThreadLocal.withInitial(()->null);
     // The kind of transaction.
-    private ThreadLocal<ReadWrite>    txnMode  = ThreadLocal.withInitial(()->null) ;
+    private ThreadLocal<ReadWrite>    transactionMode  = ThreadLocal.withInitial(()->null);
+    private ThreadLocal<TxnType>      transactionType  = ThreadLocal.withInitial(()->null);
+    private ThreadLocal<Long>         transactionEpoch = ThreadLocal.withInitial(()->null);
     
-    // Syncrhonization for making changes.  
-    private Object txnLifecycleLock   = new Object() ; 
+    // Synchronization for making changes.  
+    private Object txnLifecycleLock   = new Object(); 
     
     public TxnCounter(long x) {
-        value.set(x) ;
+        value.set(x);
     }
     
     @Override
     public void begin(ReadWrite readWrite) {
-        begin(readWrite, true) ;
+        begin(TxnType.convert(readWrite));
     }
     
-    public void begin(ReadWrite readWrite, boolean canBlock) {
+    @Override
+    public void begin(TxnType txnType) {
+        begin(txnType, true);
+    }
+    
+    public void begin(TxnType txnType, boolean canBlock) {
         // Ensure a single writer. 
         // (Readers never block at this point.)
-        if ( readWrite == WRITE ) {
+        if ( txnType == TxnType.WRITE ) {
             // Writers take a WRITE permit from the semaphore to ensure there
             // is at most one active writer, else the attempt to start the
             // transaction blocks.
             // Released by in commit/abort.
-            acquireWriterLock(canBlock) ;
+            acquireWriterLock(canBlock);
         }
         // at this point, 
         // One writer or one of many readers. 
         
         synchronized(txnLifecycleLock) {
-            if ( txnMode.get() != null )
-                throw new JenaTransactionException("Already in a transaction") ;
-            IntegerState state = new IntegerState(value.get()) ;
-            txnValue.set(state) ;
-            txnMode.set(readWrite);
+            if ( transactionMode.get() != null )
+                throw new JenaTransactionException("Already in a transaction");
+            // Set transaction to current epoch - writes advance this in commit().
+            transactionEpoch.set(epoch.get()) ;
+            IntegerState state = new IntegerState(value.get());
+            transactionValue.set(state);
+            transactionMode.set(TxnType.initial(txnType));
+            transactionType.set(txnType);
         }
     }
 
     @Override
+    public boolean promote() {
+        checkTxn();
+        if ( transactionMode.get() == ReadWrite.WRITE )
+            return true;
+        TxnType txnType = transactionType.get();
+        if ( txnType == TxnType.READ )
+            throw new JenaTransactionException("Attempt to promote a READ transsction");
+        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
+            acquireWriterLock(true);
+            transactionMode.set(ReadWrite.WRITE);
+            IntegerState state = new IntegerState(value.get());
+            transactionValue.set(state);
+            return true;
+        }
+        // READ_PROMOTE
+        acquireWriterLock(true);
+        synchronized(txnLifecycleLock) {
+            long nowEpoch = epoch.get();
+            if ( transactionEpoch.get() != nowEpoch ) {
+                // Can't.
+                releaseWriterLock();
+                return false;
+            }
+            // Can.
+            transactionMode.set(ReadWrite.WRITE);
+        }
+        return true;
+    }
+    
+    @Override
     public void commit() {
         checkTxn(); 
         if ( isWriteTxn() ) {
-            // Set global.
-            value.set(getDataState().txnValue) ;
-            txnValue.set(null); 
+            // Theer is only one writer - we are inside the writer lock. 
+            // Advance the epoch.
+            long thisEpoch = epoch.incrementAndGet();
+            value.set(getDataState().txnValue);
+            transactionValue.set(null);
             releaseWriterLock();
         }
-        endOnce() ;
+        endOnce();
     }
 
     @Override
     public void abort() {
         checkTxn(); 
         if ( isWriteTxn() ) {
-            txnValue.set(null); 
+            transactionValue.set(null); 
             releaseWriterLock();
         }
-        endOnce() ;
+        endOnce();
     }
 
     @Override
     public boolean isInTransaction() {
-        ReadWrite mode = txnMode.get() ;
-        if ( mode == null )
-            // Remove it - avoid holding the memory.
-            txnMode.remove();
-        return mode != null ;
+        return Lib.readThreadLocal(transactionMode) != null;
+    }
+
+    @Override
+    public ReadWrite transactionMode() {
+        return Lib.readThreadLocal(transactionMode);
+    }
+    
+    @Override
+    public TxnType transactionType() {
+        return Lib.readThreadLocal(transactionType);
     }
 
     @Override
     public void end() {
         if ( ! isInTransaction() ) 
-            return ;
-        if ( isWriteTxn() && txnValue.get() != null )
-            throw new JenaTransactionException("No commit or abort before end for a write transaction") ;
-        endOnce() ;
+            return;
+        if ( isWriteTxn() && transactionValue.get() != null )
+            throw new JenaTransactionException("No commit or abort before end for a write transaction");
+        endOnce();
     }
 
     private void endOnce() {
         if ( isActiveTxn() ) {
             synchronized(txnLifecycleLock) {
-                txnValue.remove();
-                txnMode.remove();
+                transactionValue.remove();
+                transactionType.remove();
+                transactionMode.remove();
+                transactionEpoch.remove();
             }
         }
     }
 
     /** Increment the value inside a write transaction */ 
     public void inc() {
-        checkWriteTxn() ;
-        IntegerState ts = getDataState() ;
-        ts.txnValue++ ;
+        checkWriteTxn();
+        IntegerState ts = getDataState();
+        ts.txnValue++;
     }
     
     /** Decrement the value inside a write transaction */ 
     public void dec() {
-        checkWriteTxn() ;
-        IntegerState ts = getDataState() ;
-        ts.txnValue-- ;
+        checkWriteTxn();
+        IntegerState ts = getDataState();
+        ts.txnValue--;
     }
 
     /** Set the value inside a write transaction, return the old value*/ 
     public long set(long x) {
-        checkWriteTxn() ;
-        IntegerState ts = getDataState() ;
-        long v = ts.txnValue ;
-        ts.txnValue = x ;
-        return v ;
+        checkWriteTxn();
+        IntegerState ts = getDataState();
+        long v = ts.txnValue;
+        ts.txnValue = x;
+        return v;
     }
     
 
@@ -186,7 +236,7 @@ public class TxnCounter implements Transactional {
      */
     public long read() {
         checkTxn();
-        return getDataState().txnValue ;
+        return getDataState().txnValue;
     }
 
     /** Return the current value.
@@ -197,14 +247,14 @@ public class TxnCounter implements Transactional {
      */
     public long get() {
         if ( isActiveTxn() )
-            return getDataState().txnValue ;
+            return getDataState().txnValue;
         else
-            return value.get() ;
+            return value.get();
     }
 
     /** Read the current global state (that is, the last committed value) outside a transaction. */
     public long value() {
-        return value.get() ;
+        return value.get();
     }
 
     // These two operations not clear the thread local if we are not in a transaction.
@@ -213,28 +263,28 @@ public class TxnCounter implements Transactional {
 
     /** Is this a write transaction? Should be called inside a transaction. */
     private boolean isWriteTxn() {
-        ReadWrite rw = txnMode.get() ;
+        ReadWrite rw = transactionMode.get();
         if ( rw == null )
-            throw new JenaTransactionException(Lib.classShortName(this.getClass())+".isWriteTxn called outside a transaction") ;
-        return txnMode.get() == ReadWrite.WRITE ;
+            throw new JenaTransactionException(Lib.classShortName(this.getClass())+".isWriteTxn called outside a transaction");
+        return transactionMode.get() == ReadWrite.WRITE;
     }
 
     private boolean isActiveTxn() {
-        ReadWrite rw = txnMode.get() ;
-        return rw != null ;
+        ReadWrite rw = transactionMode.get();
+        return rw != null;
     }
 
     private IntegerState getDataState() {
-        return txnValue.get() ;
+        return transactionValue.get();
     }
 
     private void checkWriteTxn() {
         if ( ! isWriteTxn() )
-            throw new JenaTransactionException("Not in a write transaction") ;
+            throw new JenaTransactionException("Not in a write transaction");
     }
 
     private void checkTxn() {
         if ( ! isActiveTxn() )
-            throw new JenaTransactionException("Not in a transaction") ;
+            throw new JenaTransactionException("Not in a transaction");
     }
 }

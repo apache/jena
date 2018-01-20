@@ -18,6 +18,7 @@
 
 package org.apache.jena.tdb.transaction;
 
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.tdb.store.DatasetGraphTDB;
@@ -49,6 +50,12 @@ public class DatasetGraphTxn extends DatasetGraphWrapper {
         throw new IllegalStateException() ;
     }
     
+    @Override
+    public boolean promote() {
+        //transaction.getTxnMgr().promote(this, ??)
+        throw new NotImplemented("DatasetGraphTxn.promote");
+    }
+
     @Override
     public void commit() {
         transaction.commit();

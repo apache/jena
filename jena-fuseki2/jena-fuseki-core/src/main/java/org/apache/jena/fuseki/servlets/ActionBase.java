@@ -29,10 +29,8 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
@@ -50,8 +48,6 @@ public abstract class ActionBase extends ServletBase
     public void init() {
 //        log.info("["+Utils.className(this)+"] ServletContextName = "+getServletContext().getServletContextName()) ;
 //        log.info("["+Utils.className(this)+"] ContextPath        = "+getServletContext().getContextPath()) ;
-
-        //super.init() ;
     }
     
     /**
@@ -73,8 +69,6 @@ public abstract class ActionBase extends ServletBase
             // The response may be changed to a HttpServletResponseTracker
             response = action.response ;
             initResponse(request, response) ;
-            Context cxt = ARQ.getContext() ;
-            
             try {
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {

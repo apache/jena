@@ -104,7 +104,6 @@ public class QueryExecUtils {
         outputResultSet(results, null, outputFormat) ;
     }
 
-    @SuppressWarnings("deprecation")
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
         // Proper ResultSet formats.
         Lang lang = ResultsFormat.convert(outputFormat) ;
@@ -176,11 +175,6 @@ public class QueryExecUtils {
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO) ) {
-            ResultSetFormatter.outputAsBIO(System.out, results) ;
-            done = true ;
-        }
-
         if ( !done )
             System.err.println("Unknown format request: " + outputFormat) ;
         results = null ;
@@ -244,6 +238,16 @@ public class QueryExecUtils {
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
             model.write(System.out, "N-TRIPLES", null) ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
+            model.write(System.out, "N-QUADS", null) ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
+            model.write(System.out, "TriG", null) ;
             return ;
         }
 

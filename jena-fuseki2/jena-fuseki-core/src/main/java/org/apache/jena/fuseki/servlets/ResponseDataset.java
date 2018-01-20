@@ -117,7 +117,7 @@ public class ResponseDataset
             ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
 
         try {
-            ResponseResultSet.setHttpResponse(action, contentType, charset) ;
+            ResponseOps.setHttpResponse(action, contentType, charset) ;
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
             try {

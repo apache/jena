@@ -21,7 +21,7 @@ package org.apache.jena.rdfxml.xmlinput ;
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
 import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.shared.wg.TestInputStreamFactory ;
+import org.apache.jena.shared.wg.InputStreamFactoryTests ;
 
 public class TestARPMain
 {
@@ -30,7 +30,7 @@ public class TestARPMain
         TestSuite test0 = new TestSuite("ARP") ;
         WGTestSuite test1 = 
             new org.apache.jena.rdfxml.xmlinput.WGTestSuite(
-                                                         new TestInputStreamFactory(
+                                                         new InputStreamFactoryTests(
                                                                                     IRIFactory
                                                                                     .iriImplementation()
                                                                                     .create(
@@ -1296,7 +1296,7 @@ public class TestARPMain
         // test1.addTest(test173);
         test0.addTest(test1) ;
         WGTestSuite test175 = new org.apache.jena.rdfxml.xmlinput.WGTestSuite(
-           new TestInputStreamFactory(IRIFactory.iriImplementation().create("http://jcarroll.hpl.hp.com/arp-tests/"),
+           new InputStreamFactoryTests(IRIFactory.iriImplementation().create("http://jcarroll.hpl.hp.com/arp-tests/"),
                                       "arp"),
            "ARP Tests", false) ;
         TestSuite test176 = new TestSuite("ARP") ;
@@ -1483,7 +1483,7 @@ public class TestARPMain
         test175.addTest(test176) ;
         test0.addTest(test175) ;
         WGTestSuite test211 = new org.apache.jena.rdfxml.xmlinput.NTripleTestSuite(
-                                                                                new TestInputStreamFactory(
+                                                                                new InputStreamFactoryTests(
                                                                                                            IRIFactory
                                                                                                                      .iriImplementation()
                                                                                                                      .create(

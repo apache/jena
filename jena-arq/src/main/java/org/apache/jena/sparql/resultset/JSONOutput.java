@@ -21,22 +21,29 @@ package org.apache.jena.sparql.resultset;
 import java.io.OutputStream;
 
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
 
+/**
+ * @deprecated Use {@code ResultSetMgr.write(??,??,ResultSetLang.SPARQLResultSetJSON)} 
+ */
+@Deprecated
 public class JSONOutput extends OutputBase {
     public JSONOutput() {}
 
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
-        // Use direct string output - more control
-
-        JSONOutputResultSet jsonOut = new JSONOutputResultSet(out);
-        ResultSetApply a = new ResultSetApply(resultSet, jsonOut);
-        a.apply();
+        ResultsWriter.create()
+            .lang(ResultSetLang.SPARQLResultSetJSON)
+            .build()
+            .write(out, resultSet);
     }
 
     @Override
     public void format(OutputStream out, boolean booleanResult) {
-        JSONOutputASK jsonOut = new JSONOutputASK(out);
-        jsonOut.exec(booleanResult);
+        ResultsWriter.create()
+            .lang(ResultSetLang.SPARQLResultSetJSON)
+            .build()
+            .write(out, booleanResult);
     }
 }

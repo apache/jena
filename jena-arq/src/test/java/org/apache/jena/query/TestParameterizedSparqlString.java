@@ -25,8 +25,8 @@ import java.util.TimeZone ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.syntax.Element ;
@@ -1129,7 +1129,7 @@ public class TestParameterizedSparqlString {
         query.append("SELECT *");
         query.append('\n');
         query.append("WHERE { ?s ");
-        query.appendIri(IRIFactory.iriImplementation().construct("http://example.org"));
+        query.appendIri(IRIResolver.iriFactory().construct("http://example.org"));
         query.append(" ?o }");
 
         test(query, new String[] { "SELECT", "*", "\n", "WHERE", "?s", "<http://example.org>", "?o" }, new String[] {});

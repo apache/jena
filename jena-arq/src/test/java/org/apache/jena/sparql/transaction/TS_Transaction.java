@@ -25,8 +25,6 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses( {
     TestTransactionSupport.class
-    , TestTransactionDSGWithLockNoAbort.class
-    , TestTransactionDSGWithLockWithAbort.class
 })
 
 public class TS_Transaction

@@ -372,6 +372,11 @@ public class TextIndexES implements TextIndex {
         return query(property, qs, graphURI, lang, MAX_RESULTS);
     }
 
+    @Override
+    public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit, String highlight) {
+        return query(property, qs, graphURI, lang, limit);
+    }
+
     /**
      * Query the ElasticSearch for the given Node, with the given query String and limit.
      * @param property the node property to make a search for

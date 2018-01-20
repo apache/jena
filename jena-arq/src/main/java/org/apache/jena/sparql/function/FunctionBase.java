@@ -60,7 +60,7 @@ public abstract class FunctionBase implements Function {
         try {
             this.functionEnv = env ;
             this.binding = binding;
-            NodeValue nv =  exec(evalArgs) ;
+            NodeValue nv = exec(evalArgs) ;
             return nv ;
         } finally {
             this.functionEnv = null ;
