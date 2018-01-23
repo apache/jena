@@ -398,13 +398,21 @@ public class RDFLanguages
     /** Try to map a resource name to a {@link Lang}; return the given default where there is no registered mapping */
     public static Lang resourceNameToLang(String resourceName, Lang dftLang) { return filenameToLang(resourceName, dftLang) ; }
     
-    /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
+    /** Try to map a URI or file name to a {@link Lang}; return null on no registered mapping. */
     public static Lang filenameToLang(String filename)
     {
-        if ( filename == null ) return null ;
+        if ( filename == null )
+            return null;
+        // Remove any URI fragment (there can be only one # in a URI).
+        // Pragmatically, assume any # is URI related.
+        // URIs can be relative.
+        int iHash = filename.indexOf('#');
+        if ( iHash  > 0 )
+            filename = filename.substring(0, iHash);
+        // Gzip compressed?
         if ( filename.endsWith(".gz") )
-            filename = filename.substring(0, filename.length()-3) ;
-        return fileExtToLang(FileUtils.getFilenameExt(filename)) ;
+            filename = filename.substring(0, filename.length()-3);
+        return fileExtToLang(FileUtils.getFilenameExt(filename));
     }
 
     /** Try to map a file name to a {@link Lang}; return the given default where there is no registered mapping */
