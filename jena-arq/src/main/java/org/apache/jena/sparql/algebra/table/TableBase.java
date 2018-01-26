@@ -106,6 +106,8 @@ public abstract class TableBase implements Table {
         Table table = (Table)other ;
         if ( table.size() != this.size() )
             return false ;
+        if ( !table.getVars().equals(getVars()) )
+            return false ;
         QueryIterator qIter1 = iterator(null) ;
         QueryIterator qIter2 = table.iterator(null) ;
         try {
