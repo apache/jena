@@ -163,7 +163,7 @@ public class TransactionManager
         void transactionCloses(Transaction txn) ;
         void readerStarts(Transaction txn) ;
         void readerFinishes(Transaction txn) ;
-        void transactionPromotes(Transaction txn) ;
+        void transactionPromotes(Transaction txnOld, Transaction txnNew) ;
         void writerStarts(Transaction txn) ;
         void writerCommits(Transaction txn) ;
         void writerAborts(Transaction txn) ;
@@ -175,7 +175,7 @@ public class TransactionManager
         @Override public void transactionCloses(Transaction txn)    {}
         @Override public void readerStarts(Transaction txn)         {}
         @Override public void readerFinishes(Transaction txn)       {}
-        @Override public void transactionPromotes(Transaction txn)  {}
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew) {}
         @Override public void writerStarts(Transaction txn)         {}
         @Override public void writerCommits(Transaction txn)        {}
         @Override public void writerAborts(Transaction txn)         {}
@@ -185,7 +185,8 @@ public class TransactionManager
         TSM_Logger() {}
         @Override public void readerStarts(Transaction txn)         { log("start", txn) ; }
         @Override public void readerFinishes(Transaction txn)       { log("finish", txn) ; }
-        @Override public void transactionPromotes(Transaction txn)  { log("promote", txn) ; }
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew)
+        { log("promote(old)", txnOld) ; log("promote(new)", txnNew) ; }  
         @Override public void writerStarts(Transaction txn)         { log("begin", txn) ; }
         @Override public void writerCommits(Transaction txn)        { log("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { log("abort", txn) ; }
@@ -196,7 +197,8 @@ public class TransactionManager
         TSM_LoggerDebug() {}
         @Override public void readerStarts(Transaction txn)         { logInternal("start",  txn) ; }
         @Override public void readerFinishes(Transaction txn)       { logInternal("finish", txn) ; }
-        @Override public void transactionPromotes(Transaction txn)  { logInternal("promote", txn) ; }
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew)
+        { logInternal("promote(old)", txnOld) ; logInternal("promote(new)", txnNew) ; }  
         @Override public void writerStarts(Transaction txn)         { logInternal("begin",  txn) ; }
         @Override public void writerCommits(Transaction txn)        { logInternal("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { logInternal("abort",  txn) ; }
@@ -209,7 +211,10 @@ public class TransactionManager
         @Override public void transactionCloses(Transaction txn)    { }
         @Override public void readerStarts(Transaction txn)         { inc(activeReaders) ; }
         @Override public void readerFinishes(Transaction txn)       { dec(activeReaders) ; inc(finishedReaders); }
-        @Override public void transactionPromotes(Transaction txn)  { dec(activeReaders) ; inc(finishedReaders); inc(activeWriters); }
+        
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew)
+        { dec(activeReaders) ; inc(finishedReaders); inc(activeWriters); }
+        
         @Override public void writerStarts(Transaction txn)         { inc(activeWriters) ; }
         @Override public void writerCommits(Transaction txn)        { dec(activeWriters) ; inc(committedWriters) ; }
         @Override public void writerAborts(Transaction txn)         { dec(activeWriters) ; inc(abortedWriters) ; }
@@ -235,6 +240,12 @@ public class TransactionManager
         @Override public void writerStarts(Transaction txn)     { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
         
         // Currently, the writer semaphore is managed explicitly in the main code.
+        
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew) {
+            // Switch locks.
+            txnOld.getBaseDataset().getLock().leaveCriticalSection() ;
+            txnNew.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ;
+        }
         
         @Override
         public void readerFinishes(Transaction txn) {
@@ -342,7 +353,9 @@ public class TransactionManager
             acquireWriterLock(true) ;
         }
         // entry synchronized part
-        return begin$(txnType, originalTxnType, label) ;
+        DatasetGraphTxn dsgtxn = begin$(txnType, originalTxnType, label) ;
+        noteTxnStart(dsgtxn.getTransaction()) ;
+        return dsgtxn;
     }
     
     /** Ensure a DatasetGraphTxn is for a write transaction.
@@ -377,11 +390,9 @@ public class TransactionManager
         // Can also promote - may need to wait for active writers. 
         // Go through begin for the writers lock. 
         if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
-            // Full begin cycle.
-            DatasetGraphTxn dsgtxn2 = beginInternal(TxnType.WRITE, txnType, txn.getLabel()) ;
-            // Junk the old one.
-            noteTxnPromote(txn, dsgtxn2.getTransaction());
-            return dsgtxn2 ;
+            acquireWriterLock(true);
+            // No need to sync - we just queue as a writer.
+            return promoteExec$(dsgtxn, txnType);
         }
         
         // First check, without the writer lock. Fast fail.
@@ -402,25 +413,31 @@ public class TransactionManager
         // Potentially blocking - must be outside 'synchronized' so that any active writer
         // can commit/abort.  Otherwise, we have deadlock.
         acquireWriterLock(true) ;
-
         // Do the synchronized stuff.
-        return promote2$(dsgtxn, txnType) ; 
+        return promoteSync$(dsgtxn, txnType) ; 
     }
     
     synchronized
-    private DatasetGraphTxn promote2$(DatasetGraphTxn dsgtxn, TxnType originalTxnType) {
+    private DatasetGraphTxn promoteSync$(DatasetGraphTxn dsgtxn, TxnType originalTxnType) {
         Transaction txn = dsgtxn.getTransaction() ;
         // Writers may have happened between the first check of the active writers may have committed.  
         if ( txn.getVersion() != version.get() ) {
             releaseWriterLock();
             return null;
         }
-        // Use begin$ (not beginInternal) - we have the writers lock.
+        return promoteExec$(dsgtxn, originalTxnType);
+    }
+    
+    private DatasetGraphTxn promoteExec$(DatasetGraphTxn dsgtxn, TxnType originalTxnType) {
+        // Use begin$ (not beginInternal)
+        // We have the writers lock.
+        // We keep the exclusivity lock.
+        Transaction txn = dsgtxn.getTransaction() ;
         DatasetGraphTxn dsgtxn2 = begin$(TxnType.WRITE, originalTxnType, txn.getLabel()) ;
         noteTxnPromote(txn, dsgtxn2.getTransaction());
         return dsgtxn2 ;
     }
-
+    
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
     // of the low level objects directly so we'll play safe.  
@@ -450,6 +467,7 @@ public class TransactionManager
         txn.setActiveDataset(dsgTxn) ;
 
         // Empty for READ ; only WRITE transactions have components that need notifying.
+        // Promote is a WRITE transaction starting.
         List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
         
         if ( mode == ReadWrite.READ ) {
@@ -460,8 +478,6 @@ public class TransactionManager
         
         for ( TransactionLifecycle component : components )
             component.begin(dsgTxn.getTransaction()) ;
-
-        noteTxnStart(txn) ;
         return dsgTxn ;
     }
     
@@ -870,9 +886,8 @@ public class TransactionManager
     private void noteTxnPromote(Transaction transaction, Transaction transaction2) {
         activeTransactions.remove(transaction);
         activeTransactions.add(transaction2);
-        transactionPromotes(transaction) ;
+        transactionPromotes(transaction, transaction2) ;
     }
-
 
     private void noteTxnCommit(Transaction transaction) {
         switch (transaction.getTxnMode())
@@ -1011,10 +1026,10 @@ public class TransactionManager
                 tsm.readerFinishes(txn) ;
     }
     
-    private void transactionPromotes(Transaction txn) {
+    private void transactionPromotes(Transaction txnOld, Transaction txnNew) {
         for ( TSM tsm : actions )
             if ( tsm != null )
-                tsm.transactionPromotes(txn);
+                tsm.transactionPromotes(txnOld, txnNew);
     }
 
     private void writerStarts(Transaction txn) {

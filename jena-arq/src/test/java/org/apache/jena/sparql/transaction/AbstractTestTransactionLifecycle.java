@@ -235,6 +235,17 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
         ds.end();
     }
     
+    // JENA-1469
+    @Test
+    public void transaction_p06() {
+        transaction_promote_write(TxnType.READ_COMMITTED_PROMOTE);
+    }
+
+    @Test
+    public void transaction_p07() {
+        transaction_promote_write(TxnType.READ_PROMOTE);
+    }
+
     @Test(expected=JenaException.class)
     public void transaction_err_read_promote() {
         assumeTrue(supportsPromote()) ;
@@ -245,9 +256,18 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
         ds.commit();
         ds.end();
     }
-    
-    // XXX READ_PROMOTE -> update -> fail promote/boolean. 
 
+    private void transaction_promote_write(TxnType txnType) {
+        Dataset ds = create() ;
+        ds.begin(txnType);
+        ds.promote();
+        ds.commit();
+        ds.end();
+        ds.begin(TxnType.WRITE);
+        ds.commit();
+        ds.end(); 
+    }
+    
     // Patterns.
     @Test
     public void transaction_pattern_01() {
