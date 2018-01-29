@@ -54,6 +54,9 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public class TDB {
+
+    private TDB() {}
+    
     // Initialization statics must be first in the class to avoid
     // problems with recursive initialization.  Specifcally,
     // initLock being null because elsewhere started the initialization
