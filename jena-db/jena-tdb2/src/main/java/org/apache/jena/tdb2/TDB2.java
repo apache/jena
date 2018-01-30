@@ -41,6 +41,9 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public class TDB2 {
+    
+    private TDB2() {}
+
     /** IRI for TDB */
     public static final String  tdbIRI                           = "http://jena.apache.org/#tdb" ;
 
