@@ -22,7 +22,7 @@ import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.sparql.JenaTransactionException;
 
-/** Implementation of {@link TransactionHandler} that does nothing but track the transction state. */
+/** Implementation of {@link TransactionHandler} that does nothing but track the transaction state. */
 public class TransactionHandlerNull extends TransactionHandlerBase {
  
     private ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(()->Boolean.FALSE);
