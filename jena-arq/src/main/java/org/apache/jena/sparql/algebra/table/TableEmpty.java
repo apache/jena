@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -31,6 +32,9 @@ import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 
 public class TableEmpty extends TableBase
 {
+    static public boolean isTableEmpty(Table table)
+    { return (table instanceof TableEmpty) ; } 
+
     public TableEmpty()
     { }
     

@@ -32,6 +32,7 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpPrefixesUsed ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.algebra.table.TableEmpty;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -349,7 +350,7 @@ public class WriterOp
                 return ;
             }
 
-            if ( opTable.getTable().isEmpty() ) {
+            if ( TableEmpty.isTableEmpty(opTable.getTable()) ) {
                 start(opTable, NoNL) ;
                 out.print("empty") ;
                 finish(opTable) ;
@@ -358,8 +359,10 @@ public class WriterOp
 
             start(opTable, NoNL) ;
             WriterNode.outputVars(out, opTable.getTable().getVars(), sContext) ;
-            out.println() ;
-            WriterTable.outputPlain(out, opTable.getTable(), sContext) ;
+            if ( ! opTable.getTable().isEmpty() ) {
+                out.println();
+                WriterTable.outputPlain(out, opTable.getTable(), sContext) ;
+            }
             finish(opTable) ;
         }
 
