@@ -244,18 +244,6 @@ public abstract class AbstractTestTransPromote {
         }) ;
     }
 
-    @Test
-    public void promote_10() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, true) ; }
-
-    @Test
-    public void promote_11() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, false) ; }
-    
-    @Test
-    public void promote_12() { 
-        expect(()->promote_readCommit_txnCommit(TxnType.READ_PROMOTE, true) ,
-               getTransactionExceptionClass()) ;
-    }
-    
     @SafeVarargs
     private final void expect(Runnable runnable, Class<? extends Exception>...classes) {
         try {
@@ -270,6 +258,18 @@ public abstract class AbstractTestTransPromote {
         }
     }
 
+    @Test
+    public void promote_10() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, true) ; }
+
+    @Test
+    public void promote_11() { promote_readCommit_txnCommit(TxnType.READ_COMMITTED_PROMOTE, false) ; }
+    
+    @Test
+    public void promote_12() { 
+        expect(()->promote_readCommit_txnCommit(TxnType.READ_PROMOTE, true) ,
+               getTransactionExceptionClass()) ;
+    }
+    
     @Test
     public void promote_13() { promote_readCommit_txnCommit(TxnType.READ_PROMOTE, false) ; }
 
@@ -388,7 +388,7 @@ public abstract class AbstractTestTransPromote {
         } catch (InterruptedException | ExecutionException e1) { throw new RuntimeException(e1) ; }
     }
     
-    // This would locks up because of a WRITE-WRITE deadly embrace.
+    // This would lock up because of a WRITE-WRITE deadly embrace.
     //  @Test(expected=JenaTransactionException.class)
     //  public void promote11() { test2(TxnMode.WRITE); }
       
