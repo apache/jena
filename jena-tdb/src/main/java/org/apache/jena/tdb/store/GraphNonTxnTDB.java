@@ -70,7 +70,6 @@ public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
 
         @Override
         public void abort() {
-            // Not the Jena old-style transaction interface
             throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
             // log.warn("'Abort' of a transaction not supported - ignored");
         }
