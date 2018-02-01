@@ -33,11 +33,6 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
  * A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
  */
 public class GraphViewSwitchable extends GraphView {
-    // Fixups for GraphView
-    //   Prefixes.
-    //   Transaction handler.
-    // Long term - ensure that GraphView uses get() always, inc prefixes, transaction handlers
-    
     // Factory style.
     public static GraphViewSwitchable createDefaultGraph(DatasetGraphSwitchable dsg)
     { return new GraphViewSwitchable(dsg, Quad.defaultGraphNodeGenerated) ; }
