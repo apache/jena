@@ -261,7 +261,9 @@
 
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
+        <!-- Fails for Java9 build.
         <module>jena-elephas</module>
+        -->
         <module>apache-jena-osgi</module>
       </modules>
     </profile>
