@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>18</version>
+    <version>19</version>
   </parent>
 
   <licenses>
@@ -252,7 +252,9 @@
         <module>jena-fuseki1</module>
         <module>jena-csv</module>
         <module>jena-sdb</module>
-        <module>jena-maven-tools</module>
+        <!-- apache-19 breaks this
+          <module>jena-maven-tools</module>
+        -->
 
         <!-- Other -->
         <module>jena-permissions</module>
@@ -581,6 +583,7 @@
             </goals>
             <configuration combine.self="override">
               <rules>
+                <dependencyConvergence/>
                 <requireJavaVersion>
                   <version>1.8.0</version>
                 </requireJavaVersion>
