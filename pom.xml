@@ -92,7 +92,7 @@
     <ver.awaitility>1.7.0</ver.awaitility>
 
     <jdk.version>1.8</jdk.version>
-    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+    <targetJdk>${jdk.version}</targetJdk>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
@@ -146,12 +146,11 @@
       <!--
           This is the dev profile, typically used locally with 
           "mvn clean install -Pdev".
-          It only builds the modules shipped in apache-jena binaries.
+          It builds the modules shipped in apache-jena binaries
+          but does not build these binaries.
+          This profile does not build javadoc.
       -->
       <id>dev</id>
-      <!-- The maven artifacts of the core development modules 
-           See profile bootstrap for a first build from empty.
-      -->
       <modules>
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
@@ -261,9 +260,10 @@
 
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
-        <!-- Fails for Java9 build.
-        <module>jena-elephas</module>
+        <!--  Fails when building with Java9 JDK because it requires 
+             system jar jdk.tools which is not available in Java9.
         -->
+        <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
       </modules>
     </profile>
@@ -598,7 +598,7 @@
                 </requireMavenVersion>
               </rules>
               <fail>true</fail>
-              <failFast>true</failFast>
+              <failFast>false</failFast>
             </configuration>
           </execution>
         </executions>
@@ -721,60 +721,12 @@
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
     <pluginManagement>
       <plugins>
-        <!-- For Java 9 : ahead of versions ia apache:apache v19 -->
-        <!--
-            maven-compiler-plugin  3.7.0
-            maven-enforcer-plugin  3.0.0-M1
-            maven-javadoc-plugin   3.0.0-M1 -> 3.0.0
-            maven-surefire-plugin  2.21.0 (2.20.1)
-            maven-war-plugin       3.1.0  (3.2.0)
-        -->
 
-        <!--
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.7.0</version>
-        </plugin>
-        -->
-        <!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0-M1</version>
-        </plugin>
-        -->
-        <!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        -->
-        <!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
-        </plugin>
-        -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>3.2.0</version>
-        </plugin>
-        
-        <!-- Other updates -->
-        <plugin>
-          <!-- Needed -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-
-
-        <!-- Jena configuration -->
-
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -920,10 +872,17 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.0</version>
         </plugin>
 
         <!--
