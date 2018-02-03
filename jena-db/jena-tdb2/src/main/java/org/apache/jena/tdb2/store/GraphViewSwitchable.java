@@ -20,7 +20,6 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Map ;
 
-import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
@@ -71,9 +70,9 @@ public class GraphViewSwitchable extends GraphView {
         return getx() ;
     }
 
-    // TDB2 specific.
-    // Does not cope with blank nodes.
-    // A PrefixMapping sending operations via the switchable.
+    // DatasetPrefixStorage specific with getting the DatasetPrefixStorage
+    // done at the point the operation happens.
+    // Long term: Function to get DatasetPrefixStorage
     // Long term, rework as PrefixMapping over PrefixMap over DatasetPrefixStorage
     private PrefixMapping prefixMapping(Node graphName) {
         return new PrefixMappingImplTDB2(graphName); 
@@ -93,19 +92,11 @@ public class GraphViewSwitchable extends GraphView {
                 gn = "";
         }                    
 
-        DatasetPrefixStorage dps() {
+        private DatasetPrefixStorage dps() {
             return ((DatasetGraphTDB)(getx().get())).getPrefixes();
         }
 
-        Graph graph() {
-            DatasetGraphTDB dsg = (DatasetGraphTDB)getx().get();
-            if ( gn == null )
-                return dsg.getDefaultGraph();
-            else
-                return dsg.getGraph(graphName);
-        }
-
-        PrefixMapping prefixMapping() {
+        private PrefixMapping prefixMapping() {
             if ( gn == null )
                 return dps().getPrefixMapping();
             else
@@ -134,7 +125,6 @@ public class GraphViewSwitchable extends GraphView {
         @Override
         public Map<String, String> getNsPrefixMap() {
             return prefixMapping().getNsPrefixMap();
-            //return graph().getPrefixMapping().getNsPrefixMap();
         }
     }
 

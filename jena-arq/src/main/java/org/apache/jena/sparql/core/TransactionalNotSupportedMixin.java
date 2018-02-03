@@ -36,33 +36,35 @@ public interface TransactionalNotSupportedMixin extends Transactional
 
     @Override
     public default void begin(ReadWrite readWrite)
-    { throw new UnsupportedOperationException("Transactional.begin") ; }
+    { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
 
     @Override public default boolean promote()
-    { throw new UnsupportedOperationException("Transactional.promote") ; }
+    { throw new UnsupportedOperationException("Transactional.promote()") ; }
+    
+    @Override public default boolean promote(TxnType txnType)
+    { throw new UnsupportedOperationException("Transactional.promote(TxnType)") ; }
     
     @Override
     public default void commit()
-    { throw new UnsupportedOperationException("Transactional.commit") ; }
+    { throw new UnsupportedOperationException("Transactional.commit()") ; }
 
     @Override
     public default void abort()
-    { throw new UnsupportedOperationException("Transactional.abort") ; }
+    { throw new UnsupportedOperationException("Transactional.abort()") ; }
 
     @Override
     public default void end()
-    { throw new UnsupportedOperationException("Transactional.end") ; }
+    { throw new UnsupportedOperationException("Transactional.end()") ; }
 
     @Override
     public default boolean isInTransaction()
     { return false ; }
     
     @Override default public ReadWrite transactionMode()
-    { throw new UnsupportedOperationException("Transactional.transactionMode") ; }
+    { throw new UnsupportedOperationException("Transactional.transactionMode()") ; }
     
     @Override default public TxnType transactionType()
-    { throw new UnsupportedOperationException("Transactional.transactionType") ; }
-
+    { throw new UnsupportedOperationException("Transactional.transactionType()") ; }
     
     public default boolean supportsTransactions()
     { return false ; }

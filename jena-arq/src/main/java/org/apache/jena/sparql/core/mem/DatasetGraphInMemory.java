@@ -176,17 +176,20 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         version.remove();
         transactionLock.leaveCriticalSection();
     }
-     
+
     @Override
     public boolean promote() {
+        return promote(transactionType.get());
+    }
+    
+    @Override
+    public boolean promote(TxnType txnType) {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to promote outside a transaction!");
         if ( transactionMode().equals(ReadWrite.WRITE) )
             return true;
-
         boolean readCommitted;
-        // Initial state
-        switch(transactionType.get()) {
+        switch(txnType) {
             case WRITE :
                 return true;
             case READ :
@@ -210,8 +213,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     private void _promote(boolean readCommited) {
-        //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
-        
         // Outside lock.
         if ( ! readCommited && version.get() != generation.get() )  {
             // This tests for any commited writers since this transaction started.
@@ -222,7 +223,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         }
     
         // Blocking on other writers.
-        transactionLock.enterCriticalSection(false);
+        transactionLock.enterCriticalSection(Lock.WRITE);
         // Check again now we are inside the lock. 
         if ( ! readCommited && version.get() != generation.get() )  {
                 // Can't promote - release the lock.

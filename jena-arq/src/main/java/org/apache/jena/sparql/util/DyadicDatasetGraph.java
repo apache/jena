@@ -78,6 +78,11 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
     }
 
     @Override
+    public boolean promote(TxnType txnType) {
+        // no mutation allowed
+        return false;
+    }
+    @Override
     public ReadWrite transactionMode() {
         return TxnType.convert(transactionType());
     }

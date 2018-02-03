@@ -571,8 +571,8 @@ public class TransactionCoordinator {
     /** Whether to wait for writers when trying to promote */
     private static final boolean promotionWaitForWriters = true;
 
-    /** Attempt to promote a transaction from READ to WRITE.
-     * Return true for a No-op for a transaction already a writer.
+    /** Attempt to promote a transaction from READ mode to WRITE mode based on its declared start type.
+     * Return true if the transaction is already a writer.
      */
     /*package*/ boolean promoteTxn(Transaction transaction) {
         if ( transaction.getMode() == ReadWrite.WRITE )
@@ -591,23 +591,29 @@ public class TransactionCoordinator {
         // If this test fails outside the lock it will fail inside.
         // If it passes, we have to test again in case there is an active writer.
         
-        //boolean readCommittedPromotion = transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE;
-        
-        // Once we have acquireWriterLock, we are single writer.
-        // We may have to discard writer status because eocne we can make the defintite
-        // decision on promotion, we find we can't promote after all.
-        
+        boolean readCommittedPromotion = transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE;
+        return promoteTxn$(transaction, readCommittedPromotion);
+    }
+    
+    /** Attempt to promote a transaction from READ mode to WRITE mode based.
+     *  Whether intevening commits are seen is determined by the boolean flag.
+     * Return true if the transaction is already a writer.
+     */
+    /*package*/ boolean promoteTxn(Transaction transaction, boolean readCommittedPromotion) {
+        if ( transaction.getMode() == ReadWrite.WRITE )
+            return true ;
+        // XXX Not sure what the right choice is.
+        if ( transaction.getTxnType() == TxnType.READ )
+            throw new TransactionException("promote: can't promote a READ transaction") ;
+        return promoteTxn$(transaction, readCommittedPromotion);
+    }
+    
+    private boolean promoteTxn$(Transaction transaction, boolean readCommittedPromotion) {
         // == Read committed path.
         if ( transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE ) {
-            /*
-             * acquireWriterLock(true) ;
-             * synchronized(coordinatorLock) {
-             * begin$ ==>
-             *    reset transaction.
-             *    promote components
-             *    reset dataVersion
-             */
-            acquireWriterLock(true) ;
+            if ( ! promotionWaitForWriters() )
+                return false;
+            // Now single writer.
             synchronized(coordinatorLock) {
                 try { 
                     transaction.promoteComponents() ;
@@ -632,7 +638,7 @@ public class TransactionCoordinator {
             return false;
 
         // Take writer lock.
-        if ( ! waitForWriters() )
+        if ( ! promotionWaitForWriters() )
             // Failed to become a writer.
             return false;
         
@@ -674,7 +680,7 @@ public class TransactionCoordinator {
         return true;
     }
     
-    private boolean waitForWriters() {
+    private boolean promotionWaitForWriters() {
         if ( promotionWaitForWriters )
             return acquireWriterLock(true) ;
         else

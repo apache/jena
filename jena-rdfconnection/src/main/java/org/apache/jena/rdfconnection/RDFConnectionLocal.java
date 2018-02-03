@@ -296,6 +296,7 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override public void begin(TxnType txnType)        { dataset.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { dataset.begin(mode); }
     @Override public boolean promote()                  { return dataset.promote(); }
+    @Override public boolean promote(TxnType txnType)   { return dataset.promote(txnType); }
     @Override public void commit()                      { dataset.commit(); }
     @Override public void abort()                       { dataset.abort(); }
     @Override public boolean isInTransaction()          { return dataset.isInTransaction(); }

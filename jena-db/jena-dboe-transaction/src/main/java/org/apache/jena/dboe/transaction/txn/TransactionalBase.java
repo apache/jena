@@ -20,6 +20,7 @@ package org.apache.jena.dboe.transaction.txn;
 
 import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
@@ -114,6 +115,17 @@ public class TransactionalBase implements TransactionalSystem {
         checkActive() ;
         Transaction txn = getValidTransaction() ;
         return txn.promote() ;
+    }
+
+    @Override
+    public final boolean promote(TxnType txnType) {
+        checkActive() ;
+        if ( txnType != TxnType.READ_COMMITTED_PROMOTE && 
+             txnType != TxnType.READ_PROMOTE )
+           throw new InternalErrorException("Transaction type is not "+TxnType.READ_PROMOTE+ " nor "+TxnType.READ_COMMITTED_PROMOTE);
+        boolean readCommitted = (txnType == TxnType.READ_COMMITTED_PROMOTE) ;
+        Transaction txn = getValidTransaction() ;
+        return txn.promote(readCommitted) ;
     }
 
     @Override

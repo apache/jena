@@ -120,6 +120,11 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
+    public boolean promote(TxnType txnType) {
+        return transactional.promote(txnType);
+    }
+    
+    @Override
     public ReadWrite transactionMode() {
         return transactional.transactionMode();
     }

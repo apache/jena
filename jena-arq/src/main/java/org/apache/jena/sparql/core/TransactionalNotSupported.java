@@ -71,6 +71,9 @@ public class TransactionalNotSupported implements Transactional
     @Override public boolean promote()
     { throw new UnsupportedOperationException("Transactional.promote") ; }
     
+    @Override public boolean promote(TxnType txnType)
+    { throw new UnsupportedOperationException("Transactional.promote(TxnType)") ; }
+
     @Override
     public void commit()
     { throw new UnsupportedOperationException("Transactional.commit") ; }

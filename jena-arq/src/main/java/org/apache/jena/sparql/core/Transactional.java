@@ -110,20 +110,50 @@ public interface Transactional
     public void begin(ReadWrite readWrite) ;
     
     /**
-     * Attempt to promote a transaction from "read" to "write" and the transaction
-     * start with a "promote" mode ({@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE}).
+     * Attempt to promote a transaction from "read" to "write" when the transaction
+     * started with a "promote" mode ({@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE}).
      * <p>
-     * Returns "true" if the transaction is in write mode after the call.
-     * The method always succeeds of the transaction is already
-     * "write".
+     * Returns "true" if the transaction is in write mode after the call. The method
+     * always succeeds of the transaction is already "write".
      * <p>
-     * This method returns true if a {@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE} is promoted.
+     * A {@code READ_COMMITTED_PROMOTE} can always be promoted, but the call can need to
+     * wait. This method returns true if a {@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE} is promoted.
      * <p>
-     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the transaction is still valid and in "read" mode. 
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the
+     * transaction is still valid and in "read" mode. Any further calls to
+     * {@code promote()} will also return false.
      * <p>
-     * This method throws an exception if there is an attempt to promote a "READ" transaction. 
+     * This method throws an exception if there is an attempt to promote a "READ"
+     * transaction.
      */
-    public boolean promote();
+    public default boolean promote() {
+        return promote(transactionType());
+    }
+
+    public enum Promote { ISOLATED, @Deprecated SERIALIZED, READ_COMMITTED } ; 
+    
+    /**
+     * Attempt to promote a transaction from "read" to "write" and the transaction. This
+     * method allows the form of promotion to be specified.
+     * <p>
+     * {@code READ_PROMOTE} treats the promotion as if the transaction was started
+     * with {@code READ_PROMOTE} (any other writer commiting since the transaction started
+     * blocks promotion) and {@code READ_COMMITTED_PROMOTE} treats the promotion as if the transaction was started
+     * with {@code READ_COMMITTED_PROMOTE} (intemediate writer commits become visible).
+     * <p> 
+     * Returns "true" if the transaction is in write mode after the call. The method
+     * always succeeds of the transaction is already "write".
+     * <p>
+     * This method returns true if a {@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE} is promoted.
+     * <p>
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the
+     * transaction is still valid and in "read" mode.
+     * <p>
+     */
+    public boolean promote(TxnType mode);
 
     /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;

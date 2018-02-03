@@ -445,6 +445,16 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     @Override
+    public boolean promote(TxnType txnType) {
+        if ( txnMonitor != null ) txnMonitor.startPromote();
+        try { 
+            return txnSystem.promote(txnType) ;
+        } finally { 
+            if ( txnMonitor != null ) txnMonitor.finishPromote();
+        }
+    }
+
+    @Override
     public void commit() {
         if ( txnMonitor != null ) txnMonitor.startCommit();
         txnSystem.commit();

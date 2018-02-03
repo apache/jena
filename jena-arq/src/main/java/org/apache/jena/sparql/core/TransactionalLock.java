@@ -133,6 +133,11 @@ public class TransactionalLock implements Transactional {
     }
 
     @Override
+    public boolean promote(TxnType txnType) { 
+        return false;
+    }
+
+    @Override
     public void commit() {
         endOnce() ;
     }

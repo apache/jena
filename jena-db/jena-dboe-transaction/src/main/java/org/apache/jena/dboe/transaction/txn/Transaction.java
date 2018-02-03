@@ -116,6 +116,15 @@ public class Transaction implements TransactionInfo {
         return true ;
     }
     
+    public boolean promote(boolean readCommitted) {
+        checkState(ACTIVE);
+        boolean b = txnMgr.promoteTxn(this, readCommitted) ;
+        if ( !b )
+            return false ;
+        mode = ReadWrite.WRITE;
+        return true ;
+    }
+    
     /*package*/ void promoteComponents() {
         // Call back from the Transaction coordinator during promote.
         components.forEach((c) -> {

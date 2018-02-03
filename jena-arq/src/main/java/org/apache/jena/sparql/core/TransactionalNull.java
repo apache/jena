@@ -85,6 +85,11 @@ public class TransactionalNull implements Transactional {
     }
     
     @Override
+    public boolean promote(TxnType txnType) {
+        return promote(); 
+    }
+
+    @Override
     public void commit() {
         if ( ! inTransaction.get() )
             throw new JenaTransactionException("Not in transaction"); 
