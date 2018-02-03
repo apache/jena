@@ -18,8 +18,7 @@
 
 package org.apache.jena.datatypes.xsd;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.binary.Hex;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 
 /**
@@ -39,7 +38,10 @@ public class XSDhexBinary extends XSDbinary {
     @Override
     public String unparse(Object value) {
         if (value instanceof byte[]) {
-            return DatatypeConverter.printHexBinary((byte[])value);
+            // XSD canonical form uses upper case and this aligns with
+            // javax.xml.bind.DatatypeConverter.printHexBinary which 
+            // Jena used until 3.7.0.
+            return Hex.encodeHexString((byte[])value, false);
         } else {
             throw new DatatypeFormatException("hexBinary asked to encode a non-byte arrary");
         }
