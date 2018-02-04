@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.algebra.table;
 
-import java.util.ArrayList ;
+import java.util.Collections;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -35,7 +35,7 @@ public class TableUnit extends TableBase
 {
     static public boolean isTableUnit(Table table)
     { return (table instanceof TableUnit) ; } 
-    
+ 
     public TableUnit() {}
     
     @Override
@@ -61,10 +61,9 @@ public class TableUnit extends TableBase
     public boolean isEmpty()    { return false ; }
 
     @Override
-    public List<String> getVarNames()   { return new ArrayList<>() ; }
-
+    public List<String> getVarNames()   { return Collections.emptyList(); }
     @Override
-    public List<Var> getVars()       { return new ArrayList<>() ; }
+    public List<Var> getVars()          { return Collections.emptyList(); }
     
     @Override
     public String toString()    { return "TableUnit" ; }

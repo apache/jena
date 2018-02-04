@@ -24,7 +24,8 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // This package
-    TestAlgebraTranslate.class
+    TestTable.class
+    , TestAlgebraTranslate.class
     , TestClassify.class
     , TestOpAsQuery.class
     , TestOpVars.class

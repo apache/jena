@@ -907,7 +907,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Tests use of multiple != conditions on same variable
         testOp("(filter ((!= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_inequality,
-               "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?x <y>]) (row [?x <x>])))") ;
+               "(minus (bgp (?s ?p ?x)) (table (vars ?x) (row [?x <y>]) (row [?x <x>])))") ;
     }
 
     @Test public void inequality09() {
