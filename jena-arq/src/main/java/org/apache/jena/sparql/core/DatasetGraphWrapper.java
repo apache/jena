@@ -211,7 +211,7 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     { return getT().promote(); }
     
     @Override
-    public boolean promote(TxnType type)
+    public boolean promote(Promote type)
     { return getT().promote(type); }
     
     @Override

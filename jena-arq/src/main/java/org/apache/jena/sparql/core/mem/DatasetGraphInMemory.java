@@ -178,31 +178,16 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     @Override
-    public boolean promote() {
-        return promote(transactionType.get());
-    }
-    
-    @Override
-    public boolean promote(TxnType txnType) {
+    public boolean promote(Promote promoteMode) {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to promote outside a transaction!");
         if ( transactionMode().equals(ReadWrite.WRITE) )
             return true;
-        boolean readCommitted;
-        switch(txnType) {
-            case WRITE :
-                return true;
-            case READ :
-                throw new JenaTransactionException("Tried to promote READ transaction");
-            case READ_COMMITTED_PROMOTE :
-                readCommitted = true;
-            case READ_PROMOTE :
-                readCommitted = false;
-                // Maybe!
-                break;
-            default:
-                throw new NullPointerException();
-        }
+        
+        if ( transactionType() == TxnType.READ )
+            return false;
+        
+        boolean readCommitted = (promoteMode == Promote.READ_COMMITTED);
         
         try {
             _promote(readCommitted);

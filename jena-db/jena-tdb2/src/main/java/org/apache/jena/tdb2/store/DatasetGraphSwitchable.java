@@ -30,10 +30,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 
 final
-public class DatasetGraphSwitchable extends DatasetGraphWrapperTxn /* Until ARQ catches up with promote */ 
+public class DatasetGraphSwitchable extends DatasetGraphWrapper 
 {
     // QueryEngineFactoryWrapper has a QueryEngineFactory that is always loaded that
     // executes on the unwrapped DSG (recursively). Unwrapping is via getBase, calling

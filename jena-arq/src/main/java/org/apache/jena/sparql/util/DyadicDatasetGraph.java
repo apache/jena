@@ -28,6 +28,7 @@ import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quads;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.jena.atlas.lib.PairOfSameType;
 import org.apache.jena.graph.Graph;
@@ -36,6 +37,7 @@ import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
@@ -57,9 +59,15 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
 
     @Override
     public void commit() {
-        throwNoMutationAllowed();
+        forEach(DatasetGraph::commit);
     }
 
+    @Override
+    public void begin() {
+        begin(TxnType.READ);
+    }
+
+    
     @Override
     public void begin(TxnType type) {
         switch (type) {
@@ -67,33 +75,34 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
             forEach(dsg -> dsg.begin(type));
             break;
         default:
-            throwNoMutationAllowed();
+            throw new JenaTransactionException("Only READ transactions supported");
         }
     }
 
     @Override
-    public boolean promote() {
+    public boolean promote(Promote txnType) {
         // no mutation allowed
         return false;
     }
-
-    @Override
-    public boolean promote(TxnType txnType) {
-        // no mutation allowed
-        return false;
-    }
+    
     @Override
     public ReadWrite transactionMode() {
+        if ( ! isInTransaction() )
+            return null; 
         return TxnType.convert(transactionType());
     }
 
     @Override
     public TxnType transactionType() {
-        return both(dsg -> dsg.transactionType() == READ) ? READ : null;
+        if ( ! isInTransaction() )
+            return null;
+        // no mutation allowed
+        return READ ;
     }
 
     @Override
     public synchronized void begin(ReadWrite readWrite) {
+        Objects.requireNonNull(readWrite);
         begin(TxnType.convert(readWrite));
     }
 
@@ -109,7 +118,11 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
 
     @Override
     public boolean isInTransaction() {
-        return either(DatasetGraph::isInTransaction);
+        if ( both(DatasetGraph::isInTransaction) )
+            return true;
+        if ( !either(DatasetGraph::isInTransaction) )
+            return false;
+        throw new JenaTransactionException("One datset in a transaction and one not");
     }
 
     @Override

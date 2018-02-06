@@ -115,12 +115,7 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public boolean promote() {
-        return transactional.promote();
-    }
-
-    @Override
-    public boolean promote(TxnType txnType) {
+    public boolean promote(Promote txnType) {
         return transactional.promote(txnType);
     }
     

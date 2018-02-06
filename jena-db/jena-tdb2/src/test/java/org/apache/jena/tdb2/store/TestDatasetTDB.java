@@ -28,6 +28,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.system.JenaSystem;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After ;
@@ -37,6 +38,11 @@ import org.junit.Test ;
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
 public class TestDatasetTDB
 {
+    static {
+        JenaSystem.DEBUG_INIT = true ; 
+        JenaSystem.init();
+    }
+    
     private Dataset dataset ;
     
     @Before public void before() {
@@ -170,6 +176,7 @@ public class TestDatasetTDB
     
     @Test public void special3()
     {
+        JenaSystem.init();
         Dataset ds = dataset() ;
 
         load1(ds.getDefaultModel()) ;

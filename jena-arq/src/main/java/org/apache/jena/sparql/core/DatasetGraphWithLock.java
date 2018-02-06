@@ -106,7 +106,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     }
 
     @Override
-    protected boolean _promote() {
+    protected boolean _promote(Promote promoteMode) {
         throw new JenaTransactionException("promote not supported");
     }
 

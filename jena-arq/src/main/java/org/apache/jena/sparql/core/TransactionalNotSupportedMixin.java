@@ -38,11 +38,8 @@ public interface TransactionalNotSupportedMixin extends Transactional
     public default void begin(ReadWrite readWrite)
     { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
 
-    @Override public default boolean promote()
-    { throw new UnsupportedOperationException("Transactional.promote()") ; }
-    
-    @Override public default boolean promote(TxnType txnType)
-    { throw new UnsupportedOperationException("Transactional.promote(TxnType)") ; }
+    @Override public default boolean promote(Promote txnType)
+    { throw new UnsupportedOperationException("Transactional.promote") ; }
     
     @Override
     public default void commit()

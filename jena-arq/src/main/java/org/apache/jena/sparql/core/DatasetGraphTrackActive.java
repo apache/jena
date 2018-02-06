@@ -48,9 +48,9 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
     }
 
     @Override
-    public final boolean promote() {
+    public final boolean promote(Promote promoteMode) {
         checkActive();
-        return _promote();
+        return _promote(promoteMode);
     }
 
     @Override
@@ -74,7 +74,7 @@ public abstract class DatasetGraphTrackActive extends DatasetGraphWrapper
     @Override
     public abstract boolean isInTransaction() ;
     protected abstract void _begin(TxnType txnType);
-    protected abstract boolean _promote() ;
+    protected abstract boolean _promote(Promote promoteMode) ;
     protected abstract void _commit() ;
     protected abstract void _abort() ;
     protected abstract void _end() ;

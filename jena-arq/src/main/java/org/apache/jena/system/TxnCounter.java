@@ -118,18 +118,13 @@ public class TxnCounter implements Transactional {
     }
 
     @Override
-    public boolean promote() {
-        return promote(transactionType.get());
-    }
-    
-    @Override
-    public boolean promote(TxnType txnType) {
+    public boolean promote(Promote promoteMode) {
         checkTxn();
         if ( transactionMode.get() == ReadWrite.WRITE )
             return true;
-        if ( txnType == TxnType.READ )
+        if ( transactionType.get() == TxnType.READ )
             throw new JenaTransactionException("Attempt to promote a READ transsction");
-        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
+        if ( promoteMode == Promote.READ_COMMITTED ) {
             // READ_COMMITTED_PROMOTE
             acquireWriterLock(true);
             transactionMode.set(ReadWrite.WRITE);

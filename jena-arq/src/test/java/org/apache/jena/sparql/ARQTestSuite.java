@@ -43,7 +43,10 @@ public class ARQTestSuite extends TestSuite
 
     // Log4j for testing.
     public static final String log4jPropertiesResourceName = "log4j-testing.properties" ;
-    static { System.getProperty("log4j.configuration", log4jPropertiesResourceName) ; }
+    static { 
+        System.getProperty("log4j.configuration", log4jPropertiesResourceName) ;
+        JenaSystem.init();
+    }
     
     static public TestSuite suite()
     {
