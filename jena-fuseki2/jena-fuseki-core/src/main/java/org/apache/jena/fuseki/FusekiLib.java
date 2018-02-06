@@ -128,11 +128,13 @@ public class FusekiLib {
     
     public static String safeParameter(HttpServletRequest request, String pName) {
         String value = request.getParameter(pName) ;
+        if ( value == null )
+            return null ;
         value = value.replace("\r", "") ;
         value = value.replace("\n", "") ;
         return value ;
     }
-    
+
     // Do the addition directly on the dataset
     public static void addDataInto(Graph data, DatasetGraph dsg, Node graphName) {
         // Prefixes?
