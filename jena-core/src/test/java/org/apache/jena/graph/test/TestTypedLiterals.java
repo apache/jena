@@ -25,10 +25,9 @@ import java.math.BigInteger ;
 import java.text.SimpleDateFormat ;
 import java.util.* ;
 
-import javax.xml.bind.DatatypeConverter;
-
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
@@ -961,7 +960,7 @@ public class TestTypedLiterals extends TestCase {
         Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
         LiteralLabel ll = l.asNode().getLiteral();
         assertEquals("binary test 1b", ll.getDatatype(), XSDDatatype.XSDhexBinary);
-        assertEquals("binary test 2b", DatatypeConverter.printHexBinary(data), ll.getLexicalForm());
+        assertEquals("binary test 2b", Hex.encodeHexString(data, false), ll.getLexicalForm());
         
         // Check round tripping from value
         LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
