@@ -65,7 +65,6 @@ import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.junit.After;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.Contract;
