@@ -36,47 +36,48 @@ import org.apache.jena.sparql.util.FmtUtils ;
 public class BindingHashMap extends BindingBase implements BindingMap
 {
     // Bindings are often small.  Is this overkill? 
-    Map<Var, Node> map = new HashMap<>() ;
+    private Map<Var, Node> map = new HashMap<>() ;
     
     /** Using BindingFactory.create is better */
     public BindingHashMap(Binding parent) { super(parent) ; }
     /** Using BindingFactory.create is better */
-    public BindingHashMap() { super(BindingRoot.create()) ; } // null?
+    public BindingHashMap() { super(BindingRoot.create()) ; }
 
     /** Add a (name,value) */
-    
-    protected void add1(Var var, Node node)
-    {
-        if ( ! Var.isAnonVar(var) )
-            map.put(var, node) ;
+
+    protected void add1(Var var, Node node) {
+        if ( !Var.isAnonVar(var) )
+            map.put(var, node);
     }
 
     @Override
-    protected int size1() { return map.size() ; }
-    
+    protected int size1() {
+        return map.size();
+    }
+
     @Override
-    protected boolean isEmpty1() { return map.isEmpty() ; }
-    
-    /** Iterate over all the names of variables.
+    protected boolean isEmpty1() {
+        return map.isEmpty();
+    }
+
+    /**
+     * Iterate over all the names of variables.
      */
     @Override
-    public Iterator<Var> vars1() 
-    {
+    public Iterator<Var> vars1() {
         // Assumes that varnames are NOT duplicated.
-        Iterator<Var> iter = map.keySet().iterator() ;
-        return iter ;
+        Iterator<Var> iter = map.keySet().iterator();
+        return iter;
     }
-    
+
     @Override
-    public boolean contains1(Var var)
-    {
-        return map.containsKey(var) ;
+    public boolean contains1(Var var) {
+        return map.containsKey(var);
     }
-    
+
     @Override
-    public Node get1(Var var)
-    {
-        return map.get(var) ;
+    public Node get1(Var var) {
+        return map.get(var);
     }
 
     /** Add a (var,value) - the node value is never null */
@@ -94,12 +95,11 @@ public class BindingHashMap extends BindingBase implements BindingMap
     private void checkAdd(Var var, Node node) {
         BindingBase.checkPair(var, node);
         if ( BindingBase.UNIQUE_NAMES_CHECK && contains(var) )
-            throw new ARQInternalErrorException("Attempt to reassign '"+var+
-                                                "' from '"+FmtUtils.stringForNode(get(var))+
-                                                "' to '"+FmtUtils.stringForNode(node)+"'") ;
+            throw new ARQInternalErrorException("Attempt to reassign '" + var + "' from '" + FmtUtils.stringForNode(get(var)) + "' to '"
+                                                + FmtUtils.stringForNode(node) + "'");
         // Let the implementation do a check as well.
-        checkAdd1(var, node) ;
+        checkAdd1(var, node);
     }
 
-    protected void checkAdd1(Var v, Node node) { }
+    protected void checkAdd1(Var v, Node node) {}
 }
