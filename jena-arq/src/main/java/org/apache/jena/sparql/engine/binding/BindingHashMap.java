@@ -22,7 +22,6 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.core.Var ;
@@ -31,7 +30,8 @@ import org.apache.jena.sparql.util.FmtUtils ;
 /** A mutable mapping from a name to a value such that we can create a tree of levels
  *  with higher (earlier levels) being shared.
  *  Looking up a name is done by looking in the current level,
- *  then trying the parent is not found. */
+ *  then trying the parent is not found.
+ */
 
 public class BindingHashMap extends BindingBase implements BindingMap
 {
@@ -81,32 +81,19 @@ public class BindingHashMap extends BindingBase implements BindingMap
 
     /** Add a (var,value) - the node value is never null */
     @Override
-    final public void add(Var var, Node node)
-    { 
-        if ( node == null )
-        {
-            Log.warn(this, "Binding.add: null value - ignored") ;
-            return ;
-        }
-        checkAdd(var, node) ;
-        add1(var, node) ;
+    final public void add(Var var, Node node) {
+        checkAdd(var, node);
+        add1(var, node);
     }
 
     @Override
-    final public void addAll(Binding other)
-    {
-        BindingUtils.addAll(this, other) ;
+    final public void addAll(Binding other) {
+        BindingUtils.addAll(this, other);
     }
-    
-    private void checkAdd(Var var, Node node)
-    {
-        if ( ! CHECKING )
-            return ;
-        if ( var == null )
-            throw new ARQInternalErrorException("check("+var+", "+node+"): null var" ) ;
-        if ( node == null )
-            throw new ARQInternalErrorException("check("+var+", "+node+"): null node value" ) ;
-        if ( UNIQUE_NAMES_CHECK && contains(var) )
+
+    private void checkAdd(Var var, Node node) {
+        BindingBase.checkPair(var, node);
+        if ( BindingBase.UNIQUE_NAMES_CHECK && contains(var) )
             throw new ARQInternalErrorException("Attempt to reassign '"+var+
                                                 "' from '"+FmtUtils.stringForNode(get(var))+
                                                 "' to '"+FmtUtils.stringForNode(node)+"'") ;

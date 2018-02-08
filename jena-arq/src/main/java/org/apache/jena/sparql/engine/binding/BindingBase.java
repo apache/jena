@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
@@ -38,8 +39,8 @@ import org.apache.jena.sparql.util.FmtUtils ;
 
 abstract public class BindingBase implements Binding
 {
-    static boolean CHECKING = true ;
-    static boolean UNIQUE_NAMES_CHECK = true ;
+    static final boolean CHECKING = true ;
+    /*package*/ static final boolean UNIQUE_NAMES_CHECK = false ;
     
     // This is a set of bindings, each binding being one pair (var, value).
     protected Binding parent ;
@@ -129,7 +130,19 @@ abstract public class BindingBase implements Binding
         return parent.get(var) ; 
 
     }
+    
     protected abstract Node get1(Var var) ;
+    
+    protected static void checkPair(Var var, Node node)
+    {
+        if ( ! BindingBase.CHECKING )
+            return ;
+        if ( var == null )
+            throw new ARQInternalErrorException("check("+var+", "+node+"): null var" ) ;
+        if ( node == null )
+            throw new ARQInternalErrorException("check("+var+", "+node+"): null node value" ) ;
+    }
+
     
     @Override
     public String toString()
