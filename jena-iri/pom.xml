@@ -96,6 +96,8 @@
           </execution>
         </executions>
         <configuration>
+          <!-- Should have been inherited -->
+          <additionalparam>-Xdoclint:none</additionalparam>
           <version>true</version>
           <show>public</show>
           <quiet>true</quiet>
