@@ -31,10 +31,6 @@
     <version>18</version>
   </parent>
 
-  <prerequisites>
-    <maven>3.3.5</maven>
-  </prerequisites>
-
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -96,7 +92,7 @@
     <ver.awaitility>1.7.0</ver.awaitility>
 
     <jdk.version>1.8</jdk.version>
-    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+    <targetJdk>${jdk.version}</targetJdk>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
@@ -150,12 +146,11 @@
       <!--
           This is the dev profile, typically used locally with 
           "mvn clean install -Pdev".
-          It only builds the modules shipped in apache-jena binaries.
+          It builds the modules shipped in apache-jena binaries
+          but does not build these binaries.
+          This profile does not build javadoc.
       -->
       <id>dev</id>
-      <!-- The maven artifacts of the core development modules 
-           See profile bootstrap for a first build from empty.
-      -->
       <modules>
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
@@ -265,6 +260,9 @@
 
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
+        <!--  Fails when building with Java9 JDK because it requires 
+             system jar jdk.tools which is not available in Java9.
+        -->
         <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
       </modules>
@@ -595,9 +593,12 @@
                   <message>No SNAPSHOT dependencies are allowed!</message>
                   <onlyWhenRelease>true</onlyWhenRelease>
                 </requireReleaseDeps>
+                <requireMavenVersion>
+                  <version>3.5.0</version>
+                </requireMavenVersion>
               </rules>
               <fail>true</fail>
-              <failFast>true</failFast>
+              <failFast>false</failFast>
             </configuration>
           </execution>
         </executions>
@@ -722,9 +723,17 @@
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
     <pluginManagement>
       <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.7.0</version>
           <configuration>
             <encoding>UTF-8</encoding>
             <debug>true</debug>
@@ -738,6 +747,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.20.1</version>
         </plugin>
 
         <plugin>
@@ -763,6 +773,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.0</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -831,6 +842,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M1</version>
           <executions>
             <execution>
               <id>enforce</id>
@@ -862,10 +874,17 @@
           <version>2.5.3</version>
           <extensions>true</extensions>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.0</version>
         </plugin>
 
         <!--
