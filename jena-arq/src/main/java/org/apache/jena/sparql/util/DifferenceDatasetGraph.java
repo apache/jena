@@ -61,7 +61,7 @@ public class DifferenceDatasetGraph extends DyadicDatasetGraph {
 
 	@Override
 	public boolean contains(Node g, Node s, Node p, Node o) {
-	    return both(dsg -> dsg.contains(g, s, p, o));
+	    return getLeft().contains(g, s, p, o) && ! getRight().contains(g, s, p, o);
 	}
 
 	@Override
