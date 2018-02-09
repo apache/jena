@@ -780,17 +780,18 @@
               <goals>
                 <goal>jar</goal>
               </goals>
-              <configuration>
-                <!-- Java8 and later -->
-                <additionalparam>-Xdoclint:none</additionalparam>
-              </configuration>
             </execution>
           </executions>
           <configuration>
             <!-- Java8 and later -->
-            <additionalparam>-Xdoclint:none</additionalparam>
-
-            <failOnError>false</failOnError>
+	    <!-- javadoc-plug v2.x way to do this
+              <additionalparam>-Xdoclint:none</additionalparam>
+	    -->
+	    <!-- The javadoc-plugin v3 way to do this -->
+	    <doclint>none</doclint>
+	    <!-- To allow the build to keep going 
+              <failOnError>false</failOnError>
+	    -->
             <version>true</version>
             <show>public</show>
             <quiet>true</quiet>
