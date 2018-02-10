@@ -18,47 +18,59 @@
 
 package org.apache.jena.sparql.engine.binding;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
 
-public class BindingFactory
-{
-    public static final Binding noParent = null ; 
-    
+public class BindingFactory {
+    public static final Binding noParent = null;
+
     /** Create a binding of no pairs */
-    public static Binding binding() { return binding(noParent) ; }
-    
-    /** Create a binding of no pairs */
-    public static Binding binding(Binding parent) { return new Binding0(parent)  ; }
-    
-    public static Binding binding(Var var, Node node) { return binding(noParent, var, node) ; }
-    
-    /** Create a binding of one (var, value) pair */
-    public static Binding binding(Binding parent, Var var, Node node)
-    {
-        if ( Var.isAnonVar(var) )
-            return new Binding0(parent) ;
-        return new Binding1(parent, var, node) ;
+    public static Binding binding() {
+        return binding(noParent);
     }
-    
-    public static BindingMap create() { return create(noParent) ; }
-    public static BindingMap create(Binding parent) { return new BindingHashMap(parent)  ; }
-    
-    public static Binding root() { return BindingRoot.create() ; }
 
-    /** Create a new Binding as a copy of an existing one.
-     * Additionally, it guarantees to touch each element of the binding */ 
-    public static Binding materialize(Binding b)
-    {
-        Iterator<Var> vIter = b.vars() ; 
-        BindingMap b2 = create() ; 
-        while( vIter.hasNext() )
-        {
+    /** Create a binding of no pairs */
+    public static Binding binding(Binding parent) {
+        return new Binding0(parent);
+    }
+
+    public static Binding binding(Var var, Node node) {
+        return binding(noParent, var, node);
+    }
+
+    /** Create a binding of one (var, value) pair */
+    public static Binding binding(Binding parent, Var var, Node node) {
+        BindingBase.checkPair(var, node);
+        if ( Var.isAnonVar(var) )
+            return new Binding0(parent);
+        return new Binding1(parent, var, node);
+    }
+
+    public static BindingMap create() {
+        return create(noParent);
+    }
+
+    public static BindingMap create(Binding parent) {
+        return new BindingHashMap(parent);
+    }
+
+    public static Binding root() {
+        return BindingRoot.create();
+    }
+
+    /**
+     * Create a new Binding as a copy of an existing one. Additionally, it guarantees to
+     * touch each element of the binding
+     */
+    public static Binding materialize(Binding b) {
+        Iterator<Var> vIter = b.vars();
+        BindingMap b2 = create();
+        while (vIter.hasNext()) {
             Var v = vIter.next();
-            b2.add(v, b.get(v)) ;
+            b2.add(v, b.get(v));
         }
-        return b2 ;
+        return b2;
     }
 }
