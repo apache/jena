@@ -217,7 +217,7 @@ public class query extends CmdARQ
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 throw new TerminationException(1);
             }
-            Transactional transactional = (dataset != null && dataset.supportsTransactionAbort()) ? dataset : new TransactionalNull() ;
+            Transactional transactional = (dataset != null && dataset.supportsTransactions()) ? dataset : new TransactionalNull() ;
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
