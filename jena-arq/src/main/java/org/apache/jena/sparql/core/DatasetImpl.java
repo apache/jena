@@ -42,9 +42,9 @@ import org.apache.jena.sparql.util.NodeUtils ;
 
 public class DatasetImpl implements Dataset 
 {
-    protected DatasetGraph dsg = null ;
+    protected final DatasetGraph dsg;
     // Allow for an external transactional. 
-    private Transactional transactional = null ;
+    private final Transactional transactional;
 
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph) {
@@ -52,7 +52,7 @@ public class DatasetImpl implements Dataset
     }
     
     protected DatasetImpl(DatasetGraph dsg) {
-        this(dsg,  (dsg.supportsTransactions() ? dsg : null)) ; 
+        this(dsg,  (dsg.supportsTransactions() ? dsg : new TransactionalNotSupported())) ; 
     }
 
     protected DatasetImpl(DatasetGraph dsg, Transactional transactional) {
@@ -97,6 +97,16 @@ public class DatasetImpl implements Dataset
     }
     
     @Override
+    public boolean supportsTransactions() {
+        return dsg.supportsTransactions();
+    }
+
+    @Override
+    public boolean supportsTransactionAbort() {
+        return dsg.supportsTransactionAbort();
+    }
+
+    @Override
     public void begin() {
         checkTransactional();
         transactional.begin();
@@ -116,33 +126,25 @@ public class DatasetImpl implements Dataset
 
     @Override
     public boolean promote() {
+        checkTransactional();
         return transactional.promote();
     }
 
     @Override
     public ReadWrite transactionMode() {
+        checkTransactional();
         return transactional.transactionMode();
     }
 
     @Override
     public TxnType transactionType() {
+        checkTransactional();
         return transactional.transactionType();
     }
 
-    @Override
-    public boolean supportsTransactions() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsTransactionAbort() {
-        return false;
-    }
-    
     /** Say whether a transaction is active */ 
     @Override
     public boolean isInTransaction() {
-        checkTransactional();
         return transactional != null && transactional.isInTransaction();
     }
 

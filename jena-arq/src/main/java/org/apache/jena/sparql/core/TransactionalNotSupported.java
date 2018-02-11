@@ -89,7 +89,6 @@ public class TransactionalNotSupported implements Transactional
     @Override public TxnType transactionType()
     { throw new UnsupportedOperationException("Transactional.transactionType") ; }
 
-
     @Override
     public void end()
     { throw new UnsupportedOperationException("Transactional.end") ; }
