@@ -735,6 +735,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.7.0</version>
           <configuration>
+            <showDeprecation>false</showDeprecation>
             <encoding>UTF-8</encoding>
             <debug>true</debug>
             <debuglevel>source,lines,vars</debuglevel>

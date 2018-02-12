@@ -25,6 +25,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.junit.Test;
@@ -126,52 +127,75 @@ public abstract class TestDyadicDatasetGraph extends BaseTest {
         emptyDsg().getGraph(graphName).remove(null, null, null);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    // Read lifecycle.
+    @Test
+    public void txnRead1() {
+        final DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        dsg.begin(ReadWrite.READ);
+        assertTrue(dsg.isInTransaction());
+        dsg.commit();
+        dsg.end();
+    }
+    
+    @Test
+    public void txnRead2() {
+        final DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        dsg.begin(ReadWrite.READ);
+        assertTrue(dsg.isInTransaction());
+        dsg.end();
+    }
+    
+    @Test
+    public void txnRead3() {
+        final DatasetGraph dsg = emptyDsg();
+        assertFalse(dsg.isInTransaction());
+        dsg.begin();
+        assertTrue(dsg.isInTransaction());
+        assertEquals(ReadWrite.READ, dsg.transactionMode());
+        assertEquals(TxnType.READ, dsg.transactionType());
+        dsg.end();
+    }
+    
+    @Test(expected = JenaTransactionException.class)
     public void noWriting1() {
         emptyDsg().begin(ReadWrite.WRITE);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = JenaTransactionException.class)
     public void noWriting2() {
         emptyDsg().begin(TxnType.WRITE);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = JenaTransactionException.class)
     public void noWriting3() {
         emptyDsg().begin(TxnType.READ_PROMOTE);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = JenaTransactionException.class)
     public void noWriting4() {
         emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE);
     }
     
     @Test
     public void noPromoting() {
-        assertFalse(emptyDsg().promote());
+        final DatasetGraph dsg = emptyDsg();
+        // Dynadic datasets are read-only.
+        dsg.begin(ReadWrite.READ);
+        boolean b = dsg.promote();
+        assertFalse(b);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void noCommitting() {
-        final DatasetGraph dsg = emptyDsg();
-        assertFalse(dsg.isInTransaction());
-        dsg.begin(ReadWrite.READ);
-        assertTrue(dsg.isInTransaction());
-        dsg.commit();
-    }
-    
     @Test
     public void testTransactionTypeAndMode() {
         final DatasetGraph dsg = emptyDsg();
         assertFalse(dsg.isInTransaction());
-        try {
-            dsg.begin(TxnType.READ);
-            assertTrue(dsg.isInTransaction());
-            assertEquals(TxnType.READ, dsg.transactionType());
-            assertEquals(ReadWrite.READ, dsg.transactionMode());
-        } finally {
-            dsg.end();
-        }
+        dsg.begin(TxnType.READ);
+        assertTrue(dsg.isInTransaction());
+        assertEquals(TxnType.READ, dsg.transactionType());
+        assertEquals(ReadWrite.READ, dsg.transactionMode());
+        dsg.end();
         assertFalse(dsg.isInTransaction());
     }
 

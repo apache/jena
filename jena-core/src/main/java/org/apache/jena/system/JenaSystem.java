@@ -76,7 +76,7 @@ public class JenaSystem {
         // The same thread will not stop at the lock.
         // Set initialized to true before a recursive call is possible
         // handles this.  The recursive call will see initialized true and
-        // and returnn on the first test.
+        // and return on the first test.
 
         // Net effect:
         // After a top level call of JenaSystem.init() returns, tjena has

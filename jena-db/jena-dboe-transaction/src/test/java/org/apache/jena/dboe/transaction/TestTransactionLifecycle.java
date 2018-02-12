@@ -234,9 +234,8 @@ public class TestTransactionLifecycle extends AbstractTestTxn {
     
     @Test public void txn_read_promote_commit() {
         unit.begin(TxnType.READ);
-        try { unit.promote(); fail(); }
-        // Exception is correct - it is illegal to call promote in a TxnType.READ 
-        catch (TransactionException ex) { /* Expected : can continue */ }
+        boolean b = unit.promote();
+        assertFalse(b);
         unit.end() ;
         checkClear() ;
     }

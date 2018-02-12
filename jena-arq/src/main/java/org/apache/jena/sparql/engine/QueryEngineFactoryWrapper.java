@@ -36,7 +36,7 @@ public class QueryEngineFactoryWrapper implements QueryEngineFactory
     
     @Override
     public boolean accept(Query query, DatasetGraph dsg, Context context) {
-        if ( !(  dsg instanceof DatasetGraphWrapper ) )
+        if ( !( dsg instanceof DatasetGraphWrapper ) )
             return false ;    
         DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getWrapped() ;
         return QueryEngineRegistry.findFactory(query, dsg2, context).accept(query, dsg2, context) ;
@@ -44,7 +44,7 @@ public class QueryEngineFactoryWrapper implements QueryEngineFactory
 
     @Override
     public Plan create(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
-        if ( !(  dsg instanceof DatasetGraphWrapper ) )
+        if ( ! ( dsg instanceof DatasetGraphWrapper ) )
             return null ;    
         DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getWrapped() ;
         return QueryEngineRegistry.findFactory(query, dsg2, context).create(query, dsg2, inputBinding, context) ;
@@ -52,7 +52,7 @@ public class QueryEngineFactoryWrapper implements QueryEngineFactory
 
     @Override
     public boolean accept(Op op, DatasetGraph dsg, Context context) {
-        if ( !(  dsg instanceof DatasetGraphWrapper ) )
+        if ( ! ( dsg instanceof DatasetGraphWrapper ) )
             return false ;    
         DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getWrapped() ;
         return QueryEngineRegistry.findFactory(op, dsg2, context).accept(op, dsg2, context) ;
@@ -60,7 +60,7 @@ public class QueryEngineFactoryWrapper implements QueryEngineFactory
 
     @Override
     public Plan create(Op op, DatasetGraph dsg, Binding inputBinding, Context context) {
-        if ( !(  dsg instanceof DatasetGraphWrapper ) )
+        if ( ! ( dsg instanceof DatasetGraphWrapper ) )
             return null ;    
         DatasetGraph dsg2 = ((DatasetGraphWrapper)dsg).getWrapped() ;
         return QueryEngineRegistry.findFactory(op, dsg2, context).create(op, dsg2, inputBinding, context) ;

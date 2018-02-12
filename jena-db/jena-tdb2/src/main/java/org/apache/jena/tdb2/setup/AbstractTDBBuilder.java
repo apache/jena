@@ -36,7 +36,7 @@ import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.tdb2.TDBException;
-import org.apache.jena.tdb2.solver.OpExecutorTDB1;
+import org.apache.jena.tdb2.solver.OpExecutorTDB2;
 import org.apache.jena.tdb2.store.*;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetable.NodeTableCache;
@@ -103,7 +103,7 @@ public abstract class AbstractTDBBuilder {
         DatasetGraphTxn dsg = new DatasetGraphTDB(trans, 
                                                   tripleTable, quadTable, prefixes, 
                                                   ReorderLib.fixed(), location, params);
-        QC.setFactory(dsg.getContext(), OpExecutorTDB1.OpExecFactoryTDB);
+        QC.setFactory(dsg.getContext(), OpExecutorTDB2.OpExecFactoryTDB);
         txnCoord.start();
         return dsg;
     }

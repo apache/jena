@@ -18,21 +18,21 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.Arrays ;
-import java.util.List ;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderGraph ;
-import org.junit.Test ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.graph.GraphUnionRead;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.sse.builders.BuilderGraph;
+import org.junit.Test;
 
 public class TestGraphUnionRead extends BaseTest
 {
@@ -53,80 +53,79 @@ public class TestGraphUnionRead extends BaseTest
       " (graph <http://example/g3>",
       "   (triple <http://example/s> <http://example/p> 'g3')",
       "   (triple <http://example/s> <http://example/p> <http://example/o>)",
-      " ))") ;
-    private static DatasetGraph dsg = null ;
+      " ))");
+    private static DatasetGraph dsg = null;
     static {
-        Item item = SSE.parse(dataStr) ;
-        dsg = BuilderGraph.buildDataset(item) ;
+        Item item = SSE.parse(dataStr);
+        dsg = BuilderGraph.buildDataset(item);
     }
-    private static Node gn1 = SSE.parseNode("<http://example/g1>") ;
-    private static Node gn2 = SSE.parseNode("<http://example/g2>") ;
-    private static Node gn3 = SSE.parseNode("<http://example/g3>") ;
-    private static Node gn9 = SSE.parseNode("<http://example/g9>") ;
+    private static Node gn1 = SSE.parseNode("<http://example/g1>");
+    private static Node gn2 = SSE.parseNode("<http://example/g2>");
+    private static Node gn3 = SSE.parseNode("<http://example/g3>");
+    private static Node gn9 = SSE.parseNode("<http://example/g9>");
     
-    @Test public void gr_union_01()
-    {
-        List<Node> gnodes = list(gn1, gn2) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        long x = Iter.count(g.find(null, null, null)) ;
-        assertEquals(3, x) ;
-    }
-    
-    @Test public void gr_union_02()
-    {
-        List<Node> gnodes = list(gn1, gn2) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        Node s = NodeFactory.createURI("http://example/s") ; 
-        long x = Iter.count(g.find(s, null, null)) ;
-        assertEquals(3, x) ;
+    @Test
+    public void gr_union_01() {
+        List<Node> gnodes = list(gn1, gn2);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        long x = Iter.count(g.find(null, null, null));
+        assertEquals(3, x);
     }
 
-    @Test public void gr_union_03()
-    {
-        List<Node> gnodes = list(gn1, gn2, gn9) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        Node o = NodeFactory.createLiteral("g2") ; 
-        long x = Iter.count(g.find(null, null, o)) ;
-        assertEquals(1, x) ;
-    }
-    
-    @Test public void gr_union_04()
-    {
-        List<Node> gnodes = list(gn9) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        long x = Iter.count(g.find(null, null, null)) ;
-        assertEquals(0, x) ;
+    @Test
+    public void gr_union_02() {
+        List<Node> gnodes = list(gn1, gn2);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        Node s = NodeFactory.createURI("http://example/s");
+        long x = Iter.count(g.find(s, null, null));
+        assertEquals(3, x);
     }
 
-    @Test public void gr_union_05()
-    {
-        List<Node> gnodes = list() ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        long x = Iter.count(g.find(null, null, null)) ;
-        assertEquals(0, x) ;
-    }
-    
-    @Test public void gr_union_06()
-    {
-        List<Node> gnodes = list(gn1, gn1) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        long x = Iter.count(g.find(null, null, null)) ;
-        assertEquals(2, x) ;
+    @Test
+    public void gr_union_03() {
+        List<Node> gnodes = list(gn1, gn2, gn9);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        Node o = NodeFactory.createLiteral("g2");
+        long x = Iter.count(g.find(null, null, o));
+        assertEquals(1, x);
     }
 
-    @Test public void gr_union_of_one_1()
-    {
-        List<Node> gnodes = list(gn2) ;
-        Graph g = new GraphUnionRead(dsg, gnodes) ;
-        long x1 = Iter.count(g.find(null, null, null)) ;
-        assertEquals(2, x1) ;
-        Node o = NodeFactory.createLiteral("g2") ; 
-        long x2 = Iter.count(g.find(null, null, o)) ;
-        assertEquals(1, x2) ;
+    @Test
+    public void gr_union_04() {
+        List<Node> gnodes = list(gn9);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        long x = Iter.count(g.find(null, null, null));
+        assertEquals(0, x);
     }
 
-    static <T> List<T> list(@SuppressWarnings("unchecked") T...x)
-    {
-        return Arrays.asList(x) ;
+    @Test
+    public void gr_union_05() {
+        List<Node> gnodes = list();
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        long x = Iter.count(g.find(null, null, null));
+        assertEquals(0, x);
+    }
+
+    @Test
+    public void gr_union_06() {
+        List<Node> gnodes = list(gn1, gn1);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        long x = Iter.count(g.find(null, null, null));
+        assertEquals(2, x);
+    }
+
+    @Test
+    public void gr_union_of_one_1() {
+        List<Node> gnodes = list(gn2);
+        Graph g = new GraphUnionRead(dsg, gnodes);
+        long x1 = Iter.count(g.find(null, null, null));
+        assertEquals(2, x1);
+        Node o = NodeFactory.createLiteral("g2");
+        long x2 = Iter.count(g.find(null, null, o));
+        assertEquals(1, x2);
+    }
+
+    static List<Node> list(Node...x) {
+        return Arrays.asList(x);
     }
 }

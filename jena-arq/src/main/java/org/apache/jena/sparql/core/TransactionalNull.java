@@ -32,7 +32,6 @@ public class TransactionalNull implements Transactional {
     @Override public void begin()                       { txn.begin(); }
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote()                  { return txn.promote(); }
     @Override public void commit()                      { txn.commit(); }
     @Override public void abort()                       { txn.abort(); }
     @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
@@ -77,13 +76,13 @@ public class TransactionalNull implements Transactional {
     }
 
     @Override
-    public boolean promote() {
+    public boolean promote(Promote txnType) {
         if ( ! inTransaction.get() )
             throw new JenaTransactionException("Not in transaction"); 
         txnMode.set(ReadWrite.WRITE);
         return true;
     }
-    
+
     @Override
     public void commit() {
         if ( ! inTransaction.get() )

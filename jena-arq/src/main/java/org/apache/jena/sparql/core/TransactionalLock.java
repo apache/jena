@@ -54,7 +54,6 @@ public class TransactionalLock implements Transactional {
     @Override public void begin()                       { txn.begin(); }
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote()                  { return txn.promote(); }
     @Override public void commit()                      { txn.commit(); }
     @Override public void abort()                       { txn.abort(); }
     @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
@@ -128,7 +127,7 @@ public class TransactionalLock implements Transactional {
     // Lock propmotion required (Ok for mutex) 
     
     @Override
-    public boolean promote() { 
+    public boolean promote(Promote txnType) { 
         return false;
     }
 

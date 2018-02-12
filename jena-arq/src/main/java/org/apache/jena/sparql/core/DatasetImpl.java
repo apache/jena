@@ -125,9 +125,9 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public boolean promote() {
+    public boolean promote(Promote txnType) {
         checkTransactional();
-        return transactional.promote();
+        return transactional.promote(txnType);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class DatasetImpl implements Dataset
         if ( ! supportsTransactions() )
             throw new UnsupportedOperationException("Transactions not supported") ;
     }
-    
+
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 

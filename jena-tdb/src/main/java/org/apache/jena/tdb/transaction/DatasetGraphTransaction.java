@@ -93,19 +93,28 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
             DatasetGraphTxn dsgTxn = dsgtxn.get() ;
             if ( dsgTxn.getTransaction().isRead() ) {
                 TxnType txnType = dsgTxn.getTransaction().getTxnType();
+                Promote mode;
                 switch(txnType) {
                     case READ : 
                         throw new JenaTransactionException("Attempt to update in a read transaction"); 
                     case WRITE :
                         // Impossible. We're in read-mode.
                         throw new TDBException("Internal inconsistency: read-mode write transaction");
-                    case READ_COMMITTED_PROMOTE :
                     case READ_PROMOTE : 
+                        mode = Promote.ISOLATED;
+                        break;
+                    case READ_COMMITTED_PROMOTE :
+                        mode = Promote.READ_COMMITTED;
+                        break;
+                    default:
+                        throw new TDBException("Internal inconsistency: null transaction type");
                 }
                 // Promotion.
                 TransactionManager txnMgr = dsgTxn.getTransaction().getTxnMgr() ;
-                DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, txnType) ;
+                DatasetGraphTxn dsgTxn2 = txnMgr.promote(dsgTxn, txnType, mode) ;
                 if ( dsgTxn2 == null )
+                    // We were asked for a write operation and can't promote.
+                    // Returning false makes no sense.
                     throw new JenaTransactionException("Can't promote "+txnType+"- dataset has been written to");
                 dsgtxn.set(dsgTxn2);
             }
@@ -206,12 +215,12 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected boolean _promote() {
+    protected boolean _promote(Promote promoteMode) {
         // Promotion (TDB1) is a reset of the DatasetGraphTxn.
         checkNotClosed() ;
         DatasetGraphTxn dsgTxn = dsgtxn.get();
         Transaction transaction = dsgTxn.getTransaction();
-        DatasetGraphTxn dsgTxn2 = transaction.getTxnMgr().promote(dsgTxn, transaction.getTxnType());
+        DatasetGraphTxn dsgTxn2 = transaction.getTxnMgr().promote(dsgTxn, transaction.getTxnType(), promoteMode);
         if ( dsgTxn2 == null )
             return false;
         dsgtxn.set(dsgTxn2) ;

@@ -174,10 +174,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         Transaction txn = txnSystem.getThreadTransaction() ;
         if ( txn == null )
             throw new TransactionException("Not in a transaction") ;
-            
         if ( txn.isWriteTxn() )
             return ;
-        boolean b = txn.promote() ;
+        boolean b = promote() ;
         if ( !b )
             throw new TransactionException("Can't write") ;
     }
@@ -439,6 +438,16 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         if ( txnMonitor != null ) txnMonitor.startPromote();
         try { 
             return txnSystem.promote() ;
+        } finally { 
+            if ( txnMonitor != null ) txnMonitor.finishPromote();
+        }
+    }
+
+    @Override
+    public boolean promote(Promote txnType) {
+        if ( txnMonitor != null ) txnMonitor.startPromote();
+        try { 
+            return txnSystem.promote(txnType) ;
         } finally { 
             if ( txnMonitor != null ) txnMonitor.finishPromote();
         }

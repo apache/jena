@@ -191,16 +191,23 @@ public class TestTransactionLifecycle2 {
         checkClear() ;
     }
     
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_promote_3() {
         Transaction txn1 = txnMgr.begin(TxnType.READ) ;
         boolean b = txn1.promote() ;
-        assertTrue(b) ;
+        assertFalse(b) ;
         b = txn1.promote() ;
-        assertTrue(b) ;
-        // Exception - now a writer
+        assertFalse(b) ;
+        // Not a writer
         txn1.end() ;
         checkClear() ;
+    }
+
+    @Test(expected=TransactionException.class)
+    public void txn_promote_4() {
+        Transaction txn1 = txnMgr.begin(TxnType.READ) ;
+        txn1.end() ;
+        txn1.promote();
     }
 
     //Not a @Test

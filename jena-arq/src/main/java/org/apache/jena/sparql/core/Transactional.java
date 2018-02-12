@@ -110,20 +110,66 @@ public interface Transactional
     public void begin(ReadWrite readWrite) ;
     
     /**
-     * Attempt to promote a transaction from "read" to "write" and the transaction
-     * start with a "promote" mode ({@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE}).
+     * Attempt to promote a transaction from "read" to "write" when the transaction
+     * started with a "promote" mode ({@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE}).
      * <p>
-     * Returns "true" if the transaction is in write mode after the call.
-     * The method always succeeds of the transaction is already
-     * "write".
+     * Returns "true" if the transaction is in write mode after the call. The method
+     * always succeeds of the transaction is already "write".
      * <p>
-     * This method returns true if a {@code READ_PROMOTE} or {@code READ_COMMITTED_PROMOTE} is promoted.
+     * A {@code READ_COMMITTED_PROMOTE} can always be promoted, but the call may need to
+     * wait.
      * <p>
-     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the transaction is still valid and in "read" mode. 
+     * This method returns true if a {@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE} is promoted.
      * <p>
-     * This method throws an exception if there is an attempt to promote a "READ" transaction. 
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the
+     * transaction is still valid and in "read" mode. Any further calls to
+     * {@code promote()} will also return false.
+     * <p>
+     * This method throws an exception if there is an attempt to promote a "READ"
+     * transaction.
      */
-    public boolean promote();
+    public default boolean promote() {
+        if ( transactionMode() == ReadWrite.WRITE )
+            return true;
+        TxnType txnType = transactionType();
+        if ( txnType == null )
+            throw new JenaTransactionException("txnType");
+        switch(txnType) {
+            case WRITE :                  return true;
+            case READ :                   return false;
+            case READ_PROMOTE :           return promote(Promote.ISOLATED);
+            case READ_COMMITTED_PROMOTE : return promote(Promote.READ_COMMITTED);
+        }
+        throw new JenaTransactionException("Can't determine promote '"+txnType+"'transaction");
+    }
+
+    public enum Promote { ISOLATED, READ_COMMITTED } ; 
+    
+    /**
+     * Attempt to promote a transaction from "read" mode to "write" and the transaction. This
+     * method allows the form of promotion to be specified. The transaction must not have been started
+     * with {@code READ}, which is read-only. 
+     * <p>
+     * An argument of {@code READ_PROMOTE} treats the promotion as if the transaction was started
+     * with {@code READ_PROMOTE} (any other writer commiting since the transaction started
+     * blocks promotion) and {@code READ_COMMITTED_PROMOTE} treats the promotion as if the transaction was started
+     * with {@code READ_COMMITTED_PROMOTE} (intemediate writer commits become visible).
+     * <p> 
+     * Returns "true" if the transaction is in write mode after the call. The method
+     * always succeeds of the transaction is already "write".
+     * <p>
+     * This method returns true if a {@code READ_PROMOTE} or
+     * {@code READ_COMMITTED_PROMOTE} is promoted.
+     * <p>
+     * This method returns false if a {@code READ_PROMOTE} can't be promoted - the
+     * transaction is still valid and in "read" mode.
+     * <p>
+     * This method throws an exception if there is an attempt to promote a {@code READ}
+     * transaction.
+     */
+    public boolean promote(Promote mode);
 
     /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;
@@ -134,12 +180,15 @@ public interface Transactional
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
     public void end() ;
 
-    /** Return the current mode of the transaction - "read" or "write" */ 
+    /** Return the current mode of the transaction - "read" or "write".
+     * If the caller is not in a transaction, this method returns null. 
+     */ 
     public ReadWrite transactionMode();
 
-    /** Return the transaction type used in {@code begin(TxnType)}. */ 
+    /** Return the transaction type used in {@code begin(TxnType)}. 
+     * If the caller is not in a transaction, this method returns null. 
+     */ 
     public TxnType transactionType();
-    //public default TxnType transactionType() { throw new JenaTransactionException("Not implemented"); }
 
     /** Say whether inside a transaction. */ 
     public boolean isInTransaction() ;

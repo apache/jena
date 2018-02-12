@@ -42,7 +42,6 @@ public class TransactionalNotSupported implements Transactional
     @Override public void begin()                       { txn.begin(); }
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote()                  { return txn.promote(); }
     @Override public void commit()                      { txn.commit(); }
     @Override public void abort()                       { txn.abort(); }
     @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
@@ -68,9 +67,9 @@ public class TransactionalNotSupported implements Transactional
     public void begin(ReadWrite readWrite)
     { throw new UnsupportedOperationException("Transactional.begin(ReadWrite)") ; }
 
-    @Override public boolean promote()
+    @Override public boolean promote(Promote txnType)
     { throw new UnsupportedOperationException("Transactional.promote") ; }
-    
+
     @Override
     public void commit()
     { throw new UnsupportedOperationException("Transactional.commit") ; }

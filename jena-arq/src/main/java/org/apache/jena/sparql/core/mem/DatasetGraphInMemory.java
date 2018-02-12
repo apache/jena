@@ -176,30 +176,18 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         version.remove();
         transactionLock.leaveCriticalSection();
     }
-     
+
     @Override
-    public boolean promote() {
+    public boolean promote(Promote promoteMode) {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to promote outside a transaction!");
         if ( transactionMode().equals(ReadWrite.WRITE) )
             return true;
-
-        boolean readCommitted;
-        // Initial state
-        switch(transactionType.get()) {
-            case WRITE :
-                return true;
-            case READ :
-                throw new JenaTransactionException("Tried to promote READ transaction");
-            case READ_COMMITTED_PROMOTE :
-                readCommitted = true;
-            case READ_PROMOTE :
-                readCommitted = false;
-                // Maybe!
-                break;
-            default:
-                throw new NullPointerException();
-        }
+        
+        if ( transactionType() == TxnType.READ )
+            return false;
+        
+        boolean readCommitted = (promoteMode == Promote.READ_COMMITTED);
         
         try {
             _promote(readCommitted);
@@ -210,8 +198,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     private void _promote(boolean readCommited) {
-        //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
-        
         // Outside lock.
         if ( ! readCommited && version.get() != generation.get() )  {
             // This tests for any commited writers since this transaction started.
@@ -222,7 +208,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         }
     
         // Blocking on other writers.
-        transactionLock.enterCriticalSection(false);
+        transactionLock.enterCriticalSection(Lock.WRITE);
         // Check again now we are inside the lock. 
         if ( ! readCommited && version.get() != generation.get() )  {
                 // Can't promote - release the lock.

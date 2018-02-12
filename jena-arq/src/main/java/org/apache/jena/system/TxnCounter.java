@@ -118,14 +118,14 @@ public class TxnCounter implements Transactional {
     }
 
     @Override
-    public boolean promote() {
+    public boolean promote(Promote promoteMode) {
         checkTxn();
         if ( transactionMode.get() == ReadWrite.WRITE )
             return true;
-        TxnType txnType = transactionType.get();
-        if ( txnType == TxnType.READ )
+        if ( transactionType.get() == TxnType.READ )
             throw new JenaTransactionException("Attempt to promote a READ transsction");
-        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
+        if ( promoteMode == Promote.READ_COMMITTED ) {
+            // READ_COMMITTED_PROMOTE
             acquireWriterLock(true);
             transactionMode.set(ReadWrite.WRITE);
             IntegerState state = new IntegerState(value.get());
@@ -146,7 +146,7 @@ public class TxnCounter implements Transactional {
         }
         return true;
     }
-    
+
     @Override
     public void commit() {
         checkTxn(); 

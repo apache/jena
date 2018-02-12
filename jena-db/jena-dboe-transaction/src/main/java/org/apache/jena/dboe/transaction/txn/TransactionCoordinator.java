@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.locks.ReadWriteLock ;
 import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Sys;
@@ -275,14 +274,13 @@ public class TransactionCoordinator {
             throw new TransactionException("TransactionCoordinator has already been started") ;
     }
 
-    // Are we up and ruuning?
+    // Is this TransactionCoordinator up and running?
     private void checkActive() {
         if ( ! coordinatorStarted )
             throw new TransactionException("TransactionCoordinator has not been started") ;
         checkNotShutdown();
     }
 
-    // Check not wrapped up
     private void checkNotShutdown() {
         if ( coordinatorLock == null )
             throw new TransactionException("TransactionCoordinator has been shutdown") ;
@@ -382,7 +380,6 @@ public class TransactionCoordinator {
      * 
      * @see #tryBlockWriters()
      * @see #enableWriters()
-     * 
      */
     public void blockWriters() {
         acquireWriterLock(true) ;
@@ -396,7 +393,7 @@ public class TransactionCoordinator {
      *  
      * @see #blockWriters()
      * @see #enableWriters()
-
+     *
      * @return true if the operation succeeded and writers are blocked 
      */
     public boolean tryBlockWriters() {
@@ -559,55 +556,26 @@ public class TransactionCoordinator {
         return cg ;
     }
 
-//    /** Is promotion of transactions enabled? */ 
-//    /*private*/public/*for development*/ static boolean promotion               = true ;
-//    
-//    /** Control of whether a transaction promotion can see any commits that
-//     *  happened between this transaction starting and it promoting.
-//     *  A form of "ReadCommitted".   
-//     */
-//    /*private*/public/*for development*/ static boolean readCommittedPromotion  = false ;
-    
-    /** Whether to wait for writers when trying to promote */
-    private static final boolean promotionWaitForWriters = true;
-
-    /** Attempt to promote a transaction from READ to WRITE.
-     * Return true for a No-op for a transaction already a writer.
+    /** Attempt to promote a transaction from READ mode to WRITE mode based.
+     *  Whether intevening commits are seen is determined by the boolean flag.
+     * Return true if the transaction is already a writer.
      */
-    /*package*/ boolean promoteTxn(Transaction transaction) {
+    /*package*/ boolean promoteTxn(Transaction transaction, boolean readCommittedPromotion) {
         if ( transaction.getMode() == ReadWrite.WRITE )
             return true ;
+        // While this code allows promotion of TxnType.READ, this ability is usually rejected
+        // by the transaction system around it. e.g. TransactionalBase.
         if ( transaction.getTxnType() == TxnType.READ )
             throw new TransactionException("promote: can't promote a READ transaction") ;
-        
-        if ( transaction.getTxnType() != TxnType.READ_COMMITTED_PROMOTE && 
-             transaction.getTxnType() != TxnType.READ_PROMOTE )
-            throw new InternalErrorException("Transaction type is "+transaction.getTxnType());
-        
-        // Has there been an writer active since the transaction started?
-        // Do a test outside the lock - only dataVaersion can change and that increases.
-        // If "read commited transactions" not allowed, the data has changed in a way we
-        // do no twish to expose.
-        // If this test fails outside the lock it will fail inside.
-        // If it passes, we have to test again in case there is an active writer.
-        
-        //boolean readCommittedPromotion = transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE;
-        
-        // Once we have acquireWriterLock, we are single writer.
-        // We may have to discard writer status because eocne we can make the defintite
-        // decision on promotion, we find we can't promote after all.
-        
+        return promoteTxn$(transaction, readCommittedPromotion);
+    }
+    
+    private boolean promoteTxn$(Transaction transaction, boolean readCommittedPromotion) {
         // == Read committed path.
         if ( transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE ) {
-            /*
-             * acquireWriterLock(true) ;
-             * synchronized(coordinatorLock) {
-             * begin$ ==>
-             *    reset transaction.
-             *    promote components
-             *    reset dataVersion
-             */
-            acquireWriterLock(true) ;
+            if ( ! promotionWaitForWriters() )
+                return false;
+            // Now single writer.
             synchronized(coordinatorLock) {
                 try { 
                     transaction.promoteComponents() ;
@@ -632,7 +600,7 @@ public class TransactionCoordinator {
             return false;
 
         // Take writer lock.
-        if ( ! waitForWriters() )
+        if ( ! promotionWaitForWriters() )
             // Failed to become a writer.
             return false;
         
@@ -674,7 +642,10 @@ public class TransactionCoordinator {
         return true;
     }
     
-    private boolean waitForWriters() {
+    /** Whether to wait for writers when trying to promote */
+    private static final boolean promotionWaitForWriters = true;
+
+    private boolean promotionWaitForWriters() {
         if ( promotionWaitForWriters )
             return acquireWriterLock(true) ;
         else
@@ -835,4 +806,3 @@ public class TransactionCoordinator {
 
     public long countFinished()     { return countFinished.get() ; }
 }
-

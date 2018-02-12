@@ -107,9 +107,21 @@ public class Transaction implements TransactionInfo {
         setState(ACTIVE) ;
     }
     
+    private boolean promoteReadCommitted() {
+        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) return true;
+        if ( txnType == TxnType.READ_PROMOTE ) return false;
+        return false;
+    }
+    
     public boolean promote() {
+        return promote(promoteReadCommitted());
+    }
+    
+    public boolean promote(boolean readCommitted) {
         checkState(ACTIVE);
-        boolean b = txnMgr.promoteTxn(this) ;
+        if ( txnType == TxnType.READ )
+            return false;
+        boolean b = txnMgr.promoteTxn(this, readCommitted) ;
         if ( !b )
             return false ;
         mode = ReadWrite.WRITE;
@@ -128,8 +140,7 @@ public class Transaction implements TransactionInfo {
     public void notifyUpdate() {
         checkState(ACTIVE) ;
         if ( mode == ReadWrite.READ ) {
-            System.err.println("notifyUpdate - promote needed") ;
-            promote() ;
+            promote(promoteReadCommitted()) ;
             mode = ReadWrite.WRITE ;
         }
     }

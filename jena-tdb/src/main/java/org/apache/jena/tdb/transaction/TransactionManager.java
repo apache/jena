@@ -24,7 +24,10 @@ import static org.apache.jena.tdb.transaction.TransactionManager.TxnPoint.BEGIN 
 import static org.apache.jena.tdb.transaction.TransactionManager.TxnPoint.CLOSE ;
 
 import java.io.File ;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque ;
@@ -39,6 +42,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock ;
+import org.apache.jena.sparql.core.Transactional.Promote;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.slf4j.Logger ;
@@ -375,24 +379,24 @@ public class TransactionManager
      * <p>
      * Return null for "no promote" due to intermediate commits.  
      */
-    /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, TxnType txnType) throws TDBTransactionException {
+    /*package*/ DatasetGraphTxn promote(DatasetGraphTxn dsgtxn, TxnType originalTxnType, Promote promoteType) throws TDBTransactionException {
         Transaction txn = dsgtxn.getTransaction() ;
         if ( txn.getState() != TxnState.ACTIVE )
             throw new TDBTransactionException("promote: transaction is not active") ;
         if ( txn.getTxnMode() == ReadWrite.WRITE )
             return dsgtxn ;
-        if ( txn.getTxnType() == TxnType.READ ) {
-            txn.abort();
-            throw new TDBTransactionException("promote: transaction is a READ transaction") ;
-        }
+        if ( txn.getTxnType() == TxnType.READ )
+            return null;    // Did no promote.
+            //txn.abort();
+            //throw new TDBTransactionException("promote: transaction is a READ transaction") ;
         
         // Read commit - pick up whatever is current at the point setup.
         // Can also promote - may need to wait for active writers. 
         // Go through begin for the writers lock. 
-        if ( txnType == TxnType.READ_COMMITTED_PROMOTE ) {
+        if ( promoteType == Promote.READ_COMMITTED ) {
             acquireWriterLock(true);
             // No need to sync - we just queue as a writer.
-            return promoteExec$(dsgtxn, txnType);
+            return promoteExec$(dsgtxn, originalTxnType);
         }
         
         // First check, without the writer lock. Fast fail.
@@ -414,7 +418,7 @@ public class TransactionManager
         // can commit/abort.  Otherwise, we have deadlock.
         acquireWriterLock(true) ;
         // Do the synchronized stuff.
-        return promoteSync$(dsgtxn, txnType) ; 
+        return promoteSync$(dsgtxn, originalTxnType) ; 
     }
     
     synchronized

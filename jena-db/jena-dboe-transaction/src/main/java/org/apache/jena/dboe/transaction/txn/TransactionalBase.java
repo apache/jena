@@ -94,12 +94,12 @@ public class TransactionalBase implements TransactionalSystem {
         if ( trackAttachDetach )
             Log.info(this,  "<< attach");
     } 
-    
-  @Override
-  public final void begin(ReadWrite readWrite) { 
-      begin(TxnType.convert(readWrite));
-  }
-    
+
+    @Override
+    public final void begin(ReadWrite readWrite) { 
+        begin(TxnType.convert(readWrite));
+    }
+
     @Override
     public final void begin(TxnType txnType) {
         Objects.nonNull(txnType) ;
@@ -108,12 +108,20 @@ public class TransactionalBase implements TransactionalSystem {
         Transaction transaction = txnMgr.begin(txnType) ;
         theTxn.set(transaction) ;
     }
-    
+
     @Override
     public final boolean promote() {
+        checkActive();
+        return TransactionalSystem.super.promote();
+    }
+
+    
+    @Override
+    public final boolean promote(Promote promoteMode) {
         checkActive() ;
+        boolean readCommitted = (promoteMode == Promote.READ_COMMITTED);
         Transaction txn = getValidTransaction() ;
-        return txn.promote() ;
+        return txn.promote(readCommitted) ;
     }
 
     @Override

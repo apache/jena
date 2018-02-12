@@ -37,7 +37,7 @@ public class RDFConnectionModular implements RDFConnection {
     @Override public void begin()                       { transactional.begin(); }
     @Override public void begin(TxnType txnType)        { transactional.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { transactional.begin(mode); }
-    @Override public boolean promote()                  { return transactional.promote(); }
+    @Override public boolean promote(Promote promote)   { return transactional.promote(promote); }
     @Override public void commit()                      { transactional.commit(); }
     @Override public void abort()                       { transactional.abort(); }
     @Override public boolean isInTransaction()          { return transactional.isInTransaction(); }

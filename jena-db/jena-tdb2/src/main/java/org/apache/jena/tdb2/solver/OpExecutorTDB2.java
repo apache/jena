@@ -54,22 +54,22 @@ import org.slf4j.LoggerFactory ;
  * 
  * See also: StageGeneratorDirectTDB, a non-reordering 
  */
-public class OpExecutorTDB1 extends OpExecutor
+public class OpExecutorTDB2 extends OpExecutor
 {
-    private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB1.class) ;
+    private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB2.class) ;
     
     public final static OpExecutorFactory OpExecFactoryTDB = new OpExecutorFactory()
     {
         @Override
         public OpExecutor create(ExecutionContext execCxt)
-        { return new OpExecutorTDB1(execCxt) ; }
+        { return new OpExecutorTDB2(execCxt) ; }
     } ;
     
     private final boolean isForTDB ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-execute process  
-    public OpExecutorTDB1(ExecutionContext execCxt)
+    public OpExecutorTDB2(ExecutionContext execCxt)
     {
         super(execCxt) ;
         // NB. The dataset may be a TDB one, or a general one.
