@@ -24,6 +24,7 @@ import java.util.Set ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.text.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger ;
@@ -104,39 +105,57 @@ public class textindexer extends CmdARQ {
 
     @Override
     protected void exec() {
-        Set<Node> properties = getIndexedProperties() ;
-
-        // there are various strategies possible here
-        // what is implemented is a first cut simple approach
-        // currently - for each indexed property
-        // list and index triples with that property
-        // that way only process triples that will be indexed
-        // but each entity may be updated several times
-
-        for ( Node property : properties )
-        {
-            Iterator<Quad> quadIter = dataset.find( Node.ANY, Node.ANY, property, Node.ANY );
-            for (; quadIter.hasNext(); )
+        try {
+            // JENA-1486 Make sure to use transactions if supported
+            // The supportsTransactions() check should be strictly unecessary as we should always be using a
+            // DatasetGraphText which is transactional but just for future proofing we check anyway
+            if (dataset.supportsTransactions()) {
+                dataset.begin(ReadWrite.READ);
+            }
+            
+            Set<Node> properties = getIndexedProperties() ;
+    
+            // there are various strategies possible here
+            // what is implemented is a first cut simple approach
+            // currently - for each indexed property
+            // list and index triples with that property
+            // that way only process triples that will be indexed
+            // but each entity may be updated several times
+    
+            for ( Node property : properties )
             {
-                Quad quad = quadIter.next();
-                if ( Quad.isDefaultGraph(quad.getGraph()) ) {
-                    // Need to use urn:x-arq:DefaultGraphNode for text indexing (JENA-1133)
-                    quad = Quad.create(Quad.defaultGraphNodeGenerated,
-                        quad.getSubject(), quad.getPredicate(), quad.getObject());
-                }
-                Entity entity = TextQueryFuncs.entityFromQuad( entityDefinition, quad );
-                if ( entity != null )
+                Iterator<Quad> quadIter = dataset.find( Node.ANY, Node.ANY, property, Node.ANY );
+                for (; quadIter.hasNext(); )
                 {
-                    textIndex.addEntity( entity );
-                    progressMonitor.progressByOne();
+                    Quad quad = quadIter.next();
+                    if ( Quad.isDefaultGraph(quad.getGraph()) ) {
+                        // Need to use urn:x-arq:DefaultGraphNode for text indexing (JENA-1133)
+                        quad = Quad.create(Quad.defaultGraphNodeGenerated,
+                            quad.getSubject(), quad.getPredicate(), quad.getObject());
+                    }
+                    Entity entity = TextQueryFuncs.entityFromQuad( entityDefinition, quad );
+                    if ( entity != null )
+                    {
+                        textIndex.addEntity( entity );
+                        progressMonitor.progressByOne();
+                    }
                 }
             }
+            
+            textIndex.commit();
+            textIndex.close();
+            
+            if (dataset.supportsTransactions()) {
+                dataset.commit();
+            }
+            dataset.close();
+            
+            progressMonitor.close() ;
+        } finally {
+            if (dataset.supportsTransactions()) {
+                dataset.end();
+            }
         }
-        
-        textIndex.commit();
-        textIndex.close();
-        dataset.close();
-        progressMonitor.close() ;
     }
 
     private Set<Node> getIndexedProperties() {
