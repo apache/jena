@@ -182,33 +182,37 @@ public class DatasetImpl implements Dataset
     }
 
     @Override
-    public void addNamedModel(String uri, Model model) {
+    public Dataset addNamedModel(String uri, Model model) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
+        return this;
     }
 
     @Override
-    public void removeNamedModel(String uri) {
+    public Dataset removeNamedModel(String uri) {
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.removeGraph(n) ;
+        return this;
     }
 
     @Override
-    public void replaceNamedModel(String uri, Model model) {
+    public Dataset replaceNamedModel(String uri, Model model) {
         // Assumes single writer.
         checkGraphName(uri) ;
         Node n = NodeFactory.createURI(uri) ;
         dsg.removeGraph(n) ;
         dsg.addGraph(n, model.getGraph() ) ;
+        return this;
     }
 
     @Override
-    public void setDefaultModel(Model model) {
+    public Dataset setDefaultModel(Model model) {
         if ( model == null )
             model = ModelFactory.createDefaultModel() ;
         dsg.setDefaultGraph(model.getGraph()) ;
+        return this;
     }
 
     @Override
