@@ -23,6 +23,7 @@ import org.apache.jena.query.TxnType;
 
 /** Implementation for "un-Transactional" interface.
  * 
+ * @see TransactionalNull for a do nothing implementation of Transactions.
  * @see TransactionalNotSupportedMixin
  */ 
 public class TransactionalNotSupported implements Transactional
@@ -36,24 +37,25 @@ public class TransactionalNotSupported implements Transactional
     // Sometimes implementations will have to include this code
     // directly to override super class versions.
 
-    // As an included component. 
-    /*
-    private final Transactional txn                     = new TransactionalNotSupported() ;
-    @Override public void begin()                       { txn.begin(); }
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public void commit()                      { txn.commit(); }
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    // As an included component: 
+    private static class Example implements Transactional { 
+        private final Transactional txn                     = new TransactionalNotSupported() ;
+        @Override public void begin()                       { txn.begin(); }
+        @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+        @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+        @Override public void commit()                      { txn.commit(); }
+        @Override public void abort()                       { txn.abort(); }
+        @Override public boolean promote(Promote mode)      { return txn.promote(mode) ; }
+        @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
+        @Override public void end()                         { txn.end(); }
+        @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+        @Override public TxnType transactionType()          { return txn.transactionType(); }
+//        // For Datasets: add:
+//        @Override public boolean supportsTransactions()     { return false; }
+//        @Override public boolean supportsTransactionAbort() { return false; }
+    }
     
-     For DatasetGraphs:
-     
-    @Override public boolean supportsTransactions()     { return true; }
-    @Override public boolean supportsTransactionAbort() { return false; }
-    */
+    public static Transactional create() { return new TransactionalNotSupported(); }
     
     @Override
     public void begin()
