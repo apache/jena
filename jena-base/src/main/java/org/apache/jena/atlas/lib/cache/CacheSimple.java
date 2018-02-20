@@ -98,7 +98,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
 
     @Override
     public V getOrFill(K key, Callable<V> callable) {
-        return CacheOps.getOrFill(this, key, callable) ;
+        return CacheOps.getOrFillSync(this, key, callable) ;
     }
 
     @Override
