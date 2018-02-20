@@ -95,12 +95,13 @@ public class QueryEngineHTTP implements QueryExecution {
      * Supported content types for SELECT queries
      */
     public static String[] supportedSelectContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV,
+            WebContent.contentTypeResultsThrift};
     /**
      * Supported content types for ASK queries
      */
     public static String[] supportedAskContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
 
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed

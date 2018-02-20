@@ -123,6 +123,7 @@ public class WebContent
     public static final String      contentTypeJSON              = "application/json" ;
     public static final ContentType ctJSON                       = ContentType.create(contentTypeJSON) ;
     
+    // Unofficial
     public static final String      contentTypeResultsThrift     = "application/sparql-results+thrift" ;
     public static final ContentType ctResultsThrift              = ContentType.create(contentTypeResultsThrift) ;
     
