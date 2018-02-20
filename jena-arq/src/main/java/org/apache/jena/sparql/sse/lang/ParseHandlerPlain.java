@@ -27,6 +27,7 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarAlloc ;
@@ -171,7 +172,7 @@ public class ParseHandlerPlain implements ParseHandler
     @Override
     public void emitIRI(int line, int column, String iriStr)
     {
-        Node n = NodeFactory.createURI(iriStr) ;
+        Node n = RiotLib.createIRIorBNode(iriStr) ;
         Item item = Item.createNode(n, line, column) ;
         listAdd(item) ;
     }
