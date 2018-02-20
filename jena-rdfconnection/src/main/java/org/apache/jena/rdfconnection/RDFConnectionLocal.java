@@ -156,7 +156,7 @@ public class RDFConnectionLocal implements RDFConnection {
     public void delete(String graph) {
         checkOpen();
         Txn.executeWrite(dataset,() ->{
-            if ( RDFConn.isDefault(graph) ) 
+            if ( LibRDFConn.isDefault(graph) ) 
                 dataset.getDefaultModel().removeAll();
             else 
                 dataset.removeNamedModel(graph);
@@ -175,7 +175,7 @@ public class RDFConnectionLocal implements RDFConnection {
         
         Txn.executeWrite(dataset,() ->{
             if ( RDFLanguages.isTriples(lang) ) {
-                Model model = RDFConn.isDefault(graph) ? dataset.getDefaultModel() : dataset.getNamedModel(graph);
+                Model model = LibRDFConn.isDefault(graph) ? dataset.getDefaultModel() : dataset.getNamedModel(graph);
                 if ( replace )
                     model.removeAll();
                 RDFDataMgr.read(model, file); 
@@ -235,7 +235,7 @@ public class RDFConnectionLocal implements RDFConnection {
     }
 
     private Model modelFor(String graph) {
-        if ( RDFConn.isDefault(graph)) 
+        if ( LibRDFConn.isDefault(graph)) 
             return dataset.getDefaultModel();
         return dataset.getNamedModel(graph);
     }

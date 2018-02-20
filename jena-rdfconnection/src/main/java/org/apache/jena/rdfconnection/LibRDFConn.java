@@ -18,10 +18,8 @@
 
 package org.apache.jena.rdfconnection;
 
-import java.util.Objects;
-
 /** package-wide utilities etc */
-/*package*/ class RDFConn {
+/*package*/ class LibRDFConn {
     private static String dftName =  "default" ;
     
     /*package*/ static boolean isDefault(String name) {
@@ -31,7 +29,7 @@ import java.util.Objects;
     private static String queryStringForGraph(String ch, String graphName) {
         return 
             ch + 
-                (RDFConn.isDefault(graphName)
+                (LibRDFConn.isDefault(graphName)
                 ? "default"
                 : "graph="+graphName) ;
     }
@@ -46,9 +44,13 @@ import java.util.Objects;
     }
 
     /*package*/ static String formServiceURL(String destination, String srvEndpoint) {
-        Objects.requireNonNull(srvEndpoint, "Service Endpoint");
+        if ( srvEndpoint == null )
+            return null;
+        if ( srvEndpoint == RDFConnectionRemoteBuilder.SameAsDestination )
+            return destination;
         if ( destination == null )
             return srvEndpoint;
+
         // If the srvEndpoint looks like an absolute URL, use as given. 
         if ( srvEndpoint.startsWith("http:/") || srvEndpoint.startsWith("https:/") )
             return srvEndpoint;
@@ -67,5 +69,4 @@ import java.util.Objects;
            dest = dest+queryString; 
         return dest;
     }
-
 }

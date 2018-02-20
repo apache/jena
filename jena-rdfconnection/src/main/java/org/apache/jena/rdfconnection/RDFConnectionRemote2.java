@@ -30,10 +30,13 @@ import org.apache.http.entity.EntityTemplate;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp;
@@ -42,6 +45,8 @@ import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
+import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
+import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
@@ -50,21 +55,53 @@ import org.apache.jena.web.HttpSC;
 /** 
  * Implementation of the {@link RDFConnection} interface using remote SPARQL operations.  
  */
-public class RDFConnectionRemote implements RDFConnection {
+public class RDFConnectionRemote2 implements RDFConnection {
+    // Adds a Builder to help with HTTP details.
+    
     private static final String fusekiDftSrvQuery   = "sparql";
     private static final String fusekiDftSrvUpdate  = "update";
     private static final String fusekiDftSrvGSP     = "data";
     
     private boolean isOpen = true; 
-    private final String destination;
-    private final String svcQuery;
-    private final String svcUpdate;
-    private final String svcGraphStore;
-    private HttpClient httpClient;
-    private HttpContext httpContext = null;
+    protected final String destination;
+    protected final String svcQuery;
+    protected final String svcUpdate;
+    protected final String svcGraphStore;
     
-    /** Create connection that will use the {@link HttpClient} using URL of the dataset and default service names */
-    public RDFConnectionRemote(HttpClient httpClient, String destination) {
+    protected final Transactional txnLifecycle;
+    protected final HttpClient httpClient;
+    protected final HttpContext httpContext;
+    
+    // On-the-wire settings.
+    protected final RDFFormat outputQuads; 
+    protected final RDFFormat outputTriples;
+    protected final String acceptGraph;
+    protected final String acceptDataset;
+    protected final String acceptSelectResult;
+    protected final String acceptAskResult;
+    protected final String acceptGraphResult;
+    
+    /** Create a {@link RDFConnectionRemoteBuilder}. */
+    public static RDFConnectionRemoteBuilder create() {
+        return new RDFConnectionRemoteBuilder();
+    }
+
+    /** 
+     * Create a {@link RDFConnectionRemoteBuilder} initialized with the
+     * settings of another {@code RDFConnectionRemote}.  
+     */
+    public static RDFConnectionRemoteBuilder create(RDFConnectionRemote2 base) {
+        return new RDFConnectionRemoteBuilder(base);
+    }
+    
+    /**
+     * Create connection that will use the {@link HttpClient} using URL of the dataset and
+     * default service names
+     * 
+     * @deprecated Use {@link RDFConnectionRemoteBuilder}.
+     */
+    @Deprecated 
+    public RDFConnectionRemote2(HttpClient httpClient, String destination) {
         this(httpClient,
              requireNonNull(destination),
              fusekiDftSrvQuery, 
@@ -72,53 +109,127 @@ public class RDFConnectionRemote implements RDFConnection {
              fusekiDftSrvGSP);
     }
 
-    /** Create connection, using URL of the dataset and default service names */
-    public RDFConnectionRemote(String destination) {
+    /**
+     * Create connection, using URL of the dataset and default service names
+     * 
+     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
+     *             {@link RDFConnectionFactory} operation.
+     */
+    @Deprecated 
+    public RDFConnectionRemote2(String destination) {
         this(requireNonNull(destination),
              fusekiDftSrvQuery, 
              fusekiDftSrvUpdate,
              fusekiDftSrvGSP);
     }
 
-    /** Create connection, using full URLs for services. Pass a null for "no service endpoint". */
-    public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
+    /**
+     * Create connection, using full URLs for services. Pass a null for "no service
+     * endpoint".
+     * 
+     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
+     *             {@link RDFConnectionFactory} operation.
+     */
+    @Deprecated 
+    public RDFConnectionRemote2(String sQuery, String sUpdate, String sGSP) {
         this(null, sQuery, sUpdate, sGSP);
     }
     
-    /** Create connection, using URL of the dataset and short names for the services */
-    public RDFConnectionRemote(String destination, String sQuery, String sUpdate, String sGSP) {
+    /**
+     * Create connection, using URL of the dataset and names for the services. Short names
+     * are expanded against the destination. Absolute URIs are left unchanged.
+     * 
+     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
+     *             {@link RDFConnectionFactory} operation.
+     */
+    @Deprecated
+    public RDFConnectionRemote2(String destination, String sQuery, String sUpdate, String sGSP) {
         this(null, destination, sQuery, sUpdate, sGSP);
     }
     
-    /** Create connection, using URL of the dataset and short names for the services */
-    public RDFConnectionRemote(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
-        this.destination = destination;
-        this.svcQuery = LibRDFConn.formServiceURL(destination, sQuery);
-        this.svcUpdate = LibRDFConn.formServiceURL(destination, sUpdate);
-        this.svcGraphStore = LibRDFConn.formServiceURL(destination, sGSP);
-        this.httpClient = httpClient;
+    /**
+     * Create connection, using URL of the dataset and names for the services. Short names
+     * are expanded against the destination. Absolute URIs are left unchanged.
+     * 
+     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
+     *             {@link RDFConnectionFactory} operation.
+     */
+    @Deprecated
+    public RDFConnectionRemote2(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
+        this(null, httpClient, null, destination, sQuery, sUpdate, sGSP,
+            RDFFormat.NQUADS, RDFFormat.NTRIPLES,
+            WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
+            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(), QueryEngineHTTP.defaultConstructHeader()
+            );
     }
-    
+
+    // Used by the builder.
+    protected RDFConnectionRemote2(Transactional txnLifecycle, HttpClient httpClient, HttpContext httpContext, String destination,
+                                   String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
+                                   String acceptDataset, String acceptGraph, String acceptSelectResult, String acceptAskResult,
+                                   String acceptGraphResult) {
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
+        this.destination = destination;
+        this.svcQuery = queryURL;
+        this.svcUpdate = updateURL;
+        this.svcGraphStore = gspURL;
+        if ( txnLifecycle == null )
+            txnLifecycle  = TransactionalLock.createMRPlusSW();
+        this.txnLifecycle = txnLifecycle;
+        this.outputQuads = outputQuads;
+        this.outputTriples = outputTriples;
+        this.acceptDataset = acceptDataset;
+        this.acceptGraph = acceptGraph;
+        this.acceptSelectResult = acceptSelectResult;
+        this.acceptAskResult = acceptAskResult;
+        this.acceptGraphResult = acceptGraphResult;
+    }
+
+    /** Return the {@link HttpClient} in-use. */ 
     public HttpClient getHttpClient() {
         return httpClient;
     }
 
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
-
+    /** Return the {@link HttpContext} in-use. */ 
     public HttpContext getHttpContext() {
         return httpContext;
     }
-
-    public void setHttpContext(HttpContext httpContext) {
-        this.httpContext = httpContext;
+    
+    /** Return the destination URL for the connection. */
+    public String getDestination() {
+        return destination;
     }
 
     @Override
     public QueryExecution query(Query query) {
         checkQuery();
-        return exec(()->QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext));
+        // XXX ResultSetFormat
+        
+        
+        
+        return exec(()-> {
+            QueryExecution qExec = QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext);
+            QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
+            
+            // Set general HTTP header.
+            
+//            // Only one choice, not "Accept:"
+//            switch ( query.getQueryType() ) {
+//                case Query.QueryTypeSelect:
+//                    qEngine.setSelectContentType("");
+//                    break;
+//                case Query.QueryTypeAsk:
+//                    qEngine.setAskContentType("");
+//                    break;
+//                case Query.QueryTypeDescribe:
+//                case Query.QueryTypeConstruct:
+//                    qEngine.setModelContentType("");
+//                    break;
+//            }
+            return qExec ;
+        });
+        
     }
 
     @Override
@@ -144,7 +255,7 @@ public class RDFConnectionRemote implements RDFConnection {
     
     private Graph fetch$(String url) {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler();
-        exec(()->HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, graph, this.httpClient, this.httpContext));
+        exec(()->HttpOp.execHttpGet(url, acceptGraph, graph, this.httpClient, this.httpContext));
         return graph.get();
     }
 
@@ -211,7 +322,7 @@ public class RDFConnectionRemote implements RDFConnection {
         doPutPost(url, file, lang, replace);
     }
 
-    /** Send a file to named graph (or "default" or null for the default graph).
+    /** Send a file to named graph (or "default" or null for the defaultl graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
@@ -230,7 +341,7 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    /** Send a model to named graph (or "default" or null for the default graph).
+    /** Send a model to named graph (or "default" or null for the defaultl graph).
      * <p>
      * The Content-Type is taken from the given {@code Lang}.
      * <p>
@@ -259,29 +370,31 @@ public class RDFConnectionRemote implements RDFConnection {
         checkGSP();
         delete(null);
     }
-    
+
     @Override
     public Dataset fetchDataset() {
-        checkDataset();
-        DatasetGraph dsg = fetchDataset$();
-        return DatasetFactory.wrap(dsg);
+        if ( destination == null )
+            throw new ARQException("Dataset operations not available - no dataset URL provided"); 
+        Dataset ds = DatasetFactory.createTxnMem();
+        Txn.executeWrite(ds, ()->{
+            TypedInputStream s = exec(()->HttpOp.execHttpGet(destination, acceptDataset));
+            Lang lang = RDFLanguages.contentTypeToLang(s.getContentType());
+            RDFDataMgr.read(ds, s, lang);
+        });
+        return ds;
     }
 
-    private DatasetGraph fetchDataset$() {
-        HttpCaptureResponse<DatasetGraph> dsg = HttpResponseLib.datasetHandler();
-        exec(()->HttpOp.execHttpGet(destination, WebContent.defaultDatasetAcceptHeader, dsg, this.httpClient, this.httpContext));
-        return dsg.get();
-    }
-    
     @Override
     public void loadDataset(String file) { 
-        checkDataset();
+        if ( destination == null )
+            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
         doPutPostDataset(file, false); 
     }
     
     @Override
     public void loadDataset(Dataset dataset) {
-        checkDataset();
+        if ( destination == null )
+            throw new ARQException("Dataset operations not available - no dataset URl provided"); 
         doPutPostDataset(dataset, false); 
     }
 
@@ -318,7 +431,7 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    /** Do a PUT or POST to a dataset, sending the contents of a datasets.
+    /** Do a PUT or POST to a dataset, sending the contents of a daatsets.
      * The Content-Type is {@code application/n-quads}.
      * <p>
      * "Replace" implies PUT, otherwise a POST is used.
@@ -333,31 +446,31 @@ public class RDFConnectionRemote implements RDFConnection {
         });
     }
 
-    private void checkQuery() {
+    protected void checkQuery() {
         checkOpen();
         if ( svcQuery == null )
             throw new ARQException("No query service defined for this RDFConnection");
     }
     
-    private void checkUpdate() {
+    protected void checkUpdate() {
         checkOpen();
         if ( svcUpdate == null )
             throw new ARQException("No update service defined for this RDFConnection");
     }
     
-    private void checkGSP() {
+    protected void checkGSP() {
         checkOpen();
         if ( svcGraphStore == null )
             throw new ARQException("No SPARQL Graph Store service defined for this RDFConnection");
     }
     
-    private void checkDataset() {
+    protected void checkDataset() {
         checkOpen();
         if ( destination == null )
             throw new ARQException("Dataset operations not available - no dataset URL provided"); 
     }
 
-    private void checkOpen() {
+    protected void checkOpen() {
         if ( ! isOpen )
             throw new ARQException("closed");
     }
@@ -374,7 +487,7 @@ public class RDFConnectionRemote implements RDFConnection {
 
     /** Create an HttpEntity for the graph */  
     protected HttpEntity graphToHttpEntity(Graph graph) {
-        return graphToHttpEntity(graph, RDFFormat.NTRIPLES);
+        return graphToHttpEntity(graph, outputTriples);
     }
     
     /** Create an HttpEntity for the graph */
@@ -387,7 +500,7 @@ public class RDFConnectionRemote implements RDFConnection {
 
     /** Create an HttpEntity for the dataset */  
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset) {
-        return datasetToHttpEntity(dataset, RDFFormat.NQUADS);
+        return datasetToHttpEntity(dataset, outputQuads);
     }
     
     /** Create an HttpEntity for the dataset */  
@@ -399,13 +512,13 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     /** Convert HTTP status codes to exceptions */ 
-    static void exec(Runnable action)  {
+    static protected void exec(Runnable action)  {
         try { action.run(); }
         catch (HttpException ex) { handleHttpException(ex, false); }
     }
 
     /** Convert HTTP status codes to exceptions */ 
-    static <X> X exec(Supplier<X> action)  {
+    static protected <X> X exec(Supplier<X> action)  {
         try { return action.get(); }
         catch (HttpException ex) { handleHttpException(ex, true); return null;}
     }
@@ -416,17 +529,14 @@ public class RDFConnectionRemote implements RDFConnection {
         throw ex;
     }
 
-    private final Transactional txn = TransactionalLock.createMRPlusSW();
-    
-    @Override public void begin()                       { txn.begin(); }
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote(Promote promote)   { return txn.promote(promote); }
-    @Override public void commit()                      { txn.commit(); }
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public void begin()                       { txnLifecycle.begin(); }
+    @Override public void begin(TxnType txnType)        { txnLifecycle.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txnLifecycle.begin(mode); }
+    @Override public boolean promote(Promote promote)   { return txnLifecycle.promote(promote); }
+    @Override public void commit()                      { txnLifecycle.commit(); }
+    @Override public void abort()                       { txnLifecycle.abort(); }
+    @Override public boolean isInTransaction()          { return txnLifecycle.isInTransaction(); }
+    @Override public void end()                         { txnLifecycle.end(); }
+    @Override public ReadWrite transactionMode()        { return txnLifecycle.transactionMode(); }
+    @Override public TxnType transactionType()          { return txnLifecycle.transactionType(); }
 }
-

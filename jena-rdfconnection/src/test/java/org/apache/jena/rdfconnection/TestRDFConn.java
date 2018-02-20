@@ -53,7 +53,7 @@ public class TestRDFConn {
     }
     
     private static void testServiceName(String destination, String service, String expected) {
-        String x = RDFConn.formServiceURL(destination, service);
+        String x = LibRDFConn.formServiceURL(destination, service);
         assertEquals(expected, x);
     }
     
@@ -120,7 +120,7 @@ public class TestRDFConn {
     }
 
     private void testGSP(String gsp, String graphName, String expected) {
-        String x = RDFConn.urlForGraph(gsp, graphName);
+        String x = LibRDFConn.urlForGraph(gsp, graphName);
         assertEquals(expected, x);
     }
     
