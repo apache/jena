@@ -62,7 +62,7 @@ public class RDFConnectionRemoteBuilder {
         // Default settings are the meber declarations.
     }
     
-    RDFConnectionRemoteBuilder(RDFConnectionRemote2 base) {
+    RDFConnectionRemoteBuilder(RDFConnectionRemote base) {
         Objects.requireNonNull(base);
         txnLifecycle = base.txnLifecycle;
         if ( txnLifecycle == null )
@@ -300,8 +300,8 @@ public class RDFConnectionRemoteBuilder {
         return maker.apply(this);
     }
     
-    protected RDFConnectionRemote2 buildConnection() {
-        return new RDFConnectionRemote2(txnLifecycle, httpClient, httpContext, 
+    protected RDFConnectionRemote buildConnection() {
+        return new RDFConnectionRemote(txnLifecycle, httpClient, httpContext, 
                                         destination, queryURL, updateURL, gspURL,
                                         outputQuads, outputTriples,
                                         acceptDataset, acceptGraph,

@@ -48,7 +48,7 @@ import org.apache.jena.update.UpdateRequest;
  * <p>
  * This adds the ability to work with blank nodes across the network.
  */
-public class RDFConnectionFuseki extends RDFConnectionRemote2 {
+public class RDFConnectionFuseki extends RDFConnectionRemote {
 
     /**
      * Create a connection builder which is initialized for the default Fuseki
@@ -58,7 +58,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote2 {
      * @return RDFConnectionRemoteBuilder
      */
     public static RDFConnectionRemoteBuilder create() {
-        return setupForFuseki(RDFConnectionRemote2.create());
+        return setupForFuseki(RDFConnectionRemote.create());
     }
 
     /** 
@@ -67,7 +67,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote2 {
      * @return RDFConnectionRemoteBuilder
      */
     public static RDFConnectionRemoteBuilder create(RDFConnectionFuseki other) {
-        return setupCreator(RDFConnectionRemote2.create(other));
+        return setupCreator(RDFConnectionRemote.create(other));
     }
     
     /** Fuseki settings */

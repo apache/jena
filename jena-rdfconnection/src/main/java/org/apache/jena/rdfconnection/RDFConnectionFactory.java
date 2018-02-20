@@ -41,7 +41,7 @@ public class RDFConnectionFactory {
      * @see #connect(String, String, String, String)
      */
     public static RDFConnection connect(String destination) {
-        return new RDFConnectionRemote(destination);
+        return RDFConnectionRemote.create().destination(destination).build();
     }
 
     /** Create a connection specifying the URLs of the service.
@@ -54,7 +54,11 @@ public class RDFConnectionFactory {
     public static RDFConnection connect(String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return new RDFConnectionRemote(queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint);
+        return RDFConnectionRemote.create()
+            .queryEndpoint(queryServiceEndpoint)
+            .updateEndpoint(updateServiceEndpoint)
+            .gspEndpoint(graphStoreProtocolEndpoint)
+            .build();
     }
     
     /** Create a connection to a remote location by URL.
@@ -71,7 +75,12 @@ public class RDFConnectionFactory {
                                         String queryServiceEndpoint,
                                         String updateServiceEndpoint,
                                         String graphStoreProtocolEndpoint) {
-        return new RDFConnectionRemote(datasetURL, queryServiceEndpoint, updateServiceEndpoint, graphStoreProtocolEndpoint);
+        return RDFConnectionRemote.create()
+            .destination(datasetURL)
+            .queryEndpoint(queryServiceEndpoint)
+            .updateEndpoint(updateServiceEndpoint)
+            .gspEndpoint(graphStoreProtocolEndpoint)
+            .build();
     }
 
     /**
