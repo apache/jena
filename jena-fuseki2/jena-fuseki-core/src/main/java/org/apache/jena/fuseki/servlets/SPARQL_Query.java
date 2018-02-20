@@ -237,8 +237,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     protected void execute(String queryString, HttpAction action) {
         String queryStringLog = ServletOps.formatForLog(queryString) ;
-        if ( action.verbose )
-            action.log.info(format("[%d] Query = \n%s", action.id, queryString)) ;
+        if ( action.verbose ) {
+            String str = queryString;
+            if ( str.endsWith("\n") )
+                str = str.substring(0, str.length()-1);
+            action.log.info(format("[%d] Query = \n%s", action.id, str)) ;
+        }
         else
             action.log.info(format("[%d] Query = %s", action.id, queryStringLog)) ;
 
