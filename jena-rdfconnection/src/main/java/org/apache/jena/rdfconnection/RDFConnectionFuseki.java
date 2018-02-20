@@ -26,11 +26,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.WebContent;
@@ -73,6 +70,10 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
     /** Fuseki settings */
     private static RDFConnectionRemoteBuilder setupForFuseki(RDFConnectionRemoteBuilder builder) {
         String ctRDFThrift = Lang.RDFTHRIFT.getContentType().getContentType();
+        String acceptHeaderSPARQL = String.join("," 
+                            , ResultSetLang.SPARQLResultSetThrift.getHeaderString()
+                            , ResultSetLang.SPARQLResultSetJSON.getHeaderString()+";q=0.9"
+                            , Lang.RDFTHRIFT.getHeaderString());
         return 
             builder
                 .quadsFormat(RDFFormat.RDF_THRIFT)
@@ -81,7 +82,7 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
                 .acceptHeaderDataset(ctRDFThrift)
                 .acceptHeaderSelectQuery(ResultSetLang.SPARQLResultSetThrift.getHeaderString())
                 .acceptHeaderAskQuery(ResultSetLang.SPARQLResultSetJSON.getHeaderString())
-                .acceptHeaderGraphQuery(ResultSetLang.SPARQLResultSetThrift.getHeaderString())
+                .acceptHeaderQuery(acceptHeaderSPARQL)
                 // Create object of this class.
                 .creator((b)->fusekiMaker(b));
     }
@@ -99,18 +100,18 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
             base.destination, base.queryURL, base.updateURL, base.gspURL,
             base.outputQuads, base.outputTriples,
             base.acceptDataset, base.acceptGraph,
-            base.acceptSelectResult, base.acceptAskResult, base.acceptGraphResult);
+            base.acceptSparqlResults, base.acceptSelectResult, base.acceptAskResult);
     }
     
     protected RDFConnectionFuseki(Transactional txnLifecycle, HttpClient httpClient, HttpContext httpContext, String destination,
                                   String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                                  String acceptDataset, String acceptGraph, String acceptSelectResult, String acceptAskResult,
-                                  String acceptGraphResult) {
+                                  String acceptDataset, String acceptGraph, 
+                                  String acceptSparqlResults, String acceptSelectResult, String acceptAskResult) {
         super(txnLifecycle, httpClient, httpContext, 
               destination, queryURL, updateURL, gspURL,
               outputQuads, outputTriples, 
               acceptDataset, acceptGraph,
-              acceptSelectResult, acceptAskResult, acceptGraphResult);
+              acceptSparqlResults, acceptSelectResult, acceptAskResult);
     }
     
     // Fuseki specific operations.
@@ -133,41 +134,25 @@ public class RDFConnectionFuseki extends RDFConnectionRemote {
 //        }
 //    }
     
-    // Make sure all querygoes through query(String) or query(Query) 
+    // Make sure all query goes through query(String) or query(Query) 
     
     @Override
     public QueryExecution query(String queryString) {
         checkQuery();
-        
-        Query queryLocal = QueryFactory.create(queryString);
-        // XXX Kludge until QueryEngineHTTP.setAccept.
-        // XXX Accept header builder.
-        String acceptHeader = acceptSelectResult+","+acceptAskResult+";q=0.9,"+acceptGraphResult;
         return exec(()-> {
             QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryString, httpClient, httpContext);
             QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
-            // XXX qEngine.setAccept(acceptHeader);
-            // Only one choice, not "Accept:"
-            switch ( queryLocal.getQueryType() ) {
-                case Query.QueryTypeSelect:
-                    qEngine.setSelectContentType(acceptSelectResult);
-                    break;
-                case Query.QueryTypeAsk:
-                    qEngine.setAskContentType(acceptAskResult);
-                    break;
-                case Query.QueryTypeDescribe:
-                case Query.QueryTypeConstruct:
-                    qEngine.setModelContentType(acceptGraphResult);
-                    break;
+            // We do not know the kind of query unless we parse it locally.
+            if ( acceptSparqlResults != null )
+                qEngine.setAcceptHeader(super.acceptSparqlResults);
+            else {
+                qEngine.setSelectContentType(acceptSelectResult);
+                qEngine.setAskContentType(acceptAskResult);
+                qEngine.setModelContentType(acceptGraph);
+                qEngine.setDatasetContentType(acceptDataset);
             }
             return qEngine ;
         });
-//        // XXX Better!
-//        String url = svcQuery+"?query="+queryString;
-//        // XXX Better accept.
-//        TypedInputStream in =  exec(()->HttpOp.execHttpGet(url, acceptSelectResult, this.httpClient,this.httpContext));
-//        QueryExecution qExec = 
-//        return qExec;
     }
 
     /**

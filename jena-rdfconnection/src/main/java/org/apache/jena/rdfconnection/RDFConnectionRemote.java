@@ -77,9 +77,9 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final RDFFormat outputTriples;
     protected final String acceptGraph;
     protected final String acceptDataset;
+    protected final String acceptSparqlResults;
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
-    protected final String acceptGraphResult;
     
     /** Create a {@link RDFConnectionRemoteBuilder}. */
     public static RDFConnectionRemoteBuilder create() {
@@ -159,15 +159,16 @@ public class RDFConnectionRemote implements RDFConnection {
         this(null, httpClient, null, destination, sQuery, sUpdate, sGSP,
             RDFFormat.NQUADS, RDFFormat.NTRIPLES,
             WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
-            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(), QueryEngineHTTP.defaultConstructHeader()
-            );
+            null,
+            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader());
     }
 
     // Used by the builder.
     protected RDFConnectionRemote(Transactional txnLifecycle, HttpClient httpClient, HttpContext httpContext, String destination,
                                    String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
-                                   String acceptDataset, String acceptGraph, String acceptSelectResult, String acceptAskResult,
-                                   String acceptGraphResult) {
+                                   String acceptDataset, String acceptGraph,
+                                   String acceptSparqlResults,
+                                   String acceptSelectResult, String acceptAskResult) {
         this.httpClient = httpClient;
         this.httpContext = httpContext;
         this.destination = destination;
@@ -181,9 +182,9 @@ public class RDFConnectionRemote implements RDFConnection {
         this.outputTriples = outputTriples;
         this.acceptDataset = acceptDataset;
         this.acceptGraph = acceptGraph;
+        this.acceptSparqlResults = acceptSparqlResults;
         this.acceptSelectResult = acceptSelectResult;
         this.acceptAskResult = acceptAskResult;
-        this.acceptGraphResult = acceptGraphResult;
     }
 
     /** Return the {@link HttpClient} in-use. */ 
@@ -204,32 +205,23 @@ public class RDFConnectionRemote implements RDFConnection {
     @Override
     public QueryExecution query(Query query) {
         checkQuery();
-        // XXX ResultSetFormat
-        
-        
-        
         return exec(()-> {
             QueryExecution qExec = QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext);
             QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
-            
-            // Set general HTTP header.
-            
-//            // Only one choice, not "Accept:"
-//            switch ( query.getQueryType() ) {
-//                case Query.QueryTypeSelect:
-//                    qEngine.setSelectContentType("");
-//                    break;
-//                case Query.QueryTypeAsk:
-//                    qEngine.setAskContentType("");
-//                    break;
-//                case Query.QueryTypeDescribe:
-//                case Query.QueryTypeConstruct:
-//                    qEngine.setModelContentType("");
-//                    break;
-//            }
+            if ( acceptSparqlResults != null )
+                qEngine.setAcceptHeader(acceptSparqlResults);
+            else {
+                if ( query.isSelectType() && acceptSelectResult != null )
+                    qEngine.setAcceptHeader(acceptSelectResult);
+                if ( query.isAskType() && acceptAskResult != null )
+                    qEngine.setAcceptHeader(acceptAskResult);
+                if ( ( query.isConstructType() || query.isDescribeType() ) && acceptGraph != null )
+                    qEngine.setAcceptHeader(acceptGraph);
+                if ( query.isConstructQuad() )
+                    qEngine.setDatasetContentType(acceptDataset);
+            }
             return qExec ;
         });
-        
     }
 
     @Override

@@ -25,7 +25,6 @@ import java.util.function.Function;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
-import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
@@ -56,7 +55,8 @@ public class RDFConnectionRemoteBuilder {
     
     protected String        acceptSelectResult = QueryEngineHTTP.defaultSelectHeader();
     protected String        acceptAskResult    = QueryEngineHTTP.defaultAskHeader();
-    protected String        acceptGraphResult  = QueryEngineHTTP.defaultConstructHeader();
+    // All-purpose head that works for any query type (but is quite long!)
+    protected String        acceptSparqlResults = null;
 
     RDFConnectionRemoteBuilder() { 
         // Default settings are the meber declarations.
@@ -81,7 +81,6 @@ public class RDFConnectionRemoteBuilder {
         
         acceptSelectResult  = base.acceptSelectResult;
         acceptAskResult     = base.acceptAskResult;
-        acceptGraphResult   = base.acceptGraphResult;
     }
     
     /** URL of the remote SPARQL endpoint.
@@ -235,7 +234,7 @@ public class RDFConnectionRemoteBuilder {
         this.acceptGraph = acceptGraph;
         return this;
     }
-
+    
     /** Set the HTTP {@code Accept:} header used to fetch RDF datasets using HTTP GET operations. */ 
     public RDFConnectionRemoteBuilder acceptHeaderDataset(String acceptDataset) {
         this.acceptDataset = acceptDataset;
@@ -254,16 +253,11 @@ public class RDFConnectionRemoteBuilder {
         return this;
     }
 
-    /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol CONSTRUCT or DESCRIBE query. */ 
-    public RDFConnectionRemoteBuilder acceptHeaderGraphQuery(String acceptGraphResultHeader) {
-        this.acceptGraphResult = acceptGraphResultHeader;
-        return this;
-    }
-
-    // XXX Alternative:
-    /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol query. */ 
-    public RDFConnectionRemoteBuilder acceptHeaderQuery(String acceptHeaderQuery) {
-        System.err.println("NOT YET IMPLEMENTED");
+    /** Set the HTTP {@code Accept:} header used to when making a 
+     * SPARQL Protocol query if no query type specific setting available.
+     */ 
+    public RDFConnectionRemoteBuilder acceptHeaderQuery(String acceptHeader) {
+        this.acceptSparqlResults = acceptHeader;
         return this;
     }
 
@@ -295,8 +289,13 @@ public class RDFConnectionRemoteBuilder {
         updateURL = LibRDFConn.formServiceURL(destination, sUpdate);
         gspURL = LibRDFConn.formServiceURL(destination, sGSP);
         
-        // XXX Sort out SPARQL Accept headers.
-        
+//        if ( acceptSparqlResults == null ) {
+//            if ( acceptSelectResult != acceptAskResult )
+//                acceptSparqlResults = String.join(",", acceptSelectResult, acceptAskResult, acceptGraphResult);
+//            else
+//                acceptSparqlResults = String.join(",", acceptSelectResult, acceptGraphResult);
+//        }
+//        
         return maker.apply(this);
     }
     
@@ -305,6 +304,6 @@ public class RDFConnectionRemoteBuilder {
                                         destination, queryURL, updateURL, gspURL,
                                         outputQuads, outputTriples,
                                         acceptDataset, acceptGraph,
-                                        acceptSelectResult, acceptAskResult, acceptGraphResult);
+                                        acceptSparqlResults, acceptSelectResult, acceptAskResult);
     }
 }
