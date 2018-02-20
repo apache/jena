@@ -40,7 +40,7 @@ public class DatasetGraphZero extends DatasetGraphBaseFind {
 
     public DatasetGraphZero() {}
     
-    private TransactionalNull txn                       = TransactionalNull.create();
+    private Transactional txn                           = TransactionalNull.create();
     @Override public void begin()                       { txn.begin(); }
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }

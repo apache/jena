@@ -31,7 +31,7 @@ import org.apache.jena.sparql.graph.GraphSink;
 /** 
  * An always empty {@link DatasetGraph} that accepts changes but ignores them.
  * 
- * @see DatasetGraphZero
+ * @see DatasetGraphZero - a DSG that does not allow changes.
  */
 public class DatasetGraphSink extends DatasetGraphBaseFind {
 
@@ -41,7 +41,7 @@ public class DatasetGraphSink extends DatasetGraphBaseFind {
     
     public DatasetGraphSink() {}
     
-    private TransactionalNull txn                       = TransactionalNull.create();
+    private Transactional txn                           = TransactionalNull.create();
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
     @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
     @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
@@ -99,10 +99,4 @@ public class DatasetGraphSink extends DatasetGraphBaseFind {
 
     @Override
     public void removeGraph(Node graphName) { /* ignore */ }
-    
-    @Override
-    public void close() {
-        txn.remove();
-        txn = null;
-    }
 }
