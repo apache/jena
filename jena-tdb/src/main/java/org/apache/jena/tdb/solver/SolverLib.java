@@ -257,7 +257,9 @@ public class SolverLib
             // Rely on the node table cache for efficency - we will likely be
             // repeatedly looking up the same node in different bindings.
             NodeId id = nodeTable.getNodeIdForNode(n) ;
-            // Even put in "does not exist" for a node now known not to be in the DB.
+            // Optional: whether to put in "known missing"
+            // Currently, we do. The rest of the code should work with either choice.
+            //if ( ! NodeId.isDoesNotExist(id) )
             b.put(v, id) ;
         }
         return b ;

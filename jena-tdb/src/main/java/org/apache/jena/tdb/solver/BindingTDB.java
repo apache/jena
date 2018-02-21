@@ -99,11 +99,12 @@ public class BindingTDB extends BindingBase
         NodeId id = idBinding.get(var) ;
         if ( id != null )
             return id ;
+        // In case we are inserting known missing nodes. 
+        if ( NodeId.isDoesNotExist(id) )
+            return null ;
         
         if ( parent == null )
             return null ; 
-
-        // Maybe in the parent.
         if ( parent instanceof BindingTDB )
             return ((BindingTDB)parent).getNodeId(var) ;
         return null ;
@@ -120,8 +121,11 @@ public class BindingTDB extends BindingBase
             NodeId id = idBinding.get(var) ;
             if ( id == null )
                 return null ; 
+            if ( NodeId.isDoesNotExist(id) )
+                return null;
             n = nodeTable.getNodeForNodeId(id) ;
             if ( n == null )
+                // But there was to put it in the BindingNodeId. 
                 throw new TDBException("No node in NodeTable for NodeId "+id);
             // Update cache.
             cachePut(var, n) ;
