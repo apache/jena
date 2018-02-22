@@ -29,7 +29,8 @@ import org.junit.runners.Suite ;
     
     // Addition tests added here.
     TestRDFConnectionLocalTDB.class ,
-    TestRDFConnectionRemote.class
+    TestRDFConnectionRemote.class,
+    TestBlankNodeBinary.class
 })
 
 public class TS_RDFConnection2 {}
