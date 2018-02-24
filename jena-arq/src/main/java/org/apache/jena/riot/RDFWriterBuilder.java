@@ -21,6 +21,8 @@ package org.apache.jena.riot;
 import java.io.OutputStream;
 
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context;
 
@@ -40,7 +42,7 @@ public class RDFWriterBuilder {
 
     /** Set the source of writing to the graph argument.
      * <p>
-     * Any prrvious source setting is cleared.
+     * Any previous source setting is cleared.
      * @param graph A {@link Graph}.
      * @return this
      */
@@ -50,9 +52,22 @@ public class RDFWriterBuilder {
         return this;
     }
 
+    /** Set the source of writing to the graph argument.
+     * <p>
+     * Any previous source setting is cleared.
+     * <p>
+     * Equivalent to {@code source(model.getGraph()(s)}
+     * 
+     * @param model A {@link Model}.
+     * @return this
+     */
+    public RDFWriterBuilder source(Model model) {
+        return source(model.getGraph());
+    }
+
     /** Set the source of writing to the {@code DatasetGraph} argument.
      * <p>
-     * Any prrvious source setting is cleared.
+     * Any previous source setting is cleared.
      * @param dataset A {@link DatasetGraph}.
      * @return this
      */
@@ -61,6 +76,20 @@ public class RDFWriterBuilder {
         this.dataset = dataset;
         return this;
     }
+
+    /** Set the source of writing to the {@code DatasetGraph} argument.
+     * <p>
+     * Any previous source setting is cleared.
+     * <p>
+     * Equivalent to {@code source(dataset.asDatasetGraph())}
+     * 
+     * @param dataset A {@link DatasetGraph}.
+     * @return this
+     */
+    public RDFWriterBuilder source(Dataset dataset) {
+        return source(dataset.asDatasetGraph());
+    }
+
 
 //    // Not implemented
 //    public RDFWriterBuilder labels(NodeToLabel nodeToLabel) { return this; }
