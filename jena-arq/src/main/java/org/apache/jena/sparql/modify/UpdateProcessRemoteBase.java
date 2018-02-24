@@ -130,6 +130,12 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
         return this.endpoint;
     }
 
+    /** @deprecated Use {@link #getUpdateString()} */
+    @Deprecated
+    public String getQueryString() {
+        return getUpdateString();
+    }
+
     /**
      * Gets the generated HTTP query string portion of the endpoint URL if applicable
      * <p>
@@ -140,7 +146,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * 
      * @return Generated query string
      */
-    public String getQueryString() {
+    public String getUpdateString() {
         return this.getParams().httpString();
     }
 

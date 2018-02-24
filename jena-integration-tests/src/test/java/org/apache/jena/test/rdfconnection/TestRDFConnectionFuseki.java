@@ -16,19 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdfconnection;
+package org.apache.jena.test.rdfconnection;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFactory;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Other tests, for RDFConnectionRemote and RDFConnectionFuseki, are in jena-integration-tests
-    TestRDFConnectionLocalTxnMem.class
-    , TestRDFConnectionLocalMRSW.class
-    , TestLocalIsolation.class
-    , TestLibRDFConn.class
-})
-
-public class TS_RDFConnection {}
+public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
+    @Override
+    protected RDFConnection connection() {
+        return RDFConnectionFactory.connectFuseki("http://localhost:"+PORT+"/ds");
+    }
+}
 

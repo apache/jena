@@ -144,21 +144,21 @@ public class RDFConnectionFactory {
     }
 
     /** Create a connection to a remote Fuseki server by URL.
-         * This is the URL for the dataset.
-         * 
-         * Each service is then specified by a URL which is relative to the {@code datasetURL}.
-         * 
-         * @param datasetURL
-         * @param queryServiceEndpoint
-         * @param updateServiceEndpoint
-         * @param graphStoreProtocolEndpoint
-         * @return RDFConnectionFuseki
-    s     */
-        public static RDFConnectionFuseki connectFuseki(String datasetURL, 
-                                                        String queryServiceEndpoint, 
-                                                        String updateServiceEndpoint,
-                                                        String graphStoreProtocolEndpoint) {
-            return (RDFConnectionFuseki)RDFConnectionFuseki.create()
+     * This is the URL for the dataset.
+     * 
+     * Each service is then specified by a URL which is relative to the {@code datasetURL}.
+     * 
+     * @param datasetURL
+     * @param queryServiceEndpoint
+     * @param updateServiceEndpoint
+     * @param graphStoreProtocolEndpoint
+     * @return RDFConnectionFuseki
+     */
+    public static RDFConnectionFuseki connectFuseki(String datasetURL, 
+                                                    String queryServiceEndpoint, 
+                                                    String updateServiceEndpoint,
+                                                    String graphStoreProtocolEndpoint) {
+        return (RDFConnectionFuseki)RDFConnectionFuseki.create()
                 .destination(datasetURL)
                 .queryEndpoint(queryServiceEndpoint)
                 .updateEndpoint(updateServiceEndpoint)

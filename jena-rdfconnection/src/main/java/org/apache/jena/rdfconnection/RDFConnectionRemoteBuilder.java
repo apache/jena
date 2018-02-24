@@ -56,7 +56,10 @@ public class RDFConnectionRemoteBuilder {
     protected String        acceptSelectResult = QueryEngineHTTP.defaultSelectHeader();
     protected String        acceptAskResult    = QueryEngineHTTP.defaultAskHeader();
     // All-purpose head that works for any query type (but is quite long!)
-    protected String        acceptSparqlResults = null;
+    protected String        acceptSparqlResults = acceptSelectResult+","+acceptGraph;
+    // Whether to parse SPARQL Queries and Updates for checkign purposes.
+    protected boolean       parseCheckQueries   = true;
+    protected boolean       parseCheckUpdates   = true;
 
     RDFConnectionRemoteBuilder() { 
         // Default settings are the meber declarations.
@@ -81,6 +84,8 @@ public class RDFConnectionRemoteBuilder {
         
         acceptSelectResult  = base.acceptSelectResult;
         acceptAskResult     = base.acceptAskResult;
+        parseCheckQueries   = base.parseCheckQueries;
+        parseCheckUpdates   = base.parseCheckUpdates;
     }
     
     /** URL of the remote SPARQL endpoint.
@@ -260,7 +265,16 @@ public class RDFConnectionRemoteBuilder {
         this.acceptSparqlResults = acceptHeader;
         return this;
     }
-
+    
+    /**
+     * Set the flag for whether to check SPARQL queries and SPARQL updates provided as a string.   
+     */
+    public RDFConnectionRemoteBuilder parseCheckSPARQL(boolean parseCheck) {
+        this.parseCheckQueries = parseCheck;
+        this.parseCheckUpdates = parseCheck;
+        return this;
+    }
+    
     private Function<RDFConnectionRemoteBuilder, RDFConnection> creator = null;
     /** Provide an alternative function to make the {@link RDFConnection} object.
      * <p>
@@ -304,6 +318,7 @@ public class RDFConnectionRemoteBuilder {
                                         destination, queryURL, updateURL, gspURL,
                                         outputQuads, outputTriples,
                                         acceptDataset, acceptGraph,
-                                        acceptSparqlResults, acceptSelectResult, acceptAskResult);
+                                        acceptSparqlResults, acceptSelectResult, acceptAskResult,
+                                        parseCheckQueries, parseCheckUpdates);
     }
 }

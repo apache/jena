@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class TestRDFConn {
+public class TestLibRDFConn {
     
     @Test public void service_url_01() {
         testServiceName(null, "XYZ", "XYZ"); 

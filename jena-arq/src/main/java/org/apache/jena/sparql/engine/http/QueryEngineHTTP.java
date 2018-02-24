@@ -895,6 +895,11 @@ public class QueryEngineHTTP implements QueryExecution {
             sBuff.append(";q=").append(v) ;
     }
 
+    /** Get the HTTP Accept header for the request. */ 
+    public String getAcceptHeader() {
+        return this.acceptHeader;
+    }
+    
     /** Set the HTTP Accept header for the request.
      * Unlike the {@code set??ContentType} operations, this is not checked 
      * for validity.
@@ -902,4 +907,5 @@ public class QueryEngineHTTP implements QueryExecution {
     public void setAcceptHeader(String acceptHeader) {
         this.acceptHeader = acceptHeader;
     }
+
 }

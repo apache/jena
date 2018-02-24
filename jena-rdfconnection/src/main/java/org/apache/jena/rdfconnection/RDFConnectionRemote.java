@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpEntity;
@@ -29,14 +30,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.entity.EntityTemplate;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp;
@@ -47,8 +47,7 @@ import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 import org.apache.jena.system.Txn;
-import org.apache.jena.update.UpdateExecutionFactory;
-import org.apache.jena.update.UpdateProcessor;
+import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
 
@@ -81,6 +80,11 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
     
+    // Whether to check SPARQL queries given as strings by parsing them.
+    protected final boolean parseCheckQueries;
+    // Whether to check SPARQL updates given as strings by parsing them.
+    protected final boolean parseCheckUpdates;
+
     /** Create a {@link RDFConnectionRemoteBuilder}. */
     public static RDFConnectionRemoteBuilder create() {
         return new RDFConnectionRemoteBuilder();
@@ -160,7 +164,8 @@ public class RDFConnectionRemote implements RDFConnection {
             RDFFormat.NQUADS, RDFFormat.NTRIPLES,
             WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
             null,
-            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader());
+            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(),
+            true, true);
     }
 
     // Used by the builder.
@@ -168,7 +173,8 @@ public class RDFConnectionRemote implements RDFConnection {
                                    String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
                                    String acceptDataset, String acceptGraph,
                                    String acceptSparqlResults,
-                                   String acceptSelectResult, String acceptAskResult) {
+                                   String acceptSelectResult, String acceptAskResult,
+                                   boolean parseCheckQueries, boolean parseCheckUpdates) {
         this.httpClient = httpClient;
         this.httpContext = httpContext;
         this.destination = destination;
@@ -185,6 +191,8 @@ public class RDFConnectionRemote implements RDFConnection {
         this.acceptSparqlResults = acceptSparqlResults;
         this.acceptSelectResult = acceptSelectResult;
         this.acceptAskResult = acceptAskResult;
+        this.parseCheckQueries = parseCheckQueries;
+        this.parseCheckUpdates = parseCheckUpdates;
     }
 
     /** Return the {@link HttpClient} in-use. */ 
@@ -203,14 +211,34 @@ public class RDFConnectionRemote implements RDFConnection {
     }
 
     @Override
+    public QueryExecution query(String queryString) {
+        Objects.requireNonNull(queryString);
+        return queryExec(null, queryString);
+    }
+    
+    @Override
     public QueryExecution query(Query query) {
+        Objects.requireNonNull(query);
+        return queryExec(query, null);
+    }
+    
+    private QueryExecution queryExec(Query query, String queryString) {
         checkQuery();
+        if ( query == null && queryString == null )
+            throw new InternalErrorException("Both query and query string are null"); 
+        if ( query == null ) {
+            if ( parseCheckQueries )
+                QueryFactory.create(queryString);
+        }
+        
+        // Use the query string as provided if possible, otherwise serialize the query.
+        String queryStringToSend = ( queryString != null ) ?  queryString : query.toString();
+        
         return exec(()-> {
-            QueryExecution qExec = QueryExecutionFactory.sparqlService(svcQuery, query, this.httpClient, this.httpContext);
+            QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
             QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
-            if ( acceptSparqlResults != null )
-                qEngine.setAcceptHeader(acceptSparqlResults);
-            else {
+            // Set the accept header - use the most specific method. 
+            if ( query != null ) {
                 if ( query.isSelectType() && acceptSelectResult != null )
                     qEngine.setAcceptHeader(acceptSelectResult);
                 if ( query.isAskType() && acceptAskResult != null )
@@ -220,15 +248,39 @@ public class RDFConnectionRemote implements RDFConnection {
                 if ( query.isConstructQuad() )
                     qEngine.setDatasetContentType(acceptDataset);
             }
+            // Use the general one.
+            if ( qEngine.getAcceptHeader() == null && acceptSparqlResults != null )
+                qEngine.setAcceptHeader(acceptSparqlResults);
+            // Makre sure it was set somehow.
+            if ( qEngine.getAcceptHeader() == null )
+                throw new JenaConnectionException("No Accept header");   
             return qExec ;
         });
     }
 
     @Override
+    public void update(String updateString) {
+        Objects.requireNonNull(updateString);
+        updateExec(null, updateString);
+    }
+    
+    @Override
     public void update(UpdateRequest update) {
+        Objects.requireNonNull(update);
+        updateExec(update, null);
+    }
+    
+    private void updateExec(UpdateRequest update, String updateString ) {
         checkUpdate();
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(update, svcUpdate, this.httpClient, this.httpContext);
-        exec(()->proc.execute());
+        if ( update == null && updateString == null )
+            throw new InternalErrorException("Both update request and update string are null"); 
+        if ( update == null ) {
+            if ( parseCheckUpdates )
+                UpdateFactory.create(updateString);
+        }
+        // Use the query string as provided if possible, otherwise serialize the query.
+        String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
+        exec(()->HttpOp.execHttpPost(svcUpdate, WebContent.contentTypeSPARQLUpdate, updateString, this.httpClient, this.httpContext));
     }
     
     @Override

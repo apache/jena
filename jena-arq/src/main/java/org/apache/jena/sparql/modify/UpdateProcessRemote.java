@@ -71,7 +71,7 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
         
         // Build endpoint URL
         String endpoint = this.getEndpoint();
-        String querystring = this.getQueryString();
+        String querystring = this.getUpdateString();
         if (querystring != null && !querystring.equals("")) {
             endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
         }
