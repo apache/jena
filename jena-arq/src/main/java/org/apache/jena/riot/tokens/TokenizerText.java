@@ -117,7 +117,7 @@ public final class TokenizerText implements Tokenizer
     
     @Override
     public final boolean eof() {
-        return hasNext();
+        return !hasNext();
     }
 
     @Override
