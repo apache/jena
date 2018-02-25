@@ -552,7 +552,26 @@ public class QueryEngineHTTP implements QueryExecution {
     // extensions to the far end.
     @Override
     public Query getQuery() {
-        return query;
+        if ( query != null )
+            return query;
+        if ( queryString != null ) {
+            // Object not created with a Query object, may be because there is forgein
+            // syntax in the query or may be because the queystrign was available and the app
+            // didn't want the overhead of parsing it everytime. 
+            // Try to parse it else return null;
+            try { return QueryFactory.create(queryString, Syntax.syntaxARQ); }
+            catch (QueryParseException ex) {}
+            return null ;
+        }
+        return null;
+    }
+
+    /**
+     * Return the query string. If this was supplied in a constructor, there is no
+     * guaranttee this is legal SPARQL syntax.
+     */
+    public String getQueryString() {
+        return queryString;
     }
 
     @Override
