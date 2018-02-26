@@ -36,9 +36,11 @@ import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.adapters.AdapterRDFWriter;
 import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -166,14 +168,16 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
             arp.getOptions().setIRIFactory(IRIResolver.iriFactory());
 
         if ( context != null ) {
+            Map<String, Object> properties = null;
             try { 
                 @SuppressWarnings("unchecked")
                 Map<String, Object> p = (Map<String, Object>)(context.get(SysRIOT.sysRdfReaderProperties)) ;
-                if ( p != null )
-                    p.forEach((k,v) -> oneProperty(arpOptions, k, v)) ;
-            } catch (Throwable ex) {
-                Log.warn(AdapterRDFWriter.class, "Problem setting properties", ex);
+                properties = p;
+            } catch(Throwable ex) {
+                Log.warn(this, "Problem accessing the RDF/XML reader properties: properties ignored", ex);
             }
+            if ( properties != null )
+                properties.forEach((k,v) -> oneProperty(arpOptions, k, v)) ;
         }
         arp.setOptionsWith(arpOptions) ;
         
