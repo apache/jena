@@ -19,24 +19,23 @@
 package org.apache.jena.dboe.transaction.txn;
 
 import java.nio.ByteBuffer ;
-import java.util.concurrent.locks.Lock ;
-import java.util.concurrent.locks.ReadWriteLock ;
-import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.logging.Log ;
 
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.shared.Lock;
+import org.apache.jena.shared.LockMRSW;
 
+//  ** Not used currently **
 /** Implementation of the component interface for {@link TransactionalComponent}.
  *  Useful for in-memory transactions that do not provide durability or abort (undo). 
  *  When retro fitting to other systems, that may be the best that can be done. 
  */
-public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
-    // MRSW implementation of TransactionMVCC
-    // XXX Update to Jena style TransactionalLock
-    private ReadWriteLock lock = new ReentrantReadWriteLock() ;
+public class TransactionalComponentByLock extends TransactionalComponentLifecycle<Object> {
+    //See org.apache.jena.sparql.core.TransactionalLock
+    private Lock lock = new LockMRSW();
     
-    public TransactionalMRSW(ComponentId componentId) {
+    private TransactionalComponentByLock(ComponentId componentId) {
         super(componentId) ;
     }
 
@@ -55,15 +54,8 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     @Override 
     public void cleanStart() {}
     
-    private Lock getLock() {
-        return ( ReadWrite.WRITE.equals(getReadWriteMode()) ) ? lock.writeLock() : lock.readLock() ;
-    }
-    
     @Override
     protected Object _begin(ReadWrite readWrite, TxnId thisTxnId) {
-        Lock lock = getLock() ;
-        // This is the point that makes this MRSW (readers OR writer), not MR+SW (readers and a writer)
-        lock.lock();
         if ( isWriteTxn() )
             startWriteTxn(); 
         else 
@@ -79,22 +71,22 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     protected Object _promote(TxnId txnId, Object state) {
         // We have a read lock, the transaction coordinator has said 
         // it's OK (from it's point-of-view) to promote so this should succeed.
-        // We have a read lock - theer are no other writers.
-        boolean b = lock.writeLock().tryLock();
-        if ( ! b ) {
-            Log.warn(this, "Failed to promote");  
-            return false;
+        // We have a read lock - there are no other writers.
+        
+        // No lock promotion.
+        // Best we can do is unlock and lock again:-(
+        // This is "read committed"
+        if ( isReadTxn() ) {
+            finishReadTxn();
+            startWriteTxn();
         }
-        lock.readLock().unlock(); 
         return createState(); 
     }
 
-    // Checks.
-    
-    protected void startReadTxn()   {}
-    protected void startWriteTxn()  {}
-    protected void finishReadTxn()  {}
-    protected void finishWriteTxn() {}
+    protected void startReadTxn()   { lock.enterCriticalSection(Lock.READ); }
+    protected void startWriteTxn()  { lock.enterCriticalSection(Lock.WRITE); }
+    protected void finishReadTxn()  { lock.leaveCriticalSection(); }
+    protected void finishWriteTxn() { lock.leaveCriticalSection(); }
 
     @Override
     protected ByteBuffer _commitPrepare(TxnId txnId, Object obj) {
@@ -126,12 +118,10 @@ public class TransactionalMRSW extends TransactionalComponentLifecycle<Object> {
     }
 
     private void clearup() {
-        Lock lock = getLock() ;
         if ( isWriteTxn() )
             finishWriteTxn(); 
         else 
             finishReadTxn(); 
-        lock.unlock(); 
     }
 }
 
