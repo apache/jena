@@ -30,6 +30,7 @@ import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 
+/** Builder class for {@link RDFConnectionRemote} */
 public class RDFConnectionRemoteBuilder {
     /*package*/ static String SameAsDestination  = "";
 
@@ -296,20 +297,13 @@ public class RDFConnectionRemoteBuilder {
             maker = (b)->b.buildConnection();
         
         // Sort out service URLs.
-        // Delay until here because the order of destination and service settign sisnot
-        // defined and if being modifed, may be the wrong order to calculate as queryEndpoint() is called.
+        // Delay until here. The builder may be setting destination and service endpoint
+        // names. We can't calculate the full URL until build() is called.
         
         queryURL = LibRDFConn.formServiceURL(destination, sQuery);
         updateURL = LibRDFConn.formServiceURL(destination, sUpdate);
         gspURL = LibRDFConn.formServiceURL(destination, sGSP);
         
-//        if ( acceptSparqlResults == null ) {
-//            if ( acceptSelectResult != acceptAskResult )
-//                acceptSparqlResults = String.join(",", acceptSelectResult, acceptAskResult, acceptGraphResult);
-//            else
-//                acceptSparqlResults = String.join(",", acceptSelectResult, acceptGraphResult);
-//        }
-//        
         return maker.apply(this);
     }
     
