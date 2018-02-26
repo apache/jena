@@ -91,8 +91,14 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         return transactional.isInTransaction() ;
     }
 
-    protected boolean isTransactionType(ReadWrite readWriteType) {
-        return transactional.isTransactionType(readWriteType) ;
+    protected boolean isTransactionMode(ReadWrite readWriteMode) {
+        return transactional.isTransactionMode(readWriteMode) ;
+    }
+    
+    /** @deprecated Use {@link #isTransactionMode} */
+    @Deprecated
+    protected boolean isTransactionType(ReadWrite readWriteMode) {
+        return transactional.isTransactionMode(readWriteMode) ;
     }
 
     @Override

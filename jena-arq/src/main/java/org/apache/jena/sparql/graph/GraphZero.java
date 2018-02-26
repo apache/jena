@@ -28,14 +28,14 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 
-/** Immutable empty graph.  
+/** Invariant empty graph.  
  *  @see GraphSink
  */
 public class GraphZero extends GraphBase {
     
-    private static Graph graph = new GraphZero();
     public static Graph instance() {
-        return graph;
+        // It has transaction state do unsafe to share one object on one thread. 
+        return new GraphZero();
     }
 
     private GraphZero() {}
@@ -45,10 +45,11 @@ public class GraphZero extends GraphBase {
         return NullIterator.instance();
     }
     
+    private TransactionHandler transactionHandler = new TransactionHandlerNull();
     
     @Override 
     public TransactionHandler getTransactionHandler() {
-        return new TransactionHandlerNull(); 
+        return transactionHandler; 
     }
     
     @Override
