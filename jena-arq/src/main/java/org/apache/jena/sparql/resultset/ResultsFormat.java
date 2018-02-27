@@ -53,7 +53,6 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_RS_CSV       = new ResultsFormat(contentTypeTextCSV) ;
     static public ResultsFormat FMT_RS_TSV       = new ResultsFormat(contentTypeTextTSV) ;
     static public ResultsFormat FMT_RS_SSE       = new ResultsFormat(contentTypeSSE) ;
-    static public ResultsFormat FMT_RS_BIO       = new ResultsFormat(contentTypeResultsBIO) ;
     static public ResultsFormat FMT_NONE         = new ResultsFormat("none") ;
     static public ResultsFormat FMT_TEXT         = new ResultsFormat("text") ;
     static public ResultsFormat FMT_TUPLES       = new ResultsFormat("tuples") ;
@@ -83,7 +82,6 @@ public class ResultsFormat extends Symbol
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
         names.put("tsv",         FMT_RS_TSV) ;
-        names.put("srb",         FMT_RS_BIO) ;
         names.put("text",        FMT_TEXT) ;
         names.put("count",       FMT_COUNT) ;
         names.put("tuples",      FMT_TUPLES) ;
@@ -161,9 +159,6 @@ public class ResultsFormat extends Symbol
         // -- SSE : http://jena.apache.org/documentation/notes/sse.html
         if ( url.endsWith(".sse") )
             return FMT_RS_SSE;
-
-        if ( url.endsWith(".srb") ) // BindingsIO format.
-            return FMT_RS_BIO;
 
         // Likely to be something completely different!
         if ( url.endsWith(".csv") )

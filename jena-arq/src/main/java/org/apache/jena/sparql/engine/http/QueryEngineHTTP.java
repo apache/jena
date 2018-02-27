@@ -89,18 +89,22 @@ public class QueryEngineHTTP implements QueryExecution {
     private String constructContentType = defaultConstructHeader() ;
     private String datasetContentType   = defaultConstructDatasetHeader() ;
     
+    // If this is non-null, it overrides the ???ContentType choice. 
+    private String acceptHeader         = null;
+    
     // Received content type 
     private String httpResponseContentType = null ;
     /**
      * Supported content types for SELECT queries
      */
     public static String[] supportedSelectContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV,
+            WebContent.contentTypeResultsThrift};
     /**
      * Supported content types for ASK queries
      */
     public static String[] supportedAskContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
 
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
@@ -340,7 +344,7 @@ public class QueryEngineHTTP implements QueryExecution {
    private ResultSet execResultSetInner() {
         
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(selectContentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, selectContentType));
         InputStream in = httpQuery.exec();
 
         if (false) {
@@ -373,6 +377,13 @@ public class QueryEngineHTTP implements QueryExecution {
         // Do not close the InputStream at this point. 
         ResultSet result = ResultSetMgr.read(in, lang);
         return result;
+    }
+
+   // XXX Move
+    private static String chooseAcceptHeader(String acceptHeader, String contentType) {
+        if ( acceptHeader != null )
+            return acceptHeader;
+        return contentType;
     }
 
     @Override
@@ -457,7 +468,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private Pair<InputStream, Lang> execConstructWorker(String contentType) {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(contentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, contentType));
         InputStream in = httpQuery.exec();
         
         // Don't assume the endpoint actually gives back the content type we
@@ -482,7 +493,7 @@ public class QueryEngineHTTP implements QueryExecution {
     public boolean execAsk() {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(askContentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, askContentType));
         try(InputStream in = httpQuery.exec()) {
             // Don't assume the endpoint actually gives back the content type we
             // asked for
@@ -541,7 +552,26 @@ public class QueryEngineHTTP implements QueryExecution {
     // extensions to the far end.
     @Override
     public Query getQuery() {
-        return query;
+        if ( query != null )
+            return query;
+        if ( queryString != null ) {
+            // Object not created with a Query object, may be because there is forgein
+            // syntax in the query or may be because the queystrign was available and the app
+            // didn't want the overhead of parsing it everytime. 
+            // Try to parse it else return null;
+            try { return QueryFactory.create(queryString, Syntax.syntaxARQ); }
+            catch (QueryParseException ex) {}
+            return null ;
+        }
+        return null;
+    }
+
+    /**
+     * Return the query string. If this was supplied in a constructor, there is no
+     * guaranttee this is legal SPARQL syntax.
+     */
+    public String getQueryString() {
+        return queryString;
     }
 
     @Override
@@ -882,5 +912,19 @@ public class QueryEngineHTTP implements QueryExecution {
         sBuff.append(str) ;
         if ( v < 1 )
             sBuff.append(";q=").append(v) ;
-    } 
+    }
+
+    /** Get the HTTP Accept header for the request. */ 
+    public String getAcceptHeader() {
+        return this.acceptHeader;
+    }
+    
+    /** Set the HTTP Accept header for the request.
+     * Unlike the {@code set??ContentType} operations, this is not checked 
+     * for validity.
+     */ 
+    public void setAcceptHeader(String acceptHeader) {
+        this.acceptHeader = acceptHeader;
+    }
+
 }

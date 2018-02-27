@@ -20,6 +20,7 @@ package org.apache.jena.test.rdfconnection;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.embedded.FusekiServer ;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -34,11 +35,12 @@ import org.junit.BeforeClass ;
 public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     private static FusekiServer server ;
     private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
+    protected static int PORT  = FusekiLib.choosePort(); 
     
     @BeforeClass
     public static void beforeClass() {
         server = FusekiServer.create()
-            .setPort(2244)
+            .setPort(PORT)
             .add("/ds", serverdsg)
             .build() ;
         LogCtl.setLevel(Fuseki.serverLogName,  "WARN");
@@ -69,7 +71,7 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
 
     @Override
     protected RDFConnection connection() {
-        return RDFConnectionFactory.connect("http://localhost:2244/ds");
+        return RDFConnectionFactory.connect("http://localhost:"+PORT+"/ds");
     }
 }
 

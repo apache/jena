@@ -89,7 +89,7 @@ public class DEF
                                                                           ) ;
          
     // Offer for ASK
-    // This include application/xml and application/json.
+    // This includes application/xml and application/json and excludes application/sparql-results+thrift 
     public static final AcceptList rsOfferBoolean      = AcceptList.create(contentTypeResultsJSON,
                                                                            contentTypeJSON,
                                                                            contentTypeTextCSV,

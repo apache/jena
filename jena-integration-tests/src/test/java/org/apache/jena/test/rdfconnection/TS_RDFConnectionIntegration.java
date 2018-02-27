@@ -24,13 +24,16 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // Done in the module
-//    TestRDFConnectionLocalTxnMem.class ,
-//    TestRDFConnectionLocalMRSW.class ,
-    
+    //    TestRDFConnectionLocalTxnMem
+    //    TestRDFConnectionLocalMRSW
+
+    TestBlankNodeBinary.class,
+
     // Addition tests added here.
-    TestRDFConnectionLocalTDB.class ,
-    TestRDFConnectionRemote.class
+    TestRDFConnectionLocalTDB.class,
+    TestRDFConnectionRemote.class,
+    TestRDFConnectionFuseki.class,
+    TestRDFConnectionFusekiBinary.class
 })
 
-public class TS_RDFConnection2 {}
-
+public class TS_RDFConnectionIntegration {}
