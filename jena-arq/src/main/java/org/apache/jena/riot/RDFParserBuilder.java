@@ -30,6 +30,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser.LangTagForm;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
@@ -511,6 +513,18 @@ public class RDFParserBuilder {
     }
 
     /**
+     * Parse the source, sending the results to a {@link Model}.
+     * The source must be for triples; any quads are discarded. 
+     * Short form for {@code build().parse(model)}
+     * which sends triples and prefixes to the {@code Model}.
+     * 
+     * @param model
+     */
+    public void parse(Model model) {
+        build().parse(model);
+    }
+
+    /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
      * Short form for {@code build().parse(dataset)}
      * which sends triples and prefixes to the {@code DatasetGraph}.
@@ -518,6 +532,17 @@ public class RDFParserBuilder {
      * @param dataset
      */
     public void parse(DatasetGraph dataset) {
+        build().parse(dataset);
+    }
+
+    /**
+     * Parse the source, sending the results to a {@link Dataset}.
+     * Short form for {@code build().parse(dataset)}
+     * which sends triples and prefixes to the {@code Dataset}.
+     * 
+     * @param dataset
+     */
+    public void parse(Dataset dataset) {
         build().parse(dataset);
     }
 

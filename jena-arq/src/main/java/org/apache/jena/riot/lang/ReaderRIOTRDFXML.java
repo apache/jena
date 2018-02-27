@@ -21,9 +21,11 @@ package org.apache.jena.riot.lang;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
+import java.util.Map;
 
 import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -35,7 +37,10 @@ import org.apache.jena.rdfxml.xmlinput.* ;
 import org.apache.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.checker.CheckerLiterals ;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
@@ -44,7 +49,7 @@ import org.xml.sax.SAXParseException ;
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
-public class ReaderRIOTRDFXML  implements ReaderRIOT
+public class ReaderRIOTRDFXML implements ReaderRIOT
 {
     public static class Factory implements ReaderRIOTFactory {
         @Override
@@ -63,7 +68,9 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     private String xmlBase ;
     private String filename ;
     private StreamRDF sink ;
-    private ErrorHandler errorHandler; 
+    private ErrorHandler errorHandler;
+
+    private Context context; 
     
     public ReaderRIOTRDFXML(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler; 
@@ -75,6 +82,7 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         this.xmlBase = baseURI_RDFXML(baseURI) ;
         this.filename = baseURI ;
         this.sink = output ;
+        this.context = context;
         parse();
     }
 
@@ -84,6 +92,7 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         this.xmlBase = baseURI_RDFXML(baseURI) ;
         this.filename = baseURI ;
         this.sink = output ;
+        this.context = context;
         parse();
     }
     
@@ -107,6 +116,37 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
     // It's a pragmatic compromise.
     private static boolean errorForSpaceInURI = true;
     
+    // Extracted from org.apache.jena.rdfxml.xmlinput.JenaReader
+    private void oneProperty(ARPOptions options, String pName, Object value) {
+        if (! pName.startsWith("ERR_") && ! pName.startsWith("IGN_") && ! pName.startsWith("WARN_"))
+            return ;
+        int cond = ParseException.errorCode(pName);
+        if (cond == -1)
+            throw new RiotException("No such ARP property: '"+pName+"'");
+        int val;
+        if (value instanceof String) {
+            if (!((String) value).startsWith("EM_"))
+                throw new RiotException("Value for ARP property does not start EM_: '"+pName+"' = '"+value+"'" );
+            val = ParseException.errorCode((String) value);
+            if (val == -1 )
+                throw new RiotException("Illegal value for ARP property: '"+pName+"' = '"+value+"'" );
+        } else if (value instanceof Integer) {
+            val = ((Integer) value).intValue();
+            switch (val) {
+                case ARPErrorNumbers.EM_IGNORE:
+                case ARPErrorNumbers.EM_WARNING:
+                case ARPErrorNumbers.EM_ERROR:
+                case ARPErrorNumbers.EM_FATAL:
+                    break;
+                default:
+                    throw new RiotException("Illegal value for ARP property: '"+pName+"' = '"+value+"'" );
+            }
+        } else {
+            throw new RiotException("Property \"" + pName + "\" cannot have value: " + value.toString());
+        }
+        options.setErrorMode(cond, val);
+    }
+    
     public void parse() {
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
@@ -116,17 +156,31 @@ public class ReaderRIOTRDFXML  implements ReaderRIOT
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
 
+        // ARPOptions.
+        ARPOptions arpOptions = arp.getOptions() ;
         if ( RiotUniformCompatibility ) {
-            ARPOptions options = arp.getOptions() ;
             // Convert some warnings to errors for compatible behaviour for all parsers.
             for ( int code : additionalErrors )
-                options.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
-            arp.setOptionsWith(options) ;
+                arpOptions.setErrorMode(code, ARPErrorNumbers.EM_ERROR) ;
         }
         
         if ( JenaRuntime.isRDF11 )
             arp.getOptions().setIRIFactory(IRIResolver.iriFactory());
 
+        if ( context != null ) {
+            Map<String, Object> properties = null;
+            try { 
+                @SuppressWarnings("unchecked")
+                Map<String, Object> p = (Map<String, Object>)(context.get(SysRIOT.sysRdfReaderProperties)) ;
+                properties = p;
+            } catch(Throwable ex) {
+                Log.warn(this, "Problem accessing the RDF/XML reader properties: properties ignored", ex);
+            }
+            if ( properties != null )
+                properties.forEach((k,v) -> oneProperty(arpOptions, k, v)) ;
+        }
+        arp.setOptionsWith(arpOptions) ;
+        
         try {
             if ( reader != null )
                 arp.load(reader, xmlBase) ;

@@ -36,6 +36,8 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLangTag;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLiterals;
 import org.apache.jena.riot.system.*;
@@ -235,12 +237,28 @@ public class RDFParser {
         parse(StreamRDFLib.graph(graph));
     }
     
-
+    /**
+     * Parse the source, sending the results to a {@link Model}.
+     * The source must be for triples; any quads are discarded.
+     * This method is equivalent to {@code parse(model.getGraph())}. 
+     */
+    public void parse(Model model) {
+        parse(model.getGraph());
+    }
+    
     /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
      */
     public void parse(DatasetGraph dataset) {
         parse(StreamRDFLib.dataset(dataset));
+    }
+    
+    /**
+     * Parse the source, sending the results to a {@link Dataset}.
+     * This method is equivalent to {@code parse(dataset.asDatasetGraph())}. 
+     */
+    public void parse(Dataset dataset) {
+        parse(dataset.asDatasetGraph());
     }
     
     /** 

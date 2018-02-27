@@ -64,17 +64,19 @@ public abstract class AdapterRDFWriter extends WriterGraphRIOTBase
         w.write(ModelFactory.createModelForGraph(graph), out, baseURI) ;
     }
     
-    private static void setProperties(RDFWriter w, Context context) {
+    private void setProperties(RDFWriter w, Context context) {
         if ( context == null )
             return;
+        Map<String, Object> properties = null;
         try { 
             @SuppressWarnings("unchecked")
             Map<String, Object> p = (Map<String, Object>)(context.get(SysRIOT.sysRdfWriterProperties)) ;
-            if ( p != null )
-                p.forEach((k,v) -> w.setProperty(k, v)) ;
+            properties = p;
         } catch (Throwable ex) {
-            Log.warn(AdapterRDFWriter.class, "Problem setting properties", ex);
+            Log.warn(this, "Problem accessing the RDF/XML writer properties: properties ignored", ex);
         }
+        if ( properties != null )
+            properties.forEach((k,v) -> w.setProperty(k, v)) ;
     }
 }
 

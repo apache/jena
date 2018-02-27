@@ -498,8 +498,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             return old;
 
         }
-        if (str.startsWith("ERR_") || str.startsWith("IGN_")
-                || str.startsWith("WARN_")) {
+        if (str.startsWith("ERR_") || str.startsWith("IGN_") || str.startsWith("WARN_")) {
             int cond = ParseException.errorCode(str);
             if (cond == -1) {
                 // error, see end of function.
