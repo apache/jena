@@ -50,6 +50,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -73,6 +74,11 @@ public class RiotLib
             return n;
         }
         return NodeFactory.createURI(iri);
+    }
+    
+    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
+    public static Node blankNodeToIri(Node node) {
+        return NodeFunctions.blankNodeToIri(node);
     }
 
     /** Test whether a IRI is a ARQ-encoded blank node. */
