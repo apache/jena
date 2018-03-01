@@ -34,6 +34,7 @@ import org.apache.jena.rdf.model.impl.LiteralImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
 import org.apache.jena.rdf.model.impl.StmtIteratorImpl ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.util.ModelCollector;
 import org.apache.jena.util.iterator.ClosableIterator ;
 
 
@@ -131,7 +132,15 @@ public class ModelUtils
             }
         };
     }
-    
+
+    public static ModelCollector intersectCollector() {
+        return new ModelCollector.IntersectionModelCollector();
+    }
+
+    public static ModelCollector unionCollector() {
+        return new ModelCollector.UnionModelCollector();
+    }
+
     public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
     {
         return new IteratorResourceClosing<>(Iter.map(it, Statement::asTriple),
