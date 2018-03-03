@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
@@ -41,6 +42,7 @@ import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * The interface for secured Model instances.
@@ -1745,7 +1747,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredPrefixMapping removeNsPrefix(final String prefix)
+	public SecuredModel removeNsPrefix(final String prefix)
 			throws UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
@@ -1891,4 +1893,10 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	public SecuredModel write(final Writer writer, final String lang, final String base)
 			throws ReadDeniedException, AuthenticationRequiredException;
 
+	// Override return type for methods inherited from PrefixMapping
+	SecuredModel setNsPrefix( String prefix, String uri );
+	SecuredModel clearNsPrefixMap();
+	SecuredModel setNsPrefixes( PrefixMapping other );
+	SecuredModel setNsPrefixes( Map<String, String> map );
+	SecuredModel withDefaultMappings( PrefixMapping map );
 }

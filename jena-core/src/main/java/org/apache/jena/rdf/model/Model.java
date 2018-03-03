@@ -1051,4 +1051,12 @@ public interface Model
         Answer true iff .close() has been called on this Model.
     */
     public boolean isClosed();
+
+    // Override return type for methods inherited from PrefixMapping
+	Model setNsPrefix( String prefix, String uri );
+	Model removeNsPrefix( String prefix );
+	Model clearNsPrefixMap();
+	Model setNsPrefixes( PrefixMapping other );
+	Model setNsPrefixes( Map<String, String> map );
+	Model withDefaultMappings( PrefixMapping map );
 }
