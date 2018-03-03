@@ -507,7 +507,7 @@ public class TestJsonLDWriter extends BaseTest {
 
         m.setNsPrefix("", ns);
 
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         PrefixMap pm = RiotLib.prefixMap(g);
         String base = null;
         Context jenaContext = null;
@@ -551,7 +551,7 @@ public class TestJsonLDWriter extends BaseTest {
     private String toString(Model m, RDFFormat f, Context jenaContext) {
         try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
-            DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+            DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
             PrefixMap pm = RiotLib.prefixMap(g);
             String base = null;
             w.write(out, g, pm, base, jenaContext) ;

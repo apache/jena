@@ -36,7 +36,8 @@ public class DatasetGraphFactory
      * <p>
      * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
      * <p>
-     * This implementation does not support serialized transactions (it only provides MRSW locking). 
+     * This implementation provides "best effort" transactions; it only provides MRSW locking.
+     * Use {@link #createTxnMem} for a proper in-memeory transactional {@code DatasetGraph}.
      * 
      * @see #createTxnMem
      */
@@ -45,7 +46,7 @@ public class DatasetGraphFactory
     }
 
     /**
-     * Create an in-memory. transactional {@link Dataset}.
+     * Create an in-memory, transactional {@link Dataset}.
      * <p> 
      * This fully supports transactions, including abort to roll-back changes.
      * It provides "autocommit" if operations are performed
@@ -60,7 +61,7 @@ public class DatasetGraphFactory
 
     /**
      * Create a general-purpose  {@link Dataset}.<br/>
-     * Any graphs needed are in-memory unless explciitly added with {@link Dataset#addNamedModel}.
+     * Any graphs needed are in-memory unless explicitly added with {@link Dataset#addNamedModel}.
      * </p>
      * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
      * These are held as links to the supplied graph and not copied.
@@ -73,7 +74,9 @@ public class DatasetGraphFactory
      * @see #createTxnMem
      * @return a general-purpose Dataset
      */
-    public static DatasetGraph createGeneral() { return new DatasetGraphMapLink(graphMakerMem) ; }
+    public static DatasetGraph createGeneral() { 
+        return new DatasetGraphMapLink(graphMakerMem.create(null), graphMakerMem) ;
+    }
 
     /** Create an in-memory {@link Dataset}.
      * <p>
@@ -137,7 +140,15 @@ public class DatasetGraphFactory
     /**
      * Create a DatasetGraph which only ever has a single default graph.
      */
-    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; }
+    public static DatasetGraph wrap(Graph graph) { return DatasetGraphOne.create(graph) ; }
+
+    
+    /**
+     * Create a DatasetGraph which only ever has a single default graph.
+     * @deprecated Use {#wrap(Graph)} 
+     */
+    @Deprecated
+    public static DatasetGraph createOneGraph(Graph graph) { return wrap(graph) ; }
 
     /** Interface for making graphs when a dataset needs to add a new graph.
      *  Return null for no graph created.

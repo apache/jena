@@ -152,7 +152,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         if ( g == null ) {
             g = getGraphCreate(graphNode);
             if ( g != null )
-                addGraph(graphNode, g);
+                graphs.put(graphNode, g);
         }
         return g;
     }

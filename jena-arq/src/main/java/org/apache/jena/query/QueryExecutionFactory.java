@@ -126,7 +126,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(Query query, Model model) {
         checkArg(query) ;
         checkArg(model) ;
-        return make(query, DatasetFactory.create(model)) ;
+        return make(query, DatasetFactory.wrap(model)) ;
     }
 
     /** Create a QueryExecution to execute over the Model.
@@ -201,7 +201,7 @@ public class QueryExecutionFactory
      */
     static public QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
         checkArg(model) ;
-        return create(query, DatasetFactory.create(model), initialBinding) ;
+        return create(query, DatasetFactory.wrap(model), initialBinding) ;
     }
     
     /** Create a QueryExecution to execute over the Model, 

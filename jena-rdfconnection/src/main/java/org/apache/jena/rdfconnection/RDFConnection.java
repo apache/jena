@@ -110,8 +110,6 @@ public interface RDFConnection extends
      */
     @Override
     public default void querySelect(String query, Consumer<QuerySolution> rowAction) {
-        //Parse local: querySelect(QueryFactory.create(query), rowAction);
-        // XXX Parse point.
         Txn.executeRead(this, ()->{ 
             try ( QueryExecution qExec = query(query) ) {
                 qExec.execSelect().forEachRemaining(rowAction);

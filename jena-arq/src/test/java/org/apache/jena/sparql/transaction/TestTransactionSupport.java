@@ -48,9 +48,9 @@ public class TestTransactionSupport {
         x.add(new Object[] {"create",
             (Creator<DatasetGraph>)()->DatasetGraphFactory.create(),
             true, false}) ;
-        x.add(new Object[] {"createOneGraph" ,
+        x.add(new Object[] {"wrap" ,
             (Creator<DatasetGraph>)()->
-                DatasetGraphFactory.createOneGraph(GraphFactory.createDefaultGraph()),
+                DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),
             true, true}) ;
         x.add(new Object[] {"createZeroGraph" ,
             (Creator<DatasetGraph>)()->new DatasetGraphZero(),

@@ -245,7 +245,7 @@ public class TestParameterizedSparqlString {
         bnode.addProperty(RDF.type, OWL.Thing);
         Assert.assertEquals(1, model.size());
 
-        Dataset ds = DatasetFactory.create(model);
+        Dataset ds = DatasetFactory.wrap(model);
 
         // Use a parameterized query to check the data can be found
         ParameterizedSparqlString pq = new ParameterizedSparqlString();

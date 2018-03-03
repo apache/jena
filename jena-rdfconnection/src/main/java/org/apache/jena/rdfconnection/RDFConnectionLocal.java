@@ -70,7 +70,8 @@ public class RDFConnectionLocal implements RDFConnection {
     @Override
     public QueryExecution query(Query query) {
         checkOpen();
-        return Txn.calculateRead(dataset, ()->QueryExecutionFactory.create(query, dataset));
+        // There is no point doing this in a transaction because the QueryExecution is passed out. 
+        return QueryExecutionFactory.create(query, dataset);
     }
 
     @Override

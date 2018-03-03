@@ -32,10 +32,11 @@ import org.apache.jena.query.TxnType;
 
 /** DatasetGraph of a single graph as default graph.
  * <p>
- *  Fixed as one graph (the default) - can not add named graphs.
+ *  Fixed as one graph (the default) - named graphs can notbe added nor the default graph changed, only the contents modified. 
  *  <p>
- *  Passes transactions down to a nominated backing {@link DatasetGraph}
- *  
+ *  Ths dataset passes transactions down to a nominated backing {@link DatasetGraph}
+ *  <p>
+ *  It is particular suitable for use with an interference graph.
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Graph graph;
@@ -43,21 +44,30 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Transactional txn;
     private final boolean supportsAbort;
 
-    public DatasetGraphOne(Graph graph, DatasetGraph backing) {
+    public static DatasetGraph create(Graph graph) {
+        return new DatasetGraphOne(graph);
+    }
+    
+    private DatasetGraphOne(Graph graph, DatasetGraph backing) {
         this.graph = graph;
         backingDGS = backing;
         supportsAbort = backing.supportsTransactionAbort();
         txn = backing;
     }
     
-    public DatasetGraphOne(Graph graph) {
+    @SuppressWarnings("deprecation")
+    private DatasetGraphOne(Graph graph) {
         this.graph = graph;
         if ( graph instanceof GraphView ) {
             backingDGS = ((GraphView)graph).getDataset();
             txn = backingDGS;
             supportsAbort = backingDGS.supportsTransactionAbort();
         } else {
-            txn = TransactionalLock.createMRSW();
+            // JENA-1492 - pass down transactions.
+            if ( TxnDataset2Graph.TXN_DSG_GRAPH )
+                txn = new TxnDataset2Graph(graph);
+            else
+                txn = TransactionalLock.createMRSW();
             backingDGS = null;
             supportsAbort = false;
         }

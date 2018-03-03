@@ -39,6 +39,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb2.TDBException;
@@ -392,14 +393,28 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     public Location getLocation()       { return storage.location ; }
 
+    /**
+     * Cause an exception to be thrown if sync is called.
+     * For TDB2, which is transactional only, so sync isn't a useful operation.
+     * It is implemented for completness and no more.
+     */
+    public static boolean exceptionOnSync = true ;
+
     @Override
     public void sync() {
+        if ( exceptionOnSync )
+            throw new JenaTransactionException("sync called");
         checkNotClosed();
+        syncStorage();
+    }
+
+    // Sync for internal puposes.
+    public void syncStorage() {
         storage.tripleTable.sync();
         storage.quadTable.sync();
         storage.prefixes.sync();
     }
-    
+
     @Override
     public void setDefaultGraph(Graph g) { 
         throw new UnsupportedOperationException("Can't set default graph on a TDB-backed dataset") ;

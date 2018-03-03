@@ -21,11 +21,13 @@ package org.apache.jena.tdb2.store;
 import java.util.Map ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.TransactionHandlerView;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** 
@@ -45,9 +47,13 @@ public class GraphViewSwitchable extends GraphView {
     private final DatasetGraphSwitchable dsgx;
     protected DatasetGraphSwitchable getx() { return dsgx; }
     
+    private TransactionHandler transactionHandler = null;
+    
     protected GraphViewSwitchable(DatasetGraphSwitchable dsg, Node gn) {
         super(dsg, gn) ;
         this.dsgx = dsg;
+        // Goes to the switchable DatasetGraph
+        this.transactionHandler = new TransactionHandlerView(dsgx);
     }
 
     @Override
@@ -62,6 +68,11 @@ public class GraphViewSwitchable extends GraphView {
             return pmap; 
         }
         return prefixMapping(gn);
+    }
+
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return transactionHandler;
     }
     
     /** Return the {@code DatasetGraphSwitchable} we are viewing. */

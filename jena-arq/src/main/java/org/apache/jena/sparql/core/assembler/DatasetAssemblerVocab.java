@@ -30,6 +30,9 @@ public class DatasetAssemblerVocab
     
     // General dataset
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
+    // Dataset to hold exactly one model.
+    public static final Resource tDatasetOne         = ResourceFactory.createResource(NS+"RDFDatasetOne") ;
+
     // In-memory dataset
     public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"DatasetTxnMem") ;
     public static final Resource tMemoryDataset      = ResourceFactory.createResource(NS+"MemoryDataset") ;

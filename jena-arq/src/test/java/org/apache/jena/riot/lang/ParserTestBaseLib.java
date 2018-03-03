@@ -43,7 +43,7 @@ class ParserTestBaseLib {
     static DatasetGraph parseDataset(Lang lang, String ...strings) {
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
-        parse(lang, dest, strings) ;
+        parse(lang, dest, strings);
         return dsg ;
     }
 

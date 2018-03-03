@@ -302,7 +302,7 @@ public class QueryExecUtils {
      * that one RDFNode
      */
     public static RDFNode getExactlyOne(String qs, Model model) {
-        return getExactlyOne(qs, DatasetFactory.create(model)) ;
+        return getExactlyOne(qs, DatasetFactory.wrap(model)) ;
     }
 
     /**
