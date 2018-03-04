@@ -35,10 +35,11 @@ import org.junit.BeforeClass ;
 public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     private static FusekiServer server ;
     private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
-    protected static int PORT  = FusekiLib.choosePort(); 
+    protected static int PORT; 
     
     @BeforeClass
     public static void beforeClass() {
+        PORT = FusekiLib.choosePort();
         server = FusekiServer.create()
             .setPort(PORT)
             .add("/ds", serverdsg)

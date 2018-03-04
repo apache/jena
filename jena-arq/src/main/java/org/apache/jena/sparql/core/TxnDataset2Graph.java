@@ -220,8 +220,21 @@ public class TxnDataset2Graph extends TransactionalLock {
 
     @Override
     public void abort() {
-        handlers(h -> h.abort());
+        handlers(h->h.abort());
         finish();
         super.abort();
+    }
+    
+    @Override
+    public void end() {
+        if ( isTransactionMode(ReadWrite.WRITE) )
+            error("Write transaction - no commit or abort before end()") ;
+        // Need to put this in between the two parts of end().
+        if ( super.isInTransaction() ) {
+            // Must be READ at this point.
+            handlers(h->h.commit());
+            finish();
+        }
+        super.endOnce();
     }
 }

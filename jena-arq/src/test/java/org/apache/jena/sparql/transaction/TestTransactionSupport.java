@@ -24,6 +24,7 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.junit.Assert ;
@@ -48,16 +49,17 @@ public class TestTransactionSupport {
         x.add(new Object[] {"create",
             (Creator<DatasetGraph>)()->DatasetGraphFactory.create(),
             true, false}) ;
-        x.add(new Object[] {"wrap" ,
-            (Creator<DatasetGraph>)()->
-                DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),
-            true, true}) ;
-        x.add(new Object[] {"createZeroGraph" ,
+        x.add(new Object[] {"wrap(Graph)" ,
+            (Creator<DatasetGraph>)()->DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),
+            true, false}) ;
+        x.add(new Object[] {"zero" ,
             (Creator<DatasetGraph>)()->new DatasetGraphZero(),
             true, true}) ;
+        x.add(new Object[] {"sink" ,
+            (Creator<DatasetGraph>)()->new DatasetGraphSink(),
+            true, true}) ;
         x.add(new Object[] {"create(Graph)",
-            (Creator<DatasetGraph>)()->
-                DatasetGraphFactory.create(GraphFactory.createDefaultGraph()),
+            (Creator<DatasetGraph>)()->DatasetGraphFactory.create(GraphFactory.createDefaultGraph()),
             true, false}) ;
         return x ;
     }

@@ -20,13 +20,13 @@ package org.apache.jena.test.txn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -63,6 +63,9 @@ public class TestDataset2Graph {
     // TXN_DSG_GRAPH must be true.
     @SuppressWarnings("deprecation")
     @BeforeClass public static void beforeClass() {
+        if ( ! TxnDataset2Graph.TXN_DSG_GRAPH )
+            Log.warn(TestDataset2Graph.class, "**** TxnDataset2Graph.TXN_DSG_GRAPH is false in the system setup ****");
+        
         txn_dsg_graph = TxnDataset2Graph.TXN_DSG_GRAPH;
         TxnDataset2Graph.TXN_DSG_GRAPH = true;
         // Make sure sync isn't called.
@@ -78,13 +81,13 @@ public class TestDataset2Graph {
 
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
-        Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createTxnMem() ;
+        Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createGeneral() ;
         Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
         Creator<Dataset> datasetTDB1 = ()-> TDBFactory.createDataset();
         Creator<Dataset> datasetTDB2 = ()-> TDB2Factory.createDataset();
         return Arrays.asList(new Object[][] { 
-            { "Plain",  datasetPlainMaker },
-            { "TIM",  datasetTxnMemMaker },
+            { "Plain", datasetPlainMaker },
+            { "TIM",   datasetTxnMemMaker },
             { "TDB1",  datasetTDB1 },
             { "TDB2",  datasetTDB2 }
         });
@@ -96,15 +99,15 @@ public class TestDataset2Graph {
         this.creator = creator;
     }
 
-    @Test public void dsgGraph_model() {
+    @Test public void dsgGraphTxn_model() {
         testInfModel(creator.create());
     }
 
-    @Test public void dsgGraphTxnTDB_dataset_wrap() {
+    @Test public void dsgGraphTxn_dataset_wrap() {
         testOverDS(creator.create(), true);
     }
 
-    @Test public void dsgGraphTxnTDB_dataset_create() {
+    @Test public void dsgGraphTxn_dataset_create() {
         testOverDS(creator.create(), false);
     }
     private static void testInfModel(Dataset ds0) {
@@ -129,7 +132,7 @@ public class TestDataset2Graph {
 
         try ( RDFConnection conn = RDFConnectionFactory.connect(ds1) ) {
             
-            conn.querySelect("SELECT (count(*) AS ?C) { ?s ?p ?o } HAVING (?C = 0)", (qs)-> fail("Didn't expect any query solutions"));
+            //conn.querySelect("SELECT (count(*) AS ?C) { ?s ?p ?o } HAVING (?C = 0)", (qs)-> fail("Didn't expect any query solutions"));
             
             // Necessary
             Txn.exec(conn, TxnType.READ, ()->{

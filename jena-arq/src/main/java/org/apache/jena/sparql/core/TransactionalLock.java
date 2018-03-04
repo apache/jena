@@ -161,7 +161,7 @@ public class TransactionalLock implements Transactional {
         endOnce() ;
     }
 
-    private void endOnce() {
+    protected void endOnce() {
         if ( isInTransaction() ) {
             lock.leaveCriticalSection() ;
             txnMode.set(null);
@@ -173,7 +173,7 @@ public class TransactionalLock implements Transactional {
         }
     }
     
-    private void error(String msg) {
+    protected void error(String msg) {
         throw new JenaTransactionException(msg) ; 
     }
 }
