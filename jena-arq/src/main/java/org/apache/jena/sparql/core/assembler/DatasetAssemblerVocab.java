@@ -35,8 +35,11 @@ public class DatasetAssemblerVocab
 
     // In-memory dataset
     public static final Resource tDatasetTxnMem      = ResourceFactory.createResource(NS+"DatasetTxnMem") ;
+    
+    // Specialised datasets
     public static final Resource tMemoryDataset      = ResourceFactory.createResource(NS+"MemoryDataset") ;
-    public static final Resource tDatasetNull        = ResourceFactory.createResource(NS+"DatasetNull") ;
+    public static final Resource tDatasetZero        = ResourceFactory.createResource(NS+"RDFDatasetZero") ;
+    public static final Resource tDatasetSink        = ResourceFactory.createResource(NS+"RDFDatasetSink") ;
     
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
     public static final Property pNamedGraph         = ResourceFactory.createProperty(NS, "namedGraph") ;

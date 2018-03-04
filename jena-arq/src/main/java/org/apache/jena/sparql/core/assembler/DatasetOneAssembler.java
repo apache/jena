@@ -43,7 +43,7 @@ import org.apache.jena.sparql.util.graph.GraphUtils;
  * @see DatasetAssembler {@code DatasetAssembler}, for a general dataset.
  * @see InMemDatasetAssembler {@code InMemDatasetAssembler}, for a fully transactional, in-memory dataset.
  */
-public class DatasetGraphOneAssembler extends AssemblerBase {
+public class DatasetOneAssembler extends AssemblerBase {
     public static Resource getType() {
         return DatasetAssemblerVocab.tDatasetOne;
     }
