@@ -19,18 +19,17 @@
 package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.tdb2.setup.StoreParams;
 
 public class StorageTDB {
 
     /*package*/ final TripleTable tripleTable;
     /*package*/ final QuadTable quadTable;
-    /*package*/ final DatasetPrefixStorage prefixes;
+    /*package*/ final DatasetPrefixesTDB prefixes;
     /*package*/ final Location location;
     /*package*/ final StoreParams storeParams;
     
-    public StorageTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, Location location, StoreParams params) {
+    public StorageTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, Location location, StoreParams params) {
         super();
         this.tripleTable = tripleTable;
         this.quadTable = quadTable;

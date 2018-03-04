@@ -73,7 +73,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     /** Application should not create a {@code DatasetGraphTDB} directly */
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
-                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
+                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {
         reset(txnSystem, tripleTable, quadTable, prefixes, location, params) ;
         this.transform = transform ;
@@ -81,16 +81,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     public void reset(TransactionalSystem txnSystem,
-                      TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
+                      TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
                       Location location, StoreParams params) {
-//        this.tripleTable = tripleTable ;
-//        this.quadTable = quadTable ;
-//        this.location = location ;
-//        this.prefixes = prefixes ;
-//        this.storeParams = params ;
         this.txnSystem = txnSystem ;
-        // XXX Threading?
-        // XXX (re)set transaction components in TransactionCoordinator?? 
         this.storage = new StorageTDB(tripleTable, quadTable, prefixes, location, params);
         this.defaultGraphTDB = getDefaultGraphTDB();
     }
@@ -171,7 +164,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     // Promotion
-    private void requireWriteTxn() {
+    /*package*/ void requireWriteTxn() {
         Transaction txn = txnSystem.getThreadTransaction() ;
         if ( txn == null )
             throw new TransactionException("Not in a transaction") ;
@@ -300,6 +293,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public DatasetPrefixStorage getPrefixes() {
         checkNotClosed();
+        // Need for requireWriteTxn
+        storage.prefixes.setDatasetGraphTDB(this);
         return storage.prefixes;
     }
 
