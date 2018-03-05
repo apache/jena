@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import java.util.Calendar ;
+import java.util.HashMap;
 import java.util.Iterator ;
 import java.util.TimeZone ;
 
@@ -1591,6 +1592,32 @@ public class TestParameterizedSparqlString {
         UpdateRequest updates = pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
+    
+
+    
+    @Test
+    public void test_param_string_injection_16() {
+        String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
+                " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                " PREFIX text: <http://jena.apache.org/text#>\n" ;
+        HashMap<String,String> map=new HashMap<>();
+        map.put("L_name", "\"rgyud bla ma\"");
+        map.put("LG_name", "bo-x-ewts");
+        String test2=prefixes+ "select ?comment (GROUP_CONCAT(DISTINCT ?comment_type;  SEPARATOR=\" <>" +
+                "\") AS ?comment_types)  ?root_name\n" +
+                "where {\n" +
+                "    (?root ?score ?root_name) text:query ?L_name .\n" +
+                "    ?comment :workIsAbout ?root;\n" +
+                "             :workGenre ?g .\n" +
+                "    ?g skos:prefLabel ?comment_type .\n" +
+                "    FILTER (contains(?comment_type, \"commentary\" ))\n" +
+                "}\n" +
+                "group by ?comment ?root_name";
+        ParameterizedSparqlString queryStr2 = new ParameterizedSparqlString(test2);
+        queryStr2.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));
+        System.out.println(queryStr2.toString());
+        Query q2=queryStr2.asQuery();
+    }
 
     @Test
     public void test_param_string_non_injection_01() {
@@ -1602,6 +1629,28 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("var", "predicate");
 
         pss.toString();
+    }
+    
+    @Test
+    public void test_param_string_non_injection_02() {
+        String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
+                " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                " PREFIX text: <http://jena.apache.org/text#>" ;
+        HashMap<String,String> map=new HashMap<>();
+        map.put("L_name", "\"rgyud bla ma\"");
+        map.put("LG_name", "bo-x-ewts");        
+        String test1=prefixes+ "select ?comment (GROUP_CONCAT(DISTINCT ?comment_type;  SEPARATOR=\" <>" +
+                "\") AS ?comment_types)  ?root_name\n" +
+                "where {\n" +
+                "    (?root ?score ?root_name) text:query ?L_name .\n" +
+                "    ?comment :workIsAbout ?root;\n" +
+                "             :workGenre ?g .\n" +
+                "    ?g skos:prefLabel ?comment_type .\n" +
+                "}\n"+
+                "group by ?comment ?root_name";              
+        ParameterizedSparqlString queryStr = new ParameterizedSparqlString(test1);
+        queryStr.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));        
+        queryStr.asQuery();
     }
 
     @Test(expected = ARQException.class)
