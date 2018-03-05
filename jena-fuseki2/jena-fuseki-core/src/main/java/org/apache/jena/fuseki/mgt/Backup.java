@@ -65,9 +65,6 @@ public class Backup
      *  A backup is a dump of the dataset in compressed N-Quads, done inside a transaction.
      */
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
-
-        Log.info(Fuseki.serverLog, "Backup("+backupfile+"):1");
-
         if ( transactional == null )
             transactional = new TransactionalNull() ;
         transactional.begin(ReadWrite.READ);
@@ -79,7 +76,6 @@ public class Backup
         finally {
             transactional.end() ;
         }
-        Log.info(Fuseki.serverLog, "Backup("+backupfile+"):2");
     }
 
     /** Perform a backup.
