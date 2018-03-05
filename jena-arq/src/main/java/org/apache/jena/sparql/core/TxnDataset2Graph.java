@@ -50,15 +50,15 @@ import org.apache.jena.sparql.JenaTransactionException;
  * <p>
  * Best practice is to change the graph membership outside of any transaction,
  * ideally at setup time of the object using this class. (Caution: SPARQL Update
- * can create graphs.   
+ * can create graphs.)   
  * @See {@link DatasetGraphMapLink}
  * @See {@link DatasetGraphOne}
  */
 public class TxnDataset2Graph extends TransactionalLock {
     /**
      * Control whether to pass down transactions from the dataset to the graph in the
-     * dataset. This should be set to "true"; setting it "false" causes the onld,
-     * no-transaction passing behaviour.
+     * dataset. This should be set to "true"; setting it "false" causes the old,
+     * non-transaction passing behaviour.
      * <p>
      * This is temporary flag during the transition because the change at Jena 3.7.0 needs
      * to be proven in real deployments as well as testing. "false" restores the Jena
@@ -99,17 +99,18 @@ public class TxnDataset2Graph extends TransactionalLock {
     }
 
     // Determine the key - an object that is the unit of transactions.
-    // For two graphs form the same DatasetGraph, i.e. GraphView, there should be one transaction.
+    // For two graphs from the same DatasetGraph, i.e. GraphView, there should be one transaction.
     private static Object calcKey(Graph graph) {
         if ( graph instanceof GraphView )
             // Use the database as the key so that transactions are started once-per-storage.
-            // This the case of a graph from some storage being plavced in a general dataset.  
+            // This the case of a graph from some storage being placed in a general dataset.  
             return ((GraphView)graph).getDataset();
         if ( graph instanceof InfGraph )
-            // InfGraph does actual pass done in its TransactionHandler.
-            // This allows the base graph to be included in the dataset as well as the InfGraph. 
+            // InfGraph TransactionHandler passes the graph transaction to the base graph. 
+            // This calcKey allows the base graph to be included in the dataset as well as the InfGraph. 
             return calcKey(((InfGraph)graph).getRawGraph());
-        
+        // These should be handled by their respective graph transaction handler
+        // or the graph is overriding that behaviour for some reason. 
 //        if ( graph instanceof GraphWrapper )
 //            return calcKey(((GraphWrapper)graph).get());
 //        if ( graph instanceof WrappedGraph )
@@ -213,7 +214,7 @@ public class TxnDataset2Graph extends TransactionalLock {
     @Override
     public void commit() {
         handlers(h->h.commit());
-        // Before super.commit - we stil hold the lock.
+        // Before super.commit - we still hold the lock.
         finish();
         super.commit();
     }
@@ -231,7 +232,7 @@ public class TxnDataset2Graph extends TransactionalLock {
             error("Write transaction - no commit or abort before end()") ;
         // Need to put this in between the two parts of end().
         if ( super.isInTransaction() ) {
-            // Must be READ at this point.
+            // Must be READ mode at this point.
             handlers(h->h.commit());
             finish();
         }
