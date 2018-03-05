@@ -1894,9 +1894,9 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 			throws ReadDeniedException, AuthenticationRequiredException;
 
 	// Override return type for methods inherited from PrefixMapping
-	SecuredModel setNsPrefix( String prefix, String uri );
-	SecuredModel clearNsPrefixMap();
-	SecuredModel setNsPrefixes( PrefixMapping other );
-	SecuredModel setNsPrefixes( Map<String, String> map );
-	SecuredModel withDefaultMappings( PrefixMapping map );
+	@Override SecuredModel setNsPrefix( String prefix, String uri );
+	@Override SecuredModel clearNsPrefixMap();
+	@Override SecuredModel setNsPrefixes( PrefixMapping other );
+	@Override SecuredModel setNsPrefixes( Map<String, String> map );
+	@Override SecuredModel withDefaultMappings( PrefixMapping map );
 }

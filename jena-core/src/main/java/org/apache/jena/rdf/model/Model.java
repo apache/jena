@@ -1053,10 +1053,10 @@ public interface Model
     public boolean isClosed();
 
     // Override return type for methods inherited from PrefixMapping
-	Model setNsPrefix( String prefix, String uri );
-	Model removeNsPrefix( String prefix );
-	Model clearNsPrefixMap();
-	Model setNsPrefixes( PrefixMapping other );
-	Model setNsPrefixes( Map<String, String> map );
-	Model withDefaultMappings( PrefixMapping map );
+	@Override Model setNsPrefix( String prefix, String uri );
+	@Override Model removeNsPrefix( String prefix );
+	@Override Model clearNsPrefixMap();
+	@Override Model setNsPrefixes( PrefixMapping other );
+	@Override Model setNsPrefixes( Map<String, String> map );
+	@Override Model withDefaultMappings( PrefixMapping map );
 }
