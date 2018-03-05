@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import java.util.Calendar ;
+import java.util.HashMap;
 import java.util.Iterator ;
 import java.util.TimeZone ;
 
@@ -65,6 +66,7 @@ public class TestParameterizedSparqlString {
         return query.asQuery();
     }
 
+    @SuppressWarnings("unused")
     private UpdateRequest testAsUpdate(ParameterizedSparqlString update) {
         return update.asUpdate();
     }
@@ -1382,7 +1384,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri("var2", "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1393,7 +1395,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri("var2", "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1416,7 +1418,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri("var2", "hello> . ?s ?p ?o");
 
-        Query q = pss.asQuery();
+        pss.asQuery();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1449,7 +1451,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "hello' . } ; DROP ALL ; INSERT DATA { <s> <p> \"goodbye");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1461,7 +1463,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1474,7 +1476,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1514,7 +1516,7 @@ public class TestParameterizedSparqlString {
         pss.setLiteral(first, "?" + second);
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1527,7 +1529,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1540,7 +1542,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1588,10 +1590,10 @@ public class TestParameterizedSparqlString {
         pss.setLiteral(first, " ?" + second + " ");
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
-
+    
     @Test
     public void test_param_string_non_injection_01() {
         // This test checks that a legitimate injection of a literal to a
@@ -1603,6 +1605,53 @@ public class TestParameterizedSparqlString {
 
         pss.toString();
     }
+    
+    @Test
+    public void test_param_string_non_injection_02() {
+        String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
+                " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                " PREFIX text: <http://jena.apache.org/text#>" ;
+        HashMap<String,String> map=new HashMap<>();
+        map.put("L_name", "\"rgyud bla ma\"");
+        map.put("LG_name", "bo-x-ewts");        
+        String test1=prefixes+ "select ?comment (GROUP_CONCAT(DISTINCT ?comment_type;  SEPARATOR=\" <>" +
+                "\") AS ?comment_types)  ?root_name\n" +
+                "where {\n" +
+                "    (?root ?score ?root_name) text:query ?L_name .\n" +
+                "    ?comment :workIsAbout ?root;\n" +
+                "             :workGenre ?g .\n" +
+                "    ?g skos:prefLabel ?comment_type .\n" +
+                "}\n"+
+                "group by ?comment ?root_name";              
+        ParameterizedSparqlString queryStr = new ParameterizedSparqlString(test1);
+        queryStr.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));        
+        queryStr.asQuery();
+    }
+    
+    
+    @Test
+    public void test_param_string_non_injection_03() {
+        String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
+                " PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                " PREFIX text: <http://jena.apache.org/text#>\n" ;
+        HashMap<String,String> map=new HashMap<>();
+        map.put("L_name", "\"rgyud bla ma\"");
+        map.put("LG_name", "bo-x-ewts");
+        String test2=prefixes+ "select ?comment (GROUP_CONCAT(DISTINCT ?comment_type;  SEPARATOR=\" <>" +
+                "\") AS ?comment_types)  ?root_name\n" +
+                "where {\n" +
+                "    (?root ?score ?root_name) text:query ?L_name .\n" +
+                "    ?comment :workIsAbout ?root;\n" +
+                "             :workGenre ?g .\n" +
+                "    ?g skos:prefLabel ?comment_type .\n" +
+                "    FILTER (contains(?comment_type, \"commentary\" ))\n" +
+                "}\n" +
+                "group by ?comment ?root_name";
+        ParameterizedSparqlString queryStr2 = new ParameterizedSparqlString(test2);
+        queryStr2.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));
+        System.out.println(queryStr2.toString());
+        queryStr2.asQuery();
+    }
 
     @Test(expected = ARQException.class)
     public void test_param_string_positional_injection_01() {
@@ -1611,7 +1660,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri(0, "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1622,7 +1671,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri(0, "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1645,7 +1694,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri(0, "hello> . ?s ?p ?o");
 
-        Query q = pss.asQuery();
+        pss.asQuery();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1762,7 +1811,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral(0, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1775,7 +1824,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral(0, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
-        UpdateRequest updates = pss.asUpdate();
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
