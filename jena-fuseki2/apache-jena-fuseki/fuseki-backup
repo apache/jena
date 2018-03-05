@@ -15,8 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DB="ds"
+# Simple backup script for Fuseki - adapt as needed.
+# You may need to set the URL for example.
+# This script trigger the backup. It does not wait for it to complete.
+# Backups are placed in the /backups/ directory.
 
-curl -v -XPOST 'http://localhost:3030/$/sleep?interval=10000'
+if [[ $# != 1 ]]
+then
+    echo "Usage : $(basename $0) NAME" 1>&2
+    exit 1
+fi
 
-curl -v 'http://localhost:3030/$/tasks'
+NAME="$1"
+
+curl -XPOST "http://localhost:3030/\$/backup/${NAME}"
+
+# You can track the background task with:
+#curl 'http://localhost:3030/$/tasks'
