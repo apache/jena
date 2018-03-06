@@ -387,17 +387,54 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (fdata != null) data = fdata.getGraph();
         
         // initilize the deductions graph
-        if (fdeductions != null) {
-            Graph oldDeductions = (fdeductions).getGraph();
-            oldDeductions.clear();
-        } else {
-            fdeductions = new FGraph( createDeductionsGraph() );
-        }
-        dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
-        Finder dataSource = fdata;
+        Finder dataSource = initializeDeductions(data);
         
         // Initialize the optional TGC caches
-        if (useTGCCaching) {
+        dataSource = initializeTGCCache(data, dataSource);
+        
+        // Make sure there are no Brules left over from pior runs
+        bEngine.deleteAllRules();
+
+        // Call any optional preprocessing hook
+        dataSource = callPreprocessingHook(dataSource);
+        
+        boolean rulesLoaded = false;
+        if (schemaGraph != null) {
+            Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
+            if (rawPreload != null) {
+                dataFind = FinderUtil.cascade(dataFind, new FGraph(rawPreload));
+            }
+            rulesLoaded = preloadDeductions(schemaGraph);
+        }
+        if (rulesLoaded) {
+            engine.fastInit(dataSource);
+        } else {
+            // No preload so do the rule separation
+            addBRules(extractPureBackwardRules(rules));
+            engine.init(true, dataSource);
+        }
+        // Prepare the context for builtins run in backwards engine
+        context = new BBRuleContext(this);
+    }
+
+	private Finder callPreprocessingHook(Finder dataSource) {
+		if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
+            Graph inserts = Factory.createGraphMem();
+            for ( RulePreprocessHook hook : preprocessorHooks )
+            {
+                hook.run( this, dataFind, inserts );
+            }
+            if (inserts.size() > 0) {
+                FGraph finserts = new FGraph(inserts);
+                dataSource = FinderUtil.cascade(fdata, finserts);
+                dataFind = FinderUtil.cascade(dataFind, finserts);
+            }
+        }
+		return dataSource;
+	}
+
+	private Finder initializeTGCCache(Graph data, Finder dataSource) {
+		if (useTGCCaching) {
             resetTGCCache();
             if (schemaGraph != null) {
                 // Check if we can just reuse the copy of the raw 
@@ -441,42 +478,20 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             // Without the next statement then the transitive closures are not seen by the forward rules
             dataSource = FinderUtil.cascade(dataSource, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
         }
-        
-        // Make sure there are no Brules left over from pior runs
-        bEngine.deleteAllRules();
+		return dataSource;
+	}
 
-        // Call any optional preprocessing hook
-        if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-            Graph inserts = Factory.createGraphMem();
-            for ( RulePreprocessHook hook : preprocessorHooks )
-            {
-                hook.run( this, dataFind, inserts );
-            }
-            if (inserts.size() > 0) {
-                FGraph finserts = new FGraph(inserts);
-                dataSource = FinderUtil.cascade(fdata, finserts);
-                dataFind = FinderUtil.cascade(dataFind, finserts);
-            }
-        }
-        
-        boolean rulesLoaded = false;
-        if (schemaGraph != null) {
-            Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
-            if (rawPreload != null) {
-                dataFind = FinderUtil.cascade(dataFind, new FGraph(rawPreload));
-            }
-            rulesLoaded = preloadDeductions(schemaGraph);
-        }
-        if (rulesLoaded) {
-            engine.fastInit(dataSource);
+	private Finder initializeDeductions(Graph data) {
+		if (fdeductions != null) {
+            Graph oldDeductions = (fdeductions).getGraph();
+            oldDeductions.clear();
         } else {
-            // No preload so do the rule separation
-            addBRules(extractPureBackwardRules(rules));
-            engine.init(true, dataSource);
+            fdeductions = new FGraph( createDeductionsGraph() );
         }
-        // Prepare the context for builtins run in backwards engine
-        context = new BBRuleContext(this);
-    }
+        dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+        Finder dataSource = fdata;
+		return dataSource;
+	}
     
     /**
      * Cause the inference graph to reconsult the underlying graph to take

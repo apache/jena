@@ -194,22 +194,20 @@ public class LPRuleStore extends RuleStore {
         }
 
         // Now add the wild card rules into the list for each non-wild predicate)
-        List<RuleClauseCode> wildRules = predicateToCodeMap.get(Node_RuleVariable.WILD);
-        if (wildRules != null) {
-            for ( Map.Entry<Node, List<RuleClauseCode>> entry : predicateToCodeMap.entrySet() )
-            {
-                Node predicate = entry.getKey();
-                List<RuleClauseCode> predicateCode = entry.getValue();
-                if ( predicate != Node_RuleVariable.WILD )
-                {
-                    predicateCode.addAll( wildRules );
-                }
-            }
-        }
-        indexPredicateToCodeMap.put(Node_RuleVariable.WILD, new HashMap<Node, List<RuleClauseCode>>());
+        addWildCardRules();
                 
         // Now built any required two level indices
-        for ( Map.Entry<Node, Map<Node, List<RuleClauseCode>>> entry : indexPredicateToCodeMap.entrySet() )
+        buildTwoLevelIndices();
+        
+        // Now compile all the clauses
+        for ( RuleClauseCode code : allRuleClauseCodes )
+        {
+            code.compile( this );
+        }
+    }
+
+	private void buildTwoLevelIndices() {
+		for ( Map.Entry<Node, Map<Node, List<RuleClauseCode>>> entry : indexPredicateToCodeMap.entrySet() )
         {
             Node predicate = entry.getKey();
             Map<Node, List<RuleClauseCode>> predicateMap = entry.getValue();
@@ -250,13 +248,23 @@ public class LPRuleStore extends RuleStore {
                 predicateCode.addAll( wildRulesForPredicate );
             }
         }
-        
-        // Now compile all the clauses
-        for ( RuleClauseCode code : allRuleClauseCodes )
-        {
-            code.compile( this );
+	}
+
+	private void addWildCardRules() {
+		List<RuleClauseCode> wildRules = predicateToCodeMap.get(Node_RuleVariable.WILD);
+        if (wildRules != null) {
+            for ( Map.Entry<Node, List<RuleClauseCode>> entry : predicateToCodeMap.entrySet() )
+            {
+                Node predicate = entry.getKey();
+                List<RuleClauseCode> predicateCode = entry.getValue();
+                if ( predicate != Node_RuleVariable.WILD )
+                {
+                    predicateCode.addAll( wildRules );
+                }
+            }
         }
-    }
+        indexPredicateToCodeMap.put(Node_RuleVariable.WILD, new HashMap<Node, List<RuleClauseCode>>());
+	}
     
     /**
      * Add/remove a single rule from the store. 
