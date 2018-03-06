@@ -41,12 +41,7 @@ public class BlankNodeAllocatorGlobal implements BlankNodeAllocator
 
     @Override
     public Node alloc(String label) {
-        Node b = map.get(label);
-        if ( b == null ) {
-            b = create();
-            map.put(label, b);
-        }
-        return b;
+        return map.computeIfAbsent(label, x->create());
     }
 
     @Override
