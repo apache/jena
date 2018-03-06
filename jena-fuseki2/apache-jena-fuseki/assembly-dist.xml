@@ -87,6 +87,7 @@
         <include>log4j.properties</include>
         <include>fuseki</include>
         <include>fuseki-server</include>
+        <include>fuseki-backup</include>
         <include>fuseki-server.bat</include>
         <include>bin/*</include>
       </includes>
