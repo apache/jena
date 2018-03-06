@@ -40,7 +40,6 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.resultset.ResultSetLang ;
 import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
 import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.core.Prologue ;
@@ -131,9 +130,12 @@ public class ResponseResultSet
             contentType = contentTypeTextPlain ;
 
         // Some kind of general dispatch is neater but there are quite a few special cases.
+        // text/plain is special because there is no ResultSetWriter for it (yet). 
+        // Text plain is special because of the formatting by prologue.
+        // text/plain is not a registered result set language. 
         //
         // JSON is special because of ?callback
-        // 
+        //
         // XML is special because of
         // (1) charset is a feature of XML, not the response 
         // (2) ?stylesheet=
@@ -141,16 +143,17 @@ public class ResponseResultSet
         // Thrift is special because
         // (1) charset is meaningless
         // (2) there is no boolean result form.
-        //
-        // Text plain is special because of the formatting by prologue.
-        
+
+        if ( Objects.equals(serializationType, contentTypeTextPlain) ) {
+            textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
+            return;
+        }
+
         Lang lang = WebContent.contentTypeToLangResultSet(serializationType);
         if (lang == null )
             ServletOps.errorBadRequest("Not recognized for SPARQL results: "+serializationType) ;
         if ( ! ResultSetWriterRegistry.isRegistered(lang) )
             ServletOps.errorBadRequest("No results writer for "+serializationType);
-        if ( ResultSetLang.SPARQLResultSetThrift.equals(lang) && booleanResult != null )
-            ServletOps.errorBadRequest("Can't write a boolean result in thrift") ;
 
         Context cxt = action.getContext().copy();
         String charset = charsetUTF8;
@@ -164,13 +167,9 @@ public class ResponseResultSet
             jsonCallback = ResponseOps.paramCallback(action.request) ;
         }
         if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) ) {
+            if ( booleanResult != null )
+                ServletOps.errorBadRequest("Can't write a boolean result in thrift") ;
             charset = null;
-        }
-        
-        if ( Objects.equals(serializationType, contentTypeTextPlain) ) {
-            // While text form does not use context for a Prologue.
-            textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-            return;
         }
         
         //Finally, the general case
