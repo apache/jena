@@ -138,24 +138,6 @@ public final class BPTreeNode extends BPTreePage
         // Other set by BPTreeNodeMgr.formatBPTreeNode 
     }
     
-    // ---- [[TXN]] ** work for transactions.
-    void checkTxn() {}
-    void checkWriteTxn() {}
-
-//    static BPTreeNode xensureModifiableRoot(BPTreeNode root, Object state) {
-//        BPTreeNode root2 = promote1(root, root, NO_ID)(null, root) ;
-//        if ( root != root2 && root.getId() != root2.getId() ) {
-//            System.err.println("Cloned root") ;
-//            if ( state == null )
-//                System.err.println("... no state") ;
-//            // [[TXN]] ** Root clone
-//            // get state and update root.
-//        }
-//        return root2 ;
-//    }
-
-    // ----
-    
     @Override
     public void reset(Block block) {
         this.block = block ;

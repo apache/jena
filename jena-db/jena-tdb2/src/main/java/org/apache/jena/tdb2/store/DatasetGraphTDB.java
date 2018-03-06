@@ -39,6 +39,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.* ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb2.TDBException;
@@ -72,7 +73,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     /** Application should not create a {@code DatasetGraphTDB} directly */
     public DatasetGraphTDB(TransactionalSystem txnSystem, 
-                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
+                           TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
                            ReorderTransformation transform, Location location, StoreParams params) {
         reset(txnSystem, tripleTable, quadTable, prefixes, location, params) ;
         this.transform = transform ;
@@ -80,16 +81,9 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     public void reset(TransactionalSystem txnSystem,
-                      TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes,
+                      TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes,
                       Location location, StoreParams params) {
-//        this.tripleTable = tripleTable ;
-//        this.quadTable = quadTable ;
-//        this.location = location ;
-//        this.prefixes = prefixes ;
-//        this.storeParams = params ;
         this.txnSystem = txnSystem ;
-        // XXX Threading?
-        // XXX (re)set transaction components in TransactionCoordinator?? 
         this.storage = new StorageTDB(tripleTable, quadTable, prefixes, location, params);
         this.defaultGraphTDB = getDefaultGraphTDB();
     }
@@ -170,7 +164,7 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     // Promotion
-    private void requireWriteTxn() {
+    /*package*/ void requireWriteTxn() {
         Transaction txn = txnSystem.getThreadTransaction() ;
         if ( txn == null )
             throw new TransactionException("Not in a transaction") ;
@@ -299,6 +293,8 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public DatasetPrefixStorage getPrefixes() {
         checkNotClosed();
+        // Need for requireWriteTxn
+        storage.prefixes.setDatasetGraphTDB(this);
         return storage.prefixes;
     }
 
@@ -392,14 +388,28 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     
     public Location getLocation()       { return storage.location ; }
 
+    /**
+     * Cause an exception to be thrown if sync is called.
+     * For TDB2, which is transactional only, so sync isn't a useful operation.
+     * It is implemented for completness and no more.
+     */
+    public static boolean exceptionOnSync = true ;
+
     @Override
     public void sync() {
+        if ( exceptionOnSync )
+            throw new JenaTransactionException("sync called");
         checkNotClosed();
+        syncStorage();
+    }
+
+    // Sync for internal puposes.
+    public void syncStorage() {
         storage.tripleTable.sync();
         storage.quadTable.sync();
         storage.prefixes.sync();
     }
-    
+
     @Override
     public void setDefaultGraph(Graph g) { 
         throw new UnsupportedOperationException("Can't set default graph on a TDB-backed dataset") ;

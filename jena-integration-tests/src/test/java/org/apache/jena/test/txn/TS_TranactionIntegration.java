@@ -16,25 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.store;
+package org.apache.jena.test.txn;
 
-import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.tdb2.setup.StoreParams;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class StorageTDB {
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestDataset2Graph.class
+})
 
-    /*package*/ final TripleTable tripleTable;
-    /*package*/ final QuadTable quadTable;
-    /*package*/ final DatasetPrefixesTDB prefixes;
-    /*package*/ final Location location;
-    /*package*/ final StoreParams storeParams;
-    
-    public StorageTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, Location location, StoreParams params) {
-        super();
-        this.tripleTable = tripleTable;
-        this.quadTable = quadTable;
-        this.prefixes = prefixes;
-        this.location = location;
-        this.storeParams = params;
-    }
+public class TS_TranactionIntegration {
+
 }

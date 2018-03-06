@@ -34,6 +34,7 @@ import org.apache.jena.sparql.graph.GraphZero;
  */
 public class DatasetGraphZero extends DatasetGraphBaseFind {
 
+    // Invariant DatasetGraph; it does have tarnsaction state so new object here.
     public static DatasetGraph create() { return new DatasetGraphZero(); }
     
     private Graph dftGraph = GraphZero.instance();

@@ -32,10 +32,11 @@ import org.apache.jena.query.TxnType;
 
 /** DatasetGraph of a single graph as default graph.
  * <p>
- *  Fixed as one graph (the default) - can not add named graphs.
+ *  Fixed as one graph (the default) - named graphs can notbe added nor the default graph changed, only the contents modified. 
  *  <p>
- *  Passes transactions down to a nominated backing {@link DatasetGraph}
- *  
+ *  Ths dataset passes transactions down to a nominated backing {@link DatasetGraph}
+ *  <p>
+ *  It is particular suitable for use with an interference graph.
  */
 public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Graph graph;
@@ -43,34 +44,37 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Transactional txn;
     private final boolean supportsAbort;
 
-    public DatasetGraphOne(Graph graph, DatasetGraph backing) {
+    public static DatasetGraph create(Graph graph) {
+        if ( graph instanceof GraphView ) {
+            // This becomes a simple class that passes all transaction operations the
+            // underlying dataset and masks the fact here are other graphs in the storage.
+            return new DatasetGraphOne(graph, ((GraphView)graph).getDataset());
+        }
+        
+        return new DatasetGraphOne(graph);
+    }
+    
+    private DatasetGraphOne(Graph graph, DatasetGraph backing) {
         this.graph = graph;
         backingDGS = backing;
         supportsAbort = backing.supportsTransactionAbort();
         txn = backing;
     }
     
-    public DatasetGraphOne(Graph graph) {
+    @SuppressWarnings("deprecation")
+    private DatasetGraphOne(Graph graph) {
+        // Not GraphView which was hanled in create(Graph). 
         this.graph = graph;
-        if ( graph instanceof GraphView ) {
-            backingDGS = ((GraphView)graph).getDataset();
-            txn = backingDGS;
-            supportsAbort = backingDGS.supportsTransactionAbort();
-        } else {
-            txn = TransactionalLock.createMRSW();
-            backingDGS = null;
-            supportsAbort = false;
-        }
-    }
-    
-    public DatasetGraphOne(Graph graph, Transactional transactional) {
-        this.graph = graph;
-        backingDGS = null;
-        if ( transactional == null )
-            txn = TransactionalLock.createMRSW();
+        // JENA-1492 - pass down transactions.
+        if ( TxnDataset2Graph.TXN_DSG_GRAPH )
+            txn = new TxnDataset2Graph(graph);
         else
-            txn = transactional;
-        supportsAbort = false; 
+            txn = TransactionalLock.createMRSW();
+        backingDGS = null;
+        // Don't advertise the fact but TxnDataset2Graph tries to provide abort.
+        // We can not guarantee it though because a plain, non-TIM, 
+        // memory graph does not support abort.
+        supportsAbort = false;
     }
     
     @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
@@ -83,8 +87,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
     @Override public TxnType transactionType()          { return txn.transactionType(); }
     @Override public boolean supportsTransactions()     { return true; }
-    // Because there are never any changes, abort() means "finish".  
-    @Override public boolean supportsTransactionAbort() { return true; }
+    @Override public boolean supportsTransactionAbort() { return supportsAbort; }
     
     @Override
     public boolean containsGraph(Node graphNode) {

@@ -44,9 +44,15 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     static final String unamedGraphURI = "" ;
     
     private final NodeTupleTable nodeTupleTable ;
+    private DatasetGraphTDB dataset = null;
     
     public DatasetPrefixesTDB(NodeTupleTable nodeTupleTable) {
         this.nodeTupleTable = nodeTupleTable ;
+    }
+    
+    // Needed because DatasetPrefixesTDB is created before DatasetGraphTDB 
+    /*package*/ void setDatasetGraphTDB(DatasetGraphTDB dsg) {
+        this.dataset = dsg;
     }
     
     @Override
@@ -62,6 +68,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
 
     @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri) {
+        dataset.requireWriteTxn();
         Node g = NodeFactory.createURI(graphName) ; 
         Node p = NodeFactory.createLiteral(prefix) ; 
         Node u = NodeFactory.createURI(uri) ;
@@ -141,6 +148,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
 
     /** Remove by pattern */
     private synchronized void removeAll(Node g, Node p, Node uri) {
+        dataset.requireWriteTxn();
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, uri) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;

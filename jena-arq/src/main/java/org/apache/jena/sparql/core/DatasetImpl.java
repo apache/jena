@@ -63,8 +63,7 @@ public class DatasetImpl implements Dataset
     /** Create a Dataset with the model as default model.
      *  Named models must be explicitly added to identify the storage to be used.
      */
-    public DatasetImpl(Model model)
-    {
+    public DatasetImpl(Model model) {
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
         this.transactional = dsg ;
     }
@@ -73,8 +72,7 @@ public class DatasetImpl implements Dataset
      * while sharing the graphs themselves.  
      */
     @Deprecated
-    public DatasetImpl(Dataset ds)
-    {
+    public DatasetImpl(Dataset ds) {
         this(DatasetGraphFactory.cloneStructure(ds.asDatasetGraph())) ;
     }
 

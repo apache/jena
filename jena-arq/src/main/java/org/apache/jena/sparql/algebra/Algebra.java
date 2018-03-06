@@ -136,7 +136,7 @@ public class Algebra
 
     static public QueryIterator exec(Op op, Graph graph)
     {
-        return exec(op, DatasetGraphFactory.createOneGraph(graph)) ;
+        return exec(op, DatasetGraphFactory.wrap(graph)) ;
     }
 
     static public QueryIterator exec(Op op, DatasetGraph ds)
@@ -160,7 +160,7 @@ public class Algebra
 
     static public QueryIterator execRef(Op op, Graph graph)
     {
-        return execRef(op, DatasetGraphFactory.createOneGraph(graph)) ;
+        return execRef(op, DatasetGraphFactory.wrap(graph)) ;
     }
 
     static public QueryIterator execRef(Op op, DatasetGraph dsg)

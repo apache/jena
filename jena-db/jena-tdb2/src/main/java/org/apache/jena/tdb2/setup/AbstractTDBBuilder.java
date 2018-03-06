@@ -189,7 +189,7 @@ public abstract class AbstractTDBBuilder {
         NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
                                                                 prefixIndexes,
                                                                 prefixNodes);
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable); 
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable);
         log().debug("Prefixes: "+primary+" :: "+String.join(",", indexes));
         return prefixes;
     }

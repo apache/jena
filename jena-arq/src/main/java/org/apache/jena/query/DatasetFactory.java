@@ -28,6 +28,7 @@ import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetImpl;
+import org.apache.jena.sparql.core.DatasetOne;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
@@ -109,9 +110,15 @@ public class DatasetFactory {
     }
 
     /**
-	 * @param model The model for the default graph
-	 * @return a dataset with the given model as the default graph
-	 */
+     * Create a dataset, starting with the model argument as the default graph of the
+     * dataset. Named graphs can be added. 
+     * <p> 
+     * Use {@link #wrap(Model)} to put dataset functionality around a single
+     * model when named graphs will not be added.
+     * 
+     * @param model The model for the default graph
+     * @return a dataset with the given model as the default graph
+     */
 	public static Dataset create(Model model) {
 	    Objects.requireNonNull(model, "Default model must be provided") ;
 		return new DatasetImpl(model);
@@ -135,11 +142,26 @@ public class DatasetFactory {
 	 * @return Dataset
 	 */
 	public static Dataset wrap(DatasetGraph dataset) {
-	    Objects.requireNonNull(dataset, "Can't wrap a null reference") ;
+	    Objects.requireNonNull(dataset, "Can't wrap a null DatasetGraph reference") ;
 		return DatasetImpl.wrap(dataset);
 	}
 
-	/**
+    /**
+     * Wrap a {@link Model} to make a dataset; the model is the default graph of the RDF Dataset. 
+     * 
+     * This dataset can not have additional models
+     * added to it, including indirectly through SPARQL Update
+     * adding new graphs.
+     *
+     * @param model
+     * @return Dataset
+     */
+    public static Dataset wrap(Model model) {
+        Objects.requireNonNull(model, "Can't wrap a null Model reference") ;
+        return DatasetOne.create(model);
+    }
+
+    /**
 	 * Wrap a {@link DatasetGraph} to make a dataset
 	 *
 	 * @param dataset DatasetGraph

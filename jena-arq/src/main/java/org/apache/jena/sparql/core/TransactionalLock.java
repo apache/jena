@@ -89,7 +89,7 @@ public class TransactionalLock implements Transactional {
         return create(new LockMutex()) ;
     }
     
-    private TransactionalLock(Lock lock) {
+    protected TransactionalLock(Lock lock) {
         this.lock = lock ;
     }
 
@@ -124,7 +124,7 @@ public class TransactionalLock implements Transactional {
         return Lib.readThreadLocal(txnType) ;
     }
     
-    // Lock propmotion required (Ok for mutex) 
+    // Lock promotion required (Ok for mutex) 
     
     @Override
     public boolean promote(Promote txnType) { 
@@ -148,7 +148,7 @@ public class TransactionalLock implements Transactional {
         return inTransaction.get();
     }
 
-    public boolean isTransactionType(ReadWrite mode) {
+    public boolean isTransactionMode(ReadWrite mode) {
         if ( ! isInTransaction() )
             return false;
         return Lib.readThreadLocal(txnMode) == mode;
@@ -156,12 +156,12 @@ public class TransactionalLock implements Transactional {
 
     @Override
     public void end() {
-        if ( isTransactionType(ReadWrite.WRITE) )
+        if ( isTransactionMode(ReadWrite.WRITE) )
             error("Write transaction - no commit or abort before end()") ;
         endOnce() ;
     }
 
-    private void endOnce() {
+    protected void endOnce() {
         if ( isInTransaction() ) {
             lock.leaveCriticalSection() ;
             txnMode.set(null);
@@ -173,7 +173,7 @@ public class TransactionalLock implements Transactional {
         }
     }
     
-    private void error(String msg) {
+    protected void error(String msg) {
         throw new JenaTransactionException(msg) ; 
     }
 }

@@ -166,28 +166,29 @@ public class TestResultSet extends BaseTest
     }
     
     // Into some format.
+    private static String DIR = "testing/ResultSet/";
     
     @Test public void test_RS_7()
     {
-        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true) ;
     }
     
     @Test public void test_RS_8()
     {
-        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true) ;
     }
     
     @Test public void test_RS_9()
     {
-        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
     }
     
     @Test public void test_RS_10()
     {
-        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        ResultSet rs = ResultSetFactory.load(DIR+"output.srx") ;
         for ( ; rs.hasNext(); rs.next()) { }
         // We should be able to call hasNext() as many times as we want!
         assertFalse(rs.hasNext());

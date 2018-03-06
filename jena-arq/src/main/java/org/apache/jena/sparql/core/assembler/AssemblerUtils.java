@@ -37,6 +37,7 @@ import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.system.JenaSystem ;
 import org.apache.jena.vocabulary.RDFS ;
+import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
 public class AssemblerUtils
 {
@@ -56,9 +57,12 @@ public class AssemblerUtils
         if ( initialized )
             return ;
         initialized = true ;
-        registerDataset(DatasetAssemblerVocab.tDataset,         new DatasetAssembler()) ;
-        registerDataset(DatasetAssemblerVocab.tMemoryDataset,   new InMemDatasetAssembler()) ;
-        registerDataset(DatasetAssemblerVocab.tDatasetTxnMem,   new InMemDatasetAssembler()) ;
+        registerDataset(tDataset,         new DatasetAssembler()) ;
+        registerDataset(tDatasetOne,      new DatasetOneAssembler()) ;
+        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero)) ;
+        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink)) ;
+        registerDataset(tMemoryDataset,   new InMemDatasetAssembler()) ;
+        registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler()) ;
     }
     
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
@@ -118,7 +122,7 @@ public class AssemblerUtils
                 return null ;
             
         } catch (TypeNotUniqueException ex)
-        { throw new ARQException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
+        { throw new ARQException("Multiple types for: "+tDataset) ; }
         return Assembler.general.open(root) ;
     }
     

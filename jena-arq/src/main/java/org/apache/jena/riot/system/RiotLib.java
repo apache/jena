@@ -50,6 +50,7 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -73,6 +74,11 @@ public class RiotLib
             return n;
         }
         return NodeFactory.createURI(iri);
+    }
+    
+    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
+    public static Node blankNodeToIri(Node node) {
+        return NodeFunctions.blankNodeToIri(node);
     }
 
     /** Test whether a IRI is a ARQ-encoded blank node. */
@@ -321,14 +327,17 @@ public class RiotLib
         }
     }
 
-    /** Returns dataset that wraps a graph */
-    public static DatasetGraph dataset(Graph graph)
-    {
-        return DatasetGraphFactory.createOneGraph(graph);
+    /** Returns dataset that wraps a graph
+     * @deprecated Use {@link DatasetGraphFactory#wrap(Graph)}
+     * @param graph
+     * @return DatasetGraph
+     */
+    @Deprecated
+    public static DatasetGraph xdataset(Graph graph) {
+        return DatasetGraphFactory.wrap(graph);
     }
 
-    public static PrefixMap prefixMap(DatasetGraph dsg)
-    {
+    public static PrefixMap prefixMap(DatasetGraph dsg) {
         return PrefixMapFactory.create(dsg.getDefaultGraph().getPrefixMapping());
     }
 
@@ -407,10 +416,10 @@ public class RiotLib
     
         @Override
         public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-        { writer.write(out, RiotLib.dataset(graph), prefixMap, baseURI, context); }
+        { writer.write(out, DatasetGraphFactory.wrap(graph), prefixMap, baseURI, context); }
         
         @Override
         public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-        { writer.write(out, RiotLib.dataset(graph), prefixMap, baseURI, context); }
+        { writer.write(out, DatasetGraphFactory.wrap(graph), prefixMap, baseURI, context); }
     }
 }
