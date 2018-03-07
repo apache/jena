@@ -51,6 +51,11 @@ public abstract class PMap<K, V, SelfType extends PMap<K, V, SelfType>> implemen
 		this(Maps.of());
 	}
 
+    @Override
+    public java.util.Map<K, V> asMap() {
+        return wrappedMap.asMap();
+    }
+
 	/**
 	 * @param wrapped a map that supplies the internal state to be used
 	 * @return a new {@code SelfType} that holds the supplied internal state

@@ -158,14 +158,21 @@ public class PMapQuadTable extends PMapTupleTable<FourTupleMap, Quad, TConsumer4
             final FourTupleMap fourTuples = local().get();
             fourTuples.get(first).ifPresent(threeTuples -> threeTuples.get(second)
                     .ifPresent(twoTuples -> twoTuples.get(third).ifPresent(oneTuples -> {
-                if (oneTuples.contains(fourth)) {
-                    oneTuples = oneTuples.minus(fourth);
-                    final TwoTupleMap newTwoTuples = twoTuples.minus(third).plus(third, oneTuples);
-                    final ThreeTupleMap newThreeTuples = threeTuples.minus(second).plus(second, newTwoTuples);
-                    debug("Setting transactional index to new value.");
-                    local().set(fourTuples.minus(first).plus(first, newThreeTuples));
-                }
-            })));
+                        if (oneTuples.contains(fourth)) {
+                            oneTuples = oneTuples.minus(fourth);
+                            final TwoTupleMap newTwoTuples = oneTuples.asSet().isEmpty()
+                                    ? twoTuples.minus(third)
+                                    : twoTuples.minus(third).plus(third, oneTuples);
+                            final ThreeTupleMap newThreeTuples = newTwoTuples.asMap().isEmpty()
+                                    ? threeTuples.minus(second)
+                                    : threeTuples.minus(second).plus(second, newTwoTuples);
+                            final FourTupleMap newFourTuples = newThreeTuples.asMap().isEmpty()
+                                    ? fourTuples.minus(first)
+                                    : fourTuples.minus(first).plus(first, newThreeTuples);
+                            debug("Setting transactional index to new value.");
+                            local().set(newFourTuples);
+                        }
+                    })));
         };
     }
 }
