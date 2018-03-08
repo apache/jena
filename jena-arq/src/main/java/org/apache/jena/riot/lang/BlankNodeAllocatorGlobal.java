@@ -18,41 +18,34 @@
 
 package org.apache.jena.riot.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 
-/** Allocate blank nodes by creating a randomly generated blank node.
- *  This allocator has arbitrary sized state. 
+/**
+ * Allocate blank nodes by creating a randomly generated blank node.
+ * This allocator has arbitrary sized internal state needed to record
+ * the label to node mapping.
  */
 
 public class BlankNodeAllocatorGlobal implements BlankNodeAllocator
 {
-    Map<String, Node> map = new HashMap<>() ;
+    Map<String, Node> map = new HashMap<>();
     
     public BlankNodeAllocatorGlobal()  {}
 
     @Override
-    public void reset()         { map.clear() ; }
+    public void reset()         { map.clear(); }
 
     @Override
-    public Node alloc(String label)
-    {
-        Node b = map.get(label) ;
-        if ( b == null )
-        {
-            b = create() ;
-            map.put(label, b) ;
-        }
-        return b ;
+    public Node alloc(String label) {
+        return map.computeIfAbsent(label, x->create());
     }
-    
-    
+
     @Override
-    public Node create()
-    {
-        return NodeFactory.createBlankNode() ;
+    public Node create() {
+        return NodeFactory.createBlankNode();
     }
 }
