@@ -25,7 +25,6 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
 	  TestDatasets.class
     , TestGraphsMem.class
-    , TestDatasetGraphMem.class
     , TestGraphsDataBag.class
     , TestGraphUnionRead.class
 })
