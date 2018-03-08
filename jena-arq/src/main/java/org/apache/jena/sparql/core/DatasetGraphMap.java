@@ -24,6 +24,7 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
@@ -86,9 +87,21 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     
     @Override
     public Iterator<Node> listGraphNodes() {
-        return graphs.keySet().iterator();
+        // Hide empty graphs. 
+        return graphs.entrySet().stream().filter(e->!e.getValue().isEmpty()).map(Entry::getKey).iterator();
     }
 
+    @Override
+    public boolean containsGraph(Node graphNode) {
+        // Hide empty graphs. 
+        if ( Quad.isDefaultGraph(graphNode) )
+            return true;
+        if ( Quad.isUnionGraph(graphNode) )
+            return true;
+        Graph g = graphs.get(graphNode);
+        return g != null && !g.isEmpty(); 
+    }
+    
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) {
         getDefaultGraph().add(Triple.create(s, p, o)) ;
