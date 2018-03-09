@@ -192,6 +192,7 @@
        <configuration>
          <excludeSubProjects>true</excludeSubProjects>
          <excludes>
+           <exclude>**/fuseki.classpath</exclude>
            <exclude>**/sparqler/**</exclude>
            <exclude>**/dependency-reduced-pom.xml</exclude>
          </excludes>
