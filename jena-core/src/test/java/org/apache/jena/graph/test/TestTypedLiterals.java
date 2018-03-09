@@ -996,9 +996,8 @@ public class TestTypedLiterals extends TestCase {
      * Test a user error report concerning date/time literals from JENA-1503
      */
     public void testDateTimeBug3() {
-        final RDFDatatype XSDdateTime = TypeMapper.getInstance().getSafeTypeByName(XSD.dateTime.getURI());
         final String testLex = "-0001-02-03T04:05:06";
-        Node n = createLiteral(testLex, XSDdateTime);
+        Node n = createLiteral(testLex, XSDDatatype.XSDdateTime);
         assertEquals("Got wrong XSDDateTime representation!", testLex, n.getLiteralValue().toString());
     }
 
