@@ -11,7 +11,8 @@ to run in a webapp conatiner server such as Apache Tomcat, and also a
 self-contained jar, to run as a operation system process.
 
 The script 'fuseki' is an Linux init script to run Fuseki2 as a service.
-Instructions are in comments at the start of the script.
+The file 'fuseki.service' is a systemd unit file to run Fuseki2 as a service.
+Instructions are in comments at the start of the files.
 
 The script 'fuseki-server' is a script to run the server using
 fuseki-server.jar from the command line.  Use 'fuseki-server --help' for
