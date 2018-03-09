@@ -18,6 +18,8 @@
 
 package org.apache.jena.graph.test;
 
+import static org.apache.jena.graph.NodeFactory.createLiteral;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal ;
@@ -989,7 +991,16 @@ public class TestTypedLiterals extends TestCase {
         Node node2 = NodeFactory.createLiteral("http://example/", XSDDatatype.XSDstring) ;
         assertFalse(node1.sameValueAs(node2)) ;
     }
-    
+
+    /**
+     * Test a user error report concerning date/time literals from JENA-1503
+     */
+    public void testDateTimeBug3() {
+        final String testLex = "-0001-02-03T04:05:06";
+        Node n = createLiteral(testLex, XSDDatatype.XSDdateTime);
+        assertEquals("Got wrong XSDDateTime representation!", testLex, n.getLiteralValue().toString());
+    }
+
     /**
      * Test a user error report concerning date/time literals
      */
