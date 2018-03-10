@@ -68,73 +68,66 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
         batchQuads = null ;
     }
 
-    @Override
-    protected final void print(Quad quad) {
-        if ( false ) {
-            // Merge to a triple stream.
-            triple(quad.asTriple()) ;
-            return ;
-        }
-
-        Node g = quad.getGraph() ;
-        Node s = quad.getSubject() ;
-
+    private void batch(Node g, Node s, boolean forTriples) {
         if ( !Objects.equals(g, currentGraph) || !Objects.equals(s, currentSubject) ) {
-            if ( currentSubject != null ) {
-                if ( currentGraph == null )
-                    finishBatchTriples(currentSubject) ;
-                else
-                    finishBatchQuad(currentGraph, currentSubject) ;
-            }
-            startBatchQuad(g, s) ;
+            finishBatchTriples(currentSubject) ;
+            finishBatchQuad(currentGraph, currentSubject) ;
+            if ( forTriples )
+                startBatchTriple(s);
+            else
+                startBatchQuad(g, s);
             currentGraph = g ;
             currentSubject = s ;
         }
-        processQuad(quad) ;
     }
 
     @Override
     protected final void print(Triple triple) {
         Node s = triple.getSubject() ;
-        if ( !Objects.equals(s, currentSubject) ) {
-            if ( currentSubject != null )
-                finishBatchTriples(currentSubject) ;
-            startBatchTriple(s) ;
-
-            currentGraph = null ;
-            currentSubject = s ;
-        }
+        batch(null, s, true);
         processTriple(triple) ;
     }
 
     private void startBatchTriple(Node subject) {
         batchTriples = new ArrayList<>() ;
+        this.currentGraph = null;
+        this.currentSubject = subject;
+    }
+
+    private void finishBatchTriples(Node subject) {
+        if ( batchTriples != null && !batchTriples.isEmpty() ) {
+            printBatchTriples(currentSubject, batchTriples) ;
+            batchTriples.clear() ;
+        }
     }
 
     private void processTriple(Triple triple) {
         batchTriples.add(triple) ;
     }
 
-    private void finishBatchTriples(Node subject) {
-        if ( batchTriples != null && batchTriples.size() > 0 ) {
-            printBatchTriples(currentSubject, batchTriples) ;
-            batchTriples.clear() ;
-        }
+    @Override
+    protected final void print(Quad quad) {
+        Node g = quad.getGraph() ;
+        Node s = quad.getSubject() ;
+        batch(g, s, false);
+        processQuad(quad) ;
     }
 
     private void startBatchQuad(Node graph, Node subject) {
         batchQuads = new ArrayList<>() ;
-    }
-
-    private void processQuad(Quad Quad) {
-        batchQuads.add(Quad) ;
+        this.currentGraph = graph;
+        this.currentSubject = subject;
     }
 
     private void finishBatchQuad(Node graph, Node subject) {
-        if ( batchQuads != null && batchQuads.size() > 0 ) {
+        if ( batchQuads != null && !batchQuads.isEmpty() ) {
             printBatchQuads(currentGraph, currentSubject, batchQuads) ;
             batchQuads.clear() ;
         }
+    }
+
+    private void processQuad(Quad quad) {
+        batchQuads.add(quad) ;
     }
 
     protected abstract void printBatchQuads(Node g, Node s, List<Quad> batch) ;
