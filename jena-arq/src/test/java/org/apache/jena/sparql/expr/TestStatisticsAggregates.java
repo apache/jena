@@ -243,17 +243,17 @@ public class TestStatisticsAggregates {
     
     // Empty -> error 
     @Test public void agg_stat_stdev_empty() {
-        testErr("agg:stdev(?x)", dsEmpty, syntaxSPARQL_11) ; 
+        testEmpty("agg:stdev(?x)", dsEmpty, syntaxSPARQL_11) ; 
     }
     
     // Empty -> error 
     @Test public void agg_stat_stdev_samp_empty() {
-        testErr("agg:stdev_samp(?x)", dsEmpty, syntaxSPARQL_11) ; 
+        testEmpty("agg:stdev_samp(?x)", dsEmpty, syntaxSPARQL_11) ; 
     }
     
     // Empty -> error 
     @Test public void agg_stat_stdev_pop_empty() {
-        testErr("agg:stdev_pop(?x)", dsEmpty, syntaxSPARQL_11) ; 
+        testEmpty("agg:stdev_pop(?x)", dsEmpty, syntaxSPARQL_11) ; 
     }
     
     // Sample of one -> error
@@ -273,26 +273,24 @@ public class TestStatisticsAggregates {
 
     // Population of one -> 0e0
     @Test public void agg_stat_stdev_pop_size_one() {
-        Query query = build("agg:stdev_pop(?x)", syntaxSPARQL_11) ; 
+        Query query = buildGroupBy("agg:stdev_pop(?x)", syntaxSPARQL_11) ; 
         test(query, 0e0, ds1) ; 
     }
     
     // Population of one -> 0e0
     @Test public void agg_stat_var_pop_size_one() {
-        Query query = build("agg:var_pop(?x)", syntaxSPARQL_11) ; 
+        Query query = buildGroupBy("agg:var_pop(?x)", syntaxSPARQL_11) ; 
         test(query, 0e0, ds1) ; 
     }
     
     // By keyword
-    
-    
     
     private static void test(String qsAgg, double expected, Syntax syntax) {
         test(qsAgg, expected, syntax, ds) ;
     }
 
     private static void test(String qsAgg, double expected, Syntax syntax,  DatasetGraph dsg) {
-        Query query = build(qsAgg, syntax) ; 
+        Query query = buildGroupBy(qsAgg, syntax) ; 
         test(query, expected, dsg) ;
     }
 
@@ -304,21 +302,55 @@ public class TestStatisticsAggregates {
         }
     }
 
-    private static Query build(String qsAgg, Syntax syntax) {
+    private static Query buildGroupBy(String qsAgg, Syntax syntax) {
         String NL = "\n" ;
         String qs = PRE+NL+"SELECT ("+qsAgg+NL+"AS ?X) WHERE {?s ?p ?x} GROUP BY ?s" ;
         Query query = QueryFactory.create(qs, syntax) ;
         return query ;
     }
     
+    private static Query buildNoGroupBy(String qsAgg, Syntax syntax) {
+        String NL = "\n" ;
+        String qs = PRE+NL+"SELECT ("+qsAgg+NL+"AS ?X) WHERE {?s ?p ?x}" ;
+        Query query = QueryFactory.create(qs, syntax) ;
+        return query ;
+    }
+    
+    // Error in calculation (e.g. 2+ needed)
     private void testErr(String qsAgg, DatasetGraph ds, Syntax syntax) {
-        Query query = build(qsAgg, syntax) ;
+        Query query = buildGroupBy(qsAgg, syntax) ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(ds)) ) {
+            ResultSet rs = qExec.execSelect() ;
+            assertTrue(rs.getResultVars().contains("X")) ;
+            Binding b = rs.nextBinding() ;
+            assertFalse(b.contains(Var.alloc("X"))) ;
+        }
+    }
+    
+    // Behaviour on empty
+    private void testEmpty(String qsAgg, DatasetGraph ds, Syntax syntax) {
+        testEmptyNoGroupBy(qsAgg, ds, syntax);
+        testEmptyGroupBy(qsAgg, ds, syntax);
+    }
+    
+    // Behaviour on empty - aggregate and no GROUP BY
+    private void testEmptyNoGroupBy(String qsAgg, DatasetGraph ds, Syntax syntax) {
+        Query query = buildNoGroupBy(qsAgg, syntax) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(ds)) ) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue(rs.hasNext()) ;
             assertTrue(rs.getResultVars().contains("X")) ;
             Binding b = rs.nextBinding() ;
             assertFalse(b.contains(Var.alloc("X"))) ;
+        }
+    }
+    
+    // Behaviour on empty - GROUP BY present
+    private void testEmptyGroupBy(String qsAgg, DatasetGraph ds, Syntax syntax) {
+        Query query = buildGroupBy(qsAgg, syntax) ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.wrap(ds)) ) {
+            ResultSet rs = qExec.execSelect() ;
+            assertFalse(rs.hasNext()) ;
         }
     }
 }
