@@ -1685,7 +1685,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
         }
 
-        @SuppressWarnings("unused")
         public boolean isInsideAltLiteral(int start, int stop) {
             Pair<Integer, String> pair = this.findBefore(start);
             if (pair == null)
@@ -1701,7 +1700,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
         }
 
-        @SuppressWarnings("unused")
         public boolean isBetweenLiterals(int start, int stop) {
             Pair<Integer, String> pairBefore = this.findBefore(start);
             if (pairBefore == null)
