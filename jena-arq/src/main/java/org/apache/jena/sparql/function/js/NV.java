@@ -26,6 +26,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.lib.RDFTerm2Json;
 
 /**
  * General representation of an {@link NodeValue} for JavaScript. Conversion is to native
@@ -34,6 +35,7 @@ import org.apache.jena.sparql.expr.NodeValue;
  * 
  * @see #fromNodeValue
  * @see #toNodeValue
+ * @see RDFTerm2Json RDFTerm2Json, for one way conversion JSON.  
  */
 
 public class NV implements RDFJS {
