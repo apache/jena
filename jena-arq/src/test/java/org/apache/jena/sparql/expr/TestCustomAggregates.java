@@ -135,9 +135,10 @@ public class TestCustomAggregates extends BaseTest {
     }
 
     @Test public void customAgg_21() {
+        // No GROUP BY, no match => default value
         Graph g = SSE.parseGraph("(graph (:s :p :o) (:s :p 1))") ;
         Model m = ModelFactory.createModelForGraph(g) ;
-        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o FILTER (false) } GROUP BY ?s" ;
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o FILTER (false) }" ;
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         try (QueryExecution qExec = QueryExecutionFactory.create(q, m) ) {
             ResultSet rs = qExec.execSelect() ;
@@ -149,6 +150,19 @@ public class TestCustomAggregates extends BaseTest {
     }
     
     @Test public void customAgg_22() {
+        // GROUP BY, no match +. no rows.
+        Graph g = SSE.parseGraph("(graph (:s :p :o) (:s :p 1))") ;
+        Model m = ModelFactory.createModelForGraph(g) ;
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o FILTER (false) } GROUP BY ?s" ;
+        
+        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
+        try (QueryExecution qExec = QueryExecutionFactory.create(q, m) ) {
+            ResultSet rs = qExec.execSelect() ;
+            assertFalse(rs.hasNext());
+        }
+    }
+    
+    @Test public void customAgg_23() {
         String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o }" ;
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(q) ;
