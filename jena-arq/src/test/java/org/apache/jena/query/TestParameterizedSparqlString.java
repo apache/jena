@@ -66,7 +66,6 @@ public class TestParameterizedSparqlString {
         return query.asQuery();
     }
 
-    @SuppressWarnings("unused")
     private UpdateRequest testAsUpdate(ParameterizedSparqlString update) {
         return update.asUpdate();
     }
@@ -1649,7 +1648,6 @@ public class TestParameterizedSparqlString {
                 "group by ?comment ?root_name";
         ParameterizedSparqlString queryStr2 = new ParameterizedSparqlString(test2);
         queryStr2.setLiteral("L_name", map.get("L_name"),map.get("LG_name"));
-        System.out.println(queryStr2.toString());
         queryStr2.asQuery();
     }
 
