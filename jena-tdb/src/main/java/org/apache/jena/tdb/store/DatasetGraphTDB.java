@@ -144,11 +144,15 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return result ;
     }
 
-    // When not yet transactional, these can be called??
+    // These should not be called in normal use - they are intercepted by DatasetGraphTransaction. 
     
     @Override
     public Graph getDefaultGraph()
     { return new GraphNonTxnTDB(this, null) ; }
+
+    @Override
+    public Graph getUnionGraph()
+    { return getGraph(Quad.unionGraph); }
 
     @Override
     public Graph getGraph(Node graphNode)
