@@ -69,9 +69,11 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public Graph getUnionGraph() {
         // Implementations are encouraged to implement an efficent
-        // {@code DatasetGraphBase.findQuadsInUnionGraph} or
+        // named graph for Quad.unionGraph, and this operation that
+        // does not require the full "distinct()" used by the general purpose
+        // GraphUnionRead. See also
+        // {@code DatasetGraphBase.findQuadsInUnionGraph} and
         // {@code findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)}
-        // for a distinct iterator (e.g. avoid calling "distinct()" by not creating duplicates).
         return GraphOps.unionGraph(this);
     }
 
