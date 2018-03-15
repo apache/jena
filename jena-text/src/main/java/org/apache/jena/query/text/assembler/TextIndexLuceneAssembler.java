@@ -73,28 +73,6 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 File dir = new File(path) ;
                 directory = FSDirectory.open(dir.toPath()) ;
             }
-
-            Analyzer analyzer = null;
-            Statement analyzerStatement = root.getProperty(pAnalyzer);
-            if (null != analyzerStatement) {
-                RDFNode aNode = analyzerStatement.getObject();
-                if (! aNode.isResource()) {
-                    throw new TextIndexException("Text analyzer property is not a resource : " + aNode);
-                }
-                Resource analyzerResource = (Resource) aNode;
-                analyzer = (Analyzer) a.open(analyzerResource);
-            }
-
-            Analyzer queryAnalyzer = null;
-            Statement queryAnalyzerStatement = root.getProperty(pQueryAnalyzer);
-            if (null != queryAnalyzerStatement) {
-                RDFNode qaNode = queryAnalyzerStatement.getObject();
-                if (! qaNode.isResource()) {
-                    throw new TextIndexException("Text query analyzer property is not a resource : " + qaNode);
-                }
-                Resource analyzerResource = (Resource) qaNode;
-                queryAnalyzer = (Analyzer) a.open(analyzerResource);
-            }
             
             String queryParser = null;
             Statement queryParserStatement = root.getProperty(pQueryParser);
@@ -117,12 +95,18 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 isMultilingualSupport = mlsNode.asLiteral().getBoolean();
             }
             
+            //define any filters and tokenizers first so they can be referenced in analyzer definitions if need be
             Statement defAnalyzersStatement = root.getProperty(pDefAnalyzers);
             if (null != defAnalyzersStatement) {
                 RDFNode aNode = defAnalyzersStatement.getObject();
                 if (! aNode.isResource()) {
                     throw new TextIndexException("text:defineAnalyzers property is not a resource (list) : " + aNode);
                 }
+                
+                DefineFiltersAssembler.open(a, (Resource) aNode);
+
+                DefineTokenizersAssembler.open(a, (Resource) aNode);
+
                 boolean addedLangs = DefineAnalyzersAssembler.open(a, (Resource) aNode);
                 // if the text:defineAnalyzers added any analyzers to lang tags then ensure that
                 // multilingual support is enabled
@@ -132,6 +116,30 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                     }
                     isMultilingualSupport = true;
                 }
+            }
+
+            // initialize default analyzer and query analyzer after processing all analyzer definitions
+            // so they can be referred to
+            Analyzer analyzer = null;
+            Statement analyzerStatement = root.getProperty(pAnalyzer);
+            if (null != analyzerStatement) {
+                RDFNode aNode = analyzerStatement.getObject();
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("Text analyzer property is not a resource : " + aNode);
+                }
+                Resource analyzerResource = (Resource) aNode;
+                analyzer = (Analyzer) a.open(analyzerResource);
+            }
+
+            Analyzer queryAnalyzer = null;
+            Statement queryAnalyzerStatement = root.getProperty(pQueryAnalyzer);
+            if (null != queryAnalyzerStatement) {
+                RDFNode qaNode = queryAnalyzerStatement.getObject();
+                if (! qaNode.isResource()) {
+                    throw new TextIndexException("Text query analyzer property is not a resource : " + qaNode);
+                }
+                Resource analyzerResource = (Resource) qaNode;
+                queryAnalyzer = (Analyzer) a.open(analyzerResource);
             }
 
             boolean storeValues = false;
