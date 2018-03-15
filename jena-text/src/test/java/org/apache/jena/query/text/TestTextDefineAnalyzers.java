@@ -119,18 +119,11 @@ public class TestTextDefineAnalyzers extends AbstractTestDatasetWithTextIndexBas
     @Before
     public void before() {
         Reader reader = new StringReader(SPEC);
-        System.out.println(">>>>");        
-        System.out.println(SPEC);        
-        System.out.println("<<<<");
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
         TextAssembler.init();
         Resource root = specModel.getResource(SPEC_ROOT_URI);
-        try {
-            dataset = (Dataset) Assembler.general.open(root);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dataset = (Dataset) Assembler.general.open(root);
     }
 
     @After
