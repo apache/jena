@@ -19,7 +19,9 @@
 package org.apache.jena.sparql.serializer;
 
 import java.io.OutputStream ;
+import java.util.ArrayList;
 import java.util.List ;
+import java.util.Map;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
@@ -142,7 +144,19 @@ public class QuerySerializer implements QueryVisitor
         out.print("ASK") ;
         out.newline() ;
     }
-    
+
+    @Override
+    public void visitJsonResultForm(Query query) {
+        out.print("JSON {");
+        List<String> terms = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : query.jsonMapping.entrySet()) {
+            terms.add(String.format("\"%s\" : %s ", entry.getKey(), entry.getValue()));
+        }
+        out.print(String.join(",", terms));
+        out.print(" }");
+        out.newline();
+    }
+
     @Override
     public void visitDatasetDecl(Query query)
     {

@@ -64,7 +64,7 @@ public class RDFTerm2Json {
             return new JsonString(node.getURI());
         if ( node.isBlank() ) {
             Node node2 = RiotLib.blankNodeToIri(node);
-            return new JsonString(node.getURI());
+            return new JsonString(node2.getURI());
         }
         if ( node.isVariable() ) 
             return new JsonString("?"+node.getName());

@@ -719,6 +719,8 @@ public class Query extends Prologue implements Cloneable, Printable
             visitor.visitDescribeResultForm(this) ;
         if ( this.isAskType() )
             visitor.visitAskResultForm(this) ;
+        if ( this.isJsonType() )
+            visitor.visitJsonResultForm(this) ;
         visitor.visitDatasetDecl(this) ;
         visitor.visitQueryPattern(this) ;
         visitor.visitGroupBy(this) ;

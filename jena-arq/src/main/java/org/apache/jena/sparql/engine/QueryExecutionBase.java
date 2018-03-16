@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Alarm ;
 import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
@@ -46,6 +47,7 @@ import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.engine.binding.BindingUtils;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.lib.RDFTerm2Json;
 import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.Template;
@@ -355,9 +357,8 @@ public class QueryExecutionBase implements QueryExecution
             JsonObject jsonObject = new JsonObject() ; 
             for (String resultVar : resultVars) {
                 Node n = binding.get(Var.alloc(resultVar)) ;
-                if (n.isLiteral()) {
-                    jsonObject.put(resultVar, n.getLiteral().toString()) ;
-                }
+                JsonValue value = RDFTerm2Json.fromNode(n) ;
+                jsonObject.put(resultVar, value) ;
             }
             jsonArray.add(jsonObject) ;
         }

@@ -539,7 +539,16 @@ public class ResultSetFormatter {
            for (Entry<String, JsonValue> entry: jsonItem.entrySet()) 
            {
                JsonValue value = entry.getValue() ;
-               String val = value.getAsString().value() ;
+               String val = "";
+               if (value.isString()) {
+                   val = value.getAsString().value() ;
+               } else if (value.isNull()) {
+                   val = value.getAsString().value() ;
+               } else if (value.isBoolean()) {
+                   val = Boolean.toString(value.getAsBoolean().value()) ;
+               } else if (value.isNumber()) {
+                   val = value.toString() ;
+               }
                jWriter.pair(entry.getKey(), val) ;
            }
            jWriter.finishObject() ;

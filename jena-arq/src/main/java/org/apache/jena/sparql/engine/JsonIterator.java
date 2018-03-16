@@ -24,11 +24,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Closeable;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.lib.RDFTerm2Json;
 
 /** A JSON iterator for JsonObject's, that wraps a QueryIterator, and a list
  * of result variables.
@@ -68,14 +70,8 @@ public class JsonIterator implements Iterator<JsonObject>
             for (String resultVar : resultVars)
             {
                 Node n = binding.get(Var.alloc(resultVar)) ;
-                if (n.isLiteral())
-                {
-                    jsonObject.put(resultVar, n.getLiteral().toString()) ;
-                }
-                else
-                {
-                    jsonObject.put(resultVar, n.toString()) ;
-                }
+                JsonValue value = RDFTerm2Json.fromNode(n) ;
+                jsonObject.put(resultVar, value);
             }
             return jsonObject ;
         }

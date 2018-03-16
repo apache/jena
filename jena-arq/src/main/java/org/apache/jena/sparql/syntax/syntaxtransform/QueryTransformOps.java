@@ -218,6 +218,11 @@ public class QueryTransformOps {
         }
 
         @Override
+        public void visitJsonResultForm(Query query) {
+            newQuery.setQueryJsonType();
+        }
+
+        @Override
         public void visitDatasetDecl(Query query) {
         }
 
