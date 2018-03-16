@@ -261,7 +261,7 @@
             -->
             <Embed-Transitive>true</Embed-Transitive>
             <!-- Do not embed but import Xerces classes via OSGi -->
-            <Import-Package>org.osgi.framework.*,org.apache.xml.*,org.apache.xerces.*;version="2.11.0",!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+            <Import-Package>org.osgi.framework.*,org.apache.xml.*,org.apache.xerces.*;version="2.11.0",!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,com.google.errorprone.annotations.concurrent;resolution:=optional,*</Import-Package>
             <!--
             <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
             -->
