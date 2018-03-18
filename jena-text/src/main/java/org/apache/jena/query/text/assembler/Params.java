@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
@@ -184,16 +185,10 @@ public class Params {
 
     protected static ParamSpec getParamSpec(Resource node) {
         Statement nameStmt = node.getProperty(TextVocab.pParamName);
-        Statement typeStmt = node.getProperty(TextVocab.pParamType);
         Statement valueStmt = node.getProperty(TextVocab.pParamValue);
         
-        if (typeStmt == null) {
-            throw new TextIndexException("Parameter specification must have a text:paramType: " + node);
-        }        
-        Resource typeRes = typeStmt.getResource();
-        String type = typeRes.getLocalName();
-
         String name = getStringValue(nameStmt);
+        String type = getType(node);
         String value = getStringValue(valueStmt);
 
         switch (type) {
@@ -279,6 +274,37 @@ public class Params {
         }
 
         return null;
+    }
+    
+    private static String getType(Resource node) {
+        Statement typeStmt = node.getProperty(TextVocab.pParamType);
+        Statement valueStmt = node.getProperty(TextVocab.pParamValue);
+        String type = null;
+        
+        if (typeStmt == null) {
+
+            if (valueStmt == null) {
+                throw new TextIndexException("Parameter specification must have a text:paramValue: " + node);
+            }
+            
+            RDFNode obj = valueStmt != null ? valueStmt.getObject() : null;
+            Literal lit = obj.asLiteral();
+            RDFDatatype rdfType = lit.getDatatype();
+            Class<?> clazz = rdfType.getJavaClass();
+
+            if (clazz == java.lang.Boolean.class) {
+                type = TYPE_BOOL;
+            } else if (clazz == java.math.BigInteger.class) {
+                type = TYPE_INT;
+            } else if (clazz == java.lang.String.class) {
+                type = TYPE_STRING;
+            }
+        } else {
+            Resource typeRes = typeStmt.getResource();
+            type = typeRes.getLocalName();
+        }
+        
+        return type;
     }
 
     private static String getStringValue(Statement stmt) {
