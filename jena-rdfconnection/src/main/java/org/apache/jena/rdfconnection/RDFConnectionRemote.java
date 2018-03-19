@@ -278,7 +278,7 @@ public class RDFConnectionRemote implements RDFConnection {
             if ( parseCheckUpdates )
                 UpdateFactory.create(updateString);
         }
-        // Use the query string as provided if possible, otherwise serialize the query.
+        // Use the update string as provided if possible, otherwise serialize the update.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
         exec(()->HttpOp.execHttpPost(svcUpdate, WebContent.contentTypeSPARQLUpdate, updateStringToSend, this.httpClient, this.httpContext));
     }
