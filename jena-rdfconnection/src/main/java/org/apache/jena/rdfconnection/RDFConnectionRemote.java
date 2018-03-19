@@ -280,7 +280,7 @@ public class RDFConnectionRemote implements RDFConnection {
         }
         // Use the query string as provided if possible, otherwise serialize the query.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
-        exec(()->HttpOp.execHttpPost(svcUpdate, WebContent.contentTypeSPARQLUpdate, updateString, this.httpClient, this.httpContext));
+        exec(()->HttpOp.execHttpPost(svcUpdate, WebContent.contentTypeSPARQLUpdate, updateStringToSend, this.httpClient, this.httpContext));
     }
     
     @Override
