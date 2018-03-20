@@ -17,6 +17,7 @@
  */
 package org.apache.jena.query;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -65,14 +66,16 @@ public class TestResultSetFormatter {
         try ( QueryExecution qexec = QueryExecutionFactory.create(query, model) ) {
             JsonIterator execJsonItems = (JsonIterator) qexec.execJsonItems();
             try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                ResultSetFormatter.outputAsJSON(baos, execJsonItems);
+                ResultSetFormatter.output(baos, execJsonItems);
                 String output = baos.toString(Charset.forName("UTF-8"));
                 assertTrue(output.contains("\"_:first\""));
                 assertTrue(output.contains("\"_:second\""));
                 assertTrue(output.contains("\"_:third\""));
                 assertTrue(output.contains("\"_:fourth\""));
-                assertTrue(output.contains("\"true\""));
-                assertTrue(output.contains("\"123\""));
+                assertFalse(output.contains("\"true\""));
+                assertTrue(output.contains("true"));
+                assertTrue(output.contains("123"));
+                assertFalse(output.contains("\"123\""));
                 assertTrue(output.contains("\"abc\""));
             }
         }

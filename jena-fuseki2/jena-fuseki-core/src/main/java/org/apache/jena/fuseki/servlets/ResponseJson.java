@@ -72,7 +72,7 @@ public class ResponseJson
             public void output(ServletOutputStream out)
             {
                 if (jsonItems != null)
-                    ResultSetFormatter.outputAsJSON(out, jsonItems) ;
+                    ResultSetFormatter.output(out, jsonItems) ;
             }
         } ;
 
