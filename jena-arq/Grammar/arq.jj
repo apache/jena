@@ -36,40 +36,7 @@ import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
 public class ARQParser extends ARQParserBase
-{
-    boolean allowAggregatesInExpressions = false ;
-    public static void main(String args[]) {
-        while (true) {
-            StringBuilder queryString = new StringBuilder() ;
-            java.util.Scanner scanner = new java.util.Scanner(System.in) ;
-            boolean firstEmptyLine = false ;
-            System.out.print("Enter input: ") ;
-            while (true) {
-                String line = scanner.nextLine() ;
-                if ("".equals(line) || line == null) {
-                    if (firstEmptyLine) break ;
-                    firstEmptyLine = true ;
-                } else {
-                    queryString.append(line + System.lineSeparator()) ;
-                    firstEmptyLine = false ;
-                }
-            }
-            try {
-                Query query = QueryFactory.create(queryString.toString(),
-                        "http://example/query-base", Syntax.syntaxARQ) ;
-                java.io.Reader in = new java.io.StringReader(queryString.toString()) ;
-                ARQParser parser = new ARQParser(in) ;
-                parser.setQuery(query) ;
-                parser.QueryUnit() ;
-                System.out.println("Parsed query successfully!") ;
-                System.out.println("---" + System.lineSeparator()) ;
-            } catch (Exception e) {
-                System.out.println("Parser error: " + e.getMessage()) ;
-                e.printStackTrace(System.err) ;
-            }
-        }
-    }
-}
+{}
 PARSER_END(ARQParser)
 void QueryUnit(): { }
 {
@@ -1637,6 +1604,7 @@ Number Number() : { Token t ; Number number ; }
   (
     t = < INTEGER > { number = integerValue(t.image) ; }
   | t = < DECIMAL > { number = doubleValue(t.image) ; }
+  | t = < DOUBLE > { number = doubleValue(t.image) ; }
   )
   {
     return number ;

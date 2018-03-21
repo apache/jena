@@ -35,9 +35,7 @@ import org.apache.jena.sparql.expr.aggregate.lib.* ;
 import org.apache.jena.update.* ;
 import org.apache.jena.sparql.modify.request.* ;
 public class SPARQLParser11 extends SPARQLParser11Base
-{
-    boolean allowAggregatesInExpressions = false ;
-}
+{}
 PARSER_END(SPARQLParser11)
 void QueryUnit(): { }
 {

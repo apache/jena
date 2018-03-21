@@ -33,9 +33,9 @@ import java.net.HttpURLConnection ;
 import java.net.URL ;
 import java.util.Iterator ;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
@@ -270,7 +270,7 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
-    @Test(expected = NotImplementedException.class)
+    @Test(expected = NotImplemented.class)
     public void query_json_01() throws IOException {
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);

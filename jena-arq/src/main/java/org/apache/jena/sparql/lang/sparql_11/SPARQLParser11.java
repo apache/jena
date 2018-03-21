@@ -13,7 +13,6 @@ import org.apache.jena.sparql.modify.request.* ;
 
 @SuppressWarnings("all")
 public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11Constants {
-    boolean allowAggregatesInExpressions = false ;
 
   final public void QueryUnit() throws ParseException {
     ByteOrderMark();
@@ -5111,4 +5110,4 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public void disable_tracing() {
   }
 
-}
+ }
