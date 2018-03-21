@@ -149,7 +149,7 @@ public class QuerySerializer implements QueryVisitor
     public void visitJsonResultForm(Query query) {
         out.print("JSON {");
         List<String> terms = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : query.jsonMapping.entrySet()) {
+        for (Map.Entry<String, Object> entry : query.getJsonMapping().entrySet()) {
             terms.add(String.format("\"%s\" : %s ", entry.getKey(), entry.getValue()));
         }
         out.print(String.join(",", terms));

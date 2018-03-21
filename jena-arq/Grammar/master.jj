@@ -99,42 +99,7 @@ import org.apache.jena.sparql.core.Quad ;
 #endif
 
 public class CLASS extends PARSERBASE
-{
-    boolean allowAggregatesInExpressions = false ;
-#ifdef ARQ
-    public static void main(String args[]) {
-        while (true) {
-            StringBuilder queryString = new StringBuilder() ;
-            java.util.Scanner scanner = new java.util.Scanner(System.in) ;
-            boolean firstEmptyLine = false ;
-            System.out.print("Enter input: ") ;
-            while (true) {
-                String line = scanner.nextLine() ;
-                if ("".equals(line) || line == null) {
-                    if (firstEmptyLine) break ;
-                    firstEmptyLine = true ;
-                } else {
-                    queryString.append(line + System.lineSeparator()) ;
-                    firstEmptyLine = false ;
-                }
-            }
-            try {
-                Query query = QueryFactory.create(queryString.toString(),
-                        "http://example/query-base", Syntax.syntaxARQ) ;
-                java.io.Reader in = new java.io.StringReader(queryString.toString()) ;
-                CLASS parser = new CLASS(in) ;
-                parser.setQuery(query) ;
-                parser.QueryUnit() ;
-                System.out.println("Parsed query successfully!") ;
-                System.out.println("---" + System.lineSeparator()) ;
-            } catch (Exception e) {
-                System.out.println("Parser error: " + e.getMessage()) ;
-                e.printStackTrace(System.err) ;
-            }
-        }
-    }
-#endif
-}
+{}
 PARSER_END(CLASS)
 
 // // Common top for single entry point.
