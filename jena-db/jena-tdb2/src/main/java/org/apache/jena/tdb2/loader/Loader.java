@@ -36,7 +36,7 @@ public class Loader {
 //    private static final int BATCH_SIZE = 100 ;
 //    
 //    // XXX StreamRDFBatchSplit and parallel index update.
-//    private static Logger LOG = LoggerFactory.getLogger("Loader") ;
+    private static Logger LOG = LoggerFactory.getLogger("Loader") ;
     
     public static void bulkLoad(Dataset ds, String ... files) {
         DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
