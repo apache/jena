@@ -18,8 +18,6 @@
 
 package org.apache.jena.query.text.assembler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
@@ -27,12 +25,13 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.text.TextIndexException;
+import org.apache.jena.query.text.assembler.Params.ParamSpec;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.Tokenizer;
 
 /**
- * Creates generic analyzers given a fully qualified Class name and a list
+ * Creates generic tokenizers given a fully qualified Class name and a list
  * of parameters for a constructor of the Class.
  * <p>
  * The parameters may be of the following types:
@@ -83,61 +82,60 @@ import org.apache.lucene.analysis.Analyzer;
  * <p>
  * Examples:
  * <pre>
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
+    <#indexLucene> a text:TextIndexLucene ;
+        text:directory <file:Lucene> ;
+        text:entityMap <#entMap> ;
+        text:defineAnalyzers (
+            [text:addLang "sa-x-iast" ;
+             text:analyzer [ . . . ]]
+            [text:defineAnalyzer <#foo> ;
+             text:analyzer [ . . . ]]
+            [text:defineTokenizer <#bar> ;
+             text:tokenizer [
+               a text:GenericTokenizer ;
+               text:class "org.apache.lucene.analysis.ngram.NGramTokenizer" ;
                text:params (
-                    [ text:paramName "stopwords" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("the" "a" "an") ]
-                    [ text:paramName "stemExclusionSet" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("ing" "ed") ]
-                    )
-           ] .
- * </pre>
- * <pre>
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper" ;
-               text:params (
-                    [ text:paramName "defaultAnalyzer" ;
-                      text:paramType text:TypeAnalyzer ;
-                      text:paramValue [ a text:SimpleAnalyzer ] ]
-                    [ text:paramName "maxShingleSize" ;
+                    [ text:paramName "minGram" ;
                       text:paramType text:TypeInt ;
                       text:paramValue 3 ]
+                    [ text:paramName "maxGram" ;
+                      text:paramType text:TypeInt ;
+                      text:paramValue 7 ]
                     )
-           ] .
+              ]
+            ]
+        )
  * </pre>
  */
-public class GenericAnalyzerAssembler extends AssemblerBase {
+public class GenericTokenizerAssembler extends AssemblerBase {
     /*
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
+    <#indexLucene> a text:TextIndexLucene ;
+        text:directory <file:Lucene> ;
+        text:entityMap <#entMap> ;
+        text:defineAnalyzers (
+            [text:addLang "sa-x-iast" ;
+             text:analyzer [ . . . ]]
+            [text:defineAnalyzer <#foo> ;
+             text:analyzer [ . . . ]]
+            [text:defineTokenizer <#bar> ;
+             text:tokenizer [
+               a text:GenericTokenizer ;
+               text:class "org.apache.lucene.analysis.ngram.NGramTokenizer" ;
                text:params (
-                    [ text:paramName "stopwords" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("the" "a" "an") ]
-                    [ text:paramName "stemExclusionSet" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("ing" "ed") ]
+                    [ text:paramName "minGram" ;
+                      text:paramType text:TypeInt ;
+                      text:paramValue 3 ]
+                    [ text:paramName "maxGram" ;
+                      text:paramType text:TypeInt ;
+                      text:paramValue 7 ]
                     )
-           ] .
+              ]
+            ]
+        )
      */
 
     @Override
-    public Analyzer open(Assembler a, Resource root, Mode mode) {
+    public TokenizerSpec open(Assembler a, Resource root, Mode mode) {
         if (root.hasProperty(TextVocab.pClass)) {
             // text:class is expected to be a string literal
             String className = root.getProperty(TextVocab.pClass).getString();
@@ -147,13 +145,13 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             try {
                 clazz = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                Log.error(this, "Analyzer class " + className + " not found. " + e.getMessage(), e);
+                Log.error(this, "Tokenizer class " + className + " not found. " + e.getMessage(), e);
                 return null;
             }
 
-            // Is the class an Analyzer?
-            if (!Analyzer.class.isAssignableFrom(clazz)) {
-                Log.error(this, clazz.getName() + " has to be a subclass of " + Analyzer.class.getName());
+            // Is the class an Tokenizer?
+            if (!Tokenizer.class.isAssignableFrom(clazz)) {
+                Log.error(this, clazz.getName() + " has to be a subclass of " + Tokenizer.class.getName());
                 return null;
             }
 
@@ -163,52 +161,38 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
                     throw new TextIndexException("text:params must be a list of parameter resources: " + node);
                 }
 
-                List<Params.ParamSpec> specs = Params.getParamSpecs((Resource) node);
+                List<ParamSpec> specs = Params.getParamSpecs((Resource) node);
 
                 // split the param specs into classes and values for constructor lookup
                 final Class<?> paramClasses[] = new Class<?>[specs.size()];
                 final Object paramValues[] = new Object[specs.size()];
                 for (int i = 0; i < specs.size(); i++) {
-                    Params.ParamSpec spec = specs.get(i);
+                    ParamSpec spec = specs.get(i);
                     paramClasses[i] = spec.getValueClass();
                     paramValues[i] = spec.getValue();
                 }
 
                 // Create new analyzer
-                return newAnalyzer(clazz, paramClasses, paramValues);
+                return new TokenizerSpec(clazz, paramClasses, paramValues);
 
             } else {
                 // use the nullary Analyzer constructor
-                return newAnalyzer(clazz, new Class<?>[0], new Object[0]);
+                return new TokenizerSpec(clazz, new Class<?>[0], new Object[0]);
             }
         } else {
-            throw new TextIndexException("text:class property is required by GenericAnalyzer: " + root);
+            throw new TextIndexException("text:class property is required by GenericTokenizer: " + root);
         }
     }
-
-    /**
-     * Create instance of the Lucene Analyzer, <code>class</code>, with provided parameters
-     *
-     * @param clazz The analyzer class
-     * @param paramClasses The parameter classes
-     * @param paramValues The parameter values
-     * @return The lucene analyzer
-     */
-    private Analyzer newAnalyzer(Class<?> clazz, Class<?>[] paramClasses, Object[] paramValues) {
-
-        String className = clazz.getName();
-
-        try {
-            final Constructor<?> cstr = clazz.getDeclaredConstructor(paramClasses);
-
-            return (Analyzer) cstr.newInstance(paramValues);
-
-        } catch (IllegalArgumentException | IllegalAccessException | InstantiationException | InvocationTargetException | SecurityException e) {
-            Log.error(this, "Exception while instantiating analyzer class " + className + ". " + e.getMessage(), e);
-        } catch (NoSuchMethodException ex) {
-            Log.error(this, "Could not find matching analyzer class constructor for " + className + " " + ex.getMessage(), ex);
+    
+    public static class TokenizerSpec {
+        public Class<?> clazz;
+        public Class<?>[] paramClasses;
+        public Object[] paramValues;
+        
+        public TokenizerSpec(Class<?> clazz, Class<?>[] paramClasses, Object[] paramValues) {
+            this.clazz = clazz;
+            this.paramClasses = paramClasses;
+            this.paramValues = paramValues;
         }
-
-        return null;
     }
 }

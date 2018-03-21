@@ -18,8 +18,6 @@
 
 package org.apache.jena.query.text.assembler;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
@@ -27,22 +25,25 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.text.TextIndexException;
+import org.apache.jena.query.text.assembler.Params.ParamSpec;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.TokenStream;
 
 /**
- * Creates generic analyzers given a fully qualified Class name and a list
+ * Creates generic filters given a fully qualified Class name and a list
  * of parameters for a constructor of the Class.
  * <p>
  * The parameters may be of the following types:
  * <pre>
- *     text:TypeString    String
- *     text:TypeSet       org.apache.lucene.analysis.util.CharArraySet
- *     text:TypeFile      java.io.FileReader
- *     text:TypeInt       int
- *     text:TypeBoolean   boolean
- *     text:TypeAnalyzer  org.apache.lucene.analysis.Analyzer
+ *     text:TypeString        String
+ *     text:TypeSet           org.apache.lucene.analysis.util.CharArraySet
+ *     text:TypeFile          java.io.FileReader
+ *     text:TypeInt           int
+ *     text:TypeBoolean       boolean
+ *     text:TypeTokenStream   TokenStream
+ *     text:TypeAnalyzer      org.apache.lucene.analysis.Analyzer
  * </pre>
  * 
  * Although the list of types is not exhaustive it is a simple matter
@@ -83,61 +84,54 @@ import org.apache.lucene.analysis.Analyzer;
  * <p>
  * Examples:
  * <pre>
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
+    <#indexLucene> a text:TextIndexLucene ;
+        text:directory <file:Lucene> ;
+        text:entityMap <#entMap> ;
+        text:defineAnalyzers (
+            [text:addLang "sa-x-iast" ;
+             text:analyzer [ . . . ]]
+            [text:defineAnalyzer <#foo> ;
+             text:analyzer [ . . . ]]
+            [text:defineFilter <#bar> ;
+             text:filter [
+               a text:GenericFilter ;
+               text:class "org.apache.jena.query.text.filter.SelectiveFoldingFilter" ;
                text:params (
-                    [ text:paramName "stopwords" ;
+                    [ text:paramName "whitelisted" ;
                       text:paramType text:TypeSet ;
-                      text:paramValue ("the" "a" "an") ]
-                    [ text:paramName "stemExclusionSet" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("ing" "ed") ]
+                      text:paramValue ("ç") ]
                     )
-           ] .
- * </pre>
- * <pre>
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper" ;
-               text:params (
-                    [ text:paramName "defaultAnalyzer" ;
-                      text:paramType text:TypeAnalyzer ;
-                      text:paramValue [ a text:SimpleAnalyzer ] ]
-                    [ text:paramName "maxShingleSize" ;
-                      text:paramType text:TypeInt ;
-                      text:paramValue 3 ]
-                    )
-           ] .
+              ]
+            ]
+        )
  * </pre>
  */
-public class GenericAnalyzerAssembler extends AssemblerBase {
+public class GenericFilterAssembler extends AssemblerBase {
     /*
-    text:map (
-         [ text:field "text" ; 
-           text:predicate rdfs:label;
-           text:analyzer [
-               a text:GenericAnalyzer ;
-               text:class "org.apache.lucene.analysis.en.EnglishAnalyzer" ;
+    <#indexLucene> a text:TextIndexLucene ;
+        text:directory <file:Lucene> ;
+        text:entityMap <#entMap> ;
+        text:defineAnalyzers (
+            [text:addLang "sa-x-iast" ;
+             text:analyzer [ . . . ]]
+            [text:defineAnalyzer <#foo> ;
+             text:analyzer [ . . . ]]
+            [text:defineFilter <#bar> ;
+             text:filter [
+               a text:GenericFilter ;
+               text:class "org.apache.jena.query.text.filter.SelectiveFoldingFilter" ;
                text:params (
-                    [ text:paramName "stopwords" ;
+                    [ text:paramName "whitelisted" ;
                       text:paramType text:TypeSet ;
-                      text:paramValue ("the" "a" "an") ]
-                    [ text:paramName "stemExclusionSet" ;
-                      text:paramType text:TypeSet ;
-                      text:paramValue ("ing" "ed") ]
+                      text:paramValue ("ç") ]
                     )
-           ] .
+              ]
+            ]
+        )
      */
 
     @Override
-    public Analyzer open(Assembler a, Resource root, Mode mode) {
+    public FilterSpec open(Assembler a, Resource root, Mode mode) {
         if (root.hasProperty(TextVocab.pClass)) {
             // text:class is expected to be a string literal
             String className = root.getProperty(TextVocab.pClass).getString();
@@ -147,13 +141,13 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
             try {
                 clazz = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                Log.error(this, "Analyzer class " + className + " not found. " + e.getMessage(), e);
+                Log.error(this, "Filter class " + className + " not found. " + e.getMessage(), e);
                 return null;
             }
 
             // Is the class an Analyzer?
-            if (!Analyzer.class.isAssignableFrom(clazz)) {
-                Log.error(this, clazz.getName() + " has to be a subclass of " + Analyzer.class.getName());
+            if (!TokenFilter.class.isAssignableFrom(clazz)) {
+                Log.error(this, clazz.getName() + " has to be a subclass of " + TokenFilter.class.getName());
                 return null;
             }
 
@@ -163,52 +157,43 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
                     throw new TextIndexException("text:params must be a list of parameter resources: " + node);
                 }
 
-                List<Params.ParamSpec> specs = Params.getParamSpecs((Resource) node);
+                List<ParamSpec> specs = Params.getParamSpecs((Resource) node);
 
                 // split the param specs into classes and values for constructor lookup
-                final Class<?> paramClasses[] = new Class<?>[specs.size()];
-                final Object paramValues[] = new Object[specs.size()];
+                // add an initial param for the TokenStream source. The source value is
+                // set to null and the actual value supplied in ConfigurableAnalyzer when
+                // used.
+                final Class<?> paramClasses[] = new Class<?>[specs.size()+1];
+                paramClasses[0] = TokenStream.class;
+                final Object paramValues[] = new Object[specs.size()+1];
+                paramValues[0] = null;
                 for (int i = 0; i < specs.size(); i++) {
-                    Params.ParamSpec spec = specs.get(i);
-                    paramClasses[i] = spec.getValueClass();
-                    paramValues[i] = spec.getValue();
+                    ParamSpec spec = specs.get(i);
+                    paramClasses[i+1] = spec.getValueClass();
+                    paramValues[i+1] = spec.getValue();
                 }
 
-                // Create new analyzer
-                return newAnalyzer(clazz, paramClasses, paramValues);
+                // Create spec for new filter
+                return new FilterSpec(clazz, paramClasses, paramValues);
 
             } else {
-                // use the nullary Analyzer constructor
-                return newAnalyzer(clazz, new Class<?>[0], new Object[0]);
+                // use the TokenStream constructor for the new filter
+                return new FilterSpec(clazz, new Class<?>[] { TokenStream.class }, new Object[] { null });
             }
         } else {
-            throw new TextIndexException("text:class property is required by GenericAnalyzer: " + root);
+            throw new TextIndexException("text:class property is required by GenericFilter: " + root);
         }
     }
-
-    /**
-     * Create instance of the Lucene Analyzer, <code>class</code>, with provided parameters
-     *
-     * @param clazz The analyzer class
-     * @param paramClasses The parameter classes
-     * @param paramValues The parameter values
-     * @return The lucene analyzer
-     */
-    private Analyzer newAnalyzer(Class<?> clazz, Class<?>[] paramClasses, Object[] paramValues) {
-
-        String className = clazz.getName();
-
-        try {
-            final Constructor<?> cstr = clazz.getDeclaredConstructor(paramClasses);
-
-            return (Analyzer) cstr.newInstance(paramValues);
-
-        } catch (IllegalArgumentException | IllegalAccessException | InstantiationException | InvocationTargetException | SecurityException e) {
-            Log.error(this, "Exception while instantiating analyzer class " + className + ". " + e.getMessage(), e);
-        } catch (NoSuchMethodException ex) {
-            Log.error(this, "Could not find matching analyzer class constructor for " + className + " " + ex.getMessage(), ex);
+    
+    public static class FilterSpec {
+        public Class<?> clazz;
+        public Class<?>[] paramClasses;
+        public Object[] paramValues;
+        
+        public FilterSpec(Class<?> clazz, Class<?>[] paramClasses, Object[] paramValues) {
+            this.clazz = clazz;
+            this.paramClasses = paramClasses;
+            this.paramValues = paramValues;
         }
-
-        return null;
     }
 }

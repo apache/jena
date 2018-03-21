@@ -20,14 +20,14 @@ package org.apache.jena.query.text.assembler;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.query.text.analyzer.ConfigurableAnalyzer;
+import org.apache.jena.query.text.assembler.GenericTokenizerAssembler.TokenizerSpec;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.lucene.analysis.Analyzer;
 
-public class DefineAnalyzersAssembler {
+public class DefineTokenizersAssembler {
     /*
     <#indexLucene> a text:TextIndexLucene ;
         text:directory <file:Lucene> ;
@@ -37,6 +37,10 @@ public class DefineAnalyzersAssembler {
              text:analyzer [ . . . ]]
             [text:defineAnalyzer <#foo> ;
              text:analyzer [ . . . ]]
+            [text:defineFilter <#bar> ;
+             text:filter [ . . . ]]
+            [text:defineTokenizer <#baz> ;
+             text:tokenizer [ . . . ]]
         )
     */
 
@@ -57,31 +61,23 @@ public class DefineAnalyzersAssembler {
 
             // process the current list element to add an analyzer 
             Resource adding = (Resource) first;
-            if (adding.hasProperty(TextVocab.pAnalyzer)) {
-                Statement analyzerStmt = adding.getProperty(TextVocab.pAnalyzer);
-                RDFNode analyzerNode = analyzerStmt.getObject();
-                if (!analyzerNode.isResource()) {
-                    throw new TextIndexException("addAnalyzers text:analyzer must be an analyzer spec resource: " + analyzerNode);
+            if (adding.hasProperty(TextVocab.pTokenizer)) {
+                Statement tokenizerStmt = adding.getProperty(TextVocab.pTokenizer);
+                RDFNode tokenizerNode = tokenizerStmt.getObject();
+                if (!tokenizerNode.isResource()) {
+                    throw new TextIndexException("addTokenizers text:tokenizer must be an tokenizer spec resource: " + tokenizerNode);
                 }
                 
-                // calls GenericAnalyzerAssembler
-                Analyzer analyzer = (Analyzer) a.open((Resource) analyzerNode);
+                TokenizerSpec spec = (TokenizerSpec) a.open((Resource) tokenizerNode);
                 
-                if (adding.hasProperty(TextVocab.pAddLang)) {
-                    Statement langStmt = adding.getProperty(TextVocab.pAddLang);
-                    String langCode = langStmt.getString();
-                    Util.addAnalyzer(langCode, analyzer);
-                    isMultilingualSupport = true;
-                }
-                
-                if (adding.hasProperty(TextVocab.pDefAnalyzer)) {
-                    Statement defStmt = adding.getProperty(TextVocab.pDefAnalyzer);
+                if (adding.hasProperty(TextVocab.pDefTokenizer)) {
+                    Statement defStmt = adding.getProperty(TextVocab.pDefTokenizer);
                     Resource id = defStmt.getResource();
                     
                     if (id.getURI() != null) {
-                        Util.defineAnalyzer(id, analyzer);
+                        ConfigurableAnalyzer.defineTokenizer(id.getURI(), spec);
                     } else {
-                        throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a non-blank resource: " + adding);
+                        throw new TextIndexException("addTokenizers text:defineTokenizer property must be a non-blank resource: " + adding);
                     }
                 }
             }

@@ -55,7 +55,7 @@ public class ConfigurableAnalyzerAssembler extends AssemblerBase {
     public Analyzer open(Assembler a, Resource root, Mode mode) {
         if (root.hasProperty(TextVocab.pTokenizer)) {
             Resource tokenizerResource = root.getPropertyResourceValue(TextVocab.pTokenizer);
-            String tokenizer = tokenizerResource.getLocalName();
+            String tokenizer = tokenizerResource.getURI();
             List<String> filters;
             if (root.hasProperty(TextVocab.pFilters)) {
                 Resource filtersResource = root.getPropertyResourceValue(TextVocab.pFilters);
@@ -82,7 +82,7 @@ public class ConfigurableAnalyzerAssembler extends AssemblerBase {
                 throw new TextIndexException("filter is not a resource : " + node);
             }
             
-            result.add(node.asResource().getLocalName());
+            result.add(node.asResource().getURI());
             stmt = current.getProperty(RDF.rest);
             if (stmt == null) {
                 throw new TextIndexException("filter list not terminated by rdf:nil");

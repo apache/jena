@@ -19,15 +19,16 @@
 package org.apache.jena.query.text.assembler;
 
 import org.apache.jena.assembler.Assembler;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.analyzer.Util;
+import org.apache.jena.query.text.analyzer.ConfigurableAnalyzer;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.lucene.analysis.Analyzer;
+import org.apache.jena.query.text.assembler.GenericFilterAssembler.FilterSpec;
 
-public class DefineAnalyzersAssembler {
+public class DefineFiltersAssembler {
     /*
     <#indexLucene> a text:TextIndexLucene ;
         text:directory <file:Lucene> ;
@@ -37,12 +38,15 @@ public class DefineAnalyzersAssembler {
              text:analyzer [ . . . ]]
             [text:defineAnalyzer <#foo> ;
              text:analyzer [ . . . ]]
+            [text:defineFilter <#bar> ;
+             text:filter [ . . . ]]
+            [text:defineTokenizer <#baz> ;
+             text:tokenizer [ . . . ]]
         )
     */
 
     public static boolean open(Assembler a, Resource list) {
         Resource current = list;
-        boolean isMultilingualSupport = false;
         
         while (current != null && ! current.equals(RDF.nil)){
             Statement firstStmt = current.getProperty(RDF.first);
@@ -57,32 +61,27 @@ public class DefineAnalyzersAssembler {
 
             // process the current list element to add an analyzer 
             Resource adding = (Resource) first;
-            if (adding.hasProperty(TextVocab.pAnalyzer)) {
-                Statement analyzerStmt = adding.getProperty(TextVocab.pAnalyzer);
-                RDFNode analyzerNode = analyzerStmt.getObject();
-                if (!analyzerNode.isResource()) {
-                    throw new TextIndexException("addAnalyzers text:analyzer must be an analyzer spec resource: " + analyzerNode);
+            if (adding.hasProperty(TextVocab.pFilter)) {
+                Statement filterStmt = adding.getProperty(TextVocab.pFilter);
+                RDFNode filterNode = filterStmt.getObject();
+                if (!filterNode.isResource()) {
+                    throw new TextIndexException("addFilters text:filter must be a filter spec resource: " + filterNode);
                 }
                 
-                // calls GenericAnalyzerAssembler
-                Analyzer analyzer = (Analyzer) a.open((Resource) analyzerNode);
+                // calls GenericFilterAssembler
+                FilterSpec filterSpec = (FilterSpec) a.open((Resource) filterNode);
                 
-                if (adding.hasProperty(TextVocab.pAddLang)) {
-                    Statement langStmt = adding.getProperty(TextVocab.pAddLang);
-                    String langCode = langStmt.getString();
-                    Util.addAnalyzer(langCode, analyzer);
-                    isMultilingualSupport = true;
-                }
-                
-                if (adding.hasProperty(TextVocab.pDefAnalyzer)) {
-                    Statement defStmt = adding.getProperty(TextVocab.pDefAnalyzer);
+                if (adding.hasProperty(TextVocab.pDefFilter)) {
+                    Statement defStmt = adding.getProperty(TextVocab.pDefFilter);
                     Resource id = defStmt.getResource();
                     
                     if (id.getURI() != null) {
-                        Util.defineAnalyzer(id, analyzer);
+                        ConfigurableAnalyzer.defineFilter(id.getURI(), filterSpec);
                     } else {
-                        throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a non-blank resource: " + adding);
+                        throw new TextIndexException("text:defineFilters text:defineAnalyzer property must be a non-blank resource: " + adding);
                     }
+                } else {
+                    Log.warn("DefineFiltersAssembler", "Filter specified but no text:defineFilter so filter is not accessible!");
                 }
             }
             
@@ -99,6 +98,6 @@ public class DefineAnalyzersAssembler {
             current = (Resource) rest;
         }
         
-        return isMultilingualSupport;
+        return true;
     }
 }
