@@ -41,6 +41,9 @@ ExecStart=/opt/fuseki/fuseki-server
 # Run as user "fuseki"
 User=fuseki
 Restart=on-abort
+# Java processes exit with status 143 when terminated by SIGTERM, this
+# should be considered a successful shutdown
+SuccessExitStatus=143
 ### By default, the service logs to journalctl only.
 ### If additional logging to a file is required, uncomment the following three lines
 # StandardOutput=syslog
