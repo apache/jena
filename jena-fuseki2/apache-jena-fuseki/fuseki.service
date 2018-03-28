@@ -41,6 +41,16 @@ ExecStart=/opt/fuseki/fuseki-server
 # Run as user "fuseki"
 User=fuseki
 Restart=on-abort
+### By default, the service logs to journalctl only.
+### If additional logging to a file is required, uncomment the following three lines
+# StandardOutput=syslog
+# StandardError=syslog
+# SyslogIdentifier=fuseki
+### This logs to syslog. If, e.g., rsyslogd is used, you can provide a file
+### /etc/rsyslog.d/fuseki.conf, consisting of the following two lines (uncommented)
+### if $programname == 'fuseki' then /var/log/fuseki/stderrout.log
+### if $programname == 'fuseki' then stop
+
 
 [Install]
 WantedBy=multi-user.target
