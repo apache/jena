@@ -24,6 +24,7 @@ import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpOptions;
@@ -275,9 +276,12 @@ public class FusekiLib {
         }
     }
 
-    /** Test whether a URL identifies a Fuseki server */  
+    /**
+     * Test whether a URL identifies a Fuseki server. This operation can not guaranttee to
+     * detech a Fuseki server - for example, it may be behind a reverse proxy that masks
+     * the signature.
+     */
     public static boolean isFuseki(String datasetURL) {
-		System.err.println("isFuseki: "+datasetURL);
         HttpOptions request = new HttpOptions(datasetURL);
         HttpClient httpClient = HttpOp.getDefaultHttpClient();
         if ( httpClient == null ) 
@@ -285,7 +289,11 @@ public class FusekiLib {
         return isFuseki(request, httpClient, null);
     }
 
-    /** Test whether a {@link RDFConnectionRemote} connects to a Fuseki server */  
+    /**
+     * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
+     * operation can not guaranttee to detech a Fuseki server - for example, it may be
+     * behind a reverse proxy that masks the signature.
+     */
     public static boolean isFuseki(RDFConnectionRemote connection) {
         HttpOptions request = new HttpOptions(connection.getDestination());
         HttpClient httpClient = connection.getHttpClient();
@@ -296,28 +304,34 @@ public class FusekiLib {
     }
 
     private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
-		System.err.println("isFuseki(worker)");
-		if ( httpClient == null ) {
-			System.err.println("httpClient is null");
-		}
         try {
             HttpResponse response = httpClient.execute(request);
-            // Fuseki-Request-ID:
-            //String reqId = response.getFirstHeader("Fuseki-Request-ID").getValue();
-            // Server:
-				System.err.println("isFuseki(worker)-1");
-            String serverIdent = response.getFirstHeader("Server").getValue();
-				System.err.println("isFuseki(worker)-2");
-            Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
-				System.err.println("isFuseki(worker)-3");
-            boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
-				System.err.println("isFuseki(worker)-4");
-            if ( !isFuseki )
-                isFuseki = serverIdent.toLowerCase().contains("fuseki");
-			System.err.println("isFuseki(worker)-return");
-            return isFuseki; // Maybe
+            // Fuseki does not send "Server" in release mode.
+            // (best practice).
+            // All we can do is try for the "Fuseki-Request-ID" 
+            String reqId = safeGetHeader(response, "Fuseki-Request-ID");
+            if ( reqId != null )
+                return true;
+
+            // If returning "Server"
+            String serverIdent = safeGetHeader(response, "Server");
+            if ( serverIdent != null ) {
+                Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
+                boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
+                if ( !isFuseki )
+                    isFuseki = serverIdent.toLowerCase().contains("fuseki");
+                return isFuseki;
+            }
+            return false; 
         } catch (IOException ex) {
             throw new HttpException("Failed to check for a Fuseki server", ex);
         }
+    }
+    
+    private static String safeGetHeader(HttpResponse response, String header) {
+        Header h = response.getFirstHeader(header);
+        if ( h == null )
+            return null;
+        return h.getValue();
     }
 }

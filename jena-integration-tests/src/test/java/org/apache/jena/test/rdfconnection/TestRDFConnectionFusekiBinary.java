@@ -51,22 +51,15 @@ public class TestRDFConnectionFusekiBinary {
         model.getGraph().add(triple);
         
         int PORT = FusekiLib.choosePort();
-        FusekiServer server = createFusekiServer(PORT).build().start(); 
+        FusekiServer server = createFusekiServer(PORT).build().start();
         try {
             String dsURL = "http://localhost:"+PORT+"/ds" ;
-			{
-				System.err.println("dsURL="+dsURL);
-				boolean b1 = FusekiLib.isFuseki(dsURL);
-				assertTrue("isFuseki(1)", b1) ;
-			}
-			System.err.println("builder");
+            assertTrue(FusekiLib.isFuseki(dsURL)); 
+
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
 
             try (RDFConnectionFuseki conn = (RDFConnectionFuseki)builder.build()) {
-				{
-					boolean b2 = FusekiLib.isFuseki(conn);   
-					assertTrue("isFuseki(2)", b2);
-				}
+                assertTrue(FusekiLib.isFuseki(conn));
                 // GSP
                 conn.put(model);
                 checkModel(conn, "b3456");
