@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.0-SNAPSHOT</version>
   </parent> 
 
   <dependencies>
@@ -36,13 +36,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-trans-data</artifactId>
-      <version>3.7.0</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.7.0</version>
+      <version>3.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.7.0</version>
+      <version>3.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.7.0</version>
+      <version>3.7.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
