@@ -277,6 +277,7 @@ public class FusekiLib {
 
     /** Test whether a URL identifies a Fuseki server */  
     public static boolean isFuseki(String datasetURL) {
+		System.err.println("isFuseki: "+datasetURL);
         HttpOptions request = new HttpOptions(datasetURL);
         HttpClient httpClient = HttpOp.getDefaultHttpClient();
         if ( httpClient == null ) 
@@ -295,6 +296,10 @@ public class FusekiLib {
     }
 
     private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
+		System.err.println("isFuseki(worker)");
+		if ( httpClient == null ) {
+			System.err.println("httpClient is null");
+		}
         try {
             HttpResponse response = httpClient.execute(request);
             // Fuseki-Request-ID:
