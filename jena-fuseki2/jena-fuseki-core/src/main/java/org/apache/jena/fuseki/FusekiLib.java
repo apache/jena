@@ -305,11 +305,16 @@ public class FusekiLib {
             // Fuseki-Request-ID:
             //String reqId = response.getFirstHeader("Fuseki-Request-ID").getValue();
             // Server:
+				System.err.println("isFuseki(worker)-1");
             String serverIdent = response.getFirstHeader("Server").getValue();
+				System.err.println("isFuseki(worker)-2");
             Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
+				System.err.println("isFuseki(worker)-3");
             boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
+				System.err.println("isFuseki(worker)-4");
             if ( !isFuseki )
                 isFuseki = serverIdent.toLowerCase().contains("fuseki");
+			System.err.println("isFuseki(worker)-return");
             return isFuseki; // Maybe
         } catch (IOException ex) {
             throw new HttpException("Failed to check for a Fuseki server", ex);

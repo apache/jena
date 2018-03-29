@@ -55,9 +55,11 @@ public class TestRDFConnectionFusekiBinary {
         try {
             String dsURL = "http://localhost:"+PORT+"/ds" ;
 			{
+				System.err.println("dsURL="+dsURL);
 				boolean b1 = FusekiLib.isFuseki(dsURL);
-				assertTrue("isFuseki(1)", b1) ; 
+				assertTrue("isFuseki(1)", b1) ;
 			}
+			System.err.println("builder");
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
 
             try (RDFConnectionFuseki conn = (RDFConnectionFuseki)builder.build()) {
