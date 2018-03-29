@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.7.0-SNAPSHOT</version>
+  <version>3.7.0</version>
 
   <parent>
     <groupId>org.apache</groupId>
@@ -47,7 +47,7 @@
     <connection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</connection>
     <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</developerConnection>
     <url>https://git-wip-us.apache.org/repos/asf/jena.git</url>
-    <tag>HEAD</tag>
+    <tag>jena-3.7.0-rc1</tag>
   </scm>
 
    <properties>
@@ -583,7 +583,7 @@
             </goals>
             <configuration combine.self="override">
               <rules>
-                <dependencyConvergence/>
+                <dependencyConvergence />
                 <requireJavaVersion>
                   <version>1.8.0</version>
                 </requireJavaVersion>
