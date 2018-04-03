@@ -25,7 +25,6 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.file.FileException ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 
@@ -161,31 +160,6 @@ public class ObjectFileTransComplex implements ObjectFile, TransactionLifecycle
         base.truncate(id) ;
         transObjects.truncate(0) ;
         otherAllocOffset = base.length() ;
-    }
-
-    @Override
-    public Block allocWrite(int maxBytes)
-    {
-        if ( passthrough ) return base.allocWrite(maxBytes) ;
-        Block block = transObjects.allocWrite(maxBytes) ;
-        block = new Block(block.getId()+otherAllocOffset, block.getByteBuffer()) ;
-        return block ;
-    }
-
-    @Override
-    public void completeWrite(Block block)
-    {
-        if ( passthrough ) { base.completeWrite(block) ; return ; } 
-        block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
-        transObjects.completeWrite(block) ;
-    }
-    
-    @Override
-    public void abortWrite(Block block)
-    {
-        if ( passthrough ) { base.abortWrite(block) ; return ; } 
-        block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
-        transObjects.abortWrite(block) ;
     }
 
     /** Convert from a id to the id in the "other" file */ 

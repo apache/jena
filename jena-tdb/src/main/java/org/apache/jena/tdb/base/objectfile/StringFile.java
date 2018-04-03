@@ -23,7 +23,6 @@ import java.nio.ByteBuffer ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.lib.StringAbbrev ;
 
 /** Wrap a {@link ObjectFile} with a string encoder/decoder.  
@@ -47,11 +46,12 @@ public class StringFile implements Sync, Closeable
     public long write(String str)
     { 
         str = compress(str) ;
-        Block block = file.allocWrite(4*str.length()) ;
-        int len = Bytes.toByteBuffer(str, block.getByteBuffer()) ;
-        block.getByteBuffer().flip() ;
-        file.completeWrite(block) ;
-        return block.getId() ;
+        
+        ByteBuffer bb = ByteBuffer.allocate(4*str.length());
+        int len = Bytes.toByteBuffer(str, bb) ;
+        bb.flip() ;
+        long x = file.write(bb) ;
+        return x;
     }
     
     public String read(long id)

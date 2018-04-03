@@ -22,7 +22,6 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.tdb.base.block.Block ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -38,28 +37,6 @@ public class ObjectFileLogger implements ObjectFile
         this.other = other ;
         this.label = label ;
         log = defaultLogger ;
-    }
-
-    @Override
-    public Block allocWrite(int maxBytes)
-    {
-        Block blk = other.allocWrite(maxBytes) ;
-        info("allocWrite("+maxBytes+") -> "+blk.getId()) ;
-        return blk ;
-    }
-
-    @Override
-    public void completeWrite(Block buffer)
-    {
-        info("completeWrite("+buffer.getId()+")") ;
-        other.completeWrite(buffer) ;
-    }
-
-    @Override
-    public void abortWrite(Block buffer)
-    {
-        info("abortWrite("+buffer.getId()+")") ;
-        other.abortWrite(buffer) ;
     }
 
     @Override

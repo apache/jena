@@ -21,17 +21,13 @@ package org.apache.jena.tdb.base.objectfile;
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.tdb.TDBException;
-import org.apache.jena.tdb.base.block.Block ;
 
 public class ObjectFileReadonly extends ObjectFileWrapper
 {
     public ObjectFileReadonly(ObjectFile other)         { super(other) ; }
-    @Override public Block allocWrite(int maxBytes)     { throw new TDBException("Read-only object file") ; }
-    @Override public void completeWrite(Block buffer)   { throw new TDBException("Read-only object file") ; }
-    @Override public void abortWrite(Block buffer)      { throw new TDBException("Read-only object file") ; }
     @Override public long write(ByteBuffer buffer)      { throw new TDBException("Read-only object file") ; }
     @Override public void reposition(long id)           { throw new TDBException("Read-only object file") ; }
     @Override public void truncate(long size)           { throw new TDBException("Read-only object file") ; }
     
-    @Override public String toString()              { return "RO:"+super.toString() ; } 
+    @Override public String toString()                  { return "RO:"+super.toString() ; } 
 }
