@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
@@ -34,13 +34,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Add logging -->
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-embedded</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
 
       <!-- No specific logging - leave to the application -->
       <exclusions>
