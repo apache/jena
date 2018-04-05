@@ -21,14 +21,14 @@
   <artifactId>jena-fuseki1</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki1</name>
-  <version>3.7.0-SNAPSHOT</version>
+  <version>3.7.0</version>
   <description>Fuseki is a SPARQL 1.1 Server</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.7.0</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -65,13 +65,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -95,13 +95,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
       <exclusions>
         <!-- 
              Get this via commons-fileupload and also via jena-text/sol4j
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>3.7.0-SNAPSHOT</version>
+      <version>3.7.0</version>
     </dependency>
 
     <dependency>
