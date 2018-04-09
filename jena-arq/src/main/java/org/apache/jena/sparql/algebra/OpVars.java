@@ -223,6 +223,11 @@ public class OpVars
             addVar(acc, quadPattern.getGraphNode()) ;
             VarUtils.addVars(acc, quadPattern.getBasicPattern()) ;
         }
+        
+        @Override
+        public void visit(OpQuadBlock quadBlock) {
+            VarUtils.addVars(acc, quadBlock.getPattern()) ;
+        }
 
         @Override
         public void visit(OpTriple opTriple) {
