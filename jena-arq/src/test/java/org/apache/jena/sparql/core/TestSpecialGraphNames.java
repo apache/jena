@@ -217,6 +217,42 @@ public class TestSpecialGraphNames {
         List<Binding> results = exec("(minus (bgp (?s ?p ?o)) (bgp (<x2> ?p ?o)))", QUADBLOCKS) ;
         assertEquals(2, results.size()) ;
     }
+    
+    @Test
+    public void filter_exists_1() {
+        List<Binding> results = exec("(filter (exists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", TRIPLES) ;
+        assertEquals(1, results.size()) ;
+    }
+    
+    @Test
+    public void filter_exists_2() {
+        List<Binding> results = exec("(filter (exists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", QUADS) ;
+        assertEquals(1, results.size()) ;
+    }
+    
+    @Test
+    public void filter_exists_3() {
+        List<Binding> results = exec("(filter (exists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", QUADBLOCKS) ;
+        assertEquals(1, results.size()) ;
+    }
+    
+    @Test
+    public void filter_notexists_1() {
+        List<Binding> results = exec("(filter (notexists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", TRIPLES) ;
+        assertEquals(4, results.size()) ;
+    }
+    
+    @Test
+    public void filter_notexists_2() {
+        List<Binding> results = exec("(filter (notexists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", QUADS) ;
+        assertEquals(4, results.size()) ;
+    }
+    
+    @Test
+    public void filter_notexists_3() {
+        List<Binding> results = exec("(filter (notexists (bgp (?s <p> <o>))) (bgp (?s ?p ?o)))", QUADBLOCKS) ;
+        assertEquals(4, results.size()) ;
+    }
 
     private List<Binding> exec(String string, Mode mode) {
         Op op = op(string, mode) ;
