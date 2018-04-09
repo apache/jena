@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.apache.jena.sparql.core.TestSpecialGraphNames.Mode.QUADBLOCKS ;
 import static org.apache.jena.sparql.core.TestSpecialGraphNames.Mode.QUADS ;
 import static org.apache.jena.sparql.core.TestSpecialGraphNames.Mode.TRIPLES ;
 import static org.junit.Assert.assertEquals ;
@@ -58,7 +59,7 @@ public class TestSpecialGraphNames {
             });
     }
     
-    static enum Mode { TRIPLES, QUADS } 
+    static enum Mode { TRIPLES, QUADS, QUADBLOCKS } 
     
     static String x1 = StrUtils.strjoinNL("(dataset",
                                           "  (graph (<s> <p> <x>) (<x> <p> <o>) (<x2> <p> <o1>) (<x2> <p> <o3>) (<x2> <p> <o4>))",
@@ -198,6 +199,24 @@ public class TestSpecialGraphNames {
         List<Binding> results = exec("(graph <g2> (bgp (<s2> ?p ?o)))", TRIPLES) ;
         assertEquals(2, results.size()) ;
     }
+    
+    @Test
+    public void minus_1() {
+        List<Binding> results = exec("(minus (bgp (?s ?p ?o)) (bgp (<x2> ?p ?o)))", TRIPLES) ;
+        assertEquals(2, results.size()) ;
+    }
+    
+    @Test
+    public void minus_2() {
+        List<Binding> results = exec("(minus (bgp (?s ?p ?o)) (bgp (<x2> ?p ?o)))", QUADS) ;
+        assertEquals(2, results.size()) ;
+    }
+    
+    @Test
+    public void minus_3() {
+        List<Binding> results = exec("(minus (bgp (?s ?p ?o)) (bgp (<x2> ?p ?o)))", QUADBLOCKS) ;
+        assertEquals(2, results.size()) ;
+    }
 
     private List<Binding> exec(String string, Mode mode) {
         Op op = op(string, mode) ;
@@ -213,6 +232,8 @@ public class TestSpecialGraphNames {
         Op op = SSE.parseOp(pattern) ;
         if ( mode == Mode.QUADS )
             op = Algebra.toQuadForm(op) ;
+        else if ( mode == Mode.QUADBLOCKS )
+            op = Algebra.toQuadBlockForm(op) ;
         return op ;
     }
 }
