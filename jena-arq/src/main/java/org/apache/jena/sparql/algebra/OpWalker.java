@@ -139,6 +139,7 @@ public class OpWalker
         @Override
         protected void visitExt(OpExt op) {
             before(op) ;
+            super.visitExt(op);
             if ( visitor != null )
                 op.visit(visitor) ;
             after(op) ;
