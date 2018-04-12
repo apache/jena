@@ -18,39 +18,39 @@
 
 package org.apache.jena.tdb2.solver.stats;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 
 /** Statistics collector, aggregates based on NodeId */
-public class StatsCollectorNodeId extends StatsCollectorBase<NodeId>
-{
-    private NodeTable nodeTable ;
-    
-    public StatsCollectorNodeId(NodeTable nodeTable)
-    {
-        super(findRDFType(nodeTable)) ;
-        this.nodeTable = nodeTable ;
+public class StatsCollectorNodeId extends StatsCollectorBase<NodeId> {
+    private NodeTable nodeTable;
+
+    public StatsCollectorNodeId(NodeTable nodeTable) {
+        super(findRDFType(nodeTable));
+        this.nodeTable = nodeTable;
     }
-    
-    private static NodeId findRDFType(NodeTable nodeTable2)
-    {
-        return nodeTable2.getAllocateNodeId(NodeConst.nodeRDFType) ;
+
+    private static NodeId findRDFType(NodeTable nodeTable) {
+        // It may not exist.
+        NodeId nodeId = nodeTable.getNodeIdForNode(NodeConst.nodeRDFType);
+        if ( NodeId.isDoesNotExist(nodeId) )
+            return null;
+        return nodeId;
     }
 
     @Override
-    protected Map<Node, Integer> convert(Map<NodeId, Integer> stats)
-    {
-        Map<Node, Integer> statsNodes = new HashMap<>(1000) ;
-        for ( NodeId p : stats.keySet() )
-        {
-            Node n = nodeTable.getNodeForNodeId(p) ;
-            statsNodes.put(n, stats.get(p)) ;
+    protected Map<Node, Integer> convert(Map<NodeId, Integer> stats) {
+        // Predicate -> Count
+        Map<Node, Integer> statsNodes = new HashMap<>(1000);
+        for ( NodeId p : stats.keySet() ) {
+            Node n = nodeTable.getNodeForNodeId(p);
+            statsNodes.put(n, stats.get(p));
         }
-        return statsNodes ;
+        return statsNodes;
     }
 }

@@ -25,30 +25,26 @@ import java.util.Map ;
 import org.apache.jena.graph.Node ;
 
 /** Statistics collector, general purpose */
-abstract class StatsCollectorBase<T>
-{
-    private long count = 0 ;
-    private Map<T, Integer> predicates = new HashMap<>(10000) ;
-    private Map<T, Integer> types = new HashMap<>(10000) ;
-    private T typeTrigger ;
-    
-    protected StatsCollectorBase(T typeTrigger)
-    {
-        this.typeTrigger = typeTrigger ;
+abstract class StatsCollectorBase<T> {
+    private long            count      = 0;
+    private Map<T, Integer> predicates = new HashMap<>(10000);
+    private Map<T, Integer> types      = new HashMap<>(10000);
+    private T               typeTrigger;
+
+    protected StatsCollectorBase(T typeTrigger) {
+        this.typeTrigger = typeTrigger;
     }
 
-    public void record(T g, T s, T p, T o)
-    {
-        count++ ;
-		predicates.put(p, predicates.getOrDefault(p, 0) + 1);
+    public void record(T g, T s, T p, T o) {
+        count++;
+        predicates.put(p, predicates.getOrDefault(p, 0) + 1);
         if ( typeTrigger != null && typeTrigger.equals(p) )
-        		types.put(o, types.getOrDefault(o, 0) + 1);
+            types.put(o, types.getOrDefault(o, 0) + 1);
     }
 
-    protected abstract Map<Node, Integer> convert(Map<T, Integer> map) ;
-    
-    public StatsResults results()
-    {
-        return new StatsResults(convert(predicates), convert(types), count) ;
+    protected abstract Map<Node, Integer> convert(Map<T, Integer> map);
+
+    public StatsResults results() {
+        return new StatsResults(convert(predicates), convert(types), count);
     }
 }
