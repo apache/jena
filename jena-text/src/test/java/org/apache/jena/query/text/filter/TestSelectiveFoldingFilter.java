@@ -118,7 +118,6 @@ public class TestSelectiveFoldingFilter {
         StandardTokenizer tokenizer = new StandardTokenizer();
         tokenizer.setReader(inputText);
 
-        // Replace this by a C, and then the ASCIIFolding function will take care to replace it by c, as it was not whitelisted
         SelectiveFoldingFilter selectiveFoldingFilter = new SelectiveFoldingFilter(tokenizer, whitelisted);
 
         CharTermAttribute termAttrib = (CharTermAttribute) selectiveFoldingFilter.getAttribute(CharTermAttribute.class);
