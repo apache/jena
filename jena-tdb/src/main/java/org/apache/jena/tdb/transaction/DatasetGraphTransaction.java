@@ -290,14 +290,12 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     protected void _close() {
         if ( isClosed )
             return ;
-        isClosed = true ;
-        
         if ( sConn.haveUsedInTransaction() ) {
             if ( isInTransaction() ) {
                 TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
                 return ;
             }
-            // Otherwise ignore - there might be other transactions aronud.
+            // Otherwise ignore - close() while transactional is meaningless.
             return ;
         }
         synchronized(this) {
