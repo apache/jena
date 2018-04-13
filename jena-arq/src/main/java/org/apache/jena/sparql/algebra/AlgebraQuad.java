@@ -57,6 +57,19 @@ public class AlgebraQuad
         return Transformer.transformSkipService(qg, null, op, before, after) ;
     }
     
+    public static Op quadizeBlock(Op op)
+    {
+        final Deque<QuadSlot> stack = new ArrayDeque<>() ;
+        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
+        stack.push(qSlot) ;             // Starting condition
+        
+        OpVisitor before = new Pusher(stack) ;
+        OpVisitor after = new Popper(stack) ;
+        
+        TransformQuadBlockGraph qg = new TransformQuadBlockGraph(stack, before, after) ;
+        return Transformer.transformSkipService(qg, null, op, before, after) ;
+    }
+    
     /** This is the record of the transformation.
      *  The rewriteGraphName is the node to put in the graph slot of the quad.
      *  The actualGraphName is the node used in SPARQL.

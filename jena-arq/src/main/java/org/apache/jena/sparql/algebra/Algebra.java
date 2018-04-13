@@ -83,10 +83,16 @@ public class Algebra
         return new AlgebraGenerator().compile(elt) ;
     }
 
-    /** Turn an algebra expression into quad form */
+    /** Turn an algebra expression into quadpattern form */
     public static Op toQuadForm(Op op)
     {
         return AlgebraQuad.quadize(op) ;
+    }
+    
+    /** Turn an algebra expression into quadblock form */
+    public static Op toQuadBlockForm(Op op)
+    {
+        return AlgebraQuad.quadizeBlock(op) ;
     }
     
     /** Transform an algebra expression so that default graph is union of the named graphs. */
