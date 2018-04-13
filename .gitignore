@@ -22,9 +22,6 @@ buildNumber.properties
 *.iml
 .idea/
 
-# Local area 
-local/
-
 # Caches
 .scala_dependencies
 
