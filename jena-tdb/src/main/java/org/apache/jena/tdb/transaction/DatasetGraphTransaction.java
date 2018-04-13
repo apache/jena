@@ -290,32 +290,32 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     protected void _close() {
         if ( isClosed )
             return ;
+        isClosed = true ;
         
-        if ( !sConn.haveUsedInTransaction() ) {
-            synchronized(this) {
-                if ( isClosed ) return ;
-                isClosed = true ;
-                if ( ! sConn.isValid() ) {
-                    // There may be another DatasetGraphTransaction using this location
-                    // and that DatasetGraphTransaction has been closed, invalidating
-                    // the StoreConnection.
-                    return ;
-                }
-                DatasetGraphTDB dsg = sConn.getBaseDataset() ;
-                dsg.sync() ;
-                dsg.close() ;
-                StoreConnection.release(getLocation()) ;
+        if ( sConn.haveUsedInTransaction() ) {
+            if ( isInTransaction() ) {
+                TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
                 return ;
             }
-        }
-
-        if ( isInTransaction() ) {
-            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close (" + getLocation() + ")") ;
+            // Otherwise ignore - there might be other transactions aronud.
             return ;
         }
-        dsgtxn.remove() ;
-        inTransaction.remove() ;
-        isClosed = true ;
+        synchronized(this) {
+            if ( ! sConn.isValid() ) {
+                // There may be another DatasetGraphTransaction using this location
+                // and that DatasetGraphTransaction has been closed, invalidating
+                // the StoreConnection.
+                return ;
+            }
+            DatasetGraphTDB dsg = sConn.getBaseDataset() ;
+            dsg.sync() ;
+            dsg.close() ;
+            StoreConnection.release(getLocation()) ;
+            dsgtxn.remove() ;
+            inTransaction.remove() ;
+            isClosed = true ;
+            return ;
+        }
     }
 
     @Override
