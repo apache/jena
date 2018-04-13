@@ -739,7 +739,13 @@ public final class TokenizerText implements Tokenizer
         return readCharsAnd(leadingDigitAllowed, leadingSignAllowed, extraCharsWord, false);
     }
 
-    static private char[] extraCharsVar = new char[]{'_', '.', '-', '?', '@', '+'};
+    // This array adds the other characters that can occurs in an internal variable name.
+    // Variables can be created with SPARQL-illegal syntax to ensure they do not clash with
+    // variables in the query from the application.
+    // See ARQConstants.
+    //   allocVarAnonMarker, allocVarMarker, globalVar, allocVarBNodeToVar, allocVarScopeHiding
+    // but this set is wider and matches anywhere in the name after the first '?'. 
+    static private char[] extraCharsVar = new char[]{'_', '.', '-', '?', '@', '+', '/', '~'};
 
     private String readVarName() {
         return readCharsAnd(true, true, extraCharsVar, true);
@@ -747,8 +753,7 @@ public final class TokenizerText implements Tokenizer
     
     // See also readBlankNodeLabel
     
-    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars,
-                                boolean allowFinalDot) {
+    private String readCharsAnd(boolean leadingDigitAllowed, boolean leadingSignAllowed, char[] extraChars, boolean allowFinalDot) {
         stringBuilder.setLength(0);
         int idx = 0;
         if ( !leadingDigitAllowed ) {

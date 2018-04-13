@@ -655,6 +655,21 @@ public class TestTokenizer extends BaseTest {
     }
 
     @Test
+    public void tokenUnit_var7() {
+        tokenizeAndTestExact("?" + ARQConstants.allocVarScopeHiding + "0", TokenType.VAR, ARQConstants.allocVarScopeHiding + "0") ;
+    }
+
+    @Test
+    public void tokenUnit_var8() {
+        tokenizeAndTestExact("?" + ARQConstants.allocVarAnonMarker + "0", TokenType.VAR, ARQConstants.allocVarAnonMarker + "0") ;
+    }
+
+    @Test
+    public void tokenUnit_var9() {
+        tokenizeAndTestExact("?" + ARQConstants.allocVarBNodeToVar + "ABC", TokenType.VAR, ARQConstants.allocVarBNodeToVar + "ABC") ;
+    }
+
+    @Test
     public void tokenUnit_hex1() {
         tokenizeAndTestExact("0xABC", TokenType.HEX, "0xABC") ;
     }
