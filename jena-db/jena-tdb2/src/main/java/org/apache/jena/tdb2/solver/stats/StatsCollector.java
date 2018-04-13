@@ -18,19 +18,19 @@
 
 package org.apache.jena.tdb2.solver.stats;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.graph.NodeConst;
 
 /** Statistics collector, general purpose, uses Nodes */
-public class StatsCollector extends StatsCollectorBase<Node>
-{
-    public StatsCollector() { super(NodeConst.nodeRDFType) ; }
+public class StatsCollector extends StatsCollectorBase<Node> {
+    public StatsCollector() {
+        super(NodeConst.nodeRDFType);
+    }
 
     @Override
-    protected Map<Node, Integer> convert(Map<Node, Integer> map)
-    {
-        return map ;
+    protected Map<Node, Integer> convert(Map<Node, Integer> map) {
+        return map;
     }
 }

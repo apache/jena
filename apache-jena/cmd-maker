@@ -67,6 +67,7 @@ tdb2.tdbdump
 tdb2.tdbcompact
 tdb2.tdbloader
 tdb2.tdbquery
+tdb2.tdbstats
 tdb2.tdbupdate
 EOF
 )
