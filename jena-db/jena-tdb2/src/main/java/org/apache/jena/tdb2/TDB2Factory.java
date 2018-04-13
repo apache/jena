@@ -22,12 +22,17 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.system.JenaSystem;
+import org.apache.jena.tdb2.assembler.VocabTDB2 ;
 
 /**
  *  Public factory for connecting to and creating datasets backed by TDB2 storage.
  */
 public class TDB2Factory
 {
+    static { JenaSystem.init(); }
+    
     private TDB2Factory() {} 
 
     /** @deprecated Use {@link DatabaseMgr#connectDatasetGraph(Location)} */
@@ -74,23 +79,13 @@ public class TDB2Factory
      */ 
     public static Dataset createDataset() { return connectDataset(Location.mem()) ; }
 
-//    /**
-//     *  Read the file and assembler a dataset
-//     */
-//    public static Dataset assembleDataset(String assemblerFile) {
-//        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
-//    }
-//    
-//    /** Release from the JVM. All caching is lost. */
-//    public static void release(Dataset dataset) {
-//        _release(location(dataset)) ;
-//    }
-//    
-//    /** Release from the JVM.  All caching is lost. */
-//    public static void release(DatasetGraph dataset) {
-//        _release(location(dataset)) ;
-//    }
-
+    /**
+     *  Read the file and assemble a dataset
+     */
+    public static Dataset assembleDataset(String assemblerFile) {
+        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB2.tDatasetTDB) ;
+    }
+    
     /** Test whether a dataset is backed by TDB or not. */ 
     public static boolean isBackedByTDB(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
@@ -102,24 +97,4 @@ public class TDB2Factory
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return DatabaseMgr.location(dsg) ;
     }
-
-//    /** Set the {@link StoreParams} for specific Location.
-//     *  This call must only be called before a dataset from Location
-//     *  is created. This operation should be used with care; bad choices
-//     *  of {@link StoreParams} can reduce performance.
-//     *  
-//     *  <a href="http://jena.apache.org/documentation/tdb/store-paramters.html"
-//     *  >See documentation</a>.
-//     *  
-//     *  @param location  The persistent storage location
-//     *  @param params  StoreParams to use
-//     *  @throws IllegalStateException If the dataset has already been setup.
-//     */
-//    public static void setup(Location location, StoreParams params) {
-//        StoreConnection sConn = StoreConnection.getExisting(location) ;
-//        if ( sConn != null )
-//            throw new IllegalStateException("Location is already active") ;
-//        StoreConnection.make(location, params) ;
-//    }
-    
 }
