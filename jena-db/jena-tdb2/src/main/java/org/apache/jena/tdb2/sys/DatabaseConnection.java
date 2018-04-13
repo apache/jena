@@ -32,6 +32,7 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.system.JenaSystem;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.setup.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
@@ -39,6 +40,8 @@ import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 // StoreConnection, DatabaseConnection < Connection<X> 
 
 public class DatabaseConnection {
+    static { JenaSystem.init(); }
+
     // ConnectionTracker<X> 
     
     private static Map<Location, DatabaseConnection> cache = new ConcurrentHashMap<>() ;

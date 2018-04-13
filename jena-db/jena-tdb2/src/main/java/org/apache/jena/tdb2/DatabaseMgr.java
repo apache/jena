@@ -37,8 +37,6 @@ public class DatabaseMgr {
     // All creation of DatasetGraph for TDB2 goes through this method.
     private static DatasetGraph DB_ConnectCreate(Location location) {
         return DatabaseConnection.connectCreate(location).getDatasetGraph();
-//        // One level.
-//        return StoreConnection.connectCreate(location).getDatasetGraph() ; 
     }
 
     /** Create or connect to a TDB2-backed dataset */
@@ -79,7 +77,6 @@ public class DatabaseMgr {
         return DatabaseOps.backup(dsg);
     }
 
-
     /** Create an in-memory TDB2-backed dataset (for testing) */
     public static DatasetGraph createDatasetGraph() {
         return connectDatasetGraph(Location.mem()) ;
@@ -110,5 +107,4 @@ public class DatabaseMgr {
             throw new TDBException("Not a TDB database (argument is neither a switchable nor direct TDB DatasetGraph)");
         return dsg;
     }
-
 }

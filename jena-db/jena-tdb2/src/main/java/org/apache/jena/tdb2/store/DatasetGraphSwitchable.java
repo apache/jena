@@ -81,6 +81,16 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
         return dsgx.getAndSet(dsg);
     }
     
+    /** Don't do anythine on close.
+     *  This would not be safe across switches.  
+     */
+    @Override
+    public void close() {}
+    
+//    /** Don't do anything on sync. */
+//    @Override
+//    public void sync() { }
+    
     /** If and only if the current value is the given old value, set the base {@link DatasetGraph}  
      * Returns true if a swap happened.
      */ 
