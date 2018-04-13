@@ -74,16 +74,6 @@ public abstract class ActionService extends ActionBase {
         action.setRequest(dataAccessPoint, dSrv);
         String endpointName = mapRequestToOperation(action, dataAccessPoint);
 
-        if ( false ) {
-            // DELETE when SPARQL_UberServlet goes.
-            // Old dispatch via SPARQL_UberServlet.executeAction override.
-            SPARQL_UberServlet_Original dummy = null;
-            Endpoint op = dSrv.getEndpoint(endpointName);
-            action.setEndpoint(op, endpointName);
-            executeAction(action);
-            return;
-        }
-
         // ServiceRouter dispatch
         Operation operation = null;
         if ( !endpointName.isEmpty() ) {
