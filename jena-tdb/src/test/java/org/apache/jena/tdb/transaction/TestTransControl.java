@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.SystemTDB ;

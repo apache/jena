@@ -30,7 +30,7 @@ import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset

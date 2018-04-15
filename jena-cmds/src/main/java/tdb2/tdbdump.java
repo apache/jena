@@ -20,7 +20,7 @@ package tdb2;
 
 import arq.cmdline.ModLangOutput ;
 import jena.cmd.CmdException ;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;

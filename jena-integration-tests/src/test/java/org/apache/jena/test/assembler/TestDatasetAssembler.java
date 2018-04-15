@@ -37,7 +37,7 @@ import org.apache.jena.sparql.core.TxnDataset2Graph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.system.JenaSystem;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.test.txn.TestDataset2Graph;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -23,7 +23,7 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 /* 
  * Example of a connection performng a number of transactional operations.

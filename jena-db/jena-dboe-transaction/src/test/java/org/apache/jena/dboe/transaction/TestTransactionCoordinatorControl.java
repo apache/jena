@@ -24,15 +24,15 @@ import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.dboe.migrate.L;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.dboe.transaction.txn.TransactionalBase;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.system.ThreadAction;
-import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.sys.ThreadAction;
+import org.apache.jena.sys.ThreadTxn;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

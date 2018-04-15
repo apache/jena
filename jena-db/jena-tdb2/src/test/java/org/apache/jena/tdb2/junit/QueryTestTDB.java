@@ -20,7 +20,7 @@ package org.apache.jena.tdb2.junit;
 
 import java.util.List ;
 
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.SystemARQ ;

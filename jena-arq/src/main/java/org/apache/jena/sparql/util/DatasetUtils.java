@@ -35,7 +35,7 @@ import org.apache.jena.sparql.core.DatasetDescription ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 
 /** Internal Dataset factory + graph equivalents. */
 public class DatasetUtils

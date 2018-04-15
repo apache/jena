@@ -21,7 +21,7 @@ package org.apache.jena.rdfconnection.examples;
 import org.apache.jena.query.*;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 /** RDF Connection example */
 public class RDFConnectionExample1 {

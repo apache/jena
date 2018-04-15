@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Property ;

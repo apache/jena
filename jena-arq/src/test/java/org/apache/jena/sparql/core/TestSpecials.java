@@ -34,7 +34,7 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphSink;
 import org.apache.jena.sparql.graph.GraphZero;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.junit.Test;
 
 /** Tests for

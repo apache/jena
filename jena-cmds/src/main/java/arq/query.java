@@ -37,7 +37,7 @@ import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.resultset.ResultSetException ;
 import org.apache.jena.sparql.resultset.ResultsFormat ;
 import org.apache.jena.sparql.util.QueryExecUtils ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 
 public class query extends CmdARQ
 {

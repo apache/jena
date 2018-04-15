@@ -23,8 +23,8 @@ import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
-import static org.apache.jena.system.Txn.calculateRead;
-import static org.apache.jena.system.Txn.executeWrite;
+import static org.apache.jena.sys.Txn.calculateRead;
+import static org.apache.jena.sys.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;

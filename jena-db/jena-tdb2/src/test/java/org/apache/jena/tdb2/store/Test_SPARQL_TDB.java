@@ -21,7 +21,7 @@ package org.apache.jena.tdb2.store;
 import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;

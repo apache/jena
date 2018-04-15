@@ -21,9 +21,9 @@ package org.apache.jena.dboe.transaction;
 import java.util.concurrent.Semaphore ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
-import org.apache.jena.system.ThreadAction;
-import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.sys.Txn;
+import org.apache.jena.sys.ThreadAction;
+import org.apache.jena.sys.ThreadTxn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.query.ReadWrite ;
 import org.junit.After ;

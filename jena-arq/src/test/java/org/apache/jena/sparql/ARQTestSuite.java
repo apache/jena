@@ -29,7 +29,7 @@ import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.system.JenaSystem ;
-import org.apache.jena.system.TS_System ;
+import org.apache.jena.sys.TS_System ;
 import org.apache.jena.web.TS_Web ;
 
 /**
