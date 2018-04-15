@@ -19,7 +19,7 @@
 package org.apache.jena.rdfconnection;
 
 import org.apache.jena.query.Dataset;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 
 public class RDFConnectionFactory {
     static { JenaSystem.init(); }

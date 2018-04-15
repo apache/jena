@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.RDFS ;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 

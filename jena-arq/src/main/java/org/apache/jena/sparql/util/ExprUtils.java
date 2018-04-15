@@ -42,7 +42,7 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.SSEParseException ;
 import org.apache.jena.sparql.sse.builders.ExprBuildException ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 
 /** Misc support for Expr */

@@ -25,7 +25,7 @@ import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.thrift.WriterDatasetThrift ;
 import org.apache.jena.riot.thrift.WriterGraphThrift ;
 import org.apache.jena.riot.writer.* ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 public class RDFWriterRegistry
 {

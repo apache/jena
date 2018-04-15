@@ -19,7 +19,7 @@
 package org.apache.jena.query.text.es;
 
 import org.apache.jena.query.text.es.assembler.TextAssemblerES;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 
 public class TextES {
     private static volatile boolean initialized = false ;

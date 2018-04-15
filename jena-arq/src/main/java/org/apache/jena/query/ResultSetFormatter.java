@@ -45,7 +45,7 @@ import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.TextOutput;
 import org.apache.jena.sparql.resultset.XMLOutput;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
  *  in various formats.

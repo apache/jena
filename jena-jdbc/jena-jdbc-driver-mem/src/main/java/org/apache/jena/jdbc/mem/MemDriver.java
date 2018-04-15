@@ -30,7 +30,7 @@ import org.apache.jena.jdbc.mem.connections.MemConnection;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
  * <p>

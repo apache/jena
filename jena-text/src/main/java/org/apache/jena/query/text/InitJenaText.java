@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 public class InitJenaText implements JenaSubsystemLifecycle {
 

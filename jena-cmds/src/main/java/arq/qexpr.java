@@ -42,7 +42,7 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.WriterSSE ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** A program to execute expressions from the command line. */
 

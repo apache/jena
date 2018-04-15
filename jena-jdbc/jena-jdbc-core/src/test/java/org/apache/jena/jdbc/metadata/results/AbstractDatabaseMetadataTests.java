@@ -25,7 +25,7 @@ import java.sql.SQLException ;
 import java.util.List ;
 
 import org.apache.jena.jdbc.connections.JenaConnection ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.junit.Assert ;
 import org.junit.Test ;
 

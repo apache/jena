@@ -23,7 +23,7 @@ import org.apache.jena.query.text.EntityDefinition;
 import org.apache.jena.query.text.TextDatasetFactory;
 import org.apache.jena.query.text.TextIndex;
 import org.apache.jena.query.text.TextIndexConfig;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 public class TextESDatasetFactory
 {

@@ -33,7 +33,7 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.store.NodeId;

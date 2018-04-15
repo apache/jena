@@ -23,7 +23,7 @@ import static org.apache.jena.sparql.function.library.LibTest.test;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprException ;
 import org.apache.jena.sparql.expr.VariableNotBoundException ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.junit.Test ;
 
 public class TestFnFunctions {

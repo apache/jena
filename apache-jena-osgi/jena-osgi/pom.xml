@@ -145,7 +145,7 @@
     </dependency>
     <!--
     NOTE: Also update 
-    src/main/resources/META-INF/services/org.apache.jena.system.JenaSubsystemLifecycle
+    src/main/resources/META-INF/services/org.apache.jena.sys.JenaSubsystemLifecycle
     to the concatenation of the different Jena modules' JenaSubsystemLifecycle
     (order does not matter). See JENA-1139 for details.
     -->

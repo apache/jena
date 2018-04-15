@@ -27,7 +27,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.shared.WrappedIOException ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

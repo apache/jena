@@ -45,7 +45,7 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

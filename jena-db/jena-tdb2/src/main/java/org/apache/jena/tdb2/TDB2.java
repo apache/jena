@@ -29,7 +29,7 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.tdb2.modify.UpdateEngineTDB;
 import org.apache.jena.tdb2.solver.QueryEngineTDB;

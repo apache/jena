@@ -18,7 +18,7 @@
 
 package org.apache.jena.osgi;
 
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

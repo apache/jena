@@ -19,7 +19,7 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 /** RIOT initialization. Used by {@code JenaSystem} */
 public class InitRIOT implements JenaSubsystemLifecycle {

@@ -23,7 +23,7 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.spatial.assembler.SpatialVocab;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.lucene.store.Directory;
 
 public class SpatialDatasetFactory

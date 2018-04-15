@@ -16,27 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot ;
+package org.apache.jena.system;
 
-import org.apache.jena.riot.system.IO_JenaReaders ;
-import org.apache.jena.riot.system.IO_JenaWriters ;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.sys.JenaSystem;
 
-public class IO_Jena
-{
-    static { JenaSystem.init(); }
-    
-//    private static String      riotBase               = "http://jena.apache.org/riot/" ;
-//    private static String      streamManagerSymbolStr = riotBase + "streammanager" ;
-//    public static Symbol       streamManagerSymbol    = Symbol.create(streamManagerSymbolStr) ;
+/**
+ * This is a temporary adapter for implementations to transition to [JENA-1524]
+ */
+public class JenaInit {
 
-    public static void wireIntoJena() {
-       IO_JenaReaders.wireIntoJena() ;
-       IO_JenaWriters.wireIntoJena() ;
+    /**
+     * Initialize Jena.
+     */
+    public static void init() {
+        JenaSystem.init();
     }
 
-    public static void resetJena() {
-        IO_JenaReaders.resetJena() ;
-        IO_JenaWriters.resetJena() ;
+    /** Shutdown subsystems */
+    public static void shutdown() {
+        JenaSystem.shutdown();
     }
+
 }

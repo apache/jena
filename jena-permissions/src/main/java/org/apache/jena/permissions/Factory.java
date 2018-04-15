@@ -21,7 +21,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
  * The factory that can be used to create an instance of a SecuredGraph or a SecuredModel.

@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.junit.ScriptTestSuiteFactory;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 

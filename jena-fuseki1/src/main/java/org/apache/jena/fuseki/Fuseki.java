@@ -28,7 +28,7 @@ import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
 import org.slf4j.Logger ;
