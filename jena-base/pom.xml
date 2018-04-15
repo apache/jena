@@ -32,6 +32,10 @@
     This module contains non-RDF library code and the common system runtime.
   </description>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.base</automatic.module.name>
+  </properties>
+
   <dependencies>
     
     <dependency>
@@ -86,6 +90,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>
