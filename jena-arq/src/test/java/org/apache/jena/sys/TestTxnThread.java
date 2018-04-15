@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail;
 
-import org.apache.jena.system.ThreadTxn ;
-import org.apache.jena.system.Txn ;
-import org.apache.jena.system.TxnCounter ;
+import org.apache.jena.sys.ThreadTxn ;
+import org.apache.jena.sys.Txn ;
+import org.apache.jena.sys.TxnCounter ;
 import org.junit.Test ;
 
 public class TestTxnThread {

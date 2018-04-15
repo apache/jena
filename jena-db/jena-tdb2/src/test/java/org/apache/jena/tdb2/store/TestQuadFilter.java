@@ -26,7 +26,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;

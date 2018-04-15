@@ -22,13 +22,13 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail ;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.system.ThreadAction;
-import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.sys.ThreadAction;
+import org.apache.jena.sys.ThreadTxn;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

@@ -51,7 +51,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateRequest ;

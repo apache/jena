@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicLong;

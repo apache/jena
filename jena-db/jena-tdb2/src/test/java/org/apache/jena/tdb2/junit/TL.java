@@ -23,7 +23,7 @@ import java.util.function.Consumer ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2Factory;

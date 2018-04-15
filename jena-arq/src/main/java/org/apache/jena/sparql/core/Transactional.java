@@ -21,7 +21,7 @@ package org.apache.jena.sparql.core;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 /** Interface that encapsulates the  begin/abort|commit/end operations.
  * <p>The read lifecycle is:

@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.util.compose;
 
-import static org.apache.jena.system.Txn.*;
+import static org.apache.jena.sys.Txn.*;
 
 import java.util.function.*;
 

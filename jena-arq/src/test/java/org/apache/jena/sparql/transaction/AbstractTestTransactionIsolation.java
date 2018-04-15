@@ -23,8 +23,8 @@ import static org.apache.jena.query.ReadWrite.WRITE ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.ThreadAction ;
-import org.apache.jena.system.ThreadTxn ;
+import org.apache.jena.sys.ThreadAction ;
+import org.apache.jena.sys.ThreadTxn ;
 import org.junit.Assert ;
 import org.junit.Test ;
 

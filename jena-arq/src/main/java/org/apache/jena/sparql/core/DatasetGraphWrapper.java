@@ -28,7 +28,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 public class DatasetGraphWrapper implements DatasetGraph, Sync 
 {

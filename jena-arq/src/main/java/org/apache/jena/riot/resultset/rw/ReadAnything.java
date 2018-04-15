@@ -34,7 +34,7 @@ import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 
 /** Read anything (RDF).
  * <li>By MIME type.

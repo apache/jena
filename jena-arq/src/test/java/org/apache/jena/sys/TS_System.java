@@ -16,6 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
-class ExceptionFromTest extends RuntimeException {}
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestCounter.class
+    , TestThreadAction.class
+    , TestTxnLifecycle.class
+    , TestTxn.class
+    , TestTxnThread.class
+})
+    
+public class TS_System {}

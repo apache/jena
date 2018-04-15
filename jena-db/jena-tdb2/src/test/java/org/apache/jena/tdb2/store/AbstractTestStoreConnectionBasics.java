@@ -22,7 +22,7 @@ package org.apache.jena.tdb2.store;
 import static org.junit.Assert.*;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;

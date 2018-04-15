@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;

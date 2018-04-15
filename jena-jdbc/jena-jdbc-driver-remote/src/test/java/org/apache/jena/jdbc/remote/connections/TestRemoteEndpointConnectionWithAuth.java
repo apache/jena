@@ -33,7 +33,7 @@ import org.apache.jena.jdbc.utils.TestUtils ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.junit.After ;
 import org.junit.AfterClass ;

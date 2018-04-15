@@ -33,7 +33,7 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.vocabulary.RDF;
 
 /**

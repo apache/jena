@@ -33,7 +33,7 @@ import org.apache.jena.riot.system.ProgressStreamRDF;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tdb2.cmdline.CmdTDB;

@@ -33,7 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 import org.apache.jena.sparql.graph.GraphReadOnly;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateRequest;
 

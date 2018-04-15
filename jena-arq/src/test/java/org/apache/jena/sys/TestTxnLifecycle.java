@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
 import static org.junit.Assert.* ;
 
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 import org.junit.Test ;
 
 /** Lifecycle tests - apply tests to a provided Transactional

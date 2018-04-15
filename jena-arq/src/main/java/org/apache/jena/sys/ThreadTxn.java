@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.Transactional ;

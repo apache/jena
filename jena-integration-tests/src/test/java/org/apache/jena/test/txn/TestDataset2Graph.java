@@ -37,7 +37,7 @@ import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TxnDataset2Graph;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;

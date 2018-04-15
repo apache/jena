@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue ;
 import org.apache.commons.io.FileUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
+import org.apache.jena.sys.Txn;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.RDFDataMgr ;

@@ -27,7 +27,7 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sys.Txn ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
