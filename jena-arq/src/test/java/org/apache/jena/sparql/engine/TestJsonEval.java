@@ -54,6 +54,16 @@ public class TestJsonEval {
              "[ { 'x' : 123 }]"); 
     }
 
+    @Test public void json_eval_06() {
+        test("JSON { 'x' : 123.5 } WHERE { }",
+             "[ { 'x' : 123.5 }]"); 
+    }
+
+    @Test public void json_eval_07() {
+        test("JSON { 'x' : -10 } WHERE { }",
+             "[ { 'x' : -10 }]"); 
+    }
+
     private void test(String queryString, String jsonExpected) {
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
         DatasetGraph dsg = new DatasetGraphZero();
