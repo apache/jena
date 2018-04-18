@@ -37,6 +37,7 @@
     re-package them under the package name
     org.apache.jena.ext.com.google....
   </description>
+  
 
 
   <dependencies>
@@ -49,7 +50,9 @@
       <version>21.0</version>
     </dependency>
   </dependencies>
-
+  <properties>
+   <automatic.module.name>org.apache.jena.ext.com.google</automatic.module.name>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -64,6 +67,13 @@
           </execution>
         </executions>
         <configuration>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <manifestEntries>
+                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+              </manifestEntries>
+            </transformer>
+          </transformers>
           <createSourcesJar>true</createSourcesJar>
           <artifactSet>
             <includes>

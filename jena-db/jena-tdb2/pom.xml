@@ -35,7 +35,6 @@
     <automatic.module.name>org.apache.jena.tdb2</automatic.module.name>
   </properties>
 
-
   <dependencies>
 
     <dependency>

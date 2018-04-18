@@ -42,6 +42,7 @@ limitations under the License.
     <plugin.compiler.version>2.6.0</plugin.compiler.version>
     <mrunit.version>1.1.0</mrunit.version>
     <airline.version>2.1.1</airline.version>
+    <automatic.module.name>org.apache.jena.elephas</automatic.module.name>
   </properties>
 
   <!-- Profiles to allow building for different Hadoop versions -->
@@ -59,7 +60,18 @@ limitations under the License.
   </profiles>
 
   <build>
-    <plugins>
+    <plugins> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>

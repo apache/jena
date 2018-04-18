@@ -33,6 +33,10 @@
 		<relativePath>..</relativePath>
 	</parent>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.jdbc</automatic.module.name>
+  </properties>
+
 	<modules>
 		<module>jena-jdbc-core</module>
 		<module>jena-jdbc-driver-remote</module>
@@ -63,6 +67,17 @@
 					</execution>
 				</executions>
 			</plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
 		</plugins>
 	</build>
 </project>
