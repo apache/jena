@@ -139,7 +139,9 @@ public class OpWalker
         @Override
         protected void visitExt(OpExt op) {
             before(op) ;
-            super.visitExt(op);
+            if ( op.effectiveOp() != null )
+                // Walk the effective op, if present.
+                op.effectiveOp().visit(this);
             if ( visitor != null )
                 op.visit(visitor) ;
             after(op) ;
