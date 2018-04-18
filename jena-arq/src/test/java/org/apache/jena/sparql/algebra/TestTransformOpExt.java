@@ -18,11 +18,15 @@
 
 package org.apache.jena.sparql.algebra;
 
+import java.util.Set;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.op.OpExt ;
+import org.apache.jena.sparql.algebra.op.OpFilter;
 import org.apache.jena.sparql.algebra.op.OpGraph ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
@@ -69,6 +73,14 @@ public class TestTransformOpExt extends BaseTest
         }
     }
     
+    static class OpExtTransform extends TransformCopy {
+        
+        @Override
+        public Op transform(OpFilter opFilter, Op subOp) {
+            return new OpExtTest(opFilter);
+        }
+    }
+    
     @Test public void textOpExtQuads() {
         String x = StrUtils.strjoinNL
             ("(graph <g>"
@@ -99,6 +111,25 @@ public class TestTransformOpExt extends BaseTest
         Op opSub = ((OpExt)op2).effectiveOp() ;
         Op expectedSub = SSE.parseOp(y) ;
         assertEquals(expectedSub, opSub) ;
+    }
+    
+    @Test
+    public void testOpExtMinus() {
+        String sse = StrUtils.strjoinNL
+                ("(filter (= ?o 1)"
+                ,"   (bgp (?s ?p ?o))"
+                ,")"
+                ) ;
+        
+        // Build 
+        Op op = SSE.parseOp(sse) ;
+        
+        // Transform
+        op = Transformer.transformSkipService(new OpExtTransform(), op) ;
+        
+        // Check WalkerVisitorVisible
+        Set<Var> vars = OpVars.visibleVars(op);
+        assertEquals(3, vars.size());
     }
 }
 

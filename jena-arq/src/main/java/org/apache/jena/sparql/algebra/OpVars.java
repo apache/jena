@@ -289,6 +289,11 @@ public class OpVars
         public void visit(OpProcedure opProc) {
             ExprVars.varsMentioned(acc, opProc.getArgs()) ;
         }
+        
+        @Override
+        public void visit(OpExt opExt) {
+            // OpWalkerVisitor is taking care of calling opExt.effectiveOp().visit(this)
+        }
     }
     
     private static class OpVarsPatternWithPositions extends OpVisitorBase
