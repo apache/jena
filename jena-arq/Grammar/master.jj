@@ -335,7 +335,7 @@ void JsonQuery() : {}
   SolutionModifier()
 }
 
-void JsonClause() : { Object o ; String s ; Token t; }
+void JsonClause() : { Node o ; String s ; Token t; Var v; }
 {
   <JSON> { getQuery().setQueryJsonType() ; }
   <LBRACE>
@@ -346,9 +346,10 @@ void JsonClause() : { Object o ; String s ; Token t; }
       throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
   }
   (
-    o = Var() { getQuery().addResultVar((Var) o) ; getQuery().addJsonMapping(s, o) ; }
-  | o = String() { getQuery().addJsonMapping(s, o) ; }
-  | o = Number() { getQuery().addJsonMapping(s, o) ; }
+    o = Var() { getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ; }
+  | o = RDFLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = NumericLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = BooleanLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
   )
   (
     <COMMA> s = String()
@@ -357,12 +358,14 @@ void JsonClause() : { Object o ; String s ; Token t; }
         throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
     }
     (
-      o = Var() { getQuery().addResultVar((Var) o) ; getQuery().addJsonMapping(s, o) ; }
-    | o = String() { getQuery().addJsonMapping(s, o) ; }
-    | o = Number() { getQuery().addJsonMapping(s, o) ; }
+    o = Var() { getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ; }
+  | o = RDFLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = NumericLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = BooleanLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
     )
   )*
-  <RBRACE>
+  <RBRACE> 
+  { v = null ; }
 }
 #endif
 
