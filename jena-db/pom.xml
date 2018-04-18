@@ -34,7 +34,10 @@
   </parent>
 
   <properties>
-    <automatic.module.name>org.apache.jena.db</automatic.module.name>
+    <!-- Default module name : override in a specific POM if not part of the "dboe" module.
+         e.g. jena-tdb2.
+    -->
+    <automatic.module.name>org.apache.jena.dboe</automatic.module.name>
   </properties>
 
   <licenses>

@@ -31,6 +31,11 @@
     <version>3.8.0-SNAPSHOT</version>
   </parent> 
 
+  <properties>
+    <automatic.module.name>org.apache.jena.tdb2</automatic.module.name>
+  </properties>
+
+
   <dependencies>
 
     <dependency>
@@ -66,7 +71,20 @@
   </dependencies>
 
   <build>
-    <plugins>
+    <plugins> 
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
@@ -76,6 +94,7 @@
           </includes>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
