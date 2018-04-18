@@ -322,12 +322,14 @@ public class GraphMatcher extends java.lang.Object {
             return false ;
         // Force to same term when o is a ground literal.
         ExtendedIterator<Triple> iter = otherm.find(triple) ;
-        while (iter.hasNext()) {
-            Triple t = iter.next() ;
-            if ( t.getObject().equals(o) )
-                return true ;
-        }
-        return false ;
+        try {
+            while (iter.hasNext()) {
+                Triple t = iter.next() ;
+                if ( t.getObject().equals(o) )
+                    return true ;
+            }
+            return false ;
+        } finally { iter.close(); }
     }
     
     private Bucket smallestBucket() {
