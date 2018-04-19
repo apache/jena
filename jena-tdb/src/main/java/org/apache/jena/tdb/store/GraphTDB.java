@@ -73,6 +73,17 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
     public NodeTupleTable getNodeTupleTable() {
         return getDatasetGraphTDB().chooseNodeTupleTable(getGraphName()) ;
     }
+    
+    // JENA-1527. Don't let GraphBase cache.
+    // Normally, GraphBase calls createPrefixMapping once and reuses that object.
+    // This causes it to be passed across transaction boundaries.
+    // in the case of fetching, then not using for update in a W transaction,
+    // errors occur.
+    
+    @Override
+    public PrefixMapping getPrefixMapping() {
+        return createPrefixMapping();
+    }
 
     @Override
     protected PrefixMapping createPrefixMapping() {
