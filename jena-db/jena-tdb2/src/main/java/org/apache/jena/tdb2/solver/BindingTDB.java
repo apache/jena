@@ -120,7 +120,9 @@ public class BindingTDB extends BindingBase
             
             NodeId id = idBinding.get(var) ;
             if ( id == null )
-                return null ; 
+                return null ;
+            if ( NodeId.isDoesNotExist(id) )
+                return null;
             n = nodeTable.getNodeForNodeId(id) ;
             if ( n == null )
                 // But there was to put it in the BindingNodeId. 
