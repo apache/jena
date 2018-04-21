@@ -61,8 +61,8 @@
          artifacts so the versions must align. Consult jsonld-java's 
          POM for the correct dependency versions 
     -->
-    <ver.jsonldjava>0.11.1</ver.jsonldjava>
-    <ver.jackson>2.9.0</ver.jackson>
+    <ver.jsonldjava>0.12.0</ver.jsonldjava>
+    <ver.jackson>2.9.5</ver.jackson>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
@@ -72,8 +72,8 @@
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
-    <ver.httpclient>4.5.3</ver.httpclient>
-    <ver.httpcore>4.4.6</ver.httpcore>
+    <ver.httpclient>4.5.5</ver.httpclient>
+    <ver.httpcore>4.4.9</ver.httpcore>
     <!-- Normally, these are the same as the above
          In the case of 4.2.6, there isn't a httpcore-osgi.
     -->
