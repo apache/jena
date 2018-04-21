@@ -64,15 +64,8 @@ public abstract class ActionCtl extends ActionBase {
     
     // This is the service request lifecycle.
     final
-    protected void executeLifecycle(HttpAction action)
-    {
-        startRequest(action) ;
-        try {
-            perform(action) ;
-        }
-        finally { 
-            finishRequest(action) ;
-        }
+    protected void executeLifecycle(HttpAction action) {
+        perform(action) ;
     }
     
     final

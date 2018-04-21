@@ -324,8 +324,7 @@ public class HttpAction
         activeDSG = null ;
     }
 
-    public final void startRequest()
-    { 
+    public final void startRequest() { 
         if ( dataAccessPoint != null ) 
             dataAccessPoint.startRequest(this) ;
     }
