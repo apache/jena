@@ -33,6 +33,7 @@ import org.apache.jena.query.ResultSetFormatter ;
 import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.algebra.Algebra ;
@@ -45,7 +46,6 @@ import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.util.FileManager ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
@@ -60,7 +60,7 @@ public class TestSolverTDB extends BaseTest
         graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
         graph = TDBFactory.createDatasetGraph().getDefaultGraph() ;
         Model m = ModelFactory.createModelForGraph(graph) ;
-        FileManager.get().readModel(m, graphData) ;
+        RDFDataMgr.read(m, graphData) ;
 
         pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefix("", "http://example/") ;
@@ -121,6 +121,16 @@ public class TestSolverTDB extends BaseTest
         equals(rs1, rs2) ;
     }
 
+    @Test public void solve_07()
+    {
+        // JENA-1428, JENA-1529
+        String x = "(sequence  (table (vars ?X) (row [?X 'NotPresent']))  (bgp (triple :s :p ?o)))";
+        ResultSet rs1 = exec(x, graph);
+        assertTrue(rs1.hasNext());
+        // Executing without stack trace is enough.
+        ResultSetFormatter.consume(rs1);
+    }
+    
     // ------
     
     private static void equals(ResultSet rs1, ResultSet rs2)

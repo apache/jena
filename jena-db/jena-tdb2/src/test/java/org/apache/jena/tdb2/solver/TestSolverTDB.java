@@ -19,11 +19,12 @@
 package org.apache.jena.tdb2.solver;
 
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import static org.junit.Assert.*;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -47,18 +48,15 @@ import org.junit.Test ;
 
 public class TestSolverTDB
 {
-    static String graphData = null ;
-    static Graph graph = null ;
     static Dataset dataset = null ;
     static PrefixMapping pmap = null ;
 
     @BeforeClass static public void beforeClass()
     { 
-        dataset = TL.createTestDatasetMem() ;
+        dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
-        graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
+        String graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
         RDFDataMgr.read(dataset, graphData) ;
-        graph = dataset.asDatasetGraph().getDefaultGraph() ;
         pmap = new PrefixMappingImpl() ;
         pmap.setNsPrefix("", "http://example/") ;
     }
@@ -75,17 +73,16 @@ public class TestSolverTDB
         triples.forEachRemaining(dstGraph::add) ;
     }
 
-
     @Test public void solve_01()
     {
-        ResultSet rs1 = exec("(bgp (:s :p :o))", graph) ;
+        ResultSet rs1 = exec("(bgp (:s :p :o))") ;
         ResultSet rs2 = results("unit") ;
         equals(rs1, rs2) ;
     }
     
     @Test public void solve_02()
     {
-        ResultSet rs1 = exec("(bgp (:s :p :o2))", graph) ;
+        ResultSet rs1 = exec("(bgp (:s :p :o2))") ;
         ResultSet rs2 = results("empty") ;
         equals(rs1, rs2) ;
     }
@@ -93,7 +90,7 @@ public class TestSolverTDB
     @Test public void solve_03()
     {
         // Above everything.
-        ResultSet rs1 = exec("(bgp (:zzzz :p 999999))", graph) ;
+        ResultSet rs1 = exec("(bgp (:zzzz :p 999999))") ;
         ResultSet rs2 = results("empty") ;
         equals(rs1, rs2) ;
     }
@@ -101,21 +98,21 @@ public class TestSolverTDB
     @Test public void solve_04()
     {
         // Below everything.
-        ResultSet rs1 = exec("(bgp (:a :p :a))", graph) ;
+        ResultSet rs1 = exec("(bgp (:a :p :a))") ;
         ResultSet rs2 = results("empty") ;
         equals(rs1, rs2) ;
     }
 
     @Test public void solve_05()
     {
-        ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))", graph) ;
+        ResultSet rs1 = exec("(project (?s ?y) (bgp (?s :p ?z) (?z :q ?y)))") ;
         ResultSet rs2 = results("(row (?s :s) (?y :y))") ;
         equals(rs1, rs2) ;
     }
     
     @Test public void solve_06()
     {
-        ResultSet rs1 = exec("(bgp (:s ?p ?o))", graph) ;
+        ResultSet rs1 = exec("(bgp (:s ?p ?o))") ;
         ResultSet rs2 = results("(row (?p :p) (?o :o))",
                                 "(row (?p :p) (?o 10))",
                                 "(row (?p :p) (?o :x))"
@@ -123,6 +120,16 @@ public class TestSolverTDB
         equals(rs1, rs2) ;
     }
 
+    @Test public void solve_07()
+    {
+        // JENA-1428, JENA-1529
+        String x = "(sequence  (table (vars ?X) (row [?X 'NotPresent']))  (bgp (triple :s :p ?o)))";
+        ResultSet rs1 = exec(x);
+        assertTrue(rs1.hasNext());
+        // Executing without stack trace is enough.
+        ResultSetFormatter.consume(rs1);
+    }
+    
     // ------
     
     private static void equals(ResultSet rs1, ResultSet rs2)
@@ -152,13 +159,15 @@ public class TestSolverTDB
         return SSE.parseTable(str).toResultSet() ; 
     }
     
-    
-    private static ResultSet exec(String pattern, Graph graph)
+    private static ResultSet exec(String pattern)
     {
         Op op = SSE.parseOp(pattern, pmap) ;
         List<Var> vars =  new ArrayList<>() ;
         vars.addAll(OpVars.visibleVars(op)) ;
-        QueryIterator qIter = Algebra.exec(op, graph) ;
+        //op = Algebra.toQuadForm(op);
+        QueryIterator qIter = Algebra.exec(op, dataset.asDatasetGraph()); 
+        // Will go via the StageGeneratorDirectTDB for TDB2 
+        // QueryIterator qIter = Algebra.exec(op, dataset.asDatasetGraph().getDefaultGraph());
         return ResultSetFactory.create(qIter, Var.varNames(vars)) ;
     }
     
