@@ -300,9 +300,8 @@ public class HttpQuery extends Params {
     }
     
     private void contextualizeTimeoutSettings(RequestConfig.Builder builder) {
-        if (connectTimeout <= 0)
-            return;
-        builder.setConnectTimeout(connectTimeout);
+        if (connectTimeout > 0) builder.setConnectTimeout(connectTimeout);
+        if (readTimeout > 0) builder.setSocketTimeout(readTimeout);
     }
 
     private InputStream execGet() throws QueryExceptionHTTP {
