@@ -27,6 +27,7 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
 import org.apache.jena.tdb2.store.GraphTDB;
+import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.store.NodeId;
 
 /** Execute TDB requests directly -- no reordering
@@ -45,8 +46,13 @@ public class StageGeneratorDirectTDB implements StageGenerator
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
-        // --- In case this isn't for TDB
+        // --- In case this isn't for TDB2
         Graph g = execCxt.getActiveGraph() ;
+        
+        if ( g instanceof GraphViewSwitchable ) {
+            GraphViewSwitchable gvs = (GraphViewSwitchable)g;
+            g = gvs.getGraph();
+        }
         
         if ( ! ( g instanceof GraphTDB ) )
             // Not us - bounce up the StageGenerator chain
