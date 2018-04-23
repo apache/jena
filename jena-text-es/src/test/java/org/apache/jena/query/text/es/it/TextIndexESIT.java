@@ -36,44 +36,226 @@ public class TextIndexESIT extends BaseESTest {
 
     @Test
     public void testAddEntity() {
-        String labelKey = "label";
-        String labelValue = "this is a sample Label";
-        Assert.assertNotNull(classToTest);
-        Entity entityToAdd = entity("http://example/x3", labelKey, labelValue);
-        GetResponse response = addEntity(entityToAdd);
-        Assert.assertTrue(response.getSource().containsKey(labelKey));
-        Assert.assertEquals(labelValue, ((List<?>)response.getSource().get(labelKey)).get(0));
+
+        addSpecialCharacterString("label", "this is a sample Label");
+
     }
 
     @Test
     public void testAddDateEntity() {
-        String dateKey = "label";
-        String dateValue = "2016-12-01T15:31:10-05:00";
-        Assert.assertNotNull(classToTest);
-        Entity entityToAdd = entity("http://example/x5", dateKey, dateValue);
-        GetResponse response = addEntity(entityToAdd);
-        Assert.assertTrue(response.getSource().containsKey(dateKey));
-        Assert.assertEquals(dateValue, ((List<?>)response.getSource().get(dateKey)).get(0));
+
+        addSpecialCharacterString("label", "2016-12-01T15:31:10-05:00");
+
     }
 
     @Test
-    public void dateQuery() {
-        testAddDateEntity();
-        List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "2016-12-01T15:31:10-05:00", null, null, 10);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(1, result.size());
+    public void testPlusInSearchQuery() {
+        //Test + character string
+        addSpecialCharacterString("label", "We have +plus in the string");
+        String queryString = "+plus";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
 
-        //This will search for value "2016-12-01T15:31:10-05:00" across all the fields
-        result =  classToTest.query(null, "2016-12-01T15:31:10-05:00", null, null, 10);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(1, result.size());
+    @Test
+    public void testMinusInSearchQuery() {
+        //Test - character string
+        addSpecialCharacterString("label", "We have -minus in the string");
+        String queryString = "-minus";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
 
-        //This will search for value "this" in the label_en field, if it exists. In this case it doesnt so we should get zero results
-        result =  classToTest.query(RDFS.label.asNode(), "2016-12-01T15:31:10-05:00", null, "en", 10);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(0, result.size());
+    @Test
+    public void testEqualInSearchQuery() {
+                //Test = character string
+        addSpecialCharacterString("label", "We have =equal in the string");
+        String queryString = "=equal";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+
+    @Test
+    public void testAmpersandInSearchQuery() {
+                //Test && character string
+        addSpecialCharacterString("label", "We have &&ampersand in the string");
+        String queryString = "&&ampersand";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testPipeInSearchQuery() {
+//        Test || character string
+        addSpecialCharacterString("label", "We have ||pipe in the string");
+        String queryString = "||pipe";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testGreaterInSearchQuery() {
+//        //Test > character string
+        addSpecialCharacterString("label", "We have >greater in the string");
+        String queryString = ">greater";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testLessInSearchQuery() {
+        // Test < character string
+        addSpecialCharacterString("label", "We have <less in the string");
+        String queryString = "<less";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+
+    @Test
+    public void testExclamationInSearchQuery() {
+        //Test ! character string
+        addSpecialCharacterString("label", "We have !notequal in the string");
+        String queryString = "!notequal";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testOpenRoundInSearchQuery() {
+        //Test ( character string
+        addSpecialCharacterString("label", "We have (bracket in the string");
+        String queryString = "(bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testClosedRoundInSearchQuery() {
+        //Test ) character string
+        addSpecialCharacterString("label", "We have )bracket in the string");
+        String queryString = ")bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testOpenCurlyInSearchQuery() {
+        //Test {bracket character string
+        addSpecialCharacterString("label", "We have {bracket in the string");
+        String queryString = "{bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testClosedCurlyInSearchQuery() {
+        //Test }bracket character string
+        addSpecialCharacterString("label", "We have }bracket in the string");
+        String queryString = "}bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testOpenSquareInSearchQuery() {
+        //Test [bracket character string
+        addSpecialCharacterString("label", "We have [bracket in the string");
+        String queryString = "[bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testClosedSquareInSearchQuery() {
+        //Test ]bracket character string
+        addSpecialCharacterString("label", "We have ]bracket in the string");
+        String queryString = "]bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testCaretInSearchQuery() {
+        //Test ^bracket character string
+        addSpecialCharacterString("label", "We have ^bracket in the string");
+        String queryString = "^bracket";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testTildaInSearchQuery() {
+        //Test ~bracket character string
+        addSpecialCharacterString("label", "We have ~tilda in the string");
+        String queryString = "~tilda";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testQuestionInSearchQuery() {
+        //Test ?question character string
+        addSpecialCharacterString("label", "We have ?question in the string");
+        String queryString = "?question";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+    }
+
+    @Test
+    public void testDateQuery() {
+        addSpecialCharacterString("label", "2016-12-01T15:31:10-05:00");
+        String queryString = "2016-12-01T15:31:10-05:00";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
 
     }
+
+    @Test
+    public void testDoubleQouteQuery() {
+        addSpecialCharacterString("label", "This is a \"double\" quote");
+        String queryString = "\"double\"";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 0);
+
+    }
+
+
+    private void addSpecialCharacterString(String key, String value) {
+
+        Assert.assertNotNull(classToTest);
+        Entity entityToAdd = entity("http://example/x5", key, value);
+        GetResponse response = addEntity(entityToAdd);
+        Assert.assertTrue(response.getSource().containsKey(key));
+        Assert.assertEquals(value, ((List<?>)response.getSource().get(key)).get(0));
+
+    }
+    private void querySpecialCharacterQuery(Node label, String queryString, String lang, int limit, int expectedResults) {
+        List<TextHit> result = classToTest.query(label, queryString, null, lang, limit);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(expectedResults, result.size());
+    }
+
 
     @Test
     public void testDeleteEntity() {
@@ -81,14 +263,14 @@ public class TextIndexESIT extends BaseESTest {
         String labelKey = "label";
         String labelValue = "this is a sample Label";
         //Now Delete the entity
-        classToTest.deleteEntity(entity("http://example/x3", labelKey, labelValue));
+        classToTest.deleteEntity(entity("http://example/x5", labelKey, labelValue));
 
         //Try to find it
-        GetResponse response = transportClient.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x3").get();
+        GetResponse response = transportClient.prepareGet(INDEX_NAME, DOC_TYPE, "http://example/x5").get();
         //It Should Exist
         Assert.assertTrue(response.isExists());
         //But the field value should now be empty
-        Assert.assertEquals("http://example/x3", response.getId());
+        Assert.assertEquals("http://example/x5", response.getId());
         Assert.assertTrue(response.getSource().containsKey(labelKey));
         Assert.assertEquals(0, ((List<?>)response.getSource().get(labelKey)).size());
     }
@@ -136,7 +318,7 @@ public class TextIndexESIT extends BaseESTest {
     public void testGet() {
         testAddEntity();
         //Now Get the same entity
-        Map<String, Node> response = classToTest.get("http://example/x3");
+        Map<String, Node> response = classToTest.get("http://example/x5");
         Assert.assertNotNull(response);
         Assert.assertEquals(2, response.size());
     }

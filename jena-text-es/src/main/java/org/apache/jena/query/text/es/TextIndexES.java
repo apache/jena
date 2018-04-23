@@ -422,8 +422,26 @@ public class TextIndexES implements TextIndex {
     }
 
     private String parse(String fieldName, String qs, String lang) {
-        //Escape the ":" character if any in the query string
-        qs = qs.replaceAll("\\:", "\\\\:");
+        //Escape special characters if any in the query string
+        qs = qs.replaceAll("\\:", "\\\\:")
+                .replaceAll("\\+", "\\\\+")
+                .replaceAll("\\-", "\\\\-")
+                .replaceAll("\\=", "\\\\=")
+                .replaceAll("\\&", "\\\\&")
+                .replaceAll("\\|", "\\\\|")
+                .replaceAll("\\>", "\\\\>")
+                .replaceAll("\\<", "\\\\<")
+                .replaceAll("\\!", "\\\\!")
+                .replaceAll("\\(", "\\\\(")
+                .replaceAll("\\)", "\\\\)")
+                .replaceAll("\\{", "\\\\{")
+                .replaceAll("\\}", "\\\\}")
+                .replaceAll("\\]", "\\\\]")
+                .replaceAll("\\[", "\\\\[")
+                .replaceAll("\\^", "\\\\^")
+                .replaceAll("\\~", "\\\\~")
+                .replaceAll("\\?", "\\\\?");
+
 
         if(fieldName != null && !fieldName.isEmpty()) {
             if(lang != null && !lang.equals("none")) {
