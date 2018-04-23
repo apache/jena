@@ -46,6 +46,36 @@ public class TextIndexESIT extends BaseESTest {
     }
 
     @Test
+    public void testAddDateEntity() {
+        String dateKey = "label";
+        String dateValue = "2016-12-01T15:31:10-05:00";
+        Assert.assertNotNull(classToTest);
+        Entity entityToAdd = entity("http://example/x5", dateKey, dateValue);
+        GetResponse response = addEntity(entityToAdd);
+        Assert.assertTrue(response.getSource().containsKey(dateKey));
+        Assert.assertEquals(dateValue, ((List<?>)response.getSource().get(dateKey)).get(0));
+    }
+
+    @Test
+    public void dateQuery() {
+        testAddDateEntity();
+        List<TextHit> result =  classToTest.query(RDFS.label.asNode(), "2016-12-01T15:31:10-05:00", null, null, 10);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(1, result.size());
+
+        //This will search for value "2016-12-01T15:31:10-05:00" across all the fields
+        result =  classToTest.query(null, "2016-12-01T15:31:10-05:00", null, null, 10);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(1, result.size());
+
+        //This will search for value "this" in the label_en field, if it exists. In this case it doesnt so we should get zero results
+        result =  classToTest.query(RDFS.label.asNode(), "2016-12-01T15:31:10-05:00", null, "en", 10);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(0, result.size());
+
+    }
+
+    @Test
     public void testDeleteEntity() {
         testAddEntity();
         String labelKey = "label";

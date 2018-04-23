@@ -73,7 +73,8 @@ public class JenaESTextExample {
         String qs = StrUtils.strjoinNL
                 ( "SELECT * "
 //                        , " { ?s text:query (rdfs:comment 'this' 'lang:en') ;"
-                        , " { ?s text:query ('this' 'lang:en*') ;"
+//                        , " { ?s text:query ('this' 'lang:en*') ;"
+                        ,"{ ?s text:query ('2016-12-01T15:31:10-05:00') ;"
 //                        , " { ?s text:query ('this' 'lang:en-GB') ;"
 //                        , " { ?s text:query (rdfs:comment 'this' 'lang:en-GB') ;"
 //                        , " { ?s text:query (rdfs:comment 'this' 'lang:*') ;"
