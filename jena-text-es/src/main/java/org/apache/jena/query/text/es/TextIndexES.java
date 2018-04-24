@@ -23,6 +23,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.*;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -423,25 +424,7 @@ public class TextIndexES implements TextIndex {
 
     private String parse(String fieldName, String qs, String lang) {
         //Escape special characters if any in the query string
-        qs = qs.replaceAll("\\:", "\\\\:")
-                .replaceAll("\\+", "\\\\+")
-                .replaceAll("\\-", "\\\\-")
-                .replaceAll("\\=", "\\\\=")
-                .replaceAll("\\&", "\\\\&")
-                .replaceAll("\\|", "\\\\|")
-                .replaceAll("\\>", "\\\\>")
-                .replaceAll("\\<", "\\\\<")
-                .replaceAll("\\!", "\\\\!")
-                .replaceAll("\\(", "\\\\(")
-                .replaceAll("\\)", "\\\\)")
-                .replaceAll("\\{", "\\\\{")
-                .replaceAll("\\}", "\\\\}")
-                .replaceAll("\\]", "\\\\]")
-                .replaceAll("\\[", "\\\\[")
-                .replaceAll("\\^", "\\\\^")
-                .replaceAll("\\~", "\\\\~")
-                .replaceAll("\\?", "\\\\?");
-
+        qs = QueryParserBase.escape(qs);
 
         if(fieldName != null && !fieldName.isEmpty()) {
             if(lang != null && !lang.equals("none")) {

@@ -240,6 +240,15 @@ public class TextIndexESIT extends BaseESTest {
 
     }
 
+    @Test
+    public void testBackslash() {
+        addSpecialCharacterString("label", "C:\\ title.csv save this");
+        String queryString = "C:\\ title.csv";
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, null, 10, 1);
+        querySpecialCharacterQuery(null, queryString, null, 10, 1);
+        querySpecialCharacterQuery(RDFS.label.asNode(), queryString, "en", 10, 1);
+    }
+
 
     private void addSpecialCharacterString(String key, String value) {
 
