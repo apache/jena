@@ -113,7 +113,7 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     @Override
     public Graph getGraph(Node gn) {
         Node key = ( gn != null ) ? gn : Quad.defaultGraphNodeGenerated;
-        return ngCache.getOrFill(gn, ()->GraphViewSwitchable.createNamedGraph(this, key));
+        return ngCache.getOrFill(key, ()->GraphViewSwitchable.createNamedGraph(this, key));
     }
 
     // TDB2 specific.
