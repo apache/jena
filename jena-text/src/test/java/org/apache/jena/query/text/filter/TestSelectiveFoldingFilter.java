@@ -118,17 +118,15 @@ public class TestSelectiveFoldingFilter {
         StandardTokenizer tokenizer = new StandardTokenizer();
         tokenizer.setReader(inputText);
 
-        SelectiveFoldingFilter selectiveFoldingFilter = new SelectiveFoldingFilter(tokenizer, whitelisted);
-
-        CharTermAttribute termAttrib = (CharTermAttribute) selectiveFoldingFilter.getAttribute(CharTermAttribute.class);
-
-        selectiveFoldingFilter.reset();
-        List<String> tokens = new ArrayList<>();
-        while (selectiveFoldingFilter.incrementToken()) {
-            tokens.add(termAttrib.toString());
+        try (SelectiveFoldingFilter selectiveFoldingFilter = new SelectiveFoldingFilter(tokenizer, whitelisted)) {
+            CharTermAttribute termAttrib = selectiveFoldingFilter.getAttribute(CharTermAttribute.class);
+            selectiveFoldingFilter.reset();
+            List<String> tokens = new ArrayList<>();
+            while (selectiveFoldingFilter.incrementToken()) {
+                tokens.add(termAttrib.toString());
+            }
+            selectiveFoldingFilter.end();
+            return tokens;
         }
-        selectiveFoldingFilter.end();
-        selectiveFoldingFilter.close();
-        return tokens;
     }
 }

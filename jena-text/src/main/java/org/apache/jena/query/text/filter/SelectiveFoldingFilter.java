@@ -34,7 +34,7 @@ import org.apache.lucene.util.ArrayUtil;
  * white list are ignored during the filtering. This is useful for languages
  * that require certain characters to be ignored.
  *
- * @link ASCIIFoldingFilter
+ * @see ASCIIFoldingFilter
  */
 
 public final class SelectiveFoldingFilter extends TokenFilter {
