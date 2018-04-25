@@ -18,23 +18,26 @@
 
 package org.apache.jena.system;
 
-import org.apache.jena.sys.JenaSystem;
-
 /**
  * This is a temporary adapter for implementations to transition to [JENA-1524]
  */
-public class JenaInit {
+@Deprecated
+public class JenaSystem {
 
     /**
      * Initialize Jena.
+     * @deprecated Use {@link org.apache.jena.sys.JenaSystem#init()}
      */
+    @Deprecated
     public static void init() {
-        JenaSystem.init();
+        org.apache.jena.sys.JenaSystem.init();
     }
 
-    /** Shutdown subsystems */
+    /** Shutdown subsystems
+     * @deprecated Use {@link org.apache.jena.sys.JenaSystem#shutdown()}
+     */
+    @Deprecated
     public static void shutdown() {
-        JenaSystem.shutdown();
+        org.apache.jena.sys.JenaSystem.shutdown();
     }
-
 }
