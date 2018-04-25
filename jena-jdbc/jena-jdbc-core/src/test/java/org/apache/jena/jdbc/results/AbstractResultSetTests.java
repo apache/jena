@@ -35,7 +35,7 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.XSD ;
 import org.junit.* ;
 

@@ -27,7 +27,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.Serializer;
+import org.apache.jena.sys.Serializer;
 
 /**
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  

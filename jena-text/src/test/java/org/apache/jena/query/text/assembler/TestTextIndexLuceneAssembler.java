@@ -21,7 +21,7 @@ package org.apache.jena.query.text.assembler;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.query.text.TextIndexLucene ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.store.RAMDirectory ;

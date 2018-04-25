@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.system;
 
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 /** ARQ initialization. Used by {@code JenaSystem} */
 public class InitARQ implements JenaSubsystemLifecycle {

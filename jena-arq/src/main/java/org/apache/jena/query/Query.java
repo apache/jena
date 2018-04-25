@@ -40,7 +40,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.PatternVars ;
 import org.apache.jena.sparql.syntax.Template ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn

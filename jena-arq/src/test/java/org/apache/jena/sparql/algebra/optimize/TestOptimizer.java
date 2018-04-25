@@ -29,7 +29,7 @@ import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.Test ;
 
 public class TestOptimizer extends AbstractTestTransform

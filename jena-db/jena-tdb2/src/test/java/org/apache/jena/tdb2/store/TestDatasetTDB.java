@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.junit.TL;
 import org.junit.After ;

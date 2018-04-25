@@ -24,7 +24,7 @@ import org.apache.jena.query.text.assembler.TextVocab ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 

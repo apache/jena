@@ -18,7 +18,7 @@
 
 package org.apache.jena.lang.csv;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 /** ARQ initialization. Used by {@code JenaSystem} */
 public class InitCSV implements JenaSubsystemLifecycle {

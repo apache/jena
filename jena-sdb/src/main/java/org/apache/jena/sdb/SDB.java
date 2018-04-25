@@ -34,7 +34,7 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;

@@ -35,7 +35,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
  * <p>

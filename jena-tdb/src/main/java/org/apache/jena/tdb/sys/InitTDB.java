@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb.sys;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 import org.apache.jena.tdb.TDB ;
 
 /** Jena subsystem initialization */

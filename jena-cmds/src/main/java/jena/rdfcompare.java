@@ -25,7 +25,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** A program which read two RDF models and determines if they are the same.
  *

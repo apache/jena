@@ -40,7 +40,7 @@ import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
 import org.apache.jena.tdb.modify.UpdateEngineTDB ;
 import org.apache.jena.tdb.setup.DatasetBuilderStd ;

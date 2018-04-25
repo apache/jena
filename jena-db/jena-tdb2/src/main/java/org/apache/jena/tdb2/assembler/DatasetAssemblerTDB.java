@@ -36,7 +36,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 

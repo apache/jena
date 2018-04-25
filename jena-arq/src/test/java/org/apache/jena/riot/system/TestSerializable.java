@@ -31,7 +31,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

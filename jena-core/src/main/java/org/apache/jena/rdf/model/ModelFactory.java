@@ -37,7 +37,7 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.

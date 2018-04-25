@@ -29,7 +29,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunction ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 public class SpatialQuery
 {

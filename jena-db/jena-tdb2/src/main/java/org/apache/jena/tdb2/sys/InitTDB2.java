@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.sys;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 import org.apache.jena.tdb2.TDB2;
 
 public class InitTDB2 implements JenaSubsystemLifecycle {

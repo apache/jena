@@ -20,7 +20,7 @@ package org.apache.jena.riot;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
 

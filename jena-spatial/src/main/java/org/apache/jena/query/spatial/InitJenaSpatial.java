@@ -18,7 +18,7 @@
 
 package org.apache.jena.query.spatial;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 public class InitJenaSpatial implements JenaSubsystemLifecycle {
     @Override

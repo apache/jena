@@ -25,7 +25,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 
 public class NodeFactory {
     

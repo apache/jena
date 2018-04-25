@@ -19,7 +19,7 @@
 package tdb.bulkloader2;
 
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.store.bulkloader2.ProcIndexBuild ;
 
 public class CmdIndexBuild {

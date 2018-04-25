@@ -53,7 +53,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;

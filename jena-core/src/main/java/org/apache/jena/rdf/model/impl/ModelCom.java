@@ -37,7 +37,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;

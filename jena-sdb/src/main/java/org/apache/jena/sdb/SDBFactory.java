@@ -35,7 +35,7 @@ import org.apache.jena.sdb.store.DatasetStore ;
 import org.apache.jena.sdb.store.StoreFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.modify.GraphStoreBasic ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.update.GraphStore ;
 
 /** Various operations to create or connect objects to do with SDB:

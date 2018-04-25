@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.system;
+package org.apache.jena.sys;
 
 /** Lifecycle interface for jena modules and subsystems. */ 
 public interface JenaSubsystemLifecycle {

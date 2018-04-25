@@ -22,7 +22,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.FusekiLogging ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** Setup the environment and logging.
  *  Runs before the {@link ShiroEnvironmentLoader}.

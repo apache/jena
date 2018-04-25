@@ -23,7 +23,7 @@ import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.exceptions.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.RDF ;
 
 public abstract class AssemblerBase implements Assembler
