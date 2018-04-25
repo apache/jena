@@ -28,6 +28,7 @@
   <artifactId>jena-shaded-guava</artifactId>
   <version>3.8.0-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
+
   <description>
     This module shades Google's Guava.
     Direct use can lead to versioning problems 
@@ -37,8 +38,6 @@
     re-package them under the package name
     org.apache.jena.ext.com.google....
   </description>
-  
-
 
   <dependencies>
     <dependency>
@@ -47,7 +46,7 @@
       <!-- Version number specified explicitly and not in jena-project, 
            as it should only be used here, and further shadowing/bundle/NOTICE
            consideration might be needed on upgrade. -->
-      <version>21.0</version>
+      <version>24.1-jre</version>
     </dependency>
   </dependencies>
   <properties>
