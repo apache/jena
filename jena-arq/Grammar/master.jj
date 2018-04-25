@@ -2211,20 +2211,6 @@ String String() : { Token t ; String lex ; }
     }
 }
 
-#ifdef ARQ
-Number Number() : { Token t ; Number number ; }
-{
-  (
-    t = < INTEGER > { number = integerValue(t.image) ; }
-  | t = < DECIMAL > { number = doubleValue(t.image) ; }
-  | t = < DOUBLE >  { number = doubleValue(t.image) ; }
-  )
-  {
-    return number ;
-  }
-}
-#endif
-
 String iri() : { String iri ; }
 {
   iri = IRIREF() { return iri ; }
