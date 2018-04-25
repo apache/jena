@@ -70,6 +70,7 @@ public abstract class ActionBase extends ServletBase
             response = action.response ;
             initResponse(request, response) ;
             try {
+                action.startRequest();
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
                 // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.
@@ -103,9 +104,10 @@ public abstract class ActionBase extends ServletBase
                 //ex.printStackTrace(System.err) ;
                 log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+            } finally {
+                action.setFinishTime() ;
+                finishRequest(action);
             }
-    
-            action.setFinishTime() ;
             printResponse(action) ;
             archiveHttpAction(action) ;
         } catch (Throwable th) {

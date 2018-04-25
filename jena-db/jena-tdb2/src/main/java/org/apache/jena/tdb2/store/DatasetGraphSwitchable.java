@@ -32,6 +32,7 @@ import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.apache.jena.sparql.core.Quad;
 
 final
 public class DatasetGraphSwitchable extends DatasetGraphWrapper 
@@ -111,7 +112,8 @@ public class DatasetGraphSwitchable extends DatasetGraphWrapper
     
     @Override
     public Graph getGraph(Node gn) {
-        return ngCache.getOrFill(gn, ()->GraphViewSwitchable.createNamedGraph(this, gn));
+        Node key = ( gn != null ) ? gn : Quad.defaultGraphNodeGenerated;
+        return ngCache.getOrFill(key, ()->GraphViewSwitchable.createNamedGraph(this, key));
     }
 
     // TDB2 specific.

@@ -156,7 +156,6 @@ public abstract class ActionService extends ActionBase {
      */
     // This is the service request lifecycle.
     final protected void executeLifecycle(HttpAction action) {
-        startRequest(action);
         // And also HTTP counter
         CounterSet csService = action.getDataService().getCounters();
         CounterSet csOperation = null;
@@ -166,32 +165,27 @@ public abstract class ActionService extends ActionBase {
 
         incCounter(csService, Requests);
         incCounter(csOperation, Requests);
+        // Either exit this via "bad request" on validation
+        // or in execution in perform.
         try {
-            // Either exit this via "bad request" on validation
-            // or in execution in perform.
-            try {
-                validate(action);
-            }
-            catch (ActionErrorException ex) {
-                incCounter(csOperation, RequestsBad);
-                incCounter(csService, RequestsBad);
-                throw ex;
-            }
-
-            try {
-                perform(action);
-                // Success
-                incCounter(csOperation, RequestsGood);
-                incCounter(csService, RequestsGood);
-            }
-            catch (ActionErrorException | QueryCancelledException | RuntimeIOException ex) {
-                incCounter(csOperation, RequestsBad);
-                incCounter(csService, RequestsBad);
-                throw ex;
-            }
+            validate(action);
         }
-        finally {
-            finishRequest(action);
+        catch (ActionErrorException ex) {
+            incCounter(csOperation, RequestsBad);
+            incCounter(csService, RequestsBad);
+            throw ex;
+        }
+
+        try {
+            perform(action);
+            // Success
+            incCounter(csOperation, RequestsGood);
+            incCounter(csService, RequestsGood);
+        }
+        catch (ActionErrorException | QueryCancelledException | RuntimeIOException ex) {
+            incCounter(csOperation, RequestsBad);
+            incCounter(csService, RequestsBad);
+            throw ex;
         }
     }
 

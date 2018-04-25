@@ -181,7 +181,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             if ( !update.getSilent() ) {
                 if ( ex instanceof UpdateException )
                     throw ex;
-                throw new UpdateException("Failed to LOAD '" + source + "'", ex);
+                throw new UpdateException("Failed to LOAD '" + source + "' :: " + ex.getMessage(), ex);
             }
         }
     }

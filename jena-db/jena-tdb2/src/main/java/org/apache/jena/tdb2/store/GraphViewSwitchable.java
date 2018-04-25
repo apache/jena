@@ -20,6 +20,7 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Map ;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.shared.PrefixMapping ;
@@ -80,6 +81,13 @@ public class GraphViewSwitchable extends GraphView {
     public DatasetGraphSwitchable getDataset() {
         return getx() ;
     }
+    
+    /** Return the {@code Graph} from the underlying switchable.
+     *  Do not hold onto this reference across switches. 
+     */
+    public Graph getGraph() {
+        return getx().getGraph(getGraphName()) ;
+    }
 
     // DatasetPrefixStorage specific with getting the DatasetPrefixStorage
     // done at the point the operation happens.
@@ -138,5 +146,4 @@ public class GraphViewSwitchable extends GraphView {
             return prefixMapping().getNsPrefixMap();
         }
     }
-
 }
