@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.serializer;
 
 import java.io.OutputStream ;
-import java.util.ArrayList;
 import java.util.List ;
 import java.util.Map;
 
@@ -47,6 +46,7 @@ public class QuerySerializer implements QueryVisitor
     protected FormatterElement fmtElement ;
     protected FmtExprSPARQL fmtExpr ;
     protected IndentedWriter out = null ;
+    protected Prologue prologue = null ;
 
     QuerySerializer(OutputStream        _out,
                     FormatterElement    formatterElement, 
@@ -77,6 +77,7 @@ public class QuerySerializer implements QueryVisitor
     @Override
     public void visitPrologue(Prologue prologue)
     { 
+        this.prologue = prologue ;
         int row1 = out.getRow() ;
         PrologueSerializer.output(out, prologue) ;
         int row2 = out.getRow() ;
@@ -147,12 +148,21 @@ public class QuerySerializer implements QueryVisitor
 
     @Override
     public void visitJsonResultForm(Query query) {
-        out.print("JSON {");
-        List<String> terms = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : query.getJsonMapping().entrySet()) {
-            terms.add(String.format("\"%s\" : %s ", entry.getKey(), entry.getValue()));
+        out.println("JSON {");
+        out.incIndent(4);
+        boolean first = true;
+        for (Map.Entry<String, Node> entry : query.getJsonMapping().entrySet()) {
+            String field = entry.getKey();
+            Node value = entry.getValue();
+            if ( ! first )
+                out.println(" ,");
+            first = false;
+            out.print('"'); out.print(field); out.print('"');
+            out.print(" : ");
+            out.pad(15);
+            out.print(FmtUtils.stringForNode(value, prologue));
         }
-        out.print(String.join(",", terms));
+        out.decIndent(4);
         out.print(" }");
         out.newline();
     }
