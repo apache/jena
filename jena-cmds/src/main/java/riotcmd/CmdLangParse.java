@@ -218,8 +218,14 @@ public abstract class CmdLangParse extends CmdGeneral
         RDFParserBuilder builder = RDFParser.create();
         if ( baseURI != null )
             builder.base(baseURI);
-        Lang lang = selectLang(null, null, RDFLanguages.NQUADS) ;
-        builder.lang(lang);
+        if ( modLangParse.getLang() != null )
+            // Always use the command line specified syntax.
+            builder.forceLang(modLangParse.getLang());
+        else {
+            // Otherwise, use the command selected langauge, with N-Quads as the ultimate fallback.  
+            Lang lang = selectLang(null, null, RDFLanguages.NQUADS) ;
+            builder.lang(RDFLanguages.NQUADS);
+        }
 
         // Set the source.
         if ( filename.equals("-") ) {
@@ -234,7 +240,7 @@ public abstract class CmdLangParse extends CmdGeneral
         return parseRIOT(builder, filename);
     }
 
-    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang  ) ;
+    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang) ;
 
     protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
         boolean checking = true ;
