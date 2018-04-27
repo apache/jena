@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.atlas.lib.Closeable;
-
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -93,8 +91,6 @@ public class JsonIterator implements Iterator<JsonObject>
      */
     private void close()
     {
-        if (queryIterator instanceof Closeable)
-            ((Closeable) queryIterator).close();
+        queryIterator.close();
     }
-
 }
