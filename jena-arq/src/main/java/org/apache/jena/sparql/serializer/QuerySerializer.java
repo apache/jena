@@ -149,7 +149,8 @@ public class QuerySerializer implements QueryVisitor
     @Override
     public void visitJsonResultForm(Query query) {
         out.println("JSON {");
-        out.incIndent(4);
+        out.incIndent(BLOCK_INDENT);
+        out.incIndent(BLOCK_INDENT);
         boolean first = true;
         for (Map.Entry<String, Node> entry : query.getJsonMapping().entrySet()) {
             String field = entry.getKey();
@@ -162,7 +163,8 @@ public class QuerySerializer implements QueryVisitor
             out.pad(15);
             out.print(FmtUtils.stringForNode(value, prologue));
         }
-        out.decIndent(4);
+        out.decIndent(BLOCK_INDENT);
+        out.decIndent(BLOCK_INDENT);
         out.print(" }");
         out.newline();
     }
