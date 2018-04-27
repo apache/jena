@@ -450,7 +450,7 @@ public class TestOptimizer extends AbstractTestTransform
                                , "  }"
                                , "}"
             );
-        // Fro reference, which is ...
+        // For reference, which is ...
         String x = StrUtils.strjoinNL(
             "(join"
             ,"    (bgp (triple ?s ?p ?o))"
