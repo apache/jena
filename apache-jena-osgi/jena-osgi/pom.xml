@@ -143,6 +143,13 @@
       <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>3.8.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
     <!--
     NOTE: Also update 
     src/main/resources/META-INF/services/org.apache.jena.sys.JenaSubsystemLifecycle
