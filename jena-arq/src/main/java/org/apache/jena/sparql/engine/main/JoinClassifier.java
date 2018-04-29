@@ -111,11 +111,20 @@ public class JoinClassifier
         // Step 1 : If there are any variables in the LHS that are filter-only or filter-before define,
         // we can't do anything.
         if ( ! vRightFilterOnly.isEmpty() ) {
-            // A tigher condition is to see of any of the getFilterOnly are possible from the
-            // left.  If not, then we can still use a sequence. 
-            // But an outer sequence may push arbitrary here so play safe on the argument
-            // this is a relative uncommon case.
-            return false ;
+            if ( SetUtils.intersectionP(vLeftFixed, vRightFilterOnly) ||
+                 SetUtils.intersectionP(vLeftOpt, vRightFilterOnly) ) {
+                if ( print )
+                    System.err.println("vRightFilterOnly has variables used in the left");
+                return false;
+            }
+            // JENA-1534 fixes this.
+//            // The above is the tigher condition to see of any of the getFilterOnly are
+//            // possible from the left. If not, then we can still use a sequence.
+//            // An outer sequence should not push arbitrary variables here but ... play
+//            // safe on the argument this is a relative uncommon case.
+//            if ( print )
+//                System.err.println("vRightFilterOnly.not isEmpty");
+//            return false;
         }
         
         // Step 2 : remove any variable definitely fixed from the floating sets
