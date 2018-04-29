@@ -72,10 +72,9 @@ public class TestTxnLifecycle {
         assertEquals(56,x) ;
     }
     
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void txn_lifecycle_05b() {
         int x = Txn.calculateWrite(trans, ()-> {
-            // Does not continue outer transaction.
             return Txn.calculateRead(trans, ()->56) ;
         });
         assertEquals(56,x) ;
