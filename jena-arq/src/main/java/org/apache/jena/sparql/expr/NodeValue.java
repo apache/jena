@@ -22,17 +22,10 @@ import static javax.xml.datatype.DatatypeConstants.* ;
 import static org.apache.jena.datatypes.xsd.XSDDatatype.* ;
 import static org.apache.jena.sparql.expr.ValueSpaceClassification.* ;
 
-import java.io.File ;
-import java.io.FileInputStream ;
-import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.util.Calendar ;
-import java.util.Iterator ;
-import java.util.Properties ;
-import java.util.ServiceLoader ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
@@ -45,6 +38,7 @@ import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
+import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
@@ -145,66 +139,8 @@ public abstract class NodeValue extends ExprNode
     
     public static final String xsdNamespace = XSD+"#" ; 
     
-    public static DatatypeFactory xmlDatatypeFactory = null ;
-    static
-    {
-        try { xmlDatatypeFactory = getDatatypeFactory() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory", ex) ; }
-    }
-    
-    /**
-     * Get a datatype factory using the correct classloader
-     * 
-     * See JENA-328. DatatypeFactory.newInstance() clashes with OSGi
-     * This is clearly crazy, but DatatypeFactory is missing a very obvious
-     * method newInstance(Classloader). The method that was added is very
-     * hard to use correctly, as we shall see...
-     */
-    private static DatatypeFactory getDatatypeFactory() 
-            throws DatatypeConfigurationException {
-        // Step 1. Try the system property
-        String dtfClass = System.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
-        
-        try {
-            File jaxpPropFile = new File(System.getProperty("java.home") + 
-                                         File.separator + "lib" + File.separator + "jaxp.properties");
-            // Step 2. Otherwise, try property in jaxp.properties
-            if (dtfClass == null && jaxpPropFile.exists() && jaxpPropFile.canRead()) {
-                Properties jaxp = new Properties();
-                try(InputStream in = new FileInputStream(jaxpPropFile)) {
-                    jaxp.load(in);
-                    dtfClass = jaxp.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
-                } catch (Exception e) {
-                    log.warn("Issue loading jaxp.properties", e);
-                }
-            }
-        }
-        // File.exists and File.canRead may throw  SecurityException (probably AccessControlException)
-        catch (SecurityException ex) {
-            log.warn("Security exception try to get jaxp.properties: "+ex.getMessage()) ;
-        }
-        
-        // Step 3. Otherwise try the service approach
-        // This is the normal initialization path, getting it from the Apach Xerces dependency
-        // and loading org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl
-        if (dtfClass == null) {
-            ClassLoader cl = NodeValue.class.getClassLoader();
-            Iterator<DatatypeFactory> factoryIterator = 
-                ServiceLoader.load(DatatypeFactory.class, cl).iterator();
-            if (factoryIterator.hasNext()) return factoryIterator.next();
-        }
-        
-        // Step 4. Use the default.
-        // Note: When Apache Xerces is on the classpath for Jena, javax.xml.datatype.DatatypeFactory is from that jar and
-        //  DATATYPEFACTORY_IMPLEMENTATION_CLASS is "org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl"
-        // Without an explicit Xerces, we would get "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl"
-        // from the JDK rt.jar version of javax.xml.datatype.DatatypeFactory.
-        if (dtfClass == null) 
-            dtfClass = DatatypeFactory.DATATYPEFACTORY_IMPLEMENTATION_CLASS;
-        return DatatypeFactory.newInstance(dtfClass, NodeValue.class.getClassLoader()) ;
-    }
-    
+    public static  DatatypeFactory xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
+
     private Node node = null ;     // Null used when a value has not be turned into a Node.
     
     // Don't create direct - the static builders manage the value/node relationship 

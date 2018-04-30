@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmlinput;
 
 import java.io.* ;
-import java.nio.charset.Charset ;
 
 import junit.framework.Test ;
 import junit.framework.TestCase ;
@@ -120,44 +119,50 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         }
     }
 
-	public void testLatin1() throws IOException {
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		InputStream r = new FileInputStream(
-				"testing/arp/i18n/latin1.rdf");
-		
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_NONCANONICAL_IANA_NAME };
-		rdr.read(m, r, "http://example.org/");
-		checkExpected();
-	}
-	public void testARPMacRoman() throws IOException {
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		InputStream r = new FileInputStream(
-				"testing/arp/i18n/macroman.rdf");
-		
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
-		expected[Charset.isSupported("MacRoman")?0:1]=0;
-//		 Only one of the warnings is expected, which depends on Java version
-		
-		rdr.read(m, r, "http://example.org/");
-		checkExpected();
-	}
-	public void testARPMacArabic() throws IOException {
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		InputStream r = new FileInputStream(
-				"testing/arp/i18n/arabic-macarabic.rdf");
-		
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
-		expected[Charset.isSupported("MacArabic")?0:1]=0;
-//		 Only one of the warnings is expected, which depends on Java version
-		rdr.read(m, r, "http://example.org/");
-		checkExpected();
-	}
+    // JENA-1537
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+//	public void testLatin1() throws IOException {
+//		Model m = createMemModel();
+//		RDFReader rdr = m.getReader();
+//		InputStream r = new FileInputStream(
+//				"testing/arp/i18n/latin1.rdf");
+//		
+//		rdr.setErrorHandler(this);
+//		expected = new int[] { WARN_NONCANONICAL_IANA_NAME };
+//		rdr.read(m, r, "http://example.org/");
+//		checkExpected();
+//	}
+	
+	// JENA-1537
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+	
+//	public void testARPMacRoman() throws IOException {
+//		Model m = createMemModel();
+//		RDFReader rdr = m.getReader();
+//		InputStream r = new FileInputStream(
+//				"testing/arp/i18n/macroman.rdf");
+//		
+//		rdr.setErrorHandler(this);
+//		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+//		expected[Charset.isSupported("MacRoman")?0:1]=0;
+////		 Only one of the warnings is expected, which depends on Java version
+//		
+//		rdr.read(m, r, "http://example.org/");
+//		checkExpected();
+//	}
+//	public void testARPMacArabic() throws IOException {
+//		Model m = createMemModel();
+//		RDFReader rdr = m.getReader();
+//		InputStream r = new FileInputStream(
+//				"testing/arp/i18n/arabic-macarabic.rdf");
+//		
+//		rdr.setErrorHandler(this);
+//		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+//		expected[Charset.isSupported("MacArabic")?0:1]=0;
+////		 Only one of the warnings is expected, which depends on Java version
+//		rdr.read(m, r, "http://example.org/");
+//		checkExpected();
+//	}
 	
 
 	public void testEncodingMismatch1() throws IOException {
@@ -253,16 +258,20 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		subTestEncodingMismatch2(r);
 	}
 
-	public void testEncodingMismatch3() throws IOException {
-	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
-	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
-	        subTestEncodingMismatch2(r);
-	    }catch (java.io.UnsupportedEncodingException e) {
-	        System.err
-	        .println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
-	        return;
-	    }
-	}
+	
+	// JENA-1537
+    // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+
+//	public void testEncodingMismatch3() throws IOException {
+//	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
+//	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
+//	        subTestEncodingMismatch2(r);
+//	    }catch (java.io.UnsupportedEncodingException e) {
+//	        System.err
+//	        .println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
+//	        return;
+//	    }
+//	}
 
 	private void subTestEncodingMismatch2(InputStreamReader r) {
 		if (r.getEncoding().startsWith("UTF")) {

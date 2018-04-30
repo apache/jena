@@ -40,10 +40,12 @@ public class TestMacEncodings  extends ModelTestBase
 	public TestMacEncodings( String name )
 		{ super( name ); }
 			
-	public static TestSuite suite()
+	// JENA-1537
+	// Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+	public static TestSuite inactive_suite()
     	{ 
 	    TestSuite suite = new TestSuite( TestMacEncodings.class );
-        suite.setName("Encodings (particular MacRoman etc.)");
+        suite.setName("Encodings - particular MacRoman etc.");
 
         try {
             OutputStream out = new ByteArrayOutputStream();

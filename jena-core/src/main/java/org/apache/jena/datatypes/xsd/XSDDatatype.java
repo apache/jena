@@ -18,33 +18,25 @@
 
 package org.apache.jena.datatypes.xsd;
 
-import java.io.Reader ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.net.URI ;
-import java.util.ArrayList ;
-import java.util.List ;
 
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.impl.* ;
+import org.apache.jena.ext.xerces.impl.dv.*;
+import org.apache.jena.ext.xerces.impl.dv.util.Base64;
+import org.apache.jena.ext.xerces.impl.dv.util.HexBin;
+import org.apache.jena.ext.xerces.impl.dv.xs.DecimalDV;
+import org.apache.jena.ext.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.jena.ext.xerces.impl.validation.ValidationState;
+import org.apache.jena.ext.xerces.util.SymbolHash;
+import org.apache.jena.ext.xerces.xs.XSConstants;
+import org.apache.jena.ext.xerces.xs.XSTypeDefinition;
 import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.xerces.impl.dv.* ;
-import org.apache.xerces.impl.dv.util.Base64 ;
-import org.apache.xerces.impl.dv.util.HexBin ;
-import org.apache.xerces.impl.dv.xs.DecimalDV ;
-import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl ;
-import org.apache.xerces.impl.validation.ValidationState ;
-import org.apache.xerces.parsers.XMLGrammarPreparser ;
-import org.apache.xerces.util.SymbolHash ;
-import org.apache.xerces.xni.grammars.XMLGrammarDescription ;
-import org.apache.xerces.xni.grammars.XSGrammar ;
-import org.apache.xerces.xni.parser.XMLInputSource ;
-import org.apache.xerces.xs.XSConstants ;
-import org.apache.xerces.xs.XSNamedMap ;
-import org.apache.xerces.xs.XSTypeDefinition ;
 
 /**
  * Representation of an XSD datatype based on the Xerces-2
@@ -315,77 +307,82 @@ public class XSDDatatype extends BaseDatatype {
         return typeDeclaration;
     }
 
-    /**
-     * Create and register a set of types specified in a user schema file.
-     * We use the (illegal) DAML+OIL approach that the uriref of the type
-     * is the url of the schema file with fragment ID corresponding the
-     * the name of the type.
-     *
-     * @param uri the absolute uri of the schema file to be loaded
-     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
-     * @param encoding the encoding of the source file (can be null)
-     * @param tm the type mapper into which to load the definitions
-     * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-     * in default mode for load which may provide diagnostic output direct to stderr)
-     */
-    public static List<String> loadUserDefined(String uri, Reader reader, String encoding, TypeMapper tm) throws DatatypeFormatException {
-        return loadUserDefined(new XMLInputSource(null, uri, uri, reader, encoding), tm);
-    }
-
-    /**
-     * Create and register a set of types specified in a user schema file.
-     * We use the (illegal) DAML+OIL approach that the uriref of the type
-     * is the url of the schema file with fragment ID corresponding the
-     * the name of the type.
-     *
-     * @param uri the absolute uri of the schema file to be loaded, this should be a resolvable URL
-     * @param encoding the encoding of the source file (can be null)
-     * @param tm the type mapper into which to load the definitions
-     * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-     * in default mode for load which may provide diagnostic output direct to stderr)
-     */
-    public static List<String> loadUserDefined(String uri, String encoding, TypeMapper tm) throws DatatypeFormatException {
-        return loadUserDefined(new XMLInputSource(null, uri, uri), tm);
-    }
-
-    /**
-     * Internal implementation of loadUserDefined
-     *
-     * @param uri the absolute uri of the schema file to be loaded
-     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
-     * @param encoding the encoding of the source file (can be null)
-     * @param tm the type mapper into which to load the definitions
-     * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-     * in default mode for load which may provide diagnostic output direct to stderr)
-     */
-    private static List<String> loadUserDefined(XMLInputSource source, TypeMapper tm) throws DatatypeFormatException {
-        XMLGrammarPreparser parser = new XMLGrammarPreparser();
-        parser.registerPreparser(XMLGrammarDescription.XML_SCHEMA, null);
-        try {
-            XSGrammar xsg = (XSGrammar) parser.preparseGrammar(XMLGrammarDescription.XML_SCHEMA, source);
-            org.apache.xerces.xs.XSModel xsm = xsg.toXSModel();
-            XSNamedMap map = xsm.getComponents(XSTypeDefinition.SIMPLE_TYPE);
-            int numDefs = map.getLength();
-            ArrayList<String> names = new ArrayList<>(numDefs);
-            for (int i = 0; i < numDefs; i++) {
-                XSSimpleType xstype = (XSSimpleType) map.item(i);
-                // Filter built in types - only needed for 2.6.0
-                if ( ! XSD.equals(xstype.getNamespace()) ) {
-                    //xstype.derivedFrom()
-                    XSDDatatype definedType = new XSDGenericType(xstype, source.getSystemId());
-                    tm.registerDatatype(definedType);
-                    names.add(definedType.getURI());
-                }
-            }
-            return names;
-        } catch (Exception e) {
-            e.printStackTrace();    // Temp
-            throw new DatatypeFormatException(e.toString());
-        }
-    }
+    // The following code parses an external XSD file for XSD datatype definitions.
+    // See an example "testing/xsd/daml+oil-ex-dt.xsd" and TestTypeLiterals.testUserDefined.
+    // It calls into Xerces internal XM parsing, which is problematic if switching to the
+    // JDK built-in XML parser in Java9 and later.
+    
+//    /**
+//     * Create and register a set of types specified in a user schema file.
+//     * We use the (illegal) DAML+OIL approach that the uriref of the type
+//     * is the url of the schema file with fragment ID corresponding the
+//     * the name of the type.
+//     *
+//     * @param uri the absolute uri of the schema file to be loaded
+//     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
+//     * @param encoding the encoding of the source file (can be null)
+//     * @param tm the type mapper into which to load the definitions
+//     * @return a List of strings giving the uri's of the newly defined datatypes
+//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
+//     * in default mode for load which may provide diagnostic output direct to stderr)
+//     */
+//    public static List<String> loadUserDefined(String uri, Reader reader, String encoding, TypeMapper tm) throws DatatypeFormatException {
+//        return loadUserDefined(new XMLInputSource(null, uri, uri, reader, encoding), tm);
+//    }
+//
+//    /**
+//     * Create and register a set of types specified in a user schema file.
+//     * We use the (illegal) DAML+OIL approach that the uriref of the type
+//     * is the url of the schema file with fragment ID corresponding the
+//     * the name of the type.
+//     *
+//     * @param uri the absolute uri of the schema file to be loaded, this should be a resolvable URL
+//     * @param encoding the encoding of the source file (can be null)
+//     * @param tm the type mapper into which to load the definitions
+//     * @return a List of strings giving the uri's of the newly defined datatypes
+//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
+//     * in default mode for load which may provide diagnostic output direct to stderr)
+//     */
+//    public static List<String> loadUserDefined(String uri, String encoding, TypeMapper tm) throws DatatypeFormatException {
+//        return loadUserDefined(new XMLInputSource(null, uri, uri), tm);
+//    }
+//
+//    /**
+//     * Internal implementation of loadUserDefined
+//     *
+//     * @param uri the absolute uri of the schema file to be loaded
+//     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
+//     * @param encoding the encoding of the source file (can be null)
+//     * @param tm the type mapper into which to load the definitions
+//     * @return a List of strings giving the uri's of the newly defined datatypes
+//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
+//     * in default mode for load which may provide diagnostic output direct to stderr)
+//     */
+//    private static List<String> loadUserDefined(XMLInputSource source, TypeMapper tm) throws DatatypeFormatException {
+//        XMLGrammarPreparser parser = new XMLGrammarPreparser();
+//        parser.registerPreparser(XMLGrammarDescription.XML_SCHEMA, null);
+//        try {
+//            XSGrammar xsg = (XSGrammar) parser.preparseGrammar(XMLGrammarDescription.XML_SCHEMA, source);
+//            org.apache.xerces.xs.XSModel xsm = xsg.toXSModel();
+//            XSNamedMap map = xsm.getComponents(XSTypeDefinition.SIMPLE_TYPE);
+//            int numDefs = map.getLength();
+//            ArrayList<String> names = new ArrayList<>(numDefs);
+//            for (int i = 0; i < numDefs; i++) {
+//                XSSimpleType xstype = (XSSimpleType) map.item(i);
+//                // Filter built in types - only needed for 2.6.0
+//                if ( ! XSD.equals(xstype.getNamespace()) ) {
+//                    //xstype.derivedFrom()
+//                    XSDDatatype definedType = new XSDGenericType(xstype, source.getSystemId());
+//                    tm.registerDatatype(definedType);
+//                    names.add(definedType.getURI());
+//                }
+//            }
+//            return names;
+//        } catch (Exception e) {
+//            e.printStackTrace();    // Temp
+//            throw new DatatypeFormatException(e.toString());
+//        }
+//    }
 
     /**
      * Convert a validated xerces data value into the corresponding java data value.

@@ -245,9 +245,6 @@ public class NodeId
         }
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) {
-            // Could use the Jena/XSDDateTime object here rather than reparse the lexical
-            // form.
-            // But this works and it's close to a release ...
             long v = DateTimeNode.packDateTime(lit.getLexicalForm());
             if ( v == -1 )
                 return null;

@@ -34,11 +34,11 @@ import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReader ;
 import org.apache.jena.rdfxml.xmlinput.SAX2Model ;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDF ;
-import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public class SAX2RDFTest extends TestCase {
 
@@ -1259,11 +1259,10 @@ public class SAX2RDFTest extends TestCase {
 		for (int i = 0; i < eh.v.size(); i++) {
 			assertEquals("Error " + i + " different.", a[i], a2[i]);
 		}
-
 	}
 
 	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
-		XMLReader saxParser = new SAXParser();
+		XMLReader saxParser = XMLReaderFactory.createXMLReader();
 		SAX2Model handler = SAX2Model.create(base, m2);
 		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);
