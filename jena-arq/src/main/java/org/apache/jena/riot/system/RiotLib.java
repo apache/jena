@@ -333,7 +333,7 @@ public class RiotLib
      * @return DatasetGraph
      */
     @Deprecated
-    public static DatasetGraph xdataset(Graph graph) {
+    public static DatasetGraph dataset(Graph graph) {
         return DatasetGraphFactory.wrap(graph);
     }
 
