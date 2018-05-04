@@ -21,17 +21,21 @@ package org.apache.jena.tdb.transaction;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 import org.apache.jena.tdb.base.objectfile.ObjectFileWrapper ;
 
-/** Add transactionality control to an ObjectFile.
- * ObjectFiles are "append only" so with a single writer environment, 
- * we just need to manage a reset on abort.
- * A crash in a transaction will accumulate some junk in the file.
- * This is now a tradeoff of speed and space.
+/**
+ * Add transactionality control to an ObjectFile. ObjectFiles are "append only" so with a
+ * single writer environment, we just need to manage a reset on abort. A crash in a
+ * transaction will accumulate some junk in the file. This is now a tradeoff of speed and
+ * space.
  * 
- * Speed : append to the original file directly and tolerate junk.
+ * Speed : append to the original file directly and tolerate junk. This class.
  * 
- * Space : use a journal file and write to main file on commit.
+ * Space : use a journal file and write to main file on commit. {@link ObjectFileTransComplex} 
  * 
- * @see ObjectFileTransComplex  
+ * {@link ObjectFileTransComplex} has an auxilliary file that it writes to, then copies to
+ * the main file on "commit". This avoids the possibility of junk from a failed
+ * transaction on a crash but costs extra writes.
+ * 
+ * The normal choice is this class.
  */
 class ObjectFileTrans extends ObjectFileWrapper implements TransactionLifecycle {
     ObjectFileTrans(Transaction txn /*unused*/, ObjectFile other) {
@@ -57,8 +61,11 @@ class ObjectFileTrans extends ObjectFileWrapper implements TransactionLifecycle 
     }
 
     @Override
-    public void commitEnact(Transaction txn) { }
+    public void committed(Transaction txn) { }
 
     @Override
-    public void commitClearup(Transaction txn) {}
+    public void enactCommitted(Transaction txn) { }
+
+    @Override
+    public void clearupCommitted(Transaction txn) {}
 }

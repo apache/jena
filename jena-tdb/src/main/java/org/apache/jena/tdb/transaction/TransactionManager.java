@@ -108,6 +108,9 @@ public class TransactionManager
     List<Transaction> commitedAwaitingFlush = new ArrayList<>() ;
     
     static AtomicLong transactionId = new AtomicLong(1) ;
+    
+    private List<TransactionLifecycle> additionalComponents = new ArrayList<>();  
+    
     // The version of the data starting at 1. The contract is that this is
     // never the same for two version (it may not be monotonic increasing).
     // Currently, it is sequentially increasing.
@@ -317,26 +320,13 @@ public class TransactionManager
         processDelayedReplayQueue(null) ;
         journal.close() ;
     }
+    
+    /** Add a {@link TransactionLifecycle} to transactions createed from this point onwards. */  
+    public void addAdditionComponent(TransactionLifecycle txnLifecycle) {
+        additionalComponents.add(txnLifecycle);
+    }
 
     public /*for testing only*/ static final boolean DEBUG = false ;
-    
-    // TIM
-//    @Override
-//    public void begin(TxnMode txnMode) {
-//        if (isInTransaction()) 
-//            throw new JenaTransactionException("Transactions cannot be nested!");
-//        transactionMode.set(txnMode);
-//        ReadWrite initial = txnMode.equals(TxnMode.WRITE) ? WRITE : READ;
-//        _begin(initial);
-//    }
-//    
-//    @Override
-//    public void begin(final ReadWrite readWrite) {
-//        if (isInTransaction()) 
-//            throw new JenaTransactionException("Transactions cannot be nested!");
-//        transactionMode.set(TxnMode.convert(readWrite));
-//        _begin(readWrite) ;
-//    }
     
     public DatasetGraphTxn begin(TxnType txnType, String label) {
         return beginInternal(txnType, txnType, label);
@@ -469,19 +459,7 @@ public class TransactionManager
         ReadWrite mode = initialMode(txnType);
         DatasetGraphTxn dsgTxn = createDSGTxn(dsg, txn, mode);
         txn.setActiveDataset(dsgTxn) ;
-
-        // Empty for READ ; only WRITE transactions have components that need notifying.
-        // Promote is a WRITE transaction starting.
-        List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
-        
-        if ( mode == ReadWrite.READ ) {
-            // ---- Consistency check. View caching does not reset components.
-            if ( components.size() != 0 )
-                log.warn("read transaction, non-empty lifecycleComponents list") ;
-        }
-        
-        for ( TransactionLifecycle component : components )
-            component.begin(dsgTxn.getTransaction()) ;
+        dsgTxn.getTransaction().forAllComponents(component->component.begin(dsgTxn.getTransaction())) ;
         return dsgTxn ;
     }
     
@@ -502,6 +480,8 @@ public class TransactionManager
         if ( originalTxnType == null )
             originalTxnType = txnType;
         Transaction txn = new Transaction(dsg, version.get(), txnType, initialMode(txnType), transactionId.getAndIncrement(), originalTxnType, label, this) ;
+        // Add the extras.
+        additionalComponents.forEach(txn::addAdditionaComponent);
         return txn ;
     }
 
@@ -735,12 +715,8 @@ public class TransactionManager
     /** The stage in a commit after committing - make the changes permanent in the base data */ 
     private void enactTransaction(Transaction transaction)
     {
-        // Really, really do it!
-        for ( TransactionLifecycle x : transaction.lifecycleComponents() )
-        {
-            x.commitEnact(transaction) ;
-            x.commitClearup(transaction) ;
-        }
+        transaction.forAllComponents(x->x.enactCommitted(transaction));
+        transaction.forAllComponents(x->x.clearupCommitted(transaction));
         transaction.signalEnacted() ;
     }
 
