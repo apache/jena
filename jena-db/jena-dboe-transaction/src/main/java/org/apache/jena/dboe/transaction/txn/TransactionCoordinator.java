@@ -66,7 +66,8 @@ public class TransactionCoordinator {
     private static Logger log = Sys.syslog ;
     
     private final Journal journal ;
-    private boolean coordinatorStarted = false ;
+    // Lock on configuration changes. 
+    private boolean configurable = true ;
 
     private final ComponentGroup components = new ComponentGroup() ;
     // Components 
@@ -130,10 +131,8 @@ public class TransactionCoordinator {
      * This must be setup before recovery is attempted. 
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            components.add(elt) ;
-        }
+        checklAllowModication() ;
+        components.add(elt) ;
         return this ;
     }
 
@@ -142,11 +141,30 @@ public class TransactionCoordinator {
      * @see #add 
      */
     public TransactionCoordinator remove(TransactionalComponent elt) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            components.remove(elt.getComponentId()) ;
-        }
+        checklAllowModication() ;
+        components.remove(elt.getComponentId()) ;
         return this ;
+    }
+    
+    /** 
+     * Perform modification of this {@code TransaxctionCoordiator} after it has been started.
+     * <p>
+     * This operation enters {@linkplain #startExclusiveMode() exclusive mode}, allows configurations, 
+     * carries out the {@code action}, reset the cofiguration lock, and exits exclusive mode.
+     * <p>
+     * Do not call inside a transaction, it may cause a deadlock.  
+     * <p>
+     * Use with care!  
+     */
+    public void modify(Runnable action) {
+        try {
+            startExclusiveMode();
+            configurable = true;
+            action.run();
+        } finally {
+            configurable = false;
+            finishExclusiveMode();
+        }
     }
 
     /**
@@ -154,29 +172,25 @@ public class TransactionCoordinator {
      * and hence hooks may not get called.
      */
     public void add(TransactionCoordinator.ShutdownHook hook) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            shutdownHooks.add(hook) ;
-        }
+        checklAllowModication() ;
+        shutdownHooks.add(hook) ;
     }
 
     /** Remove a shutdown hook */
     public void remove(TransactionCoordinator.ShutdownHook hook) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            shutdownHooks.remove(hook) ;
-        }
+        checklAllowModication() ;
+        shutdownHooks.remove(hook) ;
     }
     
     public void setQuorumGenerator(QuorumGenerator qGen) {
-        checkSetup() ;
+        checklAllowModication() ;
         this.quorumGenerator = qGen ;
     }
 
     public void start() {
-        checkSetup() ;
+        checklAllowModication() ;
         recovery() ;
-        coordinatorStarted = true ;
+        configurable = false ;
     }
 
     private /*public*/ void recovery() {
@@ -268,15 +282,15 @@ public class TransactionCoordinator {
         journal.close(); 
     }
 
-    // Are we in the initialization phase?
-    private void checkSetup() {
-        if ( coordinatorStarted )
-            throw new TransactionException("TransactionCoordinator has already been started") ;
+    // Can modifications be made? 
+    private void checklAllowModication() {
+        if ( ! configurable )
+            throw new TransactionException("TransactionCoordinator configuration is locked") ;
     }
 
     // Is this TransactionCoordinator up and running?
     private void checkActive() {
-        if ( ! coordinatorStarted )
+        if ( configurable )
             throw new TransactionException("TransactionCoordinator has not been started") ;
         checkNotShutdown();
     }
