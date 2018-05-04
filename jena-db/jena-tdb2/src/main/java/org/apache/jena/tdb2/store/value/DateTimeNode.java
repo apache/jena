@@ -20,7 +20,6 @@ package org.apache.jena.tdb2.store.value;
 
 import java.math.BigDecimal ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeConstants ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.XMLGregorianCalendar ;
@@ -28,7 +27,7 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 import org.apache.jena.atlas.lib.BitsInt ;
 import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.atlas.lib.NumberUtils ;
-import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 
 public class DateTimeNode
 {
@@ -77,15 +76,8 @@ public class DateTimeNode
     // Value for no timezone.
     static final int       TZ_NONE         = 0x7E;
     
-    static DatatypeFactory datatypeFactory = null;
-    static {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        }
-        catch (DatatypeConfigurationException ex) {
-            throw new TDBException("DateTimeNode", ex);
-        }
-    }
+    // JENA-1537: The Xerces 2.11.0 DatatypeFactory gets T24:00:00 right.
+    static DatatypeFactory datatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
 
     // Packed in correct place.
     static long time(long v, int hour, int mins, int millisec) {
