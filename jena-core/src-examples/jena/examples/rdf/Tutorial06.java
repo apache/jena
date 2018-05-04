@@ -29,7 +29,7 @@ import java.io.*;
 public class Tutorial06 extends Object {
     
     static final String inputFileName = "vc-db-1.rdf";
-    static final String johnSmithURI = "http://somewhere/JohnSmith";
+    static final String johnSmithURI = "http://somewhere/JohnSmith/";
     
     public static void main (String args[]) {
         // create an empty model
