@@ -242,23 +242,36 @@ public class TestTxn {
         });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void txn_nested_02() {
-        Txn.exec(counter, TxnType.READ, ()->{
-            Txn.exec(counter, TxnType.WRITE, ()->{});
+        Txn.exec(counter, TxnType.WRITE, ()->{
+            Txn.exec(counter, TxnType.READ, ()->{});
         });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void txn_nested_03() {
-        Txn.exec(counter, TxnType.WRITE, ()->{
-            // Must the same type to nest Txn.
+        Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
             Txn.exec(counter, TxnType.READ, ()->{});
         });
     }
 
     @Test
     public void txn_nested_04() {
+        Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
+            Txn.exec(counter, TxnType.READ, ()->{});
+        });
+    }
+
+    @Test(expected=JenaTransactionException.class)
+    public void txn_nested_05() {
+        Txn.exec(counter, TxnType.READ, ()->{
+            Txn.exec(counter, TxnType.WRITE, ()->{});
+        });
+    }
+
+    @Test
+    public void txn_nested_06() {
         Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
             boolean b = counter.promote();
             assertTrue(b);
@@ -268,7 +281,28 @@ public class TestTxn {
     }
 
     @Test
-    public void txn_nested_05() {
+    public void txn_nested_07() {
+        Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
+            boolean b = counter.promote();
+            assertTrue(b);
+            // Must the same type to nest Txn.
+            Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{});
+        });
+    }
+
+    @Test
+    public void txn_nested_08() {
+        Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
+            boolean b = counter.promote();
+            assertTrue(b);
+            assertEquals(ReadWrite.WRITE, counter.transactionMode());
+            // Must the same type to nest Txn.
+            Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{});
+        });
+    }
+
+    @Test
+    public void txn_nested_09() {
         Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
             boolean b = counter.promote();
             assertTrue(b);
@@ -279,11 +313,16 @@ public class TestTxn {
     }
 
     @Test(expected=JenaTransactionException.class)
-    public void txn_nested_06() {
+    public void txn_nested_10() {
         Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
-            boolean b = counter.promote();
-            assertTrue(b);
-            assertEquals(ReadWrite.WRITE, counter.transactionMode());
+            // Must the same type to nest Txn.
+            Txn.exec(counter, TxnType.WRITE, ()->{});
+        });
+    }
+
+    @Test(expected=JenaTransactionException.class)
+    public void txn_nested_11() {
+        Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
             // Must the same type to nest Txn.
             Txn.exec(counter, TxnType.WRITE, ()->{});
         });
