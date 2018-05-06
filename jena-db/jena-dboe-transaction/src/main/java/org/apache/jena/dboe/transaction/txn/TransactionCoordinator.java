@@ -131,7 +131,7 @@ public class TransactionCoordinator {
      * This must be setup before recovery is attempted. 
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
-        checklAllowModication() ;
+        checklAllowModification() ;
         components.add(elt) ;
         return this ;
     }
@@ -141,7 +141,7 @@ public class TransactionCoordinator {
      * @see #add 
      */
     public TransactionCoordinator remove(TransactionalComponent elt) {
-        checklAllowModication() ;
+        checklAllowModification() ;
         components.remove(elt.getComponentId()) ;
         return this ;
     }
@@ -172,23 +172,23 @@ public class TransactionCoordinator {
      * and hence hooks may not get called.
      */
     public void add(TransactionCoordinator.ShutdownHook hook) {
-        checklAllowModication() ;
+        checklAllowModification() ;
         shutdownHooks.add(hook) ;
     }
 
     /** Remove a shutdown hook */
     public void remove(TransactionCoordinator.ShutdownHook hook) {
-        checklAllowModication() ;
+        checklAllowModification() ;
         shutdownHooks.remove(hook) ;
     }
     
     public void setQuorumGenerator(QuorumGenerator qGen) {
-        checklAllowModication() ;
+        checklAllowModification() ;
         this.quorumGenerator = qGen ;
     }
 
     public void start() {
-        checklAllowModication() ;
+        checklAllowModification() ;
         recovery() ;
         configurable = false ;
     }
@@ -283,7 +283,7 @@ public class TransactionCoordinator {
     }
 
     // Can modifications be made? 
-    private void checklAllowModication() {
+    private void checklAllowModification() {
         if ( ! configurable )
             throw new TransactionException("TransactionCoordinator configuration is locked") ;
     }

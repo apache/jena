@@ -38,6 +38,14 @@ import org.apache.jena.tdb2.store.nodetable.NodeTable;
  * 
  */
 public class TDBInternal {
+    
+    /**
+     * Return true if this is a TDB2 backed DatasetGraph. 
+     */
+    public static boolean isTDB2(DatasetGraph dsg) {
+        return ( dsg instanceof DatasetGraphSwitchable );
+    }
+
     /**
      * Return the NodeId for a node. Returns NodeId.NodeDoesNotExist when the node is not
      * found. Returns null when not a TDB-backed dataset.

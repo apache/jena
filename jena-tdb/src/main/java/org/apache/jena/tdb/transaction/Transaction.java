@@ -332,15 +332,6 @@ public class Transaction
         }
     }
     
-//    /** Return the list of items registered for the transaction lifecycle */ 
-//    public List<TransactionLifecycle> lifecycleComponents() {
-//        List<TransactionLifecycle> x = new ArrayList<>() ;
-//        x.addAll(objectFileTrans) ;
-//        x.addAll(blkMgrs) ;
-//        x.addAll(others);
-//        return x ;
-//    }
-    
     // For development and tracking, keep these as separate lists.
     
     /*package*/ void addComponent(ObjectFileTrans oft) {
