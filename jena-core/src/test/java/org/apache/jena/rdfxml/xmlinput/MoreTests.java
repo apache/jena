@@ -163,24 +163,24 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //		rdr.read(m, r, "http://example.org/");
 //		checkExpected();
 //	}
-	
-
-	public void testEncodingMismatch1() throws IOException {
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		try ( FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf") ) {
-		    if (r.getEncoding().startsWith("UTF")) {
-		        //logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
-		        r.close() ;
-		        return;
-		    }
-		    rdr.setErrorHandler(this);
-		    expected = new int[] { WARN_ENCODING_MISMATCH };
-		    rdr.read(m, r, "http://example.org/");
-		    //System.err.println(m.size() + " triples read.");
-		    checkExpected();
-		}
-	}
+//	
+//
+//	public void testEncodingMismatch1() throws IOException {
+//		Model m = createMemModel();
+//		RDFReader rdr = m.getReader();
+//		try ( FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf") ) {
+//		    if (r.getEncoding().startsWith("UTF")) {
+//		        //logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
+//		        r.close() ;
+//		        return;
+//		    }
+//		    rdr.setErrorHandler(this);
+//		    expected = new int[] { WARN_ENCODING_MISMATCH };
+//		    rdr.read(m, r, "http://example.org/");
+//		    //System.err.println(m.size() + " triples read.");
+//		    checkExpected();
+//		}
+//	}
 
 	public void testIcu() throws IOException {
 //	  "\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
@@ -251,17 +251,16 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		assertEquals(tssh.subj, tssh.obj);
 	}
 
-	public void testEncodingMismatch2() throws IOException {
-		FileReader r = new FileReader(
-				"testing/wg/rdf-charmod-literals/test001.rdf");
-
-		subTestEncodingMismatch2(r);
-	}
-
-	
-	// JENA-1537
+    // JENA-1537
     // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
 
+//	public void testEncodingMismatch2() throws IOException {
+//		FileReader r = new FileReader(
+//				"testing/wg/rdf-charmod-literals/test001.rdf");
+//
+//		subTestEncodingMismatch2(r);
+//	}
+//	
 //	public void testEncodingMismatch3() throws IOException {
 //	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
 //	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
@@ -272,21 +271,21 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //	        return;
 //	    }
 //	}
-
-	private void subTestEncodingMismatch2(InputStreamReader r) {
-		if (r.getEncoding().startsWith("UTF")) {
-			// see above for warning message.
-			return;
-		}
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
-		rdr.read(m, r, "http://example.org/");
-
-		checkExpected();
-	}
+//
+//	private void subTestEncodingMismatch2(InputStreamReader r) {
+//		if (r.getEncoding().startsWith("UTF")) {
+//			// see above for warning message.
+//			return;
+//		}
+//		Model m = createMemModel();
+//		RDFReader rdr = m.getReader();
+//		
+//		rdr.setErrorHandler(this);
+//		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
+//		rdr.read(m, r, "http://example.org/");
+//
+//		checkExpected();
+//	}
 
 	public void testNullBaseParamOK() throws IOException {
 		Model m = createMemModel();
