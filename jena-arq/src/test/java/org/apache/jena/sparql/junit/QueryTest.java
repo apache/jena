@@ -204,6 +204,9 @@ public class QueryTest extends EarlTestCase
                     runTestDescribe(query, qe) ;
                 else if ( query.isAskType() )
                     runTestAsk(query, qe) ;
+                else if ( query.isJsonType() )
+                    throw new UnsupportedOperationException("JSON {} queries not supported");
+
             }
         }
         catch (IOException ioEx)
