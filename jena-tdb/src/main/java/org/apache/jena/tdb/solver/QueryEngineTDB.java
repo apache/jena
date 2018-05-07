@@ -172,32 +172,4 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
     }
-    
-//    // By rewrite, not using a general purpose dataset with the right graphs in.
-//    private static Op dynamicDatasetOp(Op op,  Context context)
-//    {
-//        Transform transform = null ;
-//    
-//        try {
-//            @SuppressWarnings("unchecked")
-//            Set<Node> defaultGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetDefaultGraphs)) ;
-//            @SuppressWarnings("unchecked")
-//            Set<Node> namedGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetNamedGraphs)) ;
-//            if ( defaultGraphs != null || namedGraphs != null )
-//                transform = new TransformDynamicDataset(defaultGraphs, 
-//                                                        namedGraphs, 
-//                                                        context.isTrue(TDB.symUnionDefaultGraph)) ;
-//        } catch (ClassCastException ex)
-//        {
-//            Log.warn(QueryEngineTDB.class, "Bad dynamic dataset description (ClassCastException)", ex) ;
-//            transform = null ;
-//            return op ;
-//        }
-//
-//        // Apply dynamic dataset modifications.
-//        if ( transform != null )
-//            op = Transformer.transform(transform, op) ;
-//        return op ;
-//    }        
-//    
 }

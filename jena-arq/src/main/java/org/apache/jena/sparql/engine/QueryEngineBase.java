@@ -150,9 +150,10 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         return DynamicDatasets.dynamicDataset(dsDesc, dataset, unionDftGraph) ;
     }
     
-    /** Retrun whether the dataset to execute against is the original one,
-     *  or a DatasetDescription modified one
-     *  (or a built one for provided dataset being null.
+    /**
+     * Return whether the dataset to execute against is the original one, or a
+     * DatasetDescription modified one (including one for provided then the dataset was
+     * null).
      */
     protected boolean isDynamicDataset() {
         return originalDataset != dataset;
