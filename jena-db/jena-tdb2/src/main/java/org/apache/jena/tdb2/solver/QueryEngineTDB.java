@@ -55,45 +55,40 @@ public class QueryEngineTDB extends QueryEngineMain
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
-    private Binding initialInput ;
-
     // ---- Object
+    
     protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
     {
         super(op, dataset, input, context) ;
-        this.initialInput = input ;
     }
-    
-    private boolean doingDynamicDatasetBySpecialDataset = false ;
     
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
     { 
         super(query, dataset, input, cxt) ; 
-        DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
-        
-        if ( dsDesc != null )
-        {
-            doingDynamicDatasetBySpecialDataset = true ;
-            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, isUnionDefaultGraph(cxt) ) ;
-        }
-        this.initialInput = input ; 
     }
     
     private static boolean isUnionDefaultGraph(Context cxt) {
         return cxt.isTrue(TDB2.symUnionDefaultGraph1) || cxt.isTrue(TDB2.symUnionDefaultGraph2);
     }
     
+    @Override
+    protected DatasetGraph dynamicDataset(DatasetDescription dsDesc, DatasetGraph dataset, boolean unionDftGraph) {
+        boolean union = unionDftGraph || isUnionDefaultGraph(context);
+        return DynamicDatasets.dynamicDataset(dsDesc, dataset, union ) ;
+    }
+
+    
     // Choose the algebra-level optimizations to invoke. 
     @Override
     protected Op modifyOp(Op op)
     {
-        op = Substitute.substitute(op, initialInput) ;
+        op = Substitute.substitute(op, getStartBinding()) ;
         // Optimize (high-level)
         op = super.modifyOp(op) ;
 
         // Quadification
         // Only apply if not a rewritten DynamicDataset
-        if ( ! doingDynamicDatasetBySpecialDataset )
+        if ( ! isDynamicDataset() )
             op = Algebra.toQuadForm(op) ;
         
         // Record it.
@@ -108,7 +103,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
         // Fix DatasetGraph for global union.
-        if ( isUnionDefaultGraph(context) && ! doingDynamicDatasetBySpecialDataset ) 
+        if ( isUnionDefaultGraph(context) && ! isDynamicDataset() ) 
         {
             op = A2.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;

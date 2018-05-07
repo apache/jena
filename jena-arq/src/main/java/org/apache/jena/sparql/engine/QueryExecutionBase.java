@@ -34,7 +34,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -52,19 +51,20 @@ import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.Template;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.ModelUtils;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
 public class QueryExecutionBase implements QueryExecution
 {
-    private Query                    query;
-    private Dataset                  dataset;
-    private QueryEngineFactory       qeFactory;
+    private final Query              query;
+    private final QueryEngineFactory qeFactory;
+    private final Context            context;
+    private final Dataset            dataset;
+    private final DatasetGraph       dsg;
+    
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private Context                  context;
     private QuerySolution            initialBinding   = null;
 
     // Set if QueryIterator.cancel has been called
@@ -86,14 +86,13 @@ public class QueryExecutionBase implements QueryExecution
                               Context context, QueryEngineFactory qeFactory) {
         this.query = query;
         this.dataset = dataset ;
-        this.context = context ;
         this.qeFactory = qeFactory ;
+        this.dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
+        this.context = Context.setupContextExec(context, dsg) ;
         init() ;
     }
     
     private void init() {
-        DatasetGraph dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
-        context = Context.setupContextExec(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
         // NB: Setting timeouts via the context after creating a QueryExecutionBase 
@@ -557,7 +556,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Plan getPlan() {
         if ( plan == null ) {
-            DatasetGraph dsg = prepareDataset(dataset, query);
             Binding inputBinding = null;
             if ( initialBinding != null )
                 inputBinding = BindingUtils.asBinding(initialBinding);
@@ -608,22 +606,6 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Query getQuery()     { return query ; }
 
-    private static DatasetGraph prepareDataset(Dataset dataset, Query query) {
-        if ( dataset != null )
-            return dataset.asDatasetGraph();
-
-        if ( ! query.hasDatasetDescription() ) 
-            //Query.Log.warn(this, "No data for query (no URL, no model)");
-            throw new QueryExecException("No dataset description for query");
-        
-        String baseURI = query.getBaseURI() ;
-        if ( baseURI == null )
-            baseURI = IRIResolver.chooseBaseURI().toString() ;
-        
-        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(), baseURI ) ;
-        return dsg ;
-    }
-    
     @Override
     public void setInitialBinding(QuerySolution startSolution) {
         initialBinding = startSolution ;

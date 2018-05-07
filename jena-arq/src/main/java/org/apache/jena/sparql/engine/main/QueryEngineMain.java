@@ -44,7 +44,7 @@ public class QueryEngineMain extends QueryEngineBase
     { 
         super(query, dataset, input, context) ;
     }
-
+    
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
