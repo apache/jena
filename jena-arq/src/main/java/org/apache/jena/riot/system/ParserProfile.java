@@ -49,9 +49,9 @@ public interface ParserProfile {
     /** Create a triple */
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col);
 
-    /** Create a Quad */
+    /** Create a quad */
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col);
-
+    
     /** Create a URI Node */
     public Node createURI(String uriStr, long line, long col);
 
@@ -85,7 +85,9 @@ public interface ParserProfile {
     /* Return the prefix map, if any, used for mapping tokens into Nodes. */
     public PrefixMap getPrefixMap();
     
-    /** Get the error handler used by this {@code ParserProfile} */
+    /** Get the {@link ErrorHandler error handler} used by this {@code ParserProfile} */
     public ErrorHandler getErrorHandler();
 
+    /** Get the {@link FactoryRDF factory for RDF terms, triples and quads} */
+    public FactoryRDF getFactorRDF();
 }
