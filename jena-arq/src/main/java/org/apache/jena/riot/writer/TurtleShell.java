@@ -68,16 +68,24 @@ public abstract class TurtleShell {
     protected final PrefixMap      prefixMap ;
     protected final String         baseURI ;
 
-    protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
+    protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, NodeFormatter nodeFmt, Context context) {
         this.out = out ;
         if ( pmap == null )
             pmap = PrefixMapFactory.emptyPrefixMap() ;
         this.prefixMap = pmap ;
         this.baseURI = baseURI ;
+        this.nodeFmt = nodeFmt ;
+    }
+
+    protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, Context context) {
+        this(out, pmap, baseURI, createNodeFormatter(pmap,baseURI,context), context) ;
+    }
+    
+    static public NodeFormatter createNodeFormatter(PrefixMap pmap, String baseURI, Context context) {
         if ( context != null && context.isTrue(RIOT.multilineLiterals) )
-            this.nodeFmt = new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;    
+            return new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
         else
-            this.nodeFmt = new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
+            return new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument()) ;
     }
 
     protected void writeBase(String base) {
