@@ -19,14 +19,15 @@
 package org.apache.jena.dboe.transaction;
 
 import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.core.Transactional.Promote;
 
 /** Interface for the Transactional transitions. */
 public interface TransactionalMonitor {
     default void startBegin(TxnType txnType)     {}
     default void finishBegin(TxnType txnType)    {}
 
-    default void startPromote()     {}
-    default void finishPromote()    {}
+    default void startPromote(Promote mode)     {}
+    default void finishPromote(Promote mode)    {}
 
     default void startCommit()      {}
     default void finishCommit()     {}
