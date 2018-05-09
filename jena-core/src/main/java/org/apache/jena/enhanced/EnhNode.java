@@ -102,7 +102,7 @@ public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
         return asInternal( t ); 
     }
     
-    /** allow subclasses to implement RDFNode & its subinterface */
+    /** allow subclasses to implement RDFNode &amp; its subinterface */
     public <T extends RDFNode> T as( Class<T> t )
         { return asInternal( t ); }
       

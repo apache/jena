@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A key -> value 'map' which reference counts entries.  
+ * A key {@literal ->} value 'map' which reference counts entries.  
  * 
  * <p>
  *   The same (key,value) pair can be added to the map several times and then 

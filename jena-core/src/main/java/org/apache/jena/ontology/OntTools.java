@@ -138,7 +138,7 @@ public class OntTools
      * and the object of the last statement in the list is <code>end</code>.</p>
      * <p>The <code>onPath</code> argument is a {@link Predicate}, which accepts a statement and returns
      * true if the statement should be considered to be on the path. To search for an unconstrained
-     * path, pass <code>()->true</code> as an argument. To search for a path whose predicates match a
+     * path, pass {@code ()->true} as an argument. To search for a path whose predicates match a
      * fixed restricted set of property names, pass an instance of {@link PredicatesFilter}.</p>
      * <p>If there is more than one path of minimal length from <code>start</code> to <code>end</code>,
      * this method returns an arbitrary one. The algorithm is blind breadth-first search,

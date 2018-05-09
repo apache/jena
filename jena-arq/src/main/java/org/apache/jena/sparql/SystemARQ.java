@@ -50,11 +50,11 @@ public class SystemARQ
     public static boolean ValueExtensions       = true ;
 
     /**
-     * Under strict F&O, dateTimes and dates with no timezone have one magically applied. 
+     * Under strict {@literal F&O}, dateTimes and dates with no timezone have one magically applied. 
      * This default timezone is implementation dependent and can lead to different answers
      * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
      * which an yield "indeterminate", which in turn is an evaluation error. 
-     * F&O insists on true/false and so can lead to false positves and negatives. 
+     * {@literal F&O} insists on true/false and so can lead to false positves and negatives. 
      */
     public static boolean StrictDateTimeFO      = false ;
     

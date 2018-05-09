@@ -39,7 +39,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * <pre>
  *  import static org.apache.jena.atlas.iterator.Iter.* ;
  *  
- *  filter(map(iterator, <i>function></i>), <i>predicate</i>)
+ *  filter(map(iterator, function), predicate)
  * </pre>
  * 
  * Style 2: Stream-like: The class {@code Iter} provides methods to call on an iterator.
@@ -47,7 +47,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * <pre>
  * import static org.apache.jena.atlas.iterator.Iter.iter ;
  * 
- * iter(iterator).map(...).filter(...)}
+ * iter(iterator).map(...).filter(...)
  * </pre>
  *
  * @param <T> the type of element over which an instance of {@code Iter} iterates,

@@ -31,7 +31,7 @@ import org.apache.jena.sparql.function.js.NV;
  * <p>
  * This is a one way, lossy, conversion from an RDF Term to the best available JSON value.
  * <p> 
- * This is not SPARQL results in JSON ({@locde application/result-sets+json}).
+ * This is not SPARQL results in JSON ({@code application/result-sets+json}).
  * 
  * <table>
  * <tr><th>RDF Term</th><th>JSON value</th></tr>

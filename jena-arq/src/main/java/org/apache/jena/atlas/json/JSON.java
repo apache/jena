@@ -189,7 +189,7 @@ public class JSON
 
     /** Build a JsonObject.  The outer object is created and then the {@code setup} function called to fill in the contents.
      * <pre>
-     * buildObject(builder->{
+     * buildObject(builder-&gt;{
      *     builder.pair("key", 1234);
      * });
      * </pre>

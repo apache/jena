@@ -61,7 +61,7 @@ NCSA extended/combined log format
     }
 
     /** NCSA combined log format *
-     * LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b  \"%{Referer}i\" \"%{User-Agent}i\"" combinedfwd
+     * LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %&gt;s %b  \"%{Referer}i\" \"%{User-Agent}i\"" combinedfwd
      * XXX.XXX.XXX.XXX - - [01/Feb/2014:03:19:09 +0000] "GET / HTTP/1.1" 200 6190  "-" "check_http/v1.4.16 (nagios-plugins 1.4.16)"
      */
     public static String combinedNCSA(HttpAction action) {

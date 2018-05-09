@@ -33,7 +33,6 @@ import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite ;
 
 /** A transaction component with an integer supporting MR+SW (=one writer AND many readers).
- * @see TransactionalInteger
  */
 public class TransInteger extends TransactionalComponentLifecycle<TransInteger.IntegerState> {
 

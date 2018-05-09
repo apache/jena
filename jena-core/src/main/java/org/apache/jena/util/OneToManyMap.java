@@ -457,7 +457,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          * More formally, two entries e1 and e2 represent the same mapping if
          * <code><pre>
          *      (e1.getKey()==null ?
-         *                         e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &&
+         *                         e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &amp;&amp;
          *      (e1.getValue()==null ?
          *                         e2.getValue()==null : e1.getValue().equals(e2.getValue()))
          * </pre></code>

@@ -108,7 +108,7 @@ import org.apache.jena.vocabulary.RDFS ;
  * java jena.rdfcat in1 -out N3 &gt; out.n3
  *
  * Join two owl files one N3, one XML, and their imports, into a single NTRIPLE file:
- * java jena.rdfcat -out NTRIPLE -include in1.owl -n in2.owl > out.ntriple
+ * java jena.rdfcat -out NTRIPLE -include in1.owl -n in2.owl &gt; out.ntriple
  *
  * Concatenate two N3-serving http URL's as N-TRIPLE
  * java jena.rdfcat -in N3 -out N-TRIPLE http://example.com/a http://example.com/b
