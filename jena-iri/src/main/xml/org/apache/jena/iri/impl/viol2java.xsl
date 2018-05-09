@@ -348,12 +348,12 @@ This class is not part of the API.
     
     <!--
     <xsl:template match="bad|good[not(unicode)]" mode="javadoc">
-     &lt;li>&amp;lt;&lt;code><xsl:value-of select="."/>&lt;/code>>&lt;/li>
+     &lt;li>&amp;lt;&lt;code><xsl:value-of select="."/>&lt;/code>&amp;gt;&lt;/li>
     </xsl:template>
     -->
     
     <xsl:template match="bad|good" mode="javadoc">
-     &lt;li>&amp;lt;&lt;code><xsl:apply-templates select="node()" mode="javadoc"/>&lt;/code>>&lt;/li>
+     &lt;li>&amp;lt;&lt;code><xsl:apply-templates select="node()" mode="javadoc"/>&lt;/code>&amp;gt;&lt;/li>
     </xsl:template>
     
     <xsl:template match="unicode" mode="javadoc">

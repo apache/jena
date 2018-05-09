@@ -60,9 +60,9 @@ Concepts and Abstract Syntax
       </dd>
       
       <dd>
-      The SCHEME component is required.<br>
+      The SCHEME component is required.<br />
     
-             <br>
+             <br/>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
@@ -152,7 +152,7 @@ Concepts and Abstract Syntax
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2">section 3.2.2</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2">section 3.2.2<a>
       </dt>
       <dd>
 
@@ -183,7 +183,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>http://www.example.org/foo/bar</code>></li>
+     <li>&lt;<code>http://www.example.org/foo/bar</code>&gt;</li>
     
              </ul>
              
@@ -191,11 +191,11 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>http://www.example.org:80/foo/bar</code>></li>
+     <li>&lt;<code>http://www.example.org:80/foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>http:foo/bar</code>></li>
+     <li>&lt;<code>http:foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>http://user@www.example.org/foo/bar</code>></li>
+     <li>&lt;<code>http://user@www.example.org/foo/bar</code>&gt;</li>
     
              </ul>
              
@@ -216,7 +216,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4">section 2.4</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4">section 2.4<a>
       </dt>
       <dd>
 HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier. 
@@ -226,7 +226,7 @@ HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifi
       <dt>
        See <a href="#ref-http">
      [http]</a>, specifically,
-      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2">section 3.2.2</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2">section 3.2.2<a>
       </dt>
       <dd>
 
@@ -257,7 +257,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>https://www.example.org/foo/bar</code>></li>
+     <li>&lt;<code>https://www.example.org/foo/bar</code>&gt;</li>
     
              </ul>
              
@@ -265,11 +265,11 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>https://www.example.org:443/foo/bar</code>></li>
+     <li>&lt;<code>https://www.example.org:443/foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>https:foo/bar</code>></li>
+     <li>&lt;<code>https:foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>https://user@www.example.org/foo/bar</code>></li>
+     <li>&lt;<code>https://user@www.example.org/foo/bar</code>&gt;</li>
     
              </ul>
              
@@ -292,14 +292,14 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
       </dt>
       <dd>
 
      <pre>
 ftpurl = "ftp://" login [ "/" fpath [ ";type=" ftptype ]]
 fpath = fsegment *[ "/" fsegment ]
-fsegment = *[ uchar | "?" | ":" | "@" | "&" | "=" ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
 ftptype = "A" | "I" | "D" | "a" | "i" | "d"
 </pre>
     
@@ -350,7 +350,7 @@ uchar = unreserved | escape
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>ftp://user@example.org/foo/bar;type=d</code>></li>
+     <li>&lt;<code>ftp://user@example.org/foo/bar;type=d</code>&gt;</li>
     
              </ul>
              
@@ -358,11 +358,11 @@ uchar = unreserved | escape
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>ftp:///foo/bar</code>></li>
+     <li>&lt;<code>ftp:///foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>ftp://user@example.org/foo/bar;type=z</code>></li>
+     <li>&lt;<code>ftp://user@example.org/foo/bar;type=z</code>&gt;</li>
     
-     <li>&lt;<code>ftp://user@example.org/foo/b;ar;type=d</code>></li>
+     <li>&lt;<code>ftp://user@example.org/foo/b;ar;type=d</code>&gt;</li>
     
              </ul>
              
@@ -385,7 +385,7 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
       </dt>
       <dd>
 
@@ -393,7 +393,7 @@ uchar = unreserved | escape
 newsurl = "news:" grouppart
 grouppart = "*" | group | article
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
-article = 1*[ uchar | ";" | "/" | "?" | ":" | "&" | "=" ] "@" host
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
 </pre>
     
 
@@ -432,13 +432,13 @@ uchar = unreserved | escape
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>news:*</code>></li>
+     <li>&lt;<code>news:*</code>&gt;</li>
     
-     <li>&lt;<code>news:group.it</code>></li>
+     <li>&lt;<code>news:group.it</code>&gt;</li>
     
-     <li>&lt;<code>news:arb?itrary@news.example.org</code>></li>
+     <li>&lt;<code>news:arb?itrary@news.example.org</code>&gt;</li>
     
-     <li>&lt;<code>news:arbitrary@news.example.org</code>></li>
+     <li>&lt;<code>news:arbitrary@news.example.org</code>&gt;</li>
     
              </ul>
              
@@ -446,13 +446,13 @@ uchar = unreserved | escape
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>news:arbitrary@news.exampl\u00E7.org</code>></li>
+     <li>&lt;<code>news:arbitrary@news.exampl\u00E7.org</code>&gt;</li>
     
-     <li>&lt;<code>news:arbitr?ary@news.exampl\u00E7.org</code>></li>
+     <li>&lt;<code>news:arbitr?ary@news.exampl\u00E7.org</code>&gt;</li>
     
-     <li>&lt;<code>news:///foo/bar</code>></li>
+     <li>&lt;<code>news:///foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>news://user@example.org/foo</code>></li>
+     <li>&lt;<code>news://user@example.org/foo</code>&gt;</li>
     
              </ul>
              
@@ -475,7 +475,7 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
       </dt>
       <dd>
 
@@ -517,9 +517,9 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>nntp://example.org/foo4</code>></li>
+     <li>&lt;<code>nntp://example.org/foo4</code>&gt;</li>
     
-     <li>&lt;<code>nntp://example.org/foo/4</code>></li>
+     <li>&lt;<code>nntp://example.org/foo/4</code>&gt;</li>
     
              </ul>
              
@@ -527,19 +527,19 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>nntp://user@example.org/foo</code>></li>
+     <li>&lt;<code>nntp://user@example.org/foo</code>&gt;</li>
     
-     <li>&lt;<code>nntp:/foo</code>></li>
+     <li>&lt;<code>nntp:/foo</code>&gt;</li>
     
-     <li>&lt;<code>nntp:///foo</code>></li>
+     <li>&lt;<code>nntp:///foo</code>&gt;</li>
     
-     <li>&lt;<code>nntp://example.org/foo/4/3</code>></li>
+     <li>&lt;<code>nntp://example.org/foo/4/3</code>&gt;</li>
     
-     <li>&lt;<code>nntp://example.org/</code>></li>
+     <li>&lt;<code>nntp://example.org/</code>&gt;</li>
     
-     <li>&lt;<code>nntp://example.org/foo/</code>></li>
+     <li>&lt;<code>nntp://example.org/foo/</code>&gt;</li>
     
-     <li>&lt;<code>nntp://example.org/*</code>></li>
+     <li>&lt;<code>nntp://example.org/*</code>&gt;</li>
     
              </ul>
              
@@ -562,7 +562,7 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
       </dt>
       <dd>
 
@@ -573,7 +573,7 @@ fileurl = "file://" [ host | "localhost" ] "/" fpath
 
      <pre>
 fpath = fsegment *[ "/" fsegment ]
-fsegment = *[ uchar | "?" | ":" | "@" | "&" | "=" ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
 </pre>
     
 
@@ -622,9 +622,9 @@ uchar = unreserved | escape
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>file:///foo/b</code>></li>
+     <li>&lt;<code>file:///foo/b</code>&gt;</li>
     
-     <li>&lt;<code>file:///foo/b?ar/yuk</code>></li>
+     <li>&lt;<code>file:///foo/b?ar/yuk</code>&gt;</li>
     
              </ul>
              
@@ -632,17 +632,17 @@ uchar = unreserved | escape
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>file://user@example.org/foo/bar</code>></li>
+     <li>&lt;<code>file://user@example.org/foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>file://eg:4029/foo/bar</code>></li>
+     <li>&lt;<code>file://eg:4029/foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>file:/foo/bar</code>></li>
+     <li>&lt;<code>file:/foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>file://example.org</code>></li>
+     <li>&lt;<code>file://example.org</code>&gt;</li>
     
-     <li>&lt;<code>file://foo/bar;t</code>></li>
+     <li>&lt;<code>file://foo/bar;t</code>&gt;</li>
     
-     <li>&lt;<code>file://foo/~jjc</code>></li>
+     <li>&lt;<code>file://foo/~jjc</code>&gt;</li>
     
              </ul>
              
@@ -683,13 +683,13 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2">section 2</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2">section 2<a>
       </dt>
       <dd>
    All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):
 
      <pre>
-&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+&lt;URN&gt; ::= "urn:" &lt;NID&gt; ":" &lt;NSS&gt;
 </pre>
     
 
@@ -697,16 +697,16 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1">section 2.1</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1">section 2.1<a>
       </dt>
       <dd>
 
      <pre>
-&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]
+&lt;NID&gt;         ::= &lt;let-num&gt; [ 1,31&lt;let-num-hyp&gt; ]
 
-&lt;let-num-hyp> ::= &lt;upper> | &lt;lower> | &lt;number> | "-"
+&lt;let-num-hyp&gt; ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt; | "-"
 
-&lt;let-num>     ::= &lt;upper> | &lt;lower> | &lt;number>
+&lt;let-num&gt;     ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt;
 </pre>
     
 
@@ -714,18 +714,18 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2">section 2.2</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2">section 2.2<a>
       </dt>
       <dd>
 
      <pre>
-&lt;NSS>         ::= 1*&lt;URN chars>
+&lt;NSS&gt;         ::= 1*&lt;URN chars&gt;
 
-&lt;URN chars>   ::= &lt;trans> | "%" &lt;hex> &lt;hex>
+&lt;URN chars&gt;   ::= &lt;trans&gt; | "%" &lt;hex&gt; &lt;hex&gt;
 
-&lt;trans>       ::= &lt;upper> | &lt;lower> | &lt;number> | &lt;other> | &lt;reserved>
+&lt;trans&gt;       ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt; | &lt;other&gt; | &lt;reserved&gt;
 
-&lt;other>       ::= "(" | ")" | "+" | "," | "-" | "." |
+&lt;other&gt;       ::= "(" | ")" | "+" | "," | "-" | "." |
                   ":" | "=" | "@" | ";" | "$" |
                   "_" | "!" | "*" | "'"
 </pre>
@@ -735,7 +735,7 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2</a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2<a>
       </dt>
       <dd>
 RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes. 
@@ -778,9 +778,9 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
              The following are examples of well-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>urn:x-hp:foo\u00E9</code>></li>
+     <li>&lt;<code>urn:x-hp:foo\u00E9</code>&gt;</li>
     
-     <li>&lt;<code>urn:urn-1:foo</code>></li>
+     <li>&lt;<code>urn:urn-1:foo</code>&gt;</li>
     
              </ul>
              
@@ -788,15 +788,15 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>urn:x-hp:foo/bar</code>></li>
+     <li>&lt;<code>urn:x-hp:foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>urn:urn:foo</code>></li>
+     <li>&lt;<code>urn:urn:foo</code>&gt;</li>
     
-     <li>&lt;<code>urn://foo</code>></li>
+     <li>&lt;<code>urn://foo</code>&gt;</li>
     
-     <li>&lt;<code>urn:foo:bar?query</code>></li>
+     <li>&lt;<code>urn:foo:bar?query</code>&gt;</li>
     
-     <li>&lt;<code>urn:foo:ff~</code>></li>
+     <li>&lt;<code>urn:foo:ff~</code>&gt;</li>
     
              </ul>
              
@@ -1511,7 +1511,7 @@ This class is not part of the API.
   "\n"+
     "ftpurl = \"ftp://\" login [ \"/\" fpath [ \";type=\" ftptype ]]\n"+
     "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&\" | \"=\" ]\n"+
+    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
     "ftptype = \"A\" | \"I\" | \"D\" | \"a\" | \"i\" | \"d\"\n"+
     ""+
   "\n"+
@@ -1528,7 +1528,7 @@ This class is not part of the API.
      "</p><pre>\n"+
     "ftpurl = \"ftp://\" login [ \"/\" fpath [ \";type=\" ftptype ]]\n"+
     "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&\" | \"=\" ]\n"+
+    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
     "ftptype = \"A\" | \"I\" | \"D\" | \"a\" | \"i\" | \"d\"\n"+
     "</pre>"+
      "<p>"+
@@ -1623,7 +1623,7 @@ This class is not part of the API.
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     ""+
   "\n"+
     "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
@@ -1637,7 +1637,7 @@ This class is not part of the API.
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     "</pre>"+
      "<p>"+
      "</p><pre>\n"+
@@ -1818,7 +1818,7 @@ This class is not part of the API.
     ""+
   "\n"+
     "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&\" | \"=\" ]\n"+
+    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
     ""+
   "\n"+
     "safe = \"$\" | \"-\" | \"_\" | \".\" | \"+\"\n"+
@@ -1834,7 +1834,7 @@ This class is not part of the API.
      "<p>"+
      "</p><pre>\n"+
     "fpath = fsegment *[ \"/\" fsegment ]\n"+
-    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&\" | \"=\" ]\n"+
+    "fsegment = *[ uchar | \"?\" | \":\" | \"@\" | \"&amp;\" | \"=\" ]\n"+
     "</pre>"+
      "<p>"+
      "</p><pre>\n"+
@@ -2375,11 +2375,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",    
                 "All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):"+
   "\n"+
-    "<URN> ::= \"urn:\" <NID> \":\" <NSS>\n"+
+    "<URN&gt; ::= \"urn:\" <NID&gt; \":\" <NSS&gt;\n"+
     "",    
                 "All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):"+
      "</p><pre>\n"+
-    "&lt;URN> ::= \"urn:\" &lt;NID> \":\" &lt;NSS>\n"+
+    "&lt;URN&gt; ::= \"urn:\" &lt;NID&gt; \":\" &lt;NSS&gt;\n"+
     "</pre>"+
      "<p>"
         );
@@ -2389,19 +2389,19 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1",    
                 ""+
   "\n"+
-    "<NID>         ::= <let-num> [ 1,31<let-num-hyp> ]\n"+
+    "<NID&gt;         ::= <let-num&gt; [ 1,31<let-num-hyp&gt; ]\n"+
     "\n"+
-    "<let-num-hyp> ::= <upper> | <lower> | <number> | \"-\"\n"+
+    "<let-num-hyp&gt; ::= <upper&gt; | <lower&gt; | <number&gt; | \"-\"\n"+
     "\n"+
-    "<let-num>     ::= <upper> | <lower> | <number>\n"+
+    "<let-num&gt;     ::= <upper&gt; | <lower&gt; | <number&gt;\n"+
     "",    
                 ""+
      "</p><pre>\n"+
-    "&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]\n"+
+    "&lt;NID&gt;         ::= &lt;let-num&gt; [ 1,31&lt;let-num-hyp&gt; ]\n"+
     "\n"+
-    "&lt;let-num-hyp> ::= &lt;upper> | &lt;lower> | &lt;number> | \"-\"\n"+
+    "&lt;let-num-hyp&gt; ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt; | \"-\"\n"+
     "\n"+
-    "&lt;let-num>     ::= &lt;upper> | &lt;lower> | &lt;number>\n"+
+    "&lt;let-num&gt;     ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt;\n"+
     "</pre>"+
      "<p>"
         );
@@ -2411,25 +2411,25 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2",    
                 ""+
   "\n"+
-    "<NSS>         ::= 1*<URN chars>\n"+
+    "<NSS&gt;         ::= 1*<URN chars&gt;\n"+
     "\n"+
-    "<URN chars>   ::= <trans> | \"%\" <hex> <hex>\n"+
+    "<URN chars&gt;   ::= <trans&gt; | \"%\" <hex&gt; <hex&gt;\n"+
     "\n"+
-    "<trans>       ::= <upper> | <lower> | <number> | <other> | <reserved>\n"+
+    "<trans&gt;       ::= <upper&gt; | <lower&gt; | <number&gt; | <other&gt; | <reserved&gt;\n"+
     "\n"+
-    "<other>       ::= \"(\" | \")\" | \"+\" | \",\" | \"-\" | \".\" |\n"+
+    "<other&gt;       ::= \"(\" | \")\" | \"+\" | \",\" | \"-\" | \".\" |\n"+
     "                  \":\" | \"=\" | \"@\" | \";\" | \"$\" |\n"+
     "                  \"_\" | \"!\" | \"*\" | \"'\"\n"+
     "",    
                 ""+
      "</p><pre>\n"+
-    "&lt;NSS>         ::= 1*&lt;URN chars>\n"+
+    "&lt;NSS&gt;         ::= 1*&lt;URN chars&gt;\n"+
     "\n"+
-    "&lt;URN chars>   ::= &lt;trans> | \"%\" &lt;hex> &lt;hex>\n"+
+    "&lt;URN chars&gt;   ::= &lt;trans&gt; | \"%\" &lt;hex&gt; &lt;hex&gt;\n"+
     "\n"+
-    "&lt;trans>       ::= &lt;upper> | &lt;lower> | &lt;number> | &lt;other> | &lt;reserved>\n"+
+    "&lt;trans&gt;       ::= &lt;upper&gt; | &lt;lower&gt; | &lt;number&gt; | &lt;other&gt; | &lt;reserved&gt;\n"+
     "\n"+
-    "&lt;other>       ::= \"(\" | \")\" | \"+\" | \",\" | \"-\" | \".\" |\n"+
+    "&lt;other&gt;       ::= \"(\" | \")\" | \"+\" | \",\" | \"-\" | \".\" |\n"+
     "                  \":\" | \"=\" | \"@\" | \";\" | \"$\" |\n"+
     "                  \"_\" | \"!\" | \"*\" | \"'\"\n"+
     "</pre>"+
@@ -3008,8 +3008,8 @@ This class is not part of the API.
                 "IRI", 
                 -1,
                 "http://www.apps.ietf.org/rfc/rfc3987.html#page-13",
-                "Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"<\", \">\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.",
-                "<p>Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"&lt;\", \">\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.</p>"
+                "Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"<\", \"&gt;\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.",
+                "<p>Systems accepting IRIs MAY also deal with the printable characters in US-ASCII that are not allowed in URIs, namely \"&lt;\", \"&gt;\", '\"', space, \"{\", \"}\", \"|\", \"\\\", \"^\", and \"`\", in step 2 above. If these characters are found but are not converted, then the conversion SHOULD fail.</p>"
             ),
     
             new FromAlso(
@@ -3024,7 +3024,7 @@ This class is not part of the API.
     
       "http://example.org/fo<o",
     
-      "http://example.org/fo>o",
+      "http://example.org/fo&gt;o",
     
       "http://example.org/fo\"o",
     
@@ -3803,23 +3803,23 @@ This class is not part of the API.
                 "http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema",
                 ""+
   "\n"+
-    "<xs:simpleType name=\"anyURI\" id=\"anyURI\">\n"+
+    "<xs:simpleType name=\"anyURI\" id=\"anyURI\"&gt;\n"+
     "		    [...]\n"+
-    "    <xs:restriction base=\"xs:anySimpleType\">\n"+
-    "      <xs:whiteSpace fixed=\"true\" value=\"collapse\" id=\"anyURI.whiteSpace\"/>\n"+
+    "    <xs:restriction base=\"xs:anySimpleType\"&gt;\n"+
+    "      <xs:whiteSpace fixed=\"true\" value=\"collapse\" id=\"anyURI.whiteSpace\"/&gt;\n"+
     "\n"+
-    "    </xs:restriction>\n"+
-    "</xs:simpleType>\n"+
+    "    </xs:restriction&gt;\n"+
+    "</xs:simpleType&gt;\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
-    "&lt;xs:simpleType name=\"anyURI\" id=\"anyURI\">\n"+
+    "&lt;xs:simpleType name=\"anyURI\" id=\"anyURI\"&gt;\n"+
     "		    [...]\n"+
-    "    &lt;xs:restriction base=\"xs:anySimpleType\">\n"+
-    "      &lt;xs:whiteSpace fixed=\"true\" value=\"collapse\" id=\"anyURI.whiteSpace\"/>\n"+
+    "    &lt;xs:restriction base=\"xs:anySimpleType\"&gt;\n"+
+    "      &lt;xs:whiteSpace fixed=\"true\" value=\"collapse\" id=\"anyURI.whiteSpace\"/&gt;\n"+
     "\n"+
-    "    &lt;/xs:restriction>\n"+
-    "&lt;/xs:simpleType>\n"+
+    "    &lt;/xs:restriction&gt;\n"+
+    "&lt;/xs:simpleType&gt;\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -4793,11 +4793,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3",
                 "The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
   "\n"+
-    "      <prefix>'-'<tree-specific identifier>\n"+
+    "      <prefix&gt;'-'<tree-specific identifier&gt;\n"+
     "For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.",
                 "<p>The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
      "</p><pre>\n"+
-    "      &lt;prefix>'-'&lt;tree-specific identifier>\n"+
+    "      &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;\n"+
     "</pre>"+
      "<p>For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.</p>"
             ),
@@ -4855,11 +4855,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3",
                 "The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
   "\n"+
-    "      <prefix>'-'<tree-specific identifier>\n"+
+    "      <prefix&gt;'-'<tree-specific identifier&gt;\n"+
     "For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.",
                 "<p>The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:"+
      "</p><pre>\n"+
-    "      &lt;prefix>'-'&lt;tree-specific identifier>\n"+
+    "      &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;\n"+
     "</pre>"+
      "<p>For instance, the \"foo\" tree would allow creation of scheme names of the form: \"foo-blahblah:\" and \"foo-bar:\", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix.</p>"
             ),
@@ -5091,8 +5091,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 UNASSIGNED_UNICODE_CHARACTER,
                 "UNASSIGNED_UNICODE_CHARACTER",
-                "The character code is not assigned in the version of Unicode implemented here.",
-                "<p>The character code is not assigned in the version of Unicode implemented here.</p>",
+                "The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.",
+                "<p>The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.</p>",
                 0|Force.minting,
                 new InSpec[]{
                   
@@ -5177,8 +5177,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 COMPATIBILITY_CHARACTER,
                 "COMPATIBILITY_CHARACTER",
-                "Bad character",
-                "<p>Bad character</p>",
+                "TODO",
+                "<p>TODO</p>",
                 0,
                 new InSpec[]{
                   
@@ -5262,14 +5262,14 @@ This class is not part of the API.
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -5316,11 +5316,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",
                 ""+
   "\n"+
-    "<URN> ::= \"urn:\" <NID> \":\" <NSS>\n"+
+    "<URN&gt; ::= \"urn:\" <NID&gt; \":\" <NSS&gt;\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
-    "&lt;URN> ::= \"urn:\" &lt;NID> \":\" &lt;NSS>\n"+
+    "&lt;URN&gt; ::= \"urn:\" &lt;NID&gt; \":\" &lt;NSS&gt;\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -5373,7 +5373,7 @@ This class is not part of the API.
   "\n"+
     "     mailtoURL  =  \"mailto:\" [ to ] [ headers ]\n"+
     "     to         =  #mailbox\n"+
-    "     headers    =  \"?\" header *( \"&\" header )\n"+
+    "     headers    =  \"?\" header *( \"&amp;\" header )\n"+
     "     header     =  hname \"=\" hvalue\n"+
     "     hname      =  *urlc\n"+
     "     hvalue     =  *urlc\n"+
@@ -5382,7 +5382,7 @@ This class is not part of the API.
      "</p><pre>\n"+
     "     mailtoURL  =  \"mailto:\" [ to ] [ headers ]\n"+
     "     to         =  #mailbox\n"+
-    "     headers    =  \"?\" header *( \"&\" header )\n"+
+    "     headers    =  \"?\" header *( \"&amp;\" header )\n"+
     "     header     =  hname \"=\" hvalue\n"+
     "     hname      =  *urlc\n"+
     "     hvalue     =  *urlc\n"+
@@ -5399,14 +5399,14 @@ This class is not part of the API.
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
     "newsurl = \"news:\" grouppart\n"+
     "grouppart = \"*\" | group | article\n"+
     "group = alpha *[ alpha | digit | \"-\" | \".\" | \"+\" | \"_\" ]\n"+
-    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&\" | \"=\" ] \"@\" host\n"+
+    "article = 1*[ uchar | \";\" | \"/\" | \"?\" | \":\" | \"&amp;\" | \"=\" ] \"@\" host\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -5459,11 +5459,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2",
                 ""+
   "\n"+
-    "<URN> ::= \"urn:\" <NID> \":\" <NSS>\n"+
+    "<URN&gt; ::= \"urn:\" <NID&gt; \":\" <NSS&gt;\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
-    "&lt;URN> ::= \"urn:\" &lt;NID> \":\" &lt;NSS>\n"+
+    "&lt;URN&gt; ::= \"urn:\" &lt;NID&gt; \":\" &lt;NSS&gt;\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -5474,11 +5474,11 @@ This class is not part of the API.
                 "http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1",
                 ""+
   "\n"+
-    "<NID>         ::= <let-num> [ 1,31<let-num-hyp> ]\n"+
+    "<NID&gt;         ::= <let-num&gt; [ 1,31<let-num-hyp&gt; ]\n"+
     "",
                 "<p>"+
      "</p><pre>\n"+
-    "&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]\n"+
+    "&lt;NID&gt;         ::= &lt;let-num&gt; [ 1,31&lt;let-num-hyp&gt; ]\n"+
     "</pre>"+
      "<p></p>"
             ),
@@ -5582,7 +5582,7 @@ This class is not part of the API.
 		    The character violates the grammar rules for URIs/IRIs.
 	    
           <p>This violates the following specifications:
-          <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here</a>), <a href="#ref-IRI">[IRI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2">section 2.2</a>), <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
+          <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>), <a href="#ref-IRI">[IRI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2">section 2.2<a>), <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
        
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
@@ -5590,7 +5590,7 @@ This class is not part of the API.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ht$tp://example.org/foo</code>></li>
+     <li>&lt;<code>ht$tp://example.org/foo</code>&gt;</li>
     
         </ul>
        
@@ -5608,7 +5608,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
      </dt>
      <dd>
      
@@ -5635,7 +5635,7 @@ This class is not part of the API.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/foo%c3%80</code>></li>
+     <li>&lt;<code>http://example.org/foo%c3%80</code>&gt;</li>
     
         </ul>
        
@@ -5659,7 +5659,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2">section 3.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2">section 3.2<a>
      </dt>
      <dd>
      
@@ -5683,7 +5683,7 @@ This class is not part of the API.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/foo%C3%A9r</code>></li>
+     <li>&lt;<code>http://example.org/foo%C3%A9r</code>&gt;</li>
     
         </ul>
        
@@ -5703,7 +5703,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3">section 2.3</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3">section 2.3<a>
      </dt>
      <dd>
      
@@ -5731,7 +5731,7 @@ This class is not part of the API.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/foo%5Fb%61r</code>></li>
+     <li>&lt;<code>http://example.org/foo%5Fb%61r</code>&gt;</li>
     
         </ul>
        
@@ -5757,12 +5757,12 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#page-13">here</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#page-13">here<a>
      </dt>
      <dd>
      
               Systems accepting IRIs MAY also deal with the printable characters in US-ASCII 
-              that are not allowed in URIs, namely "&lt;", ">", '"', space, "{", "}", "|", "\", 
+              that are not allowed in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|", "\", 
               "^", and "`", in step 2 above. If these characters are found but are not converted, 
               then the conversion SHOULD fail. 
              
@@ -5772,7 +5772,7 @@ This class is not part of the API.
      
     
           <p>This violates the following specifications:
-          <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here</a>).
+          <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>).
           </p>
        
      <p>This violation relates to creating your own IRIs, rather than
@@ -5784,15 +5784,15 @@ This class is not part of the API.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/fo|o</code>></li>
+     <li>&lt;<code>http://example.org/fo|o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo&lt;o</code>></li>
+     <li>&lt;<code>http://example.org/fo&lt;o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo>o</code>></li>
+     <li>&lt;<code>http://example.org/fo&gt;o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo"o</code>></li>
+     <li>&lt;<code>http://example.org/fo"o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo`o</code>></li>
+     <li>&lt;<code>http://example.org/fo`o</code>&gt;</li>
     
         </ul>
        
@@ -5813,7 +5813,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">here</a>
+     <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">here<a>
      </dt>
      <dd>
      
@@ -5840,7 +5840,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html">here</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html">here<a>
      </dt>
      <dd>
      
@@ -5869,13 +5869,13 @@ ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/fo\u007Fo</code>></li>
+     <li>&lt;<code>http://example.org/fo\u007Fo</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo\u0085o</code>></li>
+     <li>&lt;<code>http://example.org/fo\u0085o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo\u0009o</code>></li>
+     <li>&lt;<code>http://example.org/fo\u0009o</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/fo\u0001o</code>></li>
+     <li>&lt;<code>http://example.org/fo\u0001o</code>&gt;</li>
     
         </ul>
        
@@ -5893,7 +5893,7 @@ ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char">here</a>
+     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char">here<a>
      </dt>
      <dd>
       
@@ -5913,7 +5913,7 @@ Char ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/foo\u0001</code>></li>
+     <li>&lt;<code>http://example.org/foo\u0001</code>&gt;</li>
     
         </ul>
        
@@ -5931,7 +5931,7 @@ Char ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#char32">here</a>
+     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#char32">here<a>
      </dt>
      <dd>
       
@@ -5959,7 +5959,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/foo\u0080</code>></li>
+     <li>&lt;<code>http://example.org/foo\u0080</code>&gt;</li>
     
         </ul>
        
@@ -5979,7 +5979,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3">section 6.2.2.3</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3">section 6.2.2.3<a>
      </dt>
      <dd>
      
@@ -6010,17 +6010,17 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/../foo</code>></li>
+     <li>&lt;<code>http://example.org/../foo</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/foo/../foo</code>></li>
+     <li>&lt;<code>http://example.org/foo/../foo</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/foo/..</code>></li>
+     <li>&lt;<code>http://example.org/foo/..</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/foo/./foo</code>></li>
+     <li>&lt;<code>http://example.org/foo/./foo</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/./foo</code>></li>
+     <li>&lt;<code>http://example.org/./foo</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/foo/.</code>></li>
+     <li>&lt;<code>http://example.org/foo/.</code>&gt;</li>
     
         </ul>
        
@@ -6038,7 +6038,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
       Scheme names consist of a sequence of characters 
@@ -6060,7 +6060,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>://example.org/foo</code>></li>
+     <li>&lt;<code>://example.org/foo</code>&gt;</li>
     
         </ul>
        
@@ -6078,7 +6078,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
       Scheme names consist of a sequence of characters 
@@ -6100,7 +6100,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>007://example.org/foo</code>></li>
+     <li>&lt;<code>007://example.org/foo</code>&gt;</li>
     
         </ul>
        
@@ -6118,7 +6118,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
        For the SCHEME component:
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
      An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as "http") for the sake of robustness but should only produce lowercase scheme names for consistency. 
@@ -6129,7 +6129,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
        For the HOST component:
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6155,9 +6155,9 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>HTTP://example.org/foo</code>></li>
+     <li>&lt;<code>HTTP://example.org/foo</code>&gt;</li>
     
-     <li>&lt;<code>http://eXamPle.org/foo</code>></li>
+     <li>&lt;<code>http://eXamPle.org/foo</code>&gt;</li>
     
         </ul>
        
@@ -6174,7 +6174,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6200,7 +6200,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org:/foo</code>></li>
+     <li>&lt;<code>http://example.org:/foo</code>&gt;</li>
     
         </ul>
        
@@ -6217,7 +6217,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6243,7 +6243,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org:80/foo</code>></li>
+     <li>&lt;<code>http://example.org:80/foo</code>&gt;</li>
     
         </ul>
        
@@ -6262,7 +6262,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2">section 7.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2">section 7.2<a>
      </dt>
      <dd>
      
@@ -6287,7 +6287,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org:180/foo</code>></li>
+     <li>&lt;<code>http://example.org:180/foo</code>&gt;</li>
     
         </ul>
        
@@ -6312,7 +6312,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org:08080/foo</code>></li>
+     <li>&lt;<code>http://example.org:08080/foo</code>&gt;</li>
     
         </ul>
        
@@ -6328,7 +6328,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1">section 4.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1">section 4.1<a>
      </dt>
      <dd>
      
@@ -6348,19 +6348,19 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/Andr\u202Abar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u202Abar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u202Bbar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u202Bbar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u202Cbar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u202Cbar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u202Dbar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u202Dbar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u202Ebar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u202Ebar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u200Ebar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u200Ebar</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/Andr\u200Fbar</code>></li>
+     <li>&lt;<code>http://example.org/Andr\u200Fbar</code>&gt;</li>
     
         </ul>
        
@@ -6385,9 +6385,9 @@ These match no grammar rules of URIs/IRIs.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/ foo</code>></li>
+     <li>&lt;<code>http://example.org/ foo</code>&gt;</li>
     
-     <li>&lt;<code>file:///Program Files</code>></li>
+     <li>&lt;<code>file:///Program Files</code>&gt;</li>
     
         </ul>
        
@@ -6415,13 +6415,13 @@ XML system identifiers, but not XML Schema anyURIs.
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/  foo</code>></li>
+     <li>&lt;<code>http://example.org/  foo</code>&gt;</li>
     
-     <li>&lt;<code>file:///Program  Files</code>></li>
+     <li>&lt;<code>file:///Program  Files</code>&gt;</li>
     
-     <li>&lt;<code>file:///TabBar </code>></li>
+     <li>&lt;<code>file:///TabBar </code>&gt;</li>
     
-     <li>&lt;<code> rel-with-initial-space</code>></li>
+     <li>&lt;<code> rel-with-initial-space</code>&gt;</li>
     
         </ul>
        
@@ -6448,19 +6448,19 @@ Whitespace characters
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema">here</a>
+     <a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema">here<a>
      </dt>
      <dd>
      
 
      <pre>
-&lt;xs:simpleType name="anyURI" id="anyURI">
+&lt;xs:simpleType name="anyURI" id="anyURI"&gt;
 		    [...]
-    &lt;xs:restriction base="xs:anySimpleType">
-      &lt;xs:whiteSpace fixed="true" value="collapse" id="anyURI.whiteSpace"/>
+    &lt;xs:restriction base="xs:anySimpleType"&gt;
+      &lt;xs:whiteSpace fixed="true" value="collapse" id="anyURI.whiteSpace"/&gt;
 
-    &lt;/xs:restriction>
-&lt;/xs:simpleType>
+    &lt;/xs:restriction&gt;
+&lt;/xs:simpleType&gt;
 </pre>
     
   
@@ -6478,11 +6478,11 @@ Whitespace characters
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>file:///Tab\u0009Bar</code>></li>
+     <li>&lt;<code>file:///Tab\u0009Bar</code>&gt;</li>
     
-     <li>&lt;<code>file:///Tab\u000ABar</code>></li>
+     <li>&lt;<code>file:///Tab\u000ABar</code>&gt;</li>
     
-     <li>&lt;<code>file:///Tab\u000DBar</code>></li>
+     <li>&lt;<code>file:///Tab\u000DBar</code>&gt;</li>
     
         </ul>
        
@@ -6543,7 +6543,7 @@ Whitespace characters
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6582,11 +6582,11 @@ h16         = 1*4HEXDIG
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://[/</code>></li>
+     <li>&lt;<code>http://[/</code>&gt;</li>
     
-     <li>&lt;<code>ldap://[20015:db8::7]/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://[20015:db8::7]/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>ldap://[2001:db8:::7]/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://[2001:db8:::7]/c=GB?objectClass?one</code>&gt;</li>
     
         </ul>
        
@@ -6604,7 +6604,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6633,9 +6633,9 @@ h16         = 1*4HEXDIG
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ldap://[2001:Db8::7]/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://[2001:Db8::7]/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>ldap://[2001:dB8::7]/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://[2001:dB8::7]/c=GB?objectClass?one</code>&gt;</li>
     
         </ul>
        
@@ -6654,7 +6654,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6669,7 +6669,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6697,13 +6697,13 @@ dec-octet   = DIGIT                 ; 0-9
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ldap://155.00.55.102/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://155.00.55.102/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>ldap://20.256.20.20/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://20.256.20.20/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>ldap://20.1000.20.20/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://20.1000.20.20/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>ldap://20.010.20.20/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://20.010.20.20/c=GB?objectClass?one</code>&gt;</li>
     
         </ul>
        
@@ -6721,7 +6721,7 @@ dec-octet   = DIGIT                 ; 0-9
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6749,9 +6749,9 @@ dec-octet   = DIGIT                 ; 0-9
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ldap://foo$/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://foo$/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>http://foo.example.$org/</code>></li>
+     <li>&lt;<code>http://foo.example.$org/</code>&gt;</li>
     
         </ul>
        
@@ -6769,7 +6769,7 @@ dec-octet   = DIGIT                 ; 0-9
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6799,7 +6799,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ftp://andr%C3%A9.example.org/</code>></li>
+     <li>&lt;<code>ftp://andr%C3%A9.example.org/</code>&gt;</li>
     
         </ul>
        
@@ -6817,7 +6817,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
      </dt>
      <dd>
      
@@ -6837,17 +6837,17 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ftp://andr%%A9.example.org/</code>></li>
+     <li>&lt;<code>ftp://andr%%A9.example.org/</code>&gt;</li>
     
-     <li>&lt;<code>ftp://andr%.example.org/</code>></li>
+     <li>&lt;<code>ftp://andr%.example.org/</code>&gt;</li>
     
-     <li>&lt;<code>ftp://andre.example.org/%</code>></li>
+     <li>&lt;<code>ftp://andre.example.org/%</code>&gt;</li>
     
-     <li>&lt;<code>ftp://andre.example.org/%A</code>></li>
+     <li>&lt;<code>ftp://andre.example.org/%A</code>&gt;</li>
     
-     <li>&lt;<code>ftp://andre.example.org/%A?</code>></li>
+     <li>&lt;<code>ftp://andre.example.org/%A?</code>&gt;</li>
     
-     <li>&lt;<code>ftp://andre.example.org/%A#</code>></li>
+     <li>&lt;<code>ftp://andre.example.org/%A#</code>&gt;</li>
     
         </ul>
        
@@ -6873,7 +6873,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http:/foo/p\uD800</code>></li>
+     <li>&lt;<code>http:/foo/p\uD800</code>&gt;</li>
     
         </ul>
        
@@ -6891,7 +6891,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6917,15 +6917,15 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>ldap://-foo/c=GB?objectClass?one</code>></li>
+     <li>&lt;<code>ldap://-foo/c=GB?objectClass?one</code>&gt;</li>
     
-     <li>&lt;<code>http://foo.example.org-/</code>></li>
+     <li>&lt;<code>http://foo.example.org-/</code>&gt;</li>
     
-     <li>&lt;<code>http://foo.example.org--/</code>></li>
+     <li>&lt;<code>http://foo.example.org--/</code>&gt;</li>
     
-     <li>&lt;<code>http://--foo.example.org/</code>></li>
+     <li>&lt;<code>http://--foo.example.org/</code>&gt;</li>
     
-     <li>&lt;<code>http://-fo-o.example.org/</code>></li>
+     <li>&lt;<code>http://-fo-o.example.org/</code>&gt;</li>
     
         </ul>
        
@@ -6944,7 +6944,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -6962,7 +6962,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
      
@@ -6986,7 +6986,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://foo.example\u0221.org/</code>></li>
+     <li>&lt;<code>http://foo.example\u0221.org/</code>&gt;</li>
     
         </ul>
        
@@ -7004,7 +7004,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
      </dt>
      <dd>
      
@@ -7022,7 +7022,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
      </dt>
      <dd>
      
@@ -7042,11 +7042,11 @@ URI producers should provide these registered names in the IDNA encoding, rather
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://--foo.example.org/</code>></li>
+     <li>&lt;<code>http://--foo.example.org/</code>&gt;</li>
     
-     <li>&lt;<code>http://xn--andr--ep-.example.org/</code>></li>
+     <li>&lt;<code>http://xn--andr--ep-.example.org/</code>&gt;</li>
     
-     <li>&lt;<code>http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/</code>></li>
+     <li>&lt;<code>http://xn.example.\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333\u3333/</code>&gt;</li>
     
         </ul>
        
@@ -7064,7 +7064,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
      </dt>
      <dd>
      
@@ -7075,7 +7075,7 @@ Use of the format "user:password" in the userinfo field is deprecated.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
      </dt>
      <dd>
      
@@ -7100,7 +7100,7 @@ Applications may choose to ignore or reject such data when it is received as par
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://user:pass@example.org/</code>></li>
+     <li>&lt;<code>http://user:pass@example.org/</code>&gt;</li>
     
         </ul>
        
@@ -7123,7 +7123,7 @@ Applications may choose to ignore or reject such data when it is received as par
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1">section 6.1</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1">section 6.1<a>
      </dt>
      <dd>
      
@@ -7148,13 +7148,13 @@ strong visual look-alikes. Because of the likelihood of transcription errors, th
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/\u2000en-quad</code>></li>
+     <li>&lt;<code>http://example.org/\u2000en-quad</code>&gt;</li>
     
-     <li>&lt;<code>http://example.org/\u205Fmedium-mathematical-space</code>></li>
+     <li>&lt;<code>http://example.org/\u205Fmedium-mathematical-space</code>&gt;</li>
     
-     <li>&lt;<code>http://example\uFF95.org/</code>></li>
+     <li>&lt;<code>http://example\uFF95.org/</code>&gt;</li>
     
-     <li>&lt;<code>http://example\uFF47.org/</code>></li>
+     <li>&lt;<code>http://example\uFF47.org/</code>&gt;</li>
     
         </ul>
        
@@ -7174,7 +7174,7 @@ strong visual look-alikes. Because of the likelihood of transcription errors, th
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2">section 4.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2">section 4.2<a>
      </dt>
      <dd>
      
@@ -7254,7 +7254,7 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-">section </a>
+     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-">section <a>
      </dt>
      <dd>
      
@@ -7271,7 +7271,7 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2">section 3.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2">section 3.2<a>
      </dt>
      <dd>
      
@@ -7285,14 +7285,14 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3">section 3.3</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3">section 3.3<a>
      </dt>
      <dd>
      
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 
      <pre>
-      &lt;prefix>'-'&lt;tree-specific identifier>
+      &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;
 </pre>
     
 For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
@@ -7311,7 +7311,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>foo://example.org/bar</code>></li>
+     <li>&lt;<code>foo://example.org/bar</code>&gt;</li>
     
         </ul>
        
@@ -7339,14 +7339,14 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3">section 3.3</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3">section 3.3<a>
      </dt>
      <dd>
      
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 
      <pre>
-      &lt;prefix>'-'&lt;tree-specific identifier>
+      &lt;prefix&gt;'-'&lt;tree-specific identifier&gt;
 </pre>
     
 For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
@@ -7365,7 +7365,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>foo-bar://example.org/bar</code>></li>
+     <li>&lt;<code>foo-bar://example.org/bar</code>&gt;</li>
     
         </ul>
        
@@ -7383,7 +7383,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2">section 5.3.2.2</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2">section 5.3.2.2<a>
      </dt>
      <dd>
      
@@ -7406,7 +7406,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/#Andre\u0301</code>></li>
+     <li>&lt;<code>http://example.org/#Andre\u0301</code>&gt;</li>
     
         </ul>
        
@@ -7426,7 +7426,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5">section 7.5</a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5">section 7.5<a>
      </dt>
      <dd>
      
@@ -7450,7 +7450,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         <p>The following are examples of IRIs that have this violation:</p>
         <ul>
        
-     <li>&lt;<code>http://example.org/#Andre\u0301</code>></li>
+     <li>&lt;<code>http://example.org/#Andre\u0301</code>&gt;</li>
     
         </ul>
        
@@ -7505,6 +7505,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         
     
 /**The character code is not assigned in the version of Unicode implemented here.
+      Check validity of code, consider updating your copy of icu4j.jar.
       
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.
