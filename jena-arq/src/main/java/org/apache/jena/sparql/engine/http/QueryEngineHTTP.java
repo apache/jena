@@ -31,9 +31,10 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
-import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
@@ -538,13 +539,29 @@ public class QueryEngineHTTP implements QueryExecution {
     @Override
     public JsonArray execJson()
     {
-        throw new NotImplemented("JSON queries not implemented for remote calls") ;
+        checkNotClosed();
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(WebContent.contentTypeJSON);
+        InputStream in = httpQuery.exec();
+        JsonValue v = JSON.parseAny(in);
+        if ( ! v.isArray() )
+            throw new QueryExecException("Return from a JSON query isn't an array");
+        return v.getAsArray();
     }
 
     @Override
     public Iterator<JsonObject> execJsonItems()
     {
-        throw new NotImplemented("JSON queries not implemented for remote calls") ;
+        // Non-streaming.
+        // TODO Integrate with the JSON parser to stream the results. 
+        JsonArray array = execJson().getAsArray();
+        List<JsonObject> x = new ArrayList<>(array.size());
+        array.forEach(elt->{
+            if ( ! elt.isObject()) 
+                throw new QueryExecException("Item in an array from a JSON query isn't an object");
+            x.add(elt.getAsObject());
+        });
+        return x.iterator();
     }
 
     private void checkNotClosed() {

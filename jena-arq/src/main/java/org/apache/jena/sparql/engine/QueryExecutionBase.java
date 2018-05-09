@@ -595,6 +595,7 @@ public class QueryExecutionBase implements QueryExecution
         if ( q.isConstructType() )  return "CONSTRUCT" ; 
         if ( q.isDescribeType() )   return "DESCRIBE" ; 
         if ( q.isAskType() )        return "ASK" ;
+        if ( q.isJsonType() )       return "JSON" ;
         return "<<unknown>>" ;
     }
 

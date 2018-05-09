@@ -20,22 +20,18 @@ package org.apache.jena.fuseki ;
 
 import static org.apache.jena.fuseki.ServerCtl.serviceGSP ;
 import static org.apache.jena.fuseki.ServerCtl.serviceQuery ;
-import static org.apache.jena.fuseki.ServerTest.* ;
+import static org.apache.jena.fuseki.ServerTest.gn1;
+import static org.apache.jena.fuseki.ServerTest.gn2;
 import static org.apache.jena.fuseki.ServerTest.model1 ;
 import static org.apache.jena.fuseki.ServerTest.model2 ;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException ;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 import java.util.Iterator ;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Node ;
@@ -270,7 +266,6 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
-    @Test(expected = NotImplemented.class)
     public void query_json_01() throws IOException {
         Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
