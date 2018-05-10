@@ -52,7 +52,7 @@
  * <ul>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;content-type, Operation&gt;</li>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;String, Operation&gt;</li>
- * <li><em>Dispatch</em> :: Map<Operation, ActionService</li> 
+ * <li><em>Dispatch</em> :: {@literal Map<Operation, ActionService>}</li> 
  * </ul>
  * <p>
  */
