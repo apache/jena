@@ -228,8 +228,8 @@ public class Util extends Object {
     }
     
     /** Return true if the literal is a simple string.
-     *  <p>RDF 1.0 => it is a plain literal, with no language tag
-     *  <p>RDF 1.1 => it has datatype xsd:string
+     *  <p>RDF 1.0 {@literal =>} it is a plain literal, with no language tag
+     *  <p>RDF 1.1 {@literal =>} it has datatype xsd:string
      */ 
     public static boolean isSimpleString(Literal lit) {
         Objects.requireNonNull(lit) ;

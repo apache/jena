@@ -125,7 +125,7 @@ public abstract class IRIResolver
     
     /** The IRI checker setup, focused on parsing and languages.
      *  This is a clean version of jena-iri {@link IRIFactory#iriImplementation()} 
-     *  modified to allow unregistered schemes and allow <file:relative> IRIs.
+     *  modified to allow unregistered schemes and allow {@code <file:relative>} IRIs.
      *  
      *  @see IRIFactory
      */

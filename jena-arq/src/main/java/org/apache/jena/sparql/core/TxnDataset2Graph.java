@@ -51,8 +51,8 @@ import org.apache.jena.sparql.JenaTransactionException;
  * Best practice is to change the graph membership outside of any transaction,
  * ideally at setup time of the object using this class. (Caution: SPARQL Update
  * can create graphs.)   
- * @See {@link DatasetGraphMapLink}
- * @See {@link DatasetGraphOne}
+ * @see DatasetGraphMapLink
+ * @see DatasetGraphOne
  */
 public class TxnDataset2Graph extends TransactionalLock {
     /**

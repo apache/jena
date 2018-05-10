@@ -236,9 +236,9 @@ public class ARQ
 
     /** 
      * Use this Symbol to allow passing additional query parameters to a 
-     * SERVICE <IRI> call.
-     * Parameters need to be grouped by SERVICE <IRI>,  
-     * a Map<String, Map<String,List<String>>> is assumed.
+     * {@literal SERVICE <IRI>} call.
+     * Parameters need to be grouped by {@literal SERVICE <IRI>},  
+     * a {@literal Map<String, Map<String,List<String>>>} is assumed.
      * The key of the first map is the SERVICE IRI, the value is a Map 
      * which maps the name of a query string parameters to its values.
      * 
@@ -317,7 +317,7 @@ public class ARQ
     
     /** 
      *  Context key controlling whether the main query engine flattens simple paths
-     *  (e.g. <tt>?x :p/:q ?z => ?x :p ?.0 . ?.0 ?q ?z</tt>)   
+     *  (e.g. <tt>?x :p/:q ?z =&gt; ?x :p ?.0 . ?.0 ?q ?z</tt>)   
      *  <p>Default is "true"
      */  
     public static final Symbol optPathFlatten = SystemARQ.allocSymbol("optPathFlatten") ;
@@ -408,7 +408,7 @@ public class ARQ
 
     /** 
      *  Context key controlling whether the standard optimizer applies
-     *  optimizations to conjunctions (&&) in filters.
+     *  optimizations to conjunctions (&amp;&amp;) in filters.
      *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterConjunction = SystemARQ.allocSymbol("optFilterConjunction") ;

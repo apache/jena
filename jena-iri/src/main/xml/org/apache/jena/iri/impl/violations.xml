@@ -110,7 +110,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
 <pre>
 ftpurl = "ftp://" login [ "/" fpath [ ";type=" ftptype ]]
 fpath = fsegment *[ "/" fsegment ]
-fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;amp;" | "=" ]
 ftptype = "A" | "I" | "D" | "a" | "i" | "d"
 </pre>
 <pre>
@@ -152,7 +152,7 @@ login = [ user [ ":" password ] "@" ] hostport
 <pre>
      mailtoURL  =  "mailto:" [ to ] [ headers ]
      to         =  #mailbox
-     headers    =  "?" header *( "&amp;" header )
+     headers    =  "?" header *( "&amp;amp;" header )
      header     =  hname "=" hvalue
      hname      =  *urlc
      hvalue     =  *urlc
@@ -166,7 +166,7 @@ login = [ user [ ":" password ] "@" ] hostport
 newsurl = "news:" grouppart
 grouppart = "*" | group | article
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
-article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;amp;" | "=" ] "@" host
 </pre>
 <pre>
 safe = "$" | "-" | "_" | "." | "+"
@@ -183,7 +183,7 @@ uchar = unreserved | escape
 newsurl = "news:" grouppart
 grouppart = "*" | group | article
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
-article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;amp;" | "=" ] "@" host
 </pre>
 </text></prohibit>
            <require component="PATH" section="5"><text>
@@ -191,7 +191,7 @@ article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
 newsurl = "news:" grouppart
 grouppart = "*" | group | article
 group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
-article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;amp;" | "=" ] "@" host
 </pre>
 </text></require>
            <pattern component="PATHQUERY" reserved="~@">[^@]+@@{host}|[*]|[a-zA-Z][-a-zA-Z0-9.+_]*</pattern>
@@ -248,7 +248,7 @@ fileurl = "file://" [ host | "localhost" ] "/" fpath
 </pre>
 <pre>
 fpath = fsegment *[ "/" fsegment ]
-fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;amp;" | "=" ]
 </pre>
 <pre>
 safe = "$" | "-" | "_" | "." | "+"
@@ -370,27 +370,27 @@ fileurl = "file://" [ host | "localhost" ] "/" fpath
   <defn section="2">
    All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):
 <pre>
-&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+&lt;URN&amp;gt; ::= "urn:" &lt;NID&amp;gt; ":" &lt;NSS&amp;gt;
 </pre>
 </defn>
 <defn section="2.1">
 <pre>
-&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]
+&lt;NID&amp;gt;         ::= &lt;let-num&amp;gt; [ 1,31&lt;let-num-hyp&amp;gt; ]
 
-&lt;let-num-hyp> ::= &lt;upper> | &lt;lower> | &lt;number> | "-"
+&lt;let-num-hyp&amp;gt; ::= &lt;upper&amp;gt; | &lt;lower&amp;gt; | &lt;number&amp;gt; | "-"
 
-&lt;let-num>     ::= &lt;upper> | &lt;lower> | &lt;number>
+&lt;let-num&amp;gt;     ::= &lt;upper&amp;gt; | &lt;lower&amp;gt; | &lt;number&amp;gt;
 </pre>
 </defn>
 <defn section="2.2">
 <pre>
-&lt;NSS>         ::= 1*&lt;URN chars>
+&lt;NSS&amp;gt;         ::= 1*&lt;URN chars&amp;gt;
 
-&lt;URN chars>   ::= &lt;trans> | "%" &lt;hex> &lt;hex>
+&lt;URN chars&amp;gt;   ::= &lt;trans&amp;gt; | "%" &lt;hex&amp;gt; &lt;hex&amp;gt;
 
-&lt;trans>       ::= &lt;upper> | &lt;lower> | &lt;number> | &lt;other> | &lt;reserved>
+&lt;trans&amp;gt;       ::= &lt;upper&amp;gt; | &lt;lower&amp;gt; | &lt;number&amp;gt; | &lt;other&amp;gt; | &lt;reserved&amp;gt;
 
-&lt;other>       ::= "(" | ")" | "+" | "," | "-" | "." |
+&lt;other&amp;gt;       ::= "(" | ")" | "+" | "," | "-" | "." |
                   ":" | "=" | "@" | ";" | "$" |
                   "_" | "!" | "*" | "'"
 </pre>
@@ -405,12 +405,12 @@ but rather use the appropriate %-encoding for each character.
            <prohibit component="AUTHORITY">
            <text section="2">
 <pre>
-&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+&lt;URN&amp;gt; ::= "urn:" &lt;NID&amp;gt; ":" &lt;NSS&amp;gt;
 </pre>
 </text>
 <text section="2.1">
 <pre>
-&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]
+&lt;NID&amp;gt;         ::= &lt;let-num&amp;gt; [ 1,31&lt;let-num-hyp&amp;gt; ]
 </pre>
 </text></prohibit>
 
@@ -418,7 +418,7 @@ but rather use the appropriate %-encoding for each character.
            <require component="PATH">
            <text section="2">
 <pre>
-&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+&lt;URN&amp;gt; ::= "urn:" &lt;NID&amp;gt; ":" &lt;NSS&amp;gt;
 </pre>
 </text></require>
            
@@ -616,7 +616,7 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
 	    <spec ref="IRI">
              <text fragment="page-13">
               Systems accepting IRIs MAY also deal with the printable characters in US-ASCII 
-              that are not allowed in URIs, namely "&lt;", ">", '"', space, "{", "}", "|", "\", 
+              that are not allowed in URIs, namely "&lt;", "&amp;gt;", '"', space, "{", "}", "|", "\", 
               "^", and "`", in step 2 above. If these characters are found but are not converted, 
               then the conversion SHOULD fail. 
              </text>
@@ -624,7 +624,7 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
 	    <also ref="URI" fragment="page-49"/>
 	    <bad>http://example.org/fo|o</bad>
 	    <bad>http://example.org/fo&lt;o</bad>
-	    <bad>http://example.org/fo>o</bad>
+	    <bad>http://example.org/fo&amp;gt;o</bad>
 	    <bad>http://example.org/fo"o</bad>
 	    <bad>http://example.org/fo`o</bad>
     </violation>
@@ -954,13 +954,13 @@ Whitespace characters
 	    <spec ref="Schema">
 <text fragment="schema">
 <pre>
-&lt;xs:simpleType name=&quot;anyURI&quot; id=&quot;anyURI&quot;&gt;
+&lt;xs:simpleType name=&quot;anyURI&quot; id=&quot;anyURI&quot;&amp;gt;
 		    [...]
-    &lt;xs:restriction base=&quot;xs:anySimpleType&quot;&gt;
-      &lt;xs:whiteSpace fixed=&quot;true&quot; value=&quot;collapse&quot; id=&quot;anyURI.whiteSpace&quot;/&gt;
+    &lt;xs:restriction base=&quot;xs:anySimpleType&quot;&amp;gt;
+      &lt;xs:whiteSpace fixed=&quot;true&quot; value=&quot;collapse&quot; id=&quot;anyURI.whiteSpace&quot;/&amp;gt;
 
-    &lt;/xs:restriction&gt;
-&lt;/xs:simpleType&gt;
+    &lt;/xs:restriction&amp;gt;
+&lt;/xs:simpleType&amp;gt;
 </pre>
   </text>
             </spec>
@@ -1552,7 +1552,7 @@ A component using right-to-left characters SHOULD start and end
            <text section="3.3">
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 <pre>
-      &lt;prefix>'-'&lt;tree-specific identifier>
+      &lt;prefix&amp;gt;'-'&lt;tree-specific identifier&amp;gt;
 </pre>
 For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
  </text>
@@ -1580,7 +1580,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
            <text section="3.3">
         The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
 <pre>
-      &lt;prefix>'-'&lt;tree-specific identifier>
+      &lt;prefix&amp;gt;'-'&lt;tree-specific identifier&amp;gt;
 </pre>
 For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
  </text>

@@ -85,7 +85,7 @@ public class ExprList implements Iterable<Expr>
     }
     
     /**
-     * Rewrite, applying a node->node transformation
+     * Rewrite, applying a node{@literal ->}node transformation
      */
     public ExprList applyNodeTransform(NodeTransform transform) {
         ExprList x = new ExprList() ;

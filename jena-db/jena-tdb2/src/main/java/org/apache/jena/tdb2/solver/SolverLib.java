@@ -232,7 +232,7 @@ public class SolverLib
         return binding -> SolverLib.convert(binding, nodeTable);
     }
     
-    /** Binding ==> BindingNodeId, given a NodeTable */
+    /** Binding {@literal ->} BindingNodeId, given a NodeTable */
     public static BindingNodeId convert(Binding binding, NodeTable nodeTable) 
     {
         if ( binding instanceof BindingTDB )

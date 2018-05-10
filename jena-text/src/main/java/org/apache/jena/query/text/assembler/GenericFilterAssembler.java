@@ -54,7 +54,7 @@ import org.apache.lucene.analysis.TokenStream;
  * For example, <code>org.apache.lucene.analysis.ja.JapaneseAnalyzer</code>
  * has a constructor with 4 parameters: a <code>UserDict</code>,
  * a <code>CharArraySet</code>, a <code>JapaneseTokenizer.Mode</code>, and a 
- * <code>Set&lt;String></code>. So a simple wrapper can extract the values
+ * <code>Set&lt;String&gt;</code>. So a simple wrapper can extract the values
  * needed for the various parameters with types not available in this
  * extension, construct the required instances, and instantiate the
  * <code>JapaneseAnalyzer</code>.
@@ -84,6 +84,7 @@ import org.apache.lucene.analysis.TokenStream;
  * <p>
  * Examples:
  * <pre>
+ * {@code
     <#indexLucene> a text:TextIndexLucene ;
         text:directory <file:Lucene> ;
         text:entityMap <#entMap> ;
@@ -104,6 +105,7 @@ import org.apache.lucene.analysis.TokenStream;
               ]
             ]
         )
+   }
  * </pre>
  */
 public class GenericFilterAssembler extends AssemblerBase {

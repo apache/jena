@@ -582,7 +582,7 @@ public abstract class NodeValue extends ExprNode
     }
     
     /** Compare by value (and only value) if possible.
-     *  Supports <, <=, >, >= but not = nor != (which are sameValueAs and notSameValueAs)
+     *  Supports &lt;, &lt;=, &gt;, &gt;= but not = nor != (which are sameValueAs and notSameValueAs)
      * @param nv1
      * @param nv2
      * @return negative, 0 , or positive for not possible, less than, equal, greater than.

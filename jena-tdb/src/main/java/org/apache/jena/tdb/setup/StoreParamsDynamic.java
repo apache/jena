@@ -39,11 +39,11 @@ public interface StoreParamsDynamic {
     public Integer getBlockWriteCacheSize() ;
     public boolean isSetBlockWriteCacheSize() ;
     
-    /** Node cache for Node->NodeId. */
+    /** Node cache for Node{@literal ->}NodeId. */
     public Integer getNode2NodeIdCacheSize() ;
     public boolean isSetNode2NodeIdCacheSize() ;
     
-    /** Node cache for NodeId->Node. Important for SPARQL results. */
+    /** Node cache for NodeId{@literal ->}Node. Important for SPARQL results. */
     public Integer getNodeId2NodeCacheSize() ;
     public boolean isSetNodeId2NodeCacheSize() ;
 

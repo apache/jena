@@ -152,7 +152,6 @@
         <configuration>
           <version>true</version>
           <show>public</show>
-          <quiet>true</quiet>
           <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena TDB</windowtitle>
           <doctitle>Apache Jena TDB ${project.version}</doctitle>

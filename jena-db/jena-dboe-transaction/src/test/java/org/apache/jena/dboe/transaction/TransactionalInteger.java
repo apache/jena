@@ -25,7 +25,7 @@ import org.apache.jena.dboe.transaction.txn.TransactionalBase;
 /** 
  * A Transactional (unit of begin/commit) of a single integer component.
  * Testing support.  Use {@link TransInteger} for application code.
- * @see TransInteger 
+ * @see TransInteger
  */
 public class TransactionalInteger extends TransactionalBase {
     final private TransInteger integer ;

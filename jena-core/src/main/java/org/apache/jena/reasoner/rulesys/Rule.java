@@ -71,9 +71,9 @@ import org.slf4j.LoggerFactory ;
  * to allow rules to be embedded in code. External rule syntax based on N3
  * and RDF could be developed. The embedded syntax supports rules such as:
  * <blockindent>    
- * <code>[ (?C rdf:type *), guard(?C, ?P)  -> (?c rb:restriction some(?P, ?D)) ].</code><br />
- * <code>[ (?s owl:foo ?p) -> [ (?s owl:bar ?a) -> (?s ?p ?a) ] ].</code><br />
- * <code>[name: (?s owl:foo ?p) -> (?s ?p ?a)].</code><br />
+ * <code>[ (?C rdf:type *), guard(?C, ?P) {@literal ->} (?c rb:restriction some(?P, ?D)) ].</code><br />
+ * <code>[ (?s owl:foo ?p) {@literal ->} [ (?s owl:bar ?a) {@literal ->} (?s ?p ?a) ] ].</code><br />
+ * <code>[name: (?s owl:foo ?p) {@literal ->} (?s ?p ?a)].</code><br />
  * </blockindent>
  * only built in namespaces are recognized as such, * is a wildcard node, ?c is a variable, 
  * name(node ... node) is a functor, (node node node) is a triple pattern, [..] is an

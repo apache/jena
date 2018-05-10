@@ -72,7 +72,7 @@ public interface Expr
     public Expr copySubstitute(Binding binding) ;
 
     /**
-     * Rewrite, applying a node->node transformation
+     * Rewrite, applying a node{@literal ->}node transformation
      */
     public Expr applyNodeTransform(NodeTransform transform) ;
 
@@ -121,7 +121,7 @@ public interface Expr
      * must be different syntax, <code>equalsBySyntax</code> implies <code>equals</code>
      * (by alegbra).
      * <p>
-     * Hence, different <code>hashCode</code> => not <code>equalsBySyntax<code>.
+     * Hence, different <code>hashCode</code> {@literal =>} not <code>equalsBySyntax<code>.
      */ 
     @Override
     public int hashCode() ;

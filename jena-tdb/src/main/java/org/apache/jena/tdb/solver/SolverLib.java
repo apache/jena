@@ -103,7 +103,7 @@ public class SolverLib
         
         List<Triple> triples = pattern.getList() ;
         boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode))) ;
-        
+
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
         if ( graphNode == null ) {
             if ( 3 != tupleLen )
@@ -235,7 +235,7 @@ public class SolverLib
         return binding -> SolverLib.convert(binding, nodeTable);
     }
     
-    /** Binding ==> BindingNodeId, given a NodeTable */
+    /** Binding {@literal ->} BindingNodeId, given a NodeTable */
     public static BindingNodeId convert(Binding binding, NodeTable nodeTable) 
     {
         if ( binding instanceof BindingTDB )

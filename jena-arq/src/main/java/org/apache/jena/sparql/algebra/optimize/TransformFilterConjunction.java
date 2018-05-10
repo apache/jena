@@ -32,7 +32,7 @@ import org.apache.jena.sparql.expr.ExprList ;
  * hence the statics for the real work. 
  */
 
-/** Redo FILTER (A&&B) as FILTER(A) FILTER(B) (as an expr list).
+/** Redo {@literal FILTER (A&&B)} as FILTER(A) FILTER(B) (as an expr list).
  *    via multiple elements of the exprList of the OpFilter.
  *    This allows them to be placed independently.
  */

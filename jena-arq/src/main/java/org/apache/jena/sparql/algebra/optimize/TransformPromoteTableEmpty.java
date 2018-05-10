@@ -51,25 +51,25 @@ import org.apache.jena.sparql.algebra.op.* ;
  * The optimizer makes the following promotions:
  * </p>
  * <ul>
- * <li>Graph over table empty => table empty</li>
- * <li>Assign/Extend over table empty => table empty</li>
- * <li>Join where either side is table empty => table empty</li>
+ * <li>Graph over table empty {@literal =>} table empty</li>
+ * <li>Assign/Extend over table empty {@literal =>} table empty</li>
+ * <li>Join where either side is table empty {@literal =>} table empty</li>
  * <li>Left Join:
  * <ul>
- * <li>If LHS is table empty => table empty</li>
- * <li>If RHS is table empty => LHS</li>
+ * <li>If LHS is table empty {@literal =>} table empty</li>
+ * <li>If RHS is table empty {@literal =>} LHS</li>
  * </ul>
  * </li>
  * <li>Union:
  * <ul>
- * <li>If both sides are table empty => table empty</li>
- * <li>If one side is table empty => other side</li>
+ * <li>If both sides are table empty {@literal =>} table empty</li>
+ * <li>If one side is table empty {@literal =>} other side</li>
  * </ul>
  * </li>
  * <li>Minus:
  * <ul>
- * <li>If LHS is table empty => table empty</li>
- * <li>If RHS is table empty => LHS</li>
+ * <li>If LHS is table empty {@literal =>} table empty</li>
+ * <li>If RHS is table empty {@literal =>} LHS</li>
  * </ul>
  * </li>
  * </ul>

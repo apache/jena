@@ -262,7 +262,7 @@
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
         <!--  Fails when building with Java9 JDK because it requires 
-             system jar jdk.tools which is not available in Java9.
+             system jar jdk.tools which is not available in Java9 onwards
         -->
         <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
@@ -744,7 +744,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
+          <version>2.21.0</version>
         </plugin>
 
         <plugin>
@@ -780,20 +780,16 @@
             </execution>
           </executions>
           <configuration>
-
-            <!-- Java8 and later -->
-            <!-- javadoc-plug v2.x way to do this
-                 <additionalparam>-Xdoclint:none</additionalparam>
+            <!-- Java 10
+                 <additionalOptions>-html5</additionalOptions>
             -->
-            <!-- The javadoc-plugin v3 way to do this -->
+
             <doclint>none</doclint>
-            
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
             <version>true</version>
             <show>public</show>
-            <quiet>true</quiet>
             <encoding>UTF-8</encoding>
             <windowtitle>${project.name} ${project.version}</windowtitle>
             <doctitle>${project.name} ${project.version}</doctitle>
@@ -803,11 +799,10 @@
               <link>http://jena.apache.org/documentation/javadoc/arq/</link>
               <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
-              <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
+              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
               <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
               <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
-              <link>http://jena.apache.org/documentation/javadoc/elephas/</link>
             </links>
           </configuration>
         </plugin>

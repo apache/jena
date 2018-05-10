@@ -87,7 +87,7 @@ public class RDFTest {
     public static final Property document = m_model.createProperty( "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#document" );
     
     /** <p>This manifest entry is used to describe test cases that do not fall into one 
-     *  of the categories. It may have several associated files, indicated in <test:document> 
+     *  of the categories. It may have several associated files, indicated in {@literal <test:document>} 
      *  elements.</p>
      */
     public static final Resource MiscellaneousTest = m_model.createResource( "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#MiscellaneousTest" );
