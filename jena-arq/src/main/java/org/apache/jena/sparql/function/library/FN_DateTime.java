@@ -22,7 +22,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase2;
 
-/** fn:dateTime(xsd:date, xsd:time) -> xsd:dateTime */
+/** fn:dateTime(xsd:date, xsd:time) {@literal ->} xsd:dateTime */
 public class FN_DateTime extends FunctionBase2 {
 
     @Override

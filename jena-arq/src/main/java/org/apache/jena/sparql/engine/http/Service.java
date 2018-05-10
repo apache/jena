@@ -61,12 +61,10 @@ public class Service {
 
     /**
      * Use this Symbol to allow passing additional service context variables
-     * SERVICE <IRI> call. Parameters need to be grouped by SERVICE <IRI>, a
-     * Map<String, Context> is assumed. The key of the first map is the SERVICE
+     * {@literal SERVICE <IRI>} call. Parameters need to be grouped by {@literal SERVICE <IRI>}, a
+     * {@literal Map<String, Context>} is assumed. The key of the first map is the SERVICE
      * IRI, the value is a Context who's values will override any defaults in
      * the original context.
-     * 
-     * @see org.apache.jena.sparql.engine.http.Service
      */
     public static final Symbol serviceContext = SystemARQ.allocSymbol(base, "serviceContext");
 
