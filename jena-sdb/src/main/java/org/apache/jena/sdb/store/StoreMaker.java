@@ -23,7 +23,7 @@ import org.apache.jena.sdb.StoreDesc ;
 import org.apache.jena.sdb.sql.SDBConnection ;
 
 /** Source of new store objects.  Used by StoreFactory, where there is a registry
- * datatype type + layout type => store maker.
+ * datatype type + layout type {@literal =>} store maker.
  */  
 
 public interface StoreMaker
