@@ -53,7 +53,7 @@ import org.apache.jena.ext.xerces.util.IntStack;
  * <h4>Case-insensitive matching</h4>
  * <pre>
  * RegularExpression re = new RegularExpression(<var>regex</var>, "i");
- * if (re.matches(text) >= 0) { ...}
+ * if (re.matches(text) {@literal >=} 0) { ...}
  * </pre>
  *
  * <h4>Options</h4>
@@ -69,12 +69,12 @@ import org.apache.jena.ext.xerces.util.IntStack;
  *   <dt><a name="S_OPTION"><code>"s"</code></a>
  *   <dd class="REGEX"><kbd>.</kbd> matches any one character.
  *   <dt><a name="U_OPTION"><code>"u"</code></a>
- *   <dd class="REGEX">Redefines <Kbd>\d \D \w \W \s \S \b \B \&lt; \></kbd> as becoming to Unicode.
+ *   <dd class="REGEX">Redefines <Kbd>\d \D \w \W \s \S \b \B \&lt; \&gt;</kbd> as becoming to Unicode.
  *   <dt><a name="W_OPTION"><code>"w"</code></a>
- *   <dd class="REGEX">By this option, <kbd>\b \B \&lt; \></kbd> are processed with the method of
+ *   <dd class="REGEX">By this option, <kbd>\b \B \&lt; \&gt;</kbd> are processed with the method of
  *      'Unicode Regular Expression Guidelines' Revision 4.
  *      When "w" and "u" are specified at the same time,
- *      <kbd>\b \B \&lt; \></kbd> are processed for the "w" option.
+ *      <kbd>\b \B \&lt; \&gt;</kbd> are processed for the "w" option.
  *   <dt><a name="COMMA_OPTION"><code>","</code></a>
  *   <dd>The parser treats a comma in a character class as a range separator.
  *      <kbd class="REGEX">[a,b]</kbd> matches <kbd>a</kbd> or <kbd>,</kbd> or <kbd>b</kbd> without this option.
@@ -163,17 +163,17 @@ import org.apache.jena.ext.xerces.util.IntStack;
  *
  *   <li>Character class
  *     <dl>
-+ *       <dt class="REGEX"><kbd>[</kbd><var>R<sub>1</sub></var><var>R<sub>2</sub></var><var>...</var><var>R<sub>n</sub></var><kbd>]</kbd> (without <a href="#COMMA_OPTION">"," option</a>)
-+ *       <dt class="REGEX"><kbd>[</kbd><var>R<sub>1</sub></var><kbd>,</kbd><var>R<sub>2</sub></var><kbd>,</kbd><var>...</var><kbd>,</kbd><var>R<sub>n</sub></var><kbd>]</kbd> (with <a href="#COMMA_OPTION">"," option</a>)
+ *       <dt class="REGEX"><kbd>[</kbd><var>R<sub>1</sub></var><var>R<sub>2</sub></var><var>...</var><var>R<sub>n</sub></var><kbd>]</kbd> (without <a href="#COMMA_OPTION">"," option</a>)
+ *       <dt class="REGEX"><kbd>[</kbd><var>R<sub>1</sub></var><kbd>,</kbd><var>R<sub>2</sub></var><kbd>,</kbd><var>...</var><kbd>,</kbd><var>R<sub>n</sub></var><kbd>]</kbd> (with <a href="#COMMA_OPTION">"," option</a>)
  *       <dd>Positive character class.  It matches a character in ranges.
  *       <dd><var>R<sub>n</sub></var>:
  *       <ul>
  *         <li class="REGEX">A character (including <Kbd>\e \f \n \r \t</kbd> <kbd>\u005cx</kbd><var>HH</var> <kbd>\u005cx{</kbd><var>HHHH</var><kbd>}</kbd> <!--kbd>\u005c u</kbd><var>HHHH</var--> <kbd>\u005cv</kbd><var>HHHHHH</var>)
  *             <p>This range matches the character.
  *         <li class="REGEX"><var>C<sub>1</sub></var><kbd>-</kbd><var>C<sub>2</sub></var>
- *             <p>This range matches a character which has a code point that is >= <var>C<sub>1</sub></var>'s code point and &lt;= <var>C<sub>2</sub></var>'s code point.
-+ *         <li class="REGEX">A POSIX character class: <Kbd>[:alpha:] [:alnum:] [:ascii:] [:cntrl:] [:digit:] [:graph:] [:lower:] [:print:] [:punct:] [:space:] [:upper:] [:xdigit:]</kbd>,
-+ *             and negative POSIX character classes in Perl like <kbd>[:^alpha:]</kbd>
+ *             <p>This range matches a character which has a code point that is &gt;= <var>C<sub>1</sub></var>'s code point and &lt;= <var>C<sub>2</sub></var>'s code point.
+ *         <li class="REGEX">A POSIX character class: <Kbd>[:alpha:] [:alnum:] [:ascii:] [:cntrl:] [:digit:] [:graph:] [:lower:] [:print:] [:punct:] [:space:] [:upper:] [:xdigit:]</kbd>,
+ *             and negative POSIX character classes in Perl like <kbd>[:^alpha:]</kbd>
  *             <p>...
  *         <li class="REGEX"><kbd>\d \D \s \S \w \W \p{</kbd><var>name</var><kbd>} \P{</kbd><var>name</var><kbd>}</kbd>
  *             <p>These expressions specifies the same ranges as the following expressions.
@@ -186,9 +186,9 @@ import org.apache.jena.ext.xerces.util.IntStack;
  *       <dd>Negative character class.  It matches a character not in ranges.
  *
  *       <dt class="REGEX"><kbd>(?[</kbd><var>ranges</var><kbd>]</kbd><var>op</var><kbd>[</kbd><var>ranges</var><kbd>]</kbd><var>op</var><kbd>[</kbd><var>ranges</var><kbd>]</kbd> ... <Kbd>)</kbd>
- *       (<var>op</var> is <kbd>-</kbd> or <kbd>+</kbd> or <kbd>&</kbd>.)
+ *       (<var>op</var> is <kbd>-</kbd> or <kbd>+</kbd> or <kbd>&amp;</kbd>.)
  *       <dd>Subtraction or union or intersection for character classes.
- *       <dd class="REGEX">For exmaple, <kbd>(?[A-Z]-[CF])</kbd> is equivalent to <kbd>[A-BD-EG-Z]</kbd>, and <kbd>(?[0x00-0x7f]-[K]&[\p{Lu}])</kbd> is equivalent to <kbd>[A-JL-Z]</kbd>.
+ *       <dd class="REGEX">For exmaple, <kbd>(?[A-Z]-[CF])</kbd> is equivalent to <kbd>[A-BD-EG-Z]</kbd>, and <kbd>(?[0x00-0x7f]-[K]&amp;[\p{Lu}])</kbd> is equivalent to <kbd>[A-JL-Z]</kbd>.
  *       <dd>The result of this operations is a <u>positive character class</u>
  *           even if an expression includes any negative character classes.
  *           You have to take care on this in case-insensitive matching.
@@ -335,7 +335,7 @@ import org.apache.jena.ext.xerces.util.IntStack;
  *       <dt class="REGEX"><kbd>\1 \2 \3 \4 \5 \6 \7 \8 \9</kbd>
  *       <dd>
  *
- *       <dt class="REGEX"><kbd>(?></kbd><var>X</var><kbd>)</kbd>
+ *       <dt class="REGEX"><kbd>(?&gt;</kbd><var>X</var><kbd>)</kbd>
  *       <dd>Independent expression group. ................
  *
  *       <dt class="REGEX"><kbd>(?</kbd><var>options</var><kbd>:</kbd><var>X</var><kbd>)</kbd>
@@ -433,10 +433,10 @@ import org.apache.jena.ext.xerces.util.IntStack;
  * minmax ::= '{' ([0-9]+ | [0-9]+ ',' | ',' [0-9]+ | [0-9]+ ',' [0-9]+) '}'
  * atom ::= char | '.' | char-class | '(' regex ')' | '(?:' regex ')' | '\' [0-9]
  *          | '\w' | '\W' | '\d' | '\D' | '\s' | '\S' | category-block | '\X'
- *          | '(?>' regex ')' | '(?' options ':' regex ')'
+ *          | '(?&gt;' regex ')' | '(?' options ':' regex ')'
  *          | '(?' ('(' [0-9] ')' | '(' anchors ')' | looks) term ('|' term)? ')'
  * options ::= [imsw]* ('-' [imsw]+)?
- * anchors ::= '^' | '$' | '\A' | '\Z' | '\z' | '\b' | '\B' | '\&lt;' | '\>'
+ * anchors ::= '^' | '$' | '\A' | '\Z' | '\z' | '\b' | '\B' | '\&lt;' | '\&gt;'
  * looks ::= '(?=' regex ')'  | '(?!' regex ')'
  *           | '(?&lt;=' regex ')' | '(?&lt;!' regex ')'
  * char ::= '\\' | '\' [efnrtv] | '\c' [@-_] | code-point | character-1
@@ -454,7 +454,7 @@ import org.apache.jena.ext.xerces.util.IntStack;
  * character-1 ::= (any character except meta-characters)
  *
  * char-class ::= '[' ranges ']'
- *                | '(?[' ranges ']' ([-+&] '[' ranges ']')? ')'
+ *                | '(?[' ranges ']' ([-+&amp;] '[' ranges ']')? ')'
  * ranges ::= '^'? (range <a href="#COMMA_OPTION">','?</a>)+
  * range ::= '\d' | '\w' | '\s' | '\D' | '\W' | '\S' | category-block
  *           | range-char | range-char '-' range-char
@@ -2207,7 +2207,7 @@ public class RegularExpression implements java.io.Serializable {
 
     /**
      * An option.
-     * This enables to process locale-independent word boundary for <span class="REGEX"><kbd>\b \B \&lt; \></kbd></span>.
+     * This enables to process locale-independent word boundary for <span class="REGEX"><kbd>\b \B \&lt; \&gt;</kbd></span>.
      * <p>By default, the engine considers a position between a word character
      * (<span class="REGEX"><Kbd>\w</kbd></span>) and a non word character
      * is a word boundary.

@@ -125,7 +125,6 @@ public class FBRuleReasoner implements RuleReasoner {
          Add the given rules to the current set and answer this Reasoner. Provided 
          so that the Factory can deal out reasoners with specified rulesets. 
          There may well be a better way to arrange this.
-         TODO review & revise
     */
     public FBRuleReasoner addRules(List<Rule> rules) {
         List<Rule> combined = new ArrayList<>( this.rules );
