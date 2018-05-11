@@ -54,7 +54,12 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     
     /** In-memory, non persistent, transactional integer */
     public TransInteger(long v) {
-        this(null, ComponentId.allocLocal()) ;
+        this(v, ComponentId.allocLocal()) ;
+    }
+
+    /** In-memory, non persistent, transactional integer */
+    public TransInteger(long v, ComponentId componentId) {
+        this(null, componentId) ;
         value.set(v) ;
     }
 

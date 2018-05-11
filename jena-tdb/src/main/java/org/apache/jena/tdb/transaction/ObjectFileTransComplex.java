@@ -34,10 +34,8 @@ import org.apache.jena.tdb.base.objectfile.ObjectFile ;
  * 
  * To flush, it writes the journal to the base file.
  * 
- * It is relatively untested.
- * 
- * Compare to {@link ObjectFileTrans} uses the fact that object files are append only so
- * writes directly and resets on abort.
+ * It is relatively untested. Thisis not the normal implementation of a transactional
+ * ObjectFile.
  * 
  * @see ObjectFileTrans
  */
@@ -81,9 +79,13 @@ public class ObjectFileTransComplex implements ObjectFile, TransactionLifecycle
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         transObjects.sync() ;
     }
-
+    
     @Override
-    public void commitEnact(Transaction txn)
+    public void committed(Transaction txn)
+    {}
+    
+    @Override
+    public void enactCommitted(Transaction txn)
     {
         if ( ! inTransaction )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
@@ -93,18 +95,18 @@ public class ObjectFileTransComplex implements ObjectFile, TransactionLifecycle
     }
 
     @Override
-    public void abort(Transaction txn)
-    {
-        transObjects.reposition(0) ;
-    }
-    
-    @Override
-    public void commitClearup(Transaction txn)
+    public void clearupCommitted(Transaction txn)
     {
         transObjects.truncate(0) ;
         passthrough = true ;
     }
 
+    @Override
+    public void abort(Transaction txn)
+    {
+        transObjects.reposition(0) ;
+    }
+    
     /** Copy from the temporary file to the real file */
     private void append()
     {

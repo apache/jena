@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
     TestBuildTextDataset.class
     , TestDatasetWithLuceneTextIndex.class
     , TestDatasetWithLuceneMultilingualTextIndex.class
@@ -35,10 +36,15 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithLuceneGraphTextIndex.class
     , TestDatasetWithLuceneTextIndexDeletionSupport.class
     , TestDatasetWithLuceneStoredLiterals.class
+    
+    , TestTextNonTxn.class
+    , TestTextTxn.class
+    , TestTextNonTxnTDB1.class
+    , TestTextTxnTDB.class
+
     , TestEntityMapAssembler.class
     , TestTextDatasetAssembler.class
     , TestTextIndexLuceneAssembler.class
-    , TestTextTDB.class
     , TestDatasetWithSimpleAnalyzer.class
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class

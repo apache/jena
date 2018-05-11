@@ -289,7 +289,6 @@ public class RDFConnectionRemoteBuilder {
     /** Build an {RDFConnection}. */ 
     public RDFConnection build() {
         requireNonNull(txnLifecycle);
-        requireNonNull(destination);
         
         Function<RDFConnectionRemoteBuilder, RDFConnection> maker = creator ;
         

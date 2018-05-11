@@ -23,22 +23,33 @@ package org.apache.jena.tdb.transaction;
  */ 
 public interface TransactionLifecycle
 {
-    // begin - commitPrepare - commitEnact - clearup
-    // begin - abort - clearup
+    // begin - commitPrepare commit, then later. commitEnact - clearup
+    // begin - abort
     // May be reused via a new call to begin - see impl for if that's possible. 
     
     /** Start an update transaction */  
     public void begin(Transaction txn) ;
     
-    /** End of active phase - will not be making these changes*/
-    public void abort(Transaction txn) ;
+    /** End of active phase - will not be making these changes. */
+    public void abort(Transaction txn);
     
-    /** End of active phase. Make changes safe; do not update the base data. */
-    public void commitPrepare(Transaction txn) ;
+    /**
+     * Prepare to commit; end of active phase. 
+     * Make changes safe; do not update the base data.
+     */
+    public void commitPrepare(Transaction txn);
 
-    /** Update the base data */ 
-    public void commitEnact(Transaction txn) ;
+    /** 
+     *  The commit has happened
+     */
+    public void committed(Transaction txn) ;
+
+    /** Update the base data - called during journal flush. */ 
+    public void enactCommitted(Transaction txn) ;
     
-    /** All done - transaction committed and incorporated in the base dataset - can now tidy up */
-    public void commitClearup(Transaction txn) ;
+    /**
+     * All done - transaction committed and incorporated in the base dataset - can now
+     * tidy up - called during journal flush if commiting.
+     */
+    public void clearupCommitted(Transaction txn) ;
 }

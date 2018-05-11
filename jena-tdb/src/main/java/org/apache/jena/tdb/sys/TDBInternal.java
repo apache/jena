@@ -41,6 +41,13 @@ import org.apache.jena.tdb.transaction.TransactionManager ;
 public class TDBInternal
 {
     /**
+     * Return true if this is a TDB1 backed DatasetGraph. 
+     */
+    public static boolean isTDB1(DatasetGraph dsg) {
+        return ( dsg instanceof DatasetGraphTransaction );
+    }
+
+    /**
      * Return the NodeId for a node. Returns NodeId.NodeDoesNotExist when the
      * node is not found. Returns null when not a TDB-backed dataset.
      */
@@ -169,4 +176,5 @@ public class TDBInternal
                 return false ;
             return true ;
         } ;
+
 }
