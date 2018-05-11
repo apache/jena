@@ -558,7 +558,7 @@ public class ExprFactory {
 	 * Converts expr to an Expr object via expr()
 	 * 
 	 * @see #asExpr(Object)
-	 * @see org.apache.jena.sparql.expr.E_Round
+	 * @see org.apache.jena.sparql.expr.E_NumRound
 	 * 
 	 * @param expr
 	 *            the expression to check.
@@ -594,7 +594,7 @@ public class ExprFactory {
 	 * Converts expr to an Expr object via expr()
 	 * 
 	 * @see #asExpr(Object)
-	 * @see org.apache.jena.sparql.expr.E_StrEncodedForURI
+	 * @see org.apache.jena.sparql.expr.E_StrEncodeForURI
 	 * 
 	 * @param expr
 	 *            the expression to check.
@@ -1762,7 +1762,7 @@ public class ExprFactory {
 	 * 
 	 * @param o
 	 *            the object to create the expression from
-	 * @return
+	 * @return Expr
 	 */
 	public static final Expr asExpr(Object o, PrefixMapping pMap) {
 		if (o == null) {
