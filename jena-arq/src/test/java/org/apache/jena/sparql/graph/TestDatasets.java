@@ -26,7 +26,6 @@ import java.util.List ;
 import org.apache.jena.atlas.lib.Creator ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DynamicDatasets ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateFactory ;
 import org.apache.jena.update.UpdateProcessor ;
@@ -74,9 +73,6 @@ public class TestDatasets {
 	private void test(String query, String[] expected, int expectedCount) {
 		//Parse the query
 		Query q = QueryFactory.create(query);
-		
-		//Render the dataset appropriately, ARQ doesn't do this for us automatically
-		Dataset ds = DynamicDatasets.dynamicDataset(q.getDatasetDescription(), this.ds, false);
 		
 		//Then execute the query
 		QueryExecution exec = QueryExecutionFactory.create(q, ds);

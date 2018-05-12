@@ -339,7 +339,8 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Return a dataset description (FROM/FROM NAMED clauses) for the query. */  
     public DatasetDescription getDatasetDescription()
     {
-        if ( ! hasDatasetDescription() ) return null;
+        if ( ! hasDatasetDescription() )
+            return null;
         
         DatasetDescription description = new DatasetDescription() ;
         

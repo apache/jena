@@ -21,22 +21,28 @@ package org.apache.jena.sparql.engine;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Query ;
+import org.apache.jena.query.QueryExecException;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DynamicDatasets;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.mgt.QueryEngineInfo ;
 import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.DatasetUtils;
 
 /** Main part of a QueryEngine - something that takes responsibility for a complete query execution */ 
 public abstract class QueryEngineBase implements OpEval, Closeable
 {
     public final static QueryEngineInfo queryEngineInfo = new QueryEngineInfo() ;
-    // See also ExecutinContext.getDataset()
+    // See also ExecutionContext.getDataset()
+    protected final DatasetGraph originalDataset ;
     protected DatasetGraph dataset = null ;
     protected Context context ;
     private Binding startBinding ;
@@ -45,20 +51,41 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     private Op queryOp = null ;
     private Plan plan = null ;
     
-    protected QueryEngineBase(Query query,
-                              DatasetGraph dataset, 
-                              Binding input,
-                              Context cxt)
-    {
-        this(dataset, input, cxt) ;
+    protected QueryEngineBase(Query query, DatasetGraph dsg, Binding input, Context cxt) {
+        this(dsg, input, cxt) ;
         this.query = query ;
         query.setResultVars() ;
         // Unoptimized so far.
         setOp(createOp(query)) ;
+        dataset = prepareDataset(dsg, query);
     }
-    
-    protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context cxt)
-    {
+
+    private DatasetGraph prepareDataset(DatasetGraph originalDataset, Query query) {
+        DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
+        DatasetGraph dsg = originalDataset;
+        
+        if ( dsg != null ) { 
+            if ( dsDesc != null ) {
+                if ( query.hasDatasetDescription() )
+                    dsg = dynamicDataset(dsDesc, dsg, false);
+            }
+            return dsg;
+        }
+
+        // No DatasetGraph
+        if ( ! query.hasDatasetDescription() ) 
+            throw new QueryExecException("No dataset and no dataset description for query");
+
+        // DatasetDescription : Build it.
+        String baseURI = query.getBaseURI() ;
+        if ( baseURI == null )
+            baseURI = IRIResolver.chooseBaseURI().toString() ;
+
+        dsg = DatasetUtils.createDatasetGraph(dsDesc, baseURI ) ;
+        return dsg ;
+    }
+
+    protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context cxt) {
         this(dataset, input, cxt) ;
         // Ensure context setup - usually done in QueryExecutionBase
         // so it can be changed after initialization.
@@ -68,13 +95,11 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         setOp(op) ;
     }
     
-    private QueryEngineBase(DatasetGraph dataset, Binding input, Context context)
-    {
+    private QueryEngineBase(DatasetGraph dataset, Binding input, Context context) {
         this.context = context ;
-        this.dataset = dataset ;    // Maybe null e.g. in query
-        
-        if ( input == null )
-        {
+        this.originalDataset = dataset ;
+        this.dataset = dataset ;
+        if ( input == null ) {
             Log.warn(this, "Null initial input") ;
             input = BindingRoot.create() ;
         }
@@ -118,6 +143,20 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     {
         Op op = Algebra.compile(query) ;
         return op ;
+    }
+    
+    /** Calculate a dataset based on FROM and FROM NAMED in the query */ 
+    protected DatasetGraph dynamicDataset(DatasetDescription dsDesc, DatasetGraph dataset, boolean unionDftGraph) {
+        return DynamicDatasets.dynamicDataset(dsDesc, dataset, unionDftGraph) ;
+    }
+    
+    /**
+     * Return whether the dataset to execute against is the original one, or a
+     * DatasetDescription modified one (including one for provided then the dataset was
+     * null).
+     */
+    protected boolean isDynamicDataset() {
+        return originalDataset != dataset;
     }
     
     // Record the query operation as it goes pass and call the actual worker
