@@ -45,8 +45,8 @@ public class ParserProfileStd implements ParserProfile
     private final Context      context;
     private       IRIResolver  resolver;
     private final PrefixMap    prefixMap;
-    private final boolean                  strictMode;
-    private final boolean            checking;
+    private final boolean      strictMode;
+    private final boolean      checking;
 
     public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler, 
                             IRIResolver resolver, PrefixMap prefixMap,
@@ -60,6 +60,11 @@ public class ParserProfileStd implements ParserProfile
         this.strictMode = strictMode;
     }
     
+    @Override
+    public FactoryRDF getFactorRDF() {
+        return factory;
+    }
+
     @Override
     public ErrorHandler getErrorHandler() {
         return errorHandler;
@@ -99,6 +104,7 @@ public class ParserProfileStd implements ParserProfile
         return iri;
     }
 
+    /** Create a triple - this operation call {@link #checkTriple} if checking is enabled. */ 
     @Override
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
@@ -106,11 +112,36 @@ public class ParserProfileStd implements ParserProfile
         return factory.createTriple(subject, predicate, object);
     }
 
+    protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
+        if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
+            errorHandler.error("Subject is not a URI or blank node", line, col);
+            throw new RiotException("Bad subject: " + subject);
+        }
+        if ( predicate == null || (!predicate.isURI()) ) {
+            errorHandler.error("Predicate not a URI", line, col);
+            throw new RiotException("Bad predicate: " + predicate);
+        }
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
+            errorHandler.error("Object is not a URI, blank node or literal", line, col);
+            throw new RiotException("Bad object: " + object);
+        }
+    }
+
+    /** Create a quad - this operation call {@link #checkTriple} if checking is enabled. */ 
     @Override
     public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
         if ( checking )
             checkQuad(graph, subject, predicate, object, line, col);
         return factory.createQuad(graph, subject, predicate, object);
+    }
+
+    protected void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
+        // Allow blank nodes - syntax may restrict more.
+        if ( graph != null && !graph.isURI() && !graph.isBlank() ) {
+            errorHandler.error("Graph name is not a URI or blank node: " + FmtUtils.stringForNode(graph), line, col);
+            throw new RiotException("Bad graph name: " + graph);
+        }
+        checkTriple(subject, predicate, object, line, col);
     }
 
     @Override
@@ -245,29 +276,5 @@ public class ParserProfileStd implements ParserProfile
             errorHandler.fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn());
         }
         return expansion;
-    }
-
-    private void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
-        if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
-            errorHandler.error("Subject is not a URI or blank node", line, col);
-            throw new RiotException("Bad subject: " + subject);
-        }
-        if ( predicate == null || (!predicate.isURI()) ) {
-            errorHandler.error("Predicate not a URI", line, col);
-            throw new RiotException("Bad predicate: " + predicate);
-        }
-        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
-            errorHandler.error("Object is not a URI, blank node or literal", line, col);
-            throw new RiotException("Bad object: " + object);
-        }
-    }
-
-    private void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
-        // Allow blank nodes - syntax may restrict more.
-        if ( graph != null && !graph.isURI() && !graph.isBlank() ) {
-            errorHandler.error("Graph name is not a URI or blank node: " + FmtUtils.stringForNode(graph), line, col);
-            throw new RiotException("Bad graph name: " + graph);
-        }
-        checkTriple(subject, predicate, object, line, col);
     }
 }
