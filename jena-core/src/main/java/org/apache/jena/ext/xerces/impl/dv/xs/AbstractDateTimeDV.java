@@ -38,7 +38,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.XSDateTime;
  *          decl object can be used to validate two strings at the same time.
  *          -SG
  *          
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Elena Litani
  * @author Len Berman

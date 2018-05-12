@@ -23,7 +23,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 /**
  * Represent the schema type "integer"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

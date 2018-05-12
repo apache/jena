@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.xs.*;
  * Class to get the information back after content is validated. This info
  * would be filled by validate().
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  *

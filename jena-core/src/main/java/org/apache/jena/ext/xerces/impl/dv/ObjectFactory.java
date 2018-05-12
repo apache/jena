@@ -37,7 +37,7 @@ import java.util.Properties;
  * when bundled as part of the JDK.
  * <p>
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @version $Id: ObjectFactory.java 924307 2010-03-17 14:36:05Z mrglavas $
  */

@@ -29,7 +29,7 @@ import org.apache.jena.ext.xerces.xs.XSObjectList;
 /**
  * Contains a list of XSObjects.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

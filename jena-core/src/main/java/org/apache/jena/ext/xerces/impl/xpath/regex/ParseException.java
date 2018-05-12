@@ -18,7 +18,7 @@
 package org.apache.jena.ext.xerces.impl.xpath.regex;
 
 /**
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version $Id: ParseException.java 572108 2007-09-02 18:48:31Z mrglavas $

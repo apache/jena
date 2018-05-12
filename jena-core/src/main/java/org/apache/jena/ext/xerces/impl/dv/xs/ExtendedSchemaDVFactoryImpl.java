@@ -24,7 +24,7 @@ import org.apache.jena.ext.xerces.util.SymbolHash;
  * A special factory to create/return built-in schema DVs and create user-defined DVs
  * that includes anyAtomicType, yearMonthDuration and dayTimeDuration
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Khaled Noaman, IBM
  *

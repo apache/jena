@@ -18,7 +18,7 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 /**
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *  
  * @version $Id: SchemaDateTimeException.java 446745 2006-09-15 21:43:58Z mrglavas $
  */

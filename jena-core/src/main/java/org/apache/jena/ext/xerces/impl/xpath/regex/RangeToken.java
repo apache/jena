@@ -20,7 +20,7 @@ package org.apache.jena.ext.xerces.impl.xpath.regex;
 /**
  * This class represents a character class such as [a-z] or a period.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @version $Id: RangeToken.java 965250 2010-07-18 16:04:58Z mrglavas $
  */

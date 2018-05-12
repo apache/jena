@@ -27,7 +27,7 @@ import org.apache.jena.ext.xerces.impl.dv.xs.XSSimpleTypeDecl;
  * declarations to the pool.
  * Note: The cashing mechanism is not implemented yet.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  * 
  * @author Elena Litani, IBM
  * @version $Id: XSDeclarationPool.java 805582 2009-08-18 21:13:20Z sandygao $

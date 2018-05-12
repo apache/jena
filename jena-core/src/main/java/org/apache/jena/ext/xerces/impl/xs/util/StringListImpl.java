@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.xs.StringList;
 /**
  * Contains a list of Strings.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

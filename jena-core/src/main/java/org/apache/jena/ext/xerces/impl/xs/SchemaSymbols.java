@@ -21,7 +21,7 @@ package org.apache.jena.ext.xerces.impl.xs;
 /**
  * Collection of symbols used to parse a Schema Grammar.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author jeffrey rodriguez
  * @version $Id: SchemaSymbols.java 446734 2006-09-15 20:51:23Z mrglavas $

@@ -20,7 +20,7 @@ package org.apache.jena.ext.xerces.impl.dv;
 /**
  * Datatype exception for invalid values.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

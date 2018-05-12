@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 /**
  * Validator for &lt;gYearMonth&gt; datatype (W3C Schema Datatypes)
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Elena Litani
  * @author Gopal Sharma, SUN Microsystem Inc.

@@ -23,7 +23,7 @@ import org.apache.jena.ext.xerces.util.SymbolHash;
 /**
  * the factory to create/return built-in schema 1.0 DVs and create user-defined DVs
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

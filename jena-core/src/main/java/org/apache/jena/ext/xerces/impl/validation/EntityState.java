@@ -23,7 +23,7 @@ package org.apache.jena.ext.xerces.impl.validation;
  * by components that store information about entity declarations, as well as by
  * entity validator that will need to validate attributes of type entity.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @author Elena Litani, IBM
  * @version $Id: EntityState.java 446719 2006-09-15 20:32:39Z mrglavas $

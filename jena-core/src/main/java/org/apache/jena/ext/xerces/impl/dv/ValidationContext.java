@@ -23,7 +23,7 @@ import java.util.Locale;
  * ValidationContext has all the information required for the
  * validation of: id, idref, entity, notation, qname
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  * @version $Id: ValidationContext.java 713638 2008-11-13 04:42:18Z mrglavas $

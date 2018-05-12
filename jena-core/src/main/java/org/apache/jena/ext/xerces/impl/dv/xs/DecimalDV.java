@@ -27,7 +27,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.XSDecimal;
 /**
  * Represent the schema type "decimal"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM
