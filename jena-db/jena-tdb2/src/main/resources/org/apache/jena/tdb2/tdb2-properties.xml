@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
 <properties version="1.0">
-  <comment>TDB System Properties</comment>
-  <entry key="org.apache.jena.tdb.version">${project.version}</entry>
-  <entry key="org.apache.jena.tdb.build.datetime">${build.time.xsd}</entry>
+  <comment>TDB2 System Properties</comment>
+  <entry key="org.apache.jena.tdb2.version">${project.version}</entry>
+  <entry key="org.apache.jena.tdb2.build.datetime">${build.time.xsd}</entry>
 </properties>
