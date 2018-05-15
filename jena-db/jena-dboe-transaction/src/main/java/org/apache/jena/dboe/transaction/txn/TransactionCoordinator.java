@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.locks.ReadWriteLock ;
 import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Sys;
@@ -87,6 +88,22 @@ public class TransactionCoordinator {
     // "one exclusive, or many other" lock which happens to be called ReadWriteLock
     // See also {@code lock} which protects the datastructures during transaction management.  
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
+
+    // The version is the serialization point for a transaction.
+    // All transactions on the same view of the data get the same serialization point.
+    
+    // A read transaction can be promoted if writer does not start
+    // This TransactionCoordinator provides Serializable, Read-lock-free
+    // execution. With no item locking, a read can only be promoted
+    // if no writer started since the reader started or if it is "read committed",
+    // seeing changes made since it started and comitted at the poiont of promotion.
+    
+    /* The version of the data - incremented when transaction commits.
+     * This is the version with repest to the last commited transaction.
+     * Aborts do not cause the data version to advance. 
+     * This counterr never goes backwards.
+     */ 
+    private final AtomicLong dataVersion = new AtomicLong(0) ;
 
     // Coordinator wide lock object.
     private Object coordinatorLock = new Object() ;
@@ -276,6 +293,8 @@ public class TransactionCoordinator {
     public void shutdown() {
         if ( coordinatorLock == null )
             return ;
+        if ( countActive() > 0 )
+            FmtLog.warn(log, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
         coordinatorLock = null ;
@@ -469,7 +488,6 @@ public class TransactionCoordinator {
         Objects.nonNull(txnType) ;
         checkActive() ;
         
-        // XXX Flag to bounce writers for long term "block writers"
         if ( false /* bounceWritersAtTheMoment */) {
             // Is this stil needed?
             // Switching happens as copy, not in-place compaction (at the moment).
@@ -504,24 +522,10 @@ public class TransactionCoordinator {
         return transaction;
     }
     
-    // The version is the serialization point for a transaction.
-    // All transactions on the same view of the data get the same serialization point.
-    
-    // A read transaction can be promoted if writer does not start
-    // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution. With no item locking, a read can only be promoted
-    // if no writer started since the reader started or if it is "read committed",
-    // seeing changes made since it started and comitted at the poiont of promotion.
-
-    /* The version of the data - incremented when transaction commits.
-     * This is the version with repest to the last commited transaction.
-     * Aborts do not cause the data version to advance. 
-     * This counterr never goes backwards.
-     */ 
-    private final AtomicLong dataVersion = new AtomicLong(0) ;
-    
     private Transaction begin$(TxnType txnType) {
         synchronized(coordinatorLock) {
+            // Inside the lock - check again.
+            checkActive();
             // Thread safe part of 'begin'
             // Allocate the transaction serialization point.
             TxnId txnId = txnIdGenerator.generate() ;
