@@ -38,6 +38,8 @@ public class BuilderNode
             return NodeConst.nodeTrue ;
         if ( item.isSymbol("false") )
             return NodeConst.nodeFalse ;
+        if ( item.isSymbolIgnoreCase("ANY") || item.isSymbol("_") )
+            return Node.ANY;
         if ( !item.isNode() )
             BuilderLib.broken(item, "Not a node", item) ;
         return item.getNode() ;
