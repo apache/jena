@@ -26,21 +26,20 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.shared.PrefixMapping ;
 
 /** Abstract of prefix storage for graphs in an RDF dataset */
-
 public interface DatasetPrefixStorage extends Closeable, Sync
 {
     /** Return the set of graph names for which there might be prefix mappings */ 
     public Set<String> graphNames() ;
     
-    /** Get the URI string associated with a prefix string for a specific graph (or null) */ 
+    /** Get the URI string associated with a prefix string for a specific graph (or null for dataset, not a specific graph) */ 
     public String readPrefix(String graphName, String prefix) ;
-    /** Get the prefix string associated with a URI string for a specific graph (or null) */ 
+    /** Get the prefix string associated with a URI string for a specific graph (or null for dataset, not a specific graph) */ 
     public String readByURI(String graphName, String uriStr) ;
     
     /** Return the mappings for a specific graph.  Do not change this map */ 
     public Map<String, String> readPrefixMap(String graphName) ;
     
-    /** Add a prefix mapping for a specific graph */ 
+    /** Add a prefix mapping for a specific graph (or null for dataset, not a specific graph) */ 
     public void insertPrefix(String graphName, String prefix, String uri) ;
     
     /** Copy the prefixes for a graph into the given {@link PrefixMapping}
