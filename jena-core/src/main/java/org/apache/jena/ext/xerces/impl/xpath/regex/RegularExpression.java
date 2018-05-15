@@ -480,7 +480,7 @@ import org.apache.jena.ext.xerces.util.IntStack;
  *
  * <hr width="50%">
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version $Id: RegularExpression.java 961928 2010-07-08 20:43:46Z knoaman $

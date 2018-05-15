@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.xs.XSObjectList;
 /**
  * The class used to pass all facets to {@link XSSimpleType#applyFacets}.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

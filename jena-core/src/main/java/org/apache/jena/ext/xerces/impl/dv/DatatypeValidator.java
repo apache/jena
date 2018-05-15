@@ -22,7 +22,7 @@ package org.apache.jena.ext.xerces.impl.dv;
  * The interface that a DTD datatype must implement. The implementation of this
  * interface must be thread-safe.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author Sandy Gao, IBM
  *

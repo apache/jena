@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.ObjectList;
 /**
  * Contains a list of Objects.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @version $Id: ObjectListImpl.java 789785 2009-06-30 15:10:26Z knoaman $
  */

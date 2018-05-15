@@ -23,7 +23,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 /**
  * Represent the schema type "string"
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

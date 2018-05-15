@@ -29,7 +29,7 @@ public class QNameDV {}
 ///**
 // * Represent the schema type "QName" and "NOTATION"
 // *
-// * @xerces.internal 
+// * {@literal @xerces.internal} 
 // *
 // * @author Neeraj Bajaj, Sun Microsystems, inc.
 // * @author Sandy Gao, IBM

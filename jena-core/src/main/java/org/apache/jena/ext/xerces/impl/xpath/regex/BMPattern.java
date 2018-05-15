@@ -22,7 +22,7 @@ import java.text.CharacterIterator;
 /**
  * Boyer-Moore searcher.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @version $Id: BMPattern.java 572108 2007-09-02 18:48:31Z mrglavas $
  */

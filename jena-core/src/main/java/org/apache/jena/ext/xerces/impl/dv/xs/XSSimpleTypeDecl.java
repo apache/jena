@@ -38,7 +38,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.ObjectList;
 import org.w3c.dom.TypeInfo;
 
 /**
- * @xerces.internal
+ * {@literal @xerces.internal}
  *  
  * @author Sandy Gao, IBM
  * @author Neeraj Bajaj, Sun Microsystems, inc.

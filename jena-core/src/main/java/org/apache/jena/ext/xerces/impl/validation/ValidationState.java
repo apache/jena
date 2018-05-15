@@ -29,7 +29,7 @@ import org.apache.jena.ext.xerces.xni.NamespaceContext;
  * Implementation of the ValidationContext interface. Used to establish an
  * environment for simple type validation.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author Elena Litani, IBM
  * @version $Id: ValidationState.java 713638 2008-11-13 04:42:18Z mrglavas $

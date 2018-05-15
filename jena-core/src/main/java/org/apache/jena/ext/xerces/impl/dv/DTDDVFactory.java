@@ -24,7 +24,7 @@ import java.util.Hashtable;
  * store the created datatypes in static data, so that they can be shared by
  * multiple parser instance, and multiple threads.
  * 
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

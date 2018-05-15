@@ -28,7 +28,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 /**
  * Used to validate the <dayTimeDuration> type
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  * 
  * @author Ankit Pasricha, IBM
  * 

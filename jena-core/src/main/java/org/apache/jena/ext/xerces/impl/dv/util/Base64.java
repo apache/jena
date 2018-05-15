@@ -29,7 +29,7 @@ package org.apache.jena.ext.xerces.impl.dv.util;
  * data. You need the data that you will encode/decode
  * already on a byte arrray.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Jeffrey Rodriguez
  * @author Sandy Gao

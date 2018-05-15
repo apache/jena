@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 /**
  * Validator for <date> datatype (W3C Schema datatypes)
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Elena Litani
  * @author Gopal Sharma, SUN Microsystems Inc.

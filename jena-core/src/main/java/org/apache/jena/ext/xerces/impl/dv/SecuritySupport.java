@@ -30,7 +30,7 @@ import java.security.PrivilegedExceptionAction;
  * This class is duplicated for each subpackage so keep it in sync.
  * It is package private and therefore is not exposed as part of any API.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @version $Id: SecuritySupport.java 950361 2010-06-02 04:12:35Z mrglavas $
  */

@@ -22,7 +22,7 @@ package org.apache.jena.ext.xerces.impl.dv.util;
  *
  * This class encodes/decodes hexadecimal data
  * 
- * @xerces.internal  
+ * {@literal @xerces.internal}  
  * 
  * @author Jeffrey Rodriguez
  * @version $Id: HexBin.java 446747 2006-09-15 21:46:20Z mrglavas $

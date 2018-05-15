@@ -23,7 +23,7 @@ import java.util.Vector;
 /**
  * This class represents a node in parse tree.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @version $Id: Token.java 831926 2009-11-02 15:38:53Z knoaman $
  */
