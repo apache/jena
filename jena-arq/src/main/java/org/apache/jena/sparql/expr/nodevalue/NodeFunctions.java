@@ -254,10 +254,22 @@ public class NodeFunctions {
     }
 
     // -------- langMatches
+    /** LANGMATCHES
+     *  
+     * @param nv The language string
+     * @param nvPattern The pattern to match against 
+     * @return Boolean nodeValue
+     */
     public static NodeValue langMatches(NodeValue nv, NodeValue nvPattern) {
         return langMatches(nv, nvPattern.getString()) ;
     }
 
+    /** LANGMATCHES
+     *  
+     * @param nv The language string
+     * @param langPattern The pattern to match against 
+     * @return Boolean nodeValue
+     */
     public static NodeValue langMatches(NodeValue nv, String langPattern) {
         Node node = nv.asNode() ;
         if ( !node.isLiteral() ) {
@@ -265,17 +277,26 @@ public class NodeFunctions {
             return null ;
         }
 
-        String nodeLang = node.getLiteralLexicalForm() ;
-
-        if ( langPattern.equals("*") ) {
-            if ( nodeLang == null || nodeLang.equals("") )
-                return NodeValue.FALSE ;
-            return NodeValue.TRUE ;
+        String langStr = node.getLiteralLexicalForm() ;
+        return NodeValue.booleanReturn(langMatches(langStr, langPattern));
+    }
+    
+    /** The algortihm for the SPARQ function "LANGMATCHES".
+     *  
+     * @param langStr The language string
+     * @param langPattern The pattern to match against 
+     * @return Whether there is a match. 
+     */
+    public static boolean langMatches(String langStr, String langPattern) {
+        if ( langStr.equals("*") ) {
+            if ( langStr == null || langStr.equals("") )
+                return false ;
+            return true ;
         }
 
         // See RFC 3066 (it's "tag (-tag)*)"
 
-        String[] langElts = nodeLang.split("-") ;
+        String[] langElts = langStr.split("-") ;
         String[] langRangeElts = langPattern.split("-") ;
 
         /*
@@ -294,7 +315,7 @@ public class NodeFunctions {
          */
         if ( langRangeElts.length > langElts.length )
             // Lang tag longer than pattern tag => can't match
-            return NodeValue.FALSE ;
+            return false ;
         for ( int i = 0 ; i < langRangeElts.length ; i++ ) {
             String range = langRangeElts[i] ;
             if ( range == null )
@@ -306,9 +327,9 @@ public class NodeFunctions {
             if ( range.equals("*") )
                 continue ;
             if ( !range.equalsIgnoreCase(lang) )
-                return NodeValue.FALSE ;
+                return false;
         }
-        return NodeValue.TRUE ;
+        return true ;
     }
 
     // -------- isURI/isIRI

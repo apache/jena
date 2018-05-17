@@ -101,7 +101,7 @@ public class TransactionCoordinator {
     /* The version of the data - incremented when transaction commits.
      * This is the version with repest to the last commited transaction.
      * Aborts do not cause the data version to advance. 
-     * This counterr never goes backwards.
+     * This counter never goes backwards.
      */ 
     private final AtomicLong dataVersion = new AtomicLong(0) ;
 
