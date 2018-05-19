@@ -174,6 +174,7 @@ public class Transaction implements TransactionInfo {
                 break ;
         }
         setState(COMMITTED) ;
+        endInternal() ;
     }
     
     public void abort() {

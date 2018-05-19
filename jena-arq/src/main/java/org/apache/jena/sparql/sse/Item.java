@@ -353,7 +353,7 @@ public class Item extends ItemLocation
 //        if ( isList() )
 //            return transformer.transform(this, getList()) ;
 //        else
-        if ( isNode() ) 
+        if ( isNode() )
             return transformer.transform(this, getNode()) ;
         else if ( isSymbol() )
             return transformer.transform(this, getSymbol()) ;

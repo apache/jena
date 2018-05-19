@@ -44,15 +44,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     static final String unamedGraphURI = "" ;
     
     private final NodeTupleTable nodeTupleTable ;
-    private DatasetGraphTDB dataset = null;
     
     public DatasetPrefixesTDB(NodeTupleTable nodeTupleTable) {
         this.nodeTupleTable = nodeTupleTable ;
-    }
-    
-    // Needed because DatasetPrefixesTDB is created before DatasetGraphTDB 
-    /*package*/ void setDatasetGraphTDB(DatasetGraphTDB dsg) {
-        this.dataset = dsg;
     }
     
     @Override
@@ -67,8 +61,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
 
     @Override
-    public synchronized void insertPrefix(String graphName, String prefix, String uri) {
-        dataset.requireWriteTxn();
+    public void insertPrefix(String graphName, String prefix, String uri) {
         Node g = NodeFactory.createURI(graphName) ; 
         Node p = NodeFactory.createLiteral(prefix) ; 
         Node u = NodeFactory.createURI(uri) ;
@@ -87,7 +80,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
     
     @Override
-    public synchronized String readPrefix(String graphName, String prefix) {
+    public String readPrefix(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ; 
         Node p = NodeFactory.createLiteral(prefix) ; 
         
@@ -102,7 +95,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
 
     @Override
-    public synchronized String readByURI(String graphName, String uriStr) {
+    public String readByURI(String graphName, String uriStr) {
         Node g = NodeFactory.createURI(graphName) ; 
         Node u = NodeFactory.createURI(uriStr) ; 
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
@@ -114,7 +107,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
 
     @Override
-    public synchronized Map<String, String> readPrefixMap(String graphName) {
+    public Map<String, String> readPrefixMap(String graphName) {
         Map<String, String> map = new HashMap<>() ;
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
@@ -148,7 +141,6 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
 
     /** Remove by pattern */
     private synchronized void removeAll(Node g, Node p, Node uri) {
-        dataset.requireWriteTxn();
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, uri) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;

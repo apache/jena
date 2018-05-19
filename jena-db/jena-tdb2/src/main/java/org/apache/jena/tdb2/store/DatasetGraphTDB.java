@@ -298,8 +298,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public DatasetPrefixStorage getPrefixes() {
         checkNotClosed();
-        // Need for requireWriteTxn
-        storage.prefixes.setDatasetGraphTDB(this);
         return storage.prefixes;
     }
 
