@@ -288,7 +288,8 @@ public class NodeFunctions {
      * @return Whether there is a match. 
      */
     public static boolean langMatches(String langStr, String langPattern) {
-        if ( langStr.equals("*") ) {
+        if ( langPattern.equals("*") ) {
+            // Not a legal lang string.
             if ( langStr == null || langStr.equals("") )
                 return false ;
             return true ;
