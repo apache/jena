@@ -35,7 +35,6 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBException;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.GraphNonTxnTDB ;
 import org.apache.jena.tdb.store.GraphTxnTDB ;
 
 /**
@@ -192,11 +191,8 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
     
     @Override
-    public Graph getDefaultGraph() { 
-        if ( sConn.haveUsedInTransaction() )
-            return new GraphTxnTDB(this, null) ;
-        else
-            return new GraphNonTxnTDB(getBaseDatasetGraph(), null) ;
+    public Graph getDefaultGraph() {
+        return new GraphTxnTDB(this, null);
     }
 
     @Override
@@ -205,11 +201,8 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
     
     @Override
-    public Graph getGraph(Node graphNode) {      
-        if ( sConn.haveUsedInTransaction() )
-            return new GraphTxnTDB(this, graphNode) ;
-        else
-            return new GraphNonTxnTDB(getBaseDatasetGraph(), graphNode) ;
+    public Graph getGraph(Node graphNode) {
+        return new GraphTxnTDB(this, graphNode);
     }
 
     @Override
