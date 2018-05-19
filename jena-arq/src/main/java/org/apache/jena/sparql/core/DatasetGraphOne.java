@@ -27,8 +27,11 @@ import org.apache.jena.atlas.iterator.NullIterator;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.sparql.graph.GraphWrapper;
 
 /** DatasetGraph of a single graph as default graph.
  * <p>
@@ -45,13 +48,33 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final boolean supportsAbort;
 
     public static DatasetGraph create(Graph graph) {
-        if ( graph instanceof GraphView ) {
+        // Find the deepest graph, the one that may be attached to a DatasetGraph.
+        Graph graph2 = unwrap(graph);
+        if ( graph2 instanceof GraphView ) {
             // This becomes a simple class that passes all transaction operations the
             // underlying dataset and masks the fact here are other graphs in the storage.
-            return new DatasetGraphOne(graph, ((GraphView)graph).getDataset());
+            return new DatasetGraphOne(graph, ((GraphView)graph2).getDataset());
         }
-        
+        // Didn't find a GraphView so no backing DatasetGraph; work on the graph as given.
         return new DatasetGraphOne(graph);
+    }
+    
+    private static Graph unwrap(Graph graph) {
+        for (;;) {
+            if ( graph instanceof InfGraph ) {
+                graph = ((InfGraph)graph).getRawGraph();
+                continue;
+            }
+            if ( graph instanceof GraphWrapper ) {
+                graph = ((GraphWrapper)graph).get();
+                continue;
+            }
+            if ( graph instanceof WrappedGraph ) {
+                graph = ((WrappedGraph)graph).getWrapped();
+                continue;
+            }
+            return graph;
+        }
     }
     
     private DatasetGraphOne(Graph graph, DatasetGraph backing) {
