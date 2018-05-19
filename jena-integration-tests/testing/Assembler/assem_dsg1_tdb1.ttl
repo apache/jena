@@ -10,14 +10,8 @@ PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 
 <#dataset> rdf:type       ja:RDFDatasetOne ;
-    ja:defaultGraph       <#model_inf> ;
+    ja:defaultGraph       <#tdbGraph> ;
      .
-
-<#model_inf> a ja:InfModel ;
-     ja:baseModel <#tdbGraph> ;
-     ja:reasoner [
-         ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
-     ] .
 
 ## Graph from TDB
 <#tdbGraph> rdf:type tdb:GraphTDB ;

@@ -114,7 +114,23 @@ public class TestDatasetAssembler {
         assertNotNull(ds);
     } 
     
-    @Test public void dsg1_inf_tdb1_1() {
+    @Test public void dsg1_tdb1() {
+        Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_tdb1.ttl", DatasetAssemblerVocab.tDatasetOne);
+        assertNotNull(ds);
+        assertNotNull(ds.getDefaultModel());
+        assertTrue(ds instanceof DatasetOne);
+        useIt(ds);
+    }
+    
+    @Test public void dsg1_tdb2() {
+        Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_tdb2.ttl", DatasetAssemblerVocab.tDatasetOne);
+        assertNotNull(ds);
+        assertNotNull(ds.getDefaultModel());
+        assertTrue(ds instanceof DatasetOne);
+        useIt(ds);
+    }
+    
+    @Test public void dsg1_inf_tdb1() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_inf_tdb1.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
@@ -122,7 +138,7 @@ public class TestDatasetAssembler {
         useIt(ds);
     }
     
-    @Test public void dsg1_inf_tdb1_2() {
+    @Test public void dsg1_inf_tdb2() {
         Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_inf_tdb2.ttl", DatasetAssemblerVocab.tDatasetOne);
         assertNotNull(ds);
         assertNotNull(ds.getDefaultModel());
