@@ -49,7 +49,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
  * then we would end up with an escaped class name of {@code fooBarFaz}.
  * </p>
  */
-public class Loader {
+public class ClsLoader {
     static public Class<?> loadClass(String classNameOrURI) {
         return loadClass(classNameOrURI, null);
     }
@@ -86,13 +86,13 @@ public class Loader {
             }
 
             if (classObj == null) {
-                Log.warn(Loader.class, "Class not found: " + className);
+                Log.warn(ClsLoader.class, "Class not found: " + className);
                 return null;
             }
         }
 
         if (requiredClass != null && !requiredClass.isAssignableFrom(classObj)) {
-            Log.warn(Loader.class, "Class '" + className + "' found but not a " + Lib.classShortName(requiredClass));
+            Log.warn(ClsLoader.class, "Class '" + className + "' found but not a " + Lib.classShortName(requiredClass));
             return null;
         }
         return classObj;
@@ -108,7 +108,7 @@ public class Loader {
             module = classObj.newInstance();
         } catch (Exception ex) {
             String className = uri.substring(ARQConstants.javaClassURIScheme.length());
-            Log.warn(Loader.class, "Exception during instantiation '" + className + "': " + ex.getMessage());
+            Log.warn(ClsLoader.class, "Exception during instantiation '" + className + "': " + ex.getMessage());
             return null;
         }
         return module;
