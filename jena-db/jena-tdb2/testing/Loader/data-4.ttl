@@ -1,4 +1,4 @@
 prefix : <http://example/> 
 
-:s :p :o .
+:s :p _:a .
 

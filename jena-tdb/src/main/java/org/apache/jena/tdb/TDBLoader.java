@@ -35,37 +35,31 @@ import org.slf4j.Logger ;
  */ 
 public class TDBLoader
 {
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To a triples format, use {@link #load(GraphNonTxnTDB, String)}
-     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)}
-    */
+    /** Load the contents of URL into a dataset. */
     public static void load(DatasetGraphTDB dataset, String url)
     {
         load(dataset, url, false) ;
     }
 
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To a triples format, use {@link #load(GraphNonTxnTDB, String, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)}
-    */
+    /**
+     * Load the contents of URL into a dataset.
+     */
     public static void load(DatasetGraphTDB dataset, String url, boolean showProgress)
     {
         load(dataset, asList(url), showProgress, true) ;
     }
 
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To load a triples format, use {@link #load(GraphNonTxnTDB, List, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)} 
-    */
+    /**
+     * Load the contents of URL into a dataset.
+     */
     public static void load(DatasetGraphTDB dataset, List<String> urls)
     {
         load(dataset, urls, false, true) ;
     }
     
-    /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To load a triples format, use {@link #load(GraphNonTxnTDB, List, boolean)} 
-     *  or {@link #load(DatasetGraphTDB, List, boolean, boolean)} 
-    */
+    /**
+     * Load the contents of URL into a dataset.
+     */
     public static void load(DatasetGraphTDB dataset, List<String> urls, boolean showProgress, boolean generateStats)
     {
         TDBLoader loader = new TDBLoader() ;
@@ -74,9 +68,9 @@ public class TDBLoader
         loader.loadDataset(dataset, urls) ;
     }
     
-    /** Load the contents of URL into a dataset.  Input is NQUADS.
-     *  To load a triples format, use {@link #loadGraph} 
-    */
+    /**
+     *  Load the contents of URL into a dataset.  Input is N-Quads format.
+     */
     public static void load(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
     {
         TDBLoader loader = new TDBLoader() ;

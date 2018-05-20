@@ -18,61 +18,63 @@
 
 package org.apache.jena.tdb2.loader;
 
-import org.apache.jena.atlas.lib.ProgressMonitor ;
-import org.apache.jena.atlas.logging.FmtLog ;
-import org.apache.jena.system.Txn;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.ProgressStreamRDF ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.sys.TDBInternal;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import static java.util.Arrays.asList;
 
+import java.util.List;
+
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.loader.base.LoaderOps;
+import org.apache.jena.tdb2.loader.base.MonitorOutput;
+
+/** TDB2 loader operations.
+ *  These operations only work on TDB2 datasets.
+ *  
+ * @see LoaderFactory
+ * @see DataLoader
+ */
 public class Loader {
-    
-//    private static final int BATCH_SIZE = 100 ;
-//    
-//    // XXX StreamRDFBatchSplit and parallel index update.
-    private static Logger LOG = LoggerFactory.getLogger("Loader") ;
-    
-    public static void bulkLoad(Dataset ds, String ... files) {
-        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
-        StreamRDF s1 = StreamRDFLib.dataset(dsg) ;
-        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, 10) ;
-        ProgressStreamRDF sMonitor = new ProgressStreamRDF(s1, plog) ;
-        StreamRDF s3 = sMonitor ;
-
-        plog.start(); 
-        Txn.executeWrite(ds, () -> {
-            for ( String fn : files ) {
-                if ( files.length > 1 )
-                    FmtLog.info(LOG, "File: %s",fn);
-                RDFDataMgr.parse(s3, fn) ;
-            }
-        }) ;
-        plog.finish();
-        plog.finishMessage();
+    /** Load the contents of files or remote web data into a dataset. */
+    public static void load(DatasetGraph dataset, String...dataURLs) {
+        load(dataset, false, dataURLs);
     }
-    
-//    public static void bulkLoadBatching(Dataset ds, String ... files) {
-//        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
-//        StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
-//        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, BATCH_SIZE) ;
-//        // Want the monitor on the outside to capture transaction wrapper costs.
-//        StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
-//
-//        plog.start(); 
-//        Txn.executeWrite(ds, () -> {
-//            for ( String fn : files ) {
-//                if ( files.length > 1 )
-//                    FmtLog.info(LOG, "File: %s",fn);
-//                RDFDataMgr.parse(s3, fn) ;
-//            }
-//        }) ;
-//        plog.finish();  
-//        plog.finishMessage();
-//    }
+
+    /** Load the contents of files or remote web data into a dataset. */
+    public static void load(DatasetGraph dataset, boolean showProgress, String...dataURLs) {
+        load(dataset, asList(dataURLs), showProgress);
+    }
+
+    /** Load the contents of files or remote web data into a dataset. */
+    public static void load(DatasetGraph dataset, List<String> dataURLs, boolean showProgress) {
+        DataLoader loader = create(dataset, showProgress);
+        loader.startBulk();
+        try {
+            loader.load(dataURLs);
+            loader.finishBulk();
+        }
+        catch (RuntimeException ex) {
+            loader.finishException(ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * Create a {@link DataLoader}. {@code DataLoader}s provide a {@code StreamRDF}
+     * interface as well as an operation to load data from files or URLs.
+     * <p>
+     * To use the loader:
+     * 
+     * <pre>
+     *  loader.startBulk();
+     *    send data ... 
+     *        use stream()
+     *        or load(files)
+     *        or a mixture.    
+     *  loader.finishBulk();
+     * </pre>
+     */ 
+    public static DataLoader create(DatasetGraph dataset, boolean showProgress) {
+        MonitorOutput output = showProgress ? LoaderOps.outputToLog() : LoaderOps.nullOutput();
+        DataLoader loader = LoaderFactory.createLoader(dataset, output);
+        return loader;
+    }
 }

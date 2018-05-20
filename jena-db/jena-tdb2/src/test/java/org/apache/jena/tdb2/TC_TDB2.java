@@ -24,6 +24,7 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb2.assembler.TS_TDBAssembler;
 import org.apache.jena.tdb2.graph.TS_Graph;
 import org.apache.jena.tdb2.lib.TS_LibTDB;
+import org.apache.jena.tdb2.loader.TS_Loader;
 import org.apache.jena.tdb2.setup.TS_TDBSetup;
 import org.apache.jena.tdb2.solver.TS_SolverTDB;
 import org.apache.jena.tdb2.store.TS_Store;
@@ -55,6 +56,7 @@ import org.junit.runners.Suite ;
     , TS_Factory.class
     , TS_TDBAssembler.class
     , TS_Sys.class
+    , TS_Loader.class
 } )
 
 public class TC_TDB2

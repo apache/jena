@@ -19,54 +19,72 @@
 package tdb2;
 
 import java.util.List;
+import java.util.Objects;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.ProgressMonitor;
-import org.apache.jena.graph.Graph;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Timer;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.system.ProgressStreamRDF;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.system.Txn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.tdb2.loader.DataLoader;
+import org.apache.jena.tdb2.loader.LoaderFactory;
+import org.apache.jena.tdb2.loader.base.LoaderOps;
+import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
 public class tdbloader extends CmdTDBGraph {
-    // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel");
-    // private static final ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incremental");
-    private static final ArgDecl argNoStats = new ArgDecl(ArgDecl.NoValue, "nostats");
     private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats");
-
-    private boolean showProgress  = true;
-    private boolean generateStats  = true;
-
-    static public void main(String... argv) {
+    private static final ArgDecl argLoader = new ArgDecl(ArgDecl.HasValue, "loader");
+    
+    private enum LoaderEnum { Basic, Parallel, Sequential }
+    
+    private boolean showProgress = true;
+    private boolean generateStats = false;
+    private LoaderEnum loader = null;
+    
+    public static void main(String... args) {
         CmdTDB.init();
-        new tdbloader(argv).mainRun();
+        new tdbloader(args).mainRun();
     }
 
     protected tdbloader(String[] argv) {
         super(argv);
-        super.add(argNoStats, "--nostats", "Switch off statistics gathering");
-        super.add(argStats);   // Hidden argument
+//        super.add(argStats, "Generate statistics");
+        super.add(argLoader, "--loader", "Loader to use");
     }
 
     @Override
     protected void processModulesAndArgs() {
         super.processModulesAndArgs();
+        
+        if ( contains(argLoader) ) {
+            String loadername = getValue(argLoader).toLowerCase();
+            if ( loadername.matches("basic.*") )
+                loader = LoaderEnum.Basic;
+            else if ( loadername.matches("seq.*") )
+                loader = LoaderEnum.Sequential;
+            else if ( loadername.matches("para.*") )
+                loader = LoaderEnum.Parallel;
+            else
+                throw new CmdException("Unrecognized value for --loader: "+loadername);
+        }
+
+        if ( super.contains(argStats) ) {
+            if ( ! hasValueOfTrue(argStats) && ! hasValueOfFalse(argStats) )
+                throw new CmdException("Not a boolean value: "+getValue(argStats));
+            generateStats = super.hasValueOfTrue(argStats);
+        }
     }
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " [--desc DATASET | -loc DIR] FILE ...";
+        return getCommandName() + " [--desc DATASET | --loc DIR] FILE ...";
     }
 
     @Override
@@ -79,14 +97,6 @@ public class tdbloader extends CmdTDBGraph {
             showProgress = true;
         if ( isQuiet() )
             showProgress = false;
-        if ( super.contains(argStats) ) {
-            if ( ! hasValueOfTrue(argStats) && ! hasValueOfFalse(argStats) )
-                throw new CmdException("Not a boolean value: "+getValue(argStats));
-            generateStats = super.hasValueOfTrue(argStats);
-        }
-
-        if ( super.contains(argNoStats))
-            generateStats = false;
         
         List<String> urls = getPositional();
         if ( urls.size() == 0 )
@@ -99,74 +109,64 @@ public class tdbloader extends CmdTDBGraph {
         
         // There's a --graph.
         // Check/warn that there are no quads formats mentioned
-        // (RIOT will take the default graph from quads).  
         
         for ( String url : urls ) {
             Lang lang = RDFLanguages.filenameToLang(url);
             if ( lang != null && RDFLanguages.isQuads(lang) ) {
-                System.err.println("Warning: Quads format given - only the default graph is loaded into the graph for --graph");
-                break;
+                throw new CmdException("Warning: Quads format given - only the default graph is loaded into the graph for --graph");
             }
         }
         
-        loadOneGraph(urls);
+        loadTriples(graphName, urls);
     }
 
-    private void loadOneGraph(List<String> urls) {
-        Graph graph = getGraph();
-        TDBLoader.load(graph, urls, showProgress);
-        return;
+    private void loadTriples(String graphName, List<String> urls) {
+        execBulkLoad(super.getDatasetGraph(), graphName, urls, showProgress);
     }
 
     private void loadQuads(List<String> urls) {
-        TDBLoader.load(getDatasetGraph(), urls, showProgress, generateStats);
-        return;
+        // generateStats
+        execBulkLoad(super.getDatasetGraph(), null, urls, showProgress);
     }
     
-    /** Tick point for messages during loading of data */
-    public static int       DataTickPoint         = 100 * 1000;
-    /** Tick point for messages during secondary index creation */
-    public static long      IndexTickPoint        = 500 * 1000;
+    private long execBulkLoad(DatasetGraph dsg, String graphName, List<String> urls, boolean showProgress) {
+        DataLoader loader = chooseLoader(dsg, graphName);
+        long elapsed = Timer.time(()->{
+                    loader.startBulk();
+                    loader.load(urls);
+                    loader.finishBulk();
+        });
+        return elapsed;
+    }
 
-    /** Number of ticks per super tick */
-    public static int       superTick             = 10;
-    
-    private static Logger LOG = LoggerFactory.getLogger("TDB2");
-    
-    /**
-     *  For now, this is a simple loader that parses the input and adds triples/quads via {@code .add}.
-     *  @see org.apache.jena.tdb.TDBLoader TDB1 Loader.
-     */
-    
-    static class TDBLoader {
-
-        public static void load(DatasetGraph dsg, List<String> urls, boolean showProgress, boolean generateStats) {
-            StreamRDF dest = StreamRDFLib.dataset(dsg);
-            Txn.executeWrite(dsg, ()->urls.forEach( (x)->loadOne(dest, x, showProgress) ));
-        }
-
-        public static void load(Graph graph, List<String> urls, boolean showProgress) {
-            StreamRDF dest = StreamRDFLib.graph(graph);
-            graph.getTransactionHandler().execute(()->urls.forEach((x) -> loadOne(dest, x, showProgress)));
-        }
+    /** Decide on the bulk loader. */ 
+    private DataLoader chooseLoader(DatasetGraph dsg, String graphName) {
+        Objects.requireNonNull(dsg);
+        Node gn = null;
+        if ( graphName != null )
+            gn = NodeFactory.createURI(graphName);
         
-        private static void loadOne(StreamRDF dest, String x, boolean showProgress) {
-            StreamRDF sink = dest;
-            ProgressMonitor monitor = null;
-            if ( showProgress ) { 
-                String basename = FileOps.splitDirFile(x).get(1);
-                monitor = ProgressMonitor.create(LOG, basename, DataTickPoint, superTick); 
-                sink = new ProgressStreamRDF(sink, monitor);
-            }
-            if ( monitor!= null )
-                monitor.start();
-            sink.start();
-            RDFDataMgr.parse(sink, x);
-            sink.finish();
-            if ( monitor!= null ) {
-                monitor.finish();
-                monitor.finishMessage();
-            }
+        LoaderEnum useLoader = loader; 
+        if ( useLoader == null )
+            useLoader = LoaderEnum.Parallel;
+        
+        MonitorOutput output = isQuiet() ? LoaderOps.nullOutput() : LoaderOps.outputToLog();
+        DataLoader loader = createLoader(useLoader, dsg, gn, output);
+        if ( output != null )
+            output.print("Loader = %s", loader.getClass().getSimpleName());
+        return loader ;
+    }
+        
+    private DataLoader createLoader(LoaderEnum useLoader, DatasetGraph dsg, Node gn, MonitorOutput output) {
+        switch(useLoader) {
+            case Parallel :
+                return LoaderFactory.parallelLoader(dsg, gn, output);
+            case Sequential :
+                return LoaderFactory.sequentialLoader(dsg, gn, output);
+            case Basic :
+                return LoaderFactory.basicLoader(dsg, gn, output);
+            default :
+                throw new InternalErrorException("Unrecognized loader: "+useLoader);
         }
     }
 }

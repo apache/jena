@@ -41,7 +41,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     // See getPrefixMapping.
     
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-    static final String unamedGraphURI = "" ;
+    public static final String unnamedGraphURI = "" ;
     
     private final NodeTupleTable nodeTupleTable ;
     
@@ -153,7 +153,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Return a PrefixMapping for the unamed graph */
     @Override
     public PrefixMapping getPrefixMapping()
-    { return getPrefixMapping(unamedGraphURI) ; }
+    { return getPrefixMapping(unnamedGraphURI) ; }
 
     /** Return a PrefixMapping for a named graph */
     @Override
