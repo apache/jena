@@ -77,4 +77,29 @@ public class Loader {
         DataLoader loader = LoaderFactory.createLoader(dataset, output);
         return loader;
     }
+    
+    /** Load the contents of files or remote web data into a dataset using the basic data loader. */
+    public static void read(DatasetGraph dataset, String...dataURLs) {
+        read(dataset, false, dataURLs);
+    }
+    
+    /** Load the contents of files or remote web data into a dataset using the basic data loader.. */
+    public static void read(DatasetGraph dataset, boolean showProgress, String...dataURLs) {
+        read(dataset, asList(dataURLs), showProgress);
+    }
+
+    /** Load the contents of files or remote web data into a dataset using the basic data loader. */
+    public static void read(DatasetGraph dataset, List<String> dataURLs, boolean showProgress) {
+        MonitorOutput output = showProgress ? LoaderOps.outputToLog() : LoaderOps.nullOutput();
+        DataLoader loader = LoaderFactory.basicLoader(dataset, output);
+        loader.startBulk();
+        try {
+            loader.load(dataURLs);
+            loader.finishBulk();
+        }
+        catch (RuntimeException ex) {
+            loader.finishException(ex);
+            throw ex;
+        }
+    }
 }
