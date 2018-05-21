@@ -18,57 +18,12 @@
 
 package org.apache.jena.sparql.engine;
 
-import java.util.List ;
-
-import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 
-/** Wrap another {@link ResultSet} (probably to modify operations on it). */
-public class ResultSetWrapper implements ResultSet {
-    
-    private final ResultSet rs;
-
+/** @deprecated Use {@link org.apache.jena.sparql.resultset.ResultSetWrapper} */
+@Deprecated
+public class ResultSetWrapper extends org.apache.jena.sparql.resultset.ResultSetWrapper {
     public ResultSetWrapper(ResultSet rs) {
-        this.rs = rs ;
+        super(rs);
     }
-    
-    protected ResultSet get() { return rs ; }
-
-    @Override
-    public boolean hasNext() {
-        return get().hasNext() ;
-    }
-
-    @Override
-    public QuerySolution next() {
-        return get().next();
-    }
-
-    @Override
-    public QuerySolution nextSolution() {
-        return get().nextSolution();
-    }
-
-    @Override
-    public Binding nextBinding() {
-        return get().nextBinding();
-    }
-
-    @Override
-    public int getRowNumber() {
-        return get().getRowNumber() ;
-    }
-
-    @Override
-    public List<String> getResultVars() {
-        return get().getResultVars() ;
-    }
-
-    @Override
-    public Model getResourceModel() {
-        return get().getResourceModel() ;
-    }
-    
 }

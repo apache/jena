@@ -175,7 +175,7 @@ public class Util {
     }
 
     /**
-     * Internall implementation of all the getPropValue variants.
+     * Internal implementation of all the getPropValue variants.
      */
     private static Node doGetPropValue(ClosableIterator<Triple> it) {
         Node result = null;

@@ -96,7 +96,7 @@ public abstract class AbstractCompressedWholeFileQuadInputFormatTests extends
     protected abstract Lang getRdfLanguage();
 
     private void writeGoodTuples(OutputStream output, int num) {
-        Dataset ds = DatasetFactory.createMem();
+        Dataset ds = DatasetFactory.createGeneral();
         Model m = ModelFactory.createDefaultModel();
         Resource currSubj = m.createResource("http://example.org/subjects/0");
         Property predicate = m.createProperty("http://example.org/predicate");

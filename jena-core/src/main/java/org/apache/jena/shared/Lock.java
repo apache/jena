@@ -84,7 +84,7 @@ public interface Lock
      *  The application must call leaveCriticialSection.
      *  @see #leaveCriticalSection
      *
-     * @param readLockRequested true implies a read lock,false implies write lock.
+     * @param readLockRequested true implies a read lock, false implies write lock.
      */
     
     public void enterCriticalSection(boolean readLockRequested) ;

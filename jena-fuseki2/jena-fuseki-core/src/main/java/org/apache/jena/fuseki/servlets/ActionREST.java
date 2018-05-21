@@ -26,10 +26,8 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.server.CounterName ;
 
 /** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
-public abstract class ActionREST extends ActionSPARQL
+public abstract class ActionREST extends ActionService
 {
-    private static final long serialVersionUID = 7202577783034128479L;
-
     public ActionREST()
     { super() ; }
 
@@ -78,7 +76,7 @@ public abstract class ActionREST extends ActionSPARQL
             doGet(action) ;
             incCounter(action.getEndpoint(), CounterName.HTTPgetGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getEndpoint(), CounterName.HTTPGetBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPgetBad) ;
             throw ex ;
         }
     }

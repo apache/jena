@@ -21,7 +21,7 @@ package org.apache.jena.rdf.model;
 import java.io.Reader;
 import java.io.InputStream;
 
-/** An <code>RDFReader</code> reads a serialized represenation of RDF,
+/** An <code>RDFReader</code> reads a serialized representation of RDF,
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  */
 public interface RDFReader {
@@ -70,7 +70,7 @@ public interface RDFReader {
 	 * properties can be changed by calling this method.  </p>
 	 *
 	 * <p>No standard properties are defined.  For the properties recognised
-	 * by any particular reader implementation, see the the documentation for
+	 * by any particular reader implementation, see the documentation for
 	 * that implementation. </p>
      * <p> The built-in RDFReaders have properties as defined by:
  * <dl>

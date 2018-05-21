@@ -89,11 +89,11 @@ public class VarFinder
     }
     
     public void print(PrintStream out) {
-        out.printf("  Filter:  %s\n", getFilter()) ;
-        out.printf("  Filter2: %s\n", getFilterOnly()) ;
-        out.printf("  Fixed :  %s\n", getFixed()) ;
-        out.printf("  Opt:     %s\n", getOpt()) ;
-        out.printf("  Assign:  %s\n", getAssign()) ;
+        out.printf("  Filter:       %s\n", getFilter()) ;
+        out.printf("  Filter only:  %s\n", getFilterOnly()) ;
+        out.printf("  Fixed :       %s\n", getFixed()) ;
+        out.printf("  Opt:          %s\n", getOpt()) ;
+        out.printf("  Assign:       %s\n", getAssign()) ;
     }
 
     private static class VarUsageVisitor 
@@ -258,7 +258,7 @@ public class VarFinder
 
         // additionalDefines - set of variables which are defined is the filter is executed. 
         private void processExpr(ExprList exprs, Set<Var> additionalDefines) {
-            Set<Var> vars = ExprVars.getNonOpVarsMentioned(exprs);
+            Set<Var> vars = ExprVars.getVarsMentioned(exprs);
             filterMentions.addAll(vars) ;
             for ( Var v : vars ) {
                 if ( ! defines.contains(v) && (additionalDefines == null || ! additionalDefines.contains(v) ) )
@@ -355,8 +355,13 @@ public class VarFinder
 
         @Override
         public void visit(OpPropFunc opPropFunc) {
-            VarUtils.addVarNodes(defines, opPropFunc.getSubjectArgs().getArgList()) ;
-            VarUtils.addVarNodes(defines, opPropFunc.getObjectArgs().getArgList()) ;
+            VarUtils.addVars(defines, opPropFunc.getSubjectArgs()) ;
+            VarUtils.addVars(defines, opPropFunc.getObjectArgs()) ;
+            
+            mergeVars(opPropFunc.getSubOp());
+            
+            // If definite (from the property function), remove from optDefines. 
+            optDefines.removeAll(this.defines);
         }
 
         // Ops that add nothing to variable scoping.

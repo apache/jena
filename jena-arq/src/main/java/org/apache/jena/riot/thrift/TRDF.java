@@ -96,12 +96,12 @@ public class TRDF {
         throw new RiotThriftException("No protocol impl choosen") ;
     }
 
-    /** Flush a TProtocol; expections converted to {@link RiotException} */  
+    /** Flush a TProtocol; exceptions converted to {@link RiotException} */  
     public static void flush(TProtocol protocol) {
         flush(protocol.getTransport()) ;
     }
 
-    /** Flush a TTransport; expections converted to {@link RiotException} */  
+    /** Flush a TTransport; exceptions converted to {@link RiotException} */  
     public static void flush(TTransport transport) {
         try { transport.flush() ; }
         catch (TException ex) { TRDF.exception(ex) ; }

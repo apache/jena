@@ -22,21 +22,15 @@ import static javax.xml.datatype.DatatypeConstants.* ;
 import static org.apache.jena.datatypes.xsd.XSDDatatype.* ;
 import static org.apache.jena.sparql.expr.ValueSpaceClassification.* ;
 
-import java.io.File ;
-import java.io.FileInputStream ;
-import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.util.Calendar ;
-import java.util.Iterator ;
-import java.util.Properties ;
-import java.util.ServiceLoader ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
@@ -44,6 +38,7 @@ import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
+import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.impl.LiteralLabel ;
@@ -57,7 +52,7 @@ import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.util.* ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -144,66 +139,8 @@ public abstract class NodeValue extends ExprNode
     
     public static final String xsdNamespace = XSD+"#" ; 
     
-    public static DatatypeFactory xmlDatatypeFactory = null ;
-    static
-    {
-        try { xmlDatatypeFactory = getDatatypeFactory() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory", ex) ; }
-    }
-    
-    /**
-     * Get a datatype factory using the correct classloader
-     * 
-     * See JENA-328. DatatypeFactory.newInstance() clashes with OSGi
-     * This is clearly crazy, but DatatypeFactory is missing a very obvious
-     * method newInstance(Classloader). The method that was added is very
-     * hard to use correctly, as we shall see...
-     */
-    private static DatatypeFactory getDatatypeFactory() 
-            throws DatatypeConfigurationException {
-        // Step 1. Try the system property
-        String dtfClass = System.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
-        
-        try {
-            File jaxpPropFile = new File(System.getProperty("java.home") + 
-                                         File.separator + "lib" + File.separator + "jaxp.properties");
-            // Step 2. Otherwise, try property in jaxp.properties
-            if (dtfClass == null && jaxpPropFile.exists() && jaxpPropFile.canRead()) {
-                Properties jaxp = new Properties();
-                try(InputStream in = new FileInputStream(jaxpPropFile)) {
-                    jaxp.load(in);
-                    dtfClass = jaxp.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
-                } catch (Exception e) {
-                    log.warn("Issue loading jaxp.properties", e);
-                }
-            }
-        }
-        // File.exists and File.canRead may throw  SecurityException (probably AccessControlException)
-        catch (SecurityException ex) {
-            log.warn("Security exception try to get jaxp.properties: "+ex.getMessage()) ;
-        }
-        
-        // Step 3. Otherwise try the service approach
-        // This is the normal initialization path, getting it from the Apach Xerces dependency
-        // and loading org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl
-        if (dtfClass == null) {
-            ClassLoader cl = NodeValue.class.getClassLoader();
-            Iterator<DatatypeFactory> factoryIterator = 
-                ServiceLoader.load(DatatypeFactory.class, cl).iterator();
-            if (factoryIterator.hasNext()) return factoryIterator.next();
-        }
-        
-        // Step 4. Use the default.
-        // Note: When Apache Xerces is on the classpath for Jena, javax.xml.datatype.DatatypeFactory is from that jar and
-        //  DATATYPEFACTORY_IMPLEMENTATION_CLASS is "org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl"
-        // Without an explicit Xerces, we would get "com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl"
-        // from the JDK rt.jar version of javax.xml.datatype.DatatypeFactory.
-        if (dtfClass == null) 
-            dtfClass = DatatypeFactory.DATATYPEFACTORY_IMPLEMENTATION_CLASS;
-        return DatatypeFactory.newInstance(dtfClass, NodeValue.class.getClassLoader()) ;
-    }
-    
+    public static  DatatypeFactory xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
+
     private Node node = null ;     // Null used when a value has not be turned into a Node.
     
     // Don't create direct - the static builders manage the value/node relationship 
@@ -243,8 +180,11 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDouble(double d)
     { return new NodeValueDouble(d) ; }
 
-    public static NodeValue makeString(String s) 
+    public static NodeValue makeString(String s)
     { return new NodeValueString(s) ; }
+
+    public static NodeValue makeSortKey(String s, String collation)
+    { return new NodeValueSortKey(s, collation) ; }
 
     public static NodeValue makeLangString(String s, String lang) 
     { return new NodeValueLang(s, lang) ; }
@@ -583,7 +523,9 @@ public abstract class NodeValue extends ExprNode
                 raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;
                 throw new ARQInternalErrorException("raise returned (sameValueAs)") ;
             }
-            
+            case VSPACE_SORTKEY:
+                return nv1.getSortKey().compareTo(nv2.getSortKey()) == 0 ;
+                
             case VSPACE_DIFFERENT:
                 // Known to be incompatible.
                 if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
@@ -624,7 +566,7 @@ public abstract class NodeValue extends ExprNode
      *  
      * @param nv1
      * @param nv2
-     * @return negative, 0, or postive for less than, equal, greater than.  
+     * @return negative, 0, or positive for less than, equal, greater than.  
      */
 
     public static int compareAlways(NodeValue nv1, NodeValue nv2)
@@ -640,7 +582,7 @@ public abstract class NodeValue extends ExprNode
     }
     
     /** Compare by value (and only value) if possible.
-     *  Supports <, <=, >, >= but not = nor != (which are sameValueAs and notSameValueAs)
+     *  Supports &lt;, &lt;=, &gt;, &gt;= but not = nor != (which are sameValueAs and notSameValueAs)
      * @param nv1
      * @param nv2
      * @return negative, 0 , or positive for not possible, less than, equal, greater than.
@@ -705,8 +647,8 @@ public abstract class NodeValue extends ExprNode
             {
                 int x = XSDFuncOp.compareDuration(nv1, nv2) ;
                 // Fix up - Java (Oracle java7 at least) returns "equals" for 
-                // "D1Y"/"D365D" and "D1M"/"D28D", and others split over 
-                // YearMoth/DayTime.
+                // "P1Y"/"P365D" and "P1M"/"P28D", and others split over 
+                // YearMonth/DayTime.
                 
                 // OR return Expr.CMP_INDETERMINATE ??
                 if ( x == Expr.CMP_EQUAL ) {
@@ -718,18 +660,18 @@ public abstract class NodeValue extends ExprNode
                 }
                 if ( x != Expr.CMP_INDETERMINATE )
                     return x ;
-                // Indeterminate => can't compare as strict values.
                 compType = ValueSpaceClassification.VSPACE_DIFFERENT ;
                 break ;
             }
 
-            //default:
+            // No special cases.
             case VSPACE_BOOLEAN :
             case VSPACE_DIFFERENT :
             case VSPACE_LANG :
             case VSPACE_NODE :
             case VSPACE_NUM :
             case VSPACE_STRING :
+            case VSPACE_SORTKEY :
             case VSPACE_UNKNOWN :
                 // Drop through.
         }
@@ -752,11 +694,18 @@ public abstract class NodeValue extends ExprNode
             {
                 int cmp = XSDFuncOp.compareString(nv1, nv2) ;
                 
-                // Split plain literals and xsd:strings for sorting purposes.
                 if ( ! sortOrderingCompare )
                     return cmp ;
                 if ( cmp != Expr.CMP_EQUAL )
                     return cmp ;
+                
+                // Equality.
+                if ( JenaRuntime.isRDF11 )
+                    // RDF 1.1 : No literals without datatype.
+                    return cmp ;
+                
+                // RDF 1.0
+                // Split plain literals and xsd:strings for sorting purposes.
                 // Same by string value.
                 String dt1 = nv1.asNode().getLiteralDatatypeURI() ;
                 String dt2 = nv2.asNode().getLiteralDatatypeURI() ;
@@ -766,7 +715,11 @@ public abstract class NodeValue extends ExprNode
                     return Expr.CMP_GREATER ;
                 return Expr.CMP_EQUAL;  // Both plain or both xsd:string.
             }
-            case VSPACE_BOOLEAN:    return XSDFuncOp.compareBoolean(nv1, nv2) ;
+            case VSPACE_SORTKEY :
+                return nv1.getSortKey().compareTo(nv2.getSortKey());
+                
+            case VSPACE_BOOLEAN:
+                return XSDFuncOp.compareBoolean(nv1, nv2) ;
             
             case VSPACE_LANG:
             {
@@ -853,29 +806,29 @@ public abstract class NodeValue extends ExprNode
     {
         if ( nv.isNumber() )        return VSPACE_NUM ;
         if ( nv.isDateTime() )      return VSPACE_DATETIME ;
+        if ( nv.isString())         return VSPACE_STRING ;
+        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
+        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
+
+        if ( ! SystemARQ.ValueExtensions )
+            return VSPACE_UNKNOWN ;
+        
+        // Datatypes and their value spaces that are an extension of strict SPARQL.
         if ( nv.isDate() )          return VSPACE_DATE ;
         if ( nv.isTime() )          return VSPACE_TIME ;
         if ( nv.isDuration() )      return VSPACE_DURATION ;
-        
+
         if ( nv.isGYear() )         return VSPACE_G_YEAR ;
         if ( nv.isGYearMonth() )    return VSPACE_G_YEARMONTH ;
         if ( nv.isGMonth() )        return VSPACE_G_MONTH ;
         if ( nv.isGMonthDay() )     return VSPACE_G_MONTHDAY ;
         if ( nv.isGDay() )          return VSPACE_G_DAY ;
         
-        if ( SystemARQ.ValueExtensions && nv.isDate() )
-            return VSPACE_DATE ;
+        if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
         
-        if ( nv.isString())         return VSPACE_STRING ;
-        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
-        
-        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
-
-        if ( SystemARQ.ValueExtensions && nv.getNode() != null &&
-             nv.getNode().isLiteral() &&
-             ! nv.getNode().getLiteralLanguage().equals("") )
+        // Already a literal by this point.
+        if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;
-        
         return VSPACE_UNKNOWN ;
     }
         
@@ -910,6 +863,7 @@ public abstract class NodeValue extends ExprNode
     public boolean isBoolean()      { return false ; } 
     public boolean isString()       { return false ; } 
     public boolean isLangString()   { return false ; }
+    public boolean isSortKey()      { return false ; }
 
     public boolean isNumber()       { return false ; }
     public boolean isInteger()      { return false ; }
@@ -954,7 +908,8 @@ public abstract class NodeValue extends ExprNode
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
-    
+    public NodeValueSortKey getSortKey()        { raise(new ExprEvalTypeException("Not a sort key: "+this)) ; return null ; }
+
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }

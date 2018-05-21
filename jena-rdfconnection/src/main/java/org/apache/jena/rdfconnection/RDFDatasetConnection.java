@@ -98,7 +98,7 @@ public interface RDFDatasetConnection extends RDFDatasetAccessConnection, Transa
         
     /**
      * Delete a graph from the dataset.
-     * Null or "default" measn the default graph, which is cleared, not removed.
+     * Null or "default" means the default graph, which is cleared, not removed.
      * 
      * @param graphName
      */

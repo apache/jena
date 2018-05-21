@@ -27,6 +27,8 @@ import java.util.regex.Pattern ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
@@ -69,7 +71,7 @@ public class HttpQuery extends Params {
     private boolean allowCompression = false;
     private HttpClient client;
 
-    private HttpClientContext context;
+    private HttpContext context;
 
     /**
      * Create a execution object for a whole model GET
@@ -177,7 +179,7 @@ public class HttpQuery extends Params {
      * Sets the context to use
      * @param context HTTP context
      */
-    public void setContext(HttpClientContext context) {
+    public void setContext(HttpContext context) {
         this.context = context;
     }
     
@@ -200,10 +202,11 @@ public class HttpQuery extends Params {
     
     /**
      * Gets the HTTP context that is being used, or sets and returns a default
-     * @return the {@code HttpClientContext} in scope
+     * @return the {@code HttpContext} in scope
      */
-    public HttpClientContext getContext() {
-        if (context == null) context = new HttpClientContext();
+    public HttpContext getContext() {
+        if (context == null) 
+            context = new BasicHttpContext();
         return context;
     }
 
@@ -229,7 +232,7 @@ public class HttpQuery extends Params {
     }
 
     /**
-     * Sets HTTP Connection timeout, any value <= 0 is taken to mean no timeout
+     * Sets HTTP Connection timeout, any value {@literal <=} 0 is taken to mean no timeout
      * 
      * @param timeout
      *            Connection Timeout
@@ -248,7 +251,7 @@ public class HttpQuery extends Params {
     }
 
     /**
-     * Sets HTTP Read timeout, any value <= 0 is taken to mean no timeout
+     * Sets HTTP Read timeout, any value {@literal <=} 0 is taken to mean no timeout
      * 
      * @param timeout
      *            Read Timeout
@@ -274,8 +277,11 @@ public class HttpQuery extends Params {
      */
     public InputStream exec() throws QueryExceptionHTTP {
         // Select the appropriate HttpClient to use
-        contextualizeCompressionSettings();
-        contextualizeTimeoutSettings();
+        HttpClientContext hcc = HttpClientContext.adapt(getContext());
+        RequestConfig.Builder builder = RequestConfig.copy(hcc.getRequestConfig());
+        contextualizeCompressionSettings(builder);
+        contextualizeTimeoutSettings(builder);
+        hcc.setRequestConfig(builder.build());
         try {
             if (usesPOST())
                 return execPost();
@@ -289,17 +295,13 @@ public class HttpQuery extends Params {
         }
     }
     
-    private void contextualizeCompressionSettings() {
-        final RequestConfig.Builder builder = RequestConfig.copy(getContext().getRequestConfig());
+    private void contextualizeCompressionSettings(RequestConfig.Builder builder) {
         builder.setContentCompressionEnabled(allowCompression);
-        context.setRequestConfig(builder.build());
     }
     
-    private void contextualizeTimeoutSettings() {
-        final RequestConfig.Builder builder = RequestConfig.copy(context.getRequestConfig());
+    private void contextualizeTimeoutSettings(RequestConfig.Builder builder) {
         if (connectTimeout > 0) builder.setConnectTimeout(connectTimeout);
-
-        context.setRequestConfig(builder.build());
+        if (readTimeout > 0) builder.setSocketTimeout(readTimeout);
     }
 
     private InputStream execGet() throws QueryExceptionHTTP {
@@ -358,23 +360,23 @@ public class HttpQuery extends Params {
     }
     
     private QueryExceptionHTTP rewrap(HttpException httpEx) {
-    	// The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
-    	// ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
-        // Therefore we need to unnwrap and re-wrap  appropriately
+        // The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
+    	    // ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
+        // Therefore we need to wrap appropriately
         responseCode = httpEx.getResponseCode();
         if (responseCode != -1) {
         	// Was an actual HTTP error
         	String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
-        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
         	// Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP("Unexpected error making the query: " + httpEx.getMessage(), httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
         } else if (httpEx.getCause() != null) {
         	// Some other error with a cause e.g. Socket Communications failed, IO error
-        	return new QueryExceptionHTTP("Unexpected error making the query, see cause for further details", httpEx.getCause());
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
         } else {
         	// Some other error with no message and no further cause
-        	return new QueryExceptionHTTP("Unexpected error making the query", httpEx);
+        	return new QueryExceptionHTTP(responseCode, "Unexpected error making the query", httpEx);
         }
     }
 

@@ -16,28 +16,35 @@
  * limitations under the License.
  */
 
-package arq.examples.riot ;
+package arq.examples.riot;
 
-import java.io.InputStream ;
-import java.io.Reader ;
-import java.util.Iterator ;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.* ;
-import org.apache.jena.riot.adapters.RDFReaderRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.LangBuilder;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParserRegistry;
+import org.apache.jena.riot.ReaderRIOT;
+import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.adapters.RDFReaderRIOT;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.sse.builders.BuilderGraph;
+import org.apache.jena.sparql.util.Context;
 
 /** Example of using RIOT : register a new input language */
 public class ExRIOT_5
@@ -45,40 +52,34 @@ public class ExRIOT_5
     static { LogCtl.setCmdLogging(); }
     
     public static void main(String... argv) {
-        Lang lang = LangBuilder.create("SSE", "text/x-sse").addFileExtensions("rsse").build() ;
+        Lang lang = LangBuilder.create("SSE", "text/x-sse").addFileExtensions("rsse").build();
         // This just registers the name, not the parser.
-        RDFLanguages.register(lang) ;
+        RDFLanguages.register(lang);
 
         // Register the parser factory.
-        ReaderRIOTFactory factory = new SSEReaderFactory() ;
-        RDFParserRegistry.registerLangTriples(lang, factory) ;
+        ReaderRIOTFactory factory = new SSEReaderFactory();
+        RDFParserRegistry.registerLangTriples(lang, factory);
 
-        // use it ...
-        String filename = "/home/afs/tmp/data.rsse" ;
-        // model.read(filename)
-        System.out.println("## -- RDFDataMgr.loadModel") ;
-        Model model = RDFDataMgr.loadModel(filename) ;
-
-        // print results.
-        RDFDataMgr.write(System.out, model, Lang.TTL) ;
-
-        System.out.println("## -- Model.read") ;
+        // use it ... inline data
+        String x = "(graph (<s> <p1> 123) (<s> <p2> 456) )"; 
         // Model.read( , "SSE")
-        Model model2 = ModelFactory.createDefaultModel().read(filename, "SSE") ;
-        RDFDataMgr.write(System.out, model2, Lang.TTL) ;
+        Model model = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(model, new StringReader(x), "http://example/", lang);
+        // print results.
+        RDFDataMgr.write(System.out, model, Lang.TTL);      
     }
 
     static class SSEReaderFactory implements ReaderRIOTFactory
     {
         @Override
         public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new SSEReader() ;
+            return new SSEReader();
         }
     }
 
     static class SSEReader implements ReaderRIOT
     {
-        private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler();
         
         // This is just an example - it reads a graph in
         // http://jena.apache.org/documentation/notes/sse.html
@@ -88,45 +89,29 @@ public class ExRIOT_5
 
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            Item item = SSE.parse(in) ;
-            read(item, baseURI, ct, output, context) ;
-
+            Item item = SSE.parse(in);
+            read(item, baseURI, ct, output, context);
         }
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            Item item = SSE.parse(in) ;
-            read(item, baseURI, ct, output, context) ;
+            Item item = SSE.parse(in);
+            read(item, baseURI, ct, output, context);
         }
 
         private void read(Item item, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            Graph graph = BuilderGraph.buildGraph(item) ;
-            Iterator<Triple> iter = graph.find(null, null, null) ;
-            for ( ; iter.hasNext() ; )
-                output.triple(iter.next()) ;
+            Graph graph = BuilderGraph.buildGraph(item);
+            Iterator<Triple> iter = graph.find(null, null, null);
+            for (; iter.hasNext(); )
+                output.triple(iter.next());
         }
-
-        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
-        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
-
-        @Override
-        public ParserProfile getParserProfile() {
-            return null ;
-        }
-
-        @Override
-        public void setParserProfile(ParserProfile profile) {}
     }
 
     // Model.read adapter - must be public.
     public static class RDFReaderSSE extends RDFReaderRIOT
     {
         public RDFReaderSSE() {
-            super("SSE") ;
+            super("SSE");
         }
     }
-
-    /*
-     * data.rsse : (graph (<s> <p1> 123) (<s> <p2> 456) )
-     */
 }

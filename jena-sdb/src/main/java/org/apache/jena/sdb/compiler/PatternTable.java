@@ -58,7 +58,7 @@ public class PatternTable extends TableDesc
     
     @Override
     public boolean hasColumn(String colName)
-    { return cols.containsKey(colName) ; }
+    { return cols.values().contains(colName) ; }
    
     @Override
     public Iterator<String> colNames()

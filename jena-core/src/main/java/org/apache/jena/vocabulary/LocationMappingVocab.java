@@ -26,7 +26,7 @@ import org.apache.jena.rdf.model.* ;
  */
 
 public class LocationMappingVocab {
-    /** <p>The namespace of the vocabalary as a string ({@value})</p> */
+    /** <p>The namespace of the vocabulary as a string ({@value})</p> */
     public static final String NS = "http://jena.hpl.hp.com/2004/08/location-mapping#";
     
     /** <p>The namespace of the vocabalary as a string</p>

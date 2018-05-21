@@ -39,7 +39,12 @@ public final class Cache0<K, V> implements Cache<K, V> {
 
     @Override
     public V getOrFill(K key, Callable<V> callable) {
-        return null ;
+        try {
+            return callable.call() ;
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

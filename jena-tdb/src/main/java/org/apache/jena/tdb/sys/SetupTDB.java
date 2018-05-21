@@ -104,55 +104,10 @@ public class SetupTDB
     }
 
     public static RecordFactory makeRecordFactory(int keyLen, int valueLen)
-        {
-            return SetupIndex.makeRecordFactory(keyLen, valueLen) ;
-        }
-    //    
-    //    /** Make a NodeTable without cache and inline wrappers */ 
-    //    public static NodeTable makeNodeTableBase(Location location, String indexNode2Id, String indexId2Node)
-    //    {
-    //        if (location.isMem()) 
-    //            return NodeTableFactory.createMem() ;
-    //
-    //        // -- make id to node mapping -- Names.indexId2Node
-    //        FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
-    //        
-    //        ObjectFile stringFile = makeObjectFile(fsIdToNode) ;
-    //        
-    //        // -- make node to id mapping -- Names.indexNode2Id
-    //        // Make index of id to node (data table)
-    //        
-    //        // No caching at the index level - we use the internal caches of the node table.
-    //        Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
-    //        
-    //        // -- Make the node table using the components established above.
-    //        NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
-    //        return nodeTable ;
-    //    }
-    //
-    //    /** Make a NodeTable with cache and inline wrappers */ 
-    //    public static NodeTable makeNodeTable(Location location)
-    //    {
-    //        return makeNodeTable(location,
-    //                             Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
-    //                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
-    //                             SystemTDB.NodeMissCacheSize) ;
-    //    }
-    //
-    //    /** Make a NodeTable with cache and inline wrappers */ 
-    //    public static NodeTable makeNodeTable(Location location,
-    //                                          String indexNode2Id, int nodeToIdCacheSize,
-    //                                          String indexId2Node, int idToNodeCacheSize,
-    //                                          int nodeMissCacheSize)
-    //    {
-    //        NodeTable nodeTable = makeNodeTableBase(location, indexNode2Id, indexId2Node) ;
-    //        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
-    //        nodeTable = NodeTableInline.create(nodeTable) ;
-    //        return nodeTable ;
-    //    }
-    //
+    {
+        return SetupIndex.makeRecordFactory(keyLen, valueLen) ;
+    }
     
-    // XXX Move to FileFactory
     public static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;

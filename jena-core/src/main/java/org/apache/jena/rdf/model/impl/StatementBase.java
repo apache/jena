@@ -154,7 +154,7 @@ public abstract class StatementBase
         { return getLiteral().isWellFormedXML(); }
 
 	/**
-	 	Answer a string describing this Statement in a vagely pretty way, with the 
+	 	Answer a string describing this Statement in a vaguely pretty way, with the 
 	 	representations of the subject, predicate, and object in that order.
 	*/
 	@Override

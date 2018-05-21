@@ -18,6 +18,8 @@
 package org.apache.jena.arq.querybuilder;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.jena.arq.querybuilder.clauses.ConstructClause;
 import org.apache.jena.arq.querybuilder.clauses.DatasetClause;
@@ -29,6 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
@@ -53,11 +56,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	@Override
 	public DatasetHandler getDatasetHandler() {
 		return handlerBlock.getDatasetHandler();
-	}
-
-	@Override
-	public WhereHandler getWhereHandler() {
-		return handlerBlock.getWhereHandler();
 	}
 
 	@Override
@@ -214,6 +212,57 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 		return this;
 	}
 
+
+	@Override
+	public ConstructBuilder addWhereValueVar(Object var) {
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var);
+		return this;
+	}
+	
+	@Override
+	public ConstructBuilder addWhereValueVar(Object var, Object... values)
+	{
+		getWhereHandler().addValueVar(getPrologHandler().getPrefixes(), var, values);
+		return this;
+	}
+	
+	
+	@Override
+	public <K extends Collection<?>> ConstructBuilder addWhereValueVars(Map<?,K> dataTable)
+	{
+		getWhereHandler().addValueVars(getPrologHandler().getPrefixes(), dataTable);
+		return this;
+	}
+	
+	@Override
+	public ConstructBuilder addWhereValueRow(Object... values)
+	{
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+
+	@Override
+	public ConstructBuilder addWhereValueRow(Collection<?> values) {
+		getWhereHandler().addValueRow(getPrologHandler().getPrefixes(), values);
+		return this;
+	}
+	
+	@Override
+	public List<Var> getWhereValuesVars() {
+		return getWhereHandler().getValuesVars();
+	}
+
+	@Override
+	public Map<Var, List<Node>> getWhereValuesMap() {
+		return getWhereHandler().getValuesMap();
+	}
+
+	@Override
+	public ConstructBuilder clearWhereValues() {
+		getWhereHandler().clearValues();
+		return this;
+	}
+	
 	@Override
 	public ConstructBuilder addOptional(TriplePath t) {
 		getWhereHandler().addOptional(t);
@@ -227,7 +276,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
-	public ConstructBuilder addOptional(SelectBuilder t) {
+	public ConstructBuilder addOptional(AbstractQueryBuilder<?> t) {
 		getWhereHandler().addOptional(t.getWhereHandler());
 		return this;
 	}
@@ -245,27 +294,54 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	}
 
 	@Override
+	public ConstructBuilder addFilter(Expr expr) {
+		getWhereHandler().addFilter(expr);
+		return this;
+	}
+
+	@Override
 	public ConstructBuilder addFilter(String s) throws ParseException {
 		getWhereHandler().addFilter(s);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addSubQuery(SelectBuilder subQuery) {
+	public ConstructBuilder addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addSubQuery(subQuery);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addUnion(SelectBuilder subQuery) {
+	public ConstructBuilder addUnion(AbstractQueryBuilder<?> subQuery) {
 		getWhereHandler().addUnion(subQuery);
 		return this;
 	}
 
 	@Override
-	public ConstructBuilder addGraph(Object graph, SelectBuilder subQuery) {
+	public ConstructBuilder addGraph(Object graph, AbstractQueryBuilder<?> subQuery) {
 		getPrologHandler().addAll(subQuery.getPrologHandler());
 		getWhereHandler().addGraph(makeNode(graph), subQuery.getWhereHandler());
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, FrontsTriple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, Object subject, Object predicate, Object object)
+	{
+		getWhereHandler().addGraph(makeNode(graph), makeTriplePath( subject, predicate, object ));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, Triple triple) {
+		getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+		return this;
+	}
+	@Override
+	public ConstructBuilder addGraph(Object graph, TriplePath triplePath) {
+		getWhereHandler().addGraph(makeNode(graph), triplePath );
 		return this;
 	}
 
@@ -300,5 +376,11 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 	@Override
 	public Node list(Object... objs) {
 		return getWhereHandler().list(objs);
+	}
+	
+	@Override
+	public ConstructBuilder addMinus( AbstractQueryBuilder<?> t ) {
+		getWhereHandler().addMinus( t );
+		return this;
 	}
 }

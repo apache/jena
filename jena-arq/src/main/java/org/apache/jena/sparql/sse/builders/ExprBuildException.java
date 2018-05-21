@@ -20,10 +20,7 @@ package org.apache.jena.sparql.sse.builders;
 
 
 public class ExprBuildException extends BuildException
-    {
-
-//        public OpBuildException(Throwable cause) { super(cause) ; }
-//        public OpBuildException() { super() ; }
-        public ExprBuildException (String msg) { super(msg) ; }
-//        public OpBuildException (String msg, Throwable cause) { super(msg, cause) ; }
-    }
+{
+    public ExprBuildException (String msg) { super(msg) ; }
+    public ExprBuildException (String msg, Throwable cause) { super(msg, cause) ; }
+}

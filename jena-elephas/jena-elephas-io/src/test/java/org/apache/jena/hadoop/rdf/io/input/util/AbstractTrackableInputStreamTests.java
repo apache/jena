@@ -66,14 +66,14 @@ public abstract class AbstractTrackableInputStreamTests {
 
     protected final void testSingleByteRead(int length) throws IOException {
         InputStream input = this.generateData(length);
-        TrackableInputStream trackable = this.getInstance(input);
-        long count = 0;
-        while (trackable.read() >= 0) {
-            count++;
+        try ( TrackableInputStream trackable = this.getInstance(input) ) {
+            long count = 0;
+            while (trackable.read() >= 0) {
+                count++;
+            }
+            Assert.assertEquals(length, count);
+            Assert.assertEquals(length, trackable.getBytesRead());
         }
-        Assert.assertEquals(length, count);
-        Assert.assertEquals(length, trackable.getBytesRead());
-        trackable.close();
     }
 
     /**
@@ -122,18 +122,18 @@ public abstract class AbstractTrackableInputStreamTests {
         if (bufferSize < 1)
             throw new IllegalArgumentException("bufferSize must be >= 1");
         InputStream input = this.generateData(length);
-        TrackableInputStream trackable = this.getInstance(input);
-        long count = 0;
-        byte[] buffer = new byte[bufferSize];
-        long read;
-        do {
-            read = trackable.read(buffer);
-            if (read > 0)
-                count += read;
-        } while (read >= 0);
-        Assert.assertEquals(length, count);
-        Assert.assertEquals(length, trackable.getBytesRead());
-        trackable.close();
+        try (TrackableInputStream trackable = this.getInstance(input)) {
+            long count = 0;
+            byte[] buffer = new byte[bufferSize];
+            long read;
+            do {
+                read = trackable.read(buffer);
+                if (read > 0)
+                    count += read;
+            } while (read >= 0);
+            Assert.assertEquals(length, count);
+            Assert.assertEquals(length, trackable.getBytesRead());
+        }
     }
 
     /**
@@ -238,18 +238,18 @@ public abstract class AbstractTrackableInputStreamTests {
         if (readSize < 1 || readSize > bufferSize)
             throw new IllegalArgumentException("readSize must be >= 1 and <= bufferSize");
         InputStream input = this.generateData(length);
-        TrackableInputStream trackable = this.getInstance(input);
-        long count = 0;
-        byte[] buffer = new byte[bufferSize];
-        long read;
-        do {
-            read = trackable.read(buffer, 0, readSize);
-            if (read > 0)
-                count += read;
-        } while (read >= 0);
-        Assert.assertEquals(length, count);
-        Assert.assertEquals(length, trackable.getBytesRead());
-        trackable.close();
+        try (TrackableInputStream trackable = this.getInstance(input)) {
+            long count = 0;
+            byte[] buffer = new byte[bufferSize];
+            long read;
+            do {
+                read = trackable.read(buffer, 0, readSize);
+                if (read > 0)
+                    count += read;
+            } while (read >= 0);
+            Assert.assertEquals(length, count);
+            Assert.assertEquals(length, trackable.getBytesRead());
+        }
     }
 
     /**
@@ -466,17 +466,17 @@ public abstract class AbstractTrackableInputStreamTests {
         if (skipSize < 1)
             throw new IllegalArgumentException("skipSize must be >= 1");
         InputStream input = this.generateData(length);
-        TrackableInputStream trackable = this.getInstance(input);
-        long count = 0;
-        long skipped;
-        do {
-            skipped = trackable.skip(skipSize);
-            if (skipped > 0)
-                count += skipped;
-        } while (skipped > 0);
-        Assert.assertEquals(length, count);
-        Assert.assertEquals(length, trackable.getBytesRead());
-        trackable.close();
+        try(TrackableInputStream trackable = this.getInstance(input)) {
+            long count = 0;
+            long skipped;
+            do {
+                skipped = trackable.skip(skipSize);
+                if (skipped > 0)
+                    count += skipped;
+            } while (skipped > 0);
+            Assert.assertEquals(length, count);
+            Assert.assertEquals(length, trackable.getBytesRead());
+        }
     }
 
     /**
@@ -615,6 +615,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_01() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(-1, trackable.read());
@@ -628,6 +629,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_02() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(0, trackable.read(new byte[0]));
@@ -641,6 +643,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_03() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(-1, trackable.read(new byte[1]));
@@ -654,6 +657,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_04() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(0, trackable.read(new byte[16], 0, 0));
@@ -667,6 +671,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_05() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(-1, trackable.read(new byte[16], 0, 8));
@@ -680,6 +685,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_06() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(0, trackable.skip(0));
@@ -694,6 +700,7 @@ public abstract class AbstractTrackableInputStreamTests {
     @Test
     public final void trackable_input_post_close_07() throws IOException {
         InputStream input = this.generateData(0);
+        @SuppressWarnings("resource")
         TrackableInputStream trackable = this.getInstance(input);
         trackable.close();
         Assert.assertEquals(0, trackable.skip(1));

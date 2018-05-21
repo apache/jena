@@ -31,7 +31,7 @@ import org.apache.jena.riot.system.SyntaxLabels ;
  * Various different policies.
  * See {@link SyntaxLabels#createLabelToNode} for getting a default setup; 
  * some of the others are for testing and debugging and may not generate
- * legal RDF overall (e.g. reparsign the same file gets the same bNodes) 
+ * legal RDF overall (e.g. reparsing the same file gets the same bNodes) 
  */  
 
 public class LabelToNode extends MapWithScope<String, Node, Node>
@@ -50,8 +50,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorHash(seed)) ; }
 
     /** The policy up to jena 2.10.0 - problems at very large scale */
-    public static LabelToNode createScopeByDocumentOld()
-    { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorTraditional()) ; }
+    public static LabelToNode createScopeGlobal()
+    { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorGlobal()) ; }
 
     /** Allocation scoped by graph and label. */
     public static LabelToNode createScopeByGraph() {
@@ -66,7 +66,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelAsGiven()}
      * but the pair is <em>unsafe</em> for output-input.  Use encoded labels for that.
      * 
-     * The main pupose of this LabelToNode is to preserve the used label for debugging. 
+     * The main purpose of this LabelToNode is to preserve the used label for debugging. 
      */
     public static LabelToNode createUseLabelAsGiven()
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorRawLabel()) ; }
@@ -101,8 +101,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         return new Alloc(new BlankNodeAllocatorLabel()) ; 
     } 
     
-    private static Allocator<String, Node, Node> nodeAllocatorTraditional() { 
-        return new Alloc(new BlankNodeAllocatorTraditional()) ; 
+    private static Allocator<String, Node, Node> nodeAllocatorGlobal() { 
+        return new Alloc(new BlankNodeAllocatorGlobal()) ; 
     } 
     
     private static Allocator<String, Node, Node> nodeAllocatorEncoded() { 

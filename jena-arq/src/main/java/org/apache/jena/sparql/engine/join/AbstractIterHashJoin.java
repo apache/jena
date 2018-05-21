@@ -213,7 +213,7 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
 
     /**
      * Signal the end of the hash join.
-     * Outer joins can now add any "no matche" results.
+     * Outer joins can now add any "no matched" results.
      * @return QueryIterator or null
      */
     protected abstract QueryIterator joinFinished() ;

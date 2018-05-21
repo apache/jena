@@ -26,7 +26,7 @@ import org.xml.sax.ErrorHandler;
 /**
  * The interface to set the various handlers on ARP. User defined
  * implementations of this interface are not supported. This is a class rather
- * than an interface to have better backward compatibilitiy with earlier
+ * than an interface to have better backward compatibility with earlier
  * versions, however constructing instances of this class is deprecated.
  */
 public class ARPHandlers {

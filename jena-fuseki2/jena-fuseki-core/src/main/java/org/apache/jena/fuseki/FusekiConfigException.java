@@ -21,8 +21,6 @@ package org.apache.jena.fuseki;
 
 public class FusekiConfigException extends FusekiException
 {
-    private static final long serialVersionUID = 8076422665235298924L;
-
     public FusekiConfigException(String msg, Throwable cause)    { super(msg, cause) ; }
     public FusekiConfigException(String msg)                     { super(msg) ; }
     public FusekiConfigException(Throwable cause)                { super(cause) ; }

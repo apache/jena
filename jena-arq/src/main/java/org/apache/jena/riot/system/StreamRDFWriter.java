@@ -39,7 +39,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** Write RDF in a streaming fashion.
- *  {@link RDFDataMgr} operations do not provide this guaranttee.
+ *  {@link RDFDataMgr} operations do not provide this guarantee.
  *  See {@link  RDFWriterRegistry} for general purpose writers.
  *  
  * @see RDFDataMgr 
@@ -104,7 +104,7 @@ public class StreamRDFWriter {
 
     /** Register the default serialization for the language (replace any existing registration).
      * @param lang      Languages
-     * @param format    The serialization forma to use when the language is used for writing.
+     * @param format    The serialization format to use when the language is used for writing.
      */
     public static void register(Lang lang, RDFFormat format) {
         registry.register(lang, format) ;

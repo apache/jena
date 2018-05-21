@@ -20,30 +20,21 @@ package jena;
 
 import static org.apache.jena.atlas.logging.LogCtl.setCmdLogging;
 
-import java.lang.reflect.*;
-
 import org.apache.jena.Jena ;
 
 /**
  * jena.version
- * Print out jena version information and exit.
+ * Print out the jena version and exit.
  */
 public class version implements Jena {
 
     static { setCmdLogging(); }
 
     /**
-	 * Print out jena version information and exit.
-	 * @param args
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 */
-	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
-		Field f[] = Jena.class.getDeclaredFields();
-        for ( Field aF : f )
-        {
-            System.out.println( aF.getName() + ": " + aF.get( null ) );
-        }
-	}
-
+     * Print out jena version information and exits.
+     */
+    public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
+        String x = Jena.VERSION;
+        System.out.println(x);
+    }
 }

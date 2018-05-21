@@ -25,13 +25,15 @@ import java.util.Map ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.sparql.graph.GraphZero;
 
-/** Implementation of a DatasetGraph as an extensible set of graphs.
- *  <p>
- *  Graphs are held by reference. Care is needed when manipulating their contents
+/** Implementation of a DatasetGraph as an extensible set of graphs where graphs are held by reference.
+ *  Care is needed when manipulating their contents
  *  especially if they are also in another {@code DatasetGraph}.
  *  <p> 
  *  See {@link DatasetGraphMap} for an implementation that copies graphs
@@ -43,11 +45,13 @@ import org.apache.jena.sparql.graph.GraphUnionRead ;
  */
 public class DatasetGraphMapLink extends DatasetGraphCollection
 {
-    
     private final GraphMaker graphMaker ;
     private final Map<Node, Graph> graphs = new HashMap<>() ;
 
     private Graph defaultGraph ;
+    private final Transactional txn;
+    private final TxnDataset2Graph txnDsg2Graph;
+    private static GraphMaker dftGraphMaker = (name) -> GraphFactory.createDefaultGraph();
 
     /**
      * Create a new {@code DatasetGraph} that copies the dataset structure of default
@@ -55,7 +59,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * Any new graphs needed are separate from the original dataset and created in-memory. 
      */
     public static DatasetGraph cloneStructure(DatasetGraph dsg) {
-        return new DatasetGraphMapLink(dsg);
+        return cloneStructure(dsg, dftGraphMaker);
     }
     
     /**
@@ -65,77 +69,65 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * to the {@link GraphMaker}.
      */
     public static DatasetGraph cloneStructure(DatasetGraph dsg, GraphMaker graphMaker) {
-        return new DatasetGraphMapLink(dsg, graphMaker);
+        DatasetGraphMapLink dsg2 = new DatasetGraphMapLink((Graph)null, graphMaker);
+        linkGraphs(dsg, dsg2);
+        return dsg2;
     }
 
-    /** Create a new DatasetGraph that initially shares the graphs of the
-     * given DatasetGraph.  Adding/removing graphs will only affect this
-     * object, not the argument DatasetGraph but changes to shared
-     * graphs are seen by both objects.
-     */
-    private DatasetGraphMapLink(DatasetGraph dsg, GraphMaker graphMaker) {
-        this.graphMaker = graphMaker ; 
-        this.defaultGraph = dsg.getDefaultGraph() ;
-        for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; ) {
+    private static void linkGraphs(DatasetGraph srcDsg, DatasetGraphMapLink dstDsg) {
+        dstDsg.defaultGraph = srcDsg.getDefaultGraph();
+        for ( Iterator<Node> names = srcDsg.listGraphNodes() ; names.hasNext() ; ) {
             Node gn = names.next() ;
-            addGraph(gn, dsg.getGraph(gn)) ;
+            dstDsg.addGraph(gn, srcDsg.getGraph(gn)) ;
         }
-    }
-
-    /** 
-     *  A {@code DatasetGraph} with graphs for default and named graphs as given
-     *  but new graphs are created in memory.
-     */
-    private DatasetGraphMapLink(DatasetGraph dsg) {
-        this(dsg, DatasetGraphFactory.graphMakerMem) ;
-    }
-
-    private DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
-        this.graphMaker = graphMaker;
-        this.defaultGraph = dftGraph ;
-    }
-    
-//    /** A {@code DatasetGraph} with in-memory graphs for default and named graphs as needed */ 
-//    private DatasetGraphMapLink() {
-//        this(DatasetGraphFactory.memGraphMaker) ; 
-//    }
-    
-    /**
-     * A {@code DatasetGraph} with graph from the gve {@link GraphMaker} for default and
-     * named graphs as needed. This is the constructor used for
-     * DatasetFactory.createGeneral.
-     */
-    /*package*/ DatasetGraphMapLink(GraphMaker graphMaker) {
-        this(graphMaker.create(), graphMaker) ;
     }
 
     /** A {@code DatasetGraph} that uses the given graph for the default graph
      *  and create in-memory graphs for named graphs as needed
      */
     public DatasetGraphMapLink(Graph dftGraph) {
-        this.defaultGraph = dftGraph ;
-        this.graphMaker = DatasetGraphFactory.graphMakerMem ;
+        this(dftGraph, dftGraphMaker);
     }
 
-    // ----
-    private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
+    // This is the root constructor. 
+    @SuppressWarnings("deprecation")
+    /*package*/DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
+        this.graphMaker = graphMaker;
+        this.defaultGraph = dftGraph;
+        if ( TxnDataset2Graph.TXN_DSG_GRAPH ) {
+            txnDsg2Graph = new TxnDataset2Graph(dftGraph);
+            txn = txnDsg2Graph;
+        } else {
+            txnDsg2Graph = null;
+            txn = TransactionalLock.createMRSW();
+        }
+    }
 
     @Override
     public void commit() {
-        SystemARQ.sync(this);
+        if ( txnDsg2Graph == null )
+            SystemARQ.sync(this);
         txn.commit() ;
     }
 
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
+    //Above: commit()
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
     // ----
 
     @Override
     public boolean containsGraph(Node graphNode) {
+        if ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode) )
+            return true;
         return graphs.containsKey(graphNode);
     }
 
@@ -146,6 +138,7 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     @Override
     public Graph getGraph(Node graphNode) {
+        // Same as DatasetGraphMap.getGraph but we inherit differently.
         if ( Quad.isUnionGraph(graphNode) ) 
             return new GraphUnionRead(this) ;
         if ( Quad.isDefaultGraph(graphNode))
@@ -153,32 +146,42 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
-            g = getGraphCreate();
+            g = getGraphCreate(graphNode);
             if ( g != null )
-                graphs.put(graphNode, g);
+                addGraph(graphNode, g);
         }
         return g;
     }
 
-    /** Called from getGraph when a nonexistent graph is asked for.
+    /**
+     * Called from getGraph when a nonexistent graph is asked for.
      * Return null for "nothing created as a graph"
      */
-    protected Graph getGraphCreate() { 
-        return graphMaker.create() ;
+    protected Graph getGraphCreate(Node graphNode) {
+        return graphMaker.create(graphNode) ;
     }
 
     @Override
     public void addGraph(Node graphName, Graph graph) {
+        if ( txnDsg2Graph != null )
+            txnDsg2Graph.addGraph(graph);
         graphs.put(graphName, graph);
     }
 
     @Override
     public void removeGraph(Node graphName) {
-        graphs.remove(graphName);
+        Graph g = graphs.remove(graphName);
+        if ( g != null && txnDsg2Graph != null )
+            txnDsg2Graph.removeGraph(g);
     }
 
     @Override
     public void setDefaultGraph(Graph g) {
+        if ( g == null )
+            // Always have a default graph of some kind.
+            g = GraphZero.instance();
+        if ( txnDsg2Graph != null )
+            txnDsg2Graph.addGraph(g);
         defaultGraph = g;
     }
 

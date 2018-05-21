@@ -27,7 +27,6 @@ import java.util.function.BiConsumer ;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.shared.PrefixMapping ;
 
 /**
@@ -65,7 +64,7 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public void add(String prefix, String iriString) {
-        this.add(prefix, IRIFactory.iriImplementation().create(iriString));
+        this.add(prefix, IRIResolver.iriFactory().create(iriString));
     }
     
     @Override
@@ -120,7 +119,9 @@ public abstract class PrefixMapBase implements PrefixMap {
     protected boolean isSafeLocalPart(String ln) {
         // This test isn't complete but covers the common issues that arise. 
         // Does not consider possible escaping.
-        return (strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':'));
+        // There needs to be a further, stronger check for output.
+        // About ':' -- Turtle RDF 1.1 allows this in a local part of a prefix name. 
+        return strSafeFor(ln, '/') && strSafeFor(ln, '#');
     }
     
     @Override

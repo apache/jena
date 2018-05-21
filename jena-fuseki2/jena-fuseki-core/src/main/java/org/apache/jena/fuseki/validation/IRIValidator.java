@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,154 +18,21 @@
 
 package org.apache.jena.fuseki.validation;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.atlas.json.JsonObject ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.iri.Violation ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.fuseki.validation.html.IRIValidatorHTML;
+import org.apache.jena.fuseki.validation.json.IRIValidatorJSON;
 
-public class IRIValidator extends ValidatorBaseJson {
-
-    private static final long serialVersionUID = -2137772518194890583L;
-
-    public IRIValidator() { }
-    
-    static IRIFactory iriFactory = IRIResolver.iriFactory ;
-    
-    static final String paramIRI           = "iri" ;
-
-    // Output is an object  { "iris" : [ ] }
-    // { "iri": "" , "error": [], "warnings": [] }
-    static final String jIRIs    = "iris" ;
-    static final String jIRI     = "iri" ;
+public class IRIValidator extends ValidatorBase {
 
     @Override
-    protected JsonObject execute(ValidationAction action) {
-        JsonBuilder obj = new JsonBuilder() ;
-        obj.startObject() ;
-        
-        String args[] = getArgs(action, paramIRI) ;
-        if ( args.length == 0 )
-            ServletOps.errorBadRequest("No IRIs supplied");
-        
-        obj.key(jIRIs) ;
-        obj.startArray() ;
-        
-        for ( String iriStr : args )
-        {
-            obj.startObject() ;
-            obj.key(jIRI).value(iriStr) ;
-
-            IRI iri = iriFactory.create(iriStr) ;
-
-
-            List<String> errors = new ArrayList<>() ;
-            List<String> warnings = new ArrayList<>() ;
-
-            if ( iri.isRelative() )
-                warnings.add("Relative IRI: "+iriStr) ;
-
-            Iterator<Violation> vIter = iri.violations(true) ;
-            for ( ; vIter.hasNext() ; )
-            {
-                Violation v = vIter.next() ;
-                String str = v.getShortMessage() ;
-                if ( v.isError() )
-                    errors.add(str) ;
-                else
-                    warnings.add(str) ;
-            }
-            
-            obj.key(jErrors) ;
-            obj.startArray() ;
-            for ( String msg : errors )
-                obj.value(msg) ;
-            obj.finishArray() ;
-                
-            obj.key(jWarnings) ;
-            obj.startArray() ;
-            for ( String msg : warnings )
-                obj.value(msg) ;
-            obj.finishArray() ;
-
-            obj.finishObject() ;
-        }
-          
-        
-       obj.finishArray() ;
-        
-        obj.finishObject() ;
-        return obj.build().getAsObject() ;
+    protected void executeJSON(HttpServletRequest request, HttpServletResponse response) {
+        executeJSON(request, response, IRIValidatorJSON::execute);
     }
+
     @Override
-    protected String validatorName() {
-        return "RDF Data" ;
+    protected void executeHTML(HttpServletRequest request, HttpServletResponse response) {
+        IRIValidatorHTML.executeHTML(request, response);
     }
 }
-
-//static final String paramIRI      = "iri" ;
-////static IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-//static IRIFactory iriFactory = IRIResolver.iriFactory ;
-//
-//@Override
-//protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-//{
-//    try {
-//        String[] args = httpRequest.getParameterValues(paramIRI) ;
-//        ServletOutputStream outStream = httpResponse.getOutputStream() ;
-//        PrintStream stdout = System.out ;
-//        PrintStream stderr = System.err ;
-//        System.setOut(new PrintStream(outStream)) ;
-//        System.setErr(new PrintStream(outStream)) ;
-//
-//        setHeaders(httpResponse) ;
-//
-//        outStream.println("<html>") ;
-//        printHead(outStream, "Jena IRI Validator Report") ;
-//        outStream.println("<body>") ;
-//
-//        outStream.println("<h1>IRI Report</h1>") ;
-//
-//        startFixed(outStream) ;
-//
-//        try {
-//            boolean first = true ;
-//            for ( String iriStr : args )
-//            {
-//                if ( ! first )
-//                    System.out.println() ;
-//                first = false ;
-//
-//                IRI iri = iriFactory.create(iriStr) ;
-//                System.out.println(iriStr + " ==> "+iri) ;
-//                if ( iri.isRelative() )
-//                    System.out.println("Relative IRI: "+iriStr) ;
-//
-//                Iterator<Violation> vIter = iri.violations(true) ;
-//                for ( ; vIter.hasNext() ; )
-//                {
-//                    String str = vIter.next().getShortMessage() ;
-//                    str = htmlQuote(str) ;
-//                    
-//                    System.out.println(str) ;
-//                }
-//            }
-//        } finally 
-//        {
-//            finishFixed(outStream) ;
-//            System.out.flush() ;
-//            System.err.flush() ;
-//            System.setOut(stdout) ;
-//            System.setErr(stdout) ;
-//        }
-//
-//        outStream.println("</body>") ;
-//        outStream.println("</html>") ;
-//    } catch (IOException ex) {}
-//} 

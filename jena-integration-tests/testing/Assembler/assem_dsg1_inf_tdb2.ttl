@@ -1,0 +1,29 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Assembler for a dataset of a single inference model,
+## with the base storage in TDB2.
+
+PREFIX :        <#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+<#dataset> rdf:type       ja:RDFDatasetOne ;
+     ja:defaultGraph       <#model_inf> ;
+     .
+
+<#model_inf> a ja:InfModel ;
+     ja:baseModel <#tdbGraph> ;
+     ja:reasoner [
+         ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
+     ] .
+
+## Graph from the database
+<#tdbGraph> rdf:type tdb2:GraphTDB2 ;
+    tdb2:dataset <#tdbDataset> .
+
+## Base data in TDB2.
+<#tdbDataset> rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
+    .

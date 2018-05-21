@@ -57,7 +57,7 @@ public class UpdateEngineRegistry
     /** Locate a suitable factory for this dataset
      * 
      * @param graphStore    A GraphStore
-     * @return A UpdateProcessorFactroy or null if none accept the request
+     * @return A UpdateProcessorFactory or null if none accept the request
      */
     public UpdateEngineFactory find(DatasetGraph graphStore, Context context)
     {

@@ -45,6 +45,7 @@ public class TestPackage extends TestSuite {
         addTest( TestIteratorCollection.suite() );
         addTest( "TestSplitIRI_XML",      TestSplitIRI_XML.suite()) ;
         addTest( "TestSplitIRI_TTL",      TestSplitIRI_TTL.suite()) ;
+        addTest( "TestModelCollector",    TestModelCollector.suite()) ;
         addTestSuite( TestLocators.class );
         addTestSuite( TestOneToManyMap.class );
     }

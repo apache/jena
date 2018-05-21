@@ -28,19 +28,15 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
-    private static final long serialVersionUID = -8235479824229554685L;
-
     protected final Logger log ;
 
     protected ActionBase(Logger log) {
@@ -52,8 +48,6 @@ public abstract class ActionBase extends ServletBase
     public void init() {
 //        log.info("["+Utils.className(this)+"] ServletContextName = "+getServletContext().getServletContextName()) ;
 //        log.info("["+Utils.className(this)+"] ContextPath        = "+getServletContext().getContextPath()) ;
-
-        //super.init() ;
     }
     
     /**
@@ -75,9 +69,8 @@ public abstract class ActionBase extends ServletBase
             // The response may be changed to a HttpServletResponseTracker
             response = action.response ;
             initResponse(request, response) ;
-            Context cxt = ARQ.getContext() ;
-            
             try {
+                action.startRequest();
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
                 // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.
@@ -97,6 +90,12 @@ public abstract class ActionBase extends ServletBase
                     ServletOps.responseSendError(response, ex.getRC(), ex.getMessage()) ;
                 else
                     ServletOps.responseSendError(response, ex.getRC()) ;
+            } catch (HttpException ex) {
+                // Some code is passing up its own HttpException.
+                if ( ex.getMessage() == null )
+                    ServletOps.responseSendError(response, ex.getResponseCode());
+                else
+                    ServletOps.responseSendError(response, ex.getResponseCode(), ex.getMessage());
             } catch (RuntimeIOException ex) {
                 log.warn(format("[%d] Runtime IO Exception (client left?) RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
@@ -105,9 +104,10 @@ public abstract class ActionBase extends ServletBase
                 //ex.printStackTrace(System.err) ;
                 log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
                 ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+            } finally {
+                action.setFinishTime() ;
+                finishRequest(action);
             }
-    
-            action.setFinishTime() ;
             printResponse(action) ;
             archiveHttpAction(action) ;
         } catch (Throwable th) {
@@ -126,7 +126,7 @@ public abstract class ActionBase extends ServletBase
      */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, log, request, response, Fuseki.verboseLogging) ;
+        return new HttpAction(id, log, request, response);
     }
 
     /**
@@ -227,15 +227,15 @@ public abstract class ActionBase extends ServletBase
 
         HttpServletResponseTracker response = action.response ;
         if ( action.verbose ) {
-            if ( action.contentType != null )
-                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.contentType)) ;
-            if ( action.contentLength != -1 )
-                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.contentLength)) ;
+            if ( action.responseContentType != null )
+                log.info(format("[%d]   <= %-20s %s", action.id, HttpNames.hContentType+":", action.responseContentType)) ;
+            if ( action.responseContentLength != -1 )
+                log.info(format("[%d]   <= %-20s %d", action.id, HttpNames.hContentLengh+":", action.responseContentLength)) ;
             for (Map.Entry<String, String> e : action.headers.entrySet()) {
                 // Skip already printed.
-                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.contentType != null)
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentType) && action.responseContentType != null)
                     continue;
-                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.contentLength != -1)
+                if ( e.getKey().equalsIgnoreCase(HttpNames.hContentLengh) && action.responseContentLength != -1)
                     continue;
                 log.info(format("[%d]   <= %-20s %s", action.id, e.getKey()+":", e.getValue())) ;
             }

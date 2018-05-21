@@ -167,7 +167,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         protected static QueryIterator buildIterator(Binding binding, Node graphNode, Op opExec, ExecutionContext outerCxt) {
             if ( !graphNode.isURI() && !graphNode.isBlank() )
                 // e.g. variable bound to a literal or blank node.
-                throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator: Not a URI or balnk node: "+graphNode) ;
+                throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator: Not a URI or blank node: "+graphNode) ;
             
             // We can't just use DatasetGraph.getGraph because it may 
             // "auto-create" graphs. Use the containsGraph function.

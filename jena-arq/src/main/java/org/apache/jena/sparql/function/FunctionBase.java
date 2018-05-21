@@ -27,7 +27,7 @@ import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Impleemntation root for custom function evaluation. */  
+/** Implementation root for custom function evaluation. */  
 public abstract class FunctionBase implements Function {
 
     @Override
@@ -36,6 +36,13 @@ public abstract class FunctionBase implements Function {
         checkBuild(uri, args) ;
     }
 
+    // Valid during execution.
+    // Only specialised uses need these values 
+    // e.g. fn:apply which is a meta-function - it looks up a URI to get a function to call.
+    protected FunctionEnv functionEnv = null;
+    // Not needed so hide but keep for debugging.
+    private Binding binding = null;
+    
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
         if ( args == null )
@@ -49,8 +56,17 @@ public abstract class FunctionBase implements Function {
             evalArgs.add( x );
         }
         
-        NodeValue nv =  exec(evalArgs) ;
-        return nv ;
+        // Cature
+        try {
+            this.functionEnv = env ;
+            this.binding = binding;
+            NodeValue nv = exec(evalArgs) ;
+            return nv ;
+        } finally {
+            this.functionEnv = null ;
+            this.binding = null;
+        }
+        
     }
     
     /** Function call to a list of evaluated argument values */ 

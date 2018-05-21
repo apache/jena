@@ -53,7 +53,7 @@ public class BasicPattern implements Iterable<Triple> {
     }
 
     /**
-     * Wrap a list of triples up as a BasicPattern. Chnaging the list, changes the
+     * Wrap a list of triples up as a BasicPattern. Changing the list, changes the
      * BasicPattern
      */
     public static BasicPattern wrap(List<Triple> triples) {

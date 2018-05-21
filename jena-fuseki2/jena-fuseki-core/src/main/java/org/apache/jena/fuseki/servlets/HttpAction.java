@@ -37,11 +37,12 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
+import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger ;
 
 /**
  * HTTP action that represents the user request lifecycle. Its state is handled in the
- * {@link ActionSPARQL#executeAction(HttpAction)} method.
+ * {@link ActionService#executeAction(HttpAction)} method.
  */
 public class HttpAction
 {
@@ -70,6 +71,7 @@ public class HttpAction
     private DataService dataService         = null ;
     private String datasetName              = null ;        // Dataset URI used (e.g. registry)
     private DatasetGraph dsg                = null ;
+    private Context context                 = null ;
 
     // ----
     
@@ -82,8 +84,8 @@ public class HttpAction
     // Outcome.
     public int statusCode = -1 ;
     public String message = null ;
-    public int contentLength = -1 ;
-    public String contentType = null ;
+    public int responseContentLength = -1 ;
+    public String responseContentType = null ;
     
     // Cleared to archive:
     public Map <String, String> headers = new HashMap<>() ;
@@ -91,7 +93,8 @@ public class HttpAction
     public HttpServletResponseTracker response ;
     private final String actionURI ;
     private final String contextPath ;
-    // Currently, global.
+
+    private final ServiceDispatchRegistry serviceDispatchRegistry;
     private final DataAccessPointRegistry dataAccessPointRegistry ;
     
     /**
@@ -101,18 +104,18 @@ public class HttpAction
      * @param log Logger for this action 
      * @param request HTTP request
      * @param response HTTP response
-     * @param verbose verbose flag
      */
-    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
+    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response) {
         this.id = id ;
         this.log = log ;
         this.request = request ;
         this.response = new HttpServletResponseTracker(this, response) ;
         // Should this be set when setDataset is called from the dataset context?
         // Currently server-wide, e.g. from the command line.
-        this.verbose = verbose ;
+        this.verbose = Fuseki.getVerbose(request.getServletContext()); 
         this.contextPath = request.getServletContext().getContextPath() ;
         this.actionURI = ActionLib.actionURI(request) ;
+        this.serviceDispatchRegistry = ServiceDispatchRegistry.get(request.getServletContext()) ;
         this.dataAccessPointRegistry = DataAccessPointRegistry.get(request.getServletContext()) ;
     }
 
@@ -143,6 +146,16 @@ public class HttpAction
         setDataset(dService.getDataset()) ;
     }
     
+    public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
+        this.dataAccessPoint = dataAccessPoint ;
+        this.dataService = null ;
+        if ( dataAccessPoint != null )
+            this.dataService = dataAccessPoint.getDataService() ;
+        this.datasetName = datasetUri ;
+        if ( dataService != null )
+            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
+    }
+
     /** Minimum initialization using just a dataset.
      * <p>
      * the HTTP Action will change its transactional state and
@@ -154,6 +167,7 @@ public class HttpAction
      */
     private void setDataset(DatasetGraph dsg) {
         this.dsg = dsg ;
+        this.context = Context.mergeCopy(Fuseki.getContext(), dsg.getContext());
         if ( dsg == null )
             return ;
         setTransactionalPolicy(dsg) ;
@@ -180,16 +194,11 @@ public class HttpAction
         return dsg ;
     }
 
-    public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
-        this.dataAccessPoint = dataAccessPoint ;
-        this.dataService = null ;
-        if ( dataAccessPoint != null )
-            this.dataService = dataAccessPoint.getDataService() ;
-        this.datasetName = datasetUri ;
-        if ( dataService != null )
-            setDataset(dataAccessPoint.getDataService().getDataset()) ; 
+    /** Return the Context for this {@code HttpAction}. */
+    public Context getContext() {
+        return context ;
     }
-    
+
     /**
      * Return the "Transactional" for this HttpAction.
      */
@@ -226,6 +235,13 @@ public class HttpAction
         return contextPath ;
     }
     
+    /**
+     * Get the ServiceRegistry for this action
+     */
+    public ServiceDispatchRegistry getServiceDispatchRegistry() {
+        return serviceDispatchRegistry ;
+    }
+
     /**
      * Get the DataAccessPointRegistry for this action
      */
@@ -308,8 +324,7 @@ public class HttpAction
         activeDSG = null ;
     }
 
-    public final void startRequest()
-    { 
+    public final void startRequest() { 
         if ( dataAccessPoint != null ) 
             dataAccessPoint.startRequest(this) ;
     }

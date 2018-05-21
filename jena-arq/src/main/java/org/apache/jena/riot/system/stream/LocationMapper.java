@@ -79,7 +79,7 @@ public class LocationMapper
      * 
      * @param uri
      * @param otherwise
-     * @return The alternative location choosen
+     * @return The alternative location chosen
      */
     public String altMapping(String uri, String otherwise) {
         if ( altLocations.containsKey(uri) )

@@ -28,6 +28,7 @@ import org.apache.jena.propertytable.impl.PropertyTableBuilder;
  * and makes a PropertyTable through PropertyTableBuilder.
  *
  */
+@Deprecated
 public class GraphCSV extends GraphPropertyTable {
 	
 	public static GraphCSV createHashMapImpl( String csvFilePath ){

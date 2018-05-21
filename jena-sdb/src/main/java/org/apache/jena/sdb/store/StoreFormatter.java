@@ -27,7 +27,7 @@ public interface StoreFormatter
     /** Create the main tables and all indexes */
     public void create() ;
     
-    /** Add indexes - these are kept upto date for any future additions or deletions of data */
+    /** Add indexes - these are kept up to date for any future additions or deletions of data */
     void addIndexes() ;
 
     /** Drop indexes for triple/node tables */
@@ -36,6 +36,6 @@ public interface StoreFormatter
     /** Format the store - create tables but not secondary indexes */ 
     void format() ;
     
-    /** Truncate tables - clearing the store but leaving all indexes inplace */
+    /** Truncate tables - clearing the store but leaving all indexes in place */
     void truncate() ;
 }

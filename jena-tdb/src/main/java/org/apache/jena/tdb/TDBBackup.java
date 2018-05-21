@@ -23,7 +23,7 @@ import java.io.* ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -54,7 +54,7 @@ public class TDBBackup
     {
         Dataset ds = TDBFactory.createDataset(location) ;
         StoreConnection sConn = StoreConnection.make(location) ;
-        DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ, "backup") ;
+        DatasetGraphTxn dsg = sConn.begin(TxnType.READ, "backup") ;
         RDFDataMgr.write(backupfile, dsg, Lang.NQUADS) ;
         dsg.end();
     }

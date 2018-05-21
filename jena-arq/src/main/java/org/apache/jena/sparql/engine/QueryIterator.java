@@ -35,4 +35,10 @@ public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerial
      * Cancels the query as soon as is possible for the given iterator
      */
     public void cancel();
+    
+    /*
+     * Indicate whether this iterator is known to be an iterator of the join identity (one row, no columns).
+     * Returns true if definitely a join identity; false for not or don't know.
+     */
+    public default boolean isJoinIdentity() { return false; }
 }

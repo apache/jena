@@ -20,6 +20,8 @@ package org.apache.jena.sparql.util ;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -73,16 +75,20 @@ public class QueryExecUtils {
             prologue = query.getPrologue() ;
         if ( prologue == null )
             prologue = dftPrologue ;
-
         if ( query.isSelectType() )
             doSelectQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isDescribeType() )
+        else if ( query.isDescribeType() )
             doDescribeQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isConstructType() )
+        else if ( query.isConstructType() )
             doConstructQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isAskType() )
+        else if ( query.isConstructQuad() )
+            doConstructQuadsQuery(prologue, queryExecution, outputFormat) ;
+        else if ( query.isAskType() )
             doAskQuery(prologue, queryExecution, outputFormat) ;
-        queryExecution.close() ;
+        else if ( query.isJsonType() )
+            doJsonQuery(prologue, queryExecution, outputFormat) ;
+        else
+            throw new QueryException("Unrecognized query form");
     }
 
     public static void execute(Op op, DatasetGraph dsg) {
@@ -104,7 +110,6 @@ public class QueryExecUtils {
         outputResultSet(results, null, outputFormat) ;
     }
 
-    @SuppressWarnings("deprecation")
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
         // Proper ResultSet formats.
         Lang lang = ResultsFormat.convert(outputFormat) ;
@@ -176,11 +181,6 @@ public class QueryExecUtils {
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO) ) {
-            ResultSetFormatter.outputAsBIO(System.out, results) ;
-            done = true ;
-        }
-
         if ( !done )
             System.err.println("Unknown format request: " + outputFormat) ;
         results = null ;
@@ -195,6 +195,11 @@ public class QueryExecUtils {
             outputFormat = ResultsFormat.FMT_TEXT ;
         ResultSet results = qe.execSelect() ;
         outputResultSet(results, prologue, outputFormat) ;
+    }
+
+    private static void doJsonQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
+        JsonArray results = queryExecution.execJson();
+        JSON.write(System.out, results);
     }
 
     private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
@@ -247,9 +252,54 @@ public class QueryExecUtils {
             return ;
         }
 
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
+            model.write(System.out, "N-QUADS", null) ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
+            model.write(System.out, "TriG", null) ;
+            return ;
+        }
+
         System.err.println("Unknown format: " + outputFormat) ;
     }
 
+    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_RDF_TRIG;
+        Dataset ds = qe.execConstructDataset();
+        writeDataset(prologue, ds, outputFormat) ;
+    }
+
+    private static void writeDataset(Prologue prologue, Dataset dataset, ResultsFormat outputFormat) {
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_TEXT ;
+
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
+            return ;
+
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
+            System.out.println("# ======== ") ;
+            RDFDataMgr.write(System.out, dataset, Lang.TURTLE) ;
+            System.out.println("# ======== ") ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
+            RDFDataMgr.write(System.out, dataset, Lang.NQUADS);
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
+            RDFDataMgr.write(System.out, dataset, Lang.TRIG);
+            return ;
+        }
+
+        System.err.println("Unknown format: " + outputFormat) ;
+    }
+
+    
     private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         boolean b = qe.execAsk() ;
 
@@ -298,7 +348,7 @@ public class QueryExecUtils {
      * that one RDFNode
      */
     public static RDFNode getExactlyOne(String qs, Model model) {
-        return getExactlyOne(qs, DatasetFactory.create(model)) ;
+        return getExactlyOne(qs, DatasetFactory.wrap(model)) ;
     }
 
     /**
@@ -310,58 +360,50 @@ public class QueryExecUtils {
         if ( q.getResultVars().size() != 1 )
             throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
         String varname = q.getResultVars().get(0) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
-        return getExactlyOne(qExec, varname) ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
+            return getExactlyOne(qExec, varname) ;
+        }
     }
 
     /**
-     * Execute, expecting the result to be one row, one column. Return that one
-     * RDFNode or throw an exception
+     * Execute, expecting the result to be one row, one column. Return that one.
+     * RDFNode or throw an exception.
+     * Use with {@code try ( QueryExecution qExec = ....)}.
      */
     public static RDFNode getExactlyOne(QueryExecution qExec, String varname) {
-        try {
-            ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect() ;
 
-            if ( !rs.hasNext() )
-                throw new ARQException("Not found: var ?" + varname) ;
+        if ( !rs.hasNext() )
+            throw new ARQException("Not found: var ?" + varname) ;
 
-            QuerySolution qs = rs.nextSolution() ;
-            RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?" + varname) ;
-            return r ;
-        }
-        finally {
-            qExec.close() ;
-        }
+        QuerySolution qs = rs.nextSolution() ;
+        RDFNode r = qs.get(varname) ;
+        if ( rs.hasNext() )
+            throw new ARQException("More than one: var ?" + varname) ;
+        return r ;
     }
 
     /**
      * Execute, expecting the result to be one row, one column. Return that one
-     * RDFNode or null Throw excpetion if more than one.
+     * RDFNode or null. Throw exception if more than one.
+     * Use with {@code try ( QueryExecution qExec = ....)}.
      */
-    public static RDFNode getOne(QueryExecution qExec, String varname) {
-        try {
-            ResultSet rs = qExec.execSelect() ;
+    public static RDFNode getAtMostOne(QueryExecution qExec, String varname) {
+        ResultSet rs = qExec.execSelect() ;
 
-            if ( !rs.hasNext() )
-                return null ;
+        if ( !rs.hasNext() )
+            return null ;
 
-            QuerySolution qs = rs.nextSolution() ;
-            RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() ) {
-                QuerySolution qs2 = rs.next() ;
-                RDFNode r2 = qs2.get(varname) ;
-                if ( rs.hasNext() )
-                    throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
-                else
-                    throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
-            }
-            return r ;
+        QuerySolution qs = rs.nextSolution() ;
+        RDFNode r = qs.get(varname) ;
+        if ( rs.hasNext() ) {
+            QuerySolution qs2 = rs.next() ;
+            RDFNode r2 = qs2.get(varname) ;
+            if ( rs.hasNext() )
+                throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
+            else
+                throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
         }
-        finally {
-            qExec.close() ;
-        }
+        return r ;
     }
-
 }

@@ -31,7 +31,7 @@ import org.apache.jena.reasoner.* ;
  * <li>RDFS entailments</li>
  * <li>basic OWL axioms like ObjectProperty subClassOf Property</li>
  * <li>intersectionOf, equivalentClass and forward implication of unionOf sufficient for traversal
- * of explicit class hierachies<.li>
+ * of explicit class hierarchies</li>
  * <li>Property axioms (inversOf, SymmetricProperty, TransitiveProperty, equivalentProperty)</li>
  * </ul>
  * There is some experimental support for the cheaper class restriction handlingly which

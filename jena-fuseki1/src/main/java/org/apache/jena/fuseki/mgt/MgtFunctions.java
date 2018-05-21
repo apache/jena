@@ -57,7 +57,7 @@ public class MgtFunctions
         return ds ;
     }
 
-    /** Return the dataset description reference for currnet dataset */  
+    /** Return the dataset description reference for current dataset */  
     public static DatasetRef datasetDesc(HttpServletRequest request)
     {
         HttpSession session = request.getSession(false) ;

@@ -37,7 +37,6 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
@@ -45,11 +44,12 @@ import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory.ErrorHandlerTracking;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
@@ -99,28 +99,30 @@ public abstract class CmdLangParse extends CmdGeneral
     protected interface PostParseHandler { void postParse(); }
     
     static class ParseRecord {
-        final String baseURI;
         final String filename;
         final boolean success;
         final long timeMillis;
         final long triples; 
         final long quads;
         final long tuples = 0;
+        final ErrorHandlerTracking errHandler;
         
-        public ParseRecord(String baseURI, String filename,
-                           boolean successful, long timeMillis,
-                           long countTriples, long countQuads) {
-            this.baseURI = baseURI;
+        public ParseRecord(String filename, boolean successful, long timeMillis,
+                           long countTriples, long countQuads, ErrorHandlerTracking errHandler) {
             this.filename = filename;
             this.success = successful;
             this.timeMillis = timeMillis;
             this.triples = countTriples;
             this.quads = countQuads;
+            this.errHandler = errHandler;
         }
     }
 
     @Override
     protected void exec() {
+        if ( modLangParse.skipOnBadTerm() )
+            throw new CmdException("Not supported : skip on bad term"); 
+        
         boolean oldStrictValue = SysRIOT.isStrictMode() ;
         if ( modLangParse.strictMode() )
             SysRIOT.setStrictMode(true) ;
@@ -149,6 +151,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         try {
+            // The actual parsing ... 
             if ( super.getPositional().isEmpty() ) {
                 ParseRecord parseRec = parseFile("-");
                 outcome(parseRec);
@@ -162,15 +165,19 @@ public abstract class CmdLangParse extends CmdGeneral
                     outcome(parseRec);
                 }
             }
+            // ... parsing done.
+
             if ( postParse != null )
                 postParse.postParse();
             // Post parse information.
-            // Total if more then one file.
+            // Total if more than one file.
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() ) {
                 long totalMillis = 0; 
                 long totalTriples = 0;
                 long totalQuads = 0;
                 long totalTuples = 0;
+                long totalErrors = 0;
+                long totalWarnings = 0;
                 boolean allSuccessful = true;
                 
                 for ( ParseRecord pRec : outcomes ) {
@@ -179,9 +186,11 @@ public abstract class CmdLangParse extends CmdGeneral
                     totalTriples += pRec.triples;
                     totalQuads += pRec.quads;
                     totalTuples += pRec.tuples;
+                    totalErrors += pRec.errHandler.getErrorCount();
+                    totalWarnings += pRec.errHandler.getWarningCount();
                     allSuccessful = allSuccessful & pRec.success;
                 }
-                output("Total", true, totalTriples, totalQuads, totalTuples, totalMillis);
+                output("Total", true, totalTriples, totalQuads, totalTuples, totalMillis, totalErrors, totalWarnings);
             }
         } finally {
             if ( outputWrite != System.out )
@@ -193,7 +202,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
         // exit(1) if there were any errors.
         for ( ParseRecord pr : outcomes ) {
-            if ( ! pr.success )
+            if ( ! pr.success || pr.errHandler.hadIssues() )
                 throw new CmdException();
         }
     }
@@ -206,51 +215,48 @@ public abstract class CmdLangParse extends CmdGeneral
     
     public ParseRecord parseFile(String filename) {
         String baseURI = modLangParse.getBaseIRI() ;
-        if ( filename.equals("-") ) {
-            if ( baseURI == null )
-                baseURI = "http://base/";
-            TypedInputStream in = TypedInputStream.wrap(System.in) ;
-            return parseRIOT(baseURI, "stdin", in) ;
-        } else {
-            try ( TypedInputStream in = RDFDataMgr.open(filename) ) {
-                return parseRIOT(baseURI, filename, in) ;    
-            } catch (RiotNotFoundException ex) {
-                System.err.println("Can't open '"+filename+"' "+ex.getMessage()) ;
-                return new ParseRecord(null, filename, false, -1, -1, -1);
-            }
+        RDFParserBuilder builder = RDFParser.create();
+        if ( baseURI != null )
+            builder.base(baseURI);
+        if ( modLangParse.getLang() != null )
+            // Always use the command line specified syntax.
+            builder.forceLang(modLangParse.getLang());
+        else {
+            // Otherwise, use the command selected langauge, with N-Quads as the ultimate fallback.  
+            Lang lang = selectLang(null, null, RDFLanguages.NQUADS) ;
+            builder.lang(RDFLanguages.NQUADS);
         }
+
+        // Set the source.
+        if ( filename.equals("-") ) {
+            if ( baseURI == null ) {
+                baseURI = "http://base/";
+                builder.base(baseURI);
+            }
+            builder.source(System.in);
+        } else {
+            builder.source(filename);
+        }
+        return parseRIOT(builder, filename);
     }
 
-    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang  ) ;
+    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang) ;
 
-    protected ParseRecord parseRIOT(String baseURI, String filename, TypedInputStream in) {
-        ContentType ct = in.getMediaType() ;
-        
-        baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
-        
-        RDFParserBuilder builder = RDFParser.create();
+    protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
         boolean checking = true ;
-        if ( modLangParse.explicitChecking() )  checking = true ;
-        if ( modLangParse.explicitNoChecking() ) checking = false ;
+        if ( modLangParse.explicitChecking() )
+            checking = true;
+        if ( modLangParse.explicitNoChecking() )
+            checking = false;
         builder.checking(checking);
 
-        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerWarn ;
-        if ( checking ) {
-            if ( modLangParse.stopOnBadTerm() )
-                errHandler = ErrorHandlerFactory.errorHandlerStd  ;
-            else
-                // Try to go on if possible.  This is the default behaviour.
-                errHandler = ErrorHandlerFactory.errorHandlerWarn ;
-        }
+        ErrorHandlerTracking errHandler = ErrorHandlerFactory.errorHandlerTracking(ErrorHandlerFactory.stdLogger, 
+                                                                                   modLangParse.stopOnBadTerm(), 
+                                                                                   modLangParse.stopOnWarnings());
         
         if ( modLangParse.skipOnBadTerm() ) {
-            // TODO skipOnBadterm
+            // skipOnBadterm - this needs collaboration from the parser.
         }
-        
-        Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
-        if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
-            throw new CmdException("Undefined language: "+lang) ; 
-        builder.lang(lang);
         
         // Make a flag.
         // Input and output subflags.
@@ -279,8 +285,6 @@ public abstract class CmdLangParse extends CmdGeneral
         
         modTime.startTimer() ;
         sink.start() ;
-        
-        builder.source(in);
         RDFParser parser = builder.build();
         try {
             parser.parse(sink);
@@ -290,7 +294,8 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         sink.finish() ;
         long x = modTime.endTimer() ;
-        ParseRecord outcome = new ParseRecord(baseURI, filename, successful, x, sink.countTriples(), sink.countQuads());
+        // TEMP
+        ParseRecord outcome = new ParseRecord(filename, successful, x, sink.countTriples(), sink.countQuads(), errHandler);
         return outcome;
     }
     
@@ -339,10 +344,11 @@ public abstract class CmdLangParse extends CmdGeneral
     protected void output(ParseRecord rtn) {
         output(rtn.filename, rtn.success,
                rtn.triples, rtn.quads, rtn.tuples,
-               rtn.timeMillis) ;
+               rtn.timeMillis, rtn.errHandler.getErrorCount(),
+               rtn.errHandler.getWarningCount()) ;
     }
     
-    protected void output(String label, boolean success, long numberTriples, long numberQuads, long numberTuples, long timeMillis) {
+    protected void output(String label, boolean success, long numberTriples, long numberQuads, long numberTuples, long timeMillis, long errorCount, long warningCount) {
         double timeSec = timeMillis/1000.0 ;
         long total = numberTriples + numberQuads + numberTuples;
         StringBuilder sb = new StringBuilder();
@@ -357,6 +363,10 @@ public abstract class CmdLangParse extends CmdGeneral
                 appendFmt(sb," : %,.2f %s", numberTriples/timeSec, "per second");
         } else {
             appendFmt(sb, "%s :  (No Output)", label) ;
+        }
+        if ( errorCount > 0 || warningCount > 0 ) {
+            appendFmt(sb," : %,d %s", errorCount, "errors");
+            appendFmt(sb," : %,d %s", warningCount, "warnings");
         }
         System.err.println(sb.toString());
     }

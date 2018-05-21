@@ -313,7 +313,7 @@ public class RDFListImpl
      * Add the given value to the end of the list. This is a side-effecting 
      * operation on the underlying model that is only defined if this is not the
      * empty list.  If this list is the empty (nil) list, we cannot perform a 
-     * side-effecting update without changing the URI of this node (from <code>rdf:nil</code)
+     * side-effecting update without changing the URI of this node (from <code>rdf:nil</code>)
      * to a blank-node for the new list cell) without violating a Jena invariant.
      * Therefore, this update operation will throw an exception if an attempt is
      * made to add to the nil list.  Safe ways to add to an empty list include

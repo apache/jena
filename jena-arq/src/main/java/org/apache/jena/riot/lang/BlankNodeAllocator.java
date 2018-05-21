@@ -18,23 +18,23 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 /** Interface to allocators for blank nodes. */
 public interface BlankNodeAllocator
 {
     /** Allocate based on a non-null label.
      * Calling this twice, with the same label will generate equivalent nodes
-     * but they may not be identicial (i.e they are .equals but may not be ==) 
+     * but they may not be identical (i.e they are .equals but may not be ==) 
      */
-    public Node alloc(String label) ;
+    public Node alloc(String label);
     
     /** Create a fresh blank node, different from anything generated so far.
      *  Will not clash with a node allocated by {@link #alloc}
      */
-    public Node create() ;
+    public Node create();
     
     /** Reset allocation state - calls to {@link #alloc} or {@link #create} */    
-    public void reset() ;
+    public void reset();
 }
 

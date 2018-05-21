@@ -42,17 +42,9 @@ import org.apache.jena.rdf.model.* ;
 public class SchemagenOptions
     extends schemagen.SchemagenOptionsImpl
 {
-    /***********************************/
-    /* Constants                       */
-    /***********************************/
-
-    /***********************************/
-    /* Static variables                */
-    /***********************************/
-
-    /***********************************/
+    /* ******************************* */
     /* Instance variables              */
-    /***********************************/
+    /* ******************************* */
 
     /** The parent options for this options instance */
     private SchemagenOptions parent;
@@ -83,9 +75,9 @@ public class SchemagenOptions
         }
     }
 
-    /***********************************/
+    /* ******************************* */
     /* External signature methods      */
-    /***********************************/
+    /* ******************************* */
 
     /**
      * Set the parent options object for this object
@@ -178,9 +170,9 @@ public class SchemagenOptions
         getConfigRoot().addProperty( od.getDeclarationProperty(), value );
     }
 
-    /***********************************/
+    /* ******************************* */
     /* Internal implementation methods */
-    /***********************************/
+    /* ******************************* */
 
     /**
      * Configure SchemagenOptions from Source object

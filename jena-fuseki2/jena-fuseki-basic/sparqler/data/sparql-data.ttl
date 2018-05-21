@@ -1,0 +1,102 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+## People
+## Books + Prices
+## Reviews
+
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix fn:      <http://www.w3.org/2005/xpath-functions#> .
+@prefix foaf: 	 <http://xmlns.com/foaf/0.1/> .
+@prefix skos:    <http://www.w3.org/2008/05/skos#> .
+@prefix dc10:    <http://purl.org/dc/elements/1.0/> .
+@prefix dc11:    <http://purl.org/dc/elements/1.1/> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix :        <http://example/> .
+
+:A  a           foaf:Person ;
+    foaf:mbox <mailto:alice@example.net> ;
+    foaf:name   "Alice" ;
+    foaf:birthday "20-05" ;
+    foaf:knows  :B ;
+    foaf:knows  :C .
+
+:B  a          foaf:Person ;
+    foaf:name   "Bob" ;
+    foaf:birthday "13-06" ;
+    foaf:knows  :A ;
+    foaf:knows  :C .
+
+
+:C  a           foaf:Person ;
+    foaf:name   "Charlie"  ;
+    foaf:knows  :A ;
+    foaf:knows  :B .
+
+
+:D  a           foaf:Person ;
+    foaf:name   "Dave" ;
+    foaf:knows  :B .
+
+:E  a           foaf:Person ;
+    foaf:name   "EveBot" .
+
+
+@prefix stock: <http://example.org/stock#> .
+@prefix inv: <http://example.org/inventory#> .
+
+stock:book1 dc:title "SPARQL Query Language Tutorial" ;
+            inv:price 10 ;
+            inv:quantity 3 .
+
+stock:book2 dc:title "SPARQL Query Language (2nd ed)" ;
+            inv:price 20 ;
+            inv:quantity 5 .
+
+stock:book3 dc:title "Moving from SQL to SPARQL" ;
+            inv:price 5 ;
+            inv:quantity 0 .
+
+stock:book4 dc:title "Applying XQuery" ;
+            inv:price 20 ;
+            inv:quantity 8 .
+
+## Reviews
+## Record some rating as 1 (low) to 5 (high)
+
+:review1
+    dc:creator  :A ;
+    :about      stock:book1 ;
+    :rating     4 .
+
+:review2
+    dc:creator  :B ;
+    :about      stock:book1 ;
+    :rating     5 .
+
+:review3
+    dc:creator  :B ;
+    :about      stock:book2 ;
+    :rating     4 .
+
+:review4
+    dc:creator  :B ;
+    :about      stock:book3 ;
+    :rating     3 .
+
+:review5
+    dc:creator  :B ;
+    :about      stock:book3 ;
+    :rating     1 .
+
+:review5
+    dc:creator  :B ;
+    :about      stock:book3 ;
+    :rating     1 .
+
+:review6
+    dc:creator  :E ;
+    :about      stock:book3 ;
+    :rating     4 .
+
+

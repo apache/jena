@@ -34,7 +34,7 @@ public class E_FunctionDynamic extends E_Call
     private static ExprList concatArgs(Expr expr, ExprList args)
     {
         args = ExprList.copy(args) ;
-        args.getList().add(0, expr) ;
+        args.getListRaw().add(0, expr) ;
         return args ;
     }
     

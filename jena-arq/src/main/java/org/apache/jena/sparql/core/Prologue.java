@@ -205,7 +205,7 @@ public class Prologue
         return prefixMap.shortForm(uri) ;
     }
     
-    /** Test whether a Prologue wil perform the same as this one. */
+    /** Test whether a Prologue will perform the same as this one. */
     public boolean samePrologue(Prologue other) {
         // Prologue are mutable and superclasses so .equals is left as the default.
         String base1 = explicitlySetBaseURI() ? getBaseURI() : null ;

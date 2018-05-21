@@ -43,7 +43,7 @@ public class GenerateSQL implements SQLGenerator
         return generatePartSQL(sqlNode) ;
     }
     
-    /** Generate an SQL string for the node - which may no tbe legal SQL (e.g. no outer SELECT).*/  
+    /** Generate an SQL string for the node - which may no the legal SQL (e.g. no outer SELECT).*/  
     public String generatePartSQL(SqlNode sqlNode)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;

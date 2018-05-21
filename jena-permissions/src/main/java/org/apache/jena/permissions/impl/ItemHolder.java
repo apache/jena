@@ -75,10 +75,8 @@ public class ItemHolder<Base, Secured extends SecuredItem>
 	 * Get the secured item.
 	 * 
 	 * This method is used in the invocation handler to get the instance of the
-	 * proxy that made the
-	 * on which a method call was made. Generally used in returing the original
-	 * object to support
-	 * cascading.
+	 * proxy on which a method call was made. Generally used in returning the original
+	 * object to support cascading.
 	 * 
 	 * @return the proxy.
 	 */

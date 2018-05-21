@@ -34,7 +34,7 @@ public class OpAssign extends OpExtendAssign {
     // Not possible if it's the reassignment of something already assigned.
 
     /** Create an OpAssign or add to an existing one.
-     * This coperation collapses what woudl otherwise be stacks
+     * This cooperation collapses what would otherwise be stacks
      * of OpExtend.
      */ 
     static public Op assign(Op op, Var var, Expr expr) {

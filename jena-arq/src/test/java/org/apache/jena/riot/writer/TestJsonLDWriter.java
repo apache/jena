@@ -20,6 +20,10 @@ package org.apache.jena.riot.writer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonString;
@@ -38,11 +42,13 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.utils.JsonUtils;
 
@@ -61,21 +67,21 @@ public class TestJsonLDWriter extends BaseTest {
         // pretty is pretty
 
         s = toString(m, RDFFormat.JSONLD_EXPAND_PRETTY, null);
-        assertTrue(s.trim().indexOf("\n") > -1);
+        assertTrue(s.trim().contains("\n"));
         s = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
-        assertTrue(s.trim().indexOf("\n") > -1);
+        assertTrue(s.trim().contains("\n"));
         s = toString(m, RDFFormat.JSONLD_FLATTEN_PRETTY, null);
-        assertTrue(s.trim().indexOf("\n") > -1);
+        assertTrue(s.trim().contains("\n"));
 
         // and flat is flat
 
         s = toString(m, RDFFormat.JSONLD_EXPAND_FLAT, null);
-        assertTrue(s.trim().indexOf("\n") < 0);
+        assertFalse(s.trim().contains("\n"));
         s = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
-        assertTrue(s.trim().indexOf("\n") < 0);
+        assertFalse(s.trim().contains("\n"));
         s = toString(m, RDFFormat.JSONLD_FLATTEN_FLAT, null);
-        assertTrue(s.trim().indexOf("\n") < 0);
-        assertTrue(s.trim().indexOf("\n") < 0);
+        assertFalse(s.trim().contains("\n"));
+        assertFalse(s.trim().contains("\n"));
         // JSON_LD FRAME case not tested here, but in testFrames
     }
 
@@ -91,20 +97,20 @@ public class TestJsonLDWriter extends BaseTest {
         // there's no "@context" in expand
 
         s = toString(m, RDFFormat.JSONLD_EXPAND_PRETTY, null);
-        assertTrue(s.indexOf("@context") < 0);
+        assertFalse(s.contains("@context"));
         s = toString(m, RDFFormat.JSONLD_EXPAND_FLAT, null);
-        assertTrue(s.indexOf("@context") < 0);
+        assertFalse(s.contains("@context"));
 
         // there's an "@context" in compact and flatten
 
         s = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
-        assertTrue(s.indexOf("@context") > -1);
+        assertTrue(s.contains("@context"));
         s = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
-        assertTrue(s.indexOf("@context") > -1);
+        assertTrue(s.contains("@context"));
         s = toString(m, RDFFormat.JSONLD_FLATTEN_PRETTY, null);
-        assertTrue(s.indexOf("@context") > -1);
+        assertTrue(s.contains("@context"));
         s = toString(m, RDFFormat.JSONLD_FLATTEN_FLAT, null);
-        assertTrue(s.indexOf("@context") > -1);
+        assertTrue(s.contains("@context"));
     }
 
     private Model simpleModel(String ns) {
@@ -140,7 +146,7 @@ public class TestJsonLDWriter extends BaseTest {
         Model m = simpleModel(ns);
         m.setNsPrefix("", ns);
         String jsonld = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
-        assertTrue(jsonld.indexOf("\"\"") < 0);
+        assertFalse(jsonld.contains("\"\""));
         Model m2 = parse(jsonld);
         assertTrue(m2.isIsomorphicWith(m));
     }
@@ -160,7 +166,7 @@ public class TestJsonLDWriter extends BaseTest {
         String s1 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
         // there's a prefix in m, and we find it in the output
         String prefixStringInResult = "\"ex\":\"" + ns + "\"";
-        assertTrue(s1.indexOf(prefixStringInResult) > -1);
+        assertTrue(s1.contains(prefixStringInResult));
         Model m1 = parse(s1);
 
         // this is the json object associated to "@context" in s1
@@ -180,7 +186,7 @@ public class TestJsonLDWriter extends BaseTest {
         m.removeNsPrefix("ex");
         String s2 = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
         // model wo prefix -> no more prefix string in result:
-        assertTrue(s2.indexOf(prefixStringInResult) < 0);
+        assertFalse(s2.contains(prefixStringInResult));
 
         // the model wo prefix, output as jsonld using a context that defines the prefix    
         JsonLDWriteContext jenaCtx = new JsonLDWriteContext();
@@ -189,7 +195,7 @@ public class TestJsonLDWriter extends BaseTest {
         String s3 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s3.length() == s1.length());
-        assertTrue(s3.indexOf(prefixStringInResult) > 0);
+        assertTrue(s3.contains(prefixStringInResult));
         Model m3 = parse(s3);
         assertTrue(m3.isIsomorphicWith(m));
         assertTrue(m3.isIsomorphicWith(m1));
@@ -201,7 +207,7 @@ public class TestJsonLDWriter extends BaseTest {
         String s4 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s4.length() == s1.length());
-        assertTrue(s4.indexOf(prefixStringInResult) > 0);
+        assertTrue(s4.contains(prefixStringInResult));
         Model m4 = parse(s4);
         assertTrue(m4.isIsomorphicWith(m));
         assertTrue(m4.isIsomorphicWith(m1));
@@ -219,7 +225,7 @@ public class TestJsonLDWriter extends BaseTest {
         String s1 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, null);
         // there's a prefix in m, and we find it in the output
         String prefixStringInResult = "\"ex\":\"" + ns + "\"";
-        assertTrue(s1.indexOf(prefixStringInResult) > -1);
+        assertTrue(s1.contains(prefixStringInResult));
         Model m1 = parse(s1);
 
         // the context used in this case, as it would automatically be created as none is set
@@ -230,7 +236,7 @@ public class TestJsonLDWriter extends BaseTest {
         m.removeNsPrefix("ex");
         String s2 = toString(m, RDFFormat.JSONLD_COMPACT_PRETTY, null);
         // model wo prefix -> no more prefix string in result:
-        assertTrue(s2.indexOf(prefixStringInResult) < 0);
+        assertFalse(s2.contains(prefixStringInResult));
 
         // the model wo prefix, output as jsonld using a context that defines the prefix
         Context jenaCtx = new Context();
@@ -238,7 +244,7 @@ public class TestJsonLDWriter extends BaseTest {
         String s3 = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
 
         assertTrue(s3.length() == s1.length());
-        assertTrue(s3.indexOf(prefixStringInResult) > 0);
+        assertTrue(s3.contains(prefixStringInResult));
         Model m3 = parse(s3);
         assertTrue(m3.isIsomorphicWith(m));
         assertTrue(m3.isIsomorphicWith(m1));
@@ -270,7 +276,7 @@ public class TestJsonLDWriter extends BaseTest {
         } catch (Throwable e) {
             // maybe test run in a setting wo external connectivity - not a real problem
             String mess = e.getMessage();
-            if ((mess != null) && (mess.indexOf("loading remote context failed") > -1)) {
+            if ((mess != null) && (mess.contains("loading remote context failed"))) {
                 Logger.getLogger(getClass()).info(mess);
                 e.printStackTrace();
             } else {
@@ -308,14 +314,14 @@ public class TestJsonLDWriter extends BaseTest {
         String jsonld;
         jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
         String c = "\"@context\":\"http://schema.org/\"";
-        assertTrue(jsonld.indexOf(c) > -1);
+        assertTrue(jsonld.contains(c));
 
         // change @context to a given ctx
 
         String ctx = "{\"jobTitle\":{\"@id\":\"http://ex.com/jobTitle\"},\"url\":{\"@id\":\"http://ex.com/url\"},\"name\":{\"@id\":\"http://ex.com/name\"}}";
         jenaCtx.setJsonLDContextSubstitution(ctx);
         jsonld = toString(m, RDFFormat.JSONLD_COMPACT_FLAT, jenaCtx);
-        assertTrue(jsonld.indexOf("http://ex.com/name") > -1);
+        assertTrue(jsonld.contains("http://ex.com/name"));
     }
 
     /**
@@ -353,7 +359,7 @@ public class TestJsonLDWriter extends BaseTest {
         // 2 persons in m2
         assertTrue(m2.listStatements((Resource) null, RDF.type, person).toList().size() == 2);
         // something we hadn't tested in prettyIsNotFlat
-        assertTrue(jsonld.trim().indexOf("\n") > -1);
+        assertTrue(jsonld.trim().contains("\n"));
 
         // only output the subjects which have a jobTitle
 
@@ -367,7 +373,7 @@ public class TestJsonLDWriter extends BaseTest {
         // 1 subject with a jobTitle in m2
         assertTrue(m2.listStatements((Resource) null, m.createProperty(ns + "jobTitle"), (RDFNode) null).toList().size() == 1);
         // something we hadn't tested in prettyIsNotFlat
-        assertTrue(jsonld.trim().indexOf("\n") < 0);
+        assertFalse(jsonld.trim().contains("\n"));
     }
 
     /**
@@ -388,7 +394,7 @@ public class TestJsonLDWriter extends BaseTest {
         // without following line in JsonLDWriter, the test fails 
         // if (! isLangString(o) && ! isSimpleString(o) )
         String vv = "\"plangstring\":{\"@language\":\"fr\",\"@value\":\"a langstring\"}";
-        assertTrue(jsonld.indexOf(vv) > -1);
+        assertTrue(jsonld.contains(vv));
     }
 
     /**
@@ -406,24 +412,24 @@ public class TestJsonLDWriter extends BaseTest {
         String jsonld = toString(m, RDFFormat.JSONLD, null);
 
         // in one case, we have "name" : "xxx", and the other "http://.../name" : "yyy"
-        assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
-        assertTrue(jsonld.indexOf("/name\" : \"") > -1);
+        assertTrue(jsonld.contains("\"name\" : \""));
+        assertTrue(jsonld.contains("/name\" : \""));
 
         m.setNsPrefix("ns1", ns1);
         m.setNsPrefix("ns2", "http://ex.com/");
         jsonld = toString(m, RDFFormat.JSONLD, null);
         // we get either:
         /*
-        "name" : "ex.com name",
-        "ns1:name" : "schema.org name",
+      "name" : "ex.com name",
+      "ns1:name" : "schema.org name",
          */
         // or
         /*
-        "name" : "schema.org name",
-        "ns2:name" : "ex.com name",
+      "name" : "schema.org name",
+      "ns2:name" : "ex.com name",
          */
-        assertTrue(jsonld.indexOf("\"name\" : \"") > -1);
-        assertTrue((jsonld.indexOf("\"ns1:name\" : \"") > -1) || (jsonld.indexOf("\"ns2:name\" : \"") > -1));
+        assertTrue(jsonld.contains("\"name\" : \""));
+        assertTrue((jsonld.contains("\"ns1:name\" : \"")) || (jsonld.contains("\"ns2:name\" : \"")));
     }
 
     /** Test passing a JsonLdOptions through Context */
@@ -440,9 +446,9 @@ public class TestJsonLDWriter extends BaseTest {
         String jsonld = toString(m, RDFFormat.JSONLD, null);
 
         // compactArrays is true -> no "@graph"
-        assertTrue(jsonld.indexOf("@graph") < 0);
+        assertFalse(jsonld.contains("@graph"));
         // compactArrays is true -> string, not an array for props with one value
-        assertTrue(jsonld.indexOf("\"jobTitle\" : \"Professor\"") > -1);
+        assertTrue(jsonld.contains("\"jobTitle\" : \"Professor\""));
 
         // now output using a value for JsonLdOptions in Context that sets compactArrays to false
 
@@ -456,10 +462,87 @@ public class TestJsonLDWriter extends BaseTest {
         jsonld = toString(m, RDFFormat.JSONLD, jenaCtx);
 
         // compactArrays is false -> a "@graph" node
-        assertTrue(jsonld.indexOf("@graph") > -1);
+        assertTrue(jsonld.contains("@graph"));
         // compactArrays is false -> an array for all props, even when there's only one value
-        assertTrue(jsonld.indexOf("\"jobTitle\" : [ \"Professor\" ]") > -1);
+        assertTrue(jsonld.contains("\"jobTitle\" : [ \"Professor\" ]"));
     }
+
+    //
+    // @vocab
+    //
+
+    // checks we get @vocab when using an "" ns prefix
+    @Test public final void atVocab() throws JsonParseException, JsonLdError, IOException {
+        // "Jane knows John" Model
+        Model m = ModelFactory.createDefaultModel();
+        String ns = "http://schema.org/";
+        Resource person = m.createResource(ns + "Person");
+        Resource s = m.createResource("http://doe.com/jane");
+        m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+        m.add(s, RDF.type, person);
+        Resource s2 = m.createResource("http://doe.com/joe");
+        m.add(s2, m.createProperty(ns + "name"), "John Doe");
+        m.add(s2, RDF.type, person);
+        m.add(s, m.createProperty(ns + "knows"), s2);
+
+        m.setNsPrefix("", ns);
+        String jsonld = toString(m, RDFFormat.JSONLD, null);
+        assertTrue(jsonld.contains("@vocab"));
+    }
+
+    /**
+     * setting @vocab and replacing @context
+     * not really a test, sample code for JENA-1292 */
+    @SuppressWarnings("unchecked")
+    @Test public final void atVocabJENA1292() throws JsonParseException, JsonLdError, IOException {
+        Model m = ModelFactory.createDefaultModel();
+        String ns = "http://schema.org/";
+        Resource person = m.createResource(ns + "Person");
+        Resource s = m.createResource();
+        m.add(s, m.createProperty(ns + "name"), "Jane Doe");
+        m.add(s, m.createProperty(ns + "url"), "http://www.janedoe.com");
+        m.add(s, m.createProperty(ns + "jobTitle"), "Professor");
+        m.add(s, FOAF.nick, "jd");
+        m.add(s, RDF.type, person);
+
+        m.setNsPrefix("", ns);
+
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
+        PrefixMap pm = RiotLib.prefixMap(g);
+        String base = null;
+        Context jenaContext = null;
+
+        // the JSON-LD API object. It's a map
+        Map<String, Object> map = (Map<String, Object>) JsonLDWriter.toJsonLDJavaAPI((RDFFormat.JSONLDVariant)RDFFormat.JSONLD.getVariant()
+                , g, pm, base, jenaContext);
+
+        // get the @context:
+        Map<String, Object> ctx = (Map<String, Object>) map.get("@context");
+
+        // remove from ctx declaration of props in ns
+        List<String> remove = new ArrayList<>();
+        for (Entry<String, Object> e : ctx.entrySet()) {
+            // is it the declaration of a prop in ns?
+            Object o = e.getValue();
+            if (o instanceof Map) {
+                o = ((Map<String, Object>) o).get("@id");
+            }           
+            if ((o != null) && (o instanceof String)) {
+                if (((String) o).equals(ns + e.getKey())) {
+                    remove.add(e.getKey());
+                }
+            }
+        }
+        for (String key : remove) {
+            ctx.remove(key);
+        }
+
+        // add to ctx the "@vocab" key
+        ctx.put("@vocab", "http://schema.org/");
+
+        // JsonUtils.writePrettyPrint(new PrintWriter(System.out), map) ;
+    }
+
 
     //
     // some utilities
@@ -468,7 +551,7 @@ public class TestJsonLDWriter extends BaseTest {
     private String toString(Model m, RDFFormat f, Context jenaContext) {
         try(ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
-            DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+            DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
             PrefixMap pm = RiotLib.prefixMap(g);
             String base = null;
             w.write(out, g, pm, base, jenaContext) ;

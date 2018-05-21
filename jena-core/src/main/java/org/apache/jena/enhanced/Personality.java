@@ -67,14 +67,14 @@ public class Personality<T> {
         { return new Personality<>( this ); }
     
     /** 
-        get the implemementation for the specified type, returning null if there
+        get the implementation for the specified type, returning null if there
         isn't one available. 
     */
     public <X extends T> Implementation getImplementation( Class<X> t )
         { return types.get( t ); }
     
     /**
-    	extend this personality by adding in all the mappins from the argument _p_.
+    	extend this personality by adding in all the mappings from the argument _p_.
     	return _this_ (for call chaining).
     */
     public Personality<T> add( Personality<T> p ) {

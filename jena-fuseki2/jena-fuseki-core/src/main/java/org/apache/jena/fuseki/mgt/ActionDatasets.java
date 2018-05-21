@@ -41,18 +41,21 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.* ;
+import org.apache.jena.fuseki.build.DatasetDescriptionRegistry ;
+import org.apache.jena.fuseki.build.FusekiBuilder ;
+import org.apache.jena.fuseki.build.Template ;
+import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.servlets.Upload;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.shared.uuid.JenaUUID ;
@@ -67,8 +70,6 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionDatasets extends ActionContainerItem {
     
-    private static final long serialVersionUID = 5171975468398320835L;
-
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     
@@ -110,9 +111,17 @@ public class ActionDatasets extends ActionContainerItem {
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         JenaUUID uuid = JenaUUID.generate() ;
-        DatasetDescriptionRegistry registry = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
+        
+        boolean hasParams = action.request.getParameterNames().hasMoreElements();
+        
+        if ( ct == null && ! hasParams ) {
+            ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
+            // Or do "GET over POST"
+            //return execGetContainer(action);
+        }
         
         boolean committed = false ;
         // Also acts as a concurrency lock
@@ -125,7 +134,7 @@ public class ActionDatasets extends ActionContainerItem {
             Model model = ModelFactory.createDefaultModel() ;
             StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
     
-            if ( WebContent.isHtmlForm(ct) )
+            if ( hasParams || WebContent.isHtmlForm(ct) )
                 assemblerFromForm(action, dest) ;
             else if ( WebContent.isMultiPartForm(ct) )
                 assemblerFromUpload(action, dest) ;
@@ -135,7 +144,7 @@ public class ActionDatasets extends ActionContainerItem {
             // ----
             // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            systemFileCopy = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
+            systemFileCopy = FusekiSystem.dirFileArea.resolve(uuid.asString()).toString() ;
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
@@ -183,8 +192,8 @@ public class ActionDatasets extends ActionContainerItem {
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             
-            configFile = FusekiEnv.generateConfigurationFilename(datasetPath) ;
-            List<String> existing = FusekiEnv.existingConfigurationFile(datasetPath) ;
+            configFile = FusekiSystem.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiSystem.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
                 ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists") ;
 
@@ -265,48 +274,10 @@ public class ActionDatasets extends ActionContainerItem {
         return null ;
     }
 
-    private static void assemblerFromBody(HttpAction action, StreamRDF dest) {
-        bodyAsGraph(action, dest) ;
-    }
-
-    private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
-        String dbType = action.getRequest().getParameter(paramDatasetType) ;
-        String dbName = action.getRequest().getParameter(paramDatasetName) ;
-        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
-            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
-        
-        Map<String, String> params = new HashMap<>() ;
-        
-        if ( dbName.startsWith("/") )
-            params.put(Template.NAME, dbName.substring(1)) ;
-        else
-            params.put(Template.NAME, dbName) ;
-        FusekiServer.addGlobals(params); 
-        
-        //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
-        if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
-            ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
-        
-        String template = null ;
-        if ( dbType.equalsIgnoreCase(tDatabasetTDB))
-            template = TemplateFunctions.templateFile(Template.templateTDBFN, params, Lang.TTL) ;
-        if ( dbType.equalsIgnoreCase(tDatabasetMem))
-            template = TemplateFunctions.templateFile(Template.templateMemFN, params, Lang.TTL) ;
-        RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
-    }
-
-    private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
-        Upload.fileUploadWorker(action, dest);
-    }
-
     // ---- DELETE
-
+    
     @Override
     protected void execDeleteItem(HttpAction action) {
-//      if ( isContainerAction(action) ) {
-//      ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
-//      return ;
-//  }
         // Does not exist?
         String name = action.getDatasetName() ;
         if ( name == null )
@@ -322,21 +293,24 @@ public class ActionDatasets extends ActionContainerItem {
             // Here, go offline.
             // Need to reference count operations when they drop to zero
             // or a timer goes off, we delete the dataset.
-            
+
             DataAccessPoint ref = action.getDataAccessPointRegistry().get(name) ;
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
 
             // Make it invisible to the outside.
-            action.getDataAccessPointRegistry().remove(name) ;
+            action.getDataAccessPointRegistry().remove(name);
             // Delete configuration file.
             // Should be only one, undo damage if multiple.
-            FusekiEnv.existingConfigurationFile(name).stream().forEach(FileOps::deleteSilent);
-            
+            String filename = name.startsWith("/") ? name.substring(1) : name;
+            FusekiSystem.existingConfigurationFile(filename).stream().forEach(FileOps::deleteSilent);
+            // Leave the database in place. if it is in /databases/, recreating the
+            // configuration will make the database reappear. This is intentional.
+            // Deleting a large database by accident is a major mistake.
+
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
-            
             Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
             Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n) ;
 //            if ( q == null )
@@ -353,9 +327,43 @@ public class ActionDatasets extends ActionContainerItem {
             if ( ! committed ) systemDSG.abort() ; 
             systemDSG.end() ; 
         }
-        
+
         // Remove the configuration file (if any).
         action.getDataAccessPointRegistry().remove(name) ;
+    }
+
+    private static void assemblerFromBody(HttpAction action, StreamRDF dest) {
+        bodyAsGraph(action, dest) ;
+    }
+
+    private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
+        String dbType = action.getRequest().getParameter(paramDatasetType) ;
+        String dbName = action.getRequest().getParameter(paramDatasetName) ;
+        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
+            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
+        
+        Map<String, String> params = new HashMap<>() ;
+        
+        if ( dbName.startsWith("/") )
+            params.put(Template.NAME, dbName.substring(1)) ;
+        else
+            params.put(Template.NAME, dbName) ;
+        FusekiSystem.addGlobals(params); 
+        
+        //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
+        if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
+            ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
+        
+        String template = null ;
+        if ( dbType.equalsIgnoreCase(tDatabasetTDB))
+            template = TemplateFunctions.templateFile(Template.templateTDBFN, params, Lang.TTL) ;
+        if ( dbType.equalsIgnoreCase(tDatabasetMem))
+            template = TemplateFunctions.templateFile(Template.templateMemFN, params, Lang.TTL) ;
+        RDFParser.create().source(new StringReader(template)).base("http://base/").lang(Lang.TTL).parse(dest);
+    }
+
+    private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
+        Upload.fileUploadWorker(action, dest);
     }
 
     // Persistent state change.
@@ -424,8 +432,11 @@ public class ActionDatasets extends ActionContainerItem {
         try { input = request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
 
+        // Don't log - assemblers are typically small.
+        // Adding this to the log confuses things.
+        // Reserve logging for data uploads. 
 //        int len = request.getContentLength() ;
-//        if ( verbose ) {
+//        if ( action.verbose ) {
 //            if ( len >= 0 )
 //                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
 //                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
@@ -434,6 +445,6 @@ public class ActionDatasets extends ActionContainerItem {
 //                                ct.getCharset(), lang.getName())) ;
 //        }
         dest.prefix("root", base+"#");
-        ActionSPARQL.parse(action, dest, input, lang, base) ;
+        ActionLib.parse(action, dest, input, lang, base) ;
     }
 }

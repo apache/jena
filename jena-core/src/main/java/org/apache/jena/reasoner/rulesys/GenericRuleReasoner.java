@@ -160,7 +160,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     
     /**
      * Set to true to enable translation of selected parts of an OWL schema
-     * to additional rules. At present only intersction statements are handled this way.
+     * to additional rules. At present only intersection statements are handled this way.
      * The translation is only applicable in HYBRID mode.
      */
     public void setOWLTranslation(boolean enableOWLTranslation) {
@@ -198,7 +198,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * Add a new preprocessing hook defining an operation that
      * should be run when the inference graph is being prepared. This can be
      * used to generate additional data-dependent rules or translations.
-     * This is only guaranted to be implemented for the HYBRID mode.
+     * This is only guaranteed to be implemented for the HYBRID mode.
      */
     public void addPreprocessingHook(RulePreprocessHook hook) {
         if (preprocessorHooks == null) {
@@ -273,7 +273,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     
     /**
      * Internal version of setParameter that does not directly raise an
-     * exception on parameters it does not reconize.
+     * exception on parameters it does not recognize.
      * @return false if the parameter was not recognized
      */
     @Override

@@ -22,8 +22,6 @@ import org.apache.jena.sparql.ARQException ;
 
 public class FusekiException extends ARQException
 {
-    private static final long serialVersionUID = -3213544429295511644L;
-
     public FusekiException(String msg, Throwable cause)    { super(msg, cause) ; }
     public FusekiException(String msg)                     { super(msg) ; }
     public FusekiException(Throwable cause)                { super(cause) ; }

@@ -23,7 +23,7 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 /** Output UTF-8 encoded data.
- *  This class implements the "Modified UTF8" encoding rules (null -> C0 80)
+ *  This class implements the "Modified UTF8" encoding rules (null {@literal ->} C0 80)
  *  It will encode any 16 bit value.  
  *  It can be used as a pure UTf-8 encoder. 
  * 

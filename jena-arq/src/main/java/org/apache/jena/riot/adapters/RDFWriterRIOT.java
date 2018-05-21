@@ -60,12 +60,12 @@ public class RDFWriterRIOT implements RDFWriter
         context.put(SysRIOT.sysRdfWriterProperties, properties);
     }
 
-    private WriterGraphRIOT writer() {
+    protected WriterGraphRIOT writer() {
         if ( writer != null )
             return writer;
         if ( jenaName == null )
             throw new IllegalArgumentException("Jena writer name is null");
-        // For writing via model.write(), use the old names for jena writers.
+        // For writing via model.write(), use any old names for jena writers. (As of 2107-03 - there are none)
         RDFFormat format = RDFWriterRegistry.getFormatForJenaWriter(jenaName) ;
         if ( format != null )
             return RDFDataMgr.createGraphWriter(format) ;
@@ -97,7 +97,7 @@ public class RDFWriterRIOT implements RDFWriter
         Object oldObj = context.get(sym);
         context.set(sym, propValue);
         properties.put(propName, propValue) ;
-        // These are added to any Jena RDFWriter (old-style, e.g. RDF/XML) in  
+        // These are added to any Jena RDFWriter (old-style, e.g. RDF/XML) in AdapterRDFWriter  
         return oldObj;
     }
 

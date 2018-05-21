@@ -40,7 +40,7 @@ public class TDBConnection extends DatasetConnection {
      * @param ds Dataset
      * @param holdability Result Set holdability
      * @param autoCommit Auto-commit mode
-     * @param compatibilityLevel JDBC compatability level, see {@link JdbcCompatibility}
+     * @param compatibilityLevel JDBC compatibility level, see {@link JdbcCompatibility}
      * @throws SQLException
      */
     public TDBConnection(Dataset ds, int holdability, boolean autoCommit, int compatibilityLevel) throws SQLException {

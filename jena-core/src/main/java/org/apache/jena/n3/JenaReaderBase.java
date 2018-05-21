@@ -29,7 +29,7 @@ import org.apache.jena.util.FileUtils ;
 import org.slf4j.LoggerFactory;
 
 /** Abstract class that sorts out input streams, readers and base URIs, to call a
- * single worker function with model, UTF8 reader and visated base  
+ * single worker function with model, UTF8 reader and visited base  
  */
 @SuppressWarnings("deprecation")
 public abstract class JenaReaderBase implements RDFReader

@@ -29,7 +29,7 @@ import org.apache.jena.util.iterator.* ;
 // Purely syntactic: Uses .equals, not .sameVAlueAs (see the one note at "PURE SYNTAX" below and "containsSameTerm") 
 
 /**
- * An implemantation of graph isomorphism for Graph equality.
+ * An implementation of graph isomorphism for Graph equality.
  * The underlying algorithm is exponential but will only enter
  * a non-deterministic polynomial part when there are a lot of difficult to
  * distinguish anonymous nodes
@@ -322,12 +322,14 @@ public class GraphMatcher extends java.lang.Object {
             return false ;
         // Force to same term when o is a ground literal.
         ExtendedIterator<Triple> iter = otherm.find(triple) ;
-        while (iter.hasNext()) {
-            Triple t = iter.next() ;
-            if ( t.getObject().equals(o) )
-                return true ;
-        }
-        return false ;
+        try {
+            while (iter.hasNext()) {
+                Triple t = iter.next() ;
+                if ( t.getObject().equals(o) )
+                    return true ;
+            }
+            return false ;
+        } finally { iter.close(); }
     }
     
     private Bucket smallestBucket() {

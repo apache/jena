@@ -854,6 +854,15 @@ public class TestXSDFuncOp extends BaseTest
         assertNotNull(result.asNode()) ;
     }
     
+    @Test(expected=ExprEvalException.class)
+    public void testStrReplace() {
+        //test invalid pattern 
+        NodeValue wrong = NodeValue.makeString("^(?:-*[^-]){-9}");
+        NodeValue nvStr= NodeValue.makeString("AGIKLAKLMTUARAR");
+        NodeValue empty= NodeValue.makeString("");
+        XSDFuncOp.strReplace(nvStr, wrong, empty);
+    }
+    
     // All compatible - no timezone.
     private static NodeValue nv_dt = NodeValue.makeNode("2010-03-22T20:31:54.5", XSDDatatype.XSDdateTime) ;
     private static NodeValue nv_d = NodeValue.makeNode("2010-03-22", XSDDatatype.XSDdate) ;
@@ -938,5 +947,27 @@ public class TestXSDFuncOp extends BaseTest
     @Test public void cast_time_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDtime, nv_t_tz1) ; }
     @Test public void cast_time_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDtime, nv_t_tz2) ; }
     @Test public void cast_time_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDtime, nv_t_tz3) ; }
+    
+    @Test
+    public void fn_error_01() {
+        try {
+            LibTestExpr.eval("fn:error()");
+            fail("No exception");
+        }
+        catch (ExprEvalException ex) {
+            assertNull(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void fn_error_02() {
+        try {
+            LibTestExpr.eval("fn:error('MESSAGE')");
+            fail("No exception");
+        }
+        catch (ExprEvalException ex) {
+            assertEquals("MESSAGE", ex.getMessage());
+        }
+    }
 }
 

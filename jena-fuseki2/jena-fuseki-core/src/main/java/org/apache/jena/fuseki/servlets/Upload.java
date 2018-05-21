@@ -65,11 +65,11 @@ public class Upload {
         try { input = action.request.getInputStream() ; } 
         catch (IOException ex) { IO.exception(ex) ; }
     
-        int len = action.request.getContentLength() ;
+        long len = action.request.getContentLengthLong();
 
         StreamRDFCounting countingDest = StreamRDFLib.count(dest) ;
         try {
-            ActionSPARQL.parse(action, countingDest, input, lang, base) ;
+            ActionLib.parse(action, countingDest, input, lang, base) ;
             UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads()) ;
             action.log.info(format("[%d] Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s : %s", 
                                    action.id, len, ct.getContentType(), ct.getCharset(), lang.getName(),
@@ -141,7 +141,7 @@ public class Upload {
                 // count just this step
                 StreamRDFCounting countingDest2 =  StreamRDFLib.count(countingDest) ;
                 try {
-                    ActionSPARQL.parse(action, countingDest2, stream, lang, base);
+                    ActionLib.parse(action, countingDest2, stream, lang, base);
                     UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads()) ;
                     action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s", 
                                            action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName(),

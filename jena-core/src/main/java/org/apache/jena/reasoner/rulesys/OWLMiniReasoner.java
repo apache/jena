@@ -28,7 +28,7 @@ import org.apache.jena.reasoner.* ;
  * Reasoner configuration for the OWL mini reasoner.
  * Key limitations over the normal OWL configuration are:
  * <UL>
- * <li>omits the someValuesFrom => bNode entailments</li>
+ * <li>omits the someValuesFrom {@literal =>} bNode entailments</li>
  * <li>avoids any guard clauses which would break the find() contract</li>
  * <li>omits inheritance of range implications for XSD datatype ranges</li>
  * </UL>

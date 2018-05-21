@@ -19,24 +19,23 @@
 package org.apache.jena.sparql.core;
 
 import static org.apache.jena.atlas.iterator.Iter.asStream ;
-import static org.apache.jena.atlas.iterator.Iter.toList ;
+import static org.apache.jena.atlas.iterator.Iter.toList;
+import static org.apache.jena.atlas.iterator.Iter.toSet;
 import static org.apache.jena.atlas.junit.BaseTest.assertEqualsUnordered;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue ;
-import static org.junit.Assert.fail ;
+import static org.junit.Assert.fail;
 
-import java.util.Arrays ;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.*;
 import java.util.stream.Collectors ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphBaseFind ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assume ;
@@ -193,6 +192,8 @@ public abstract class AbstractDatasetGraphFind {
         assertTrue(x.contains(q2)) ;
     }
     
+    // Union graph by name.
+
     @Test public void find_union_01() {
         List<Quad> x = toList(dsg.find(Quad.unionGraph, null, null, null)) ;
         assertEquals(3, x.size()) ;
@@ -205,6 +206,38 @@ public abstract class AbstractDatasetGraphFind {
         assertTrue(x.contains(qx)) ;
         Quad qz = Quad.create(Quad.unionGraph, q2.asTriple()) ;
         assertFalse(x.contains(qz)) ;
+    }
+
+    // Union graph as graph
+    
+    @Test public void find_union_02() {
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg ;
+        assertNotNull(dsgx.getUnionGraph());
+        List<Triple> x = toList(dsgx.getUnionGraph().find(null, null, null)) ;
+        assertEquals(3, x.size()) ;
+        assertTrue(x.contains(q4.asTriple())) ;
+        assertTrue(x.contains(q5.asTriple())) ;
+        assertTrue(x.contains(q10.asTriple())) ;
+    }
+    
+    @Test public void find_union_03() {
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg ;
+        assertNotNull(dsgx.getUnionGraph());
+        Set<Triple> x1 = toSet(dsgx.getUnionGraph().find(null, null, null)) ;
+        Set<Triple> x2 = Iter.iter(dsg.find(Quad.unionGraph, null, null, null)).map(Quad::asTriple).toSet();
+        assertEquals(x1, x2);
+    }
+
+    @Test(expected=AddDeniedException.class)
+    public void find_union_04() {
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg ;
+        dsgx.getUnionGraph().add(q4.asTriple());
+    }
+    
+    @Test(expected=DeleteDeniedException.class)
+    public void find_union_05() {
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg ;
+        dsgx.getUnionGraph().delete(q4.asTriple());
     }
     
     // DatasetGraphBaseFind specific.
@@ -245,7 +278,7 @@ public abstract class AbstractDatasetGraphFind {
         assertEqualsUnordered(x1, x2) ;
         assertEquals(1, x2.size()) ;
     }
-
+    
     static List<Triple> quadsToDistinctTriples(Iterator<Quad> iter) {
         return asStream(iter).map(Quad::asTriple).distinct().collect(Collectors.toList()) ;
     }

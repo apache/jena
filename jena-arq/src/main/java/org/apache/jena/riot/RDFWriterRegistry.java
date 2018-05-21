@@ -25,7 +25,7 @@ import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.thrift.WriterDatasetThrift ;
 import org.apache.jena.riot.thrift.WriterGraphThrift ;
 import org.apache.jena.riot.writer.* ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 public class RDFWriterRegistry
 {
@@ -297,7 +297,7 @@ public class RDFWriterRegistry
      * @param lang
      *            Languages
      * @param format
-     *            The serialization forma to use when the language is used for
+     *            The serialization format to use when the language is used for
      *            writing.
      */
     public static void register(Lang lang, RDFFormat format) {
@@ -343,7 +343,7 @@ public class RDFWriterRegistry
     }
     
     
-    /** Get the graph writer factory asscoiated with the language */
+    /** Get the graph writer factory associated with the language */
     public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang) {
         RDFFormat serialization = defaultSerialization(lang) ;
         if ( serialization == null )
@@ -351,12 +351,12 @@ public class RDFWriterRegistry
         return getWriterGraphFactory(serialization) ;
     }
 
-    /** Get the graph writer factory asscoiated with the output format */
+    /** Get the graph writer factory associated with the output format */
     public static WriterGraphRIOTFactory getWriterGraphFactory(RDFFormat serialization) {
         return registryGraph.get(serialization) ;
     }
 
-    /** Get the dataset writer factory asscoiated with the language */
+    /** Get the dataset writer factory associated with the language */
     public static WriterDatasetRIOTFactory getWriterDatasetFactory(Lang lang) {
         RDFFormat serialization = defaultSerialization(lang) ;
         if ( serialization == null )
@@ -364,7 +364,7 @@ public class RDFWriterRegistry
         return getWriterDatasetFactory(serialization) ;
     }
 
-    /** Get the dataset writer factory asscoiated with the output format */
+    /** Get the dataset writer factory associated with the output format */
     public static WriterDatasetRIOTFactory getWriterDatasetFactory(RDFFormat serialization) {
         if ( serialization == null )
             return null ;

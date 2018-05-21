@@ -229,7 +229,7 @@ public interface Container extends Resource {
     
     /** Return an iterator over the values.
      *
-     * <p><B>Note</B> the interator returned is not a standard java.util.iterator.
+     * <p><B>Note</B> the iterator returned is not a standard java.util.iterator.
      * It has a <CODE>close</CODE> method which SHOULD be called if the
      * application has not completed the iteration, but no longer requires
      * the iterator.  This will enable the freeing of resources in, for

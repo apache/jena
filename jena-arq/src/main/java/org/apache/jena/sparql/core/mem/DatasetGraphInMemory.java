@@ -20,10 +20,11 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.lang.ThreadLocal.withInitial;
 import static org.apache.jena.graph.Node.ANY;
-import static org.apache.jena.query.ReadWrite.READ;
 import static org.apache.jena.query.ReadWrite.WRITE;
 import static org.apache.jena.sparql.core.Quad.isUnionGraph;
 import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph ;
+import static org.apache.jena.system.Txn.calculateRead;
+import static org.apache.jena.system.Txn.executeWrite;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
@@ -33,10 +34,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -83,17 +83,25 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         isInTransaction.set(b);
     }
 
-    private final ThreadLocal<ReadWrite> transactionType = withInitial(() -> null);
+    private final ThreadLocal<TxnType> transactionType = withInitial(() -> null);
+    // Current state.
+    private final ThreadLocal<ReadWrite> transactionMode = withInitial(() -> null);
 
     /**
-     * @return the type of transaction in progress
+     * @return the current mode of the transaction in progress
      */
-    public ReadWrite transactionType() {
+    @Override
+    public ReadWrite transactionMode() { 
+        return transactionMode.get();
+    }
+    
+    @Override
+    public TxnType transactionType() {
         return transactionType.get();
     }
 
-    protected void transactionType(final ReadWrite readWrite) {
-        transactionType.set(readWrite);
+    private void transactionMode(final ReadWrite readWrite) {
+        transactionMode.set(readWrite);
     }
 
     private final QuadTable quadsIndex;
@@ -131,13 +139,20 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     @Override
     public void begin(final ReadWrite readWrite) {
-        if (isInTransaction()) 
-            throw new JenaTransactionException("Transactions cannot be nested!");
-        startTransaction(readWrite) ;
-        _begin(readWrite) ;
+        begin(TxnType.convert(readWrite));
     }
 
-    private void _begin(ReadWrite readWrite) {
+    @Override
+    public void begin(TxnType txnType) {
+        if (isInTransaction()) 
+            throw new JenaTransactionException("Transactions cannot be nested!");
+        transactionType.set(txnType);
+        _begin(txnType, TxnType.initial(txnType));
+    }
+    
+    private void _begin(TxnType txnType, ReadWrite readWrite) {
+        // Takes transactionLock
+        startTransaction(txnType, readWrite);
         withLock(systemLock, () ->{
             quadsIndex().begin(readWrite);
             defaultGraph().begin(readWrite);
@@ -146,9 +161,10 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     /** Called transaction start code at most once per transaction. */ 
-    private void startTransaction(ReadWrite mode) {
-        transactionLock.enterCriticalSection(mode.equals(READ)); // get the dataset write lock, if needed.
-        transactionType(mode);
+    private void startTransaction(TxnType txnType, ReadWrite mode) {
+        transactionLock.enterCriticalSection(mode.equals(ReadWrite.READ)); // get the dataset write lock, if needed.
+        transactionType.set(txnType);
+        transactionMode(mode);
         isInTransaction(true);
     }
 
@@ -156,15 +172,59 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     private void finishTransaction() {
         isInTransaction.remove();
         transactionType.remove();
+        transactionMode.remove();
         version.remove();
         transactionLock.leaveCriticalSection();
     }
-     
+
+    @Override
+    public boolean promote(Promote promoteMode) {
+        if (!isInTransaction())
+            throw new JenaTransactionException("Tried to promote outside a transaction!");
+        if ( transactionMode().equals(ReadWrite.WRITE) )
+            return true;
+        
+        if ( transactionType() == TxnType.READ )
+            return false;
+        
+        boolean readCommitted = (promoteMode == Promote.READ_COMMITTED);
+        
+        try {
+            _promote(readCommitted);
+            return true;
+        } catch (JenaTransactionException ex) {
+            return false ;
+        }
+    }
+    
+    private void _promote(boolean readCommited) {
+        // Outside lock.
+        if ( ! readCommited && version.get() != generation.get() )  {
+            // This tests for any commited writers since this transaction started.
+            // This does not catch the case of a currently active writer
+            // that has not gone to commit or abort yet.
+            // The final test is after we obtain the transactionLock.
+            throw new JenaTransactionException("Dataset changed - can't promote") ;
+        }
+    
+        // Blocking on other writers.
+        transactionLock.enterCriticalSection(Lock.WRITE);
+        // Check again now we are inside the lock. 
+        if ( ! readCommited && version.get() != generation.get() )  {
+                // Can't promote - release the lock.
+                transactionLock.leaveCriticalSection();
+                throw new JenaTransactionException("Concurrent writer changed the dataset : can't promote") ;
+            }
+        // We have the lock and we have promoted!
+        transactionMode(WRITE);
+        _begin(transactionType(), ReadWrite.WRITE) ;
+    }
+
     @Override
     public void commit() {
         if (!isInTransaction())
             throw new JenaTransactionException("Tried to commit outside a transaction!");
-        if (transactionType().equals(WRITE))
+        if (transactionMode().equals(WRITE))
             _commit();
         finishTransaction();
     }
@@ -176,7 +236,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
             quadsIndex().end();
             defaultGraph().end();
 
-            if ( transactionType().equals(WRITE) ) {
+            if ( transactionMode().equals(WRITE) ) {
                 if ( version.get() != generation.get() )
                     throw new InternalErrorException(String.format("Version=%d, Generation=%d",version.get(),generation.get())) ;
                 generation.incrementAndGet() ;
@@ -188,7 +248,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void abort() {
         if (!isInTransaction()) 
             throw new JenaTransactionException("Tried to abort outside a transaction!");
-        if (transactionType().equals(WRITE))
+        if (transactionMode().equals(WRITE))
             _abort();
         finishTransaction();
     }
@@ -211,10 +271,12 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     @Override
     public void end() {
         if (isInTransaction()) {
-            if (transactionType().equals(WRITE)) {
-                log.warn("end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.");
+            if (transactionMode().equals(WRITE)) {
+                String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
                 // _abort does _end actions inside the lock. 
                 _abort() ;
+                finishTransaction();
+                throw new JenaTransactionException(msg);
             } else {
                 _end() ;
             }
@@ -238,15 +300,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
     
     private <T> Iterator<T> access(final Supplier<Iterator<T>> source) {
-        if (!isInTransaction()) {
-            begin(READ);
-            try {
-                return source.get();
-            } finally {
-                end();
-            }
-        }
-        return source.get();
+        return isInTransaction() ? source.get() : calculateRead(this, source::get);
     }
 
     @Override
@@ -275,9 +329,8 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     public void setDefaultGraph(final Graph g) {
         mutate(graph -> {
             defaultGraph().clear();
-            graph.find(ANY, ANY, ANY)
-            .forEachRemaining(t -> addToDftGraph(t.getSubject(), t.getPredicate(), t.getObject()));
-        } , g);
+            graph.find().forEachRemaining(defaultGraph()::add);
+        }, g);
     }
 
     @Override
@@ -290,11 +343,16 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         return getGraph(Quad.defaultGraphNodeGenerated);
     }
 
+    @Override
+    public Graph getUnionGraph() {
+        return getGraph(Quad.unionGraph);
+    }
+    
     private Consumer<Graph> addGraph(final Node name) {
-        return g -> g.find(ANY, ANY, ANY).forEachRemaining(t -> add(new Quad(name, t)));
+        return g -> g.find().mapWith(t -> new Quad(name, t)).forEachRemaining(this::add);
     }
 
-    private final Consumer<Graph> removeGraph = g -> g.find(ANY, ANY, ANY).forEachRemaining(g::delete);
+    private final Consumer<Graph> removeGraph = g -> g.find().forEachRemaining(g::delete);
 
     @Override
     public void addGraph(final Node graphName, final Graph graph) {
@@ -314,50 +372,23 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
      * @param payload
      */
     private <T> void mutate(final Consumer<T> mutator, final T payload) {
-        if (!isInTransaction()) {
-            begin(WRITE);
-            try {
-                mutator.accept(payload);
-                commit();
-            } finally {
-                end();
+        if (isInTransaction()) {
+            if (!transactionMode().equals(WRITE)) {
+                TxnType mode = transactionType.get();
+                switch (mode) {
+                case WRITE:
+                    break;
+                case READ:
+                    throw new JenaTransactionException("Tried to write inside a READ transaction!");
+                case READ_COMMITTED_PROMOTE:
+                case READ_PROMOTE:
+                    boolean readCommitted = (mode == TxnType.READ_COMMITTED_PROMOTE);
+                    _promote(readCommitted);
+                    break;
+                }
             }
-            return ;
-        }
-        if ( !transactionType().equals(WRITE) ) {
-            if ( ! promotion )
-                throw new JenaTransactionException("Tried to write inside a READ transaction!");
-            promote(readCommittedPromotion) ;
-        }
-        mutator.accept(payload);
-    }
-
-    /*private*/public/*for development*/ static boolean promotion               = false ;
-    /*private*/public/*for development*/ static boolean readCommittedPromotion  = true ;
-    
-    private void promote(boolean readCommited) {
-        //System.err.printf("Promote: version=%d generation=%d\n", version.get() , generation.get()) ;
-        
-        // Outside lock.
-        if ( ! readCommited && version.get() != generation.get() )  {
-            // This tests for any commited writers since this transaction started.
-            // This does not catch the case of a currently active writer
-            // that has not gone to commit or abort yet.
-            // The final test is after we obtain the transactionLock.
-            throw new JenaTransactionException("Dataset changed - can't promote") ;
-        }
-       
-        // Blocking on other writers.
-        transactionLock.enterCriticalSection(false);
-        // Check again now we are inside the lock. 
-        if ( ! readCommited && version.get() != generation.get() )  {
-                // Can't promote - release the lock.
-                transactionLock.leaveCriticalSection();
-                throw new JenaTransactionException("Concurrent writer changed the dataset : can't promote") ;
-            }
-        // We have the lock and we have promoted!
-        transactionType(WRITE);
-        _begin(WRITE) ;
+            mutator.accept(payload);
+        } else executeWrite(this, () -> mutator.accept(payload));
     }
 
     /**

@@ -37,7 +37,6 @@ import org.apache.jena.sparql.core.Quad ;
  * 
  * 
  */
-@SuppressWarnings("javadoc")
 public class TriplesOrQuadsReader extends AbstractRdfReader<Quad, QuadWritable> {
 
     @Override

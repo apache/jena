@@ -18,7 +18,7 @@
 
 package org.apache.jena.query;
 
-/** QueryBuildException is exception for all excpetions during query 
+/** QueryBuildException is exception for all exceptions during query 
  *  execution construction. */
 
 

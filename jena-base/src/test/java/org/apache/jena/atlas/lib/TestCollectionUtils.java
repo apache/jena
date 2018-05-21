@@ -18,9 +18,8 @@
 
 package org.apache.jena.atlas.lib;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.sameElts ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertTrue ;
+import static org.apache.jena.atlas.lib.CollectionUtils.* ;
+import static org.junit.Assert.* ;
 
 import java.util.Arrays ;
 import java.util.HashSet ;
@@ -31,21 +30,21 @@ import org.junit.Test ;
 
 public class TestCollectionUtils {
     @Test
-    public void sameElst_01() {
+    public void sameElts_01() {
         List<String> x1 = Arrays.asList("a", "b", "c") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         assertTrue(sameElts(x1, x2)) ;
     }
     
     @Test
-    public void sameElst_02() {
+    public void sameElts_02() {
         List<String> x1 = Arrays.asList("a", "b", "c", "a") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         assertTrue(sameElts(x1, x2)) ;
     }
 
     @Test
-    public void sameElst_03() {
+    public void sameElts_03() {
         List<String> x1 = Arrays.asList("a", "b", "c") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         Set<String>  z1 = new HashSet<>(x2) ;
@@ -53,24 +52,36 @@ public class TestCollectionUtils {
     }
 
     @Test
-    public void sameElst_04() {
+    public void sameElts_04() {
         List<String> x1 = Arrays.asList("a", "b", "X") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         assertFalse(sameElts(x1, x2)) ;
     }
 
     @Test
-    public void sameElst_05() {
+    public void sameElts_05() {
         List<String> x1 = Arrays.asList("a", "b", "c") ;
         List<String> x2 = Arrays.asList("a", "b") ;
         assertFalse(sameElts(x1, x2)) ;
     }
 
     @Test
-    public void sameElst_06() {
+    public void sameElts_06() {
         List<String> x1 = Arrays.asList("a", "b", "X") ;
         List<String> x2 = Arrays.asList("a", "c", "b") ;
         Set<String>  z1 = new HashSet<>(x2) ;
         assertFalse(sameElts(x1, z1)) ;
+    }
+
+    @Test
+    public void oneElt_01() {
+        List<String> x = Arrays.asList("a", "b", "c") ;
+        assertEquals("a", oneElt(x));
+    }
+
+    @Test
+    public void oneElt_02() {
+        List<String> x = Arrays.asList() ;
+        assertNull(oneElt(x));
     }
 }

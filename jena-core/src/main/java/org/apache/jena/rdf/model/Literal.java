@@ -32,8 +32,8 @@ import org.apache.jena.datatypes.RDFDatatype ;
  * value returned. If the coercion fails then a runtime DatatypeFormatException is 
  * thrown.</p>
  * 
- * <p>In the case of plain literals then the primitve accessor methods duplicate
- * the behvaiour of jena1. The literal is internally stored in lexical form but
+ * <p>In the case of plain literals then the primitive accessor methods duplicate
+ * the behaviour of jena1. The literal is internally stored in lexical form but
  * the accessor methods such as getInt will attempt to parse the lexical form
  * and if successful will return the primitive value.</p>
  * 

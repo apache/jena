@@ -30,13 +30,16 @@ public class TextAssembler
         
         Assembler.general.implementWith(TextVocab.entityMap,        new EntityDefinitionAssembler()) ;
         Assembler.general.implementWith(TextVocab.textIndexLucene,  new TextIndexLuceneAssembler()) ;
-        Assembler.general.implementWith(TextVocab.textIndexES,  new TextIndexESAssembler()) ;
         Assembler.general.implementWith(TextVocab.standardAnalyzer, new StandardAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.simpleAnalyzer,   new SimpleAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.keywordAnalyzer,  new KeywordAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer, new LowerCaseKeywordAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.localizedAnalyzer, new LocalizedAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.configurableAnalyzer, new ConfigurableAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.genericAnalyzer,  new GenericAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.genericFilter,    new GenericFilterAssembler()) ;
+        Assembler.general.implementWith(TextVocab.genericTokenizer,  new GenericTokenizerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.definedAnalyzer,  new DefinedAnalyzerAssembler()) ;
 
     }
 }

@@ -23,7 +23,7 @@ package org.apache.jena.rdf.model;
  * <p>This interface defines methods for accessing RDF Bag resources.
  * These methods operate on the RDF statements contained in a model.  The
  * Bag implementation may cache state from the underlying model, so
- * objects should not be added to or removed a the Bag by directly
+ * objects should not be added to or removed to/from the Bag by directly
  * manipulating its properties, whilst the Bag is being
  * accessed through this interface.</p>
  *

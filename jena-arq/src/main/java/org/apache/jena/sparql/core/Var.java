@@ -28,7 +28,7 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprVar ;
-import org.apache.jena.system.JenaSystem;
+import org.apache.jena.sys.JenaSystem;
 
 /** A SPARQL variable */
 
@@ -141,7 +141,7 @@ public class Var extends Node_Variable
         if ( node instanceof Var )
             return true;
         if ( node != null && node.isVariable() )
-            throw new NotAVariableException("Node_variable (not a Var) found");
+            throw new NotAVariableException("Node_Variable (not a Var) found");
         return false;
     }
     

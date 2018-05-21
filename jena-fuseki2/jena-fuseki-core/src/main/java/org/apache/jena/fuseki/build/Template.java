@@ -33,6 +33,7 @@ public class Template
     public static final String templateTDBFN        = templateDir+"/config-tdb" ;
     public static final String templateTDBMemFN     = templateDir+"/config-tdb-mem" ; 
     public static final String templateTDBDirFN     = templateDir+"/config-tdb-dir" ;
+    public static final String templateTDBDirReadFN = templateDir+"/config-tdb-dir-read-only" ;
     public static final String templateServiceFN    = templateDir+"/config-service" ;       // Dummy used by dataset-less service.
     
     public static final String templateMemFN_1      = templateDir+"/config-mem-txn" ;

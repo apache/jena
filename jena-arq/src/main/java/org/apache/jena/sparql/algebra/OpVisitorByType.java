@@ -31,8 +31,10 @@ public abstract class OpVisitorByType implements OpVisitor
     
     protected abstract void visit0(Op0 op) ;    
     
-    protected void visitExt(OpExt op)
-    { op.effectiveOp().visit(this); }     
+    protected void visitExt(OpExt op) {
+        if ( op.effectiveOp() != null )
+            op.effectiveOp().visit(this); 
+    }     
 
     protected abstract void visitFilter(OpFilter op) ;
     

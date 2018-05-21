@@ -114,7 +114,7 @@ public class LangBuilder {
     }
 
     /** Set the main content type for this language.
-     * If tehre is an officially registers, preferred type, this should be that.  
+     * If there is an officially registered, preferred type, this should be that.  
      */
     public LangBuilder contentType(String officialContentType)
     {

@@ -18,13 +18,32 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.WebContent.* ;
+import static org.apache.jena.riot.WebContent.charsetASCII;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeN3;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt1;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt2;
+import static org.apache.jena.riot.WebContent.contentTypeNQuads;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt2;
+import static org.apache.jena.riot.WebContent.contentTypeNTriples;
+import static org.apache.jena.riot.WebContent.contentTypeNTriplesAlt;
+import static org.apache.jena.riot.WebContent.contentTypeRDFJSON;
+import static org.apache.jena.riot.WebContent.contentTypeRDFThrift;
+import static org.apache.jena.riot.WebContent.contentTypeRDFXML;
+import static org.apache.jena.riot.WebContent.contentTypeTextCSV;
+import static org.apache.jena.riot.WebContent.contentTypeTextTSV;
+import static org.apache.jena.riot.WebContent.contentTypeTextPlain;
+import static org.apache.jena.riot.WebContent.contentTypeTriG;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt2;
+import static org.apache.jena.riot.WebContent.contentTypeTriX;
+import static org.apache.jena.riot.WebContent.contentTypeTriXxml;
+import static org.apache.jena.riot.WebContent.contentTypeTurtle;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt1;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt2;
 
-import java.util.Collection ;
-import java.util.Collections ;
-import java.util.HashMap;
-import java.util.Locale ;
-import java.util.Map ;
+import java.util.*;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -47,6 +66,7 @@ public class RDFLanguages
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
     public static final String strLangCSV        = "CSV";
+    public static final String strLangTSV        = "TSV";
     public static final String strLangTriX       = "TriX";
     public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
     
@@ -119,12 +139,6 @@ public class RDFLanguages
     /** Alternative constant {@link #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
-    /** CSV data.  This can be read into an RDF model with simple conversion */
-    public static final Lang CSV        = LangBuilder.create(strLangCSV, contentTypeTextCSV)
-                                                     .addAltNames("csv")   
-                                                     .addFileExtensions("csv")
-                                                     .build() ;
-
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
     public static final Lang THRIFT     = LangBuilder.create(strLangRDFTHRIFT, contentTypeRDFThrift)
                                                      .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
@@ -167,8 +181,8 @@ public class RDFLanguages
     // ----------------------
     public static void init() {}
     static { init$() ; }
-    private static synchronized void init$()
-    {
+    
+    private static synchronized void init$() {
         initStandard() ;
         // Needed to avoid a class initialization loop. 
         Lang.RDFXML     = RDFLanguages.RDFXML ; 
@@ -183,10 +197,22 @@ public class RDFLanguages
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ;
         Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
-        Lang.CSV        = RDFLanguages.CSV ;
         Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
-    }
+        
+        // Used for result sets, not RDF syntaxes.
+        
+        Lang.CSV = LangBuilder.create(strLangCSV, contentTypeTextCSV)
+            .addAltNames("csv")   
+            .addFileExtensions("csv")
+            .build() ;
+        Lang.TSV = LangBuilder.create(strLangTSV, contentTypeTextTSV)
+            .addAltNames("tsv")
+            .addFileExtensions("tsv")
+            .build() ;
+
+        
+   }
     // ----------------------
     
     /** Standard built-in languages */  
@@ -201,7 +227,6 @@ public class RDFLanguages
         register(TRIG) ;
         register(NQUADS) ;
         register(THRIFT) ;
-        register(CSV) ;
         register(TRIX) ;
         register(RDFNULL) ;
         
@@ -221,7 +246,7 @@ public class RDFLanguages
      * To create a {@link Lang} object use {@link LangBuilder}.
      * See also 
      * {@link RDFParserRegistry#registerLang}
-     * for registering a language and it's RDF parser fatory.
+     * for registering a language and it's RDF parser factory.
      * 
      * @see RDFParserRegistry
      */
@@ -275,7 +300,7 @@ public class RDFLanguages
                 error("Language overlap: " +lang+" and "+mapFileExtToLang.get(ext)+" on file extension type "+ext) ;
     }
 
-    /** Remove a regsitration of a language - this also removes all recorded mapping
+    /** Remove a registration of a language - this also removes all recorded mapping
      * of content types and file extensions. 
      */
     
@@ -373,13 +398,21 @@ public class RDFLanguages
     /** Try to map a resource name to a {@link Lang}; return the given default where there is no registered mapping */
     public static Lang resourceNameToLang(String resourceName, Lang dftLang) { return filenameToLang(resourceName, dftLang) ; }
     
-    /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
+    /** Try to map a URI or file name to a {@link Lang}; return null on no registered mapping. */
     public static Lang filenameToLang(String filename)
     {
-        if ( filename == null ) return null ;
+        if ( filename == null )
+            return null;
+        // Remove any URI fragment (there can be only one # in a URI).
+        // Pragmatically, assume any # is URI related.
+        // URIs can be relative.
+        int iHash = filename.indexOf('#');
+        if ( iHash  > 0 )
+            filename = filename.substring(0, iHash);
+        // Gzip compressed?
         if ( filename.endsWith(".gz") )
-            filename = filename.substring(0, filename.length()-3) ;
-        return fileExtToLang(FileUtils.getFilenameExt(filename)) ;
+            filename = filename.substring(0, filename.length()-3);
+        return fileExtToLang(FileUtils.getFilenameExt(filename));
     }
 
     /** Try to map a file name to a {@link Lang}; return the given default where there is no registered mapping */

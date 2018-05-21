@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.jena.sdb.Store ;
 
-/** Experimental : cache for int <=> node hash 
+/** Experimental : cache for int {@literal <=>} node hash 
  * 
  */
 public class IndexCache

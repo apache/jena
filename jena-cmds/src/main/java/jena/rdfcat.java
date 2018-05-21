@@ -33,7 +33,7 @@ import java.util.function.BiConsumer;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
 import org.apache.jena.shared.NoWriterForLangException ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.vocabulary.OWL ;
@@ -45,7 +45,7 @@ import org.apache.jena.vocabulary.RDFS ;
  * An RDF utility that takes its name from the Unix utility <em>cat</em>, and
  * is used to generate serialisations of the contents of zero or more
  * input model serialisations. <strong>Note</strong> In a change from previous
- * versions, but to ensure compatability with standard argument handling
+ * versions, but to ensure compatibility with standard argument handling
  * practice, the input language options are <em>no longer sticky</em>. In
  * previous versions, <code>rdfcat -n A B C</code> would ensure that A, B
  * and C were all read as N3. From Jena 2.5.2 onwards, this requires:
@@ -108,7 +108,7 @@ import org.apache.jena.vocabulary.RDFS ;
  * java jena.rdfcat in1 -out N3 &gt; out.n3
  *
  * Join two owl files one N3, one XML, and their imports, into a single NTRIPLE file:
- * java jena.rdfcat -out NTRIPLE -include in1.owl -n in2.owl > out.ntriple
+ * java jena.rdfcat -out NTRIPLE -include in1.owl -n in2.owl &gt; out.ntriple
  *
  * Concatenate two N3-serving http URL's as N-TRIPLE
  * java jena.rdfcat -in N3 -out N-TRIPLE http://example.com/a http://example.com/b

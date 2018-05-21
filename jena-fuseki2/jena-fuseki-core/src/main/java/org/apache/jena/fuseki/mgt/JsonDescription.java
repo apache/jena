@@ -24,7 +24,7 @@ import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.OperationName ;
+import org.apache.jena.fuseki.server.Operation ;
 
 /** Create a description of a service */
 public class JsonDescription {
@@ -47,20 +47,19 @@ public class JsonDescription {
         builder.key(JsonConst.dsService) ;
         builder.startArray() ;
         
-        for ( OperationName opName : access.getDataService().getOperations() ) {
-            List<Endpoint> endpoints = access.getDataService().getOperation(opName) ;
-            describe(builder, opName, endpoints) ;
+        for ( Operation operation : access.getDataService().getOperations() ) {
+            List<Endpoint> endpoints = access.getDataService().getEndpoints(operation) ;
+            describe(builder, operation, endpoints) ;
         }
         builder.finishArray() ;
         builder.finishObject() ;
     }
     
-    private static void describe(JsonBuilder builder, OperationName opName, List<Endpoint> endpoints) {
+    private static void describe(JsonBuilder builder, Operation operation, List<Endpoint> endpoints) {
         builder.startObject() ;
         
-        builder.key(JsonConst.srvType).value(opName.name()) ;
-        builder.key(JsonConst.srvDescription).value(opName.getDescription()) ;
-
+        builder.key(JsonConst.srvType).value(operation.getName()) ;
+        builder.key(JsonConst.srvDescription).value(operation.getDescription()) ;
         builder.key(JsonConst.srvEndpoints) ;
         builder.startArray() ;
         for ( Endpoint endpoint : endpoints )

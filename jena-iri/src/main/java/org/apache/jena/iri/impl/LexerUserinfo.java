@@ -441,7 +441,7 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
 
 
   /**
-   * Reports an error that occured while scanning.
+   * Reports an error that occurred while scanning.
    *
    * In a wellformed scanner (no or only correct usage of 
    * yypushback(int) and a match-all fallback rule) this method 
@@ -490,7 +490,8 @@ class LexerUserinfo extends AbsLexer implements org.apache.jena.iri.ViolationCod
    * @return      the next token
    * @exception   java.io.IOException  if any I/O-Error occurs
    */
-  @Override
+  @SuppressWarnings("fallthrough")
+@Override
 public int yylex() throws java.io.IOException {
     int zzInput;
     int zzAction;

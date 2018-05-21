@@ -37,7 +37,7 @@ import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -46,7 +46,7 @@ import org.apache.jena.vocabulary.RDF ;
  *
  * <P>This class implements common methods, mainly convenience methods, for
  *    model implementations.  It is intended use is as a base class from which
- *    model implemenations can be derived.</P>
+ *    model implementations can be derived.</P>
  */
 
 public class ModelCom extends EnhGraph
@@ -1021,42 +1021,42 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public PrefixMapping setNsPrefix( String prefix, String uri )
+    public Model setNsPrefix( String prefix, String uri )
     { 
         getPrefixMapping().setNsPrefix( prefix, uri ); 
         return this;
     }
 
     @Override
-    public PrefixMapping removeNsPrefix( String prefix )
+    public Model removeNsPrefix( String prefix )
     {
         getPrefixMapping().removeNsPrefix( prefix );
         return this;
     }
 
     @Override
-    public PrefixMapping clearNsPrefixMap()
+    public Model clearNsPrefixMap()
     {
         getPrefixMapping().clearNsPrefixMap();
         return this ;
     }
 
     @Override
-    public PrefixMapping setNsPrefixes( PrefixMapping pm )
+    public Model setNsPrefixes( PrefixMapping pm )
     { 
         getPrefixMapping().setNsPrefixes( pm );
         return this;
     }
 
     @Override
-    public PrefixMapping setNsPrefixes( Map<String, String> map )
+    public Model setNsPrefixes( Map<String, String> map )
     { 
         getPrefixMapping().setNsPrefixes( map ); 
         return this;
     }
 
     @Override
-    public PrefixMapping withDefaultMappings( PrefixMapping other )
+    public Model withDefaultMappings( PrefixMapping other )
     {
         getPrefixMapping().withDefaultMappings( other );
         return this;

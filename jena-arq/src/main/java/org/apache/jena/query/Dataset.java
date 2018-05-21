@@ -35,8 +35,16 @@ public interface Dataset extends Transactional
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
     
-    /** Set the default graph.  Can be set to null for none. */ 
-    public void  setDefaultModel(Model model) ;
+    /** Get the graph which is the unionof all named graphs as a Jena Model */
+    public Model getUnionModel() ;
+
+    /**
+     * Set the default graph. Can be set to null for none.
+     * 
+     * @param model the default graph to set
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset setDefaultModel(Model model);
 
     /** Get a graph by name as a Jena Model */
     public Model getNamedModel(String uri) ;
@@ -44,14 +52,31 @@ public interface Dataset extends Transactional
     /** Does the dataset contain a model with the name supplied? */ 
     public boolean containsNamedModel(String uri) ;
 
-    /** Set a named graph. */
-    public void  addNamedModel(String uri, Model model) ;
+    /**
+     * Set a named graph.
+     * 
+     * @param uri the name of the graph to set
+     * @param model the graph to set
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset addNamedModel(String uri, Model model);
 
-    /** Remove a named graph. */
-    public void  removeNamedModel(String uri) ;
+    /**
+     * Remove a named graph.
+     * 
+     * @param uri the name of the gaph to remove
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset removeNamedModel(String uri);
 
-    /** Change a named graph for another using the same name */
-    public void  replaceNamedModel(String uri, Model model) ;
+    /**
+     * Change a named graph for another using the same name
+     * 
+     * @param uri the name of the graph to replace
+     * @param model the graph with which to replace it
+     * @return this {@code Dataset} for continued usage
+     */
+    public Dataset replaceNamedModel(String uri, Model model);
     
     /** List the names */
     public Iterator<String> listNames() ;
@@ -110,4 +135,9 @@ public interface Dataset extends Transactional
      *  The dataset can not be used for query after this call.
      */
     public void close() ;
+    
+    /**
+     * @return Whether this {@code Dataset} is empty of triples, whether in the default graph or in any named graph.
+     */
+    boolean isEmpty();
 }

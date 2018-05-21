@@ -29,8 +29,8 @@ import org.apache.jena.sparql.core.BasicPattern ;
 
 /** Merge BGPs 
  * 
- * <li>(join BGP1 BGP2) => BGP
- * <li>(sequence ...BGP1 BGP2 ...) => (sequence ...BGP ...)
+ * <li>(join BGP1 BGP2) {@literal =>} BGP
+ * <li>(sequence ...BGP1 BGP2 ...) {@literal =>} (sequence ...BGP ...)
  */
 public class TransformMergeBGPs extends TransformCopy {
     @Override

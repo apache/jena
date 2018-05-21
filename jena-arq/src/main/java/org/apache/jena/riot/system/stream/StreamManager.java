@@ -86,7 +86,7 @@ public class StreamManager {
 
     /**
      * Return the {@code StreamManager} in a context, or the global one if the context is
-     * null or does not contain an entry for a {@code StreamManager}.
+     * null or does not contain a valid entry for a {@code StreamManager}.
      * <p>
      * The {@code StreamManager} is keyed in the context by
      * {@link SysRIOT#sysStreamManager}.
@@ -95,7 +95,8 @@ public class StreamManager {
         if ( context == null )
             return get();
         try {
-            return (StreamManager)context.get(SysRIOT.sysStreamManager, context);
+            if ( context.isDefined(SysRIOT.sysStreamManager))
+                return (StreamManager)context.get(SysRIOT.sysStreamManager);
         }
         catch (ClassCastException ex) {
             log.warn("Context symbol '" + SysRIOT.sysStreamManager + "' is not a " + Lib.classShortName(StreamManager.class));

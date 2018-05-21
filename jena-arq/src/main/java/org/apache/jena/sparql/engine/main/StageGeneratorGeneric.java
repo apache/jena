@@ -28,7 +28,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterBlockTriples ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
-import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -63,20 +62,18 @@ public class StageGeneratorGeneric implements StageGenerator {
             return input ;
         
         if ( reorder != null && pattern.size() >= 2 ) {
-            // If pattern size is 0 or one, nothing to do.
+            // If pattern size is 0 or 1, nothing to do.
             BasicPattern bgp2 = pattern ;
 
             // Try to ground the pattern
-            if ( ! ( input instanceof QueryIterRoot ) ) {
+            if ( ! input.isJoinIdentity() ) {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-                Binding b = peek.peek() ;
-                // And use this one
+                // And now use this one
                 input = peek ;
+                Binding b = peek.peek() ;
                 bgp2 = Substitute.substitute(pattern, b) ;
-                // ---- common
                 ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
                 pattern = reorderProc.reorder(pattern) ;
-
             }
         }
         Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;

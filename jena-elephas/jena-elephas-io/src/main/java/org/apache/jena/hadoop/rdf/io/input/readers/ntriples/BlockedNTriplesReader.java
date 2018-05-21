@@ -22,7 +22,7 @@ import org.apache.jena.hadoop.rdf.io.input.readers.AbstractBlockBasedTripleReade
 import org.apache.jena.riot.Lang;
 
 /**
- * A record record for NTriples
+ * A record for NTriples
  * <p>
  * This is a hybrid of the {@link NTriplesReader} and the
  * {@link WholeFileNTriplesReader} in that it does not process individual lines

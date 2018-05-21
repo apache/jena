@@ -20,6 +20,10 @@ package org.apache.jena.arq.querybuilder;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import org.apache.jena.graph.FrontsNode ;
 import org.apache.jena.graph.Node ;
@@ -98,43 +102,70 @@ public class AbstractQueryBuilderTest {
 		n = builder.makeNode(builder);
 		LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(builder);
 		assertEquals(NodeFactory.createLiteral(ll), n);
+		
+		n = builder.makeNode( NodeFactory.createVariable("foo"));
+		assertTrue( n.isVariable());
+		assertEquals( "foo", n.getName());
+		assertTrue( n instanceof Var );
 
 	}
 
 	@Test
 	public void testMakeVar() {
-		Var v = builder.makeVar(null);
+		Var v = AbstractQueryBuilder.makeVar(null);
 		assertEquals(Var.ANON, v);
 
-		v = builder.makeVar("a");
+		v = AbstractQueryBuilder.makeVar("a");
 		assertEquals(Var.alloc("a"), v);
 
-		v = builder.makeVar("?a");
+		v = AbstractQueryBuilder.makeVar("?a");
 		assertEquals(Var.alloc("a"), v);
 
 		Node n = NodeFactory.createVariable("foo");
-		v = builder.makeVar(n);
+		v = AbstractQueryBuilder.makeVar(n);
 		assertEquals(Var.alloc("foo"), v);
 
 		NodeFront nf = new NodeFront(n);
-		v = builder.makeVar(nf);
+		v = AbstractQueryBuilder.makeVar(nf);
 		assertEquals(Var.alloc("foo"), v);
 
-		v = builder.makeVar(Node_RuleVariable.WILD);
+		v = AbstractQueryBuilder.makeVar(Node_RuleVariable.WILD);
 		assertNull(v);
 
 		ExprVar ev = new ExprVar("bar");
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.alloc("bar"), v);
 
 		ev = new ExprVar(n);
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.alloc("foo"), v);
 
 		ev = new ExprVar(Var.ANON);
-		v = builder.makeVar(ev);
+		v = AbstractQueryBuilder.makeVar(ev);
 		assertEquals(Var.ANON, v);
 
 	}
 
+	@Test
+	public void testMakeValueNodes()
+	{
+		List<Object> list = new ArrayList<Object>();
+		list.add( null);
+		list.add( RDF.type );
+		Node n2 = NodeFactory.createBlankNode();
+		list.add( n2 );
+		builder.addPrefix("demo", "http://example.com/");
+		list.add( "demo:type" );
+		list.add( "<one>" );
+		list.add( builder );
+		
+		Collection<Node> result = builder.makeValueNodes(list.iterator());
+		
+		assertTrue( result.contains( null ));
+		assertTrue( result.contains( RDF.type.asNode()));
+		assertTrue( result.contains( n2 ));
+		assertTrue( result.contains(NodeFactory.createURI("http://example.com/type") ));
+		assertTrue( result.contains(NodeFactory.createURI("one")));
+
+	}
 }

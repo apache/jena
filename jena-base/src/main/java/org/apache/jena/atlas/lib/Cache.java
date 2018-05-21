@@ -32,7 +32,7 @@ public interface Cache<Key, Value>
     /** Get from cache - or return null. */  
     public Value getIfPresent(Key key) ;
     
-    /** Get from cache, of not present, call the {@code callable}
+    /** Get from cache, of not present, call the {@link Callable}
      *  to try to fill the cache. This operation should be atomic.
      */
     public Value getOrFill(Key key, Callable<Value> callable) ;
@@ -43,7 +43,7 @@ public interface Cache<Key, Value>
     /** Remove from cache - return true if key referenced an entry */
     public void remove(Key key) ;
     
-    /** Iterate over all keys. Iteratering over the keys requires the caller be thread-safe. */ 
+    /** Iterate over all keys. Iterating over the keys requires the caller be thread-safe. */ 
     public Iterator<Key> keys() ;
     
     public boolean isEmpty() ;

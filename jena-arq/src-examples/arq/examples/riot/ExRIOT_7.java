@@ -19,7 +19,7 @@
 package arq.examples.riot;
 
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.lang.CollectorStreamBase;
 import org.apache.jena.riot.lang.CollectorStreamTriples;
 
@@ -38,7 +38,7 @@ public class ExRIOT_7 {
         final String filename = "data.ttl";
         
         CollectorStreamTriples inputStream = new CollectorStreamTriples();
-        RDFDataMgr.parse(inputStream, filename);
+        RDFParser.source(filename).parse(inputStream);
 
         for (Triple triple : inputStream.getCollected()) {
         	System.out.println(triple);

@@ -21,13 +21,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>jena-shaded-guava</artifactId>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
   <name>Apache Jena - Shadowed external libraries</name>
+
   <description>
     This module shades Google's Guava.
     Direct use can lead to versioning problems 
@@ -38,18 +39,19 @@
     org.apache.jena.ext.com.google....
   </description>
 
-
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- Version number specified explicitly and not in jena-parent, 
+      <!-- Version number specified explicitly and not in jena-project, 
            as it should only be used here, and further shadowing/bundle/NOTICE
            consideration might be needed on upgrade. -->
-      <version>21.0</version>
+      <version>24.1-jre</version>
     </dependency>
   </dependencies>
-
+  <properties>
+   <automatic.module.name>org.apache.jena.ext.com.google</automatic.module.name>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -64,6 +66,13 @@
           </execution>
         </executions>
         <configuration>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <manifestEntries>
+                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+              </manifestEntries>
+            </transformer>
+          </transformers>
           <createSourcesJar>true</createSourcesJar>
           <artifactSet>
             <includes>

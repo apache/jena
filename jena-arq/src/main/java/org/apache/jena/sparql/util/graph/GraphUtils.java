@@ -18,11 +18,7 @@
 
 package org.apache.jena.sparql.util.graph ;
 
-import java.util.ArrayList ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
@@ -33,7 +29,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.NotUniqueException ;
 import org.apache.jena.sparql.util.PropertyRequiredException ;
-import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.vocabulary.RDF ;
@@ -50,7 +46,7 @@ public class GraphUtils {
         return triples2quads(Quad.defaultGraphIRI, iter) ;
     }
 
-    /** Convert an iterator of triples into quads for the specificed graph name. */
+    /** Convert an iterator of triples into quads for the specified graph name. */
     public static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter) {
         return Iter.iter(iter).map(t -> new Quad(graphNode, t)) ;
     }
@@ -62,6 +58,24 @@ public class GraphUtils {
         for ( RDFNode n : nodes ) {
             if ( n.isLiteral() ) {
                 values.add(((Literal)n).getString()) ;
+            }
+        }
+        return values ;
+    }
+    
+    /** Get a list of the URIs (as strings) and strings
+     *  @see #getAsStringValue
+     */
+    public static List<String> multiValueAsString(Resource r, Property p) {
+        List<RDFNode> nodes = multiValue(r, p) ;
+        List<String> values = new ArrayList<>() ;
+
+        for ( RDFNode n : nodes ) {
+            if ( n.isLiteral() ) {
+                values.add(((Literal)n).getString()) ;
+            }
+            if ( n.isURIResource() ) {
+                values.add(((Resource)n).getURI());
             }
         }
         return values ;
@@ -159,13 +173,16 @@ public class GraphUtils {
             return null ;
         return s.getResource() ;
     }
+    
+    public static List<Resource> listResourcesByType(Model model, Resource type) {
+        return Iter.toList(model.listSubjectsWithProperty(RDF.type, type)) ;
+    }
 
     public static Resource getResourceByType(Model model, Resource type) {
-        // See also
-        StmtIterator sIter = model.listStatements(null, RDF.type, type) ;
+        ResIterator sIter = model.listSubjectsWithProperty(RDF.type, type) ;
         if ( !sIter.hasNext() )
             return null ;
-        Resource r = sIter.nextStatement().getSubject() ;
+        Resource r = sIter.next();
         if ( sIter.hasNext() )
             throw new TypeNotUniqueException(r) ;
         return r ;
@@ -181,9 +198,9 @@ public class GraphUtils {
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
 
-        QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm) ;
-        Resource r = (Resource)QueryExecUtils.getOne(qExec, "root") ;
-        return r ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
+            return (Resource)QueryExecUtils.getAtMostOne(qExec, "root") ;
+        }
     }
 
     public static String fmtURI(Resource r) {

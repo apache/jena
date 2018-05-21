@@ -37,27 +37,7 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
     private static Logger[] getLoggers() {
         return new Logger[]{ Logger.getLogger(DatasetGraphInMemory.class) } ;
     }
-
-    @Override
-    protected void setPromotion(boolean b) {
-        DatasetGraphInMemory.promotion = b ;
-    }
-
-    @Override
-    protected boolean getPromotion() {
-        return DatasetGraphInMemory.promotion ;
-    }
-
-    @Override
-    protected void setReadCommitted(boolean b) {
-        DatasetGraphInMemory.readCommittedPromotion = b ;
-    }
-
-    @Override
-    protected boolean getReadCommitted() {
-        return DatasetGraphInMemory.readCommittedPromotion ;
-    }
-
+    
     @Override
     protected Class<JenaTransactionException> getTransactionExceptionClass() {
         return JenaTransactionException.class ;

@@ -26,6 +26,7 @@ import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.text.*;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
@@ -48,6 +49,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         .
     */
     
+    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -71,7 +73,53 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 File dir = new File(path) ;
                 directory = FSDirectory.open(dir.toPath()) ;
             }
+            
+            String queryParser = null;
+            Statement queryParserStatement = root.getProperty(pQueryParser);
+            if (null != queryParserStatement) {
+                RDFNode qpNode = queryParserStatement.getObject();
+                if (! qpNode.isResource()) {
+                    throw new TextIndexException("Text query parser property is not a resource : " + qpNode);
+                }
+                Resource parserResource = (Resource) qpNode;
+                queryParser = parserResource.getLocalName();
+            }
 
+            boolean isMultilingualSupport = false;
+            Statement mlSupportStatement = root.getProperty(pMultilingualSupport);
+            if (null != mlSupportStatement) {
+                RDFNode mlsNode = mlSupportStatement.getObject();
+                if (! mlsNode.isLiteral()) {
+                    throw new TextIndexException("text:multilingualSupport property must be a boolean : " + mlsNode);
+                }
+                isMultilingualSupport = mlsNode.asLiteral().getBoolean();
+            }
+            
+            //define any filters and tokenizers first so they can be referenced in analyzer definitions if need be
+            Statement defAnalyzersStatement = root.getProperty(pDefAnalyzers);
+            if (null != defAnalyzersStatement) {
+                RDFNode aNode = defAnalyzersStatement.getObject();
+                if (! aNode.isResource()) {
+                    throw new TextIndexException("text:defineAnalyzers property is not a resource (list) : " + aNode);
+                }
+                
+                DefineFiltersAssembler.open(a, (Resource) aNode);
+
+                DefineTokenizersAssembler.open(a, (Resource) aNode);
+
+                boolean addedLangs = DefineAnalyzersAssembler.open(a, (Resource) aNode);
+                // if the text:defineAnalyzers added any analyzers to lang tags then ensure that
+                // multilingual support is enabled
+                if (addedLangs) {
+                    if (!isMultilingualSupport) {
+                        Log.warn(this,  "Multilingual support implicitly enabled by text:defineAnalyzers");
+                    }
+                    isMultilingualSupport = true;
+                }
+            }
+
+            // initialize default analyzer and query analyzer after processing all analyzer definitions
+            // so they can be referred to
             Analyzer analyzer = null;
             Statement analyzerStatement = root.getProperty(pAnalyzer);
             if (null != analyzerStatement) {
@@ -93,36 +141,26 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 Resource analyzerResource = (Resource) qaNode;
                 queryAnalyzer = (Analyzer) a.open(analyzerResource);
             }
-            
-            String queryParser = null;
-            Statement queryParserStatement = root.getProperty(pQueryParser);
-            if (null != queryParserStatement) {
-                RDFNode qpNode = queryParserStatement.getObject();
-                if (! qpNode.isResource()) {
-                    throw new TextIndexException("Text query parser property is not a resource : " + qpNode);
-                }
-                Resource parserResource = (Resource) qpNode;
-                queryParser = parserResource.getLocalName();
-            }
-
-            boolean isMultilingualSupport = false;
-            Statement mlSupportStatement = root.getProperty(pMultilingualSupport);
-            if (null != mlSupportStatement) {
-                RDFNode mlsNode = mlSupportStatement.getObject();
-                if (! mlsNode.isLiteral()) {
-                    throw new TextIndexException("text:multilingualSupport property must be a string : " + mlsNode);
-                }
-                isMultilingualSupport = mlsNode.asLiteral().getBoolean();
-            }
 
             boolean storeValues = false;
             Statement storeValuesStatement = root.getProperty(pStoreValues);
             if (null != storeValuesStatement) {
                 RDFNode svNode = storeValuesStatement.getObject();
                 if (! svNode.isLiteral()) {
-                    throw new TextIndexException("text:storeValues property must be a string : " + svNode);
+                    throw new TextIndexException("text:storeValues property must be a boolean : " + svNode);
                 }
                 storeValues = svNode.asLiteral().getBoolean();
+            }
+
+            // use query cache by default
+            boolean cacheQueries = true;
+            Statement cacheQueriesStatement = root.getProperty(pCacheQueries);
+            if (null != cacheQueriesStatement) {
+                RDFNode cqNode = cacheQueriesStatement.getObject();
+                if (! cqNode.isLiteral()) {
+                    throw new TextIndexException("text:cacheQueries property must be a boolean : " + cqNode);
+                }
+                cacheQueries = cqNode.asLiteral().getBoolean();
             }
 
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
@@ -133,6 +171,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setQueryParser(queryParser);
             config.setMultilingualSupport(isMultilingualSupport);
             config.setValueStored(storeValues);
+            docDef.setCacheQueries(cacheQueries);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

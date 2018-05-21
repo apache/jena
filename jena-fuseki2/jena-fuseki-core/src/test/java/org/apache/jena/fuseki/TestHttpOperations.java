@@ -107,10 +107,10 @@ public class TestHttpOperations extends AbstractFusekiTest {
         }
     }
 
-    // ---- Dataset direct
+    // ---- Dataset direct, with content type.
     
     @Test 
-    public void ds_query_by_get_1() {
+    public void ds_fetch_by_get_1() {
         String u = ServerCtl.urlDataset() ;
         try (TypedInputStream in = HttpOp.execHttpGet(u)) {
             Assert.assertNotNull(in);
@@ -130,5 +130,4 @@ public class TestHttpOperations extends AbstractFusekiTest {
         String u = ServerCtl.urlDataset() ;
         HttpOp.execHttpPost(u, WebContent.contentTypeSPARQLUpdate, "INSERT DATA{}") ;
     }
-
 }

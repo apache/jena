@@ -18,13 +18,12 @@
 
 package org.apache.jena.tdb.transaction ;
 
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
-import org.apache.jena.tdb.transaction.TDBTransactionException ;
 import org.apache.log4j.Logger ;
 
 /** Tests for transactions that start read and then promote to write -- TDB */
@@ -46,27 +45,7 @@ public class TestTransPromoteTDB extends AbstractTestTransPromote {
     }
 
     @Override
-    protected void setPromotion(boolean b) {
-        DatasetGraphTransaction.promotion = b ;
-    }
-
-    @Override
-    protected boolean getPromotion() {
-        return DatasetGraphTransaction.promotion ;
-    }
-
-    @Override
-    protected void setReadCommitted(boolean b) {
-        DatasetGraphTransaction.readCommittedPromotion = b ;
-    }
-
-    @Override
-    protected boolean getReadCommitted() {
-        return DatasetGraphTransaction.readCommittedPromotion ;
-    }
-
-    @Override
-    protected Class<TDBTransactionException> getTransactionExceptionClass() {
-        return TDBTransactionException.class ;
+    protected Class<JenaTransactionException> getTransactionExceptionClass() {
+        return JenaTransactionException.class ;
     }
 }

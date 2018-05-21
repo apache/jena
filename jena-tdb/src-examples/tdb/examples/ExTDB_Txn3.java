@@ -23,7 +23,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
-/** Illustraion of working at the DatasetGraph level.
+/** Illustration of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
  *  Occasionally, it's more convenient to work with the
  *  TDB-implemented DatasetGraph interface. 

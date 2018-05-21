@@ -80,23 +80,22 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     static ParserProfile profile()
     {
-        // Don't do anything with IRIs.
+        // Don't do anything with IRIs or blank nodes.
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         FactoryRDF factory = RiotLib.factoryRDF(LabelToNode.createUseLabelAsGiven()) ;
-        ParserProfile profile = new ParserProfileBase(prologue, handler, factory) ;
-        // Include safe bNode labels.
+        ParserProfile profile = RiotLib.createParserProfile(factory, handler, false);
         return profile ;
     }
     
     /** Create an RDF Tuples parser.
      *  No need to pass in a buffered InputStream; the code 
-     *  will do it's own buffering.
+     *  will do its own buffering.
      */
     
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)
     {
-        super(tokenizer, profile) ;
+        super(tokenizer, profile, profile.getErrorHandler()) ;
         iter = new IteratorTuples() ;
     }
 
@@ -244,7 +243,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                 exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
             String iriStr = peekToken().getImage() ;
             IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
-            profile.getPrologue().getPrefixMap().add(prefix, iri) ;
+            profile.getPrefixMap().add(prefix, iri) ;
             nextToken() ;
             expect("PREFIX directive not terminated by a dot", DOT) ;
         }

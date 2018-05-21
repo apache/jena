@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * 
  * This class provides a number of static methods which interact with
- * java.nio.charset.Charset to analyze and transform the strings identifing
+ * java.nio.charset.Charset to analyze and transform the strings identifying
  * character encodings.
  */
 abstract public class CharEncoding {

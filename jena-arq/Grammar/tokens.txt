@@ -48,6 +48,7 @@
 [<CONSTRUCT>]  ::= 'CONSTRUCT'
 //[<CONSTRUCT_WHERE>]  ::= 'CONSTRUCT WHERE'
 [<ASK>]        ::= 'ASK'
+[<JSON>]       ::= 'JSON'
 [<DISTINCT>]   ::= 'DISTINCT'
 [<REDUCED>]    ::= 'REDUCED'
 [<WHERE>]      ::= 'WHERE'

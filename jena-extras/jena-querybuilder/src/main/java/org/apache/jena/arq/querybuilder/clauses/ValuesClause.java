@@ -97,7 +97,7 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	 * The order in which variables 
 	 * are added to the values table is preserved.
 	 * 
-	 * Each item in the value collectionis converted into a node using makeNode() strategy except that null values are converted 
+	 * Each item in the value collection is converted into a node using makeNode() strategy except that null values are converted 
 	 * to UNDEF.
 	 * 
 	 * If there are already values in the value statement the data table is adds as follows:
@@ -149,8 +149,10 @@ public interface ValuesClause<T extends AbstractQueryBuilder<T>> {
 	/**
 	 * Reset the values table to the initial undefined state.  Used primarily to reset the builder values table
 	 * to a known state. 
+	 * 
+	 * @return The builder for chaining.
 	 */
-	public void clearValues();
+	public T clearValues();
 	
 	/**
 	 * Get an unmodifiable list of vars in the order that they appear in the values table.

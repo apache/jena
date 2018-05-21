@@ -119,16 +119,21 @@ public class AbstractRewriter<T> {
 
 	/**
 	 * If the node is a variable perform any necessary rewrite, otherwise return the node.
-	 * @param n The node to to rewrite.
-	 * @return the rewriten node.
+	 * @param n The node to rewrite.
+	 * @return the rewritten node.
 	 */
 	protected final Node changeNode(Node n) {
+		if (n == null)
+		{
+			return n;
+		}
 		if (n.isVariable()) {
 			Var v = Var.alloc(n);
 
 			if (values.containsKey(v)) {
 				return values.get(v);
 			}
+			return v;
 		}
 		return n;
 	}
@@ -180,7 +185,7 @@ public class AbstractRewriter<T> {
 	/**
 	 * Rewrite a variable expression list.
 	 * @param lst The variable expression list.
-	 * @return the rewritten variable expresson list.
+	 * @return the rewritten variable expression list.
 	 */
 	public final VarExprList rewrite(VarExprList lst) {
 

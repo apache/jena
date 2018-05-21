@@ -172,7 +172,7 @@ public class LocationMapper
      *  in a specific base directory. 
      * @param uri
      * @param otherwise
-     * @return The alternative location choosen
+     * @return The alternative location chosen
      */
     public String altMapping(String uri, String otherwise)
     {

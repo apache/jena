@@ -27,7 +27,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.Serializer;
+import org.apache.jena.sys.Serializer;
 
 /**
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
@@ -237,9 +237,8 @@ public abstract class Node implements Serializable {
      * Test that two nodes are semantically equivalent.
      * In some cases this may be the same as equals, in others
      * equals is stricter. For example, two xsd:int literals with
-     * the same value but different language tag are semantically
-     * equivalent but distinguished by the java equality function
-     * in order to support round-tripping.
+     * the same value but different lexical form are semantically
+     * equivalent but distinguished by the java equals function.
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */

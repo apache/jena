@@ -33,7 +33,7 @@ import org.apache.jena.vocabulary.RDF ;
 /** A Reifier that only supports one style Standard (intercept, no conceal 
  *  -- and intercept is a no-op anyway because all triples 
  *  appear in the underlying graph for storing all triples).
- *  This exists to give reification style "Standard" semantics primarly for legacy reasons. 
+ *  This exists to give reification style "Standard" semantics primarily for legacy reasons. 
  */
 
 public class ReifierStd
@@ -115,7 +115,7 @@ public class ReifierStd
     }
     
     /**
-    @return true iff there's > 0 mappings to this triple
+    @return true iff there's {@literal >} 0 mappings to this triple
      */
     public static boolean hasTriple(Graph graph, Triple t)
     {

@@ -1,4 +1,0 @@
-org.apache.jena.system.InitJenaCore
-org.apache.jena.riot.system.InitRIOT
-org.apache.jena.sparql.system.InitARQ
-org.apache.jena.tdb.sys.InitTDB

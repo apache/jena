@@ -25,15 +25,15 @@
   <artifactId>jena-rdfconnection</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - RDF Connection</name>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
 
   <description>RDF Connection</description>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
 
   <licenses>
@@ -43,17 +43,21 @@
     </license>
   </licenses>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.rdfconnection</automatic.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -61,7 +65,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -70,7 +74,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>    
 
@@ -136,6 +140,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>

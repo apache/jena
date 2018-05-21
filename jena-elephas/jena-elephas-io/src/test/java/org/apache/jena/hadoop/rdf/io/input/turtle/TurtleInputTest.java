@@ -61,7 +61,8 @@ public class TurtleInputTest extends AbstractWholeFileTripleInputFormatTests {
         // Try to reproduce JENA-1075
         
         // Create test data
-        File f = new File("target/prefixes.ttl");
+        File f = folder.newFile("prefixes.ttl");
+        
         try (FileWriter writer = new FileWriter(f)) {
             //@formatter:off
             writer.write(StrUtils.strjoinNL("@prefix : <http://test/ns#> .",

@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Alarm ;
 import org.apache.jena.atlas.lib.AlarmClock;
 import org.apache.jena.atlas.logging.Log;
@@ -31,11 +34,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.describe.DescribeHandler;
 import org.apache.jena.sparql.core.describe.DescribeHandlerRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -43,23 +46,25 @@ import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.engine.binding.BindingUtils;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.lib.RDFTerm2Json;
 import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.Template;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.ModelUtils;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
 public class QueryExecutionBase implements QueryExecution
 {
-    private Query                    query;
-    private Dataset                  dataset;
-    private QueryEngineFactory       qeFactory;
+    private final Query              query;
+    private final QueryEngineFactory qeFactory;
+    private final Context            context;
+    private final Dataset            dataset;
+    private final DatasetGraph       dsg;
+    
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private Context                  context;
     private QuerySolution            initialBinding   = null;
 
     // Set if QueryIterator.cancel has been called
@@ -81,14 +86,13 @@ public class QueryExecutionBase implements QueryExecution
                               Context context, QueryEngineFactory qeFactory) {
         this.query = query;
         this.dataset = dataset ;
-        this.context = context ;
         this.qeFactory = qeFactory ;
+        this.dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
+        this.context = Context.setupContextExec(context, dsg) ;
         init() ;
     }
     
     private void init() {
-        DatasetGraph dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
-        context = Context.setupContext(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
         // NB: Setting timeouts via the context after creating a QueryExecutionBase 
@@ -335,7 +339,45 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     @Override
-    public void setTimeout(long timeout, TimeUnit timeUnit) {
+    public JsonArray execJson()
+    {
+        checkNotClosed() ;
+        if ( ! query.isJsonType() )
+            throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query)+" query") ;
+
+        startQueryIterator() ;
+
+        JsonArray jsonArray = new JsonArray() ;
+        List<String> resultVars = query.getResultVars() ;
+
+        while (queryIterator.hasNext())
+        {
+            Binding binding = queryIterator.next() ;
+            JsonObject jsonObject = new JsonObject() ; 
+            for (String resultVar : resultVars) {
+                Node n = binding.get(Var.alloc(resultVar)) ;
+                JsonValue value = RDFTerm2Json.fromNode(n) ;
+                jsonObject.put(resultVar, value) ;
+            }
+            jsonArray.add(jsonObject) ;
+        }
+
+        return jsonArray ;
+    }
+
+    @Override
+    public Iterator<JsonObject> execJsonItems() 
+    {
+        checkNotClosed() ;
+        if ( ! query.isJsonType() )
+            throw new QueryExecException("Attempt to get a JSON result from a " + labelForQuery(query)+" query") ;
+        startQueryIterator() ;
+        return new JsonIterator(queryIterator, query.getResultVars()) ;
+    }
+
+    @Override
+    public void setTimeout(long timeout, TimeUnit timeUnit)
+    {
         // Overall timeout - recorded as (UNSET,N)
         long x = asMillis(timeout, timeUnit);
         this.timeout1 = TIMEOUT_UNSET;
@@ -514,7 +556,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Plan getPlan() {
         if ( plan == null ) {
-            DatasetGraph dsg = prepareDataset(dataset, query);
             Binding inputBinding = null;
             if ( initialBinding != null )
                 inputBinding = BindingUtils.asBinding(initialBinding);
@@ -552,6 +593,7 @@ public class QueryExecutionBase implements QueryExecution
         if ( q.isConstructType() )  return "CONSTRUCT" ; 
         if ( q.isDescribeType() )   return "DESCRIBE" ; 
         if ( q.isAskType() )        return "ASK" ;
+        if ( q.isJsonType() )       return "JSON" ;
         return "<<unknown>>" ;
     }
 
@@ -564,22 +606,6 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Query getQuery()     { return query ; }
 
-    private static DatasetGraph prepareDataset(Dataset dataset, Query query) {
-        if ( dataset != null )
-            return dataset.asDatasetGraph();
-
-        if ( ! query.hasDatasetDescription() ) 
-            //Query.Log.warn(this, "No data for query (no URL, no model)");
-            throw new QueryExecException("No dataset description for query");
-        
-        String baseURI = query.getBaseURI() ;
-        if ( baseURI == null )
-            baseURI = IRIResolver.chooseBaseURI().toString() ;
-        
-        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(), baseURI ) ;
-        return dsg ;
-    }
-    
     @Override
     public void setInitialBinding(QuerySolution startSolution) {
         initialBinding = startSolution ;

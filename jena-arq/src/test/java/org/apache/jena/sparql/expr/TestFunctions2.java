@@ -34,7 +34,6 @@ import org.junit.Test ;
 
 public class TestFunctions2 extends BaseTest
 {
-    // 3->2
     // Some overlap with TestFunctions except those are direct function calls and these are via SPARQL 1.1 syntax.
     // Better too many tests than too few.
     

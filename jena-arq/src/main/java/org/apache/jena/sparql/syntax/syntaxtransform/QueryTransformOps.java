@@ -25,6 +25,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryVisitor;
 import org.apache.jena.query.SortCondition;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.ARQException;
@@ -41,15 +44,28 @@ import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 
 /** Support for transformation of query abstract syntax. */
-
 public class QueryTransformOps {
+    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */ 
     public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions);
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
         ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
         return transform(query, eltrans, exprTrans);
     }
+    
+    /**
+     * Transform a query based on a mapping from variable name to replacement
+     * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
+     */
+    public static Query transformQuery(Query query, Map<String, ? extends RDFNode> substitutions) {
+        // Must have a different name because of Java's erasure of parameterised types.
+        Map<Var, Node> map = TransformElementLib.convert(substitutions);
+        return transform(query, map);
+    }
 
+    /** Transform a query using {@link ElementTransform} and {@link ExprTransform}.
+     *  It is the responsibility of these transforms to transform to a legal SPARQL query.
+     */ 
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
 
@@ -57,13 +73,10 @@ public class QueryTransformOps {
         transformVarExprList(q2.getProject(), exprTransform);
         transformVarExprList(q2.getGroupBy(), exprTransform);
         transformExprList(q2.getHavingExprs(), exprTransform);
-        // ?? DOES NOT WORK: transformExprListAgg(q2.getAggregators(),
-        // exprTransform) ;
-        // ??
         if (q2.getOrderBy() != null) {
             transformSortConditions(q2.getOrderBy(), exprTransform);
         }
-
+        // ?? DOES NOT WORK: transformExprListAgg(q2.getAggregators(), exprTransform) ; ??
         // if ( q2.hasHaving() ) {}
         // if ( q2.hasAggregators() ) {}
 
@@ -202,6 +215,11 @@ public class QueryTransformOps {
         @Override
         public void visitAskResultForm(Query query) {
             newQuery.setQueryAskType();
+        }
+
+        @Override
+        public void visitJsonResultForm(Query query) {
+            newQuery.setQueryJsonType();
         }
 
         @Override

@@ -28,7 +28,8 @@ import org.apache.jena.sparql.engine.binding.Binding ;
  *  <li>arguments are not lists</li>
  *  <li>attempt to put values in for any bound variables</li>
  *  <li>call the implementation with one binding at a time</li>
- *  </ul> */
+ *  </ul>
+ */
 
 public abstract
 class PFuncSimple extends PropertyFunctionEval

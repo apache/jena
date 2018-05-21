@@ -94,8 +94,8 @@ public abstract class AggregatorBase implements Aggregator
         return copy(e) ;
     }
     
-    /** Many aggergate use a single expression.
-     *  This convebnience operation gets the expression if there is exactly one.
+    /** Many aggregate use a single expression.
+     *  This convenience operation gets the expression if there is exactly one.
      */
     protected Expr getExpr() {
         if ( exprList != null && exprList.size() == 1 )

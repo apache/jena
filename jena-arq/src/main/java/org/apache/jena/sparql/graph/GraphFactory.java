@@ -22,11 +22,11 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.graph.Factory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.util.graph.GraphSink ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /** Ways to make graphs and models */
 public class GraphFactory
@@ -54,10 +54,10 @@ public class GraphFactory
         return Factory.createDefaultGraph() ;
     }
     
-    /** Very simple graph that uses same-term for find() (small-scale use only) */
+    /** Graph that uses same-term for find() and contains(). */
     public static Graph createPlainGraph()
     {
-        return new GraphMemPlain() ;
+        return GraphPlain.plain() ;
     }
 
     public static Graph sinkGraph()

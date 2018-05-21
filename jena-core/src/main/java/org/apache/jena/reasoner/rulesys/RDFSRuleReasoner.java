@@ -27,7 +27,7 @@ import org.apache.jena.reasoner.rulesys.impl.RDFSCMPPreprocessHook ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
 
 /**
- * A full implemention of RDFS reasoning using a hybrid rule system, together
+ * A full implementation of RDFS reasoning using a hybrid rule system, together
  * with optimized subclass/subproperty closure using the transitive graph caches.
  * Implements the container membership property rules using an optional
  * data scanning hook. Implements datatype range validation.
@@ -105,7 +105,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     
     /**
      * Internal version of setParameter that does not directly raise an
-     * exception on parameters it does not reconize.
+     * exception on parameters it does not recognize.
      * @return false if the parameter was not recognized
      */
     @Override
@@ -207,7 +207,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     }
 
     /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
+     * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
     @Override

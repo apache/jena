@@ -27,7 +27,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ResultSetMgr ;
-import org.apache.jena.shared.NotFoundException ;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.rw.ReadAnything;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.graph.GraphFactory ;
@@ -40,8 +41,9 @@ import org.apache.jena.util.FileManager ;
 /** ResultSetFactory - make result sets from places other than a query. */
 
 public class ResultSetFactory {
-    // See also ResultSetMgr -- this post-dates this code.
+    // See also ResultSetMgr - which post-dates this code.
     // Ideally, read operations here should call ResultSetMgr.
+    // The exception is XML from a string and the arcachic RDF to ResultSet forms.
     
     /**
      * Load a result set from file or URL into a result set (memory backed).
@@ -87,21 +89,6 @@ public class ResultSetFactory {
         Lang lang = ResultsFormat.convert(format) ;
         if ( lang != null )
             return ResultSetMgr.read(input, lang) ;
-
-        if (format.equals(ResultsFormat.FMT_RS_JSON))
-            return JSONInput.fromJSON(input);
-
-        if (format.equals(ResultsFormat.FMT_RS_TSV))
-            return TSVInput.fromTSV(input);
-
-        if (format.equals(ResultsFormat.FMT_RS_CSV))
-            return CSVInput.fromCSV(input);
-
-        if (format.equals(ResultsFormat.FMT_RS_BIO))
-            return BIOInput.fromBIO(input);
-
-        if (format.equals(ResultsFormat.FMT_RS_XML))
-            return ResultSetFactory.fromXML(input);
 
         if (format.equals(ResultsFormat.FMT_TEXT)) {
             Log.warn(ResultSet.class, "Can't read a text result set");
@@ -202,27 +189,13 @@ public class ResultSetFactory {
         }
 
         if (format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON)) {
-            InputStream in = null;
-            try {
-                in = FileManager.get().open(filenameOrURI);
-                if (in == null)
-                    throw new NotFoundException(filenameOrURI);
-            } catch (NotFoundException ex) {
-                throw new NotFoundException("File not found: " + filenameOrURI);
-            }
-
-            SPARQLResult x = null;
-
-            if (format.equals(ResultsFormat.FMT_RS_JSON))
-                x = JSONInput.make(in, GraphFactory.makeDefaultModel());
-            else
-                x = XMLInput.make(in, GraphFactory.makeDefaultModel());
-
+            SPARQLResult x = ReadAnything.read(filenameOrURI);
             if (x.isResultSet())
                 RDFOutput.encodeAsRDF(model, x.getResultSet());
-            else
+            else if ( x.isBoolean() )
                 RDFOutput.encodeAsRDF(model, x.getBooleanResult());
-
+            else 
+                throw new ResultSetException("Not a result set");
             return model;
         }
 
@@ -243,8 +216,9 @@ public class ResultSetFactory {
 
     /**
      * Read in any kind of result kind (result set, boolean, graph)
+     * @deprecated Use ReadAnything.read(filenameOrURI);
      */
-
+    @Deprecated
     public static SPARQLResult result(String filenameOrURI, ResultsFormat format) {
         if (format == null)
             format = ResultsFormat.guessSyntax(filenameOrURI);
@@ -261,31 +235,8 @@ public class ResultSetFactory {
 
         if (format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON)
             || format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV)) {
-            InputStream in = null;
-            try {
-                in = FileManager.get().open(filenameOrURI);
-                if (in == null)
-                    throw new NotFoundException(filenameOrURI);
-            } catch (NotFoundException ex) {
-                throw new NotFoundException("File not found: " + filenameOrURI);
-            }
-
-            SPARQLResult x = null;
-
-            if (format.equals(ResultsFormat.FMT_RS_JSON))
-                return JSONInput.make(in, GraphFactory.makeDefaultModel());
-            else if (format.equals(ResultsFormat.FMT_RS_XML))
-                return XMLInput.make(in, GraphFactory.makeDefaultModel());
-            else if (format.equals(ResultsFormat.FMT_RS_TSV)) {
-                ResultSet rs = TSVInput.fromTSV(in);
-                return new SPARQLResult(rs);
-            } else if (format.equals(ResultsFormat.FMT_RS_CSV)) {
-                ResultSet rs = CSVInput.fromCSV(in);
-                return new SPARQLResult(rs);
-            } else if (format.equals(ResultsFormat.FMT_RS_BIO)) {
-                ResultSet rs = BIOInput.fromBIO(in);
-                return new SPARQLResult(rs);
-            }
+            SPARQLResult x = ReadAnything.read(filenameOrURI);
+            return x;
         }
 
         if (ResultsFormat.isRDFGraphSyntax(format)) {
@@ -305,7 +256,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromXML(InputStream in) {
-        return XMLInput.fromXML(in);
+        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetXML);
     }
 
     /**
@@ -314,7 +265,9 @@ public class ResultSetFactory {
      * @param str
      *            String to process
      * @return ResultSet
+     * @deprecated
      */
+    @Deprecated
     public static ResultSet fromXML(String str) {
         return XMLInput.fromXML(str);
     }
@@ -328,7 +281,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromJSON(InputStream in) {
-        return JSONInput.fromJSON(in);
+        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetJSON);
     }
 
     /**
@@ -340,7 +293,7 @@ public class ResultSetFactory {
      * @return ResultSet
      */
     public static ResultSet fromTSV(InputStream in) {
-        return TSVInput.fromTSV(in);
+        return ResultSetMgr.read(in, ResultSetLang.SPARQLResultSetTSV);
     }
 
     /**
@@ -363,7 +316,7 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
+     * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
      * 
@@ -375,7 +328,7 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turns an RDF model, with properties and classses from the result set
+     * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set which is rewindable (has a
      * .reset()operation). The result set formed is a copy in memory.
      * 
@@ -388,7 +341,7 @@ public class ResultSetFactory {
 
     /**
      * Turn an existing result set into a rewindable one.
-     * May take a copy but this is not guarantted
+     * May take a copy but this is not guaranteed
      * Uses up the result set passed in which is no longer valid as a ResultSet.
      * 
      * @param resultSet

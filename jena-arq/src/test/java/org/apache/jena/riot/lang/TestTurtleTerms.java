@@ -19,9 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -243,8 +241,8 @@ public class TestTurtleTerms extends BaseTest
 	    
 	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
 	    StreamRDF sink = StreamRDFLib.sinkNull() ;
-        LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, "http://base/", sink) ;
-	    PrefixMap prefixMap = parser.getProfile().getPrologue().getPrefixMap() ;
+        LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, sink, RiotLib.dftProfile()) ;
+	    PrefixMap prefixMap = parser.getProfile().getPrefixMap() ;
 
 	    prefixMap.add("a", "http://host/a#") ;
         prefixMap.add("x", "http://host/a#") ;

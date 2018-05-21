@@ -34,7 +34,7 @@ public abstract class OpN extends OpBase
     protected OpN(List<Op> x)   { elements = x ; }
     
     /** Accumulate an op in the OpN.
-     *  This exists to help building OpN in teh first place.
+     *  This exists to help building OpN in the first place.
      *  Once built, an OpN, like any Op should be treated as immutable
      *  with no calls change the sub ops contents.
      *  No calls to .add.

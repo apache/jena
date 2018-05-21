@@ -22,8 +22,8 @@ import java.util.function.Supplier ;
 
 /** Represents a creator of things.
  * 
- *  Unlike {@link Supplier}, this interface contract requres that the returned object
- *  is a new, fresh instance on each call.  i.e.  two calls return objects that are
+ *  Unlike {@link Supplier}, this interface contract requires that the returned object
+ *  is a new, fresh instance on each call.  i.e. two calls return objects that are
  *  not {@code ==}.
  */
 @FunctionalInterface

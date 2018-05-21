@@ -30,7 +30,7 @@ import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 /**
- * This is the operation in stadard SPARQL 1.1 OpAssign is specifically in
+ * This is the operation in standard SPARQL 1.1 OpAssign is specifically in
  * support of LET.
  */
 public class OpExtend extends OpExtendAssign {
@@ -38,7 +38,7 @@ public class OpExtend extends OpExtendAssign {
     // Not possible if it's the reassignment of something already assigned.
 
     /** Create an OpExtend or add to an existing one.
-     * This coperation collapses what woudl otherwise be stacks
+     * This cooperation collapses what would otherwise be stacks
      * of OpExtend.
      */ 
     static public Op extend(Op op, Var var, Expr expr) {

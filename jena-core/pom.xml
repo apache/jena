@@ -22,13 +22,13 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Core</name>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
 
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
@@ -36,6 +36,7 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+    <automatic.module.name>org.apache.jena.core</automatic.module.name>
   </properties>
 
   <dependencies>
@@ -54,17 +55,17 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
      <dependency>
        <artifactId>commons-cli</artifactId>
        <groupId>commons-cli</groupId>
+     </dependency>
+
+     <dependency>
+       <artifactId>commons-codec</artifactId>
+       <groupId>commons-codec</groupId>
      </dependency>
 
     <dependency>
@@ -88,13 +89,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -209,6 +210,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>

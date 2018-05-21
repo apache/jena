@@ -30,12 +30,18 @@ public abstract class CmdUpdate extends CmdARQ
     protected CmdUpdate(String[] argv)
     {
         super(argv) ;
-        modDataset = setModeDataset() ;
+        modDataset = setModDataset() ;
         addModule(modDataset) ;
     }
     
-    protected ModDataset setModeDataset() {
+    protected ModDataset setModDataset() {
         return new ModDatasetGeneralAssembler() ;
+    }
+
+    /** @deprecated Use {@link setModDataset} */ 
+    @Deprecated
+    protected ModDataset setModeDataset() {
+        return setModDataset();
     }
 
     @Override

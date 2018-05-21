@@ -86,11 +86,11 @@ public class IteratorWithBuffer<T> implements Iterator<T> {
     }
 
     /**
-     * Look at elements that will be returned by a subsequnet call of .next().
+     * Look at elements that will be returned by a subsequent call of .next().
      * The next element is index 0, then index 1 etc. This operation is valid
      * immediately after the constructor returns. Returns null for no such
-     * element (underlying iterator didn't yeild enough elements). Throws
-     * IndexOutOfBoundsException if an attempt i smade to go beyond the
+     * element (underlying iterator didn't yield enough elements). Throws
+     * IndexOutOfBoundsException if an attempt is made to go beyond the
      * buffering window.
      */
     public T peek(int idx) {

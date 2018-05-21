@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.util.graph;
 
+import java.util.Collection;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern ;
 
 
@@ -32,8 +35,11 @@ public class GNode
     { this.findable = new FindableGraph(graph) ; this.node = node ; }
     
     public GNode(BasicPattern triples, Node node)
-    { this.findable = new FindableBasicPattern(triples) ; this.node = node ; }
+    { this.findable = new FindableCollection(triples.getList()) ; this.node = node ; }
     
+    public GNode(Collection<Triple> triples, Node node)
+    { this.findable = new FindableCollection(triples) ; this.node = node ; }
+
     public GNode(GNode other, Node node)
     { this.findable = other.findable ; this.node = node ; }
 

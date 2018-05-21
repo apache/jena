@@ -21,7 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-/** Null Iterator - also guaranteed sharable and immutable */
+/** Null Iterator - also guaranteed shareable and immutable */
 public class NullIterator<T> implements Iterator<T>, Iterable<T>
 {
     @Override

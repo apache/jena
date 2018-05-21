@@ -205,11 +205,11 @@ define(
           model.set( "counts", counts );
         };
 
-        $.getJSON( sprintf( "%s?query=%s", self.queryURL(), query1 ) )
+        $.getJSON( self.queryURL(), { query: query1 } )
          .done( function( data ) {
            updateCount( self, data.results.bindings[0], "default graph" );
 
-           $.getJSON( sprintf( "%s?query=%s", self.queryURL(), query2 ) )
+           $.getJSON( self.queryURL(), { query: query2 } )
             .done( function( data ) {
               _.each( data.results.bindings, function( binding ) {
                 if (binding.g) {

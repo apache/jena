@@ -18,6 +18,7 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
+import org.apache.jena.arq.querybuilder.ExprFactory;
 import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.handlers.SolutionModifierHandler;
 import org.apache.jena.query.SortCondition;
@@ -35,6 +36,13 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
 	 * Add an ascending order by.
+	 * 
+	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+	 * methods to create the expression.
+	 * 
+	 * @see ExprFactory
+	 * @see org.apache.jena.sparql.expr.NodeValue
+	 * @see AbstractQueryBuilder#makeExpr(String) 
 	 * 
 	 * @param orderBy
 	 *            The expression to order by.
@@ -131,6 +139,13 @@ public interface SolutionModifierClause<T extends AbstractQueryBuilder<T>> {
 
 	/**
 	 * Add a having expression.
+	 * 
+	 * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
+	 * methods to create the expression.
+	 * 
+	 * @see ExprFactory
+	 * @see org.apache.jena.sparql.expr.NodeValue
+	 * @see AbstractQueryBuilder#makeExpr(String)
 	 * 
 	 * @param expression
 	 *            Expression to evaluate for the having.

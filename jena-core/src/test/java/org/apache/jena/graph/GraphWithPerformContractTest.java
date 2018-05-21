@@ -22,7 +22,7 @@ import static org.apache.jena.testing_framework.GraphHelper.graphWith;
 import static org.apache.jena.testing_framework.GraphHelper.triple;
 import static org.apache.jena.testing_framework.GraphHelper.txnBegin;
 import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
-
+import static org.apache.jena.testing_framework.GraphHelper.txnRun;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -39,28 +39,33 @@ import org.xenei.junit.contract.IProducer;
  * non-notifying versions of add and delete.
  */
 @Contract(GraphWithPerform.class)
-public class GraphWithPerformContractTest<T extends GraphWithPerform> {
+public class GraphWithPerformContractTest<T extends GraphWithPerform>
+{
 
 	private IProducer<T> producer;
 
 	// Recording listener for tests
 	protected RecordingGraphListener GL = new RecordingGraphListener();
 
-	public GraphWithPerformContractTest() {
+	public GraphWithPerformContractTest()
+	{
 	}
 
 	@Contract.Inject
-	public void setGraphWithPerformContractTestProducer(IProducer<T> producer) {
+	public void setGraphWithPerformContractTestProducer(IProducer<T> producer)
+	{
 		this.producer = producer;
 	}
 
 	@After
-	public final void afterGraphWithPerformContractTest() {
+	public final void afterGraphWithPerformContractTest()
+	{
 		producer.cleanUp();
 	}
 
 	@ContractTest
-	public void testPerformAdd_Triple() {
+	public void testPerformAdd_Triple()
+	{
 		GraphWithPerform g = (GraphWithPerform) graphWith(
 				producer.newInstance(), "S P O; S2 P2 O2");
 		g.getEventManager().register(GL);
@@ -68,11 +73,12 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> {
 		g.performAdd(triple("S3 P3 O3"));
 		txnCommit(g);
 		GL.assertEmpty();
-		assertTrue(g.contains(triple("S3 P3 O3")));
+		txnRun(g, () -> assertTrue(g.contains(triple("S3 P3 O3"))));
 	}
 
 	@ContractTest
-	public void testPerformDelete_Triple() {
+	public void testPerformDelete_Triple()
+	{
 		GraphWithPerform g = (GraphWithPerform) graphWith(
 				producer.newInstance(), "S P O; S2 P2 O2");
 		g.getEventManager().register(GL);
@@ -80,7 +86,8 @@ public class GraphWithPerformContractTest<T extends GraphWithPerform> {
 		g.performDelete(triple("S2 P2 O2"));
 		txnCommit(g);
 		GL.assertEmpty();
-		assertFalse(g.contains(triple("S2 P2 O2")));
+		txnRun(g, () -> assertFalse(g.contains(triple("S2 P2 O2"))));
+
 	}
 
 }

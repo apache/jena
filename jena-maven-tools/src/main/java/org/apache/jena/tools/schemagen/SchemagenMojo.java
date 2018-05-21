@@ -55,9 +55,9 @@ import org.codehaus.plexus.util.DirectoryScanner;
 public class SchemagenMojo
     extends AbstractMojo
 {
-    /***********************************/
+    /* ******************************* */
     /* Constants                       */
-    /***********************************/
+    /* ******************************* */
 
     /** Default output location */
     public static final String GENERATED_SOURCES = File.separator + "generated-sources";
@@ -67,13 +67,13 @@ public class SchemagenMojo
     /** Name of default options element */
     public static final String DEFAULT_OPTIONS_ELEM = "default";
 
-    /***********************************/
+    /* ******************************* */
     /* Static variables                */
-    /***********************************/
+    /* ******************************* */
 
-    /***********************************/
+    /* ******************************* */
     /* Instance variables              */
-    /***********************************/
+    /* ******************************* */
 
     /**
      * @parameter property="project.build.directory"
@@ -113,13 +113,13 @@ public class SchemagenMojo
     /** Map of source options, indexed by name */
     private Map<String, SchemagenOptions> optIndex = new HashMap<>();
 
-    /***********************************/
+    /* ******************************* */
     /* Constructors                    */
-    /***********************************/
+    /* ******************************* */
 
-    /***********************************/
+    /* ******************************* */
     /* External signature methods      */
-    /***********************************/
+    /* ******************************* */
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -274,9 +274,9 @@ public class SchemagenMojo
     }
 
 
-    /***********************************/
+    /* ******************************* */
     /* Internal implementation methods */
-    /***********************************/
+    /* ******************************* */
 
     public void setExcludes( String[] excludes ) {
         this.excludes = excludes;
@@ -350,9 +350,9 @@ public class SchemagenMojo
         return projectBuildDir + GENERATED_SOURCES;
     }
 
-    /***********************************/
+    /* ******************************* */
     /* Inner classes                   */
-    /***********************************/
+    /* ******************************* */
 
     /**
      * Adapter class to invoke the schemagen tool with a given set of options

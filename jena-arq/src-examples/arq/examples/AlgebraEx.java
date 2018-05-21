@@ -26,7 +26,7 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** Simple example to show parsing a query and producing the
- *  SPARQL agebra expression for the query. */
+ *  SPARQL algebra expression for the query. */
 public class AlgebraEx
 {
     public static void main(String []args)

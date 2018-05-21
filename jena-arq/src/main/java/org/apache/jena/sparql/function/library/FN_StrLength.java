@@ -22,7 +22,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionBase1 ;
 
-/** string length - F&O operation */
+/** string length - {@literal F&O} operation */
 
 public class FN_StrLength extends FunctionBase1
 {

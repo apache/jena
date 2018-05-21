@@ -41,14 +41,14 @@ import org.apache.jena.sparql.expr.ExprTransform;
 
 public class NodeTransformLib
 {
-    /** Do a node->node conversion of an Op - return original BGP for "no change" */
+    /** Do a node{@literal ->}node conversion of an Op - return original BGP for "no change" */
     public static Op transform(NodeTransform nodeTransform, Op op) {
         Transform opTransform = new NodeTransformOp(nodeTransform) ;
         ExprTransform exprTransform = new NodeTransformExpr(nodeTransform) ;
         return Transformer.transform(opTransform, exprTransform, op);
     }
     
-    /** Do a node->node conversion of a BGP - return original BGP for "no change" */
+    /** Do a node{@literal ->}node conversion of a BGP - return original BGP for "no change" */
     public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern) {
         BasicPattern bgp2 = new BasicPattern() ;
         boolean changed = false ;
@@ -64,7 +64,7 @@ public class NodeTransformLib
         return bgp2 ;
     }
 
-    /** Do a node->node conversion of a QuadPattern - return original QuadPattern for "no change" */
+    /** Do a node{@literal ->}node conversion of a QuadPattern - return original QuadPattern for "no change" */
     public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern) {
         QuadPattern qp2 = new QuadPattern() ;
         boolean changed = false ;
@@ -80,7 +80,7 @@ public class NodeTransformLib
         return qp2 ;
     }
 
-    /** Do a node->node conversion of a Triple - return original Triple for "no change" */
+    /** Do a node{@literal ->}node conversion of a Triple - return original Triple for "no change" */
     public static Triple transform(NodeTransform nodeTransform, Triple triple) {
         boolean change = false ;
         Node s = triple.getSubject() ;
@@ -99,7 +99,7 @@ public class NodeTransformLib
         return new Triple(s,p,o) ;
     }
 
-    /** Do a node->node conversion of a Quad - return original Quad for "no change" */
+    /** Do a node{@literal ->}node conversion of a Quad - return original Quad for "no change" */
     public static Quad transform(NodeTransform nodeTransform, Quad quad) {
         boolean change = false ;
         Node s = quad.getSubject() ;
@@ -146,7 +146,7 @@ public class NodeTransformLib
 
 
 
-    /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
+    /** Do a node{@literal ->}node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
     public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads) {
         List<Quad> x = new ArrayList<>() ;
         boolean changed = false ; 

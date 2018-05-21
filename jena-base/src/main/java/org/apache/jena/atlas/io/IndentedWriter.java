@@ -66,7 +66,6 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected int column = 0 ;
     protected int row = 1 ;
     
-    
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
@@ -263,7 +262,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     /** Get row/line (counts from 1) */
     public int getRow() { return row ; }
     /** Get the absolute column.
-     *  This is the location where the next charcter on the line will be printed.
+     *  This is the location where the next character on the line will be printed.
      *  The IndentedWriter may not yet have padded to this place.   
      */
     public int getCol() {
@@ -367,7 +366,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public int getNumberWidth() { return widthLineNumber ; }
     
     /** Set the width of the number field.
-     * There is also a singel space after the number not included in this setting.  
+     * There is also a single space after the number not included in this setting.  
      */
     public void setNumberWidth(int widthOfNumbers) { widthLineNumber = widthOfNumbers ; }
 

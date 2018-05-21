@@ -42,6 +42,14 @@ public abstract class PropertyFunctionEval extends PropertyFunctionBase
         return execEvaluated(binding, argSubject, predicate, argObject, execCxt) ;
     }
     
+    /** 
+     * @param binding       Current solution from previous query stage 
+     * @param argSubject    PropFuncArg, after substitution of any bound variables in this binding
+     * @param predicate     This predicate
+     * @param argObject     PropFuncArg, after substitution of any bound variables in this binding
+     * @param execCxt       Execution context
+     * @return              QueryIterator
+     */
     public abstract QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) ;
     
 }

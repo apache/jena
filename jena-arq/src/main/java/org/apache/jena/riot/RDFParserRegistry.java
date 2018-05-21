@@ -18,7 +18,17 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.* ;
+import static org.apache.jena.riot.RDFLanguages.JSONLD;
+import static org.apache.jena.riot.RDFLanguages.N3;
+import static org.apache.jena.riot.RDFLanguages.NQUADS;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON;
+import static org.apache.jena.riot.RDFLanguages.RDFNULL;
+import static org.apache.jena.riot.RDFLanguages.RDFXML;
+import static org.apache.jena.riot.RDFLanguages.THRIFT;
+import static org.apache.jena.riot.RDFLanguages.TRIG;
+import static org.apache.jena.riot.RDFLanguages.TRIX;
+import static org.apache.jena.riot.RDFLanguages.TURTLE;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -30,7 +40,8 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -48,7 +59,7 @@ public class RDFParserRegistry
     private static Map<String, Lang> mapJenaNameToLang                 = new HashMap<>() ;
 
     /** map language to a parser factory */ 
-    private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = new HashMap<>() ;
+    private static Map<Lang, ReaderRIOTFactory> langToParserFactory    = new HashMap<>() ;
     
     /** Known triples languages */
     private static Set<Lang> langTriples  = new HashSet<>() ;
@@ -56,12 +67,14 @@ public class RDFParserRegistry
     /** Known quads languages */
     private static Set<Lang> langQuads    = new HashSet<>() ;
 
-    /** Generic parser factory. */
-    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;
+    /** General parser factory for parsers implemented by "Lang" */
+    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTLangFactory() ;
+    // Others
+    private static ReaderRIOTFactory parserFactoryRDFXML    = new ReaderRIOTRDFXML.Factory(); 
     private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
-    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderRIOTFactoryTriX() ;
-    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRIOTFactoryRDFNULL() ;
+    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderTriX.ReaderRIOTFactoryTriX() ;
+    private static ReaderRIOTFactory parserFactoryRDFNULL   = new ReaderRDFNULL.Factory() ;
         
     private static boolean initialized = false ;
     static { init() ; }
@@ -77,13 +90,12 @@ public class RDFParserRegistry
         // Make sure the constants are initialized.
         RDFLanguages.init() ;
         
-        registerLangTriples(RDFXML,     parserFactory) ;
         registerLangTriples(NTRIPLES,   parserFactory) ;
         registerLangTriples(N3,         parserFactory) ;
         registerLangTriples(TURTLE,     parserFactory) ;
-        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
-        registerLangTriples(CSV,        parserFactory) ;
+        registerLangTriples(RDFXML,     parserFactoryRDFXML) ;
+        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
         registerLangTriples(TRIX,       parserFactoryTriX) ;
         registerLangTriples(RDFNULL,    parserFactoryRDFNULL) ;
@@ -150,56 +162,44 @@ public class RDFParserRegistry
 
     // Parser factories
     
-    private static class ReaderRIOTFactoryImpl implements ReaderRIOTFactory
+    private static class ReaderRIOTLangFactory implements ReaderRIOTFactory
     {
         @Override
         public ReaderRIOT create(Lang lang, ParserProfile parserProfile) {
             return new ReaderRIOTLang(lang, parserProfile) ;
         }
-
     }
 
     private static class ReaderRIOTLang implements ReaderRIOT
     {
         private final Lang lang ;
-        private ErrorHandler errorHandler ; 
         private ParserProfile parserProfile = null ;
-
-        ReaderRIOTLang(Lang lang) {
-            this.lang = lang ;
-            errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-        }
 
         ReaderRIOTLang(Lang lang, ParserProfile parserProfile) {
             this.lang = lang ;
             this.parserProfile = parserProfile;
-            this.errorHandler = parserProfile.getHandler();
         }
 
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
-            if ( parserProfile != null )
-                parser.setProfile(parserProfile);
-            if ( errorHandler != null )
-                parser.getProfile().setHandler(errorHandler) ;
+            // Unnecessary - RDFParser did it and set it in the ParserProfile
+//            if ( baseURI != null ) {
+//                IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//                parserProfile.setIRIResolver(newResolver);
+//            }
+            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
             parser.parse() ;
         }
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, baseURI, output) ;
-            parser.getProfile().setHandler(errorHandler) ; 
+            // Unnecessary - RDFParser did it and set it in the ParserProfile
+//          if ( baseURI != null ) {
+//              IRIResolver newResolver = IRIResolver.create(baseURI) ;
+//              parserProfile.setIRIResolver(newResolver);
+//          }
+            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
             parser.parse() ;
-        }
-
-        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
-        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
-
-        @Override public ParserProfile getParserProfile()                   { return parserProfile ; } 
-        @Override public void setParserProfile(ParserProfile parserProfile) { 
-            this.parserProfile = parserProfile ;
-            this.errorHandler = parserProfile.getHandler() ;
         }
     }
 
@@ -208,7 +208,7 @@ public class RDFParserRegistry
         public ReaderRIOT create(Lang language, ParserProfile profile) {
             if ( !Lang.JSONLD.equals(language) )
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
-            return new JsonLDReader(language, profile, profile.getHandler());
+            return new JsonLDReader(language, profile, profile.getErrorHandler());
         }
     }
  
@@ -228,37 +228,6 @@ public class RDFParserRegistry
         @Override
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
-        }
-
-        @Override
-        public ErrorHandler getErrorHandler() {
-            return null ;
-        }
-
-        @Override
-        public void setErrorHandler(ErrorHandler errorHandler) {}
-
-        @Override
-        public ParserProfile getParserProfile() {
-            return null ;
-        }
-
-        @Override
-        public void setParserProfile(ParserProfile profile) {}
-        
-    }
-
-    private static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderTriX(profile, profile.getHandler());
-        }
-    }
-
-    private static class ReaderRIOTFactoryRDFNULL implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            return new ReaderRDFNULL();
         }
     }
 }

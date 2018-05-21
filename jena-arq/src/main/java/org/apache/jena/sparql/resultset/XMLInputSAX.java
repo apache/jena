@@ -30,6 +30,9 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.resultset.rw.XMLResults;
+import org.apache.jena.riot.system.SyntaxLabels;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -38,13 +41,12 @@ import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.sparql.util.LabelToNodeMap ;
 import org.apache.jena.vocabulary.RDF ;
 import org.xml.sax.* ;
 import org.xml.sax.helpers.XMLReaderFactory ;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same. */
-
+// UNUSED
 class XMLInputSAX extends SPARQLResult {
     // See also XMLInputStAX, which is preferred.
     // SAX is not a streaming API - the SAX handler is called as fast as the
@@ -102,7 +104,7 @@ class XMLInputSAX extends SPARQLResult {
         boolean             askResult       = false ;
 
         int                 rowCount        = 0 ;
-        LabelToNodeMap      bNodes          = LabelToNodeMap.createBNodeMap() ;
+        LabelToNode         bNodes          = SyntaxLabels.createLabelToNode();
 
         boolean             accumulate      = false ;
         StringBuffer        buff            = new StringBuffer() ;
@@ -342,7 +344,7 @@ class XMLInputSAX extends SPARQLResult {
         private void endElementBNode(String ns, String localName, String name) {
             endAccumulate() ;
             String bnodeId = buff.toString() ;
-            Node node = bNodes.asNode(bnodeId) ;
+            Node node = bNodes.get(null, bnodeId) ;
             if ( checkVarName("BNode: " + bnodeId) )
                 addBinding(binding, Var.alloc(varName), node) ;
         }
@@ -373,5 +375,20 @@ class XMLInputSAX extends SPARQLResult {
 
         @Override
         public void skippedEntity(String name) throws SAXException {}
+        
+        static protected void addBinding(BindingMap binding, Var var, Node value) {
+            Node n = binding.get(var);
+            if ( n != null ) {
+                // Same - silently skip.
+                if ( n.equals(value) )
+                    return;
+                Log.warn(SPARQLResult.class,
+                         String.format("Multiple occurences of a binding for variable '%s' with different values - ignored", var.getName()));
+                return;
+            }
+            binding.add(var, value);
+        }
+
+
     }
 }

@@ -20,6 +20,7 @@ package org.apache.jena.query;
 import java.util.List ;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -125,7 +126,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(Query query, Model model) {
         checkArg(query) ;
         checkArg(model) ;
-        return make(query, DatasetFactory.create(model)) ;
+        return make(query, DatasetFactory.wrap(model)) ;
     }
 
     /** Create a QueryExecution to execute over the Model.
@@ -200,7 +201,7 @@ public class QueryExecutionFactory
      */
     static public QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
         checkArg(model) ;
-        return create(query, DatasetFactory.create(model), initialBinding) ;
+        return create(query, DatasetFactory.wrap(model), initialBinding) ;
     }
     
     /** Create a QueryExecution to execute over the Model, 
@@ -281,13 +282,17 @@ public class QueryExecutionFactory
         return sparqlService(service, query, (HttpClient)null) ;
     }
     
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
+    static public QueryExecution sparqlService(String service, String query, HttpClient client) {
+        return sparqlService(service, query, client, null);
+    }
+        /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service   URL of the remote service 
      * @param query     Query string to execute 
      * @param client    HTTP client
+     * @param httpContext HTTP Context
      * @return QueryExecution
      */ 
-    static public QueryExecution sparqlService(String service, String query, HttpClient client) {
+    static public QueryExecution sparqlService(String service, String query, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         checkArg(query) ;
         return sparqlService(service, QueryFactory.create(query), client) ;
@@ -311,10 +316,22 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client) {
+        return sparqlService(service, query, defaultGraph, client, null) ;
+    }
+
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service       URL of the remote service 
+     * @param query         Query string to execute
+     * @param defaultGraph  URI of the default graph
+     * @param client        HTTP client
+     * @param httpContext   HTTP Context
+     * @return QueryExecution
+     */ 
+    static public QueryExecution sparqlService(String service, String query, String defaultGraph, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        return sparqlService(service, QueryFactory.create(query), defaultGraph, client) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraph, client, httpContext) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -338,11 +355,25 @@ public class QueryExecutionFactory
      */ 
     static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
                                                HttpClient client) {
+        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null) ;
+    }
+    
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service           URL of the remote service 
+     * @param query             Query string to execute
+     * @param defaultGraphURIs  List of URIs to make up the default graph
+     * @param namedGraphURIs    List of URIs to make up the named graphs
+     * @param client            HTTP client
+     * @param httpContext HTTP Context
+     * @return QueryExecution
+     */ 
+    static public QueryExecution sparqlService(String service, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
+                                               HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         // checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
         checkArg(query) ;
-        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, client) ;
+        return sparqlService(service, QueryFactory.create(query), defaultGraphURIs, namedGraphURIs, client, httpContext) ;
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -367,6 +398,18 @@ public class QueryExecutionFactory
     }
     
     /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service   URL of the remote service 
+     * @param query     Query to execute 
+     * @param client    HTTP client
+     * @return QueryExecution
+     */ 
+    static public QueryExecution sparqlService(String service, Query query, HttpClient client, HttpContext httpContext) {
+        checkNotNull(service, "URL for service is null") ;
+        checkArg(query) ;
+        return createServiceRequest(service, query, client, httpContext) ;
+    }
+    
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
      * @param service           URL of the remote service 
      * @param query             Query to execute
      * @param defaultGraphURIs  List of URIs to make up the default graph
@@ -374,7 +417,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null) ;
+        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, null, null) ;
     }
 
     /** Create a QueryExecution that will access a SPARQL service over HTTP
@@ -385,8 +428,21 @@ public class QueryExecutionFactory
      * @param client            HTTP client
      * @return QueryExecution
      */ 
+    static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs, HttpClient client) {
+        return sparqlService(service, query, defaultGraphURIs, namedGraphURIs, client, null);
+    }
+
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service           URL of the remote service 
+     * @param query             Query to execute
+     * @param defaultGraphURIs  List of URIs to make up the default graph
+     * @param namedGraphURIs    List of URIs to make up the named graphs
+     * @param client            HTTP client
+     * @param httpContext       HTTP Context
+     * @return QueryExecution
+     */
     static public QueryExecution sparqlService(String service, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                                               HttpClient client) {
+                                               HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraphURIs, "List of default graph URIs is null") ;
         // checkNotNull(namedGraphURIs, "List of named graph URIs is null") ;
@@ -417,14 +473,24 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */ 
     static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client) {
+       return sparqlService(service, query, client, null);
+    }
+    
+    /** Create a QueryExecution that will access a SPARQL service over HTTP
+     * @param service       URL of the remote service 
+     * @param query         Query to execute
+     * @param defaultGraph  URI of the default graph
+     * @param client        HTTP client
+     * @return QueryExecution
+     */ 
+    static public QueryExecution sparqlService(String service, Query query, String defaultGraph, HttpClient client, HttpContext httpContext) {
         checkNotNull(service, "URL for service is null") ;
         // checkNotNull(defaultGraph, "IRI for default graph is null") ;
         checkArg(query) ;
-        QueryEngineHTTP qe = createServiceRequest(service, query, client) ;
+        QueryEngineHTTP qe = createServiceRequest(service, query, client, httpContext) ;
         qe.addDefaultGraph(defaultGraph) ;
         return qe ;
     }
-
     /** Create a service request for remote execution over HTTP.  The returned class,
      * {@link QueryEngineHTTP},
      * allows various HTTP specific parameters to be set. 
@@ -446,6 +512,20 @@ public class QueryExecutionFactory
      */
     static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client) {
         QueryEngineHTTP qe = new QueryEngineHTTP(service, query, client) ;
+        return qe ;
+    }
+
+    /** Create a service request for remote execution over HTTP.  The returned class,
+     * {@link QueryEngineHTTP},
+     * allows various HTTP specific parameters to be set. 
+     * @param service Endpoint URL
+     * @param query Query
+     * @param client HTTP client 
+     * @param httpContext HTTP Context
+     * @return Remote Query Engine
+     */
+    static public QueryEngineHTTP createServiceRequest(String service, Query query, HttpClient client, HttpContext httpContext) {
+        QueryEngineHTTP qe = new QueryEngineHTTP(service, query, client, httpContext) ;
         return qe ;
     }
 

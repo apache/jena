@@ -18,11 +18,7 @@
 
 package org.apache.jena.riot.resultset;
 
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetThrift ;
-import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML ;
+import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -34,11 +30,13 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.resultset.rw.ResultSetReaderJSON;
+import org.apache.jena.riot.resultset.rw.ResultSetReaderThrift;
+import org.apache.jena.riot.resultset.rw.ResultSetReaderXML;
 import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.sparql.resultset.CSVInput ;
-import org.apache.jena.sparql.resultset.JSONInput ;
+import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.resultset.TSVInput ;
-import org.apache.jena.sparql.resultset.XMLInput ;
 import org.apache.jena.sparql.util.Context ;
 
 public class ResultSetReaderRegistry {
@@ -56,6 +54,12 @@ public class ResultSetReaderRegistry {
         registry.put(lang, factory) ;
     }
 
+    /** Test whether {@link Lang} is registered as a result set syntax. */
+    public static boolean isRegistered(Lang lang) {
+        Objects.requireNonNull(lang) ;
+        return registry.containsKey(lang);
+    }
+
     private static Map<Lang, ResultSetReaderFactory> registry = new HashMap<>() ;
     
     private static boolean initialized = false ;
@@ -65,24 +69,21 @@ public class ResultSetReaderRegistry {
         initialized = true ;
 
         ResultSetReaderFactory factory = new ResultSetReaderFactoryStd() ;
-        register(SPARQLResultSetXML,    factory) ;
-        register(SPARQLResultSetJSON,   factory) ;
+        register(SPARQLResultSetXML,    ResultSetReaderXML.factory) ;
+        register(SPARQLResultSetJSON,   ResultSetReaderJSON.factory) ;
+        register(SPARQLResultSetThrift, ResultSetReaderThrift.factory) ;
         register(SPARQLResultSetCSV,    factory) ;
         register(SPARQLResultSetTSV,    factory) ;
-        register(SPARQLResultSetThrift, factory) ;
     }
     
-    static { ResultSetLang.init(); }
-
     private static class ResultSetReaderFactoryStd implements ResultSetReaderFactory {
         @Override
         public ResultSetReader create(Lang lang) {
             lang = Objects.requireNonNull(lang, "Language must not be null") ;
-            if ( lang.equals(SPARQLResultSetXML) )      return readerXML ;
-            if ( lang.equals(SPARQLResultSetJSON) )     return readerJSON ;
+//            if ( lang.equals(SPARQLResultSetXML) )      return readerXML ;
+//            if ( lang.equals(SPARQLResultSetJSON) )     return readerJSON ;
             if ( lang.equals(SPARQLResultSetCSV) )      return readerCSV ;
             if ( lang.equals(SPARQLResultSetTSV) )      return readerTSV ;
-            if ( lang.equals(SPARQLResultSetThrift) )   return readerThrift ;
             throw new RiotException("Lang not registered (ResultSet reader)") ;
         }
     }
@@ -98,43 +99,49 @@ public class ResultSetReaderRegistry {
                 @Override
                 public ResultSet read(Reader in, Context context) {
                     throw new NotImplemented("Reading binary data from a java.io.Reader is not possible") ;
-                }} ;
+                    
+                }
+                @Override public SPARQLResult readAny(InputStream in, Context context) { 
+                    return new SPARQLResult(read(in, context));
+                }    
+            } ;
         }
     }
     // These all call static methods, so have no state and so don't
     // need to be created for each read operation.  
     
-    private static ResultSetReader readerXML = new ResultSetReader() {
-        @Override public ResultSet read(InputStream in, Context context)    { return XMLInput.fromXML(in); }
-        @Override public ResultSet read(Reader in, Context context)         { return XMLInput.fromXML(in); }
-    } ;
+//    private static ResultSetReader readerXML = new ResultSetReader() {
+//        @Override public ResultSet read(InputStream in, Context context)    { return XMLInput.fromXML(in); }
+//        @Override public ResultSet read(Reader in, Context context)         { return XMLInput.fromXML(in); }
+//        @Override public SPARQLResult readAny(InputStream in, Context context) { return XMLInput.make(in); }
+//    };
 
-    private static ResultSetReader readerJSON = new ResultSetReader() {
-        @Override public ResultSet read(InputStream in, Context context)    { return JSONInput.fromJSON(in) ; }
-        @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
-    } ;
-
+//    private static ResultSetReader readerJSON = new ResultSetReader() {
+//        @Override public ResultSet read(InputStream in, Context context)    { return JSONInput.fromJSON(in) ; }
+//        @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
+//    } ;
+//
     private static ResultSetReader readerCSV = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return CSVInput.fromCSV(in) ; }
         @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
+        @Override public SPARQLResult readAny(InputStream in, Context context) {
+            // Not switchable.
+            return new SPARQLResult(read(in, context));
+        } 
     } ;
     
     private static ResultSetReader readerTSV = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return TSVInput.fromTSV(in); }
         @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
-    } ;
-
-    private static ResultSetReader readerThrift = new ResultSetReader() {
-        @Override public ResultSet read(InputStream in, Context context)    { return BinRDF.readResultSet(in) ;}
-        @Override public ResultSet read(Reader in, Context context)         { 
-            throw new NotImplemented("Reading binary data from a java.io.Reader is not possible") ;
-        }
+        @Override public SPARQLResult readAny(InputStream in, Context context) {
+            // Not switchable.
+            return new SPARQLResult(read(in, context));
+        } 
     } ;
 
     private static ResultSetReader readerNo = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return null ; }
         @Override public ResultSet read(Reader in, Context context)         { return null ; }
+        @Override public SPARQLResult readAny(InputStream in, Context context) { return null ; }
     } ;
-    
-    
 }

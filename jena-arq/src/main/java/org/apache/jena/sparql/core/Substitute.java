@@ -124,8 +124,8 @@ public class Substitute {
         if ( propFuncArg.isNode() ) {
             Node n = propFuncArg.getArg();
             if ( !Var.isVar(n) )
-                                // Not a Var, no substitute needed.
-                                return propFuncArg;
+                // Not a Var, no substitute needed.
+                return propFuncArg;
             return new PropFuncArg(substitute(propFuncArg.getArg(), binding));
         }
 

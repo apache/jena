@@ -44,6 +44,14 @@ import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 
 /**
+ * <b>Note:</b>
+ * <br/>
+ * <em> There is a {@code FusekiTestServer} in the basic Fuseki server which is more
+ * appropriate for testing SPARQL protocols. It does not have a on-disk footprint.</em>
+ * <br/>
+ * This class is
+ * primarily for testing the full Fuseki server and has a full on-disk configuration.
+ * 
  * Manage a single server for use with tests. It supports three modes:
  * <ul>
  * <li>One server for a whole test suite
@@ -51,12 +59,14 @@ import org.apache.jena.update.UpdateProcessor ;
  * <li>One server per individual test
  * </ul>
  * One server per individual test can be troublesome due to connections not closing down
- * fast enough (left in TCP state {@code TIME_WAIT} which is 2 minutes) and also can be slow.
- * One server per test class is a good compromise. 
- * <p> The data in the server is always reseet between tests.
+ * fast enough (left in TCP state {@code TIME_WAIT} which is 2 minutes) and also can be
+ * slow. One server per test class is a good compromise.
  * <p>
- * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is important,
- * both for test performance and for reducing the TCP connection load on the operating system.  
+ * The data in the server is always reseet between tests.
+ * <p>
+ * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is
+ * important, both for test performance and for reducing the TCP connection load on the
+ * operating system.
  * <p>
  * Usage:
  * </p>
@@ -69,6 +79,7 @@ import org.apache.jena.update.UpdateProcessor ;
  * </pre>
  * <p>
  * In the test class, put:
+ * 
  * <pre>
  * {@literal @BeforeClass} public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
  * {@literal @AfterClass}  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
@@ -98,7 +109,7 @@ public class ServerCtl {
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS ;
-    private static int currentPort = FusekiEnv.choosePort() ;
+    private static int currentPort = FusekiLib.choosePort() ;
     
     public static int port() {
         return currentPort ;
@@ -218,7 +229,7 @@ public class ServerCtl {
         SystemState.location = Location.mem() ;
         SystemState.init$() ;
         
-        ServerInitialConfig params = new ServerInitialConfig() ;
+        FusekiInitialConfig params = new FusekiInitialConfig() ;
         dsgTesting = DatasetGraphFactory.createTxnMem() ;
         params.dsg = dsgTesting ;
         params.datasetPath = datasetPath ;
@@ -237,7 +248,7 @@ public class ServerCtl {
         if ( server != null ) {
             // Clear out the registry.
             server.getDataAccessPointRegistry().clear() ;
-            FileOps.clearAll(FusekiServer.dirConfiguration.toFile()) ;
+            FileOps.clearAll(FusekiSystem.dirConfiguration.toFile()) ;
             server.stop() ;
         }
         server = null ;

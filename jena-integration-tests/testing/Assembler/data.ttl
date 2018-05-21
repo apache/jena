@@ -1,0 +1,5 @@
+PREFIX : <http://example/data/>
+
+:s :p :o .
+:s :q 12 .
+:s :q 12.0 .

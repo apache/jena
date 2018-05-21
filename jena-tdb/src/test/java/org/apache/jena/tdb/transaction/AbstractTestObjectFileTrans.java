@@ -25,6 +25,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
 import org.apache.jena.tdb.transaction.ObjectFileTrans ;
 import org.apache.jena.tdb.transaction.Transaction ;
@@ -37,7 +38,6 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
 {
     static long count = 0 ;
     ObjectFile file1 ;
-    ObjectFile file2 ;
     ObjectFileTrans file ;
     Transaction txn ;
     
@@ -49,9 +49,9 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, 5, ReadWrite.WRITE, ++count, null, tm) ;
+        txn = new Transaction(null, 5, TxnType.WRITE, ReadWrite.WRITE, ++count, TxnType.WRITE, null, tm) ;
         file1 = createFile("base") ;
-        file2 = createFile("log") ;
+        //file2 = createFile("log") ;
     }
 
     @After
@@ -83,7 +83,10 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     }
     
 
-    private void init() { file = new ObjectFileTrans(null, file1, file2) ; } 
+    private void init() { 
+        //file = new ObjectFileTransComplex(null, file1, file2) ;
+        file = new ObjectFileTrans(null, file1) ;
+    }
     
     static void fill(ObjectFile file, String... contents)
     {
@@ -103,11 +106,11 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         init() ;
         
         file.begin(txn) ; 
-        contains(file2) ;
+        //contains(file2) ;
         file.commitPrepare(txn) ;
-        file.commitEnact(txn) ;
+        file.enactCommitted(txn) ;
         contains(file1, "ABC") ;
-        file.commitClearup(txn) ;
+        file.clearupCommitted(txn) ;
     }
 
     @Test public void objFileTrans_03()
@@ -117,9 +120,9 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.begin(txn) ; 
         write(file, "X") ;
         file.commitPrepare(txn) ;
-        file.commitEnact(txn) ;
+        file.enactCommitted(txn) ;
         contains(file1, "ABC", "X") ;
-        file.commitClearup(txn) ;
+        file.clearupCommitted(txn) ;
     }
 
     @Test public void objFileTrans_04()
@@ -129,9 +132,9 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         file.begin(txn) ; 
         write(file, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
         file.commitPrepare(txn) ;
-        file.commitEnact(txn) ;
+        file.enactCommitted(txn) ;
         contains(file1, "ABC", "ABC", "ABCDEFGHIJKLMNOPQRSTUVWXYZ") ;
-        file.commitClearup(txn) ;
+        file.clearupCommitted(txn) ;
     }
 
     @Test public void objFileTrans_05()
@@ -142,7 +145,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
         write(file, "ABCDEF") ;
         file.abort(txn) ;
         contains(file1, "ABC") ;
-        file.commitClearup(txn) ;
+        file.clearupCommitted(txn) ;
     }
 
     @Test public void objFileTrans_06()

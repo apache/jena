@@ -27,6 +27,7 @@ import java.util.Map.Entry ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.JenaRuntime ;
+import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.rdf.model.* ;
@@ -38,7 +39,6 @@ import org.apache.jena.shared.* ;
 import org.apache.jena.util.CharEncoding ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.vocabulary.* ;
-import org.apache.xerces.util.XMLChar ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -490,6 +490,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
     
     @SuppressWarnings("deprecation")
+    // Testing.
+    // Agrees with ARPOptions.defaultIriFactory.
     static IRIFactory factory = IRIFactory.jenaImplementation();
 
    

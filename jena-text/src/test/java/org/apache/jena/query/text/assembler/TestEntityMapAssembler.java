@@ -32,6 +32,7 @@ import org.apache.jena.query.text.TextIndexException ;
 import org.apache.jena.query.text.analyzer.ConfigurableAnalyzer ;
 import org.apache.jena.query.text.analyzer.LowerCaseKeywordAnalyzer ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
@@ -163,6 +164,7 @@ public class TestEntityMapAssembler {
     private static final Property SPEC2_PREDICATE1 = RDFS.label;
     private static final Property SPEC2_PREDICATE2 = RDFS.comment;
     static {
+        JenaSystem.init();
         TextAssembler.init();
         Model model = ModelFactory.createDefaultModel();
         

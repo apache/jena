@@ -93,7 +93,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * "prepare" if necessary. The call is provided for those occasions where
      * substantial preparation work is possible (e.g. running a forward chaining
      * rule system) and where an application might wish greater control over when
-     * this prepration is done.
+     * this preparation is done.
      */
     @Override
     public synchronized void prepare() {
@@ -276,7 +276,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
 //     Interface between infGraph and the goal processing machinery
 
     /**
-     * Log a dervivation record against the given triple.
+     * Log a derivation record against the given triple.
      */
     @Override
     public void logDerivation(Triple t, Derivation derivation) {
@@ -329,7 +329,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
 
     /**
      * Find any axioms (rules with no body) in the rule set and
-     * add those to the auxilliary graph to be included in searches.
+     * add those to the auxiliary graph to be included in searches.
      */
     protected void extractAxioms() {
         Graph axioms = fdeductions.getGraph();

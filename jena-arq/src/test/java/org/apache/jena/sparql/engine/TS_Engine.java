@@ -34,6 +34,8 @@ import org.junit.runners.Suite ;
       , TestService.class
       , TestQueryEngineHTTP.class
       , TestQueryEngineMultiThreaded.class
+      , TestJsonIterator.class
+      , TestJsonEval.class
 })
 
 public class TS_Engine {}

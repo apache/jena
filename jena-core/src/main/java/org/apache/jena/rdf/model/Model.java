@@ -510,7 +510,7 @@ public interface Model
 	public Model write( Writer writer ) ;
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * It is often better to use an OutputStream rather than a Writer, since this
      * will avoid character encoding errors.
      * </p>
@@ -525,7 +525,7 @@ public interface Model
 	public Model write( Writer writer, String lang ) ;
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * It is often better to use an OutputStream rather than a Writer,
      * since this will avoid character encoding errors.
      * </p>
@@ -555,7 +555,7 @@ public interface Model
 	public Model write(OutputStream out) ;
 
     /**
-     * <p>Write a serialized represention of this model in a specified language.
+     * <p>Write a serialized representation of this model in a specified language.
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
@@ -568,7 +568,7 @@ public interface Model
 	public Model write( OutputStream out, String lang ) ;
 
     /**
-     * <p>Write a serialized represention of a model in a specified language.
+     * <p>Write a serialized representation of a model in a specified language.
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
@@ -638,7 +638,7 @@ public interface Model
     
 	/** 
 	    An alias for <code>listResourcesWithProperty(Property)</code>,
-	    retained for backward compatability. It may be deprecated in later
+	    retained for backward compatibility. It may be deprecated in later
 	    releases.
 	 */
 	ResIterator listSubjectsWithProperty( Property p );
@@ -652,7 +652,7 @@ public interface Model
 
 	/** 
 	   An alias for <code>listResourcesWithProperty</code>, retained for
-	   backward compatability. It may be deprecated in later releases.
+	   backward compatibility. It may be deprecated in later releases.
 	*/
 	ResIterator listSubjectsWithProperty( Property p, RDFNode o );
 	
@@ -704,7 +704,7 @@ public interface Model
      * to represent a wildcard match.
 	 * @return true if the statement with subject s, property p and object o
 	 * is in the model, false otherwise
-	 * @param s The subject of the statment tested (null as wildcard).
+	 * @param s The subject of the statement tested (null as wildcard).
 	 * @param p The predicate of the statement tested (null as wildcard).
 	 * @param o The object of the statement tested (null as wildcard).
 
@@ -789,7 +789,7 @@ public interface Model
 
 	/** List the statements matching a selector.
 	 *
-	 * <p>A statment is considered to match if the <CODE>test</CODE> method
+	 * <p>A statement is considered to match if the <CODE>test</CODE> method
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
@@ -839,7 +839,7 @@ public interface Model
 
 	/** Create a new model containing the statements matching a query.
 	 *
-	 * <p>A statment is considered to match if the <CODE>test</CODE> method
+	 * <p>A statement is considered to match if the <CODE>test</CODE> method
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
@@ -899,7 +899,7 @@ public interface Model
 	@Override
     public boolean equals(Object m);
 
-	/** Begin a new transation.
+	/** Begin a new transaction.
 	 *
 	 * <p> All changes made to a model within a transaction, will either
 	 * be made, or none of them will be made.</p>
@@ -973,7 +973,7 @@ public interface Model
 	 * <p>Special treatment is given to anonymous nodes.  A binding is a one to
 	 * one mapping which maps each anonymous node in <code>this</code> model to
 	 * an anonymous node in <code>model</code>.  Two statements s1 and s2 match
-	 * under a binding if if s1.subject is anonymous and s2.subject is anonymous
+	 * under a binding if s1.subject is anonymous and s2.subject is anonymous
 	 * and the binding maps s1.subject to s2.subject.</p>
 	 *
 	 * <p>Two models are isomorphic if there is a binding that allows all the
@@ -1051,4 +1051,12 @@ public interface Model
         Answer true iff .close() has been called on this Model.
     */
     public boolean isClosed();
+
+    // Override return type for methods inherited from PrefixMapping
+	@Override Model setNsPrefix( String prefix, String uri );
+	@Override Model removeNsPrefix( String prefix );
+	@Override Model clearNsPrefixMap();
+	@Override Model setNsPrefixes( PrefixMapping other );
+	@Override Model setNsPrefixes( Map<String, String> map );
+	@Override Model withDefaultMappings( PrefixMapping map );
 }

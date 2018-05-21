@@ -24,19 +24,9 @@ import java.util.Deque ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 
-/** Resolve syntacic forms like (base ...) and (prefix...)
+/** Habdle forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
- *  
- *  
- *  Forms:
- *    (FORM DECL... TERM) => where TERM is the result.
- *  Examples 
- *    (prefix (PREFIXES) TERM) => TERM with prefix names expanded
- *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
- *  
- *  The DECL part can not itself have nested, independent forms
- *  unless a subclass (carefully) manages that. */
-
+ */
 public abstract class ParseHandlerForm extends ParseHandlerPlain 
 {
     // generally: (FORM DECL* TERM?)

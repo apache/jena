@@ -63,7 +63,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends AbstractNodeTupleWritable<TValue>> {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNodeTupleOutputFormatTests.class);
 
     protected static final int EMPTY_SIZE = 0, SMALL_SIZE = 100, LARGE_SIZE = 10000, VERY_LARGE_SIZE = 100000;

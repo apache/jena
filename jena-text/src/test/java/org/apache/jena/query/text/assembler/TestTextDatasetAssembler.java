@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.QuadAction ;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb.assembler.AssemblerTDB ;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
@@ -93,6 +94,7 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     }
 
     static {
+        JenaSystem.init();
         TextAssembler.init();
         AssemblerTDB.init();
         spec1 =

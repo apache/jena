@@ -21,10 +21,18 @@ package org.apache.jena.query.text ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.dboe.transaction.txn.ComponentId;
+import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
+import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.* ;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphMonitor;
+import org.apache.jena.sparql.core.GraphView;
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.tdb.transaction.TransactionManager;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -36,27 +44,65 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     private final Graph         dftGraph ;
     private final boolean       closeIndexOnClose;
     // Lock needed for commit/abort that perform an index operation and a dataset operation
-    // which need it happen without a W thread coming in between them.
-    // JENA-1302.
+    // when the underlying datsetGraph does not coordinate the commit.
     private final Object        txnExitLock = new Object();
-    
     
     // If we are going to implement Transactional, then we are going to have to do as DatasetGraphWithLock and
     // TDB's DatasetGraphTransaction do and track transaction state in a ThreadLocal
     private final ThreadLocal<ReadWrite> readWriteMode = new ThreadLocal<>();
     
+    private Runnable delegateCommit = ()-> {
+        super.commit();
+    };
     
-    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer)
-    { 
+    private Runnable delegateAbort = ()-> {
+        super.abort();
+    };
+    
+    private Runnable nonDelegatedCommit = ()-> {
+        if (readWriteMode.get() == ReadWrite.WRITE)
+            commit_W();
+        else
+            commit_R();
+    };
+    
+    private Runnable nonDelegatedAbort = ()-> {
+        if (readWriteMode.get() == ReadWrite.WRITE)
+            abort_W();
+        else
+            abort_R();
+    };
+
+    private Runnable commitAction = null;
+    private Runnable abortAction = null;
+    
+    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer) {
         this(dsg, index, producer, false);
     }
-    
-    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer, boolean closeIndexOnClose)
-    {
+
+    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer, boolean closeIndexOnClose) {
         super(dsg, producer) ;
         this.textIndex = index ;
         dftGraph = GraphView.createDefaultGraph(this) ;
         this.closeIndexOnClose = closeIndexOnClose;
+        
+        if ( org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) ) {
+            TransactionManager txnMgr = org.apache.jena.tdb.sys.TDBInternal.getTransactionManager(dsg);
+            txnMgr.addAdditionComponent(new TextIndexTDB1(textIndex));
+            commitAction = delegateCommit;
+            abortAction = delegateAbort;
+        } else if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) ) {
+            TransactionCoordinator coord = org.apache.jena.tdb2.sys.TDBInternal.getTransactionCoordinator(dsg);
+            // Does not overlap with the ids used by TDB2.
+            byte[] componentID = { 2,4,6,10 } ;
+            TransactionalComponent tc = new TextIndexDB(ComponentId.create(null, componentID), textIndex);
+            coord.modify(()->coord.add(tc));
+            commitAction = delegateCommit;
+            abortAction = delegateAbort;
+        } else {
+            commitAction = nonDelegatedCommit;
+            abortAction = nonDelegatedAbort;
+        }
     }
 
     // ---- Intercept these and force the use of views.
@@ -108,6 +154,17 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     }
 
     @Override
+    public void begin(TxnType txnType) {
+        switch(txnType) {
+            case READ_PROMOTE:
+            case READ_COMMITTED_PROMOTE:
+                throw new UnsupportedOperationException("begin("+txnType+")");
+            default:
+        }
+        begin(TxnType.convert(txnType));
+    }
+    
+    @Override
     public void begin(ReadWrite readWrite) {
         // Do not synchronized(txnLock) here. It will deadlock because if there
         // is an writer in commit, it can't 
@@ -118,48 +175,27 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         super.getMonitor().start() ;
     }
     
-    // JENA-1302 :: txnExitLock
-    // We need to 
-    //   textIndex.prepareCommit();
-    //   super.commit();
-    //   textIndex.commit();
-    // without another thread getting in.
-    
-    // Concurrency control most of the time is because we use the transaction
-    // capability of the wrapped dataset but here we need to do an action before
-    // wrapped dataset commit and also an action after.
-    // 
-    // At the point of super.commit, it let in a new writer in begin() which
-    // races to commit before text index commit.
-    //
-    // txnExitLock extends the time of exclusive access.    
-    
-    /**
-     * Perform a 2-phase commit by first calling prepareCommit() on the TextIndex
-     * followed by committing the Transaction object, and then calling commit()
-     * on the TextIndex().
-     * <p> 
-     * If either of the objects fail on either the preparation or actual commit,
-     * it terminates and calls {@link #abort()} on both of them.
-     * <p>
-     * <b>NOTE:</b> it may happen that the TextIndex fails to commit, after the
-     * Transactional has already successfully committed.  A rollback instruction will
-     * still be issued, but depending on the implementation, it may not have any effect.
-     */
     @Override
     public void commit() {
-        if (readWriteMode.get() == ReadWrite.WRITE)
-            commit_W();
-        else
-            commit_R();
+        super.getMonitor().finish() ;
+        commitAction.run();
+        readWriteMode.set(null);
     }
     
     
+    /**
+     * Rollback all changes, discarding any exceptions that occur.
+     */
+    @Override
+    public void abort() {
+        super.getMonitor().finish() ;
+        abortAction.run();
+        readWriteMode.set(null);
+    }
+
     private void commit_R() {
         // No index action needed.
-        super.getMonitor().finish() ;
         super.commit();
-        readWriteMode.set(null);
     }
 
     private void commit_W() {
@@ -175,6 +211,38 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             
             // Phase 2
             try {
+                // JENA-1302: This needs the exclusive lock for flushing the queue.
+                // TDB1
+                // Thread 1(W) is running, holds the exclusivitylock=R
+                
+                // Thread 2(W) starts, tries to commit
+                //   Takes txnExitLock
+                //   Calls super.commit
+                //     Find an excessive flush queue.
+                //     It tries to TransactionManger.exclusiveFlushQueue
+                //       This needs exclusivitylock=W
+                //       So Thread 2 blocks, waiting for thread 1
+                //       but still holds txnExitLock
+                //
+                // Thread 1 tries to commit. 
+                //   Can't take the txnExitLock because of thread 2.
+                //
+                // ==> Deadlock.
+                // Fix:
+                //   Put index commit into TDB TransactionLifecycle.
+                //   No txnExitLock.
+                
+                // Doing a non-blocking exclusive attempt in TransactionManger.exclusiveFlushQueue
+                // does not help - we are in a situation where the queue is growing and unflushable
+                // which is why we entered emergency measures. Eventually, RAM will run out as well as
+                // the system becoming slow due to Journal layers. 
+                
+                // TDB2
+                //   All work takes place on the W commiting thread.
+                //   There is no pause point so this can't happen.
+                //     txnExitLock isn't needed, the overall TDB2 transaction 
+                //     means W is unique and all work happens without any potential blocking.
+                
                 super.commit();
                 textIndex.commit();
             }
@@ -183,35 +251,19 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
                 abort();
                 throw new TextIndexException(t);
             }
-            readWriteMode.set(null);
         }
     }
 
-    /**
-     * Rollback all changes, discarding any exceptions that occur.
-     */
-    @Override
-    public void abort() {
-        if (readWriteMode.get() == ReadWrite.WRITE)
-            abort_W();
-        else
-            abort_R();
-    }
-    
     private void abort_R() {
-        super.getMonitor().finish() ;
         try { super.abort() ; }
         catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
-        readWriteMode.set(null) ;
     }
     
     private void abort_W() {
         synchronized(txnExitLock) {
-            super.getMonitor().finish() ;
             // Roll back on both objects, discarding any exceptions that occur
             try { super.abort(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
             try { textIndex.rollback(); } catch (Throwable t) { log.warn("Exception in abort: " + t.getMessage(), t); }
-            readWriteMode.set(null) ;
         }
     }
 
@@ -229,7 +281,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         if (readWriteMode.get() == ReadWrite.WRITE) {
             // If we are still in a write transaction at this point, then commit
             // was never called, so rollback the TextIndex and the dataset.
-            abort();
+            abortAction.run();
         }
         super.end() ;
         super.getMonitor().finish() ;

@@ -35,7 +35,7 @@ import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
 
 /**
- * A collection of small utilites for pretty printing nodes, triples
+ * A collection of small utilities for pretty printing nodes, triples
  * and associated things. The core functionality here is a static
  * prefix map which is preloaded with known prefixes.
  */
@@ -151,7 +151,7 @@ public class PrintUtil {
     }
     
     /**
-     * Return a simplified print string for a statment
+     * Return a simplified print string for a statement
      */
     public static String print(Statement stmt) {
         if (stmt == null) return "(null)";

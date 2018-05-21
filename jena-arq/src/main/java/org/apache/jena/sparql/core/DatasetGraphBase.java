@@ -21,11 +21,13 @@ package org.apache.jena.sparql.core;
 import java.util.Iterator ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.shared.Lock ;
 import org.apache.jena.shared.LockMRSW ;
 import org.apache.jena.sparql.core.mem.DatasetGraphInMemory ;
+import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.sse.writers.WriterGraph ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -39,7 +41,7 @@ import org.apache.jena.sparql.util.Context ;
  * <li>{@link DatasetGraphInMemory} provides full transactions for an in-memory {@code DatasetGraph}.</li>
  * <li>{@link DatasetGraphTriplesQuads} that adds mutating quad operations.</li>
  * <li>{@link DatasetGraphMap} provides for operations working over a collection of in-memory graphs.</li>
- * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provived by the application.</li>
+ * <li>{@link DatasetGraphMapLink} provides for operations working over a collection of graphs provided by the application.</li>
  * <li>{@link DatasetGraphCollection} that provides for operations working over a collection of graphs.</li>
  * </ul> 
  */
@@ -51,13 +53,29 @@ abstract public class DatasetGraphBase implements DatasetGraph
     protected DatasetGraphBase() {}
     
     @Override
-    public boolean containsGraph(Node graphNode)
-    { return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ; }
+    public boolean containsGraph(Node graphNode) { 
+        if ( Quad.isDefaultGraph(graphNode) )
+            return true;
+        if ( Quad.isUnionGraph(graphNode) )
+            return true;
+        return contains(graphNode, Node.ANY, Node.ANY, Node.ANY);
+    }
     
     // Explicit record of what's not provided here.
     
     @Override
     public abstract Graph getDefaultGraph() ;
+    
+    @Override
+    public Graph getUnionGraph() {
+        // Implementations are encouraged to implement an efficent
+        // named graph for Quad.unionGraph, and this operation that
+        // does not require the full "distinct()" used by the general purpose
+        // GraphUnionRead. See also
+        // {@code DatasetGraphBase.findQuadsInUnionGraph} and
+        // {@code findNG(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)}
+        return GraphOps.unionGraph(this);
+    }
 
     @Override
     public abstract Graph getGraph(Node graphNode) ;
@@ -137,6 +155,10 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return g == null || g == Node.ANY;
     }
 
+    protected static void unsupportedMethod(Object object, String method) {
+        throw new UnsupportedOperationException(Lib.className(object)+"."+method) ;
+    }
+    
     @Override
     public void clear() {
         deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);

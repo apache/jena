@@ -320,9 +320,9 @@ public class OpExecutor
     protected QueryIterator execute(OpTable opTable, QueryIterator input) {
         if (opTable.isJoinIdentity())
             return input ;
-        if (input instanceof QueryIterRoot) {
+        if (input.isJoinIdentity() ) {
             input.close() ;
-            return opTable.getTable().iterator(execCxt) ;
+            return opTable.getTable().iterator(execCxt);
         }
         QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
         QueryIterator qIter = Join.join(input, qIterT, execCxt) ;

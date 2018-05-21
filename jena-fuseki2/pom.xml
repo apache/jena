@@ -20,14 +20,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
   <artifactId>jena-fuseki</artifactId>
-  <version>2.6.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
 
   <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
   SPARQL update and SPARQL graph store protocols.
@@ -36,17 +36,6 @@
   <packaging>pom</packaging>
   
   <url>http://jena.apache.org/</url>
-
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <organization>
     <name>Apache Jena</name>
@@ -61,11 +50,11 @@
   </licenses>
 
   <properties>
-    <!--<ver.jetty>9.1.1.v20140108</ver.jetty>-->
-    <ver.jetty>9.3.3.v20150827</ver.jetty>
-    <ver.shiro>1.2.4</ver.shiro>
+    <ver.jetty>9.4.7.v20170914</ver.jetty>
+    <ver.shiro>1.2.6</ver.shiro>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+    <automatic.module.name>org.apache.jena.fuseki2</automatic.module.name>  
   </properties>
 
   <modules>
@@ -73,6 +62,7 @@
     <module>jena-fuseki-embedded</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-server</module>
+    <module>jena-fuseki-basic</module>
     <module>apache-jena-fuseki</module>
   </modules>
   

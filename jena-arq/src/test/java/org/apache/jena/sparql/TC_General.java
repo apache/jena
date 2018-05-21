@@ -31,12 +31,15 @@ import org.apache.jena.sparql.engine.join.TS_Join ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
+import org.apache.jena.sparql.function.js.TS_FunctionJS;
+import org.apache.jena.sparql.function.library.TS_LibraryFunctions ;
 import org.apache.jena.sparql.function.user.TS_UserFunctions ;
 import org.apache.jena.sparql.graph.TS_Graph ;
 import org.apache.jena.sparql.lang.TS_Lang ;
 import org.apache.jena.sparql.modify.TS_Update ;
 import org.apache.jena.sparql.negation.TS_Negation ;
 import org.apache.jena.sparql.path.TS_Path ;
+import org.apache.jena.sparql.pfunction.library.TS_PFunction ;
 import org.apache.jena.sparql.resultset.TS_ResultSet ;
 import org.apache.jena.sparql.solver.TS_Solver ;
 import org.apache.jena.sparql.syntax.TS_SSE ;
@@ -56,7 +59,10 @@ import org.junit.runners.Suite ;
     , TS_Util.class
     
     , TS_Expr.class
+    , TS_LibraryFunctions.class
     , TS_UserFunctions.class
+    , TS_FunctionJS.class
+    , TS_PFunction.class
     
     , TS_ResultSet.class
     , TS_Engine.class

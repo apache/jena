@@ -390,6 +390,25 @@ public class TestOpAsQuery {
     }
     
     @Test
+    public void testTable1() {
+        String query = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }" ;
+        roundTripQuery(query);
+    }
+    
+    @Test
+    public void testTable2() {
+        // JENA-1468 : op to string and back.
+        String qs = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }" ;
+        Query query = QueryFactory.create(qs); 
+        Op op = Algebra.compile(query);
+        String x = op.toString();
+        Op op1 = SSE.parseOp(x);
+        Query query2 = OpAsQuery.asQuery(op1);
+        assertEquals(query, query2);
+    }
+    
+
+    @Test
     public void testValues1() {
         String query = "SELECT  * { VALUES ?x {1 2} ?s ?p ?x }" ;
         test_roundTripQuery(query) ;
@@ -443,6 +462,7 @@ public class TestOpAsQuery {
     
     // Test for queries that do query->algebra->OpAsQuery->query
     // to produce an output that is .equals the input.
+    /** query->algebra->OpAsQuery->query */
     public static Query[] test_roundTripQuery(String query) {
         Query[] r = roundTripQuery(query) ;
         stripNamespacesAndBase(r[0]) ; 
@@ -471,7 +491,7 @@ public class TestOpAsQuery {
         Assert.assertEquals(a1, a2);
     }
     
-    // algebra->OpAsQuery->query
+    /** algebra->OpAsQuery->query */
     public static void test_AlgebraToQuery(String input, String expected) {
         Op op = SSE.parseOp(input) ;
         Query orig = QueryFactory.create(expected, Syntax.syntaxSPARQL_11);
@@ -480,7 +500,7 @@ public class TestOpAsQuery {
         Assert.assertEquals(orig, got) ;
     }
 
-    // query->algebra->OpAsQuery->query
+    /** query->algebra->OpAsQuery->query **/
     private static Query[] roundTripQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
@@ -489,7 +509,7 @@ public class TestOpAsQuery {
         return r;
     }
     
-    // query->algebra/quads->OpAsQuery->query
+    /** query->algebra/quads->OpAsQuery->query */
     private static Query[] roundTripQueryQuad(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);

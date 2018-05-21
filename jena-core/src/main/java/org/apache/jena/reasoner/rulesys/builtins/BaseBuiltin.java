@@ -108,7 +108,7 @@ public abstract class BaseBuiltin implements Builtin {
     }
     
     /**
-     * Return the n'th argument node after dererencing by what ever type of
+     * Return the n'th argument node after dereferencing by what ever type of
      * rule engine binding environment is appropriate.
      */
     public Node getArg(int n, Node[] args, RuleContext context) {

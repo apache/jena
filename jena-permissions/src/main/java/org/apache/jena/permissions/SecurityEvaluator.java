@@ -248,7 +248,7 @@ public interface SecurityEvaluator {
 	 * explicit triple checks.
 	 * <em>If the system can not quickly verify the solution it is always
 	 * acceptable to return <code>false</code>.</em></li>
-	 * <li>All other triples are explict triples and the system must determine
+	 * <li>All other triples are explicit triples and the system must determine
 	 * if the user is permitted to perform the action on the triple. If the
 	 * triple contains a <code>FUTURE</code> node that node should be considered
 	 * as an anonymous or blank node that is not yet created. It should only be

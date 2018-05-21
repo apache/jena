@@ -19,15 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.riot.WebContent.charsetUTF8 ;
-import static org.apache.jena.riot.WebContent.contentTypeRDFXML ;
-import static org.apache.jena.riot.WebContent.contentTypeResultsJSON ;
-import static org.apache.jena.riot.WebContent.contentTypeResultsThrift ;
-import static org.apache.jena.riot.WebContent.contentTypeResultsXML ;
-import static org.apache.jena.riot.WebContent.contentTypeTextCSV ;
-import static org.apache.jena.riot.WebContent.contentTypeTextPlain ;
-import static org.apache.jena.riot.WebContent.contentTypeTextTSV ;
-import static org.apache.jena.riot.WebContent.contentTypeXML ;
+import static org.apache.jena.riot.WebContent.*;
 
 import java.io.IOException ;
 import java.util.HashMap ;
@@ -38,7 +30,6 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -47,10 +38,13 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
-import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.resultset.ResultSetLang ;
+import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
+import org.apache.jena.riot.resultset.rw.ResultsWriter;
 import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.resultset.XMLOutput;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -81,48 +75,41 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputThrift, contentTypeResultsThrift) ;
     }
 
-    interface OutputContent { void output(ServletOutputStream out) ; }
+    interface OutputContent { void output(ServletOutputStream out) throws IOException; }
 
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
-    {
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult) {
         doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
-    {
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue) {
         doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
     }
 
-    // If we refactor the conneg into a single function, we can split boolean and result set handling.
-
     // One or the other argument must be null
-    private static void doResponseResultSet$(HttpAction action,
+    private static void doResponseResultSet$(HttpAction action, 
                                              ResultSet resultSet, Boolean booleanResult,
-                                             Prologue qPrologue,
-                                             AcceptList contentTypeOffer)
-    {
+                                             Prologue qPrologue, AcceptList contentTypeOffer) {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
         long id = action.id ;
 
-        if ( resultSet == null && booleanResult == null )
-        {
+        if ( resultSet == null && booleanResult == null ) {
             xlog.warn("doResponseResult: Both result set and boolean result are null") ;
             throw new FusekiException("Both result set and boolean result are null") ;
         }
 
-        if ( resultSet != null && booleanResult != null )
-        {
+        if ( resultSet != null && booleanResult != null ) {
             xlog.warn("doResponseResult: Both result set and boolean result are set") ;
             throw new FusekiException("Both result set and boolean result are set") ;
         }
 
         String mimeType = null ;
+        // -- Conneg
         MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
         if ( i != null )
             mimeType = i.getContentType() ;
 
-        // Override content type
+        // -- Override content type from conneg.
         // Does &output= override?
         // Requested output type by the web form or &output= in the request.
         String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
@@ -132,7 +119,7 @@ public class ResponseResultSet
         String serializationType = mimeType ;           // Choose the serializer based on this.
         String contentType = mimeType ;                 // Set the HTTP respose header to this.
 
-        // Stylesheet - change to application/xml.
+        // -- Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
         if ( stylesheetURL != null && Objects.equals(serializationType,contentTypeResultsXML) )
             contentType = contentTypeXML ;
@@ -142,164 +129,99 @@ public class ResponseResultSet
         if ( forceAccept != null )
             contentType = contentTypeTextPlain ;
 
-        // Better : dispatch on MediaType
-        if ( Objects.equals(serializationType, contentTypeResultsXML) )
-            sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
-        else if ( Objects.equals(serializationType, contentTypeResultsJSON) )
-            jsonOutput(action, contentType, resultSet, booleanResult) ;
-        else if ( Objects.equals(serializationType, contentTypeTextPlain) )
+        // Some kind of general dispatch is neater but there are quite a few special cases.
+        // text/plain is special because there is no ResultSetWriter for it (yet). 
+        // Text plain is special because of the formatting by prologue.
+        // text/plain is not a registered result set language. 
+        //
+        // JSON is special because of ?callback
+        //
+        // XML is special because of
+        // (1) charset is a feature of XML, not the response 
+        // (2) ?stylesheet=
+        //
+        // Thrift is special because
+        // (1) charset is meaningless
+        // (2) there is no boolean result form.
+
+        if ( Objects.equals(serializationType, contentTypeTextPlain) ) {
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-        else if ( Objects.equals(serializationType, contentTypeTextCSV) )
-            csvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (Objects.equals(serializationType, contentTypeTextTSV) )
-            tsvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) )
-            thriftOutput(action, contentType, resultSet, booleanResult) ;
-        else
-            ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
-    }
-
-
-    public static void setHttpResponse(HttpAction action,
-//                                       HttpServletRequest httpRequest,
-//                                       HttpServletResponse httpResponse,
-                                       String contentType, String charset)
-    {
-        // ---- Set up HTTP Response
-        // Stop caching (not that ?queryString URLs are cached anyway)
-        if ( true )
-            ServletOps.setNoCache(action) ;
-        // See: http://www.w3.org/International/O-HTTP-charset.html
-        if ( contentType != null )
-        {
-            if ( charset != null && ! isXML(contentType) )
-                contentType = contentType+"; charset="+charset ;
-            action.log.trace("Content-Type for response: "+contentType) ;
-            action.response.setContentType(contentType) ;
-        }
-    }
-
-    private static boolean isXML(String contentType)
-    {
-        return contentType.equals(contentTypeRDFXML)
-            || contentType.equals(contentTypeResultsXML)
-            || contentType.equals(contentTypeXML) ;
-    }
-
-    private static void sparqlXMLOutput(HttpAction action, String contentType, final ResultSet resultSet, final String stylesheetURL, final Boolean booleanResult)
-    {
-        OutputContent proc =
-            new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetFormatter.outputAsXML(out, resultSet, stylesheetURL) ;
-                if ( booleanResult != null )
-                    ResultSetFormatter.outputAsXML(out, booleanResult.booleanValue(), stylesheetURL) ;
-            }} ;
-            output(action, contentType, null, proc) ;
+            return;
         }
 
-    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult)
-    {
-        OutputContent proc = new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetFormatter.outputAsJSON(out, resultSet) ;
-                if (  booleanResult != null )
-                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
-            }
-        } ;
+        Lang lang = WebContent.contentTypeToLangResultSet(serializationType);
+        if (lang == null )
+            ServletOps.errorBadRequest("Not recognized for SPARQL results: "+serializationType) ;
+        if ( ! ResultSetWriterRegistry.isRegistered(lang) )
+            ServletOps.errorBadRequest("No results writer for "+serializationType);
 
-        try {
-            String callback = ResponseOps.paramCallback(action.request) ;
-            ServletOutputStream out = action.response.getOutputStream() ;
-
-            if ( callback != null )
-            {
-                callback = callback.replace("\r", "") ;
-                callback = callback.replace("\n", "") ;
-                out.print(callback) ;
-                out.println("(") ;
-            }
-
-            output(action, contentType, charsetUTF8, proc) ;
-
-            if ( callback != null )
-                out.println(")") ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        Context cxt = action.getContext().copy();
+        String charset = charsetUTF8;
+        String jsonCallback = null;
+        
+        if ( Objects.equals(serializationType, contentTypeResultsXML) ) {
+            charset = null;
+            XMLOutput.setStylesheetURL(cxt, stylesheetURL);
+        }
+        if ( Objects.equals(serializationType, contentTypeResultsJSON) ) {
+            jsonCallback = ResponseOps.paramCallback(action.request) ;
+        }
+        if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) ) {
+            if ( booleanResult != null )
+                ServletOps.errorBadRequest("Can't write a boolean result in thrift") ;
+            charset = null;
+        }
+        
+        //Finally, the general case
+        generalOutput(action, lang, contentType, charset, cxt, jsonCallback, resultSet, booleanResult) ;
     }
 
-    private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)
-    {
+    private static void textOutput(HttpAction action, String contentType, ResultSet resultSet, Prologue qPrologue, Boolean booleanResult) {
         // Text is not streaming.
-        OutputContent proc =  new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetFormatter.out(out, resultSet, qPrologue) ;
-                if (  booleanResult != null )
-                    ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
-            }
+        OutputContent proc = (ServletOutputStream out) -> { 
+            if ( resultSet != null )
+                ResultSetFormatter.out(out, resultSet, qPrologue) ;
+            if (  booleanResult != null )
+                ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
         };
 
         output(action, contentType, charsetUTF8, proc) ;
     }
 
-    private static void csvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
-        OutputContent proc = new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetFormatter.outputAsCSV(out, resultSet) ;
-                if (  booleanResult != null )
-                    ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
+    /** Any format */
+    private static void generalOutput(HttpAction action, Lang rsLang, 
+                                      String contentType, String charset,
+                                      Context context, String callback,
+                                      ResultSet resultSet, Boolean booleanResult) {
+        ResultsWriter rw = ResultsWriter.create()
+            .lang(rsLang)
+            .context(context)
+            .build();
+        OutputContent proc = (ServletOutputStream out) -> {
+            if ( callback != null ) {
+                String callbackFunction = callback;
+                callbackFunction = callbackFunction.replace("\r", "") ;
+                callbackFunction = callbackFunction.replace("\n", "") ;
+                out.print(callbackFunction) ;
+                out.println("(") ;
             }
+            if ( resultSet != null )
+                rw.write(out, resultSet) ;
+            if (  booleanResult != null )
+                rw.write(out, booleanResult.booleanValue()) ;
+            if ( callback != null )
+                out.println(")") ;
         } ;
-        output(action, contentType, charsetUTF8, proc) ;
+        output(action, contentType, charset, proc) ;
     }
 
-    private static void tsvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
-        OutputContent proc = new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetFormatter.outputAsTSV(out, resultSet) ;
-                if (  booleanResult != null )
-                    ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
-            }
-        } ;
-        output(action, contentType, charsetUTF8, proc) ;
-    }
-
-    private static void thriftOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
-        OutputContent proc = new OutputContent(){
-            @Override
-            public void output(ServletOutputStream out)
-            {
-                if ( resultSet != null )
-                    ResultSetMgr.write(out, resultSet, ResultSetLang.SPARQLResultSetThrift) ;
-                if ( booleanResult != null )
-                    xlog.error("Can't write boolen result in thrift") ;
-            }
-        } ;
-        output(action, contentType, WebContent.charsetUTF8, proc) ;
-    }
-
-    private static void output(HttpAction action, String contentType, String charset, OutputContent proc)
-    {
+    // Sett HTTP response Execute OutputContent inside 
+    private static void output(HttpAction action, String contentType, String charset, OutputContent proc) {
         try {
-            setHttpResponse(action, contentType, charset) ;
+            ResponseOps.setHttpResponse(action, contentType, charset) ;
             action.response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = action.response.getOutputStream() ;
-            try
-            {
+            try {
                 proc.output(out) ;
                 out.flush() ;
             } catch (QueryCancelledException ex) {
@@ -313,9 +235,8 @@ public class ResponseResultSet
                 //errorOccurred(ex) ;
             }
         // Includes client gone.
-        } catch (IOException ex)
-        { ServletOps.errorOccurred(ex) ; }
-        // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
-        // then the JSON callback closing details can't be added.
+        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+        // Do not call httpResponse.flushBuffer() at this point. JSON callback closing details haven't been added.
+        // Jetty closes the stream if it is a gzip stream.
     }
 }

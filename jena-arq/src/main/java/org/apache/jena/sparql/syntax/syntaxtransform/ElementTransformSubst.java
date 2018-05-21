@@ -30,7 +30,7 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.ElementPathBlock ;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
 
-/** An {@link ElementTransform} which replaces occurences of a variable with a Node value. 
+/** An {@link ElementTransform} which replaces occurrences of a variable with a Node value. 
  * Because a {@link Var} is a subclass of {@link Node_Variable} which is a {@link Node},
  * this includes variable renaming.
  * <p>

@@ -28,7 +28,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.function.FunctionBase ;
 
-/** substring(string, start[, length]) - F&O style*/
+/** substring(string, start[, length]) - {@literal F&O} style*/
 
 public class FN_StrSubstring extends FunctionBase
 {

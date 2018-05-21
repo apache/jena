@@ -159,7 +159,7 @@ public class Join {
     /** Very simple, materializing version - useful for debugging.
      *  Builds output early. Materializes left, streams right.
      *  Does <b>not</b> scale. 
-     *  No cancelation, no stats.
+     *  No cancellation, no stats.
      * 
      * @see #nestedLoopJoin
      */

@@ -19,7 +19,7 @@
 package org.apache.jena.sdb.core;
 
 import org.apache.jena.sdb.SDB ;
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 /** Jena subsystem initialization */
 public class InitSDB implements JenaSubsystemLifecycle {

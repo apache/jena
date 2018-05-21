@@ -22,7 +22,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 
 /** The interface for the output of RDF, such as the RIOT parsers.
- *  The parser event model is that items are emitted for signficant events.
+ *  The parser event model is that items are emitted for significant events.
  *  The events are start/finish, emitting triples/quads/tuples as necessary, prefixes and base directives.
  *  Tuples are generalized triples or quads.  A triple language will call triple(),
  *  quad language quad() in preference.    

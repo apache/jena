@@ -18,17 +18,17 @@
 
 package org.apache.jena.test;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.jena.JenaRuntime ;
-import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.jena.JenaRuntime ;
+import org.apache.jena.util.FileUtils;
+import org.apache.jena.vocabulary.RDFS;
+import org.junit.Assert;
 
 public class TestSystemSetup extends TestCase {
 
@@ -61,8 +61,7 @@ public class TestSystemSetup extends TestCase {
 
         Assert.assertEquals(0, child.waitFor());
         Assert.assertEquals(RDFS.subClassOf.toString()+"\n",
-                IOUtils.toString(child.getInputStream()));
+                            FileUtils.readWholeFileAsUTF8(child.getInputStream()));
     }
-
 }
 

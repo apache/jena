@@ -33,14 +33,12 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 
-/** The ping servlet provides a low costy, uncached endpoint that can be used
+/** The ping servlet provides a low cost, uncached endpoint that can be used
  * to determine if this component is running and responding.  For example,
  * a nagios check should use this endpoint.    
  */
 public class ActionPing extends HttpServlet
 {
-    private static final long serialVersionUID = -7784830233939700895L;
-
     // Ping is special.
     // To avoid excessive logging and id allocation for a "noise" operation,
     // this is a raw servlet.

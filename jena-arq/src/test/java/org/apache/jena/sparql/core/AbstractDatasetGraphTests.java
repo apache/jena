@@ -31,8 +31,6 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
@@ -272,6 +270,32 @@ public abstract class AbstractDatasetGraphTests
         
         assertTrue(dsg.isEmpty()) ;
         assertFalse(dsg.containsGraph(gn)) ;
+    }
+    
+    // Quad delete causes graph to not be visable.
+    // Not valid for all datasets (e.g. DatasetGraphMapLink)
+    @Test public void emptyGraph_1() {
+        DatasetGraph dsg = emptyDataset() ;
+        Node gn = NodeFactory.createURI("http://example/g") ;
+        Quad q = SSE.parseQuad("(:g :s :p :o)");
         
+        dsg.add(q);
+        List<Node> nodes1 = Iter.toList(dsg.listGraphNodes());
+        assertEquals(1, nodes1.size());
+        dsg.delete(q);
+        List<Node> nodes2 = Iter.toList(dsg.listGraphNodes());
+        assertEquals(0, nodes2.size());
+    }
+    
+    @Test public void emptyGraph_2() {
+        DatasetGraph dsg = emptyDataset() ;
+        Node gn = NodeFactory.createURI("http://example/g") ;
+        Quad q = SSE.parseQuad("(:g :s :p :o)");
+        
+        dsg.add(q);
+        assertTrue(dsg.containsGraph(gn));
+        
+        dsg.delete(q);
+        assertFalse(dsg.containsGraph(gn));
     }
 }

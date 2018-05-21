@@ -29,8 +29,6 @@ import org.apache.jena.web.HttpSC ;
 /** Base for actions that are container and also have action on items */ 
 public abstract class ActionContainerItem extends ActionCtl {
     
-    private static final long serialVersionUID = 2824158659375951964L;
-
     public ActionContainerItem() { super() ; }
 
     // Redirect operations so they dispatch to perform(HttpAction)
@@ -80,7 +78,7 @@ public abstract class ActionContainerItem extends ActionCtl {
     
     /** GET request on the container - respond with JSON, or null for plain 200 */  
     protected abstract JsonValue execGetContainer(HttpAction action) ;
-    /** GET request on an item in the container - repond with JSON, or null for plain 200 */  
+    /** GET request on an item in the container - respond with JSON, or null for plain 200 */  
     protected abstract JsonValue execGetItem(HttpAction action) ;
 
     protected void execPost(HttpAction action) {

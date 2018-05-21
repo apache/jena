@@ -34,11 +34,23 @@ import org.apache.jena.util.iterator.* ;
  *   that should be called to free resources if the application does 
  *   not complete the iteration.</p>
  */
-public interface StmtIterator extends ExtendedIterator<Statement> 
-    {
-    /** Return the next Statement of the iteration.
-     * @throws NoSuchElementException if there are no more to be returned.
+public interface StmtIterator extends ExtendedIterator<Statement> {
+    /**
+     * Return the next Statement of the iteration.
+     * 
+     * @throws NoSuchElementException
+     *             if there are no more to be returned.
      * @return The next Resource from the iteration.
      */
-    public Statement nextStatement() throws  NoSuchElementException;
+    public Statement nextStatement() throws NoSuchElementException;
+
+    /**
+     * Answer a Model of the [remaining] Statements of this iterator, consuming this
+     * iterator.
+     */
+    public default Model toModel() {
+        Model m = ModelFactory.createDefaultModel();
+        this.forEachRemaining(m::add);
+        return m;
     }
+}

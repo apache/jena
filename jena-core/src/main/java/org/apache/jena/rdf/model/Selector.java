@@ -34,7 +34,7 @@ public interface Selector extends Predicate<Statement> {
         Answer true iff this Selector is completely characterised by its subject,
         predicate, and object fields. If so, the <code>test</code> predicate need
         not be called to decide if a statement is acceptable. This allows query engines
-        lattitude for optimisation (and our memory-based implementation both exploits
+        latitude for optimisation (and our memory-based implementation both exploits
         this licence).
     */
     boolean isSimple();

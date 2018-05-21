@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory ;
  * not when needed where a split can bubble up from below.
  * It means it only ever walks down the tree on insert.
  * Similarly, the delete code ensures a node is suitable
- * before decending. 
+ * before descending. 
  *    
  * Variations:
  * In this impl, splitRoot leaves the root node in place.
@@ -142,7 +142,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     
     /** Create the in-memory structures to correspond to
      *  the supplied block managers for the persistent storage.
-     *  Does not inityalize the B+Tree - it assumes the block managers
+     *  Does not initialize the B+Tree - it assumes the block managers
      *  correspond to an existing B+Tree.
      */
     public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)

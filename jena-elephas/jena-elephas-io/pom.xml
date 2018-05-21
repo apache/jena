@@ -20,8 +20,8 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-elephas</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
-     <relativePath>../</relativePath>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
   </parent>
   <artifactId>jena-elephas-io</artifactId>
   <name>Apache Jena - Elephas - I/O</name>
@@ -34,12 +34,12 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-elephas-common</artifactId>
-      <version>${project.version}</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Hadoop Dependencies -->
     <!-- Note these will be provided on the Hadoop cluster hence
-	 the provided scope
+   the provided scope
     -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -67,7 +67,7 @@
     </dependency>
   </dependencies>
   
-    <build>
+  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -87,6 +87,17 @@
           </links>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+	      <!-- versions 2.20 and 2.20.1 result in test failures -->
+	      <version>2.19.1</version>
+        <configuration>
+          <parallel>classes</parallel>
+          <threadCount>2</threadCount>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
 </project>

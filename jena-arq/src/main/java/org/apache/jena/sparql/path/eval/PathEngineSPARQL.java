@@ -68,12 +68,22 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected void doNegatedPropertySet(P_NegPropSet pathNotOneOf, Node node, Collection<Node> output) {
-        if ( pathNotOneOf.getFwdNodes().size() > 0 ) {
-            Iterator<Node> nodes1 = stepExcludeForwards(node, pathNotOneOf.getFwdNodes()) ;
+        List<Node> fwdSteps = pathNotOneOf.getFwdNodes();
+        List<Node> bwkSteps = pathNotOneOf.getBwdNodes();
+        
+        // Flip lists processed - flips calls of stepExcludeForwards/stepExcludeBackwards
+        if ( ! forwardMode ) {
+            List<Node> tmp = fwdSteps;
+            fwdSteps = bwkSteps;
+            bwkSteps = tmp;
+        }
+
+        if ( fwdSteps.size() > 0 ) {
+            Iterator<Node> nodes1 = stepExcludeForwards(node, fwdSteps) ;
             fill(nodes1, output) ;
         }
-        if ( pathNotOneOf.getBwdNodes().size() > 0 ) {
-            Iterator<Node> nodes2 = stepExcludeBackwards(node, pathNotOneOf.getBwdNodes()) ;
+        if ( bwkSteps.size() > 0 ) {
+            Iterator<Node> nodes2 = stepExcludeBackwards(node, bwkSteps) ;
             fill(nodes2, output) ;
         }
     }

@@ -25,7 +25,7 @@ import org.apache.jena.iri.IRIFactory;
  * The interface to set the various options on ARP.
  *  User defined
  * implementations of this interface are not supported. This is a class rather
- * than an interface to have better backward compatibilitiy with earlier
+ * than an interface to have better backward compatibility with earlier
  * versions, however constructing instances of this class is deprecated.
  * In addition, accessing the fields of {@link ARPErrorNumbers} through this
  * class is not supported. The inheritance of this interface will be removed.
@@ -67,6 +67,12 @@ public class ARPOptions implements ARPErrorNumbers {
     private boolean embedding = false;
     private int errorMode[] = defaultErrorMode.clone();
     
+    // Note: This is the legacy setup for jena-core only.
+    // When used normally, with RIOT, the IRIFcatory is 
+    // org.apache.jena.riot.system.IRIResolver.iriFactory
+    // which is RDF 1.1 and also the IRIfcatory used by all
+    // RIOT parsing.
+ 
     @SuppressWarnings("deprecation")
     private static IRIFactory defaultIriFactory = IRIFactory.jenaImplementation() ;
     private IRIFactory iriFactory = defaultIriFactory ;

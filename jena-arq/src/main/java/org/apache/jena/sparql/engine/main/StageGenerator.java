@@ -23,11 +23,11 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 
 /** Interface for execution of a basic graph pattern.
- *  A StageGenerator is registred in the context of an query
+ *  A StageGenerator is registered in the context of an query
  *  execution to be found and called by the StageBuilder.
  *  
  *  The StageGenerator is called repeated for a basic graph pattern
- *  with each possible bindings unsed to instantiate variables
+ *  with each possible bindings unused to instantiate variables
  *  where possible.  
  *  
  *  Each call of a stage generator returns a QueryIterator

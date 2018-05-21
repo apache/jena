@@ -35,7 +35,7 @@ import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
  * <p>
@@ -48,7 +48,7 @@ import org.apache.jena.system.JenaSystem ;
  * </p>
  * 
  * <pre>
- * jdbc:jena:remote:query=http://example.org/query&update=http://example.org/update
+ * jdbc:jena:remote:query=http://example.org/query&amp;update=http://example.org/update
  * </pre>
  * <p>
  * The {@code query} parameter is used to refer to a SPARQL query endpoint to

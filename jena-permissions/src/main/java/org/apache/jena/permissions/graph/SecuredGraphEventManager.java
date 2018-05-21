@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.jena.ext.com.google.common.collect.Sets;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
 import org.apache.jena.graph.GraphListener;
@@ -378,8 +378,8 @@ public class SecuredGraphEventManager implements GraphEventManager {
 	private static Set<Action> ADD;
 
 	static {
-		SecuredGraphEventManager.ADD = Sets.newHashSet(Action.Create, Action.Read);
-		SecuredGraphEventManager.DELETE = Sets.newHashSet(Action.Delete, Action.Read);
+		SecuredGraphEventManager.ADD = new HashSet<Action>( Arrays.asList(Action.Create, Action.Read));
+		SecuredGraphEventManager.DELETE = new HashSet<Action>(Arrays.asList(Action.Delete, Action.Read));
 	}
 
 	public SecuredGraphEventManager(final SecuredGraph securedGraph,

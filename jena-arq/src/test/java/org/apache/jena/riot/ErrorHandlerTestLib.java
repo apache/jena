@@ -34,6 +34,8 @@ public class ErrorHandlerTestLib
 
     public static class ErrorHandlerEx implements ErrorHandler
     {
+        public ErrorHandlerEx() {}
+        
         @Override
         public void warning(String message, long line, long col)
         { throw new ExWarning(message) ; }

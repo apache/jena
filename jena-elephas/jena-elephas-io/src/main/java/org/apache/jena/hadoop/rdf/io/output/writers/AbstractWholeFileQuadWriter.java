@@ -38,7 +38,7 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public abstract class AbstractWholeFileQuadWriter<TKey> extends AbstractWholeFileNodeTupleWriter<TKey, Quad, QuadWritable> {
 
-    private DatasetGraph g = DatasetGraphFactory.createMem();
+    private DatasetGraph g = DatasetGraphFactory.createGeneral();
 
     protected AbstractWholeFileQuadWriter(Writer writer) {
         super(writer);

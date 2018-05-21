@@ -197,7 +197,7 @@ public interface OntClass
      * since this can be inferred from the closure of the graph.
      * </p>
      * <p>
-     * <strong>Note:</strong> This is is a change from the behaviour of Jena 1, which took a
+     * <strong>Note:</strong> This is a change from the behaviour of Jena 1, which took a
      * parameter <code>closed</code> to compute the closure over transitivity and equivalence
      * of sub-classes.  The closure capability in Jena2 is determined by the inference engine
      * that is wrapped with the ontology model.  The direct parameter is provided to allow,

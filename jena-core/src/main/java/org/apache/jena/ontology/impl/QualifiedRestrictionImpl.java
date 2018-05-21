@@ -113,7 +113,7 @@ public class QualifiedRestrictionImpl
     }
 
     /**
-     * <p>Answer the class or datarnage to which all values of the restricted property belong.</p>
+     * <p>Answer the class or datarange to which all values of the restricted property belong.</p>
      * @return The ontology class of the restricted property values
      * @exception ProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */

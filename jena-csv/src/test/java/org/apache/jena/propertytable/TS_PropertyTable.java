@@ -23,7 +23,6 @@ import org.apache.jena.propertytable.impl.PropertyTableArrayImplTest;
 import org.apache.jena.propertytable.impl.PropertyTableBuilderForArrayImplTest;
 import org.apache.jena.propertytable.impl.PropertyTableBuilderForHashMapImplTest;
 import org.apache.jena.propertytable.impl.PropertyTableHashMapImplTest;
-import org.apache.jena.propertytable.lang.TestLangCSV;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,7 +34,6 @@ import org.junit.runners.Suite;
 	GraphCSVTest.class,
 	PropertyTableBuilderForArrayImplTest.class,
 	PropertyTableBuilderForHashMapImplTest.class,
-	TestLangCSV.class
 })
 public class TS_PropertyTable {
 

@@ -265,9 +265,11 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
+  <!-- For serving static files -->
+
   <mime-mapping>
     <extension>rdf</extension>
-    <mime-type>application/rdf+xml;charset=utf-8</mime-type>
+    <mime-type>application/rdf+xml</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>ttl</extension>
@@ -275,15 +277,50 @@
   </mime-mapping>
   <mime-mapping>
     <extension>nt</extension>
-    <mime-type>text/plain;charset=utf-8</mime-type>
+    <mime-type>application/n-triples</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>nq</extension>
-    <mime-type>text/nquads;charset=utf-8</mime-type>
+    <mime-type>application/n-quads</mime-type>
   </mime-mapping>
   <mime-mapping>
     <extension>trig</extension>
-    <mime-type>application/trig;charset=utf-8</mime-type>
+    <mime-type>application/trig</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>jsonld</extension>
+    <mime-type>application/ld+json</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>tr</extension>
+    <mime-type>application/rdf+thrift</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>trdf</extension>
+    <mime-type>application/rdf+thrift</mime-type>
+  </mime-mapping>
+  
+  <mime-mapping>
+    <extension>rq</extension>
+    <mime-type>application/sparql-query</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>ru</extension>
+    <mime-type>application/sparql-update</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>srx</extension>
+    <mime-type>application/sparql-results+xml</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>srj</extension>
+    <mime-type>application/sparql-results+json</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>srt</extension>
+    <mime-type>application/sparql-results+thrift</mime-type>
   </mime-mapping>
 
 </web-app>

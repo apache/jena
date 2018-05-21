@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-maven-tools</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.7.0-SNAPSHOT</version>
   <name>Apache Jena - Maven Plugins, including schemagen</name>
   <description>Plugins for Apache Maven to perform source management activities,
   such as generating Java files from RDF vocabulary sources using
@@ -29,9 +29,9 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>18-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.7.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
 
   <developers>
@@ -188,7 +188,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.1.2-SNAPSHOT</version>
+      <version>3.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -226,9 +226,7 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-        <version>1.5</version>
+        <artifactId>maven-jxr-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

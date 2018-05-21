@@ -167,7 +167,7 @@ public class query extends CmdARQ
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
     /** Choose the dataset.
-     * <li> use the data as described on the comand line
+     * <li> use the data as described on the command line
      * <li> else use FROM/FROM NAMED if present (pass null to ARQ)
      * <li> else provided an empty dataset and hope the query has VALUES/BIND
      */
@@ -217,7 +217,7 @@ public class query extends CmdARQ
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 throw new TerminationException(1);
             }
-            Transactional transactional = (dataset != null && dataset.supportsTransactionAbort()) ? dataset : new TransactionalNull() ;
+            Transactional transactional = (dataset != null && dataset.supportsTransactions()) ? dataset : new TransactionalNull() ;
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {

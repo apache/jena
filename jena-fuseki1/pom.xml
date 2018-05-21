@@ -21,28 +21,16 @@
   <artifactId>jena-fuseki1</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki1</name>
-  <version>1.6.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
   <description>Fuseki is a SPARQL 1.1 Server</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>19-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena</artifactId>
+    <version>3.8.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent> 
-
-  <!-- Need if the parent is a snapshot -->
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <organization>
     <name>Apache Jena</name>
@@ -64,12 +52,12 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     -->
 
-    <ver.jetty>8.1.14.v20131031</ver.jetty>
+    <ver.jetty>8.1.22.v20160922</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
     
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-
+    <automatic.module.name>org.apache.jena.fuseki1</automatic.module.name>
   </properties>
 
   <dependencies>
@@ -77,13 +65,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -91,7 +79,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -99,7 +87,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -107,13 +95,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <exclusions>
         <!-- 
              Get this via commons-fileupload and also via jena-text/sol4j
@@ -130,7 +118,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -274,6 +262,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
 
 
@@ -351,6 +346,7 @@
             <phase>package</phase>
             <goals><goal>single</goal></goals>
             <configuration>
+              <tarLongFileMode>posix</tarLongFileMode>
               <descriptors>
                 <descriptor>assembly-dist.xml</descriptor>
               </descriptors>

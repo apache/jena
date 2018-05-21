@@ -24,9 +24,10 @@ import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.tdb.StoreConnection ;
 
-/** Setup configurtation.
+/** Setup configuration.
  * The order is controlled by {@code web.xml}:
  * <ul>
  * <li>{@link FusekiServerEnvironmentInit}
@@ -39,7 +40,7 @@ public class FusekiServerListener implements ServletContextListener {
 
     public FusekiServerListener() { }
     
-    public static ServerInitialConfig initialSetup = null ;
+    public static FusekiInitialConfig initialSetup = null ;
 
     private boolean initialized = false ;
 
@@ -66,12 +67,15 @@ public class FusekiServerListener implements ServletContextListener {
             return ;
         initialized = true ;
 
-        DataAccessPointRegistry registry = new DataAccessPointRegistry() ;
-        DataAccessPointRegistry.set(servletContext, registry);
+        ServiceDispatchRegistry serviceDispatchRegistry = new ServiceDispatchRegistry(true);
+        ServiceDispatchRegistry.set(servletContext, serviceDispatchRegistry);
+        DataAccessPointRegistry dataAccessPointRegistry = new DataAccessPointRegistry() ;
+        DataAccessPointRegistry.set(servletContext, dataAccessPointRegistry);
+        
         
         try {
-            FusekiServer.formatBaseArea() ; 
-            if ( ! FusekiServer.serverInitialized ) {
+            FusekiSystem.formatBaseArea() ; 
+            if ( ! FusekiSystem.serverInitialized ) {
                 Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
             }
@@ -79,22 +83,23 @@ public class FusekiServerListener implements ServletContextListener {
             // The command line code sets initialSetup.
             // In a non-commandline startup, initialSetup is null. 
             if ( initialSetup == null ) {
-                initialSetup = new ServerInitialConfig() ;
-                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
+                initialSetup = new FusekiInitialConfig() ;
+                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiSystem.DFT_CONFIG).toAbsolutePath().toString() ;
                 initialSetup.fusekiServerConfigFile = cfg ;
             }
 
-            if ( initialSetup != null ) {
-                FusekiServer.initializeDataAccessPoints(registry,
-                                                        initialSetup, FusekiServer.dirConfiguration.toString()) ;
-            } else {
+            if ( initialSetup == null ) {
                 Fuseki.serverLog.error("No configuration") ;
                 throw new FusekiException("No configuration") ;
-            }
+            }                
+            Fuseki.setVerbose(servletContext, initialSetup.verbose);
+            FusekiSystem.initializeDataAccessPoints(dataAccessPointRegistry,
+                                                    initialSetup, FusekiSystem.dirConfiguration.toString()) ;
         } catch (Throwable th) { 
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
             throw th ;
         }
+        FusekiInfo.info(initialSetup, dataAccessPointRegistry);
     }
 }
 

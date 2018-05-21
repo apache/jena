@@ -101,8 +101,25 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 		// no triples from default graph should appear in union
 		Triple t = Triple.create(createBlankNode(), createBlankNode(), createBlankNode());
 		dsg.getDefaultGraph().add(t);
-		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(Quad::isDefaultGraph)) ;
+		assertFalse(iter(dsg.find(unionGraph, ANY, ANY, ANY)).some(Quad::isDefaultGraph));
 	}
+
+    @Test
+    public void listGraphNodesHasNoPhantomEmptyGraphs() {
+        final DatasetGraph dsg = emptyDataset();
+        final Node g = createURI("http://example/g");
+        final Node s = createURI("http://example/s");
+        final Node p = createURI("http://example/p");
+        final Node o = createURI("http://example/o");
+        dsg.add(g, s, p, o);
+        Iterator<Node> graphNodes = dsg.listGraphNodes();
+        assertTrue("Missing named graph!", graphNodes.hasNext());
+        assertEquals("Wrong graph name!", g, graphNodes.next());
+        assertFalse("Too many named graphs!", graphNodes.hasNext());
+        dsg.delete(g, s, p, o);
+        graphNodes = dsg.listGraphNodes();
+        assertFalse("Too many named graphs!", graphNodes.hasNext());
+    }
 
 	@Override
 	protected DatasetGraph emptyDataset() {

@@ -90,8 +90,6 @@ public class JettyFuseki {
      */
     
     public static void initializeServer(JettyServerConfig config) {
-        // Currently server-wide.
-        Fuseki.verboseLogging = config.verboseLogging ;
         instance = new JettyFuseki(config) ;
     }
     

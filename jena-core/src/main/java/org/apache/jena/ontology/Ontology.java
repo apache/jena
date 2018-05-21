@@ -215,7 +215,7 @@ public interface Ontology
     public void addIncompatibleWith( Resource res );
 
     /**
-     * <p>Answer a resource that represents an ontology that is is incompatible with this ontology. If there is
+     * <p>Answer a resource that represents an ontology that is incompatible with this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An {@link OntResource} representing an ontology that this ontology is incompatible with
      * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.

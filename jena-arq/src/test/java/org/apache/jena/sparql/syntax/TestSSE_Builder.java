@@ -20,10 +20,12 @@ package org.apache.jena.sparql.syntax;
 
 
 import junit.framework.TestCase ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.algebra.op.OpNull ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_IsNumeric ;
 import org.apache.jena.sparql.expr.E_SameTerm ;
 import org.apache.jena.sparql.expr.Expr ;
@@ -38,11 +40,12 @@ public class TestSSE_Builder extends TestCase
     @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
+    
     @Test public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
     @Test public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
     
-    @Test public void test_07() { SSE.parseExpr("1") ; }
-    @Test public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
+    @Test public void test_10() { SSE.parseExpr("1") ; }
+    @Test public void test_11() { SSE.parseExpr("(+ 1 2)") ; }
     
     @Test public void testOp_01() { opSame("(null)") ; }
     @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
@@ -78,6 +81,45 @@ public class TestSSE_Builder extends TestCase
         Item item = SSE.parseItem("_") ;
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(23, i) ;
+    }
+
+    @Test
+    public void testBuildNode_01() {
+        Item item = SSE.parseItem("ANY") ;
+        Node n = BuilderNode.buildNode(item);
+        assertSame(Node.ANY, n);
+    }
+
+    @Test
+    public void testBuildNode_02() {
+        Item item = SSE.parseItem("_") ;
+        Node n = BuilderNode.buildNode(item);
+        assertSame(Node.ANY, n);
+    }
+    
+    @Test
+    public void testBuildNode_03() {
+        Item item = SSE.parseItem("<http://example/>") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isURI());
+        assertEquals("http://example/", n.getURI());
+    }
+
+    @Test
+    public void testBuildNode_04() {
+        // Jena skolemized blank node.
+        Item item = SSE.parseItem("<_:cba>") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isBlank());
+        assertEquals("cba", n.getBlankNodeLabel());
+    }
+
+    @Test
+    public void testBuildNode_05() {
+        Item item = SSE.parseItem("?variable") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(Var.isVar(n));
+        assertEquals("variable", ((Var)n).getVarName());
     }
 
     @Test

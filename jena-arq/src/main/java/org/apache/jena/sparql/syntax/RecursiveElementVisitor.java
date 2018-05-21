@@ -22,7 +22,7 @@ package org.apache.jena.sparql.syntax;
 /** <p> Visitor pattern helper that walks the entire tree calling operations
  * are various points in the walking process.  It is a depth first traversal.</p>
  * 
- * <p> Every visit operation is bracketted by a start/end pair makeing the
+ * <p> Every visit operation is bracketted by a start/end pair making the
  * calling points:
  * <ul>
  * <li>start of element</li>

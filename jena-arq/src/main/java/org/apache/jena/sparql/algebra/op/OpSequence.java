@@ -26,7 +26,7 @@ import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A "sequence" is a join-like operation where it is know that the 
+/** A "sequence" is a join-like operation where it is known that
  * the output of one step can be fed into the input of the next 
  * (that is, no scoping issues arise). */
 

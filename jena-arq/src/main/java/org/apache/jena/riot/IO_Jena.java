@@ -20,7 +20,7 @@ package org.apache.jena.riot ;
 
 import org.apache.jena.riot.system.IO_JenaReaders ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 public class IO_Jena
 {

@@ -61,25 +61,4 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>apache-repo-snapshots</id>
-      <url>http://repository.apache.org/content/repositories/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-
-    <repository>
-      <id>apache-repo-releases</id>
-      <url>http://repository.apache.org/content/repositories/releases/</url>
-      <releases>
-       <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
-
 </project>

@@ -18,9 +18,15 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.system.JenaSubsystemLifecycle ;
+import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 public class InitJenaText implements JenaSubsystemLifecycle {
+
+	// Subsystems of jena-text should initialize after jena-text.
+    public static int LEVEL       = 50;
+    public static int LEVEL_ES    = 52;
+    public static int LEVEL_SOLR  = 52;
+    
     @Override
     public void start() {
         TextQuery.init() ;
@@ -28,6 +34,11 @@ public class InitJenaText implements JenaSubsystemLifecycle {
 
     @Override
     public void stop() {
+    }
+    
+    @Override
+    public int level() {
+        return LEVEL;
     }
 }
 

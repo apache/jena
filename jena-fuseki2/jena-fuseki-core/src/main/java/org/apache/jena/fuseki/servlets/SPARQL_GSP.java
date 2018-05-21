@@ -33,8 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_GSP extends ActionREST
 {
-    private static final long serialVersionUID = 5807509103047946413L;
-
     protected final static Target determineTarget(HttpAction action) {
         // Delayed until inside a transaction.
         if ( action.getActiveDSG() == null )

@@ -228,23 +228,24 @@ public class NodeTableNative implements NodeTable
     }
 
     @Override
-    public void sync() 
-    { 
-        if ( syncNeeded )
-        {
-            if ( nodeHashToId != null )
-                nodeHashToId.sync() ;
+    public void sync() {
+        if ( syncNeeded ) {
             if ( getObjects() != null )
-                getObjects().sync() ;
-            syncNeeded = false ;
+                getObjects().sync();
+            if ( nodeHashToId != null )
+                nodeHashToId.sync();
+            syncNeeded = false;
         }
     }
 
-    public ObjectFile getObjects()
-    {
+    public ObjectFile getObjects() {
         return objects;
     }
-    
+
+    public Index getIndex() {
+        return nodeHashToId;
+    }
+
     @Override
     public String toString() { return objects.getLabel() ; }
 

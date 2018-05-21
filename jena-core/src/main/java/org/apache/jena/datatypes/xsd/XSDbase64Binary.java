@@ -18,8 +18,7 @@
 
 package org.apache.jena.datatypes.xsd;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 
 /**
@@ -39,7 +38,7 @@ public class XSDbase64Binary extends XSDbinary {
     @Override
     public String unparse(Object value) {
         if (value instanceof byte[]) {
-            return DatatypeConverter.printBase64Binary((byte[])value);
+            return Base64.encodeBase64String((byte[])value);
         } else {
             throw new DatatypeFormatException("base64 asked to encode an unwrapped byte array");
         }

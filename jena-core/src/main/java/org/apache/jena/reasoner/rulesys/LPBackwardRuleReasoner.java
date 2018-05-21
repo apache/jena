@@ -31,7 +31,7 @@ import org.apache.jena.vocabulary.ReasonerVocabulary ;
  * Reasoner implementation which augments or transforms an RDF graph
  * according to a set of rules. The rules are processed using a
  * tabled LP backchaining interpreter which is implemented by the
- * relvant InfGraph class. 
+ * relevant InfGraph class. 
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -183,7 +183,7 @@ public class LPBackwardRuleReasoner implements Reasoner {
     } 
    
     /**
-     * Switch on/off drivation logging.
+     * Switch on/off derivation logging.
      * If set to true then the InfGraph created from the bind operation will start
      * life with recording of derivations switched on. This is currently only of relevance
      * to rule-based reasoners.

@@ -18,11 +18,21 @@
 
 package org.apache.jena.fuseki;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.fuseki.server.SystemState ;
@@ -35,8 +45,10 @@ import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
@@ -126,11 +138,13 @@ public class FusekiLib {
     
     public static String safeParameter(HttpServletRequest request, String pName) {
         String value = request.getParameter(pName) ;
+        if ( value == null )
+            return null ;
         value = value.replace("\r", "") ;
         value = value.replace("\n", "") ;
         return value ;
     }
-    
+
     // Do the addition directly on the dataset
     public static void addDataInto(Graph data, DatasetGraph dsg, Node graphName) {
         // Prefixes?
@@ -221,12 +235,10 @@ public class FusekiLib {
         return lit.getLexicalForm() ;
     }
 
-    // XXX Lib
     public static String strForResource(Resource r) {
         return strForResource(r, r.getModel()) ;
     }
 
-    // XXX Lib
     public static String strForResource(Resource r, PrefixMapping pm) {
         if ( r == null )
             return "NULL " ;
@@ -253,5 +265,73 @@ public class FusekiLib {
                 return x ;
         }
         return "<" + uri + ">" ;
+    }
+
+    /** Choose an unused port for a server to listen on */
+    public static int choosePort() {
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException ex) {
+            throw new FusekiException("Failed to find a port");
+        }
+    }
+
+    /**
+     * Test whether a URL identifies a Fuseki server. This operation can not guaranttee to
+     * detech a Fuseki server - for example, it may be behind a reverse proxy that masks
+     * the signature.
+     */
+    public static boolean isFuseki(String datasetURL) {
+        HttpOptions request = new HttpOptions(datasetURL);
+        HttpClient httpClient = HttpOp.getDefaultHttpClient();
+        if ( httpClient == null ) 
+            httpClient = HttpClients.createSystem();
+        return isFuseki(request, httpClient, null);
+    }
+
+    /**
+     * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
+     * operation can not guaranttee to detech a Fuseki server - for example, it may be
+     * behind a reverse proxy that masks the signature.
+     */
+    public static boolean isFuseki(RDFConnectionRemote connection) {
+        HttpOptions request = new HttpOptions(connection.getDestination());
+        HttpClient httpClient = connection.getHttpClient();
+        if ( httpClient == null ) 
+            httpClient = HttpClients.createSystem();
+        HttpContext httpContext = connection.getHttpContext();
+        return isFuseki(request, httpClient, httpContext);
+    }
+
+    private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
+        try {
+            HttpResponse response = httpClient.execute(request);
+            // Fuseki does not send "Server" in release mode.
+            // (best practice).
+            // All we can do is try for the "Fuseki-Request-ID" 
+            String reqId = safeGetHeader(response, "Fuseki-Request-ID");
+            if ( reqId != null )
+                return true;
+
+            // If returning "Server"
+            String serverIdent = safeGetHeader(response, "Server");
+            if ( serverIdent != null ) {
+                Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
+                boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
+                if ( !isFuseki )
+                    isFuseki = serverIdent.toLowerCase().contains("fuseki");
+                return isFuseki;
+            }
+            return false; 
+        } catch (IOException ex) {
+            throw new HttpException("Failed to check for a Fuseki server", ex);
+        }
+    }
+    
+    private static String safeGetHeader(HttpResponse response, String header) {
+        Header h = response.getFirstHeader(header);
+        if ( h == null )
+            return null;
+        return h.getValue();
     }
 }

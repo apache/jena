@@ -31,7 +31,7 @@ import org.apache.jena.sparql.path.PathLib ;
  * exact transformation as per spec as there are better ways to do it for ARQ.
  * For example, 
  * <ul>
- * <li>Path seq -> BGPs or a (sequence)
+ * <li>Path seq {@literal ->} BGPs or a (sequence)
  * <li>"|" is not expanded into a union.
  * </ul>
  */

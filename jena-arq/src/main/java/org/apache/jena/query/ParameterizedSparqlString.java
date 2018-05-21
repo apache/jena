@@ -898,7 +898,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Sets a positional arameter to a typed literal
+     * Sets a positional parameter to a typed literal
      * <p>
      * Setting a parameter to null is equivalent to calling
      * {@link #clearParam(int)} for the given index
@@ -1558,9 +1558,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             if (cs[j] == '"' && cs[j + 1] == '"' && cs[j + 2] == '"') {
                                 this.addStop(i, j + 2);
                                 i = j + 2;
+                                break;
                             }
                         }
-                        // Was unterminated
                     } else {
                         // Normal literal, scan till we see a " which is not
                         // preceded by a \
@@ -1569,10 +1569,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             if (cs[j] == '"' && cs[j - 1] != '\\') {
                                 this.addStop(i, j);
                                 i = j;
-                                continue;
+                                break;
                             }
                         }
-                        // Was unterminated
                     }
                     break;
                 case '<':
@@ -1582,10 +1581,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
                         if (cs[j] == '>' && cs[j - 1] != '\\') {
                             this.addStop(i, j);
                             i = j;
-                            continue;
+                            break;
                         }
                     }
-                    // Was unterminated
                     break;
                 case '\'':
                     // Start of alternative literal form
@@ -1597,9 +1595,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             if (cs[j] == '\'' && cs[j + 1] == '\'' && cs[j + 2] == '\'') {
                                 this.addStop(i, j + 2);
                                 i = j + 2;
+                                break;
                             }
                         }
-                        // Was unterminated
                     } else {
                         // Normal literal, scan till we see a ' which is not
                         // preceded by a \
@@ -1608,10 +1606,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             if (cs[j] == '\'' && cs[j - 1] != '\\') {
                                 this.addStop(i, j);
                                 i = j;
-                                continue;
+                                break;
                             }
                         }
-                        // Was unterminated
                     }
                     break;
                 case '#':
@@ -1622,7 +1619,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                         if (cs[j] == '\n' || cs[j] == '\r') {
                             this.addStop(i, j);
                             i = j;
-                            continue;
+                            break;
                         }
                     }
                     this.addStop(i, cs.length - 1);
@@ -1719,6 +1716,21 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 // Previous deliminator is not that of a literal
                 return false;
             }
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            for (Pair<Integer, String> pair : this.starts) {
+                builder.append("Delim ");
+                builder.append(pair.getRight());
+                builder.append(" - Start ");
+                builder.append(pair.getLeft());
+                builder.append(" - End ");
+                builder.append(this.stops.get(pair.getLeft()));
+                builder.append('\n');
+            }
+            return builder.toString();
         }
 
     }

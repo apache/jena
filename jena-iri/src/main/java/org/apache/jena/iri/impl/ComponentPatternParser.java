@@ -181,7 +181,6 @@ public class ComponentPatternParser implements ViolationCodes {
         }
     }
 
-    @SuppressWarnings("fallthrough")
     private void next() {
         switch (classify[field]) {
         case CLOSE_SQ:
@@ -214,7 +213,7 @@ public class ComponentPatternParser implements ViolationCodes {
 
         case OPEN_PAREN:
             groupCount++;
-        // fall through
+            //$FALL-THROUGH$
         case OPEN_NON_CAPTURING_PAREN:
         case CLOSE_PAREN:
         case CLOSE_BRACE:
@@ -227,7 +226,6 @@ public class ComponentPatternParser implements ViolationCodes {
         }
     }
 
-    @SuppressWarnings("fallthrough")
     private void addLowerCase() {
         int sqCount=0;
         field++;
@@ -263,7 +261,7 @@ public class ComponentPatternParser implements ViolationCodes {
             case OPEN_PAREN:
                 if (sqCount==0)
                 throw new IllegalStateException("IRI code internal error: capturing group not supported inside lowercase.");
-                // fall through
+                //$FALL-THROUGH$
             case OPEN_NON_CAPTURING_PAREN:
             case CLOSE_PAREN:  // here
             case CLOSE_BRACE:

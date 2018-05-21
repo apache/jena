@@ -40,11 +40,9 @@ public class TestClassify extends BaseTest
 	{ classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
 
     // JENA-1167
-    // This actually safe in this case but as general component.
-    // the JoinClassifier is not clever enough to know that ?o is completely
-    // unbound. It may be bound by whatever feeds into the potential sequence.
+    // This safe; ?o is not an input to the filter block.
     @Test public void testClassify_Join_04() 
-	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", false) ; }
+	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ; }
 
     @Test public void testClassify_Join_05() 
 	{ classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ; }
@@ -82,7 +80,7 @@ public class TestClassify extends BaseTest
 
 	// See testClassify_Join_04()
 	@Test public void testClassify_Join_14() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", false) ; }
+	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
 
     @Test public void testClassify_Join_14a() 
     { classifyJ("{?s :p :o . { OPTIONAL { :s :p ?o FILTER(?o) } } }", true) ; }
@@ -104,9 +102,8 @@ public class TestClassify extends BaseTest
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", true) ; }
 
     // JENA-1167 : Use of a filter variable not in the LHS
-    // Could be safe but the optimizer is not spotting it. 
     @Test public void testClassify_Join_32() 
-    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", false) ; }
+    { classifyJ("{ GRAPH ?g { ?x ?y ?z } { FILTER (?a) } }", true) ; }
 
     // Use of a filter variable from the LHS
     @Test public void testClassify_Join_33() 
@@ -150,6 +147,18 @@ public class TestClassify extends BaseTest
         TestClassify.classifyJ(x1, true);
     }
     
+    // JENA-1167, JENA-1280, JENA-1534
+    @Test public void testClassify_Join_52() { 
+        String x1 = "{ ?s  ?p  ?V0 GRAPH ?g { ?s1  ?p  ?o1 FILTER EXISTS { _:b0  ?p  ?V1 } } }";
+        TestClassify.classifyJ(x1, true);
+    }
+    
+    // JENA-1167, JENA-1280, JENA-1534
+    @Test public void testClassify_Join_53() { 
+        String x1 = "{ ?s  ?p  ?V GRAPH ?g { ?s1  ?p  ?o1 FILTER EXISTS { _:b0  ?p  ?V } } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
     public static void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
@@ -160,6 +169,11 @@ public class TestClassify extends BaseTest
             fail("Not a join: "+pattern) ;
 
         boolean nonLinear = JoinClassifier.isLinear((OpJoin)op) ;
+        if ( nonLinear != expected ) {
+            System.out.println(query);
+            System.out.println(op);
+        }
+        
         assertEquals("Join: "+pattern, expected, nonLinear) ;
     }
 

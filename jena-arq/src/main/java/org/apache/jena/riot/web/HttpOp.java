@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory ;
  * of HTTP. The expectation is that the simplified operations in this class can
  * be used by other code to generate more application specific HTTP interactions
  * (e.g. SPARQL queries). For more complicated requirements of HTTP, then the
- * application wil need to use org.apache.http.client directly.
+ * application will need to use org.apache.http.client directly.
  * 
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a
@@ -109,7 +109,7 @@ public class HttpOp {
     public static final HttpClient initialDefaultHttpClient = defaultHttpClient;
     
     public static HttpClient createDefaultHttpClient() {
-        return createCachingHttpClient();
+        return createPoolingHttpClient();
     }
     
     /**
@@ -210,19 +210,26 @@ public class HttpOp {
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
     public static CloseableHttpClient createPoolingHttpClient() {
+        return createPoolingHttpClientBuilder().build() ;
+    }
+    
+    /**
+     * Create an HttpClientBuilder that performs connection pooling.
+     */
+    public static HttpClientBuilder createPoolingHttpClientBuilder() {
         String s = System.getProperty("http.maxConnections", "5");
         int max = Integer.parseInt(s);
         return HttpClientBuilder.create()
             .useSystemProperties()
             .setRedirectStrategy(laxRedirectStrategy)
             .setMaxConnPerRoute(max)
-            .setMaxConnTotal(2*max)
-            .build() ;
+            .setMaxConnTotal(2*max);
     }
-    
+
     /**
-     * Create an HttpClient that performs client-side caching and conection pooling. This can be used
-     * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     * Create an HttpClient that performs client-side caching and connection pooling. 
+     * This can be used with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     * Beware that content is cached in this process, including across remote server restart. 
      */
     public static CloseableHttpClient createCachingHttpClient() {
         String s = System.getProperty("http.maxConnections", "5");
@@ -367,7 +374,7 @@ public class HttpOp {
     }
 
     /**
-     * Convenience operation to execute a GET with no content negtotiation and
+     * Convenience operation to execute a GET with no content negotiation and
      * return the response as a string.
      * 
      * @param url

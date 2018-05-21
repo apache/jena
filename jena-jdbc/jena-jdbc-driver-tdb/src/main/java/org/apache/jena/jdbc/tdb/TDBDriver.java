@@ -30,7 +30,7 @@ import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.tdb.connections.TDBConnection;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.TDBFactory ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

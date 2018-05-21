@@ -26,6 +26,7 @@ import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBase ;
+import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.NodeId ;
 import org.apache.jena.tdb.store.nodetable.NodeTable ;
 
@@ -98,11 +99,12 @@ public class BindingTDB extends BindingBase
         NodeId id = idBinding.get(var) ;
         if ( id != null )
             return id ;
-        
-        if ( parent == null )
-            return null ; 
+        // In case we are inserting known missing nodes. 
+        if ( NodeId.isDoesNotExist(id) )
+            return null ;
 
-        // Maybe in the parent.
+        if ( parent == null )
+            return null ;
         if ( parent instanceof BindingTDB )
             return ((BindingTDB)parent).getNodeId(var) ;
         return null ;
@@ -118,8 +120,13 @@ public class BindingTDB extends BindingBase
             
             NodeId id = idBinding.get(var) ;
             if ( id == null )
-                return null ; 
+                return null ;
+            if ( NodeId.isDoesNotExist(id) )
+                return null;
             n = nodeTable.getNodeForNodeId(id) ;
+            if ( n == null )
+                // But there was to put it in the BindingNodeId. 
+                throw new TDBException("No node in NodeTable for NodeId "+id);
             // Update cache.
             cachePut(var, n) ;
             return n ;

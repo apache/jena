@@ -49,7 +49,7 @@ public class JsonBuilder {
     public static JsonBuilder create() { return new JsonBuilder() ; }
     
     /** Create a builder from a {@link JsonValue}.
-     *  <p>If the argument is an object or array, use it to initailize the builder.
+     *  <p>If the argument is an object or array, use it to initialize the builder.
      *  <p>If the argument is a JSON primitive (string, number, boolean or null),
      *  <p>Otherwise thrown {@link IllegalArgumentException}.
      */
@@ -92,7 +92,7 @@ public class JsonBuilder {
 
     /** Build a JsonObject.  The outer object is created and then the {@code setup} function called to fill in the contents.
      * <pre>
-     * buildObject(builder->{
+     * buildObject(builder-&gt;{
      *     builder.pair("key", 1234);
      * });
      * </pre>

@@ -24,12 +24,14 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.triples2quadsDftGraph
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
@@ -52,37 +54,54 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     /**  DatasetGraphMap defaulting to storage in memory.
      */
     public DatasetGraphMap() {
-        this(DatasetGraphFactory.graphMakerMem) ; 
+        this(DatasetGraphFactory.graphMakerNamedGraphMem) ; 
     }
     
     /**  DatasetGraphMap with a specific policy for graph creation.
      *   This allows control over the storage. 
      */
     public DatasetGraphMap(GraphMaker graphMaker) {
-        this(graphMaker.create(), graphMaker) ;
+        this(graphMaker.create(null), graphMaker) ;
     }
     
-    public DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
+    private DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
         this.defaultGraph = defaultGraph ;
         this.graphMaker = graphMaker ;
     }
     
     // ----
     private final Transactional txn                     = TransactionalLock.createMRSW() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
     // ----
     
     @Override
     public Iterator<Node> listGraphNodes() {
-        return graphs.keySet().iterator();
+        // Hide empty graphs. 
+        return graphs.entrySet().stream().filter(e->!e.getValue().isEmpty()).map(Entry::getKey).iterator();
     }
 
+    @Override
+    public boolean containsGraph(Node graphNode) {
+        // Hide empty graphs. 
+        if ( Quad.isDefaultGraph(graphNode) )
+            return true;
+        if ( Quad.isUnionGraph(graphNode) )
+            return true;
+        Graph g = graphs.get(graphNode);
+        return g != null && !g.isEmpty(); 
+    }
+    
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) {
         getDefaultGraph().add(Triple.create(s, p, o)) ;
@@ -144,7 +163,7 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
-            g = getGraphCreate();
+            g = getGraphCreate(graphNode);
             if ( g != null )
                 graphs.put(graphNode, g);
         }
@@ -155,8 +174,8 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
      * Return null for "nothing created as a graph".
      * Sub classes can reimplement this.  
      */
-    protected Graph getGraphCreate() { 
-        Graph g = graphMaker.create() ;
+    protected Graph getGraphCreate(Node graphNode) { 
+        Graph g = graphMaker.create(graphNode) ;
         if ( g == null )
             throw new ARQException("Can't make new graphs") ;
         return g ;

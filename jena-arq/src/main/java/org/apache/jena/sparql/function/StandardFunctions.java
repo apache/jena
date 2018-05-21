@@ -95,12 +95,19 @@ public class StandardFunctions
         addCastTemporal(registry, XSDDatatype.XSDgMonthDay) ;
         addCastTemporal(registry, XSDDatatype.XSDgDay) ;
 
+        // Using ARQ prefix http://jena.apache.org/ARQ/function#
+        add(registry, ARQConstants.ARQFunctionLibraryURI+"collation",        collation.class) ;
+
         //TODO op:numeric-greater-than etc.
         //TODO sparql:* for all the SPARQL builtins.
         
         // Sections refer to XQ/XP Expression 3.1
         // https://www.w3.org/TR/xpath-functions-3/
 
+        // 3.1.1 fn:error
+        add(registry, xfn+"error",         FN_Error.class) ;
+
+        
 //      5.4.1 fn:concat
 //      5.4.3 fn:substring
 //      5.4.4 fn:string-length
@@ -159,6 +166,7 @@ public class StandardFunctions
         
         add(registry, xfn+"encode-for-uri", FN_StrEncodeForURI.class) ;
 
+        add(registry, xfn+"dateTime",               FN_DateTime.class) ;
         add(registry, xfn+"year-from-dateTime",     FN_YearFromDateTime.class) ;
         add(registry, xfn+"month-from-dateTime",    FN_MonthFromDateTime.class) ;
         add(registry, xfn+"day-from-dateTime",      FN_DayFromDateTime.class) ;
@@ -228,6 +236,11 @@ public class StandardFunctions
         add(registry, math+"atan",      tan1.class) ;
         
         add(registry, math+"atan2",     Math_atan2.class) ;
+        
+        // F&O 3.1
+        add(registry, xfn+"apply",           FN_Apply.class);
+        add(registry, xfn+"collation-key",   FN_CollationKey.class);
+
         
         // And add op:'s
 //        4.2.1 op:numeric-add

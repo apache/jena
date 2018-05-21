@@ -77,19 +77,25 @@ public class DEF
                                                                           ) ;
     
     // Offer for SELECT
+    // This include application/xml and application/json.
     public static final AcceptList rsOfferTable       = AcceptList.create(contentTypeResultsJSON,
+                                                                          contentTypeJSON,
                                                                           contentTypeTextCSV,
                                                                           contentTypeTextTSV,
                                                                           contentTypeResultsXML,
+                                                                          contentTypeXML,
                                                                           contentTypeResultsThrift,
                                                                           contentTypeTextPlain
                                                                           ) ;
          
     // Offer for ASK
+    // This includes application/xml and application/json and excludes application/sparql-results+thrift 
     public static final AcceptList rsOfferBoolean      = AcceptList.create(contentTypeResultsJSON,
+                                                                           contentTypeJSON,
                                                                            contentTypeTextCSV,
                                                                            contentTypeTextTSV,
                                                                            contentTypeResultsXML,
+                                                                           contentTypeXML,
                                                                            contentTypeTextPlain
                                                                            ) ;
 

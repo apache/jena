@@ -56,4 +56,9 @@ public interface PersistentSet<E> {
 	 * @return a {@link Stream} of the elements in this set
 	 */
 	Stream<E> stream();
+
+    /**
+     * An immutable view of this as a {@code java.util.Set}.
+     */
+    java.util.Set<E> asSet();
 }

@@ -79,7 +79,6 @@ public class RdfTypesTest {
      *            Data
      * @return Data Input
      */
-    @SuppressWarnings("unused")
     private DataInput prepareInput(byte[] data) {
         this.inputStream = new ByteArrayInputStream(data);
         return new DataInputStream(this.inputStream);

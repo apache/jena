@@ -27,7 +27,7 @@ import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
 import jena.cmd.ModBase;
-
+import org.apache.jena.ext.com.google.common.base.Objects;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -95,6 +95,18 @@ public class ModLangOutput extends ModBase
                     System.err.println("Language '"+lang.getLabel()+"' not recognized.") ;
                     printRegistered(System.err) ;
                     throw new CmdException("No output set: '"+langName+"'") ;
+                }
+                // Non-streaming block-style writers.
+                // The normal RDF/XML writer is the pretty one, also know as "RDF/XML-ABBREV" 
+                // but it can occassionally use a lot of stack and heap.
+                // 
+                // The RDF/XML basic writer ("Basic") is not streaming but does not
+                // consume a lot of stack and heap as it writes in a flat block style.
+                //
+                // To make it accessible, we use --pretty for the pretty form, also known as 
+                // RDF/XML-ABBREV and --output for the basic writer.  
+                if ( Objects.equal(formattedOutput, RDFFormat.RDFXML_PRETTY) ) {
+                    formattedOutput = RDFFormat.RDFXML_PLAIN;
                 }
             }
         }

@@ -22,7 +22,7 @@ import java.io.Closeable ;
 
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.sparql.engine.ResultSetWrapper ;
+import org.apache.jena.sparql.resultset.ResultSetWrapper ;
 
 /** A {@link ResultSet} that closes the associated {@link QueryExecution} 
  * via {@link AutoCloseable}.
@@ -35,7 +35,7 @@ public class ResultSetCloseable extends ResultSetWrapper implements AutoCloseabl
      * @return ResultSetCloseable
      */
     public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
-        if ( ! queryExecution.getQuery().isSelectType() )
+        if ( queryExecution.getQuery() != null && ! queryExecution.getQuery().isSelectType() )
             throw new IllegalArgumentException("Not an execution for a SELECT query");
         return new ResultSetCloseable(queryExecution.execSelect(), queryExecution) ;
     }

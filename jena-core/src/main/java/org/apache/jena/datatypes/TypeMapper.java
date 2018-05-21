@@ -136,7 +136,7 @@ public class TypeMapper {
     }
 
     /**
-     * Lookup a known datatype. An unkown datatype or a datatype with uri null
+     * Lookup a known datatype. An unknown datatype or a datatype with uri null
      * will return null will mean that the value will be treated as a old-style plain literal.
      *
      * @param uri the URI of the desired datatype

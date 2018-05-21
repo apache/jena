@@ -27,10 +27,10 @@ import static org.apache.jena.atlas.lib.StrUtils.* ;
 public class StrUtils
 {
     public static String sqlList(List<String> args)
-    { return strjoin(", ", args) ; }
+    { return String.join(", ", args) ; }
     
     public static String sqlList(String[] args)
-    { return strjoin(", ", args) ; }
+    { return String.join(", ", args) ; }
     
     public static String substitute(String str, Map<String, String>subs)
     {

@@ -25,12 +25,13 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
-class ResultSetWrapper implements ResultSet {
+/** Wrap another {@link ResultSet} (probably to modify operations on it). */
+public class ResultSetWrapper implements ResultSet {
     
     protected ResultSet get() { return rs ; }
     private final ResultSet rs;
 
-    ResultSetWrapper(ResultSet rs) {
+    public ResultSetWrapper(ResultSet rs) {
         this.rs = rs ;
     }
     

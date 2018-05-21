@@ -137,7 +137,7 @@ public class LPRuleStore extends RuleStore {
     /**
      * Return true if the given goal is tabled, currently this is true if the
      * predicate is a tabled predicate or the predicate is a wildcard and some
-     * tabled predictes exist.
+     * tabled predicates exist.
      */
     public boolean isTabled(TriplePattern goal) {
         return isTabled(goal.getPredicate());
@@ -146,7 +146,7 @@ public class LPRuleStore extends RuleStore {
     /**
      * Return true if the given predicated is tabled, currently this is true if the
      * predicate is a tabled predicate or the predicate is a wildcard and some
-     * tabled predictes exist.
+     * tabled predicates exist.
      */
     public boolean isTabled(Node predicate) {
         if (allTabled) return true;

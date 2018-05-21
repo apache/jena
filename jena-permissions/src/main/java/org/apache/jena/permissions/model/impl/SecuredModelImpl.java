@@ -1869,7 +1869,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping removeNsPrefix(final String prefix)
+	public SecuredModel removeNsPrefix(final String prefix)
 			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().removeNsPrefix(prefix);
@@ -1877,7 +1877,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping clearNsPrefixMap() {
+	public SecuredModel clearNsPrefixMap() {
 		checkUpdate();
 		holder.getBaseItem().clearNsPrefixMap();
 		return holder.getSecuredItem();
@@ -1908,7 +1908,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefix(final String prefix, final String uri)
+	public SecuredModel setNsPrefix(final String prefix, final String uri)
 			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefix(prefix, uri);
@@ -1916,7 +1916,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes(final Map<String, String> map)
+	public SecuredModel setNsPrefixes(final Map<String, String> map)
 			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(map);
@@ -1924,7 +1924,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping setNsPrefixes(final PrefixMapping other)
+	public SecuredModel setNsPrefixes(final PrefixMapping other)
 			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().setNsPrefixes(other);
@@ -2010,7 +2010,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 	}
 
 	@Override
-	public SecuredPrefixMapping withDefaultMappings(final PrefixMapping map)
+	public SecuredModel withDefaultMappings(final PrefixMapping map)
 			throws UpdateDeniedException, AuthenticationRequiredException {
 		checkUpdate();
 		holder.getBaseItem().withDefaultMappings(map);

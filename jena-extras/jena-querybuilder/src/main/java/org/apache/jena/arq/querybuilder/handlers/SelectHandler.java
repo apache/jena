@@ -116,7 +116,7 @@ public class SelectHandler implements Handler {
 	 * 
 	 * @param s
 	 *            the select string to parse.
-	 * @return the epxression
+	 * @return the expression
 	 * @throws QueryParseException
 	 *             on error
 	 */

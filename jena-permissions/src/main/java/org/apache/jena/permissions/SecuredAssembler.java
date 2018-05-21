@@ -38,7 +38,7 @@ import org.apache.jena.sparql.util.MappingRegistry ;
  * <p>
  * The assembler file should include the following
  * <code><pre>
- * <>; ja:loadClass	"org.apache.jena.permission.SecuredAssembler" .
+ * &lt;&gt; ja:loadClass    "org.apache.jena.permission.SecuredAssembler" .
  * 
  * sec:Model rdfs:subClassOf ja:NamedModel .
  * 

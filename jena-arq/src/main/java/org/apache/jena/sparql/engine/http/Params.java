@@ -107,7 +107,7 @@ public class Params
     
     public int count() { return paramList.size() ; }
     
-    /** Get the names of parameters - one ocurrence */ 
+    /** Get the names of parameters - one occurrence */ 
     public List<String> names()
     {
         return paramList.stream().map(Pair::getName).distinct().collect(toList()); 

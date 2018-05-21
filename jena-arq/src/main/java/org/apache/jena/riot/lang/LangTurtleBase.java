@@ -36,9 +36,7 @@ import static org.apache.jena.riot.tokens.TokenType.SEMICOLON ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.Prologue;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -50,7 +48,7 @@ public abstract class LangTurtleBase extends LangBase {
     // Some predicates (if accepted)
     protected final static String  KW_A           = "a" ;
     protected final static String  KW_SAME_AS     = "=" ;
-    protected final static String  KW_LOG_IMPLIES = "=>" ;
+    //protected final static String  KW_LOG_IMPLIES = "=>" ;
     protected final static String  KW_TRUE        = "true" ;
     protected final static String  KW_FALSE       = "false" ;
 
@@ -58,17 +56,20 @@ public abstract class LangTurtleBase extends LangBase {
     // protected final static boolean CHECKING = true ;
     // Current graph - null for default graph
     private Node                   currentGraph   = null ;
+    
+    protected /*final*/ PrefixMap prefixMap;
 
-    public final Node getCurrentGraph() {
+    protected final Node getCurrentGraph() {
         return currentGraph ;
     }
 
-    public final void setCurrentGraph(Node graph) {
+    protected final void setCurrentGraph(Node graph) {
         this.currentGraph = graph ;
     }
 
     protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
+        prefixMap = profile.getPrefixMap();
     }
 
     @Override
@@ -128,7 +129,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("base") ) {
             directiveBase() ;
-            if ( profile.isStrictMode() )
+            if ( isStrictMode )
                 // The line number is probably one ahead due to the newline
                 expect("Base directive not terminated by a dot", DOT) ;
             else
@@ -138,7 +139,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("prefix") ) {
             directivePrefix() ;
-            if ( profile.isStrictMode() )
+            if ( isStrictMode )
                 // The line number is probably one ahead due to the newline
                 expect("Prefix directive not terminated by a dot", DOT) ;   
             else
@@ -160,7 +161,7 @@ public abstract class LangTurtleBase extends LangBase {
             exception(peekToken(), "@prefix requires an IRI (found '" + peekToken() + "')") ;
         String iriStr = peekToken().getImage() ;
         IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
-        profile.getPrologue().getPrefixMap().add(prefix, iri) ;
+        prefixMap.add(prefix, iri) ;
         emitPrefix(prefix, iri.toString()) ;
         nextToken() ;
     }
@@ -173,18 +174,12 @@ public abstract class LangTurtleBase extends LangBase {
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
         emitBase(baseIRI.toString()) ;
         nextToken() ;
-        //profile.getPrologue().setBaseURI(baseIRI) ;
-        // XXX [ParserRDF]
-        // This creates a new resolver but MakerRDFStd has a copy of the resolver object
-        Prologue prologue = profile.getPrologue();
-        prologue.setBaseURI(baseIRI);
-        profile.setPrologue(prologue);
+        IRIResolver newResolver = IRIResolver.create(baseIRI) ;
+        profile.setIRIResolver(newResolver);
     }
 
-    
-
     // Unlike many operations in this parser suite
-    // this does not assume that we have definitely
+    // this does not assume that we are definitely
     // entering this state. It does checks and may
     // signal a parse exception.
 
@@ -215,7 +210,7 @@ public abstract class LangTurtleBase extends LangBase {
             // There must be a predicate and object.
 
             // -- If strict turtle.
-            if ( profile.isStrictMode() && maybeList ) {
+            if ( isStrictMode && maybeList ) {
                 if ( peekPredicate() ) {
                     predicateObjectList(n) ;
                     expectEndOfTriples() ;
@@ -264,7 +259,7 @@ public abstract class LangTurtleBase extends LangBase {
     // It is not in N3 and SPARQL.
     
     protected void expectEndOfTriplesTurtle() {
-        if ( profile.isStrictMode() )
+        if ( isStrictMode )
             expect("Triples not terminated by DOT", DOT) ;
         else
             expectOrEOF("Triples not terminated by DOT", DOT) ;
@@ -301,16 +296,18 @@ public abstract class LangTurtleBase extends LangBase {
         Token t = peekToken() ;
 
         if ( t.hasType(TokenType.KEYWORD) ) {
-            boolean strict = profile.isStrictMode() ;
+            boolean strict = isStrictMode ;
             Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType ;
+            // N3-isms
             if ( !strict && image.equals(KW_SAME_AS) )
                 return nodeSameAs ;
-            if ( !strict && image.equals(KW_LOG_IMPLIES) )
-                return NodeConst.nodeRDFType ;
-            exception(tErr, "Unrecognized: " + image) ;
+            // Relationship between two formulae in N3.
+//            if ( !strict && image.equals(KW_LOG_IMPLIES) )
+//                return log:implies;
+            exception(tErr, "Unrecognized keyword: " + image) ;
         }
 
         Node n = node() ;
@@ -319,17 +316,16 @@ public abstract class LangTurtleBase extends LangBase {
         return n ;
     }
 
-    /** Check raw token to see if it might be a predciate */
+    /** Check raw token to see if it might be a predicate */
     protected final boolean peekPredicate() {
         if ( lookingAt(TokenType.KEYWORD) ) {
             String image = peekToken().getImage() ;
-            boolean strict = profile.isStrictMode() ;
             if ( image.equals(KW_A) )
                 return true ;
-            if ( !strict && image.equals(KW_SAME_AS) )
+            if ( !isStrictMode && image.equals(KW_SAME_AS) )
                 return true ;
-            if ( !strict && image.equals(KW_LOG_IMPLIES) )
-                return true ;
+//            if ( !isStrictMode && image.equals(KW_LOG_IMPLIES) )
+//                return true ;
             return false ;
         }
         // if ( lookingAt(NODE) )
@@ -410,7 +406,7 @@ public abstract class LangTurtleBase extends LangBase {
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception(peekToken(), "Unrecognized: " + peekToken()) ;
+        exception(peekToken(), "Unrecognized (expected an RDF Term): " + peekToken()) ;
         return null ;
     }
 
@@ -465,21 +461,18 @@ public abstract class LangTurtleBase extends LangBase {
             lastCell = nextCell ;
 
             emitTriple(nextCell, NodeConst.nodeFirst, n) ;
-
-            if ( !moreTokens() ) // Error.
-                break ;
         }
         // On exit, just after the RPARENS
 
-        if ( lastCell == null )
+        if ( lastCell == null ) {
             // Simple ()
+            finishList();
             return NodeConst.nodeNil ;
+        }
 
         // Finish list.
         emitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
-
         finishList() ;
-
         return listHead ;
     }
 

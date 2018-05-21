@@ -84,7 +84,7 @@ public abstract class AccumulatorExpr implements Accumulator
     /** Called if no errors to get the accumulated result */
     protected abstract NodeValue getAccValue() ; 
 
-    /** Called when the expression beeing aggregated evaluates OK.
+    /** Called when the expression being aggregated evaluates OK.
      * Can throw ExprEvalException - in which case the accumulateError is called */
     protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
     

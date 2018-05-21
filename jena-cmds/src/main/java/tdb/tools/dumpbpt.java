@@ -22,7 +22,9 @@ import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
@@ -84,19 +86,37 @@ public class dumpbpt extends CmdARQ {
         // The name is the order.
         for ( String indexName : super.getPositional() ) {
             String primary ;
+            
             if ( indexName.length() == 3 ) {
                 primary = Names.primaryIndexTriples ;
             } else if ( indexName.length() == 4 ) {
                 primary = Names.primaryIndexQuads ;
+            } else if ( Objects.equals(indexName, Names.indexNode2Id) ) {
+                primary = Names.indexNode2Id;
             } else {
                 cmdError("Wrong length: " + indexName) ;
                 primary = null ;
             }
+            
+            //prefix2id
+            //prefixIdx : GPU
 
             int keySubLen = SystemTDB.SizeOfNodeId ;
             int keyUnitLen = indexName.length() ;
             int keyLength = keySubLen * keyUnitLen ;
             int valueLength = 0 ;
+            
+            // Node table indexes.
+            if ( Objects.equals(indexName, Names.indexNode2Id) || Objects.equals(indexName, Names.prefixNode2Id) ) {
+                keySubLen = SystemTDB.LenNodeHash;
+                keyUnitLen = 1 ;
+                keyLength = SystemTDB.LenNodeHash;
+                valueLength = SystemTDB.SizeOfNodeId;
+            }
+            // Prefixes
+            if ( Objects.equals(indexName, Names.indexPrefix) ) {
+                primary = Names.primaryIndexPrefix;
+            }
 
             RecordFactory rf = new RecordFactory(keyLength, valueLength) ;
             RangeIndex rIndex = IndexFactory.buildRangeIndex(loc, indexName, rf) ;
@@ -105,6 +125,7 @@ public class dumpbpt extends CmdARQ {
             if ( false ) {
                 System.out.println("---- Index structure") ;
                 bpt.dump() ;
+                
             }
             if ( true ) {
                 System.out.println("---- Index contents") ;
@@ -168,11 +189,20 @@ public class dumpbpt extends CmdARQ {
             // Print in chunks
             int k = i * keySubLen ;
             for ( int j = k ; j < k + keySubLen ; j++ )
-                out.printf("%02x", r.getKey()[j]) ;
+                out.printf("%02X", r.getKey()[j]) ;
 
             // long x = Bytes.getLong(r.getKey(), i*SystemTDB.SizeOfNodeId) ;
-            // System.out.printf("%016x", x) ;
+            // System.out.printf("%016X", x) ;
         }
+        
+        if ( r.getValue() != null &&  r.getValue().length != 0 ) {
+            out.print(" -> ");
+            String s = Bytes.asHexUC(r.getValue());
+            out.print(s);
+        }
+
+
+        
         out.println() ;
     }
 }

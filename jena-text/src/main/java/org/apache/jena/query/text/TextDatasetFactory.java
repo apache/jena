@@ -24,7 +24,7 @@ import org.apache.jena.query.text.assembler.TextVocab ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory ;
 
@@ -164,30 +164,5 @@ public class TextDatasetFactory
         TextIndex index = createLuceneIndex(directory, config) ;
         return create(base, index, true) ;
     }
-
-    /**
-     * Create an ElasticSearch based Index and return a Dataset based on this index
-     * @param base the base {@link Dataset}
-     * @param config {@link TextIndexConfig} containing the {@link EntityDefinition}
-     * @param settings ElasticSearch specific settings for initializing and connecting to an ElasticSearch Cluster
-     * @return The config definition for the index instantiation
-     */
-    public static Dataset createES(Dataset base, TextIndexConfig config, ESSettings settings)
-    {
-        TextIndex index = createESIndex(config, settings) ;
-        return create(base, index, true) ;
-    }
-
-    /**
-     * Create an ElasticSearch based Index
-     * @param config {@link TextIndexConfig} containing the {@link EntityDefinition}
-     * @param settings ElasticSearch specific settings for initializing and connecting to an ElasticSearch Cluster
-     * @return a configured instance of TextIndexES
-     */
-    public static TextIndex createESIndex(TextIndexConfig config, ESSettings settings)
-    {
-        return new TextIndexES(config, settings) ;
-    }
-
 }
 

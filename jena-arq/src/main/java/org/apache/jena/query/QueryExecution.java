@@ -21,6 +21,8 @@ package org.apache.jena.query;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
@@ -78,7 +80,7 @@ public interface QueryExecution extends AutoCloseable
     public Model execConstruct();
 
     /** Execute a CONSTRUCT query, putting the statements into 'model'.
-     *  @return Model The model argument for casaded code.
+     *  @return Model The model argument for cascaded code.
      */
     public Model execConstruct(Model model);
     
@@ -116,12 +118,12 @@ public interface QueryExecution extends AutoCloseable
     public Iterator<Quad> execConstructQuads();
     
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
-     *  This maybe an exetended synatx query (if supported).   
+     *  This maybe an extended syntax query (if supported).   
      */
     public Dataset execConstructDataset();
 
     /** Execute a CONSTRUCT query, putting the statements into 'dataset'.
-     *  This maybe an exetended synatx query (if supported).   
+     *  This maybe an extended syntax query (if supported).   
      */
     public Dataset execConstructDataset(Dataset dataset);
     
@@ -153,7 +155,13 @@ public interface QueryExecution extends AutoCloseable
 
     /** Execute an ASK query */
     public boolean execAsk();
-    
+
+    /** Execute a JSON query and return a json array */
+    public JsonArray execJson() ;
+
+    /** Execute a JSON query and return an interator */
+    public Iterator<JsonObject> execJsonItems() ;
+
 	/** Stop in mid execution.
 	 *  This method can be called in parallel with other methods on the
      *  QueryExecution object.
@@ -169,7 +177,7 @@ public interface QueryExecution extends AutoCloseable
      *  QueryExecution objects, and a {@link ResultSet} from {@link #execSelect},
      *  can not be used once the QueryExecution is closed.  
      *  Model results from {@link #execConstruct} and {@link #execDescribe}
-     *  are stil valid.
+     *  are still valid.
      *  It is important to close query execution objects in order to release
      *  resources such as working memory and to stop the query execution.
      *  Some storage subsystems require explicit ends of operations and this
@@ -187,7 +195,7 @@ public interface QueryExecution extends AutoCloseable
     public boolean isClosed();
 
     /** Set a timeout on the query execution.
-	 * Processing will be aborted after the timeout (which starts when the approprate exec call is made).
+	 * Processing will be aborted after the timeout (which starts when the appropriate exec call is made).
 	 * Not all query execution systems support timeouts.
 	 * A timeout of less than zero means no timeout.
 	 */
@@ -212,9 +220,9 @@ public interface QueryExecution extends AutoCloseable
      */
     public void setTimeout(long timeout1, long timeout2) ;
 
-    /** Return the first timeout (time to first result), in millseconds: negative if unset */
+    /** Return the first timeout (time to first result), in milliseconds: negative if unset */
     public long getTimeout1() ;
-    /** Return the second timeout (overall query execution after first result), in millseconds: negative if unset */
+    /** Return the second timeout (overall query execution after first result), in milliseconds: negative if unset */
     public long getTimeout2() ;
     
     //	/** Say whether this QueryExecution is useable or not.

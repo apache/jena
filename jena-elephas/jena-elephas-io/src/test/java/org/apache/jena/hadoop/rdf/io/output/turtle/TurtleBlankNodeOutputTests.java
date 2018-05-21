@@ -53,9 +53,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TurtleBlankNodeOutputTests extends StreamedTurtleOutputTest {
 
+    @SuppressWarnings("hiding")
 	static long $bs1 = RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE;
+    @SuppressWarnings("hiding")
 	static long $bs2 = 1000;
+    @SuppressWarnings("hiding")
 	static long $bs3 = 100;
+    @SuppressWarnings("hiding")
 	static long $bs4 = 1;
 
 	/**

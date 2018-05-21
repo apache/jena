@@ -29,7 +29,7 @@ import org.apache.jena.sdb.assembler.AssemblerVocab ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.util.FileManager ;
 
-/** Java description a script : the assmbler build one of these */ 
+/** Java description a script : the assembler build one of these */ 
 
 public class ScriptDesc
 {

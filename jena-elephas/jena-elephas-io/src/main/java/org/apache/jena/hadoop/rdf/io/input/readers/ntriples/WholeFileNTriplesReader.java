@@ -22,7 +22,7 @@ import org.apache.jena.hadoop.rdf.io.input.readers.AbstractWholeFileTripleReader
 import org.apache.jena.riot.Lang;
 
 /**
- * A record record for NTriples
+ * A record for NTriples
  * <p>
  * Unlike the {@link NTriplesReader} this processes files as a whole rather than
  * individual lines. This has the advantage of less parser setup overhead but

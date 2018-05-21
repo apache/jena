@@ -197,7 +197,7 @@ public class TestDateTimeParsing extends TestCase
     private static void dateTimeTest(String str)
     {
         DateTimeStruct dt = DateTimeStruct.parseDateTime(str) ;
-        assertTrue(dt.xsdDateTime) ;
+        assertTrue(dt.isDateTime()) ;
         check(dt) ;
         assertEquals(str, dt.toString()) ;
     }
@@ -214,7 +214,8 @@ public class TestDateTimeParsing extends TestCase
     private static void dateTest(String str)
     {
         DateTimeStruct dt = DateTimeStruct.parseDate(str) ;
-        assertFalse(dt.xsdDateTime) ;
+        assertTrue(dt.isDate()) ;
+        assertFalse(dt.isDateTime()) ;
         check(dt) ;
         assertEquals(str, dt.toString()) ;
     }
@@ -242,7 +243,7 @@ public class TestDateTimeParsing extends TestCase
         if ( dt.day != null )
             assertEquals(2, dt.day.length()) ;
         
-        if ( dt.xsdDateTime )
+        if ( dt.isDateTime() )
         {
             assertNotNull(dt.hour) ;
             assertEquals(2, dt.hour.length()) ;

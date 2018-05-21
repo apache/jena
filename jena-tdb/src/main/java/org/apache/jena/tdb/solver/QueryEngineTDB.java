@@ -54,42 +54,34 @@ public class QueryEngineTDB extends QueryEngineMain
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
-    private Binding initialInput ;
 
     // ---- Object
-    protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
-    {
-        super(op, dataset, input, context) ;
-        this.initialInput = input ;
+
+    protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context) {
+        super(op, dataset, input, context);
+    }
+
+    protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt) {
+        super(query, dataset, input, cxt);
     }
     
-    private boolean doingDynamicDatasetBySpecialDataset = false ;
-    
-    protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
-    { 
-        super(query, dataset, input, cxt) ; 
-        DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
-        
-        if ( dsDesc != null )
-        {
-            doingDynamicDatasetBySpecialDataset = true ;
-            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB.symUnionDefaultGraph) ) ;
-        }
-        this.initialInput = input ; 
+    @Override
+    protected DatasetGraph dynamicDataset(DatasetDescription dsDesc, DatasetGraph dataset, boolean unionDftGraph) {
+        boolean union = unionDftGraph || context.isTrue(TDB.symUnionDefaultGraph);
+        return DynamicDatasets.dynamicDataset(dsDesc, dataset, union ) ;
     }
     
     // Choose the algebra-level optimizations to invoke. 
     @Override
     protected Op modifyOp(Op op)
     {
-        op = Substitute.substitute(op, initialInput) ;
+        op = Substitute.substitute(op, getStartBinding()) ;
         // Optimize (high-level)
         op = super.modifyOp(op) ;
 
         // Quadification
         // Only apply if not a rewritten DynamicDataset
-        if ( ! doingDynamicDatasetBySpecialDataset )
+        if ( ! isDynamicDataset() )
             op = Algebra.toQuadForm(op) ;
         
         // Record it.
@@ -104,7 +96,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
         
         // Fix DatasetGraph for global union.
-        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
+        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! isDynamicDataset() ) 
         {
             op = A2.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
@@ -180,32 +172,4 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
     }
-    
-//    // By rewrite, not using a general purpose dataset with the right graphs in.
-//    private static Op dynamicDatasetOp(Op op,  Context context)
-//    {
-//        Transform transform = null ;
-//    
-//        try {
-//            @SuppressWarnings("unchecked")
-//            Set<Node> defaultGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetDefaultGraphs)) ;
-//            @SuppressWarnings("unchecked")
-//            Set<Node> namedGraphs = (Set<Node>)(context.get(SystemTDB.symDatasetNamedGraphs)) ;
-//            if ( defaultGraphs != null || namedGraphs != null )
-//                transform = new TransformDynamicDataset(defaultGraphs, 
-//                                                        namedGraphs, 
-//                                                        context.isTrue(TDB.symUnionDefaultGraph)) ;
-//        } catch (ClassCastException ex)
-//        {
-//            Log.warn(QueryEngineTDB.class, "Bad dynamic dataset description (ClassCastException)", ex) ;
-//            transform = null ;
-//            return op ;
-//        }
-//
-//        // Apply dynamic dataset modifications.
-//        if ( transform != null )
-//            op = Transformer.transform(transform, op) ;
-//        return op ;
-//    }        
-//    
 }

@@ -27,6 +27,8 @@ import org.apache.jena.base.Sys ;
 /** Operations related to IRIs */
 public class IRILib
 {
+    // Tests - see also TestFilenameProcessing
+    
     // http://www.w3.org/TR/xpath-functions/#func-encode-for-uri
     // Encodes delimiters.
     
@@ -119,6 +121,12 @@ public class IRILib
             fn = iri.substring("file://".length()) ;
         else
             fn = iri.substring("file:".length()) ;
+        // MS Windows: we can have 
+        //  file:///C:/path or file:/C:/path
+        // At this point, we have a filename of /C:/
+        // so need strip the leading "/"
+        fn = fixupWindows(fn);
+        
         return decode(fn) ;
     }
     
@@ -128,13 +136,10 @@ public class IRILib
         // Make Absolute filename.
 
         boolean trailingSlash = fn.endsWith("/") ;
-        if ( Sys.isWindows ) {
-            // Can be "/C:/" on windows :-(
-            // This happens because of URL.toString.
-            if ( fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
-                fn = fn.substring(1) ;
-        }
-        
+
+        // To get Path.toAbsolutePath to work, we need to convert /C:/ to C:/
+        // then back again.
+        fn = fixupWindows(fn) ;
         fn = Paths.get(fn).toAbsolutePath().normalize().toString() ;
         
         if ( trailingSlash && ! fn.endsWith("/") )
@@ -156,6 +161,18 @@ public class IRILib
         return "file://"+fn ;
     }
     
+    // Case of Windows /C:/ which can come from URL.toString 
+    // giving file:/C:/ and decoding file:///C:/ 
+    private static String fixupWindows(String fn) {
+        if ( Sys.isWindows && 
+             fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
+             fn = fn.substring(1) ;
+        return fn;
+    }
+    
+    /** Does filename {@code fn} look like a windows-drive rooted file path?
+     * The test is can we find "C:" at location {@code i}. 
+     */
     private static boolean windowsDrive(String fn, int i) {
         return 
             fn.length() >= 2+i && 
@@ -175,14 +192,14 @@ public class IRILib
             return plainFilenameToURL(fn2) ;
         }
         
-        // Starts file:///
+        // Starts file:// or file:/// 
         if ( fn.startsWith("file:///") )
             // Assume it's good and return as-is.
             return fn ;
 
         if ( fn.startsWith("file://") ) {
-            String fn2 = fn.substring("file:/".length()) ;  // Leave one "/"
-            return plainFilenameToURL(fn2) ;
+            // file: URL with host name (maybe!)
+            return fn ;
         }
 
         // Must be file:/

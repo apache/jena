@@ -38,7 +38,7 @@ public final class FileBase implements Sync, Closeable
     private static long counter = 0 ;
     private final long id ;
 
-    /** Create an FileBase withotu managed resources  Use with case. */
+    /** Create an FileBase without managed resources  Use with case. */
     static FileBase createUnmanged(String filename, FileChannel channel) { return new FileBase(filename, channel) ; }
     
     /** Create a Filebase with managed resources */

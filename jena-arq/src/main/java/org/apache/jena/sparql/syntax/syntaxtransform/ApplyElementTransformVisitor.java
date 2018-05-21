@@ -101,8 +101,8 @@ class ApplyElementTransformVisitor implements ElementVisitor {
 
     @Override
     public void visit(ElementData el) {
-        transform.transform(el) ;
-        push(el) ;
+        Element el2 = transform.transform(el) ;
+        push(el2) ;
     }
 
     @Override
@@ -115,7 +115,7 @@ class ApplyElementTransformVisitor implements ElementVisitor {
     @Override
     public void visit(ElementGroup el) {
         ElementGroup newElt = new ElementGroup() ;
-        boolean b = transformFromTo(el.getElements(), newElt.getElements()) ;
+        transformFromTo(el.getElements(), newElt.getElements()) ;
         Element el2 = transform.transform(el, newElt.getElements()) ;
         push(el2) ;
     }
@@ -123,7 +123,7 @@ class ApplyElementTransformVisitor implements ElementVisitor {
     @Override
     public void visit(ElementUnion el) {
         ElementUnion newElt = new ElementUnion() ;
-        boolean b = transformFromTo(el.getElements(), newElt.getElements()) ;
+        transformFromTo(el.getElements(), newElt.getElements()) ;
         Element el2 = transform.transform(el, newElt.getElements()) ;
         push(el2) ;
     }

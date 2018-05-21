@@ -65,4 +65,9 @@ public class PSet<E> implements PersistentSet<E> {
 	public Stream<E> stream() {
 		return wrappedSet.asSet().stream();
 	}
+
+    @Override
+    public java.util.Set<E> asSet() {
+        return wrappedSet.asSet();
+    }
 }

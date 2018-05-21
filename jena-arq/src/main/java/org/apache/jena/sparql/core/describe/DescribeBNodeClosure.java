@@ -61,15 +61,15 @@ public class DescribeBNodeClosure implements DescribeHandler
         
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("s", r) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm) ;
-        ResultSet rs = qExec.execSelect() ;
-        for ( ; rs.hasNext() ; )
-        {
-            QuerySolution qs = rs.next() ;
-            String gName = qs.getResource("g").getURI() ;
-            Model model =  dataset.getNamedModel(gName) ;
-            Resource r2 = otherModel(r, model) ;
-            Closure.closure(r2, false, acc) ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm)) {
+            ResultSet rs = qExec.execSelect() ;
+            for ( ; rs.hasNext() ; ) {
+                QuerySolution qs = rs.next() ;
+                String gName = qs.getResource("g").getURI() ;
+                Model model =  dataset.getNamedModel(gName) ;
+                Resource r2 = otherModel(r, model) ;
+                Closure.closure(r2, false, acc) ;
+            }
         }
         
 //        // Named graphs

@@ -64,7 +64,7 @@ public class OpFilter extends Op1
     
     /** Combine an ExprList with an Op so that the expressions filter the Op.
      * If the exprs are empty, return the Op.  
-     * If the op is already a OpFilter, merge the expressions into the filters existintg expressions.  
+     * If the op is already a OpFilter, merge the expressions into the filters existing expressions.  
      * Else create a new OpFilter with the expressions and subOp. 
      */ 
     public static Op filterBy(ExprList exprs, Op op) {

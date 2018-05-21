@@ -37,7 +37,7 @@ public class QueryIterSlice extends QueryIter1
      * 
      * @param cIter            The closable iterator to throttle 
      * @param startPosition    Offset of start after - 0 is the no-op.
-     * @param numItems         Maximium number of items to yield.  
+     * @param numItems         Maximum number of items to yield.  
      */
     
     public QueryIterSlice(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context)

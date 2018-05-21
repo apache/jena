@@ -24,11 +24,11 @@ import java.util.regex.Pattern ;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.shared.CannotEncodeCharacterException ;
 import org.apache.jena.util.SplitIRI ;
-import org.apache.xerces.util.XMLChar ;
 
 /** Some utility functions.
  */
@@ -203,6 +203,8 @@ public class Util extends Object {
      */
     public static boolean isSimpleString(Node n) {
         Objects.requireNonNull(n) ;
+        if ( ! n.isLiteral() )
+            return false ;
         RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt == null )
             return !isLangString(n) ;
@@ -217,6 +219,8 @@ public class Util extends Object {
      */
     public static boolean isLangString(Node n) {
         Objects.requireNonNull(n) ;
+        if ( ! n.isLiteral() )
+            return false ;
         String lang = n.getLiteralLanguage() ;
         if ( lang == null )
             return false ;
@@ -224,8 +228,8 @@ public class Util extends Object {
     }
     
     /** Return true if the literal is a simple string.
-     *  <p>RDF 1.0 => it is a plain literal, with no language tag
-     *  <p>RDF 1.1 => it has datatype xsd:string
+     *  <p>RDF 1.0 {@literal =>} it is a plain literal, with no language tag
+     *  <p>RDF 1.1 {@literal =>} it has datatype xsd:string
      */ 
     public static boolean isSimpleString(Literal lit) {
         Objects.requireNonNull(lit) ;

@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.* ;
+import org.apache.jena.sparql.pfunction.PropFuncArg;
 
 public class VarUtils {
     public static Set<Var> getVars(Triple triple) {
@@ -87,5 +88,10 @@ public class VarUtils {
         }
     }
 
-
+    public static void addVars(Collection<Var> acc, PropFuncArg arg) {
+        if ( arg.isNode() )
+            addVar(acc, arg.getArg());
+        else
+            addVarNodes(acc, arg.getArgList());
+    }
 }

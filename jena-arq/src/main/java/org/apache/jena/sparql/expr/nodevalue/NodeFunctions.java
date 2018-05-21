@@ -28,6 +28,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprTypeException ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -66,7 +67,7 @@ public class NodeFunctions {
     }
 
     /**
-     * Check for string operations with primary first arg and second second arg
+     * Check for string operations with primary first arg and second arg
      * (e.g. CONTAINS).  The arguments are not used in the same way and the check
      * operation is not symmetric. 
      * <li> "abc"@en is compatible with "abc"
@@ -202,6 +203,12 @@ public class NodeFunctions {
         return "[undef]" ;
     }
 
+    // -------- sort key (collation)
+
+    public static NodeValue sortKey(NodeValue nv, String collation) {
+        return NodeValue.makeSortKey(str(nv.asNode()), collation) ;
+    }
+
     // -------- datatype
     public static NodeValue datatype(NodeValue nv) {
         return NodeValue.makeNode(datatype(nv.asNode())) ;
@@ -247,10 +254,22 @@ public class NodeFunctions {
     }
 
     // -------- langMatches
+    /** LANGMATCHES
+     *  
+     * @param nv The language string
+     * @param nvPattern The pattern to match against 
+     * @return Boolean nodeValue
+     */
     public static NodeValue langMatches(NodeValue nv, NodeValue nvPattern) {
         return langMatches(nv, nvPattern.getString()) ;
     }
 
+    /** LANGMATCHES
+     *  
+     * @param nv The language string
+     * @param langPattern The pattern to match against 
+     * @return Boolean nodeValue
+     */
     public static NodeValue langMatches(NodeValue nv, String langPattern) {
         Node node = nv.asNode() ;
         if ( !node.isLiteral() ) {
@@ -258,17 +277,27 @@ public class NodeFunctions {
             return null ;
         }
 
-        String nodeLang = node.getLiteralLexicalForm() ;
-
+        String langStr = node.getLiteralLexicalForm() ;
+        return NodeValue.booleanReturn(langMatches(langStr, langPattern));
+    }
+    
+    /** The algortihm for the SPARQ function "LANGMATCHES".
+     *  
+     * @param langStr The language string
+     * @param langPattern The pattern to match against 
+     * @return Whether there is a match. 
+     */
+    public static boolean langMatches(String langStr, String langPattern) {
         if ( langPattern.equals("*") ) {
-            if ( nodeLang == null || nodeLang.equals("") )
-                return NodeValue.FALSE ;
-            return NodeValue.TRUE ;
+            // Not a legal lang string.
+            if ( langStr == null || langStr.equals("") )
+                return false ;
+            return true ;
         }
 
         // See RFC 3066 (it's "tag (-tag)*)"
 
-        String[] langElts = nodeLang.split("-") ;
+        String[] langElts = langStr.split("-") ;
         String[] langRangeElts = langPattern.split("-") ;
 
         /*
@@ -287,7 +316,7 @@ public class NodeFunctions {
          */
         if ( langRangeElts.length > langElts.length )
             // Lang tag longer than pattern tag => can't match
-            return NodeValue.FALSE ;
+            return false ;
         for ( int i = 0 ; i < langRangeElts.length ; i++ ) {
             String range = langRangeElts[i] ;
             if ( range == null )
@@ -299,9 +328,9 @@ public class NodeFunctions {
             if ( range.equals("*") )
                 continue ;
             if ( !range.equalsIgnoreCase(lang) )
-                return NodeValue.FALSE ;
+                return false;
         }
-        return NodeValue.TRUE ;
+        return true ;
     }
 
     // -------- isURI/isIRI
@@ -342,34 +371,40 @@ public class NodeFunctions {
         return node.isLiteral() ;
     }
 
-    private static final IRIFactory iriFactory      = IRIFactory.iriImplementation() ;
+    private static final IRIFactory iriFactory      = IRIResolver.iriFactory();
     public static boolean           warningsForIRIs = false ;
 
     // -------- IRI
+    /** "Skolemize": BlankNode to IRI else return node unchanged. */ 
+    public static Node blankNodeToIri(Node node) {
+        if ( node.isBlank() ) {
+            String x = node.getBlankNodeLabel() ;
+            return NodeFactory.createURI("_:" + x) ;
+        }
+        return node;
+    }
+
+    /** NodeValue to NodeValue, skolemizing, and converting strings to URIs. */
     public static NodeValue iri(NodeValue nv, String baseIRI) {
         if ( isIRI(nv.asNode()) )
             return nv ;
         Node n2 = iri(nv.asNode(), baseIRI) ;
         return NodeValue.makeNode(n2) ;
     }
-
-    public static Node iri(Node nv, String baseIRI) {
-        if ( nv.isURI() )
-            return nv ;
-
-        if ( nv.isBlank() ) {
-            // Skolemization of blank nodes to IRIs : Don't ask, just don't ask.
-            String x = nv.getBlankNodeLabel() ;
-            return NodeFactory.createURI("_:" + x) ;
-        }
-
+    
+    /** Node to Node, skolemizing, and converting strings to URIs. */
+    public static Node iri(Node n, String baseIRI) {
+        Node node = blankNodeToIri(n);
+        if ( node.isURI() )
+            return node ;
+        // Literals.
         // Simple literal or xsd:string
-        String str = simpleLiteralOrXSDString(nv) ;
+        String str = simpleLiteralOrXSDString(node) ;
         if ( str == null )
-            throw new ExprEvalException("Can't make an IRI from " + nv) ;
+            throw new ExprEvalException("Can't make an IRI from " + node) ;
 
         IRI iri = null ;
-        String iriStr = nv.getLiteralLexicalForm() ;
+        String iriStr = node.getLiteralLexicalForm() ;
 
         // Level of checking?
         if ( baseIRI != null ) {
@@ -392,7 +427,7 @@ public class NodeFunctions {
         return NodeFactory.createURI(iri.toString()) ;
     }
 
-    // The Jena version can vbe slow to inityailise (but is pure java)
+    // The Jena version can be slow to inityailise (but is pure java)
 
     // private static UUIDFactory factory = new UUID_V4_Gen() ;
     // private static UUIDFactory factory = new UUID_V1_Gen() ;

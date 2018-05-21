@@ -54,8 +54,7 @@ public class BlockMgrFactory {
         return create(fileSet, ext, null, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
     }
 
-    // XXX Deprecate?
-    public static BlockMgr create(FileSet fileSet, String ext, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
+    private static BlockMgr create(FileSet fileSet, String ext, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( fileSet.isMem() )
             return createMem(fileSet.filename(ext), blockSize) ;
         else

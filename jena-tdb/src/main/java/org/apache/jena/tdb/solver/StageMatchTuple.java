@@ -62,7 +62,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodeIds and Variables. 
      *  A variable in the pattern is replaced by its binding or null in the Nodeids.
      *  A variable that is not bound by the binding is placed in the var array.
-     *  Return false if preparation detechs the pattern can not match. 
+     *  Return false if preparation detects the pattern can not match. 
      */
     public static boolean prepare(NodeTable nodeTable, Tuple<Node> patternTuple, BindingNodeId input, NodeId ids[], Var[] var)
     {

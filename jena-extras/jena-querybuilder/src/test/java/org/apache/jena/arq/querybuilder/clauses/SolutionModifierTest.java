@@ -18,14 +18,24 @@
 package org.apache.jena.arq.querybuilder.clauses;
 
 import static org.junit.Assert.assertFalse;
+
+import java.util.List;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Order;
 import org.apache.jena.arq.querybuilder.clauses.SolutionModifierClause;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.After;
+import org.junit.Assert;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
 import org.xenei.junit.contract.IProducer;
@@ -55,32 +65,51 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 	public void testAddOrderByString() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy("foo");
-		assertContainsRegex(ORDER_BY + var("foo"), builder.buildString());
+		
+		List<SortCondition> lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_DEFAULT ), lst.get(0));
 
 		builder = solutionModifier.addOrderBy("bar");
-		assertContainsRegex(ORDER_BY + var("foo") + SPACE + var("bar"), builder.buildString());
+		lst = builder.build().getOrderBy();
+		Assert.assertEquals( 2, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_DEFAULT ), lst.get(0));
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("bar")), Query.ORDER_DEFAULT ), lst.get(1));
+
 	}
 
 	@ContractTest
 	public void testAddOrderByStringAscending() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy("foo", Order.ASCENDING);
-		assertContainsRegex(ORDER_BY + "ASC" + OPEN_PAREN + var("foo") + CLOSE_PAREN, builder.buildString());
+		
+		List<SortCondition> lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_ASCENDING ), lst.get(0));
 
+		
 		builder = solutionModifier.addOrderBy("bar");
-		assertContainsRegex(ORDER_BY + "ASC" + OPEN_PAREN + var("foo") + CLOSE_PAREN + SPACE + var("bar"),
-				builder.buildString());
+		lst = builder.build().getOrderBy();
+		Assert.assertEquals( 2, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_ASCENDING ), lst.get(0));
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("bar")), Query.ORDER_DEFAULT ), lst.get(1));
+
 	}
 
 	@ContractTest
 	public void testAddOrderByStringDescending() {
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy("foo", Order.DESCENDING);
-		assertContainsRegex(ORDER_BY + "DESC" + OPEN_PAREN + var("foo") + CLOSE_PAREN, builder.buildString());
+		
+		List<SortCondition> lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_DESCENDING ), lst.get(0));
 
 		builder = solutionModifier.addOrderBy("bar");
-		assertContainsRegex(ORDER_BY + "DESC" + OPEN_PAREN + var("foo") + CLOSE_PAREN + SPACE + var("bar"),
-				builder.buildString());
+		lst = builder.build().getOrderBy();
+		Assert.assertEquals( 2, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("foo")), Query.ORDER_DESCENDING ), lst.get(0));
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("bar")), Query.ORDER_DEFAULT ), lst.get(1));
 	}
 
 	@ContractTest
@@ -143,12 +172,25 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 
 	@ContractTest
 	public void testAddGroupByVar() {
+		Var foo = Var.alloc("foo");
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
-		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(Var.alloc("foo"));
-		assertContainsRegex(GROUP_BY + var("foo"), builder.buildString());
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(foo);
+		
+		VarExprList groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 1, groupBy.size());
+		Assert.assertEquals( foo, groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( foo ));
+
 
 		builder = solutionModifier.addGroupBy("bar");
-		assertContainsRegex(GROUP_BY + var("foo") + SPACE + var("bar"), builder.buildString());
+		groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 2, groupBy.size());
+		Assert.assertEquals( foo, groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( foo ));
+
+		Assert.assertEquals( Var.alloc("bar"), groupBy.getVars().get(1));
+		Assert.assertNull( groupBy.getExpr( Var.alloc("bar") ));
+
 	}
 
 	@ContractTest
@@ -236,12 +278,39 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy("?v");
 
-		String[] s = byLine(builder);
-		assertContainsRegex(GROUP_BY + var("v"), s);
+		VarExprList groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 1, groupBy.size());
+		Assert.assertEquals( Var.alloc( "v"), groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( Var.alloc( "v")));
+
 
 		builder.setVar(v, Var.alloc("v2"));
-		s = byLine(builder);
-		assertContainsRegex(GROUP_BY + var("v2"), s);
+		groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 1, groupBy.size());
+		Assert.assertEquals( Var.alloc( "v2"), groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( Var.alloc( "v2")));
+		builder.setVar(v, Var.alloc("v2"));
+		
+	}
+
+	@ContractTest
+	public void testSetVarsGroupBy_Node_Variable() {
+		Node v = NodeFactory.createVariable("v");
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addGroupBy(v);
+
+		VarExprList groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 1, groupBy.size());
+		Assert.assertEquals( Var.alloc( "v"), groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( Var.alloc( "v")));
+
+
+		builder.setVar(v, NodeFactory.createVariable("v2"));
+		groupBy = builder.build().getGroupBy();
+		Assert.assertEquals( 1, groupBy.size());
+		Assert.assertEquals( Var.alloc( "v2"), groupBy.getVars().get(0));
+		Assert.assertNull( groupBy.getExpr( Var.alloc( "v2")));
+
 	}
 
 	@ContractTest
@@ -250,12 +319,30 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addHaving("?v");
 
-		String[] s = byLine(builder);
-		assertContainsRegex(HAVING + var("v"), s);
+		List<Expr> exprs = builder.build().getHavingExprs();
+		Assert.assertEquals( 1, exprs.size());
+		Assert.assertEquals( new ExprVar( Var.alloc(v)), exprs.get(0));
 
 		builder.setVar(v, Var.alloc("v2"));
-		s = byLine(builder);
-		assertContainsRegex(HAVING + var("v2"), s);
+		exprs = builder.build().getHavingExprs();
+		Assert.assertEquals( 1, exprs.size());
+		Assert.assertEquals( new ExprVar( Var.alloc("v2")), exprs.get(0));
+	}
+
+	@ContractTest
+	public void testSetVarsHaving_Node_Variable() throws ParseException {
+		Node v = NodeFactory.createVariable("v");
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addHaving(v);
+
+		List<Expr> exprs = builder.build().getHavingExprs();
+		Assert.assertEquals( 1, exprs.size());
+		Assert.assertEquals( new ExprVar( Var.alloc(v)), exprs.get(0));
+
+		builder.setVar(v, Var.alloc("v2"));
+		exprs = builder.build().getHavingExprs();
+		Assert.assertEquals( 1, exprs.size());
+		Assert.assertEquals( new ExprVar( Var.alloc("v2")), exprs.get(0));
 	}
 
 	@ContractTest
@@ -264,12 +351,30 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
 		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy("?v");
 
-		String[] s = byLine(builder);
-		assertContainsRegex(ORDER_BY + var("v"), s);
+		List<SortCondition> lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc(v)), Query.ORDER_DEFAULT ), lst.get(0));
 
 		builder.setVar(v, Var.alloc("v2"));
-		s = byLine(builder);
-		assertContainsRegex(ORDER_BY + var("v2"), s);
+		lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("v2")), Query.ORDER_DEFAULT ), lst.get(0));
+
 	}
 
+	@ContractTest
+	public void testSetVarsOrderBy_NodeVariable() {
+		Node v = NodeFactory.createVariable("v");
+		SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
+		AbstractQueryBuilder<?> builder = solutionModifier.addOrderBy(v);
+
+		List<SortCondition> lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc(v)), Query.ORDER_DEFAULT ), lst.get(0));
+
+		builder.setVar(v, Var.alloc("v2"));
+		lst = builder.build().getOrderBy();
+		Assert.assertEquals( 1, lst.size());
+		Assert.assertEquals( new SortCondition( new ExprVar( Var.alloc("v2")), Query.ORDER_DEFAULT ), lst.get(0));
+	}
 }

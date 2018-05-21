@@ -60,7 +60,7 @@ public interface SecuredItem {
 	}
 
 	/**
-	 * @return true if the securedModel allows items to to be created.
+	 * @return true if the securedModel allows items to be created.
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
@@ -97,7 +97,7 @@ public interface SecuredItem {
 			throws AuthenticationRequiredException;
 
 	/**
-	 * @return true if the securedModel allows items to to be deleted.
+	 * @return true if the securedModel allows items to be deleted.
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
@@ -134,7 +134,7 @@ public interface SecuredItem {
 			throws AuthenticationRequiredException;
 
 	/**
-	 * @return true if the securedModel allows items to to be read.
+	 * @return true if the securedModel allows items to be read.
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */
@@ -148,7 +148,7 @@ public interface SecuredItem {
 	 * 
 	 * (S, P, O) check if S,P,O can be read. (S, P, ANY) check if there are any
 	 * S,P,x restrictions. (S, ANY, P) check if there are any S,x,P
-	 * restrictions. (ANY, ANY, ANY) check if there are any restricitons on
+	 * restrictions. (ANY, ANY, ANY) check if there are any restrictions on
 	 * reading.
 	 * 
 	 * @param t
@@ -172,7 +172,7 @@ public interface SecuredItem {
 			throws AuthenticationRequiredException;
 
 	/**
-	 * @return true if the securedModel allows items to to be updated.
+	 * @return true if the securedModel allows items to be updated.
 	 * @throws AuthenticationRequiredException
 	 *             if user is not authenticated and is required to be.
 	 */

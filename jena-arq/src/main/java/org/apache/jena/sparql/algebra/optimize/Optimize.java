@@ -29,10 +29,10 @@ import org.apache.jena.sparql.util.Context ;
  * <p>
  *  New optimization processes can be installed via a global change:
  *  <pre>
- *    Optimize.setFactory((cxt)->new MyOptimizer(cxt)) ;</pre>
+ *    Optimize.setFactory((cxt)-&gt;new MyOptimizer(cxt)) ;</pre>
  *  or on a per-context basis: 
  *  <pre>
- *    Optimize.RewriterFactory f = (cxt)->new MyOptimizer(cxt) ;
+ *    Optimize.RewriterFactory f = (cxt)-&gt;new MyOptimizer(cxt) ;
  *    context.set(ARQConstants.sysOptimizerFactory, f) ;<pre>
  */
 public class Optimize
@@ -68,12 +68,12 @@ public class Optimize
     }
 
     /** Set the global optimizer factory to one that does nothing.
-     * Applications probably wany {@link #basicOptimizer}  */
+     * Applications probably want {@link #basicOptimizer}  */
     public static void noOptimizer() {
         setFactory(noOptimizationFactory) ;
     }
 
-    /** Set the global optimizer factory to one that only does property functions and scaoped variables.
+    /** Set the global optimizer factory to one that only does property functions and scoped variables.
      * @see #minimalOptimizationFactory
      */
     public static void basicOptimizer() {
@@ -89,7 +89,7 @@ public class Optimize
         return f.create(context) ;
     }
     
-    /** Globably set the factory for making optimizers */ 
+    /** Globally set the factory for making optimizers */ 
     public static void setFactory(RewriteFactory aFactory)
     { factory = aFactory ; }
 

@@ -72,5 +72,9 @@ public class Entity
     public String toString() {
         return id+" : "+map ;
     }
+    
+    public String toStringDetail() {
+        return id+" : "+graph+" : "+language+" : "+datatype+" : "+map ;
+    }
 }
 

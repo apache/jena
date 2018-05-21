@@ -46,7 +46,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph, the current implemenation
+     * passed the reasoner encoded within an RDF graph, the current implementation
      * is not configurable and will ignore this parameter.
      */
     @Override

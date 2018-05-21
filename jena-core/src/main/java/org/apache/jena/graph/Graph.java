@@ -92,17 +92,25 @@ public interface Graph
 	/** 
         Returns an iterator over all the Triples that match the triple pattern.
    
-        @param m a Triple[Match] encoding the pattern to look for
+        @param m a Triple encoding the pattern to look for
         @return an iterator of all triples in this graph that match m
 	 */
 	ExtendedIterator<Triple> find(Triple m);
 
-
-/** Returns an iterator over Triple.
-	   */
-	ExtendedIterator<Triple> find(Node s,Node p,Node o);
+	/** Returns an iterator over Triples matching a pattern.
+     * 
+     * @return an iterator of all triples in this graph
+	 */
+	ExtendedIterator<Triple> find(Node s, Node p, Node o);
     
-	/**
+    /** Returns an iterator over all Triples in the graph.
+     * Equivalent to {@code find(Node.ANY, Node.ANY, Node.ANY)}
+     * 
+     * @return an iterator of all triples in this graph
+     */
+    default ExtendedIterator<Triple> find() { return find(Node.ANY, Node.ANY, Node.ANY); }
+
+    /**
 	 * Compare this graph with another using the method
 	 * described in 
 	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">

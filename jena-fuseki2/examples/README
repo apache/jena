@@ -8,3 +8,6 @@ Put in the configuration/ directory.
 fuseki-jetty-https.xml : A Jetty XML configuration file for running
   This file will require configuration and also installing a certificate
   Requires Jetty 9.3.3 first used in Fuseki 2.3.1
+
+
+fuseki-tdb2.ttl: Server configuration file for running with a TDB2 database.

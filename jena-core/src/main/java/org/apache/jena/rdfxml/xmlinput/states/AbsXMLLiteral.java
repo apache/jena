@@ -130,9 +130,9 @@ public abstract class AbsXMLLiteral extends Frame {
     }
 
     /** except all ampersands are replaced by &amp;, all open angle
-      brackets () are replaced by &lt;, all closing angle brackets 
-      (>) are replaced by &gt;, and all #xD characters are replaced 
-      by &#xD;.  
+      brackets (&lt;) are replaced by &amp;lt;, all closing angle brackets 
+      (&gt;) are replaced by &amp;gt;, and all #xD characters are replaced 
+      by &amp;#xD;.  
      * @throws SAXParseException 
      */
     @Override

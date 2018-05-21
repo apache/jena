@@ -25,7 +25,7 @@ import org.apache.jena.reasoner.* ;
 import org.apache.jena.reasoner.rulesys.impl.* ;
 
 /**
- * RETE implementation of the forward rule infernce graph.
+ * RETE implementation of the forward rule inference graph.
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
@@ -73,7 +73,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 
     /**
      * Instantiate the forward rule engine to use.
-     * Subclasses can override this to switch to, say, a RETE imlementation.
+     * Subclasses can override this to switch to, say, a RETE implementation.
      * @param rules the rule set or null if there are not rules bound in yet.
      */
     @Override

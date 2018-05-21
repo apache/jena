@@ -21,9 +21,12 @@ import java.io.IOException ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.FileRef ;
 import org.apache.jena.tdb.sys.SystemTDB ;
@@ -35,10 +38,13 @@ public class Transaction
     private final String label ;
     private final TransactionManager txnMgr ;
     private final Journal journal ;
+    private final TxnType txnType ;
+    private final TxnType originalTxnType ;
     private final ReadWrite mode ;
     
-    private final List<NodeTableTrans> nodeTableTrans = new ArrayList<>() ;
+    private final List<ObjectFileTrans> objectFileTrans = new ArrayList<>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
+    private final List<TransactionLifecycle> others = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
     private final long version ;
@@ -53,7 +59,7 @@ public class Transaction
     
     private boolean changesPending ;
     
-    public Transaction(DatasetGraphTDB dsg, long version, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
+    public Transaction(DatasetGraphTDB dsg, long version, TxnType txnType, ReadWrite mode, long id,  TxnType originalTxnType, String label, TransactionManager txnMgr) {
         this.id = id ;
         if (label == null )
             label = "Txn" ;
@@ -67,6 +73,8 @@ public class Transaction
         this.txnMgr = txnMgr ;
         this.basedsg = dsg ;
         this.version = version ;
+        this.txnType = txnType ;
+        this.originalTxnType = originalTxnType ; 
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
@@ -128,7 +136,9 @@ public class Transaction
                     
                     try {
                         journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-                        journal.sync() ;        // Commit point.
+                        // **** COMMIT POINT
+                        journal.sync() ;
+                        // **** COMMIT POINT
                     } catch (RuntimeException ex) {
                         // It either did all commit or didn't but we don't know which.
                         // Some low level system error - probably a sign of something
@@ -138,6 +148,16 @@ public class Transaction
                         else
                             SystemTDB.errlog.warn("Exception during 'commit' : transaction status not known (but not a partial commit): ",ex) ;
                         throw new TDBTransactionException("Exception at commit point", ex) ;
+                    }
+                    
+                    try {
+                       committed() ;
+                    } catch (RuntimeException ex) {
+                        if ( isIOException(ex) )
+                            SystemTDB.errlog.warn("IOException during 'committed'"+ex.getMessage()) ;
+                        else
+                            SystemTDB.errlog.warn("Exception during 'committed': "+ex.getMessage(), ex) ;
+                        throw new TDBTransactionException("Exception during 'committed' - transaction did commit", ex) ;
                     }
                     outcome = TxnOutcome.W_COMMITED ;
                     break ;
@@ -165,13 +185,20 @@ public class Transaction
         }
         return false ;
     }
+    
+    /*package*/ void forAllComponents(Consumer<TransactionLifecycle> action) {
+        objectFileTrans.forEach(action);
+        blkMgrs.forEach(action);
+        others.forEach(action);
+    }
 
     private void prepare() {
         state = TxnState.PREPARING ;
-        for ( BlockMgrJournal x : blkMgrs )
-            x.commitPrepare(this) ;
-        for ( NodeTableTrans x : nodeTableTrans )
-            x.commitPrepare(this) ;
+        forAllComponents(x->x.commitPrepare(this));
+    }
+
+    private void committed() {
+        forAllComponents(x->x.committed(this));
     }
 
     public void abort() {
@@ -185,12 +212,7 @@ public class Transaction
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted") ;
                     try {
-                        // Clearup.
-                        for ( BlockMgrJournal x : blkMgrs )
-                            x.abort(this) ;
-
-                        for ( NodeTableTrans x : nodeTableTrans )
-                            x.abort(this) ;
+                        forAllComponents(x->x.abort(this)) ;
                     }
                     catch (RuntimeException ex) {
                         if ( isIOException(ex) )
@@ -202,7 +224,6 @@ public class Transaction
                     }
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.W_ABORTED ;
-                    // [TxTDB:TODO]
                     // journal.truncate to last commit
                     // Not need currently as the journal is only written in
                     // prepare.
@@ -227,6 +248,8 @@ public class Transaction
     public void close() {
         //Log.info(this, "Peek = "+peekCount+" ; count = "+count) ; 
         
+        JenaTransactionException throwThis = null;
+        
         synchronized (this) {
             switch (state) {
                 case CLOSED :
@@ -236,8 +259,11 @@ public class Transaction
                         commit() ;
                         outcome = TxnOutcome.R_CLOSED ;
                     } else {
-                        SystemTDB.errlog.warn("Transaction not commited or aborted: " + this) ;
+                        // Application error: begin(WRITE)...end() with no commit() or abort(). 
                         abort() ;
+                        String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
+                        throwThis = new JenaTransactionException(msg);
+                        // Keep going to clear up.
                     }
                     break ;
                 default :
@@ -249,9 +275,11 @@ public class Transaction
         }
         // Called once.
         txnMgr.notifyClose(this) ;
+        if ( throwThis != null )
+            throw throwThis;
     }
     
-    /** A write transaction has been processed and all chanages propagated back to the database */  
+    /** A write transaction has been processed and all changes propagated back to the database */  
     /*package*/ void signalEnacted()
     {
         synchronized (this)
@@ -262,7 +290,9 @@ public class Transaction
         }
     }
 
-    public ReadWrite getMode()                      { return mode ; }
+    public TxnType   getTxnType()                   { return originalTxnType ; }
+    public TxnType   getCurrentTxnType()            { return txnType ; }
+    public ReadWrite getTxnMode()                   { return mode ; }
     public boolean   isRead()                       { return mode == ReadWrite.READ ; }
     public boolean   isWrite()                      { return mode == ReadWrite.WRITE ; }
 
@@ -302,20 +332,18 @@ public class Transaction
         }
     }
     
-    /** Return the list of items registered for the transaction lifecycle */ 
-    public List<TransactionLifecycle> lifecycleComponents() {
-        List<TransactionLifecycle> x = new ArrayList<>() ;
-        x.addAll(nodeTableTrans) ;
-        x.addAll(blkMgrs) ;
-        return x ;
-    }
+    // For development and tracking, keep these as separate lists.
     
-    /*package*/ void addComponent(NodeTableTrans ntt) {
-        nodeTableTrans.add(ntt) ;
+    /*package*/ void addComponent(ObjectFileTrans oft) {
+        objectFileTrans.add(oft);
     }
 
     /*package*/ void addComponent(BlockMgrJournal blkMgr) {
         blkMgrs.add(blkMgr) ;
+    }
+    
+    /*package*/ void addAdditionaComponent(TransactionLifecycle tlc) {
+        others.add(tlc) ;
     }
 
     public DatasetGraphTDB getBaseDataset() {

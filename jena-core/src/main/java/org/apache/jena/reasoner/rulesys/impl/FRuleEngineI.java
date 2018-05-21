@@ -84,7 +84,7 @@ public interface FRuleEngineI {
     public Object getRuleStore();
     
     /**
-     * Set the internal rule from from a precomputed state.
+     * Set the internal rule from a precomputed state.
      */
     public void setRuleStore(Object ruleStore);
     

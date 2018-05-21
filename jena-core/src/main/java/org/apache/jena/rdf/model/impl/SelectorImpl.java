@@ -57,7 +57,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -73,7 +73,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -89,7 +89,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -105,7 +105,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -121,7 +121,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -137,7 +137,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -153,7 +153,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.
@@ -169,7 +169,7 @@ public final class SelectorImpl extends SimpleSelector  {
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the
      * subject parameter, whose predicate matches the predicate parameter and whose
-     * object matches the object paramater.  Any null parameter is considered to
+     * object matches the object parameter.  Any null parameter is considered to
      * match anything.
      * @param subject if not null, the subject of selected statements
      * must equal this argument.

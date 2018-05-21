@@ -81,6 +81,10 @@ public class QueryHashCode
         { }
 
         @Override
+        public void visitJsonResultForm(Query query)
+        { }
+
+        @Override
         public void visitDatasetDecl(Query query)
         {
             x ^= query.getNamedGraphURIs().hashCode() ; 

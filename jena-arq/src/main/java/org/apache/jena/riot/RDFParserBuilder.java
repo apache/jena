@@ -26,14 +26,18 @@ import java.util.*;
 
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFParser.LangTagForm;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 
@@ -61,12 +65,15 @@ import org.apache.jena.sparql.util.Context;
  * </pre> 
  */
 public class RDFParserBuilder {
-    // Source
+    // The various sources
+    // Reusable parser
     private String uri = null;
     private Path path = null;
+    private String content = null;
+    // The not reusable sources.
     private InputStream inputStream;
-    // StringReader - charset problems with any other kind.
     private Reader javaReader = null;
+    private StreamManager streamManager = null;
 
     // HTTP
     private Map<String, String> httpHeaders = new HashMap<>(); 
@@ -77,7 +84,10 @@ public class RDFParserBuilder {
     private Lang forceLang = null;
     
     private String baseUri = null;
-    private boolean canonicalLiterals = false;
+    
+    private boolean           canonicalValues = false;
+    private LangTagForm  langTagForm = LangTagForm.NONE;
+    
     private Optional<Boolean> checking = Optional.empty();
     
     // ---- Unused but left in case required in the future.
@@ -102,6 +112,8 @@ public class RDFParserBuilder {
     /** 
      *  Set the source to {@link Path}. 
      *  This clears any other source setting.
+     *  <p>
+     *  The parser can be reused.
      *  @param path
      *  @return this
      */
@@ -113,20 +125,41 @@ public class RDFParserBuilder {
 
     /** 
      *  Set the source to a URI; this includes OS file names.
-     *  File URL shoudl be of the form {@code file:///...}. 
+     *  File URL should be of the form {@code file:///...}. 
      *  This clears any other source setting.
-     *  @param uri
+     *  <p>
+     *  The parser can be reused.
+     *  @param uriOrFile
      *  @return this
      */
-    public RDFParserBuilder source(String uri) {
+    public RDFParserBuilder source(String uriOrFile) {
         clearSource();
-        this.uri = uri;
+        this.uri = uriOrFile;
         return this;
     }
 
     /** 
+     *  Use the given string as the content to parse. 
+     *  This clears any other source setting.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  The parser can be reused.  
+     *  @param string The characters to be parsed. 
+     *  @return this
+     */
+    public RDFParserBuilder fromString(String string) {
+        clearSource();
+        this.content = string;
+        return this;
+    }
+    
+    /** 
      *  Set the source to {@link InputStream}. 
      *  This clears any other source setting.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
      *  The {@link InputStream} will be closed when the 
      *  parser is called and the parser can not be reused.  
      *  @param input
@@ -138,11 +171,15 @@ public class RDFParserBuilder {
         return this;
     }
 
-    /** 
+    /**
      *  Set the source to {@link StringReader}. 
      *  This clears any other source setting.
      *  The {@link StringReader} will be closed when the 
-     *  parser is called and the parser can not be reused.  
+     *  parser is called and the parser can not be reused.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
+     *  <p>
+     *  Consider using {@link #fromString} instead.   
      *  @param reader
      *  @return this
      */
@@ -153,13 +190,15 @@ public class RDFParserBuilder {
     }
 
     /** 
-     *  Set the source to {@link StringReader}. 
+     *  Set the source to {@link Reader}. 
      *  This clears any other source setting.
-     *  The {@link StringReader} will be closed when the 
-     *  parser is called and the parser can not be reused.  
+     *  The {@link Reader} will be closed when the 
+     *  parser is called and the parser can not be reused.
+     *  <p>
+     *  The syntax must be set with {@code .lang(...)}.
      *  @param reader
      *  @return this
-     *  @deprecated   Use an InputStream or a StringReader. 
+     *  @deprecated Use {@link #fromString}, or an InputStream or a StringReader. 
      */
     @Deprecated
     public RDFParserBuilder source(Reader reader) {
@@ -167,11 +206,22 @@ public class RDFParserBuilder {
         this.javaReader = reader;
         return this;
     }
+    
+    /**
+     * Set the StreamManager to use when opening a URI (including files by name, but not by {@code Path}). 
+     * @param streamManager
+     * @return this
+     */
+    public RDFParserBuilder streamManager(StreamManager streamManager) {
+        this.streamManager = streamManager;
+        return this;
+    }
 
     private void clearSource() {
         this.uri = null;
-        this.inputStream = null;
         this.path = null;
+        this.content = null;
+        this.inputStream = null;
         this.javaReader = null;
     }
 
@@ -236,10 +286,34 @@ public class RDFParserBuilder {
 
     /**
      * Convert the lexical form of literals to a canonical form.
+     * @deprecated Use {@link #canonicalValues} and one of {@link #langTagCanonical} and {@link #langTagLowerCase} 
+     * <p>
+     * This operation is equivalent to 
+     * <pre>
+     *   this.canonicalValues(flag);
+     *    if ( flag )
+     *        this.langTagCanonical();
+     *    else
+     *        this.langTagAsGiven();
+     *    return this;
+     * </pre>
+     */
+    @Deprecated
+    public RDFParserBuilder canonicalLiterals(boolean flag) {
+        this.canonicalValues(flag);
+        if ( flag )
+            this.langTagCanonical();
+        else
+            this.langTagAsGiven();
+        return this;
+    }
+    
+    /**
+     * Convert the lexical form of literals to a canonical form.
      * <p>
      * Two literals can be different RDF terms for the same value.
      * <p>
-     * Examples include (first shows of the pair is the canonical form):
+     * Examples include (first shown of the pair is the canonical form):
      * 
      * <pre>
      *    {@code "1"^^xsd:integer} and {@code "+01"^^xsd:integer} 
@@ -247,17 +321,12 @@ public class RDFParserBuilder {
      * </pre>
      * 
      * The canonical forms follow XSD 1.1
-     * <href="https://www.w3.org/TR/xmlschema11-2/#canonical-lexical-representation">2.3.1
-     * Canonical Mapping</a> except in the case of xsd:decimal where it follows the older
+     * {@literal <href="https://www.w3.org/TR/xmlschema11-2/#canonical-lexical-representation">2.3.1
+     * Canonical Mapping</a>} except in the case of xsd:decimal where it follows the older
      * XSD 1.0 which makes it legal for Turtle's short form ({@code "1.0"^^xsd:Decimal}
      * rather than {@code "1"^^xsd:decimal}). See XSD 1.0 <a href=
      * "https://www.w3.org/TR/xmlschema-2/#decimal-canonical-representation">3.2.3.2
      * Canonical representation</a>
-     * <p>
-     * Language tags are case-normalized as defined by
-     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>. Example: {@code en-GB}
-     * not {@code en-gb}. This does not affect the RDF 1.1 requirement that the
-     * value-space of language tags is lower-case.
      * <p>
      * The effect on literals where the lexical form does not represent a
      * valid value (for example, {@code "3000"^^xsd:byte}) is undefined.
@@ -268,21 +337,79 @@ public class RDFParserBuilder {
      * <p>
      * For consistent loading of data, it is recommended that data is cleaned and
      * canonicalized before loading so the conversion is done once.
+     * 
+     * @see #langTagLowerCase
+     * @see #langTagCanonical
      */
-    public RDFParserBuilder canonicalLiterals(boolean flag) { this.canonicalLiterals = flag ; return this; }
+    public RDFParserBuilder canonicalValues(boolean flag) {
+        this.canonicalValues = flag;
+        return this; 
+    }
+    
+    /**
+     * Convert language tags to lower case.
+     * <p>
+     * This is the suggested form in RDF 1.1 for comparsions. 
+     * However, this is not the recommended canonical form in
+     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
+     * <p>
+     * Providing all data is converted consistently, language tag equality 
+     * is maintained for either lower case or RFC canonicalization styles.
+     * <p>
+     * This option can slow parsing down.
+     * <p>
+     * @see #langTagCanonical
+     */
+    public RDFParserBuilder langTagLowerCase() {
+        return langTagForm(LangTagForm.LOWER_CASE);
+    }
+
+    /**
+     * Language tags are case-normalized as defined by
+     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
+     * Example: {@code en-GB}, not {@code en-gb}.
+     * <p>
+     * This does not affect the RDF 1.1 requirement that the
+     * value-space of language tags is lower-case.
+     * <p>
+     * Providing all data is converted consistently, lang tag equality is maintained for either
+     * lower case or RFC canonicalization.
+     * <p>
+     * This option can slow parsing down.
+     * <p>
+     * @see #langTagLowerCase
+     */
+    public RDFParserBuilder langTagCanonical() {
+        return langTagForm(LangTagForm.CANONICAL);
+    }
+
+    /**
+     * The form of the language tags as given in the data is preserved.
+     * This is the default behaviour of parsing.
+     * @see #langTagLowerCase
+     * @see #langTagCanonical
+     */
+    public RDFParserBuilder langTagAsGiven() {
+        return langTagForm(LangTagForm.NONE);
+    }
+
+    private RDFParserBuilder langTagForm(LangTagForm form) {
+        this.langTagForm = form;
+        return this;
+    }
     
     /** Set whether to perform checking, 
-     * NTriples and NQuads default to no checking, olther langauges to checking.
+     * NTriples and NQuads default to no checking, other languages to checking.
      * <p>
      * Checking adds warnings over and above basic syntax errors.
      * <ul>
-     * <li>URIs - whether IRs confrm to all the rules of the URI scheme
+     * <li>URIs - whether IRs confirm to all the rules of the URI scheme
      * <li>Literals: whether the lexical form conforms to the rules for the datatype. 
      * <li>Triples and quads: check slots have a valid kind of RDF term (parsers usually make this a syntax error anyway).
      * </ul> 
      * <p>
      * See also {@link #errorHandler(ErrorHandler)} to control the output. The default is to log.
-     * Thsi can also be used to turn warnings into exceptions. 
+     * This can also be used to turn warnings into exceptions. 
      */
     public RDFParserBuilder checking(boolean flag) { this.checking = Optional.of(flag) ; return this; }
     
@@ -374,26 +501,49 @@ public class RDFParserBuilder {
     }
 
     /**
-     * Parse the source, sending the results to a {@link Graph}. The source must be for
-     * triples; any quads are discarded. 
-     * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends tripes and prfixes to the {@code Graph}.
+     * Parse the source, sending the results to a {@link Graph}.
+     * The source must be for triples; any quads are discarded. 
+     * Short form for {@code build().parse(graph)}
+     * which sends triples and prefixes to the {@code Graph}.
      * 
      * @param graph
      */
     public void parse(Graph graph) {
-        parse(StreamRDFLib.graph(graph));
+        build().parse(graph);
+    }
+
+    /**
+     * Parse the source, sending the results to a {@link Model}.
+     * The source must be for triples; any quads are discarded. 
+     * Short form for {@code build().parse(model)}
+     * which sends triples and prefixes to the {@code Model}.
+     * 
+     * @param model
+     */
+    public void parse(Model model) {
+        build().parse(model);
     }
 
     /**
      * Parse the source, sending the results to a {@link DatasetGraph}.
-     * Short form for {@code build().parse(stream)}
-     * where {@code stream} sends tripes and prefixes to the {@code DatasetGraph}.
+     * Short form for {@code build().parse(dataset)}
+     * which sends triples and prefixes to the {@code DatasetGraph}.
      * 
      * @param dataset
      */
     public void parse(DatasetGraph dataset) {
-        parse(StreamRDFLib.dataset(dataset));
+        build().parse(dataset);
+    }
+
+    /**
+     * Parse the source, sending the results to a {@link Dataset}.
+     * Short form for {@code build().parse(dataset)}
+     * which sends triples and prefixes to the {@code Dataset}.
+     * 
+     * @param dataset
+     */
+    public void parse(Dataset dataset) {
+        build().parse(dataset);
     }
 
     /** Build an {@link RDFParser}. The parser takes it's configuration from this builder and can not then be changed.
@@ -410,9 +560,8 @@ public class RDFParserBuilder {
      * @return RDFParser
      */
     public RDFParser build() {
-        // Build what we can now - something have to be built in the parser.
-        
-        if ( uri == null && path == null && inputStream == null && javaReader == null )
+        // Build what we can now - some things have to be built in the parser.
+        if ( uri == null && path == null && content == null && inputStream == null && javaReader == null )
             throw new RiotException("No source specified");
         
         // Setup the HTTP client.
@@ -427,11 +576,16 @@ public class RDFParserBuilder {
         if ( path == null && baseUri == null && uri != null )
             baseUri = uri;
         
-        // Can't build the maker here as it is Lang/conneg dependent.
-        return new RDFParser(uri, path, inputStream, javaReader, client,
-                             hintLang, forceLang,
-                             baseUri, strict, checking, resolveURIs, canonicalLiterals,
-                             resolver, factory$, errorHandler$, context);
+        StreamManager sMgr = streamManager;
+        if ( sMgr == null )
+            sMgr = StreamManager.get(context);
+        
+        // Can't build the profile here as it is Lang/conneg dependent.
+        return new RDFParser(uri, path, content, inputStream, javaReader, sMgr, 
+                             client, hintLang, forceLang,
+                             baseUri, strict, checking, 
+                             canonicalValues, langTagForm,
+                             resolveURIs, resolver, factory$, errorHandler$, context);
     }
 
     private FactoryRDF buildFactoryRDF() {
@@ -450,15 +604,21 @@ public class RDFParserBuilder {
             return httpClient;
         if ( httpHeaders.isEmpty() )
             // System default.
-            // For complete compatibility, we have to let null pass through.
-            return null; // HttpOp.getDefaultHttpClient();
+            // In this case, RDFParser will use the current-at-parse-time,
+            // settings of HttpOp, not frozen here. The HTTP step operation will use a
+            // general purpose accept header, WebContent.defaultRDFAcceptHeader, that
+            // gets any syntax of triples or quads. To freeze now to HttpOp settings, 
+            // call httpClient(HttpOp.getDefaultHttpClient). 
+            return null;
         List<Header> hdrs = new ArrayList<>();
         httpHeaders.forEach((k,v)->{
             Header header = new BasicHeader(k, v);
             hdrs.add(header);
         });
-        HttpClient hc = CachingHttpClientBuilder.create().setDefaultHeaders(hdrs).build();
-        return hc;
+        HttpClient hc = HttpOp.createPoolingHttpClientBuilder()
+            .setDefaultHeaders(hdrs)
+            .build() ;
+        return hc ;
     }
 
     /**
@@ -470,6 +630,7 @@ public class RDFParserBuilder {
         RDFParserBuilder builder = new RDFParserBuilder();
         builder.uri =               this.uri;
         builder.path =              this.path;
+        builder.content =           this.content;
         builder.inputStream =       this.inputStream;
         builder.javaReader =        this.javaReader;
         builder.httpHeaders =       new HashMap<>(this.httpHeaders);
@@ -478,7 +639,8 @@ public class RDFParserBuilder {
         builder.forceLang =         this.forceLang;
         builder.baseUri =           this.baseUri;
         builder.checking =          this.checking;
-        builder.canonicalLiterals = this.canonicalLiterals;
+        builder.canonicalValues =   this.canonicalValues;
+        builder.langTagForm =       this.langTagForm;
         builder.strict =            this.strict;
         builder.resolveURIs =       this.resolveURIs;
         builder.resolver =          this.resolver;

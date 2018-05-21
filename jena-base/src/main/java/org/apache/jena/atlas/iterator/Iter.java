@@ -39,7 +39,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * <pre>
  *  import static org.apache.jena.atlas.iterator.Iter.* ;
  *  
- *  filter(map(iterator, <i>function></i>), <i>predicate</i>)
+ *  filter(map(iterator, function), predicate)
  * </pre>
  * 
  * Style 2: Stream-like: The class {@code Iter} provides methods to call on an iterator.
@@ -47,7 +47,7 @@ import org.apache.jena.atlas.lib.Sink ;
  * <pre>
  * import static org.apache.jena.atlas.iterator.Iter.iter ;
  * 
- * iter(iterator).map(...).filter(...)}
+ * iter(iterator).map(...).filter(...)
  * </pre>
  *
  * @param <T> the type of element over which an instance of {@code Iter} iterates,
@@ -279,7 +279,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Transform a list of elements to a new list of the function applied to each element.
-     * Using a stream is often better.  This operation preseves the order of the list.
+     * Using a stream is often better.  This operation preserves the order of the list.
      * @deprecated Use Java8 Streams
      */
     @Deprecated
@@ -332,7 +332,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Return an iterator that will see each element of the underlying iterator only once.
-     * Note that this need working memory to remember the elements alreadey seen.
+     * Note that this need working memory to remember the elements already seen.
      */
     public static <T> Iterator<T> distinct(Iterator<T> iter) {
         return filter(iter, new FilterUnique<T>()) ;
@@ -349,6 +349,22 @@ public class Iter<T> implements Iterator<T> {
     /** Remove nulls from an iterator */
     public static <T> Iterator<T> removeNulls(Iterator<T> iter) {
         return filter(iter, Objects::nonNull) ;
+    }
+
+    /** Step forward up to {@code steps} places.
+     * <br/>Return number of steps taken.
+     * 
+     * @apiNote
+     * The iterator is moved at most {@code steps} places with no overshoot.
+     * The iterator can be used afterwards.
+     */ 
+    public static int step(Iterator<?> iter, int steps) {
+        for ( int i = 0 ; i < steps; i++) {
+            if ( ! iter.hasNext() ) 
+                return i;
+            iter.next();
+        }
+        return steps;
     }
 
     /** Take the first N elements of an iterator - stop early if too few */
@@ -381,7 +397,7 @@ public class Iter<T> implements Iterator<T> {
     /** Create an iterator such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
      *  are iterated over.  
-     *  The first element where the predicte becomes true is the first element of the
+     *  The first element where the predicted becomes true is the first element of the
      *  returned iterator.    
      */
     public static <T> Iterator<T> dropWhile(Iterator<T> iter, Predicate<T> predicate) {
@@ -598,11 +614,11 @@ public class Iter<T> implements Iterator<T> {
     /** An {@code Iterator} of 2 {@code Iterator}'s.
      * See also {@link IteratorConcat}.
      */
-    public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
+    public static <T> Iter<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
         if ( iter1 == null )
-            return iter2 ;
+            return iter(iter2) ;
         if ( iter2 == null )
-            return iter1 ;
+            return iter(iter1) ;
         return iter(iter1).append(iter(iter2)) ;
     }
 
@@ -816,7 +832,7 @@ public class Iter<T> implements Iterator<T> {
     /** Create an {@code Iter} such that elements from the front while
      *  a predicate test become true are dropped then return all remaining elements
      *  are iterated over.  
-     *  The first element where the predicte becomes true is the first element of the
+     *  The first element where the predicted becomes true is the first element of the
      *  returned iterator.    
      */
     public Iter<T> dropWhile(Predicate<T> predicate) {
@@ -849,7 +865,7 @@ public class Iter<T> implements Iterator<T> {
     }
 
     /** Return an {:@code Iter} that will see each element of the underlying iterator only once.
-     * Note that this need working memory to remember the elements alreadey seen.
+     * Note that this need working memory to remember the elements already seen.
      */
     public Iter<T> distinct() {
         return iter((distinct(iterator))) ;

@@ -43,9 +43,9 @@ import org.apache.jena.atlas.lib.StrUtils ;
  * 
  * A {@code TupleMap} holds twp maps: the "getTransform" and the "putTransform".
  * The "getTransform" is here to get the item from in the mapper Tuple.
- * In the case is {@code SPO->POS} this is 
- * {@code 0<-1, 1<-2, 2<-0} 
- * and the "putTransform" is where to place the items: {@code 0->2, 1->0, 2->1}.
+ * In the case is {@code SPO{@literal ->}POS} this is 
+ * {@code 0{@literal <-}1, 1{@literal <-}2, 2{@literal <-}0} 
+ * and the "putTransform" is where to place the items: {@code 0{@literal ->}2, 1{@literal ->}0, 2{@literal ->}1}.
  */
 final
 public class TupleMap {
@@ -114,9 +114,9 @@ public class TupleMap {
 
     /**
      * Construct a mapping - the elements are the mappings of a tuple
-     * originally in the order 0,1,2,... so SPO->POS is 2,0,1 (SPO->POS so S->2,
-     * P->0, O->1) and not 1,2,0 (which is the extraction mapping). The label is
-     * just a label and is not interpretted here.
+     * originally in the order 0,1,2,... so SPO{@literal ->}POS is 2,0,1 (SPO{@literal ->}POS so S{@literal ->}2,
+     * P{@literal ->}0, O{@literal ->}1) and not 1,2,0 (which is the extraction mapping). The label is
+     * just a label and is not interpreted here.
      */
     private TupleMap(String label, int... elements) {
         this.len = elements.length ; 
@@ -165,7 +165,7 @@ public class TupleMap {
 
     /** 
      * Get the index of the i'th slot as it appears from a mapping : for
-     * SPO->POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
+     * SPO{@literal ->}POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
      * The 0'th mapped slot is {@code tuple.get(tupleMap.getSlotIdx(0))}.
      */
     public int getSlotIdx(int idx) {
@@ -173,7 +173,7 @@ public class TupleMap {
     }
 
     /**
-     * Get the index of the i'th slot as it appears after unmapping : SPO->POS :
+     * Get the index of the i'th slot as it appears after unmapping : SPO{@literal ->}POS :
      * 0'th slot is S from POS so 0 returns 2
      */
     public int putSlotIdx(int idx) {
@@ -182,7 +182,7 @@ public class TupleMap {
 
     /** 
      * Get the index of the i'th slot as it appears from a mapping : for
-     * SPO->POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
+     * SPO{@literal ->}POS : 0'th slot is P so 0 returns 1 (the location in the tuple before mapping)
      * Equivalent to {@link #getSlotIdx}.<br/>
      * The 0'th mapped slot is {@code tuple.get(tupleMap.mapIdx(0))}.<br/>
      * Mapping a tuple is {@code map(tuple) == create(tuple.mapIdx(0) , tuple.mapIdx(1), ... tuple.mapIdx(n-1))}<br/>   
@@ -192,7 +192,7 @@ public class TupleMap {
     }
 
     /**
-     * Get the index of the i'th slot as it appears after unmapping : SPO->POS :
+     * Get the index of the i'th slot as it appears after unmapping : SPO{@literal ->}POS :
      * 0'th slot is S from POS so 0 returns 2
      * Equivalent to {@link #putSlotIdx}.<br/>
      * The 0'th unmapped slot is {@code tuple.get(tupleMap.unmapIdx(0))}.<br/>
@@ -282,7 +282,7 @@ public class TupleMap {
 
     /**
      * Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping :
-     * SPO->POS : 0'th slot is P from SPO
+     * SPO{@literal ->}POS : 0'th slot is P from SPO
      */
     public <T> T mapSlot(int idx, Tuple<T> tuple) {
         checkLength(tuple) ;
@@ -292,7 +292,7 @@ public class TupleMap {
 
     /**
      * Apply to a <em>mapped</em> tuple to get the i'th slot as it appears after
-     * mapping : SPO->POS : 0'th slot is S from POS
+     * mapping : SPO{@literal ->}POS : 0'th slot is S from POS
      */
     public <T> T unmapSlot(int idx, Tuple<T> tuple) {
         checkLength(tuple) ;
@@ -302,7 +302,7 @@ public class TupleMap {
 
     /**
      * Apply to an <em>unmapped</em> tuple to get the i'th slot after mapping :
-     * SPO->POS : 0'th slot is P from SPO
+     * SPO{@literal ->}POS : 0'th slot is P from SPO
      */
     public <T> T mapSlot(int idx, T[] tuple) {
         return tuple[getSlotIdx(idx)] ;
@@ -310,13 +310,13 @@ public class TupleMap {
 
     /**
      * Apply to a <em>mapped</em> tuple to get the i'th slot as it appears after
-     * mapping : SPO->POS : 0'th slot is S from POS
+     * mapping : SPO{@literal ->}POS : 0'th slot is S from POS
      */
     public <T> T unmapSlot(int idx, T[] tuple) {
         return tuple[putSlotIdx(idx)] ;
     }
 
-    /** Compile a mapping encoded as single charcaters e.g. "SPO", "POS" */
+    /** Compile a mapping encoded as single characters e.g. "SPO", "POS" */
     private static int[] compileMapping(String domain, String range) {
         List<Character> input = StrUtils.toCharList(domain);
         List<Character> output = StrUtils.toCharList(range);

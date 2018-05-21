@@ -38,7 +38,7 @@ public interface TDBSystemInfoMBean
    
    /** Size of NodeId to Node cache.
     *  Used to map from NodeId to Node spaces.
-    *  Used for retriveing results.
+    *  Used for retrieving results.
     */
    public int getNodeId2NodeCacheSize() ;
    

@@ -40,7 +40,7 @@ import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.ValueSpaceClassification ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
-/** The code parts of arithmetic opperations on Nodevlaues.
+/** The code parts of arithmetic operations on {@link NodeValue}s.
  */
 public class NodeValueOps
 {

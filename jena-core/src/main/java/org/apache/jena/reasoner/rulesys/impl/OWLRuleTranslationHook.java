@@ -26,8 +26,8 @@ import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.vocabulary.* ;
 
 /**
- * A rule preprocessor that scans the data looking for interesection
- * definitions and augements the rule base by translations of the
+ * A rule preprocessor that scans the data looking for intersection
+ * definitions and augments the rule base by translations of the
  * intersection statement.
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {

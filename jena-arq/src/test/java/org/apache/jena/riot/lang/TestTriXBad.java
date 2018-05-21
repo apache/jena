@@ -23,7 +23,7 @@ import java.util.Arrays ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFParser ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
@@ -67,7 +67,7 @@ public class TestTriXBad extends Assert /*BaseTest*/ {
             ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerSimple()) ;
             InputStream in = IO.openFile(fInput) ;
             StreamRDF sink = StreamRDFLib.sinkNull() ;
-            RDFDataMgr.parse(sink, in, Lang.TRIX) ;
+            RDFParser.source(in).lang(Lang.TRIX).parse(sink);
         } finally {
             ErrorHandlerFactory.setDefaultErrorHandler(err) ;
         }

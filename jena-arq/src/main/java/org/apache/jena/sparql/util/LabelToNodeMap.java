@@ -28,11 +28,9 @@ import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.VarAlloc ;
 
 
-/** Map from _:* form to bNodes */
-
+/** Map from _:* form to bNodes or variables. */
 public class LabelToNodeMap
 {
-    // Wil be replaced by LabelToNode in RIOT
     Map<String, Node> bNodeLabels = new HashMap<>() ;
     
     // Variables or bNodes?
@@ -41,11 +39,12 @@ public class LabelToNodeMap
     boolean generateVars = false ;
     VarAlloc allocator = null ;
     
-    /** Create blank nodes, with the same blank node returned for thre same label.  
+    /** Create blank nodes, with the same blank node returned for the same label.  
      * 
      * @return LabelToNodeMap
+     * @deprecated use LabelToNode 
      */
-
+    @Deprecated
     public static LabelToNodeMap createBNodeMap()
     { return new LabelToNodeMap(false, null) ; }
     

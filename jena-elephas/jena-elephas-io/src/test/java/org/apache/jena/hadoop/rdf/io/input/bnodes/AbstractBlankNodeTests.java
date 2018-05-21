@@ -51,7 +51,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
-import org.apache.jena.riot.system.ParserProfile;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -77,8 +76,6 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
 
     /**
      * Gets the extension for the initial input files
-     * 
-     * @return Extension including the {@code .}
      */
     protected abstract String getInitialInputExtension();
 

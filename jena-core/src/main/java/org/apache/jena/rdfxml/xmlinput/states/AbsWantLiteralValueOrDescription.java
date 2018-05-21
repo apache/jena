@@ -39,7 +39,7 @@ abstract class AbsWantLiteralValueOrDescription extends
         super(s, x);
     }
 
-    /**
+    /*
      * It is unclear to jjc, whether we are obliged to copy the characters, or
      * whether we know that they will not be overwritten after we return. For
      * safety, I hence copy them. Normally, we have two interesting cases: a)

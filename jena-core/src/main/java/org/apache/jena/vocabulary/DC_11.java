@@ -28,7 +28,7 @@ public class DC_11 {
     /** <p>The RDF model that holds the vocabulary terms</p> */
     private static final Model m_model = ModelFactory.createDefaultModel();
     
-    /** <p>The namespace of the vocabalary as a string ({@value})</p> */
+    /** <p>The namespace of the vocabulary as a string ({@value})</p> */
     public static final String NS = "http://purl.org/dc/elements/1.1/";
     
     /** <p>The namespace of the vocabalary as a string</p>

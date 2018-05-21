@@ -38,9 +38,12 @@ public class TestPackage extends TestCase{
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest( TestMacEncodings.suite() );
+        
+        // JENA-1537
+        // Character encoding checks removed due to lack of support in JDK XML parser APIs.  
+        //suite.addTest( TestMacEncodings.suite() );
+        
         // add all the tests defined in this class to the suite
-        /* */
         suite.addTestSuite( PrettyWriterTest.class );
         suite.addTest(new TestWriterInterface("testInterface", null)); 
         suite.addTest( testWriterAndReader.suiteXML() );

@@ -22,6 +22,9 @@
 ##   It is split into several scripts that leverage a mixture of 
 ##   POSIX and java tools and should be maintained separately
 
+# Not script "jena"
+## the "jena" script is slightly different (see end of script).
+
 CMDS=$(cat <<EOF
 jena.rdfcat
 jena.rdfcompare
@@ -58,11 +61,31 @@ tdb.tdbupdate
 EOF
 )
 
+CMDS2=$(cat <<EOF
+tdb2.tdbbackup
+tdb2.tdbdump
+tdb2.tdbcompact
+tdb2.tdbloader
+tdb2.tdbquery
+tdb2.tdbstats
+tdb2.tdbupdate
+EOF
+)
+
 make_bin()
 {
     local C=$1
     # Filename.
     CMD=bin/${C#*.}
+    sed -e "s!JENA_CMD!$C!" < template.bin > $CMD
+}
+
+# These scripts end up with the full name of the command
+make_bin_full()
+{
+    local C=$1
+    # Filename.
+    CMD="bin/$C"
     sed -e "s!JENA_CMD!$C!" < template.bin > $CMD
 }
 
@@ -74,10 +97,27 @@ make_bat()
     sed -e "s!JENA_CMD!$C!" < template.bat > $CMD
 }
 
+make_bat_full()
+{
+    local C=$1
+    # Filename.
+    # Replace '.' by '_'
+    CMD="$(echo "bat/$C" | sed -e s!\\.!_!g).bat"
+    sed -e "s!JENA_CMD!$C!" < template.bat > $CMD
+}
+
 for cmd in $CMDS
 do
     ## echo $cmd
     make_bin $cmd
     make_bat $cmd
 done
+
+for cmd in $CMDS2
+do
+    ## echo $cmd
+    make_bin_full $cmd
+    make_bat_full $cmd
+done
+
 

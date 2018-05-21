@@ -170,7 +170,7 @@ public class SolutionModifierHandler implements Handler {
 	/**
 	 * Set the limit for the number of results to return.
 	 * Setting the limit to zero (0) or removes the limit.
-	 * @param limit THe limit to set.
+	 * @param limit The limit to set.
 	 */
 	public void setLimit(int limit) {
 		query.setLimit(limit < 1 ? Query.NOLIMIT : limit);
@@ -179,7 +179,7 @@ public class SolutionModifierHandler implements Handler {
 	/**
 	 * Set the offset for the results to return.
 	 * Setting the offset to zero (0) or removes the offset.
-	 * @param offset THe offset to set.
+	 * @param offset The offset to set.
 	 */
 	public void setOffset(int offset) {
 		query.setOffset(offset < 1 ? Query.NOLIMIT : offset);

@@ -23,7 +23,10 @@ import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
-/** Black hole for triples */
+/** Black hole for triples.
+ * @deprecated [Dec 2017] Use {@link org.apache.jena.sparql.graph.GraphSink}. To be removed.
+ */
+@Deprecated
 public class GraphSink extends GraphBase
 {
     @Override

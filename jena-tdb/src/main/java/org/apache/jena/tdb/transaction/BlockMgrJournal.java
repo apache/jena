@@ -41,6 +41,12 @@ import org.apache.jena.tdb.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/**
+ * Block manager that keeps temporary copies of updated blocks, then writes them
+ * to a journal when commitPrepare happens. No work is done in commitEnact
+ * because the {@link TransactionManager} is responsible to writing 
+ * the blocks to the main storage.
+ */
 public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrJournal.class) ;
@@ -55,27 +61,21 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private final Map<Long, Block> writeBlocks = new HashMap<>() ;
     private final Map<Long, Block> freedBlocks = new HashMap<>() ;
     private boolean closed  = false ;
-    private boolean active  = false ;   // In a transaction, or preparing.
+    private boolean active  = false ;   // In the transaction, from begin to commitPrepare.
     
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         Context context = txn.getBaseDataset().getContext() ;
         String mode = (null != context) ? (String) context.get(TDB.transactionJournalWriteBlockMode, "") : "" ;
         if ("direct".equalsIgnoreCase(mode))
-        {
             writeBlockBufferAllocator = new BufferAllocatorDirect() ;
-        }
         else if ("mapped".equalsIgnoreCase(mode))
-        {
             writeBlockBufferAllocator = new BufferAllocatorMapped(SystemTDB.BlockSize) ;
-        }
         else
-        {
             writeBlockBufferAllocator = new BufferAllocatorMem() ;
-        }
         
         reset(txn, fileRef, underlyingBlockMgr) ;
-        if ( txn.getMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
+        if ( txn.getTxnMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
             System.err.println("Two level BlockMgrJournal") ;
     }
 
@@ -93,11 +93,20 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeJournalEntry(blk) ;
         this.active = false ;
     }
+    
+    @Override
+    public void committed(Transaction txn)
+    {}
 
     @Override
-    public void commitEnact(Transaction txn)
-    {
+    public void enactCommitted(Transaction txn) {
         // No-op : this is done by playing the master journal.
+    }
+
+    @Override
+    public void clearupCommitted(Transaction txn) {
+        // Persistent state is in the system journal.
+        clear(txn) ;
     }
 
     @Override
@@ -106,13 +115,6 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         checkActive() ;
         this.active = false ;
         // Do clearup of in-memory structures in clearup().
-    }
-    
-    @Override
-    public void commitClearup(Transaction txn)
-    {
-        // Persistent state is in the system journal.
-        clear(txn) ;
     }
     
     /** Set, or reset, this BlockMgr.
@@ -142,7 +144,6 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         // Might as well allocate now. 
         // This allocates the id.
         Block block = blockMgr.allocate(blockSize) ;
-        // [TxTDB:TODO]
         // But we "copy" it by allocating ByteBuffer space.
         if ( active ) 
         {
@@ -274,7 +275,8 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     public boolean valid(int id)
     {
         checkIfClosed() ;
-        if ( writeBlocks.containsKey(id) ) return true ;
+        if ( writeBlocks.containsKey(Long.valueOf(id)))
+            return true ;
         return blockMgr.valid(id) ; 
     }
 

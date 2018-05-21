@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.Serializer;
+import org.apache.jena.sys.Serializer;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 

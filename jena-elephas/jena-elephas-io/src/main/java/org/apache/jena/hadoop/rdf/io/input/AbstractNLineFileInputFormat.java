@@ -51,6 +51,7 @@ public abstract class AbstractNLineFileInputFormat<TKey, TValue> extends FileInp
      * 
      * @see FileInputFormat#getSplits(JobContext)
      */
+    @Override
     public final List<InputSplit> getSplits(JobContext job) throws IOException {
         boolean debug = LOGGER.isDebugEnabled();
         if (debug && FileInputFormat.getInputDirRecursive(job)) {

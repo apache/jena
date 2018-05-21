@@ -21,7 +21,7 @@ package org.apache.jena.assembler.exceptions;
 import org.apache.jena.rdf.model.Resource ;
 
 /**
-    Exception used to report a faulire to load a class.
+    Exception used to report a failure to load a class.
 */
 public class CannotLoadClassException extends AssemblerException
     {

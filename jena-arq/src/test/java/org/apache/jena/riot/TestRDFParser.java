@@ -34,7 +34,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.FactoryRDFStd;
+import org.apache.jena.riot.system.stream.LocatorFile;
+import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 
 public class TestRDFParser {
@@ -45,7 +48,7 @@ public class TestRDFParser {
     
     @Test public void source_not_uri_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParserBuilder.create().lang(Lang.TTL).source(new StringReader(testdata)).parse(graph);
+        RDFParserBuilder.create().lang(Lang.TTL).fromString(testdata).parse(graph);
         assertEquals(1, graph.size());
     }
     
@@ -98,7 +101,7 @@ public class TestRDFParser {
     // Shortcut source
     @Test public void source_shortcut_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.source(new StringReader(testdata)).lang(Lang.TTL).parse(graph);
+        RDFParser.fromString(testdata).lang(Lang.TTL).parse(graph);
         assertEquals(1, graph.size());
     }
     
@@ -132,6 +135,15 @@ public class TestRDFParser {
         assertEquals(3, graph.size());
     }
 
+    @Test
+    public void source_string() {
+        Graph graph = GraphFactory.createGraphMem();
+        RDFParser.create().fromString("<x> <p> <z> .")
+            .lang(Lang.NT)
+            .parse(graph);
+        assertEquals(1, graph.size());
+    }
+
     @Test(expected=RiotException.class)
     public void errorHandler() {
         Graph graph = GraphFactory.createGraphMem();
@@ -146,6 +158,15 @@ public class TestRDFParser {
     public void source_uri_force_lang() {
         Graph graph = GraphFactory.createGraphMem();
         RDFParser.create().source("file:"+DIR+"data.rdf").forceLang(Lang.TTL).parse(graph);
+        assertEquals(3, graph.size());
+    }
+
+    @Test
+    public void source_streamManager() {
+        StreamManager sMgr = new StreamManager();
+        sMgr.addLocator(new LocatorFile(DIR)) ;
+        Graph graph = GraphFactory.createGraphMem();
+        RDFParser.create().streamManager(sMgr).source("file:data.rdf").forceLang(Lang.TTL).parse(graph);
         assertEquals(3, graph.size());
     }
 
@@ -185,5 +206,49 @@ public class TestRDFParser {
             .parse(graph);
         assertEquals(1, graph.size());
         assertNotEquals(0, f.counter);
+    }
+    
+    // Canonical literals.
+    
+    @Test public void canonical_value_1() { 
+        testNormalization("0123", "0123", builder().canonicalValues(false));
+    }
+
+    @Test public void canonical_value_2() {
+        testNormalization("+123", "123", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_value_3() {
+        testNormalization("+123.00", "123.0", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_value_4() {
+        testNormalization("+123.00e0", "1.23E2", builder().canonicalValues(true));
+    }
+
+    @Test public void canonical_langTag_1() {
+        testNormalization("'abc'@En-gB", "'abc'@En-gB", builder().langTagAsGiven());
+    }
+
+    @Test public void canonical_langTag_2() {
+        testNormalization("'abc'@En-gB", "'abc'@en-gb", builder().langTagLowerCase());
+    }
+
+    @Test public void canonical_langTag_3() {
+        testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
+    }
+    
+    private static String PREFIX = "PREFIX : <http://example/>\n ";
+    private static Node s = SSE.parseNode(":s");
+    private static Node p = SSE.parseNode(":p");
+    
+    private void testNormalization(String input, String output, RDFParserBuilder builder) {
+        Graph graph = GraphFactory.createGraphMem();
+        String x = PREFIX+":s :p "+input;
+        builder.source(new StringReader(x)).parse(graph);
+        assertEquals(1, graph.size());
+        Node objExpected = SSE.parseNode(output);
+        Node objObtained = graph.find(s, p, null).next().getObject();
+        assertEquals(objExpected, objObtained);
     }
 }

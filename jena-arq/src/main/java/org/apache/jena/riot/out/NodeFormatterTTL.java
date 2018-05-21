@@ -52,7 +52,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         this.prefixMap = prefixMap ;
         this.baseIRI = baseIRI ;
         this.iriResolver = 
-            baseIRI != null ? IRIResolver.iriFactory.construct(baseIRI) : null ;
+            baseIRI != null ? IRIResolver.iriFactory().construct(baseIRI) : null ;
     }
 
     @Override
@@ -60,13 +60,15 @@ public class NodeFormatterTTL extends NodeFormatterNT
         Pair<String, String> pName = prefixMap.abbrev(uriStr) ;
         // Check if legal
         if ( pName != null ) {
-            // Check legal - need to check legal, not for illegal.
-            String pref = pName.getLeft() ;
-            String ln = pName.getRight() ;
-            if ( safeForPrefix(pref) && safeForPrefixLocalname(ln) ) {
-                w.print(pName.getLeft()) ;
+            // Check legal - need to check its legal, not for illegal.
+            // The splitter in "abbrev" only has a weak rule.
+            String prefix = pName.getLeft() ;
+            String localname = pName.getRight() ;
+            
+            if ( safePrefixName(prefix, localname) ) {
+                w.print(prefix) ;
                 w.print(':') ;
-                w.print(pName.getRight()) ;
+                w.print(localname) ;
                 return ;
             }
         }
@@ -100,8 +102,45 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return r ;
     }
 
+    @Override
+    public void formatBNode(AWriter w, Node n) {
+        String x = nodeToLabel.get(null, n) ;
+        w.print(x) ;
+    }
+
+    // From NodeFormatterNT:
+    
+    // @Override
+    // public void formatVar(WriterI w, String name)
+
+    // @Override
+    // public void formatLitString(WriterI w, String lex)
+
+    // @Override
+    // public void formatLitLang(WriterI w, String lex, String langTag)
+
+    static boolean safePrefixName(String prefix, String localname) {
+        return safeForPrefix(prefix) && safeForPrefixLocalname(localname) ;    
+    }
+    
+    // [139s]  PNAME_NS        ::=     PN_PREFIX? ':'
+    // [140s]  PNAME_LN        ::=     PNAME_NS PN_LOCAL
+    
+    // [167s]  PN_PREFIX       ::=     PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
+    // [168s]  PN_LOCAL        ::=     (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
+
+    // [163s]  PN_CHARS_BASE   ::=     [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    // [164s]  PN_CHARS_U      ::=     PN_CHARS_BASE | '_'
+    // [166s]  PN_CHARS        ::=     PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+    
+    // [169s]  PLX             ::=     PERCENT | PN_LOCAL_ESC
+    // [170s]  PERCENT         ::=     '%' HEX HEX
+    // [171s]  HEX             ::=     [0-9] | [A-F] | [a-f]
+    // [172s]  PN_LOCAL_ESC    ::=     '\' ('_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%')
+    
     /* private-testing */
     static boolean safeForPrefix(String str) {
+        // PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
         int N = str.length() ;
         if ( N == 0 )
             return true ;
@@ -112,44 +151,30 @@ public class NodeFormatterTTL extends NodeFormatterNT
         idx = skipAny_PN_CHARS_or_DOT(str, idx, N - 1) ;
         if ( idx == -1 )
             return false ;
-        // Final char
         idx = skip1_PN_CHARS(str, idx) ;
         if ( idx == -1 )
             return false ;
         return (idx == N) ;
     }
 
-    // @Override
-    // public void formatVar(WriterI w, String name)
-
-    // @Override
-    // public void formatBNode(WriterI w, String label)
-
-    @Override
-    public void formatBNode(AWriter w, Node n) {
-        String x = nodeToLabel.get(null, n) ;
-        w.print(x) ;
-    }
-
-    // @Override
-    // public void formatLitString(WriterI w, String lex)
-
-    // @Override
-    // public void formatLitLang(WriterI w, String lex, String langTag)
-
     /* private-testing */static boolean safeForPrefixLocalname(String str) {
+        // PN_LOCAL ::=  (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
+        // This code does not consider PLX (which is more than one character).
         int N = str.length() ;
         if ( N == 0 )
             return true ;
         int idx = 0 ;
-        idx = skip1_PN_CHARS_U_or_digit(str, idx) ;
+        idx = skip1_PN_CHARS_U_or_digit_or_COLON(str, idx) ;
         if ( idx == -1 )
             return false ;
-        idx = skipAny_PN_CHARS_or_DOT(str, idx, N - 1) ;
+        idx = skipAny_PN_CHARS_or_DOT_or_COLON(str, idx, N - 1) ;
         if ( idx == -1 )
             return false ;
-        idx = skip1_PN_CHARS(str, idx) ;
         // Final char
+        idx = skip1_PN_CHARS_or_COLON(str, idx) ;
+        if ( idx == -1 )
+            return false ;
+        // We got to the end.
         return (idx == N) ;
     }
 
@@ -161,6 +186,8 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return is_PN_CHARS_BASE(ch) || ch == '_' ;
     }
 
+    // TODO Merge to RiotChars
+    
     private static boolean is_PN_CHARS(int ch) {
         return is_PN_CHARS_U(ch) || ch == '-' || RiotChars.isDigit(ch) || isCharsExtra(ch) ;
     }
@@ -169,15 +196,8 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return ch == '\u00B7' || RiotChars.range(ch, '\u0300', '\u036F') || RiotChars.range(ch, '\u203F', '\u2040') ;
     }
 
-    private static int skip1_PN_CHARS_U_or_digit(String str, int idx) {
-        char ch = str.charAt(idx) ;
-        if ( is_PN_CHARS_U(ch) )
-            return idx + 1 ;
-        if ( RiotChars.isDigit(ch) )
-            return idx + 1 ;
-        return -1 ;
-    }
-
+    // ---- Prefix name : prefix part
+    
     private static int skip1_PN_CHARS_BASE(String str, int idx) {
         char ch = str.charAt(idx) ;
         if ( is_PN_CHARS_BASE(ch) )
@@ -201,6 +221,39 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return -1 ;
     }
 
+    // ---- Prefix name : local part
+
+    private static int skip1_PN_CHARS_U_or_digit_or_COLON(String str, int idx) {
+        char ch = str.charAt(idx) ;
+        if ( is_PN_CHARS_U(ch) )
+            return idx + 1 ;
+        if ( RiotChars.isDigit(ch) )
+            return idx + 1 ;
+        if ( ch == ':' )
+            return idx + 1 ;
+        return -1 ;
+    }
+    
+    private static int skipAny_PN_CHARS_or_DOT_or_COLON(String str, int idx, int max) {
+        for (int i = idx; i < max; i++) {
+            char ch = str.charAt(i) ;
+            if ( !is_PN_CHARS(ch) && ch != '.' && ch != ':' )
+                return i ;
+        }
+        return max ;
+    }
+
+    private static int skip1_PN_CHARS_or_COLON(String str, int idx) {
+        char ch = str.charAt(idx) ;
+        if ( is_PN_CHARS(ch) )
+            return idx + 1 ;
+        if ( ch == ':' )
+            return idx + 1 ;
+        return -1 ;
+    }
+
+    // ---- 
+    
     private static final String dtDecimal = XSDDatatype.XSDdecimal.getURI() ;
     private static final String dtInteger = XSDDatatype.XSDinteger.getURI() ;
     private static final String dtDouble  = XSDDatatype.XSDdouble.getURI() ;

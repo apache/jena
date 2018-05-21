@@ -34,23 +34,16 @@ import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.validation.json.ValidationAction;
+
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
-/** ValidationBase for JSON out */ 
+/** Validation base for JSON output */ 
 public abstract class ValidatorBaseJson extends ServletBase
 {
-
-    private static final long serialVersionUID = 6539771233008186266L;
-
     private static Logger vLog = Fuseki.validationLog ;
-    public static final String jErrors          = "errors" ;
-    public static final String jWarnings        = "warning" ;
-
-    public static final String jParseError      = "parse-error" ;
-    public static final String jParseErrorLine  = "parse-error-line" ;
-    public static final String jParseErrorCol   = "parse-error-column" ;
 
     public static final String respService      = "X-Service" ;
     
@@ -95,7 +88,7 @@ public abstract class ValidatorBaseJson extends ServletBase
         printResponse(action) ;
     }
     
-    private void initResponse(HttpServletRequest request, HttpServletResponse response)
+    static void initResponse(HttpServletRequest request, HttpServletResponse response)
     {
         setCommonHeaders(response) ;
         String method = request.getMethod() ;
@@ -104,7 +97,7 @@ public abstract class ValidatorBaseJson extends ServletBase
             setVaryHeader(response) ;
     }
     
-    private void printRequest(ValidationAction action)
+    static void printRequest(ValidationAction action)
     {
         String url = ActionLib.wholeRequestURL(action.request) ;
         String method = action.request.getMethod() ;
@@ -125,7 +118,7 @@ public abstract class ValidatorBaseJson extends ServletBase
         }
     }
     
-    private void printResponse(ValidationAction action)
+    static void printResponse(ValidationAction action)
     {
         long time = action.getTime() ;
         
@@ -147,7 +140,7 @@ public abstract class ValidatorBaseJson extends ServletBase
             action.log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
     
-    private static String fmtMillis(long time)
+    static String fmtMillis(long time)
     {
         // Millis only? seconds only?
         if ( time < 1000 )
@@ -159,11 +152,11 @@ public abstract class ValidatorBaseJson extends ServletBase
     
     protected abstract String validatorName() ;
 
-    protected void setHeaders(HttpServletResponse httpResponse)
+    static void setHeaders(HttpServletResponse httpResponse, String vName)
     {
         httpResponse.setCharacterEncoding(charsetUTF8) ;
         httpResponse.setContentType(contentTypeJSON) ;
-        httpResponse.setHeader(respService, "Jena Fuseki Validator / "+validatorName()+": http://jena.apache.org/") ;
+        httpResponse.setHeader(respService, "Jena Fuseki Validator / "+vName+": http://jena.apache.org/") ;
     }
 
     protected static String getArg(ValidationAction action, String paramName) {

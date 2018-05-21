@@ -67,7 +67,7 @@ public class EnhGraph
     }
    
     /**
-     * Hashcode for an enhnaced graph is delegated to the underlyin graph.
+     * Hashcode for an enhanced graph is delegated to the underlying graph.
      * @return The hashcode as an int
      */
     @Override final public int hashCode() {
@@ -79,7 +79,7 @@ public class EnhGraph
      * are equal.
      * This  is deemed to be a complete and correct interpretation of enhanced
      * graph equality, which is why this method has been marked final.
-     * <p> Note that this equality test does not look for correspondance between
+     * <p> Note that this equality test does not look for correspondence between
      * the structures in the two graphs.  To test whether another graph has the
      * same nodes and edges as this one, use {@link #isIsomorphicWith}.
      * </p>

@@ -24,7 +24,6 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
 
 /**
  * Default implementation of a {@link PrefixMap}, this implementation
@@ -66,7 +65,7 @@ public class PrefixMapStd extends PrefixMapBase {
     @Override
     public void add(String prefix, String iriString) {
         prefix = canonicalPrefix(prefix);
-        IRI iri = IRIFactory.iriImplementation().create(iriString);
+        IRI iri = IRIResolver.iriFactory().create(iriString);
         prefixes.put(prefix, iri);
         uriToPrefix.put(iriString, prefix) ;
     }
@@ -133,6 +132,9 @@ public class PrefixMapStd extends PrefixMapBase {
         index = iriString.lastIndexOf('/');
         if (index > -1)
             return iriString.substring(0, index + 1);
+        // We could add ':' here, it is used as a separater in URNs.
+        // But it is a multiple use character and always present in the scheme name.
+        // This is a fast-track guess so don't try guessing based on ':'.
         return null;
     }
 

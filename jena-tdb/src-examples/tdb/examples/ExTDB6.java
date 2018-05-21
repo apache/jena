@@ -33,7 +33,7 @@ import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 
-/** Example of single threaded use of TDB workign with the Jena RDF API */
+/** Example of single threaded use of TDB working with the Jena RDF API */
 public class ExTDB6
 {
     /// observe the non-http "protocol", because it is a bad precident

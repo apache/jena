@@ -34,6 +34,7 @@ import java.util.* ;
 import java.util.regex.Pattern ;
 import java.util.regex.PatternSyntaxException ;
 
+import org.apache.jena.ext.xerces.util.XMLChar;
 import org.apache.jena.ontology.Individual ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -46,7 +47,6 @@ import org.apache.jena.vocabulary.OWL ;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.XSD ;
-import org.apache.xerces.util.XMLChar ;
 
 
 

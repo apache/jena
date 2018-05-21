@@ -22,7 +22,7 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.util.iterator.* ;
 
 /**
- * Wrapper round a Graph to implement the slighly modified Finder
+ * Wrapper round a Graph to implement the slightly modified Finder
  * interface.
  */
 public class FGraph implements Finder {

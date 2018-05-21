@@ -30,13 +30,16 @@ import org.apache.jena.graph.GraphEvents ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
@@ -49,15 +52,27 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
         super(dataset, graphName) ;
     }
 
+    private String graphNameStr() {
+        if ( getGraphName() == null ) return DatasetPrefixesTDB.unnamedGraphURI;
+        if ( getGraphName().isURI() ) return getGraphName().getURI();
+        if ( getGraphName().isBlank() ) return RiotLib.blankNodeToIri(getGraphName()).getURI();
+        throw new TDBException("Bad node for graph name: "+getGraphName());
+    }
+    
     /** Return the associated DatasetGraphTDB.
      * For non-transactional, that's the base storage.
      * For transactional, it is the transactional view.
      * <p>
      * Immediate validity only.
-     * Not valid actoss transacion boundaries, nor non-transactional to transactional. 
+     * Not valid across transatcion boundaries, nor non-transactional to transactional. 
      */
     public abstract DatasetGraphTDB getDatasetGraphTDB() ;
     
+    /** Return the {@link DatasetGraphTransaction}.
+     * If this wrapping a base {@link DatasetGraphTDB}, return null.  
+     */
+    public abstract DatasetGraphTransaction getDatasetGraphTransaction() ;
+
     /** Return the associated base DatasetGraphTDB storage.
      * Use with great care.
      * <p>
@@ -73,16 +88,39 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
     public NodeTupleTable getNodeTupleTable() {
         return getDatasetGraphTDB().chooseNodeTupleTable(getGraphName()) ;
     }
+    
+    // JENA-1527. Don't let GraphBase cache.
+    // Normally, GraphBase calls createPrefixMapping once and reuses that object.
+    // This causes it to be passed across transaction boundaries.
+    // in the case of fetching, then not using for update in a W transaction,
+    // errors occur.
+    //
+    // In TDB1, prefix mapping are limited in usage scope to the transaction.
+    // The issue of the DatasetPrefixStorage.
+    // (Could improve with PrefixMapping that gets the underlying PrefixeMapping each time).
+    
+    @Override
+    public PrefixMapping getPrefixMapping() {
+        return createPrefixMapping();
+    }
 
     @Override
     protected PrefixMapping createPrefixMapping() {
-        // [TXN] Make transactional.
+        boolean txnMode = getDatasetGraphTransaction() != null && getDatasetGraphTransaction().getStoreConnection().haveUsedInTransaction() ;
+        if ( ! txnMode )
+            return createPrefixMapping$();
+        return 
+            Txn.calculateRead(getDataset(),()-> createPrefixMapping$()); 
+    }
+    
+    private PrefixMapping createPrefixMapping$() {
         DatasetPrefixStorage dsgPrefixes = getDatasetGraphTDB().getPrefixes() ;
         if ( isDefaultGraph() )
             return dsgPrefixes.getPrefixMapping() ;
         if ( isUnionGraph() )
             return dsgPrefixes.getPrefixMapping() ;
         return dsgPrefixes.getPrefixMapping(getGraphName().getURI()) ;
+        
     }
 
     @Override

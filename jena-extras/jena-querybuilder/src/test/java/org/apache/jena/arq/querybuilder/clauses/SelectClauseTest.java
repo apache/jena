@@ -19,6 +19,8 @@ package org.apache.jena.arq.querybuilder.clauses;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.SelectHandler;
 import org.apache.jena.graph.NodeFactory ;
@@ -61,62 +63,7 @@ public class SelectClauseTest<T extends SelectClause<?>> extends
 		assertNotNull(handler);
 	}
 
-	@ContractTest
-	public void setDistinctTest() throws Exception {
-		SelectClause<?> selectClause = getProducer().newInstance();
-		Query query = getQuery((AbstractQueryBuilder<?>) selectClause);
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setDistinct(true));
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setReduced(false));
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setReduced(true));
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
-
-		query = getQuery(selectClause.setDistinct(true));
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setDistinct(false));
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-	}
-
-	@ContractTest
-	public void setReducedTest() throws Exception {
-		SelectClause<?> selectClause = getProducer().newInstance();
-		Query query = getQuery((AbstractQueryBuilder<?>) selectClause);
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setReduced(true));
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
-
-		query = getQuery(selectClause.setDistinct(false));
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
-
-		query = getQuery(selectClause.setDistinct(true));
-		assertTrue(query.isDistinct());
-		assertFalse(query.isReduced());
-
-		query = getQuery(selectClause.setReduced(true));
-		assertFalse(query.isDistinct());
-		assertTrue(query.isReduced());
-
-		query = getQuery(selectClause.setReduced(false));
-		assertFalse(query.isDistinct());
-		assertFalse(query.isReduced());
-	}
-
+	
 	@ContractTest
 	public void testAddVarString() throws Exception {
 		Var v = Var.alloc("one");
@@ -151,12 +98,17 @@ public class SelectClauseTest<T extends SelectClause<?>> extends
 	}
 
 	@ContractTest
-	public void getVarsTest() {
+	public void getVarsTest()  {
 		SelectClause<?> selectClause = getProducer().newInstance();
 		AbstractQueryBuilder<?> builder = selectClause.addVar(NodeFactory
 				.createVariable("foo"));
-		String[] s = byLine(builder);
-		assertContainsRegex( SELECT+var("foo"), s );
+		try {
+			List<Var> vars = getQuery(builder).getProjectVars();
+			assertEquals( 1, vars.size());
+			assertEquals( "?foo", vars.get(0).toString());
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			fail( "Unable to access query from queryBuilder: "+e.getMessage() );
+		}
 	}
 
 	@ContractTest

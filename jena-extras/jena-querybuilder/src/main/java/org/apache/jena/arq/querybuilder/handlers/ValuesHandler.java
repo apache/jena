@@ -30,8 +30,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingHashMap;
+import org.apache.jena.sparql.syntax.ElementData;
 
 public class ValuesHandler implements Handler {
 
@@ -52,27 +52,27 @@ public class ValuesHandler implements Handler {
 	 * @param query
 	 *            The query to manipulate.
 	 */
-	public ValuesHandler(Query query) {
+	public ValuesHandler() {
+		this( null );
+	}
+	
+	public ValuesHandler( Query query ) {
 		this.query = query;
 		this.valuesTable = new LinkedHashMap<Var, List<Node>>();
 		this.valueMap = Collections.emptyMap();
 	}
-
-	@Override
-	public void setVars(Map<Var, Node> values) {
-		valueMap = values;
-	}
-
-	@Override
-	public void build() {
+	
+	public ElementData asElement() {
+		ElementData ed = new ElementData();
 		// remove all the vars that have been set
 		List<Var> vars = new ArrayList<Var>(valuesTable.keySet());
 		vars.removeAll(valueMap.keySet());
 		if (vars.isEmpty()) {
-			return;
+			return ed;
 		}
-
-		List<Binding> bindings = new ArrayList<Binding>();
+		vars.forEach( var -> ed.add(var));
+	
+		//List<Binding> bindings = new ArrayList<Binding>();
 		int count = valuesTable.get(vars.get(0)).size();
 		for (int i = 0; i < count; i++) {
 			BindingHashMap b = new BindingHashMap();
@@ -92,13 +92,32 @@ public class ValuesHandler implements Handler {
 					b.add(var, n);
 				}
 			}
-
+	
 			if (!b.isEmpty()) {
-				bindings.add(b);
+				ed.add(b);
 			}
 		}
-		if (!bindings.isEmpty()) {
-			query.setValuesDataBlock(vars, bindings);
+		return ed;
+	}
+
+	public boolean isEmpty()
+	{
+		return valuesTable.isEmpty();
+	}
+	
+	@Override
+	public void setVars(Map<Var, Node> values) {
+		valueMap = values;
+	}
+
+	@Override
+	public void build() {
+		if (query != null)
+		{
+		ElementData ed = asElement();
+		if (!ed.getRows().isEmpty()) {
+			query.setValuesDataBlock(ed.getVars(), ed.getRows());
+		}
 		}
 	}
 

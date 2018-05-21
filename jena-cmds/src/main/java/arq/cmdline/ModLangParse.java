@@ -44,6 +44,7 @@ public class ModLangParse extends ModBase
     private ArgDecl argSkip     = new ArgDecl(ArgDecl.NoValue, "skip") ;
     private ArgDecl argNoSkip   = new ArgDecl(ArgDecl.NoValue, "noSkip") ;
     private ArgDecl argStop     = new ArgDecl(ArgDecl.NoValue, "stopOnError", "stoponerror", "stop") ;
+    private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings") ;
     
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
     
@@ -58,6 +59,7 @@ public class ModLangParse extends ModBase
     private boolean explicitNoCheck     = false ;
     private boolean skipOnBadTerm       = false ;
     private boolean stopOnBadTerm       = false ;
+    private boolean stopOnWarnings      = false ;
     private boolean bitbucket           = false ; 
     private boolean strict              = false ;
     private boolean validate            = false ;
@@ -78,6 +80,7 @@ public class ModLangParse extends ModBase
 //        cmdLine.add(argSkip,    "--noSkip",         "Skip (do not output) triples failing the RDF term tests") ;
 //        cmdLine.add(argNoSkip,  "--skip",           "Include triples failing the RDF term tests (not recommended)") ;
         cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
+        cmdLine.add(argStopWarn,"--stop-warnings",  "Stop parsing on encountering a warning") ;
     }
 
     @Override
@@ -122,6 +125,9 @@ public class ModLangParse extends ModBase
 
         if ( cmdLine.contains(argStop) )
             stopOnBadTerm = true ;
+        
+        if ( cmdLine.contains(argStopWarn) )
+            stopOnWarnings = true;
 
         if ( cmdLine.contains(argSink) )
             bitbucket = true ;
@@ -160,6 +166,10 @@ public class ModLangParse extends ModBase
 
     public boolean stopOnBadTerm() {
         return stopOnBadTerm ;
+    }
+    
+    public boolean stopOnWarnings() {
+        return stopOnWarnings ;
     }
 
     public boolean toBitBucket() {

@@ -24,9 +24,12 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
@@ -44,7 +47,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  *  @see GraphUnionRead
  */ 
 
-public class GraphView extends GraphBase implements Sync
+public class GraphView extends GraphBase implements NamedGraph, Sync
 {
     // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
@@ -58,7 +61,9 @@ public class GraphView extends GraphBase implements Sync
     }
     
     private final DatasetGraph dsg ;
-    private final Node gn ;                 // null for default graph.
+    // null for default graph.
+    private final Node gn ;                 
+    private final TransactionHandlerView transactionHandler;
 
     // Factory style.
     public static GraphView createDefaultGraph(DatasetGraph dsg)
@@ -70,16 +75,17 @@ public class GraphView extends GraphBase implements Sync
     public static GraphView createUnionGraph(DatasetGraph dsg)
     { return new GraphView(dsg, Quad.unionGraph) ; }
 
-    // If inherited.
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
         this.gn = gn ;
+        this.transactionHandler = new TransactionHandlerView(dsg);
     }
 
     /**
      * Return the graph name for this graph in the dataset it is a view of.
      * Returns {@code null} for the default graph.
      */
+    @Override
     public Node getGraphName() {
         return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
     }
@@ -130,7 +136,7 @@ public class GraphView extends GraphBase implements Sync
         Node g = graphNode(gn) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
-        // but assumes thing come back in a particular order
+        // but assumes things come back in a particular order
         Iterator<Quad> iterQuads = getDataset().find(g, s, p, o) ;
         Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
@@ -142,7 +148,7 @@ public class GraphView extends GraphBase implements Sync
     public void performAdd( Triple t ) { 
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
-            throw new GraphViewException("Can't update the default union graph of a dataset") ; 
+            throw new AddDeniedException("Can't update the union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
@@ -153,7 +159,7 @@ public class GraphView extends GraphBase implements Sync
     public void performDelete( Triple t ) {
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
-            throw new GraphViewException("Can't update the default union graph of a dataset") ; 
+            throw new DeleteDeniedException("Can't update the union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
@@ -163,6 +169,11 @@ public class GraphView extends GraphBase implements Sync
     @Override
     public void sync() {
         SystemARQ.sync(dsg);
+    }
+    
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerView(dsg);
     }
     
     @Override

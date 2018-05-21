@@ -25,7 +25,7 @@ import org.apache.jena.shared.impl.* ;
 import org.apache.jena.vocabulary.* ;
 
 /**
-    Methods for recording namepsace prefix mappings and applying and
+    Methods for recording namespace prefix mappings and applying and
     unapplying them to URIs.
 <p>
     Note that a Model *is* a PrefixMapping, so all the PrefixMapping
@@ -49,7 +49,7 @@ public interface PrefixMapping
         should end with a non-NCName character has been removed.
    <p>        
          
-        Note, in particular, that the a prefix mapping can only be used 
+        Note, in particular, that the prefix mapping can only be used 
         if it includes the URI up to any '#' character because '#' is not legal
         in the local part of an NCName.
 
@@ -131,7 +131,7 @@ public interface PrefixMapping
         Return a copy of the internal mapping from names to URI strings. Updating
         this copy will have no effect on the PrefixMap.
 
-        @return a copy of the internal String -> String mapping
+        @return a copy of the internal String {@literal ->} String mapping
     */
     Map<String, String> getNsPrefixMap();
 
@@ -147,7 +147,7 @@ public interface PrefixMapping
 
     /**
         Compress the URI using the prefix mappings if possible. If there is a
-        prefix mapping Name -> URIStart, and uri is URIStart+Tail, return Name:Tail;
+        prefix mapping Name {@literal ->} URIStart, and uri is URIStart+Tail, return Name:Tail;
         otherwise return uri unchanged. If there are multiple applicable mappings
         available, the "most recent" is chosen if that is possible, otherwise
         one is picked "at random".

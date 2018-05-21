@@ -37,7 +37,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -236,9 +236,9 @@ public class ARQ
 
     /** 
      * Use this Symbol to allow passing additional query parameters to a 
-     * SERVICE <IRI> call.
-     * Parameters need to be grouped by SERVICE <IRI>,  
-     * a Map<String, Map<String,List<String>>> is assumed.
+     * {@literal SERVICE <IRI>} call.
+     * Parameters need to be grouped by {@literal SERVICE <IRI>},  
+     * a {@literal Map<String, Map<String,List<String>>>} is assumed.
      * The key of the first map is the SERVICE IRI, the value is a Map 
      * which maps the name of a query string parameters to its values.
      * 
@@ -317,7 +317,7 @@ public class ARQ
     
     /** 
      *  Context key controlling whether the main query engine flattens simple paths
-     *  (e.g. <tt>?x :p/:q ?z => ?x :p ?.0 . ?.0 ?q ?z</tt>)   
+     *  (e.g. <tt>?x :p/:q ?z =&gt; ?x :p ?.0 . ?.0 ?q ?z</tt>)   
      *  <p>Default is "true"
      */  
     public static final Symbol optPathFlatten = SystemARQ.allocSymbol("optPathFlatten") ;
@@ -349,6 +349,12 @@ public class ARQ
      *  Default is "true" - total sort if avoided by default when ORDER BY is used with LIMIT.
      */  
     public static final Symbol optTopNSorting = SystemARQ.allocSymbol("optTopNSorting") ;
+    
+    /** Threshold for doing a top N sort for ORDER-LIMIT.
+     * The default is a limit of 1000.
+     * The context value should be a {@link java.lang.Number}.
+     */
+    public static final Symbol topNSortingThreshold = SystemARQ.allocSymbol("topNSortingThreshold") ;
     
     /** 
      *  Context key controlling whether a DISTINCT-ORDER BY query is done by replacing the distinct with a reduced.
@@ -402,7 +408,7 @@ public class ARQ
 
     /** 
      *  Context key controlling whether the standard optimizer applies
-     *  optimizations to conjunctions (&&) in filters.
+     *  optimizations to conjunctions (&amp;&amp;) in filters.
      *  <p>By default, this transformation is applied.
      */  
     public static final Symbol optFilterConjunction = SystemARQ.allocSymbol("optFilterConjunction") ;
@@ -479,6 +485,16 @@ public class ARQ
      * Expression evaluation without extension types (e.g. xsd:date, language tags)
      */
     public static final Symbol extensionValueTypes = SystemARQ.allocSymbol("extensionValueTypesExpr") ;
+    
+    /** 
+     * Context symbol for JavaScript functions as a string value which is evaluated.
+     */ 
+    public static Symbol symJavaScriptFunctions = SystemARQ.allocSymbol("js-functions");
+    
+    /**
+     * Context symbol for JavaScript library of functions defined in a file.
+     */
+    public static Symbol symJavaScriptLibFile = SystemARQ.allocSymbol("js-library");
 
     /**
      * Generate the ToList operation in the algebra (as ARQ is stream based, ToList is a non-op).

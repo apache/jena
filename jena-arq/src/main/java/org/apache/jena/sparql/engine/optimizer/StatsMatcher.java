@@ -269,19 +269,6 @@ public final class StatsMatcher
         entry.add(pattern) ;
     }
     
-//    public void addPattern(Triple triple)
-//    {
-//        if ( triple.getSubject().isVariable() )
-//        {
-//            // PO, P and O
-//        }
-//        else
-//        {
-//            //SPO, SP and SO
-//        }
-//        throw new NotImplementedException("StatsMatcher.addPattern") ;
-//    }
-    
     private static void check(Pattern pattern)
     {
         check(pattern.subjItem) ;
@@ -319,7 +306,7 @@ public final class StatsMatcher
     }
     
     /** Return the matching weight for the first triple match found, 
-     * else apply default value for fixed, unknnown predciate,
+     * else apply default value for fixed, unknown predicate,
      * else return NOMATCH
      */
     public double match(Item subj, Item pred, Item obj)

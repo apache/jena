@@ -19,8 +19,9 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.* ;
-import java.util.HashSet ;
+import java.util.Collections;
 import java.util.Set ;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -28,7 +29,7 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.server.FusekiServer ;
+import org.apache.jena.fuseki.server.FusekiSystem ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -52,16 +53,16 @@ public class Backup
 
         String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
         String filename = ds + "_" + timestamp ;
-        filename = FusekiServer.dirBackups.resolve(filename).toString() ;
+        filename = FusekiSystem.dirBackups.resolve(filename).toString() ;
         return filename ;
     }
     
-    // Rcord of all backups so we don't attempt to backup the
+    // Record of all backups so we don't attempt to backup the
     // same dataset multiple times at the same time. 
-    private static Set<DatasetGraph> activeBackups = new HashSet<>() ;
+    private static Set<DatasetGraph> activeBackups = Collections.newSetFromMap(new ConcurrentHashMap<>());
     
     /** Perform a backup.
-     *  A backup is a dump of the datset in comrpessed N-Quads, done inside a transaction.
+     *  A backup is a dump of the dataset in compressed N-Quads, done inside a transaction.
      */
     public static void backup(Transactional transactional, DatasetGraph dsg, String backupfile) {
         if ( transactional == null )
@@ -69,12 +70,14 @@ public class Backup
         transactional.begin(ReadWrite.READ);
         try {
             Backup.backup(dsg, backupfile) ;
+        } catch (Exception ex) {
+            Log.warn(Fuseki.serverLog, "Exception in backup", ex);
         }
         finally {
             transactional.end() ;
         }
     }
-    
+
     /** Perform a backup.
      * 
      * @see #backup(Transactional, DatasetGraph, String)
@@ -86,7 +89,7 @@ public class Backup
         // Per backup source lock. 
         synchronized(activeBackups) {
             // Atomically check-and-set
-            if ( activeBackups.contains(backupfile) )
+            if ( activeBackups.contains(dsg) )
                 Log.warn(Fuseki.serverLog, "Backup already in progress") ;
             activeBackups.add(dsg) ;
         }

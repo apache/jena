@@ -59,7 +59,7 @@ public interface MaxCardinalityQRestriction
     public int getMaxCardinalityQ();
 
     /**
-     * <p>Answer true if this property restriction has the given maximum qualifed cardinality.</p>
+     * <p>Answer true if this property restriction has the given maximum qualified cardinality.</p>
      * @param maxCardinality The cardinality to test against 
      * @return True if the given cardinality is the maximum qualified cardinality of the restricted property in this restriction
      * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   

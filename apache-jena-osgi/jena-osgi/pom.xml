@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.8.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>  
   <packaging>bundle</packaging>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <!-- These are all embedded within httpclient-osgi -->
@@ -106,46 +106,40 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
-    </dependency>
-   <!-- xerces is needed - but this is marked as optional as some
-        OSGi frameworks like Karaf will include their own
-        xerces in their boot delegation.
-
-        See also pull request #134
-        https://github.com/apache/jena/pull/134#issuecomment-209474708
-   -->
-    <dependency>
-        <groupId>org.apache.servicemix.bundles</groupId>
-        <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
-        <version>2.11.0_1</version>
-        <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!--
     NOTE: Also update 
-    src/main/resources/META-INF/services/org.apache.jena.system.JenaSubsystemLifecycle
+    src/main/resources/META-INF/services/org.apache.jena.sys.JenaSubsystemLifecycle
     to the concatenation of the different Jena modules' JenaSubsystemLifecycle
     (order does not matter). See JENA-1139 for details.
     -->
@@ -153,7 +147,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.3.0-SNAPSHOT</version>
+      <version>3.8.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -256,14 +250,10 @@
           <instructions>
             <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>            
             <Embed-Dependency>artifactId=jena*;inline=true</Embed-Dependency>
-            <!--            
-            <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
-            -->
             <Embed-Transitive>true</Embed-Transitive>
-            <!-- Do not embed but import Xerces classes via OSGi -->
-            <Import-Package>org.osgi.framework.*,org.apache.xml.*,org.apache.xerces.*;version="2.11.0",!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,com.google.errorprone.annotations.concurrent;resolution:=optional,*</Import-Package>
             <!--
-            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
+            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
             -->
             <Private-Package>org.apache.jena.ext.*</Private-Package>
             <Bundle-Activator>org.apache.jena.osgi.Activator</Bundle-Activator>

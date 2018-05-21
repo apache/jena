@@ -34,29 +34,44 @@ import org.apache.jena.rdf.model.impl.LiteralImpl ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
 import org.apache.jena.rdf.model.impl.StmtIteratorImpl ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.util.ModelCollector;
 import org.apache.jena.util.iterator.ClosableIterator ;
 
 
 public class ModelUtils
 {
-    public static RDFNode convertGraphNodeToRDFNode(Node n, Model model)
-    {
-        if ( n.isVariable() )
-            throw new QueryException("Variable: "+n) ;
+    /** Convert a {@link Node} (graph SPI) to an RDFNode (model API), anchored to the model if possible.
+     *  
+     * @param node
+     * @param model (may be null)
+     * @return RDFNode
+     */
+  
+    public static RDFNode convertGraphNodeToRDFNode(Node node, Model model) {
+        if ( node.isVariable() )
+            throw new QueryException("Variable: "+node) ;
 
         // Best way.
         if ( model != null )
-             return model.asRDFNode(n) ;
+             return model.asRDFNode(node) ;
         
-        if ( n.isLiteral() )
-            return new LiteralImpl(n, null) ;
+        if ( node.isLiteral() )
+            return new LiteralImpl(node, null) ;
                 
-        if ( n.isURI() || n.isBlank() )
-            return new ResourceImpl(n, null) ;
+        if ( node.isURI() || node.isBlank() )
+            return new ResourceImpl(node, null) ;
         
-        throw new ARQInternalErrorException("Unknown node type for node: "+n) ;
+        throw new ARQInternalErrorException("Unknown node type for node: "+node) ;
     }
-    
+
+    /** Convert a {@link Node} (graph SPI) to an RDFNode (model API)
+     * 
+     * @param node
+     * @return RDFNode
+     */
+    public static RDFNode convertGraphNodeToRDFNode(Node node) {
+        return convertGraphNodeToRDFNode(node, null);
+    }
  
     public static Statement tripleToStatement(Model model, Triple t)
     {
@@ -117,7 +132,15 @@ public class ModelUtils
             }
         };
     }
-    
+
+    public static ModelCollector intersectCollector() {
+        return new ModelCollector.IntersectionModelCollector();
+    }
+
+    public static ModelCollector unionCollector() {
+        return new ModelCollector.UnionModelCollector();
+    }
+
     public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
     {
         return new IteratorResourceClosing<>(Iter.map(it, Statement::asTriple),

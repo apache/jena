@@ -1,0 +1,8 @@
+<rdf:RDF
+    xml:base="app://2dee5b0a-6100-470a-a67f-1399518cb470/nested/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+  <rdf:Description rdf:about="foo.txt">
+    <rdfs:seeAlso rdf:resource="/bar.txt"/>
+  </rdf:Description>
+</rdf:RDF>

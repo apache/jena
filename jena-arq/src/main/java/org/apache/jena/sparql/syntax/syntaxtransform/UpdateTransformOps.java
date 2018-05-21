@@ -23,8 +23,10 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Sink ;
-
 import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.Literal ;
+import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprTransform ;
@@ -37,6 +39,7 @@ import org.apache.jena.update.UpdateRequest ;
 /** Support for transformation of update abstract syntax. */ 
 public class UpdateTransformOps {
     
+    /** Transform an {@link Update} based on a mapping from {@link Var} variable to replacement {@link Node}. */ 
     public static Update transform(Update update, Map<Var, Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions) ;
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions) ;
@@ -44,6 +47,7 @@ public class UpdateTransformOps {
         return transform(update, eltrans, exprTrans) ;
     }
 
+    /** Transform an {@link UpdateRequest} based on a mapping from {@link Var} variable to replacement {@link Node}. */ 
     public static UpdateRequest transform(UpdateRequest update, Map<Var, Node> substitutions) {
         ElementTransform eltrans = new ElementTransformSubst(substitutions) ;
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions) ;
@@ -51,6 +55,24 @@ public class UpdateTransformOps {
         return transform(update, eltrans, exprTrans) ;
     }
 
+    /**
+     * Transform an {@link Update} based on a mapping from variable name to replacement
+     * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
+     */
+    public static Update transformUpdate(Update update, Map<String, ? extends RDFNode> substitutions) {
+        Map<Var, Node> map = TransformElementLib.convert(substitutions);
+        return transform(update, map);
+    }
+
+    /**
+     * Transform an {@link UpdateRequest} based on a mapping from variable name to replacement
+     * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
+     */
+    public static UpdateRequest transformUpdate(UpdateRequest update, Map<String, ? extends RDFNode> substitutions) {
+        Map<Var, Node> map = TransformElementLib.convert(substitutions);
+        return transform(update, map);
+    }
+    
     public static Update transform(Update update, ElementTransform transform, ExprTransform exprTransform) {
         UpdateTransform upParam = new UpdateTransform(transform, exprTransform) ;
         update.visit(upParam) ;

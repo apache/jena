@@ -33,8 +33,6 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query {
-    private static final long serialVersionUID = -3322268853028371757L;
-
     final static int MaxTriples = 100 * 1000 ;
 
     public SPARQL_QueryGeneral() {
@@ -56,7 +54,9 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
     protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetDescription datasetDesc = getDatasetDescription(action, query) ;
         if ( datasetDesc == null )
-            ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
+            //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
+            // Hope the query has something in it!
+            return DatasetFactory.createTxnMem();
         return datasetFromDescriptionWeb(action, datasetDesc) ;
     }
 

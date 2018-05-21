@@ -22,6 +22,7 @@ import static org.junit.Assert.* ;
 
 import java.util.concurrent.atomic.AtomicLong ;
 
+import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
 import org.apache.jena.system.Txn ;
@@ -62,6 +63,24 @@ public class TestTxnLifecycle {
         assertEquals(56,x) ;
     }
     
+    @Test(expected=JenaTransactionException.class)
+    public void txn_lifecycle_05a() {
+        int x = Txn.calculateRead(trans, ()-> {
+            // Does not continue outer transaction.
+            return Txn.calculateWrite(trans, ()->56) ;
+        });
+        assertEquals(56,x) ;
+    }
+    
+    @Test
+    public void txn_lifecycle_05b() {
+        int x = Txn.calculateWrite(trans, ()-> {
+            return Txn.calculateRead(trans, ()->56) ;
+        });
+        assertEquals(56,x) ;
+    }
+
+    
     @Test(expected=ExceptionFromTest.class)
     public void txn_lifecycle_06() {
         int x = Txn.calculateWrite(trans, ()-> {
@@ -70,6 +89,7 @@ public class TestTxnLifecycle {
         });
         fail("Should not be here!") ;
     }
+    
     
     @Test public void txn_lifecycle_07() {
         Txn.executeWrite(trans, ()->trans.commit()) ; 

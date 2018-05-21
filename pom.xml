@@ -23,18 +23,13 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.8.0-SNAPSHOT</version>
 
-  <!-- The org.apache:apache version is also in jena-parent pom.xml -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>18</version>
+    <version>19</version>
   </parent>
-
-  <prerequisites>
-    <maven>3.3.5</maven>
-  </prerequisites>
 
   <licenses>
     <license>
@@ -55,75 +50,158 @@
     <tag>HEAD</tag>
   </scm>
 
+   <properties>
+    <ver.slf4j>1.7.25</ver.slf4j>
+    <ver.log4j>1.2.17</ver.log4j>
+    <ver.junit>4.12</ver.junit>
+    <ver.libthrift>0.10.0</ver.libthrift>
+
+    <!-- jsonld-java depends on depends on Jackson core
+         artifacts so the versions must align. Consult jsonld-java's 
+         POM for the correct dependency versions 
+    -->
+    <ver.jsonldjava>0.12.0</ver.jsonldjava>
+    <ver.jackson>2.9.5</ver.jackson>
+
+    <ver.commonsio>2.6</ver.commonsio>
+    <ver.commonscli>1.4</ver.commonscli>
+    <ver.commonslang3>3.4</ver.commonslang3>
+    <ver.commonscsv>1.5</ver.commonscsv>
+    <ver.commons-codec>1.11</ver.commons-codec>
+
+    <ver.dexxcollection>0.7</ver.dexxcollection>
+
+    <ver.httpclient>4.5.5</ver.httpclient>
+    <ver.httpcore>4.4.9</ver.httpcore>
+    <!-- Normally, these are the same as the above
+         In the case of 4.2.6, there isn't a httpcore-osgi.
+    -->
+    <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
+    <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
+
+    <ver.lucene>6.4.1</ver.lucene>
+
+    <ver.elasticsearch>5.2.2</ver.elasticsearch>
+    <!-- elasticsearch uses this by reflection -->
+    <ver.log4j2>2.7</ver.log4j2>
+
+    <ver.spatial4j>0.6</ver.spatial4j>
+
+    <ver.mockito>1.9.5</ver.mockito>
+    <ver.awaitility>1.7.0</ver.awaitility>
+
+    <jdk.version>1.8</jdk.version>
+    <targetJdk>${jdk.version}</targetJdk>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <ver.contract.tests>0.2.0</ver.contract.tests>
+  </properties>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Jena Users Mailing List</name>
+      <post>users@jena.apache.org</post>
+      <subscribe>users-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?users@jena.apache.org</archive>
+      <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-users/</otherArchive>
+        <otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
+        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Jena Developers Mailing List</name>
+      <post>dev@jena.apache.org</post>
+      <subscribe>dev-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?dev@jena.apache.org</archive>
+      <otherArchives>
+        <otherArchive>http://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
+        <otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
+        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Jena Commits</name>
+      <post>commits@jena.apache.org</post>
+      <subscribe>commits-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>https://lists.apache.org/list.html?commits@jena.apache.org</archive>
+      <otherArchives>
+        <otherArchive>http://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
   <profiles>
     <profile>
       <!--
           This is the dev profile, typically used locally with 
           "mvn clean install -Pdev".
-          It only builds the modules shipped in apache-jena binaries.
+          It builds the modules shipped in apache-jena binaries
+          but does not build these binaries.
+          This profile does not build javadoc.
       -->
       <id>dev</id>
-      <!-- The maven artifacts of the basic modules -->
       <modules>
-        <module>jena-parent</module>
-        <!-- <module>jena-shaded-guava</module> -->
-        <!-- <module>jena-iri</module> -->
+        <module>jena-shaded-guava</module>
+        <module>jena-iri</module>
         <module>jena-base</module>
         
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
+        <module>jena-db</module> 
         <module>apache-jena-libs</module>
+
+        <module>jena-text</module>
+        <!-- <module>jena-text-es</module>        -->
+        <module>jena-spatial</module>
+
         <module>jena-cmds</module>
-        
-        <!--<module>jena-text</module>-->
-        <!--<module>jena-spatial</module>-->
-        <!--<module>jena-fuseki1</module>-->
         <module>jena-fuseki2</module>
 
         <module>jena-integration-tests</module>
 
-        <module>jena-permissions</module>
-
-        <!-- Slow to build - exclude from dev build -->
-        <!-- <module>jena-jdbc</module>           -->
-        <!-- <module>jena-maven-tools</module>    -->
-        <!-- <module>apache-jena-libs</module>    -->
+        <!-- Binary distribution -->
         <!-- <module>apache-jena</module>         -->
-        <!-- <module>jena-elephas</module> -->
-        <!-- <module>jena-extras</module> -->
+
+        <!-- <module>jena-fuseki1</module>        -->
+        <!-- <module>jena-csv</module>            -->
+        <!-- <module>jena-sdb</module>            -->
+        <!-- <module>jena-maven-tools</module>    -->
+
+        <!-- <module>jena-permissions</module>    -->
+        <!-- <module>jena-extras</module>         -->
+        <!-- <module>jena-jdbc</module>           -->
+        <!-- <module>jena-elephas</module>        -->
+        <!-- <module>apache-jena-osgi</module>    -->
+
       </modules>
+
+      <build>
+        <plugins>
+          <!-- For -Pdev :: don't create javadoc. -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+
     </profile>
 
-    <profile>
-      <!-- From the start, up until profile "dev".
-           Use this (or a full build) when building locally
-           and there are no SNAPSHOTs in the "snapshots" repository.
-           This profile does a more complete "dev" build,
-           does not assume anything is already built,
-           and does not include the longer running modules.
-      -->
-      
-      <id>bootstrap</id>
-      <modules>
-        <module>jena-parent</module>
-        <module>jena-shaded-guava</module>
-        <module>jena-iri</module> 
-        <module>jena-base</module>
-        <module>jena-core</module>
-        <module>jena-arq</module>
-        <module>jena-rdfconnection</module>
-        <module>jena-tdb</module> 
-        <module>apache-jena-libs</module>
-        <module>jena-cmds</module>
-        <module>jena-text</module>
-        <module>jena-spatial</module>
-        <!--<module>jena-fuseki1</module>-->
-        <module>jena-fuseki2</module>
-      </modules>
-    </profile>
-      
     <profile>
       <!--
           This is the complete profile, it builds everything including slow
@@ -138,25 +216,24 @@
         </property>
       </activation>
       <modules>
-        <module>jena-parent</module>
+        <!-- Basic modules -->
         <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
 
+        <!-- Main modules -->
         <module>jena-core</module>
         <module>jena-arq</module>
         <module>jena-rdfconnection</module>
         <module>jena-tdb</module>
+        <module>jena-db</module>
         <module>apache-jena-libs</module>
-        <module>jena-cmds</module>
 
         <module>jena-text</module>
+        <module>jena-text-es</module>
         <module>jena-spatial</module>
-        <module>jena-csv</module>
 
-        <module>jena-sdb</module>
-
-        <module>jena-fuseki1</module>
+        <module>jena-cmds</module>
         <module>jena-fuseki2</module>
 
         <!--
@@ -166,59 +243,794 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
-
-        <module>jena-permissions</module>
-
-        <module>jena-jdbc</module>
-        <!-- Removed because this breaks the build after the 
-             upgrade of Apache parent PM to v18 - see JENA-1184 
-        -->
-        <!-- <module>jena-maven-tools</module> -->
-        <module>jena-elephas</module>
-
+        
+        <!-- Binary distribution -->
         <module>apache-jena</module>
-        <module>apache-jena-osgi</module>
 
+        <!-- Old modules -->
+        <module>jena-fuseki1</module>
+        <module>jena-csv</module>
+        <module>jena-sdb</module>
+        <!-- apache-19 breaks this
+          <module>jena-maven-tools</module>
+        -->
+
+        <!-- Other -->
+        <module>jena-permissions</module>
         <module>jena-extras</module>
+
+        <!-- Slow building modules -->
+        <module>jena-jdbc</module>
+        <!--  Fails when building with Java9 JDK because it requires 
+             system jar jdk.tools which is not available in Java9 onwards
+        -->
+        <module>jena-elephas</module>
+        <module>apache-jena-osgi</module>
       </modules>
     </profile>
   </profiles>
 
-  <mailingLists>
-    <mailingList>
-      <name>Jena Users Mailing List</name>
-      <post>users@jena.apache.org</post>
-      <subscribe>users-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-users/</archive>
-      <otherArchives>
-        <otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Jena Developers Mailing List</name>
-      <post>dev@jena.apache.org</post>
-      <subscribe>dev-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-dev/</archive>
-      <otherArchives>
-        <otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
-        <otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Jena Commits</name>
-      <post>commits@jena.apache.org</post>
-      <subscribe>commits-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-commits/</archive>
-    </mailingList>
-  </mailingLists>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${ver.junit}</version>
+        <scope>test</scope>
+      </dependency>
 
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/JENA</url>
-  </issueManagement>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-cache</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <!-- Replace with slf4j adapter -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <!-- Replace with slf4j adapter -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${ver.commons-codec}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${ver.commonsio}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.thrift</groupId>
+        <artifactId>libthrift</artifactId>
+        <version>${ver.libthrift}</version>
+        <exclusions>
+          <!-- Use whatever version Jena is using -->
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>${ver.commonscsv}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${ver.commonslang3}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.3.3</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.1</version>
+      </dependency>
+      
+      <!-- supports persistent data structures -->
+      <dependency>
+        <groupId>com.github.andrewoma.dexx</groupId>
+        <artifactId>collection</artifactId>
+        <version>${ver.dexxcollection}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.github.jsonld-java</groupId>
+        <artifactId>jsonld-java</artifactId>
+        <version>${ver.jsonldjava}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <!-- Exclude so we use our choice of versions -->
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-osgi</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore-osgi</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      
+      <!-- Lucene dependencies -->
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${ver.lucene}</version>
+        <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <!-- For jena-spatial -->
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial-extras</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.locationtech.spatial4j</groupId>
+        <artifactId>spatial4j</artifactId>
+        <version>${ver.spatial4j}</version>
+      </dependency>
+
+      <!-- Elasticsearch dependencies -->
+
+      <dependency>
+        <groupId>org.elasticsearch.client</groupId>
+        <artifactId>transport</artifactId>
+        <version>${ver.elasticsearch}</version>
+      </dependency>
+
+      <!-- Elasticsearch Server
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${ver.elasticsearch}</version>
+      </dependency>
+      -->
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${ver.log4j2}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${ver.log4j2}</version>
+      </dependency>
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
+      -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${ver.slf4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${ver.log4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-cli</artifactId>
+        <version>${ver.commonscli}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xenei</groupId>
+        <artifactId>junit-contracts</artifactId>
+        <version>${ver.contract.tests}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-cli</artifactId>
+            <groupId>commons-cli</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.xenei</groupId>
+        <artifactId>contract-test-maven-plugin</artifactId>
+        <version>${ver.contract.tests}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${ver.mockito}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.jayway.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${ver.awaitility}</version>
+      </dependency>
+    </dependencies>
+
+  </dependencyManagement>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <!-- Run the enforcer plugin automatically at compile time -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration combine.self="override">
+              <rules>
+                <dependencyConvergence />
+                <requireJavaVersion>
+                  <version>1.8.0</version>
+                </requireJavaVersion>
+                <requirePluginVersions>
+                  <message>Best practice is to always define plugin versions!</message>
+                  <banLatest>true</banLatest>
+                  <banRelease>true</banRelease>
+                </requirePluginVersions>
+                <requireReleaseDeps>
+                  <message>No SNAPSHOT dependencies are allowed!</message>
+                  <onlyWhenRelease>true</onlyWhenRelease>
+                </requireReleaseDeps>
+                <requireMavenVersion>
+                  <version>3.5.0</version>
+                </requireMavenVersion>
+              </rules>
+              <fail>true</fail>
+              <failFast>false</failFast>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Run the RAT Plugin -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.12</version>
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludeSubProjects>true</excludeSubProjects>
+          <excludes>
+            <exclude>**/hs_err_pid*.log</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/README.*</exclude>
+            <exclude>**/META-INF/services/*</exclude>
+            <!--
+                jena-core exclusions
+            -->
+            <exclude>**/src-examples/data/*</exclude>
+            
+            <!--
+                jena-fuseki exclusions
+            -->
+            <exclude>**/dist/ABOUT</exclude>
+            <exclude>**/SEE_FUSEKI2</exclude>
+            <!-- 
+                 Need to exclude JS and CSS since much of it comes from other Apache licensed projects 
+                 e.g. Bootstrap, Qonsole
+                 
+            -->
+            <exclude>**/src/main/webapp/css/*</exclude>
+            <exclude>**/src/main/webapp/fonts/*</exclude>
+            <exclude>**/src/main/webapp/js/**/*</exclude>
+            
+            <!-- General exclusions -->
+            <!-- 
+                 Vocabularies are often just local copies of vocabularies
+                 published by others
+            -->
+            <exclude>**/vocabularies/*</exclude>
+            <exclude>**/Vocabularies/*</exclude>
+
+            <!--
+                Javadoc add-ons files are required to be simple and our javadoc configuration
+                will ensure appropriate license and copyright statements are inserted
+                into generated documentation anyway so no need to put license statements in these
+                files
+            -->
+            <exclude>**/src/main/**/*.html</exclude>
+            <exclude>**/src/**/package-info.java</exclude>
+            
+            <exclude>**/DEPENDENCIES</exclude>
+            
+            <!--
+                Text and Markdown files are typically used only for documentation purposes
+                and license declarations are usually spurious in these files since often they
+                will refer to the LICENSE/NOTICE for users to find the actual licenses
+            -->
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.md</exclude>
+            
+            <!--
+                META-INF services files can include comments but a license header would be
+                unecessarily clutter so we exclude these
+            -->
+            <exclude>**/META-INF/services/*</exclude>
+            
+            <!--
+                Jena historically has large numbers of small test file
+                with no license headers.  Such small files are not required 
+                to have headers. 
+
+                In addition, there are files with different Licenses
+                (e.g. W3C Software Licence, W3C Test Suite License) as
+                noted in the code tree.
+            -->
+            <exclude>**/src/test/resources/**/*</exclude>
+            <exclude>**/testing/**/*</exclude>
+
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/log4j-testing.properties</exclude>
+            <exclude>**/derby.log</exclude>
+            <exclude>**/DB/**/*</exclude>
+            <!-- TDB config files JSON - no comments allowed -->
+            <exclude>**/tdb*.cfg</exclude>
+            <!-- Fuseki2 server "run" area -->
+            <exclude>**/run/**/*</exclude>
+            <!-- Cached classpath for commands - autogenerated -->
+            <exclude>**/*.classpath</exclude>
+            <!-- Cached recommenders by Eclipse  - autogenerated -->
+            <exclude>**/*.recommenders/**/*</exclude>
+
+            <!-- Exclude anything created during the build (plugin generated files) ->-->
+            <exclude>**/target/**/*</exclude>
+            <!-- MSHADE-124 -->
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+            <exclude>.travis.yml</exclude>
+            <exclude>jena-examples/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+
+    <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.7.0</version>
+          <configuration>
+            <showDeprecation>false</showDeprecation>
+            <encoding>UTF-8</encoding>
+            <debug>true</debug>
+            <debuglevel>source,lines,vars</debuglevel>
+            <optimize>true</optimize>
+            <source>${jdk.version}</source>
+            <target>${jdk.version}</target>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.21.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+            <!-- Only needed in some jars <execution> <id>attach-sources-test</id> 
+                 <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.0</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Java 10
+                 <additionalOptions>-html5</additionalOptions>
+            -->
+
+            <doclint>none</doclint>
+            <!-- To allow the build to keep going despite javadoc problems:
+                 <failOnError>false</failOnError>
+            -->
+            <version>true</version>
+            <show>public</show>
+            <encoding>UTF-8</encoding>
+            <windowtitle>${project.name} ${project.version}</windowtitle>
+            <doctitle>${project.name} ${project.version}</doctitle>
+            <bottom>Licensed under the Apache License, Version 2.0</bottom>
+            <links>
+              <link>http://jena.apache.org/documentation/javadoc/jena/</link>
+              <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+              <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>http://jena.apache.org/documentation/javadoc/text/</link>
+              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
+              <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
+              <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+            </links>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <!-- Temp fix for remote-resources while waiting for remote-resources >1.5
+             1.6 should fix this - SNAPSHOT already does.
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-filtering</artifactId>
+              <version>1.2</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <configuration>
+            <overWriteReleases>false</overWriteReleases>
+            <overWriteIfNewer>true</overWriteIfNewer>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.0.0-M1</version>
+          <executions>
+            <execution>
+              <id>enforce</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <rules>
+              <requirePluginVersions>
+                <message>Best practice is to always define plugin versions!</message>
+                <banLatest>true</banLatest>
+                <banRelease>true</banRelease>
+              </requirePluginVersions>
+              <requireReleaseDeps>
+                <message>No SNAPSHOT dependencies are allowed!</message>
+                <onlyWhenRelease>true</onlyWhenRelease>
+              </requireReleaseDeps>
+              <DependencyConvergence />
+            </rules>
+            <fail>true</fail>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+          <extensions>true</extensions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <!--
+            Avoid the warnings and errors from m2e.
+            This plugin's configuration is used to store Eclipse m2e settings only. 
+            It has no influence on the Maven build itself.
+        -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <!-- 
+                       Warning:
+                       "maven-remote-resources-plugin (goal "process") is ignored by m2e." 
+                  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <!-- 
+                       Warning:
+                       "maven-enforcer-plugin (goal "enforce") is ignored by m2e." 
+                  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                
+                <pluginExecution>
+                  <!--
+                      Error:
+                      Plugin execution not covered by lifecycle configuration
+                  -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <versionRange>[0.11,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.xenei</groupId>
+                    <artifactId>contract-test-maven-plugin</artifactId>
+                    <versionRange>[0.1.5,)</versionRange>
+                    <goals>
+                      <goal>contract-test</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <instrumentation>
+            <ignores>
+              <ignore>org.slf4j.*</ignore>
+            </ignores>
+          </instrumentation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.8</version>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>3.1.1</version>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>

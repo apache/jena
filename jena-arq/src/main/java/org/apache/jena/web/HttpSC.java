@@ -467,7 +467,7 @@ package org.apache.jena.web;
  * <td>&nbsp;</td>
  * <td><strike>418</strike></td>
  * <td><strike>Unprocessable Entity</strike></td>
- * <td>&nbsp;<direct/td>
+ * <td>&nbsp;</td>
  * <td>&nbsp;</td>
  * <td>
  * <a href=

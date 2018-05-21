@@ -27,13 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Lock implemenetation using a Multiple Reader, Single Writer policy.
+ * Lock implementation using a Multiple Reader, Single Writer policy.
  * All the locking work is done by the imported WriterPreferenceReadWriteLock.
- * Ths class adds:
+ * This class adds:
  * <ul>
  *   <li>The same thread that acquired a lock should release it</li>
  *   <li>Lock promotion (turning read locks into write locks) is 
- *   deteched as an error</li>
+ *   detached as an error</li>
  *  <ul>
  */
 

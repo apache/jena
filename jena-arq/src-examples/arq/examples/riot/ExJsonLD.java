@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 
+import com.github.jsonldjava.core.JsonLdOptions;
+
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -37,8 +39,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-
-import com.github.jsonldjava.core.JsonLdOptions;
 
 /** Example writing as JSON-LD */
 public class ExJsonLD
@@ -123,7 +123,7 @@ public class ExJsonLD
 
         // the write method takes a DatasetGraph as input to represent the data that we want to output
         // Let's create one from our model:
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
 
         // and let's use the write method to output the data in json-ld compact format,
         // passing a null Context for the moment
@@ -161,7 +161,7 @@ public class ExJsonLD
         Model m = aSimpleModel();
         m.setNsPrefix("ex", "http://www.ex.com/");
         m.setNsPrefix("sh", "http://schema.org/");
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
         // When no value for the "@context" is provided, 
@@ -199,7 +199,7 @@ public class ExJsonLD
         // "@context" : "http://schema.org/"
 
         Model m = aModelThatOnlyUsesSchemaDotOrg();
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
         // The following should work, but unfortunately it doesn't (with JSONLD-java 0.8.3):
@@ -270,7 +270,7 @@ public class ExJsonLD
         m.add(s, m.createProperty(ns + "name"), "Not a person");
         m.add(s, RDF.type, m.createResource(ns + "Event"));
 
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
 
         // only output the persons using a frame
@@ -289,7 +289,7 @@ public class ExJsonLD
         Model m = aSimpleModel();
         m.setNsPrefix("ex", "http://www.ex.com/");
         m.setNsPrefix("sh", "http://schema.org/");
-        DatasetGraph g = DatasetFactory.create(m).asDatasetGraph();
+        DatasetGraph g = DatasetFactory.wrap(m).asDatasetGraph();
         JsonLDWriteContext ctx = new JsonLDWriteContext();
         JsonLdOptions opts = new JsonLdOptions();
         ctx.setOptions(opts);

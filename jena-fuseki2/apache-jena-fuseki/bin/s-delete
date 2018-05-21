@@ -42,7 +42,7 @@ $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new
 # What about direct naming?
 
 # Names
-$mtTurtle           = 'text/turtle;charset=utf-8'
+$mtTurtle           = 'text/turtle'
 $mtRDF              = 'application/rdf+xml'
 $mtText             = 'text/plain'
 $mtNTriples         = 'application/n-triples'
@@ -62,7 +62,7 @@ $mtSparqlQuery      = "application/sparql-query" ;
 # Global media type table.
 $fileMediaTypes = {}
 $fileMediaTypes['ttl']   = $mtTurtle
-$fileMediaTypes['n3']    = 'text/n3; charset=utf-8'
+$fileMediaTypes['n3']    = 'text/n3'
 $fileMediaTypes['nt']    = $mtText
 $fileMediaTypes['rdf']   = $mtRDF
 $fileMediaTypes['owl']   = $mtRDF
@@ -75,6 +75,7 @@ $fileMediaTypes['jsonld']  = $mtJSONLD
 $charsetUTF8      = 'utf-8'
 $charset = {}
 $charset[$mtTurtle]   = 'utf-8'
+$charset['text/n3']   = 'utf-8'
 $charset[$mtText]     = 'ascii'
 $charset[$mtTriG]     = 'utf-8'
 $charset[$mtNQuads]   = 'utf-8'

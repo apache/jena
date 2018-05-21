@@ -64,7 +64,7 @@ public class GraphTestBase extends JenaTestBase
     	
     /**
         Answer a Node as described by <code>x</code>; a shorthand for
-        <code>Node.create(x)</code>, which see.
+        <code>NodeCreateUtils.create(x)</code>, which see.
     */
     public static Node node( String x )
         { return NodeCreateUtils.create( x ); }
@@ -105,7 +105,7 @@ public class GraphTestBase extends JenaTestBase
     
     /**
         Answer a triple described by the three space-separated node descriptions
-        in <code>fact</code>; a shorthand for <code>Triple.create(fact)</code>,
+        in <code>fact</code>; a shorthand for <code>NodeCreateUtils.createTriple(fact)</code>,
         which see.
     */
     public static Triple triple( String fact )

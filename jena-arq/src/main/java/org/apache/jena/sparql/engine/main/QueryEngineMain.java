@@ -44,12 +44,14 @@ public class QueryEngineMain extends QueryEngineBase
     { 
         super(query, dataset, input, context) ;
     }
-
+    
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
-        QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
+        QueryIterator qIter1 = 
+            ( input.isEmpty() ) ? QueryIterRoot.create(execCxt) 
+                                : QueryIterRoot.create(input, execCxt);
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;

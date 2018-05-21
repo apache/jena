@@ -22,7 +22,6 @@ import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.sparql.util.Context ;
@@ -42,7 +41,7 @@ public interface ReaderRIOT
      *                   parser will have already been done so this only useful to get
      *                   addition Content-Type information or if this ReaderRIOT can
      *                   handle multiple media types.  
-     * @param output    Destintation for the parser output.
+     * @param output    Destination for the parser output.
      * @param context   Environment settings.
      */
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) ;
@@ -54,16 +53,18 @@ public interface ReaderRIOT
      *                   parser will have already been done so this only useful to get
      *                   addition Content-Type information or if this ReaderRIOT can
      *                   handle multiple media types.  
-     * @param output    Destintation for the parser output.
+     * @param output    Destination for the parser output.
      * @param context   Environment settings.
      */
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) ;
     
-    public ErrorHandler getErrorHandler() ;
-    public void setErrorHandler(ErrorHandler errorHandler) ;
-    
-    /** Get the parser profile.  Not all parsers have parser profiles so this may be null */
-    public ParserProfile getParserProfile() ;
-    /** Set the parser profile.  Not all parsers have parser profiles so this may be a no-op */
-    public void setParserProfile(ParserProfile profile) ;
+    /** @deprecated Returns null. */
+    @Deprecated
+    public default ParserProfile getParserProfile() { return null; }
+
+    /** Set the parser profile.  Not all parsers have parser profiles so this may be a no-op
+     * @deprecated Does nothing.
+     */
+    @Deprecated
+    public default void setParserProfile(ParserProfile profile) { }
 }

@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.core.Transactional ;
@@ -143,11 +144,15 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
         return result ;
     }
 
-    // When not yet transactional, these can be called??
+    // These should not be called in normal use - they are intercepted by DatasetGraphTransaction. 
     
     @Override
     public Graph getDefaultGraph()
     { return new GraphNonTxnTDB(this, null) ; }
+
+    @Override
+    public Graph getUnionGraph()
+    { return getGraph(Quad.unionGraph); }
 
     @Override
     public Graph getGraph(Node graphNode)
@@ -256,11 +261,16 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     private final Transactional txn                     = new TransactionalNotSupported() ;
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode) ; }
-    @Override public void commit()                      { txn.commit() ; }
-    @Override public void abort()                       { txn.abort() ; }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction() ; }
+    @Override public void begin()                       { txn.begin(); }
+    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
+    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
+    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
+    @Override public void commit()                      { txn.commit(); }
+    @Override public void abort()                       { txn.abort(); }
+    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
     @Override public void end()                         { txn.end(); }
-    @Override public boolean supportsTransactions()     { return true ; }
-    @Override public boolean supportsTransactionAbort() { return false ; }
+    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
+    @Override public TxnType transactionType()          { return txn.transactionType(); }
+    @Override public boolean supportsTransactions()     { return true; }
+    @Override public boolean supportsTransactionAbort() { return false; }
 }

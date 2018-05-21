@@ -80,6 +80,7 @@ public class ParserBase
     private boolean bNodesAreAllowed = true ;
     
     // label => bNode for construct templates patterns
+    @SuppressWarnings("deprecation")
     final LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap() ;
     
     // label => bNode (as variable) for graph patterns
@@ -222,7 +223,7 @@ public class ParserBase
         return s.substring(3, s.length() - 3) ;
     }
 
-    /** remove the first n charcacters from the string */
+    /** remove the first n characters from the string */
     public static String stripChars(String s, int n) {
         return s.substring(n, s.length()) ;
     }

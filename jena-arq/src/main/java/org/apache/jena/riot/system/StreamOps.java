@@ -41,14 +41,14 @@ import org.apache.jena.sparql.core.Quad ;
 
 public class StreamOps {
     
-    /** Send a dataset to a StreamRDF as prefixes, triples and quads, enclosed in stream.start()/steram.finish() */
+    /** Send a dataset to a StreamRDF as prefixes, triples and quads, enclosed in stream.start()/stream.finish() */
     public static void datasetToStream(DatasetGraph datasetGraph, StreamRDF stream) {
         stream.start() ;
         sendDatasetToStream(datasetGraph, stream) ;
         stream.finish() ;
     }
 
-    /** Send the triples of graph and it's prefix mapping to a StreamRDF, enclosed in stream.start()/steram.finish() */
+    /** Send the triples of graph and it's prefix mapping to a StreamRDF, enclosed in stream.start()/stream.finish() */
     public static void graphToStream(Graph graph, StreamRDF stream) {
         stream.start();
         sendGraphToStream(graph, stream) ;

@@ -1,0 +1,89 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+resolveLink() {
+  local NAME=$1
+
+  if [ -L "$NAME" ]; then
+    case "$OSTYPE" in
+      darwin*|bsd*)
+        # BSD style readlink behaves differently to GNU readlink
+        # Have to manually follow links
+        while [ -L "$NAME" ]; do
+          NAME=$( cd $NAME && pwd -P ) ;
+        done
+        ;;
+      *)
+        # Assuming standard GNU readlink with -f for
+        # canonicalize and follow
+        NAME=$(readlink -f "$NAME")
+        ;;
+    esac
+  fi
+
+  echo "$NAME"
+}
+
+# If JENA_HOME is empty
+if [ -z "$JENA_HOME" ]; then
+  SCRIPT="$0"
+  # Catch common issue: script has been symlinked
+  if [ -L "$SCRIPT" ]; then
+    SCRIPT=$(resolveLink "$0")
+    # If link is relative
+    case "$SCRIPT" in
+      /*)
+        # Already absolute
+        ;;
+      *)
+        # Relative, make absolute
+        SCRIPT=$( dirname "$0" )/$SCRIPT
+        ;;
+    esac
+  fi
+
+  # Work out root from script location
+  JENA_HOME="$( cd "$( dirname "$SCRIPT" )/.." && pwd )"
+  export JENA_HOME
+fi
+
+# If JENA_HOME is a symbolic link need to resolve
+if [ -L "${JENA_HOME}" ]; then
+  JENA_HOME=$(resolveLink "$JENA_HOME")
+  # If link is relative
+  case "$JENA_HOME" in
+    /*)
+      # Already absolute
+      ;;
+    *)
+      # Relative, make absolute
+      JENA_HOME=$(dirname "$JENA_HOME")
+      ;;
+  esac
+  export JENA_HOME
+fi
+
+# ---- Setup
+# JVM_ARGS : don't set here but it can be set in the environment.
+# Expand JENA_HOME but literal *
+JENA_CP="$JENA_HOME"'/lib/*'
+SOCKS=
+LOGGING="${LOGGING:--Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties}"
+
+# Platform specific fixup
+# On CYGWIN convert path and end with a ';' 
+case "$(uname)" in
+   CYGWIN*) JENA_CP="$(cygpath -wp "$JENA_CP");";;
+esac
+
+# Respect TMPDIR or TMP (windows?) if present
+# important for tdbloader spill
+if [ -n "$TMPDIR" ]
+	then
+	JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMPDIR\""
+elif [ -n "$TMP" ]
+	then
+	JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
+fi
+
+java $JVM_ARGS $LOGGING -cp "$JENA_CP" tdb2.tdbdump "$@" 

@@ -21,7 +21,7 @@ package org.apache.jena.tdb.setup;
 import org.apache.jena.tdb.base.block.FileMode ;
 
 /** Store parameters that can be adjusted after a store has been created,
- *  and given different values when the JVM attachs to a store area. 
+ *  and given different values when the JVM attaches to a store area. 
  *  (They are still fixed for any given database once created in a JVM.) 
  */
 
@@ -39,11 +39,11 @@ public interface StoreParamsDynamic {
     public Integer getBlockWriteCacheSize() ;
     public boolean isSetBlockWriteCacheSize() ;
     
-    /** Node cache for Node->NodeId. */
+    /** Node cache for Node{@literal ->}NodeId. */
     public Integer getNode2NodeIdCacheSize() ;
     public boolean isSetNode2NodeIdCacheSize() ;
     
-    /** Node cache for NodeId->Node. Important for SPARQL results. */
+    /** Node cache for NodeId{@literal ->}Node. Important for SPARQL results. */
     public Integer getNodeId2NodeCacheSize() ;
     public boolean isSetNodeId2NodeCacheSize() ;
 

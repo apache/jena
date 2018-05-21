@@ -34,9 +34,9 @@ import org.apache.jena.sparql.core.Quad ;
 public abstract class AbstractLineBasedQuadReader extends AbstractLineBasedNodeTupleReader<Quad, QuadWritable> {
 
     @Override
-    protected Iterator<Quad> getIterator(String line, ParserProfile profile) {
+    protected Iterator<Quad> getIterator(String line, ParserProfile maker) {
         Tokenizer tokenizer = getTokenizer(line);
-        return getQuadsIterator(tokenizer, profile);
+        return getQuadsIterator(tokenizer, maker);
     }
 
     @Override
@@ -44,7 +44,5 @@ public abstract class AbstractLineBasedQuadReader extends AbstractLineBasedNodeT
         return new QuadWritable(q);
     }
 
-    protected abstract Tokenizer getTokenizer(String line);
-
-    protected abstract Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, ParserProfile profile);
+    protected abstract Iterator<Quad> getQuadsIterator(Tokenizer tokenizer, ParserProfile maker);
 }

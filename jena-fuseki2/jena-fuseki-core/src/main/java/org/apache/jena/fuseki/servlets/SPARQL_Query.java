@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
@@ -64,8 +65,6 @@ import org.apache.jena.web.HttpSC ;
  */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
-    private static final long serialVersionUID = 6670547318463759949L;
-
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
     public SPARQL_Query() {
@@ -73,9 +72,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     // Choose REST verbs to support.
-
-    // doMethod : Not used with UberServlet dispatch.
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response) ;
@@ -241,8 +238,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     protected void execute(String queryString, HttpAction action) {
         String queryStringLog = ServletOps.formatForLog(queryString) ;
-        if ( action.verbose )
-            action.log.info(format("[%d] Query = \n%s", action.id, queryString)) ;
+        if ( action.verbose ) {
+            String str = queryString;
+            if ( str.endsWith("\n") )
+                str = str.substring(0, str.length()-1);
+            action.log.info(format("[%d] Query = \n%s", action.id, str)) ;
+        }
         else
             action.log.info(format("[%d] Query = %s", action.id, queryStringLog)) ;
 
@@ -308,7 +309,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @return
      */
     protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
-        setAnyTimeouts(queryExecution, action) ;
+        setAnyProtocolTimeouts(queryExecution, action) ;
 
         if ( query.isSelectType() ) {
             ResultSet rs = queryExecution.execSelect() ;
@@ -345,11 +346,19 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return new SPARQLResult(b) ;
         }
 
+        if ( query.isJsonType() )
+        {
+            Iterator<JsonObject> jsonIterator = queryExecution.execJsonItems();
+            //JsonArray jsonArray = queryExecution.execJson();
+            action.log.info(format("[%d] exec/json", action.id));
+            return new SPARQLResult(jsonIterator);
+        }
+
         ServletOps.errorBadRequest("Unknown query type - " + queryStringLog) ;
         return null ;
     }
 
-    private void setAnyTimeouts(QueryExecution qexec, HttpAction action) {
+    private void setAnyProtocolTimeouts(QueryExecution qexec, HttpAction action) {
 //        if ( !(action.getDataService().allowTimeoutOverride) )
 //            return ;
 
@@ -399,6 +408,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ResponseDataset.doResponseModel(action, result.getModel());
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
+        else if ( result.isJson() )
+            ResponseJson.doResponseJson(action, result.getJsonItems()) ;
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }

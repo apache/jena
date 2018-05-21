@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.GraphWithPerform;
 import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -39,7 +40,7 @@ public class GraphUtil
     private GraphUtil()
     {}
 
-    /** Return an iterator over the unique subjects with predciate p and object o.
+    /** Return an iterator over the unique subjects with predicate p and object o.
      * p and o can be wildcards (Node.ANY)
      * @param g Graph  
      * @param p Predicate - may be Node.ANY
@@ -79,7 +80,7 @@ public class GraphUtil
         return WrappedIterator.createNoRemove(nodes.iterator()) ;
     }
     
-    /** Does the graph use the node anywhere as a subject, predciate or object? */
+    /** Does the graph use the node anywhere as a subject, predicate or object? */
     public static boolean containsNode(Graph graph, Node node) {
         return
             graph.contains(node, Node.ANY, Node.ANY) ||
@@ -98,7 +99,7 @@ public class GraphUtil
      * @return an iterator over all the graph's triples
      */
     public static ExtendedIterator<Triple> findAll(Graph g) {
-        return g.find(Triple.ANY) ;
+        return g.find() ;
     }
     
     public static void add(Graph graph, Triple[] triples) {
@@ -185,35 +186,69 @@ public class GraphUtil
             deleteIteratorWorker(graph, it);
     }
     
-    private static int MIN_SRC_SIZE   = 1000 ;
-    private static int DST_SRC_RATIO  = 2 ;
+    private static final int sliceSize = 1000 ;
+
+    /** A safe and cautious remove() function that converts the remove to
+     *  a number of {@link Graph#delete(Triple)} operations. 
+     *  <p>
+     *  To avoid any possible ConcurrentModificationExceptions,
+     *  it finds batches of triples, deletes them and tries again until
+     *  no more triples matching the input can be found. 
+     */
+    public static void remove(Graph g, Node s, Node p, Node o) {
+        // Beware of ConcurrentModificationExceptions.
+        // Delete in batches.
+        // That way, there is no active iterator when a delete
+        // from the indexes happens.
     
-    /** Delete triples in the destination (arg 1) as given in the source (arg 2) */
-    public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
-        boolean events = requireEvents(dstGraph);
-        
-        if ( dstGraph == srcGraph && ! events ) {
-            dstGraph.clear();
-            return;
+        Triple[] array = new Triple[sliceSize] ;
+    
+        while (true) {
+            // Convert/cache s,p,o?
+            // The Node Cache will catch these so don't worry unduely.
+            ExtendedIterator<Triple> iter = g.find(s, p, o) ;
+    
+            // Get a slice
+            int len = 0 ;
+            for ( ; len < sliceSize ; len++ ) {
+                if ( !iter.hasNext() )
+                    break ;
+                array[len] = iter.next() ;
+            }
+    
+            // Delete them.
+            for ( int i = 0 ; i < len ; i++ ) {
+                g.delete(array[i]) ;
+                array[i] = null ;
+            }
+            // Finished?
+            if ( len < sliceSize )
+                break ;
         }
-        
+    }
+
+    /**
+     * Delete triples in {@code srcGraph} from {@code dstGraph}
+     * by looping on {@code srcGraph}.
+     * 
+     */
+    public static void deleteLoopSrc(Graph dstGraph, Graph srcGraph) {
+        deleteIteratorWorker(dstGraph, findAll(srcGraph)) ;
+        dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
+    }
+
+    /** 
+     * Delete the triple in {@code srcGraph} from {@code dstGraph}
+     * by checking the contents of {@code dsgGraph} against the {@code srcGraph}.
+     * This involves calling {@code srcGraph.contains}. 
+     * @implNote
+     * {@code dstGraph.size()} is used by this method. 
+     */
+    public static void deleteLoopDst(Graph dstGraph, Graph srcGraph) {
+        // Size the list to avoid reallocation on growth.
         int dstSize = dstGraph.size();
-        int srcSize = srcGraph.size();
+        List<Triple> toBeDeleted = new ArrayList<>(dstSize);
         
-        // Whether to loop on dstGraph or srcGraph.
-        // Loop on src if:
-        // * srcGraph is below the threshold MIN_SRC_SIZE (a "Just Do it" number)
-        // * dstGraph is "much" larger than src where "much" is given by DST_SRC_RATIO
-        boolean loopOnSrc = (srcSize < MIN_SRC_SIZE || dstSize > DST_SRC_RATIO*srcSize) ;
-        
-        if ( loopOnSrc ) {
-            deleteIteratorWorker(dstGraph, findAll(srcGraph)) ;
-            dstGraph.getEventManager().notifyDeleteGraph(dstGraph, srcGraph) ;
-            return;
-        }
-        // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
-        List<Triple> toBeDeleted = new ArrayList<>();
-        // Loop on dstGraph
         Iterator<Triple> iter = findAll(dstGraph);
         for( ; iter.hasNext() ; ) {
            Triple t = iter.next();
@@ -247,43 +282,120 @@ public class GraphUtil
         }
     }
 
-    private static final int sliceSize = 1000 ;
-    /** A safe and cautious remove() function that converts the remove to
-     *  a number of {@link Graph#delete(Triple)} operations. 
+    private static int MIN_SRC_SIZE   = 1000 ;
+    // If source and destination are large, limit the search for the best way round to "deleteFrom" 
+    private static int MAX_SRC_SIZE   = 1000*1000 ;
+    private static int DST_SRC_RATIO  = 2 ;
+
+    /**
+     * Delete triples in the destination (arg 1) as given in the source (arg 2).
+     *
+     * @implNote
+     *  This is designed for the case of {@code dstGraph} being comparable or much larger than
+     *  {@code srcGraph} or {@code srcGraph} having a lot of triples to actually be
+     *  deleted from {@code dstGraph}. This includes teh case of large, persistent {@code dstGraph}.
+     *  <p>  
+     *  It is not designed for a large {@code srcGraph} and large {@code dstGraph} 
+     *  with only a few triples in common to delete from {@code dstGraph}. It is better to
+     *  calculate the difference in some way, and copy into a small graph to use as the {@srcGraph}.  
      *  <p>
-     *  To avoid any possible ConcurrentModificationExceptions,
-     *  it finds batches of triples, deletes them and tries again until
-     *  no more triples matching the input can be found. 
+     *  To force delete by looping on {@code srcGraph}, use {@link #deleteLoopSrc(Graph, Graph)}.
+     *  <p>
+     *  For large {@code srcGraph} and small {@code dstGraph}, use {@link #deleteLoopDst}.
+     *  
+     * See discussion on <a href=""https://github.com/apache/jena/pull/212">jena/pull/212</a>, 
+     * (archived at <a href="https://issues.apache.org/jira/browse/JENA-1284">JENA-1284</a>).
      */
-    public static void remove(Graph g, Node s, Node p, Node o) {
-        // Beware of ConcurrentModificationExceptions.
-        // Delete in batches.
-        // That way, there is no active iterator when a delete
-        // from the indexes happens.
+    public static void deleteFrom(Graph dstGraph, Graph srcGraph) {
+        boolean events = requireEvents(dstGraph);
+        
+        if ( dstGraph == srcGraph && ! events ) {
+            dstGraph.clear();
+            return;
+        }
+        
+        boolean loopOnSrc = decideHowtoExecute(dstGraph, srcGraph);
+        
+        if ( loopOnSrc ) {
+            // Normal path.
+            deleteLoopSrc(dstGraph, srcGraph);
+            return;
+        }
 
-        Triple[] array = new Triple[sliceSize] ;
+        // Loop on dstGraph, not srcGraph, but need to use srcGraph.contains on this code path.
+        deleteLoopDst(dstGraph, srcGraph);
+    }
+    
+    private static final int CMP_GREATER = 1;
+    private static final int CMP_EQUAL   = 0;
+    private static final int CMP_LESS    = -1;
+    
+    /**
+     * Decide whether to loop on dstGraph or srcGraph.
+     * @param dstGraph
+     * @param srcGraph
+     * @return boolean true for "loop on src"
+     */
+    private static boolean decideHowtoExecute(Graph dstGraph, Graph srcGraph) {
+        //return decideHowtoExecuteBySizeSize(dstGraph, srcGraph);
 
-        while (true) {
-            // Convert/cache s,p,o?
-            // The Node Cache will catch these so don't worry unduely.
-            ExtendedIterator<Triple> iter = g.find(s, p, o) ;
+        // Avoid calling dstGraph.size()
+        return decideHowtoExecuteBySizeStep(dstGraph, srcGraph);
+    }
+    
+    /**
+     * Decide using dstGraph.size() and srcGraph.size()
+     */
+    private static boolean decideHowtoExecuteBySizeSize(Graph dstGraph, Graph srcGraph) {
+        // Loop on src if:
+        //     size(src) <= MIN_SRC_SIZE : srcGraph is below the threshold MIN_SRC_SIZE (a "Just Do it" number)
+        //     size(src)*DST_SRC_RATIO <= size(dst)
+        // dstGraph is "much" larger than src where "much" is given by DST_SRC_RATIO
+        //     Assumes dstGraph.size is efficient.
+        
+        int srcSize = srcGraph.size();
+        if ( srcSize <= MIN_SRC_SIZE )
+            return true ;
+        int dstSize = dstGraph.size();
+        
+        boolean loopOnSrc = (srcSize <= MIN_SRC_SIZE || dstSize > DST_SRC_RATIO*srcSize) ;
+        return loopOnSrc;
+    }
 
-            // Get a slice
-            int len = 0 ;
-            for ( ; len < sliceSize ; len++ ) {
-                if ( !iter.hasNext() )
-                    break ;
-                array[len] = iter.next() ;
-            }
+    /**
+     *  Avoid dstGraph.size(). Instead step through {@codedstGraph.find} to compare to {@code srcGraph.size()} 
+     *  
+     */
+    private static boolean decideHowtoExecuteBySizeStep(Graph dstGraph, Graph srcGraph) {
+        // loopOnSrc if:
+        //     size(src) <= MIN_SRC_SIZE
+        //     size(src)*DST_SRC_RATIO <= |find(dst)|
+        int srcSize = srcGraph.size();
+        if ( srcSize <= MIN_SRC_SIZE )
+            return true ;
+        boolean loopOnSrc = (srcSize <= MIN_SRC_SIZE || compareSizeTo(dstGraph, DST_SRC_RATIO*srcSize) == CMP_GREATER) ;
+        return loopOnSrc;
+    }
 
-            // Delete them.
-            for ( int i = 0 ; i < len ; i++ ) {
-                g.delete(array[i]) ;
-                array[i] = null ;
-            }
-            // Finished?
-            if ( len < sliceSize )
-                break ;
+    /** Compare the size of a graph to {@code size}, without calling Graph.size
+     *  by iterating on {@code graph.find()} as necessary.
+     *  <p>
+     *  Return -1 , 0, 1 for the comparison.  
+     */
+    /*package*/ static int compareSizeTo(Graph graph, int size) {
+        ExtendedIterator<Triple> it = graph.find();
+        try {
+            int stepsTake = Iter.step(it, size);
+            if ( stepsTake < size )
+                // Iterator ran out.
+                return CMP_LESS;
+            if ( !it.hasNext())
+                // Finsiehd at the same timne. 
+                return CMP_EQUAL;
+            // Still more to go
+            return CMP_GREATER;
+        } finally {
+            it.close();
         }
     }
 }

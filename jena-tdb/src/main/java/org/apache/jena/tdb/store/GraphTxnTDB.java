@@ -21,21 +21,18 @@ package org.apache.jena.tdb.store ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.TransactionHandler ;
-import org.apache.jena.tdb.graph.TransactionHandlerTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /**
- * Transaction version of {@link GraphTDB}.
- * Valid across transactions excep where noted.
+ * Transaction-capable version of {@link GraphTDB}.
+ * Valid across transactions except where noted (caution: prefix mappings are not).
+ * Valid to use when TDB is not transactional.
  * 
  * @see GraphTDB  
- * @see GraphTxnTDB  
+ * @see GraphNonTxnTDB  
 
  */
 public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
-    // [TXN] ??
-    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
 
     private final DatasetGraphTransaction dataset ;
 
@@ -45,15 +42,13 @@ public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
     }
 
     @Override
-    public DatasetGraphTDB getDatasetGraphTDB() {
-        return dataset.getDatasetGraphToQuery() ;
+    public DatasetGraphTransaction getDatasetGraphTransaction() {
+        return dataset;
     }
 
-    // [TXN] Transaction prefixes.
-    
     @Override
-    public TransactionHandler getTransactionHandler() {
-        return transactionHandler ;
+    public DatasetGraphTDB getDatasetGraphTDB() {
+        return dataset.getDatasetGraphToQuery() ;
     }
 
     @Override

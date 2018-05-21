@@ -70,7 +70,11 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     protected Iterator<Quad> findAny(Node s, Node p, Node o) {
         // Default graph
         Iterator<Quad> iter1 = findInDftGraph(s, p, o);
+        if ( ! iter1.hasNext() )
+            iter1 = null;
         Iterator<Quad> iter2 = findInAnyNamedGraphs(s, p, o);
+        if ( ! iter2.hasNext() )
+            iter2 = null;
         // Copes with null in either or both positions.
         return Iter.append(iter1, iter2);
     }
@@ -96,19 +100,27 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
      * No duplicates - the union graph is a <em>set</em> of triples.
      * See {@link #findInAnyNamedGraphs}, where there may be duplicates.
      * <p>
-     * Implementations are encouraged to override this method. For example, it
-     * may be possible to avoid "distinct".
+     * Implementations are encouraged to override this method or {@link #findUnionGraphTriples}.
+     * For example, it may be possible to avoid "distinct".
      */
     public Iterator<Quad> findQuadsInUnionGraph(Node s, Node p , Node o) {
         return findUnionGraphTriples(s,p,o).map(t -> new Quad(Quad.unionGraph, t)).iterator() ;
     }
 
+    /** Find matches in the notional union of all named graphs - return as triples.
+     * No duplicates - the union graph is a <em>set</em> of triples.
+     * See {@link #findInAnyNamedGraphs}, where there may be duplicates.
+     * <p>
+     * Implementations are encouraged to override this method. For example, it
+     * may be possible to avoid "distinct".
+     */
     private Stream<Triple> findUnionGraphTriples(Node s, Node p , Node o) {
         return Iter.asStream(findInAnyNamedGraphs(s,p,o)).map(Quad::asTriple).distinct() ;
     }
 
-    /** Find in a specific named graph - {@code g} is a group term (IRI or bNode), not a wild card (or null). */
+    /** Find in a specific named graph - {@code g} is a ground term (IRI or bNode), not a wild card (or null). */
     protected abstract Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o) ;
+    
     /** Find in any named graph - return quads.
      * If a triple matches in two different graph, return a quad for each.
      * See {@link #findInUnionGraph} for matching without duplicate triples.

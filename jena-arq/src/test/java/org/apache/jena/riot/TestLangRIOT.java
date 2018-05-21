@@ -64,6 +64,11 @@ public class TestLangRIOT extends BaseTest
     @Test public void guess_09() { guess("D.trig", RDFLanguages.TRIG) ; }
     @Test public void guess_10() { guess("D.jsonld", RDFLanguages.JSONLD) ; }
     
+    // JENA-1467 : URI fragments
+    @Test public void guess_11() { guess("http://example/foo/bar.ttl#frag", RDFLanguages.TTL) ; }
+    @Test public void guess_12() { guess("bar.ttl#frag", RDFLanguages.TTL) ; }
+
+    
     private void test(Lang expected, String string)
     {
         Lang lang = RDFLanguages.nameToLang(string) ;

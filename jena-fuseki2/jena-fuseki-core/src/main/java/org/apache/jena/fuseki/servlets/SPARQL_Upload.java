@@ -49,10 +49,8 @@ import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
 
-public class SPARQL_Upload extends ActionSPARQL
+public class SPARQL_Upload extends ActionService
 {
-    private static final long serialVersionUID = -8762461819710807201L;
-
     public SPARQL_Upload() {
         super() ;
     }
@@ -69,6 +67,10 @@ public class SPARQL_Upload extends ActionSPARQL
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
+
+    @Override
+    protected void validate(HttpAction action)
+    {}
 
     @Override
     protected void perform(HttpAction action) {
@@ -176,7 +178,7 @@ public class SPARQL_Upload extends ActionSPARQL
          }
      }
 
-    /** Process an HTTP file upload of RDF with additiona name field for the graph name.
+    /** Process an HTTP file upload of RDF with additional name field for the graph name.
      *  We can't stream straight into a dataset because the graph name can be after the data.
      *  @return graph name and count
      */
@@ -258,7 +260,7 @@ public class SPARQL_Upload extends ActionSPARQL
 
                     StreamRDF x = StreamRDFLib.dataset(dsgTmp) ;
                     StreamRDFCounting dest = StreamRDFLib.count(x) ;
-                    ActionSPARQL.parse(action, dest, stream, lang, base) ;
+                    ActionLib.parse(action, dest, stream, lang, base) ;
                     count = dest.count() ;
                 }
             }
@@ -272,8 +274,4 @@ public class SPARQL_Upload extends ActionSPARQL
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
     }
-
-    @Override
-    protected void validate(HttpAction action)
-    {}
 }

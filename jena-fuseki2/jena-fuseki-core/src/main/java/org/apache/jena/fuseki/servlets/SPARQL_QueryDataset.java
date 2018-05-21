@@ -27,8 +27,6 @@ import org.apache.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
-    private static final long serialVersionUID = 7831017147865247480L;
-
     public SPARQL_QueryDataset(boolean verbose)     { super() ; }
 
     public SPARQL_QueryDataset()

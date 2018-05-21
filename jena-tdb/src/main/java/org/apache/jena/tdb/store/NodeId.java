@@ -186,7 +186,7 @@ public class NodeId
         XSDDatatype.XSDboolean
     } ;
 
-    /** Return true if this node has a datatype that look sliek it is inlineable.
+    /** Return true if this node has a datatype that looks like it is inlineable.
      * The node may still be out of range (e.g. very large integer).
      * Only inline(Node)->NodeId can determine that. 
      */
@@ -245,9 +245,6 @@ public class NodeId
         }
         
         if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) {
-            // Could use the Jena/XSDDateTime object here rather than reparse the lexical
-            // form.
-            // But this works and it's close to a release ...
             long v = DateTimeNode.packDateTime(lit.getLexicalForm());
             if ( v == -1 )
                 return null;

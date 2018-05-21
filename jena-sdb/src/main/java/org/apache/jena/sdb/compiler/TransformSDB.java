@@ -155,15 +155,6 @@ public class TransformSDB extends TransformCopy
         return super.transform(opFilter, op) ;
     }
     
-    @Override
-    public Op transform(OpTable opTable)
-    {
-        if ( ! opTable.isJoinIdentity())
-            log.error("OpTable : Not join identity") ;
-        //return new OpSQL(null, opUnit, request) ;
-        return super.transform(opTable) ;
-    }
-    
     // Modifiers: the structure is:
     //    slice
     //      distinct/reduced

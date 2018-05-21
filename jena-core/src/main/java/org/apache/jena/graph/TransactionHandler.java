@@ -36,21 +36,21 @@ public interface TransactionHandler
     boolean transactionsSupported();
 
     /**
-        If transactions are supported, begin a new transaction. If tranactions are
-        not supported, or they are but this tranaction is nested and nested transactions
+        If transactions are supported, begin a new transaction. If transactions are
+        not supported, or they are but this transaction is nested and nested transactions
         are not supported, throw an UnsupportedOperationException.
      */
     void begin();
 
     /**
-        If transactions are supported and there is a tranaction in progress, abort
+        If transactions are supported and there is a transaction in progress, abort
         it. If transactions are not supported, or there is no transaction in progress,
         throw an UnsupportedOperationException.
      */
     void abort();
 
     /**
-        If transactions are supported and there is a tranaction in progress, commit
+        If transactions are supported and there is a transaction in progress, commit
         it. If transactions are not supported, , or there is no transaction in progress,
         throw an UnsupportedOperationException.
      */

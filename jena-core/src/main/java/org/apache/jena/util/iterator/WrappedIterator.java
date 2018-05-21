@@ -78,7 +78,7 @@ public class WrappedIterator<T> extends NiceIterator<T>
     
     /**
          Initialise this wrapping with the given base iterator and remove-control.
-         @param base the base iterator that this tierator wraps
+         @param base the base iterator that this iterator wraps
          @param removeDenied true if .remove() must throw an exception
     */
     protected WrappedIterator( Iterator<? extends T> base, boolean removeDenied )

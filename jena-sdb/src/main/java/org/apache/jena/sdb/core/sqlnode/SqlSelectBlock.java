@@ -30,7 +30,7 @@ import org.apache.jena.sdb.shared.SDBInternalError ;
 import org.apache.jena.sparql.core.Var ;
 
 /** A unit that generates an SQL SELECT Statement.
- *  The SQL generation process is a pass over the SqlNdoe structure to generate SelectBlocks,
+ *  The SQL generation process is a pass over the SqlNode structure to generate SelectBlocks,
  *  then to generate the SQL strings.
  */
 

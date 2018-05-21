@@ -29,18 +29,19 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.ItemList ;
 import org.apache.jena.sparql.sse.builders.BuilderPrefixMapping ;
 
-/** Resolve syntacic forms like (base ...) and (prefix...)
+/** Resolve syntactic forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
  *  
  *  
  *  Forms:
- *    (FORM DECL... TERM) => where TERM is the result.
+ *    (FORM DECL... TERM) {@literal =>} where TERM is the result.
  *  Examples 
- *    (prefix (PREFIXES) TERM) => TERM with prefix names expanded
- *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
+ *    (prefix (PREFIXES) TERM) {@literal =>} TERM with prefix names expanded
+ *    (base IRI TERM) {@literal =>} TERM with IRIs resolved to absolute IRIs
  *  
  *  The DECL part can not itself have nested, independent forms
- *  unless a subclass (carefully) manages that. */
+ *  unless a subclass (carefully) manages that.
+ */
 
 public class ParseHandlerResolver extends ParseHandlerForm
 {

@@ -29,7 +29,6 @@ public class TestDatasetGraphCopyAdd extends AbstractDatasetGraphTests
     @Override
     protected DatasetGraph emptyDataset() { return DatasetGraphFactory.create() ; }
     
-    
     @Test public void copyAdd_01() {
         Graph graph = SSE.parseGraph("(graph (:s :p :o))") ;
         Node g = SSE.parseNode(":g") ;

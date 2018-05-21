@@ -18,8 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.xerces.impl.xpath.regex.ParseException ;
-import org.apache.xerces.impl.xpath.regex.RegularExpression ;
+import org.apache.jena.ext.xerces.impl.xpath.regex.ParseException;
+import org.apache.jena.ext.xerces.impl.xpath.regex.REUtil;
+import org.apache.jena.ext.xerces.impl.xpath.regex.RegularExpression;
 
 public class RegexXerces implements RegexEngine
 {
@@ -27,6 +28,8 @@ public class RegexXerces implements RegexEngine
 
     public RegexXerces(String pattern, String flags)
     {
+        if ( flags.contains("q") )
+            pattern = REUtil.quoteMeta(pattern);
         regexPattern = makePattern(pattern, flags) ;
     }
     
@@ -38,12 +41,13 @@ public class RegexXerces implements RegexEngine
     
     private RegularExpression makePattern(String patternStr, String flags)
     {
+        // flag q supported above.
         // Input : only  m s i x
         // Check/modify flags.
         // Always "u", never patternStr
-        //x: Remove whitespace characters (#x9, #xA, #xD and #x20) unless in [] classes
+        // x: Remove whitespace characters (#x9, #xA, #xD and #x20) unless in [] classes
         try { return new RegularExpression(patternStr, flags) ; }
         catch (ParseException pEx)
-        { throw new ExprException("Regex: Pattern exception: "+pEx) ; }
+        { throw new ExprEvalException("Regex: Pattern exception: "+pEx) ; }
     }
 }

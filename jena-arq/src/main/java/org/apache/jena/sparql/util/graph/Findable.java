@@ -20,11 +20,26 @@ package org.apache.jena.sparql.util.graph;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 
+/** Minimal interface to find by pattern */
 public interface Findable
 {
-    public Iterator<Triple> find(Node s, Node p, Node o) ; 
-    public boolean  contains(Node s, Node p, Node o) ; 
+    /** Return an iterator over all triples matching the {@code (s,p,o)} pattern. 
+     * Each element of {@code (s,p,o)} can be concrete, or the wildcard {@code Node.ANY}. 
+     */  
+    public Iterator<Triple> find(Node s, Node p, Node o) ;
+    
+    /** Return whether any triple matches the (s,p,o) pattern. 
+     * Each element of {@code (s,p,o)} can be concrete, or the wildcard {@code Node.ANY}. 
+     */  
+    public boolean contains(Node s, Node p, Node o) ;
+    
+    /** Return the number of triples matching the (s,p,o) pattern. 
+     */  
+    public default int count(Node s, Node p, Node o) {
+        return (int)Iter.count(find(s,p,o));
+    }
 }

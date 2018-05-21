@@ -57,7 +57,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -203,20 +203,20 @@ public class XSDFuncOp
         return nv1 ;
     }
 
-    /** F&O fn:not */
+    /** {@literal F&O} fn:not */
     public static NodeValue not(NodeValue nv) {
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         return NodeValue.booleanReturn(!b) ;
     }    
     
-    /** F&O fn:boolean */
+    /** {@literal F&O} fn:boolean */
     public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
         if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
             return nv ;
         return NodeValue.booleanReturn(booleanEffectiveValue(nv)) ;
     }
     
-    /** F&O fn:boolean */
+    /** {@literal F&O} fn:boolean */
     public static boolean booleanEffectiveValue(NodeValue nv) {
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
@@ -465,14 +465,12 @@ public class XSDFuncOp
     }
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue nvFlags) {
-        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm() ;
-        int flags = 0 ;
-        if ( nvFlags != null ) {
-            String flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm() ;
-            flags = RegexJava.makeMask(flagsStr) ;
-        }
-        return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
-    }
+        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm();
+        String flagsStr = null;
+        if ( nvFlags != null )
+            flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
+        return strReplace(nvStr, RegexJava.makePattern("replace", pat, flagsStr), nvReplacement);
+    }    
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
         String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm() ;
@@ -688,7 +686,7 @@ public class XSDFuncOp
         return NodeValue.makeString(encStr) ;
     }
 
-    /** F&O fn:concat (implicit cast to strings). */
+    /** {@literal F&O} fn:concat (implicit cast to strings). */
     public static NodeValue fnConcat(List<NodeValue> args) {
         StringBuilder sb = new StringBuilder() ;
 
@@ -992,7 +990,7 @@ public class XSDFuncOp
     public static final String defaultTimezone = "Z" ;
     
     
-    /** Strict F&O handling of compare date(times).
+    /** Strict {@literal F&O} handling of compare date(times).
      * But that means applying the "local" timezone if there is no TZ.
      * The data may have come from different timezones to the query. 
      */
@@ -1162,7 +1160,7 @@ public class XSDFuncOp
         return nv.hasDateTime() ;
     }
     
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   
@@ -1174,7 +1172,7 @@ public class XSDFuncOp
         return dateTimeCast(nv, t) ;
     }
 
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   
@@ -1201,7 +1199,7 @@ public class XSDFuncOp
         return tzStr ;
     }
     
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   
@@ -1346,6 +1344,32 @@ public class XSDFuncOp
         return dtGetSeconds(nv) ;
     }
 
+    private static int F_UNDEF = DatatypeConstants.FIELD_UNDEFINED; 
+    public static NodeValue dtDateTime(NodeValue nv1, NodeValue nv2) {
+        if ( ! nv1.isDate() )
+            throw new ExprEvalException("fn:dateTime: arg1: Not an xsd:date: "+nv1) ;
+        if ( ! nv2.isTime() )
+            throw new ExprEvalException("fn:dateTime: arg2: Not an xsd:time: "+nv2) ;
+        String lex1 = nv1.asNode().getLiteralLexicalForm() ;
+        String lex2 = nv2.asNode().getLiteralLexicalForm() ;
+        
+        DateTimeStruct dts1 = DateTimeStruct.parseDate(lex1);
+        DateTimeStruct dts2 = DateTimeStruct.parseTime(lex2);
+
+        if ( dts1.hasTimezone() && dts2.hasTimezone() ) {
+            if ( ! Objects.equals(dts1.timezone, dts2.timezone) )
+                throw new ExprEvalException("fn:dateTime: Two different timezones: ("+nv1+", "+nv2+")");
+        }
+        
+        // Merge the date into the time.  There are zero or one timezones, or two the same by this point.
+        dts2.year = dts1.year;
+        dts2.month = dts1.month;
+        dts2.day = dts1.day;
+        dts2.timezone = ( dts1.timezone != null ) ? dts1.timezone : dts2.timezone;
+        String lex = dts2.toString();
+        return NodeValue.makeDateTime(lex);
+    }
+    
     // Datetime accessors
     public static NodeValue dtGetYear(NodeValue nv) {
         if ( nv.isDateTime() || nv.isDate() || nv.isGYear() || nv.isGYearMonth() ) {

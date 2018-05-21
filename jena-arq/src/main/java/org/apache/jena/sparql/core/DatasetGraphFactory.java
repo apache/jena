@@ -19,68 +19,85 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
+import java.util.Objects ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.mem.DatasetGraphInMemory;
 import org.apache.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
-    /** Create an in-memory {@link DatasetGraph}.
-     * This implementation copies the triples of an added graph into the dataset. 
+    /** Create an in-memory {@link Dataset}.
      * <p>
-     * See also {@link #createTxnMem()}
-     * <br/>
-     * See also {@link #createGeneral()}
+     * See also {@link #createTxnMem()} for a transactional dataset.
+     * <p>
+     * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
+     * <p>
+     * This implementation provides "best effort" transactions; it only provides MRSW locking.
+     * Use {@link #createTxnMem} for a proper in-memeory transactional {@code DatasetGraph}.
      * 
      * @see #createTxnMem
-     * @see #createGeneral
      */
-    
     public static DatasetGraph create() {
         return new DatasetGraphMap() ;
     }
 
     /**
-     * Create a general-purpose, non-transactional Dataset.<br/>
-     * 
-     * This dataset can contain graphs from any source when added via {@link Dataset#addNamedModel}.
-     * Any graphs needed are in-memory unless explicitly added with {@link DatasetGraph#addGraph}.
-     * </p>
-     * These are held as links to the supplied graph and not copied.
+     * Create an in-memory, transactional {@link Dataset}.
      * <p> 
-     * This dataset does not support transactions. 
-     * <p>
+     * This fully supports transactions, including abort to roll-back changes.
+     * It provides "autocommit" if operations are performed
+     * outside a transaction but with a performance impact
+     * (the implementation adds a begin/commit around each add or delete
+     * so overheads can accumulate).
      * 
-     * @return a general-purpose DatasetGraph
-     */
-    public static DatasetGraph createGeneral() { return new DatasetGraphMapLink(graphMakerMem) ; }
-
-    /**
-     * @return a DatasetGraph which features transactional in-memory operation
+     * @return a transactional, in-memory, modifiable Dataset
+     * 
      */
     public static DatasetGraph createTxnMem() { return new DatasetGraphInMemory(); }
 
-    /** Create an in-memory, non-transactional DatasetGraph.
+    /**
+     * Create a general-purpose  {@link Dataset}.<br/>
+     * Any graphs needed are in-memory unless explicitly added with {@link Dataset#addNamedModel}.
+     * </p>
+     * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
+     * These are held as links to the supplied graph and not copied.
+     * <p> 
+     * <em>This dataset does not support the graph indexing feature of jena-text.</em>
+     * <p>
+     * This dataset does not support serialized transactions (it only provides MRSW locking). 
+     * <p>
+     * 
+     * @see #createTxnMem
+     * @return a general-purpose Dataset
+     */
+    public static DatasetGraph createGeneral() { 
+        return new DatasetGraphMapLink(graphMakerMem.create(null), graphMakerMem) ;
+    }
+
+    /** Create an in-memory {@link Dataset}.
      * <p>
      * See also {@link #createTxnMem()} for a transactional dataset.
      * <p>
      * Use {@link #createGeneral()} when needing to add graphs with mixed characteristics, 
-     * e.g. inference graphs, specific graphs from TDB.
+     * e.g. inference graphs, or specific graphs from TDB.
      * <p>    
-     * <em>This operation is marked "deprecated" because the general purpose 
-     * "add named graph of any implementation"
+     * <em>It does not support the graph indexing feature of jena-text.</em>
+     * <p>
+     * <em>This factory operation is marked "deprecated" because the general purpose "add named graph of any implementation"
      * feature will be removed; this feature is now provided by {@link #createGeneral()}.
      * </em>
-     * @deprecated Prefer {@link #createGeneral()} or {@link #createTxnMem()}
+     * @deprecated Prefer {@link #createTxnMem()} or {@link #create()} or, for special cases, {@link #createGeneral()}.
+     * @see #createTxnMem
      */
-    @Deprecated
+   @Deprecated
     public static DatasetGraph createMem() { return createGeneral() ; }
     
     /** Create a DatasetGraph based on an existing one;
-     *  this is a structure copy of the dataset struture
+     *  this is a structure copy of the dataset structure
      *  but graphs are shared
      *  @deprecated Use {@link #cloneStructure}
      */
@@ -89,9 +106,11 @@ public class DatasetGraphFactory
         return cloneStructure(dsg) ;
     }
     
-    /** Clone the structure of a DatasetGraph
+    /** 
+     * Clone the structure of a {@link DatasetGraph}.
      */
     public static DatasetGraph cloneStructure(DatasetGraph dsg) {
+        Objects.requireNonNull(dsg, "DatasetGraph must be provided") ;
         DatasetGraphMapLink dsg2 = new DatasetGraphMapLink(dsg.getDefaultGraph()) ;
         for ( Iterator<Node> names = dsg.listGraphNodes() ; names.hasNext() ; ) {
             Node gn = names.next() ;
@@ -121,20 +140,30 @@ public class DatasetGraphFactory
     /**
      * Create a DatasetGraph which only ever has a single default graph.
      */
-    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; }
+    public static DatasetGraph wrap(Graph graph) { return DatasetGraphOne.create(graph) ; }
+
+    
+    /**
+     * Create a DatasetGraph which only ever has a single default graph.
+     * @deprecated Use {#wrap(Graph)} 
+     */
+    @Deprecated
+    public static DatasetGraph createOneGraph(Graph graph) { return wrap(graph) ; }
 
     /** Interface for making graphs when a dataset needs to add a new graph.
      *  Return null for no graph created.
      */
-    public interface GraphMaker { public Graph create() ; }
+    public interface GraphMaker { public Graph create(Node name) ; }
 
-    /** A graph maker that doesn't make graphs */
-    public static GraphMaker graphMakerNull = () -> null ;
+    /** A graph maker that doesn't make graphs. */
+    public static GraphMaker graphMakerNull = (name) -> null ;
 
-//    /** @deprecated Use graphMakerMem */
-//    @Deprecated 
-//    public static GraphMaker memGraphMaker = () -> GraphFactory.createDefaultGraph() ;
+    /** A graph maker that creates unnamed Jena default graphs */ 
+    /*package*/ static GraphMaker graphMakerMem = (name) -> GraphFactory.createDefaultGraph() ;
     
-    /** A graph maker that create Jena default graphs */ 
-    public static GraphMaker graphMakerMem = () -> GraphFactory.createDefaultGraph() ;
+    /** A graph maker that create {@link NamedGraph}s around a Jena default graphs */ 
+    public static GraphMaker graphMakerNamedGraphMem = (name) -> {
+        Graph g = GraphFactory.createDefaultGraph() ;
+        return new NamedGraphWrapper(name, g);
+    };
 }

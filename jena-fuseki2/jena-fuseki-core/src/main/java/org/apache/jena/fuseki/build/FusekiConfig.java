@@ -33,7 +33,6 @@ import java.util.Collections ;
 import java.util.List ;
 
 import org.apache.jena.assembler.JA ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -47,7 +46,7 @@ import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.slf4j.Logger ;
 
 public class FusekiConfig {
@@ -55,19 +54,13 @@ public class FusekiConfig {
     
     private static Logger log = Fuseki.configLog ;
     
-    /** Has side effects in server setup */
-    public static List<DataAccessPoint> readServerConfigFile(String filename) {
-        // Old-style config file.
-        Model model = readAssemblerFile(filename) ;
-        if ( model.size() == 0 )
-            return Collections.emptyList() ;
-        server(model) ;
-        return servicesAndDatasets(model) ;
-    }
-
-    private static void server(Model model) {
+    /** Process the server section, if any, of a configuration file.
+     * This includes setting global context and ja:loadClass.
+     * It does not include services - see {@link #servicesAndDatasets}
+     */ 
+    public static void processServerConfig(Model model) {
         // Find one server.
-        List<Resource> servers = getByType(FusekiVocab.tServer, model) ;
+        List<Resource> servers = GraphUtils.listResourcesByType(model, FusekiVocab.tServer) ;
         if ( servers.size() == 0 )
             return ; 
         if ( servers.size() > 1 )
@@ -106,9 +99,13 @@ public class FusekiConfig {
         }
     }
     
-    private static List<DataAccessPoint> servicesAndDatasets(Model model) {
+    /** Find and process datasets and services in a configuration file.
+     * This can be a Fuseki server configuration file or a services-only configuration file.
+     * It looks {@code fuseki:services ( .... )} then, if not found, all {@code rtdf:type fuseki:services}. 
+     */
+    public static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
-        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry();
         // ---- Services
         ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
@@ -124,7 +121,6 @@ public class FusekiConfig {
             DataAccessPoint acc = FusekiBuilder.buildDataAccessPoint(svc, dsDescMap) ;
             accessPoints.add(acc) ;
         }
-        
         return accessPoints ;
     }
     
@@ -145,12 +141,6 @@ public class FusekiConfig {
     
     private static Model readAssemblerFile(String filename) {
         return AssemblerUtils.readAssemblerFile(filename) ;
-    }
-    
-    // XXX Move to a library
-    private static List<Resource> getByType(Resource type, Model m) {
-        ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
-        return Iter.toList(rIter) ;
     }
     
     // ---- Directory of assemblers
@@ -177,7 +167,7 @@ public class FusekiConfig {
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(pDir, filter)) {
             for ( Path p : stream ) {
-                DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+                DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
                 String fn = IRILib.filenameToIRI(p.toString()) ;
                 log.info("Load configuration: "+fn);
                 Model m = readAssemblerFile(fn) ;
@@ -189,21 +179,12 @@ public class FusekiConfig {
         return dataServiceRef ;
     }
 
-    /** Read and process one file */ 
-    public static  List<DataAccessPoint> readConfigurationFile(String fn) {
-        List<DataAccessPoint> acc = new ArrayList<>() ;
-        Model m = readAssemblerFile(fn) ;
-        DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
-        readConfiguration(m, dsDescMap, acc) ;
-        return acc ;
-    }
-    
     /** Read a configuration in a model.
-     * Allow dataset descriptions to be carried over from anothe rplace.
+     * Allow dataset descriptions to be carried over from another place.
      * Add to a list. 
      */
     private static void readConfiguration(Model m, DatasetDescriptionRegistry dsDescMap, List<DataAccessPoint> dataServiceRef) {
-        List<Resource> services = getByType(FusekiVocab.fusekiService, m) ; 
+        List<Resource> services = GraphUtils.listResourcesByType(m, FusekiVocab.fusekiService) ; 
 
         if ( services.size() == 0 ) {
             log.error("No services found") ;
@@ -219,7 +200,7 @@ public class FusekiConfig {
     // ---- System database
     /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
-        DatasetDescriptionRegistry dsDescMap = FusekiServer.registryForBuild() ;
+        DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,

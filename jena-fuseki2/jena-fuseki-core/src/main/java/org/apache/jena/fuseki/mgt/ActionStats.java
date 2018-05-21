@@ -37,8 +37,6 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 
 public class ActionStats extends ActionContainerItem
 {
-    private static final long serialVersionUID = 7077403170416268730L;
-
     public ActionStats() { super() ; } 
     
     // This does not consult the system database for dormant etc.
@@ -93,14 +91,14 @@ public class ActionStats extends ActionContainerItem
         DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
-        builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
-        builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
-        builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
+        builder.key(CounterName.Requests.getName()).value(dSrv.getCounters().value(CounterName.Requests)) ;
+        builder.key(CounterName.RequestsGood.getName()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
+        builder.key(CounterName.RequestsBad.getName()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
         
         builder.key(JsonConst.endpoints).startObject("endpoints") ;
         
-        for ( OperationName operName : dSrv.getOperations() ) {
-            List<Endpoint> endpoints = access.getDataService().getOperation(operName) ;
+        for ( Operation operName : dSrv.getOperations() ) {
+            List<Endpoint> endpoints = access.getDataService().getEndpoints(operName) ;
             
             for ( Endpoint endpoint : endpoints ) {
                 // Endpoint names are unique for a given service.
@@ -108,8 +106,8 @@ public class ActionStats extends ActionContainerItem
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);
-                builder.key(JsonConst.operation).value(operName.name()) ;
-                builder.key(JsonConst.description).value(operName.getDescription()) ;
+                builder.key(JsonConst.operation).value(operName.getName()) ;
+                builder.key(JsonConst.description).value(operName.getDescription());
                 
                 builder.finishObject() ;
             }
@@ -121,7 +119,7 @@ public class ActionStats extends ActionContainerItem
     private static void operationCounters(JsonBuilder builder, Endpoint operation) {
         for (CounterName cn : operation.getCounters().counters()) {
             Counter c = operation.getCounters().get(cn) ;
-            builder.key(cn.name()).value(c.value()) ;
+            builder.key(cn.getName()).value(c.value()) ;
         }
     }
 
@@ -152,39 +150,40 @@ public class ActionStats extends ActionContainerItem
         out.println("    Bad           = "+dSrv.getCounters().value(CounterName.RequestsBad)) ;
 
         out.println("  SPARQL Query:") ;
-        out.println("    Request       = "+counter(dSrv, OperationName.Query, CounterName.Requests)) ;
-        out.println("    Good          = "+counter(dSrv, OperationName.Query, CounterName.RequestsGood)) ;
-        out.println("    Bad requests  = "+counter(dSrv, OperationName.Query, CounterName.RequestsBad)) ;
-        out.println("    Timeouts      = "+counter(dSrv, OperationName.Query, CounterName.QueryTimeouts)) ;
-        out.println("    Bad exec      = "+counter(dSrv, OperationName.Query, CounterName.QueryExecErrors)) ;
-        out.println("    IO Errors     = "+counter(dSrv, OperationName.Query, CounterName.QueryIOErrors)) ;
+        out.println("    Request       = "+counter(dSrv, Operation.Query, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, Operation.Query, CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+counter(dSrv, Operation.Query, CounterName.RequestsBad)) ;
+        out.println("    Timeouts      = "+counter(dSrv, Operation.Query, CounterName.QueryTimeouts)) ;
+        out.println("    Bad exec      = "+counter(dSrv, Operation.Query, CounterName.QueryExecErrors)) ;
+        out.println("    IO Errors     = "+counter(dSrv, Operation.Query, CounterName.QueryIOErrors)) ;
 
         out.println("  SPARQL Update:") ;
-        out.println("    Request       = "+counter(dSrv, OperationName.Update, CounterName.Requests)) ;
-        out.println("    Good          = "+counter(dSrv, OperationName.Update, CounterName.RequestsGood)) ;
-        out.println("    Bad requests  = "+counter(dSrv, OperationName.Update, CounterName.RequestsBad)) ;
-        out.println("    Bad exec      = "+counter(dSrv, OperationName.Update, CounterName.UpdateExecErrors)) ;
+        out.println("    Request       = "+counter(dSrv, Operation.Update, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, Operation.Update, CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+counter(dSrv, Operation.Update, CounterName.RequestsBad)) ;
+        out.println("    Bad exec      = "+counter(dSrv, Operation.Update, CounterName.UpdateExecErrors)) ;
         
         out.println("  Upload:") ;
-        out.println("    Requests      = "+counter(dSrv, OperationName.Upload, CounterName.Requests)) ;
-        out.println("    Good          = "+counter(dSrv, OperationName.Upload, CounterName.RequestsGood)) ;
-        out.println("    Bad           = "+counter(dSrv, OperationName.Upload, CounterName.RequestsBad)) ;
+        out.println("    Requests      = "+counter(dSrv, Operation.Upload, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, Operation.Upload, CounterName.RequestsGood)) ;
+        out.println("    Bad           = "+counter(dSrv, Operation.Upload, CounterName.RequestsBad)) ;
         
         out.println("  SPARQL Graph Store Protocol:") ;
-        out.println("    GETs          = "+gspValue(dSrv, CounterName.HTTPget)+ " (good="+gspValue(dSrv, CounterName.HTTPgetGood)+"/bad="+gspValue(dSrv, CounterName.HTTPGetBad)+")") ;
-        out.println("    PUTs          = "+gspValue(dSrv, CounterName.HTTPput)+ " (good="+gspValue(dSrv, CounterName.HTTPputGood)+"/bad="+gspValue(dSrv, CounterName.HTTPputBad)+")") ;
-        out.println("    POSTs         = "+gspValue(dSrv, CounterName.HTTPpost)+ " (good="+gspValue(dSrv, CounterName.HTTPpostGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpostBad)+")") ;
-        out.println("    DELETEs       = "+gspValue(dSrv, CounterName.HTTPdelete)+ " (good="+gspValue(dSrv, CounterName.HTTPdeleteGood)+"/bad="+gspValue(dSrv, CounterName.HTTPdeleteBad)+")") ;
-        out.println("    HEADs         = "+gspValue(dSrv, CounterName.HTTPhead)+ " (good="+gspValue(dSrv, CounterName.HTTPheadGood)+"/bad="+gspValue(dSrv, CounterName.HTTPheadBad)+")") ;
+        out.println("    GETs          = "+gspValue(dSrv, CounterName.HTTPget)      + " (good="+gspValue(dSrv, CounterName.HTTPgetGood)+"/bad="+gspValue(dSrv, CounterName.HTTPgetBad)+")") ;
+        out.println("    PUTs          = "+gspValue(dSrv, CounterName.HTTPput)      + " (good="+gspValue(dSrv, CounterName.HTTPputGood)+"/bad="+gspValue(dSrv, CounterName.HTTPputBad)+")") ;
+        out.println("    POSTs         = "+gspValue(dSrv, CounterName.HTTPpost)     + " (good="+gspValue(dSrv, CounterName.HTTPpostGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpostBad)+")") ;
+        out.println("    PATCHs        = "+gspValue(dSrv, CounterName.HTTPpatch)    + " (good="+gspValue(dSrv, CounterName.HTTPpatchGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpatchBad)+")") ;
+        out.println("    DELETEs       = "+gspValue(dSrv, CounterName.HTTPdelete)   + " (good="+gspValue(dSrv, CounterName.HTTPdeleteGood)+"/bad="+gspValue(dSrv, CounterName.HTTPdeleteBad)+")") ;
+        out.println("    HEADs         = "+gspValue(dSrv, CounterName.HTTPhead)     + " (good="+gspValue(dSrv, CounterName.HTTPheadGood)+"/bad="+gspValue(dSrv, CounterName.HTTPheadBad)+")") ;
     }
     
-    private long counter(DataService dSrv, OperationName opName, CounterName cName) {
+    private long counter(DataService dSrv, Operation operation, CounterName cName) {
         return 0 ;
     }
     
     private long gspValue(DataService dSrv, CounterName cn) {
-        return  counter(dSrv, OperationName.GSP_RW, cn) +
-                counter(dSrv, OperationName.GSP_R, cn) ;
+        return  counter(dSrv, Operation.GSP_RW, cn) +
+                counter(dSrv, Operation.GSP_R, cn) ;
     }
 
     // We shouldn't get here - no doPost above.

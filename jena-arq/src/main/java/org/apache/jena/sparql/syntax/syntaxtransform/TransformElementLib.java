@@ -18,9 +18,13 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform ;
 
+import java.util.Map ;
+import java.util.stream.Collectors ;
+
 import org.apache.jena.atlas.lib.InternalErrorException ;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprTransform ;
@@ -58,4 +62,9 @@ public class TransformElementLib {
         throw new InternalErrorException("Managed to turn a node " + n + " into " + e) ;
     }
 
+    public static Map<Var, Node> convert(Map<String, ? extends RDFNode> substitutions) {
+        return substitutions.entrySet().stream()
+                    .collect(Collectors.toMap(e -> Var.alloc(e.getKey()),
+                                              e -> e.getValue().asNode()));
+    }
 }

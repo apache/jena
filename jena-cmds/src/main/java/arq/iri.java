@@ -32,7 +32,7 @@ public class iri
     public static void main(String[] args)
     {
         //IRIFactory iriFactory = IRIFactory.iriImplementation() ;
-        IRIFactory iriFactory = IRIResolver.iriFactory ;
+        IRIFactory iriFactory = IRIResolver.iriFactory() ;
         
         boolean first = true ;
         for ( String iriStr : args )

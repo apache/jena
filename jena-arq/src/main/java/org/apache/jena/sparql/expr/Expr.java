@@ -40,7 +40,7 @@ public interface Expr
     public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE ;
     
     /** Test whether a Constraint is satisfied, given a set of bindings
-     *  Includes error propagtion and Effective Boolean Value rules.
+     *  Includes error propagation and Effective Boolean Value rules.
      * 
      * @param binding   The bindings
      * @param execCxt   FunctionEnv   
@@ -72,7 +72,7 @@ public interface Expr
     public Expr copySubstitute(Binding binding) ;
 
     /**
-     * Rewrite, applying a node->node transformation
+     * Rewrite, applying a node{@literal ->}node transformation
      */
     public Expr applyNodeTransform(NodeTransform transform) ;
 
@@ -95,7 +95,7 @@ public interface Expr
     /** NodeValue constant (returns null if not a constant) */
     public NodeValue getConstant() ;
     
-    /** Answer wether this is a function. */
+    /** Answer whether this is a function. */
     public boolean isFunction() ;
     /** Get the function (returns null if not a function) */
     public ExprFunction getFunction() ;
@@ -121,7 +121,7 @@ public interface Expr
      * must be different syntax, <code>equalsBySyntax</code> implies <code>equals</code>
      * (by alegbra).
      * <p>
-     * Hence, different <code>hashCode</code> => not <code>equalsBySyntax<code>.
+     * Hence, different <code>hashCode</code> {@literal =>} not <code>equalsBySyntax<code>.
      */ 
     @Override
     public int hashCode() ;

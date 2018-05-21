@@ -34,17 +34,11 @@ import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.block.BlockMgr ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelFile ;
-import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.base.record.RecordFactory ;
-import org.apache.jena.tdb.index.IndexMap ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.store.StorageConfig ;
-import org.apache.jena.tdb.store.nodetable.NodeTable ;
 import org.apache.jena.tdb.sys.FileRef ;
 import org.apache.jena.tdb.sys.Names ;
-import org.apache.jena.tdb.sys.SystemTDB ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -66,10 +60,16 @@ public class JournalControl
         System.out.println("Size: "+journal.size()) ;
         Iterator<JournalEntry> iter = journal.entries() ; 
         
-        for (  ; iter.hasNext() ; )
+        for ( ; ; )
         {
+            long posn0 = journal.position();
+            if ( ! iter.hasNext() )
+                break;
             JournalEntry e = iter.next() ;
-            System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
+            long posn1 = journal.position();
+            long size = posn1 - posn0;
+            System.out.printf("Posn: (%d, %d) Len=%d  reverse %d\n", posn0, posn1, size, (journal.size()-journal.position())) ;
+            System.out.print("  ");
             System.out.println(JournalEntry.format(e)) ;
         }
     }
@@ -85,13 +85,11 @@ public class JournalControl
         if ( journal == null || journal.isEmpty() )
             return ;
         
-        for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
-            recoverNodeDat(dsg, fileRef) ;
         recoverFromJournal(dsg.getConfig(), journal) ;
         
-        journal.close() ;
+        journal.close();
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
-        if ( journal.getFilename() != null )
+        if ( journal.getFilename() != null )  
         {
             if ( FileOps.exists(journal.getFilename()) )
                 FileOps.delete(journal.getFilename()) ;
@@ -120,6 +118,9 @@ public class JournalControl
     {
         if ( jrnl.isEmpty() )
             return false ;
+        
+        for ( FileRef fileRef : sConf.objectFiles.keySet() )
+            recoverNodeDat(sConf.location, fileRef) ;
 
         long posn = 0 ;
         for ( ;; )
@@ -137,11 +138,12 @@ public class JournalControl
             recoverSegment(jrnl, posn, x, sConf) ;
             posn = x ;
         }
-
+        
+        // Sync database.
+        syncAll(sConf) ;
         // We have replayed the journals - clean up.
         jrnl.truncate(0) ;
         jrnl.sync() ;
-        syncAll(sConf) ;
         return true ;
     }
 
@@ -163,13 +165,15 @@ public class JournalControl
     }
     
     /** Recover one transaction from the start position given.
-     *  Scan to see if theer is a commit; if found, play the
+     *  Scan to see if there is a commit; if found, play the
      *  journal from the start point to the commit.
      *  Return true is a commit was found.
      *  Leave journal positioned just after commit or at end if none found.
      */
     private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, StorageConfig sConf)
     {
+        //System.out.printf("Segment: %d %d\n", startPosn, endPosn);
+        
         Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
         iter = jrnl.entries(startPosn) ;
         try {
@@ -188,31 +192,26 @@ public class JournalControl
     }
     
     /** Recover a node data file (".dat").
-     *  Node data files are append-only so recovering, then not using the data is safe.
-     *  Node data file is a precursor for full recovery that works from the master journal.
+     *  Node data files are append-only so recovering.
+     *  This code is only for ObjectFileTransComplex.
      */
-    private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
+    private static void recoverNodeDat(Location loc, FileRef fileRef)
     {
-        // See DatasetBuilderTxn - same name generation code.
-        // [TxTDB:TODO]
-        
-        RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
-        NodeTable baseNodeTable = dsg.getConfig().nodeTables.get(fileRef) ;
+        // See DatasetBuilderTxn (Jena 3.4.0 or earlier) - same name generation code.
         String objFilename = fileRef.getFilename()+"-"+Names.extJournal ;
-        objFilename = dsg.getLocation().absolute(objFilename) ;
+        objFilename = loc.absolute(objFilename) ;
         File jrnlFile = new File(objFilename) ;
-        if ( jrnlFile.exists() && jrnlFile.length() > 0 )
-        {
-            syslog.info("Recovering node data: "+fileRef.getFilename()) ;
-            ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-            NodeTableTrans ntt = new NodeTableTrans(null, objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
-            ntt.append() ;
-            ntt.close() ;
-            dataJrnl.close() ;
-            baseNodeTable.sync() ;
-        }
-        if ( jrnlFile.exists() )
+        if ( jrnlFile.exists() ) {
+            if ( jrnlFile.length() > 0 ) {
+                syslog.info("Found dat-jrnl file : earlier version of Jena"+fileRef.getFilename()) ;
+                syslog.info("  To clearup: run TDB from a version of Jena 3.0.0-3.4.0");
+                syslog.info("  dat-jrnl should then go away");
+                syslog.info("  See https://issues.apache.org/jira/browse/JENA-1379");
+                throw new TDBException("Manual recovery required - see log - see JENA-1379 <https://issues.apache.org/jira/browse/JENA-1379>");
+            }
+            //Empty - nothing to do anyway - clearup.
             FileOps.delete(objFilename) ;
+        }
     }
     
     public static void replay(Transaction transaction)

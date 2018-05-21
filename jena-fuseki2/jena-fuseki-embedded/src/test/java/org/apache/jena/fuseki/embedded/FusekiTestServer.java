@@ -18,19 +18,19 @@
 
 package org.apache.jena.fuseki.embedded;
 
-import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.CLASS ;
-import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.SUITE ;
-import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.TEST ;
+import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.CLASS;
+import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.SUITE;
+import static org.apache.jena.fuseki.embedded.FusekiTestServer.ServerScope.TEST;
 
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.server.FusekiEnv;
+import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target ;
 import org.apache.jena.sparql.modify.request.UpdateDrop ;
 import org.apache.jena.system.Txn ;
@@ -38,22 +38,22 @@ import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateExecutionFactory ;
 import org.apache.jena.update.UpdateProcessor ;
 
-// NOT FINISHED
-
 /**
  * Manage a single server for use with tests. It supports three modes:
  * <ul>
- * <li>{@code ServerScope.SUITE} : One server for a whole test suite
- * <li>{@code ServerScope.CLASS} : One server per test class
- * <li>{@code ServerScope.TEST} :One server per individual test
+ * <li>One server for a whole test suite
+ * <li>One server per test class
+ * <li>One server per individual test
  * </ul>
  * One server per individual test can be troublesome due to connections not closing down
- * fast enough and can also be slow.
- * <p> One server per test class is a good compromise. 
- * <p> The data in the server is always reset between tests in all modes.
+ * fast enough (left in TCP state {@code TIME_WAIT} which is 2 minutes) and also can be
+ * slow. One server per test class is a good compromise.
  * <p>
- * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is important,
- * both for test performance and for reducing the TCP connection load on the operating system.  
+ * The data in the server is always reseet between tests.
+ * <p>
+ * Using a connection pooling HttpClient (see {@link HttpOp#createPoolingHttpClient()}) is
+ * important, both for test performance and for reducing the TCP connection load on the
+ * operating system.
  * <p>
  * Usage:
  * </p>
@@ -61,40 +61,67 @@ import org.apache.jena.update.UpdateProcessor ;
  * In the test suite, put:
  * 
  * <pre>
- *  {@literal @BeforeClass} static public void beforeSuiteClass() { ServerCtl.ctlBeforeTestSuite(); } 
- *  {@literal @AfterClass}  static public void afterSuiteClass()  { ServerCtl.ctlAfterTestSuite(); }
+ *  {@literal @BeforeClass} static public void beforeSuiteClass() { FusekiTestServer.ctlBeforeTestSuite(); } 
+ *  {@literal @AfterClass}  static public void afterSuiteClass()  { FusekiTestServer.ctlAfterTestSuite(); }
  * </pre>
  * <p>
  * In the test class, put:
+ * 
  * <pre>
- * {@literal @BeforeClass} public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
- * {@literal @AfterClass}  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
- * {@literal @Before}      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
- * {@literal @After}       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
+ * {@literal @BeforeClass} public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
+ * {@literal @AfterClass}  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
+ * {@literal @Before}      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
+ * {@literal @After}       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); }
+ * </pre>
+ * 
+ * Much of this machinery is unnessecary for just running a sever in the background:
+ * 
+ * <pre>
+ *   private static FusekiServer server ;
+ *   private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
+ *
+ *   &#64;BeforeClass
+ *   public static void beforeClass() {
+ *       server = FusekiServer.create()
+ *           .setPort(....)
+ *           .add("/ds", serverdsg)
+ *           .build()
+ *           .start();
+ *   }
+ *
+ *   &#64;Before
+ *   public void beforeTest() {
+ *       // Clear up data in server servers
+ *       Txn.executeWrite(serverdsg, ()->serverdsg.clear()) ;
+ *   }
+ *       
+ *   &#64;AfterClass
+ *   public static void afterClass() {
+ *       server.stop(); 
+ *   }
  * </pre>
  */
 public class FusekiTestServer {
     /* Cut&Paste versions:
 
     Test suite (TS_*)
-    @BeforeClass static public void beforeSuiteClass() { ServerCtl.ctlBeforeTestSuite(); } 
-    @AfterClass  static public void afterSuiteClass()  { ServerCtl.ctlAfterTestSuite(); }
+    @BeforeClass static public void beforeSuiteClass() { FusekiTestServer.ctlBeforeTestSuite(); } 
+    @AfterClass  static public void afterSuiteClass()  { FusekiTestServer.ctlAfterTestSuite(); }
 
     Test class (Test*)
-    @BeforeClass public static void ctlBeforeClass() { ServerCtl.ctlBeforeClass(); }
-    @AfterClass  public static void ctlAfterClass()  { ServerCtl.ctlAfterClass(); }
-    @Before      public void ctlBeforeTest()         { ServerCtl.ctlBeforeTest(); }
-    @After       public void ctlAfterTest()          { ServerCtl.ctlAfterTest(); }
+    @BeforeClass public static void ctlBeforeClass() { FusekiTestServer.ctlBeforeClass(); }
+    @AfterClass  public static void ctlAfterClass()  { FusekiTestServer.ctlAfterClass(); }
+    @Before      public void ctlBeforeTest()         { FusekiTestServer.ctlBeforeTest(); }
+    @After       public void ctlAfterTest()          { FusekiTestServer.ctlAfterTest(); }
+     
     */
-    
-    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient();
 
     // Note: it is important to cleanly close a PoolingHttpClient across server restarts
     // otherwise the pooled connections remain for the old server. 
     
     /*package : for import static */ enum ServerScope { SUITE, CLASS, TEST }
     private static ServerScope serverScope = ServerScope.CLASS ;
-    private static int currentPort = FusekiEnv.choosePort() ;
+    private static int currentPort = FusekiLib.choosePort() ;
     
     public static int port() {
         return currentPort ;
@@ -104,12 +131,9 @@ public class FusekiTestServer {
     static boolean CLEAR_DSG_DIRECTLY = true ;
     static private DatasetGraph dsgTesting ;
     
-    // reference count of start/stop server
-    private static AtomicInteger countServer    = new AtomicInteger() ; 
-    private static FusekiEmbeddedServer server  = null ;
-    
+    // Abstraction that runs a SPARQL server for tests.
     public static final String urlRoot()        { return "http://localhost:"+port()+"/" ; }
-    public static final String datasetPath()    { return "/ds_test" ; }
+    public static final String datasetPath()    { return "/dataset" ; }
     public static final String urlDataset()     { return "http://localhost:"+port()+datasetPath() ; }
     
     public static final String serviceUpdate()  { return "http://localhost:"+port()+datasetPath()+"/update" ; } 
@@ -172,22 +196,26 @@ public class FusekiTestServer {
     }
 
     /** Set a PoolingHttpClient */
-    private static void setPoolingHttpClient() {
+    public static void setPoolingHttpClient() {
         setHttpClient(HttpOp.createPoolingHttpClient()) ;
     }
 
     /** Restore the original setup */
     private static void resetDefaultHttpClient() {
-        setHttpClient(defaultHttpClient);
+        setHttpClient(HttpOp.createDefaultHttpClient());
     }
     
     /** Set the HttpClient - close the old one if appropriate */
-    /*package*/ static void setHttpClient(HttpClient newHttpClient) {
+    public static void setHttpClient(HttpClient newHttpClient) {
         HttpClient hc = HttpOp.getDefaultHttpClient() ;
         if ( hc instanceof CloseableHttpClient )
             IO.close((CloseableHttpClient)hc) ;
         HttpOp.setDefaultHttpClient(newHttpClient) ;
     }
+    
+    // reference count of start/stop server
+    private static AtomicInteger countServer = new AtomicInteger() ; 
+    private static FusekiServer server        = null ;
     
     /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
@@ -200,19 +228,19 @@ public class FusekiTestServer {
     }
     
     /*package*/ static void setupServer(boolean updateable) {
-        dsgTesting = DatasetGraphFactory.createTxnMem() ;
-        server =
-            FusekiEmbeddedServer.create()
-            .setPort(port())
-            .setLoopback(true)
+        dsgTesting = DatasetGraphFactory.createTxnMem();
+        server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
-            .build();
+            .setPort(port())
+            .build()
+            .start();
     }
     
     /*package*/ static void teardownServer() {
-        if ( server != null )
+        if ( server != null ) {
             server.stop() ;
-        server = null ;
+            server = null ;
+        }
     }
 
     /*package*/ static void resetServer() {
@@ -227,4 +255,7 @@ public class FusekiTestServer {
             catch (Throwable e) {e.printStackTrace(); throw e;}
         }
     }
+    
+    // ---- Helper code.
+
 }

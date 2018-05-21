@@ -309,6 +309,26 @@ public class TestPath extends BaseTest
         assertEquals(2, x.size()) ;
     }
 
+    @Test public void path_50() 
+    { 
+        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "<n4>" ) ;
+        assertEquals(1, x.size()) ;
+    }
+
+    @Test public void path_51() 
+    { 
+        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "?z" ) ;
+        assertEquals(3, x.size()) ;
+    }
+
+    @Test public void path_52() 
+    { 
+        List<Binding> x = eval(graph1, "<n1>", "(notoneof :DoesNotExist)", "?z" ) ;
+        assertEquals(1, x.size()) ;
+    }
+
+
+    
     // TODO Shortest path is not implemented yet.  These also need to be verified that they are correct.
 //    @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
 //    @Ignore @Test public void path_41()   { test(graph1, n1,   "shortest(:p+)",       n2) ; }

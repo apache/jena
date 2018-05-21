@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  *            iterates
  */
 public interface ExtendedIterator<T> extends ClosableIterator<T>
-    {
+{
     /**
          Answer the next object, and remove it. Equivalent to next(); remove().
     */
@@ -82,4 +82,23 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
         consuming this iterator.
     */
     public Set<T> toSet();
+    
+    
+    /**
+        Answer with an {@link Optional}.
+        This operation assumes that the {@code ExtendedIterator} does not return null for {@code next()}. 
+        If it does,  {@code NullPointerException} is thrown.
+        <ul>
+        <li>If there is no next, return {@code Optional.empty()}
+        <li>If the next object exists, and is not null, return that in the {@link Optional}.
+        <li>If the next object exists, and is null, throw {@code NullPointerException}
+        </ul>
+     */
+    public default Optional<T> nextOptional() {
+        if ( ! hasNext() )
+            return Optional.empty();
+        T obj = next();
+        Objects.requireNonNull(obj, "ExtendedIterator.next is null");
+        return Optional.of(obj);
     }
+}

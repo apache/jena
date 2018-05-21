@@ -20,7 +20,7 @@ package org.apache.jena.sparql.path;
 
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** A path element that, on evalution, switches to multi-cardinality semantics. */
+/** A path element that, on evaluation, switches to multi-cardinality semantics. */
 public class P_Multi extends P_Path1 {
     public P_Multi(Path p) {
         super(p);

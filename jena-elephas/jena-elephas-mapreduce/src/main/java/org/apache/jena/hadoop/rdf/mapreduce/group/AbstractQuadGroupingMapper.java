@@ -34,6 +34,7 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public abstract class AbstractQuadGroupingMapper<TKey> extends AbstractNodeTupleGroupingMapper<TKey, Quad, QuadWritable> {
 
+    @Override
     protected final NodeWritable selectKey(QuadWritable tuple) {
         return this.selectKey(tuple.get());
     }

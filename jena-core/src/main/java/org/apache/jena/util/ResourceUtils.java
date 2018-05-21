@@ -146,7 +146,7 @@ public class ResourceUtils {
      * input list of resources.  The equivalence relation is the predicate p.
      * So, two resources <code>a</code> and <code>b</code>
      * will be in the same partition iff
-     * <code>(a p b) && (b p a)</code>.</p>
+     * {@code (a p b) && (b p a)}.</p>
      * @param <T>
      * @param l A list of resources
      * @param p An equivalence predicate

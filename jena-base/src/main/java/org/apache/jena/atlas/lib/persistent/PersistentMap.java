@@ -76,4 +76,9 @@ public interface PersistentMap<K, V, SelfType extends PersistentMap<K, V, SelfTy
 	default <R> Stream<R> flatten(final BiFunction<K, V, Stream<R>> f) {
 		return entryStream().flatMap(e -> f.apply(e.getKey(), e.getValue()));
 	}
+	
+    /**
+     * An immutable view of this as a {@link java.util.Map}.
+     */
+    java.util.Map<K, V> asMap();
 }

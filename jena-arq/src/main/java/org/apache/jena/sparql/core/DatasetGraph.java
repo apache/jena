@@ -43,16 +43,23 @@ public interface DatasetGraph extends Transactional, Closeable
     public Graph getDefaultGraph() ;
 
     /** Get the graph named by graphNode : returns null on no graph 
-     * NB Whether a dataset contains a graph if there are no triples is not defined - see the specifc implementation.
+     * NB Whether a dataset contains a graph if there are no triples is not defined - see the specific implementation.
      * Some datasets are "open" - they have all graphs even if no triples,
      */
     public Graph getGraph(Node graphNode) ;
     
     /**
+     * Return a {@link Graph} that is the union of all named graphs in this dataset. This
+     * union graph is read-only (its prefix mapping in the current JVM may be changed but
+     * that may not persist).
+     */
+    public Graph getUnionGraph();
+    
+    /**
      * Does the DatasetGraph contain a specific named graph? 
      * Whether a dataset contains a graph if there are no triples is
-     * not defined - see the specifc implementation. Some datasets are "open" -
-     * they have all graphs even if no triples and thsi returns true always.
+     * not defined - see the specific implementation. Some datasets are "open" -
+     * they have all graphs even if no triples and this returns true always.
      * 
      * @param graphNode
      * @return boolean
@@ -144,12 +151,12 @@ public interface DatasetGraph extends Transactional, Closeable
     public void close() ;
 
     /**
-     * A {@code DatasetGraph} supports tranactions if it provides {@link #begin}/
-     * {@link #commit}/{@link #end}. There core storage {@code DatasetGraph} that
-     * provide fully serialized transactions.  {@code DatasetGraph} that provide
-     * functionality acorss independent systems can not provide such strong guarantees.
-     * For example, they may use MRSW locking and some isolation control.
-     * Specifically, they do not necessarily provide {@link #abort}.
+     * A {@code DatasetGraph} supports transactions if it provides {@link #begin}/
+     * {@link #commit}/{@link #end}. The core storage {@code DatasetGraph}s 
+     * provide fully serialized transactions. A {@code DatasetGraph} that provides
+     * functionality across independent systems can not provide such strong guarantees.
+     * For example, it may use MRSW locking and some isolation control.
+     * Specifically, it would not necessarily provide {@link #abort}.
      * <p>
      * See {@link #supportsTransactionAbort()} for {@link #abort}.
      * In addition, check details of a specific implementation.

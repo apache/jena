@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
  *  Syntax (ARQ extension): CALL <iri>(?x, ?y+3)
  *  
  *  See also the similar algebra form for property functions.  The difference is in argument handling.
- *  A property function has a URI and two argment lists, one for subject, one for objects.
+ *  A property function has a URI and two argument lists, one for subject, one for objects.
  *  A procedure is a URI and a list of arguments. */
 public class OpProcedure extends Op1
 {

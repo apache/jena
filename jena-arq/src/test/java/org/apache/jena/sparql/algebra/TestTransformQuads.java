@@ -75,10 +75,15 @@ public class TestTransformQuads extends BaseTest
     // ?g is unbound in the filter. 
     @Test public void quads20() { test ("{ GRAPH ?g { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 FILTER (str(?g) = 'graphURI') } } }",
                                         "(assign ((?g ?*g0))" +
-                                        "   (join" +
-                                        "     (quadpattern (quad ?*g0 ?s ?p ?o))" +
-                                        "     (filter (= (str ?g) 'graphURI')" +
-                                        "       (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
+                                        "    (sequence" +
+                                        "        (quadpattern (quad ?*g0 ?s ?p ?o))" +
+                                        "        (filter (= (str ?g) 'graphURI')" +
+                                        "          (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
+// If untransformed.                                            
+//                                        "   (join" +
+//                                        "     (quadpattern (quad ?*g0 ?s ?p ?o))" +
+//                                        "     (filter (= (str ?g) 'graphURI')" +
+//                                        "       (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
                                         ) ; }
     
     @Test public void quads21() { test ("{ GRAPH ?g { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 FILTER (str(?g1) = 'graphURI') } } }",
@@ -196,7 +201,6 @@ public class TestTransformQuads extends BaseTest
         if ( optimize )
             op = Algebra.optimize(op) ;
         op = Algebra.toQuadForm(op) ;
-        
         Op op2 = SSE.parseOp(StrUtils.strjoinNL(strExpected)) ;
         assertEquals(op2, op) ;
     }

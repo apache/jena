@@ -37,7 +37,7 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.
@@ -104,7 +104,7 @@ public class ModelFactory extends ModelFactoryBase
         { return AssemblerHelp.findAssemblerRoots( m ); }
 
     /**
-        Answer a Model as described the the Assembler specification rooted
+        Answer a Model as described the Assembler specification rooted
         at the Resource <code>root</code> in its Model. <code>Resource</code>
         must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
         is the prefix of Jena Assembler objects.

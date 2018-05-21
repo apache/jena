@@ -1850,7 +1850,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * <p>
      * Answer a new, anonymous node representing the fact that a given set of classes are all
      * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
-     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * of an anomaly in that it exists only to give a place to anchor the <code>distinctMembers</code>
      * property, which is the actual expression of the fact.
      * </p>
      *
@@ -1866,7 +1866,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * <p>
      * Answer a new, anonymous node representing the fact that a given set of classes are all
      * pair-wise distinct.  <code>AllDifferent</code> is a feature of OWL only, and is something
-     * of an anomoly in that it exists only to give a place to anchor the <code>distinctMembers</code>
+     * of an anomaly in that it exists only to give a place to anchor the <code>distinctMembers</code>
      * property, which is the actual expression of the fact.
      * </p>
      * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes

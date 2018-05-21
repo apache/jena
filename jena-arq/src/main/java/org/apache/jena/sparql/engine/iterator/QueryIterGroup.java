@@ -26,8 +26,8 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.ext.com.google.common.collect.HashMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
+import org.apache.jena.ext.com.google.common.collect.MultimapBuilder;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
@@ -51,159 +51,129 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 	    // Delayed initalization 
 	    // Does the group calculation when first used (typically hasNext) 
         super(calc(qIter, groupVars, aggregators, execCxt),
-              execCxt) ;
+              execCxt);
         this.embeddedIterator = qIter;
     }
 
     @Override
-    public void requestCancel()
-    {
+    public void requestCancel() {
         this.embeddedIterator.cancel();
-        super.requestCancel() ;
+        super.requestCancel();
     }
-    
+
     @Override
-    protected void closeIterator()
-    {
+    protected void closeIterator() {
         this.embeddedIterator.close();
         super.closeIterator();
     }
-	
-    // Phase 1 : Consume the input iterator, assigning groups (keys) 
-    //           and push rows through the aggregator function. 
-    
-    // Phase 2 : Go over the group bindings and assign the value of each aggregation.
 	
 	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ; 
     
     private static Iterator<Binding> calc(final QueryIterator iter, 
                                           final VarExprList groupVarExpr,
                                           final List<ExprAggregator> aggregators,
-                                          final ExecutionContext execCxt)
-    {
+                                          final ExecutionContext execCxt) {
         return new IteratorDelayedInitialization<Binding>() {
             @Override
             protected Iterator<Binding> initializeIterator() {
 
-                boolean noAggregators =  ( aggregators == null || aggregators.isEmpty() ) ;
+                boolean hasAggregators = ( aggregators != null && ! aggregators.isEmpty() );
+                boolean hasGroupBy = ! groupVarExpr.isEmpty();
+                boolean noInput = ! iter.hasNext();
+
+                // Case: No input.
+                // 1/ GROUP BY - no rows.
+                // 2/ No GROUP BY, e.g. COUNT=0, the results is one row always and not handled here.
+                if ( noInput ) {
+                    if ( hasGroupBy )
+                        // GROUP        
+                        return Iter.nullIterator() ;
+                    if ( ! hasAggregators ) {
+                        // No GROUP BY, no aggregators. One result row of no colums.
+                        return Iter.singleton(BindingFactory.binding());
+                    }
+                    // No GROUP BY, has aggregators. Insert default values.
+                    BindingMap binding = BindingFactory.create();
+                    for ( ExprAggregator agg : aggregators ) {
+                        Node value = agg.getAggregator().getValueEmpty();
+                        if ( value == null )
+                            continue;
+                        Var v = agg.getVar();
+                        binding.add(v, value);
+                    }
+                    return Iter.singleton(binding);
+                }
                 
-                // Phase 1 : assign bindings to buckets by key and pump through the aggregators.
-                Multimap<Binding, Pair<Var, Accumulator>> accumulators = HashMultimap.create() ;
+                // Case: there is input.
+                // Phase 1 : Create keys and aggreators per key, and pump bindings through the aggregators.
+                Multimap<Binding, Pair<Var, Accumulator>> accumulators = MultimapBuilder.hashKeys().arrayListValues().build();
 
-                while ( iter.hasNext() )
-                {
-                    Binding b = iter.nextBinding() ;
-                    Binding key = genKey(groupVarExpr, b, execCxt) ;
+                while (iter.hasNext()) {
+                    Binding b = iter.nextBinding();
+                    Binding key = genKey(groupVarExpr, b, execCxt);
 
-                    if ( noAggregators )
-                    {
+                    if ( !hasAggregators ) {
                         // Put in a dummy to remember the input.
-                        accumulators.put(key, placeholder ) ;
-                        continue ;
+                        accumulators.put(key, placeholder);
+                        continue;
                     }
 
                     // Create if does not exist.
-                    if ( !accumulators.containsKey(key) )
-                    {
-                        for ( ExprAggregator agg : aggregators )
-                        {
-                            Accumulator x = agg.getAggregator().createAccumulator() ;
-                            Var v = agg.getVar() ;
-                            accumulators.put(key, Pair.create(v, x)) ;
+                    if ( !accumulators.containsKey(key) ) {
+                        for ( ExprAggregator agg : aggregators ) {
+                            Accumulator x = agg.getAggregator().createAccumulator();
+                            Var v = agg.getVar();
+                            accumulators.put(key, Pair.create(v, x));
                         }
                     }
 
                     // Do the per-accumulator calculation.
                     for ( Pair<Var, Accumulator> pair : accumulators.get(key) )
-                        pair.getRight().accumulate(b, execCxt) ;
-                }
-
-                // Phase 2 : Empty input
-                // has as iter.hasNext false at start.
-
-                // If there are no binding from the input stage, two things can happen.
-                //   If there are no aggregators, there are no groups.
-                //   If there are aggregators, then they may have a default value. 
-
-                if ( accumulators.isEmpty() )
-                {
-                    if ( noAggregators )
-                    {
-                        // No rows to group, no aggregators.
-                        // ==> No result rows.
-                        return Iter.nullIterator() ;
-                    }
-                    
-                    BindingMap binding = BindingFactory.create() ;
-
-                    for ( ExprAggregator agg : aggregators )
-                    {
-                        Var v = agg.getVar();
-                        Node value = agg.getAggregator().getValueEmpty();
-                        if ( value != null )
-                        {
-                            binding.add( v, value );
-                        }
-                    }
-                        
-                    if ( binding == null )
-                        // This does not happen if there are any aggregators. 
-                        return Iter.nullIterator() ;
-                    // cast to get the static type inference to work.
-                    return Iter.singletonIter((Binding)binding) ;
+                        pair.getRight().accumulate(b, execCxt);
                 }
 
                 // Phase 2 : There was input and so there are some groups.
                 // For each bucket, get binding, add aggregator values to the binding.
-                // We used AccNull so there are always accumulators. 
-                
-                if ( noAggregators )
-                    // We used placeholder so there are always the key. 
-                    return accumulators.keySet().iterator() ;
-                
-                List<Binding> results = new ArrayList<>() ;
+                // We used AccNull so there are always accumulators.
 
-                for ( Binding k : accumulators.keySet() )
-                {
-                    Collection<Pair<Var, Accumulator>> accs = accumulators.get(k) ;
-                    BindingMap b = BindingFactory.create(k) ;
-                    
-                    for ( Pair<Var, Accumulator> pair : accs )
-                    {
-                        Var v = pair.getLeft() ;
-                        NodeValue value = pair.getRight().getValue() ;
-                        Node n = (value==null) ? null : value.asNode() ;
-                        if ( v == null || n == null )
-                        {} 
-                        else
-                            b.add(v, n) ;
+                if ( !hasAggregators )
+                    // We used placeholder so there are always the key.
+                    return accumulators.keySet().iterator();
+
+                List<Binding> results = new ArrayList<>();
+                for ( Binding k : accumulators.keySet() ) {
+                    Collection<Pair<Var, Accumulator>> accs = accumulators.get(k);
+                    BindingMap b = BindingFactory.create(k);
+
+                    for ( Pair<Var, Accumulator> pair : accs ) {
+                        NodeValue value = pair.getRight().getValue();
+                        if ( value == null )
+                            continue;
+                        Var v = pair.getLeft();
+                        b.add(v, value.asNode());
                     }
-                    results.add(b) ;
+                    results.add(b);
                 }
-                return results.iterator() ;
+                return results.iterator();
             }
         };
     }
-    
-    static private Binding genKey(VarExprList vars, Binding binding, ExecutionContext execCxt) 
-    {
-        return copyProject(vars, binding, execCxt) ;
+
+    static private Binding genKey(VarExprList vars, Binding binding, ExecutionContext execCxt) {
+        return copyProject(vars, binding, execCxt);
     }
-    
-    static private Binding copyProject(VarExprList vars, Binding binding, ExecutionContext execCxt)
-    {
-        // No group vars (implicit or explicit) => working on whole result set. 
+
+    static private Binding copyProject(VarExprList vars, Binding binding, ExecutionContext execCxt) {
+        // No group vars (implicit or explicit) => working on whole result set.
         // Still need a BindingMap to assign to later.
-        BindingMap x = BindingFactory.create() ;
-        for ( Var var : vars.getVars() )
-        {
-            Node node = vars.get( var, binding, execCxt );
+        BindingMap x = BindingFactory.create();
+        for ( Var var : vars.getVars() ) {
+            Node node = vars.get(var, binding, execCxt);
             // Null returned for unbound and error.
-            if ( node != null )
-            {
-                x.add( var, node );
+            if ( node != null ) {
+                x.add(var, node);
             }
         }
-        return x ;
+        return x;
     }
 }

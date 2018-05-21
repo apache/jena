@@ -82,6 +82,7 @@ public interface RDFConnection extends
      */
     @Override
     public default void queryResultSet(String query, Consumer<ResultSet> resultSetAction) {
+        // XXX Parse point.
         queryResultSet(QueryFactory.create(query), resultSetAction);
     }
     
@@ -94,7 +95,6 @@ public interface RDFConnection extends
     public default void queryResultSet(Query query, Consumer<ResultSet> resultSetAction) {
         if ( ! query.isSelectType() )
             throw new JenaConnectionException("Query is not a SELECT query");
-
         Txn.executeRead(this, ()->{ 
             try ( QueryExecution qExec = query(query) ) {
                 ResultSet rs = qExec.execSelect();
@@ -110,7 +110,11 @@ public interface RDFConnection extends
      */
     @Override
     public default void querySelect(String query, Consumer<QuerySolution> rowAction) {
-        querySelect(QueryFactory.create(query), rowAction);
+        Txn.executeRead(this, ()->{ 
+            try ( QueryExecution qExec = query(query) ) {
+                qExec.execSelect().forEachRemaining(rowAction);
+            }
+        } ); 
     }
     
     /**
@@ -132,6 +136,7 @@ public interface RDFConnection extends
     /** Execute a CONSTRUCT query and return as a Model */
     @Override
     public default Model queryConstruct(String query) {
+        // XXX Parse point.
         return queryConstruct(QueryFactory.create(query));
     }
     
@@ -149,6 +154,7 @@ public interface RDFConnection extends
     /** Execute a DESCRIBE query and return as a Model */
     @Override
     public default Model queryDescribe(String query) {
+        // XXX Parse point.
         return queryDescribe(QueryFactory.create(query));
     }
     
@@ -309,7 +315,7 @@ public interface RDFConnection extends
         
     /**
      * Delete a graph from the dataset.
-     * Null or "default" measn the default graph, which is cleared, not removed.
+     * Null or "default" means the default graph, which is cleared, not removed.
      * 
      * @param graphName
      */

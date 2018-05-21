@@ -144,9 +144,15 @@ public class PMapTripleTable extends PMapTupleTable<ThreeTupleMap, Triple, TCons
             final ThreeTupleMap threeTuples = local().get();
             threeTuples.get(first).ifPresent(twoTuples -> twoTuples.get(second).ifPresent(oneTuples -> {
                 if (oneTuples.contains(third)) {
-                    final TwoTupleMap newTwoTuples = twoTuples.minus(second).plus(second, oneTuples.minus(third));
+                    oneTuples = oneTuples.minus(third);
+                    final TwoTupleMap newTwoTuples = oneTuples.asSet().isEmpty()
+                            ? twoTuples.minus(second)
+                            : twoTuples.minus(second).plus(second, oneTuples);
                     debug("Setting transactional index to new value.");
-                    local().set(threeTuples.minus(first).plus(first, newTwoTuples));
+                    final ThreeTupleMap newThreeTuples = twoTuples.asMap().isEmpty()
+                            ? threeTuples.minus(first)
+                            : threeTuples.minus(first).plus(first, newTwoTuples);
+                    local().set(newThreeTuples);
                 }
             }));
         };

@@ -83,10 +83,16 @@ public class Algebra
         return new AlgebraGenerator().compile(elt) ;
     }
 
-    /** Turn an algebra expression into quad form */
+    /** Turn an algebra expression into quadpattern form */
     public static Op toQuadForm(Op op)
     {
         return AlgebraQuad.quadize(op) ;
+    }
+    
+    /** Turn an algebra expression into quadblock form */
+    public static Op toQuadBlockForm(Op op)
+    {
+        return AlgebraQuad.quadizeBlock(op) ;
     }
     
     /** Transform an algebra expression so that default graph is union of the named graphs. */
@@ -136,7 +142,7 @@ public class Algebra
 
     static public QueryIterator exec(Op op, Graph graph)
     {
-        return exec(op, DatasetGraphFactory.createOneGraph(graph)) ;
+        return exec(op, DatasetGraphFactory.wrap(graph)) ;
     }
 
     static public QueryIterator exec(Op op, DatasetGraph ds)
@@ -160,7 +166,7 @@ public class Algebra
 
     static public QueryIterator execRef(Op op, Graph graph)
     {
-        return execRef(op, DatasetGraphFactory.createOneGraph(graph)) ;
+        return execRef(op, DatasetGraphFactory.wrap(graph)) ;
     }
 
     static public QueryIterator execRef(Op op, DatasetGraph dsg)

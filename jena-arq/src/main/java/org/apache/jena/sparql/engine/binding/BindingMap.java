@@ -28,11 +28,10 @@ import org.apache.jena.sparql.core.Var ;
  * returned as type "Binding".  
  */
 
-public interface BindingMap extends Binding
-{
+public interface BindingMap extends Binding {
     /** Add a (var, value) pair - the value must not be null */
-    public void add(Var var, Node node) ;
+    public void add(Var var, Node node);
 
     /** Add all the (var, value) pairs from another binding */
-    public void addAll(Binding other) ;
+    public void addAll(Binding other);
 }

@@ -83,7 +83,7 @@ public final class BitsLong
         return Long.parseLong(s, 16) ;
     }
 
-    /** Set the bits specificied.
+    /** Set the bits specified.
      * 
      * @param bits      Pattern
      * @param bitIndex 

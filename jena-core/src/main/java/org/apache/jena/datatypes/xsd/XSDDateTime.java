@@ -261,11 +261,12 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & YEAR_MASK) != 0) {
             int cy = data[CY] ;
             int absCY = Math.abs(cy) ;
+            if ( cy    < 0   )  buff.append('-') ;
             // XSD dateTime requires at least 4 digits for the year field
             if ( absCY < 10  )  buff.append('0') ;
             if ( absCY < 100 )  buff.append('0') ;
             if ( absCY < 1000 ) buff.append('0') ;
-            buff.append(data[CY]);
+            buff.append(absCY);
         } else {
             buff.append("-");
         }

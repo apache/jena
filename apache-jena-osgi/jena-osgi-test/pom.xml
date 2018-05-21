@@ -22,13 +22,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>18-SNAPSHOT</version>
+    <artifactId>jena</artifactId>
+    <version>3.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>jena-osgi-test</artifactId>
   <!-- Same as jena-osgi -->
-  <version>3.2.0-SNAPSHOT</version>
+  <version>3.4.0-SNAPSHOT</version>
   <name>Apache Jena - OSGi integration tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>
@@ -37,22 +37,11 @@
     <pax.exam.version>4.4.0</pax.exam.version>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>       
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi-features</artifactId>  
-      <version>3.2.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>
@@ -60,7 +49,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-osgi</artifactId>
-      <version>3.2.0-SNAPSHOT</version>
+      <version>3.4.0-SNAPSHOT</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>

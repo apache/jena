@@ -28,7 +28,7 @@ import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.system.JenaSystem ;
+import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.system.TS_System ;
 import org.apache.jena.web.TS_Web ;
 
@@ -43,7 +43,10 @@ public class ARQTestSuite extends TestSuite
 
     // Log4j for testing.
     public static final String log4jPropertiesResourceName = "log4j-testing.properties" ;
-    static { System.getProperty("log4j.configuration", log4jPropertiesResourceName) ; }
+    static { 
+        System.getProperty("log4j.configuration", log4jPropertiesResourceName) ;
+        JenaSystem.init();
+    }
     
     static public TestSuite suite()
     {

@@ -21,7 +21,7 @@ package org.apache.jena.reasoner.rulesys;
 import org.apache.jena.shared.JenaException ;
 
 /**
- * Exceptions thrown by runtime errors in exceuting rule system
+ * Exceptions thrown by runtime errors in executing rule system
  * builtin operations.
  */
 public class BuiltinException extends JenaException {

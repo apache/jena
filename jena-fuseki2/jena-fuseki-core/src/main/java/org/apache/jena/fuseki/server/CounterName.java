@@ -18,67 +18,115 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.Objects;
+
 /** Names for all counters */ 
-public enum CounterName {
-    // There are generic names - apply to all services and datasets - and
-    // also specific ones that relate only to a particular kind of service.
+public class CounterName {
+ // Create intern'ed symbols. 
+    static private NameMgr<CounterName> mgr = new NameMgr<>();
+    static public CounterName register(String name, String hierarchicalName) {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(hierarchicalName, "hierarchicalName");
+        return mgr.register(name, (n)->new CounterName(name, hierarchicalName));
+    }
     
+    // The "name" is used as a JSON key string.
+    // Legacy from when this was an enum and the name() was used for the UI.
+    // The better hierarchicalName is not used but becuse this has
+    // leaked to the jaavscript, we're a bit stuck. 
+
+    private final String name ;
+    private final String hierarchicalName ;
+    
+    // There are generic names - apply to all services and datasets.
     // Total request received
-    Requests("requests"),
+    public static final CounterName Requests         = register("Requests", "requests");
     // .. of which some and "good" and some are "bad".
     // #"good" + #"bad" roughly equals #"requests"
     // except that the total is incremented at the start, and the outcome at the end.
     // There may also be short term consistency issues.
-    RequestsGood("requests.good"),
-    RequestsBad("requests.bad") ,
-    
-    // SPARQL Protocol - query and update - together with upload.  
-    
-    // Query - standard and ... 
-    QueryTimeouts("query.timeouts") ,
-    QueryExecErrors("query.execerrors") ,
-    QueryIOErrors("query.ioerrors") ,
-    
+    public static final CounterName RequestsGood     = register("RequestsGood", "requests.good");
+    public static final CounterName RequestsBad      = register("RequestsBad", "requests.bad");
+
+    // SPARQL Protocol - query and update - together with upload.
+
+    // Query - standard and ...
+    public static final CounterName QueryTimeouts    = register("QueryTimeouts", "query.timeouts");
+    public static final CounterName QueryExecErrors  = register("QueryExecErrors", "query.execerrors");
+    public static final CounterName QueryIOErrors    = register("QueryIOErrors", "query.ioerrors");
+
     // Update - standard and ...
-    UpdateExecErrors("update.execerrors"),
-    
+    public static final CounterName UpdateExecErrors = register("UpdateExecErrors", "update.execerrors");
+
     // Upload ... standard counters
-    
+
     // Graph Store Protocol. uses HTTP codes.
 
     // For each HTTP method
 
-    HTTPget("http.get.requests") ,
-    HTTPgetGood("http.get.requests.good") ,
-    HTTPGetBad("http.get.requests.bad") ,
+    public static final CounterName HTTPget          = register("HTTPget", "http.get.requests");
+    public static final CounterName HTTPgetGood      = register("HTTPgetGood", "http.get.requests.good");
+    public static final CounterName HTTPgetBad       = register("HTTPGetBad", "http.get.requests.bad");
 
-    HTTPpost("http.post.requests") ,
-    HTTPpostGood("http.post.requests.good") ,
-    HTTPpostBad("http.post.requests.bad") ,
+    public static final CounterName HTTPpost         = register("HTTPpost", "http.post.requests");
+    public static final CounterName HTTPpostGood     = register("HTTPpostGood", "http.post.requests.good");
+    public static final CounterName HTTPpostBad      = register("HTTPpostBad", "http.post.requests.bad");
 
-    HTTPdelete("http.delete.requests") ,
-    HTTPdeleteGood("http.delete.requests.good") ,
-    HTTPdeleteBad("http.delete.requests.bad") ,
+    public static final CounterName HTTPdelete       = register("HTTPdelete", "http.delete.requests");
+    public static final CounterName HTTPdeleteGood   = register("HTTPdeleteGood", "http.delete.requests.good");
+    public static final CounterName HTTPdeleteBad    = register("HTTPdeleteBad", "http.delete.requests.bad");
 
-    HTTPput("http.put.requests") ,
-    HTTPputGood("http.put.requests.good") ,
-    HTTPputBad("http.put.requests.bad") ,
+    public static final CounterName HTTPput          = register("HTTPput", "http.put.requests");
+    public static final CounterName HTTPputGood      = register("HTTPputGood", "http.put.requests.good");
+    public static final CounterName HTTPputBad       = register("HTTPputBad", "http.put.requests.bad");
 
-    HTTPhead("http.head.requests") ,
-    HTTPheadGood("http.head.requests.good") ,
-    HTTPheadBad("http.head.requests.bad") ,
+    public static final CounterName HTTPhead         = register("HTTPhead", "http.head.requests");
+    public static final CounterName HTTPheadGood     = register("HTTPheadGood", "http.head.requests.good");
+    public static final CounterName HTTPheadBad      = register("HTTPheadBad", "http.head.requests.bad");
 
-    HTTPpatch("http.patch.requests") ,
-    HTTPpatchGood("http.patch.requests.good") ,
-    HTTPpatchBad("http.patch.requests.bad") ,
+    public static final CounterName HTTPpatch        = register("HTTPpatch", "http.patch.requests");
+    public static final CounterName HTTPpatchGood    = register("HTTPpatchGood", "http.patch.requests.good");
+    public static final CounterName HTTPpatchBad     = register("HTTPpatchBad", "http.patch.requests.bad");
 
-    HTTPoptions("http.options.requests") ,
-    HTTPoptionsGood("http.options.requests.good") ,
-    HTTPoptionsBad("http.options.requests.bad") ,
+    public static final CounterName HTTPoptions      = register("HTTPoptions", "http.options.requests");
+    public static final CounterName HTTPoptionsGood  = register("HTTPoptionsGood", "http.options.requests.good");
+    public static final CounterName HTTPoptionsBad   = register("HTTPoptionsBad", "http.options.requests.bad");
     
-    ;
+    private CounterName(String name, String hierarchicalName) {
+        this.name = name;
+        this.hierarchicalName = hierarchicalName;
+    }
     
-    public final String name ;
-    private CounterName(String name) { this.name = name ; }
+    public String getName() {
+        return name;
+    }
     
+    public String getFullName() {
+        return hierarchicalName;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        CounterName other = (CounterName)obj;
+        if ( name == null ) {
+            if ( other.name != null )
+                return false;
+        } else if ( !name.equals(other.name) )
+            return false;
+        return true;
+    }
 }

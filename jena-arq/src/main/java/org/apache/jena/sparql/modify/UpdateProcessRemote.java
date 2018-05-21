@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.ARQException ;
@@ -47,14 +48,16 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
      * @param endpoint Update endpoint
      * @param context Context
      * @param client HTTP client
+     * @param httpContext HTTP Context 
      */
-    public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpClient client)
+    public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpClient client, HttpContext httpContext)
     {
         this(request, endpoint, context);
         // Don't want to overwrite config we may have picked up from
         // service context in the parent constructor if the specified
         // client is null
         if (client != null) this.setClient(client);
+        if (httpContext != null) this.setHttpContext(httpContext);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase
         
         // Build endpoint URL
         String endpoint = this.getEndpoint();
-        String querystring = this.getQueryString();
+        String querystring = this.getUpdateString();
         if (querystring != null && !querystring.equals("")) {
             endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
         }

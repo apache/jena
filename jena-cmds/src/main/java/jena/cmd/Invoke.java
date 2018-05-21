@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException ;
 import java.lang.reflect.Method ;
 
 /** Helper code to invoke a main method buy reflection
- *  This means coomand can be invoked from this module even
+ *  This means command can be invoked from this module even
  *  if their implementation resides in a module later
  *  in the build sequence.
  */

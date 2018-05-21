@@ -21,6 +21,7 @@ package org.apache.jena.sparql.modify;
 import static org.apache.jena.riot.web.HttpOp.execHttpPostForm;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.riot.web.HttpResponseLib;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.engine.http.HttpParams ;
@@ -62,13 +63,17 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase {
      *            Context
      * @param client
      *            HTTP Client
+     * @param httpContext
+     *            HTTP Context
+
      */
-    public UpdateProcessRemoteForm(UpdateRequest request, String endpoint, Context context, HttpClient client) {
+    public UpdateProcessRemoteForm(UpdateRequest request, String endpoint, Context context, HttpClient client, HttpContext httpContext) {
         this(request, endpoint, context);
         // Don't want to overwrite config we may have picked up from
         // service context in the parent constructor if the specified
         // client is null
         if (client != null) this.setClient(client);
+        if (httpContext != null) this.setHttpContext(httpContext);
     }
 
     @Override

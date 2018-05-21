@@ -39,7 +39,8 @@ public class TestOpVars extends BaseTest
     @Test public void opvars_04() { visible("(project (?s) (bgp(?s :p ?o)))", "s") ; }
     @Test public void opvars_05() { visible("(minus (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
     @Test public void opvars_06() { visible("(join (project (?x) (bgp(?x :p ?z)))  (bgp(?s :p 1)) )", "x", "s") ; }
-    
+    @Test public void opvars_07() { visible("(triple ?s :p ?o)", "s", "o") ; }
+    @Test public void opvars_08() { visible("(quad :g ?s :p ?o)", "s", "o") ; }
     
     @Test public void opvars_10() { fixed("(bgp (?s :p ?o))", "s", "o") ; }
     @Test public void opvars_11() { fixed("(leftjoin (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
@@ -48,6 +49,8 @@ public class TestOpVars extends BaseTest
     @Test public void opvars_13() { fixed("(union (bgp (?s :p ?o1)) (bgp (?s :p ?o2)) )", "s") ; }
     @Test public void opvars_14() { fixed("(minus (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
     @Test public void opvars_15() { fixed("(join (project (?x) (bgp(?x :p ?z)))  (bgp(?s :p 1)) )", "x", "s") ; }
+    @Test public void opvars_16() { fixed("(triple ?s :p ?o)", "s", "o") ; }
+    @Test public void opvars_17() { fixed("(quad :g ?s :p ?o)", "s", "o") ; }
     
     
     private static void visible(String string, String... vars)

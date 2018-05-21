@@ -27,7 +27,6 @@ import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.iterator.QueryIterRoot ;
 
 public class TableFactory
 {
@@ -45,13 +44,13 @@ public class TableFactory
     
     public static Table create(QueryIterator queryIterator)
     { 
-        if ( queryIterator instanceof QueryIterRoot )
-        {
+        if ( queryIterator.isJoinIdentity() ) {
             queryIterator.close();
             return createUnit() ;
         }
         
-        return new TableN(queryIterator) ; }
+        return new TableN(queryIterator) ;
+    }
 
     public static Table create(Var var, Node value)
     { return new Table1(var, value) ; }

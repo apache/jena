@@ -103,7 +103,7 @@ public class SolverLib
         
         List<Triple> triples = pattern.getList() ;
         boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode))) ;
-        
+
         int tupleLen = nodeTupleTable.getTupleTable().getTupleLen() ;
         if ( graphNode == null ) {
             if ( 3 != tupleLen )
@@ -235,7 +235,7 @@ public class SolverLib
         return binding -> SolverLib.convert(binding, nodeTable);
     }
     
-    /** Binding ==> BindingNodeId, given a NodeTable */
+    /** Binding {@literal ->} BindingNodeId, given a NodeTable */
     public static BindingNodeId convert(Binding binding, NodeTable nodeTable) 
     {
         if ( binding instanceof BindingTDB )
@@ -257,7 +257,9 @@ public class SolverLib
             // Rely on the node table cache for efficency - we will likely be
             // repeatedly looking up the same node in different bindings.
             NodeId id = nodeTable.getNodeIdForNode(n) ;
-            // Even put in "does not exist" for a node now known not to be in the DB.
+            // Optional: whether to put in "known missing"
+            // Currently, we do. The rest of the code should work with either choice.
+            //if ( ! NodeId.isDoesNotExist(id) )
             b.put(v, id) ;
         }
         return b ;

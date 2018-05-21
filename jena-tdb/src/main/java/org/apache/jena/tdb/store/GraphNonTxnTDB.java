@@ -16,34 +16,82 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb.store ;
+package org.apache.jena.tdb.store;
 
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.atlas.lib.Sync ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TransactionHandler;
+import org.apache.jena.graph.impl.TransactionHandlerBase;
+import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 
 /**
- * Non-transactional version of {@link GraphTDB}. Handed out by DatasetGraphTDB when used
- * directly.
+ * Non-transactional version of {@link GraphTDB}.
+ * Handed out by DatasetGraphTDB when used directly (e.g. by the loader)
+ * but not for API or SPARQL usage. 
  * 
  * @see GraphTDB
  * @see GraphTxnTDB
  */
 public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
-    private final DatasetGraphTDB    dataset ;
+    private final DatasetGraphTDB    dataset;
 
     public GraphNonTxnTDB(DatasetGraphTDB dataset, Node graphName) {
-        super(dataset, graphName) ;
-        this.dataset = dataset ;
+        super(dataset, graphName);
+        this.dataset = dataset;
     }
 
     @Override
     public DatasetGraphTDB getDatasetGraphTDB() {
-        return dataset ;
+        return dataset;
     }
 
     @Override
     protected DatasetGraphTDB getBaseDatasetGraphTDB() {
-        return dataset ;
+        return dataset;
+    }
+    
+    @Override
+    public DatasetGraphTransaction getDatasetGraphTransaction() {
+        return null;
+    }
+    
+    @Override
+    public TransactionHandler getTransactionHandler() {
+        return new TransactionHandlerTDBNonTXn(this);
+    }
+    
+    // Transaction handler for non-transactional use.
+    // Does not support transactions, but syncs on commit which is the best it
+    // can do without being transactional, which is striongly preferrerd.
+    // For backwards compatibility only.
+    private static class TransactionHandlerTDBNonTXn extends TransactionHandlerBase //implements TransactionHandler 
+    {
+        private final Graph graph;
+
+        public TransactionHandlerTDBNonTXn(GraphTDB graph) {
+            this.graph = graph ;
+        }
+
+        @Override
+        public void abort() {
+            throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
+            // log.warn("'Abort' of a transaction not supported - ignored");
+        }
+
+        @Override
+        public void begin() {}
+
+        @Override
+        public void commit() {
+            TDB.sync(graph) ;
+        }
+
+        @Override
+        public boolean transactionsSupported() {
+            return false ;
+        }
     }
 }

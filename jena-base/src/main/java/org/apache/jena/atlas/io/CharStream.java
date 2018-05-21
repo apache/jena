@@ -19,7 +19,7 @@
 package org.apache.jena.atlas.io;
 
 
-/** A simplifed reader interface without IOExceptions. 
+/** A simplified reader interface without IOExceptions. 
  * And it's an interface, not an abstract class 
  */
 public interface CharStream

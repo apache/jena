@@ -121,10 +121,10 @@ void QueryUnit(): { }
 void Query() : { }
 {    
   Prologue()
-  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() 
-// #ifdef ARQ
-//   | JsonTemplateQuery()
-// #endif
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery()
+#ifdef ARQ
+    | JsonQuery()
+#endif
   )
   ValuesClause()
 }
@@ -325,6 +325,41 @@ void AskQuery() : {}
   WhereClause()
   SolutionModifier()
 }
+
+#ifdef ARQ
+void JsonQuery() : {}
+{
+  JsonClause()
+  ( DatasetClause() )*
+  WhereClause()
+  SolutionModifier()
+}
+
+void JsonClause() : {}
+{
+  <JSON> { getQuery().setQueryJsonType() ; }
+  <LBRACE>
+  JsonObjectMember() ( <COMMA> JsonObjectMember() ) *
+  <RBRACE> 
+}
+
+void JsonObjectMember() : { Node o ; String s ; Token t; }
+{
+  s = String()
+  // PNAME_NS would eval true before COLON (default namescape) so we make sure we got what we were expecting
+  t = < PNAME_NS > {
+    if ( ! t.image.equals(":") )
+      throwParseException("Prefix name expression not legal at this point : "+t.image, t.beginLine, t.beginColumn) ;
+  }
+  (
+    o = Var() { getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ; }
+  | o = RDFLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = NumericLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  | o = BooleanLiteral() { getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ; }
+  )
+}
+
+#endif
 
 // ----
 
@@ -2276,6 +2311,9 @@ TOKEN [IGNORE_CASE] :
 |  < SELECT:      "select" >
 |  < DISTINCT:    "distinct" >
 |  < REDUCED:     "reduced" >
+#ifdef ARQ
+|  < JSON:        "json" >
+#endif
 |  < DESCRIBE:    "describe" >
 |  < CONSTRUCT:   "construct" >
 |  < ASK:         "ask" >

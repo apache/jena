@@ -40,7 +40,7 @@ import org.apache.jena.tdb.TDB ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
-/** Control functions for a Fuskei server */
+/** Control functions for a Fuseki server */
 
 public class MgtCmdServlet extends HttpServlet
 {

@@ -165,7 +165,14 @@ public class TestFmtUtils
         assertEquals("<zz:ü_fe-zz>", s) ;
 
     }
-
+    
+    @Test
+    public void stringForURI_colonInLocalname_shouldCompact() {
+        String uri = aUri + "local:name";
+        final String result = FmtUtils.stringForURI(uri, getPrefixMapping());
+        assertEquals("zz:local:name", result);
+    }
+    
     @Test
     public void testStringEsc() {
         assertEquals("\\\\\\r\\n", FmtUtils.stringEsc("\\\r\n")) ;

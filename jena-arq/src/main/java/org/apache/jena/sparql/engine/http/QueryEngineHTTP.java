@@ -28,24 +28,25 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ResultSetCheckCondition ;
 import org.apache.jena.sparql.graph.GraphFactory ;
-import org.apache.jena.sparql.resultset.CSVInput ;
-import org.apache.jena.sparql.resultset.JSONInput ;
-import org.apache.jena.sparql.resultset.TSVInput ;
-import org.apache.jena.sparql.resultset.XMLInput ;
+import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -71,7 +72,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private List<String> defaultGraphURIs = new ArrayList<>();
     private List<String> namedGraphURIs = new ArrayList<>();
     private HttpClient client;
-    private HttpClientContext httpContext;
+    private HttpContext httpContext;
 
     private boolean closed = false;
 
@@ -92,44 +93,52 @@ public class QueryEngineHTTP implements QueryExecution {
     private String constructContentType = defaultConstructHeader() ;
     private String datasetContentType   = defaultConstructDatasetHeader() ;
     
+    // If this is non-null, it overrides the ???ContentType choice. 
+    private String acceptHeader         = null;
+    
     // Received content type 
     private String httpResponseContentType = null ;
     /**
      * Supported content types for SELECT queries
      */
     public static String[] supportedSelectContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV,
+            WebContent.contentTypeResultsThrift};
     /**
      * Supported content types for ASK queries
      */
     public static String[] supportedAskContentTypes = new String[] { WebContent.contentTypeResultsXML,
-            WebContent.contentTypeJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
 
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
     private InputStream retainedConnection = null;
 
     public QueryEngineHTTP(String serviceURI, Query query) {
-        this(serviceURI, query, query.toString());
+        this(serviceURI, query, null, null);
     }
     
     public QueryEngineHTTP(String serviceURI, Query query, HttpClient client) {
-        this(serviceURI, query, query.toString(), client);
+        this(serviceURI, query, client, null);
+    }
+
+    public QueryEngineHTTP(String serviceURI, Query query, HttpClient client, HttpContext httpContext) {
+        this(serviceURI, query, query.toString(), client, httpContext);
     }
 
     public QueryEngineHTTP(String serviceURI, String queryString) {
-        this(serviceURI, null, queryString);
+        this(serviceURI, queryString, null, null);
     }
     
     public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client) {
-        this(serviceURI, null, queryString, client);
-    }
-    
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
-        this(serviceURI, query, queryString, null);
+        this(serviceURI, queryString, client, null);
     }
 
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client) {
+    public QueryEngineHTTP(String serviceURI, String queryString, HttpClient client, HttpContext httpContext) {
+        this(serviceURI, null, queryString, client, httpContext);
+    }
+    
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpClient client, HttpContext httpContext) {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
@@ -142,6 +151,7 @@ public class QueryEngineHTTP implements QueryExecution {
         // service context in the parent constructor if the specified
         // client is null
         if (client != null) setClient(client);
+        if (httpContext != null) setHttpContext(httpContext);
     }
 
     /**
@@ -310,16 +320,16 @@ public class QueryEngineHTTP implements QueryExecution {
      * 
      * @param context HTTP context
      */
-    public void setHttpContext(HttpClientContext context) {
+    public void setHttpContext(HttpContext context) {
         this.httpContext = context;
     }
     
     /**
      * Get the HTTP context in use, if none is set then null.
      * 
-     * @return the {@code HttpClientContext} in scope
+     * @return the {@code HttpContext} in scope
      */
-    public HttpClientContext getHttpContext() {
+    public HttpContext getHttpContext() {
         return httpContext;
     }
 
@@ -338,7 +348,7 @@ public class QueryEngineHTTP implements QueryExecution {
    private ResultSet execResultSetInner() {
         
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(selectContentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, selectContentType));
         InputStream in = httpQuery.exec();
 
         if (false) {
@@ -361,16 +371,23 @@ public class QueryEngineHTTP implements QueryExecution {
             actualContentType = selectContentType;
         }
 
-        if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
-            return ResultSetFactory.fromXML(in);
-        if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
-            return ResultSetFactory.fromJSON(in);
-        if (actualContentType.equals(WebContent.contentTypeTextTSV))
-            return ResultSetFactory.fromTSV(in);
-        if (actualContentType.equals(WebContent.contentTypeTextCSV))
-            return CSVInput.fromCSV(in);
-        throw new QueryException("Endpoint returned Content-Type: " + actualContentType
-                + " which is not currently supported for SELECT queries");
+        // Map to lang, with pragmatic alternatives. 
+        Lang lang = WebContent.contentTypeToLangResultSet(actualContentType);
+        if ( lang == null )
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not rcognized for SELECT queries");
+        if ( !ResultSetReaderRegistry.isRegistered(lang) )
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
+        // This returns a streaming result set for some formats.
+        // Do not close the InputStream at this point. 
+        ResultSet result = ResultSetMgr.read(in, lang);
+        return result;
+    }
+
+   // XXX Move
+    private static String chooseAcceptHeader(String acceptHeader, String contentType) {
+        if ( acceptHeader != null )
+            return acceptHeader;
+        return contentType;
     }
 
     @Override
@@ -455,7 +472,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private Pair<InputStream, Lang> execConstructWorker(String contentType) {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(contentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, contentType));
         InputStream in = httpQuery.exec();
         
         // Don't assume the endpoint actually gives back the content type we
@@ -480,7 +497,7 @@ public class QueryEngineHTTP implements QueryExecution {
     public boolean execAsk() {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
-        httpQuery.setAccept(askContentType);
+        httpQuery.setAccept(chooseAcceptHeader(acceptHeader, askContentType));
         try(InputStream in = httpQuery.exec()) {
             // Don't assume the endpoint actually gives back the content type we
             // asked for
@@ -493,18 +510,23 @@ public class QueryEngineHTTP implements QueryExecution {
                 actualContentType = askContentType;
             }
 
-            // Parse the result appropriately depending on the
-            // selected content type.
-            if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
-                return XMLInput.booleanFromXML(in);
-            if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
-                return JSONInput.booleanFromJSON(in);
-            if (actualContentType.equals(WebContent.contentTypeTextTSV))
-                return TSVInput.booleanFromTSV(in);
-            if (actualContentType.equals(WebContent.contentTypeTextCSV))
-                return CSVInput.booleanFromCSV(in);
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType
-                    + " which is not currently supported for ASK queries");
+            Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
+            if ( lang == null ) {
+                // Any specials :
+                // application/xml for application/sparql-results+xml
+                // application/json for application/sparql-results+json
+                if (actualContentType.equals(WebContent.contentTypeXML))
+                    lang = ResultSetLang.SPARQLResultSetXML;
+                else if ( actualContentType.equals(WebContent.contentTypeJSON))
+                    lang = ResultSetLang.SPARQLResultSetJSON;
+            }
+            if ( lang == null )
+                throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries");
+            Boolean result = ResultSetMgr.readBoolean(in, lang);
+            return result;
+        } catch (ResultSetException e) {
+            log.warn("Returned content is not a boolean result", e);
+            throw e;
         } catch (QueryExceptionHTTP e) { 
             throw e ;
         }
@@ -512,6 +534,34 @@ public class QueryEngineHTTP implements QueryExecution {
             log.warn("Failed to close connection", e);
             return false ;
         }
+    }
+
+    @Override
+    public JsonArray execJson()
+    {
+        checkNotClosed();
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(WebContent.contentTypeJSON);
+        InputStream in = httpQuery.exec();
+        JsonValue v = JSON.parseAny(in);
+        if ( ! v.isArray() )
+            throw new QueryExecException("Return from a JSON query isn't an array");
+        return v.getAsArray();
+    }
+
+    @Override
+    public Iterator<JsonObject> execJsonItems()
+    {
+        // Non-streaming.
+        // TODO Integrate with the JSON parser to stream the results. 
+        JsonArray array = execJson().getAsArray();
+        List<JsonObject> x = new ArrayList<>(array.size());
+        array.forEach(elt->{
+            if ( ! elt.isObject()) 
+                throw new QueryExecException("Item in an array from a JSON query isn't an object");
+            x.add(elt.getAsObject());
+        });
+        return x.iterator();
     }
 
     private void checkNotClosed() {
@@ -534,7 +584,26 @@ public class QueryEngineHTTP implements QueryExecution {
     // extensions to the far end.
     @Override
     public Query getQuery() {
-        return query;
+        if ( query != null )
+            return query;
+        if ( queryString != null ) {
+            // Object not created with a Query object, may be because there is forgein
+            // syntax in the query or may be because the queystrign was available and the app
+            // didn't want the overhead of parsing it everytime. 
+            // Try to parse it else return null;
+            try { return QueryFactory.create(queryString, Syntax.syntaxARQ); }
+            catch (QueryParseException ex) {}
+            return null ;
+        }
+        return null;
+    }
+
+    /**
+     * Return the query string. If this was supplied in a constructor, there is no
+     * guaranttee this is legal SPARQL syntax.
+     */
+    public String getQueryString() {
+        return queryString;
     }
 
     @Override
@@ -619,7 +688,8 @@ public class QueryEngineHTTP implements QueryExecution {
             }
         }
         httpQuery.setClient(client);
-        httpQuery.setContext(getHttpContext());
+        HttpClientContext hcc = ( httpContext == null ) ? null : HttpClientContext.adapt(httpContext);
+        httpQuery.setContext(hcc);
         
         // Apply timeouts
         if (connectTimeout > 0) httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
@@ -874,5 +944,19 @@ public class QueryEngineHTTP implements QueryExecution {
         sBuff.append(str) ;
         if ( v < 1 )
             sBuff.append(";q=").append(v) ;
-    } 
+    }
+
+    /** Get the HTTP Accept header for the request. */ 
+    public String getAcceptHeader() {
+        return this.acceptHeader;
+    }
+    
+    /** Set the HTTP Accept header for the request.
+     * Unlike the {@code set??ContentType} operations, this is not checked 
+     * for validity.
+     */ 
+    public void setAcceptHeader(String acceptHeader) {
+        this.acceptHeader = acceptHeader;
+    }
+
 }

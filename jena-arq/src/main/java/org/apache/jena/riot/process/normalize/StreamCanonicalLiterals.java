@@ -24,7 +24,7 @@ import org.apache.jena.riot.process.StreamRDFApplyObject;
 import org.apache.jena.riot.process.normalize.CanonicalizeLiteral;
 import org.apache.jena.riot.system.StreamRDF;
 
-/** Canoncialize literals (in the object position).
+/** Canonicalize literal lexcial forms (in the object position).
  * Canoncialize literals use the same RDF term (same lexcial form) for a given value.
  * So {@code "+01"^^xsd:integer} is converted to {@code "1"^^xsd:integer}.
  * Language tags are canonicalized for case as well. 
@@ -39,16 +39,7 @@ public class StreamCanonicalLiterals extends StreamRDFApplyObject {
     private static Node canonical(Node n) {
         if ( ! n.isLiteral() )
             return n;
-        // Lang tag - done in CanonicalizeLiteral anyway.
-//        if ( Util.isLangString(n) ) {
-//            String lang = n.getLiteralLanguage();
-//            String lang2 = LangTag.canonical(lang);
-//            if ( lang == lang2 )
-//                return n ;
-//            return NodeFactory.createLiteral(n.getLiteralLexicalForm(), lang2);
-//        }
-        // Include LangTag (but check).
-        Node obj2 = CanonicalizeLiteral.get().apply(n);
+        Node obj2 = CanonicalizeLiteral.canonicalValue(n);
         return obj2;
     }
 }

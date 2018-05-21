@@ -35,7 +35,7 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.Quad ;
 
-/** Presentation utilitiles for Nodes, Triples, Quads and more.
+/** Presentation utilities for Nodes, Triples, Quads and more.
  * <p>
  * Methods <tt>str</tt> generate a reparsable string.
  * <p>
@@ -219,7 +219,7 @@ public class NodeFmtLib
     {
         if ( base == null )
             return null ;
-        IRI baseIRI = IRIResolver.iriFactory.construct(base) ;
+        IRI baseIRI = IRIResolver.iriFactory().construct(base) ;
         IRI rel = baseIRI.relativize(uri, relFlags) ;
         String r = null ;
         try { r = rel.toASCIIString() ; }

@@ -17,16 +17,21 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.SelectBuilder;
+import org.apache.jena.arq.querybuilder.clauses.SelectClause;
+import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
@@ -47,6 +52,8 @@ public class WhereHandler implements Handler {
 
 	// the query to modify
 	private final Query query;
+	
+	private final ValuesHandler valuesHandler;
 
 	/**
 	 * Constructor.
@@ -56,6 +63,30 @@ public class WhereHandler implements Handler {
 	 */
 	public WhereHandler(Query query) {
 		this.query = query;
+		this.valuesHandler = new ValuesHandler();
+	}
+	
+	/**
+	 * Creates a where handler with a new query.
+	 */
+	public WhereHandler() {
+		this( new Query() );
+	}
+	
+	/**
+	 * Get the query pattern from this where handler.
+	 * @return the query pattern
+	 */
+	public Element getQueryPattern()
+	{
+		 return query.getQueryPattern();
+	}
+	
+	/**
+	 * @return The query this where handler is using.
+	 */
+	public Query getQuery() {
+		return query;
 	}
 
 	/**
@@ -92,16 +123,17 @@ public class WhereHandler implements Handler {
 				query.setQueryPattern(eg);
 			}
 		}
+		valuesHandler.addAll( whereHandler.valuesHandler);
 	}
 
 	/**
 	 * Get the base element from the where clause. If the clause does not
 	 * contain an element return the element group, otherwise return the
-	 * enclosed elelment.
+	 * enclosed element.
 	 * 
 	 * @return the base element.
 	 */
-	private Element getElement() {
+	public Element getElement() {
 		Element result = query.getQueryPattern();
 		if (result == null) {
 			result = getClause();
@@ -113,9 +145,11 @@ public class WhereHandler implements Handler {
 	 * Get the element group for the clause. if The element group is not set,
 	 * create and set it.
 	 * 
+	 * Public for ExprFactory use.
+	 * 
 	 * @return The element group.
 	 */
-	private ElementGroup getClause() {
+	public ElementGroup getClause() {
 		Element e = query.getQueryPattern();
 		if (e == null) {
 			e = new ElementGroup();
@@ -127,7 +161,6 @@ public class WhereHandler implements Handler {
 
 		ElementGroup eg = new ElementGroup();
 		eg.addElement(e);
-		;
 		query.setQueryPattern(eg);
 		return eg;
 	}
@@ -210,6 +243,17 @@ public class WhereHandler implements Handler {
 	}
 
 	/**
+	 * Add the triple path to the where clause
+	 * 
+	 * @param values
+	 *            The values to add to this where clause.
+	 * @throws IllegalArgumentException
+	 *             If the triple path is not a valid triple path for a where clause.
+	 */
+	public void addWhere(ValuesHandler values) throws IllegalArgumentException {
+		valuesHandler.addAll(values);
+	}
+	/**
 	 * Add an optional triple to the where clause
 	 * 
 	 * @param t
@@ -261,7 +305,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The sub query to add.
 	 */
-	public void addSubQuery(SelectBuilder subQuery) {
+	public void addSubQuery(AbstractQueryBuilder<?> subQuery) {
 		getClause().addElement(makeSubQuery(subQuery));
 	}
 
@@ -272,7 +316,7 @@ public class WhereHandler implements Handler {
 	 *            The sub query to convert
 	 * @return THe converted element.
 	 */
-	private ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
+	public ElementSubQuery makeSubQuery(AbstractQueryBuilder<?> subQuery) {
 		Query q = new Query();
 		SelectHandler sh = subQuery.getHandlerBlock().getSelectHandler();
 		if (sh != null)
@@ -304,7 +348,7 @@ public class WhereHandler implements Handler {
 	 * @param subQuery
 	 *            The subquery to add as the union.
 	 */
-	public void addUnion(SelectBuilder subQuery) {
+	public void addUnion(AbstractQueryBuilder<?> subQuery) {
 		ElementUnion union = null;
 		ElementGroup clause = getClause();
 		// if the last element is a union make sure we add to it.
@@ -326,7 +370,7 @@ public class WhereHandler implements Handler {
 		}
 		// if there are projected vars then do a full blown subquery
 		// otherwise just add the clause.
-		if (subQuery.getVars().size() > 0) {
+		if (subQuery instanceof SelectClause && ((SelectClause<?>)subQuery).getVars().size() > 0) {
 			union.addElement(makeSubQuery(subQuery));
 		} else {
 			PrologHandler ph = new PrologHandler(query);
@@ -348,6 +392,22 @@ public class WhereHandler implements Handler {
 		getClause().addElement(new ElementNamedGraph(graph, subQuery.getElement()));
 	}
 
+	/**
+	 * Add a graph to the where clause.
+	 * 
+	 * Short hand for graph { s, p, o }
+	 * 
+	 * @param graph
+	 *            The name of the graph.
+	 * @param subQuery
+	 *            A triple path to add to the graph.
+	 */
+	public void addGraph(Node graph, TriplePath subQuery) {
+		ElementPathBlock epb = new ElementPathBlock();
+		epb.addTriple(subQuery);		
+		getClause().addElement(new ElementNamedGraph(graph, epb));
+	}
+	
 	/**
 	 * Add a binding to the where clause.
 	 * 
@@ -385,11 +445,29 @@ public class WhereHandler implements Handler {
 			e.visit(r);
 			query.setQueryPattern(r.getResult());
 		}
+		valuesHandler.setVars(values);
 	}
 
 	@Override
 	public void build() {
-		// no special operations required.
+		/*
+		 * cleanup union-of-one and other similar issues.
+		 */
+		BuildElementVisitor visitor = new BuildElementVisitor();
+		getElement().visit(visitor);
+		if (! valuesHandler.isEmpty())
+		{
+			if (visitor.getResult() instanceof ElementGroup) {
+				((ElementGroup)visitor.getResult()).addElement( valuesHandler.asElement());;
+			}
+			else {					
+				ElementGroup eg = new ElementGroup();
+				eg.addElement(visitor.getResult());
+				eg.addElement( valuesHandler.asElement());
+				visitor.setResult( eg );
+			}
+		}
+		query.setQueryPattern( visitor.getResult() );
 	}
 
 	/**
@@ -418,5 +496,88 @@ public class WhereHandler implements Handler {
 		}
 
 		return retval;
+	}
+	
+	/**
+	 * Add a minus operation to the where clause.
+	 * The prolog will be updated with the prefixes from the abstract query builder.
+	 * 
+	 * @param qb the abstract builder that defines the data to subtract.
+	 */
+	public void addMinus( AbstractQueryBuilder<?> qb )
+	{
+		PrologHandler ph = new PrologHandler(query);
+		ph.addPrefixes( qb.getPrologHandler().getPrefixes() );
+		ElementGroup clause = getClause();
+		ElementMinus minus = new ElementMinus(qb.getWhereHandler().getClause());
+		clause.addElement(minus);
+	}
+	
+	public void addValueVar(PrefixMapping prefixMapping, Object var) {
+		if (var == null)
+		{
+			throw new IllegalArgumentException( "var must not be null.");
+		}
+		if (var instanceof Collection<?>)
+		{
+			Collection<?> column = (Collection<?>)var;
+			if (column.size() == 0)
+			{
+				throw new IllegalArgumentException( "column must have at least one entry.");
+			}
+			Iterator<?> iter = column.iterator();
+			Var v = AbstractQueryBuilder.makeVar( iter.next() );
+			valuesHandler.addValueVar(v, AbstractQueryBuilder.makeValueNodes(iter,prefixMapping));
+		} else {
+			valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), null );
+		}		
+	}
+
+	public void addValueVar(PrefixMapping prefixMapping, Object var, Object... objects) {
+		
+		Collection<Node> values = null;
+		if (objects != null)
+		{
+			values = AbstractQueryBuilder.makeValueNodes( Arrays.asList(objects).iterator(), prefixMapping);
+		}
+		
+		valuesHandler.addValueVar(AbstractQueryBuilder.makeVar(var), values );
+	}
+	
+	public <K extends Collection<?>> void addValueVars(PrefixMapping prefixMapping, Map<?,K> dataTable) {
+		ValuesHandler hdlr = new ValuesHandler();
+		for (Map.Entry<?, K> entry : dataTable.entrySet())
+		{
+			Collection<Node> values = null;
+			if (entry.getValue() != null)
+			{
+				values = AbstractQueryBuilder.makeValueNodes( entry.getValue().iterator(), prefixMapping );
+			}
+			hdlr.addValueVar(AbstractQueryBuilder.makeVar(entry.getKey()), values );
+		}
+		valuesHandler.addAll( hdlr );
+	}
+	
+	public void addValueRow(PrefixMapping prefixMapping, Object... values) {
+		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( Arrays.asList(values).iterator(), prefixMapping));
+	}
+
+	public void addValueRow(PrefixMapping prefixMapping, Collection<?> values) {
+		valuesHandler.addValueRow( AbstractQueryBuilder.makeValueNodes( values.iterator(), prefixMapping));
+	}
+	
+	
+	public List<Var> getValuesVars() {
+		return valuesHandler.getValuesVars();
+	}
+
+
+	public Map<Var,List<Node>> getValuesMap() {
+		return valuesHandler.getValuesMap();
+	}
+	
+
+	public  void clearValues() {
+		valuesHandler.clear();
 	}
 }

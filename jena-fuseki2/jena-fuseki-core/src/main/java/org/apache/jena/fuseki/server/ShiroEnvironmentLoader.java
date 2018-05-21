@@ -47,7 +47,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiServer.formatBaseArea() ; 
+        FusekiSystem.formatBaseArea() ; 
         this.servletContext = sce.getServletContext() ;
         try { 
             // Shiro.
@@ -67,7 +67,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     /** 
      * Normal Shiro initialization only supports one location for an INI file.
      *  
-     * When given multiple multiple locations for the shiro.ini file, and 
+     * When given multiple locations for the shiro.ini file, and 
      * if a {@link ResourceBasedWebEnvironment}, check the list of configuration
      * locations, testing whether the name identified an existing resource.  
      * For the first resource name found to exist, reset the {@link ResourceBasedWebEnvironment}

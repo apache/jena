@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang ;
+package org.apache.jena.riot.lang;
 
-import java.security.MessageDigest ;
-import java.security.NoSuchAlgorithmException ;
-import java.util.UUID ;
-import java.util.concurrent.Callable ;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 
-import org.apache.jena.atlas.lib.Bytes ;
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.atlas.lib.Bytes;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 
 /**
  * Allocate bnode labels using a per-run seed and the label presented.
@@ -39,7 +39,7 @@ import org.apache.jena.graph.NodeFactory ;
  * fed to a digest to give a bit string, (currently MD5, to get a 128bit bit
  * string) that is used to form a bNode AnonId of hex digits.
  * <p>
- * In addition there is a cache of label->node allocations, using the natural
+ * In addition, there is a cache of label{@literal ->}node allocations, using the natural
  * tendency to locality in a database dump. (subject bNodes, bNodes in lists
  * and other data values structures like unit values).
  * <p>
@@ -47,23 +47,23 @@ import org.apache.jena.graph.NodeFactory ;
  */
 
 public class BlankNodeAllocatorHash implements BlankNodeAllocator {
-    private static String       DigestAlgorithm = "MD5" ;
-    private static int          CacheSize       = 1000 ;
-    private MessageDigest       mDigest ;
-    private byte[]              seedBytes ;
+    private static String       DigestAlgorithm = "MD5";
+    private static int          CacheSize       = 1000;
+    private MessageDigest       mDigest;
+    private byte[]              seedBytes;
     // long+2 bytes to distinguish from UTF-8 bytes.
-    private byte[]              counterBytes    = new byte[10] ; 
-    private Cache<String, Node> cache ;
-    private long                counter         = 0 ;
+    private byte[]              counterBytes    = new byte[10]; 
+    private Cache<String, Node> cache;
+    private long                counter         = 0;
 
     public BlankNodeAllocatorHash() {
-        reset() ;
+        reset();
         try {
-            mDigest = MessageDigest.getInstance(DigestAlgorithm) ;
+            mDigest = MessageDigest.getInstance(DigestAlgorithm);
         } catch (NoSuchAlgorithmException e) {
-            throw new InternalErrorException("failed to create message digest", e) ;
+            throw new InternalErrorException("failed to create message digest", e);
         }
-        cache = CacheFactory.createCache(CacheSize) ;
+        cache = CacheFactory.createCache(CacheSize);
     }
     
     /**
@@ -90,9 +90,9 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
     @Override
     public void reset() {
         UUID seed = this.freshSeed();
-        seedBytes = new byte[128 / 8] ;
-        Bytes.setLong(seed.getMostSignificantBits(), seedBytes, 0) ;
-        Bytes.setLong(seed.getLeastSignificantBits(), seedBytes, 8) ;
+        seedBytes = new byte[128 / 8];
+        Bytes.setLong(seed.getMostSignificantBits(), seedBytes, 0);
+        Bytes.setLong(seed.getLeastSignificantBits(), seedBytes, 8);
         if ( cache != null )
             cache.clear();
     }
@@ -102,29 +102,31 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         Callable<Node> getter = new Callable<Node>() {
             @Override
             public Node call() {
-                return alloc(Bytes.string2bytes(label)) ;
+                return alloc(Bytes.string2bytes(label));
             }
-        } ;
-        Node n = cache.getOrFill(label, getter) ;
-        return n ;
+        };
+        Node n = cache.getOrFill(label, getter);
+        return n;
     }
 
     @Override
     public Node create() {
-        counter++ ;
-        // Make illegal string bytes so can't clash with alloc(String)
-        counterBytes[0] = 0 ;
-        counterBytes[1] = 0 ;
-        Bytes.setLong(counter, counterBytes, 2) ;
-        return alloc(counterBytes) ;
+        counter++;
+        // Make illegal string bytes so can't clash with alloc(String).
+        // It is different because it has zeros in it.
+        counterBytes[0] = 0;
+        counterBytes[1] = 0;
+        Bytes.setLong(counter, counterBytes, 2);
+        return alloc(counterBytes);
     }
 
     private Node alloc(byte[] labelBytes) {
-        // ?? UUID.nameUUIDFromBytes(seedBytes+labelBytes) ;
-        mDigest.update(seedBytes) ;
-        mDigest.update(labelBytes) ;
-        byte[] bytes = mDigest.digest() ; // resets
-        String hexString = Bytes.asHexLC(bytes) ;
-        return NodeFactory.createBlankNode(hexString) ;
+        // UUID.nameUUIDFromBytes(seedBytes+labelBytes) uses MD5 but creates the digester
+        // each time. It also stamps in the UUID version/variant bits.
+        mDigest.update(seedBytes);
+        mDigest.update(labelBytes);
+        byte[] bytes = mDigest.digest(); // resets
+        String hexString = Bytes.asHexLC(bytes);
+        return NodeFactory.createBlankNode(hexString);
     }
 }

@@ -24,7 +24,7 @@ import org.apache.jena.vocabulary.ReasonerVocabulary ;
 
 /**
  * Factory object for creating general rule reasoner instances. The
- * specific rule set and mode confriguration can be set either be method
+ * specific rule set and mode configuration can be set either be method
  * calls to the created reasoner or though parameters in the configuration Model.
  */
 public class GenericRuleReasonerFactory implements ReasonerFactory {

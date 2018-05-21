@@ -22,7 +22,9 @@ import java.text.MessageFormat ;
 import java.util.logging.Formatter ;
 import java.util.logging.LogRecord ;
 
-/** Very simple formatter - just the log message */ 
+/** Very simple formatter - just the log message.
+ * @see FlatHandler
+ */ 
 public class FlatFormatter extends Formatter {
 
     private final boolean ensureNL ;

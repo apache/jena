@@ -22,8 +22,8 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.reasoner.rulesys.* ;
 
 /**
- * Bind the third argument to the arithetic difference between the 
- * first and second aguments.
+ * Bind the third argument to the arithmetic difference between the 
+ * first and second arguments.
  */
 
 public class Difference extends BaseBuiltin {

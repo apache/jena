@@ -19,7 +19,7 @@
 package org.apache.jena.reasoner;
 
 /**
- * Exception used to to signal that a configuration parameter was used
+ * Exception used to signal that a configuration parameter was used
  * (typically in a setParameter call) that was not understood - either
  * because it was not a recognized parameter URI or its value range was incorrect.
  */

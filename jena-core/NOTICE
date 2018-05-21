@@ -1,5 +1,5 @@
 Apache Jena - module jena-core
-Copyright 2011-2017 The Apache Software Foundation
+Copyright 2011-2018 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -12,3 +12,7 @@ These have been licensed to the Apache Software Foundation under a software gran
 
 This product includes software developed by
 PluggedIn Software under a BSD license.
+
+Portions of this software are from Apache Xerces and were originally based on the following:
+  - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
+  - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.

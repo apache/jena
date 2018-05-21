@@ -52,7 +52,7 @@ public class RDFSFBRuleReasoner extends FBRuleReasoner {
     }
 
     /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
+     * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
     @Override
