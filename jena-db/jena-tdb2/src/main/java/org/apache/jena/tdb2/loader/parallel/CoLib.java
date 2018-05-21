@@ -25,30 +25,30 @@ import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
-/** Per-thread TransactionCoordinator helpers.
-/*package*/ class CoLib {
+/** Per-thread TransactionCoordinator helpers. */
+/*package*/ public class CoLib {
     
-    /*package*/ static TransactionCoordinator newCoordinator() {
+    /*package*/ public static TransactionCoordinator newCoordinator() {
         Journal journal = Journal.create(Location.mem());
         return new TransactionCoordinator(journal);
     }
     
-    /*package*/ static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
+    /*package*/ public static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
         coordinator.add(LoaderOps.ntDataFile(nodeTable));
         coordinator.add(LoaderOps.ntBPTree(nodeTable));
     }
     
-    /*package*/ static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
+    /*package*/ public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
         for ( TupleIndex pIdx : indexes ) {
             coordinator.add(LoaderOps.idxBTree(pIdx));
         }
     }
 
-    /*package*/ static void start(TransactionCoordinator coordinator) {
+    /*package*/ public static void start(TransactionCoordinator coordinator) {
         coordinator.start();
     }
     
-    /*package*/ static void finish(TransactionCoordinator coordinator) {
+    /*package*/ public static void finish(TransactionCoordinator coordinator) {
         // Donot do this - it will shutdown the TrasnactionComponents as well.
         //coordinator.shutdown();
     }

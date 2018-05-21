@@ -42,7 +42,7 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
  * <p>
  * This class creates one thread per {@link TupleIndex}.  
  */
-class Indexer implements BulkStartFinish {
+public class Indexer implements BulkStartFinish {
 
     private BlockingQueue<List<Tuple<NodeId>>>[] pipesTripleIndexers;
     private final int N;

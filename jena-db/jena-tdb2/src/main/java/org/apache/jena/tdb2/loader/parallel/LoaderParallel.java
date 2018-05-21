@@ -41,12 +41,16 @@ import org.apache.jena.tdb2.sys.TDBInternal;
  * The process is:
  * <blockquote>
  * {@code DataBatcher -> DataToTuples -> Indexer}
- * <blockquote>
- * {@link DataBatcher} produces {@link DataBlock}s - grouping of triples and quads. It uses 
- * <br/>
- * {@link DataToTuples} processes {@link DataBlock} to create 2 outputs blocks of {@code Tuple<NodeId>}, one output for triples, oue for quads.
- * <br/>
- * {@link Indexer} processes blocks of {@code Tuple<NodeId>} (of the same tuple length) and writes them to a number of indexes.
+ * </blockquote>
+ * <p>
+ * {@link DataBatcher} produces {@link DataBlock}s - grouping of triples and quads and sends them to a handler {@code Consumer<DataBlock>}. 
+ * This is wired up to be the feed for {@code DataToTuples}. 
+ * <p>
+ * {@link DataToTuples} processes {@link DataBlock}s to create 2 outputs blocks of {@code Tuple<NodeId>}, one output for triples, one for quads,
+ * and sends these to {@code Indexer}s for triples and quads. 
+ * <p>
+ * {@link Indexer} processes blocks of {@code Tuple<NodeId>} (of the same tuple length) and writes them to a number of indexes. 
+ * Each index being written is a separate thread. 
  */
 public class LoaderParallel extends LoaderBase implements DataLoader {
     public static final int DataTickPoint   = 500_000;
