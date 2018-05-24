@@ -163,15 +163,17 @@ public class TransactionCoordinator {
         return this ;
     }
     
-    /** 
-     * Perform modification of this {@code TransaxctionCoordiator} after it has been started.
+    /**
+     * Perform modification of this {@code TransactionCoordiator} after it has been
+     * started.
      * <p>
-     * This operation enters {@linkplain #startExclusiveMode() exclusive mode}, allows configurations, 
-     * carries out the {@code action}, reset the cofiguration lock, and exits exclusive mode.
+     * This operation enters {@linkplain #startExclusiveMode() exclusive mode}, releases the
+     * configuration lock, then calls the {@code action}. On exit from the action,
+     * it resets the configuration lock, and exits exclusive mode.
      * <p>
-     * Do not call inside a transaction, it may cause a deadlock.  
+     * Do not call inside a transaction, it may cause a deadlock.
      * <p>
-     * Use with care!  
+     * Use with care!
      */
     public void modify(Runnable action) {
         try {

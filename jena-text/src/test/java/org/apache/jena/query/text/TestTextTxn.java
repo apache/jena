@@ -52,7 +52,7 @@ import org.junit.runners.Parameterized.Parameters;
  * <p>
  * Note that in Lucene, writes are not visible to a reader of the {@code Directory}
  * until committed. A special {@link IndexReader} is needed. See
- * {@link DirectoryReader#open(IndexWriter)}. jena-text does not currentyl do this.
+ * {@link DirectoryReader#open(IndexWriter)}. jena-text does not currently do this.
  * <p>
  * When used outside a transaction, writes are "autocommit" (see
  * {@link TextDocProducerTriples}) and so are visible immediately.
