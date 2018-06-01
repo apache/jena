@@ -40,7 +40,7 @@ public class PrefixHandler implements BulkStartFinish {
     private DatasetPrefixesTDB prefixes;
     private MonitorOutput output;
     
-    PrefixHandler(DatasetPrefixesTDB prefixes, MonitorOutput output) {
+    public PrefixHandler(DatasetPrefixesTDB prefixes, MonitorOutput output) {
         this.prefixes = prefixes;
         this.output = output;
     }
