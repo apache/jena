@@ -31,6 +31,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.loader.DataLoader;
 import org.apache.jena.tdb2.loader.LoaderFactory;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
@@ -42,7 +43,7 @@ public class tdbloader extends CmdTDBGraph {
     private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats");
     private static final ArgDecl argLoader = new ArgDecl(ArgDecl.HasValue, "loader");
     
-    private enum LoaderEnum { Basic, Parallel, Sequential }
+    private enum LoaderEnum { Basic, Parallel, Sequential, Phased }
     
     private boolean showProgress = true;
     private boolean generateStats = false;
@@ -56,7 +57,7 @@ public class tdbloader extends CmdTDBGraph {
     protected tdbloader(String[] argv) {
         super(argv);
 //        super.add(argStats, "Generate statistics");
-        super.add(argLoader, "--loader", "Loader to use");
+        super.add(argLoader, "--loader=", "Loader to use: 'basic', 'phased' (default), 'sequential' or 'parallel'");
     }
 
     @Override
@@ -67,6 +68,8 @@ public class tdbloader extends CmdTDBGraph {
             String loadername = getValue(argLoader).toLowerCase();
             if ( loadername.matches("basic.*") )
                 loader = LoaderEnum.Basic;
+            else if ( loadername.matches("phas.*") )
+                loader = LoaderEnum.Phased;
             else if ( loadername.matches("seq.*") )
                 loader = LoaderEnum.Sequential;
             else if ( loadername.matches("para.*") )
@@ -84,7 +87,7 @@ public class tdbloader extends CmdTDBGraph {
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " [--desc DATASET | --loc DIR] FILE ...";
+        return getCommandName() + "--loader= [--desc DATASET | --loc DIR] FILE ...";
     }
 
     @Override
@@ -146,9 +149,15 @@ public class tdbloader extends CmdTDBGraph {
         if ( graphName != null )
             gn = NodeFactory.createURI(graphName);
         
-        LoaderEnum useLoader = loader; 
-        if ( useLoader == null )
-            useLoader = LoaderEnum.Parallel;
+        LoaderEnum useLoader = loader;
+        if ( useLoader == null ) {
+            // Default choice - phased if empty. basic if not.  
+            boolean isEmpty = Txn.calculateRead(dsg, ()->dsg.isEmpty());
+            if ( isEmpty )
+                useLoader = LoaderEnum.Phased;
+            else
+                useLoader = LoaderEnum.Basic;
+        }
         
         MonitorOutput output = isQuiet() ? LoaderOps.nullOutput() : LoaderOps.outputToLog();
         DataLoader loader = createLoader(useLoader, dsg, gn, output);
@@ -159,6 +168,8 @@ public class tdbloader extends CmdTDBGraph {
         
     private DataLoader createLoader(LoaderEnum useLoader, DatasetGraph dsg, Node gn, MonitorOutput output) {
         switch(useLoader) {
+            case Phased :
+                return LoaderFactory.phasedLoader(dsg, gn, output);
             case Parallel :
                 return LoaderFactory.parallelLoader(dsg, gn, output);
             case Sequential :

@@ -16,10 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
-public interface BulkStartFinish {
-    public void startBulk();
-    public void finishBulk();
+import java.util.List;
+
+import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.tdb2.loader.base.BulkStartFinish;
+
+public class BulkProcesses {
     
+    public static void start(List<BulkStartFinish> list) {
+        list.forEach(x->x.startBulk());
+    }
+    
+    public static void finish(List<BulkStartFinish> list) {
+        Lists.reverse(list).forEach(x->x.finishBulk());
+    }
+
 }

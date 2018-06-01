@@ -28,7 +28,8 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other).
- * 
+ * <br/>
+ * This is the TDB1 tdbloader algorithm ported to TDB2. 
  */
 
 public class LoaderNodeTupleTable implements Closeable, Sync
@@ -74,7 +75,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         if ( count > 0 ) {
             if ( dropAndRebuildIndexes )
                 // Now do secondary indexes.
-                createSecondaryIndexes();
+                BuilderSecondaryIndexes.createSecondaryIndexes(output, primaryIndex, secondaryIndexes);
         }
         attachSecondaryIndexes();
     }
@@ -113,22 +114,8 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         nodeTupleTable.addRow(nodes);
     }
 
-//    public void loadIndexStart()
-//    {
-//        if ( count > 0 )
-//            // Do index phase only if any items seen.
-//            monitor.startIndexPhase();
-//        // Always do this - it reattaches the secondary indexes.
-//        loadSecondaryIndexes();
-//    }
-//
-//    public void loadIndexFinish()
-//    {
-//        if ( count > 0 )
-//            monitor.finishIndexPhase();
-//    }
-    
     public void sync(boolean force) {}
+    
     @Override
     public void sync() {}
     
@@ -151,10 +138,9 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             nodeTupleTable.getTupleTable().setTupleIndex(i, null);
     }
     
-    private void createSecondaryIndexes() {        
-        BuilderSecondaryIndexes builder = new BuilderSecondaryIndexesSequential();
-        builder.createSecondaryIndexes(output, primaryIndex, secondaryIndexes);
-    }
+//    private void createSecondaryIndexes() {        
+//        BuilderSecondaryIndexes.createSecondaryIndexes(output, primaryIndex, secondaryIndexes);
+//    }
     
     private void attachSecondaryIndexes() {
         for ( int i = 1; i < numIndexes; i++ )

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 
 /**

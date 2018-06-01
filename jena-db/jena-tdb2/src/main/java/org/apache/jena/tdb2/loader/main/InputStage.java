@@ -16,22 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
-import java.util.List;
-
-import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.core.Quad;
-
-/** Unit of output from the data batcher */ 
-public class DataBlock {
-    /** Unique end marker object */ 
-    static DataBlock END = new DataBlock(null, null);
-     
-    List<Triple> triples = null;
-    List<Quad> quads = null;
-    DataBlock( List<Triple> triples, List<Quad> quads) {
-        this.triples = triples;
-        this.quads = quads;
-    }
+/** 
+ * The first phase, parsing to at least one index each of triples and quads
+ * can be done in several ways.
+ * <ul>
+ * <li> {@code MULTI} - one thread parsing (caller), one for nodetable/tuples, and one for each index
+ * <li> {@code PARSE_NODE} - one thread parsing (caller) and also nodetable/tuples, and one for each index
+ * <li> {@code PARSE_NODE_INDEX} - use the caller thread for all operations
+ * </ul>
+ * {@code MULTI} is fastest when hardware allows.
+ * <br/>
+ * When data is triples or quads, not a mixture, {@code PARSE_NODE} uses two threads.
+ * <br/>
+ * {@code PARSE_NODE_INDEX} uses only the caller thread for all steps.
+ */
+enum InputStage { 
+    MULTI,
+    PARSE_NODE, 
+    PARSE_NODE_INDEX
 }

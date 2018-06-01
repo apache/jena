@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,8 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.BulkLoaderException;
+import org.apache.jena.tdb2.loader.base.BulkStartFinish;
+import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.NodeId;

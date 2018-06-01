@@ -26,7 +26,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.loader.basic.LoaderBasic;
-import org.apache.jena.tdb2.loader.parallel.LoaderParallel;
+import org.apache.jena.tdb2.loader.main.LoaderParallel;
+import org.apache.jena.tdb2.loader.main.LoaderPhased;
 import org.apache.jena.tdb2.loader.sequential.LoaderSequential;
 
 /** Obtain a {@link DataLoader}.
@@ -124,6 +125,47 @@ public class LoaderFactory {
      * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
      * or {@code null} for no output.
      */
+    
+    public static DataLoader phasedLoader(DatasetGraph dsg, MonitorOutput output) {
+        Objects.requireNonNull(dsg);
+        return new LoaderPhased(dsg, null, output);
+    }
+
+    /** 
+     * A phased loader to load a single graph in the destination {@code DatasetGraph}.
+     * See {@link #phasedLoader(DatasetGraph, MonitorOutput)} for loader characteristics.
+     * <p>
+     * Use {@link Quad#defaultGraphIRI} to load the default graph.
+     * <p>
+     * No other graphs in the destination {@code DatasetGraph} are touched. If quads
+     * data is read, default graph data is sent to the destination named graph but all
+     * other quad data is discarded.
+     * <p>
+     * For other behaviours, use {@link #phasedLoader(DatasetGraph, MonitorOutput)} 
+     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
+     * transformation.
+     * 
+     * @see #phasedLoader(DatasetGraph, MonitorOutput)
+     */
+    
+    public static DataLoader phasedLoader(DatasetGraph dsg, Node graphName, MonitorOutput output) {
+        Objects.requireNonNull(dsg);
+        return new LoaderPhased(dsg, graphName, output);
+    }
+
+    /** 
+     * A loader that uses multiple threads to reduce loading time,
+     * and makes parallel writes to persistent storage (disk or SSD).
+     * <p> 
+     * This loader will use all available resources of the machine,
+     * making other actions on the machine unresponsive.
+     * <p>
+     * * The dataset can not be used for other operations - the code will block other transactions
+     * as necessary and release then when loading has finished.
+     * <p>
+     * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
+     * or {@code null} for no output.
+     */
     public static DataLoader parallelLoader(DatasetGraph dsg, MonitorOutput output) {
         Objects.requireNonNull(dsg);
         return new LoaderParallel(dsg, null, output);
@@ -159,7 +201,7 @@ public class LoaderFactory {
         Objects.requireNonNull(dsg);
         return createDft(dsg, null, output);
     }
-    
+
     /**
      * Return a general purpose loader to load a single graph in the destination {@code DatasetGraph}.
      * Use {@link Quad#defaultGraphIRI} to load the default graph.
@@ -176,10 +218,10 @@ public class LoaderFactory {
         return createDft(dsg, graphName, output);
     }
     
+    // Choice of default loader.
     private static DataLoader createDft(DatasetGraph dsg, Node graphName, MonitorOutput output) {
-        // May be a conservatively tuned LoaderParallel so that it does not
-        // swamp the machine and copes with lower spec hardware while still
-        // providing a reasonable loading rate.  
-        return parallelLoader(dsg, graphName, output);
+        // The LoaderPhased does not swamp the machine and copes with lower spec hardware
+        // while still providing a reasonable loading rate.
+        return phasedLoader(dsg, graphName, output);
     }
 }

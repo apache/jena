@@ -16,12 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
-import java.util.List;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.loader.base.MonitorOutput;
 
-/** Unit of delivery to a processing stage. */
-@FunctionalInterface
-public interface Destination<X> {
-    void deliver(List<X> block); 
+public class LoaderPhased extends LoaderMain {
+    
+    public LoaderPhased(DatasetGraph dsg, MonitorOutput output) {
+        this(dsg, null, output);
+    }
+    
+    public LoaderPhased(DatasetGraph dsg, Node graphName, MonitorOutput output) {
+        super(LoaderPlans.loaderPlanPhased, dsg, graphName, output);
+    }
 }

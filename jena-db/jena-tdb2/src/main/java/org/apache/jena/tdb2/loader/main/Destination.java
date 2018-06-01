@@ -16,15 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader;
+package org.apache.jena.tdb2.loader.main;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.List;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestLoaderStd.class ,
-    TestLoaderMain.class
-})
-
-public class TS_Loader {}
+/** Unit of delivery to a processing stage. */
+@FunctionalInterface
+public interface Destination<X> {
+    void deliver(List<X> block); 
+}

@@ -16,53 +16,55 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
-import java.util.function.BiConsumer;
+import java.util.Arrays;
 
+import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.query.TxnType;
+import org.apache.jena.tdb2.loader.base.BulkStartFinish;
+import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
-import org.apache.jena.tdb2.store.DatasetPrefixesTDB;
-import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable; 
+import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /**
- * Prefix handler. 
+ * Build index(es).
  * <p>
- * This class is not multithreaded - prefixes are usually few enough in number
- * and so forking a thread so that work can be done in parallel is not beneficial.
+ * This is an inline indexer, it loads each Tuple<NodeId> on the calling thread. 
  */
-public class PrefixHandler implements BulkStartFinish {
-    
-    private Transaction transaction;
+public class IndexerInline implements BulkStartFinish {
+    private final int N;
+    private final MonitorOutput output;
+    private TupleIndex[] indexes;
     private TransactionCoordinator coordinator;
-    private DatasetPrefixesTDB prefixes;
-    private MonitorOutput output;
+    private Transaction transaction;
     
-    public PrefixHandler(DatasetPrefixesTDB prefixes, MonitorOutput output) {
-        this.prefixes = prefixes;
-        this.output = output;
+    public IndexerInline(MonitorOutput output, TupleIndex... idxTriples) {
+        this.N = idxTriples.length;
+        this.indexes = Arrays.copyOf(idxTriples, N); 
+        this.output = output; 
     }
     
-    // Inline, not a separate thread.
     @Override
-    public void startBulk() {
+    public void startBulk() { 
         TransactionCoordinator coordinator = CoLib.newCoordinator();
-        NodeTupleTable p = prefixes.getNodeTupleTable();
-        CoLib.add(coordinator, p.getNodeTable());
-        CoLib.add(coordinator, p.getTupleTable().getIndexes());
-        coordinator.start();
+        Arrays.stream(indexes).forEach(idx->CoLib.add(coordinator, idx));
+        CoLib.start(coordinator);
         transaction = coordinator.begin(TxnType.WRITE);
     }
-
+    
     @Override
-    public void finishBulk() {
+    public void finishBulk() { 
         transaction.commit();
+        transaction.end();
+        CoLib.finish(coordinator);
     }
-
-    public BiConsumer<String, String> handler() {
-        return (prefix, uriStr) -> 
-            prefixes.insertPrefix(DatasetPrefixesTDB.unnamedGraphURI, prefix, uriStr);
+    
+    public void load(Tuple<NodeId> tuple) {
+        for ( TupleIndex idx : indexes )
+            idx.add(tuple);
     }
 }

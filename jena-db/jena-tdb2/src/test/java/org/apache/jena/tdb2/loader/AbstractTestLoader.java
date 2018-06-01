@@ -21,7 +21,6 @@ package org.apache.jena.tdb2.loader ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -40,38 +39,20 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
-import org.apache.jena.tdb2.loader.DataLoader;
-import org.apache.jena.tdb2.loader.LoaderFactory;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
-public class TestLoader {
+public abstract class AbstractTestLoader {
     static { JenaSystem.init(); }
-    
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        BiFunction<DatasetGraph, Node, DataLoader> basic = (dsg, gn)->LoaderFactory.basicLoader(dsg, gn, output);
-        BiFunction<DatasetGraph, Node, DataLoader> sequential = (dsg, gn)->LoaderFactory.sequentialLoader(dsg, gn, output);
-        BiFunction<DatasetGraph, Node, DataLoader> parallel = (dsg, gn)->LoaderFactory.parallelLoader(dsg, gn, output);
-        x.add(new Object[]{"Basic loader", basic}) ;
-        x.add(new Object[]{"Sequential loader", sequential}) ;
-        x.add(new Object[]{"Parallel loader", parallel}) ;
-        return x ; 
-    }
     
     static MonitorOutput output = LoaderOps.nullOutput();
     private String name;
     private BiFunction<DatasetGraph, Node, DataLoader> maker;
     
-    public TestLoader(String name, BiFunction<DatasetGraph, Node, DataLoader> maker) {
+    protected AbstractTestLoader(String name, BiFunction<DatasetGraph, Node, DataLoader> maker) {
         this.name = name;
         this.maker = maker;
     }

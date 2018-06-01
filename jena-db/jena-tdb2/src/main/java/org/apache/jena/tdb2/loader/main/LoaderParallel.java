@@ -16,26 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.main;
 
-import java.util.Collections;
-import java.util.List;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.loader.base.MonitorOutput;
 
-import org.apache.jena.atlas.lib.tuple.Tuple;
-import org.apache.jena.tdb2.store.NodeId;
-
-public class LoaderConst {
-
-    /** Chunk size for the triple->tuples output pipe */  
-    public final static int ChunkSize = 100_000 ;
-
-    /** Queue size for chunks of tuples Tuples */
-    public final static int QueueSizeTuples = 10;
-
-    //public final static int pipeSize = 10;
+public class LoaderParallel extends LoaderMain {
     
-    /* package */ static final List<Tuple<NodeId>> END_TUPLES      = Collections.emptyList();
-
-    /*package*/ static final int QueueSizeData = 10;
-
+    public LoaderParallel(DatasetGraph dsg, MonitorOutput output) {
+        super(LoaderPlans.loaderPlanParallel, dsg, output);
+    }
+    
+    public LoaderParallel(DatasetGraph dsg, Node graphName, MonitorOutput output) {
+        super(LoaderPlans.loaderPlanParallel, dsg, graphName, output);
+    }
 }

@@ -41,17 +41,24 @@ import org.apache.jena.riot.system.StreamRDF;
  * to large datasets and doe sssot max up the hardware so it is suitable for runtime operation at larger scales.
  * 
  * <h4>sequential</h4>
- * A fully transactional laoder that loads the primary indexes then does multipel passes to load the secondary indexes.
+ * A fully transactional loader that loads the primary indexes then does multiple passes to load the secondary indexes.
  * This maximises RAM file system caching effects.
  * It can be useful when hardware is restricted and I/O is slow (disk, not non volatile storage liek SSDs).  
  *
- * <h4>parallel</h4>
- * The parallel loader use multiple threads to process data and to index the {@code DatasetGraph}.  
- * Loading in parallel is not fully transaction-safe in the presence of persistent
+ * <h4>phased</h4>
+ * The phased loader use some multiple threads to process data and to index the {@code DatasetGraph}.
+ * It proceeds by loading data into theprimaryindexes, then, separately, builds the other indexes.  
+ * Loading is not fully transaction-safe in the presence of persistent
  * storage problems or a JVM/machine crash when finishing writing.
  * Otherwise it is transactional.
  * 
- * Because it uses multi-threads, it can interfer with performance of other applications on the machine it is run on.
+ * <h4>parallel</h4>
+ * The parallel loader use multiple threads to process data and to index the {@code DatasetGraph}.  
+ * Loading is not fully transaction-safe in the presence of persistent
+ * storage problems or a JVM/machine crash when finishing writing.
+ * Otherwise it is transactional.
+ * Because it uses many threads to write to peristsne storage,
+ * it can interfer with performance of other applications on the machine it is run on.
  * 
  * <h4>{@code DataLoader} API</h4>
  * 

@@ -16,15 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader;
+package org.apache.jena.tdb2.loader.main;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.List;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestLoaderStd.class ,
-    TestLoaderMain.class
-})
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 
-public class TS_Loader {}
+/** Unit of output from the data batcher */ 
+public class DataBlock {
+    /** Unique end marker object */ 
+    static DataBlock END = new DataBlock(null, null);
+     
+    List<Triple> triples = null;
+    List<Quad> quads = null;
+    DataBlock( List<Triple> triples, List<Quad> quads) {
+        this.triples = triples;
+        this.quads = quads;
+    }
+}

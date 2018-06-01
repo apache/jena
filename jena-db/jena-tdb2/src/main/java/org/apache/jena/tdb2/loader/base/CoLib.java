@@ -16,41 +16,39 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader.parallel;
+package org.apache.jena.tdb2.loader.base;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
 /** Per-thread TransactionCoordinator helpers. */
-/*package*/ public class CoLib {
+public class CoLib {
     
-    /*package*/ public static TransactionCoordinator newCoordinator() {
+    public static TransactionCoordinator newCoordinator() {
         Journal journal = Journal.create(Location.mem());
         return new TransactionCoordinator(journal);
     }
     
-    /*package*/ public static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
+    public static void add(TransactionCoordinator coordinator, NodeTable nodeTable) {
         coordinator.add(LoaderOps.ntDataFile(nodeTable));
         coordinator.add(LoaderOps.ntBPTree(nodeTable));
     }
     
-    /*package*/ public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
+    public static void add(TransactionCoordinator coordinator, TupleIndex... indexes) {
         for ( TupleIndex pIdx : indexes ) {
             coordinator.add(LoaderOps.idxBTree(pIdx));
         }
     }
 
-    /*package*/ public static void start(TransactionCoordinator coordinator) {
+    public static void start(TransactionCoordinator coordinator) {
         coordinator.start();
     }
     
-    /*package*/ public static void finish(TransactionCoordinator coordinator) {
-        // Donot do this - it will shutdown the TrasnactionComponents as well.
+    public static void finish(TransactionCoordinator coordinator) {
+        // Do not do this - it will shutdown the TransactionComponents as well.
         //coordinator.shutdown();
     }
-
 }

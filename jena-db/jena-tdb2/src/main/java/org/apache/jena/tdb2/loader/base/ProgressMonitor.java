@@ -33,10 +33,13 @@ public interface ProgressMonitor {
      */
     public void finishMessage(String message);
 
-    /** Start and start timing. TYhis should be pairs with a call to {@link #finish()}. */
+    /** Start and start timing. This should be paired with a call to {@link #finish()}. */
     public void start();
 
-    /** Finish - return time in milliseconds since the {@link #start()} call. */
+    /**
+     * Finish and stop timing. The total time is available with {@link #getTime} and the
+     * numbe rof items processes with {@link #getTicks()}.
+     */
     public void finish();
 
     /** Something happened */

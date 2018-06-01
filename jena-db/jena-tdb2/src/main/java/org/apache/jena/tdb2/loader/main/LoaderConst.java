@@ -16,15 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb2.loader;
+package org.apache.jena.tdb2.loader.main;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collections;
+import java.util.List;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestLoaderStd.class ,
-    TestLoaderMain.class
-})
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.tdb2.store.NodeId;
 
-public class TS_Loader {}
+public class LoaderConst {
+
+    /** Chunk size for the triple->tuples output pipe */  
+    public final static int ChunkSize = 100_000 ;
+
+    /** Queue size for chunks of tuples Tuples */
+    public final static int QueueSizeTuples = 10;
+
+    //public final static int pipeSize = 10;
+    
+    /* package */ static final List<Tuple<NodeId>> END_TUPLES      = Collections.emptyList();
+
+    /*package*/ static final int QueueSizeData = 10;
+
+}
