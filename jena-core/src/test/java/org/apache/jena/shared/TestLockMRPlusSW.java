@@ -18,7 +18,7 @@
 
 package org.apache.jena.shared;
 
-import static com.jayway.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.await;
 import static java.lang.Thread.sleep;
 import static java.util.concurrent.Executors.defaultThreadFactory;
 

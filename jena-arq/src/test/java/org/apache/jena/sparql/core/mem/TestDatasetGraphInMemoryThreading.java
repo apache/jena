@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static com.jayway.awaitility.Awaitility.await ;
+import static org.awaitility.Awaitility.await ;
 import static org.apache.jena.graph.NodeFactory.createBlankNode ;
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
