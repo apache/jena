@@ -37,6 +37,7 @@ import org.junit.runners.Suite ;
     // Writers
     , TestBufferingWriter.class
     // Other
+    , TestFilenameExtensions.class
     , TestPrintUtils.class
 } )
 public class TS_IO

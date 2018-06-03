@@ -24,7 +24,11 @@ import java.nio.charset.StandardCharsets ;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
 import org.apache.jena.atlas.RuntimeIOException ;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib ;
 
 public class IO
@@ -63,7 +67,7 @@ public class IO
     
     /** Open an input stream to a file; do not mask IOExceptions. 
      * If the filename is null or "-", return System.in
-     * If the filename ends in .gz, wrap in  GZIPInputStream  
+     * If the filename ends in .gz, wrap in GZIPInputStream  
      * @param filename
      * @throws FileNotFoundException 
      * @throws IOException
@@ -77,9 +81,27 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         InputStream in = new FileInputStream(filename) ;
-        if ( filename.endsWith(".gz") )
-            in = new GZIPInputStream(in) ;
+        String ext = FileOps.extension(filename);
+        switch ( ext ) {
+            case "":        return in;
+            case "gz":      return new GZIPInputStream(in) ;
+            case "bz2":     return new BZip2CompressorInputStream(in);
+            case "sz":      return new SnappyCompressorInputStream(in);
+        }
         return in ;
+    }
+
+    private static String[] extensions = { ".gz", ".bz2", ".sz" }; 
+    
+    /** The filename without any compression extension, or the original filename.
+     *  It tests for compression types handled by {@link #openFileEx}.
+     */
+    static public String filenameNoCompression(String filename) {
+        for ( String ext : extensions ) {
+            if ( filename.endsWith(ext) )
+                return filename.substring(0, filename.length()-ext.length());
+        }
+        return filename;
     }
     
     /** Open a UTF8 Reader for a file. 
@@ -134,11 +156,8 @@ public class IO
     }
 
     /** Open a file for output - may include adding gzip processing. */
-    static public OutputStream openOutputFile(String filename)
-    {
-        try {
-           return openOutputFileEx(filename) ;
-        }
+    static public OutputStream openOutputFile(String filename) {
+        try { return openOutputFileEx(filename) ; }
         catch (IOException ex) { IO.exception(ex) ; return null ; }
     }
     
@@ -158,15 +177,18 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         OutputStream out = new FileOutputStream(filename) ;
-        if ( filename.endsWith(".gz") )
-            out = new GZIPOutputStream(out) ;
+        String ext = FileOps.extension(filename);
+        switch ( ext ) {
+            case "":        return out;
+            case "gz":      return new GZIPOutputStream(out) ;
+            case "bz2":     return new BZip2CompressorOutputStream(out);
+            case "sz":      throw new UnsupportedOperationException("Snappy output");
+        }
         return out ;
     }
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrap(Writer w) { 
-        return Writer2.wrap(w) ;
-    }
+    static public AWriter wrap(Writer w)                    { return Writer2.wrap(w) ; }
     
     /** Wrap in a general writer interface */ 
     static public AWriter wrapUTF8(OutputStream out)        { return wrap(asUTF8(out)) ; } 
@@ -343,5 +365,4 @@ public class IO
             return null ;
         }
     }
-
 }

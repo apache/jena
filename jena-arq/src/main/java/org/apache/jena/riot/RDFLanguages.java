@@ -45,6 +45,7 @@ import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt2;
 
 import java.util.*;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
@@ -409,9 +410,8 @@ public class RDFLanguages
         int iHash = filename.indexOf('#');
         if ( iHash  > 0 )
             filename = filename.substring(0, iHash);
-        // Gzip compressed?
-        if ( filename.endsWith(".gz") )
-            filename = filename.substring(0, filename.length()-3);
+        // Gzip or BZip2 compressed?
+        filename = IO.filenameNoCompression(filename);
         return fileExtToLang(FileUtils.getFilenameExt(filename));
     }
 
