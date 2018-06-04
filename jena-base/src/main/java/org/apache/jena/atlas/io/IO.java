@@ -27,8 +27,8 @@ import java.util.zip.GZIPOutputStream ;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.atlas.RuntimeIOException ;
-import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib ;
 
 public class IO
@@ -81,7 +81,7 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         InputStream in = new FileInputStream(filename) ;
-        String ext = FileOps.extension(filename);
+        String ext = FilenameUtils.getExtension(filename);
         switch ( ext ) {
             case "":        return in;
             case "gz":      return new GZIPInputStream(in) ;
@@ -91,15 +91,14 @@ public class IO
         return in ;
     }
 
-    private static String[] extensions = { ".gz", ".bz2", ".sz" }; 
+    private static String[] extensions = { "gz", "bz2", "sz" }; 
     
     /** The filename without any compression extension, or the original filename.
      *  It tests for compression types handled by {@link #openFileEx}.
      */
     static public String filenameNoCompression(String filename) {
-        for ( String ext : extensions ) {
-            if ( filename.endsWith(ext) )
-                return filename.substring(0, filename.length()-ext.length());
+        if ( FilenameUtils.isExtension(filename, extensions) ) {
+            return FilenameUtils.removeExtension(filename);
         }
         return filename;
     }
@@ -177,7 +176,7 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         OutputStream out = new FileOutputStream(filename) ;
-        String ext = FileOps.extension(filename);
+        String ext = FilenameUtils.getExtension(filename);
         switch ( ext ) {
             case "":        return out;
             case "gz":      return new GZIPOutputStream(out) ;
