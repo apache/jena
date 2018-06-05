@@ -68,6 +68,7 @@
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.5</ver.commonscsv>
     <ver.commons-codec>1.11</ver.commons-codec>
+    <ver.commons-compress>1.17</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
@@ -88,7 +89,7 @@
     <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
-    <ver.awaitility>1.7.0</ver.awaitility>
+    <ver.awaitility>3.1.0</ver.awaitility>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -318,6 +319,12 @@
       </dependency>
       
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${ver.commons-compress}</version>
+      </dependency>
+      
+      <dependency>
         <groupId>org.apache.thrift</groupId>
         <artifactId>libthrift</artifactId>
         <version>${ver.libthrift}</version>
@@ -527,7 +534,7 @@
       </dependency>
       
       <dependency>
-        <groupId>com.jayway.awaitility</groupId>
+        <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
       </dependency>
