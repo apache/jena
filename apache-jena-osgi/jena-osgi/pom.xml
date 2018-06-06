@@ -251,7 +251,19 @@
             <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>            
             <Embed-Dependency>artifactId=jena*;inline=true</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,com.google.errorprone.annotations.concurrent;resolution:=optional,*</Import-Package>
+            <Import-Package>
+              org.osgi.framework.*,
+              !sun.io,
+              !org.apache.avalon.framework.logger,
+              !com.ibm.uvm.tools,
+              !com.sun.jdmk.comm,
+              !org.apache.log,
+              !org.checkerframework.checker.*,
+              !org.apache.jena.ext.*,
+              sun.misc;resolution:=optional,
+              com.google.errorprone.annotations.*;resolution:=optional,
+              *
+            </Import-Package>
             <!--
             <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
             -->

@@ -33,11 +33,14 @@
 		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${ver.jackson}</bundle>
 		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${ver.httpcore-osgi}</bundle>
 		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${ver.httpclient-osgi}</bundle>
+		<bundle>mvn:org.apache.commons/commons-compress/${ver.commons-compress}</bundle>
 		<bundle>mvn:org.apache.commons/commons-csv/${ver.commonscsv}</bundle>
 		<bundle>mvn:org.apache.commons/commons-lang3/${ver.commonslang3}</bundle>
 		<bundle>mvn:commons-codec/commons-codec/${ver.commons-codec}</bundle>
 		<bundle>mvn:commons-io/commons-io/${ver.commonsio}</bundle>
-		<bundle>mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>	
+		<bundle>mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>
+		<!-- Guava 24.1 is required by jsonld-java -->
+		<bundle>mvn:com.google.guava/guava/24.1-jre</bundle>
 	</feature>
 
 	<feature name="xerces" version="2.11.0">
