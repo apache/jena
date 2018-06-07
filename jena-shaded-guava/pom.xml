@@ -40,14 +40,49 @@
   </description>
 
   <dependencies>
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <!-- Version number specified explicitly and not in jena-project, 
            as it should only be used here, and further shadowing/bundle/NOTICE
-           consideration might be needed on upgrade. -->
+           consideration might be needed on upgrade. 
+           The shading step takes only the com.google.commons/com.google.thirdparty
+           This is important because Guava itself (at v24 at least) has tools dependencies
+           with various licenses.
+      -->
       <version>24.1-jre</version>
+      <optional>true</optional>
+      <!-- These make the excluded parts clean for dependency:tree in the module directory -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-qual</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-compat-qual</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.j2objc</groupId>
+          <artifactId>j2objc-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-annotations</artifactId>
+        </exclusion>
+      </exclusions>
+
     </dependency>
+
   </dependencies>
   <properties>
    <automatic.module.name>org.apache.jena.ext.com.google</automatic.module.name>
@@ -90,6 +125,9 @@
                 <include>com/google/common/**</include>
                 <include>com/google/thirdparty/**</include>
               </includes>
+              <excludes>
+                <exclude>META-INF/maven/**</exclude>
+              </excludes>
             </filter>
           </filters>
 
