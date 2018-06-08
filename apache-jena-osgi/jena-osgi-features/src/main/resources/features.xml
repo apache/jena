@@ -21,31 +21,24 @@
 	<feature name="jena" version="${project.version}">
 		<bundle>mvn:org.apache.jena/jena-osgi/${project.version}</bundle>
 		<feature version="${project.version}">jena_osgi_dependencies</feature>
-		<!-- This is normally exposed by Apache Karaf via root classloader -->
-		<!--<feature version="2.11.0">xerces</feature>-->
 	</feature>
 
 	<feature name="jena_osgi_dependencies" version="${project.version}">
-		<bundle>mvn:com.github.andrewoma.dexx/collection/${ver.dexxcollection}</bundle>
-		<bundle>mvn:com.github.jsonld-java/jsonld-java/${ver.jsonldjava}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-core/${ver.jackson}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-databind/${ver.jackson}</bundle>
-		<bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${ver.jackson}</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${ver.httpcore-osgi}</bundle>
-		<bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${ver.httpclient-osgi}</bundle>
-		<bundle>mvn:org.apache.commons/commons-compress/${ver.commons-compress}</bundle>
-		<bundle>mvn:org.apache.commons/commons-csv/${ver.commonscsv}</bundle>
-		<bundle>mvn:org.apache.commons/commons-lang3/${ver.commonslang3}</bundle>
-		<bundle>mvn:commons-codec/commons-codec/${ver.commons-codec}</bundle>
-		<bundle>mvn:commons-io/commons-io/${ver.commonsio}</bundle>
-		<bundle>mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>
+		<bundle dependency="true">mvn:com.github.andrewoma.dexx/collection/${ver.dexxcollection}</bundle>
+		<bundle dependency="true">mvn:com.github.jsonld-java/jsonld-java/${ver.jsonldjava}</bundle>
+		<bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-core/${ver.jackson}</bundle>
+		<bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-databind/${ver.jackson}</bundle>
+		<bundle dependency="true">mvn:com.fasterxml.jackson.core/jackson-annotations/${ver.jackson}</bundle>
+		<bundle dependency="true">mvn:org.apache.httpcomponents/httpcore-osgi/${ver.httpcore-osgi}</bundle>
+		<bundle dependency="true">mvn:org.apache.httpcomponents/httpclient-osgi/${ver.httpclient-osgi}</bundle>
+		<bundle dependency="true">mvn:org.apache.commons/commons-compress/${ver.commons-compress}</bundle>
+		<bundle dependency="true">mvn:org.apache.commons/commons-csv/${ver.commonscsv}</bundle>
+		<bundle dependency="true">mvn:org.apache.commons/commons-lang3/${ver.commonslang3}</bundle>
+		<bundle dependency="true">mvn:commons-codec/commons-codec/${ver.commons-codec}</bundle>
+		<bundle dependency="true">mvn:commons-io/commons-io/${ver.commonsio}</bundle>
+		<bundle dependency="true">mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>
 		<!-- Guava 24.1 is required by jsonld-java -->
-		<bundle>mvn:com.google.guava/guava/24.1-jre</bundle>
-	</feature>
-
-	<feature name="xerces" version="2.11.0">
-		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/2.11.0_1</bundle>
-		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/1.2_5</bundle>
+		<bundle dependency="true">mvn:com.google.guava/guava/24.1-jre</bundle>
 	</feature>
 
 </features>

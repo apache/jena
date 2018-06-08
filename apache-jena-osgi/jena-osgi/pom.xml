@@ -258,10 +258,10 @@
               !com.ibm.uvm.tools,
               !com.sun.jdmk.comm,
               !org.apache.log,
-              !org.checkerframework.checker.*,
               !org.apache.jena.ext.*,
+              !org.checkerframework.checker.*,
+              !com.google.errorprone.annotations.*,
               sun.misc;resolution:=optional,
-              com.google.errorprone.annotations.*;resolution:=optional,
               *
             </Import-Package>
             <!--
