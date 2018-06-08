@@ -343,6 +343,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         return getGraph(Quad.defaultGraphNodeGenerated);
     }
 
+    @Override
+    public Graph getUnionGraph() {
+        return getGraph(Quad.unionGraph);
+    }
+    
     private Consumer<Graph> addGraph(final Node name) {
         return g -> g.find().mapWith(t -> new Quad(name, t)).forEachRemaining(this::add);
     }

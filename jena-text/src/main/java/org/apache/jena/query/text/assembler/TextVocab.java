@@ -43,6 +43,7 @@ public class TextVocab
     public static final Property pQueryParser       = Vocab.property(NS, "queryParser") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;
     public static final Property pTokenizer         = Vocab.property(NS, "tokenizer") ;
+    public static final Property pFilter            = Vocab.property(NS, "filter") ;
     public static final Property pFilters           = Vocab.property(NS, "filters") ;
     
     // Entity definition
@@ -78,21 +79,24 @@ public class TextVocab
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");
     public static final Resource asciiFoldingFilter = Vocab.resource(NS, "ASCIIFoldingFilter");
 
+    // ElasticSearch
     public static final Property pServerList        = Vocab.property(NS, "serverList");
     public static final Property pClusterName       = Vocab.property(NS, "clusterName");
     public static final Property pShards            = Vocab.property(NS, "shards");
     public static final Property pReplicas          = Vocab.property(NS, "replicas");
-    public static final Property pIndexName          = Vocab.property(NS, "indexName");
+    public static final Property pIndexName         = Vocab.property(NS, "indexName");
 
-    //GenericAnalyzer
-    public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
+    //GenericAnalyzer, DefinedFilter, DefinedTokenizer
     public static final Resource definedAnalyzer    = Vocab.resource(NS, "DefinedAnalyzer");
-    public static final Resource typeAnalyzer       = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_ANALYZER);
-    public static final Resource typeBoolean        = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_BOOL);
-    public static final Resource typeFile           = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_FILE);
-    public static final Resource typeInt            = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_INT);
-    public static final Resource typeSet            = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_SET);
-    public static final Resource typeString         = Vocab.resource(NS, GenericAnalyzerAssembler.TYPE_STRING);
+    public static final Resource genericAnalyzer    = Vocab.resource(NS, "GenericAnalyzer");
+    public static final Resource genericFilter      = Vocab.resource(NS, "GenericFilter");
+    public static final Resource genericTokenizer   = Vocab.resource(NS, "GenericTokenizer");
+    public static final Resource typeAnalyzer       = Vocab.resource(NS, Params.TYPE_ANALYZER);
+    public static final Resource typeBoolean        = Vocab.resource(NS, Params.TYPE_BOOL);
+    public static final Resource typeFile           = Vocab.resource(NS, Params.TYPE_FILE);
+    public static final Resource typeInt            = Vocab.resource(NS, Params.TYPE_INT);
+    public static final Resource typeSet            = Vocab.resource(NS, Params.TYPE_SET);
+    public static final Resource typeString         = Vocab.resource(NS, Params.TYPE_STRING);
     public static final Property pClass             = Vocab.property(NS, "class");
     public static final Property pParams            = Vocab.property(NS, "params");
     public static final Property pParamName         = Vocab.property(NS, "paramName");
@@ -100,8 +104,14 @@ public class TextVocab
     public static final Property pParamValue        = Vocab.property(NS, "paramValue");
     public static final Property pDefAnalyzers      = Vocab.property(NS, "defineAnalyzers");
     public static final Property pDefAnalyzer       = Vocab.property(NS, "defineAnalyzer");
+    public static final Property pDefFilter         = Vocab.property(NS, "defineFilter");
+    public static final Property pDefTokenizer      = Vocab.property(NS, "defineTokenizer");
     public static final Property pAddLang           = Vocab.property(NS, "addLang");
     public static final Property pUseAnalyzer       = Vocab.property(NS, "useAnalyzer");
+    public static final Property pSearchFor         = Vocab.property(NS, "searchFor");
+    public static final Property pAuxIndex          = Vocab.property(NS, "auxIndex");
+    public static final Property pIndexAnalyzer     = Vocab.property(NS, "indexAnalyzer");
+    public static final Property indexAnalyzer      = Vocab.property(NS, "IndexAnalyzer");
     
     // Query Cache
     public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");

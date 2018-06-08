@@ -27,18 +27,19 @@ import org.apache.jena.riot.system.ProgressStreamRDF ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 public class Loader {
     
-    private static final int BATCH_SIZE = 100 ;
-    
-    // XXX StreamRDFBatchSplit and parallel index update.
+//    private static final int BATCH_SIZE = 100 ;
+//    
+//    // XXX StreamRDFBatchSplit and parallel index update.
     private static Logger LOG = LoggerFactory.getLogger("Loader") ;
     
     public static void bulkLoad(Dataset ds, String ... files) {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
         StreamRDF s1 = StreamRDFLib.dataset(dsg) ;
         ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, 10) ;
         ProgressStreamRDF sMonitor = new ProgressStreamRDF(s1, plog) ;
@@ -56,23 +57,22 @@ public class Loader {
         plog.finishMessage();
     }
     
-    public static void bulkLoadBatching(Dataset ds, String ... files) {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)ds.asDatasetGraph() ;
-
-        StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
-        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, BATCH_SIZE) ;
-        // Want the monitor on the outside to capture transaction wrapper costs.
-        StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
-
-        plog.start(); 
-        Txn.executeWrite(ds, () -> {
-            for ( String fn : files ) {
-                if ( files.length > 1 )
-                    FmtLog.info(LOG, "File: %s",fn);
-                RDFDataMgr.parse(s3, fn) ;
-            }
-        }) ;
-        plog.finish();  
-        plog.finishMessage();
-    }
+//    public static void bulkLoadBatching(Dataset ds, String ... files) {
+//        DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(ds);
+//        StreamRDFBatchSplit s1 = new StreamRDFBatchSplit(dsg, 10) ;
+//        ProgressMonitor plog = ProgressMonitor.create(LOG, "Triples", 100000, BATCH_SIZE) ;
+//        // Want the monitor on the outside to capture transaction wrapper costs.
+//        StreamRDF s3 = new ProgressStreamRDF(s1, plog) ;
+//
+//        plog.start(); 
+//        Txn.executeWrite(ds, () -> {
+//            for ( String fn : files ) {
+//                if ( files.length > 1 )
+//                    FmtLog.info(LOG, "File: %s",fn);
+//                RDFDataMgr.parse(s3, fn) ;
+//            }
+//        }) ;
+//        plog.finish();  
+//        plog.finishMessage();
+//    }
 }

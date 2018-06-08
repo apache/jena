@@ -148,13 +148,13 @@ public class RDFConnectionRemoteBuilder {
     
     }
 
-    /** Set the {@link HttpClient} fir the conenction to tbe built */
+    /** Set the {@link HttpClient} fir the connection to tbe built */
     public RDFConnectionRemoteBuilder httpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
         return this;
     }
 
-    /** Set the {@link HttpContext} for the conenction to tbe built */
+    /** Set the {@link HttpContext} for the connection to tbe built */
     public RDFConnectionRemoteBuilder httpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
         return this;

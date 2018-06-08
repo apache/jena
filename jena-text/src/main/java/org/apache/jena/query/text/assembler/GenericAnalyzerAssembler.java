@@ -18,10 +18,8 @@
 
 package org.apache.jena.query.text.assembler;
 
-import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.assembler.Assembler;
@@ -29,13 +27,9 @@ import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.vocabulary.RDF;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.CharArraySet;
 
 /**
  * Creates generic analyzers given a fully qualified Class name and a list
@@ -142,13 +136,6 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
            ] .
      */
 
-    public static final String TYPE_ANALYZER   = "TypeAnalyzer";
-    public static final String TYPE_BOOL       = "TypeBoolean";
-    public static final String TYPE_FILE       = "TypeFile";
-    public static final String TYPE_INT        = "TypeInt";
-    public static final String TYPE_SET        = "TypeSet";
-    public static final String TYPE_STRING     = "TypeString";
-
     @Override
     public Analyzer open(Assembler a, Resource root, Mode mode) {
         if (root.hasProperty(TextVocab.pClass)) {
@@ -176,13 +163,13 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
                     throw new TextIndexException("text:params must be a list of parameter resources: " + node);
                 }
 
-                List<ParamSpec> specs = getParamSpecs((Resource) node);
+                List<Params.ParamSpec> specs = Params.getParamSpecs((Resource) node);
 
                 // split the param specs into classes and values for constructor lookup
                 final Class<?> paramClasses[] = new Class<?>[specs.size()];
                 final Object paramValues[] = new Object[specs.size()];
                 for (int i = 0; i < specs.size(); i++) {
-                    ParamSpec spec = specs.get(i);
+                    Params.ParamSpec spec = specs.get(i);
                     paramClasses[i] = spec.getValueClass();
                     paramValues[i] = spec.getValue();
                 }
@@ -223,216 +210,5 @@ public class GenericAnalyzerAssembler extends AssemblerBase {
         }
 
         return null;
-    }
-
-    private List<ParamSpec> getParamSpecs(Resource list) {
-        List<ParamSpec> result = new ArrayList<>();
-        Resource current = list;
-
-        while (current != null && ! current.equals(RDF.nil)){
-            Statement firstStmt = current.getProperty(RDF.first);
-            if (firstStmt == null) {
-                throw new TextIndexException("parameter list not well formed: " + current);
-            }
-
-            RDFNode first = firstStmt.getObject();
-            if (! first.isResource()) {
-                throw new TextIndexException("parameter specification must be an anon resource : " + first);
-            }
-
-            result.add(getParamSpec((Resource) first));
-
-            Statement restStmt = current.getProperty(RDF.rest);
-            if (restStmt == null) {
-                throw new TextIndexException("parameter list not terminated by rdf:nil");
-            }
-
-            RDFNode rest = restStmt.getObject();
-            if (! rest.isResource()) {
-                throw new TextIndexException("parameter list node is not a resource : " + rest);
-            }
-
-            current = (Resource) rest;
-        }
-
-        return result;
-    }
-
-    private ParamSpec getParamSpec(Resource node) {
-        Statement nameStmt = node.getProperty(TextVocab.pParamName);
-        Statement typeStmt = node.getProperty(TextVocab.pParamType);
-        Statement valueStmt = node.getProperty(TextVocab.pParamValue);
-        
-        if (typeStmt == null) {
-            throw new TextIndexException("Parameter specification must have a text:paramType: " + node);
-        }        
-        Resource typeRes = typeStmt.getResource();
-        String type = typeRes.getLocalName();
-
-        String name = getStringValue(nameStmt);
-        String value = getStringValue(valueStmt);
-
-        switch (type) {
-
-        // String
-        case TYPE_STRING: {
-            if (value == null) {
-                throw new TextIndexException("Value for string param: " + name + " must not be empty!");
-            }
-
-            return new ParamSpec(name, value, String.class);
-        }
-
-        // java.io.FileReader
-        case TYPE_FILE: {
-
-            if (value == null) {
-                throw new TextIndexException("Value for file param must exist and must contain a file name.");
-            }
-
-            try {
-                // The analyzer is responsible for closing the file
-                Reader fileReader = new java.io.FileReader(value);
-                return new ParamSpec(name, fileReader, Reader.class);
-
-            } catch (java.io.FileNotFoundException ex) {
-                throw new TextIndexException("File " + value + " for param " + name + " not found!");
-            }
-        }
-
-        // org.apache.lucene.analysis.util.CharArraySet
-        case TYPE_SET: {
-            if (valueStmt == null) {
-                throw new TextIndexException("A set param spec must have a text:paramValue:" + node);
-            }
-
-            RDFNode valueNode = valueStmt.getObject();
-            if (!valueNode.isResource()) {
-                throw new TextIndexException("A set param spec text:paramValue must be a list of strings: " + valueNode);
-            }
-
-            List<String> values = toStrings((Resource) valueNode);
-
-            return new ParamSpec(name, new CharArraySet(values, false), CharArraySet.class);
-        }
-
-        // int
-        case TYPE_INT:
-            if (value == null) {
-                throw new TextIndexException("Value for int param: " + name + " must not be empty!");
-            }
-
-            int n = ((Literal) valueStmt.getObject()).getInt();
-            return new ParamSpec(name, n, int.class);
-
-            // boolean
-        case TYPE_BOOL:
-            if (value == null) {
-                throw new TextIndexException("Value for boolean param: " + name + " must not be empty!");
-            }
-
-            boolean b = ((Literal) valueStmt.getObject()).getBoolean();
-            return new ParamSpec(name, b, boolean.class);
-
-            // org.apache.lucene.analysis.Analyzer
-        case TYPE_ANALYZER:
-            if (valueStmt == null) {
-                throw new TextIndexException("Analyzer param spec must have a text:paramValue:" + node);
-            }
-
-            RDFNode valueNode = valueStmt.getObject();
-            if (!valueNode.isResource()) {
-                throw new TextIndexException("Analyzer param spec text:paramValue must be an analyzer spec resource: " + valueNode);
-            }
-
-            Analyzer analyzer = (Analyzer) Assembler.general.open((Resource) valueNode);
-            return new ParamSpec(name, analyzer, Analyzer.class);
-
-        default:
-            // there was no match
-            Log.error(this, "Unknown parameter type: " + type + " for param: " + name + " with value: " + value);
-            break;
-        }
-
-        return null;
-    }
-
-    private String getStringValue(Statement stmt) {
-        if (stmt == null) {
-            return null;
-        } else {
-            RDFNode node = stmt.getObject();
-            if (node.isLiteral()) {
-                return ((Literal) node).getLexicalForm();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    private List<String> toStrings(Resource list) {
-        List<String> result = new ArrayList<>();
-        Resource current = list;
-
-        while (current != null && ! current.equals(RDF.nil)){
-            Statement firstStmt = current.getProperty(RDF.first);
-            if (firstStmt == null) {
-                throw new TextIndexException("param spec of type set not well formed");
-            }
-
-            RDFNode first = firstStmt.getObject();
-            if (! first.isLiteral()) {
-                throw new TextIndexException("param spec of type set item is not a literal: " + first);
-            }
-
-            result.add(((Literal)first).getLexicalForm());
-
-            Statement restStmt = current.getProperty(RDF.rest);
-            if (restStmt == null) {
-                throw new TextIndexException("param spec of type set not terminated by rdf:nil");
-            }
-
-            RDFNode rest = restStmt.getObject();
-            if (! rest.isResource()) {
-                throw new TextIndexException("param spec of type set rest is not a resource: " + rest);
-            }
-
-            current = (Resource) rest;
-        }
-
-        return result;
-    }
-
-    /**
-     * <code>ParamSpec</code> contains the <code>name</code>, <code>Class</code>, and 
-     * <code>value</code> of a parameter for a constructor (or really any method in general)
-     */
-    private static final class ParamSpec {
-
-        private final String name;
-        private final Object value;
-        private final Class<?> clazz;
-
-        public ParamSpec(String key, Object value) {
-            this(key, value, value.getClass());
-        }
-
-        public ParamSpec(String key, Object value, Class<?> clazz) {
-            this.name = key;
-            this.value = value;
-            this.clazz = clazz;
-        }
-
-        public String getKey() {
-            return name;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public Class<?> getValueClass() {
-            return clazz;
-        }
     }
 }

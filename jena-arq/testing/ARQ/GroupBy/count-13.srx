@@ -4,10 +4,5 @@
     <variable name="c"/>
   </head>
   <results>
-    <result>
-      <binding name="c">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
-      </binding>
-    </result>
   </results>
 </sparql>

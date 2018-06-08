@@ -32,7 +32,7 @@ public class TestNV {
     
     // No conversion to JS - becomes an NV.
     @Test public void nv_5() { test("'2018-01-06T17:56:41.293+00:00'^^xsd:dateTime"); }
-    @Test public void nv_6() { test("<http://jena/apche.org/>"); }
+    @Test public void nv_6() { test("<http://jena.apache.org/>"); }
     @Test public void nv_7() { test("_:abc123"); }
     
     @Test public void nv_10() {
@@ -44,10 +44,10 @@ public class TestNV {
     }
 
     @Test public void nv_12() {
-        NodeValue nodeValue = nv("<http://jena/apche.org/>");
+        NodeValue nodeValue = nv("<http://jena.apache.org/>");
         NV nv = new NV(nodeValue);
-        assertEquals("http://jena/apche.org/", nv.getUri());
-        assertEquals("http://jena/apche.org/", nv.getValue());
+        assertEquals("http://jena.apache.org/", nv.getUri());
+        assertEquals("http://jena.apache.org/", nv.getValue());
         assertEquals("NamedNode", nv.getTermType());
     }
 

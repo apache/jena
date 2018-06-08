@@ -28,6 +28,8 @@ import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
@@ -146,7 +148,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     public void performAdd( Triple t ) { 
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
-            throw new GraphViewException("Can't update the default union graph of a dataset") ; 
+            throw new AddDeniedException("Can't update the union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
@@ -157,7 +159,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     public void performDelete( Triple t ) {
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
-            throw new GraphViewException("Can't update the default union graph of a dataset") ; 
+            throw new DeleteDeniedException("Can't update the union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;

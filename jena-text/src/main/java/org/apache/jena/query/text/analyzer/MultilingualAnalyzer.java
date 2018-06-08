@@ -20,6 +20,8 @@ package org.apache.jena.query.text.analyzer ;
 
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /** 
@@ -29,6 +31,7 @@ import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
  */
 
 public class MultilingualAnalyzer extends DelegatingAnalyzerWrapper {
+        private static Logger log = LoggerFactory.getLogger(MultilingualAnalyzer.class);
         private Analyzer defaultAnalyzer;
 
         public MultilingualAnalyzer(Analyzer defaultAnalyzer) {
@@ -44,7 +47,9 @@ public class MultilingualAnalyzer extends DelegatingAnalyzerWrapper {
                 }
                 String lang = fieldName.substring(idx+1);
                 Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
-                return (analyzer != null ? analyzer : defaultAnalyzer);
+                analyzer = analyzer != null ? analyzer : defaultAnalyzer;
+                log.trace("getWrappedAnalyzer {}", analyzer);
+                return analyzer;
         }
 
         @Override

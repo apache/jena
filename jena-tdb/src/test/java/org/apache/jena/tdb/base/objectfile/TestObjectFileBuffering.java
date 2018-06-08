@@ -24,11 +24,8 @@ import static org.apache.jena.tdb.base.objectfile.AbstractTestObjectFile.fill ;
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.tdb.base.block.Block ;
 import org.apache.jena.tdb.base.file.BufferChannel ;
 import org.apache.jena.tdb.base.file.BufferChannelMem ;
-import org.apache.jena.tdb.base.objectfile.ObjectFile ;
-import org.apache.jena.tdb.base.objectfile.ObjectFileStorage ;
 import org.junit.Test ;
 
 public class TestObjectFileBuffering extends BaseTest
@@ -62,41 +59,41 @@ public class TestObjectFileBuffering extends BaseTest
         }
     }
     
-    private void writePrealloc(int sizeOfBuffer, int... sizes)
-    {
-        ObjectFile file = make(sizeOfBuffer) ;
-        int N = sizes.length ;
-        Block blocks[] = new Block[N] ;
-        ByteBuffer read[] = new ByteBuffer[N] ;
-        
-        for ( int i = 0 ; i < N ; i++ )
-        {
-            blocks[i] = file.allocWrite(sizes[i]) ;
-            fill(blocks[i].getByteBuffer()) ;
-            file.completeWrite(blocks[i]) ;
-        }
-
-        for ( int i = 0 ; i < N ; i++ )
-        {
-            read[i] = file.read(blocks[i].getId()) ;
-            assertNotSame(blocks[i].getByteBuffer(), read[i]) ;
-            sameValue(blocks[i].getByteBuffer(), read[i]) ;
-        }
-    }
+//    private void writePrealloc(int sizeOfBuffer, int... sizes)
+//    {
+//        ObjectFile file = make(sizeOfBuffer) ;
+//        int N = sizes.length ;
+//        Block blocks[] = new Block[N] ;
+//        ByteBuffer read[] = new ByteBuffer[N] ;
+//        
+//        for ( int i = 0 ; i < N ; i++ )
+//        {
+//            blocks[i] = file.allocWrite(sizes[i]) ;
+//            fill(blocks[i].getByteBuffer()) ;
+//            file.completeWrite(blocks[i]) ;
+//        }
+//
+//        for ( int i = 0 ; i < N ; i++ )
+//        {
+//            read[i] = file.read(blocks[i].getId()) ;
+//            assertNotSame(blocks[i].getByteBuffer(), read[i]) ;
+//            sameValue(blocks[i].getByteBuffer(), read[i]) ;
+//        }
+//    }
 
     
     @Test public void objectfile_50()       { write(5, 10) ; }
-    @Test public void objectfile_51()       { writePrealloc(5, 10) ; }
+    //@Test public void objectfile_51()       { writePrealloc(5, 10) ; }
     @Test public void objectfile_52()       { write(12, 10) ; }
-    @Test public void objectfile_53()       { writePrealloc(12, 10) ; }
+    //@Test public void objectfile_53()       { writePrealloc(12, 10) ; }
     @Test public void objectfile_54()       { write(12, 10, 8) ; }          // 10 is too big
-    @Test public void objectfile_55()       { writePrealloc(12, 10, 8) ; }  // 10 is too big
+    //@Test public void objectfile_55()       { writePrealloc(12, 10, 8) ; }  // 10 is too big
     @Test public void objectfile_56()       { write(12, 6, 10) ; }
-    @Test public void objectfile_57()       { writePrealloc(12, 6, 10) ; }
+    //@Test public void objectfile_57()       { writePrealloc(12, 6, 10) ; }
     @Test public void objectfile_58()       { write(20, 6, 10, 5) ; }
-    @Test public void objectfile_59()       { writePrealloc(20, 6, 10, 5) ; }
+    //@Test public void objectfile_59()       { writePrealloc(20, 6, 10, 5) ; }
 
     @Test public void objectfile_60()       { write(20, 4, 4, 8) ; }
-    @Test public void objectfile_61()       { writePrealloc(20, 4, 4, 8) ; }
+    //@Test public void objectfile_61()       { writePrealloc(20, 4, 4, 8) ; }
 
 }

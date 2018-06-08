@@ -22,7 +22,6 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.tdb.base.block.Block ;
 
 /** 
  * An ObjectFile is an append-read file, that is you can append data
@@ -34,15 +33,6 @@ public class ObjectFileWrapper implements ObjectFile
     protected ObjectFile other ;
 
     public ObjectFileWrapper(ObjectFile other)      { this.other = other ; }
-    
-    @Override
-    public Block allocWrite(int maxBytes)           { return other.allocWrite(maxBytes) ; }
-
-    @Override
-    public void completeWrite(Block buffer)         { other.completeWrite(buffer) ; }
-
-    @Override
-    public void abortWrite(Block buffer)            { other.abortWrite(buffer) ; }
     
     @Override
     public long write(ByteBuffer buffer)            { return other.write(buffer) ; }

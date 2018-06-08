@@ -271,6 +271,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     @Override
+    public Graph getUnionGraph() {
+        return getGraph(Quad.unionGraph);
+    }
+
+    @Override
     public Graph getGraph(Node graphNode) {
         checkNotClosed();
         return new GraphTDB(this, graphNode);

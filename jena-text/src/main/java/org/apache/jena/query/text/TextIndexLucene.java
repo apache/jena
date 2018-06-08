@@ -31,7 +31,10 @@ import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.query.text.analyzer.IndexingMultilingualAnalyzer;
 import org.apache.jena.query.text.analyzer.MultilingualAnalyzer;
+import org.apache.jena.query.text.analyzer.QueryMultilingualAnalyzer;
+import org.apache.jena.query.text.analyzer.Util;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.TokenStream;
@@ -92,7 +95,9 @@ public class TextIndexLucene implements TextIndex {
 
     private final EntityDefinition docDef ;
     private final Directory        directory ;
-    private final Analyzer         analyzer ;
+    private final Analyzer         indexAnalyzer ;
+    private       Analyzer         defaultAnalyzer ;
+    private       Map<String, Analyzer> analyzerPerField;
     private final Analyzer         queryAnalyzer ;
     private final String           queryParserType ;
     private final FieldType        ftText ;
@@ -122,7 +127,7 @@ public class TextIndexLucene implements TextIndex {
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and the configured analyzer(s) for all other
-        Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
+        analyzerPerField = new HashMap<>() ;
         analyzerPerField.put(docDef.getEntityField(), new KeywordAnalyzer()) ;
         if ( docDef.getGraphField() != null )
             analyzerPerField.put(docDef.getGraphField(), new KeywordAnalyzer()) ;
@@ -136,12 +141,17 @@ public class TextIndexLucene implements TextIndex {
             }
         }
 
-        Analyzer defaultAnalyzer = (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer();
-        if (this.isMultilingual)
-            defaultAnalyzer = new MultilingualAnalyzer(defaultAnalyzer);
-        this.analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, analyzerPerField) ;
-        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : this.analyzer ;
+        defaultAnalyzer = (null != config.getAnalyzer()) ? config.getAnalyzer() : new StandardAnalyzer();
+        Analyzer indexDefault = defaultAnalyzer;
+        Analyzer queryDefault = defaultAnalyzer;
+        if (this.isMultilingual) {
+            queryDefault = new MultilingualAnalyzer(defaultAnalyzer);
+            indexDefault = Util.usingIndexAnalyzers() ? new IndexingMultilingualAnalyzer(defaultAnalyzer) : queryDefault;
+        }
+        this.indexAnalyzer = new PerFieldAnalyzerWrapper(indexDefault, analyzerPerField) ;
+        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : new PerFieldAnalyzerWrapper(queryDefault, analyzerPerField) ;
         this.queryParserType = config.getQueryParser() ;
+        log.debug("TextIndexLucene defaultAnalyzer: {}, indexAnalyzer: {}, queryAnalyzer: {}, queryParserType: {}", defaultAnalyzer, indexAnalyzer, queryAnalyzer, queryParserType);
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;
         if (config.isValueStored() && docDef.getLangField() == null)
             log.warn("Values stored but langField not set. Returned values will not have language tag or datatype.");
@@ -150,7 +160,7 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private void openIndexWriter() {
-        IndexWriterConfig wConfig = new IndexWriterConfig(analyzer) ;
+        IndexWriterConfig wConfig = new IndexWriterConfig(indexAnalyzer) ;
         try
         {
             indexWriter = new IndexWriter(directory, wConfig) ;
@@ -163,7 +173,7 @@ public class TextIndexLucene implements TextIndex {
         }
         catch (IOException e)
         {
-            throw new TextIndexException(e) ;
+            throw new TextIndexException("openIndexWriter", e) ;
         }
     }
 
@@ -172,7 +182,7 @@ public class TextIndexLucene implements TextIndex {
     }
 
     public Analyzer getAnalyzer() {
-        return analyzer ;
+        return indexAnalyzer ;
     }
 
     public Analyzer getQueryAnalyzer() {
@@ -189,7 +199,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.prepareCommit();
         }
         catch (IOException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException("prepareCommit", e);
         }
     }
 
@@ -199,7 +209,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.commit();
         }
         catch (IOException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException("commit", e);
         }
     }
 
@@ -211,7 +221,7 @@ public class TextIndexLucene implements TextIndex {
             idx.rollback();
         }
         catch (IOException e) {
-            throw new TextIndexException(e);
+            throw new TextIndexException("rollback", e);
         }
 
         // The rollback will close the indexWriter, so we need to reopen it
@@ -224,7 +234,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.close() ;
         }
         catch (IOException ex) {
-            throw new TextIndexException(ex) ;
+            throw new TextIndexException("close", ex) ;
         }
     }
 
@@ -237,7 +247,7 @@ public class TextIndexLucene implements TextIndex {
         try {
             updateDocument(entity);
         } catch (IOException e) {
-            throw new TextIndexException(e) ;
+            throw new TextIndexException("updateEntity", e) ;
         }
     }
 
@@ -259,7 +269,7 @@ public class TextIndexLucene implements TextIndex {
             addDocument(entity);
         }
         catch (IOException e) {
-            throw new TextIndexException(e) ;
+            throw new TextIndexException("addEntity", e) ;
         }
     }
 
@@ -288,7 +298,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.deleteDocuments(uid);
 
         } catch (Exception e) {
-            throw new TextIndexException(e) ;
+            throw new TextIndexException("deleteEntity", e) ;
         }
     }
 
@@ -316,6 +326,13 @@ public class TextIndexLucene implements TextIndex {
                     if (this.isMultilingual) {
                         // add a field that uses a language-specific analyzer via MultilingualAnalyzer
                         doc.add(new Field(e.getKey() + "_" + lang, (String) e.getValue(), ftText));
+                        // add fields for any defined auxiliary indexes
+                        List<String> auxIndexes = Util.getAuxIndexes(lang);
+                        if (auxIndexes != null) {
+                            for (String auxTag : auxIndexes) {
+                                doc.add(new Field(e.getKey() + "_" + auxTag, (String) e.getValue(), ftText));
+                            }
+                        }
                     }
                 } else if (datatype != null && !datatype.equals(XSDDatatype.XSDstring)) {
                     // for non-string and non-langString datatypes, store the datatype in langField
@@ -342,7 +359,7 @@ public class TextIndexLucene implements TextIndex {
             return x.get(0) ;
         }
         catch (Exception ex) {
-            throw new TextIndexException(ex) ;
+            throw new TextIndexException("get", ex) ;
         }
     }
 
@@ -416,7 +433,8 @@ public class TextIndexLucene implements TextIndex {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
         }
         catch (Exception ex) {
-            throw new TextIndexException(ex) ;
+            ex.printStackTrace(); // TEMPORARY 
+            throw new TextIndexException("query", ex) ;
         }
     }
 
@@ -514,7 +532,7 @@ public class TextIndexLucene implements TextIndex {
         return rez;
     }
     
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field, String highlight) 
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field, String highlight, boolean useDocLang) 
             throws IOException, InvalidTokenOffsetsException { 
         List<TextHit> results = new ArrayList<>() ;
         
@@ -526,14 +544,15 @@ public class TextIndexLucene implements TextIndex {
 
         for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
-            log.trace("highlightResults[{}]: {}", sd.doc, doc) ;
             String entity = doc.get(docDef.getEntityField()) ;
 
             Node literal = null;
             String lexical = doc.get(field) ;
+            String docLang = doc.get(docDef.getLangField()) ;
+            String effectiveField = useDocLang ? field + "_" + docLang : field;
+            log.trace("highlightResults[{}]: {}, field: {}, lexical: {}, docLang: {}, effectiveField: {}", sd.doc, doc, field, lexical, docLang, effectiveField) ;
             if (lexical != null) {
-                String docLang = doc.get(docDef.getLangField()) ;
-                TokenStream tokenStream = analyzer.tokenStream(field, lexical);
+                TokenStream tokenStream = queryAnalyzer.tokenStream(effectiveField, lexical);
                 TextFragment[] frags = highlighter.getBestTextFragments(tokenStream, lexical, opts.joinFrags, opts.maxFrags);
                 String rez = frags2string(frags, opts);
                 
@@ -549,56 +568,81 @@ public class TextIndexLucene implements TextIndex {
         }
         return results ;
     }
+    
+    private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
+    
+    private Analyzer getQueryAnalyzer(boolean usingSearchFor, String lang) {
+        if (usingSearchFor) {
+            Analyzer qa = multilingualQueryAnalyzers.get(lang);
+            if (qa == null) {
+                qa = new PerFieldAnalyzerWrapper(new QueryMultilingualAnalyzer(defaultAnalyzer, lang), analyzerPerField);
+                multilingualQueryAnalyzers.put(lang, qa);
+            }
+            return qa;
+        } else {
+            return queryAnalyzer;
+        }
+    }
 
     private List<TextHit> query$(IndexReader indexReader, Node property, String qs, String graphURI, String lang, int limit, String highlight)
             throws ParseException, IOException, InvalidTokenOffsetsException {
-        String textField = docDef.getField(property);
-        String textClause;
-        String langClause = null;
-        String graphClause = null;
-
-        //for language-based search extension
-        if (getDocDef().getLangField() != null) {
-            String langField = getDocDef().getLangField();
-            if (StringUtils.isNotEmpty(lang)) {
-                if (this.isMultilingual && !lang.equals("none")) {
-                    textField = (textField == null ? docDef.getPrimaryField() : textField)  + "_" + lang;
-                }
-                langClause = !"none".equals(lang)?
-                        langField + ":" + lang : "-" + langField + ":*";
-            }
-        }
-
-        if (textField != null)
-            textClause = textField + ":" + qs ;
-        else
-            textClause = qs ;
+        String textField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
+        String textClause = "";               
+        String langField = getDocDef().getLangField();
         
-        String effectiveField = (textField != null) ? textField : docDef.getPrimaryField();
-
+        List<String> searchForTags = Util.getSearchForTags(lang);
+        boolean usingSearchFor = !searchForTags.isEmpty();
+        if (usingSearchFor) {            
+            for (String tag : searchForTags) {
+                String tf = textField + "_" + tag;
+                textClause += tf + ":" + qs + " ";
+            }
+        } else {
+            if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
+                textField += "_" + lang;
+            }
+            
+            if (docDef.getField(property) != null) {
+                textClause = textField + ":" + qs;
+            } else {
+                textClause = qs;
+            }
+           
+            String langClause = null;
+            if (langField != null) {
+                langClause = StringUtils.isNotEmpty(lang) ? (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*") : null;
+            }
+            if (langClause != null)
+                textClause = "(" + textClause + ") AND " + langClause ;
+        }
+        
+        String graphClause = null;
         if (graphURI != null) {
             String escaped = QueryParserBase.escape(graphURI) ;
             graphClause = getDocDef().getGraphField() + ":" + escaped ;
         }
-
+        
         String queryString = textClause ;
-        if (langClause != null)
-            queryString = "(" + queryString + ") AND " + langClause ;
+
         if (graphClause != null)
             queryString = "(" + queryString + ") AND " + graphClause ;
-
-        log.debug("Lucene query: {} ({})", queryString, limit) ;
-
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        Query query = parseQuery(queryString, queryAnalyzer) ;
+        
+        Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
+        Query query = parseQuery(queryString, qa) ;
+        
         if ( limit <= 0 )
             limit = MAX_N ;
+
+        log.debug("Lucene queryString: {}, parsed query: {}, limit:{}", queryString, query, limit) ;
+
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
+
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
         
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, effectiveField, highlight);
+            return highlightResults(sDocs, indexSearcher, query, textField, highlight, usingSearchFor);
         } else {
-            return simpleResults(sDocs, indexSearcher, query, effectiveField);
+            return simpleResults(sDocs, indexSearcher, query, textField);
         }
     }
 

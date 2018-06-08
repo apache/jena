@@ -28,6 +28,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphTrackActive ;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDB ;
@@ -198,6 +199,11 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
             return new GraphNonTxnTDB(getBaseDatasetGraph(), null) ;
     }
 
+    @Override
+    public Graph getUnionGraph() {
+        return getGraph(Quad.unionGraph);
+    }
+    
     @Override
     public Graph getGraph(Node graphNode) {      
         if ( sConn.haveUsedInTransaction() )
