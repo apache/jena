@@ -88,7 +88,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         try
             {
             getMapping().setNsPrefix( "xy", null );
-            fail( "shouild trap null URI in setNsPrefix" );
+            fail( "should trap null URI in setNsPrefix" );
             }
         catch (NullPointerException e)
             { pass(); }

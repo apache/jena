@@ -18,21 +18,21 @@
 
 package org.apache.jena.sparql.graph;
 
-/** Immutable empty PrefixMapping. */
-public class PrefixMappingZero extends PrefixMappingSink {
+import org.apache.jena.shared.AbstractTestPrefixMapping;
+import org.apache.jena.shared.PrefixMapping;
 
-    @Override
-    protected void add(String prefix, String uri) {
-        throw new UnsupportedOperationException("add prefix");
+/** Test a {@link PrefixMapping} backed by a {@link PrefixMappingMem} */
+public class TestPrefixMappingMem extends AbstractTestPrefixMapping {
+
+    public TestPrefixMappingMem(String name) {
+        super(name);
     }
 
     @Override
-    protected void remove(String prefix) {
-        throw new UnsupportedOperationException("remove prefix");
+    protected PrefixMapping getMapping() {
+        return new PrefixMappingMem();
     }
     
     @Override
-    public String toString() {
-        return "pm:Zero";
-    }
+    public void testLock() {}
 }

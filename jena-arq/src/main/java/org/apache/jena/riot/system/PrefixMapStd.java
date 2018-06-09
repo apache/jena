@@ -39,8 +39,8 @@ public class PrefixMapStd extends PrefixMapBase {
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
     
     // Abbreviation map used for common cases.
-    // This keeps the URI->prefix mappings for a computed guess at the anser, before
-    // resorting to a full search. See abbrev(String) below.s 
+    // This keeps the URI->prefix mappings for a computed guess at the answer, before
+    // resorting to a full search. See abbrev(String) below. 
     final Map<String, String> uriToPrefix = new HashMap<>();
 
     /**
