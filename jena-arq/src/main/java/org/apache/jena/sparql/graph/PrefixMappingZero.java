@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.graph;
 
-/** Immutable empty PrefixMapping. */
+import org.apache.jena.shared.PrefixMapping;
+
+/** Immutable empty {@link PrefixMapping}. */
 public class PrefixMappingZero extends PrefixMappingSink {
 
     @Override

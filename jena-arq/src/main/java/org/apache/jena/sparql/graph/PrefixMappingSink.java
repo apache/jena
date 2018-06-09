@@ -24,7 +24,9 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-/** Sink PrefixMapping. Accepts changes but does not retain state. */ 
+import org.apache.jena.shared.PrefixMapping;
+
+/** Sink {@link PrefixMapping}. Accepts changes but does not retain state. */ 
 public class PrefixMappingSink extends PrefixMappingBase {
     @Override
     protected void add(String prefix, String uri) { }

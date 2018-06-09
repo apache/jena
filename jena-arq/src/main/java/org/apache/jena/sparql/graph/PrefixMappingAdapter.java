@@ -25,12 +25,14 @@ import java.util.function.BiConsumer;
 
 import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.shared.PrefixMapping;
 
-public class PrefixMappingOver extends PrefixMappingBase {
+/** Provided {@link PrefixMapping} for a {@link PrefixMap}. */
+public class PrefixMappingAdapter extends PrefixMappingBase {
 
     private final PrefixMap pmap;
     
-    public PrefixMappingOver(PrefixMap pmap) {
+    public PrefixMappingAdapter(PrefixMap pmap) {
         this.pmap = pmap;
     }
     

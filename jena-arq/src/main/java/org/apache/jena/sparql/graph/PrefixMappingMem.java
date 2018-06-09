@@ -24,7 +24,16 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
-/** In-memory pair of maps */ 
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+
+/** 
+ * A {@link PrefixMapping} implemented as a pair of in-memory maps.
+ * 
+ * @implNote
+ * {@link PrefixMappingImpl} is the long time implementation.
+ * This class should be exactly the same within the {@link PrefixMappingBase} framework.  
+ */ 
 public class PrefixMappingMem extends PrefixMappingBase {
 
     private Map<String, String> prefixToUri = new ConcurrentHashMap<>();

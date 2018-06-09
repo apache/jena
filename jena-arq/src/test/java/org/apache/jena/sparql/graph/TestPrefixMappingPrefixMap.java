@@ -24,7 +24,7 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.graph.PrefixMappingOver;
+import org.apache.jena.sparql.graph.PrefixMappingAdapter;
 
 /** Test a {@link PrefixMapping} backed by a {@link PrefixMap} */
 public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMapping {
@@ -36,7 +36,7 @@ public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMapping {
     @Override
     protected PrefixMapping getMapping() {
         PrefixMap pmap = PrefixMapFactory.create();
-        return new PrefixMappingOver(pmap);
+        return new PrefixMappingAdapter(pmap);
     }
     
     // PrefixMaps only keep the prefix -> URI direction mapping.

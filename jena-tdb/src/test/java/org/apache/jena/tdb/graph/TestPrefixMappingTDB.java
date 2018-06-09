@@ -111,7 +111,9 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         prefixes.close() ;
 
         prefixes = createTesting(Location.create(dir), new DatasetControlMRSW()) ;
-        assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
+        PrefixMapping pmap2 = prefixes.getPrefixMapping() ;
+        String uri = pmap2.getNsPrefixURI("x");
+        assertEquals("http://foo/", uri) ;
         prefixes.close() ;
     }
     

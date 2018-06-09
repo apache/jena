@@ -33,15 +33,13 @@ import org.apache.jena.util.SplitIRI;
  * {@code PrefixMappingImpl}) and implements the contract of {@link PrefixMapping},
  * providing the key algorithm and delegating storage to the subclasses.
  * <p>
- * Reverse mapping, looking up a URI to find a prefix is complex. There may be several
- * possibilities. Applications should not reliy on every implementat being consistent,
- * espeically when writing data when there has to be a choice on on prefix to use to
- * shorten a URI.
- * 
+ * Reverse mapping, looking up a URI to find a prefix is complex because there may be several
+ * possibilities. Applications should not rely on every implementation being consistent
+ * when there is a choice of which prefix to use to shorten a URI.
  */
 public abstract class PrefixMappingBase implements PrefixMapping {
     /* Reverse mappings.
-     * The strict contract of PrefixMapping requires a separate reversemapping to be storoed and manipuated
+     * The strict contract of PrefixMapping requires a separate reverse mapping to be stored and manipulated,
      * which in turn adds complexity to the storage implementations.
      * However, applications removing prefixes is unusual so we end up with a lot of complexity with little value.
      * 
@@ -92,8 +90,8 @@ public abstract class PrefixMappingBase implements PrefixMapping {
     
     /** Return as a map. This map is only used within this class.
      * It can be as efficient as possible.
-     * It will not be modifed.
-     * It wil not be retuned to a caller of {@code PrefixMappingBase}.
+     * It will not be modified.
+     * It will not be returned to a caller of {@code PrefixMappingBase}.
      */
     abstract protected Map<String, String> asMap();
 
@@ -107,7 +105,7 @@ public abstract class PrefixMappingBase implements PrefixMapping {
     abstract protected void apply(BiConsumer<String, String> action);
     
     /**
-     * This part of the subclass API and may be overriden if an implementation can do
+     * This part of the subclass API and may be overridden if an implementation can do
      * better This general implementation is based on asMap() which may be a copy or may
      * be a view of the storage directly.
      */
@@ -122,7 +120,7 @@ public abstract class PrefixMappingBase implements PrefixMapping {
 
     @Override
     public PrefixMapping setNsPrefix(String prefix, String uri) {
-        checkLegal(prefix); 
+        checkLegalPrefix(prefix); 
         add(prefix, uri);
         return this;
     }
@@ -150,7 +148,7 @@ public abstract class PrefixMappingBase implements PrefixMapping {
      * <p>
      * See also {@link #qnameFor}.
      */
-    private void checkLegal(String prefix) {
+    public static void checkLegalPrefix(String prefix) {
         if ( prefix == null )
             throw new PrefixMapping.IllegalPrefixException("null for prefix");
         if ( prefix.length() > 0 && !XMLChar.isValidNCName(prefix) )
@@ -177,13 +175,13 @@ public abstract class PrefixMappingBase implements PrefixMapping {
 
     /* Not javadoc.
         This is the unusual contract as defined by the interface:
-        Update this PrefixMapping with the bindings in <code>map</code>, only
-        adding those (p, u) pairs for which neither p nor u appears in this mapping.
+      Update this PrefixMapping with the bindings in <code>map</code>, only
+      adding those (p, u) pairs for which neither p nor u appears in this mapping.
      */
     @Override
     public PrefixMapping withDefaultMappings(PrefixMapping pmap) {
         if ( pmap instanceof PrefixMappingBase ) {
-            // Direct. No intemediate Map<> object created,
+            // Direct. No intermediate Map<> object created,
             PrefixMappingBase pmap2 = (PrefixMappingBase)pmap;
             pmap2.apply(this::addWith);
             return this;
