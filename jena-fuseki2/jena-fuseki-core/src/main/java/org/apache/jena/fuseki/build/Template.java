@@ -29,22 +29,38 @@ public class Template
     }
     
     public static final String templateDir          = "templates" ;
-    public static final String templateMemFN        = templateDir+"/config-mem" ;
-    public static final String templateTDBFN        = templateDir+"/config-tdb" ;
-    public static final String templateTDBMemFN     = templateDir+"/config-tdb-mem" ; 
-    public static final String templateTDBDirFN     = templateDir+"/config-tdb-dir" ;
-    public static final String templateTDBDirReadFN = templateDir+"/config-tdb-dir-read-only" ;
-    public static final String templateServiceFN    = templateDir+"/config-service" ;       // Dummy used by dataset-less service.
     
-    public static final String templateMemFN_1      = templateDir+"/config-mem-txn" ;
+    // These are used by the command line start up.
+    public static final String templateServiceFN    = templateDir+"/config-service" ;       // Dummy used by dataset-less service.
+
+    // TDB1 - for backwards compatibility, the files are called "tdb"
+    public static final String templateTDB1_FN        = templateDir+"/config-tdb" ;
+    public static final String templateTDB1_MemFN     = templateDir+"/config-tdb-mem" ; 
+    public static final String templateTDB1_DirFN     = templateDir+"/config-tdb-dir" ;
+    public static final String templateTDB1_DirReadFN = templateDir+"/config-tdb-dir-read-only" ;
+    
+    public static final String templateTDB2_FN        = templateDir+"/config-tdb2" ;
+    public static final String templateTDB2_MemFN     = templateDir+"/config-tdb2-mem" ; 
+    public static final String templateTDB2_DirFN     = templateDir+"/config-tdb2-dir" ;
+    public static final String templateTDB2_DirReadFN = templateDir+"/config-tdb2-dir-read-only" ;
+    
+    
+    public static final String templateTIM_MemFN      = templateDir+"/config-mem" ;
 
     // Template may be in a resources area of a jar file so you can't do a directory listing.
     public static final String[] templateNames = {
-        templateMemFN ,
-        templateTDBFN ,
-        templateTDBMemFN ,
-        templateTDBDirFN ,
-        templateServiceFN
+        templateTIM_MemFN,
+        templateServiceFN,
+        
+        templateTDB1_FN ,
+        templateTDB1_MemFN ,
+        templateTDB1_DirFN ,
+        //templateTDB1_DirReadFN,
+        
+        templateTDB2_FN ,
+        templateTDB2_MemFN ,
+        templateTDB2_DirFN ,
+        //templateTDB2_DirReadFN
     } ;
     
     public static final String NAME = "NAME" ;

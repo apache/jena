@@ -81,6 +81,7 @@ public class FusekiCmd {
         // This does not apply to empty in-memory setups. 
         private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate") ;
         private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file") ;
+        private static ArgDecl  argTDB2mode     = new ArgDecl(ArgDecl.NoValue,  "tdb2");
         private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem") ;
         private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb") ;
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port") ;
@@ -113,6 +114,7 @@ public class FusekiCmd {
         }
 
         private final FusekiInitialConfig cmdLineConfig  = new FusekiInitialConfig() ;
+        private boolean useTDB2;
 
         public FusekiCmdInner(String... argv) {
             super(argv) ;
@@ -123,6 +125,8 @@ public class FusekiCmd {
                 "Create an in-memory, non-persistent dataset for the server") ;
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file") ;
+            add(argTDB2mode, "--tdb2",
+                "Create command line persistent datasets with TDB2");
             add(argTDB, "--loc=DIR",
                 "Use an existing TDB database (or create if does not exist)") ;
             add(argMemTDB, "--memTDB",
@@ -224,6 +228,9 @@ public class FusekiCmd {
                 if ( Files.exists(cfg) )
                     cmdLineConfig.fusekiServerConfigFile = cfg.toString() ;
             }
+
+            // Which TDB to use to create a command line TDB database. 
+            useTDB2 = contains(argTDB2mode);
             
             cmdLineConfig.allowUpdate = contains(argUpdate) ; 
 
@@ -233,7 +240,7 @@ public class FusekiCmd {
                 // Only one setup should be called by the test above but to be safe
                 // and in case of future changes, clear the configuration.  
                 cmdLineConfig.reset();
-                cmdLineConfig.argTemplateFile = Template.templateMemFN ;
+                cmdLineConfig.argTemplateFile = Template.templateTIM_MemFN ;
                 // Always allow.
                 cmdLineConfig.allowUpdate = true ;
             }
@@ -259,22 +266,20 @@ public class FusekiCmd {
             if ( contains(argMemTDB) ) {
                 //log.info("TDB dataset: in-memory") ;
                 cmdLineConfig.reset();
-                cmdLineConfig.argTemplateFile = Template.templateTDBMemFN ;
+                cmdLineConfig.argTemplateFile = useTDB2 ? Template.templateTDB2_MemFN : Template.templateTDB1_MemFN ;
                 cmdLineConfig.params.put(Template.DIR, Names.memName) ;
                 // Always allow.
                 cmdLineConfig.allowUpdate = true ;
-                cmdLineConfig.datasetDescription = "TDB dataset (in-memory)";
+                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset (in-memory)" : "TDB dataset (in-memory)";
             }
 
             if ( contains(argTDB) ) {
                 cmdLineConfig.reset();
-//                cmdLineConfig.argTemplateFile = 
-//                    cmdLineConfig.allowUpdate ? Template.templateTDBDirFN : Template.templateTDBDirReadFN;
-                // For a long time, "--update" did not apply here and so for compatibility ... 
-                cmdLineConfig.argTemplateFile = Template.templateTDBDirFN;
+                cmdLineConfig.argTemplateFile = 
+                    useTDB2 ? Template.templateTDB2_DirFN : Template.templateTDB1_DirFN;
                 String dir = getValue(argTDB) ;
                 cmdLineConfig.params.put(Template.DIR, dir) ;
-                cmdLineConfig.datasetDescription = "TDB dataset: "+dir;
+                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset: "+dir : "TDB dataset: "+dir;
             }
 
             // Otherwise

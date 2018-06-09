@@ -24,10 +24,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.io.StringReader ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest ;
 
@@ -78,8 +75,9 @@ public class ActionDatasets extends ActionContainerItem {
 
     private static final String paramDatasetName    = "dbName" ;
     private static final String paramDatasetType    = "dbType" ;
-    private static final String tDatabasetTDB       = "tdb" ;
-    private static final String tDatabasetMem       = "mem" ;
+    private static final String tDatabaseTDB        = "tdb" ;
+    private static final String tDatabaseTDB2       = "tdb2" ;
+    private static final String tDatabaseMem        = "mem" ;
 
     public ActionDatasets() { super() ; }
     
@@ -336,6 +334,13 @@ public class ActionDatasets extends ActionContainerItem {
         bodyAsGraph(action, dest) ;
     }
 
+    private static Map<String, String> dbTypeToTemplate = new HashMap<>();
+    static {
+        dbTypeToTemplate.put(tDatabaseTDB,  Template.templateTDB1_FN);
+        dbTypeToTemplate.put(tDatabaseTDB2, Template.templateTDB2_FN);
+        dbTypeToTemplate.put(tDatabaseMem,  Template.templateTIM_MemFN);
+    }
+    
     private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
@@ -351,15 +356,13 @@ public class ActionDatasets extends ActionContainerItem {
         FusekiSystem.addGlobals(params); 
         
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
-        if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
-            ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
         
-        String template = null ;
-        if ( dbType.equalsIgnoreCase(tDatabasetTDB))
-            template = TemplateFunctions.templateFile(Template.templateTDBFN, params, Lang.TTL) ;
-        if ( dbType.equalsIgnoreCase(tDatabasetMem))
-            template = TemplateFunctions.templateFile(Template.templateMemFN, params, Lang.TTL) ;
-        RDFParser.create().source(new StringReader(template)).base("http://base/").lang(Lang.TTL).parse(dest);
+        String template = dbTypeToTemplate.get(dbType.toLowerCase(Locale.ROOT));
+        if ( template == null )
+                ServletOps.errorBadRequest(format("dbType can be only '%s', '%s' or '%s'", tDatabaseTDB, tDatabaseTDB2, tDatabaseMem)) ;
+        
+        String syntax =  TemplateFunctions.templateFile(template, params, Lang.TTL) ;
+        RDFParser.create().source(new StringReader(syntax)).base("http://base/").lang(Lang.TTL).parse(dest);
     }
 
     private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {

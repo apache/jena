@@ -192,7 +192,7 @@ public class FusekiSystem
                 // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
                 URL url = FusekiSystem.class.getResource(fn) ;
                 if ( url == null )
-                    throw new FusekiConfigException("Field to find resource '"+fn+"'") ; 
+                    throw new FusekiConfigException("Failed to find resource '"+fn+"'") ; 
                 InputStream in = url.openStream() ;
                 Files.copy(in, dstFile) ;
             }
