@@ -16,13 +16,10 @@
  * limitations under the License.
  */
 
-// Turtle & N3 for Jena
+// Turtle-Star for Jena
 
-// N3 compatible:
-// All legal Turtle documents are acceped by this grammar.
-// Some N3 features, which are stil RDF, are provided.
-
-//see https://www.w3.org/TR/turtle/#sec-grammar-grammar
+//Turtle* – An RDF* Extension of Turtle
+//read https://arxiv.org/pdf/1406.3399.pdf
 
 options
 {
@@ -37,7 +34,7 @@ options
 //   DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(TurtleParser)
+PARSER_BEGIN(TurtleStarParser)
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -56,15 +53,15 @@ PARSER_BEGIN(TurtleParser)
  * limitations under the License.
  */
 
-package org.apache.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtlestar.parser ;
 
 import org.apache.jena.n3.turtle.ParserBase ;
 import org.apache.jena.graph.* ;
 
-public class TurtleParser extends ParserBase
+public class TurtleStarParser extends ParserBase
 {
 }
-PARSER_END(TurtleParser)
+PARSER_END(TurtleStarParser)
 
 // --- Entry point
 
@@ -90,6 +87,22 @@ void Directive() : { Token t ; String iri ; }
     t = <BASE> iri = IRI_REF()
     { setBase(iri, t.beginLine, t.beginColumn) ; }
 }
+
+// ------- turtle star
+Node TripleX() : { Node n = null; Node s ; Node p ; Node o ; }
+{
+    (
+        <LEMB>
+        s = VarOrTerm()
+        p = Verb()
+        o = GraphNode()
+        <REMB>
+    )
+    {
+        return createReified(s, p, o, token) ;
+    }
+}
+
 
 // -------- PATH
 TOKEN:
@@ -224,7 +237,7 @@ Node GraphNode() : { Node n ; }
 
 Node VarOrTerm() : {Node n = null ; }
 {
-  ( n = Var() | n = GraphTerm() | n = Formula() )
+  ( n = Var() | n = GraphTerm() | n = Formula() | n = TripleX() )
   { return n ; }
 }
 
@@ -450,6 +463,10 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA:     "," >
 | < DOT:       "." >
+
+//embedding (for turtle-star)
+| < LEMB:       "<<" >
+| < REMB:       ">>" >
 }
 
 // Operator

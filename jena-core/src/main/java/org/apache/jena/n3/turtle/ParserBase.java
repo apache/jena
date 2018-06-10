@@ -24,8 +24,9 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.n3.N3IRIResolver ;
 import org.apache.jena.n3.JenaURIException ;
+import org.apache.jena.n3.N3IRIResolver ;
+import org.apache.jena.n3.turtlestar.parser.Token;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.vocabulary.RDF ;
@@ -46,6 +47,7 @@ public class ParserBase
     protected final Node nRDFsubject    = RDF.subject.asNode() ;
     protected final Node nRDFpredicate  = RDF.predicate.asNode() ;
     protected final Node nRDFobject     = RDF.object.asNode() ;
+    protected final Node nRDFstatement  = RDF.Statement.asNode() ;
 
     protected final String SWAP_NS      = "http://www.w3.org/2000/10/swap/" ;
     protected final String SWAP_LOG_NS  = "http://www.w3.org/2000/10/swap/log#" ;
@@ -265,6 +267,23 @@ public class ParserBase
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
+    protected Node createReified(Node s, Node p, Node o, Token token) {
+        Node b = createBNode();
+        
+        //the reification
+        emitTriple(token.beginLine, token.beginColumn, new Triple(b, nRDFtype, nRDFstatement)) ;
+        
+        //the s, p, o of the statement
+        emitTriple(token.beginLine, token.beginColumn, new Triple(b, nRDFsubject, s)) ;
+        emitTriple(token.beginLine, token.beginColumn, new Triple(b, nRDFpredicate, p)) ;
+        emitTriple(token.beginLine, token.beginColumn, new Triple(b, nRDFobject, o)) ;
+        
+        //the triple itself
+        emitTriple(token.beginLine, token.beginColumn, new Triple(s, p, o)) ;
+        
+        //return the blanknode so that we can extend it
+        return b;
+    }
 
     
 //    protected Node createNodeFromURI(String s, int line, int column)

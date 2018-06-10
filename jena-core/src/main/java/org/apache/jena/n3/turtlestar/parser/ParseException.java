@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtlestar.parser ;
 
 /**
  * This exception is thrown when parse errors are encountered.
@@ -202,4 +202,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=12a0e42b69ea8c3aa6fa675df5a779b9 (do not edit this line) */
+/* JavaCC - OriginalChecksum=69f47b88f9ebed4a222f3417bfb13e5f (do not edit this line) */

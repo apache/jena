@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtlestar.parser ;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to
@@ -635,4 +635,4 @@ class JavaCharStream
   void setTrackLineColumn(boolean tlc) { trackLineColumn = tlc; }
 
 }
-/* JavaCC - OriginalChecksum=4d375bd2d4a918b8dc3878f96ba356d8 (do not edit this line) */
+/* JavaCC - OriginalChecksum=f4ccdd1ef6d2d7ac1be0431da95e71cf (do not edit this line) */

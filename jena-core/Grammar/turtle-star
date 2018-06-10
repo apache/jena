@@ -17,10 +17,10 @@
 
 # Parser builder
 
-CLASS=Turtle
-DIR="../src/main/java/org/apache/jena/n3/turtle/parser"
-FILE=turtle.jj
-NAME=Turtle
+CLASS=TurtleStar
+DIR="../src/main/java/org/apache/jena/n3/turtlestar/parser"
+FILE=turtle-star.jj
+NAME=TurtleStar
 
 (cd "$DIR" ; rm TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 
@@ -29,8 +29,8 @@ echo "---- Process grammar ----"
 ./javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "$FILE"
 RC=$?
 [ "$RC" = 0 ] || return
-echo "---- Create text form ----"
-jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+#echo "---- Create text form ----"
+#jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 
 ## echo "---- Fixing Java warnings ---- "
 ##

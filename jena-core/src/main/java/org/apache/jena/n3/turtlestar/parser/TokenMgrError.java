@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtlestar.parser ;
 
 /** Token Manager Error. */
 public class TokenMgrError extends Error
@@ -162,4 +162,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=a9e7e768b81ed1e3889474f734f287b8 (do not edit this line) */
+/* JavaCC - OriginalChecksum=50d6f2f31253e5c3ac133f19e15852c3 (do not edit this line) */

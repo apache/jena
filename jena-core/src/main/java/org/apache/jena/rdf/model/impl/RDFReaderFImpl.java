@@ -20,7 +20,6 @@ package org.apache.jena.rdf.model.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.RDFReader;
 import org.apache.jena.rdf.model.RDFReaderF;
@@ -127,6 +126,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         Class<? extends RDFReader> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
         Class<? extends RDFReader> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
         Class<? extends RDFReader> turtleReader = org.apache.jena.n3.turtle.TurtleReader.class;
+        Class<? extends RDFReader> turtleStarReader = org.apache.jena.n3.turtle.TurtleStarReader.class;
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);
@@ -140,6 +140,10 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         custom.put("TURTLE", turtleReader);
         custom.put("Turtle", turtleReader);
         custom.put("TTL", turtleReader);
+        
+        custom.put("TURTLE-STAR", turtleStarReader);
+        custom.put("Turtle-Star", turtleStarReader);
+        custom.put("TTL*", turtleStarReader);
     }
 
     private static String currentEntry(String lang) {

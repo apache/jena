@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.n3.turtle.parser ;
+package org.apache.jena.n3.turtlestar.parser ;
 
 /**
  * Describes the input token stream.
@@ -146,4 +146,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=8b31c10aaf9a4d7eaeb21af2b90413aa (do not edit this line) */
+/* JavaCC - OriginalChecksum=44983e82c722aecf22e9a056c1a12554 (do not edit this line) */
