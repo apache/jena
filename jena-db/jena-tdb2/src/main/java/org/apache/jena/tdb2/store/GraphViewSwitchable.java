@@ -18,13 +18,13 @@
 
 package org.apache.jena.tdb2.store;
 
-import java.util.Map ;
+import java.util.Map;
 
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TransactionHandler;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.DatasetPrefixStorage;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
@@ -37,13 +37,13 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 public class GraphViewSwitchable extends GraphView {
     // Factory style.
     public static GraphViewSwitchable createDefaultGraph(DatasetGraphSwitchable dsg)
-    { return new GraphViewSwitchable(dsg, Quad.defaultGraphNodeGenerated) ; }
+    { return new GraphViewSwitchable(dsg, Quad.defaultGraphNodeGenerated); }
     
     public static GraphView createNamedGraph(DatasetGraphSwitchable dsg, Node graphIRI)
-    { return new GraphViewSwitchable(dsg, graphIRI) ; }
+    { return new GraphViewSwitchable(dsg, graphIRI); }
     
     public static GraphViewSwitchable createUnionGraph(DatasetGraphSwitchable dsg)
-    { return new GraphViewSwitchable(dsg, Quad.unionGraph) ; }
+    { return new GraphViewSwitchable(dsg, Quad.unionGraph); }
     
     private final DatasetGraphSwitchable dsgx;
     protected DatasetGraphSwitchable getx() { return dsgx; }
@@ -51,7 +51,7 @@ public class GraphViewSwitchable extends GraphView {
     private TransactionHandler transactionHandler = null;
     
     protected GraphViewSwitchable(DatasetGraphSwitchable dsg, Node gn) {
-        super(dsg, gn) ;
+        super(dsg, gn);
         this.dsgx = dsg;
         // Goes to the switchable DatasetGraph
         this.transactionHandler = new TransactionHandlerView(dsgx);
@@ -79,16 +79,28 @@ public class GraphViewSwitchable extends GraphView {
     /** Return the {@code DatasetGraphSwitchable} we are viewing. */
     @Override
     public DatasetGraphSwitchable getDataset() {
-        return getx() ;
+        return getx();
     }
     
     /** Return the {@code Graph} from the underlying switchable.
      *  Do not hold onto this reference across switches. 
      */
     public Graph getGraph() {
-        return getx().getGraph(getGraphName()) ;
+        return getx().getGraph(getGraphName());
     }
 
+    // Super uses find. Override to call GraphTDB.size()
+    @Override
+    protected int graphBaseSize() {
+        if ( isDefaultGraph() )
+            return getDSG().getDefaultGraphTDB().size();
+        return getDSG().getGraphTDB(getGraphName()).size();
+    }
+
+    private DatasetGraphTDB getDSG() {
+        return ((DatasetGraphTDB)(getx().get()));    
+    }
+    
     // DatasetPrefixStorage specific with getting the DatasetPrefixStorage
     // done at the point the operation happens.
     // Long term: Function to get DatasetPrefixStorage
@@ -111,9 +123,7 @@ public class GraphViewSwitchable extends GraphView {
                 gn = "";
         }                    
 
-        private DatasetPrefixStorage dps() {
-            return ((DatasetGraphTDB)(getx().get())).getPrefixes();
-        }
+        private DatasetPrefixStorage dps() { return getDSG().getPrefixes(); }
 
         private PrefixMapping prefixMapping() {
             if ( gn == null )

@@ -101,9 +101,6 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     protected static final boolean isDefaultGraph(Node gn) { return gn == null || Quad.isDefaultGraph(gn) ; }
     protected static final boolean isUnionGraph(Node gn)   { return Quad.isUnionGraph(gn) ; }
     
-    // TODO Unsatisfactory - need PrefixMap support by DSGs 
-    // and sort out PrefixMap/PrefixMapping.
-    
     @Override
     protected PrefixMapping createPrefixMapping() {
         // Subclasses should override this but in the absence of anything better ...
@@ -165,6 +162,11 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         Node o = t.getObject() ;
         dsg.delete(g, s, p, o) ;
     }
+    
+    /** 
+     * Subclasses may wish to provide {@code graphBaseSize} otherwise {@link GraphBase} uses {@code find()}.  
+     */
+    @Override protected int graphBaseSize() { return super.graphBaseSize(); }
 
     @Override
     public void sync() {
