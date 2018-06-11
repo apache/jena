@@ -185,7 +185,7 @@ public class NodeTableCache implements NodeTable {
             return n ;
 
         synchronized (lock) {
-            // Lock to update two caches consisently.
+            // Lock to update two caches consistently.
             // Verify cache miss
             n = cacheLookup(id) ;
             if ( n != null )
