@@ -42,10 +42,12 @@ public class TestPackage extends TestSuite {
         addTest( "TestFileManager",       TestFileManager.suite()) ;
         addTest( "TestMonitors",          TestMonitors.suite()) ;
         addTest( "TestPrintUtil",         TestPrintUtil.suite()) ;
+        addTest( "TestPrefixMappingUtils", TestPrefixMappingUtils.suite() );
         addTest( TestIteratorCollection.suite() );
         addTest( "TestSplitIRI_XML",      TestSplitIRI_XML.suite()) ;
         addTest( "TestSplitIRI_TTL",      TestSplitIRI_TTL.suite()) ;
         addTest( "TestModelCollector",    TestModelCollector.suite()) ;
+        
         addTestSuite( TestLocators.class );
         addTestSuite( TestOneToManyMap.class );
     }
