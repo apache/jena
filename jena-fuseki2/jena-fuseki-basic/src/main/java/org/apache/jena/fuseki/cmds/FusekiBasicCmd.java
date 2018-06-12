@@ -58,6 +58,7 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.transaction.TransactionManager;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 
 /** Fuseki command that runs a Fuseki server with no UI, just SPARQL services.
@@ -110,8 +111,11 @@ public class FusekiBasicCmd {
         private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem");
         private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
         private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file");
+
+        private static ArgDecl  argTDB2mode     = new ArgDecl(ArgDecl.NoValue,  "tdb2");
         private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem");
         private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb");
+        
         // No SPARQL dataset or services
         private static ArgDecl  argEmpty        = new ArgDecl(ArgDecl.NoValue,  "empty", "no-dataset");
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port");
@@ -131,6 +135,7 @@ public class FusekiBasicCmd {
         }
 
         private final ServerConfig serverConfig  = new ServerConfig();
+        private boolean useTDB2;
         
         public FusekiCmdInner(String... argv) {
             super(argv);
@@ -145,6 +150,8 @@ public class FusekiBasicCmd {
                 "Create an in-memory, non-persistent dataset for the server");
             add(argFile, "--file=FILE",
                 "Create an in-memory, non-persistent dataset for the server, initialised with the contents of the file");
+            add(argTDB2mode, "--tdb2",
+                "Create command line persistent datasets with TDB2");
             add(argTDB, "--loc=DIR",
                 "Use an existing TDB database (or create if does not exist)");
             add(argMemTDB, "--memTDB",
@@ -252,6 +259,10 @@ public class FusekiBasicCmd {
             // ---- Dataset
             // Only one of these is choose from the checking above.
             
+            // Which TDB to use to create a command line TDB database. 
+            useTDB2 = contains(argTDB2mode);
+            String tag = useTDB2 ? "TDB2" : "TDB";
+            
             if ( allowEmpty ) {
                 serverConfig.empty = true;
                 serverConfig.datasetDescription = "No dataset";
@@ -300,16 +311,41 @@ public class FusekiBasicCmd {
                 Txn.executeWrite(serverConfig.dsg,  ()->RDFDataMgr.read(serverConfig.dsg, filename));
             }
 
+//            if ( contains(argMemTDB) ) {
+//                //log.info("TDB dataset: in-memory") ;
+//                cmdLineConfig.reset();
+//                cmdLineConfig.argTemplateFile = useTDB2 ? Template.templateTDB2_MemFN : Template.templateTDB1_MemFN ;
+//                cmdLineConfig.params.put(Template.DIR, Names.memName) ;
+//                // Always allow.
+//                cmdLineConfig.allowUpdate = true ;
+//                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset (in-memory)" : "TDB dataset (in-memory)";
+//            }
+//
+//            if ( contains(argTDB) ) {
+//                cmdLineConfig.reset();
+//                cmdLineConfig.argTemplateFile = 
+//                    useTDB2 ? Template.templateTDB2_DirFN : Template.templateTDB1_DirFN;
+//                String dir = getValue(argTDB) ;
+//                cmdLineConfig.params.put(Template.DIR, dir) ;
+//                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset: "+dir : "TDB dataset: "+dir;
+//            }
+            
             if ( contains(argMemTDB) ) {
-                serverConfig.datasetDescription = "TDB dataset in-memory";
-                serverConfig.dsg = TDBFactory.createDatasetGraph();
+                serverConfig.datasetDescription = tag+" dataset in-memory";
+                serverConfig.dsg =
+                    useTDB2
+                    ? DatabaseMgr.createDatasetGraph()
+                    : TDBFactory.createDatasetGraph();
                 serverConfig.allowUpdate = true;
             }
 
             if ( contains(argTDB) ) {
                 String dir = getValue(argTDB);
-                serverConfig.datasetDescription = "TDB dataset: "+dir;
-                serverConfig.dsg = TDBFactory.createDatasetGraph(dir);
+                serverConfig.datasetDescription = tag+" dataset: "+dir;
+                serverConfig.dsg = 
+                    useTDB2
+                    ? DatabaseMgr.connectDatasetGraph(dir)
+                    : TDBFactory.createDatasetGraph(dir);
             }
 
             if ( contains(ModAssembler.assemblerDescDecl) ) {
