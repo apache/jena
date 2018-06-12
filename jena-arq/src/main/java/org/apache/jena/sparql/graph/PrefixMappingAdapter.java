@@ -18,66 +18,82 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import org.apache.jena.iri.IRI;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shared.PrefixMapping;
 
-/** Sink {@link PrefixMapping}. Accepts changes but does not retain state. */ 
-public class PrefixMappingSink extends PrefixMappingBase {
+/** Provided {@link PrefixMapping} for a {@link PrefixMap}. */
+public class PrefixMappingAdapter extends PrefixMappingBase {
+
+    private final PrefixMap pmap;
+    
+    public PrefixMappingAdapter(PrefixMap pmap) {
+        this.pmap = pmap;
+    }
+    
     @Override
-    protected void add(String prefix, String uri) { }
+    protected void add(String prefix, String uri) {
+        pmap.add(prefix, uri);
+    }
 
     @Override
-    protected void remove(String prefix) { }
+    protected void remove(String prefix) {
+        pmap.delete(prefix);
+    }
 
     @Override
-    protected void clear() {}
+    protected void clear() {
+        pmap.clear();
+    }
 
     @Override
-    protected boolean isEmpty() { 
-        return true;
+    protected boolean isEmpty() {
+        return pmap.isEmpty();
     }
 
     @Override
     protected int size() {
-        return 0;
+        return pmap.size();
     }
 
     @Override
     protected String prefixToUri(String prefix) {
-        return null;
+        IRI iri = pmap.getMapping().get(prefix);
+        if ( iri == null )
+            return null;
+        return iri.toString();
     }
 
     @Override
     protected String uriToPrefix(String uri) {
-        return null;
-    }
-
-    @Override
-    protected Optional<Entry<String, String>> findMapping(String uri, boolean partial) {
-        return Optional.empty();
+       return pmap.getMapping().entrySet().stream()
+           .filter(e->Objects.equals(uri, e.getValue().toString()))
+           .map(Entry::getKey)
+           .findFirst()
+           .orElse(null);
     }
 
     @Override
     protected Map<String, String> asMap() {
-        return Collections.emptyMap();
+        return pmap.getMappingCopyStr();
     }
 
     @Override
     protected Map<String, String> asMapCopy() {
-        return Collections.emptyMap();
+        return pmap.getMappingCopyStr();
     }
 
     @Override
-    protected void apply(BiConsumer<String, String> action) {}
+    protected void apply(BiConsumer<String, String> action) {
+        BiConsumer<String, IRI> a = (p, iri)->action.accept(p, iri.toString());
+        pmap.forEach(a);
+    }
+
     
-    @Override
-    public String toString() {
-        return "pm:Sink";
-    }
-
+    
 }

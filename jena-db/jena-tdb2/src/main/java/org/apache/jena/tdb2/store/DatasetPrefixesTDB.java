@@ -28,6 +28,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.apache.jena.sparql.graph.GraphPrefixesProjection;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
 /**
@@ -37,9 +38,6 @@ import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
  */
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
 {
-    // Consider a cache - like PrefixMappingCache was - but needs to respect transactions.
-    // See getPrefixMapping.
-    
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     public static final String unnamedGraphURI = "" ;
     
@@ -158,7 +156,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     /** Return a PrefixMapping for a named graph */
     @Override
     public PrefixMapping getPrefixMapping(String graphName) {
-        PrefixMapping pm = new GraphPrefixesProjectionTDB(graphName, this) ;
+        PrefixMapping pm = new GraphPrefixesProjection(graphName, this) ;
         return pm ;
     }
     

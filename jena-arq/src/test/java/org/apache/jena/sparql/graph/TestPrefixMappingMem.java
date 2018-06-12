@@ -18,19 +18,21 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.shared.AbstractTestPrefixMapping;
+import org.apache.jena.shared.PrefixMapping;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-	  TestDatasets.class
-    , TestGraphsMem.class
-    , TestGraphsDataBag.class
-    , TestGraphUnionRead.class
-    , TestPrefixMappingMem.class
-    , TestPrefixMappingPrefixMap.class
-})
-public class TS_Graph
-{
+/** Test a {@link PrefixMapping} backed by a {@link PrefixMappingMem} */
+public class TestPrefixMappingMem extends AbstractTestPrefixMapping {
 
+    public TestPrefixMappingMem(String name) {
+        super(name);
+    }
+
+    @Override
+    protected PrefixMapping getMapping() {
+        return new PrefixMappingMem();
+    }
+    
+    @Override
+    public void testLock() {}
 }
