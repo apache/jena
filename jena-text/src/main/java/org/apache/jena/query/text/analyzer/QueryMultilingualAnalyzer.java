@@ -30,30 +30,47 @@ import org.slf4j.LoggerFactory;
  * an EnglishAnalyzer.
  */
 
-public class MultilingualAnalyzer extends DelegatingAnalyzerWrapper {
-        private static Logger log = LoggerFactory.getLogger(MultilingualAnalyzer.class);
+public class QueryMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
+        private static Logger log = LoggerFactory.getLogger(QueryMultilingualAnalyzer.class);
         private Analyzer defaultAnalyzer;
+        private String langTag;
 
-        public MultilingualAnalyzer(Analyzer defaultAnalyzer) {
+        public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer) {
                 super(PER_FIELD_REUSE_STRATEGY);
                 this.defaultAnalyzer = defaultAnalyzer;
+                this.langTag = null;
+        }
+
+        public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer, String tag) {
+                super(PER_FIELD_REUSE_STRATEGY);
+                this.defaultAnalyzer = defaultAnalyzer;
+                this.langTag = tag;
         }
 
         @Override
+        /**
+         * The analyzer corresponding to the langTag supplied at instantiation
+         * is used to retrieve the analyzer to use regardless of the tag on the
+         * fieldName. If no langTag is supplied then the tag on fieldName is
+         * used to retrieve the analyzer as with the MultilingualAnalyzer
+         * 
+         * @param fieldName
+         * @return the analyzer to use in the search
+         */
         protected Analyzer getWrappedAnalyzer(String fieldName) {
                 int idx = fieldName.lastIndexOf("_");
                 if (idx == -1) { // not language-specific, e.g. "label"
                         return defaultAnalyzer;
                 }
-                String lang = fieldName.substring(idx+1);
+                String lang = langTag != null ? langTag : fieldName.substring(idx+1);
                 Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
                 analyzer = analyzer != null ? analyzer : defaultAnalyzer;
-                log.trace("getWrappedAnalyzer {}", analyzer);
+                log.trace("getWrappedAnalyzer langTag: {}, fieldName: {}, analyzer: {}", langTag, fieldName, analyzer);
                 return analyzer;
         }
 
         @Override
         public String toString() {
-                return "MultilingualAnalyzer(default=" + defaultAnalyzer + ")";
+                return "QueryMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
         }
 }

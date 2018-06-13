@@ -30,11 +30,12 @@ import org.slf4j.LoggerFactory;
  * an EnglishAnalyzer.
  */
 
-public class MultilingualAnalyzer extends DelegatingAnalyzerWrapper {
-        private static Logger log = LoggerFactory.getLogger(MultilingualAnalyzer.class);
+public class IndexingMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
+        private static Logger log = LoggerFactory.getLogger(IndexingMultilingualAnalyzer.class);
+        
         private Analyzer defaultAnalyzer;
 
-        public MultilingualAnalyzer(Analyzer defaultAnalyzer) {
+        public IndexingMultilingualAnalyzer(Analyzer defaultAnalyzer) {
                 super(PER_FIELD_REUSE_STRATEGY);
                 this.defaultAnalyzer = defaultAnalyzer;
         }
@@ -46,14 +47,15 @@ public class MultilingualAnalyzer extends DelegatingAnalyzerWrapper {
                         return defaultAnalyzer;
                 }
                 String lang = fieldName.substring(idx+1);
-                Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
+                Analyzer analyzer = Util.getIndexAnalyzer(lang);
+                analyzer = analyzer != null ? analyzer : Util.getLocalizedAnalyzer(lang);
                 analyzer = analyzer != null ? analyzer : defaultAnalyzer;
-                log.trace("getWrappedAnalyzer {}", analyzer);
+                log.trace("getWrappedAnalyzer fieldName: {}, analyzer: {}", fieldName, analyzer);
                 return analyzer;
         }
 
         @Override
         public String toString() {
-                return "MultilingualAnalyzer(default=" + defaultAnalyzer + ")";
+                return "IndexingMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
         }
 }
