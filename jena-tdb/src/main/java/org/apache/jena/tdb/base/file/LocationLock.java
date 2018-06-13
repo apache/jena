@@ -161,10 +161,10 @@ public class LocationLock {
         if (owner == NO_OWNER) {
             // No owner currently so try to obtain the lock
             if (pid == NO_OWNER) {
-                // In the case where we cannot obtain our PID then we cannot
-                // obtain a lock
+                // In the case where we cannot obtain our PID then we cannot obtain a lock
                 SystemTDB.errlog.warn("Location " + location.getDirectoryPath()
-                        + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
+                        + " cannot be locked as unable to obtain PID of current process."
+                        + " If another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 
