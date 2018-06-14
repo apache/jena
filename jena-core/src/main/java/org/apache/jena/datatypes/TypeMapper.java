@@ -109,7 +109,7 @@ public class TypeMapper {
      * Version of getTypeByName which will treat unknown URIs as typed literals but with
      * just the default implementation
      * <p>
-     * RDF 1.1: null for {@code uri} returns null and it wil mean {@code xsd:string}
+     * RDF 1.1: null for {@code uri} returns null and it will mean {@code xsd:string}
      * because plain literals (no lang tag) and xsd:strings are now the same.
      *
      * @param uri
