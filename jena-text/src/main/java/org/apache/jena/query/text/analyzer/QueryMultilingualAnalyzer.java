@@ -23,7 +23,6 @@ import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /** 
  * Lucene Analyzer implementation that delegates to a language-specific
  * Analyzer based on a field name suffix: e.g. field="label_en" will use

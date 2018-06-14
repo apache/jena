@@ -143,8 +143,7 @@ public class DefineAnalyzersAssembler {
                     Util.addAuxIndexes(langCode, tags);
                     log.trace("addAuxIndexes for {} with tags: {}", langCode, tags);
                 }
-                
-                
+                               
                 if (adding.hasProperty(TextVocab.pIndexAnalyzer)) {
                     Statement indexStmt = adding.getProperty(TextVocab.pIndexAnalyzer);
                     Resource key = indexStmt.getResource();

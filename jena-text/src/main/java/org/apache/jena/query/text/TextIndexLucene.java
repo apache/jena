@@ -433,7 +433,6 @@ public class TextIndexLucene implements TextIndex {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
         }
         catch (Exception ex) {
-            ex.printStackTrace(); // TEMPORARY 
             throw new TextIndexException("query", ex) ;
         }
     }

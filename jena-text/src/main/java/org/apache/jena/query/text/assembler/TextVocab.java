@@ -111,7 +111,6 @@ public class TextVocab
     public static final Property pSearchFor         = Vocab.property(NS, "searchFor");
     public static final Property pAuxIndex          = Vocab.property(NS, "auxIndex");
     public static final Property pIndexAnalyzer     = Vocab.property(NS, "indexAnalyzer");
-    public static final Property indexAnalyzer      = Vocab.property(NS, "IndexAnalyzer");
     
     // Query Cache
     public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");
