@@ -44,7 +44,7 @@ public class DefineAnalyzersAssembler {
              text:analyzer [ . . . ]]
         )
     */
-    private static Logger          log      = LoggerFactory.getLogger(DefineAnalyzersAssembler.class) ;
+    private static Logger log = LoggerFactory.getLogger(DefineAnalyzersAssembler.class) ;
 
     private static List<String> getStringList(Statement stmt, String p) {
         List<String> tags = new ArrayList<String>();

@@ -102,6 +102,8 @@ public class TextIndexLucene implements TextIndex {
     private final String           queryParserType ;
     private final FieldType        ftText ;
     private final boolean          isMultilingual ;
+    
+    private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
 
     // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
     // However, it needs to be volatile in case the next write transaction is on a different thread,
@@ -567,8 +569,6 @@ public class TextIndexLucene implements TextIndex {
         }
         return results ;
     }
-    
-    private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
     
     private Analyzer getQueryAnalyzer(boolean usingSearchFor, String lang) {
         if (usingSearchFor) {

@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text.analyzer ;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.slf4j.Logger;
@@ -30,31 +31,31 @@ import org.slf4j.LoggerFactory;
  */
 
 public class IndexingMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
-        private static Logger log = LoggerFactory.getLogger(IndexingMultilingualAnalyzer.class);
-        
-        private Analyzer defaultAnalyzer;
+    private static Logger log = LoggerFactory.getLogger(IndexingMultilingualAnalyzer.class);
 
-        public IndexingMultilingualAnalyzer(Analyzer defaultAnalyzer) {
-                super(PER_FIELD_REUSE_STRATEGY);
-                this.defaultAnalyzer = defaultAnalyzer;
-        }
+    private Analyzer defaultAnalyzer;
 
-        @Override
-        protected Analyzer getWrappedAnalyzer(String fieldName) {
-                int idx = fieldName.lastIndexOf("_");
-                if (idx == -1) { // not language-specific, e.g. "label"
-                        return defaultAnalyzer;
-                }
-                String lang = fieldName.substring(idx+1);
-                Analyzer analyzer = Util.getIndexAnalyzer(lang);
-                analyzer = analyzer != null ? analyzer : Util.getLocalizedAnalyzer(lang);
-                analyzer = analyzer != null ? analyzer : defaultAnalyzer;
-                log.trace("getWrappedAnalyzer fieldName: {}, analyzer: {}", fieldName, analyzer);
-                return analyzer;
-        }
+    public IndexingMultilingualAnalyzer(Analyzer defaultAnalyzer) {
+        super(PER_FIELD_REUSE_STRATEGY);
+        this.defaultAnalyzer = defaultAnalyzer;
+    }
 
-        @Override
-        public String toString() {
-                return "IndexingMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
+    @Override
+    protected Analyzer getWrappedAnalyzer(String fieldName) {
+        int idx = fieldName.lastIndexOf("_");
+        if (idx == -1) { // not language-specific, e.g. "label"
+            return defaultAnalyzer;
         }
+        String lang = fieldName.substring(idx+1);
+        Analyzer analyzer = Util.getIndexAnalyzer(lang);
+        analyzer = ObjectUtils.defaultIfNull(analyzer, Util.getLocalizedAnalyzer(lang));
+        analyzer = ObjectUtils.defaultIfNull(analyzer, defaultAnalyzer);
+        log.trace("getWrappedAnalyzer fieldName: {}, analyzer: {}", fieldName, analyzer);
+        return analyzer;
+    }
+
+    @Override
+    public String toString() {
+        return "IndexingMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
+    }
 }

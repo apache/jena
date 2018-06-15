@@ -108,7 +108,7 @@ public class Util {
     }
     
     public static List<String> getAuxIndexes(String tag) {
-        return StringUtils.isNotEmpty(tag) ? auxIndexes.get(tag) : new ArrayList<>();
+        return StringUtils.isNotEmpty(tag) ? auxIndexes.get(tag) : null;
     }
     
     public static void addAuxIndexes(String tag, List<String> tags) {

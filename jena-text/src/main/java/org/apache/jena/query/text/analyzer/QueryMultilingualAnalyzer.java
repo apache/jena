@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text.analyzer ;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.slf4j.Logger;
@@ -30,46 +31,46 @@ import org.slf4j.LoggerFactory;
  */
 
 public class QueryMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
-        private static Logger log = LoggerFactory.getLogger(QueryMultilingualAnalyzer.class);
-        private Analyzer defaultAnalyzer;
-        private String langTag;
+    private static Logger log = LoggerFactory.getLogger(QueryMultilingualAnalyzer.class);
+    private Analyzer defaultAnalyzer;
+    private String langTag;
 
-        public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer) {
-                super(PER_FIELD_REUSE_STRATEGY);
-                this.defaultAnalyzer = defaultAnalyzer;
-                this.langTag = null;
-        }
+    public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer) {
+        super(PER_FIELD_REUSE_STRATEGY);
+        this.defaultAnalyzer = defaultAnalyzer;
+        this.langTag = null;
+    }
 
-        public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer, String tag) {
-                super(PER_FIELD_REUSE_STRATEGY);
-                this.defaultAnalyzer = defaultAnalyzer;
-                this.langTag = tag;
-        }
+    public QueryMultilingualAnalyzer(Analyzer defaultAnalyzer, String tag) {
+        super(PER_FIELD_REUSE_STRATEGY);
+        this.defaultAnalyzer = defaultAnalyzer;
+        this.langTag = tag;
+    }
 
-        @Override
-        /**
-         * The analyzer corresponding to the langTag supplied at instantiation
-         * is used to retrieve the analyzer to use regardless of the tag on the
-         * fieldName. If no langTag is supplied then the tag on fieldName is
-         * used to retrieve the analyzer as with the MultilingualAnalyzer
-         * 
-         * @param fieldName
-         * @return the analyzer to use in the search
-         */
-        protected Analyzer getWrappedAnalyzer(String fieldName) {
-                int idx = fieldName.lastIndexOf("_");
-                if (idx == -1) { // not language-specific, e.g. "label"
-                        return defaultAnalyzer;
-                }
-                String lang = langTag != null ? langTag : fieldName.substring(idx+1);
-                Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
-                analyzer = analyzer != null ? analyzer : defaultAnalyzer;
-                log.trace("getWrappedAnalyzer langTag: {}, fieldName: {}, analyzer: {}", langTag, fieldName, analyzer);
-                return analyzer;
+    @Override
+    /**
+     * The analyzer corresponding to the langTag supplied at instantiation
+     * is used to retrieve the analyzer to use regardless of the tag on the
+     * fieldName. If no langTag is supplied then the tag on fieldName is
+     * used to retrieve the analyzer as with the MultilingualAnalyzer
+     * 
+     * @param fieldName
+     * @return the analyzer to use in the search
+     */
+    protected Analyzer getWrappedAnalyzer(String fieldName) {
+        int idx = fieldName.lastIndexOf("_");
+        if (idx == -1) { // not language-specific, e.g. "label"
+            return defaultAnalyzer;
         }
+        String lang = ObjectUtils.defaultIfNull(langTag, fieldName.substring(idx+1));
+        Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
+        analyzer = ObjectUtils.defaultIfNull(analyzer, defaultAnalyzer);
+        log.trace("getWrappedAnalyzer langTag: {}, fieldName: {}, analyzer: {}", langTag, fieldName, analyzer);
+        return analyzer;
+    }
 
-        @Override
-        public String toString() {
-                return "QueryMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
-        }
+    @Override
+    public String toString() {
+        return "QueryMultilingualAnalyzer(default=" + defaultAnalyzer + ")";
+    }
 }
