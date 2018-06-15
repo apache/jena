@@ -59,6 +59,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestTextGraphIndexExtra2.class
     , TestTextHighlighting.class
     , TestTextDefineAnalyzers.class
+    , TestTextMultilingualEnhancements.class
 })
 
 public class TS_Text
