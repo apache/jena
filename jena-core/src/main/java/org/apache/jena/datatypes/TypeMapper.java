@@ -106,14 +106,18 @@ public class TypeMapper {
 
 
     /**
-     * Version of getTypeByName which will treat unknown URIs as typed
-     * literals but with just the default implementation
+     * Version of getTypeByName which will treat unknown URIs as typed literals but with
+     * just the default implementation
+     * <p>
+     * RDF 1.1: null for {@code uri} returns null and it will mean {@code xsd:string}
+     * because plain literals (no lang tag) and xsd:strings are now the same.
      *
-     * @param uri the URI of the desired datatype
-     * @return Datatype the datatype definition
-     * registered at uri, if there is no such registered type it
-     * returns a new instance of the default datatype implementation, if the
-     * uri is null it returns null (indicating a plain RDF literal).
+     * @param uri
+     *            the URI of the desired datatype
+     * @return Datatype the datatype definition registered at uri, if there is no such
+     *         registered type it returns a new instance of the default datatype
+     *         implementation, if the uri is null it returns null (indicating a plain RDF
+     *         literal).
      */
     public RDFDatatype getSafeTypeByName(final String uri) {
         RDFDatatype dtype = uriToDT.get(uri);

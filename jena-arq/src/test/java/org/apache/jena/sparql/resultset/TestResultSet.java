@@ -194,6 +194,27 @@ public class TestResultSet extends BaseTest
         assertFalse(rs.hasNext());
     }
 
+    // Test reading "variations". Things that are accepted but not in the form Jena writes. 
+    
+    // JENA-1563: xml:lang= and datatype=rdf:langString
+    @Test
+    public void rs_xmllang_datatype_1() {
+        ResultSetFactory.load(DIR + "rs-xmllang-datatype-1.srj");
+    }
+
+    // JENA-1563: xml:lang= and incompatible datatype
+    @Test(expected=ResultSetException.class)
+    public void rs_xmllang_datatype_2() {
+        // Bad: datatype is not rdf:langString (it is xsd:string in the test data)
+        ResultSetFactory.load(DIR + "rs-xmllang-datatype-2.srj");
+    }
+
+    // Explicit (unnecessary) datatype=xsd:string
+    @Test
+    public void rs_datatype_string() {
+        ResultSet rs = ResultSetFactory.load(DIR + "rs-datatype-string.srj");
+    }
+    
     @Test public void test_RS_union_1() 
     {
     	ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local")) ;
