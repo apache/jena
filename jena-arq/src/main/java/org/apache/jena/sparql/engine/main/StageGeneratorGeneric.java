@@ -72,9 +72,9 @@ public class StageGeneratorGeneric implements StageGenerator {
                 input = peek ;
                 Binding b = peek.peek() ;
                 bgp2 = Substitute.substitute(pattern, b) ;
-                ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
-                pattern = reorderProc.reorder(pattern) ;
             }
+            ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
+            pattern = reorderProc.reorder(pattern) ;
         }
         Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
         return QueryIterBlockTriples.create(input, pattern, execCxt) ;
