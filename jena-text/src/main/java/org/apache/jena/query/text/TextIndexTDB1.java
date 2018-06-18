@@ -22,8 +22,8 @@ import org.apache.jena.query.text.TextIndex;
 import org.apache.jena.tdb.transaction.Transaction;
 import org.apache.jena.tdb.transaction.TransactionLifecycle;
 
-/*&
- * Adapter to put Lucene text indexes into the TDB1 trsnaction system.
+/**
+ * Adapter to put Lucene text indexes into the TDB1 transaction system.
  */
 public class TextIndexTDB1 implements TransactionLifecycle {
 
