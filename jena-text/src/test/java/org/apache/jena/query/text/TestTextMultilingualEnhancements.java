@@ -85,7 +85,15 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "    text:directory \"mem\" ;",
                     "    text:storeValues true ;",
                     "    text:entityMap :entMap ;",
+                    "    text:multilingualSupport true ;", 
                     "    text:defineAnalyzers (",
+                    "      [ text:defineAnalyzer :folding ;",
+                    "        text:analyzer [",
+                    "          a text:ConfigurableAnalyzer ;",
+                    "          text:tokenizer text:StandardTokenizer ;",
+                    "          text:filters (text:LowerCaseFilter text:ASCIIFoldingFilter) ;",
+                    "        ]",
+                    "      ]",
                     "      [ text:addLang \"en-01\" ;",
                     "        text:searchFor ( \"en-01\" \"en-02\" ) ;",
                     "        text:analyzer [ a text:StandardAnalyzer ]",
@@ -99,6 +107,17 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "      ]",
                     "      [ text:addLang \"en-04\" ;",
                     "        text:analyzer [ a text:StandardAnalyzer ]",
+                    "      ]",
+                    "      [ text:addLang \"en-05\" ;",
+                    "        text:searchFor ( \"en-05\" \"en-aux\" ) ;",
+                    "        text:analyzer [ a text:StandardAnalyzer ]",
+                    "      ]",
+                    "      [ text:addLang \"en-aux\" ;",
+                    "        text:searchFor ( \"en-05\" \"en-aux\" ) ;",
+                    "        text:analyzer [ ",
+                    "          a text:DefinedAnalyzer ; ",
+                    "          text:useAnalyzer :folding",
+                    "        ]",
                     "      ]",
                     "    ) ;",
                     "    .",
@@ -160,6 +179,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                 assertNotNull(literal);
                 literals.put(entityUri, literal);
             }
+            System.err.println("Query: " + queryString + ", COUNT: " + count + ", Expected; " + expectedEntityURIs.size());
             assertEquals(expectedEntityURIs.size(), count);
         }
         finally {
@@ -169,7 +189,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
     }
 
     @Test
-    public void testTextMultilingualFeatures1() {
+    public void testTextSearchFor1() {
         final String turtleA = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
@@ -184,7 +204,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( \"green\" ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( \"green\"@en-02 ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
@@ -200,7 +220,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
     }
 
     @Test
-    public void testTextMultilingualFeatures2() {
+    public void testTextSearchFor2() {
         final String turtleA = StrUtils.strjoinNL(
                 TURTLE_PROLOG,
                 "<" + RESOURCE_BASE + "testResultOneInModelA>",
@@ -215,7 +235,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                 QUERY_PROLOG,
                 "SELECT ?s ?lit",
                 "WHERE {",
-                "  (?s ?sc ?lit ?g) text:query ( \"flower\" ) . ",
+                "  (?s ?sc ?lit ?g) text:query ( \"flower\"@en-01 ) . ",
                 "}"
                 );
         Set<String> expectedURIs = new HashSet<>() ;
@@ -225,6 +245,66 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
         assertEquals(1, literals.size());
         
         Literal value = literals.get(RESOURCE_BASE + "testResultOneInModelA");
+        assertNotNull(value);
+    }
+
+    @Test
+    public void testTextSimple1() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelA>",
+                "  rdfs:label \"one green flower\"@en-03",
+                ".",
+                "<" + RESOURCE_BASE + "testResultTwoInModelA>",
+                "  rdfs:label \"two green flowers\"@en-04",
+                "."
+                );
+        putTurtleInModel(turtleA, "http://example.org/modelA") ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?lit",
+                "WHERE {",
+                "  (?s ?sc ?lit ?g) text:query ( \"green\"@en-03 ) . ",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultOneInModelA")) ;
+        
+        Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
+        assertEquals(1, literals.size());
+        
+        Literal value = literals.get(RESOURCE_BASE + "testResultOneInModelA");
+        assertNotNull(value);
+    }
+
+    @Test
+    public void testTextAux1() {
+        final String turtleA = StrUtils.strjoinNL(
+                TURTLE_PROLOG,
+                "<" + RESOURCE_BASE + "testResultOneInModelA>",
+                "  rdfs:label \"one Green flower\"@en-05",
+                ".",
+                "<" + RESOURCE_BASE + "testResultTwoInModelA>",
+                "  rdfs:label \"two gReeN flowers\"@en-05",
+                "."
+                );
+        putTurtleInModel(turtleA, "http://example.org/modelA") ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s ?lit",
+                "WHERE {",
+                "  (?s ?sc ?lit ?g) text:query ( \"green\"@en-aux ) . ",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<>() ;
+        expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultOneInModelA", RESOURCE_BASE + "testResultTwoInModelA")) ;
+        
+        Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
+        assertEquals(2, literals.size());
+        
+        Literal value = literals.get(RESOURCE_BASE + "testResultOneInModelA");
+        assertNotNull(value);
+        value = literals.get(RESOURCE_BASE + "testResultTwoInModelA");
         assertNotNull(value);
     }
 }
