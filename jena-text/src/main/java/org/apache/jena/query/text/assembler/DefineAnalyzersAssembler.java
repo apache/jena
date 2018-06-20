@@ -18,6 +18,9 @@
 
 package org.apache.jena.query.text.assembler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.query.text.analyzer.Util;
@@ -26,6 +29,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.lucene.analysis.Analyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefineAnalyzersAssembler {
     /*
@@ -39,7 +44,46 @@ public class DefineAnalyzersAssembler {
              text:analyzer [ . . . ]]
         )
     */
+    private static Logger log = LoggerFactory.getLogger(DefineAnalyzersAssembler.class) ;
 
+    private static List<String> getStringList(Statement stmt, String p) {
+        List<String> tags = new ArrayList<String>();
+        RDFNode aNode = stmt.getObject();
+        if (! aNode.isResource()) {
+            throw new TextIndexException(p + " property is not a list : " + aNode);
+        }
+
+        Resource current = (Resource) aNode;
+        while (current != null && ! current.equals(RDF.nil)) {
+            Statement firstStmt = current.getProperty(RDF.first);
+            if (firstStmt == null) {
+                throw new TextIndexException(p + " list not well formed: " + current);
+            }
+
+            RDFNode first = firstStmt.getObject();
+            if (! first.isLiteral()) {
+                throw new TextIndexException(p + " list not a String : " + first);
+            }
+
+            String tag = first.toString();
+            tags.add(tag);
+            
+            Statement restStmt = current.getProperty(RDF.rest);
+            if (restStmt == null) {
+                throw new TextIndexException(p + " list not terminated by rdf:nil");
+            }
+            
+            RDFNode rest = restStmt.getObject();
+            if (! rest.isResource()) {
+                throw new TextIndexException(p + " list rest node is not a resource : " + rest);
+            }
+            
+            current = (Resource) rest;
+        }
+       
+        return tags;
+    }
+   
     public static boolean open(Assembler a, Resource list) {
         Resource current = list;
         boolean isMultilingualSupport = false;
@@ -67,13 +111,6 @@ public class DefineAnalyzersAssembler {
                 // calls GenericAnalyzerAssembler
                 Analyzer analyzer = (Analyzer) a.open((Resource) analyzerNode);
                 
-                if (adding.hasProperty(TextVocab.pAddLang)) {
-                    Statement langStmt = adding.getProperty(TextVocab.pAddLang);
-                    String langCode = langStmt.getString();
-                    Util.addAnalyzer(langCode, analyzer);
-                    isMultilingualSupport = true;
-                }
-                
                 if (adding.hasProperty(TextVocab.pDefAnalyzer)) {
                     Statement defStmt = adding.getProperty(TextVocab.pDefAnalyzer);
                     Resource id = defStmt.getResource();
@@ -83,6 +120,36 @@ public class DefineAnalyzersAssembler {
                     } else {
                         throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a non-blank resource: " + adding);
                     }
+                }
+                
+                String langCode = null;
+                
+                if (adding.hasProperty(TextVocab.pAddLang)) {
+                    Statement langStmt = adding.getProperty(TextVocab.pAddLang);
+                    langCode = langStmt.getString();
+                    Util.addAnalyzer(langCode, analyzer);
+                    isMultilingualSupport = true;
+                }
+                
+                if (langCode != null && adding.hasProperty(TextVocab.pSearchFor)) {
+                    Statement searchForStmt = adding.getProperty(TextVocab.pSearchFor);
+                    List<String> tags = getStringList(searchForStmt, "text:searchFor");
+                    Util.addSearchForTags(langCode, tags);
+                }
+                
+                if (langCode != null && adding.hasProperty(TextVocab.pAuxIndex)) {
+                    Statement searchForStmt = adding.getProperty(TextVocab.pAuxIndex);
+                    List<String> tags = getStringList(searchForStmt, "text:auxIndex");
+                    Util.addAuxIndexes(langCode, tags);
+                    log.trace("addAuxIndexes for {} with tags: {}", langCode, tags);
+                }
+                               
+                if (adding.hasProperty(TextVocab.pIndexAnalyzer)) {
+                    Statement indexStmt = adding.getProperty(TextVocab.pIndexAnalyzer);
+                    Resource key = indexStmt.getResource();
+                    Analyzer indexer = Util.getDefinedAnalyzer(key);
+                    Util.addIndexAnalyzer(langCode, indexer);
+                    log.trace("addIndexAnalyzer lang: {} with analyzer: {}", langCode, indexer);
                 }
             }
             

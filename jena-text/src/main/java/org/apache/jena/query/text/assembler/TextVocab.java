@@ -108,6 +108,9 @@ public class TextVocab
     public static final Property pDefTokenizer      = Vocab.property(NS, "defineTokenizer");
     public static final Property pAddLang           = Vocab.property(NS, "addLang");
     public static final Property pUseAnalyzer       = Vocab.property(NS, "useAnalyzer");
+    public static final Property pSearchFor         = Vocab.property(NS, "searchFor");
+    public static final Property pAuxIndex          = Vocab.property(NS, "auxIndex");
+    public static final Property pIndexAnalyzer     = Vocab.property(NS, "indexAnalyzer");
     
     // Query Cache
     public static final Property pCacheQueries      = Vocab.property(NS, "cacheQueries");
