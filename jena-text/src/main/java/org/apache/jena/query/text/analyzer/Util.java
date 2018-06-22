@@ -18,18 +18,30 @@
 
 package org.apache.jena.query.text.analyzer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.lucene.analysis.Analyzer;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Util {
 
-    private static Hashtable<String, Class<?>> analyzersClasses; //mapping between ISO2-letter language and lucene existing analyzersClasses
-    private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multi instantiation
+    private static Hashtable<String, Class<?>> analyzersClasses; //mapping between BCP-47 language tags and lucene analyzersClasses
+    private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multiple analyzer instantiations
     
     // cache of defined text:defineAnalyzers
     private static Hashtable<String, Analyzer> definedAnalyzers = new Hashtable<>();
+    
+    // cache of defined text:indexAnalyzers
+    private static Hashtable<String, Analyzer> indexAnalyzers = new Hashtable<>();
+    
+    // cache of text:searchFor language tags
+    private static Hashtable<String, List<String>> searchForTags = new Hashtable<>();
+    
+    // map of auxiliary index info
+    private static Hashtable<String, List<String>> auxIndexes = new Hashtable<>();
 
     static {
         initAnalyzerDefs();
@@ -66,6 +78,41 @@ public class Util {
     
     public static void defineAnalyzer(Resource key, Analyzer analyzer) {
         definedAnalyzers.put(key.getURI(), analyzer);
+    }
+    
+    public static Analyzer getIndexAnalyzer(String tag) {
+        return indexAnalyzers.get(tag);
+    }
+    
+    public static void addIndexAnalyzer(String tag, Analyzer analyzer) {
+        indexAnalyzers.put(tag, analyzer);
+    }
+    
+    public static boolean usingIndexAnalyzers() {
+        return !indexAnalyzers.isEmpty();
+    }
+    
+    public static List<String> getSearchForTags(String tag) {
+        List<String> tags = new ArrayList<>();
+        if (StringUtils.isNotEmpty(tag)) {
+            List<String> x = searchForTags.get(tag);
+            if (x != null) {
+                tags = x;
+            }
+        }
+        return tags;
+    }
+    
+    public static void addSearchForTags(String tag, List<String> tags) {
+        searchForTags.put(tag, tags);
+    }
+    
+    public static List<String> getAuxIndexes(String tag) {
+        return StringUtils.isNotEmpty(tag) ? auxIndexes.get(tag) : null;
+    }
+    
+    public static void addAuxIndexes(String tag, List<String> tags) {
+        auxIndexes.put(tag, tags);
     }
 
     private static void initAnalyzerDefs() {
