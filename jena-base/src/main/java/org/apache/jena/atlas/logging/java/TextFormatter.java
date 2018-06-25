@@ -18,7 +18,9 @@
 
 package org.apache.jena.atlas.logging.java;
 
-import java.text.MessageFormat ;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.Date ;
 import java.util.logging.Formatter ;
 import java.util.logging.Level ;
@@ -89,6 +91,18 @@ public class TextFormatter extends Formatter
         if ( record.getParameters() != null )
             formatted$ = MessageFormat.format(formatted$, record.getParameters()) ;
         
+        String throwable = "";
+        Throwable th = record.getThrown();
+        if ( th != null ) {
+            // Avoid going via bytes because of the risk of platform character set issues.
+            StringWriter sw = new StringWriter();
+            try ( PrintWriter pw = new PrintWriter(sw) ) {
+                pw.println();
+                th.printStackTrace(pw);
+            }
+            formatted$ = formatted$ + sw.toString();
+        }
+        
         Level level = record.getLevel() ;
         String levelOutputName = levelOutputName(level) ;
         
@@ -98,7 +112,7 @@ public class TextFormatter extends Formatter
                              levelOutputName,                   // 3
                              Thread.currentThread().getName(),  // 4
                              new Date(record.getMillis()),      // 5
-                             formatted$) ;                      // 6
+                             formatted$);                       // 6
     }
 
     /** By default use slf4j name.
