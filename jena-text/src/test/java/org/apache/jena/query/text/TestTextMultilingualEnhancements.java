@@ -32,7 +32,6 @@ import java.util.Set ;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryExecution ;
