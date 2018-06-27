@@ -18,92 +18,134 @@
 
 package org.apache.jena.sparql.syntax;
 
-
-import junit.framework.TestCase ;
+import junit.framework.TestCase;
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.TableFactory;
-import org.apache.jena.sparql.algebra.op.OpLabel ;
-import org.apache.jena.sparql.algebra.op.OpNull ;
-import org.apache.jena.sparql.algebra.op.OpTable ;
+import org.apache.jena.sparql.algebra.op.OpLabel;
+import org.apache.jena.sparql.algebra.op.OpNull;
+import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.expr.E_IsNumeric ;
-import org.apache.jena.sparql.expr.E_SameTerm ;
-import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.E_IsNumeric;
+import org.apache.jena.sparql.expr.E_SameTerm;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.graph.NodeConst;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderNode ;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.sse.builders.BuilderNode;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Test ;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class TestSSE_Builder extends TestCase
-{
-    @Test public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
-    @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
-    @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
-    @Test public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
-    
-    @Test public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
-    @Test public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
-    
-    @Test public void test_10() { SSE.parseExpr("1") ; }
-    @Test public void test_11() { SSE.parseExpr("(+ 1 2)") ; }
-    
-    @Test public void testOp_01() { opSame("(null)") ; }
-    @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
-    @Test public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
+public class TestSSE_Builder extends TestCase {
+    @Test
+    public void test_01() {
+        SSE.parseTriple("[triple ?s ?p ?o]");
+    }
 
-    @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
-    
+    @Test
+    public void test_02() {
+        SSE.parseTriple("[?s ?p ?o]");
+    }
+
+    @Test
+    public void test_03() {
+        SSE.parseTriple("[?s ?p ?o]");
+    }
+
+    @Test
+    public void test_04() {
+        SSE.parseTriple("(?s ?p ?o)");
+    }
+
+    @Test
+    public void test_05() {
+        SSE.parseQuad("(_ ?s ?p ?o)");
+    }
+
+    @Test
+    public void test_06() {
+        SSE.parseQuad("(quad _ ?s ?p ?o)");
+    }
+
+    @Test
+    public void test_10() {
+        SSE.parseExpr("1");
+    }
+
+    @Test
+    public void test_11() {
+        SSE.parseExpr("(+ 1 2)");
+    }
+
+    @Test
+    public void testOp_01() {
+        opSame("(null)");
+    }
+
+    @Test
+    public void testOp_02() {
+        opSame("(null)", OpNull.create());
+    }
+
+    @Test
+    public void testOp_03() {
+        opSame("(bgp [triple ?s ?p ?o])");
+    }
+
+    @Test
+    public void testOp_04() {
+        opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit()));
+    }
+
     private static void opSame(String str) {
-        opSame(str, SSE.parseOp(str)) ;
+        opSame(str, SSE.parseOp(str));
     }
 
     private static void opSame(String str, Op other) {
-        Op op = SSE.parseOp(str) ;
-        assertEquals(op, other) ;
+        Op op = SSE.parseOp(str);
+        assertEquals(op, other);
     }
 
     @Test
     public void testBuildInt_01() {
-        Item item = SSE.parseItem("1") ;
-        int i = BuilderNode.buildInt(item) ;
-        assertEquals(1, i) ;
+        Item item = SSE.parseItem("1");
+        int i = BuilderNode.buildInt(item);
+        assertEquals(1, i);
     }
 
     @Test
     public void testBuildInt_02() {
-        Item item = SSE.parseItem("1") ;
-        int i = BuilderNode.buildInt(item, 23) ;
-        assertEquals(1, i) ;
+        Item item = SSE.parseItem("1");
+        int i = BuilderNode.buildInt(item, 23);
+        assertEquals(1, i);
     }
 
     @Test
     public void testBuildInt_03() {
-        Item item = SSE.parseItem("_") ;
-        int i = BuilderNode.buildInt(item, 23) ;
-        assertEquals(23, i) ;
+        Item item = SSE.parseItem("_");
+        int i = BuilderNode.buildInt(item, 23);
+        assertEquals(23, i);
     }
 
     @Test
     public void testBuildNode_01() {
-        Item item = SSE.parseItem("ANY") ;
+        Item item = SSE.parseItem("ANY");
         Node n = BuilderNode.buildNode(item);
         assertSame(Node.ANY, n);
     }
 
     @Test
     public void testBuildNode_02() {
-        Item item = SSE.parseItem("_") ;
+        Item item = SSE.parseItem("_");
         Node n = BuilderNode.buildNode(item);
         assertSame(Node.ANY, n);
     }
-    
+
     @Test
     public void testBuildNode_03() {
-        Item item = SSE.parseItem("<http://example/>") ;
+        Item item = SSE.parseItem("<http://example/>");
         Node n = BuilderNode.buildNode(item);
         assertTrue(n.isURI());
         assertEquals("http://example/", n.getURI());
@@ -112,7 +154,7 @@ public class TestSSE_Builder extends TestCase
     @Test
     public void testBuildNode_04() {
         // Jena skolemized blank node.
-        Item item = SSE.parseItem("<_:cba>") ;
+        Item item = SSE.parseItem("<_:cba>");
         Node n = BuilderNode.buildNode(item);
         assertTrue(n.isBlank());
         assertEquals("cba", n.getBlankNodeLabel());
@@ -120,12 +162,12 @@ public class TestSSE_Builder extends TestCase
 
     @Test
     public void testBuildNode_05() {
-        Item item = SSE.parseItem("?variable") ;
+        Item item = SSE.parseItem("?variable");
         Node n = BuilderNode.buildNode(item);
         assertTrue(Var.isVar(n));
-        assertEquals("variable", ((Var)n).getVarName());
+        assertEquals("variable", ((Var) n).getVarName());
     }
-    
+
     @Test
     public void testBuildNode_06() {
         Item item = SSE.parseItem("true");
@@ -137,113 +179,101 @@ public class TestSSE_Builder extends TestCase
 
     @Test
     public void testBuildLong_01() {
-        Item item = SSE.parseItem("100000000000") ;
-        long i = BuilderNode.buildLong(item) ;
-        assertEquals(100000000000L, i) ;
+        Item item = SSE.parseItem("100000000000");
+        long i = BuilderNode.buildLong(item);
+        assertEquals(100000000000L, i);
     }
 
     @Test
     public void testBuildLong_02() {
-        Item item = SSE.parseItem("100000000000") ;
-        long i = BuilderNode.buildLong(item, 23) ;
-        assertEquals(100000000000L, i) ;
+        Item item = SSE.parseItem("100000000000");
+        long i = BuilderNode.buildLong(item, 23);
+        assertEquals(100000000000L, i);
     }
 
     @Test
     public void testBuildLong_03() {
-        Item item = SSE.parseItem("_") ;
-        long i = BuilderNode.buildLong(item, 23) ;
-        assertEquals(23, i) ;
+        Item item = SSE.parseItem("_");
+        long i = BuilderNode.buildLong(item, 23);
+        assertEquals(23, i);
     }
 
     @Test
     public void testBuildExpr_01() {
-        Expr e = SSE.parseExpr("(sameTerm (?x) (?y))") ;
-        assertTrue(e instanceof E_SameTerm) ;
+        Expr e = SSE.parseExpr("(sameTerm (?x) (?y))");
+        assertTrue(e instanceof E_SameTerm);
     }
 
     @Test
     public void testBuildExpr_02() {
-        Expr e = SSE.parseExpr("(isNumeric ?x)") ;
-        assertTrue(e instanceof E_IsNumeric) ;
+        Expr e = SSE.parseExpr("(isNumeric ?x)");
+        assertTrue(e instanceof E_IsNumeric);
     }
-    
+
     private static void testExprForms(String str1, String str2) {
-        Expr e1 = SSE.parseExpr(str1) ;
-        Expr e2 = SSE.parseExpr(str2) ;
-        assertEquals(str1+" "+str2, e1, e2) ;
+        Expr e1 = SSE.parseExpr(str1);
+        Expr e2 = SSE.parseExpr(str2);
+        assertEquals(str1 + " " + str2, e1, e2);
     }
-    
+
     @Test
-    public void testBuildExpr_03()  { 
-        testExprForms("(add ?x ?y)",
-                      "(+ ?x ?y)") ;
+    public void testBuildExpr_03() {
+        testExprForms("(add ?x ?y)", "(+ ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_04() {
-        testExprForms("(subtract ?x ?y)",
-                      "(- ?x ?y)") ;
+        testExprForms("(subtract ?x ?y)", "(- ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_05() {
-        testExprForms("(multiply ?x ?y)",
-                      "(* ?x ?y)") ;
+        testExprForms("(multiply ?x ?y)", "(* ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_06() {
-        testExprForms("(divide ?x ?y)", 
-                      "(/ ?x ?y)") ;
+        testExprForms("(divide ?x ?y)", "(/ ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_07() {
-        testExprForms("(lt ?x ?y)", 
-                      "(< ?x ?y)") ;
+        testExprForms("(lt ?x ?y)", "(< ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_08() {
-        testExprForms("(le ?x ?y)", 
-                      "(<= ?x ?y)") ;
+        testExprForms("(le ?x ?y)", "(<= ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_09() {
-        testExprForms("(gt ?x ?y)", 
-                      "(> ?x ?y)") ;
+        testExprForms("(gt ?x ?y)", "(> ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_10() {
-        testExprForms("(ge ?x ?y)", 
-                      "(>= ?x ?y)") ;
+        testExprForms("(ge ?x ?y)", "(>= ?x ?y)");
     }
-    
+
     @Test
     public void testBuildExpr_11() {
-        testExprForms("(unaryplus ?x)", 
-                      "(+ ?x)") ;
+        testExprForms("(unaryplus ?x)", "(+ ?x)");
     }
 
     @Test
     public void testBuildExpr_12() {
-        testExprForms("(unaryminus ?x)", 
-                      "(- ?x)") ;
+        testExprForms("(unaryminus ?x)", "(- ?x)");
     }
 
     @Test
     public void testBuildExpr_13() {
-        testExprForms("(eq ?x ?y)", 
-                      "(= ?x ?y)") ;
+        testExprForms("(eq ?x ?y)", "(= ?x ?y)");
     }
 
     @Test
     public void testBuildExpr_14() {
-        testExprForms("(ne ?x ?y)", 
-                      "(!= ?x ?y)") ;
+        testExprForms("(ne ?x ?y)", "(!= ?x ?y)");
     }
 
     @Test
@@ -252,33 +282,48 @@ public class TestSSE_Builder extends TestCase
         Op actual = SSE.parseOp("(table unit)");
         assertEquals(expected, actual);
     }
-    
+
     @Test
     public void testBuildTable_02() {
         Op expected = OpTable.empty();
         Op actual = SSE.parseOp("(table empty)");
         assertEquals(expected, actual);
     }
-    
+
     @Test
     public void testBuildTable_03() {
         Op expected = OpTable.create(TableFactory.create(Var.alloc("x"), NodeConst.nodeTrue));
         Op actual = SSE.parseOp("(table (vars ?x) (row (?x true)))");
         assertEquals(expected, actual);
     }
-    
-    @Test(expected = ExprBuildException.class)
+
+    @Test
     public void testBuildTableBad_01() {
-        SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
+        try {
+            SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
+            Assert.fail("Parsing should fail");
+        } catch (ExprBuildException e) {
+            // OK
+        }
     }
-    
-    @Test(expected = ExprBuildException.class)
+
+    @Test
     public void testBuildTableBad_02() {
-        SSE.parseOp("(table (vars ?x) (row (?x _:anon)))");
+        try {
+            SSE.parseOp("(table (vars ?x) (row (?x _:anon)))");
+            Assert.fail("Parsing should fail");
+        } catch (ExprBuildException e) {
+            // OK
+        }
     }
-    
-    @Test(expected = ExprBuildException.class)
+
+    @Test
     public void testBuildTableBad_03() {
-        SSE.parseOp("(table (vars ?x) (row (?x _)))");
+        try {
+            SSE.parseOp("(table (vars ?x) (row (?x _)))");
+            Assert.fail("Parsing should fail");
+        } catch (ExprBuildException e) {
+            // OK
+        }
     }
 }
