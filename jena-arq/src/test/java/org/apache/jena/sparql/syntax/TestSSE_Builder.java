@@ -22,6 +22,7 @@ package org.apache.jena.sparql.syntax;
 import junit.framework.TestCase ;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.algebra.op.OpNull ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
@@ -29,9 +30,12 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_IsNumeric ;
 import org.apache.jena.sparql.expr.E_SameTerm ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
+import org.apache.jena.sparql.sse.builders.ExprBuildException;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.Test ;
 
 public class TestSSE_Builder extends TestCase
@@ -120,6 +124,15 @@ public class TestSSE_Builder extends TestCase
         Node n = BuilderNode.buildNode(item);
         assertTrue(Var.isVar(n));
         assertEquals("variable", ((Var)n).getVarName());
+    }
+    
+    @Test
+    public void testBuildNode_06() {
+        Item item = SSE.parseItem("true");
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isLiteral());
+        assertEquals("true", n.getLiteralLexicalForm());
+        assertEquals(XSD.xboolean.getURI(), n.getLiteralDatatype().getURI());
     }
 
     @Test
@@ -233,4 +246,39 @@ public class TestSSE_Builder extends TestCase
                       "(!= ?x ?y)") ;
     }
 
+    @Test
+    public void testBuildTable_01() {
+        Op expected = OpTable.unit();
+        Op actual = SSE.parseOp("(table unit)");
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testBuildTable_02() {
+        Op expected = OpTable.empty();
+        Op actual = SSE.parseOp("(table empty)");
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testBuildTable_03() {
+        Op expected = OpTable.create(TableFactory.create(Var.alloc("x"), NodeConst.nodeTrue));
+        Op actual = SSE.parseOp("(table (vars ?x) (row (?x true)))");
+        assertEquals(expected, actual);
+    }
+    
+    @Test(expected = ExprBuildException.class)
+    public void testBuildTableBad_01() {
+        SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
+    }
+    
+    @Test(expected = ExprBuildException.class)
+    public void testBuildTableBad_02() {
+        SSE.parseOp("(table (vars ?x) (row (?x _:anon)))");
+    }
+    
+    @Test(expected = ExprBuildException.class)
+    public void testBuildTableBad_03() {
+        SSE.parseOp("(table (vars ?x) (row (?x _)))");
+    }
 }

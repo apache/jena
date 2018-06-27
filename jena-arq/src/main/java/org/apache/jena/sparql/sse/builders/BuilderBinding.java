@@ -60,8 +60,7 @@ public class BuilderBinding
             // undef
             if ( cdr.isSymbolIgnoreCase(Tags.tagUndef) || cdr.isSymbolIgnoreCase(Tags.tagNull) )
                 continue ;
-            
-            BuilderLib.checkNode(cdr) ;
+;
             Node node = BuilderNode.buildNode(item.getList().get(1)) ;
             if ( node == null )
                 BuilderLib.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
