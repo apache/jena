@@ -21,6 +21,7 @@ package org.apache.jena.sparql.syntax;
 
 import junit.framework.TestCase ;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
@@ -35,6 +36,7 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.Assert;
 import org.junit.Test ;
@@ -267,34 +269,22 @@ public class TestSSE_Builder extends TestCase
         Op actual = SSE.parseOp("(table (vars ?x) (row (?x true)))");
         assertEquals(expected, actual);
     }
-
+    
     @Test
+    public void testBuildTable_04() {
+        // Can't test for equality because can't create a BNode in a way that equality will
+        // succeed because OpTable does strict equality and ignores NodeIsomorphismMap
+        SSE.parseOp("(table (vars ?x) (row (?x _:test)))");
+    }
+
+    @Test(expected = ExprBuildException.class)
     public void testBuildTableBad_01() {
-        try {
-            SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
-            Assert.fail("Parsing should fail");
-        } catch (ExprBuildException e) {
-            // OK
-        }
+        SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
+
     }
 
-    @Test
+    @Test(expected = ExprBuildException.class)
     public void testBuildTableBad_02() {
-        try {
-            SSE.parseOp("(table (vars ?x) (row (?x _:anon)))");
-            Assert.fail("Parsing should fail");
-        } catch (ExprBuildException e) {
-            // OK
-        }
-    }
-
-    @Test
-    public void testBuildTableBad_03() {
-        try {
-            SSE.parseOp("(table (vars ?x) (row (?x _)))");
-            Assert.fail("Parsing should fail");
-        } catch (ExprBuildException e) {
-            // OK
-        }
+        SSE.parseOp("(table (vars ?x) (row (?x _)))");
     }
 }

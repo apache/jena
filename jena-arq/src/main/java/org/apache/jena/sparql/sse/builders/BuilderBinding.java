@@ -68,8 +68,6 @@ public class BuilderBinding
                 BuilderLib.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
             if ( !node.isConcrete() )
                 BuilderLib.broken(item.getList().get(1), "Only concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
-            if ( node.isBlank() )
-                BuilderLib.broken(item.getList().get(1), "Only non-blank nodes as table values: "+FmtUtils.stringForNode(node)) ;
             binding.add(v, node) ;
         }
         return binding ;
