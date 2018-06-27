@@ -6,5 +6,4 @@ jdk:
   - oraclejdk8
   - openjdk8
 env:
-  global:
-    - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
+  - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
