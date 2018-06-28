@@ -71,19 +71,37 @@ public class TestTransactionCoordinatorControl {
         Transaction txn = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
         assertNull(txn) ;
         txnMgr.enableWriters();
-        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
-        assertNotNull(txn1) ;
+        Transaction txn2 = L.syncCallThread(()-> {
+            Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
+            assertNotNull(txn1);
+            txn1.abort(); txn1.end();
+            return txn1;
+        }) ;
+        assertNotNull(txn2) ;
     }
     
     @Test public void txn_coord_disable_writers_3() {
         txnMgr.blockWriters();
-        Transaction txn = L.syncCallThread(()->txnMgr.begin(TxnType.READ, false)) ;
+        Transaction txn = L.syncCallThread(() -> {
+            Transaction tx = txnMgr.begin(TxnType.READ, false);
+            tx.end();
+            return tx;
+        });
         assertNotNull(txn) ;
         txnMgr.enableWriters();
-        Transaction txn1 = L.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false)) ;
-        assertNotNull(txn1) ;
-        Transaction txn2 = L.syncCallThread(()->txnMgr.begin(TxnType.READ, false)) ;
-        assertNotNull(txn2) ;
+        Transaction txn1 = L.syncCallThread(() -> {
+            Transaction tx = txnMgr.begin(TxnType.WRITE, false);
+            tx.commit();
+            tx.end();
+            return tx;
+        });
+        assertNotNull(txn1);
+        Transaction txn2 = L.syncCallThread(() -> {
+            Transaction tx = txnMgr.begin(TxnType.READ, false);
+            tx.end();
+            return tx;
+        });
+        assertNotNull(txn2);
     }
     
     @Test(expected=TransactionException.class)
@@ -116,6 +134,8 @@ public class TestTransactionCoordinatorControl {
             assertNotNull(txn1) ;
             Transaction txn2 = txnMgr.begin(TxnType.READ, false) ;
             assertNotNull(txn2) ;
+            txn1.commit(); txn1.end();
+            txn2.commit(); txn2.end();
         }) ;
     }
     
@@ -134,7 +154,5 @@ public class TestTransactionCoordinatorControl {
         b = txnMgr.tryExclusiveMode(false);
         assertTrue(b) ;
     }
-    
-    
 }
 

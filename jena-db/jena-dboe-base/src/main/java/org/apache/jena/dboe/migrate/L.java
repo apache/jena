@@ -109,9 +109,8 @@ public class L {
             return null ;
         }
     }
-    
 
-    /** Execute. Preform the "before" action, then main action.
+    /** Execute. Perform the "before" action, then main action.
      *  Always call the "after" runnable if the "before" succeeded.
      *  Be careful about argument order. 
      * @param action
@@ -124,7 +123,7 @@ public class L {
         finally { after.run();  }
     }
 
-    /** Execute. Preform the "before" action, then main action.
+    /** Execute. Perform the "before" action, then main action.
      *  Always call the "after" runnable if the "before" succeeded.
      *  Be careful about argument order. 
      * @param action
@@ -174,9 +173,9 @@ public class L {
         }
     }
 
-    /** Read a whole stream as UTF-8
+    /** Write a string into an {@link OutputStream} as UTF-8. 
      * 
-     * @param out       OutputStream to be read
+     * @param out       OutputStream destination.
      * @param content   String to be written
      * @throws  IOException
      */
@@ -189,7 +188,7 @@ public class L {
 
     // ==> IO.writeWholeFileAsUTF8
     
-    /** String to ByteBuffer */
+    /** String to ByteBuffer as UTF-8 bytes */
     public static ByteBuffer stringToByteBuffer(String str) {
         byte[] b = StrUtils.asUTF8bytes(str) ;
         return ByteBuffer.wrap(b) ;

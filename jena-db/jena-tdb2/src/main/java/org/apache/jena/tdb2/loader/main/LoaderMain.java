@@ -252,7 +252,8 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     
     /** Execute secondary index building of a {@link LoaderPlan} */
     private static void executeSecondary(TupleIndex srcIdx, TupleIndex[][] indexSets, DatasetGraphTDB dsgtdb, MonitorOutput output) {
-        
+        if ( indexSets.length == 0 )
+            return;
         List<BulkStartFinish> processes = new ArrayList<>();
         output.print("Start replay index %s", srcIdx.getName());
         // For each phase.

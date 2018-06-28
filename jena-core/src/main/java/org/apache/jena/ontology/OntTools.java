@@ -35,7 +35,7 @@ import org.apache.jena.shared.JenaException ;
  * Some general utilities and algorithms to support developers working with the
  * general classes in the Jena ontology API. <strong>Warning</strong> these
  * utilities are <strong>experimental</strong>. Extensive testing has not yet
- * occurred (see {@link org.apache.jena.ontology.impl.TestOntTools} in the
+ * occurred (see {@code org.apache.jena.ontology.impl.TestOntTools} in the
  * test area for basic unit tests), 
  * and in particular performance testing has not been carried out yet. 
  * Users are advised to exercise caution before relying on these utilities in 
