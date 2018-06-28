@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.syntax;
 
 
-import junit.framework.TestCase ;
+import static org.junit.Assert.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.TableFactory;
@@ -37,11 +37,8 @@ import org.apache.jena.sparql.sse.builders.BuilderNode ;
 import org.apache.jena.sparql.sse.builders.ExprBuildException;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.Test ;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class TestSSE_Builder extends TestCase
+public class TestSSE_Builder
 {
     @Test public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
     @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
