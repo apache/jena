@@ -18,20 +18,15 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.File ;
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Random ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase ;
-import org.apache.jena.atlas.data.DistinctDataNet ;
-import org.apache.jena.atlas.data.ThresholdPolicyCount ;
+import java.io.File ;
+import java.util.*;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
-import org.junit.Test ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.sparql.core.Var ;
@@ -44,8 +39,9 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import org.junit.Test ;
 
-public class TestDistinctDataNet extends TestCase
+public class TestDistinctDataNet
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     Random random = new Random();

@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.util;
 
-import junit.framework.TestCase ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
 import org.junit.Test ;
+import static org.junit.Assert.*;
 
-
-public class TestDateTimeParsing extends TestCase
+public class TestDateTimeParsing
 {
     @Test public void testDT_1()  { dateTimeTest("2007-08-31T12:34:56Z") ; }
     @Test public void testDT_2()  { dateTimeTest("2007-08-31T12:34:56") ; } 
