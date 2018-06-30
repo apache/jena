@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.syntax;
 
-import junit.framework.TestCase ;
+import static org.junit.Assert.*;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -30,7 +31,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.Test ;
 
-public class TestSSE_Basic extends TestCase
+public class TestSSE_Basic
 {
     // Tests not requiring URI resolution or prefix name handling.
     

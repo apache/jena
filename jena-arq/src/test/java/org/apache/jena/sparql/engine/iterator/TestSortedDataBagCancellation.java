@@ -17,12 +17,16 @@
  */
 package org.apache.jena.sparql.engine.iterator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
@@ -42,7 +46,6 @@ import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Context;
 import org.junit.Test;
-
 /*
 	Test that a SortedDataBag used inside a QueryIterSort
 	does indeed cut off when cancelled.
@@ -52,7 +55,7 @@ import org.junit.Test;
 	test the SortedDataBag correctly?
  
 */
-public class TestSortedDataBagCancellation extends TestCase {
+public class TestSortedDataBagCancellation {
 
     static final BindingMap b1 = BindingFactory.create();
     static final BindingMap b2 = BindingFactory.create();

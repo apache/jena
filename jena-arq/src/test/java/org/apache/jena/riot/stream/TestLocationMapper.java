@@ -18,18 +18,21 @@
 
 package org.apache.jena.riot.stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Iterator ;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.adapters.TestFileManager ;
-import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.LocationMapper ;
+import org.junit.Test;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class TestLocationMapper extends TestCase
+public class TestLocationMapper
 {
     static Logger log = LoggerFactory.getLogger(TestLocationMapper.class) ;
     static final String testingDir = TestFileManager.testingDir ;
@@ -40,17 +43,9 @@ public class TestLocationMapper extends TestCase
                                   testingDir+"/location-mapping-test.ttl" ;
 
     
-    public TestLocationMapper( String name )
-    {
-        super(name);
-    }
+    public TestLocationMapper() { }
     
-    public static TestSuite suite()
-    {
-        return new TestSuite( TestLocationMapper.class );
-    }
-
-    public void testLocationMapper()
+    @Test public void testLocationMapper()
     {
         LocationMapper locMap = new LocationMapper(mapping) ;
         String alt = locMap.altMapping(filename1) ;
@@ -58,7 +53,7 @@ public class TestLocationMapper extends TestCase
         assertEquals(filename2, alt) ;
     }
 
-    public void testLocationMapperMiss()
+    @Test public void testLocationMapperMiss()
     {
         LocationMapper locMap = new LocationMapper(mapping) ;
         String alt = locMap.altMapping(notFilename) ;
@@ -66,7 +61,7 @@ public class TestLocationMapper extends TestCase
         assertEquals(notFilename, alt) ;
     }
 
-    public void testLocationMapperURLtoFile()
+    @Test public void testLocationMapperURLtoFile()
     {
         LocationMapper locMap = new LocationMapper(mapping) ;
         String alt = locMap.altMapping("http://example.org/file") ;
@@ -74,9 +69,9 @@ public class TestLocationMapper extends TestCase
         assertEquals("file:"+testingDir+"/location-mapping-test-file", alt) ;
     }
     
-    public void testLocationMapperFromModel()
+    @Test public void testLocationMapperFromModel()
     {
-        Model model = FileManager.get().loadModel(testingDir+"/location-mapping-test.ttl") ;
+        Model model = RDFDataMgr.loadModel(testingDir+"/location-mapping-test.ttl") ;
         LocationMapper loc = new LocationMapper(model) ; 
         
         // Light test that the two location mappers are "the same"
@@ -97,7 +92,7 @@ public class TestLocationMapper extends TestCase
         }
     }
 
-    public void testLocationMapperClone1()
+    @Test public void testLocationMapperClone1()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         // See testLocationMapperURLtoFile
@@ -113,7 +108,7 @@ public class TestLocationMapper extends TestCase
         assertEquals("file:"+testingDir+"/location-mapping-test-file", alt) ;
     }
     
-    public void testLocationMapperClone2()
+    @Test public void testLocationMapperClone2()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         // See testLocationMapperURLtoFile
@@ -139,7 +134,7 @@ public class TestLocationMapper extends TestCase
         }
     }
 
-    public void testLocationMapperEquals1()
+    @Test public void testLocationMapperEquals1()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(mapping) ;
@@ -147,7 +142,7 @@ public class TestLocationMapper extends TestCase
         assertEquals(locMap1.hashCode(), locMap2.hashCode()) ;
     }
 
-    public void testLocationMapperEquals2()
+    @Test public void testLocationMapperEquals2()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(mapping) ;
@@ -156,7 +151,7 @@ public class TestLocationMapper extends TestCase
         assertFalse(locMap2.equals(locMap1)) ;
     }
 
-    public void testLocationMapperToModel1()
+    @Test public void testLocationMapperToModel1()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(locMap1.toModel()) ;
@@ -164,7 +159,7 @@ public class TestLocationMapper extends TestCase
         assertEquals(locMap1.hashCode(), locMap2.hashCode()) ;
     }
 
-    public void testLocationMapperToModel2()
+    @Test public void testLocationMapperToModel2()
     {
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(mapping) ;
