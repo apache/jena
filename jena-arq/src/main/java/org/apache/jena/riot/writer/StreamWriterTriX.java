@@ -44,9 +44,9 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public class StreamWriterTriX implements StreamRDF {
     /*
-     * Notes on writing qname:
+     * Notes on writing qnames:
      * 1/ Currently disabled in favour of the most regular XML output.
-     * 2/ There is code in write(...,Node,...) to handle it currently commented out. 
+     * 2/ There is code in write(...,Node,...) to handle it which is currently commented out. 
      * 3/ Need to write prefixes which in turn needs delaying writing the <TriX> start.  
      */
     
@@ -63,7 +63,7 @@ public class StreamWriterTriX implements StreamRDF {
     @Override public void start() {
         if ( depth == 0 ) {
             StreamWriterTriX.startXML(out) ;
-            // Wirte using the element name from the W3C DTD.
+            // Write using the element name from the W3C DTD.
             StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
             out.println() ;
         }
@@ -180,11 +180,16 @@ public class StreamWriterTriX implements StreamRDF {
         
         if ( node.isLiteral() ) {
             // RDF 1.1
-            String lang = node.getLiteralLanguage() ;
-            if ( lang != null && lang.isEmpty() )
-                lang = null ;
-            String dt = node.getLiteralDatatypeURI() ;
-            if ( lang != null ) {
+            if ( Util.isSimpleString(node) ) {
+                startTag(out, TriX.tagPlainLiteral) ;
+                writeTextNoIndent(out, node.getLiteralLexicalForm()) ;
+                endTag(out, TriX.tagPlainLiteral) ;
+                out.println() ;
+                return ;
+            }
+
+            if ( Util.isLangString(node) ) {
+                String lang = node.getLiteralLanguage() ;
                 startTag(out, TriX.tagPlainLiteral, "xml:lang", lang) ;
                 writeTextNoIndent(out, node.getLiteralLexicalForm()) ;
                 endTag(out, TriX.tagPlainLiteral) ;
@@ -192,15 +197,7 @@ public class StreamWriterTriX implements StreamRDF {
                 return ;
             }
             
-            if ( dt == null ) {
-                startTag(out, TriX.tagPlainLiteral) ;
-                writeTextNoIndent(out, node.getLiteralLexicalForm()) ;
-                endTag(out, TriX.tagPlainLiteral) ;
-                out.println() ;
-                return ;
-            }
-            
-            // The case of ( lang == null && dt != null )
+            String dt = node.getLiteralDatatypeURI() ;
             startTag(out, TriX.tagTypedLiteral, TriX.attrDatatype, dt) ;
             String lex = node.getLiteralLexicalForm() ;
             if ( rdfXMLLiteral.equals(dt) ) {
