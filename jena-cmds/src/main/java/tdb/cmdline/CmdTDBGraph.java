@@ -20,61 +20,56 @@ package tdb.cmdline;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.tdb.store.GraphNonTxnTDB ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb.store.GraphTDB;
 
-public abstract class CmdTDBGraph extends CmdTDB
-{
-    private static final ArgDecl argNamedGraph          = new ArgDecl(ArgDecl.HasValue, "graph") ;
-    protected String graphName = null ;
-    
-    protected CmdTDBGraph(String[] argv)
-    {
-        super(argv) ;
-        super.add(argNamedGraph, "--graph=IRI", "Act on a named graph") ;
+public abstract class CmdTDBGraph extends CmdTDB {
+    private static final ArgDecl argNamedGraph = new ArgDecl(ArgDecl.HasValue, "graph");
+    protected String             graphName     = null;
+
+    protected CmdTDBGraph(String[] argv) {
+        super(argv);
+        super.add(argNamedGraph, "--graph=IRI", "Act on a named graph");
     }
-    
+
     @Override
-    protected void processModulesAndArgs()
-    {
-        super.processModulesAndArgs() ;
+    protected void processModulesAndArgs() {
+        super.processModulesAndArgs();
         if ( contains(argNamedGraph) )
-            graphName = getValue(argNamedGraph) ; 
+            graphName = getValue(argNamedGraph);
     }
-    
-    protected Model getModel()
-    {
-        Dataset ds = tdbDatasetAssembler.getDataset() ;
-        
-        if ( graphName != null )
-        {
-            Model m = ds.getNamedModel(graphName) ;
+
+    protected Model getModel() {
+        Dataset ds = tdbDatasetAssembler.getDataset();
+
+        if ( graphName != null ) {
+            Model m = ds.getNamedModel(graphName);
             if ( m == null )
-                throw new CmdException("No such named graph (is this a TDB dataset?)") ;
-            return m ;
-        }
-        else
-            return ds.getDefaultModel() ;
+                throw new CmdException("No such named graph (is this a TDB dataset?)");
+            return m;
+        } else
+            return ds.getDefaultModel();
     }
-    
-    public Node getGraphName()  { return graphName == null ? null : NodeFactory.createURI(graphName) ; } 
-    
-    protected GraphNonTxnTDB getGraph()
-    {
+
+    public Node getGraphName() {
+        return graphName == null ? null : NodeFactory.createURI(graphName);
+    }
+
+    protected GraphTDB getGraph() {
+        DatasetGraph dsg = tdbDatasetAssembler.getDataset().asDatasetGraph();
         if ( graphName != null )
-            return (GraphNonTxnTDB)tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph() ;
+            return (GraphTDB)dsg.getGraph(getGraphName());
         else
-            return (GraphNonTxnTDB)tdbDatasetAssembler.getDataset().getDefaultModel().getGraph() ;
+            return (GraphTDB)dsg.getDefaultGraph();
     }
-    
+
     @Override
-    protected String getCommandName()
-    {
-        return Lib.className(this) ;
+    protected String getCommandName() {
+        return Lib.className(this);
     }
-    
 }

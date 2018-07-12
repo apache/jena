@@ -146,7 +146,7 @@ public class TestLoader extends BaseTest {
     @Test
     public void load_graph_05() {
         DatasetGraphTDB dsg = fresh() ;
-        GraphNonTxnTDB graph = dsg.getDefaultGraphTDB() ;
+        GraphTDB graph = dsg.getDefaultGraphTDB() ;
         TDBLoader.load(graph, DIR + "data-4.ttl", false) ;
         String uri = dsg.getDefaultGraph().getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri) ;
@@ -155,7 +155,7 @@ public class TestLoader extends BaseTest {
     @Test
     public void load_graph_06() {
         DatasetGraphTDB dsg = fresh() ;
-        GraphNonTxnTDB graph = dsg.getGraphTDB(g) ;
+        GraphTDB graph = dsg.getGraphTDB(g) ;
         TDBLoader.load(graph, DIR + "data-4.ttl", false) ;
         String uri1 = dsg.getGraph(g).getPrefixMapping().getNsPrefixURI("") ;
         assertEquals("http://example/", uri1) ;

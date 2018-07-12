@@ -104,11 +104,11 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
     { getQuadTable().delete(g, s, p, o) ; }
     
-    public GraphNonTxnTDB getDefaultGraphTDB() 
-    { return (GraphNonTxnTDB)getDefaultGraph() ; }
+    public GraphTDB getDefaultGraphTDB() 
+    { return (GraphTDB)getDefaultGraph() ; }
 
-    public GraphNonTxnTDB getGraphTDB(Node graphNode)
-    { return (GraphNonTxnTDB)getGraph(graphNode) ; }
+    public GraphTDB getGraphTDB(Node graphNode)
+    { return (GraphTDB)getGraph(graphNode) ; }
 
     @Override
     public void close() {
