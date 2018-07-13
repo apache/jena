@@ -29,12 +29,20 @@ define(
                   } );
       },
 
+      /* x is the empty object if baseURL is "" 
+       * Ensure it is always a string.
+       */
+      getStr: function(key) {
+        var x = this.get( key );
+        return jQuery.isEmptyObject(x) ? "" : x ;
+      },
+  
       baseURL: function() {
-        return this.get( "baseURL" );
+        return this.getStr( "baseURL" );
       },
 
       mgmtURL: function() {
-        return this.get( "mgmtURL" );
+        return this.getStr( "mgmtURL" );
       },
 
       mgmtActionURL: function() {

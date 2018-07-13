@@ -138,35 +138,31 @@ define(
                      );
       },
 
-      /** Extract the server root path from the current window href */
+      /** Extract the server root path from the current window href
+       * This is the path, from /, without protocol, host or port.
+       * Then the browser adds protocol, host or port.
+       * Sometimes, the app does not know URL the browser used.
+       * For example, in docker, the port may have been remapped,
+       * or with a reverse proxy, https may have been terminated.
+       */
       currentRootPath: function() {
         var path = window.location.pathname.replace( /\/[^/]*$/, "" );
-
-		/*
-		console.log("window.location="+window.location) ;
-		console.log("window.location.href="+window.location.href) ;
-		console.log("window.location.protocol="+window.location.protocol) ;
-		console.log("window.location.host="+window.location.host) ;
-		console.log("window.location.hostname="+window.location.hostname) ;
-		console.log("window.location.port="+window.location.port) ;
-		console.log("window.location.pathname="+window.location.pathname) ;
-		console.log("window.location.origin="+window.location.origin) ;
-		console.log("window.location.hash="+window.location.hash) ;
-		console.log("window.location.search="+window.location.search) ;
-	    console.log("path='"+path+"'") ;
-		*/
-	
-		var path2 ;
-		var port = window.location.port ;
-		//console.log("port='"+port+"'") ;
-		if ( !port || 0 === port.length ) {
-		    // No explicit port.
-		    path2 = sprintf( "%s//%s%s",  window.location.protocol, window.location.hostname, path ) ;
-		} else {
-		    path2 = sprintf( "%s//%s:%s%s",  window.location.protocol, window.location.hostname, window.location.port, path );
-		}
-	    //console.log("path2='"+path2+"'") ;
-		return path2 ;
+          /*
+            console.log("window.location="+window.location) ;
+            console.log("window.location.href="+window.location.href) ;
+            
+            console.log("window.location.protocol="+window.location.protocol) ;
+            console.log("window.location.host="+window.location.host) ;
+            console.log("window.location.hostname="+window.location.hostname) ;
+            console.log("window.location.port="+window.location.port) ;
+            console.log("window.location.pathname="+window.location.pathname) ;
+            
+            console.log("window.location.origin="+window.location.origin) ;
+            console.log("window.location.hash="+window.location.hash) ;
+            console.log("window.location.search="+window.location.search) ;
+            console.log("path='"+path+"'") ;
+          */
+        return path ;
       }
     } );
 
