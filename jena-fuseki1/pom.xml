@@ -47,11 +47,6 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <server.jar.name>${this.root}-server</server.jar.name>
-
-    <!--
-    <assembly.soh.name>${this.root}</assembly.soh.name>
-    -->
-
     <ver.jetty>8.1.22.v20160922</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
     
@@ -322,39 +317,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <!-- After shared jar - same phase -->
-        <executions>
-          <!--
-          <execution>
-            <id>create-soh-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <finalName>${assembly.soh.name}</finalName>
-              <!- -<appendAssemblyId>false</appendAssemblyId> - ->
-              <descriptors>
-                <descriptor>assembly-soh.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-          -->
-
-          <execution>
-            <id>create-zip-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <tarLongFileMode>posix</tarLongFileMode>
-              <descriptors>
-                <descriptor>assembly-dist.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
