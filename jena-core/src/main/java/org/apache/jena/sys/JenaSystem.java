@@ -23,9 +23,6 @@ import java.util.Comparator ;
 import java.util.List ;
 import java.util.function.Consumer ;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
 /** Jena "system" - simple controls for ensuring components are loaded and initialized.
  * <p>
  * All initialization should be concurrent and thread-safe.  In particular,
@@ -206,15 +203,14 @@ public class JenaSystem {
      *  There should be only one such level 0 handler. 
      */
     private static class JenaInitLevel0 implements JenaSubsystemLifecycle {
-        private static Logger log = LoggerFactory.getLogger("Jena") ; 
         @Override
         public void start() {
-            log.debug("Jena initialization");
+            logLifecycle("Jena initialization");
         }
     
         @Override
         public void stop() {
-            log.debug("Jena shutdown");
+            logLifecycle("Jena shutdown");
         }
     
         @Override
