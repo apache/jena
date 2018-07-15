@@ -178,7 +178,6 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                 assertNotNull(literal);
                 literals.put(entityUri, literal);
             }
-            System.err.println("Query: " + queryString + ", COUNT: " + count + ", Expected; " + expectedEntityURIs.size());
             assertEquals(expectedEntityURIs.size(), count);
         }
         finally {
