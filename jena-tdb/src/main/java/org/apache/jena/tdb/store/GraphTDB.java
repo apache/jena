@@ -64,7 +64,7 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
      * For transactional, it is the transactional view.
      * <p>
      * Immediate validity only.
-     * Not valid across transatcion boundaries, nor non-transactional to transactional. 
+     * Not valid across transaction boundaries, nor non-transactional to transactional. 
      */
     public abstract DatasetGraphTDB getDatasetGraphTDB() ;
     

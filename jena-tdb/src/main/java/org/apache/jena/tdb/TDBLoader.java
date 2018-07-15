@@ -26,9 +26,9 @@ import org.apache.jena.atlas.lib.Timer ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.store.GraphNonTxnTDB ;
+import org.apache.jena.tdb.store.GraphTDB ;
 import org.apache.jena.tdb.store.bulkloader.BulkLoader ;
-import org.slf4j.Logger ;
+import org.apache.jena.tdb.sys.TDBInternal;
 
 /** Public interface to the loader functionality.
  * The bulk loader is not transactional. 
@@ -75,30 +75,29 @@ public class TDBLoader
     {
         TDBLoader loader = new TDBLoader() ;
         loader.setShowProgress(showProgress) ;
-        // TODO Lang version
         loader.loadDataset(dataset, input) ;
     }
     
     /** Load the contents of URL into a graph */
-    public static void load(GraphNonTxnTDB graph, String url)
+    public static void load(GraphTDB graph, String url)
     {
         load(graph, url, false) ;
     }
     
     /** Load the contents of URL into a graph */
-    public static void load(GraphNonTxnTDB graph, String url, boolean showProgress)
+    public static void load(GraphTDB graph, String url, boolean showProgress)
     {
         load(graph, asList(url), showProgress) ;
     }
 
     /** Load the contents of URL into a graph */
-    public static void load(GraphNonTxnTDB graph, List<String> urls)
+    public static void load(GraphTDB graph, List<String> urls)
     {
         load(graph, urls, false) ;
     }
     
     /** Load the contents of URL into a graph */
-    public static void load(GraphNonTxnTDB graph, List<String> urls, boolean showProgress)
+    public static void load(GraphTDB graph, List<String> urls, boolean showProgress)
     {
         TDBLoader loader = new TDBLoader() ;
         loader.setShowProgress(showProgress) ;
@@ -140,7 +139,6 @@ public class TDBLoader
     
     private boolean showProgress = true ;
     private boolean generateStats = true ;
-    private Logger loaderLog  = TDB.logLoader ;
     private boolean checking ;
     
     // ---- The class itself.
@@ -148,19 +146,19 @@ public class TDBLoader
     public TDBLoader() {}
 
     /** Load a graph from a URL - assumes URL names a triples format document*/
-    public void loadGraph(GraphNonTxnTDB graph, String url)
+    public void loadGraph(GraphTDB graph, String url)
     {
         loadGraph(graph, asList(url)) ;
     }
     
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    public void loadGraph(GraphNonTxnTDB graph, List<String> urls)
+    public void loadGraph(GraphTDB graph, List<String> urls)
     {
         loadGraph$(graph, urls, showProgress, generateStats) ;
     }
     
     /** Load a graph from a list of URL - assumes the URLs name triples format documents */
-    public void loadGraph(GraphNonTxnTDB graph, InputStream in)
+    public void loadGraph(GraphTDB graph, InputStream in)
     {
         loadGraph$(graph, in, showProgress, generateStats) ;
     }
@@ -204,13 +202,7 @@ public class TDBLoader
     public final void setGenerateStats(boolean generateStats)
     { this.generateStats = generateStats ; }
     
-//    public final Logger getLogger()
-//    { return this.loaderLog ; }
-//
-//    public final void setLogger(Logger log)
-//    { this.loaderLog = log ; }
-    
-    private static void loadGraph$(GraphNonTxnTDB graph, List<String> urls, boolean showProgress, boolean collectStats) {
+    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress, boolean collectStats) {
         if ( graph.getGraphName() == null )
             loadDefaultGraph$(graph.getDatasetGraphTDB(), urls, showProgress, collectStats) ;
         else
@@ -219,11 +211,14 @@ public class TDBLoader
 
     // These are the basic operations for TDBLoader.
 
-    private static void loadGraph$(GraphNonTxnTDB graph, InputStream input, boolean showProgress, boolean collectStats) {
+    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress, boolean collectStats) {
+        
+        DatasetGraphTDB dsgtdb = TDBInternal.getBaseDatasetGraphTDB(graph.getDatasetGraphTDB());
+        
         if ( graph.getGraphName() == null )
-            loadDefaultGraph$(graph.getDatasetGraphTDB(), input, showProgress, collectStats) ;
+            loadDefaultGraph$(dsgtdb, input, showProgress, collectStats) ;
         else
-            loadNamedGraph$(graph.getDatasetGraphTDB(), graph.getGraphName(), input, showProgress, collectStats) ;
+            loadNamedGraph$(dsgtdb, graph.getGraphName(), input, showProgress, collectStats) ;
     }
 
     private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress, boolean collectStats) {
