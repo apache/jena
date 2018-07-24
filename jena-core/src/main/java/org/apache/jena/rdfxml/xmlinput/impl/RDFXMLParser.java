@@ -30,9 +30,6 @@ import org.apache.jena.rdfxml.xmlinput.FatalParsingErrorException ;
 import org.apache.jena.rdfxml.xmlinput.SAX2RDF ;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.CharEncoding ;
-//import org.apache.xerces.parsers.SAXParser; //XMLReader
-//import org.apache.xerces.parsers.StandardParserConfiguration;
-//import org.apache.xerces.xni.Augmentations;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -75,101 +72,33 @@ public class RDFXMLParser extends XMLHandler {
         return saxParser;
     }
 
-    // JENA-1537: JDK SaxParser does not expose  xmlDecl
-//    /**
-//     * This works with an {@link RDFXMLParser} and catches and reports several
-//     * common errors to do with character encoding.
-//     *
-//     */
-//    static protected class SAXParserWithEncodingCheck extends SAXParser {
-//        protected SAXParserWithEncodingCheck(StandardParserConfiguration c) {
-//            super(c);
-////            try {
-////                setFeature("http://xml.org/sax/features/string-interning",
-////                        false);
-////            } catch (SAXException e) {
-////                // Not supported - aggh
-////                // TO DO ask on xerces list why not?
-////                // e.printStackTrace();
-////            }
-//        }
-//
-//        private RDFXMLParser rdfXmlParser;
-//
-//        @Override
-//        public void xmlDecl(String version, String encoding, String standalone,
-//                Augmentations augs) {
-//            try {
-//                getRdfXmlParser().setEncoding(encoding == null ? "UTF" : encoding);
-//            } catch (SAXParseException e) {
-//                throw new WrappedException(e);
-//            }
-//            super.xmlDecl(version, encoding, standalone, augs);
-//
-//        }
-//
-//		/**
-//		 * This must be called as part of the initialization process.
-//		 * @param rdfXmlParser the rdfXmlParser to set
-//		 */
-//		public void setRdfXmlParser(RDFXMLParser rdfXmlParser) {
-//			this.rdfXmlParser = rdfXmlParser;
-//		}
-//
-//		/**
-//		 * @return the rdfXmlParser
-//		 */
-//		public RDFXMLParser getRdfXmlParser() {
-//			if (rdfXmlParser == null) {
-//				throw new IllegalStateException("setRdfXmlParser must be called as part of the initialization process");
-//			}
-//			return rdfXmlParser;
-//		}
-//    }
-
+    private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
     public static RDFXMLParser create() {
-//        StandardParserConfiguration c = new StandardParserConfiguration();
-//        SAXParserWithEncodingCheck msp = new SAXParserWithEncodingCheck(c);
-        // JENA-1537
         try { 
-            SAXParserFactory spf = SAXParserFactory.newInstance();
-            // Create a JAXP SAXParser
-            SAXParser saxParser = spf.newSAXParser();
+            SAXParser saxParser = saxParserFactory.newSAXParser();
             // Get the encapsulated SAX XMLReader
             XMLReader xmlreader = saxParser.getXMLReader();
-
             RDFXMLParser a = new RDFXMLParser(xmlreader);
             // Default.
             a.setEncoding("UTF");
-            // JENA-1537
-            //msp.setRdfXmlParser(a);
             return a;
         } catch (Exception ex) {
             throw new JenaException("Failed to create an RDFXMLParser", ex);
         }
     }
 
-
     public void parse(InputSource input) throws IOException, SAXException {
         parse(input, input.getSystemId());
     }
 
-
-    synchronized public void parse(InputSource input, String base)
-            throws IOException, SAXException {
+    synchronized public void parse(InputSource input, String base) throws IOException, SAXException {
         // Make sure we have a sane state for
         // Namespace processing.
-
         initParse(base,"");
         SAX2RDF.installHandlers(saxParser, this);
-        //[JENA]
-        //saxParser.reset();
-
         initEncodingChecks(input);
         try {
-
             saxParser.parse(input);
-
         } 
         catch (UTFDataFormatException e) {
                 generalError(ERR_UTF_ENCODING, e);
@@ -236,5 +165,4 @@ public class RDFXMLParser extends XMLHandler {
             }
         }
     }
-
 }
