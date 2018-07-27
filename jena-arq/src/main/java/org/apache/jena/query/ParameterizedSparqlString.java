@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
@@ -1793,10 +1792,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * @param valuesItems
      */
     public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems) {
-        for (String varName : valuesItems.keySet()) {
-            Collection<? extends RDFNode> items = valuesItems.get(varName);
-            setValues(varName, items);
-        }
+        valuesItems.forEach(this::setValues);
     }
 
     /**
@@ -1806,10 +1802,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * @param isParenthesisNeeded
      */
     public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems, Boolean isParenthesisNeeded) {
-        for (String varName : valuesItems.keySet()) {
-            Collection<? extends RDFNode> items = valuesItems.get(varName);
-            setValues(varName, items, isParenthesisNeeded);
-        }
+        valuesItems.forEach((varName, items) -> setValues(varName, items, isParenthesisNeeded));
     }
 
     /**
