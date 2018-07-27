@@ -20,7 +20,9 @@ package org.apache.jena.query;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -141,6 +143,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private Map<String, Node> params = new HashMap<>();
     private Map<Integer, Node> positionalParams = new HashMap<>();
     private PrefixMapping prefixes;
+    private Map<String, ValueReplacement> valuesReplacements = new HashMap<>();
 
     /**
      * Creates a new parameterized string
@@ -1328,6 +1331,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
             command = p.matcher(command).replaceAll(Matcher.quoteReplacement(this.stringForNode(n, context)) + "$2");
         }
 
+        // Inject Values Parameters
+        command = applyValues(command);
+        
         // Then inject Positional Parameters
         // To do this we need to find the ? we will replace
         p = Pattern.compile("(\\?)[\\s;,.]");
@@ -1734,4 +1740,243 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
     }
+    
+    /**
+     * Assign a varName with a multiple items and whether to include
+     * parenthesis.
+     *
+     * @param varName
+     * @param items
+     * @param isParenthesisNeeded
+     */
+    public void setValues(String varName, Collection<? extends RDFNode> items, boolean isParenthesisNeeded) {
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, items, isParenthesisNeeded));
+    }
+
+    /**
+     * Assign a varName with a multiple items.<br>
+     * Can be used to assign multiple values to a single variable or single
+     * value to multiple variables (if using a List) in the SPARQL query.<br>
+     * See setGroupedValues to assign multiple values to multiple variables.
+     *
+     * @param varName
+     * @param items
+     */
+    public void setValues(String varName, Collection<? extends RDFNode> items) {
+        setValues(varName, items, false);
+    }
+
+    /**
+     * Assign a varName with a single item and whether to include parenthesis.
+     *
+     * @param varName
+     * @param item
+     * @param isParenthesisNeeded
+     */
+    public void setValues(String varName, RDFNode item, boolean isParenthesisNeeded) {
+        setValues(varName, Arrays.asList(item), isParenthesisNeeded);
+    }
+
+    /**
+     * Assign a varName with a single item.
+     *
+     * @param varName
+     * @param item
+     */
+    public void setValues(String varName, RDFNode item) {
+        setValues(varName, Arrays.asList(item), false);
+    }
+
+    /**
+     * Sets a map of varNames and their items.
+     *
+     * @param valuesItems
+     */
+    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems) {
+        for (String varName : valuesItems.keySet()) {
+            Collection<? extends RDFNode> items = valuesItems.get(varName);
+            setValues(varName, items);
+        }
+    }
+
+    /**
+     * All varNames in the map will use the same approach to parenthesis.
+     *
+     * @param valuesItems
+     * @param isParenthesisNeeded
+     */
+    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems, Boolean isParenthesisNeeded) {
+        for (String varName : valuesItems.keySet()) {
+            Collection<? extends RDFNode> items = valuesItems.get(varName);
+            setValues(varName, items, isParenthesisNeeded);
+        }
+    }
+
+    /**
+     * Combine a map of varNames and items with whether to include parenthesis.
+     * Missing varNames in the parenthesis map will default to false.
+     *
+     * @param valuesItems
+     * @param valuesParenthesis
+     */
+    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems, Map<String, Boolean> valuesParenthesis) {
+
+        for (String varName : valuesItems.keySet()) {
+            Collection<? extends RDFNode> items = valuesItems.get(varName);
+            Boolean isParenthesisNeeded;
+            if (valuesParenthesis.containsKey(varName)) {
+                isParenthesisNeeded = valuesParenthesis.get(varName);
+            } else {
+                isParenthesisNeeded = false;
+            }
+
+            setValues(varName, items, isParenthesisNeeded);
+        }
+    }
+
+    /**
+     * Allocate multiple lists of variables to a single varName.<br>
+     * Using "vars" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on query
+     * "VALUES (?p ?o) {?vars}" would produce "VALUES (?p ?o) {(prop_A obj_A)
+     * (prop_B obj_B)}".
+     *
+     * @param varName
+     * @param items
+     */
+    public void setGroupedValues(String varName, Collection<List<? extends RDFNode>> items) {
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, items));
+    }
+
+    private String applyValues(String command) {
+
+        for (ValueReplacement valueReplacement : valuesReplacements.values()) {
+            command = valueReplacement.apply(command);
+        }
+        return command;
+    }
+
+    /**
+     * Performs replacement of VALUES in query string.
+     *
+     */
+    private class ValueReplacement {
+
+        private final String varName;
+        private final Collection<? extends RDFNode> items;
+        private final Collection<List<? extends RDFNode>> groupedItems;
+        private final Boolean isParenthesisNeeded;
+        private final Boolean isGrouped;
+
+        public ValueReplacement(String varName, Collection<? extends RDFNode> items, Boolean isParenthesisNeeded) {
+            this.varName = varName;
+            this.items = items;
+            this.groupedItems = new ArrayList<>();
+            this.isParenthesisNeeded = isParenthesisNeeded;
+            this.isGrouped = false;
+        }
+
+        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> groupedItems) {
+            this.varName = varName;
+            this.items = new ArrayList<>();
+            this.groupedItems = groupedItems;
+            this.isParenthesisNeeded = true;
+            this.isGrouped = true;
+        }
+
+        public String apply(String command) {
+
+            if (items.isEmpty() && groupedItems.isEmpty()) {
+                return command;
+            }
+
+            String target = createTarget(varName);
+
+            StringBuilder replacement;
+
+            if (isGrouped) {
+                replacement = groupedApply();
+            } else {
+                replacement = ungroupedApply();
+            }
+
+            return command.replace(target, replacement);
+        }
+
+        private StringBuilder groupedApply() {
+            StringBuilder replacement = new StringBuilder("");
+
+            for (List<? extends RDFNode> group : groupedItems) {
+                replacement.append("(");
+
+                for (RDFNode item : group) {
+                    String insert = createInsert(item);
+                    replacement.append(insert);
+                    replacement.append(" ");
+                }
+
+                replacement.deleteCharAt(replacement.length() - 1);
+                replacement.append(") ");
+            }
+
+            replacement.deleteCharAt(replacement.length() - 1);
+            return replacement;
+        }
+
+        private StringBuilder ungroupedApply() {
+            StringBuilder replacement = new StringBuilder("");
+
+            for (RDFNode item : items) {
+                if (isParenthesisNeeded) {
+                    replacement.append("(");
+                }
+                String insert = createInsert(item);
+                replacement.append(insert);
+                if (isParenthesisNeeded) {
+                    replacement.append(")");
+                }
+                replacement.append(" ");
+            }
+
+            replacement.deleteCharAt(replacement.length() - 1);
+
+            return replacement;
+        }
+
+        /**
+         * Tidy up varName if doesn't start with a ? or $.
+         *
+         * @param varName
+         * @return
+         */
+        private String createTarget(String varName) {
+            String target;
+
+            if (varName.startsWith("?") || varName.startsWith("$")) {
+                target = varName;
+            } else {
+                target = "?" + varName;
+            }
+            return target;
+        }
+
+        /**
+         * Insert the SPARQL representation of the RDF node.
+         *
+         * @param item
+         * @return
+         */
+        private String createInsert(RDFNode item) {
+            String insert;
+            if (item.isLiteral()) {
+                Literal lit = item.asLiteral();
+                insert = "\"" + lit.getLexicalForm() + "\"^^" + lit.getDatatypeURI();
+            } else if (item.isResource()) {
+                insert = "<" + item.asResource().getURI() + ">";
+            } else {
+                insert = item.asResource().getId().getLabelString();
+            }
+            return insert;
+        }
+    }
+    
 }

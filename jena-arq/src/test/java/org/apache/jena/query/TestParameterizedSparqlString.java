@@ -18,9 +18,11 @@
 
 package org.apache.jena.query;
 
+import java.util.ArrayList;
 import java.util.Calendar ;
 import java.util.HashMap;
 import java.util.Iterator ;
+import java.util.List;
 import java.util.TimeZone ;
 
 import org.apache.jena.datatypes.TypeMapper ;
@@ -1924,5 +1926,137 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("o", "has $9 sign");
 
         pss.toString();
+    }
+    
+    @Test
+    public void test_set_values_item() {
+        // Tests a single value being added.
+        String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"));
+
+        String exp = "SELECT * WHERE { VALUES ?o {\"test\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_item_parenthesis() {
+        // Tests a single value with parenthesis.
+        String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"), true);
+
+        String exp = "SELECT * WHERE { VALUES ?o {(\"test\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_items() {
+        // Tests two values for same variable.
+        String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> objs = new ArrayList<>();
+        objs.add(ResourceFactory.createPlainLiteral("obj_A"));
+        objs.add(ResourceFactory.createPlainLiteral("obj_B"));
+        pss.setValues("objs", objs);
+
+        String exp = "SELECT * WHERE { VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_items_parenthesis() {
+        // Tests two values for same variable.
+        String str = "SELECT * WHERE { VALUES (?o) {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> objs = new ArrayList<>();
+        objs.add(ResourceFactory.createPlainLiteral("obj_A"));
+        objs.add(ResourceFactory.createPlainLiteral("obj_B"));
+        pss.setValues("objs", objs, true);
+
+        String exp = "SELECT * WHERE { VALUES (?o) {(\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string) (\"obj_B\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_multi_var() {
+        // Tests two variables.
+        String str = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> objs = new ArrayList<>();
+        objs.add(ResourceFactory.createPlainLiteral("obj_A"));
+        objs.add(ResourceFactory.createPlainLiteral("obj_B"));
+        pss.setValues("objs", objs);
+
+        List<RDFNode> props = new ArrayList<>();
+        props.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
+        pss.setValues("props", props);
+
+        String exp = "SELECT * WHERE { VALUES ?p {<http://example.org/prop_A> <http://example.org/prop_B>} VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_multi_var_parenthesis() {
+        // Tests two variables with parenthesis for one.
+        String str = "SELECT * WHERE { VALUES (?p) {?props} VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> objs = new ArrayList<>();
+        objs.add(ResourceFactory.createPlainLiteral("obj_A"));
+        objs.add(ResourceFactory.createPlainLiteral("obj_B"));
+        pss.setValues("objs", objs);
+
+        List<RDFNode> props = new ArrayList<>();
+        props.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
+        pss.setValues("props", props, true);
+
+        String exp = "SELECT * WHERE { VALUES (?p) {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_grouped_var() {
+        // Tests two variables with parenthesis for one.
+        String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+
+        List<List<? extends RDFNode>> vars = new ArrayList<>();
+        List<RDFNode> objsA = new ArrayList<>();
+        objsA.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        objsA.add(ResourceFactory.createPlainLiteral("obj_A"));
+        vars.add(objsA);
+
+        List<RDFNode> objsB = new ArrayList<>();
+        objsB.add(ResourceFactory.createProperty("http://example.org/prop_B"));
+        objsB.add(ResourceFactory.createPlainLiteral("obj_B"));
+        vars.add(objsB);
+
+        pss.setGroupedValues("vars", vars);
+
+        String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\"^^http://www.w3.org/2001/XMLSchema#string) (<http://example.org/prop_B> \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
     }
 }
