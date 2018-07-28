@@ -129,10 +129,9 @@ public class StoreConnection
     }
 
     /**
-     * Testing operation - do not use the base dataset without knowing how the
-     * transaction system uses it. The base dataset may not reflect the true state
-     * if pending commits are queued.
-     * @see #flush
+     * Internal operation - to get a dataset for application use, call a
+     * {@link TDBFactory} function. Do not use the base dataset without knowing how the
+     * transaction system uses it.
      */
     public DatasetGraphTDB getBaseDataset() {
         checkValid();
