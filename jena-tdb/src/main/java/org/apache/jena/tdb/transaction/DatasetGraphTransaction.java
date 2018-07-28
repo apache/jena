@@ -69,7 +69,11 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     private boolean                      isClosed      = false;
 
     public DatasetGraphTransaction(Location location) {
-        sConn = StoreConnection.make(location) ;
+        this(StoreConnection.make(location)) ;
+    }
+
+    public DatasetGraphTransaction(StoreConnection sConn) {
+        this.sConn = sConn; 
     }
 
     public Location getLocation() {
@@ -135,7 +139,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         if ( sConn.haveUsedInTransaction() )
             throw new TDBTransactionException("Not in a transaction") ;
 
-        // Never used in a transaction - return underlying database for old
+        // Never been used in a transaction - return underlying database for old
         // style (non-transactional) usage.
         return sConn.getBaseDataset() ;
     }
