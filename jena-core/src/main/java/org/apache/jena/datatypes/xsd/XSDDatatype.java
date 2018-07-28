@@ -167,7 +167,7 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:dateTime */
     public static final XSDDatatype XSDdateTime = new XSDDateTimeType("dateTime");
 
-    /** Datatype representing xsd:dateTime */
+    /** Datatype representing xsd:dateTimeStamp */
     public static final XSDDatatype XSDdateTimeStamp = new XSDDateTimeStampType("dateTimeStamp");
 
     /** Datatype representing xsd:duration */
