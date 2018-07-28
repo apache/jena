@@ -129,6 +129,14 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the
      * logging provider to Apache common logging or slf4j.
      */
+    static public void disable(Logger logger) {
+        setLevel(logger.getName(), "OFF") ;
+    }
+
+    /**
+     * Turn on a logger (all levels). Works for Log4j and Java logging as the
+     * logging provider to Apache common logging or slf4j.
+     */
     static public void disable(String logger) {
         setLevel(logger, "OFF") ;
     }
