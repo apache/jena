@@ -228,9 +228,17 @@ public class StoreConnection
         StoreConnection sConn = cache.get(location) ;
         if (sConn != null) 
             return sConn ;
-        DatasetGraphTDB dsg = DatasetBuilderStd.create(location, params) ;
+        DatasetGraphTDB dsg = build(location, params) ;
         sConn = _makeAndCache(dsg) ;
         return sConn ;
+    }
+    
+    /**
+     * Build storage {@link DatasetGraphTDB}.
+     * This operation is the primitive that creates the storage-level DatasetGraphTDB.
+     */
+    private static DatasetGraphTDB build(Location location, StoreParams params) {
+        return DatasetBuilderStd.create(location, params) ;
     }
 
     /** Make a StoreConnection based on any StoreParams at the location or the system defaults. */
