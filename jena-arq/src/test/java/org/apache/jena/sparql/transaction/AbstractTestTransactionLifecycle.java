@@ -586,7 +586,7 @@ public abstract class AbstractTestTransactionLifecycle extends BaseTest
             Future<Boolean> f1 = executor.submit(callable);
             Future<Boolean> f2 = executor.submit(callable);
             // Wait longer than the cumulative threads sleep
-            assertTrue(f1.get(4, TimeUnit.SECONDS));
+            assertTrue(f1.get(10, TimeUnit.SECONDS));
             assertTrue(f2.get(1, TimeUnit.SECONDS));
         } finally {
             executor.shutdownNow();

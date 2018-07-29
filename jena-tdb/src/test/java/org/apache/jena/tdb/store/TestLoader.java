@@ -34,7 +34,7 @@ import org.apache.jena.tdb.ConfigTest ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
 import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.sys.TDBMaker ;
+import org.apache.jena.tdb.setup.DatasetBuilderStd;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -60,7 +60,7 @@ public class TestLoader extends BaseTest {
     }
 
     static DatasetGraphTDB fresh() {
-        return TDBMaker.createDatasetGraphTDB(Location.mem(), null) ;
+        return DatasetBuilderStd.create(Location.mem()) ;
     }
 
     @Test
