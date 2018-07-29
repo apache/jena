@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.cmds;
 
+import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +37,7 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.FusekiLogging;
 import org.apache.jena.fuseki.embedded.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
@@ -403,7 +405,17 @@ public class FusekiBasicCmd {
             try {
                 FusekiServer server = buildServer(serverConfig);
                 info(server, serverConfig);
-                server.start();
+                try {
+                    server.start();
+                } catch (FusekiException ex) {
+                    if ( ex.getCause() instanceof BindException ) {
+                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverConfig.port) ;
+                        System.exit(1);
+                    }
+                    throw ex;
+                } catch (Exception ex) {
+                    throw new FusekiException("Failed to start server: " + ex.getMessage(), ex) ;
+                }
                 server.join();
                 System.exit(0);
             }
