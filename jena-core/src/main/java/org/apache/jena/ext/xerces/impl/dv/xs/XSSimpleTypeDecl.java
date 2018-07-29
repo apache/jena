@@ -99,18 +99,18 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         new HexBinaryDV(),
         new Base64BinaryDV(),
         new AnyURIDV(),
-        null, //new QNameDV(), // QName datatype not supported (or relevant) to RDF / Apache Jena.
-        new PrecisionDecimalDV(), // XML Schema 1.1 type
-        null, //new QNameDV(),   // notation use the same one as qname
+        new QNameDV(),
+        new PrecisionDecimalDV(),   // XML Schema 1.1 type
+        new QNameDV(),              // NOTATION -- use the same one as qname
         new IDDV(),
         new IDREFDV(),
         new EntityDV(),
         new IntegerDV(),
         new ListDV(),
         new UnionDV(),
-        new YearMonthDurationDV(), // XML Schema 1.1 type
-        new DayTimeDurationDV(), // XML Schema 1.1 type
-        new AnyAtomicDV() // XML Schema 1.1 type
+        new YearMonthDurationDV(),  // XML Schema 1.1 type
+        new DayTimeDurationDV(),    // XML Schema 1.1 type
+        new AnyAtomicDV()           // XML Schema 1.1 type
     };
 
     static final short NORMALIZE_NONE = 0;
