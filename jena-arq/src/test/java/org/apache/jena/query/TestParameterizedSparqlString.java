@@ -1942,20 +1942,6 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
-    public void test_set_values_item_parenthesis() {
-        // Tests a single value with parenthesis.
-        String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
-        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
-        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"), true);
-
-        String exp = "SELECT * WHERE { VALUES ?o {(\"test\")} ?s ?p ?o }";
-        String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
-        Assert.assertEquals(exp, res);
-    }
-
-    @Test
     public void test_set_values_items() {
         // Tests two values for same variable.
         String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
@@ -1980,7 +1966,7 @@ public class TestParameterizedSparqlString {
         List<RDFNode> objs = new ArrayList<>();
         objs.add(ResourceFactory.createPlainLiteral("obj_A"));
         objs.add(ResourceFactory.createPlainLiteral("obj_B"));
-        pss.setValues("objs", objs, true);
+        pss.setValues("objs", objs);
 
         String exp = "SELECT * WHERE { VALUES (?o) {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
@@ -2024,7 +2010,7 @@ public class TestParameterizedSparqlString {
         List<RDFNode> props = new ArrayList<>();
         props.add(ResourceFactory.createProperty("http://example.org/prop_A"));
         props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
-        pss.setValues("props", props, true);
+        pss.setValues("props", props);
 
         String exp = "SELECT * WHERE { VALUES (?p) {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {\"obj_A\" \"obj_B\"} ?s ?p ?o }";
         String res = pss.toString();

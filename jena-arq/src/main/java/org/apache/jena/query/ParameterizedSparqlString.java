@@ -1741,19 +1741,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
     
     /**
-     * Assign a varName with a multiple items and whether to include
-     * parenthesis.
-     *
-     * @param varName
-     * @param items
-     * @param isParenthesisNeeded
-     */
-    public void setValues(String varName, Collection<? extends RDFNode> items, boolean isParenthesisNeeded) {
-        items.forEach(item -> validateParameterValue(item.asNode()));
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, items, isParenthesisNeeded));
-    }
-
-    /**
      * Assign a varName with a multiple items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
@@ -1763,69 +1750,31 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * @param items
      */
     public void setValues(String varName, Collection<? extends RDFNode> items) {
-        setValues(varName, items, false);
+        items.forEach(item -> validateParameterValue(item.asNode()));
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, items));
     }
 
     /**
-     * Assign a varName with a single item and whether to include parenthesis.
-     *
-     * @param varName
-     * @param item
-     * @param isParenthesisNeeded
-     */
-    public void setValues(String varName, RDFNode item, boolean isParenthesisNeeded) {
-        setValues(varName, Arrays.asList(item), isParenthesisNeeded);
-    }
-
-    /**
-     * Assign a varName with a single item.
+     * Assign a varName with a single item.<br>
      *
      * @param varName
      * @param item
      */
     public void setValues(String varName, RDFNode item) {
-        setValues(varName, Arrays.asList(item), false);
+        setValues(varName, Arrays.asList(item));
     }
 
     /**
-     * Sets a map of varNames and their items.
+     * **
+     * Sets a map of varNames and their items.<br>
+     * Can be used to assign multiple values to a single variable or single
+     * value to multiple variables (if using a List) in the SPARQL query.<br>
+     * See setGroupedValues to assign multiple values to multiple variables.
      *
-     * @param valuesItems
+     * @param itemsMap
      */
-    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems) {
-        valuesItems.forEach(this::setValues);
-    }
-
-    /**
-     * All varNames in the map will use the same approach to parenthesis.
-     *
-     * @param valuesItems
-     * @param isParenthesisNeeded
-     */
-    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems, Boolean isParenthesisNeeded) {
-        valuesItems.forEach((varName, items) -> setValues(varName, items, isParenthesisNeeded));
-    }
-
-    /**
-     * Combine a map of varNames and items with whether to include parenthesis.
-     * Missing varNames in the parenthesis map will default to false.
-     *
-     * @param valuesItems
-     * @param valuesParenthesis
-     */
-    public void setValues(Map<String, Collection<? extends RDFNode>> valuesItems, Map<String, Boolean> valuesParenthesis) {
-
-        for (String varName : valuesItems.keySet()) {
-            Collection<? extends RDFNode> items = valuesItems.get(varName);
-            Boolean isParenthesisNeeded;
-            if (valuesParenthesis.containsKey(varName)) {
-                isParenthesisNeeded = valuesParenthesis.get(varName);
-            } else {
-                isParenthesisNeeded = false;
-            }
-
-            setValues(varName, items, isParenthesisNeeded);
-        }
+    public void setValues(Map<String, Collection<? extends RDFNode>> itemsMap) {
+        itemsMap.forEach(this::setValues);
     }
 
     /**
@@ -1835,11 +1784,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * (prop_B obj_B)}".
      *
      * @param varName
-     * @param items
+     * @param groupedItems
      */
-    public void setGroupedValues(String varName, Collection<List<? extends RDFNode>> items) {
-        items.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, items));
+    public void setGroupedValues(String varName, Collection<List<? extends RDFNode>> groupedItems) {
+        groupedItems.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, groupedItems, true));
     }
 
     private String applyValues(String command) {
@@ -1868,6 +1817,22 @@ public class ParameterizedSparqlString implements PrefixMapping {
         return targetVars;
     }
 
+    protected static boolean checkParenthesis(String command, String varName) {
+        boolean isNeeded;
+
+        int varIndex = command.indexOf(varName);
+        if (varIndex > -1) {
+            String subCmd = command.substring(0, varIndex).toLowerCase(); //Truncate the command at the varName. Lowercase to search both types of values.
+            int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
+            int bracesIndex = subCmd.lastIndexOf("{");
+            String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), bracesIndex);
+            isNeeded = vars.contains("(");
+        } else {
+            isNeeded = false;
+        }
+        return isNeeded;
+    }
+
     /**
      * Performs replacement of VALUES in query string.
      *
@@ -1877,23 +1842,20 @@ public class ParameterizedSparqlString implements PrefixMapping {
         private final String varName;
         private final Collection<? extends RDFNode> items;
         private final Collection<List<? extends RDFNode>> groupedItems;
-        private final Boolean isParenthesisNeeded;
         private final Boolean isGrouped;
 
-        public ValueReplacement(String varName, Collection<? extends RDFNode> items, Boolean isParenthesisNeeded) {
+        public ValueReplacement(String varName, Collection<? extends RDFNode> items) {
             this.varName = varName;
             this.items = items;
             this.groupedItems = new ArrayList<>();
-            this.isParenthesisNeeded = isParenthesisNeeded;
             this.isGrouped = false;
         }
 
-        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> groupedItems) {
+        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> groupedItems, Boolean isGrouped) {
             this.varName = varName;
             this.items = new ArrayList<>();
             this.groupedItems = groupedItems;
-            this.isParenthesisNeeded = true;
-            this.isGrouped = true;
+            this.isGrouped = isGrouped;
         }
 
         public String apply(String command) {
@@ -1910,7 +1872,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
             if (isGrouped) {
                 replacement = groupedApply();
             } else {
-                replacement = ungroupedApply();
+
+                replacement = ungroupedApply(command);
             }
 
             return command.replace(target, replacement);
@@ -1936,7 +1899,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
             return replacement;
         }
 
-        private StringBuilder ungroupedApply() {
+        private StringBuilder ungroupedApply(String command) {
+            boolean isParenthesisNeeded = checkParenthesis(command, varName);
             StringBuilder replacement = new StringBuilder("");
 
             for (RDFNode item : items) {
