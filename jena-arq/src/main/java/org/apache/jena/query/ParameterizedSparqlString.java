@@ -1829,9 +1829,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
         if (varIndex > -1) {
             String subCmd = command.substring(0, varIndex).toLowerCase(); //Truncate the command at the varName. Lowercase to search both types of values.
             int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
-            int bracesIndex = subCmd.lastIndexOf("{");
-            String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), bracesIndex);
-            isNeeded = vars.contains("(");
+            int parenthesisIndex = subCmd.indexOf("(", valuesIndex + VALUES_KEYWORD.length());
+            isNeeded = parenthesisIndex > -1;
         } else {
             isNeeded = false;
         }
