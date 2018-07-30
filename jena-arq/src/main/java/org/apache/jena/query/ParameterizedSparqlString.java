@@ -1741,10 +1741,13 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
     
     /**
-     * Assign a varName with a multiple items.<br>
+     * Assign a VALUES varName with a multiple items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
-     * See setGroupedValues to assign multiple values to multiple variables.
+     * See setGroupedValues to assign multiple values to multiple variables.<br>
+     * Using "var" with list(prop_A, obj_A) on query "VALUES ?p ?o {?var}" would
+     * produce "VALUES ?p ?o {prop_A obj_A}".
+     *
      *
      * @param varName
      * @param items
@@ -1755,7 +1758,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Assign a varName with a single item.<br>
+     * Assign a VALUES varName with a single item.<br>
+     * Using "var" with Literal obj_A on query "VALUES ?o {?var}" would produce
+     * "VALUES ?o {obj_A}".
      *
      * @param varName
      * @param item
@@ -1766,7 +1771,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * **
-     * Sets a map of varNames and their items.<br>
+     * Sets a map of VALUES varNames and their items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setGroupedValues to assign multiple values to multiple variables.
@@ -1778,7 +1783,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Allocate multiple lists of variables to a single varName.<br>
+     * Allocate multiple lists of variables to a single VALUES varName.<br>
      * Using "vars" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on query
      * "VALUES (?p ?o) {?vars}" would produce "VALUES (?p ?o) {(prop_A obj_A)
      * (prop_B obj_B)}".
