@@ -2058,4 +2058,16 @@ public class TestParameterizedSparqlString {
         //System.out.println("Res: " + res);
         Assert.assertEquals(exp, res);
     }
+
+    @Test(expected = ARQException.class)
+    public void test_set_values_uri_injection() {
+        // This injection is prevented by forbidding the > character in URIs
+        String str = "PREFIX : <http://example/>\nSELECT * WHERE { VALUES ?obj {?objVar} <s> <p> ?obj . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues(str, ResourceFactory.createResource("<http://example.org/obj_A>"));
+
+        pss.asQuery();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
 }

@@ -1749,6 +1749,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * @param isParenthesisNeeded
      */
     public void setValues(String varName, Collection<? extends RDFNode> items, boolean isParenthesisNeeded) {
+        items.forEach(item -> validateParameterValue(item.asNode()));
         this.valuesReplacements.put(varName, new ValueReplacement(varName, items, isParenthesisNeeded));
     }
 
@@ -1837,6 +1838,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * @param items
      */
     public void setGroupedValues(String varName, Collection<List<? extends RDFNode>> items) {
+        items.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
         this.valuesReplacements.put(varName, new ValueReplacement(varName, items));
     }
 
