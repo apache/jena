@@ -1850,6 +1850,24 @@ public class ParameterizedSparqlString implements PrefixMapping {
         return command;
     }
 
+    private static final String VALUES_KEYWORD = "values";
+
+    protected static String[] extractTargetVars(String command, String varName) {
+        String[] targetVars;
+
+        int varIndex = command.indexOf(varName);
+        if (varIndex > -1) {
+            String subCmd = command.substring(0, varIndex).toLowerCase(); //Truncate the command at the varName. Lowercase to search both types of values.
+            int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
+            int bracesIndex = subCmd.lastIndexOf("{");
+            String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), bracesIndex);
+            targetVars = vars.replaceAll("[(?)]", "").trim().split(" ");
+        } else {
+            targetVars = new String[]{};
+        }
+        return targetVars;
+    }
+
     /**
      * Performs replacement of VALUES in query string.
      *
@@ -1884,10 +1902,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 return command;
             }
 
-            String target = createTarget(varName);
+            validateValuesSafeToInject(command);
+
+            String target = createTarget();
 
             StringBuilder replacement;
-
             if (isGrouped) {
                 replacement = groupedApply();
             } else {
@@ -1943,7 +1962,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
          * @param varName
          * @return
          */
-        private String createTarget(String varName) {
+        private String createTarget() {
             String target;
 
             if (varName.startsWith("?") || varName.startsWith("$")) {
@@ -1954,6 +1973,38 @@ public class ParameterizedSparqlString implements PrefixMapping {
             return target;
         }
 
+        protected void validateValuesSafeToInject(String command) {
+
+            String[] targetVars = extractTargetVars(command, varName);
+
+            for (int i = 0; i < targetVars.length; i++) {
+                String targetVar = targetVars[i];
+                if (isGrouped) {
+                    //Iterate through each group according to the position of var and item.
+                    for (List<? extends RDFNode> group : groupedItems) {
+                        RDFNode item = group.get(i);
+                        validateSafeToInject(command, targetVar, item.asNode());
+                    }
+                } else {
+                    if (targetVars.length > 1) {
+                        if (items instanceof List) {
+                            //Multiple vars with items in an ordered list. Each var is checked against the item.
+                            List<? extends RDFNode> listItems = (List<? extends RDFNode>) items;
+                            RDFNode item = listItems.get(i);
+                            validateSafeToInject(command, targetVar, item.asNode());
+                        } else {
+                            //Multiple vars with items not in an ordered list. This is parsing error.
+                            throw new ARQException("Multiple VALUES variables (" + String.join(", ", targetVars) + ") being used without an ordered list of items: " + items.toString());
+                        }
+                    } else {
+                        //Single var with one or more items so all are checked.
+                        for (RDFNode item : items) {
+                            validateSafeToInject(command, targetVar, item.asNode());
+                        }
+                    }
+                }
+            }
+        }
     }
     
 }

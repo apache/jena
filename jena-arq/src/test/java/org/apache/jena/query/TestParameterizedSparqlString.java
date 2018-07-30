@@ -2070,4 +2070,43 @@ public class TestParameterizedSparqlString {
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
+    @Test
+    public void test_extract_target_vars() {
+        // Identifies the vars in the VALUES clause according to the substituting varName.
+        String cmd = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{"o"};
+
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_two_target_vars() {
+        // Identifies the vars in the VALUES clause according to the substituting varName.
+        String cmd = "SELECT * WHERE { VALUES(?p ?o){?vars} ?s ?p ?o }";
+        String varName = "vars";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{"p", "o"};
+
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_multiple_target_vars() {
+        // Identifies the vars in the VALUES clause according to the substituting varName.
+        String cmd = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o {?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{"o"};
+
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertArrayEquals(exp, res);
+    }
+
 }
