@@ -1976,6 +1976,23 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
+    public void test_set_values_multiple_variables_parenthesis() {
+        // Tests two values for same variable.
+        String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> vars = new ArrayList<>();
+        vars.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        vars.add(ResourceFactory.createPlainLiteral("obj_A"));
+        pss.setValues("vars", vars);
+
+        String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\")} ?s ?p ?o }";
+        String res = pss.toString();
+        System.out.println("Exp: " + exp);
+        System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
     public void test_set_values_multi_var() {
         // Tests two variables.
         String str = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o {?objs} ?s ?p ?o }";

@@ -1745,8 +1745,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setGroupedValues to assign multiple values to multiple variables.<br>
-     * Using "var" with list(prop_A, obj_A) on query "VALUES ?p ?o {?var}" would
-     * produce "VALUES ?p ?o {prop_A obj_A}".
+     * Using "var" with list(prop_A, obj_A) on query "VALUES (?p ?o) {?var}"
+     * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
      *
      *
      * @param varName
@@ -1868,7 +1868,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 return command;
             }
 
-            validateValuesSafeToInject(command);
+            String[] targetVars = extractTargetVars(command, varName);
+            validateValuesSafeToInject(command, targetVars);
 
             String target = createTarget();
 
@@ -1877,7 +1878,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 replacement = groupedApply();
             } else {
 
-                replacement = ungroupedApply(command);
+                replacement = ungroupedApply(command, targetVars.length);
             }
 
             return command.replace(target, replacement);
@@ -1903,23 +1904,34 @@ public class ParameterizedSparqlString implements PrefixMapping {
             return replacement;
         }
 
-        private StringBuilder ungroupedApply(String command) {
-            boolean isParenthesisNeeded = checkParenthesis(command, varName);
+        private StringBuilder ungroupedApply(String command, int targetVarCount) {
+
             StringBuilder replacement = new StringBuilder("");
 
-            for (RDFNode item : items) {
-                if (isParenthesisNeeded) {
-                    replacement.append("(");
+            if (targetVarCount == 1) {
+                boolean isParenthesisNeeded = checkParenthesis(command, varName);
+                for (RDFNode item : items) {
+                    if (isParenthesisNeeded) {
+                        replacement.append("(");
+                    }
+                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
+                    replacement.append(insert);
+                    if (isParenthesisNeeded) {
+                        replacement.append(")");
+                    }
+                    replacement.append(" ");
                 }
-                String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
-                replacement.append(insert);
-                if (isParenthesisNeeded) {
-                    replacement.append(")");
+                replacement.deleteCharAt(replacement.length() - 1);
+            } else {
+                replacement.append("(");
+                for (RDFNode item : items) {
+                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
+                    replacement.append(insert);
+                    replacement.append(" ");
                 }
-                replacement.append(" ");
+                replacement.deleteCharAt(replacement.length() - 1);
+                replacement.append(")");
             }
-
-            replacement.deleteCharAt(replacement.length() - 1);
 
             return replacement;
         }
@@ -1941,9 +1953,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             return target;
         }
 
-        protected void validateValuesSafeToInject(String command) {
-
-            String[] targetVars = extractTargetVars(command, varName);
+        protected void validateValuesSafeToInject(String command, String[] targetVars) {
 
             for (int i = 0; i < targetVars.length; i++) {
                 String targetVar = targetVars[i];
