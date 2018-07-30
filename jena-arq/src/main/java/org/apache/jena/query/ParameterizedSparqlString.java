@@ -1902,7 +1902,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 replacement.append("(");
 
                 for (RDFNode item : group) {
-                    String insert = createInsert(item);
+                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
                     replacement.append(insert);
                     replacement.append(" ");
                 }
@@ -1922,7 +1922,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 if (isParenthesisNeeded) {
                     replacement.append("(");
                 }
-                String insert = createInsert(item);
+                String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
                 replacement.append(insert);
                 if (isParenthesisNeeded) {
                     replacement.append(")");
@@ -1952,24 +1952,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
             return target;
         }
 
-        /**
-         * Insert the SPARQL representation of the RDF node.
-         *
-         * @param item
-         * @return
-         */
-        private String createInsert(RDFNode item) {
-            String insert;
-            if (item.isLiteral()) {
-                Literal lit = item.asLiteral();
-                insert = "\"" + lit.getLexicalForm() + "\"^^" + lit.getDatatypeURI();
-            } else if (item.isResource()) {
-                insert = "<" + item.asResource().getURI() + ">";
-            } else {
-                insert = item.asResource().getId().getLabelString();
-            }
-            return insert;
-        }
     }
     
 }

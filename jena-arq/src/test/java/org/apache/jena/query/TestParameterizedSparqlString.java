@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator ;
 import java.util.List;
 import java.util.TimeZone ;
-
-import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.* ;
@@ -1935,7 +1934,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setValues("objs", ResourceFactory.createPlainLiteral("test"));
 
-        String exp = "SELECT * WHERE { VALUES ?o {\"test\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES ?o {\"test\"} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -1949,7 +1948,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setValues("objs", ResourceFactory.createPlainLiteral("test"), true);
 
-        String exp = "SELECT * WHERE { VALUES ?o {(\"test\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES ?o {(\"test\")} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -1966,7 +1965,7 @@ public class TestParameterizedSparqlString {
         objs.add(ResourceFactory.createPlainLiteral("obj_B"));
         pss.setValues("objs", objs);
 
-        String exp = "SELECT * WHERE { VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES ?o {\"obj_A\" \"obj_B\"} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -1983,7 +1982,7 @@ public class TestParameterizedSparqlString {
         objs.add(ResourceFactory.createPlainLiteral("obj_B"));
         pss.setValues("objs", objs, true);
 
-        String exp = "SELECT * WHERE { VALUES (?o) {(\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string) (\"obj_B\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES (?o) {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -2005,7 +2004,7 @@ public class TestParameterizedSparqlString {
         props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
         pss.setValues("props", props);
 
-        String exp = "SELECT * WHERE { VALUES ?p {<http://example.org/prop_A> <http://example.org/prop_B>} VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES ?p {<http://example.org/prop_A> <http://example.org/prop_B>} VALUES ?o {\"obj_A\" \"obj_B\"} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -2027,7 +2026,7 @@ public class TestParameterizedSparqlString {
         props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
         pss.setValues("props", props, true);
 
-        String exp = "SELECT * WHERE { VALUES (?p) {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {\"obj_A\"^^http://www.w3.org/2001/XMLSchema#string \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES (?p) {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {\"obj_A\" \"obj_B\"} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
@@ -2053,7 +2052,7 @@ public class TestParameterizedSparqlString {
 
         pss.setGroupedValues("vars", vars);
 
-        String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\"^^http://www.w3.org/2001/XMLSchema#string) (<http://example.org/prop_B> \"obj_B\"^^http://www.w3.org/2001/XMLSchema#string)} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\") (<http://example.org/prop_B> \"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
