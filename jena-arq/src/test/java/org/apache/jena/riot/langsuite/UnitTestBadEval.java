@@ -19,29 +19,28 @@
 package org.apache.jena.riot.langsuite;
 
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.junit.EarlReport ;
 import org.junit.After ;
 import org.junit.Before ;
 
 public class UnitTestBadEval extends LangTestCase
 {
-    private final String input ;
+    private final String uri ;
     private final Lang lang ;
 
-    protected UnitTestBadEval(String name, String testURI, String uri, Lang lang, EarlReport earl)
+    public UnitTestBadEval(String name, String testURI, String uri, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
-        this.input = uri ;
+        this.uri = uri ;
         this.lang = lang ;
     }
     
@@ -75,9 +74,9 @@ public class UnitTestBadEval extends LangTestCase
     
     private void run3()
     {
-        Model model = ModelFactory.createDefaultModel() ;
+        Graph graph = GraphFactory.createDefaultGraph(); 
         try {
-            RDFDataMgr.read(model, input) ;
+            Parse.parse(graph, uri, lang);
             fail("Managed to read a bad evaluation test without error") ;
         }
         catch (JenaException ex) {}
@@ -89,9 +88,9 @@ public class UnitTestBadEval extends LangTestCase
     
     private void run4()
     {
-        Dataset ds = DatasetFactory.createGeneral() ;
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral() ;
         try {
-            RDFDataMgr.read(ds, input) ;
+            Parse.parse(dsg, uri, lang);
             fail("Managed to read a bad evaluation test without error") ;
         }
         catch (JenaException ex) {}

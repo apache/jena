@@ -19,6 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -234,27 +235,26 @@ public class TestTurtleTerms extends BaseTest
 	@Test public void turtle_151() { parse("[ a <y> ] . ") ; }
     @Test public void turtle_152() { parse("[ a <y> ; a <z> ] . ") ; }
     @Test public void turtle_153() { parse("[ a <z>, <z1> ] . ") ; }
+
+    private static String prefixMap = StrUtils.strjoinNL(
+        "PREFIX a: <http://host/a#>",
+        "PREFIX x: <http://host/a#>",
+        // Unicode 00E9 is e-acute
+        // Unicode 03B1 is alpha
+        "PREFIX \u00E9: <http://host/e-acute/>",
+        "PREFIX \u03B1: <http://host/alpha/>",
+        "PREFIX : <http://host/>",
+        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>");
+
     
 	public static void parse(String testString)
 	{
-	    // Need to access the prefix mapping.
-	    
-	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(testString) ;
+	    // Need a prefix mapping.
+	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(prefixMap+"\n"+testString) ;
 	    StreamRDF sink = StreamRDFLib.sinkNull() ;
         LangTurtle parser = RiotParsers.createParserTurtle(tokenizer, sink, RiotLib.dftProfile()) ;
-	    PrefixMap prefixMap = parser.getProfile().getPrefixMap() ;
-
-	    prefixMap.add("a", "http://host/a#") ;
-        prefixMap.add("x", "http://host/a#") ;
-        // Unicode 00E9 is e-acute
-        // Unicode 03B1 is alpha
-        prefixMap.add("\u00E9", "http://host/e-acute/") ;
-        prefixMap.add("\u03B1", "http://host/alpha/") ;
-        prefixMap.add("", "http://host/") ;
-        prefixMap.add("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
-        prefixMap.add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
         parser.parse();
-
         tokenizer.close();
 	}
 }

@@ -91,7 +91,7 @@ public class TestParserFactory extends BaseTest
 
     @Test public void turtle_01() 
     {
-        // Verify the excected outoput works.
+        // Verify the expected output works.
         {
             String s = "<x> <p> <q> ." ;
             CatchParserOutput sink = parseCapture(s, Lang.TTL) ;

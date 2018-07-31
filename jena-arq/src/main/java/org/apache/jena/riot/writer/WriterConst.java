@@ -84,7 +84,5 @@ public class WriterConst
     public static final Node RDF_First      = RDF.Nodes.first ;
     public static final Node RDF_Rest       = RDF.Nodes.rest ;
     public static final Node RDF_Nil        = RDF.Nodes.nil ;
-    
-
 }
 

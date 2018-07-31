@@ -40,7 +40,7 @@ import org.junit.runners.Suite ;
     , TestLangRdfJson.class
     , TestTriXReader.class
     , TestTriXBad.class
-    // Thrift is done in the "thift" package
+    // Thrift is done in the "thrift" package
     , TestParserFactory.class
     , TestPipedRDFIterators.class
     , TestCollectorStream.class

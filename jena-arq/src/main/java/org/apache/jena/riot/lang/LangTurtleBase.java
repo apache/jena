@@ -57,7 +57,7 @@ public abstract class LangTurtleBase extends LangBase {
     // Current graph - null for default graph
     private Node                   currentGraph   = null ;
     
-    protected /*final*/ PrefixMap prefixMap;
+    protected final PrefixMap prefixMap;
 
     protected final Node getCurrentGraph() {
         return currentGraph ;

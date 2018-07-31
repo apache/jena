@@ -46,7 +46,6 @@ public class RiotChars
     }
 
     public static boolean isWhitespace(int ch) {
-        // ch = ch | 0xFF;
         return isHorizontalWhitespace(ch) || isNewlineChar(ch) || ch == '\f';
     }
 
