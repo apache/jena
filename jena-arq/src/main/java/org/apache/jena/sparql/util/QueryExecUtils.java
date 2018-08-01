@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.util ;
 
+import java.util.ArrayList;
 import java.util.List ;
 
 import org.apache.jena.atlas.json.JSON;
@@ -405,5 +406,19 @@ public class QueryExecUtils {
                 throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
         }
         return r ;
+    }
+    
+    /**
+     * Execute, returning all matches, which may be zero.
+     */
+    public static List<RDFNode> getAll(QueryExecution qExec, String varname) {
+        ResultSet rs = qExec.execSelect() ;
+        List<RDFNode> matches = new ArrayList<>();
+        rs.forEachRemaining(qs->{
+            RDFNode r = qs.get(varname) ;
+            if ( r != null )
+                matches.add(r);
+        });
+        return matches ;
     }
 }
