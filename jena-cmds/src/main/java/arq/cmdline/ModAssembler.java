@@ -34,6 +34,7 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 public class ModAssembler extends ModBase
 {
     public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
+    
     private String assemblerFile = null ;
     Object thingDescribed = null ;
     
