@@ -41,10 +41,9 @@ import org.apache.jena.tdb.lib.StringAbbrev ;
 
 public class NodecSSE implements Nodec
 {
-    private static boolean SafeChars = false ;
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
-    final private static char MarkerChar = '_' ;
-    final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
+    private final static char MarkerChar = '_' ;
+    private final static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
     public NodecSSE() {}
     

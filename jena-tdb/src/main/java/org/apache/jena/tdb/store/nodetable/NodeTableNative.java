@@ -38,12 +38,9 @@ import org.apache.jena.tdb.store.NodeId ;
 /** A concrete NodeTable based on native storage (string file and an index) */ 
 public class NodeTableNative implements NodeTable
 {
-    // TODO Split into a general accessor (get and put (node,NodeId) pairs)
-    // Abstracts the getAllocateNodeId requirements.
-    
     protected ObjectFile objects ;
-    protected Index nodeHashToId ;        // hash -> int
-    private boolean syncNeeded = false ;
+    protected Index nodeHashToId ;          // hash -> int
+    private boolean syncNeeded = false ;    // Non-transactional mode sync.
     
     // Delayed construction - must call init explicitly.
     protected NodeTableNative() {}
@@ -95,10 +92,10 @@ public class NodeTableNative implements NodeTable
     // accessIndex and readNodeFromTable
     
     // Cache around this class further out in NodeTableCache are synchronized
-    // to maintain cache validatity which indirectly sync access to the NodeTable.
+    // to maintain cache validity which indirectly sync access to the NodeTable.
     // But to be sure, we provide MRSW guarantees on this class.
     // (otherwise if no cache => disaster)
-    // synchonization happens in accessIndex() and readNodeByNodeId
+    // Synchronization happens in accessIndex() and readNodeByNodeId()
     
     // NodeId to Node worker.
     private Node _retrieveNodeByNodeId(NodeId id)
@@ -120,13 +117,11 @@ public class NodeTableNative implements NodeTable
     {
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
-        
-        // synchronized in accessIndex
         NodeId nodeId = accessIndex(node, allocate) ;
         return nodeId ;
     }
     
-    protected final NodeId accessIndex(Node node, boolean create)
+    private final NodeId accessIndex(Node node, boolean create)
     {
         Hash hash = new Hash(nodeHashToId.getRecordFactory().keyLength()) ;
         setHash(hash, node) ;
@@ -163,19 +158,20 @@ public class NodeTableNative implements NodeTable
     }
     
     // -------- NodeId<->Node
+    // Workspace for "normal" sized nodes.
+    // Null means allocate a fresh buffer each time.
+    private final ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
     // Synchronization:
     //   write: in accessIndex
     //   read: synchronized here.
     // Only places for accessing the StringFile.
-    
+
     private final NodeId writeNodeToTable(Node node)
     {
         syncNeeded = true ;
-        // Synchronized in accessIndex
-        long x = NodeLib.encodeStore(node, getObjects()) ;
+        long x = NodeLib.encodeStore(node, getObjects(), writeBuffer) ;
         return NodeId.create(x);
     }
-    
 
     private final Node readNodeFromTable(NodeId id)
     {
