@@ -1816,17 +1816,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private static final String VALUES_KEYWORD = "values";
 
     protected static String[] extractTargetVars(String command, String varName) {
-        String[] targetVars;
+        String[] targetVars = new String[]{};
 
         int varIndex = command.indexOf(varName);
         if (varIndex > -1) {
             String subCmd = command.substring(0, varIndex).toLowerCase(); //Truncate the command at the varName. Lowercase to search both types of values.
             int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
-            int bracesIndex = subCmd.lastIndexOf("{");
-            String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), bracesIndex);
-            targetVars = vars.replaceAll("[(?)]", "").trim().split(" ");
-        } else {
-            targetVars = new String[]{};
+            int openBracesIndex = subCmd.lastIndexOf("{");
+            int closeBracesIndex = subCmd.lastIndexOf("}");
+            if (valuesIndex > -1 && valuesIndex < openBracesIndex && closeBracesIndex < valuesIndex) { //Ensure that VALUES keyword is found, open braces index is located after the VALUES and any close braces is located before the VALUES.
+                String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), openBracesIndex);
+                targetVars = vars.replaceAll("[(?)]", "").trim().split(" ");
+            }
         }
         return targetVars;
     }
@@ -1852,6 +1853,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
 
             String[] targetVars = extractTargetVars(command, varName);
+            if (targetVars.length == 0) {
+                //VALUES keyword has not been found or there is another issue so do not modify the command.
+                return command;
+            }
+
             validateValuesSafeToInject(command, targetVars);
 
             String target = createTarget();

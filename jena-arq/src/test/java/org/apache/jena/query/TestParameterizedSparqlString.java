@@ -1992,8 +1992,8 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES ?p {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
-        System.out.println("Exp: " + exp);
-        System.out.println("Res: " + res);
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
         Assert.assertEquals(exp, res);
     }
 
@@ -2042,8 +2042,8 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
         String[] exp = new String[]{"o"};
 
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2055,8 +2055,8 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
         String[] exp = new String[]{"p", "o"};
 
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+        ///System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2068,8 +2068,86 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
         String[] exp = new String[]{"o"};
 
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_target_vars_missing_target() {
+        // Missing target variable name so should return empty array.
+        String cmd = "SELECT * WHERE { VALUES ?o {} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_target_vars_missing_brace() {
+        // Missing brace so should return empty array.
+        String cmd = "SELECT * WHERE { VALUES ?o ?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_multiple_target_vars_missing_brace() {
+        // Missing brace so should return empty array.
+        String cmd = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o ?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_target_vars_missing_values() {
+        // Missing VALUES keyword so should return empty array.
+        String cmd = "SELECT * WHERE { ?o {?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_multiple_target_vars_missing_values() {
+        // Missing VALUES keyword so should return empty array.
+        String cmd = "SELECT * WHERE { VALUES ?p {?props} ?o {?objs} ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
+        Assert.assertArrayEquals(exp, res);
+    }
+
+    @Test
+    public void test_extract_multiple_target_vars_no_braces() {
+        // Missing braces and VALUES keyword so should return empty array.
+        String cmd = "SELECT * WHERE { VALUES ?p ?props ?o ?objs ?s ?p ?o }";
+        String varName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String[] exp = new String[]{};
+
+        //System.out.println("Exp: " + String.join(",", exp));
+        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
