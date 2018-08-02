@@ -1942,6 +1942,62 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
+    public void test_set_values_item2() {
+        // Tests a single value being added using '$' variable syntax - always adding parenthesis.
+        String str = "SELECT * WHERE { VALUES $o {$objs} $s $p $o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"));
+
+        String exp = "SELECT * WHERE { VALUES $o {(\"test\")} $s $p $o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_item_missing_values() {
+        // VALUES keyword missing so query is unchanged.
+        String str = "SELECT * WHERE { ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"));
+
+        String exp = "SELECT * WHERE { ?o {?objs} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_item_missing_braces() {
+        // Braces missing so query is unchanged.
+        String str = "SELECT * WHERE { VALUES ?o ?objs ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", ResourceFactory.createPlainLiteral("test"));
+
+        String exp = "SELECT * WHERE { VALUES ?o ?objs ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_item_missing_varName() {
+        // varName missing ('props' instead of 'objs') so query is unchanged.
+        String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("props", ResourceFactory.createPlainLiteral("test"));
+
+        String exp = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
+        String res = pss.toString();
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
     public void test_set_values_items_parenthesis() {
         // Tests two values for same variable.
         String str = "SELECT * WHERE { VALUES (?o) {?objs} ?s ?p ?o }";
