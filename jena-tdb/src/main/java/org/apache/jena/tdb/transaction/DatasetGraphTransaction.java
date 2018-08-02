@@ -39,13 +39,13 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.
- * 
+ *
  * {@link DatasetGraphTxn} holds the {@link Transaction} object.
  *
- * This is analogous to a "connection" in JDBC. 
+ * This is analogous to a "connection" in JDBC.
  * It is a holder of a {@link StoreConnection} combined with the machinary from
- * {@link DatasetGraphTrackActive}.  
- * 
+ * {@link DatasetGraphTrackActive}.
+ *
  * Not considered to be in the public API.
  */
 
@@ -54,7 +54,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
      * Initially, the app can use this DatasetGraph non-transactionally. But as
      * soon as it starts a transaction, the dataset can only be used inside
      * transactions.
-     * 
+     *
      * There are two per-thread state variables: txn: ThreadLocalTxn -- the
      * transactional , one time use dataset isInTransactionB: ThreadLocalBoolean
      * -- flags true between begin and commit/abort, and end for read
@@ -73,7 +73,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     public DatasetGraphTransaction(StoreConnection sConn) {
-        this.sConn = sConn; 
+        this.sConn = sConn;
     }
 
     public Location getLocation() {
@@ -99,12 +99,12 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
                 TxnType txnType = dsgTxn.getTransaction().getTxnType();
                 Promote mode;
                 switch(txnType) {
-                    case READ : 
-                        throw new JenaTransactionException("Attempt to update in a read transaction"); 
+                    case READ :
+                        throw new JenaTransactionException("Attempt to update in a read transaction");
                     case WRITE :
                         // Impossible. We're in read-mode.
                         throw new TDBException("Internal inconsistency: read-mode write transaction");
-                    case READ_PROMOTE : 
+                    case READ_PROMOTE :
                         mode = Promote.ISOLATED;
                         break;
                     case READ_COMMITTED_PROMOTE :
@@ -125,7 +125,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         }
         return super.getW() ;
     }
-    
+
     /** Get the current DatasetGraphTDB */
     @Override
     public DatasetGraphTDB get() {
@@ -168,13 +168,13 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         checkNotClosed() ;
         return inTransaction.get() ;
     }
-    
+
     @Override
     public ReadWrite transactionMode() {
         checkNotClosed() ;
         if ( ! isInTransaction() )
             return null;
-        return dsgtxn.get().getTransaction().getTxnMode();      
+        return dsgtxn.get().getTransaction().getTxnMode();
     }
 
     @Override
@@ -193,7 +193,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         if ( !sConn.haveUsedInTransaction() )
             sConn.getBaseDataset().sync() ;
     }
-    
+
     @Override
     public Graph getDefaultGraph() {
         return new GraphTxnTDB(this, null);
@@ -203,7 +203,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     public Graph getUnionGraph() {
         return getGraph(Quad.unionGraph);
     }
-    
+
     @Override
     public Graph getGraph(Node graphNode) {
         return new GraphTxnTDB(this, graphNode);
@@ -229,7 +229,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
         dsgtxn.set(dsgTxn2) ;
         return true;
     }
-    
+
     @Override
     protected void _commit() {
         checkNotClosed() ;
@@ -265,10 +265,10 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
 
     @Override
     public boolean supportsTransactions()       { return true ; }
-    
+
     @Override
     public boolean supportsTransactionAbort()   { return true ; }
-    
+
     @Override
     public String toString() {
         try {
@@ -284,7 +284,7 @@ import org.apache.jena.tdb.store.GraphTxnTDB ;
     }
 
     @Override
-    protected void _close() {
+    protected synchronized void _close() {
         if ( isClosed )
             return ;
         if ( sConn.haveUsedInTransaction() ) {
