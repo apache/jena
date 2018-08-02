@@ -1984,8 +1984,8 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
-    public void test_set_values_item_missing_varName() {
-        // varName missing ('props' instead of 'objs') so query is unchanged.
+    public void test_set_values_item_missing_valueName() {
+        // valueName missing ('props' instead of 'objs') so query is unchanged.
         String str = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setValues("props", ResourceFactory.createPlainLiteral("test"));
@@ -2092,10 +2092,10 @@ public class TestParameterizedSparqlString {
 
     @Test
     public void test_extract_target_vars() {
-        // Identifies the vars in the VALUES clause according to the substituting varName.
+        // Identifies the vars in the VALUES clause according to the substituting valueName.
         String cmd = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"o"};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2105,10 +2105,10 @@ public class TestParameterizedSparqlString {
 
     @Test
     public void test_extract_two_target_vars() {
-        // Identifies the vars in the VALUES clause according to the substituting varName.
-        String cmd = "SELECT * WHERE { VALUES(?p ?o){?vars} ?s ?p ?o }";
-        String varName = "vars";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        // Identifies the vars in the VALUES clause according to the substituting valueName.
+        String cmd = "SELECT * WHERE { VALUES(?p ?o){?valuesName} ?s ?p ?o }";
+        String valueName = "valuesName";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"p", "o"};
 
         ///System.out.println("Exp: " + String.join(",", exp));
@@ -2118,10 +2118,10 @@ public class TestParameterizedSparqlString {
 
     @Test
     public void test_extract_multiple_target_vars() {
-        // Identifies the vars in the VALUES clause according to the substituting varName.
+        // Identifies the vars in the VALUES clause according to the substituting valueName.
         String cmd = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o {?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"o"};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2133,8 +2133,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_target_vars_missing_target() {
         // Missing target variable name so should return empty array.
         String cmd = "SELECT * WHERE { VALUES ?o {} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2146,8 +2146,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_target_vars_missing_brace() {
         // Missing brace so should return empty array.
         String cmd = "SELECT * WHERE { VALUES ?o ?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2159,8 +2159,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_multiple_target_vars_missing_brace() {
         // Missing brace so should return empty array.
         String cmd = "SELECT * WHERE { VALUES ?p {?props} VALUES ?o ?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2172,8 +2172,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_target_vars_missing_values() {
         // Missing VALUES keyword so should return empty array.
         String cmd = "SELECT * WHERE { ?o {?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2185,8 +2185,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_multiple_target_vars_missing_values() {
         // Missing VALUES keyword so should return empty array.
         String cmd = "SELECT * WHERE { VALUES ?p {?props} ?o {?objs} ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));
@@ -2198,8 +2198,8 @@ public class TestParameterizedSparqlString {
     public void test_extract_multiple_target_vars_no_braces() {
         // Missing braces and VALUES keyword so should return empty array.
         String cmd = "SELECT * WHERE { VALUES ?p ?props ?o ?objs ?s ?p ?o }";
-        String varName = "objs";
-        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, varName);
+        String valueName = "objs";
+        String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
         //System.out.println("Exp: " + String.join(",", exp));

@@ -1744,18 +1744,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
     
     /**
-     * Assign a VALUES varName with a multiple items.<br>
+     * Assign a VALUES valueName with a multiple items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setRowValues to assign multiple values to multiple variables.<br>
-     * Using "var" with list(prop_A, obj_A) on query "VALUES (?p ?o) {?var}"
-     * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
+     * Using "valueName" with list(prop_A, obj_A) on query "VALUES (?p ?o)
+     * {?valueName}"     * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
      *
      *
-     * @param varName
+     * @param valueName
      * @param items
      */
-    public void setValues(String varName, Collection<? extends RDFNode> items) {
+    public void setValues(String valueName, Collection<? extends RDFNode> items) {
         items.forEach(item -> validateParameterValue(item.asNode()));
 
         //Ensure that a list is used for the items.
@@ -1765,24 +1765,24 @@ public class ParameterizedSparqlString implements PrefixMapping {
         } else {
             rowItems.add(new ArrayList<>(items));
         }
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems));
+        this.valuesReplacements.put(valueName, new ValueReplacement(valueName, rowItems));
     }
 
     /**
-     * Assign a VALUES varName with a single item.<br>
-     * Using "var" with Literal obj_A on query "VALUES ?o {?var}" would produce
-     * "VALUES ?o {obj_A}".
+     * Assign a VALUES valueName with a single item.<br>
+     * Using "valueName" with Literal obj_A on query "VALUES ?o {?valueName}"
+     * would produce     * "VALUES ?o {obj_A}".
      *
-     * @param varName
+     * @param valueName
      * @param item
      */
-    public void setValues(String varName, RDFNode item) {
-        setValues(varName, Arrays.asList(item));
+    public void setValues(String valueName, RDFNode item) {
+        setValues(valueName, Arrays.asList(item));
     }
 
     /**
      * **
-     * Sets a map of VALUES varNames and their items.<br>
+     * Sets a map of VALUES valueNames and their items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setRowValues to assign multiple values to multiple variables.
@@ -1794,17 +1794,17 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Allocate multiple lists of variables to a single VALUES varName.<br>
-     * Using "vars" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on query
-     * "VALUES (?p ?o) {?vars}" would produce "VALUES (?p ?o) {(prop_A obj_A)
-     * (prop_B obj_B)}".
+     * Allocate multiple lists of variables to a single VALUES valueName.<br>
+     * Using "valuesName" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on
+     * query "VALUES (?p ?o) {?valuesName}" would produce "VALUES (?p ?o)
+     * {(prop_A obj_A)     * (prop_B obj_B)}".
      *
-     * @param varName
+     * @param valueName
      * @param rowItems
      */
-    public void setRowValues(String varName, Collection<List<? extends RDFNode>> rowItems) {
+    public void setRowValues(String valueName, Collection<List<? extends RDFNode>> rowItems) {
         rowItems.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems));
+        this.valuesReplacements.put(valueName, new ValueReplacement(valueName, rowItems));
     }
 
     private String applyValues(String command, SerializationContext context) {
@@ -1817,12 +1817,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     private static final String VALUES_KEYWORD = "values";
 
-    protected static String[] extractTargetVars(String command, String varName) {
+    protected static String[] extractTargetVars(String command, String valueName) {
         String[] targetVars = new String[]{};
 
-        int varIndex = command.indexOf(varName);
-        if (varIndex > -1) {
-            String subCmd = command.substring(0, varIndex).toLowerCase(); //Truncate the command at the varName. Lowercase to search both types of values.
+        int valueIndex = command.indexOf(valueName);
+        if (valueIndex > -1) {
+            String subCmd = command.substring(0, valueIndex).toLowerCase(); //Truncate the command at the valueName. Lowercase to search both cases of VALUES keyword.
             int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
             int openBracesIndex = subCmd.lastIndexOf("{");
             int closeBracesIndex = subCmd.lastIndexOf("}");
@@ -1840,11 +1840,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     private class ValueReplacement {
 
-        private final String varName;
+        private final String valueName;
         private final Collection<List<? extends RDFNode>> rowItems;
 
-        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> rowItems) {
-            this.varName = varName;
+        public ValueReplacement(String valueName, Collection<List<? extends RDFNode>> rowItems) {
+            this.valueName = valueName;
             this.rowItems = rowItems;
         }
 
@@ -1854,7 +1854,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 return command;
             }
 
-            String[] targetVars = extractTargetVars(command, varName);
+            String[] targetVars = extractTargetVars(command, valueName);
             if (targetVars.length == 0) {
                 //VALUES keyword has not been found or there is another issue so do not modify the command.
                 return command;
@@ -1899,18 +1899,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
         /**
-         * Tidy up varName if doesn't start with a ? or $.
+         * Tidy up valueName if doesn't start with a ? or $.
          *
-         * @param varName
+         * @param valueName
          * @return
          */
         private String createTarget() {
             String target;
 
-            if (varName.startsWith("?") || varName.startsWith("$")) {
-                target = varName;
+            if (valueName.startsWith("?") || valueName.startsWith("$")) {
+                target = valueName;
             } else {
-                target = "[?$]" + varName;
+                target = "[?$]" + valueName;
             }
             return target;
         }
