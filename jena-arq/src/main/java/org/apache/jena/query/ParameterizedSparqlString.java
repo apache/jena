@@ -1159,14 +1159,15 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Clears the value for a variable parameter so the given variable will not
-     * have a value injected
+     * Clears the value for a variable or values parameter so the given variable
+     * will not     * have a value injected
      * 
      * @param var
      *            Variable
      */
     public void clearParam(String var) {
         this.params.remove(var);
+        this.valuesReplacements.remove(var);
     }
 
     /**
@@ -1180,10 +1181,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Clears all values for both variable and positional parameters
+     * Clears all values for variable, values and positional parameters
      */
     public void clearParams() {
         this.params.clear();
+        this.valuesReplacements.clear();
         this.positionalParams.clear();
     }
 
