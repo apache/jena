@@ -1334,7 +1334,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
         // Inject Values Parameters
-        command = applyValues(command);
+        command = applyValues(command, context);
         
         // Then inject Positional Parameters
         // To do this we need to find the ? we will replace
@@ -1807,10 +1807,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
         this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems));
     }
 
-    private String applyValues(String command) {
+    private String applyValues(String command, SerializationContext context) {
 
         for (ValueReplacement valueReplacement : valuesReplacements.values()) {
-            command = valueReplacement.apply(command);
+            command = valueReplacement.apply(command, context);
         }
         return command;
     }
@@ -1848,7 +1848,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             this.rowItems = rowItems;
         }
 
-        public String apply(String command) {
+        public String apply(String command, SerializationContext context) {
 
             if (rowItems.isEmpty()) {
                 return command;
@@ -1863,29 +1863,29 @@ public class ParameterizedSparqlString implements PrefixMapping {
             validateValuesSafeToInject(command, targetVars);
 
             String target = createTarget();
-            String replacement = buildReplacement(targetVars.length);
+            String replacement = buildReplacement(targetVars.length, context);
 
             return command.replaceAll(target, replacement);
         }
 
-        private String buildReplacement(int targetVarCount) {
+        private String buildReplacement(int targetVarCount, SerializationContext context) {
 
             StringBuilder replacement = new StringBuilder("");
 
             if (targetVarCount == 1) {
                 for (List<? extends RDFNode> row : rowItems) {
                     for (RDFNode item : row) {
-                    replacement.append("(");
-                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
-                    replacement.append(insert);
-                    replacement.append(") ");
+                        replacement.append("(");
+                        String insert = stringForNode(item.asNode(), context);
+                        replacement.append(insert);
+                        replacement.append(") ");
                     }
                 }
             } else {
                 for (List<? extends RDFNode> row : rowItems) {
                     replacement.append("(");
                     for (RDFNode item : row) {
-                        String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
+                        String insert = stringForNode(item.asNode(), context);
                         replacement.append(insert);
                         replacement.append(" ");
                     }
