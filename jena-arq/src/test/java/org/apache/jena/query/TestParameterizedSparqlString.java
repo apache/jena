@@ -2015,7 +2015,7 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
-    public void test_set_values_multiple_variables_parenthesis() {
+    public void test_set_values_multiple_variables() {
         // Tests two values for same variable.
         String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
@@ -2029,6 +2029,34 @@ public class TestParameterizedSparqlString {
         //System.out.println("Exp: " + exp);
         //System.out.println("Res: " + res);
         Assert.assertEquals(exp, res);
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_set_values_multiple_variables_too_few() {
+        // Test of one value for two variables.
+        String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> vars = new ArrayList<>();
+        vars.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        pss.setValues("vars", vars);
+
+        pss.toString();
+        Assert.fail("Attempt to insert incorrect number of values.");
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_set_values_multiple_variables_too_many() {
+        // Test of three values for two variables.
+        String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> vars = new ArrayList<>();
+        vars.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        vars.add(ResourceFactory.createPlainLiteral("obj_A"));
+        vars.add(ResourceFactory.createPlainLiteral("obj_A"));
+        pss.setValues("vars", vars);
+
+        pss.toString();
+        Assert.fail("Attempt to insert incorrect number of values.");
     }
 
     @Test
@@ -2086,7 +2114,7 @@ public class TestParameterizedSparqlString {
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setValues(str, ResourceFactory.createResource("<http://example.org/obj_A>"));
 
-        pss.asQuery();
+        pss.toString();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
