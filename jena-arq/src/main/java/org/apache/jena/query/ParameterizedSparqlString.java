@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
@@ -1754,7 +1755,15 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     public void setValues(String varName, Collection<? extends RDFNode> items) {
         items.forEach(item -> validateParameterValue(item.asNode()));
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, items));
+
+        //Ensure that a list is used for the items.
+        Collection<List<? extends RDFNode>> rowItems = new ArrayList<>();
+        if (items instanceof List) {
+            rowItems.add((List) items);
+        } else {
+            rowItems.add(new ArrayList<>(items));
+        }
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems));
     }
 
     /**
@@ -1793,7 +1802,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     public void setRowValues(String varName, Collection<List<? extends RDFNode>> rowItems) {
         rowItems.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
-        this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems, true));
+        this.valuesReplacements.put(varName, new ValueReplacement(varName, rowItems));
     }
 
     private String applyValues(String command) {
@@ -1829,27 +1838,16 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private class ValueReplacement {
 
         private final String varName;
-        private final Collection<? extends RDFNode> items;
         private final Collection<List<? extends RDFNode>> rowItems;
-        private final Boolean isRows;
 
-        public ValueReplacement(String varName, Collection<? extends RDFNode> items) {
+        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> rowItems) {
             this.varName = varName;
-            this.items = items;
-            this.rowItems = new ArrayList<>();
-            this.isRows = false;
-        }
-
-        public ValueReplacement(String varName, Collection<List<? extends RDFNode>> rowItems, Boolean isRows) {
-            this.varName = varName;
-            this.items = new ArrayList<>();
             this.rowItems = rowItems;
-            this.isRows = isRows;
         }
 
         public String apply(String command) {
 
-            if (items.isEmpty() && rowItems.isEmpty()) {
+            if (rowItems.isEmpty()) {
                 return command;
             }
 
@@ -1857,59 +1855,38 @@ public class ParameterizedSparqlString implements PrefixMapping {
             validateValuesSafeToInject(command, targetVars);
 
             String target = createTarget();
-
-            StringBuilder replacement;
-            if (isRows) {
-                replacement = rowsApply();
-            } else {
-                replacement = singleApply(targetVars.length);
-            }
+            StringBuilder replacement = buildReplacement(targetVars.length);
 
             return command.replace(target, replacement);
         }
 
-        private StringBuilder rowsApply() {
-            StringBuilder replacement = new StringBuilder("");
 
-            for (List<? extends RDFNode> row : rowItems) {
-                replacement.append("(");
-
-                for (RDFNode item : row) {
-                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
-                    replacement.append(insert);
-                    replacement.append(" ");
-                }
-
-                replacement.deleteCharAt(replacement.length() - 1);
-                replacement.append(") ");
-            }
-
-            replacement.deleteCharAt(replacement.length() - 1);
-            return replacement;
-        }
-
-        private StringBuilder singleApply(int targetVarCount) {
+        private StringBuilder buildReplacement(int targetVarCount) {
 
             StringBuilder replacement = new StringBuilder("");
 
             if (targetVarCount == 1) {
-                for (RDFNode item : items) {
+                for (List<? extends RDFNode> row : rowItems) {
+                    for (RDFNode item : row) {
                     replacement.append("(");
                     String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
                     replacement.append(insert);
                     replacement.append(") ");
+                    }
                 }
-                replacement.deleteCharAt(replacement.length() - 1);
             } else {
-                replacement.append("(");
-                for (RDFNode item : items) {
-                    String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
-                    replacement.append(insert);
-                    replacement.append(" ");
+                for (List<? extends RDFNode> row : rowItems) {
+                    replacement.append("(");
+                    for (RDFNode item : row) {
+                        String insert = FmtUtils.stringForNode(item.asNode(), (PrefixMapping) null);
+                        replacement.append(insert);
+                        replacement.append(" ");
+                    }
+                    replacement.deleteCharAt(replacement.length() - 1);
+                    replacement.append(") ");
                 }
-                replacement.deleteCharAt(replacement.length() - 1);
-                replacement.append(")");
             }
+            replacement.deleteCharAt(replacement.length() - 1);
 
             return replacement;
         }
@@ -1933,29 +1910,25 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
         protected void validateValuesSafeToInject(String command, String[] targetVars) {
 
-            for (int i = 0; i < targetVars.length; i++) {
-                String targetVar = targetVars[i];
-                if (isRows) {
-                    //Iterate through each row according to the position of var and item.
-                    for (List<? extends RDFNode> row : rowItems) {
-                        RDFNode item = row.get(i);
+            if (targetVars.length == 1) {
+                //Single var with one or more items so all checked against the same var.
+                String targetVar = targetVars[0];
+                for (List<? extends RDFNode> row : rowItems) {
+                    for (RDFNode item : row) {
                         validateSafeToInject(command, targetVar, item.asNode());
                     }
-                } else {
-                    if (targetVars.length > 1) {
-                        if (items instanceof List) {
-                            //Multiple vars with items in an ordered list. Each var is checked against the item.
-                            List<? extends RDFNode> listItems = (List<? extends RDFNode>) items;
-                            RDFNode item = listItems.get(i);
+                }
+            } else {
+                //Multiple var with one or more rows.
+                for (int i = 0; i < targetVars.length; i++) {
+                    String targetVar = targetVars[i];
+                    for (List<? extends RDFNode> row : rowItems) {
+                        if (targetVars.length == row.size()) {
+                            RDFNode item = row.get(i);
                             validateSafeToInject(command, targetVar, item.asNode());
                         } else {
-                            //Multiple vars with items not in an ordered list. This is parsing error.
-                            throw new ARQException("Multiple VALUES variables (" + String.join(", ", targetVars) + ") being used without an ordered list of items: " + items.toString());
-                        }
-                    } else {
-                        //Single var with one or more items so all are checked.
-                        for (RDFNode item : items) {
-                            validateSafeToInject(command, targetVar, item.asNode());
+                            String rowString = row.stream().map(RDFNode::toString).collect(Collectors.joining(","));
+                            throw new ARQException("Number of VALUES variables (" + String.join(", ", targetVars) + ") does not equal replacement row (" + rowString + ").");
                         }
                     }
                 }
