@@ -1826,7 +1826,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             int closeBracesIndex = subCmd.lastIndexOf("}");
             if (valuesIndex > -1 && valuesIndex < openBracesIndex && closeBracesIndex < valuesIndex) { //Ensure that VALUES keyword is found, open braces index is located after the VALUES and any close braces is located before the VALUES.
                 String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), openBracesIndex);
-                targetVars = vars.replaceAll("[(?)]", "").trim().split(" ");
+                targetVars = vars.replaceAll("[(?$)]", "").trim().split(" ");
             }
         }
         return targetVars;
@@ -1861,13 +1861,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
             validateValuesSafeToInject(command, targetVars);
 
             String target = createTarget();
-            StringBuilder replacement = buildReplacement(targetVars.length);
+            String replacement = buildReplacement(targetVars.length);
 
-            return command.replace(target, replacement);
+            return command.replaceAll(target, replacement);
         }
 
-
-        private StringBuilder buildReplacement(int targetVarCount) {
+        private String buildReplacement(int targetVarCount) {
 
             StringBuilder replacement = new StringBuilder("");
 
@@ -1894,7 +1893,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
             replacement.deleteCharAt(replacement.length() - 1);
 
-            return replacement;
+            return replacement.toString();
         }
 
         /**
@@ -1909,7 +1908,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             if (varName.startsWith("?") || varName.startsWith("$")) {
                 target = varName;
             } else {
-                target = "?" + varName;
+                target = "[?$]" + varName;
             }
             return target;
         }
