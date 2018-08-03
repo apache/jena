@@ -26,8 +26,15 @@ import java.math.BigInteger;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.reasoner.rulesys.test.TestComparatorBuiltins;
 import org.junit.Test;
 
+/**
+ * Tests more of comparison in org.apache.jena.reasoner.rulesys.Util/
+ * These tests must run in the same package - calls a package visible function.
+ * 
+ * @see TestComparatorBuiltins
+ */
 public class TestRuleUtil {
     @Test public void cmp1() {
         compare("1", XSDDatatype.XSDdecimal, "2", XSDDatatype.XSDdecimal, -1);
