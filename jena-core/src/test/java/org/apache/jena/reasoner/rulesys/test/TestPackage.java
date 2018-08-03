@@ -19,13 +19,13 @@
 package org.apache.jena.reasoner.rulesys.test;
 
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite ;
-
+import org.apache.jena.reasoner.rulesys.TestRuleUtil;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
-import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
@@ -42,6 +42,7 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("RuleSys");
+        addTest(new JUnit4TestAdapter(TestRuleUtil.class));
 
         addTestSuite( TestConfigVocabulary.class );
         addTestSuite( TestGenericRuleReasonerConfig.class );
@@ -60,6 +61,8 @@ public class TestPackage extends TestSuite {
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
+        // Must reside in same package as util.
+        addTest(new JUnit4TestAdapter(TestRuleUtil.class));
         //addTest ("TestRuleLoader", TestRuleLoader.suite() );
 
         try {
@@ -84,5 +87,4 @@ public class TestPackage extends TestSuite {
         tc.setName(name);
         addTest(tc);
     }
-
 }

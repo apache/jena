@@ -19,6 +19,8 @@
 package org.apache.jena.reasoner.rulesys;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
@@ -52,6 +54,25 @@ public class Util {
     }
 
     /**
+     * Check whether a Node is an Instant (DateTime) value
+     */
+    public static boolean isInstant(Node n) {
+        if (n.isLiteral()) {
+            Object o = n.getLiteralValue();
+            return (o instanceof XSDDateTime);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Test if two literals are comparable by an order operator (both numbers or both times)
+     */
+    public static boolean comparable(Node n1, Node n2) {
+       return (isNumeric(n1) && isNumeric(n2)) || (isInstant(n1) && isInstant(n2));
+    }
+
+    /**
      * Compare two numeric nodes.
      * @param n1 the first numeric valued literal node
      * @param n2 the second numeric valued literal node
@@ -63,31 +84,78 @@ public class Util {
             Object v1 = n1.getLiteralValue();
             Object v2 = n2.getLiteralValue();
             if (v1 instanceof Number && v2 instanceof Number) {
-                if (v1 instanceof Float || v1 instanceof Double
-                        || v2 instanceof Float || v2 instanceof Double) {
-                            double d1 = ((Number)v1).doubleValue();
-                            double d2 = ((Number)v2).doubleValue();
-                            return (d1 < d2) ? -1 : ( (d1 == d2) ? 0 : +1 );
-                } else {
-                    long l1 = ((Number)v1).longValue();
-                    long l2 = ((Number)v2).longValue();
-                    return (l1 < l2) ? -1 : ( (l1 == l2) ? 0 : +1 );
-                }
+                Number num1 = (Number)v1;
+                Number num2 = (Number)v2;
+                return compareNumbers(num1, num2);
             }
         }
         throw new ClassCastException("Non-numeric literal in compareNumbers");
     }
 
-    /**
-     * Check whether a Node is an Instant (DateTime) value
-     */
-    public static boolean isInstant(Node n) {
-        if (n.isLiteral()) {
-            Object o = n.getLiteralValue();
-            return (o instanceof XSDDateTime);
-        } else {
-            return false;
+    /*package*/ static int compareNumbers(Number num1, Number num2) {
+        // Comparing java.lang.Number.
+        //
+        // Check whether the two numbers are of the same primitive kind (both long
+        // or both double valued) and, if so, compare. Do the same for BigDecimal
+        // and BigInteger.
+        //
+        // If all that fails, convert to BigDecimal and compare.
+
+        // Wrapped primitives, with integer values.
+        if ( valueIsLong(num1) && valueIsLong(num2) ) {
+            long z1 = num1.longValue();
+            long z2 = num2.longValue();
+            return Long.compare(z1, z2);
         }
+        // Wrapped primitives, with floating point values.
+        if ( valueIsDouble(num1) && valueIsDouble(num2) ) {
+            double d1 = num1.doubleValue();
+            double d2 = num2.doubleValue();
+            return Double.compare(d1, d2);
+        }
+        // Both BigDecimal
+        if ( num1 instanceof BigDecimal && num2 instanceof BigDecimal ) {
+            BigDecimal dec1 = (BigDecimal)num1;
+            BigDecimal dec2 = (BigDecimal)num2;
+            return dec1.compareTo(dec2); 
+        }
+        // Both BigInteger
+        if ( num1 instanceof BigInteger && num2 instanceof BigInteger ) {
+            BigInteger int1 = (BigInteger)num1;
+            BigInteger int2 = (BigInteger)num2;
+            return int1.compareTo(int2); 
+        }
+
+        // Mixed. Includes comparing BigInteger and BigDecimal and comparing
+        // BigInteger or BigDecimal with a wrapped primitive.
+        BigDecimal dec1 = convertToBigDecimal(num1);
+        BigDecimal dec2 = convertToBigDecimal(num2);
+        return dec1.compareTo(dec2);
+    }
+    
+    private static BigDecimal convertToBigDecimal(Number num) {
+        if ( num instanceof BigDecimal )
+            return (BigDecimal)num ;
+        if ( valueIsLong(num) )
+            return new BigDecimal(num.longValue()) ;
+        if ( num instanceof BigInteger )
+            return new BigDecimal((BigInteger)num) ;
+        // double and float.
+        return new BigDecimal(num.doubleValue()) ;
+    }
+
+    private static boolean valueIsLong(Number v) {
+        if ( v instanceof Long ) return true;
+        if ( v instanceof Integer ) return true;
+        if ( v instanceof Short ) return true;
+        if ( v instanceof Byte ) return true;
+        return false;
+    }
+
+    private static boolean valueIsDouble(Number v) {
+        if ( v instanceof Double ) return true;
+        if ( v instanceof Float ) return true;
+        return false;
     }
 
     /**
@@ -113,41 +181,21 @@ public class Util {
     /**
      * General order comparator for typed literal nodes, works for all numbers and
      * for date times.
-     *
      */
-    // Thanks to Bradley Schatz (Bradley@greystate.com) for the original suggestions
-    // for datetime comparison. This code is a rewrite based on those suggestions.
     public static int compareTypedLiterals(Node n1, Node n2) {
         if (n1.isLiteral() && n2.isLiteral()) {
             Object v1 = n1.getLiteralValue();
             Object v2 = n2.getLiteralValue();
+            if (v1 instanceof Number && v2 instanceof Number) {
+                return compareNumbers((Number)v1, (Number)v2);
+            }
             if (v1 instanceof XSDDateTime && v2 instanceof XSDDateTime) {
                 XSDDateTime a = (XSDDateTime) v1;
                 XSDDateTime b = (XSDDateTime) v2;
                 return a.compare(b);
-            } else {
-                if (v1 instanceof Number && v2 instanceof Number) {
-                    if (v1 instanceof Float || v1 instanceof Double
-                            || v2 instanceof Float || v2 instanceof Double) {
-                                double d1 = ((Number)v1).doubleValue();
-                                double d2 = ((Number)v2).doubleValue();
-                                return (d1 < d2) ? -1 : ( (d1 == d2) ? 0 : +1 );
-                    } else {
-                        long l1 = ((Number)v1).longValue();
-                        long l2 = ((Number)v2).longValue();
-                        return (l1 < l2) ? -1 : ( (l1 == l2) ? 0 : +1 );
-                    }
-                }
             }
         }
         throw new ClassCastException("Compare typed literals can only compare numbers and datetimes");
-    }
-
-    /**
-     * Test if two literals are comparable by an order operator (both numbers or both times)
-     */
-    public static boolean comparable(Node n1, Node n2) {
-       return (isNumeric(n1) && isNumeric(n2)) || (isInstant(n1) && isInstant(n2));
     }
 
     /**
