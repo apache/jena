@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.servlets.UploadDetails.PreState ;
+import org.apache.jena.fuseki.system.UploadDetails;
+import org.apache.jena.fuseki.system.UploadDetails.PreState;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;

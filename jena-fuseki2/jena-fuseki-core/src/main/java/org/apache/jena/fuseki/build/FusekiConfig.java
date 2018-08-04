@@ -37,8 +37,8 @@ import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
@@ -107,13 +107,13 @@ public class FusekiConfig {
         // Old style configuration file : server to services.
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry();
         // ---- Services
-        ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
         if ( ! rs.hasNext() )
             // No "fu:services ( .... )" so try looking for services directly.
             // This means Fuseki2, service configuration files (no server section) work for --conf. 
-            rs = FusekiLib.query("SELECT ?service { ?service a fu:Service }", model) ;
+            rs = FusekiBuildLib.query("SELECT ?service { ?service a fu:Service }", model) ;
 
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
@@ -215,7 +215,7 @@ public class FusekiConfig {
         
         ds.begin(ReadWrite.WRITE) ;
         try {
-            ResultSet rs = FusekiLib.query(qs, ds) ;
+            ResultSet rs = FusekiBuildLib.query(qs, ds) ;
 
     //        ResultSetFormatter.out(rs); 
     //        ((ResultSetRewindable)rs).reset();

@@ -27,5 +27,26 @@ public class MgtConst {
     public static final String  opDatasets      = "datasets" ;
     public static final String  opListBackups   = "backups-list" ;
     public static final String  opServer        = "server" ;
+    
+    // JSON constants
+    public static final String datasets         = "datasets" ;
+    public static final String uptime           = "uptime" ;
+    public static final String startDT          = "startDateTime" ;
+    public static final String server           = "server" ;
+    public static final String port             = "port" ;
+    public static final String hostname         = "hostname" ;
+    public static final String admin            = "admin" ;
+    public static final String version          = "version" ;
+    public static final String built            = "built" ;
+    public static final String services         = "services" ;
+    public static final String operation        = "operation" ;
+    public static final String description      = "description" ;
+    public static final String endpoints        = "endpoints" ;
+    public static final String dsName           = "ds.name" ;
+    public static final String dsState          = "ds.state" ;
+    public static final String dsService        = "ds.services" ;
+    public static final String srvType          = "srv.type" ;
+    public static final String srvDescription   = "srv.description" ;
+    public static final String srvEndpoints     = "srv.endpoints" ;
 }
 

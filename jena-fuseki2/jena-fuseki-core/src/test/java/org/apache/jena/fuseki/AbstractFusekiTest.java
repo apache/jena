@@ -24,9 +24,11 @@ import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 
-/** Framework for tests using client-side operation onto a forked Fuseki server.
- *  Not general - some test sets set up their own environment for 
- *  different, additional requirements.
+/**
+ * See package-info.
+ * Framework for tests using client-side operation onto a forked Fuseki server. Not
+ * general - some test sets set up their own environment for different, additional
+ * requirements.
  */
 
 public class AbstractFusekiTest extends BaseTest

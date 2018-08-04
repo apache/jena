@@ -35,7 +35,7 @@ import org.apache.jena.web.HttpSC ;
 import org.junit.Test ;
 
 /** TestDatasetAccessorHTTP does most of the GSP testing.
- *  This class adds the testing of Fuseki extras.
+ *  This class adds the testing of Jena Fuseki extras - whole dataset HTTP.
  */
 public class TestDatasetOps extends AbstractFusekiTest 
 {

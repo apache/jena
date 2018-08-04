@@ -32,6 +32,10 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.webapp.FusekiEnv;
+import org.apache.jena.fuseki.webapp.FusekiServerListener;
+import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
@@ -47,7 +51,7 @@ import org.apache.jena.update.UpdateProcessor ;
  * <b>Note:</b>
  * <br/>
  * <em> There is a {@code FusekiTestServer} in the basic Fuseki server which is more
- * appropriate for testing SPARQL protocols. It does not have a on-disk footprint.</em>
+ * appropriate for testing SPARQL protocols. It does not have an on-disk footprint.</em>
  * <br/>
  * This class is
  * primarily for testing the full Fuseki server and has a full on-disk configuration.

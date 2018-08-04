@@ -27,6 +27,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 

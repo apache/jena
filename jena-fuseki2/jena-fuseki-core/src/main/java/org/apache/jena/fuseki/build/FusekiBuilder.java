@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki.build;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.FusekiLib.nodeLabel ;
-import static org.apache.jena.fuseki.FusekiLib.query ;
 import static org.apache.jena.fuseki.server.FusekiVocab.pServiceQueryEP;
 import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadGraphStoreEP;
 import static org.apache.jena.fuseki.server.FusekiVocab.pServiceReadQuadsEP;
@@ -33,7 +31,6 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.Operation ;
@@ -52,7 +49,7 @@ public class FusekiBuilder
 {
     /** Build a DataAccessPoint, including DataService, from the description at Resource svc */ 
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionRegistry dsDescMap) {
-        RDFNode n = FusekiLib.getOne(svc, "fu:name") ;
+        RDFNode n = FusekiBuildLib.getOne(svc, "fu:name") ;
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
         Literal object = n.asLiteral() ;
@@ -110,13 +107,13 @@ public class FusekiBuilder
         return dataService ;
     }
     
-    static Dataset getDataset(Resource datasetDesc, DatasetDescriptionRegistry dsDescMap) {
+    public static Dataset getDataset(Resource datasetDesc, DatasetDescriptionRegistry dsDescMap) {
     	// check if this one already built
     	Dataset ds = dsDescMap.get(datasetDesc);
     	if (ds == null) {
     	    // Check if the description is in the model.
             if ( !datasetDesc.hasProperty(RDF.type) )
-                throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+                throw new FusekiConfigException("No rdf:type for dataset " + FusekiBuildLib.nodeLabel(datasetDesc)) ;
             ds = (Dataset)Assembler.general.open(datasetDesc) ;
     	}
     	// Some kind of check that it is "the same" dataset.  
@@ -155,18 +152,18 @@ public class FusekiBuilder
 
     public static RDFNode getOne(Resource svc, String property) {
         String ln = property.substring(property.indexOf(':') + 1) ;
-        ResultSet rs = FusekiLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
         if ( !rs.hasNext() )
-            throw new FusekiConfigException("No " + ln + " for service " + FusekiLib.nodeLabel(svc)) ;
+            throw new FusekiConfigException("No " + ln + " for service " + FusekiBuildLib.nodeLabel(svc)) ;
         RDFNode x = rs.next().get("x") ;
         if ( rs.hasNext() )
-            throw new FusekiConfigException("Multiple " + ln + " for service " + FusekiLib.nodeLabel(svc)) ;
+            throw new FusekiConfigException("Multiple " + ln + " for service " + FusekiBuildLib.nodeLabel(svc)) ;
         return x ;
     }
 
     private static void addServiceEP(DataService dataService, Operation operation, Resource svc, Property property) {
         String p = "<"+property.getURI()+">" ;
-        ResultSet rs = query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;

@@ -23,7 +23,7 @@ import static java.lang.String.format ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
+import org.apache.jena.fuseki.system.GraphLoadUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.Query ;

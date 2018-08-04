@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
-import org.apache.jena.fuseki.http.TestHttpOp ;
 import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.rdf.model.Model ;

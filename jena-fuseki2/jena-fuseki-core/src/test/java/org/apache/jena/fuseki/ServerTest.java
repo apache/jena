@@ -25,7 +25,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.sse.SSE ;
 
-public class ServerTest {
+class ServerTest {
     public static final String  gn1           = "http://graph/1" ;
     public static final String  gn2           = "http://graph/2" ;
     public static final String  gn99          = "http://graph/99" ;

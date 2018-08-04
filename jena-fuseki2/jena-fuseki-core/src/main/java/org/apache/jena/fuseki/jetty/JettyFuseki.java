@@ -31,7 +31,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
-import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.HttpConnectionFactory ;
