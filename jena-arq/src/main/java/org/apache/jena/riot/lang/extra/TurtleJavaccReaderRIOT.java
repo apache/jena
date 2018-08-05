@@ -38,9 +38,13 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
     
     public static void register() {
         // This just registers the name, not the parser.
-        //RDFLanguages.register(lang);
-        // Register the parser factory.
+        RDFLanguages.register(lang);
         RDFParserRegistry.registerLangTriples(lang, factory);
+    }
+
+    public static void unregister() {
+        RDFParserRegistry.removeRegistration(lang);
+        RDFLanguages.unregister(lang);
     }
 
     private final ParserProfile profile;
