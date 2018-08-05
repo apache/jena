@@ -162,7 +162,17 @@
     <servlet-name>PingServlet</servlet-name>
     <url-pattern>/$/ping</url-pattern>
   </servlet-mapping>
-  
+
+  <servlet>
+    <servlet-name>ActionStats</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.ctl.ActionStats</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ActionStats</servlet-name>
+    <url-pattern>/$/stats/*</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>ActionTasks</servlet-name>
     <servlet-class>org.apache.jena.fuseki.ctl.ActionTasks</servlet-class>
@@ -236,11 +246,6 @@
     <servlet-class>org.apache.jena.fuseki.mgt.ActionDatasets</servlet-class>
   </servlet>
   
-  <servlet>
-    <servlet-name>ActionStats</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.mgt.ActionStats</servlet-class>
-  </servlet>
-
   <servlet>
     <servlet-name>ActionLogs</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionLogs</servlet-class>
