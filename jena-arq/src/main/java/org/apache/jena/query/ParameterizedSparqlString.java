@@ -1761,7 +1761,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         //Ensure that a list is used for the items.
         Collection<List<? extends RDFNode>> rowItems = new ArrayList<>();
         if (items instanceof List) {
-            rowItems.add((List) items);
+            rowItems.add((List<? extends RDFNode>)items);
         } else {
             rowItems.add(new ArrayList<>(items));
         }
