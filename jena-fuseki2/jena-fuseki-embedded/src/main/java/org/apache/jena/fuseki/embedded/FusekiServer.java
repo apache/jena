@@ -249,7 +249,7 @@ public class FusekiServer {
         }
 
         /** Add the "/$/ping" servlet that responds to HTTP very efficiently.
-         * This is useful for testign whether a server is alove, for example, from a load balencer.  
+         * This is useful for testing whether a server is alive, for example, from a load balancer.  
          */ 
         public Builder enablePing(boolean withPing) {
             this.withPing = withPing;

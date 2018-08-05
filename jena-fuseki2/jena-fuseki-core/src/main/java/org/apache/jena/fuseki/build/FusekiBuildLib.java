@@ -28,6 +28,7 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.RDFS ;
 
+/** Library code for operations specific to building Fuseki servers and services. */
 public class FusekiBuildLib {
 
     // ---- Helper code
