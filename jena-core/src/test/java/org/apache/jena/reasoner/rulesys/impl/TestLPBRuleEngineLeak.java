@@ -41,7 +41,7 @@ import org.apache.jena.vocabulary.RDFS;
 
 public class TestLPBRuleEngineLeak extends TestCase {
 	public static TestSuite suite() {
-		return new TestSuite(TestLPBRuleEngineLeak.class, "TestLPBRuleEngineLeak");
+		return new TestSuite(TestLPBRuleEngineLeak.class);
 	}
 
 	protected Node a = NodeFactory.createURI("a");

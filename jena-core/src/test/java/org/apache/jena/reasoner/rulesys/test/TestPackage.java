@@ -19,13 +19,13 @@
 package org.apache.jena.reasoner.rulesys.test;
 
 
+import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite ;
-
+import org.apache.jena.reasoner.rulesys.TestRuleUtil;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
+import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-
-import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
-import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
@@ -42,24 +42,29 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("RuleSys");
-
+        
         addTestSuite( TestConfigVocabulary.class );
         addTestSuite( TestGenericRuleReasonerConfig.class );
         addTest( "TestBasics", TestBasics.suite() );
+        
+        addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
+        addTest( new JUnit4TestAdapter(TestRuleUtil.class));
+
         addTest( "TestBackchainer", TestBackchainer.suite() );
         addTest( "TestLPBasics", TestBasicLP.suite() );
+
         addTest( "TestLPDerivation", TestLPDerivation.suite() );
-        addTest( TestLPBRuleEngine.suite() );
+        addTest( "TestLPBRuleEngine", TestLPBRuleEngine.suite() );
         addTest( "TestFBRules", TestFBRules.suite() );
         addTest( "TestGenericRules", TestGenericRules.suite() );
         addTest( "TestRETE", TestRETE.suite() );
-        addTest( TestSetRules.suite() );
-        addTest( TestLPBRuleEngineLeak.suite() );
+        addTest( "TestSetRules", TestSetRules.suite() );
+        addTest( "TestLPBRuleEngineLeak", TestLPBRuleEngineLeak.suite() );
         addTest( "OWLRuleUnitTests", OWLUnitTest.suite() );
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
-        addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
+        
         //addTest ("TestRuleLoader", TestRuleLoader.suite() );
 
         try {
@@ -72,8 +77,8 @@ public class TestPackage extends TestSuite {
         } catch (Throwable t) {
             logger.warn("Skipping concurrency test, JVM doesn't seem to support fileDeadlockedThreads");
         }
-        addTestSuite( TestInferenceReification.class );
-        addTestSuite( TestRestrictionsDontNeedTyping.class );
+        addTest( "TestInferenceReification", TestInferenceReification.suite() );
+        addTest( "TestRestrictionsDontNeedTyping", TestRestrictionsDontNeedTyping.suite() );
 
         // No longer needed because the tests are now subsumed in OWLUnitTest
         // addTest( "TestOWLConsistency", TestOWLRules.suite() );
@@ -84,5 +89,4 @@ public class TestPackage extends TestSuite {
         tc.setName(name);
         addTest(tc);
     }
-
 }
