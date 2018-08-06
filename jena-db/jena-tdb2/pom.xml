@@ -113,8 +113,21 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <encoding>UTF-8</encoding>
+          <windowtitle>Apache Jena TDB2</windowtitle>
+          <doctitle>Apache Jena TDB2 ${project.version}</doctitle>
+          <excludePackageNames>org.apache.jena.tdb2.*</excludePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
-
 
 </project>
