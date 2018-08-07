@@ -16,7 +16,7 @@
 @prefix rdft:   <http://www.w3.org/ns/rdftest#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Turtle tests" ;
+    rdfs:comment "Turtle tests (RDF 1.1 Test Suite)" ;
     mf:entries
     (
 

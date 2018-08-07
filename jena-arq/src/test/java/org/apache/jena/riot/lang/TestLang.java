@@ -126,11 +126,11 @@ public class TestLang extends BaseTest
     @Test
     public void testDefaultInExtensions()
     {
-        for (Lang l : RDFLanguages.getRegisteredLanguages() )
+        for (Lang lang : RDFLanguages.getRegisteredLanguages() )
         {
-            if ( RDFLanguages.RDFNULL.equals(l) )
+            if ( lang.getFileExtensions() == null || lang.getFileExtensions().isEmpty())
                 continue ;
-            Assert.assertTrue( l+" default extension not in file extensions list", l.getFileExtensions().contains( l.getFileExtensions().get(0))  );
+            Assert.assertTrue( lang+" default extension not in file extensions list", lang.getFileExtensions().contains( lang.getFileExtensions().get(0))  );
         }
     }
     

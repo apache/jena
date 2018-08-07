@@ -68,9 +68,9 @@ public class UnitTestEval extends LangTestCase
         DatasetGraph dsg = DatasetGraphFactory.create() ;
         try {
             if ( baseIRI != null )
-                RDFDataMgr.read(dsg, input, baseIRI, lang) ;
+                Parse.parse(dsg, input, baseIRI, lang) ;
             else
-                RDFDataMgr.read(dsg, input, lang) ;
+                Parse.parse(dsg, input, lang) ;
             
             Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS) ;
             

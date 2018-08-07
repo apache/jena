@@ -98,8 +98,8 @@ public abstract class IRIResolver
      * @param isWarning Whether it is to be treated a warning.
      */
     private static void setErrorWarning(IRIFactory factory, int code, boolean isError, boolean isWarning) {
-        factory.setIsError(code, isError);
         factory.setIsWarning(code, isWarning);
+        factory.setIsError(code, isError);
     }
     
     private static void printSetting(IRIFactory factory) {

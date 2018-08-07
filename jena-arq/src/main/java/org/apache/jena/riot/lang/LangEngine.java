@@ -34,7 +34,7 @@ import org.apache.jena.riot.tokens.Tokenizer;
 
 /** Common operations for RIOT token stream parsing - not the implementation LangRIOT. */
 public class LangEngine {
-    protected ParserProfile          profile;
+    protected ParserProfile     profile;
     protected ErrorHandler      errorHandler;
     protected final Tokenizer   tokens;
     private PeekIterator<Token> peekIter;

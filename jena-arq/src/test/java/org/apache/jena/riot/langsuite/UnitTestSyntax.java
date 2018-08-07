@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot.langsuite;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.junit.EarlReport ;
 
 public class UnitTestSyntax extends LangTestCase
@@ -48,14 +47,16 @@ public class UnitTestSyntax extends LangTestCase
             run4() ;
     }
 
-    private void run3() {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(model, uri, uri, lang) ;
+    private void run3()
+    {
+        Graph graph = GraphFactory.createDefaultGraph(); 
+        Parse.parse(graph, uri, lang);
     }
     
-    private void run4() {
-        Dataset ds = DatasetFactory.createGeneral() ;
-        RDFDataMgr.read(ds, uri, uri, lang) ;
+    private void run4()
+    {
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral() ;
+        Parse.parse(dsg, uri, lang);
     }
     
     @Override
