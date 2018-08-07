@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.servlets ;
 
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.Upload;
+import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;

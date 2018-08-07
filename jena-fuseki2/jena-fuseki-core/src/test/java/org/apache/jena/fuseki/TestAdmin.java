@@ -41,7 +41,7 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.mgt.JsonConst ;
+import org.apache.jena.fuseki.mgt.MgtConst;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
@@ -71,9 +71,9 @@ public class TestAdmin extends AbstractFusekiTest {
         JsonValue jv = httpGetJson(ServerCtl.urlRoot()+"$/"+opServer) ;
         JsonObject obj = jv.getAsObject() ;
         // Now optional : assertTrue(obj.hasKey(JsonConst.admin)) ;
-        assertTrue(obj.hasKey(JsonConst.datasets)) ;
-        assertTrue(obj.hasKey(JsonConst.uptime)) ;
-        assertTrue(obj.hasKey(JsonConst.startDT)) ;
+        assertTrue(obj.hasKey(MgtConst.datasets)) ;
+        assertTrue(obj.hasKey(MgtConst.uptime)) ;
+        assertTrue(obj.hasKey(MgtConst.startDT)) ;
     }
 
     @Test public void server_2() {

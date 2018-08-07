@@ -33,8 +33,6 @@ import org.junit.Test ;
 /** Operation by HTTP - test dispatch - lower level than TestSPARQLProtocol */
 public class TestHttpOperations extends AbstractFusekiTest {
     
-    // XXX and directly on dataset
-    
     @Test 
     public void query_by_get_1() {
         String qs = Convert.encWWWForm("ASK{}") ;

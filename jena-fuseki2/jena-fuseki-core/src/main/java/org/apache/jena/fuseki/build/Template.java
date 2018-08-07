@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.build;
 
 import java.nio.file.Path ;
 
-import org.apache.jena.fuseki.server.FusekiEnv ;
+import org.apache.jena.fuseki.webapp.FusekiEnv;
 
 public class Template
 {

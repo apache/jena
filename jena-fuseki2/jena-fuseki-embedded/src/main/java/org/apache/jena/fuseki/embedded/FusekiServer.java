@@ -33,8 +33,9 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.ctl.ActionStats;
+import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
-import org.apache.jena.fuseki.mgt.ActionStats;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
@@ -180,8 +181,9 @@ public class FusekiServer {
         // Default values.
         private int                      port               = 3330;
         private boolean                  loopback           = false;
-        private boolean                  withStats          = false;
         private boolean                  verbose            = false;
+        private boolean                  withStats          = false;
+        private boolean                  withPing           = false;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> other       = new ArrayList<>();
         private String                   contextPath        = "/";
@@ -246,6 +248,13 @@ public class FusekiServer {
             return this;
         }
 
+        /** Add the "/$/ping" servlet that responds to HTTP very efficiently.
+         * This is useful for testing whether a server is alive, for example, from a load balancer.  
+         */ 
+        public Builder enablePing(boolean withPing) {
+            this.withPing = withPing;
+            return this;
+        }
         /** Add the dataset with given name and a default set of services including update */  
         public Builder add(String name, Dataset dataset) {
             requireNonNull(name, "name");
@@ -450,6 +459,8 @@ public class FusekiServer {
             
             if ( withStats )
                 addServlet(context, "/$/stats", new ActionStats());
+            if ( withPing )
+                addServlet(context, "/$/ping", new ActionPing());
             
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();

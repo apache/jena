@@ -30,7 +30,6 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiLogging;
 import org.apache.jena.riot.web.HttpOp;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.junit.AfterClass;
@@ -40,7 +39,6 @@ import org.junit.Test;
 public class TestFusekiTestAuth {
     
     static {
-        FusekiLogging.setLogging();
         LogCtl.setLevel(Fuseki.serverLogName, "WARN");
         LogCtl.setLevel(Fuseki.actionLogName, "WARN");
         LogCtl.setLevel(Fuseki.requestLogName, "WARN");

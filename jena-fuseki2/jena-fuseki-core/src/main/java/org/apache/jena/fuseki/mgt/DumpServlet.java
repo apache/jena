@@ -41,19 +41,7 @@ import org.apache.jena.atlas.io.IO ;
 
 public class DumpServlet extends HttpServlet
 {
-    private static final long serialVersionUID = 99L;  // Serilizable.
-
-
-    public DumpServlet()
-    {
-
-    }
-
-    @Override
-    public void init()
-    {
-        return ;
-    }
+    public DumpServlet() { }
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp)

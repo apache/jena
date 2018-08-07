@@ -40,11 +40,11 @@ public class JsonDescription {
     
     public static void describe(JsonBuilder builder, DataAccessPoint access) {
         builder.startObject() ;
-        builder.key(JsonConst.dsName).value(access.getName()) ;
+        builder.key(MgtConst.dsName).value(access.getName()) ;
         
-        builder.key(JsonConst.dsState).value(access.getDataService().isAcceptingRequests()) ;
+        builder.key(MgtConst.dsState).value(access.getDataService().isAcceptingRequests()) ;
         
-        builder.key(JsonConst.dsService) ;
+        builder.key(MgtConst.dsService) ;
         builder.startArray() ;
         
         for ( Operation operation : access.getDataService().getOperations() ) {
@@ -58,9 +58,9 @@ public class JsonDescription {
     private static void describe(JsonBuilder builder, Operation operation, List<Endpoint> endpoints) {
         builder.startObject() ;
         
-        builder.key(JsonConst.srvType).value(operation.getName()) ;
-        builder.key(JsonConst.srvDescription).value(operation.getDescription()) ;
-        builder.key(JsonConst.srvEndpoints) ;
+        builder.key(MgtConst.srvType).value(operation.getName()) ;
+        builder.key(MgtConst.srvDescription).value(operation.getDescription()) ;
+        builder.key(MgtConst.srvEndpoints) ;
         builder.startArray() ;
         for ( Endpoint endpoint : endpoints )
             builder.value(endpoint.getEndpoint()) ;
