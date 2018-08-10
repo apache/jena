@@ -21,6 +21,11 @@ package org.apache.jena.atlas.io;
 import java.io.* ;
 import java.nio.charset.Charset ;
 import java.nio.charset.StandardCharsets ;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
@@ -363,5 +368,32 @@ public class IO
             IO.exception(e) ;
             return null ;
         }
+    }
+    
+    /** Delete everything from a {@code Path} start point, including the path itself.
+     * This function works on files or directories.
+     * This function does not follow symbolic links.
+     */  
+    public static void deleteAll(Path start) {
+        // Walks down the tree and delete directories on the way backup.
+        try { 
+            Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+                    if (e == null) {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        throw e;
+                    }
+                }
+            });
+        }
+        catch (IOException ex) { IO.exception(ex) ; return; }
     }
 }

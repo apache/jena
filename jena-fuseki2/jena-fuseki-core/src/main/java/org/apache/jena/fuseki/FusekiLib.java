@@ -71,7 +71,7 @@ public class FusekiLib {
         return ContentType.create(contentTypeHeader) ;
     }
     
-    /** Get the incoming Lang based on Content-Type of an action.
+    /** Get the incoming {@link Lang} based on Content-Type of an action.
      * @param  action
      * @param  dft Default if no "Content-Type:" found. 
      * @return ContentType
@@ -178,8 +178,8 @@ public class FusekiLib {
     }
 
     /**
-     * Test whether a URL identifies a Fuseki server. This operation can not guaranttee to
-     * detech a Fuseki server - for example, it may be behind a reverse proxy that masks
+     * Test whether a URL identifies a Fuseki server. This operation can not guarantee to
+     * detect a Fuseki server - for example, it may be behind a reverse proxy that masks
      * the signature.
      */
     public static boolean isFuseki(String datasetURL) {
