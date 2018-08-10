@@ -340,8 +340,6 @@ public abstract class ServiceRouter extends ActionService {
         return null;
     }
 
-    // XXX -------------------
-
     private boolean isReadMethod(HttpServletRequest request) {
         String method = request.getMethod();
         // REST dataset.
