@@ -29,7 +29,7 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly ;
@@ -151,50 +151,24 @@ public class DataService { //implements DatasetMXBean {
         return counters.value(CounterName.RequestsBad) ;
     }
 
-    /** Counter of active read transactions */
-    public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
+    /** Counter of active transactions */
+    public AtomicLong   activeTxn           = new AtomicLong(0) ;
 
-    /** Counter of active write transactions */
-    public AtomicLong   activeWriteTxn          = new AtomicLong(0) ;
+    /** Cumulative counter of transactions */
+    public AtomicLong   totalTxn            = new AtomicLong(0) ;
 
-    /** Cumulative counter of read transactions */
-    public AtomicLong   totalReadTxn            = new AtomicLong(0) ;
-
-    /** Cumulative counter of writer transactions */
-    public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
-
-    public void startTxn(ReadWrite mode)
-    {
-        switch(mode)
-        {
-            case READ:  
-                activeReadTxn.getAndIncrement() ;
-                totalReadTxn.getAndIncrement() ;
-                break ;
-            case WRITE:
-                activeWriteTxn.getAndIncrement() ;
-                totalWriteTxn.getAndIncrement() ;
-                break ;
-        }
+    public void startTxn(TxnType mode) {
+        activeTxn.getAndIncrement();
+        totalTxn.getAndIncrement();
     }
 
-    public void finishTxn(ReadWrite mode)
-    {
-        switch(mode)
-        {
-            case READ:  
-                activeReadTxn.decrementAndGet() ;
-                break ;
-            case WRITE:
-                activeWriteTxn.decrementAndGet() ;
-                break ;
-        }
-        checkShutdown() ;
+    public void finishTxn() {
+        activeTxn.decrementAndGet();
     }
 
     private void checkShutdown() {
         if ( state == CLOSING ) {
-            if ( activeReadTxn.get() == 0 && activeWriteTxn.get() == 0 )
+            if ( activeTxn.get() == 0 )
                 shutdown() ;
         }
     }

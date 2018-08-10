@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.query.ReadWrite.READ ;
-import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.TxnType.*;
+import static org.apache.jena.query.TxnType.WRITE;
 
 import java.util.HashMap ;
 import java.util.Map ;
@@ -31,7 +31,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper ;
@@ -61,7 +61,6 @@ public class HttpAction
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
     private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
-    private ReadWrite       activeMode      = null ;        // Set when inside begin/end.
     
     // -- Valid only for administration actions.
     
@@ -270,30 +269,50 @@ public class HttpAction
         return isTransactional ;
     }
 
-    public void beginRead() {
-        activeMode = READ ;
-        transactional.begin(READ) ;
+    public void begin(TxnType txnType) {
+        transactional.begin(txnType);
         activeDSG = dsg ;
-        dataService.startTxn(READ) ;
+        dataService.startTxn(txnType) ;
+    }
+    
+    public void begin() {
+        begin(READ_PROMOTE);
+    }
+
+    public void beginWrite() {
+        begin(WRITE);
+    }
+
+    public void beginRead() {
+        begin(READ);
     }
 
     public void endRead() {
-        dataService.finishTxn(READ) ;
-        activeMode = null ;
+        dataService.finishTxn() ;
+        transactional.commit();
         transactional.end() ;
         activeDSG = null ;
     }
 
-    public void beginWrite() {
-        transactional.begin(WRITE) ;
-        activeMode = WRITE ;
-        activeDSG = dsg ;
-        dataService.startTxn(WRITE) ;
-    }
-
-    public void commit() {
-        transactional.commit() ;
+    public void end() {
+        dataService.finishTxn() ;
+        
+        if ( transactional.isInTransaction() ) {
+            Log.warn(this, "Transaction still active - no commit or abort seen (forced abort)") ;
+            try {
+                transactional.abort() ;
+            } catch (RuntimeException ex) {
+                Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;
+            }
+        }
+        transactional.end() ;
         activeDSG = null ;
+    }
+    
+    public void commit() {
+        dataService.finishTxn() ;
+        transactional.commit() ;
+        end();
     }
 
     public void abort() {
@@ -305,23 +324,7 @@ public class HttpAction
             // we try to continue server operation.
             Log.warn(this, "Exception during abort (operation attempts to continue): "+ex.getMessage()) ; 
         }
-        activeDSG = null ;
-    }
-
-    public void endWrite() {
-        dataService.finishTxn(WRITE) ;
-        activeMode = null ;
-
-        if ( transactional.isInTransaction() ) {
-            Log.warn(this, "Transaction still active in endWriter - no commit or abort seen (forced abort)") ;
-            try {
-                transactional.abort() ;
-            } catch (RuntimeException ex) {
-                Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;
-            }
-        }
-        transactional.end() ;
-        activeDSG = null ;
+        end();
     }
 
     public final void startRequest() { 
