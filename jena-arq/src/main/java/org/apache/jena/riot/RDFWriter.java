@@ -139,7 +139,7 @@ public class RDFWriter {
             if ( ct == null )
                 throw new RiotException("Lang and RDFformat unset and can't determine syntax from '"+filename+"'");
             Lang lang = RDFLanguages.contentTypeToLang(ct);
-            if ( ct == null )
+            if ( lang == null )
                 throw new RiotException("No syntax registered for '"+ct.getContentType()+"'"); 
             fmt = RDFWriterRegistry.defaultSerialization(lang);
         }
