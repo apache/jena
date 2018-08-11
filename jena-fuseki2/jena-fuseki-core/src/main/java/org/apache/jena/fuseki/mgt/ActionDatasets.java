@@ -59,7 +59,6 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -217,6 +216,7 @@ public class ActionDatasets extends ActionContainerItem {
             
             // Need to be in Resource space at this point.
             DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+            ref.getDataService().goActive();
             action.getDataAccessPointRegistry().register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOps.success(action) ;
@@ -327,48 +327,35 @@ public class ActionDatasets extends ActionContainerItem {
             FileOps.deleteSilent(cfgPathname);
 
             // Get before removing.
-            DatasetGraph database = ref.getDataService().getDataset();
+            DataService dataService = ref.getDataService();
+            
             // Make it invisible in this running server.
             action.getDataAccessPointRegistry().remove(name);
 
-            // JENA-1481 & JENA-1586 : Delete the database.
             // Delete the database for real only when it is in the server "run/databases"
             // area. Don't delete databases that reside elsewhere. We do delete the
             // configuration file, so the databases will not be associated with the server
             // anymore.
-
-            boolean tryToRemoveFiles = true;
             
-            // Text databases.
-            // Close the in-JVM objects for Lucene index and databases. 
-            // Do not delete files; at least for the lucene index, they are likely outside the run/databases. 
-            if ( database instanceof DatasetGraphText ) {
-                DatasetGraphText dbtext = (DatasetGraphText)database;
-                database = dbtext.getBase();
-                dbtext.getTextIndex().close();
-                tryToRemoveFiles = false ;
-            }
+            // JENA-1586: Remove from current running Fuseki server.
 
-            boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(database);
-            boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(database);
-            
+            boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(dataService.getDataset());
+            boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
+
+            dataService.shutdown();
+            // JENA-1481: Really delete files.
             if ( ( isTDB1 || isTDB2 ) ) {
-                // JENA-1586: Remove database from the process.
-                if ( isTDB1 )
-                    org.apache.jena.tdb.sys.TDBInternal.expel(database);
-                if ( isTDB2 )
-                    org.apache.jena.tdb2.sys.TDBInternal.expel(database);
-            
-                // JENA-1481: Really delete files.
-                // Find the database files (may not be any - e.g. in-memory).
+                // Delete databases created by the UI, or the admin operation, which are
+                // in predictable, unshared location on disk.
+                // There may not be any database files, the in-memory case.
                 Path pDatabase = FusekiSystem.dirDatabases.resolve(filename);
-                if ( tryToRemoveFiles && Files.exists(pDatabase)) {
-                    try { 
+                if ( Files.exists(pDatabase)) {
+                    try {
                         if ( Files.isSymbolicLink(pDatabase)) {
-                            action.log.info(format("[%d] Database is a symbolic link, not removing files", action.id, pDatabase)) ;
+                            action.log.info(format("[%d] Database is a symbolic link, not removing files", action.id, pDatabase));
                         } else {
                             IO.deleteAll(pDatabase);
-                            action.log.info(format("[%d] Deleted database files %s", action.id, pDatabase)) ;
+                            action.log.info(format("[%d] Deleted database files %s", action.id, pDatabase));
                         }
                     } catch (RuntimeIOException ex) {
                         action.log.error(format("[%d] Error while deleting database files %s: %s", action.id, pDatabase, ex.getMessage()), ex);

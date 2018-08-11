@@ -22,6 +22,7 @@ import static org.apache.jena.fuseki.ServerCtl.ServerScope.CLASS ;
 import static org.apache.jena.fuseki.ServerCtl.ServerScope.SUITE ;
 import static org.apache.jena.fuseki.ServerCtl.ServerScope.TEST ;
 
+import java.nio.file.Path;
 import java.nio.file.Paths ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
@@ -226,7 +227,25 @@ public class ServerCtl {
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
         FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
+        // Must have shiro.ini.
+        // This fakes the state after FusekiSystem initialization
+        // in the case of starting in the same location. FusekiSystem has statics.
+        // Fuseki-full is designed to be the only server, not restartable.
+        // Here, we want to reset for testing.
+        emptyDirectory(FusekiSystem.dirSystemDatabase);
+        emptyDirectory(FusekiSystem.dirBackups);
+        emptyDirectory(FusekiSystem.dirLogs);
+        emptyDirectory(FusekiSystem.dirConfiguration);
+        emptyDirectory(FusekiSystem.dirDatabases);
+        
         setupServer(port(), null, datasetPath(), updateable) ;
+    }
+    
+    private static void emptyDirectory(Path directory) {
+        if ( directory == null )
+            // Server will create.
+            return; 
+        FileOps.clearAll(directory.toString());
     }
     
     public static void setupServer(int port, String authConfigFile, String datasetPath, boolean updateable) {

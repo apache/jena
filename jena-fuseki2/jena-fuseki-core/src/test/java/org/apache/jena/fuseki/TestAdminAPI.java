@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki;
 
+import static org.apache.jena.riot.web.HttpOp.execHttpGet;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,12 +29,15 @@ import java.util.List;
 import org.apache.http.HttpEntity ;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.webapp.FusekiSystem;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.engine.http.Params;
+import org.apache.jena.web.HttpSC;
 import org.junit.Test ;
 
 /** More tests of the admin functionality
@@ -53,13 +58,15 @@ public class TestAdminAPI extends AbstractFusekiTest {
     }
 
     private static void testAddDelete(String dbName, String dbType, boolean hasFiles) {
-        String URL = ServerCtl.urlRoot()+dbName;
+        String datasetURL = ServerCtl.urlRoot()+dbName;
         String admin = ServerCtl.urlRoot()+"$/";
         HttpEntity e = createFormEntity(dbName, "tdb");
         
+        assertFalse(exists(datasetURL));
+        
         HttpOp.execHttpPost(admin+"datasets", e); 
 
-        RDFConnection conn = RDFConnectionFactory.connect(URL);
+        RDFConnection conn = RDFConnectionFactory.connect(datasetURL);
         conn.update("INSERT DATA { <x:s> <x:p> 123 }");
         int x1 = count(conn);
         assertEquals(1, x1);
@@ -70,19 +77,30 @@ public class TestAdminAPI extends AbstractFusekiTest {
             assertTrue(Files.exists(pathDB));
 
         HttpOp.execHttpDelete(admin+"datasets/"+dbName);
+
+        assertFalse(exists(datasetURL));
         
         //if ( hasFiles )
             assertFalse(Files.exists(pathDB));
         
         // Recreate : no contents.
         HttpOp.execHttpPost(admin+"datasets", e);
+        assertTrue(exists(datasetURL));
         int x2 = count(conn);
         assertEquals(0, x2);
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));
     }
-                              
-                              
+    
+    private static boolean exists(String url) {
+        try ( TypedInputStream in = execHttpGet(url) ) {
+            return true;
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+                return false;
+            throw ex;
+        }
+    }
                               
     static int count(RDFConnection conn) {
         try ( QueryExecution qExec = conn.query("SELECT (count(*) AS ?C) { ?s ?p ?o }")) {

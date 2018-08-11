@@ -18,7 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.query.TxnType.*;
+import static org.apache.jena.query.TxnType.READ;
+import static org.apache.jena.query.TxnType.READ_PROMOTE;
 import static org.apache.jena.query.TxnType.WRITE;
 
 import java.util.HashMap ;
@@ -305,10 +306,11 @@ public class HttpAction
                 Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;
             }
         }
-        transactional.end() ;
+        if ( transactional.isInTransaction() )
+            transactional.end() ;
         activeDSG = null ;
     }
-    
+
     public void commit() {
         dataService.finishTxn() ;
         transactional.commit() ;
