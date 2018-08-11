@@ -757,8 +757,8 @@ public class TransactionCoordinator {
     private void finishActiveTransaction(Transaction transaction) {
         synchronized(coordinatorLock) {
             // Idempotent.
-            Object x = activeTransactions.remove(transaction) ;
-            if ( x == null )
+            boolean x = activeTransactions.remove(transaction) ;
+            if ( ! x )
                 return ;
             countFinished.incrementAndGet() ;
             activeTransactionCount.decrementAndGet() ;
