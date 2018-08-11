@@ -38,18 +38,12 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
 
 /**
- * Upload data into a graph within a dataset. This is fuseki:serviceUpload.
+ * Upload data into a graph within a dataset. This is {@code fuseki:serviceUpload}.
  * 
  * It is better to use GSP POST with the body being the content.
  * 
- * This class work with general HTML form file upload wherte  has the name somewhere in the form and that may be
+ * This class works with general HTML form file upload where the name is somewhere in the form and that may be
  * after the data.
- * 
- * With sophisticated use of {@link ServletFileUpload}, it is possible to stream to disk
- * avoid an in-memory copy. The whole form is processed to find the fields before parsing starts
- * and potentially is is several files.
- * 
- * This all makes transactional stream-parsing quite complex and it requires an abort. 
  * 
  * Consider this service useful for small files and use GSP POST for large ones.
  */

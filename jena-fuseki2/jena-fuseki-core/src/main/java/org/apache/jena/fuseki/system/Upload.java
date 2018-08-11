@@ -52,7 +52,9 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 public class Upload {
     
-    /** Parse the body contents to the {@link StreamRDF}. */ 
+    /** Parse the body contents to the {@link StreamRDF}. 
+     *  This function is used by GSP.
+     */ 
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = FusekiLib.getContentType(action) ;
         
@@ -97,7 +99,7 @@ public class Upload {
     /**  
      * Process an HTTP upload of RDF files (triples or quads)
      * Stream straight into the destination graph or dataset, ignoring any
-     * headers in the form parts.
+     * headers in the form parts. This function is used by GSP.
      */
     
     public static UploadDetails fileUploadWorker(HttpAction action, StreamRDF dest) {
@@ -114,6 +116,8 @@ public class Upload {
                     String fieldName = fileStream.getFieldName() ;
                     InputStream stream = fileStream.openStream();
                     String value = Streams.asString(stream, "UTF-8") ;
+                    // This code is currently used to put multiple files into a single destination.
+                    // Additonal field/values do not make sense.
                     ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)",fieldName, value)) ;
                 }
                 //Ignore the field name.
@@ -171,11 +175,15 @@ public class Upload {
     }
     
     // XXX Merge/replace with Upload.fileUploadWorker
-    // This code sets the StreamRDF destination during processing and can handle multiple files to multiple destinations
-    // for example, graphs within a dataset.
-    // This backs SPARQL_Upload.
+    // This code sets the StreamRDF destination during processing and can handle multiple
+    // files to multiple destinations for example, graphs within a dataset.
+    // The only functional difference is the single destination (fileUploadWorker) and
+    // switching on graph name (multipartUploadWorker).
     
-    /** Process an HTTP file upload of RDF using the name field for the graph name destination. */
+    /** 
+     * Process an HTTP file upload of RDF using the name field for the graph name destination.
+     * This function is used by SPARQL_Upload for {@code fuseki:serviceUpload}.
+     */
     public static UploadDetailsWithName multipartUploadWorker(HttpAction action, String base) {
         DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
         ServletFileUpload upload = new ServletFileUpload() ;
@@ -199,6 +207,7 @@ public class Upload {
                     if ( fieldName.equals(HttpNames.paramGraph) ) {
                         graphName = value ;
                         if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
+                            // -- Check IRI with additional checks.
                             IRI iri = IRIResolver.parseIRI(value) ;
                             if ( iri.hasViolation(false) )
                                 ServletOps.errorBadRequest("Bad IRI: " + graphName) ;
@@ -213,6 +222,7 @@ public class Upload {
                                 if ( iri.getRawPath().charAt(0) != '/' )
                                     ServletOps.errorBadRequest("Bad IRI: Path does not start '/': " + graphName) ;
                             }
+                            // End check IRI
                         }
                     } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
                         graphName = null ;
