@@ -160,7 +160,7 @@ public class TDBInternal {
         return null;
     }
 
-    /** Stop managing a DatasetGraph. Use with great care (testing only). */
+    /** Stop managing a DatasetGraph. Use with great care. */
     public static synchronized void expel(DatasetGraph dsg) {
         Location locContainer = null;
         Location locStorage = null;
@@ -176,6 +176,23 @@ public class TDBInternal {
         StoreConnection.internalExpel(locStorage, false);
     }
 
+    /** Stop managing a DatasetGraph. Use with great care. */
+    public static synchronized void expel(DatasetGraph dsg, boolean force) {
+        Location locContainer = null;
+        Location locStorage = null;
+        
+        if ( dsg instanceof DatasetGraphSwitchable ) {
+            locContainer = ((DatasetGraphSwitchable)dsg).getLocation();
+            dsg = ((DatasetGraphSwitchable)dsg).getWrapped();
+        }
+        if ( dsg instanceof DatasetGraphTDB )
+            locStorage = ((DatasetGraphTDB)dsg).getLocation();
+        
+        DatabaseConnection.internalExpel(locContainer, force);
+        StoreConnection.internalExpel(locStorage, force);
+    }
+
+    
     /** 
      * Reset the whole TDB system.      
      * Use with great care.

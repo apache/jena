@@ -349,7 +349,6 @@ public class TestAdmin extends AbstractFusekiTest {
                 result = JSON.parseAny(in) ;
             }
         }
-        
     }
 
     private static String execSleepTask(String name, int millis) {

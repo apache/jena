@@ -257,11 +257,6 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>ActionStats</servlet-name>
-    <url-pattern>/$/stats/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
     <servlet-name>ActionLogs</servlet-name>
     <url-pattern>/$/logs</url-pattern>
   </servlet-mapping>

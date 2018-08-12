@@ -36,6 +36,20 @@ public class FusekiBuildLib {
         return query(string, m, null, null) ;
     }
 
+    public static RDFNode queryOne(String string, Model m, String varname) {
+        ResultSet rs = query(string, m) ;
+        return getExactlyOne(rs, varname);
+    }
+    
+    private static RDFNode getExactlyOne(ResultSet rs, String varname) {
+        if ( ! rs.hasNext() )
+            return null;
+        QuerySolution qs = rs.next();
+        if ( rs.hasNext() )
+            return null;
+        return qs.get(varname);
+    }
+
     public static ResultSet query(String string, Dataset ds) {
         return query(string, ds, null, null) ;
     }

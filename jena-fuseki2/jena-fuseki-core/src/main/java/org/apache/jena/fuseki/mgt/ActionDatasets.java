@@ -20,15 +20,18 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.io.StringReader ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
@@ -38,12 +41,14 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.DatasetDescriptionRegistry ;
-import org.apache.jena.fuseki.build.FusekiBuilder ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
+import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
+import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.Template;
+import org.apache.jena.fuseki.build.TemplateFunctions;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
-import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
@@ -52,8 +57,9 @@ import org.apache.jena.fuseki.webapp.FusekiSystem;
 import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -228,7 +234,7 @@ public class ActionDatasets extends ActionContainerItem {
         }
         return null ;
     }
-    
+
     @Override
     protected JsonValue execPostItem(HttpAction action) {
         String name = action.getDatasetName() ;
@@ -288,28 +294,90 @@ public class ActionDatasets extends ActionContainerItem {
         if ( ! action.getDataAccessPointRegistry().isRegistered(name) )
             ServletOps.errorNotFound("No such dataset registered: "+name);
 
+        // This acts as a lock. 
         systemDSG.begin(ReadWrite.WRITE) ;
         boolean committed = false ;
+
         try {
             // Here, go offline.
             // Need to reference count operations when they drop to zero
             // or a timer goes off, we delete the dataset.
 
             DataAccessPoint ref = action.getDataAccessPointRegistry().get(name) ;
+            
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
-
-            // Make it invisible to the outside.
-            action.getDataAccessPointRegistry().remove(name);
-            // Delete configuration file.
-            // Should be only one, undo damage if multiple.
+            
             String filename = name.startsWith("/") ? name.substring(1) : name;
-            FusekiSystem.existingConfigurationFile(filename).stream().forEach(FileOps::deleteSilent);
-            // Leave the database in place. if it is in /databases/, recreating the
-            // configuration will make the database reappear. This is intentional.
-            // Deleting a large database by accident is a major mistake.
+            List<String> configurationFiles = FusekiSystem.existingConfigurationFile(filename);
+            if  ( configurationFiles.size() != 1 ) {
+                // This should not happen.
+                action.log.warn(format("[%d] There are %d configuration files, not one.", action.id, configurationFiles.size()));
+                ServletOps.errorOccurred(
+                    format(
+                        "There are %d configuration files, not one. Delete not performed; clearup of the filesystem needed.",
+                        action.id, configurationFiles.size()));
+            }
+            
+            String cfgPathname = configurationFiles.get(0);
+            
+            // Delete configuration file.
+            // Once deleted, server restart will not have the database. 
+            FileOps.deleteSilent(cfgPathname);
 
+            // Get before removing.
+            DatasetGraph database = ref.getDataService().getDataset();
+            // Make it invisible in this running server.
+            action.getDataAccessPointRegistry().remove(name);
+
+            // JENA-1481 & JENA-1586 : Delete the database.
+            // Delete the database for real only when it is in the server "run/databases"
+            // area. Don't delete databases that reside elsewhere. We do delete the
+            // configuration file, so the databases will not be associated with the server
+            // anymore.
+
+            boolean tryToRemoveFiles = true;
+            
+            // Text databases.
+            // Close the in-JVM objects for Lucene index and databases. 
+            // Do not delete files; at least for the lucene index, they are likely outside the run/databases. 
+            if ( database instanceof DatasetGraphText ) {
+                DatasetGraphText dbtext = (DatasetGraphText)database;
+                database = dbtext.getBase();
+                dbtext.getTextIndex().close();
+                tryToRemoveFiles = false ;
+            }
+
+            boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(database);
+            boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(database);
+            
+            if ( ( isTDB1 || isTDB2 ) ) {
+                // JENA-1586: Remove database from the process.
+                if ( isTDB1 )
+                    org.apache.jena.tdb.sys.TDBInternal.expel(database);
+                if ( isTDB2 )
+                    org.apache.jena.tdb2.sys.TDBInternal.expel(database);
+            
+                // JENA-1481: Really delete files.
+                // Find the database files (may not be any - e.g. in-memory).
+                Path pDatabase = FusekiSystem.dirDatabases.resolve(filename);
+                if ( tryToRemoveFiles && Files.exists(pDatabase)) {
+                    try { 
+                        if ( Files.isSymbolicLink(pDatabase)) {
+                            action.log.info(format("[%d] Database is a symbolic link, not removing files", action.id, pDatabase)) ;
+                        } else {
+                            IO.deleteAll(pDatabase);
+                            action.log.info(format("[%d] Deleted database files %s", action.id, pDatabase)) ;
+                        }
+                    } catch (RuntimeIOException ex) {
+                        action.log.error(format("[%d] Error while deleting database files %s: %s", action.id, pDatabase, ex.getMessage()), ex);
+                        // But we have managed to remove it from the running server, and removed its configuration, so declare victory. 
+                    }
+                }
+            }
+            
+            // -- System database
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
             Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name)) ;
@@ -328,9 +396,6 @@ public class ActionDatasets extends ActionContainerItem {
             if ( ! committed ) systemDSG.abort() ; 
             systemDSG.end() ; 
         }
-
-        // Remove the configuration file (if any).
-        action.getDataAccessPointRegistry().remove(name) ;
     }
 
     private static void assemblerFromBody(HttpAction action, StreamRDF dest) {

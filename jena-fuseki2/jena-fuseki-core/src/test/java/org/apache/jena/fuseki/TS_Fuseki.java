@@ -41,6 +41,7 @@ import org.junit.runners.Suite ;
     , TestDatasetOps.class
     , TestFileUpload.class
     , TestAdmin.class
+    , TestAdminAPI.class
     , TestServerReadOnly.class
     , TestBuilder.class
 })
