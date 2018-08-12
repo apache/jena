@@ -396,6 +396,10 @@ public class FusekiServer {
             // Clone to isolate from any future changes. 
             ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
             DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));
+
+            // Start services.
+            DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
+            
             setMimeTypes(handler);
             servlets(handler);
             

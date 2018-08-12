@@ -18,111 +18,134 @@
 
 package org.apache.jena.fuseki.server;
 
-import static org.apache.jena.fuseki.server.DatasetStatus.CLOSING ;
-import static org.apache.jena.fuseki.server.DatasetStatus.UNINITIALIZED ;
+import static java.lang.String.format;
+import static org.apache.jena.fuseki.server.DataServiceStatus.*;
 
-import java.util.* ;
-import java.util.concurrent.atomic.AtomicBoolean ;
-import java.util.concurrent.atomic.AtomicLong ;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
-import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.query.ReadWrite ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.DatasetGraphReadOnly ;
-import org.apache.jena.tdb.StoreConnection ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.fuseki.DEF;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.query.TxnType;
+import org.apache.jena.query.text.DatasetGraphText;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 
 public class DataService { //implements DatasetMXBean {
     public static DataService serviceOnlyDataService() {
-        return dummy ; 
+        return dummy; 
     }
     
-    public static final DataService dummy ;
+    private static final DataService dummy;
     static {
-        DatasetGraph dsg = new DatasetGraphReadOnly(DatasetGraphFactory.create()) ;
-        dummy = new DataService(dsg) ;
-        dummy.addEndpoint(Operation.Query, DEF.ServiceQuery) ;
-        dummy.addEndpoint(Operation.Query, DEF.ServiceQueryAlt) ;
+        DatasetGraph dsg = new DatasetGraphReadOnly(DatasetGraphFactory.create());
+        dummy = new DataService(dsg);
+        dummy.addEndpoint(Operation.Query, DEF.ServiceQuery);
+        dummy.addEndpoint(Operation.Query, DEF.ServiceQueryAlt);
     }
     
-    private DatasetGraph dataset ;
+    private DatasetGraph dataset;
 
-    private ListMultimap<Operation, Endpoint> operations    = ArrayListMultimap.create() ;
-    private Map<String, Endpoint> endpoints                     = new HashMap<>() ;
-    
-    private volatile DatasetStatus state = UNINITIALIZED ;
+    private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();
+    private Map<String, Endpoint> endpoints               = new HashMap<>();
+
+    /**
+     * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
+     * associated with. This is mainly for checking and development.
+     * Usually, one {@code DataService} is associated with one {@link DataAccessPoint}.
+     */
+    private List<DataAccessPoint> dataAccessPoints      = new ArrayList<>(1);
+
+    private volatile DataServiceStatus state            = UNINITIALIZED;
 
     // DataService-level counters.
-    private final CounterSet    counters                = new CounterSet() ;
-    private final AtomicLong    requestCounter          = new AtomicLong(0) ;   
-    private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
-    private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
+    private final CounterSet    counters                = new CounterSet();
+    private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false);
+    private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true);
 
     /** Create a {@code DataService} for the given dataset. */
     public DataService(DatasetGraph dataset) {
-        this.dataset = dataset ;
-        counters.add(CounterName.Requests) ;
-        counters.add(CounterName.RequestsGood) ;
-        counters.add(CounterName.RequestsBad) ;
+        this.dataset = dataset;
+        counters.add(CounterName.Requests);
+        counters.add(CounterName.RequestsGood);
+        counters.add(CounterName.RequestsBad);
+        // Start ACTIVE. Registration controls visibility. 
+        goActive();
+
     }
 
     /**
      * Create a {@code DataService} that has the same dataset, same operations and
-     * endpoints as another {@code DataService}. Counters are not copied.
+     * endpoints as another {@code DataService}. Counters are not copied, not
+     * DataAccessPoint associations.
      */
-    public DataService(DataService other) {
+    private DataService(int dummy, DataService other) {
         // Copy non-counter state of 'other'.
-        this.dataset = other.dataset ;
-        this.operations = ArrayListMultimap.create(other.operations) ;
-        this.endpoints = new HashMap<>(other.endpoints) ;
+        this.dataset = other.dataset;
+        this.operations = ArrayListMultimap.create(other.operations);
+        this.endpoints = new HashMap<>(other.endpoints);
+        this.state = UNINITIALIZED;
     }
 
+    /*package*/ void noteDataAccessPoint(DataAccessPoint dap) {
+        this.dataAccessPoints.add(dap);
+    }
+    
+    private String label() {
+        StringJoiner sj = new StringJoiner(", ", "[", "]");
+        dataAccessPoints.stream()
+            .map(DataAccessPoint::getName)
+            .filter(x->!x.isEmpty())
+            .forEach(sj::add);
+        return sj.toString();
+    }
     
     public DatasetGraph getDataset() {
-        return dataset ; 
+        return dataset; 
     }
     
     public void addEndpoint(Operation operation, String endpointName) {
-        Endpoint endpoint = new Endpoint(operation, endpointName) ;
-        endpoints.put(endpointName, endpoint) ;
+        Endpoint endpoint = new Endpoint(operation, endpointName);
+        endpoints.put(endpointName, endpoint);
         operations.put(operation, endpoint);
     }
     
     public Endpoint getEndpoint(String endpointName) {
-        return endpoints.get(endpointName) ;
+        return endpoints.get(endpointName);
     }
 
     public List<Endpoint> getEndpoints(Operation operation) {
-        List<Endpoint> x = operations.get(operation) ;
+        List<Endpoint> x = operations.get(operation);
         if ( x == null )
-            x = Collections.emptyList() ;
-        return x ;  
+            x = Collections.emptyList();
+        return x;  
     }
 
     /** Return the operations available here.
      *  @see #getEndpoints(Operation) to get the endpoint list
      */
     public Collection<Operation> getOperations() {
-        return operations.keySet() ;
+        return operations.keySet();
     }
 
     //@Override
-    public boolean allowUpdate()    { return true ; }
+    public boolean allowUpdate()    { return true; }
 
     public void goOffline() {
         offlineInProgress.set(true);
         acceptingRequests.set(false);
-        state = DatasetStatus.OFFLINE;
+        state = OFFLINE;
     }
 
     public void goActive() {
         offlineInProgress.set(false);
         acceptingRequests.set(true);
-        state = DatasetStatus.ACTIVE;
+        state = ACTIVE;
     }
 
     // Due to concurrency, call isAcceptingRequests().
@@ -131,82 +154,79 @@ public class DataService { //implements DatasetMXBean {
 //    }
 
     public boolean isAcceptingRequests() {
-        return acceptingRequests.get() ;
+        return acceptingRequests.get();
     }
     
     //@Override
-    public  CounterSet getCounters() { return counters ; }
+    public  CounterSet getCounters() { return counters; }
     
     //@Override 
     public long getRequests() { 
-        return counters.value(CounterName.Requests) ;
+        return counters.value(CounterName.Requests);
     }
 
     //@Override
     public long getRequestsGood() {
-        return counters.value(CounterName.RequestsGood) ;
+        return counters.value(CounterName.RequestsGood);
     }
     //@Override
     public long getRequestsBad() {
-        return counters.value(CounterName.RequestsBad) ;
+        return counters.value(CounterName.RequestsBad);
     }
 
-    /** Counter of active read transactions */
-    public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
+    /** Counter of active transactions */
+    public AtomicLong   activeTxn           = new AtomicLong(0);
 
-    /** Counter of active write transactions */
-    public AtomicLong   activeWriteTxn          = new AtomicLong(0) ;
+    /** Cumulative counter of transactions */
+    public AtomicLong   totalTxn            = new AtomicLong(0);
 
-    /** Cumulative counter of read transactions */
-    public AtomicLong   totalReadTxn            = new AtomicLong(0) ;
+    public void startTxn(TxnType mode) {
+        check(DataServiceStatus.ACTIVE);
+        activeTxn.getAndIncrement();
+        totalTxn.getAndIncrement();
+    }
 
-    /** Cumulative counter of writer transactions */
-    public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
-
-    public void startTxn(ReadWrite mode)
-    {
-        switch(mode)
-        {
-            case READ:  
-                activeReadTxn.getAndIncrement() ;
-                totalReadTxn.getAndIncrement() ;
-                break ;
-            case WRITE:
-                activeWriteTxn.getAndIncrement() ;
-                totalWriteTxn.getAndIncrement() ;
-                break ;
+    private void check(DataServiceStatus status) {
+        if ( state != status ) {
+            String msg = format("DataService %s: Expected=%s, Actual=%s", label(), status, state);
+            throw new FusekiException(msg);
         }
     }
 
-    public void finishTxn(ReadWrite mode)
-    {
-        switch(mode)
-        {
-            case READ:  
-                activeReadTxn.decrementAndGet() ;
-                break ;
-            case WRITE:
-                activeWriteTxn.decrementAndGet() ;
-                break ;
-        }
-        checkShutdown() ;
+    public void finishTxn() {
+        activeTxn.decrementAndGet();
     }
 
-    private void checkShutdown() {
-        if ( state == CLOSING ) {
-            if ( activeReadTxn.get() == 0 && activeWriteTxn.get() == 0 )
-                shutdown() ;
-        }
+    /** Shutdown and never use again. */
+    public synchronized void shutdown() {
+        if ( state == CLOSING )
+            return;
+        Fuseki.serverLog.info(format("Shutting down data service for %s", endpoints.keySet()));
+        expel(dataset);
+        dataset = null; 
+        state = CLOSED;
     }
-
-    private void shutdown() {
-        Fuseki.serverLog.info("Shutting down dataset") ;
-        dataset.close() ;
-        if ( dataset instanceof DatasetGraphTransaction ) {
-            DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
-            StoreConnection.release(dsgtxn.getLocation()) ;
+    
+    private void expel(DatasetGraph database) {
+        // Text databases.
+        // Close the in-JVM objects for Lucene index and databases. 
+        if ( database instanceof DatasetGraphText ) {
+            DatasetGraphText dbtext = (DatasetGraphText)database;
+            database = dbtext.getBase();
+            dbtext.getTextIndex().close();
         }
-        dataset = null ; 
+    
+        boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(database);
+        boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(database);
+        
+        if ( ( isTDB1 || isTDB2 ) ) {
+            // JENA-1586: Remove database from the process.
+            if ( isTDB1 )
+                org.apache.jena.tdb.sys.TDBInternal.expel(database);
+            if ( isTDB2 )
+                org.apache.jena.tdb2.sys.TDBInternal.expel(database);
+        } else
+            dataset.close();
     }
 }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,25 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.system;
 
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
-public enum DatasetStatus {
-    UNINITIALIZED("Uninitialized"), ACTIVE("Active"), OFFLINE("Offline"), CLOSING("Closing"), CLOSED("Closed") ;
-    public final String name ; 
-    DatasetStatus(String string) { name = string ; }
-    
-    public static DatasetStatus status(Resource r) {
-        if ( FusekiVocab.stateActive.equals(r) )
-            return ACTIVE ;
-        if ( FusekiVocab.stateOffline.equals(r) )
-            return OFFLINE ;
-        if ( FusekiVocab.stateClosing.equals(r) )
-            return CLOSING ;
-        if ( FusekiVocab.stateClosed.equals(r) )
-            return CLOSED ;
-        return null ;
-    }
-}
-
+public class UploadDetailsWithName {
+     public final String graphName  ;
+     public final DatasetGraph data ;
+     public final long count ;
+     public UploadDetailsWithName(String gn, DatasetGraph dsg, long parserCount) {
+         this.graphName = gn ;
+         this.data = dsg ;
+         this.count = parserCount ;
+     }
+ }

@@ -31,6 +31,7 @@ public class DataAccessPoint {
     public DataAccessPoint(String name, DataService dataService) {
         this.name = canonical(name) ;
         this.dataService = dataService ;
+        dataService.noteDataAccessPoint(this);
     }
     
     public String getName()     { return name ; }

@@ -38,14 +38,23 @@ import org.apache.jena.fuseki.servlets.ActionErrorException;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.iri.IRI;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 public class Upload {
+    
+    /** Parse the body contents to the {@link StreamRDF}. 
+     *  This function is used by GSP.
+     */ 
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = FusekiLib.getContentType(action) ;
         
@@ -87,17 +96,15 @@ public class Upload {
         }
     }
     
-    /**  Process an HTTP upload of RDF files (triples or quads)
-     *   Stream straight into a graph or dataset -- unlike SPARQL_Upload the destination
-     *   is known at the start of the multipart file body
+    /**  
+     * Process an HTTP upload of RDF files (triples or quads)
+     * Stream straight into the destination graph or dataset, ignoring any
+     * headers in the form parts. This function is used by GSP.
      */
     
     public static UploadDetails fileUploadWorker(HttpAction action, StreamRDF dest) {
         String base = ActionLib.wholeRequestURL(action.request) ;
         ServletFileUpload upload = new ServletFileUpload();
-        //log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
-        
-        // Overall counting.
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest) ;
         
         try {
@@ -109,6 +116,8 @@ public class Upload {
                     String fieldName = fileStream.getFieldName() ;
                     InputStream stream = fileStream.openStream();
                     String value = Streams.asString(stream, "UTF-8") ;
+                    // This code is currently used to put multiple files into a single destination.
+                    // Additonal field/values do not make sense.
                     ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)",fieldName, value)) ;
                 }
                 //Ignore the field name.
@@ -163,6 +172,108 @@ public class Upload {
         // Overall results.
         UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads()) ;
         return details ;
+    }
+    
+    // XXX Merge/replace with Upload.fileUploadWorker
+    // This code sets the StreamRDF destination during processing and can handle multiple
+    // files to multiple destinations for example, graphs within a dataset.
+    // The only functional difference is the single destination (fileUploadWorker) and
+    // switching on graph name (multipartUploadWorker).
+    
+    /** 
+     * Process an HTTP file upload of RDF using the name field for the graph name destination.
+     * This function is used by SPARQL_Upload for {@code fuseki:serviceUpload}.
+     */
+    public static UploadDetailsWithName multipartUploadWorker(HttpAction action, String base) {
+        DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
+        ServletFileUpload upload = new ServletFileUpload() ;
+        String graphName = null ;
+        boolean isQuads = false ;
+        long count = -1 ;
+
+        String name = null ;
+        ContentType ct = null ;
+        Lang lang = null ;
+
+        try {
+            FileItemIterator iter = upload.getItemIterator(action.request) ;
+            while (iter.hasNext()) {
+                FileItemStream item = iter.next() ;
+                String fieldName = item.getFieldName() ;
+                InputStream stream = item.openStream() ;
+                if ( item.isFormField() ) {
+                    // Graph name.
+                    String value = Streams.asString(stream, "UTF-8") ;
+                    if ( fieldName.equals(HttpNames.paramGraph) ) {
+                        graphName = value ;
+                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
+                            // -- Check IRI with additional checks.
+                            IRI iri = IRIResolver.parseIRI(value) ;
+                            if ( iri.hasViolation(false) )
+                                ServletOps.errorBadRequest("Bad IRI: " + graphName) ;
+                            if ( iri.getScheme() == null )
+                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: " + graphName) ;
+                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https") ) {
+                                // Redundant??
+                                if ( iri.getRawHost() == null )
+                                    ServletOps.errorBadRequest("Bad IRI: no host name: " + graphName) ;
+                                if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
+                                    ServletOps.errorBadRequest("Bad IRI: no path: " + graphName) ;
+                                if ( iri.getRawPath().charAt(0) != '/' )
+                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': " + graphName) ;
+                            }
+                            // End check IRI
+                        }
+                    } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
+                        graphName = null ;
+                    else
+                        // Add file type?
+                        action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
+                } else {
+                    // Process the input stream
+                    name = item.getName() ;
+                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") )
+                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax") ;
+
+                    String contentTypeHeader = item.getContentType() ;
+                    ct = ContentType.create(contentTypeHeader) ;
+
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
+                    if ( lang == null ) {
+                        lang = RDFLanguages.filenameToLang(name) ;
+
+                        // JENA-600 filenameToLang() strips off certain
+                        // extensions such as .gz and
+                        // we need to ensure that if there was a .gz extension
+                        // present we wrap the stream accordingly
+                        if ( name.endsWith(".gz") )
+                            stream = new GZIPInputStream(stream) ;
+                    }
+
+                    if ( lang == null )
+                        // Desperate.
+                        lang = RDFLanguages.RDFXML ;
+
+                    isQuads = RDFLanguages.isQuads(lang) ;
+
+                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
+                                           ct.getContentType(), ct.getCharset(), lang.getName())) ;
+
+                    StreamRDF x = StreamRDFLib.dataset(dsgTmp) ;
+                    StreamRDFCounting dest = StreamRDFLib.count(x) ;
+                    ActionLib.parse(action, dest, stream, lang, base) ;
+                    count = dest.count() ;
+                }
+            }
+
+            if ( graphName == null || graphName.equals("") )
+                graphName = HttpNames.valueDefault ;
+            if ( isQuads )
+                graphName = null ;
+            return new UploadDetailsWithName(graphName, dsgTmp, count) ;
+        }
+        catch (ActionErrorException ex) { throw ex ; }
+        catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
     }
 }
 

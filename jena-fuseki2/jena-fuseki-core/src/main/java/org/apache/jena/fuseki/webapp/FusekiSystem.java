@@ -96,7 +96,7 @@ public class FusekiSystem
     /** Directory for system database */
     public static Path        dirSystemDatabase  = null ;
 
-    /** Directory for files uploaded (e.g upload assmbler descriptions); not data uploads. */
+    /** Directory for files uploaded (e.g upload assembler descriptions); not data uploads. */
     public static Path        dirFileArea        = null ;
     
     /** Directory for assembler files */
@@ -185,22 +185,26 @@ public class FusekiSystem
             try {
                 Files.copy(src.resolve(fn), dstFile, StandardCopyOption.COPY_ATTRIBUTES) ;
             } catch (IOException e) {
-                IO.exception("Failed to copy file "+src, e);
+                IO.exception("Failed to copy file "+src.resolve(fn), e);
                 e.printStackTrace();
             }
         } else {
-            try {
-                // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
-                URL url = FusekiSystem.class.getResource(fn) ;
-                if ( url == null )
-                    throw new FusekiConfigException("Failed to find resource '"+fn+"'") ; 
-                InputStream in = url.openStream() ;
-                Files.copy(in, dstFile) ;
-            }
-            catch (IOException e) {
-                IO.exception("Failed to copy file from resource: "+src, e);
-                e.printStackTrace();
-            }
+            copyFileFromResource(fn, dstFile);
+        }
+    }
+    
+    public static void copyFileFromResource(String fn, Path dstFile) {
+        try {
+            // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
+            URL url = FusekiSystem.class.getResource(fn) ;
+            if ( url == null )
+                throw new FusekiConfigException("Failed to find resource '"+fn+"'") ; 
+            InputStream in = url.openStream() ;
+            Files.copy(in, dstFile) ;
+        }
+        catch (IOException e) {
+            IO.exception("Failed to copy file from resource: "+fn, e);
+            e.printStackTrace();
         }
     }
 
@@ -221,7 +225,8 @@ public class FusekiSystem
     private static void enable(DataAccessPointRegistry registry, List<DataAccessPoint> datapoints) {
         for ( DataAccessPoint dap : datapoints ) {
             Fuseki.configLog.info("Register: "+dap.getName()) ;
-            registry.register(dap.getName(), dap); 
+            dap.getDataService().goActive();
+            registry.register(dap.getName(), dap);
         }
     }
 

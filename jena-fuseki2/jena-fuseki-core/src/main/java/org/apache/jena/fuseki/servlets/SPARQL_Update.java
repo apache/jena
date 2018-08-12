@@ -249,7 +249,7 @@ public class SPARQL_Update extends SPARQL_Protocol
                 try { action.abort() ; } catch (Exception ex2) {}
                 ServletOps.errorOccurred(ex.getMessage(), ex) ;
             }
-        } finally { action.endWrite(); }
+        } finally { action.end(); }
     }
 
     /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters

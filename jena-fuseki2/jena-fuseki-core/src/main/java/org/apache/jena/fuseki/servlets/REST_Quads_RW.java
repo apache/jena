@@ -109,7 +109,7 @@ public class REST_Quads_RW extends REST_Quads_R {
             action.abort() ;
             ServletOps.errorOccurred(ex.getMessage()) ;
         } finally {
-            action.endWrite() ;
+            action.end() ;
         }
         ServletOps.uploadResponse(action, details) ;
     }
@@ -143,7 +143,7 @@ public class REST_Quads_RW extends REST_Quads_R {
             } catch (Exception ex2) {}
             ServletOps.errorOccurred(ex.getMessage()) ;
         } finally {
-            action.endWrite() ;
+            action.end() ;
         }
         ServletOps.uploadResponse(action, details) ;
     }

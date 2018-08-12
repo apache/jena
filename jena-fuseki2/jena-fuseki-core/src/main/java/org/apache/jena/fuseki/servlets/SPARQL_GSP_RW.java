@@ -68,7 +68,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             deleteGraph(action) ;
             action.commit() ;
         }
-        finally { action.endWrite() ; }
+        finally { action.end() ; }
         ServletOps.successNoContent(action) ;
     }
 
@@ -143,7 +143,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             ServletOps.errorOccurred(ex.getMessage()) ;
             return null ;
         } finally {
-            action.endWrite() ;
+            action.end() ;
         }
     }
     
@@ -188,7 +188,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             try { action.abort() ; } catch (Exception ex2) {} 
             ServletOps.errorOccurred(ex.getMessage()) ;
             return null ;            
-        } finally { action.endWrite() ; }
+        } finally { action.end() ; }
     }
     
     /** Delete a graph. This removes the storage choice and looses the setup.

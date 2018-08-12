@@ -172,7 +172,8 @@ public class TDBInternal {
         if ( dsg instanceof DatasetGraphTDB )
             locStorage = ((DatasetGraphTDB)dsg).getLocation();
         
-        DatabaseConnection.internalExpel(locContainer, false);
+        if ( locContainer != null )
+            DatabaseConnection.internalExpel(locContainer, false);
         StoreConnection.internalExpel(locStorage, false);
     }
 

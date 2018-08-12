@@ -171,7 +171,5 @@ public class FusekiBuilder
             //log.info("  " + operation.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }
     }
-
-
 }
 

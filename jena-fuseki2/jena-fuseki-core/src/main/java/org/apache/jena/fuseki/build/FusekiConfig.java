@@ -226,7 +226,7 @@ public class FusekiConfig {
                 Resource g = row.getResource("g") ;
                 Resource rStatus = row.getResource("status") ;
                 //String name = row.getLiteral("name").getLexicalForm() ;
-                DatasetStatus status = DatasetStatus.status(rStatus) ;
+                DataServiceStatus status = DataServiceStatus.status(rStatus) ;
 
                 Model m = ds.getNamedModel(g.getURI()) ;
                 // Rebase the resource of the service description to the containing graph.
