@@ -267,7 +267,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         try {
             action.beginRead() ;
             Dataset dataset = decideDataset(action, query, queryStringLog) ;
-            try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
+            try ( QueryExecution qExec = createQueryExecution(action, query, dataset) ; ) {
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
@@ -285,8 +285,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     /**
-     * Check the query - if unacceptable, throw ActionErrorException or call
-     * super.error
+     * Check the query - if unacceptable, throw ActionErrorException 
+     * or call on of the {@link ServletOps#error} operations.
      * @param action HTTP Action
      * @param query  SPARQL Query
      */
@@ -296,9 +296,21 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param query
      * @param dataset
      * @return QueryExecution
+     * @deprecated Use {@link #createQueryExecution(HttpAction, Query, Dataset)}
      */
+    @Deprecated
     protected QueryExecution createQueryExecution(Query query, Dataset dataset) {
         return QueryExecutionFactory.create(query, dataset) ;
+    }
+
+    /** Create the {@link QueryExecution} for this operation.
+     * @param action
+     * @param query
+     * @param dataset
+     * @return QueryExecution
+     */
+    protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
+        return createQueryExecution(query, dataset);
     }
 
     /** Perform the {@link QueryExecution} once.

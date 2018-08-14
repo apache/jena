@@ -100,7 +100,8 @@ public abstract class ActionService extends ActionBase {
     // Overridden by the ServiceRouter.
     protected Operation chooseOperation(HttpAction action, DataService dataService, String serviceName) {
         // This default implementation is plain service name to operation based on the
-        // DataService as would be used by operation servlets bound by web.xml.
+        // DataService as would be used by operation servlets bound by web.xml
+        // except Fuseki can add and delete mapping while running.
         Endpoint ep = dataService.getEndpoint(serviceName);
         Operation operation = ep.getOperation();
         return operation;

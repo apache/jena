@@ -351,7 +351,7 @@ public class FusekiServer {
         /**
          * Add an operation to the server, together with its triggering Content-Type (may be null) and servlet handler.
          * <p>
-         * To associate an operation with a daatsets, call {@link #addOperation} after adding the dataset. 
+         * To associate an operation with a dataset, call {@link #addOperation} after adding the dataset. 
          *
          * @see #addOperation 
          */

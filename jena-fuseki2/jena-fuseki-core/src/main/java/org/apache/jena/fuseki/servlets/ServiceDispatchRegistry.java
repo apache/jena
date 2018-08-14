@@ -29,8 +29,14 @@ import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.riot.WebContent;
 
-/** 
- * The global mapping of content-type to Operation and operation to implementation.
+/**
+ * Mapping of dispatching operations. {@link Operation} is the operation reference (name)
+ * but the {@link Operation} does not carry the implementation. The registry, which is
+ * per-server, maps:
+ * <ul>
+ * <li>Content-type to {@code Operation}.
+ * <li>{@code Operation} to {@link ActionService} implementation
+ * </ul>
  */
 
 public class ServiceDispatchRegistry {
@@ -94,13 +100,18 @@ public class ServiceDispatchRegistry {
      * Register a new {@link Operation}, with its {@code Content-Type} (may be null,
      * meaning no dispatch by content type), and the implementation handler.
      * <p>
-     * The application needs to enable an operation on a service endpoint. 
+     * The application needs to enable an operation on a service endpoint.
+     * <p>
+     * Replaces any existing registration.  
      */
     public void register(Operation operation, String contentType, ActionService action) {
         Objects.requireNonNull(operation);
         Objects.requireNonNull(action);
         if ( contentType != null )
             contentTypeToOperation.put(contentType, operation);
+        else
+            // Remove any mapping.
+            contentTypeToOperation.values().remove(operation);
         operationToHandler.put(operation, action);
     }
     
