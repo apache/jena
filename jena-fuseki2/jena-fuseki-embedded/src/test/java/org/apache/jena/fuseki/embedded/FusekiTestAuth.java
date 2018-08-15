@@ -36,19 +36,19 @@ import org.junit.Assert;
 /**
  * Testing HTTP athentication.
  * <p>
- * {@code FusekiAuth} provides helper code for before/after (any of suite/class/test).
+ * {@code FusekiTestAuth} provides helper code for before/after (any of suite/class/test).
  * The pattern of usage is:
  * <pre>
  * 
  * &#64;BeforeClass
  * public static void beforeClassAuth() {
- *     SecurityHandler sh = FusekiAuth.makeSimpleSecurityHandler("/*", "USER", "PASSWORD");
- *     FusekiAuth.setupServer(true, sh);
+ *     SecurityHandler sh = FusekiTestAuth.makeSimpleSecurityHandler("/*", "USER", "PASSWORD");
+ *     FusekiTestAuth.setupServer(true, sh);
  * }
  * 
  * &#64;AfterClass
  * public static void afterClassAuth() {
- *     FusekiAuth.teardownServer();
+ *     FusekiTestAuth.teardownServer();
  *     // Clear up any pooled connections.
  *     HttpOp.setDefaultHttpClient(HttpOp.createPoolingHttpClient());
  * }
