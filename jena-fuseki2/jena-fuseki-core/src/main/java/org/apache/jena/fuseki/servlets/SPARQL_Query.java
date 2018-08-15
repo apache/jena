@@ -94,12 +94,28 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         doOptions(action.request, action.response) ;
     }
 
-    // All the params we support
-
-    protected static List<String> allParams = Arrays.asList(paramQuery, paramDefaultGraphURI, paramNamedGraphURI,
-                                                            paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
-                                                            paramOutput2, paramCallback, paramForceAccept, paramTimeout) ;
-
+    /** All the query parameters that are acceptable in a given request.
+    *  This is comprised of, by default,
+    *  <ul>
+    *  <li>SPARQL Protocol for query ({@link #stdParams()}) as mentioned in the spec.
+    *  <li>Fuseki parameters ({@link #fusekiParams()}) e.g. timeout and formatting
+    *  <li>Any custom parameter for this particular servlet ({@link #customParams()}, usually none.
+    *  </ul>
+    *  The default implementation calculates this list of parameters once (on first use). 
+    */     
+    private Set<String> acceptedParams_ = null;
+    protected Collection<String> acceptedParams(HttpAction action) {
+        if ( acceptedParams_ == null ) {
+            synchronized(this) {
+                if ( acceptedParams_ == null )
+                // Does not matter about race condition here because the same Set should be
+                // created on any call to generateAcceptedParams.
+                acceptedParams_ = generateAcceptedParams();
+            }
+        }
+        return acceptedParams_;
+    }
+    
     /**
      * Validate the request, checking HTTP method and HTTP Parameters.
      * @param action HTTP Action
@@ -121,7 +137,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         // Use of the dataset describing parameters is check later.
         try {
-            validateParams(action, allParams) ;
+            Collection<String> x = acceptedParams(action);
+            validateParams(action, x) ;
             validateRequest(action) ;
         } catch (ActionErrorException ex) {
             throw ex ;
@@ -437,4 +454,34 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return HttpOp.execHttpGetString(queryURI) ;
     }
 
+    // ---- Query parameters for validation
+    /** 
+     * Create the set of all parameters passed by validation.
+     * This is called once only.
+     * Override {@link acceptedParams} for a full dynamic choice.  
+     */
+    protected Set<String> generateAcceptedParams() {
+        Set<String> x  = new HashSet<>();
+        x.addAll(stdParams());
+        x.addAll(fusekiParams());
+        x.addAll(customParams());
+        return x;
+    }
+
+    private static Collection<String> customParams_ = Collections.emptyList();
+    /** Extension parameters : called once during parameter collection setup. */
+    protected Collection<String> customParams() {
+        return customParams_;
+    }
+
+    /** The parameters in the SPARQL Protocol for query */
+    private static Collection<String> stdParams_ = Arrays.asList(paramQuery, paramDefaultGraphURI, paramNamedGraphURI);
+
+    protected Collection<String> stdParams() { return stdParams_; }
+
+    /** The parameters Fuseki also provides */
+    private static Collection<String> fusekiParams_ = Arrays.asList(paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
+                                                                    paramOutput2, paramCallback, paramForceAccept, paramTimeout) ;
+
+    protected Collection<String> fusekiParams() { return fusekiParams_; }
 }
