@@ -39,7 +39,7 @@ public class NodeId implements Comparable<NodeId>
     public static final NodeId NodeIdUndefined      = makeSpecial(0xA6);
     
     private static NodeId makeSpecial(long v) {
-        // Careful of an initialzer loop (create(type, v1, v2) looks at specials).
+        // Careful of an initializer loop (create(type, v1, v2) looks at specials).
         return NodeIdFactory.createValue(SPECIAL, v);
     }
     

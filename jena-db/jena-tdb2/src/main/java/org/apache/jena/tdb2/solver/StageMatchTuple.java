@@ -85,7 +85,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
     {
         // ---- Convert to NodeIds 
         NodeId ids[] = new NodeId[patternTuple.len()] ;
-        // Variables for this tuple after subsitution
+        // Variables for this tuple after substitution
         final Var[] var = new Var[patternTuple.len()] ;
 
         boolean b = prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
