@@ -20,9 +20,7 @@ package org.apache.jena.fuseki.embedded;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
@@ -33,8 +31,8 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.ctl.ActionPing;
+import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -83,18 +81,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
  * 
  */
 public class FusekiServer {
-    static { 
-        //FusekiEnv.mode = FusekiEnv.INIT.EMBEDDED;
-        // Stop anything accidently resetting Fuseki server logging. 
-        //FusekiLogging.allowLoggingReset(false);
-    }
-    
     /** Construct a Fuseki server for one dataset.
      * It only responds to localhost. 
-     * The returned server has not been started  */ 
+     * The returned server has not been started. 
+     */ 
     static public FusekiServer make(int port, String name, DatasetGraph dsg) {
         return create()
-            .setPort(port)
+            .port(port)
             .setLoopback(true)
             .add(name, dsg)
             .build();
@@ -189,9 +182,18 @@ public class FusekiServer {
         private String                   contextPath        = "/";
         private String                   staticContentDir   = null;
         private SecurityHandler          securityHandler    = null;
+        private Map<String, Object>      servletAttr        = new HashMap<>();
 
-        /** Set the port to run on. */ 
+        /** Set the port to run on.
+         * @deprecated Use {@link #port}. 
+         */
+        @Deprecated
         public Builder setPort(int port) {
+            return port(port);
+        }
+        
+        /** Set the port to run on. */ 
+        public Builder port(int port) {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
             this.port = port;
@@ -200,24 +202,59 @@ public class FusekiServer {
         
         /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
          * "http://host:port/dataset/query" else "http://host:port/path/dataset/query" 
+         * @deprecated Use {@link #contextPath}. 
          */
+        @Deprecated
         public Builder setContextPath(String path) {
+            return contextPath(path);
+        }
+        
+        /** Context path to Fuseki.  If it's "/" then Fuseki URL look like
+         * "http://host:port/dataset/query" else "http://host:port/path/dataset/query" 
+         */
+        public Builder contextPath(String path) {
             requireNonNull(path, "path");
             this.contextPath = path;
             return this;
         }
         
-        /** Restrict the server to only responding to the localhost interface. */ 
+        /** Restrict the server to only responding to the localhost interface.
+         *  @deprecated Use {@link #loopback}.
+         */
+        @Deprecated
         public Builder setLoopback(boolean loopback) {
+            return loopback(loopback);
+        }
+
+        /** Restrict the server to only responding to the localhost interface. */ 
+        public Builder loopback(boolean loopback) {
             this.loopback = loopback;
             return this;
         }
 
-        /** Set the location (filing system directory) to serve static file from. */ 
+        /** Set the location (filing system directory) to serve static file from.
+         *  @deprecated Use {@link #staticFileBase}.
+         */
+        @Deprecated
         public Builder setStaticFileBase(String directory) {
+            return staticFileBase(directory);
+        }
+        
+        /** Set the location (filing system directory) to serve static file from. */ 
+        public Builder staticFileBase(String directory) {
             requireNonNull(directory, "directory");
             this.staticContentDir = directory;
             return this;
+        }
+
+        /** Set a Jetty SecurityHandler.
+         * <p>
+         *  By default, the server runs with no security.
+         *  @deprecated Use {@link #staticFileBase}.
+         */
+        @Deprecated
+        public Builder setSecurityHandler(SecurityHandler securityHandler) {
+            return securityHandler(securityHandler);
         }
         
         /** Set a Jetty SecurityHandler.
@@ -226,16 +263,24 @@ public class FusekiServer {
          *  This is more for using the basic server for testing.
          *  The full Fuseki server provides security with Apache Shiro
          *  and a defensive reverse proxy (e.g. Apache httpd) in front of the Jetty server
-         *  can also be used, which provides a wide varity of proven security options.   
+         *  can also be used, which provides a wide variety of proven security options.   
          */
-        public Builder setSecurityHandler(SecurityHandler securityHandler) {
+        public Builder securityHandler(SecurityHandler securityHandler) {
             requireNonNull(securityHandler, "securityHandler");
             this.securityHandler = securityHandler;
             return this;
         }
         
-        /** Set verbose logging */
+
+        /** Set verbose logging 
+         *  @deprecated Use {@link #verbose(boolean)}.
+         */
         public Builder setVerbose(boolean verbose) {
+            return verbose(verbose);
+        }
+
+        /** Set verbose logging */
+        public Builder verbose(boolean verbose) {
             this.verbose = verbose;
             return this;
         }
@@ -337,6 +382,19 @@ public class FusekiServer {
         }
         
         /**
+         * Add a servlet attribute. Pass a value of null to remove any existing binding.
+         */
+        
+        public Builder addServletAttribute(String attrName, Object value) {
+            requireNonNull(attrName, "attrName");
+            if ( value != null )
+                servletAttr.put(attrName, value);
+            else
+                servletAttr.remove(attrName);
+            return this;
+        }
+        
+        /**
          * Add an operation and handler to the server. This does not enable it for any dataset.
          * <p>
          * To associate an operation with a dataset, call {@link #addOperation} after adding the dataset.
@@ -393,6 +451,7 @@ public class FusekiServer {
 
             ServletContext cxt = handler.getServletContext();
             Fuseki.setVerbose(cxt, verbose);
+            servletAttr.forEach((n,v)->cxt.setAttribute(n, v));
             // Clone to isolate from any future changes. 
             ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
             DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));

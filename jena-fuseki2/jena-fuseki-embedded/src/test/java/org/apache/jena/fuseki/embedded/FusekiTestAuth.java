@@ -113,8 +113,8 @@ public class FusekiTestAuth {
         dsgTesting = dsg;
         server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
-            .setPort(port())
-            .setSecurityHandler(sh)
+            .port(port())
+            .securityHandler(sh)
             .build()
             .start();
     }

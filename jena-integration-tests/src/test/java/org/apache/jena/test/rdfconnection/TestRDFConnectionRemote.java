@@ -41,7 +41,7 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     public static void beforeClass() {
         PORT = FusekiLib.choosePort();
         server = FusekiServer.create()
-            .setPort(PORT)
+            .port(PORT)
             .add("/ds", serverdsg)
             .build() ;
         LogCtl.setLevel(Fuseki.serverLogName,  "WARN");

@@ -231,7 +231,7 @@ public class FusekiTestServer {
         dsgTesting = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
             .add(datasetPath(), dsgTesting)
-            .setPort(port())
+            .port(port())
             .build()
             .start();
     }

@@ -448,8 +448,8 @@ public class FusekiBasicCmd {
         private static FusekiServer buildServer(ServerConfig serverConfig) {
             FusekiServer.Builder builder = FusekiServer.create();
             // Loopback.
-            builder.setPort(serverConfig.port);
-            builder.setLoopback(serverConfig.loopback);
+            builder.port(serverConfig.port);
+            builder.loopback(serverConfig.loopback);
             
             if ( serverConfig.validators ) {
                 if ( serverConfig.sparqler )
@@ -470,7 +470,7 @@ public class FusekiBasicCmd {
             }
             
             if ( serverConfig.contentDirectory != null )
-                builder.setStaticFileBase(serverConfig.contentDirectory) ;
+                builder.staticFileBase(serverConfig.contentDirectory) ;
 
             return builder.build();
         }

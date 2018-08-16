@@ -67,8 +67,8 @@ public class ExtendFuseki_AddService_3 {
         ActionService customHandler = new SpecialService();
         
         FusekiServer server = 
-            FusekiServer.create().setPort(PORT)
-                .setVerbose(true)
+            FusekiServer.create().port(PORT)
+                .verbose(true)
 
                 // Register the new operation, with content type and handler
                 .registerOperation(myOperation, contentType, customHandler)
