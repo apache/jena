@@ -18,12 +18,9 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Objects;
-import java.util.Set ;
+import java.util.*;
 
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -105,15 +102,23 @@ public class NodeUtils
         Iterator<String> conv = new MapFilterIterator<>(mapper, eIter) ;
         return conv ;
     }
-
-    /** Convert IRI String to Node */  
-    public static Set<Node> convertToNodes(Collection<String> uris) {
-        Set<Node> nodes = new HashSet<>() ;
-        for ( String x : uris )
-            nodes.add(NodeFactory.createURI(x)) ;
-        return nodes ;
+    
+    /** Convert a collection of strings to a collection of {@link Node Nodes}. */ 
+    public static Collection<Node> convertToNodes(Collection<String> namedGraphs) {
+        List<Node> nodes = ListUtils.toList(
+            namedGraphs.stream().map(NodeFactory::createURI)
+            );
+        return nodes;
     }
 
+    /** Convert strings to a collection of {@link Node Nodes}. */ 
+    public static Collection<Node> convertToNodes(String... namedGraphs) {
+        List<Node> nodes = ListUtils.toList(
+            Arrays.stream(namedGraphs).map(NodeFactory::createURI)
+            );
+        return nodes;
+    }
+    
     /** Compare two Nodes, based on their RDF terms forms, not value */
     public static int compareRDFTerms(Node node1, Node node2) {
         if ( node1 == null ) {
