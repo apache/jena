@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.riot.WebContent;
@@ -117,16 +118,14 @@ public class ServiceDispatchRegistry {
     
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
     
-    private static final String attrServiceRegistry = "jena-fuseki:ServiceDispatchRegistry" ;
-
     public static ServiceDispatchRegistry get(ServletContext servletContext) {
-        ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(attrServiceRegistry) ;
+        ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(Fuseki.attrServiceRegistry) ;
         if ( registry == null )
             Log.warn(ServiceDispatchRegistry.class, "No service registry for ServletContext") ;
         return registry ;
     }
     
     public static void set(ServletContext cxt, ServiceDispatchRegistry registry) {
-        cxt.setAttribute(attrServiceRegistry, registry) ;
+        cxt.setAttribute(Fuseki.attrServiceRegistry, registry) ;
     }
 }

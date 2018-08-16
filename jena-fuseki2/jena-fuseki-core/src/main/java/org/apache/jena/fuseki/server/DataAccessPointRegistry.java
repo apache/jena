@@ -22,6 +22,7 @@ import javax.servlet.ServletContext ;
 
 import org.apache.jena.atlas.lib.Registry ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
 
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
@@ -57,15 +58,14 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
     
-    private static final String attrNameRegistry = "jena-fuseki:dataAccessPointRegistry" ;
     public static DataAccessPointRegistry get(ServletContext cxt) {
-        DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(attrNameRegistry) ;
+        DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(Fuseki.attrNameRegistry) ;
         if ( registry == null )
             Log.warn(DataAccessPointRegistry.class, "No data access point registry for ServletContext") ;
         return registry ;
     }
     
     public static void set(ServletContext cxt, DataAccessPointRegistry registry) {
-        cxt.setAttribute(attrNameRegistry, registry) ;
+        cxt.setAttribute(Fuseki.attrNameRegistry, registry) ;
     }
 }
