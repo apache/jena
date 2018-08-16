@@ -34,49 +34,40 @@ public class ListUtils
 {
     private ListUtils() {}
 
-    public static <T>
-    List<T> unique(List<T> list)
-    {
-    		return toList(list.stream().distinct()) ;
+    public static <T> List<T> unique(List<T> list) {
+        return toList(list.stream().distinct());
     }
-    
-    public static
-    List<Integer> asList(int... values)
-    {
-        List<Integer> x = new ArrayList<>(values.length) ;
+
+    public static List<Integer> asList(int...values) {
+        List<Integer> x = new ArrayList<>(values.length);
         for ( int v : values )
-            x.add(v) ;
-        return x ;
+            x.add(v);
+        return x;
     }
-    
+
     // This is commonly needed
     public static <T> List<T> toList(Stream<T> stream) {
         return stream.collect(Collectors.toList()) ;
     }
     
-    public static <T> String str(T[] array)
-    {
+    public static <T> String str(T[] array) {
         return stream(array).map(String::valueOf).collect(joining(", ", "[", "]"));
     }
-    
-    public static String str(int[] array)
-    {
-    		return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
-    }
-    
-    public static String str(long[] array)
-    {
-    		return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
+
+    public static String str(int[] array) {
+        return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
     }
 
-    public static <T> void print(IndentedWriter out, List<T> list)
-    { 
-        print(out, list, " ") ;
+    public static String str(long[] array) {
+        return stream(array).mapToObj(String::valueOf).collect(joining(", ", "[", "]"));
     }
-    
-    public static <T> void print(final IndentedWriter out, List<T> list, final CharSequence sep)
-    {
-		out.print(list.stream().map(String::valueOf).collect(joining(sep)));
+
+    public static <T> void print(IndentedWriter out, List<T> list) {
+        print(out, list, " ");
+    }
+
+    public static <T> void print(final IndentedWriter out, List<T> list, final CharSequence sep) {
+        out.print(list.stream().map(String::valueOf).collect(joining(sep)));
     }
     
     /**
@@ -85,49 +76,46 @@ public class ListUtils
      */
     public static <T> boolean equalsUnordered(List<T> list1, List<T> list2) {
         if ( list1.size() != list2.size() )
-            return false ;
+            return false;
         // containsAll bothe ways round isn't enough.
-        List<T> list2a = new ArrayList<>(list2) ;
+        List<T> list2a = new ArrayList<>(list2);
         for ( T elt : list1 )
-            list2a.remove(elt) ;
+            list2a.remove(elt);
         if ( list2a.size() != 0 )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
     
-    /** Return a list of lists of all the elements of collection in every order
-     *  Easy to run out of heap memory.
-     *  
-     *  See also {@code org.apache.jena.ext.com.google.common.collect.Collections2#permutations}
-     */  
-    static public <T> List<List<T>> permute(List<T> c)
-    {
-        if ( c.size() > 5 )
-        {
-            Log.warn(ListUtils.class, "Attempt to permute more than 5 items - think again") ;
-            return null ;
-        }
-        
-        List<List<T>> x = new ArrayList<>() ;
-        if ( c.size() == 1 )
-        {
-            x.add(c) ;
-            return x ;
+    /**
+     * Return a list of lists of all the elements of collection in every order Easy to run
+     * out of heap memory.
+     * 
+     * See also
+     * {@code org.apache.jena.ext.com.google.common.collect.Collections2#permutations}
+     */
+    static public <T> List<List<T>> permute(List<T> c) {
+        if ( c.size() > 5 ) {
+            Log.warn(ListUtils.class, "Attempt to permute more than 5 items - think again");
+            return null;
         }
 
-        for ( T obj : c )
-        {
-            List<T> c2 = new ArrayList<>(c) ;
-            c2.remove(obj) ;
-            List<List<T>> x2 = permute(c2) ;
+        List<List<T>> x = new ArrayList<>();
+        if ( c.size() == 1 ) {
+            x.add(c);
+            return x;
+        }
+
+        for ( T obj : c ) {
+            List<T> c2 = new ArrayList<>(c);
+            c2.remove(obj);
+            List<List<T>> x2 = permute(c2);
             // For each list returned
-            for ( List<T> x3 : x2 )
-            {
+            for ( List<T> x3 : x2 ) {
                 // Gives a more expected ordering
-                x3.add(0,obj) ;
-                x.add(x3) ;
+                x3.add(0, obj);
+                x.add(x3);
             }
         }
-        return x ;
+        return x;
     }
 }
