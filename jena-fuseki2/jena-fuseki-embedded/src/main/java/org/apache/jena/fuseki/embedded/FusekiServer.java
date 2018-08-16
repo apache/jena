@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.*;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
@@ -178,7 +179,9 @@ public class FusekiServer {
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
         // Other servlets to add.
-        private List<Pair<String, HttpServlet>> other       = new ArrayList<>();
+        private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
+        private List<Pair<String, Filter>> filters          = new ArrayList<>();
+
         private String                   contextPath        = "/";
         private String                   staticContentDir   = null;
         private SecurityHandler          securityHandler    = null;
@@ -377,7 +380,7 @@ public class FusekiServer {
         public Builder addServlet(String pathSpec, HttpServlet servlet) {
             requireNonNull(pathSpec, "pathSpec");
             requireNonNull(servlet, "servlet");
-            other.add(Pair.create(pathSpec, servlet));
+            servlets.add(Pair.create(pathSpec, servlet));
             return this;
         }
         
@@ -391,6 +394,16 @@ public class FusekiServer {
                 servletAttr.put(attrName, value);
             else
                 servletAttr.remove(attrName);
+            return this;
+        }
+        
+        /**
+         * Add a filter with the pathSpec.
+         */
+        public Builder addFilter(String pathSpec, Filter filter) {
+            requireNonNull(pathSpec, "pathSpec");
+            requireNonNull(filter, "filter");
+            filters.add(Pair.create(pathSpec, filter));
             return this;
         }
         
@@ -514,17 +527,18 @@ public class FusekiServer {
 
         private void servlets(ServletContextHandler context) {
             // Fuseki dataset services filter
+            // This goes as the filter at the end of any filter chaining.
             FusekiFilter ff = new FusekiFilter();
-            FilterHolder h = new FilterHolder(ff);
-            context.addFilter(h, "/*", null);
-
-            other.forEach(p->addServlet(context, p.getLeft(), p.getRight()));
+            addFilter(context, "/*", ff);
             
             if ( withStats )
                 addServlet(context, "/$/stats", new ActionStats());
             if ( withPing )
                 addServlet(context, "/$/ping", new ActionPing());
             
+            servlets.forEach(p->addServlet(context, p.getLeft(), p.getRight()));
+            filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));
+
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
@@ -532,10 +546,15 @@ public class FusekiServer {
                 context.addServlet(staticContent, "/");
             }
         }
-
+        
         private static void addServlet(ServletContextHandler context, String pathspec, HttpServlet httpServlet) {
             ServletHolder sh = new ServletHolder(httpServlet);
             context.addServlet(sh, pathspec);
+        }
+
+        private void addFilter(ServletContextHandler context, String pathspec, Filter filter) {
+            FilterHolder h = new FilterHolder(filter);
+            context.addFilter(h, pathspec, null);
         }
 
         /** Jetty server */
