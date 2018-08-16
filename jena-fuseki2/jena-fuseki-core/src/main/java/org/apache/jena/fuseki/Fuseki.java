@@ -186,10 +186,10 @@ public class Fuseki {
 
     // Servlet context attribute names,
 
-    public static final String attrVerbose                 = "jena-fuseki:verbose";
-    public static final String attrNameRegistry            = "jena-fuseki:dataAccessPointRegistry";
-    public static final String attrServiceRegistry         = "jena-fuseki:ServiceDispatchRegistry";
-    public static final String attrSecurityContextRegistry = "jena-fuseki:SecurityContextRegistry";
+    public static final String attrVerbose                 = "org.apache.jena.fuseki:verbose";
+    public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
+    public static final String attrServiceRegistry         = "org.apache.jena.fuseki:ServiceDispatchRegistry";
+    public static final String attrSecurityRegistry        = "org.apache.jena.fuseki:SecurityRegistry";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));
