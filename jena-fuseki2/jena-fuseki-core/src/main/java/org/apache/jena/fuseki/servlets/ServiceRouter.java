@@ -124,7 +124,7 @@ public abstract class ServiceRouter extends ActionService {
          * Test whether there is a configuration that allows this action as the operation
          * given. Ignores the operation in the action which is set due to parsing - it
          * might be "quads" which is the generic operation when just the dataset is
-         * specificed.
+         * specified.
          */
         private boolean isEnabled(HttpAction action, Operation operation) {
             // Disregard the operation name of the action
