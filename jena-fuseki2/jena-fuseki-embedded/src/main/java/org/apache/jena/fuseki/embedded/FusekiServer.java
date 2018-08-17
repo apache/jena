@@ -468,27 +468,30 @@ public class FusekiServer {
          * Build a server according to the current description.
          */
         public FusekiServer build() {
-            ServletContextHandler handler = buildServletContext(contextPath);
+            ServletContextHandler handler = buildFusekiContext();
+            // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
+            Server server = jettyServer(port, loopback);
+            server.setHandler(handler);
+            return new FusekiServer(port, server);
+        }
 
+        /** Build one configured Fuseki in one unit - same ServletContext, same dispatch ContextPath */  
+        private ServletContextHandler buildFusekiContext() {
+            ServletContextHandler handler = buildServletContext(contextPath);
             ServletContext cxt = handler.getServletContext();
             Fuseki.setVerbose(cxt, verbose);
             servletAttr.forEach((n,v)->cxt.setAttribute(n, v));
             // Clone to isolate from any future changes.
             ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
             DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));
-
-            // Start services.
-            DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
-
             setMimeTypes(handler);
             servlets(handler);
-
-            Server server = jettyServer(port, loopback);
-            server.setHandler(handler);
-            return new FusekiServer(port, server);
+            // Start services.
+            DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
+            return handler;
         }
-
-        /** Build a ServletContextHandler with the Fuseki router : {@link FusekiFilter} */
+        
+        /** Build a ServletContextHandler */
         private ServletContextHandler buildServletContext(String contextPath) {
             if ( contextPath == null || contextPath.isEmpty() )
                 contextPath = "/";
@@ -500,7 +503,6 @@ public class FusekiServer {
             context.setContextPath(contextPath);
             if ( securityHandler != null )
                 context.setSecurityHandler(securityHandler);
-
             return context;
         }
 
@@ -533,6 +535,7 @@ public class FusekiServer {
             context.setMimeTypes(mimeTypes);
         }
 
+        /** Add servlets and servlet filters, including the {@link FusekiFilter} */ 
         private void servlets(ServletContextHandler context) {
             // Fuseki dataset services filter
             // This goes as the filter at the end of any filter chaining.
@@ -565,7 +568,7 @@ public class FusekiServer {
             context.addFilter(h, pathspec, null);
         }
 
-        /** Jetty server */
+        /** Jetty server with one connector/port. */
         private static Server jettyServer(int port, boolean loopback) {
             Server server = new Server();
             HttpConnectionFactory f1 = new HttpConnectionFactory();
