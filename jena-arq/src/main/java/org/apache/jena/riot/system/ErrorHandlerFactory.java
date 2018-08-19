@@ -32,7 +32,7 @@ public class ErrorHandlerFactory
     /** Standard error handler - logs to stdLogger */
     static public final ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
 
-    /** Error handler (no wanrings) - logs to stdLogger */
+    /** Error handler (no warnings) - logs to stdLogger */
     static public final ErrorHandler errorHandlerNoWarnings   = errorHandlerNoWarnings(stdLogger) ;
 
     /** Strict error handler - logs to stdLogger - exceptions for warnings */
@@ -47,7 +47,7 @@ public class ErrorHandlerFactory
     /** Silent, strict error handler */
     static public final ErrorHandler errorHandlerStrictNoLogging    = errorHandlerStrictSilent() ;
 
-    /** Silent, strict error handler, nologging */
+    /** Silent, strict error handler, no logging */
     public static ErrorHandler errorHandlerStrictSilent()           { return new ErrorHandlerStrict(null) ; }
 
     /** Strict error handler, with logging */
