@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.lib.ListUtils;
+import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -107,22 +109,39 @@ public class NodeUtils
         return conv ;
     }
 
-    /** Convert a collection of strings to a collection of {@link Node Nodes}. */ 
-    public static Collection<Node> convertToNodes(Collection<String> namedGraphs) {
-        List<Node> nodes = ListUtils.toList(
+     
+    /** @deprecated Use {@link #convertToSetNodes} */
+    @Deprecated
+    public static Set<Node> convertToNodes(Collection<String> namedGraphs) {
+        return convertToSetNodes(namedGraphs);
+    }
+    
+    /** Convert a collection of strings to a set of {@link Node Nodes}. */ 
+    public static Set<Node> convertToSetNodes(Collection<String> namedGraphs) {
+        Set<Node> nodes = SetUtils.toSet(
             namedGraphs.stream().map(NodeFactory::createURI)
             );
         return nodes;
     }
 
-    /** Convert strings to a collection of {@link Node Nodes}. */ 
-    public static Collection<Node> convertToNodes(String... namedGraphs) {
+    /** Convert a collection of strings to a set of {@link Node Nodes}. */ 
+    public static Set<Node> convertToSetNodes(String... namedGraphs) {
+        return convertToSetNodes(Arrays.asList(namedGraphs));
+    }
+
+    /** Convert strings to a List of {@link Node Nodes}. */ 
+    public static List<Node> convertToListNodes(String... namedGraphs) {
+        return convertToListNodes(Arrays.asList(namedGraphs));
+    }
+
+    /** Convert strings to a List of {@link Node Nodes}. */ 
+    public static List<Node> convertToListNodes(List<String> namedGraphs) {
         List<Node> nodes = ListUtils.toList(
-            Arrays.stream(namedGraphs).map(NodeFactory::createURI)
+            namedGraphs.stream().map(NodeFactory::createURI)
             );
         return nodes;
     }
-
+    
     /** Compare two Nodes, based on their RDF terms forms, not value */
     public static int compareRDFTerms(Node node1, Node node2) {
         if ( node1 == null ) {
