@@ -22,8 +22,11 @@ import java.util.List ;
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.engine.Plan ;
 import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryEngineRegistry ;
@@ -31,6 +34,7 @@ import org.apache.jena.sparql.engine.QueryExecutionBase ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP ;
+import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.util.Context ;
 
@@ -126,7 +130,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(Query query, Model model) {
         checkArg(query) ;
         checkArg(model) ;
-        return make(query, DatasetFactory.wrap(model)) ;
+        return make(query, model) ;
     }
 
     /** Create a QueryExecution to execute over the Model.
@@ -569,7 +573,28 @@ public class QueryExecutionFactory
     }
     
     static protected QueryExecution make(Query query) {
-        return make(query, null) ;
+        return make(query, (Dataset)null) ;
+    }
+
+    protected  static QueryExecution make(Query query, Model model) { 
+        Dataset dataset = DatasetFactory.wrap(model);
+        Graph g = unwrap(model.getGraph());
+        if ( g instanceof GraphView ) {
+            GraphView gv = (GraphView)model.getGraph();
+            // Copy context of the storage dataset to the wrapper dataset. 
+            dataset.getContext().putAll(gv.getDataset().getContext());
+        }
+        return make(query, dataset);
+    }
+    
+    private static Graph unwrap(Graph graph) {
+        for(;;) {
+            if ( graph instanceof GraphWrapper )
+                graph = ((GraphWrapper)graph).get();
+            else if ( graph instanceof WrappedGraph )
+                graph = ((WrappedGraph)graph).getWrapped();
+            else return graph;
+        }
     }
 
     protected  static QueryExecution make(Query query, Dataset dataset)
