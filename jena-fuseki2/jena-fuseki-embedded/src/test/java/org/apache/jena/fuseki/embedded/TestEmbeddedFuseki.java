@@ -96,7 +96,7 @@ public class TestEmbeddedFuseki {
         DatasetGraph dsg = dataset() ;
         int port = FusekiLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .add("/ds1", dsg) 
             .build() ;
         server.start() ;
@@ -131,7 +131,7 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
         
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .add("/data", dataService)
             .build() ;
         server.start() ;
@@ -170,7 +170,7 @@ public class TestEmbeddedFuseki {
         DatasetGraph dsg = dataset() ;
         int port = FusekiLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .add("/ds0", dsg) 
             .build() ;
         server.start() ;
@@ -185,7 +185,7 @@ public class TestEmbeddedFuseki {
         DatasetGraph dsg = dataset() ;
         int port = FusekiLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .add("/ds0", dsg)
             .enableStats(true)
             .build() ;
@@ -202,8 +202,8 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
         
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
-            .setContextPath("/ABC")
+            .port(port)
+            .contextPath("/ABC")
             .add("/ds", dsg) 
             .build() ;
         server.start() ;
@@ -220,7 +220,7 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
 
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .parseConfigFile(DIR+"config.ttl") 
             .build() ;
         server.start() ;
@@ -234,8 +234,8 @@ public class TestEmbeddedFuseki {
         int port = FusekiLib.choosePort() ;
 
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
-            .setContextPath("/ABC")
+            .port(port)
+            .contextPath("/ABC")
             .parseConfigFile(DIR+"config.ttl") 
             .build() ;
         server.start() ;
@@ -259,7 +259,7 @@ public class TestEmbeddedFuseki {
         dSrv.addEndpoint(Operation.GSP_R, "gsp") ;
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
-            .setPort(port)
+            .port(port)
             .build() ;
         server.start() ;
         try {
@@ -278,8 +278,8 @@ public class TestEmbeddedFuseki {
         dSrv.addEndpoint(Operation.GSP_R, "gsp") ;
         FusekiServer server = FusekiServer.create()
             .add("/dsrv1", dSrv)
-            .setStaticFileBase(DIR)
-            .setPort(port)
+            .staticFileBase(DIR)
+            .port(port)
             .build() ;
         server.start() ;
         

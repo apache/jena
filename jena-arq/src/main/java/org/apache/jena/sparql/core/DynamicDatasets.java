@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Collection ;
-import java.util.Set ;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -56,8 +55,8 @@ public class DynamicDatasets
     	if (description.isEmpty() )
     		return dsg;
     	
-        Set<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
-        Set<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
+        Collection<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
+        Collection<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
         return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
     }
     

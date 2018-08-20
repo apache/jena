@@ -64,7 +64,7 @@ public class TestFusekiCustomOperation {
         
         FusekiServer server = 
             FusekiServer.create()
-                .setPort(port)
+                .port(port)
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", dataService)
                 .build();
@@ -75,7 +75,7 @@ public class TestFusekiCustomOperation {
     public void cfg_builder_CT() {
         FusekiServer server = 
             FusekiServer.create()
-                .setPort(port)
+                .port(port)
                 .registerOperation(newOp, contentType, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addOperation("/ds", endpointName, newOp)
@@ -87,7 +87,7 @@ public class TestFusekiCustomOperation {
     public void cfg_builder_noCT() {
         FusekiServer server = 
             FusekiServer.create()
-                .setPort(port)
+                .port(port)
                 .registerOperation(newOp, null, customHandler)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addOperation("/ds", endpointName, newOp)
@@ -98,7 +98,7 @@ public class TestFusekiCustomOperation {
     @Test(expected=FusekiConfigException.class)
     public void cfg_bad_01() {
         FusekiServer.create()
-        .setPort(port)
+        .port(port)
         .registerOperation(newOp, null, customHandler)
         .addOperation("/UNKNOWN", endpointName, newOp);
         //.build();
@@ -107,7 +107,7 @@ public class TestFusekiCustomOperation {
     @Test(expected=FusekiConfigException.class)
     public void cfg_bad_02() {
         FusekiServer.create()
-        .setPort(port)
+        .port(port)
         //.registerOperation(newOp, null, customHandler)
         .add("/ds", DatasetGraphFactory.createTxnMem(), true)
         // Unregistered.
@@ -117,7 +117,7 @@ public class TestFusekiCustomOperation {
     
     public void cfg_bad_ct_not_enabkled_here() {
         FusekiServer server = FusekiServer.create()
-            .setPort(port)
+            .port(port)
             .registerOperation(newOp, "app/special", customHandler)
             .add("/ds", DatasetGraphFactory.createTxnMem(), true)
             // Unregistered.

@@ -38,6 +38,7 @@ public class NodeIdFactory
     // In-memory - always int-long
     
     // XXX Chance for a cache?
+    // See also TupleIndexRecord.
 
     private static NodeId create(NodeIdType type, int v1, long v2) {
         if ( isSpecial(type) ) {
@@ -56,12 +57,13 @@ public class NodeIdFactory
         return createNew(type, v1, v2);
     }
     
+    /** Make a NodeId of type and value - the value is assumed to be the right format for the type. */
     public static NodeId createValue(NodeIdType type, long value) {
-        // 64 bit.
         return createNew(type, 0, value);
     }
     
     private static NodeId createNew(NodeIdType type, int v1, long v2) {
+        // Create general NodeId form.
         return NodeId.createRaw(type, v1, v2);
     }
 
@@ -76,7 +78,7 @@ public class NodeIdFactory
     // ---- Create from binary.
     
     // 64 bit create
-    private static NodeId create(long value2) {
+    private static NodeId create64(long value2) {
         if ( !BitsLong.isSet(value2, 63) )
             return createPtr(value2);
         // Inline.
@@ -94,7 +96,6 @@ public class NodeIdFactory
         return NodeId.createRaw(type, v2);
     }
     
-    // Long create.
     private static NodeId create(int v1, long v2) {
         if ( !BitsInt.isSet(v1, 32) )
             return createPtrLong(v1, v2);
@@ -130,7 +131,7 @@ public class NodeIdFactory
 
     // 64 bit version
     private static NodeId decode(long value2) {
-        return NodeIdFactory.create(value2);
+        return NodeIdFactory.create64(value2);
     }
 
     /** Not relative - set at position zero */

@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set ;
 
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -106,12 +107,20 @@ public class NodeUtils
         return conv ;
     }
 
-    /** Convert IRI String to Node */  
-    public static Set<Node> convertToNodes(Collection<String> uris) {
-        Set<Node> nodes = new HashSet<>() ;
-        for ( String x : uris )
-            nodes.add(NodeFactory.createURI(x)) ;
-        return nodes ;
+    /** Convert a collection of strings to a collection of {@link Node Nodes}. */ 
+    public static Collection<Node> convertToNodes(Collection<String> namedGraphs) {
+        List<Node> nodes = ListUtils.toList(
+            namedGraphs.stream().map(NodeFactory::createURI)
+            );
+        return nodes;
+    }
+
+    /** Convert strings to a collection of {@link Node Nodes}. */ 
+    public static Collection<Node> convertToNodes(String... namedGraphs) {
+        List<Node> nodes = ListUtils.toList(
+            Arrays.stream(namedGraphs).map(NodeFactory::createURI)
+            );
+        return nodes;
     }
 
     /** Compare two Nodes, based on their RDF terms forms, not value */
@@ -195,7 +204,7 @@ public class NodeUtils
      *  <li> Datatypes by URI
      *  </ol>
      */
-    
+
     private static int compareLiteralsBySyntax(Node node1, Node node2) {
         if ( node1 == null || !node1.isLiteral() || node2 == null || !node2.isLiteral() )
             throw new ARQInternalErrorException("compareLiteralsBySyntax called with non-literal: (" + node1 + "," + node2 + ")") ;
@@ -243,7 +252,7 @@ public class NodeUtils
         // Two datatypes.
         return StrUtils.strCompare(dt1, dt2) ;
     }
-    
+
     /**
      * A Node is a simple string if: 
      * <li>(RDF 1.0) No datatype and no language tag

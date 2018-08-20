@@ -99,13 +99,19 @@ public class TDBFactory
         TDBMaker.releaseLocation(location) ;
     }
 
-    /** Test whether a dataset is backed by TDB. */ 
+    /** Test whether a dataset is backed by TDB.
+     * @deprecated Use {@link #isTDB1(Dataset)}
+     */
+    @Deprecated
     public static boolean isBackedByTDB(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return isBackedByTDB(dsg) ;
     }
     
-    /** Test whether a dataset is backed by TDB. */ 
+    /** Test whether a dataset is backed by TDB.
+     * @deprecated Use {@link #isTDB1(DatasetGraph)} 
+     */
+    @Deprecated
     public static boolean isBackedByTDB(DatasetGraph datasetGraph) {
         if ( datasetGraph instanceof DatasetGraphTransaction )
             // The switching "connection" for TDB 
@@ -114,6 +120,17 @@ public class TDBFactory
             // A transaction or the base storage.
             return true ;
         return false ;
+    }
+
+    /** Test whether a dataset is backed by TDB. */ 
+    public static boolean isTDB1(Dataset dataset) {
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return isTDB1(dsg) ;
+    }
+    
+    /** Test whether a dataset is backed by TDB. */ 
+    public static boolean isTDB1(DatasetGraph datasetGraph) {
+        return TDBInternal.isTDB1(datasetGraph);
     }
 
     /** Return the location of a dataset if it is backed by TDB, else null */

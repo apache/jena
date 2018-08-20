@@ -278,7 +278,7 @@ public class RDFParserBuilder {
     public RDFParserBuilder base(String base) { this.baseUri = base ; return this; }
 
     /** Choose whether to resolve URIs.<br/>
-     *  This does not affect all langages: N-Triples and N-Quads never resolve URIs.<br/>
+     *  This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
      *  Relative URIs are bad data.<br/>
      *  Only set this to false for debugging and development purposes. 
      */ 

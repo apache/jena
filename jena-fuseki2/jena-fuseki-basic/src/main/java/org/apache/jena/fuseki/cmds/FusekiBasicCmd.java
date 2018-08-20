@@ -78,10 +78,16 @@ public class FusekiBasicCmd {
         FusekiLogging.setLogging();
     }
 
+    /** Build and run, a server based on command line syntax. This operation does not return. */  
     static public void main(String... argv) {
         FusekiCmdInner.innerMain(argv);
     }
     
+    /** Build, but do not start, a server based on command line syntax. */  
+    static public FusekiServer build(String... argv) {
+        return FusekiCmdInner.build(argv);
+    }
+
     /** Dataset setup (command line, config file) for a dataset (or several if config file) */
     static class ServerConfig {
         public int port;
@@ -131,9 +137,16 @@ public class FusekiBasicCmd {
         // private static ModLocation modLocation = new ModLocation();
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
-        static public void innerMain(String... argv) {
+        static void innerMain(String... argv) {
             JenaSystem.init();
             new FusekiCmdInner(argv).mainRun();
+        }
+
+        /** Build, but do not start, a server based on command line syntax. */  
+        static FusekiServer build(String... argv) {
+            FusekiCmdInner inner = new FusekiCmdInner(argv);
+            inner.process();
+            return inner.buildServer();
         }
 
         private final ServerConfig serverConfig  = new ServerConfig();
@@ -427,12 +440,16 @@ public class FusekiBasicCmd {
             }
         }
 
+        private FusekiServer buildServer() {
+            return buildServer(serverConfig);
+        }
+
         // ServerConfig -> Setup the builder.
         private static FusekiServer buildServer(ServerConfig serverConfig) {
             FusekiServer.Builder builder = FusekiServer.create();
             // Loopback.
-            builder.setPort(serverConfig.port);
-            builder.setLoopback(serverConfig.loopback);
+            builder.port(serverConfig.port);
+            builder.loopback(serverConfig.loopback);
             
             if ( serverConfig.validators ) {
                 if ( serverConfig.sparqler )
@@ -453,7 +470,7 @@ public class FusekiBasicCmd {
             }
             
             if ( serverConfig.contentDirectory != null )
-                builder.setStaticFileBase(serverConfig.contentDirectory) ;
+                builder.staticFileBase(serverConfig.contentDirectory) ;
 
             return builder.build();
         }

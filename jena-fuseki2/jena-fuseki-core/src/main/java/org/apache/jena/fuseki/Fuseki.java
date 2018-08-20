@@ -184,8 +184,12 @@ public class Fuseki {
      */
     public static boolean             verboseLogging    = false ;
 
-    /** ServletContext attibute for "verbose" - the value of the attirbiye is a Boolean */
-    public static String attrVerbose = "jena-fuseki:verbose" ;
+    // Servlet context attribute names,
+
+    public static final String attrVerbose                 = "org.apache.jena.fuseki:verbose";
+    public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
+    public static final String attrServiceRegistry         = "org.apache.jena.fuseki:ServiceDispatchRegistry";
+    public static final String attrSecurityRegistry        = "org.apache.jena.fuseki:SecurityRegistry";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));

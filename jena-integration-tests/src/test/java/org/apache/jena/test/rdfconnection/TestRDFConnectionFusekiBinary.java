@@ -114,7 +114,7 @@ public class TestRDFConnectionFusekiBinary {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         return  
             FusekiServer.create()
-                .setPort(PORT)
+                .port(PORT)
                 //.setStaticFileBase("/home/afs/ASF/jena-fuseki-cmds/sparqler")
                 .add("/ds", dsg)
                 //.setVerbose(true)
