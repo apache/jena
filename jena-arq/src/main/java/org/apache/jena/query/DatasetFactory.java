@@ -64,7 +64,6 @@ public class DatasetFactory {
      * so overheads can accumulate).
      * 
      * @return a transactional, in-memory, modifiable Dataset
-     * 
      */
 	public static Dataset createTxnMem() {
 		return wrap(DatasetGraphFactory.createTxnMem());
@@ -72,7 +71,7 @@ public class DatasetFactory {
 
 	/**
 	 * Create a general-purpose  {@link Dataset}.<br/>
-	 * Any graphs needed are in-memory unless explciitly added with {@link Dataset#addNamedModel}.
+	 * Any graphs needed are in-memory unless explicitly added with {@link Dataset#addNamedModel}.
 	 * </p>
 	 * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
 	 * These are held as links to the supplied graph and not copied.
@@ -194,7 +193,6 @@ public class DatasetFactory {
 	 * @param namedSourceList
 	 * @return a named graph container of graphs based on a list of URIs.
 	 */
-
 	public static Dataset createNamed(List<String> namedSourceList) {
 		return create((List<String>) null, namedSourceList, null);
 	}
@@ -209,7 +207,6 @@ public class DatasetFactory {
 	 * @param namedSourceList graphs to be attached as named graphs
 	 * @return Dataset
 	 */
-
 	public static Dataset create(List<String> uriList, List<String> namedSourceList) {
 		return create(uriList, namedSourceList, null);
 	}
@@ -224,7 +221,6 @@ public class DatasetFactory {
 	 * @param namedSourceList graphs to be attached as named graphs
 	 * @return Dataset
 	 */
-
 	public static Dataset create(String uri, List<String> namedSourceList) {
 		return create(uri, namedSourceList, null);
 	}
@@ -240,7 +236,6 @@ public class DatasetFactory {
 	 * @param baseURI baseURI for relative URI expansion
 	 * @return Dataset
 	 */
-
 	public static Dataset create(String uri, List<String> namedSourceList, String baseURI) {
 		return DatasetUtils.createDataset(uri, namedSourceList, baseURI);
 	}
@@ -256,7 +251,6 @@ public class DatasetFactory {
 	 * @param baseURI baseURI for relative URI expansion
 	 * @return Dataset
 	 */
-
 	public static Dataset create(List<String> uriList, List<String> namedSourceList, String baseURI) {
 		return DatasetUtils.createDataset(uriList, namedSourceList, baseURI);
 	}
@@ -316,7 +310,6 @@ public class DatasetFactory {
 	 * @param resource The resource for the dataset
 	 * @return Dataset
 	 */
-
 	public static Dataset assemble(Resource resource) {
         Objects.requireNonNull(resource, "resource can not be null") ;
 		Dataset ds = (Dataset) Assembler.general.open(resource);
