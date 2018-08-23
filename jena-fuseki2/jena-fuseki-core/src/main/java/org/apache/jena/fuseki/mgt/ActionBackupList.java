@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.ctl;
+package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.fuseki.webapp.FusekiSystem;

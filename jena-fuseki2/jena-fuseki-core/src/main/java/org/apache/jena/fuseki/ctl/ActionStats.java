@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.mgt.MgtConst;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 
@@ -50,7 +49,7 @@ public class ActionStats extends ActionContainerItem
     public static JsonObject generateStats(DataAccessPointRegistry registry) {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("top") ;
-        builder.key(MgtConst.datasets) ;
+        builder.key(ServerConst.datasets) ;
         builder.startObject("datasets") ;
         registry.forEach((name, access)->statsDataset(builder, access));
         builder.finishObject("datasets") ;
@@ -66,7 +65,7 @@ public class ActionStats extends ActionContainerItem
         String datasetPath = DataAccessPoint.canonical(action.getDatasetName()) ;
         builder.startObject("TOP") ;
         
-        builder.key(MgtConst.datasets) ;
+        builder.key(ServerConst.datasets) ;
         builder.startObject("datasets") ;
         statsDataset(builder, datasetPath, action.getDataAccessPointRegistry()) ;
         builder.finishObject("datasets") ;
@@ -96,7 +95,7 @@ public class ActionStats extends ActionContainerItem
         builder.key(CounterName.RequestsGood.getName()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
         builder.key(CounterName.RequestsBad.getName()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
         
-        builder.key(MgtConst.endpoints).startObject("endpoints") ;
+        builder.key(ServerConst.endpoints).startObject("endpoints") ;
         
         for ( Operation operName : dSrv.getOperations() ) {
             List<Endpoint> endpoints = access.getDataService().getEndpoints(operName) ;
@@ -107,8 +106,8 @@ public class ActionStats extends ActionContainerItem
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);
-                builder.key(MgtConst.operation).value(operName.getName()) ;
-                builder.key(MgtConst.description).value(operName.getDescription());
+                builder.key(ServerConst.operation).value(operName.getName()) ;
+                builder.key(ServerConst.description).value(operName.getDescription());
                 
                 builder.finishObject() ;
             }

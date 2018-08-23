@@ -30,7 +30,6 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.jetty.JettyFuseki ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiInitialConfig ;
 import org.apache.jena.fuseki.system.FusekiLogging;

@@ -22,10 +22,10 @@ import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Transactional ;
 
-/** Base of async tasks - this caries some useful information around, leaving the
+/** Base of async tasks - this carries some useful information around, leaving the
  * implementation of Callable.run() to the specific task.
  */
-abstract class TaskBase implements Runnable {
+public abstract class TaskBase implements Runnable {
     public final long actionId ;
     public final DatasetGraph dataset ;
     public final String datasetName ;
