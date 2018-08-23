@@ -18,6 +18,12 @@
 
 package org.apache.jena.rdfconnection;
 
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sys.JenaSystem;
 
@@ -82,6 +88,25 @@ public class RDFConnectionFactory {
             .gspEndpoint(graphStoreProtocolEndpoint)
             .build();
     }
+    
+    /** Make a remote RDFConnection to the URL, with user and password for the client access using basic auth.
+     *  Use with care.  Basic auth over plain HTTP reveals the password on the network. 
+     * @param URL
+     * @param user
+     * @param password
+     * @return RDFConnection
+     */
+    public static RDFConnection connectPW(String URL, String user, String password) {
+        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+        Credentials credentials = new UsernamePasswordCredentials(user, password);
+        credsProvider.setCredentials(AuthScope.ANY, credentials);
+        HttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+        return RDFConnectionRemote.create()
+            .destination(URL)
+            .httpClient(client)
+            .build();
+    }
+
 
     /**
      * Connect to a local (same JVM) dataset.

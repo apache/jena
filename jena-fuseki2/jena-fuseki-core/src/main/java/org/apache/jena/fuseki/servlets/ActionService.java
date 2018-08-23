@@ -79,7 +79,7 @@ public abstract class ActionService extends ActionBase {
         if ( !endpointName.isEmpty() ) {
             operation = chooseOperation(action, dSrv, endpointName);
             if ( operation == null )
-                ServletOps.errorNotFound(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
+                ServletOps.errorBadRequest(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
 
         } else {
             operation = chooseOperation(action, dSrv);

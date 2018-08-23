@@ -39,6 +39,7 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
+import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
@@ -50,11 +51,9 @@ import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
-import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -102,8 +101,19 @@ public class FusekiServer {
             .build();
     }
 
+    /** Return a builder, with the default choices of actions available. */   
     public static Builder create() {
         return new Builder();
+    }
+
+    /**
+     * Return a builder, with a custom set of operation-action mappings. An endpoint must
+     * still be created for the server to be able to provide the action. An endpoint
+     * dispatches to an operation, and an operation maps to an implementation. This is a
+     * specialised operation - normal use is the operation {@link #create()}.
+     */
+    public static Builder create(ServiceDispatchRegistry serviceDispatchRegistry) {
+        return new Builder(serviceDispatchRegistry);
     }
 
     public final Server server;
@@ -179,10 +189,10 @@ public class FusekiServer {
     /** FusekiServer.Builder */
     public static class Builder {
         private DataAccessPointRegistry  dataAccessPoints   = new DataAccessPointRegistry();
-        private ServiceDispatchRegistry  serviceDispatch    = new ServiceDispatchRegistry(true);
+        private final ServiceDispatchRegistry  serviceDispatch;
         // Default values.
-        private int                      port               = 3330;
-        private boolean                  loopback           = false;
+        private int                      serverPort         = 3330;
+        private boolean                  networkLoopback    = false;
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
@@ -194,6 +204,17 @@ public class FusekiServer {
         private String                   staticContentDir   = null;
         private SecurityHandler          securityHandler    = null;
         private Map<String, Object>      servletAttr        = new HashMap<>();
+
+        // Builder with standard operation-action mapping.  
+        Builder() {
+            this.serviceDispatch = new ServiceDispatchRegistry(true);
+        }
+
+        // Builder with provided operation-action mapping.  
+        Builder(ServiceDispatchRegistry  serviceDispatch) {
+            // Isolate.
+            this.serviceDispatch = new ServiceDispatchRegistry(serviceDispatch);
+        }
 
         /** Set the port to run on.
          * @deprecated Use {@link #port}.
@@ -207,7 +228,7 @@ public class FusekiServer {
         public Builder port(int port) {
             if ( port < 0 )
                 throw new IllegalArgumentException("Illegal port="+port+" : Port must be greater than or equal to zero.");
-            this.port = port;
+            this.serverPort = port;
             return this;
         }
 
@@ -230,7 +251,7 @@ public class FusekiServer {
         }
 
         /** Restrict the server to only responding to the localhost interface.
-         *  @deprecated Use {@link #loopback}.
+         *  @deprecated Use {@link #networkLoopback}.
          */
         @Deprecated
         public Builder setLoopback(boolean loopback) {
@@ -239,7 +260,7 @@ public class FusekiServer {
 
         /** Restrict the server to only responding to the localhost interface. */
         public Builder loopback(boolean loopback) {
-            this.loopback = loopback;
+            this.networkLoopback = loopback;
             return this;
         }
 
@@ -311,13 +332,21 @@ public class FusekiServer {
             this.withPing = withPing;
             return this;
         }
-        /** Add the dataset with given name and a default set of services including update */
+
+        /**
+         * Add the dataset with given name and a default set of services including update.
+         * This is equivalent to {@code add(name, dataset, true)}.
+         */
         public Builder add(String name, Dataset dataset) {
             requireNonNull(name, "name");
             requireNonNull(dataset, "dataset");
             return add(name, dataset.asDatasetGraph());
         }
 
+        /**
+         * Add the {@link DatasetGraph} with given name and a default set of services including update.
+         * This is equivalent to {@code add(name, dataset, true)}.
+         */
         /** Add the dataset with given name and a default set of services including update */
         public Builder add(String name, DatasetGraph dataset) {
             requireNonNull(name, "name");
@@ -325,14 +354,20 @@ public class FusekiServer {
             return add(name, dataset, true);
         }
 
-        /** Add the dataset with given name and a default set of services. */
+        /**
+         * Add the dataset with given name and a default set of services and enabling
+         * update if allowUpdate=true.
+         */
         public Builder add(String name, Dataset dataset, boolean allowUpdate) {
             requireNonNull(name, "name");
             requireNonNull(dataset, "dataset");
             return add(name, dataset.asDatasetGraph(), allowUpdate);
         }
 
-        /** Add the dataset with given name and a default set of services. */
+        /**
+         * Add the dataset with given name and a default set of services and enabling
+         * update if allowUpdate=true.
+         */
         public Builder add(String name, DatasetGraph dataset, boolean allowUpdate) {
             requireNonNull(name, "name");
             requireNonNull(dataset, "dataset");
@@ -358,11 +393,12 @@ public class FusekiServer {
             return this;
         }
 
-        /** Read and parse a Fuseki services/datasets file.
-         *  <p>
-         *  The application is responsible for ensuring a correct classpath. For example,
-         *  including a dependency on {@code jena-text} if the configuration file
-         *  includes a text index.
+        /**
+         * Configure using a Fuseki services/datasets assembler file.
+         * <p>
+         * The application is responsible for ensuring a correct classpath. For example,
+         * including a dependency on {@code jena-text} if the configuration file includes
+         * a text index.
          */
         public Builder parseConfigFile(String filename) {
             requireNonNull(filename, "filename");
@@ -381,9 +417,10 @@ public class FusekiServer {
         }
 
         /**
-         * Add the given servlet with the pathSpec. These are added so that they are
-         * checked after the Fuseki filter for datasets and before the static content
-         * handler (which is the last servlet) used for {@link #setStaticFileBase(String)}.
+         * Add the given servlet with the {@code pathSpec}. These servlets are added so
+         * that they are checked after the Fuseki filter for datasets and before the
+         * static content handler (which is the last servlet) used for
+         * {@link #setStaticFileBase(String)}.
          */
         public Builder addServlet(String pathSpec, HttpServlet servlet) {
             requireNonNull(pathSpec, "pathSpec");
@@ -395,7 +432,6 @@ public class FusekiServer {
         /**
          * Add a servlet attribute. Pass a value of null to remove any existing binding.
          */
-
         public Builder addServletAttribute(String attrName, Object value) {
             requireNonNull(attrName, "attrName");
             if ( value != null )
@@ -406,7 +442,8 @@ public class FusekiServer {
         }
 
         /**
-         * Add a filter with the pathSpec.
+         * Add a filter with the pathSpec. Note that Fuseki dispatch uses a servlet filter
+         * which is the last in the filter chain.
          */
         public Builder addFilter(String pathSpec, Filter filter) {
             requireNonNull(pathSpec, "pathSpec");
@@ -436,10 +473,10 @@ public class FusekiServer {
          */
         public Builder registerOperation(Operation operation, String contentType, ActionService handler) {
             Objects.requireNonNull(operation, "operation");
-            Objects.requireNonNull(handler, "handler");
-            if ( serviceDispatch.isRegistered(operation) )
-                throw new FusekiConfigException("Handler for operation already registered: "+operation.getName());
-            serviceDispatch.register(operation, contentType, handler);
+            if ( handler == null )
+                serviceDispatch.unregister(operation);
+            else    
+                serviceDispatch.register(operation, contentType, handler);
             return this;
         }
 
@@ -470,9 +507,9 @@ public class FusekiServer {
         public FusekiServer build() {
             ServletContextHandler handler = buildFusekiContext();
             // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(port, loopback);
+            Server server = jettyServer(serverPort, networkLoopback);
             server.setHandler(handler);
-            return new FusekiServer(port, server);
+            return new FusekiServer(serverPort, server);
         }
 
         /** Build one configured Fuseki in one unit - same ServletContext, same dispatch ContextPath */  
@@ -484,8 +521,8 @@ public class FusekiServer {
             // Clone to isolate from any future changes.
             ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
             DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));
-            setMimeTypes(handler);
-            servlets(handler);
+            JettyLib.setMimeTypes(handler);
+            servletsAndFilters(handler);
             // Start services.
             DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
             return handler;
@@ -506,37 +543,8 @@ public class FusekiServer {
             return context;
         }
 
-        private static void setMimeTypes(ServletContextHandler context) {
-            MimeTypes mimeTypes = new MimeTypes();
-            // RDF syntax
-            mimeTypes.addMimeMapping("nt",      WebContent.contentTypeNTriples);
-            mimeTypes.addMimeMapping("nq",      WebContent.contentTypeNQuads);
-            mimeTypes.addMimeMapping("ttl",     WebContent.contentTypeTurtle+";charset=utf-8");
-            mimeTypes.addMimeMapping("trig",    WebContent.contentTypeTriG+";charset=utf-8");
-            mimeTypes.addMimeMapping("rdfxml",  WebContent.contentTypeRDFXML);
-            mimeTypes.addMimeMapping("jsonld",  WebContent.contentTypeJSONLD);
-            mimeTypes.addMimeMapping("rj",      WebContent.contentTypeRDFJSON);
-            mimeTypes.addMimeMapping("rt",      WebContent.contentTypeRDFThrift);
-            mimeTypes.addMimeMapping("trdf",    WebContent.contentTypeRDFThrift);
-
-            // SPARQL syntax
-            mimeTypes.addMimeMapping("rq",      WebContent.contentTypeSPARQLQuery);
-            mimeTypes.addMimeMapping("ru",      WebContent.contentTypeSPARQLUpdate);
-
-            // SPARQL Result set
-            mimeTypes.addMimeMapping("rsj",     WebContent.contentTypeResultsJSON);
-            mimeTypes.addMimeMapping("rsx",     WebContent.contentTypeResultsXML);
-            mimeTypes.addMimeMapping("srt",     WebContent.contentTypeResultsThrift);
-
-            // Other
-            mimeTypes.addMimeMapping("txt",     WebContent.contentTypeTextPlain);
-            mimeTypes.addMimeMapping("csv",     WebContent.contentTypeTextCSV);
-            mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
-            context.setMimeTypes(mimeTypes);
-        }
-
         /** Add servlets and servlet filters, including the {@link FusekiFilter} */ 
-        private void servlets(ServletContextHandler context) {
+        private void servletsAndFilters(ServletContextHandler context) {
             // Fuseki dataset services filter
             // This goes as the filter at the end of any filter chaining.
             FusekiFilter ff = new FusekiFilter();
