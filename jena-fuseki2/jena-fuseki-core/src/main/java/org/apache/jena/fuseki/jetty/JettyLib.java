@@ -102,7 +102,7 @@ public class JettyLib {
         return makeUserStore(user, password, "**");
     }
     
-    /** Make a {@link UserStore} for a sigle user,password,role*/
+    /** Make a {@link UserStore} for a single user,password,role*/
     public static UserStore makeUserStore(String user, String password, String role) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);

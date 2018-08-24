@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.access;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
@@ -65,6 +66,10 @@ public class SecurityPolicy {
         this.matchDefaultGraph = graphNames.stream().anyMatch(Quad::isDefaultGraph);
     }
     
+    public Collection<Node> visibleGraphs() {
+        return Collections.unmodifiableCollection(graphNames);
+    }
+    
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
      * {@link QueryExecution}. This does not modify the {@link DatasetGraph}
@@ -83,6 +88,18 @@ public class SecurityPolicy {
     @Override
     public String toString() {
         return "dft:"+matchDefaultGraph+" / "+graphNames.toString();
+    }
+
+    public Predicate<Quad> predicateQuad() {
+        return quad -> {
+            if ( quad.isDefaultGraph() )
+                return matchDefaultGraph;
+            if ( quad.isUnionGraph() ) 
+                // XXX What to do here.
+                // Need special union graph?
+                return true;
+            return graphNames.contains(quad.getGraph());
+        };
     }
 
     /**

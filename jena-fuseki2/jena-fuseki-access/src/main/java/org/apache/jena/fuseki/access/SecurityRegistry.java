@@ -54,8 +54,10 @@ public class SecurityRegistry extends Registry<String, SecurityPolicy>{
     
     @Override 
     public String toString() {
-        if ( true ) 
-            return "SecurityRegistry"+keys();
+        return "SecurityRegistry"+keys();
+    }        
+ 
+    public String toLongString() {
         // Long form.
         StringJoiner sj1 = new StringJoiner("\n", "{ SecurityRegistry\n", "\n}");
         super.keys().forEach(u->{

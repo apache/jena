@@ -45,6 +45,9 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
+/**
+ * Helper functions use to construct Fuseki servers.
+ */
 public class FusekiBuilder
 {
     /** Build a DataAccessPoint, including DataService, from the description at Resource svc */ 

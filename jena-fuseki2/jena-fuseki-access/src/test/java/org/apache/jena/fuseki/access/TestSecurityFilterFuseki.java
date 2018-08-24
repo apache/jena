@@ -30,11 +30,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.SetUtils;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.embedded.FusekiServer;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -105,9 +108,11 @@ public class TestSecurityFilterFuseki {
     private static UserStore userStore() {
         PropertyUserStore propertyUserStore = new PropertyUserStore();
         String[] roles = new String[]{"**"};
-        addUserPassword(propertyUserStore, "user0", "pw0", roles);
-        addUserPassword(propertyUserStore, "user1", "pw1", roles);
-        addUserPassword(propertyUserStore, "user2", "pw2", roles);
+        addUserPassword(propertyUserStore, "userNone", "pwNone", roles);
+        addUserPassword(propertyUserStore, "userDft",  "pwDft",  roles);
+        addUserPassword(propertyUserStore, "user0",    "pw0",    roles);
+        addUserPassword(propertyUserStore, "user1",    "pw1",    roles);
+        addUserPassword(propertyUserStore, "user2",    "pw2",    roles);
         return propertyUserStore;
     }
 
@@ -166,6 +171,16 @@ public class TestSecurityFilterFuseki {
         }
     }
     
+    @Test public void query_userDft() {
+        Set<Node> results = query("userDft", "pwDft", queryAll);
+        assertSeen(results, s0);
+    }
+
+    @Test public void query_userNone() {
+        Set<Node> results = query("userNone", "pwNone", queryAll);
+        assertSeen(results);
+    }
+
     @Test public void query_user0() {
         Set<Node> results = query("user0", "pw0", queryAll);
         assertSeen(results, s0);
@@ -176,10 +191,6 @@ public class TestSecurityFilterFuseki {
         assertSeen(results, s0, s1);
     }
     
-    @Test public void query_userX() {
-        query401("userX", "pwX", queryAll);
-    }
-    
     @Test public void query_bad_user() {
         query401("userX", "pwX", queryAll);
     }
@@ -188,4 +199,117 @@ public class TestSecurityFilterFuseki {
         query401("user0", "not-the-password", queryAll);
     }
 
+    private Set<Node> gsp(String user, String password, String graphName) {
+        Set<Node> results = new HashSet<>();
+        try (RDFConnection conn = RDFConnectionFactory.connectPW(baseUrl, user, password)) {
+            Model model = graphName == null ? conn.fetch() : conn.fetch(graphName);
+            // Extract subjects.
+            Set<Node> seen = 
+                SetUtils.toSet(
+                    Iter.asStream(model.listSubjects())
+                        .map(r->r.asNode())
+                        );
+            return seen;
+        }
+    }
+
+    private void gsp401(String user, String password, String graphName) {
+        gspHttp(401, user, password, graphName); 
+    }
+    
+    private void gsp403(String user, String password, String graphName) {
+        gspHttp(403, user, password, graphName);
+    }
+
+    private void gsp404(String user, String password, String graphName) {
+        gspHttp(404, user, password, graphName);
+    }
+
+    private void gspHttp(int statusCode, String user, String password, String queryString) {
+        try {
+            gsp(user, password, queryString);
+            if ( statusCode < 200 && statusCode > 299 ) 
+                fail("Should have responded with "+statusCode);
+        } catch (HttpException ex) {
+            assertEquals(statusCode, ex.getResponseCode());
+        }
+    }
+    
+    // When a graph is not visible, it should return 404 except 
+    // for the default graph which should be empty.
+
+    @Test public void gsp_dft_userDft() {
+        Set<Node> results = gsp("userDft", "pwDft", null);
+        assertSeen(results, s0);
+    }
+    
+    @Test public void gsp_dft_userNone() {
+        Set<Node> results = gsp("userNone", "pwNone", null);
+        assertSeen(results);
+    }
+    
+    @Test public void gsp_dft_user0() {
+        Set<Node> results = gsp("user0", "pw0", null);
+        assertSeen(results, s0);
+    }
+
+    @Test public void gsp_dft_user1() {
+        Set<Node> results = gsp("user1", "pw1", null);
+        assertSeen(results, s0);
+    }
+    
+    @Test public void gsp_dft_user2() {
+        Set<Node> results = gsp("user2", "pw2", null);
+        assertSeen(results);
+    }
+    
+    @Test public void gsp_graph1_userDft() {
+        gsp404("userDft", "pwDft", "http://test/g1");
+    }
+    
+    @Test public void gsp_graph1_userNone() {
+        gsp404("userNone", "pwNone", "http://test/g1");
+    }
+    
+    @Test public void gsp_graph1_user0() {
+        gsp404("user0", "pw0", "http://test/g1");
+    }
+
+    @Test public void gsp_graph1_user1() {
+        Set<Node> results = gsp("user1", "pw1", "http://test/g1");
+        assertSeen(results, s1);
+    }
+    
+    @Test public void gsp_graph1_user2() {
+        gsp404("user2", "pw2", "http://test/g1");
+    }
+    
+    // No such graph.
+    @Test public void gsp_graphX_userDft() {
+        gsp404("userDft", "pwDft", "http://test/gX");
+    }
+    
+    @Test public void gsp_graphX_userNone() {
+        gsp404("userNone", "pwNone", "http://test/gX");
+    }
+    
+    @Test public void gsp_graphX_user0() {
+        gsp404("user0", "pw0", "http://test/gX");
+    }
+
+    @Test public void gsp_graphX_user1() {
+        gsp404("user1", "pw1", "http://test/g1X");
+    }
+    
+    @Test public void gsp_graphX_user2() {
+        gsp404("user2", "pw2", "http://test/gX");
+    }
+    
+    @Test public void gsp_bad_user() {
+        gsp401("userX", "pwX", null);
+    }
+
+    @Test public void gsp_bad_password() {
+        gsp401("user0", "not-the-password", null);
+    }
 }

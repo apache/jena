@@ -388,9 +388,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     private void setAnyProtocolTimeouts(QueryExecution qexec, HttpAction action) {
-//        if ( !(action.getDataService().allowTimeoutOverride) )
-//            return ;
-
+        //        if ( !(action.getDataService().allowTimeoutOverride) )
+        //            return ;
+        // See also QueryExecutionBase.setTimeouts to parse and process N,M form.
+        // ?? Set only if lower than any settings from the dataset or global contexts already in
+        // the QueryExecution.
+        // Add context setting for "allow increases".
+        // Documentation.
         long desiredTimeout = Long.MAX_VALUE ;
         String timeoutHeader = action.request.getHeader("Timeout") ;
         String timeoutParameter = action.request.getParameter("timeout") ;

@@ -19,33 +19,43 @@
 package org.apache.jena.fuseki.access;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.REST_Quads_R;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphWrapper;
-import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.core.Quad;
 
+/**
+ * Filter for {@link REST_Quads_R} that inserts a security filter on read-access to the
+ * {@link DatasetGraph}.
+ */
 public class Filtered_REST_Quads_R extends REST_Quads_R {
-    public Filtered_REST_Quads_R(Function<HttpAction, String> determineUser) {}
+    
+    private final Function<HttpAction, String> requestUser;
+    
+    public Filtered_REST_Quads_R(Function<HttpAction, String> determineUser) {
+        this.requestUser = determineUser; 
+    }
 
     @Override
     protected void validate(HttpAction action) {
         super.validate(action);
     }
 
+    // Where? REST_Quads_R < REST_Quads < ActionREST < ActionService
     @Override
-    protected void doGet(HttpAction action) {
-        
-        DatasetGraph dsg0 = action.getActiveDSG();
-        DatasetGraph dsg = new DatasetGraphWrapper(dsg0) {
-            @Override public Context getContext() { return super.getContext(); }
-        };
-        // Replace datasetGraph
-        // XXX Implement access control for REST_Quads_R
-
-        HttpAction action2 = action;
-        
-        super.doGet(action2);
+    protected DatasetGraph actOn(HttpAction action) {
+        DatasetGraph dsg = action.getDataset();
+        if ( dsg == null )
+            return dsg;//super.actOn(action);
+        if ( ! DataAccessCtl.isAccessControlled(dsg) )
+            // Not access controlled.
+            return dsg;//super.actOn(action);
+        SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dsg, requestUser);
+        dsg = DatasetGraphAccessControl.unwrap(dsg);
+        Predicate<Quad> filter = sCxt.predicateQuad();
+        dsg = new DatasetGraphFiltered(dsg, filter, sCxt.visibleGraphs());
+        return dsg;
     }
 }

@@ -41,6 +41,7 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     @Override
     protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
         // Server database, not the possibly dynamically built "dataset"
+        // ---- XXX DRY
         DatasetGraph dsg = action.getDataset();
         if ( dsg == null )
             return super.createQueryExecution(action, query, dataset);
@@ -54,6 +55,7 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             // Add back the Dataset for the createQueryExecution call.
             dataset = DatasetFactory.wrap(dsg);
         }
+        // ----
         
         QueryExecution qExec = super.createQueryExecution(action, query, dataset);
         if ( sCxt != null )

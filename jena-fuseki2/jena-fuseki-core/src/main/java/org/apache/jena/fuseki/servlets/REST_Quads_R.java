@@ -80,7 +80,7 @@ public class REST_Quads_R extends REST_Quads {
 
         action.beginRead() ;
         try {
-            DatasetGraph dsg = action.getActiveDSG() ;
+            DatasetGraph dsg = actOn(action); 
             action.response.setHeader("Content-type", lang.getContentType().toHeaderString());
             // ActionLib.contentNegotationQuads above
             // RDF/XML is not a choice but this code is general.
@@ -99,6 +99,14 @@ public class REST_Quads_R extends REST_Quads {
         } finally {
             action.endRead() ;
         }
+    }
+
+    /**
+     * Decide on the dataset to use for the operation. Can be overrided by specialist
+     * subclasses.
+     */
+    protected DatasetGraph actOn(HttpAction action) {
+        return action.getActiveDSG() ;
     }
 
     @Override
