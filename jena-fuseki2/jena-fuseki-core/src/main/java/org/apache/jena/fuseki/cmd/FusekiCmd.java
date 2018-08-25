@@ -58,8 +58,9 @@ public class FusekiCmd {
     // statics of a class are run.
 
     static {
-        FusekiEnv.mode = FusekiEnv.INIT.STANDALONE ;
-        FusekiLogging.setLogging() ;
+        FusekiEnv.mode = FusekiEnv.INIT.STANDALONE;
+        FusekiEnv.setEnvironment();
+        FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
     }
 
     static public void main(String... argv) {
