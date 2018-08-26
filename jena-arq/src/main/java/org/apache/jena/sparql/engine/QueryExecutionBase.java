@@ -33,7 +33,11 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -82,14 +86,38 @@ public class QueryExecutionBase implements QueryExecution
     private long                     timeout2         = TIMEOUT_UNSET;
     private final AlarmClock         alarmClock       = AlarmClock.get();
 
-    public QueryExecutionBase(Query query, Dataset dataset, 
+    public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryEngineFactory qeFactory) {
+        this(query, dataset, null, context, qeFactory);
+    }
+
+    public QueryExecutionBase(Query query, DatasetGraph datasetGraph, Context context, QueryEngineFactory qeFactory) {
+        this(query, null, datasetGraph, context, qeFactory);
+    }
+
+    public QueryExecutionBase(Query query, Dataset dataset, DatasetGraph datasetGraph, 
                               Context context, QueryEngineFactory qeFactory) {
         this.query = query;
-        this.dataset = dataset ;
+        this.dataset = formDataset(dataset, datasetGraph);
         this.qeFactory = qeFactory ;
-        this.dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
+        this.dsg = formDatasetGraph(datasetGraph, dataset);
         this.context = Context.setupContextExec(context, dsg) ;
         init() ;
+    }
+    
+    private static Dataset formDataset(Dataset dataset, DatasetGraph datasetGraph) {
+        if ( dataset != null ) 
+            return dataset;
+        if ( datasetGraph != null )
+            return DatasetFactory.wrap(datasetGraph);
+        return null;
+    }
+
+    private static DatasetGraph formDatasetGraph(DatasetGraph datasetGraph, Dataset dataset) {
+        if ( datasetGraph != null ) 
+            return datasetGraph;
+        if ( dataset != null )
+            return dataset.asDatasetGraph();
+        return null;
     }
     
     private void init() {

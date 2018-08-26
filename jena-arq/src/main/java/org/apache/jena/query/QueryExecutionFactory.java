@@ -18,6 +18,7 @@
 
 package org.apache.jena.query;
 import java.util.List ;
+import java.util.Objects;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -93,7 +94,19 @@ public class QueryExecutionFactory
         // checkArg(dataset) ; // Allow null
         return make(query, dataset) ;
     }
-
+    
+    /**
+     * Create a QueryExecution to execute over the {@link DatasetGraph}.
+     * 
+     * @param query Query
+     * @param datasetGraph Target of the query
+     * @return QueryExecution
+     */
+    static public QueryExecution create(Query query, DatasetGraph datasetGraph) {
+        Objects.requireNonNull(query, "Query is null") ;
+        Objects.requireNonNull(datasetGraph, "DatasetGraph is null") ;
+        return make(query, datasetGraph) ;
+    }
     /** Create a QueryExecution to execute over the Dataset.
      * 
      * @param queryStr     Query string
@@ -580,7 +593,7 @@ public class QueryExecutionFactory
         Dataset dataset = DatasetFactory.wrap(model);
         Graph g = unwrap(model.getGraph());
         if ( g instanceof GraphView ) {
-            GraphView gv = (GraphView)model.getGraph();
+            GraphView gv = (GraphView)g;
             // Copy context of the storage dataset to the wrapper dataset. 
             dataset.getContext().putAll(gv.getDataset().getContext());
         }
@@ -597,23 +610,25 @@ public class QueryExecutionFactory
         }
     }
 
-    protected  static QueryExecution make(Query query, Dataset dataset)
-    { return make(query, dataset, null) ; }
+    protected static QueryExecution make(Query query, Dataset dataset)
+    { return make(query, dataset, null, null) ; }
 
-    
-    protected static QueryExecution make(Query query, Dataset dataset, Context context) {
+    protected static QueryExecution make(Query query, DatasetGraph datasetGraph)
+    { return make(query, null, datasetGraph, null) ; }
+
+    // Both Dataset and DatasetGraph for full backwards compatibility 
+    protected static QueryExecution make(Query query, Dataset dataset, DatasetGraph dsg, Context context) {
+        if ( dsg == null && dataset != null )
+            dsg = dataset.asDatasetGraph();
         query.setResultVars() ;
         if ( context == null )
             context = ARQ.getContext() ;  // .copy done in QueryExecutionBase -> Context.setupContext.
-        DatasetGraph dsg = null ;
-        if ( dataset != null )
-            dsg = dataset.asDatasetGraph() ;
         QueryEngineFactory f = findFactory(query, dsg, context) ;
         if ( f == null ) {
             Log.warn(QueryExecutionFactory.class, "Failed to find a QueryEngineFactory") ;
             return null ;
         }
-        return new QueryExecutionBase(query, dataset, context, f) ;
+        return new QueryExecutionBase(query, dataset, dsg, context, f) ;
     }
 
     static private QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context) {
