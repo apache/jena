@@ -49,7 +49,7 @@ public class FmtUtils
 {
     // OLD CODE - being replaced by riot.NodeFmtLib
     
-    // Consider withdrawing non-serialzation context forms of this.
+    // Consider withdrawing non-serialization context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
     static final String indentPrefix = "  " ;
     public static boolean multiLineExpr = false ;
