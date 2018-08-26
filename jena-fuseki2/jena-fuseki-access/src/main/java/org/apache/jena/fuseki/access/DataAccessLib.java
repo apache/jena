@@ -40,7 +40,6 @@ class DataAccessLib {
             sCxt = noSecurityPolicy();
         return sCxt;
     }
-
     
     /** Get the {@link SecurityRegistry} for an action/query/dataset */
     static SecurityRegistry getSecurityRegistry(HttpAction action, DatasetGraph dsg) {
@@ -53,6 +52,19 @@ class DataAccessLib {
         ServletOps.errorForbidden();
         // Should not get here.
         throw new InternalError();
+    }
+    
+    static DatasetGraph decideDataset(HttpAction action, Function<HttpAction, String> requestUser) {
+        DatasetGraph dsg = action.getDataset();
+        if ( dsg == null )
+            return dsg;//super.actOn(action);
+        if ( ! DataAccessCtl.isAccessControlled(dsg) )
+            // Not access controlled.
+            return dsg;//super.actOn(action);
+        SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dsg, requestUser);
+        dsg = DatasetGraphAccessControl.removeWrapper(dsg);
+        dsg = DataAccessCtl.filteredDataset(dsg, sCxt);
+        return dsg;
     }
 }
 

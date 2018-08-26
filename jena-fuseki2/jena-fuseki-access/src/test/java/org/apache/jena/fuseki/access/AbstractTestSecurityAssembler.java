@@ -20,8 +20,8 @@ package org.apache.jena.fuseki.access;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -322,10 +322,5 @@ public abstract class AbstractTestSecurityAssembler {
                 .forEach(n->results.add(n));
         });
         return results;
-    }
-
-    private static void assertSeen(Set<Node> visible, Node ... expected) {
-        Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
-        assertEquals(expectedNodes, visible);
     }
 }

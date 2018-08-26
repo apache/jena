@@ -33,11 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_GSP extends ActionREST
 {
-    protected final static Target determineTarget(HttpAction action) {
-        DatasetGraph dsg = action.getActiveDSG(); 
-        return determineTarget(dsg, action);
-    }
-    
     protected final static Target determineTarget(DatasetGraph dsg, HttpAction action) {
         // Delayed until inside a transaction.
         if ( dsg == null )

@@ -41,9 +41,19 @@ class DatasetGraphAccessControl extends DatasetGraphWrapper {
      * Return the underlying {@code DatasetGraph}. If the argument is not a
      * {@code DatasetGraphAccessControl}, return the argument.
      */
-    public static DatasetGraph unwrap(DatasetGraph dsg) {
+    public static DatasetGraph removeWrapper(DatasetGraph dsg) {
         if ( ! ( dsg instanceof DatasetGraphAccessControl ) )
             return dsg;
+        return ((DatasetGraphAccessControl)dsg).getWrapped();
+    }
+    
+    /**
+     * Return the underlying {@code DatasetGraph}. If the argument is not a
+     * {@code DatasetGraphAccessControl}, return null.
+     */
+    public static DatasetGraph unwrapOrNull(DatasetGraph dsg) {
+        if ( ! ( dsg instanceof DatasetGraphAccessControl ) )
+            return null;
         return ((DatasetGraphAccessControl)dsg).getWrapped();
     }
 }

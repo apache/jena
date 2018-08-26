@@ -18,8 +18,7 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.apache.jena.fuseki.access.GraphData.s0;
-import static org.apache.jena.fuseki.access.GraphData.s1;
+import static org.apache.jena.fuseki.access.AccessTestLib.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -69,15 +68,15 @@ public class TestSecurityFilterFuseki {
     }
 
     private final String baseUrl;
-    private static final DatasetGraph testdsg1 =  TDBFactory.createDatasetGraph();
-    private static final DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
+    private static DatasetGraph testdsg1 =  TDBFactory.createDatasetGraph();
+    private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
     private static FusekiServer fusekiServer;
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
     @BeforeClass public static void beforeClass() {
         int port = FusekiLib.choosePort();
-        GraphData.fill(testdsg1);
-        GraphData.fill(testdsg2);
+        addTestData(testdsg1);
+        addTestData(testdsg2);
         
         SecurityRegistry reg = new SecurityRegistry();
         reg.put("userNone", SecurityPolicy.NONE);
@@ -86,9 +85,9 @@ public class TestSecurityFilterFuseki {
         reg.put("user1", new SecurityPolicy("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityPolicy("http://test/g1", "http://test/g2", "http://test/g3"));
         
-        // XXXX Also need wrapped tests
-        DataAccessCtl.controlledDataset(testdsg1, reg);
-        DataAccessCtl.controlledDataset(testdsg2, reg);
+        // XXX Also need wrapped tests
+        testdsg1 = DataAccessCtl.wrapControlledDataset(testdsg1, reg);
+        testdsg2 = DataAccessCtl.wrapControlledDataset(testdsg2, reg);
 
         UserStore userStore = userStore();
         SecurityHandler sh = JettyLib.makeSecurityHandler("/*", "DatasetRealm", userStore);
@@ -124,11 +123,6 @@ public class TestSecurityFilterFuseki {
     public TestSecurityFilterFuseki(String label, String dsName) {
         int port = fusekiServer.getPort();
         baseUrl = "http://localhost:"+port+"/"+dsName;
-    }
-
-    private static void assertSeen(Set<Node> visible, Node ... expected) {
-        Set<Node> expectedNodes = new HashSet<>(Arrays.asList(expected));
-        assertEquals(expectedNodes, visible);
     }
 
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";

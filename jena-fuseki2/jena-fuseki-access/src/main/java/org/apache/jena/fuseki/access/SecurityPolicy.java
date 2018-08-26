@@ -25,7 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
@@ -61,9 +64,13 @@ public class SecurityPolicy {
         this(Arrays.asList(graphNames));
     }
 
-    public SecurityPolicy(Collection<Node> graphNames) {
-        this.graphNames.addAll(graphNames);
-        this.matchDefaultGraph = graphNames.stream().anyMatch(Quad::isDefaultGraph);
+    public SecurityPolicy(Collection<Node> visibleGraphs) {
+        this.graphNames.addAll(visibleGraphs);
+        this.matchDefaultGraph = visibleGraphs.stream().anyMatch(Quad::isDefaultGraph);
+        if ( matchDefaultGraph ) {
+            this.graphNames.remove(Quad.defaultGraphIRI);
+            this.graphNames.remove(Quad.defaultGraphNodeGenerated);
+        }
     }
     
     public Collection<Node> visibleGraphs() {
@@ -74,17 +81,29 @@ public class SecurityPolicy {
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
      * {@link QueryExecution}. This does not modify the {@link DatasetGraph}
      */
-    public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+    /*package*/ void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
         GraphFilter<?> predicate = predicate(dsg);
         qExec.getContext().set(predicate.getContextKey(), predicate);
     }
-    
-    /** Modify the {@link Context} of the TDB-backed {@link DatasetGraph}. */
-    public void filterTDB(DatasetGraph dsg) {
-        GraphFilter<?> predicate = predicate(dsg);
-        dsg.getContext().set(predicate.getContextKey(), predicate);
-    }
 
+    public QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
+        return createQueryExecution(QueryFactory.create(queryString), dsg);
+    }
+    
+    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
+        if ( ! ( dsg instanceof DatasetGraphAccessControl ) ) {
+            return QueryExecutionFactory.create(query, dsg);
+        }
+        if ( isAccessControlledTDB(dsg) ) {
+            QueryExecution qExec = QueryExecutionFactory.create(query, dsg);
+            filterTDB(dsg, qExec);
+            return qExec;
+        }
+        
+        DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
+        return QueryExecutionFactory.create(query, dsgA); 
+    }
+    
     @Override
     public String toString() {
         return "dft:"+matchDefaultGraph+" / "+graphNames.toString();
@@ -111,7 +130,7 @@ public class SecurityPolicy {
      *             TDB database.
      */
     public GraphFilter<?> predicate(DatasetGraph dsg) {
-        dsg = DatasetGraphAccessControl.unwrap(dsg);
+        dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         // dsg has to be the database dataset, not wrapped.
         //  DatasetGraphSwitchable is wrapped but should not be unwrapped. 
         if ( TDBFactory.isTDB1(dsg) )
@@ -121,6 +140,17 @@ public class SecurityPolicy {
         throw new IllegalArgumentException("Not a TDB1 or TDB2 database: "+dsg.getClass().getSimpleName());
     }
 
+    public boolean isAccessControlledTDB(DatasetGraph dsg) {
+        DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
+        if ( dsgBase == null )
+            return false;
+        if ( TDBFactory.isTDB1(dsgBase) )
+            return true;
+        if ( DatabaseMgr.isTDB2(dsgBase) )
+            return true;
+        return false;
+    }
+    
     public GraphFilterTDB2 filterTDB2(DatasetGraph dsg) {
         GraphFilterTDB2 f = GraphFilterTDB2.graphFilter(dsg, graphNames, matchDefaultGraph);
         return f;

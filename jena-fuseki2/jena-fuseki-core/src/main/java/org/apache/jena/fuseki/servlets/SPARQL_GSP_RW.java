@@ -34,6 +34,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.web.HttpSC ;
 
@@ -55,7 +56,8 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     protected void doDelete(HttpAction action) {
         action.beginWrite() ;
         try {
-            Target target = determineTarget(action) ;
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("DELETE->"+target) ;
             boolean existedBefore = target.exists() ; 
@@ -113,10 +115,11 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
      * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand
      */
-    protected static UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {   
+    protected UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {   
         action.beginWrite();
         try {
-            Target target = determineTarget(action) ;
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug(action.request.getMethod().toUpperCase()+"->"+target) ;
             boolean existedBefore = target.exists() ;
@@ -156,7 +159,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
      * @return whether the target existed beforehand.
      */
     
-    protected static UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
+    protected UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
 
@@ -168,7 +171,8 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
         }
         // Now insert into dataset
         action.beginWrite() ;
-        Target target = determineTarget(action) ;
+        DatasetGraph dsg = decideDataset(action);
+        Target target = determineTarget(dsg, action) ;
         boolean existedBefore = false ;
         try {
             if ( action.log.isDebugEnabled() )
@@ -194,8 +198,9 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     /** Delete a graph. This removes the storage choice and looses the setup.
      * The default graph is cleared, not removed.
      */
-    protected static void deleteGraph(HttpAction action) {
-        Target target = determineTarget(action) ;
+    protected void deleteGraph(HttpAction action) {
+        DatasetGraph dsg = decideDataset(action);
+        Target target = determineTarget(dsg, action) ;
         if ( target.isDefault )
             clearGraph(target) ;
         else
@@ -203,7 +208,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     }
 
     /** Clear a graph - this leaves the storage choice and setup in-place */ 
-    protected static void clearGraph(Target target) {
+    protected void clearGraph(Target target) {
         Graph g = target.graph() ;
         g.getPrefixMapping().clearNsPrefixMap() ;
         g.clear() ;

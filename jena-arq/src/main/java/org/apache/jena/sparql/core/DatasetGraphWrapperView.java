@@ -16,24 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.sparql.core;
 
-import java.util.function.Function;
+import org.apache.jena.sparql.engine.QueryEngineFactoryWrapper;
 
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_GSP_R;
-import org.apache.jena.sparql.core.DatasetGraph;
-
-public class Filtered_SPARQL_GSP_R extends SPARQL_GSP_R {
-    
-    private final Function<HttpAction, String> requestUser;
-
-    public Filtered_SPARQL_GSP_R(Function<HttpAction, String> determineUser) {
-        this.requestUser = determineUser;
-    }
-
-    @Override
-    protected DatasetGraph decideDataset(HttpAction action) {
-        return DataAccessLib.decideDataset(action, requestUser);
-    }
-}
+/** 
+ *  Marker interface that indicates a DatasetGraphWrapper
+ *  is one that defined a different view on the base dataset data.
+ *  Hence, query should not access the wrapped dataset.
+ *  
+ *  @see QueryEngineFactoryWrapper
+ */
+public interface DatasetGraphWrapperView extends DatasetGraph {}

@@ -24,7 +24,6 @@ import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -41,25 +40,26 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     @Override
     protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
         // Server database, not the possibly dynamically built "dataset"
-        // ---- XXX DRY
         DatasetGraph dsg = action.getDataset();
         if ( dsg == null )
             return super.createQueryExecution(action, query, dataset);
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.createQueryExecution(action, query, dataset);
-        
+
+        // XXX Generalize to any DSG.
         SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dataset.asDatasetGraph(), requestUser);
-        if ( dsg instanceof DatasetGraphAccessControl ) {
-            // Take off one layer.
-            dsg = DatasetGraphAccessControl.unwrap(dsg);
-            // Add back the Dataset for the createQueryExecution call.
-            dataset = DatasetFactory.wrap(dsg);
-        }
-        // ----
         
-        QueryExecution qExec = super.createQueryExecution(action, query, dataset);
-        if ( sCxt != null )
-            sCxt.filterTDB(dsg, qExec);
+        QueryExecution qExec = sCxt.createQueryExecution(query, dsg);
+        
+//        if ( dsg instanceof DatasetGraphAccessControl ) {
+//            // Take off one layer.
+//            dsg = DatasetGraphAccessControl.removeWrapper(dsg);
+//            // Add back the Dataset for the createQueryExecution call.
+//            dataset = DatasetFactory.wrap(dsg);
+//        }
+//        QueryExecution qExec = super.createQueryExecution(action, query, dataset);
+//        if ( sCxt != null )
+//            sCxt.filterTDB(dsg, qExec);
         return qExec;
     }
 }

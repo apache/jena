@@ -63,7 +63,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
         action.beginRead() ;
         setCommonHeaders(action.response) ;
         try {
-            DatasetGraph dsg = actOn(action);
+            DatasetGraph dsg = decideDataset(action);
             Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("GET->"+target) ;
@@ -95,14 +95,6 @@ public class SPARQL_GSP_R extends SPARQL_GSP
         } finally { action.endRead() ; }
     }
     
-    /**
-     * Decide on the dataset to use for the operation. Can be overrided by specialist
-     * subclasses.
-     */
-    protected DatasetGraph actOn(HttpAction action) {
-        return action.getActiveDSG() ;
-    }
-    
     @Override
     protected void doOptions(HttpAction action) {
         setCommonHeadersForOptions(action.response) ;
@@ -115,8 +107,9 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     protected void doHead(HttpAction action) {
         action.beginRead() ;
         setCommonHeaders(action.response) ;
-        try { 
-            Target target = determineTarget(action) ;
+        try {
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("HEAD->"+target) ;
             if ( ! target.exists() )

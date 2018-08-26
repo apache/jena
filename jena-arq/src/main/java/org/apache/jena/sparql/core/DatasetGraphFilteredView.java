@@ -34,7 +34,7 @@ import org.apache.jena.sparql.graph.GraphUnionRead;
  * A read-only {@link DatasetGraph} that applies a filter testing all triples and quads
  * returned by accessing the data. Only quads where the filter tests for "true" are exposed. 
  */
-public class DatasetGraphFilteredView extends DatasetGraphReadOnly {
+public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements DatasetGraphWrapperView {
   /* 
   Write operations
     add(Quad)
@@ -104,9 +104,12 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly {
 
     @Override
     public Iterator<Node> listGraphNodes() {
-//        Predicate<Node> notSpecial = x-> ! ( Quad.isDefaultGraph(x)|| Quad.isUnionGraph(x) );
-//        return Iter.filter(visibleGraphs.iterator(), notSpecial);
         return visibleGraphs.iterator();
+    }
+
+    @Override
+    public long size() {
+        return visibleGraphs.size();
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFilteredView;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -54,47 +55,24 @@ public class DataAccessCtl {
     /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */ 
     public static final Function<HttpAction, String> requestUserServlet = (action)->action.request.getRemoteUser();
 
-//    /** Build a fuseki server with controlled access enabled. */
-//    public static FusekiServer controlledFuseki(int port, Function<HttpAction, String> determineUser, Consumer<FusekiServer.Builder> configure) {
-//        FusekiServer.Builder b = controlledFuseki(port, determineUser);
-//        configure.accept(b);
-//        return b.build();
-//    }
-//    
-//    /** Builder for a read-only Fuseki server with controlled access actions enabled. */ 
-//    public static FusekiServer.Builder controlledFuseki(int port, Function<HttpAction, String> determineUser) {
-//        ServiceDispatchRegistry sdr = new ServiceDispatchRegistry(false);
-//        ActionService actionQuery   = new Filtered_SPARQL_QueryDataset(determineUser);
-//        ActionService actionGspR    = new Filtered_SPARQL_GSP_R(determineUser);
-//        ActionService actionQuadsR  = new Filtered_REST_Quads_R(determineUser);
-//        
-//        // Create empty and only add "read" operations.
-//        FusekiServer.Builder builder = FusekiServer.create(sdr)
-//            .port(port)
-//            .registerOperation(Operation.Query,     WebContent.contentTypeSPARQLQuery, actionQuery)
-//            .registerOperation(Operation.GSP_R,     actionGspR)
-//            .registerOperation(Operation.Quads_R,   actionQuadsR);
-//        return builder;
-//    }
-
     /**
-     * Enable data access control on a {@link DatasetGraph}. This modifies the
+     * Add data access control information on a {@link DatasetGraph}. This modifies the
      * {@link DatasetGraph}'s {@link Context}.
      */
-    public static void controlledDataset(DatasetGraph dsg, SecurityRegistry reg) {
+    private static void controlledDataset(DatasetGraph dsg, SecurityRegistry reg) {
         // Or wrapper.
         dsg.getContext().set(symControlledAccess, true);
         dsg.getContext().set(symSecurityRegistry, reg);
     }
 
-    /**
-     * Enable data access control on a {@link Dataset}. This modifies the
-     * {@link Dataset}'s {@link Context}.
-     */
-    public static void controlledDataset(Dataset ds, SecurityRegistry reg) {
-        ds.getContext().set(symControlledAccess, true);
-        ds.getContext().set(symSecurityRegistry, reg);
-    }
+//    /**
+//     * Enable data access control on a {@link Dataset}. This modifies the
+//     * {@link Dataset}'s {@link Context}.
+//     */
+//    private static void controlledDataset(Dataset ds, SecurityRegistry reg) {
+//        ds.getContext().set(symControlledAccess, true);
+//        ds.getContext().set(symSecurityRegistry, reg);
+//    }
 
     /**
      * Return a {@link DatasetGraph} with added data access control. Use of the original
@@ -149,7 +127,7 @@ public class DataAccessCtl {
      * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
      * (It is better to create the server via {@link #DataAccessCtl.builder} first rather than modify afterwards.) 
      */
-    public static void enable(FusekiServer server, Function<HttpAction, String> determineUser) {
+    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
         /* 
          * Reconfigure standard Jena Fuseki, replacing the default implementation of "query"
          * with a filtering one.  This for this server only. 
@@ -175,5 +153,12 @@ public class DataAccessCtl {
         if ( dsg.getContext().isDefined(DataAccessCtl.symSecurityRegistry) )
             return true;
         return false;
+    }
+
+    /**
+     * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityPolicy}.
+     */
+    public static DatasetGraphFilteredView filteredDataset(DatasetGraph dsg, SecurityPolicy sCxt) {
+        return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());
     }
 }

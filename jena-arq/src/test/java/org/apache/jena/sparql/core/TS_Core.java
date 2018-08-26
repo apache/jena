@@ -40,8 +40,9 @@ import org.junit.runners.Suite ;
     , TestDatasetGraphBaseFind_Mem.class
     , TestDatasetGraphBaseFindPattern_General.class
     , TestDatasetGraphBaseFindPattern_Mem.class
-    
     , TestSpecialGraphNames.class
+    
+    , TestDatasetGraphFilteredView.class
     , TestSpecials.class
 })
 

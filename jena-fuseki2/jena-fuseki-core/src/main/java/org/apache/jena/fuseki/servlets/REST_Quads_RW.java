@@ -90,7 +90,7 @@ public class REST_Quads_RW extends REST_Quads_R {
         UploadDetails details = null ;
         action.beginWrite() ;
         try {
-            DatasetGraph dsg = action.getActiveDSG() ;
+            DatasetGraph dsg = decideDataset(action);
             if ( clearFirst )
                 dsg.clear() ;
             StreamRDF dest = StreamRDFLib.dataset(dsg) ;
@@ -128,7 +128,7 @@ public class REST_Quads_RW extends REST_Quads_R {
         // Now insert into dataset
         action.beginWrite() ;
         try {
-            DatasetGraph dsg = action.getActiveDSG() ;
+            DatasetGraph dsg = decideDataset(action);
             if ( clearFirst )
                 dsg.clear() ;
             FusekiLib.addDataInto(dsgTmp, dsg) ;
