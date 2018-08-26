@@ -510,10 +510,8 @@ public class FusekiBasicCmd {
             }
             
             if ( serverConfig.datasetPath != null ) {
-                if ( mapDatasetEndpoints.size() != 1 ) {
-                    System.err.println(serverConfig.datasetPath);
+                if ( mapDatasetEndpoints.size() != 1 )
                     log.error("Expected only one dataset");
-                }
                 List<String> endpoints = mapDatasetEndpoints.get(serverConfig.datasetPath); 
                 FmtLog.info(log,  "Dataset Type = %s", serverConfig.datasetDescription);
                 FmtLog.info(log,  "Path = %s; Services = %s", serverConfig.datasetPath, endpoints);

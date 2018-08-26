@@ -108,9 +108,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         if ( acceptedParams_ == null ) {
             synchronized(this) {
                 if ( acceptedParams_ == null )
-                // Does not matter about race condition here because the same Set should be
-                // created on any call to generateAcceptedParams.
-                acceptedParams_ = generateAcceptedParams();
+                    // Does not matter about race condition here because the same Set should be
+                    // created on any call to generateAcceptedParams.
+                    acceptedParams_ = generateAcceptedParams();
             }
         }
         return acceptedParams_;

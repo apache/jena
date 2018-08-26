@@ -114,6 +114,9 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
 
     @Override
     public Graph getUnionGraph() {
+        // Does not exploit TDB-isms, but is general.
+        // To exploit TDB, we'd have to modify the dataset
+        // to set union graph but that's not per-request.
         return new GraphUnionRead(this, visibleGraphs);
     }
 

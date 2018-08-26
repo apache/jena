@@ -35,20 +35,23 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFilteredView;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sys.JenaSystem;
 import org.eclipse.jetty.security.SecurityHandler;
 
 /** A library of operations related to data acess sexurity for Fuseki */  
 public class DataAccessCtl {
-
+    static { JenaSystem.init(); }
+    
     /**
      * Flag for whether this is data access controlled or not - boolean false or undef for "not
-     * controlled".
+     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
      */
     public static final Symbol   symControlledAccess      = Symbol.create(VocabSecurity.getURI() + "controlled");
     
     /**
      * Symbol for the {@link SecurityRegistry}. Must be present if
      * {@link #symControlledAccess} indicates data access control.
+     * This is an alternative to {@link DatasetGraphAccessControl}.
      */
     public static final Symbol   symSecurityRegistry      = Symbol.create(VocabSecurity.getURI() + "registry");
 
@@ -56,30 +59,26 @@ public class DataAccessCtl {
     public static final Function<HttpAction, String> requestUserServlet = (action)->action.request.getRemoteUser();
 
     /**
+     * Get the user from {@code ?user} query string parameter. Use carefully; for situations where the user name has
+     * been authenticated already and is being passed on securely. Also for testing.
+     */
+    public static final Function<HttpAction, String> paramUserServlet = (action)->action.request.getParameter("user");
+
+    /**
      * Add data access control information on a {@link DatasetGraph}. This modifies the
      * {@link DatasetGraph}'s {@link Context}.
      */
-    private static void controlledDataset(DatasetGraph dsg, SecurityRegistry reg) {
-        // Or wrapper.
+    private static void addSecurityRegistry(DatasetGraph dsg, SecurityRegistry reg) {
         dsg.getContext().set(symControlledAccess, true);
         dsg.getContext().set(symSecurityRegistry, reg);
     }
 
-//    /**
-//     * Enable data access control on a {@link Dataset}. This modifies the
-//     * {@link Dataset}'s {@link Context}.
-//     */
-//    private static void controlledDataset(Dataset ds, SecurityRegistry reg) {
-//        ds.getContext().set(symControlledAccess, true);
-//        ds.getContext().set(symSecurityRegistry, reg);
-//    }
-
     /**
-     * Return a {@link DatasetGraph} with added data access control. Use of the original
-     * {@code DatasetGraph} is not controlled.
+     * Return a {@link DatasetGraph} with added data access control. 
+     * Use of the original {@code DatasetGraph} is not controlled.
      */
-    public static Dataset wrapControlledDataset(Dataset dsBase, SecurityRegistry reg) {
-        DatasetGraph dsg = wrapControlledDataset(dsBase.asDatasetGraph(), reg);
+    public static Dataset controlledDataset(Dataset dsBase, SecurityRegistry reg) {
+        DatasetGraph dsg = controlledDataset(dsBase.asDatasetGraph(), reg);
         return DatasetFactory.wrap(dsg);
     }
     
@@ -87,7 +86,7 @@ public class DataAccessCtl {
      * Return a {@link DatasetGraph} with added data access control. Use of the original
      * {@code DatasetGraph} is not controlled.
      */
-    public static DatasetGraph wrapControlledDataset(DatasetGraph dsgBase, SecurityRegistry reg) {
+    public static DatasetGraph controlledDataset(DatasetGraph dsgBase, SecurityRegistry reg) {
         if ( dsgBase instanceof DatasetGraphAccessControl ) {
             DatasetGraphAccessControl dsgx = (DatasetGraphAccessControl)dsgBase;
             if ( reg == dsgx.getRegistry() )

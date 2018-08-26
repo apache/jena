@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.access;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -38,6 +40,12 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     }
 
     @Override
+    protected Collection<String> customParams() {
+        // The additional ?user.
+        return Collections.singletonList("user");
+    }
+    
+    @Override
     protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
         // Server database, not the possibly dynamically built "dataset"
         DatasetGraph dsg = action.getDataset();
@@ -46,20 +54,9 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.createQueryExecution(action, query, dataset);
 
-        // XXX Generalize to any DSG.
         SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dataset.asDatasetGraph(), requestUser);
-        
+        // A QueryExecution for controlled access
         QueryExecution qExec = sCxt.createQueryExecution(query, dsg);
-        
-//        if ( dsg instanceof DatasetGraphAccessControl ) {
-//            // Take off one layer.
-//            dsg = DatasetGraphAccessControl.removeWrapper(dsg);
-//            // Add back the Dataset for the createQueryExecution call.
-//            dataset = DatasetFactory.wrap(dsg);
-//        }
-//        QueryExecution qExec = super.createQueryExecution(action, query, dataset);
-//        if ( sCxt != null )
-//            sCxt.filterTDB(dsg, qExec);
         return qExec;
     }
 }

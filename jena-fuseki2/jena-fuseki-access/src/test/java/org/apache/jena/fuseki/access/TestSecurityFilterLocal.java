@@ -48,8 +48,10 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
+import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.tdb2.TDB2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -86,7 +88,7 @@ public class TestSecurityFilterLocal {
     private final DatasetGraph testdsg;
     private SecurityRegistry reg = new SecurityRegistry();
     private final boolean applyFilterDSG;
-    private final boolean applyFilterQExec;
+    private final boolean applyFilterTDB;
     
     public TestSecurityFilterLocal(String name, Creator<DatasetGraph> source, boolean applyFilterTDB) {
         DatasetGraph dsgBase = source.create();
@@ -96,9 +98,9 @@ public class TestSecurityFilterLocal {
         reg.put("user0", new SecurityPolicy(Quad.defaultGraphIRI.getURI()));
         reg.put("user1", new SecurityPolicy("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityPolicy("http://test/g1", "http://test/g2", "http://test/g3"));
-        testdsg = DataAccessCtl.wrapControlledDataset(dsgBase, reg);
+        testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
+        this.applyFilterTDB = applyFilterTDB;
         this.applyFilterDSG = ! applyFilterTDB;
-        this.applyFilterQExec = applyFilterTDB;
     }
     
     private static void assertSeen(Set<Node> visible, Node ... expected) {
@@ -121,7 +123,7 @@ public class TestSecurityFilterLocal {
         return
             Txn.calculateRead(ds, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryString, ds)) {
-                    if ( applyFilterQExec )
+                    if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream()
@@ -142,7 +144,7 @@ public class TestSecurityFilterLocal {
         return
             Txn.calculateRead(testdsg, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryString, model)) {
-                    if ( applyFilterQExec )
+                    if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream().map(qs->qs.get("s")).filter(Objects::nonNull).map(RDFNode::asNode);
@@ -159,7 +161,7 @@ public class TestSecurityFilterLocal {
         return
             Txn.calculateRead(ds, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryGraphNames, ds)) {
-                    if ( applyFilterQExec )
+                    if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream().map(qs->qs.get("g")).filter(Objects::nonNull).map(RDFNode::asNode);
@@ -251,15 +253,21 @@ public class TestSecurityFilterLocal {
     // QueryExecution w/ Union default graph
     private void filter_union_user(String user, Node ... expected) {
         SecurityPolicy sCxt = reg.get(user);
-        // XXX Need to set union.
-//        Consumer<QueryExecution> modifier = qExec-> {
-//            qExec.getContext().set(TDB.symUnionDefaultGraph, true);
-//            qExec.getContext().set(TDB2.symUnionDefaultGraph, true);
-//            sCxt.filterTDB(testdsg, qExec); 
-//        };
-//        Set<Node> visible = subjects(testdsg, queryDft, sCxt);
-        
-        Set<Node> visible = subjects(testdsg, dsg->dsg.getUnionGraph(), queryDft, sCxt);
+        Set<Node> visible;
+        if ( applyFilterTDB ) {
+            // TDB special version. Set the TDB flags for union default graph
+            try {
+                testdsg.getContext().set(TDB.symUnionDefaultGraph, true);
+                testdsg.getContext().set(TDB2.symUnionDefaultGraph, true);
+                visible = subjects(testdsg, queryDft, sCxt);
+            } finally {
+                // And unset them.
+                testdsg.getContext().unset(TDB.symUnionDefaultGraph);
+                testdsg.getContext().unset(TDB2.symUnionDefaultGraph);
+            }
+        } else {
+            visible = subjects(testdsg, dsg->dsg.getUnionGraph(), queryDft, sCxt);
+        }
         assertSeen(visible, expected);
     }
     

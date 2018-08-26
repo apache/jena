@@ -114,8 +114,7 @@ public class SecurityPolicy {
             if ( quad.isDefaultGraph() )
                 return matchDefaultGraph;
             if ( quad.isUnionGraph() ) 
-                // XXX What to do here.
-                // Need special union graph?
+                // Union graph is automatically there but its visible contents are different.
                 return true;
             return graphNames.contains(quad.getGraph());
         };

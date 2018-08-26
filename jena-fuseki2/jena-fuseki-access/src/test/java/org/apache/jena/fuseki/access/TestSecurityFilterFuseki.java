@@ -41,6 +41,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.tdb.TDBFactory;
@@ -62,14 +63,17 @@ public class TestSecurityFilterFuseki {
 
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        Object[] obj1 = { "TDB", "data1" };
+        Object[] obj1 = { "TDB",  "data1" };
         Object[] obj2 = { "TDB2", "data2" };
-        return Arrays.asList(obj1, obj2);
+        Object[] obj3 = { "TIM",  "data3" };
+        return Arrays.asList(obj1, obj2, obj3);
     }
 
     private final String baseUrl;
     private static DatasetGraph testdsg1 =  TDBFactory.createDatasetGraph();
     private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
+    private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();
+    
     private static FusekiServer fusekiServer;
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
@@ -77,6 +81,7 @@ public class TestSecurityFilterFuseki {
         int port = FusekiLib.choosePort();
         addTestData(testdsg1);
         addTestData(testdsg2);
+        addTestData(testdsg3);
         
         SecurityRegistry reg = new SecurityRegistry();
         reg.put("userNone", SecurityPolicy.NONE);
@@ -85,10 +90,10 @@ public class TestSecurityFilterFuseki {
         reg.put("user1", new SecurityPolicy("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityPolicy("http://test/g1", "http://test/g2", "http://test/g3"));
         
-        // XXX Also need wrapped tests
-        testdsg1 = DataAccessCtl.wrapControlledDataset(testdsg1, reg);
-        testdsg2 = DataAccessCtl.wrapControlledDataset(testdsg2, reg);
-
+        testdsg1 = DataAccessCtl.controlledDataset(testdsg1, reg);
+        testdsg2 = DataAccessCtl.controlledDataset(testdsg2, reg);
+        testdsg3 = DataAccessCtl.controlledDataset(testdsg3, reg);
+        
         UserStore userStore = userStore();
         SecurityHandler sh = JettyLib.makeSecurityHandler("/*", "DatasetRealm", userStore);
         
@@ -96,6 +101,7 @@ public class TestSecurityFilterFuseki {
             .port(port)
             .add("data1", testdsg1)
             .add("data2", testdsg2)
+            .add("data3", testdsg3)
             .build();
         fusekiServer.start();
     }
