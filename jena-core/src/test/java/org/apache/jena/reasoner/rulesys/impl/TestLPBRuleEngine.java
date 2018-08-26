@@ -162,8 +162,8 @@ public class TestLPBRuleEngine extends TestCase {
 				it.close();
 			}
 
-			// Let's see how many were cached
-			assertEquals(MAX, engine.tabledGoals.size());
+			// Let's see how many were cached - should be MAX or less (less if a GC freed weak values in the cache). 
+			assertTrue(engine.tabledGoals.size() <= MAX);
 			// and no leaks of activeInterpreters (this will happen if we forget
 			// to call hasNext above)
 			assertEquals(0, engine.activeInterpreters.size());
