@@ -232,8 +232,8 @@
   </servlet>
 
   <servlet-mapping>
-   <servlet-name>DumpServlet</servlet-name>
-   <url-pattern>/$/dump</url-pattern>
+    <servlet-name>DumpServlet</servlet-name>
+    <url-pattern>/$/dump</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
