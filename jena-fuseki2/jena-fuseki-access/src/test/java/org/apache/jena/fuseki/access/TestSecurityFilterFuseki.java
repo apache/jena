@@ -84,11 +84,11 @@ public class TestSecurityFilterFuseki {
         addTestData(testdsg3);
         
         SecurityRegistry reg = new SecurityRegistry();
-        reg.put("userNone", SecurityPolicy.NONE);
-        reg.put("userDft", SecurityPolicy.DFT_GRAPH);
-        reg.put("user0", new SecurityPolicy(Quad.defaultGraphIRI.getURI()));
-        reg.put("user1", new SecurityPolicy("http://test/g1", Quad.defaultGraphIRI.getURI()));
-        reg.put("user2", new SecurityPolicy("http://test/g1", "http://test/g2", "http://test/g3"));
+        reg.put("userNone", SecurityContext.NONE);
+        reg.put("userDft", SecurityContext.DFT_GRAPH);
+        reg.put("user0", new SecurityContext(Quad.defaultGraphIRI.getURI()));
+        reg.put("user1", new SecurityContext("http://test/g1", Quad.defaultGraphIRI.getURI()));
+        reg.put("user2", new SecurityContext("http://test/g1", "http://test/g2", "http://test/g3"));
         
         testdsg1 = DataAccessCtl.controlledDataset(testdsg1, reg);
         testdsg2 = DataAccessCtl.controlledDataset(testdsg2, reg);

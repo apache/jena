@@ -93,11 +93,11 @@ public class TestSecurityFilterLocal {
     public TestSecurityFilterLocal(String name, Creator<DatasetGraph> source, boolean applyFilterTDB) {
         DatasetGraph dsgBase = source.create();
         AccessTestLib.addTestData(dsgBase);
-        reg.put("userNone", SecurityPolicy.NONE);
-        reg.put("userDft", SecurityPolicy.DFT_GRAPH);
-        reg.put("user0", new SecurityPolicy(Quad.defaultGraphIRI.getURI()));
-        reg.put("user1", new SecurityPolicy("http://test/g1", Quad.defaultGraphIRI.getURI()));
-        reg.put("user2", new SecurityPolicy("http://test/g1", "http://test/g2", "http://test/g3"));
+        reg.put("userNone", SecurityContext.NONE);
+        reg.put("userDft", SecurityContext.DFT_GRAPH);
+        reg.put("user0", new SecurityContext(Quad.defaultGraphIRI.getURI()));
+        reg.put("user1", new SecurityContext("http://test/g1", Quad.defaultGraphIRI.getURI()));
+        reg.put("user2", new SecurityContext("http://test/g1", "http://test/g2", "http://test/g3"));
         testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
         this.applyFilterTDB = applyFilterTDB;
         this.applyFilterDSG = ! applyFilterTDB;
@@ -115,7 +115,7 @@ public class TestSecurityFilterLocal {
     private static String queryG2         = "SELECT * { GRAPH <http://test/graph2> { ?s ?p ?o } }";
     private static String queryGraphNames = "SELECT * { GRAPH ?g { } }";
 
-    private Set<Node> subjects(DatasetGraph dsg, String queryString, SecurityPolicy sCxt) {
+    private Set<Node> subjects(DatasetGraph dsg, String queryString, SecurityContext sCxt) {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -135,7 +135,7 @@ public class TestSecurityFilterLocal {
             });
     }
     
-    private Set<Node> subjects(DatasetGraph dsg,  Function<DatasetGraph, Graph> graphChoice, String queryString, SecurityPolicy sCxt) {
+    private Set<Node> subjects(DatasetGraph dsg,  Function<DatasetGraph, Graph> graphChoice, String queryString, SecurityContext sCxt) {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -153,7 +153,7 @@ public class TestSecurityFilterLocal {
             });
     }
 
-    private Set<Node> graphs(DatasetGraph dsg, SecurityPolicy sCxt) {
+    private Set<Node> graphs(DatasetGraph dsg, SecurityContext sCxt) {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -171,14 +171,14 @@ public class TestSecurityFilterLocal {
     }
 
     @Test public void filter_setup() {
-        Set<Node> visible = subjects(testdsg, queryAll, SecurityPolicy.NONE);
+        Set<Node> visible = subjects(testdsg, queryAll, SecurityContext.NONE);
         assertEquals(0, visible.size());
         assertSeen(visible);
     }
 
     // QueryExecution
     private void filter_user(String user, Node ... expected) {
-        SecurityPolicy sCxt = reg.get(user);
+        SecurityContext sCxt = reg.get(user);
         Set<Node> visible = subjects(testdsg, queryAll, sCxt);
         assertSeen(visible, expected);
     }
@@ -209,50 +209,50 @@ public class TestSecurityFilterLocal {
 
     // "Access Denied"
     @Test public void no_access_user1() {
-        SecurityPolicy sCxt = reg.get("user1");
+        SecurityContext sCxt = reg.get("user1");
         Set<Node> visible = subjects(testdsg, queryG2, sCxt);
         assertTrue(visible.isEmpty());
     }
 
     @Test public void graph_names_userNone() {
-        SecurityPolicy sCxt = reg.get("userNone");
+        SecurityContext sCxt = reg.get("userNone");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible);
     }
     
     @Test public void graph_names_userDft() {
-        SecurityPolicy sCxt = reg.get("userDft");
+        SecurityContext sCxt = reg.get("userDft");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible);
     }
     
     @Test public void graph_names_user0() {
-        SecurityPolicy sCxt = reg.get("user0");
+        SecurityContext sCxt = reg.get("user0");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible);
     }
     
     @Test public void graph_names_user1() {
-        SecurityPolicy sCxt = reg.get("user1");
+        SecurityContext sCxt = reg.get("user1");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible, g1);
     }
 
     @Test public void graph_names_user2() {
-        SecurityPolicy sCxt = reg.get("user2");
+        SecurityContext sCxt = reg.get("user2");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible, g1, g2, g3);
     }
 
     @Test public void graph_names_userX() {
-        SecurityPolicy sCxt = reg.get("userX");
+        SecurityContext sCxt = reg.get("userX");
         Set<Node> visible = graphs(testdsg, sCxt); 
         assertSeen(visible);
     }
 
     // QueryExecution w/ Union default graph
     private void filter_union_user(String user, Node ... expected) {
-        SecurityPolicy sCxt = reg.get(user);
+        SecurityContext sCxt = reg.get(user);
         Set<Node> visible;
         if ( applyFilterTDB ) {
             // TDB special version. Set the TDB flags for union default graph
@@ -348,7 +348,7 @@ public class TestSecurityFilterLocal {
     }
 
     private void query_model_user(DatasetGraph dsg, Function<DatasetGraph, Graph> graphChoice, String user, Node ... expected) {
-        SecurityPolicy sCxt = reg.get(user);
+        SecurityContext sCxt = reg.get(user);
         Set<Node> visible = subjects(dsg, graphChoice, queryDft, sCxt);
         assertSeen(visible, expected);
     }

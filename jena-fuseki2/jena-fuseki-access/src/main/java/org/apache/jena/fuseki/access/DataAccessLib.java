@@ -27,13 +27,13 @@ import org.apache.jena.sparql.core.DatasetGraph;
 /** Package-only operations */
 class DataAccessLib {
     
-    /** Determine the {@link SecurityPolicy} for this request */  
-    static SecurityPolicy getSecurityPolicy(HttpAction action, DatasetGraph dataset, Function<HttpAction, String> requestUser) {
+    /** Determine the {@link SecurityContext} for this request */  
+    static SecurityContext getSecurityContext(HttpAction action, DatasetGraph dataset, Function<HttpAction, String> requestUser) {
         SecurityRegistry registry = getSecurityRegistry(action, dataset);
         if ( registry == null )
             ServletOps.errorOccurred("Internal Server Error");
 
-        SecurityPolicy sCxt = null;
+        SecurityContext sCxt = null;
         String user = requestUser.apply(action);
         sCxt = registry.get(user);
         if ( sCxt == null )
@@ -48,7 +48,7 @@ class DataAccessLib {
         return dsg.getContext().get(DataAccessCtl.symSecurityRegistry);
     }
 
-    static SecurityPolicy noSecurityPolicy() {
+    static SecurityContext noSecurityPolicy() {
         ServletOps.errorForbidden();
         // Should not get here.
         throw new InternalError();
@@ -61,7 +61,7 @@ class DataAccessLib {
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             // Not access controlled.
             return dsg;//super.actOn(action);
-        SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dsg, requestUser);
+        SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         dsg = DataAccessCtl.filteredDataset(dsg, sCxt);
         return dsg;

@@ -155,9 +155,9 @@ public class DataAccessCtl {
     }
 
     /**
-     * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityPolicy}.
+     * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityContext}.
      */
-    public static DatasetGraphFilteredView filteredDataset(DatasetGraph dsg, SecurityPolicy sCxt) {
+    public static DatasetGraphFilteredView filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
         return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());
     }
 }

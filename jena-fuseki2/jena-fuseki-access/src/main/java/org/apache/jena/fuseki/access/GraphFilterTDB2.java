@@ -50,7 +50,7 @@ class GraphFilterTDB2 extends GraphFilter<NodeId> {
      * true) for Tuples where the graph slot in quad is in the collection or for triples in the default
      * graph according the boolean.
      * 
-     * @see SecurityPolicy#filterTDB(DatasetGraph, QueryExecution)
+     * @see SecurityContext#filterTDB(DatasetGraph, QueryExecution)
      */
     public static GraphFilterTDB2 graphFilter(DatasetGraph dsg, Collection<Node> namedGraphs, boolean matchDefaultGraph) {
         if ( ! TDBInternal.isTDB2(dsg) )

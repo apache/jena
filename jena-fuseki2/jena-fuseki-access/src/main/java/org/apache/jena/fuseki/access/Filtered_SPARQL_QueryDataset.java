@@ -54,7 +54,7 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return super.createQueryExecution(action, query, dataset);
 
-        SecurityPolicy sCxt = DataAccessLib.getSecurityPolicy(action, dataset.asDatasetGraph(), requestUser);
+        SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dataset.asDatasetGraph(), requestUser);
         // A QueryExecution for controlled access
         QueryExecution qExec = sCxt.createQueryExecution(query, dsg);
         return qExec;

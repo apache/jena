@@ -36,35 +36,35 @@ import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;
 
-/** A {@link SecurityPolicy} is the things actor (user, role) is allowed to do. 
+/** A {@link SecurityContext} is the things actor (user, role) is allowed to do. 
  * Currently version: the set of graphs, by graph name, they can access.
  * It can be inverted into a "deny" policy with {@link Predicate#negate()}.
  */ 
-public class SecurityPolicy {
+public class SecurityContext {
     
-    public static SecurityPolicy NONE = new SecurityPolicy();
-    public static SecurityPolicy DFT_GRAPH = new SecurityPolicy(true);
+    public static SecurityContext NONE = new SecurityContext();
+    public static SecurityContext DFT_GRAPH = new SecurityContext(true);
 
     private final Collection<Node> graphNames = ConcurrentHashMap.newKeySet();
     private final boolean matchDefaultGraph;
     
-    public SecurityPolicy() {
+    public SecurityContext() {
         this(false);
     }
 
-    public SecurityPolicy(boolean matchDefaultGraph) {
+    public SecurityContext(boolean matchDefaultGraph) {
         this.matchDefaultGraph = matchDefaultGraph;
     }
 
-    public SecurityPolicy(String...graphNames) {
+    public SecurityContext(String...graphNames) {
         this(NodeUtils.convertToSetNodes(graphNames));
     }
 
-    public SecurityPolicy(Node...graphNames) {
+    public SecurityContext(Node...graphNames) {
         this(Arrays.asList(graphNames));
     }
 
-    public SecurityPolicy(Collection<Node> visibleGraphs) {
+    public SecurityContext(Collection<Node> visibleGraphs) {
         this.graphNames.addAll(visibleGraphs);
         this.matchDefaultGraph = visibleGraphs.stream().anyMatch(Quad::isDefaultGraph);
         if ( matchDefaultGraph ) {

@@ -27,10 +27,10 @@ import org.apache.jena.fuseki.Fuseki;
 
 /**
  * A {@link SecurityRegistry} is mapping from a string (typically a user name or role
- * name) to a {@link SecurityPolicy}, where the {@link SecurityPolicy}
+ * name) to a {@link SecurityContext}, where the {@link SecurityContext}
  * is the access control operations for the user/role.
  */ 
-public class SecurityRegistry extends Registry<String, SecurityPolicy>{
+public class SecurityRegistry extends Registry<String, SecurityContext>{
     
     public static SecurityRegistry get(ServletContext cxt) {
         return (SecurityRegistry)cxt.getAttribute(Fuseki.attrSecurityRegistry);
@@ -43,13 +43,13 @@ public class SecurityRegistry extends Registry<String, SecurityPolicy>{
     public SecurityRegistry() {}
     
     @Override
-    public SecurityPolicy get(String actor) {
+    public SecurityContext get(String actor) {
         if ( actor == null )
-            return SecurityPolicy.NONE;
-        SecurityPolicy policy = super.get(actor);
-        if ( policy == null )
-            policy = SecurityPolicy.NONE;
-        return policy;
+            return SecurityContext.NONE;
+        SecurityContext sCxt = super.get(actor);
+        if ( sCxt == null )
+            sCxt = SecurityContext.NONE;
+        return sCxt;
     }
     
     @Override 
@@ -61,7 +61,7 @@ public class SecurityRegistry extends Registry<String, SecurityPolicy>{
         // Long form.
         StringJoiner sj1 = new StringJoiner("\n", "{ SecurityRegistry\n", "\n}");
         super.keys().forEach(u->{
-            SecurityPolicy x = super.get(u);
+            SecurityContext x = super.get(u);
             StringJoiner sj2 = new StringJoiner("");
             sj2.add("  ")
                 .add(u)

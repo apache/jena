@@ -77,8 +77,8 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
         });
         
         map.keySet().forEach(u->{
-            SecurityPolicy policy = new SecurityPolicy(map.get(u));
-            registry.put(u, policy);
+            SecurityContext sCxt = new SecurityContext(map.get(u));
+            registry.put(u, sCxt);
         });
         
         return registry;
