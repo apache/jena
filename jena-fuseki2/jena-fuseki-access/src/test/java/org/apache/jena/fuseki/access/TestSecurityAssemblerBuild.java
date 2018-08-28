@@ -40,7 +40,7 @@ public class TestSecurityAssemblerBuild {
     private void assemblerFile(String assemblerFile) { 
         Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, VocabSecurity.tAccessControlledDataset);
         DatasetGraphAccessControl dsg = (DatasetGraphAccessControl)ds.asDatasetGraph();
-        SecurityRegistry securityRegistry = dsg.getRegistry();
+        AuthorizationService securityRegistry = dsg.getAuthService();
         assertNotNull(securityRegistry);
     }
 }

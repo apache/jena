@@ -38,7 +38,7 @@ import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 import org.eclipse.jetty.security.SecurityHandler;
 
-/** A library of operations related to data acess sexurity for Fuseki */  
+/** A library of operations related to data access security for Fuseki */  
 public class DataAccessCtl {
     static { JenaSystem.init(); }
     
@@ -46,14 +46,14 @@ public class DataAccessCtl {
      * Flag for whether this is data access controlled or not - boolean false or undef for "not
      * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
      */
-    public static final Symbol   symControlledAccess      = Symbol.create(VocabSecurity.getURI() + "controlled");
+    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
     
     /**
-     * Symbol for the {@link SecurityRegistry}. Must be present if
+     * Symbol for the {@link AuthorizationService}. Must be present if
      * {@link #symControlledAccess} indicates data access control.
      * This is an alternative to {@link DatasetGraphAccessControl}.
      */
-    public static final Symbol   symSecurityRegistry      = Symbol.create(VocabSecurity.getURI() + "registry");
+    public static final Symbol   symAuthorizationService    = Symbol.create(VocabSecurity.getURI() + "authService");
 
     /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */ 
     public static final Function<HttpAction, String> requestUserServlet = (action)->action.request.getRemoteUser();
@@ -68,16 +68,16 @@ public class DataAccessCtl {
      * Add data access control information on a {@link DatasetGraph}. This modifies the
      * {@link DatasetGraph}'s {@link Context}.
      */
-    private static void addSecurityRegistry(DatasetGraph dsg, SecurityRegistry reg) {
+    private static void addAuthorizatonService(DatasetGraph dsg, AuthorizationService authService) {
         dsg.getContext().set(symControlledAccess, true);
-        dsg.getContext().set(symSecurityRegistry, reg);
+        dsg.getContext().set(symAuthorizationService, authService);
     }
 
     /**
      * Return a {@link DatasetGraph} with added data access control. 
      * Use of the original {@code DatasetGraph} is not controlled.
      */
-    public static Dataset controlledDataset(Dataset dsBase, SecurityRegistry reg) {
+    public static Dataset controlledDataset(Dataset dsBase, AuthorizationService reg) {
         DatasetGraph dsg = controlledDataset(dsBase.asDatasetGraph(), reg);
         return DatasetFactory.wrap(dsg);
     }
@@ -86,12 +86,12 @@ public class DataAccessCtl {
      * Return a {@link DatasetGraph} with added data access control. Use of the original
      * {@code DatasetGraph} is not controlled.
      */
-    public static DatasetGraph controlledDataset(DatasetGraph dsgBase, SecurityRegistry reg) {
+    public static DatasetGraph controlledDataset(DatasetGraph dsgBase, AuthorizationService reg) {
         if ( dsgBase instanceof DatasetGraphAccessControl ) {
             DatasetGraphAccessControl dsgx = (DatasetGraphAccessControl)dsgBase;
-            if ( reg == dsgx.getRegistry() )
+            if ( reg == dsgx.getAuthService() )
                 return dsgx;
-            throw new IllegalArgumentException("DatasetGraph is alerady wrapped on a DatasetGraphAccessControl with a different SecurityRegistry");
+            throw new IllegalArgumentException("DatasetGraph is alerady wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
         }
         
         DatasetGraphAccessControl dsg1 = new DatasetGraphAccessControl(dsgBase, reg);
@@ -149,7 +149,7 @@ public class DataAccessCtl {
             return true;
         if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
             return true;
-        if ( dsg.getContext().isDefined(DataAccessCtl.symSecurityRegistry) )
+        if ( dsg.getContext().isDefined(DataAccessCtl.symAuthorizationService) )
             return true;
         return false;
     }

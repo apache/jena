@@ -47,7 +47,7 @@ public class AssemblerAccessDataset extends AssemblerBase {
         RDFNode rnRegistry = root.getProperty(VocabSecurity.pSecurityRegistry).getObject();
         RDFNode rnDataset = root.getProperty(VocabSecurity.pDataset).getObject();
         
-        SecurityRegistry sr = (SecurityRegistry)a.open(rnRegistry.asResource()) ;
+        AuthorizationService sr = (AuthorizationService)a.open(rnRegistry.asResource()) ;
         Dataset ds = (Dataset)a.open(rnDataset.asResource()) ;
         
         DatasetGraph dsg = new DatasetGraphAccessControl(ds.asDatasetGraph(), sr);

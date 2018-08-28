@@ -20,6 +20,9 @@ package org.apache.jena.fuseki.access;
 
 import java.util.function.Function;
 
+import javax.servlet.ServletContext;
+
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -29,7 +32,7 @@ class DataAccessLib {
     
     /** Determine the {@link SecurityContext} for this request */  
     static SecurityContext getSecurityContext(HttpAction action, DatasetGraph dataset, Function<HttpAction, String> requestUser) {
-        SecurityRegistry registry = getSecurityRegistry(action, dataset);
+        AuthorizationService registry = getAuthorizationService(action, dataset);
         if ( registry == null )
             ServletOps.errorOccurred("Internal Server Error");
 
@@ -41,11 +44,11 @@ class DataAccessLib {
         return sCxt;
     }
     
-    /** Get the {@link SecurityRegistry} for an action/query/dataset */
-    static SecurityRegistry getSecurityRegistry(HttpAction action, DatasetGraph dsg) {
+    /** Get the {@link AuthorizationService} for an action/query/dataset */
+    static AuthorizationService getAuthorizationService(HttpAction action, DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphAccessControl )
-            return ((DatasetGraphAccessControl)dsg).getRegistry();
-        return dsg.getContext().get(DataAccessCtl.symSecurityRegistry);
+            return ((DatasetGraphAccessControl)dsg).getAuthService();
+        return dsg.getContext().get(DataAccessCtl.symAuthorizationService);
     }
 
     static SecurityContext noSecurityPolicy() {
@@ -65,6 +68,14 @@ class DataAccessLib {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         dsg = DataAccessCtl.filteredDataset(dsg, sCxt);
         return dsg;
+    }
+
+    static void set(ServletContext cxt, AuthorizationService authorizationService) {
+        cxt.setAttribute(Fuseki.attrAuthorizationService, authorizationService);
+    }
+
+    static AuthorizationService get(ServletContext cxt) {
+        return (AuthorizationService)cxt.getAttribute(Fuseki.attrAuthorizationService);
     }
 }
 

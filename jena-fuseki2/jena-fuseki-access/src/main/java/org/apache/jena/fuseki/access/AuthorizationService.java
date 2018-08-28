@@ -18,27 +18,13 @@
 
 package org.apache.jena.fuseki.access;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.Fuseki;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.concurrent.ConcurrentHashMap;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestSecurityFilterLocal.class
-    , TestSecurityFilterFuseki.class
-    , TestSecurityAssemblerBuild.class
-    , TestAssemblerSeparate.class
-    , TestAssemblerShared.class
-})
+/**
+ * A {@link AuthorizationService} implemented with a {@link ConcurrentHashMap}.
+ */ 
+public interface AuthorizationService {
 
-public class TS_SecurityFiltering {
-    @BeforeClass public static void setupForFusekiServer() {
-        LogCtl.setLevel(Fuseki.serverLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,  "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,    "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",    "WARN");
-    }
+    /** Return the security context  for a geiven actor (user) */
+    public SecurityContext get(String actor);
 }

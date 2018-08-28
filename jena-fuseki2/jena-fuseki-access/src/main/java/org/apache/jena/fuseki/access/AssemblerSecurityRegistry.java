@@ -52,7 +52,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
      */
     
     @Override
-    public SecurityRegistry open(Assembler a, Resource root, Mode mode) {
+    public AuthorizationService open(Assembler a, Resource root, Mode mode) {
         SecurityRegistry registry = new SecurityRegistry();
         // Java walking gives better error messages.
         StmtIterator sIter = root.listProperties(VocabSecurity.pEntry);

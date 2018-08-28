@@ -70,7 +70,7 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
         super(dsg);
         this.quadFilter = filter;
         if ( visibleGraphs.contains(Quad.defaultGraphIRI) || visibleGraphs.contains(Quad.defaultGraphNodeGenerated) ) {
-            Log.warn(DatasetGraphFilteredView.class, "default graph Node in visibleGraphs colelction - fix up applied");
+            Log.warn(DatasetGraphFilteredView.class, "default graph Node in visibleGraphs collection - fix up applied");
             visibleGraphs = new HashSet<>(visibleGraphs);
             visibleGraphs.remove(Quad.defaultGraphIRI);
             visibleGraphs.remove(Quad.defaultGraphNodeGenerated);
