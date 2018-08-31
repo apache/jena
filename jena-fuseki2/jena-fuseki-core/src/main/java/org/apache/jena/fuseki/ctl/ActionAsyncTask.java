@@ -22,7 +22,6 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.async.AsyncPool ;
 import org.apache.jena.fuseki.async.AsyncTask ;
-import org.apache.jena.fuseki.mgt.ActionItem;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 

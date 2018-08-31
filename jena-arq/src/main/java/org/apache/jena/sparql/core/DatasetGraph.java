@@ -123,10 +123,10 @@ public interface DatasetGraph extends Transactional, Closeable
      */
     public Iterator<Quad> findNG(Node g, Node s, Node p , Node o) ;
 
-    /** Test whether the dataset  (including default graph) contains a quad - may include wildcards, Node.ANY or null */
+    /** Test whether the dataset (including default graph) contains a quad - may include wildcards, Node.ANY or null */
     public boolean contains(Node g, Node s, Node p , Node o) ;
 
-    /** Test whether the dataset contains a quad  (including default graph)- may include wildcards, Node.ANY or null */
+    /** Test whether the dataset contains a quad (including default graph)- may include wildcards, Node.ANY or null */
     public boolean contains(Quad quad) ;
 
     /** Remove everything - remove all named graphs, clear the default graph */

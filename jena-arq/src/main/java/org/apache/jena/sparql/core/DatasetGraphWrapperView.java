@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,24 +18,13 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.engine.QueryEngineFactoryWrapper;
 
-/** Override {@link DatasetGraph#addGraph} so that it always copies
- * content from the added graph data.
+/** 
+ *  Marker interface that indicates a DatasetGraphWrapper
+ *  is one that defined a different view on the base dataset data.
+ *  Hence, query should not access the wrapped dataset.
+ *  
+ *  @see QueryEngineFactoryWrapper
  */
-
-/*package*/ class DatasetGraphCopyAdd extends DatasetGraphWrapper 
-{
-    public DatasetGraphCopyAdd(boolean x , DatasetGraph dsg) {
-        super(dsg);
-    }
-    
-    @Override
-    public void addGraph(Node graphName, Graph graph) {
-        graph.find(null,null,null).forEachRemaining(t-> {
-            Quad q = Quad.create(graphName, t) ;
-            super.add(q) ;
-        }) ;
-    }
-}
+public interface DatasetGraphWrapperView extends DatasetGraph {}

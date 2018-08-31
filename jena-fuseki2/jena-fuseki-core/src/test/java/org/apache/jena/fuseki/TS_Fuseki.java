@@ -55,8 +55,8 @@ public class TS_Fuseki extends ServerTest
         FileOps.ensureDir(FusekiTestHome);
         FileOps.clearDirectory(FusekiTestHome);
         System.setProperty("FUSEKI_HOME", FusekiTestHome) ;
-        FusekiLogging.setLogging();
         FusekiEnv.setEnvironment() ;
+        FusekiLogging.setLogging();
         // To avoid confusion with log4j.properties in the main part of the server,
         // we modify in place the logging, not try to set it with another
         // Log4j properties file from the classpath.  

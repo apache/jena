@@ -44,7 +44,14 @@
       <version>3.9.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- For compiling the log4j1 helper code. -->
     <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+    
+   <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
     </dependency> 

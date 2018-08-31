@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.fuseki.jetty.JettyFuseki ;
+import org.apache.jena.fuseki.cmd.JettyFuseki;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.webapp.FusekiEnv;

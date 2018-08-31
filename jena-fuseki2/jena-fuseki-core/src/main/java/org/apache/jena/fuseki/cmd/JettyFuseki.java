@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty ;
+package org.apache.jena.fuseki.cmd ;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
@@ -29,7 +29,8 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.mgt.MgtJMX ;
+import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
+import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.eclipse.jetty.security.* ;
@@ -45,7 +46,7 @@ import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
-/** Standalone server, not run as a WAR file.
+/** Standalone full server, not run as a WAR file.
  * Used in testing and development.
  * 
  * SPARQLServer is the Jena server instance which wraps/utilizes 
@@ -167,7 +168,6 @@ public class JettyFuseki {
         } catch (Exception ex) {
             Fuseki.serverLog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ;
         }
-        MgtJMX.removeJMX() ;
     }
 
     public static WebAppContext createWebApp(String contextPath) {

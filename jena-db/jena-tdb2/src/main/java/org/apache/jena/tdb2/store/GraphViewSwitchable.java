@@ -76,17 +76,20 @@ public class GraphViewSwitchable extends GraphView {
         return transactionHandler;
     }
     
-    /** Return the {@code DatasetGraphSwitchable} we are viewing. */
+    /** Return the {@link DatasetGraphSwitchable} we are viewing. */
     @Override
     public DatasetGraphSwitchable getDataset() {
         return getx();
     }
     
-    /** Return the {@code Graph} from the underlying switchable.
+    /** Return the {@code Graph} from the underlying DatasetGraph
      *  Do not hold onto this reference across switches. 
      */
-    public Graph getGraph() {
-        return getx().getGraph(getGraphName());
+    public Graph getBaseGraph() {
+        if ( getGraphName() == null )
+            return getDSG().getDefaultGraph();
+        else
+            return getDSG().getGraph(getGraphName());
     }
 
     // Super uses find. Override to call GraphTDB.size()

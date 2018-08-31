@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.webapp;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.tdb.StoreConnection ;
@@ -93,20 +92,5 @@ public class SystemState {
         dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
         dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;
     }
-    
-    public static String PREFIXES = StrUtils.strjoinNL
-        ("BASE            <http://example/base#>",
-         "PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>",
-         "PREFIX fu:      <http://jena.apache.org/fuseki#>",
-         "PREFIX fuseki:  <http://jena.apache.org/fuseki#>",
-         "PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-         "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
-         "PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>",
-         "PREFIX sdb:     <http://jena.hpl.hp.com/2007/sdb#>",
-         "PREFIX list:    <http://jena.apache.org/ARQ/list#>",
-         "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-         "PREFIX apf:     <http://jena.apache.org/ARQ/property#>",
-         "PREFIX afn:     <http://jena.apache.org/ARQ/function#>",
-         "") ;
 }
 

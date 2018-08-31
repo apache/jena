@@ -32,7 +32,9 @@ import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.ctl.ActionCtl;
+import org.apache.jena.fuseki.ctl.JsonDescription;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 
@@ -98,16 +100,16 @@ public class ActionServerStatus extends ActionCtl
 //            .finishObject() ;
 
         builder
-            .key(MgtConst.version).value(versionStr)
-            .key(MgtConst.built).value(builtDateStr)
-            .key(MgtConst.startDT).value(Fuseki.serverStartedAt())
-            .key(MgtConst.uptime).value(Fuseki.serverUptimeSeconds())
+            .key(ServerMgtConst.version).value(versionStr)
+            .key(ServerMgtConst.built).value(builtDateStr)
+            .key(ServerMgtConst.startDT).value(Fuseki.serverStartedAt())
+            .key(ServerMgtConst.uptime).value(Fuseki.serverUptimeSeconds())
             ;
             
     }
 
     private void describeDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {
-        builder.key(MgtConst.datasets) ;
+        builder.key(ServerConst.datasets) ;
         JsonDescription.arrayDatasets(builder, registry);
     }
 

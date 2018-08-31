@@ -18,11 +18,11 @@
 
 package org.apache.jena.fuseki;
 
-import static org.apache.jena.fuseki.mgt.MgtConst.opDatasets ;
-import static org.apache.jena.fuseki.mgt.MgtConst.opListBackups ;
-import static org.apache.jena.fuseki.mgt.MgtConst.opPing ;
-import static org.apache.jena.fuseki.mgt.MgtConst.opServer ;
-import static org.apache.jena.fuseki.mgt.MgtConst.opStats ;
+import static org.apache.jena.fuseki.mgt.ServerMgtConst.opDatasets ;
+import static org.apache.jena.fuseki.mgt.ServerMgtConst.opListBackups ;
+import static org.apache.jena.fuseki.mgt.ServerMgtConst.opServer ;
+import static org.apache.jena.fuseki.server.ServerConst.opPing;
+import static org.apache.jena.fuseki.server.ServerConst.opStats;
 import static org.apache.jena.riot.web.HttpOp.execHttpDelete ;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet ;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
@@ -41,7 +41,8 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.mgt.MgtConst;
+import org.apache.jena.fuseki.mgt.ServerMgtConst;
+import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
@@ -71,9 +72,9 @@ public class TestAdmin extends AbstractFusekiTest {
         JsonValue jv = httpGetJson(ServerCtl.urlRoot()+"$/"+opServer) ;
         JsonObject obj = jv.getAsObject() ;
         // Now optional : assertTrue(obj.hasKey(JsonConst.admin)) ;
-        assertTrue(obj.hasKey(MgtConst.datasets)) ;
-        assertTrue(obj.hasKey(MgtConst.uptime)) ;
-        assertTrue(obj.hasKey(MgtConst.startDT)) ;
+        assertTrue(obj.hasKey(ServerConst.datasets)) ;
+        assertTrue(obj.hasKey(ServerMgtConst.uptime)) ;
+        assertTrue(obj.hasKey(ServerMgtConst.startDT)) ;
     }
 
     @Test public void server_2() {

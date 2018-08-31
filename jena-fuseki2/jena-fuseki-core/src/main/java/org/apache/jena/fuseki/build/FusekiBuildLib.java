@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.build;
 
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
@@ -55,7 +54,7 @@ public class FusekiBuildLib {
     }
 
     public static ResultSet query(String string, Model m, String varName, RDFNode value) {
-        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
+        Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
         if ( varName != null )
             initValues = querySolution(varName, value) ;
@@ -65,7 +64,7 @@ public class FusekiBuildLib {
     }
 
     public static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
-        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
+        Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
         if ( varName != null )
             initValues = querySolution(varName, value) ;

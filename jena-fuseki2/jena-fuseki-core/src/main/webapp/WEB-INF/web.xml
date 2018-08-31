@@ -185,12 +185,12 @@
 
   <servlet>
     <servlet-name>ActionBackup</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.ctl.ActionBackup</servlet-class>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackup</servlet-class>
   </servlet>
 
   <servlet>
     <servlet-name>BackupListServlet</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.ctl.ActionBackupList</servlet-class>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackupList</servlet-class>
   </servlet>
 
   <!-- An action that only creates a background task that sleeps. -->
@@ -232,8 +232,8 @@
   </servlet>
 
   <servlet-mapping>
-   <servlet-name>DumpServlet</servlet-name>
-   <url-pattern>/$/dump</url-pattern>
+    <servlet-name>DumpServlet</servlet-name>
+    <url-pattern>/$/dump</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

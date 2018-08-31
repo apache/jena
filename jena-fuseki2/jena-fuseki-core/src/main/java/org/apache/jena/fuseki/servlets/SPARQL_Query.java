@@ -108,9 +108,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         if ( acceptedParams_ == null ) {
             synchronized(this) {
                 if ( acceptedParams_ == null )
-                // Does not matter about race condition here because the same Set should be
-                // created on any call to generateAcceptedParams.
-                acceptedParams_ = generateAcceptedParams();
+                    // Does not matter about race condition here because the same Set should be
+                    // created on any call to generateAcceptedParams.
+                    acceptedParams_ = generateAcceptedParams();
             }
         }
         return acceptedParams_;
@@ -388,9 +388,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     private void setAnyProtocolTimeouts(QueryExecution qexec, HttpAction action) {
-//        if ( !(action.getDataService().allowTimeoutOverride) )
-//            return ;
-
+        //        if ( !(action.getDataService().allowTimeoutOverride) )
+        //            return ;
+        // See also QueryExecutionBase.setTimeouts to parse and process N,M form.
+        // ?? Set only if lower than any settings from the dataset or global contexts already in
+        // the QueryExecution.
+        // Add context setting for "allow increases".
+        // Documentation.
         long desiredTimeout = Long.MAX_VALUE ;
         String timeoutHeader = action.request.getHeader("Timeout") ;
         String timeoutParameter = action.request.getParameter("timeout") ;

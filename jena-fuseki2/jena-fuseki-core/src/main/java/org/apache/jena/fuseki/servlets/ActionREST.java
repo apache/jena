@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.server.CounterName ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
 public abstract class ActionREST extends ActionService
@@ -68,6 +69,14 @@ public abstract class ActionREST extends ActionService
             ServletOps.errorNotImplemented("Unknown method: "+method) ;
     }
 
+    /**
+     * Decide on the dataset to use for the operation. This can be overridden
+     * by specialist subclasses e.g. data access control. 
+     */
+    protected DatasetGraph decideDataset(HttpAction action) {
+        return action.getActiveDSG() ;
+    }
+    
     // Counter wrappers
     
     private final void doGet$(HttpAction action) {

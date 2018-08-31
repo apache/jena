@@ -30,62 +30,51 @@ import org.apache.jena.shared.AuthenticationRequiredException;
 /**
  * SecurityEvaluator.
  * <p>
- * The security evaluator is the link between the graph security system and an
- * external security system. This interface specifies the methods that are
- * required by the graph security system. It is assumed that the implementation
- * will handle tracking the current user and will query some underlying data
- * source to determine what actions the user can and can not take.
+ * The security evaluator is the link between the graph security system and an external
+ * security system. This interface specifies the methods that are required by the graph
+ * security system. It is assumed that the implementation will handle tracking the current
+ * user and will query some underlying data source to determine what actions the user can
+ * and can not take.
  * </p>
  * <p>
- * All questions of white listing or black listing will be handled in the
- * concrete implementation.
+ * All questions of white listing or black listing will be handled in the concrete
+ * implementation.
  * </p>
  * <p>
- * Implementations of this class should probably cache any evaluate calculations
- * as the evaluate methods are called frequently. However, the underlying
- * classes do cache results within a single method check.
+ * Implementations of this class should probably cache any evaluate calculations as the
+ * evaluate methods are called frequently. However, the underlying classes do cache
+ * results within a single method check.
  * </p>
  * <p>
  * <dl>
  * <dt>Secured operations</dt>
- * <dd>The security system recognizes and secures each of the CRUD (Create,
- * Read, Update and Delete) operations as represented by the Action enumeration.
- * </dd>
- * </dl>
- * <dl>
+ * <dd>The security system recognizes and secures each of the CRUD (Create, Read, Update
+ * and Delete) operations as represented by the Action enumeration.</dd>
  * <dt>Levels of security</dt>
- * <dd>The security interfaces operates at two (2) levels: graph (or Model) and
- * triple.
+ * <dd>The security interfaces operates at two (2) levels: graph (or Model) and triple.
  * <p>
- * At the the graph level the security evaluator may restrict CRUD access to the
- * graph or model as a whole. When evaluating the restriction, if the user it
- * not permitted to perform the operation on the graph or model access is
- * denied. If the user is permitted any triple restrictions are evaluated.
+ * At the the graph level the security evaluator may restrict CRUD access to the graph or
+ * model as a whole. When evaluating the restriction, if the user it not permitted to
+ * perform the operation on the graph or model access is denied. If the user is permitted
+ * any triple restrictions are evaluated.
  * </p>
  * <p>
- * At the triple level the security evaluator may restrict CRUD access to
- * specific triples. In order to skip potentially expensive triple security
- * checks the system will generally ask if the user is permitted the CRUD action
- * on any triple. This is represented by the SecTriple
- * <code>(ANY, ANY, ANY)</code>.
+ * At the triple level the security evaluator may restrict CRUD access to specific
+ * triples. In order to skip potentially expensive triple security checks the system will
+ * generally ask if the user is permitted the CRUD action on any triple. This is
+ * represented by the SecTriple <code>(ANY, ANY, ANY)</code>.
+ * </p>
  * <ul>
- * <li>
- * If the system does not support triple level security the system should always
- * return <code>true</code>.</li>
- * If the system does support triple level security and is unable to verify that
- * the user can execute the CRUD action against any arbitrary triple the system
- * should return <code>false</code>. </li>
+ * <li>If the system does not support triple level security the system should always
+ * return <code>true</code>.</li> If the system does support triple level security and is
+ * unable to verify that the user can execute the CRUD action against any arbitrary triple
+ * the system should return <code>false</code>.</li>
  * <li>See <code>Node.ANY</code>, <code>SecurityEvaluator.FUTURE</code>, and
- * <code>SecurityEvaluator.VARIABLE</code> for discussion of specifics of their
- * respective usages.</li>
+ * <code>SecurityEvaluator.VARIABLE</code> for discussion of specifics of their respective
+ * usages.</li>
  * </ul>
- * </p>
  * </dd>
  * </dl>
- * <dl>
- * <dt>
- *
- * </p>
  */
 public interface SecurityEvaluator {
 	/**

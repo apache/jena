@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,31 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt;
+package org.apache.jena.fuseki.access;
 
-import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.fuseki.ctl.ActionContainerItem;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.web.HttpSC ;
+public class TestAssemblerShared extends AbstractTestSecurityAssembler {
 
-/** Action on items in a container, but not the container itself */ 
-public abstract class ActionItem extends ActionContainerItem
-{
-    public ActionItem() { super() ; }
-    
-    @Override
-    final
-    protected JsonValue execGetContainer(HttpAction action) {
-        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
-        return null ;
-    }
-
-    @Override
-    final
-    protected JsonValue execPostContainer(HttpAction action) {
-        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
-        return null ;
+    public TestAssemblerShared() {
+        super(DIR+"assem-security-shared.ttl", true);
     }
 }
-

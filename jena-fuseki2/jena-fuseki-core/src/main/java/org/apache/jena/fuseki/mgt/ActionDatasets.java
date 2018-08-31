@@ -43,12 +43,15 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
 import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.FusekiConst;
 import org.apache.jena.fuseki.build.Template;
 import org.apache.jena.fuseki.build.TemplateFunctions;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
+import org.apache.jena.fuseki.ctl.JsonDescription;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocab;
+import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
@@ -95,7 +98,7 @@ public class ActionDatasets extends ActionContainerItem {
         action.log.info(format("[%d] GET datasets", action.id)) ;
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("D") ;
-        builder.key(MgtConst.datasets) ;
+        builder.key(ServerConst.datasets) ;
         JsonDescription.arrayDatasets(builder, action.getDataAccessPointRegistry());
         builder.finishObject("D") ;
         return builder.build() ;
@@ -434,7 +437,7 @@ public class ActionDatasets extends ActionContainerItem {
                 dbName = dbName.substring(1) ;
             
             String update =  StrUtils.strjoinNL
-                (SystemState.PREFIXES,
+                (FusekiConst.PREFIXES,
                  "DELETE { GRAPH ?g { ?s fu:status ?state } }",
                  "INSERT { GRAPH ?g { ?s fu:status "+FmtUtils.stringForRDFNode(newState)+" } }",
                  "WHERE {",

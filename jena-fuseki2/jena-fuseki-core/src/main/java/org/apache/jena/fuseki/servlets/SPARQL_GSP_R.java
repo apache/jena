@@ -30,6 +30,7 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Only the READ operations */
 public class SPARQL_GSP_R extends SPARQL_GSP
@@ -62,17 +63,20 @@ public class SPARQL_GSP_R extends SPARQL_GSP
         action.beginRead() ;
         setCommonHeaders(action.response) ;
         try {
-            Target target = determineTarget(action) ;
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("GET->"+target) ;
             boolean exists = target.exists() ;
             if ( ! exists )
                 ServletOps.errorNotFound("No such graph: <"+target.name+">") ;
+            Graph g = target.graph() ;
+            if ( ! target.isDefault && g.isEmpty() )
+                ServletOps.errorNotFound("No such graph: <"+target.name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
             String ct = lang.getContentType().toHeaderString() ;
             action.response.setContentType(ct) ;
-            Graph g = target.graph() ;
             //Special case RDF/XML to be the plain (faster, less readable) form
             RDFFormat fmt = 
                 ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;
@@ -103,8 +107,9 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     protected void doHead(HttpAction action) {
         action.beginRead() ;
         setCommonHeaders(action.response) ;
-        try { 
-            Target target = determineTarget(action) ;
+        try {
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("HEAD->"+target) ;
             if ( ! target.exists() )

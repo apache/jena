@@ -20,11 +20,11 @@ package org.apache.jena.fuseki.system;
 
 import java.io.File ;
 import java.net.URL ;
+import java.nio.file.Path;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.helpers.Loader ;
@@ -65,12 +65,20 @@ public class FusekiLogging
     
     /** Set up logging - standalone and war packaging */
     public static synchronized void setLogging() {
+        setLogging(null);
+        
+    }
+    
+    /** Set up logging. Allow an extra location (string directory name without trailing "/"). This may be null 
+     * 
+     * @param extraDir
+     */
+    public static synchronized void setLogging(Path extraDir) {
         if ( ! allowLoggingReset )
             return ;
         if ( loggingInitialized )
             return ;
         loggingInitialized = true ;
-        FusekiEnv.setEnvironment() ;
         
         logLogging("Fuseki logging") ;
         // No loggers have been created but configuration may have been set up.
@@ -86,12 +94,12 @@ public class FusekiLogging
         }
         logLogging("Fuseki logging - setup") ;
         // Look for a log4j.properties in the current working directory
-        // and an existing FUSEKI_BASE for easy customization.
+        // and a plane (e.g. FUSEKI_BASE in the webapp/full server) for easy customization.
         String fn1 = "log4j.properties" ;
         String fn2 = null ;
         
-        if ( FusekiEnv.FUSEKI_BASE != null ) 
-            fn2 = FusekiEnv.FUSEKI_BASE.toString()+"/log4j.properties" ;
+        if ( extraDir != null ) 
+            fn2 = extraDir.resolve("log4j.properties").toString() ;
         if ( attempt(fn1) ) return ; 
         if ( attempt(fn2) ) return ;
         

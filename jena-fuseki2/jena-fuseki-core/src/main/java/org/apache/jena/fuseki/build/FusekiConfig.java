@@ -38,7 +38,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
@@ -202,7 +201,7 @@ public class FusekiConfig {
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
         String qs = StrUtils.strjoinNL
-            (SystemState.PREFIXES ,
+            (FusekiConst.PREFIXES ,
              "SELECT * {" ,
              "  GRAPH ?g {",
              "     ?s fu:name ?name ;" ,

@@ -421,7 +421,7 @@ public class RDFConnectionRemote implements RDFConnection {
             throw new ARQException("Dataset operations not available - no dataset URL provided"); 
         Dataset ds = DatasetFactory.createTxnMem();
         Txn.executeWrite(ds, ()->{
-            TypedInputStream s = exec(()->HttpOp.execHttpGet(destination, acceptDataset));
+            TypedInputStream s = exec(()->HttpOp.execHttpGet(destination, acceptDataset, this.httpClient, this.httpContext));
             Lang lang = RDFLanguages.contentTypeToLang(s.getContentType());
             RDFDataMgr.read(ds, s, lang);
         });

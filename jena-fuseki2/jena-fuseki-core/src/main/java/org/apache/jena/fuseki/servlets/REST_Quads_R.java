@@ -80,7 +80,7 @@ public class REST_Quads_R extends REST_Quads {
 
         action.beginRead() ;
         try {
-            DatasetGraph dsg = action.getActiveDSG() ;
+            DatasetGraph dsg = decideDataset(action); 
             action.response.setHeader("Content-type", lang.getContentType().toHeaderString());
             // ActionLib.contentNegotationQuads above
             // RDF/XML is not a choice but this code is general.

@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.ctl;
+package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
+import org.apache.jena.fuseki.ctl.ActionAsyncTask;
+import org.apache.jena.fuseki.ctl.Backup;
+import org.apache.jena.fuseki.ctl.TaskBase;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;

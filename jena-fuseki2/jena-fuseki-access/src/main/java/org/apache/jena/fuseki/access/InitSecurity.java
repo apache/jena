@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt;
+package org.apache.jena.fuseki.access;
 
-public interface ServiceMXBean
-{
-    String getName() ;
+import org.apache.jena.sys.JenaSubsystemLifecycle;
+import org.apache.jena.sys.JenaSystem;
+
+public class InitSecurity implements JenaSubsystemLifecycle {
+
+    @Override
+    public void start() {
+        JenaSystem.logLifecycle("InitSecurity - start") ;
+        VocabSecurity.init();
+        JenaSystem.logLifecycle("InitSecurity - finish") ;
+    }
+
+    @Override
+    public void stop() {}
     
-    long getRequests() ;
-    long getRequestsGood() ;
-    long getRequestsBad() ;
-    
-//    void enable() ;
-//    void disable() ;
+    @Override
+    public int level() { return 100; }
 }
-

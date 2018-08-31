@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt;
+package org.apache.jena.fuseki.ctl;
 
 import java.util.List ;
 
@@ -25,6 +25,7 @@ import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.Endpoint ;
 import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.server.ServerConst;
 
 /** Create a description of a service */
 public class JsonDescription {
@@ -40,11 +41,11 @@ public class JsonDescription {
     
     public static void describe(JsonBuilder builder, DataAccessPoint access) {
         builder.startObject() ;
-        builder.key(MgtConst.dsName).value(access.getName()) ;
+        builder.key(ServerConst.dsName).value(access.getName()) ;
         
-        builder.key(MgtConst.dsState).value(access.getDataService().isAcceptingRequests()) ;
+        builder.key(ServerConst.dsState).value(access.getDataService().isAcceptingRequests()) ;
         
-        builder.key(MgtConst.dsService) ;
+        builder.key(ServerConst.dsService) ;
         builder.startArray() ;
         
         for ( Operation operation : access.getDataService().getOperations() ) {
@@ -58,9 +59,9 @@ public class JsonDescription {
     private static void describe(JsonBuilder builder, Operation operation, List<Endpoint> endpoints) {
         builder.startObject() ;
         
-        builder.key(MgtConst.srvType).value(operation.getName()) ;
-        builder.key(MgtConst.srvDescription).value(operation.getDescription()) ;
-        builder.key(MgtConst.srvEndpoints) ;
+        builder.key(ServerConst.srvType).value(operation.getName()) ;
+        builder.key(ServerConst.srvDescription).value(operation.getDescription()) ;
+        builder.key(ServerConst.srvEndpoints) ;
         builder.startArray() ;
         for ( Endpoint endpoint : endpoints )
             builder.value(endpoint.getEndpoint()) ;

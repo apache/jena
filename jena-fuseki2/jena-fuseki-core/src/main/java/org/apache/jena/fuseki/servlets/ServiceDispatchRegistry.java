@@ -116,8 +116,16 @@ public class ServiceDispatchRegistry {
         operationToHandler.put(operation, action);
     }
     
+    /**
+     * Remove the registration for an operation.
+     */
+    public void unregister(Operation operation) {
+        Objects.requireNonNull(operation);
+        operationToHandler.remove(operation);
+        contentTypeToOperation.values().remove(operation);
+    }
+
     // The server DataAccessPointRegistry is held in the ServletContext for the server.
-    
     public static ServiceDispatchRegistry get(ServletContext servletContext) {
         ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(Fuseki.attrServiceRegistry) ;
         if ( registry == null )
