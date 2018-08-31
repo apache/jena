@@ -103,7 +103,7 @@ public class DumpServlet extends HttpServlet
               PrintWriter pw = new PrintWriter(sw) ) {
             // Standard environment
             pw.println("Method:                 "+req.getMethod());
-            pw.println("getContentLength:       "+Integer.toString(req.getContentLength()));
+            pw.println("getContentLength:       "+Long.toString(req.getContentLengthLong()));
             pw.println("getContentType:         "+req.getContentType());
             pw.println("getRequestURI:          "+req.getRequestURI());
             pw.println("getRequestURL:          "+req.getRequestURL());

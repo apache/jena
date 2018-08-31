@@ -496,7 +496,7 @@ public class ActionDatasets extends ActionContainerItem {
         // Don't log - assemblers are typically small.
         // Adding this to the log confuses things.
         // Reserve logging for data uploads. 
-//        int len = request.getContentLength() ;
+//        long len = request.getContentLengthLong() ;
 //        if ( action.verbose ) {
 //            if ( len >= 0 )
 //                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,

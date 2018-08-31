@@ -54,7 +54,7 @@ public class TestMultipleEmbedded {
 
         int port = FusekiLib.choosePort() ;
         FusekiServer server1 = FusekiServer.create().port(port).add("/ds1", dsg).build() ;
-        // Same port - Bbad.
+        // Same port - Bad.
         FusekiServer server2 = FusekiServer.create().port(port).add("/ds2", dsg).build() ;
     
         server1.start();
