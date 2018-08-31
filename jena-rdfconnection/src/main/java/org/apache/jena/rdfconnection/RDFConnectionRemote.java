@@ -233,29 +233,31 @@ public class RDFConnectionRemote implements RDFConnection {
         
         // Use the query string as provided if possible, otherwise serialize the query.
         String queryStringToSend = ( queryString != null ) ?  queryString : query.toString();
-        
-        return exec(()-> {
-            QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
-            QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
-            // Set the accept header - use the most specific method. 
-            if ( query != null ) {
-                if ( query.isSelectType() && acceptSelectResult != null )
-                    qEngine.setAcceptHeader(acceptSelectResult);
-                if ( query.isAskType() && acceptAskResult != null )
-                    qEngine.setAcceptHeader(acceptAskResult);
-                if ( ( query.isConstructType() || query.isDescribeType() ) && acceptGraph != null )
-                    qEngine.setAcceptHeader(acceptGraph);
-                if ( query.isConstructQuad() )
-                    qEngine.setDatasetContentType(acceptDataset);
-            }
-            // Use the general one.
-            if ( qEngine.getAcceptHeader() == null && acceptSparqlResults != null )
-                qEngine.setAcceptHeader(acceptSparqlResults);
-            // Makre sure it was set somehow.
-            if ( qEngine.getAcceptHeader() == null )
-                throw new JenaConnectionException("No Accept header");   
-            return qExec ;
-        });
+        return exec(()-> createQueryExecution(query, queryStringToSend));
+    }
+    
+    // Create the QueryExecution
+    private QueryExecution createQueryExecution(Query query, String queryStringToSend) {
+        QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
+        QueryEngineHTTP qEngine = (QueryEngineHTTP)qExec;
+        // Set the accept header - use the most specific method. 
+        if ( query != null ) {
+            if ( query.isSelectType() && acceptSelectResult != null )
+                qEngine.setAcceptHeader(acceptSelectResult);
+            if ( query.isAskType() && acceptAskResult != null )
+                qEngine.setAcceptHeader(acceptAskResult);
+            if ( ( query.isConstructType() || query.isDescribeType() ) && acceptGraph != null )
+                qEngine.setAcceptHeader(acceptGraph);
+            if ( query.isConstructQuad() )
+                qEngine.setDatasetContentType(acceptDataset);
+        }
+        // Use the general one.
+        if ( qEngine.getAcceptHeader() == null && acceptSparqlResults != null )
+            qEngine.setAcceptHeader(acceptSparqlResults);
+        // Make sure it was set somehow.
+        if ( qEngine.getAcceptHeader() == null )
+            throw new JenaConnectionException("No Accept header");   
+        return qExec ;
     }
 
     @Override
