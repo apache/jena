@@ -29,16 +29,29 @@ import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.StandardCopyOption ;
-import java.util.* ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import jena.cmd.CmdException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.build.* ;
-import org.apache.jena.fuseki.server.*;
+import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
+import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.mgt.Template;
+import org.apache.jena.fuseki.mgt.TemplateFunctions;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.FusekiInitialConfig;
+import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.rdf.model.* ;
@@ -226,7 +239,7 @@ public class FusekiSystem
         for ( DataAccessPoint dap : datapoints ) {
             Fuseki.configLog.info("Register: "+dap.getName()) ;
             dap.getDataService().goActive();
-            registry.register(dap.getName(), dap);
+            registry.register(dap);
         }
     }
 

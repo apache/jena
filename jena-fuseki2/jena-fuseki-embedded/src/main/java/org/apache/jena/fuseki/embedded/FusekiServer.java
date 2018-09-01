@@ -389,7 +389,7 @@ public class FusekiServer {
             if ( dataAccessPoints.isRegistered(name) )
                 throw new FusekiConfigException("Data service name already registered: "+name);
             DataAccessPoint dap = new DataAccessPoint(name, dataService);
-            dataAccessPoints.register(name, dap);
+            dataAccessPoints.register(dap);
             return this;
         }
 

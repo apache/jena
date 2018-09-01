@@ -38,14 +38,13 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConst;
-import org.apache.jena.fuseki.build.Template;
-import org.apache.jena.fuseki.build.TemplateFunctions;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
 import org.apache.jena.fuseki.ctl.JsonDescription;
 import org.apache.jena.fuseki.server.DataAccessPoint;
@@ -183,6 +182,7 @@ public class ActionDatasets extends ActionContainerItem {
             String datasetPath ;
             {   // Check the name provided.
                 String datasetName = object.getLexicalForm() ;
+                // This duplicates the code FusekiBuilder.buildDataAccessPoint to give better error messages and HTTP status code."
                 
                 // ---- Check and canonicalize name.
                 if ( datasetName.isEmpty() )
@@ -194,13 +194,14 @@ public class ActionDatasets extends ActionContainerItem {
                 if ( datasetName.equals("/") )
                     ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetName)) ;
                 datasetPath = DataAccessPoint.canonical(datasetName) ;
+                // ---- Check whether it already exists 
+                if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) )
+                    // And abort.
+                    ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             }
-            action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-            // ---- Check whether it already exists 
-            if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) )
-                // And abort.
-                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
             
+            action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
+
             configFile = FusekiSystem.generateConfigurationFilename(datasetPath) ;
             List<String> existing = FusekiSystem.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
@@ -218,9 +219,12 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
-            ref.getDataService().goActive();
-            action.getDataAccessPointRegistry().register(datasetPath, ref) ;
+            DataAccessPoint dataAccessPoint = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+            dataAccessPoint.getDataService().goActive();
+            if ( ! datasetPath.equals(dataAccessPoint.getName()) )
+                FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
+            
+            action.getDataAccessPointRegistry().register(dataAccessPoint) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOps.success(action) ;
             system.commit();

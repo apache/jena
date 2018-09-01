@@ -25,19 +25,39 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <name>Apache Jena - Fuseki Server Engine</name>
-  <artifactId>jena-fuseki-core</artifactId>
+  <name>Apache Jena - Fuseki Webapp</name>
+  <artifactId>jena-fuseki-webapp</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
+      <artifactId>jena-fuseki-core</artifactId>
       <version>3.9.0-SNAPSHOT</version>
-      <type>pom</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
+      <version>3.9.0-SNAPSHOT</version>
+    </dependency>
+   
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-runner</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
+    -->
+
+    <!-- Text and spatial -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
@@ -45,21 +65,22 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-fileupload</groupId>
-      <artifactId>commons-fileupload</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-spatial</artifactId>
+      <version>3.9.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Apache Shiro -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>${ver.shiro}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>
-
-    <!-- Jetty's useful servlets, inc compression -->
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlets</artifactId>
-      <version>${ver.jetty}</version>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>${ver.shiro}</version>
     </dependency>
 
     <!-- Logging :  Needed because the Fuseki command line manages logging -->
@@ -78,6 +99,23 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <optional>true</optional>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>3.9.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-base</artifactId>
+      <version>3.9.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -126,12 +164,13 @@
         </executions>
       </plugin>
 
-      <!-- Testing is done in jena-fuseki-webapp and jena-fuseki-embedded -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <skipTests>true</skipTests>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
         </configuration>
       </plugin>
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.ctl;
+package org.apache.jena.fuseki.mgt;
 
 import java.io.* ;
 import java.util.Collections;

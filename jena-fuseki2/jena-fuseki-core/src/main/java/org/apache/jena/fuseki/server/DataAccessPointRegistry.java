@@ -33,13 +33,16 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         other.forEach((name, accessPoint)->register(name, accessPoint));
     }
     
-    // Add error checking.
-    public void register(String name, DataAccessPoint accessPt) {
+    // Preferred way to register. Other method for legacy.
+    public void register(DataAccessPoint accessPt) {
+        register(accessPt.getName(), accessPt);
+    }
+    
+    private void register(String name, DataAccessPoint accessPt) {
         if ( isRegistered(name) )
             throw new FusekiException("Already registered: "+name) ;
         super.put(name, accessPt);
     }
-    
     // Debugging
     public void print(String string) {
         System.out.flush() ;

@@ -36,7 +36,7 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-core</artifactId>
+      <artifactId>jena-fuseki-webapp</artifactId>
       <version>${project.version}</version>
     </dependency>
 

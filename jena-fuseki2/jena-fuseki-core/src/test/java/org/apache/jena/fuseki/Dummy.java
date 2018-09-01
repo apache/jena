@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,11 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-public class FusekiCmd {
-    public static void main(String[] args) {
-        // Must NOT use any logging.  The command processor sets that up.
-        System.err.println("Deprecated: Use org.apache.jena.fuseki.cmd.FusekiCmd") ;
-        org.apache.jena.fuseki.cmd.FusekiCmd.main(args);
-    }
-}
+public class Dummy {
 
+}

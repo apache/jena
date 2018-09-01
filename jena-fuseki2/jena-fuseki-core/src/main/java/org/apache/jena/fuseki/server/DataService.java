@@ -36,7 +36,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 
-public class DataService { //implements DatasetMXBean {
+public class DataService {
     public static DataService serviceOnlyDataService() {
         return dummy; 
     }
@@ -76,7 +76,6 @@ public class DataService { //implements DatasetMXBean {
         counters.add(CounterName.RequestsBad);
         // Start ACTIVE. Registration controls visibility. 
         goActive();
-
     }
 
     /**

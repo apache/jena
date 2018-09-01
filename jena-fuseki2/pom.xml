@@ -61,6 +61,7 @@
     <module>jena-fuseki-core</module>
     <module>jena-fuseki-embedded</module>
     <module>jena-fuseki-access</module>
+    <module>jena-fuseki-webapp</module>
     <module>jena-fuseki-war</module>
     <module>jena-fuseki-server</module>
     <module>jena-fuseki-basic</module>
