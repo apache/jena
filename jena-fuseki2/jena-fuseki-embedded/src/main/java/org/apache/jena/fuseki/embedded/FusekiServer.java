@@ -77,7 +77,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  * <pre>
  *      DatasetGraph dsg = ...;
  *      FusekiServer server = FusekiServer.create()
- *          .setPort(1234)
+ *          .port(1234)
  *          .add("/ds", dsg)
  *          .build();
  *       server.start();
@@ -96,7 +96,7 @@ public class FusekiServer {
     static public FusekiServer make(int port, String name, DatasetGraph dsg) {
         return create()
             .port(port)
-            .setLoopback(true)
+            .loopback(true)
             .add(name, dsg)
             .build();
     }
