@@ -41,7 +41,7 @@ import org.apache.jena.update.UpdateRequest;
  * Implement of {@link RDFConnection} over a {@link Dataset} in the same JVM.
  * <p>
  * Multiple levels of {@link Isolation} are provided, The default {@code COPY} level makes a local
- * {@link RDFConnection} behave like a remote conenction. This should be the normal use in
+ * {@link RDFConnection} behave like a remote connection. This should be the normal use in
  * testing.
  * <ul>
  * <li>{@code COPY} &ndash; {@code Model}s and {@code Dataset}s are copied. 
@@ -105,12 +105,6 @@ public class RDFConnectionLocal implements RDFConnection {
     public void load(Model model) { 
         load(null, model);
     }
-
-    /**
-     * There may be differences between local and remote behaviour. A local
-     * connection may return direct references to a dataset so updates on
-     * returned
-     */
 
     @Override
     public Model fetch(String graph) {
