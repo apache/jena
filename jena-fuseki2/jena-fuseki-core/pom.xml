@@ -29,6 +29,10 @@
   <artifactId>jena-fuseki-core</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-core</automatic.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>
@@ -135,6 +139,18 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

@@ -29,6 +29,10 @@
   </parent> 
 
   <packaging>jar</packaging>
+  
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-access</automatic.module.name>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -49,6 +53,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>

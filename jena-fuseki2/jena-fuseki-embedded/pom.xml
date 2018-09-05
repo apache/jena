@@ -30,6 +30,10 @@
 
   <packaging>jar</packaging>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-embedded</automatic.module.name>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
@@ -97,6 +101,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>
