@@ -37,8 +37,6 @@
 		<bundle dependency="true">mvn:commons-codec/commons-codec/${ver.commons-codec}</bundle>
 		<bundle dependency="true">mvn:commons-io/commons-io/${ver.commonsio}</bundle>
 		<bundle dependency="true">mvn:org.apache.thrift/libthrift/${ver.libthrift}</bundle>
-		<!-- Guava 24.1 is required by jsonld-java -->
-		<bundle dependency="true">mvn:com.google.guava/guava/24.1-jre</bundle>
 	</feature>
 
 </features>
