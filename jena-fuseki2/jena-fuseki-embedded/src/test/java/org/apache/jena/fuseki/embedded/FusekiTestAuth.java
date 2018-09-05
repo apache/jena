@@ -21,16 +21,14 @@ package org.apache.jena.fuseki.embedded;
 import java.util.Objects;
 
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.util.security.Constraint;
-import org.eclipse.jetty.util.security.Credential;
-import org.eclipse.jetty.util.security.Password;
 import org.junit.Assert;
 
 /**
@@ -155,7 +153,7 @@ public class FusekiTestAuth {
         securityHandler.addConstraintMapping(mapping) ;
         securityHandler.setIdentityService(identService) ;
         
-        UserStore userStore = makeUserStore(user, password, role);
+        UserStore userStore = JettyLib.makeUserStore(user, password, role);
         
         HashLoginService loginService = new HashLoginService("Fuseki Authentication") ;
         loginService.setUserStore(userStore);
@@ -167,17 +165,6 @@ public class FusekiTestAuth {
             securityHandler.setRealmName(realm);
         
         return securityHandler;
-    }
-
-    /** Very simple! */
-    private static UserStore makeUserStore(String user, String password, String role) {
-        Credential cred  = new Password(password);
-        PropertyUserStore propertyUserStore = new PropertyUserStore();
-        String[] roles = role == null ? null : new String[]{role};
-        propertyUserStore.addUser(user, cred, roles);
-        try { propertyUserStore.start(); }
-        catch (Exception ex) { throw new FusekiException("UserStore", ex); }
-        return propertyUserStore;
     }
 
     /** Assert that an {@code HttpException} ias an authorization failure.

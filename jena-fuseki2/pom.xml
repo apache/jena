@@ -50,7 +50,7 @@
   </licenses>
 
   <properties>
-    <ver.jetty>9.4.7.v20170914</ver.jetty>
+    <ver.jetty>9.4.12.v20180830</ver.jetty>
     <ver.shiro>1.2.6</ver.shiro>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
