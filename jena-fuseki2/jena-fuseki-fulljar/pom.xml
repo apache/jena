@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Apache Jena - Fuseki Server Standalone Jar</name>
-  <artifactId>jena-fuseki-server</artifactId>
+  <artifactId>jena-fuseki-fulljar</artifactId>
 
   <parent>
     <groupId>org.apache.jena</groupId>

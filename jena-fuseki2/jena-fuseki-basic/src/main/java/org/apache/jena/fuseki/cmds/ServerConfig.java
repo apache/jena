@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.cmds;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Setup details (command line, config file) from command line processing.
- *  Thisis built by {@link FusekiBasicMain#exec}.
+ *  This is built by {@link FusekiBasicMain#exec}.
  *  This is processed by {@link FusekiBasicMain#buildServer}.
  */
 class ServerConfig {
