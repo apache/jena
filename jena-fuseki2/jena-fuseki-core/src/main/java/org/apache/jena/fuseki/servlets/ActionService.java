@@ -67,8 +67,10 @@ public abstract class ActionService extends ActionBase {
                 return;
             }
         } else {
-            dataAccessPoint = null;
-            dSrv = DataService.serviceOnlyDataService();
+            // Routed to this URL; no registered dataset on this URL.
+            // e.g. General query servlet
+            dSrv = ServiceOnly.dataService();
+            dataAccessPoint = ServiceOnly.dataAccessPoint();
         }
 
         action.setRequest(dataAccessPoint, dSrv);

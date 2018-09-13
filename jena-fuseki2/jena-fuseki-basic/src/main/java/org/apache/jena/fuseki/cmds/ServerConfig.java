@@ -39,11 +39,11 @@ class ServerConfig {
     // ... or this.
     public String serverConfig        = null;
     
-
-    /** Allow there to be no registered datasets without it being an error. */
-    public boolean empty              = false ;
-    /** Setup for SPARQLer - validators and general query engine, some pages. */ 
-    public boolean sparqler           = false ;
+    /** No registered datasets without it being an error. */
+    public boolean empty         = false ;
+    /** General query processor servlet */
+    public String addGeneral          = null ;
+    
     public boolean validators         = false ;
     /** An informative label */
     public String datasetDescription;

@@ -27,28 +27,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
-import org.apache.jena.fuseki.DEF;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.core.DatasetGraphReadOnly;
 
 public class DataService {
-    public static DataService serviceOnlyDataService() {
-        return dummy; 
-    }
-    
-    private static final DataService dummy;
-    static {
-        DatasetGraph dsg = new DatasetGraphReadOnly(DatasetGraphFactory.create());
-        dummy = new DataService(dsg);
-        dummy.addEndpoint(Operation.Query, DEF.ServiceQuery);
-        dummy.addEndpoint(Operation.Query, DEF.ServiceQueryAlt);
-    }
-    
     private DatasetGraph dataset;
 
     private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();

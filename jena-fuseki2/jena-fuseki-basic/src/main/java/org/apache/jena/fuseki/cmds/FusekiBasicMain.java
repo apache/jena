@@ -80,7 +80,12 @@ public class FusekiBasicMain extends CmdARQ {
         private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
+        private static ArgDecl  argGeneralQuerySvc = new ArgDecl(ArgDecl.HasValue, "general");
+        
+        // Same as --empty --validators --general=/sparql, --files=ARG
+        
         private static ArgDecl  argSparqler     = new ArgDecl(ArgDecl.HasValue, "sparqler");
+
         private static ArgDecl  argValidators   = new ArgDecl(ArgDecl.NoValue,  "validators");
         // private static ModLocation modLocation = new ModLocation();
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
@@ -153,37 +158,33 @@ public class FusekiBasicMain extends CmdARQ {
 
         @Override
         protected void processModulesAndArgs() {
-            int x = 0;
+            boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
 
-            Logger log = Fuseki.serverLog;
-
-            // ---- Checking
+            // ---- Checking consistency
+            int numDefinitions = 0;
 
             if ( contains(argMem) )             
-                x++;
+                numDefinitions++;
             if ( contains(argFile) )
-                x++;
+                numDefinitions++;
             if ( contains(ModAssembler.assemblerDescDecl) )
-                x++;
+                numDefinitions++;
             if ( contains(argTDB) )
-                x++;
+                numDefinitions++;
             if ( contains(argMemTDB) )
-                x++;
+                numDefinitions++;
             if ( contains(argConfig) )
-                x++;
+                numDefinitions++;
 
-            boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
-            
-            
-            if ( x == 0 && ! allowEmpty )
+            if ( numDefinitions == 0 && ! allowEmpty )
                 throw new CmdException("No dataset specified on the command line.");
 
-            if ( x > 1 )
+            if ( numDefinitions > 1 )
                 throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc");
-            
-            if ( x > 0 && allowEmpty )
+
+            if ( numDefinitions > 0 && allowEmpty )
                 throw new CmdException("Dataset provided but 'no dataset' flag given");
-            
+
             //---- check: Invalid: --conf + service name.
             if ( contains(argConfig) ) {
                 if ( getPositional().size() != 0 )
@@ -274,25 +275,6 @@ public class FusekiBasicMain extends CmdARQ {
                 Txn.executeWrite(serverConfig.dsg,  ()->RDFDataMgr.read(serverConfig.dsg, filename));
             }
 
-//            if ( contains(argMemTDB) ) {
-//                //log.info("TDB dataset: in-memory") ;
-//                cmdLineConfig.reset();
-//                cmdLineConfig.argTemplateFile = useTDB2 ? Template.templateTDB2_MemFN : Template.templateTDB1_MemFN ;
-//                cmdLineConfig.params.put(Template.DIR, Names.memName) ;
-//                // Always allow.
-//                cmdLineConfig.allowUpdate = true ;
-//                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset (in-memory)" : "TDB dataset (in-memory)";
-//            }
-//
-//            if ( contains(argTDB) ) {
-//                cmdLineConfig.reset();
-//                cmdLineConfig.argTemplateFile = 
-//                    useTDB2 ? Template.templateTDB2_DirFN : Template.templateTDB1_DirFN;
-//                String dir = getValue(argTDB) ;
-//                cmdLineConfig.params.put(Template.DIR, dir) ;
-//                cmdLineConfig.datasetDescription = useTDB2 ? "TDB2 dataset: "+dir : "TDB dataset: "+dir;
-//            }
-            
             if ( contains(argMemTDB) ) {
                 serverConfig.datasetDescription = tag+" dataset in-memory";
                 serverConfig.dsg =
@@ -324,19 +306,27 @@ public class FusekiBasicMain extends CmdARQ {
                 ARQ.getContext().set(ARQ.queryTimeout, str);
             }
             
-            if ( contains(argValidators) ) {
-                serverConfig.validators = true;
-            }
-                
             if ( contains(argSparqler) ) {
                 String filebase = getValue(argSparqler);
                 if ( ! FileOps.exists(filebase) )
                     throw new CmdException("File area not found: "+filebase); 
                 serverConfig.contentDirectory = filebase;
-                serverConfig.sparqler = true;
+                serverConfig.addGeneral = "/sparql";
+                serverConfig.empty = true;
                 serverConfig.validators = true;
             }
             
+            if ( contains(argGeneralQuerySvc) ) {
+                String z = getValue(argGeneralQuerySvc);
+                if ( ! z.startsWith("/") )
+                    z = "/"+z;
+                serverConfig.addGeneral = z;
+            }
+
+            if ( contains(argValidators) ) {
+                serverConfig.validators = true;
+            }
+                
             if ( contains(argBase) ) {
                 // Static files.
                 String filebase = getValue(argBase);
@@ -353,14 +343,7 @@ public class FusekiBasicMain extends CmdARQ {
 //                jettyServerConfig.enableCompression = super.hasValueOfTrue(argGZip);
 //            }
         }
-
-//        private static String sort_out_dir(String path) {
-//            path.replace('\\', '/');
-//            if ( !path.endsWith("/") )
-//                path = path + "/";
-//            return path;
-//        }
-
+        
         @Override
         protected void exec() {
             try {
@@ -406,15 +389,17 @@ public class FusekiBasicMain extends CmdARQ {
             builder.port(serverConfig.port);
             builder.loopback(serverConfig.loopback);
             
+            if ( serverConfig.addGeneral != null )
+                builder.addServlet(serverConfig.addGeneral,  new SPARQL_QueryGeneral());
+            
             if ( serverConfig.validators ) {
-                if ( serverConfig.sparqler )
-                    builder.addServlet("/sparql",  new SPARQL_QueryGeneral());
                 // Validators.
                 builder.addServlet("/validate/query",  new QueryValidator());
                 builder.addServlet("/validate/update", new UpdateValidator());
                 builder.addServlet("/validate/iri",    new IRIValidator());
                 builder.addServlet("/validate/data",   new DataValidator());
-            } 
+            }
+            
             if ( ! serverConfig.empty ) {
                 if ( serverConfig.serverConfig != null )
                     // Config file.
