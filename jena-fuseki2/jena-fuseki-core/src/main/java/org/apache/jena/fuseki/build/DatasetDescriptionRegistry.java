@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.build;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
@@ -36,27 +39,17 @@ import org.apache.jena.rdf.model.Resource;
  */
 public class DatasetDescriptionRegistry  {
 	
-	private RefCountingMap<Resource, Dataset> map = new RefCountingMap<>() ;
+	private Map<Resource, Dataset> map = new HashMap<>();
 	
 	public DatasetDescriptionRegistry() {}
 	
-    /** Use a mapping. This will add a mapping or increment any reference counting. */
     public void register(Resource node, Dataset ds) {
         Dataset dsCurrent = map.get(node) ;
         if ( dsCurrent != null ) {
             if ( ! dsCurrent.equals(ds) )
                 Log.warn(this.getClass(), "Replacing registered dataset for "+node);
         }
-        map.add(node, ds);
-    }
-
-    /** Stop using a mapping. */
-    public void unregister(Resource node) {
-        map.remove(node);
-    }
-
-    public int refCount(Resource node) {
-        return map.refCount(node);
+        map.put(node, ds);
     }
 
     public Dataset get(Resource node) {

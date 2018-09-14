@@ -29,8 +29,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.FusekiLib;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
@@ -50,7 +50,7 @@ public class TestFusekiCustomOperation {
     private static final String endpointName = "special";
 
     private final ActionService customHandler = new CustomService();
-    private final int port = FusekiLib.choosePort();
+    private final int port = WebLib.choosePort();
     private final String url = "http://localhost:"+port;
 
     @Test

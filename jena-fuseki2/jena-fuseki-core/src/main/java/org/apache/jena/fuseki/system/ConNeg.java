@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.conneg;
+package org.apache.jena.fuseki.system;
 
 import static org.apache.jena.riot.web.HttpNames.hAcceptCharset ;
 
@@ -156,7 +156,7 @@ public class ConNeg
                                               AcceptList myPrefs,
                                               MediaType defaultMediaType)
     {
-        String a = WebLib.getAccept(httpRequest) ;
+        String a = FusekiNetLib.getAccept(httpRequest) ;
         if ( log.isDebugEnabled() )
             log.debug("Accept request: "+a) ;
         

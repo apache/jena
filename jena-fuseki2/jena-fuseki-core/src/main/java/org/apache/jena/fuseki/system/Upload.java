@@ -33,7 +33,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.servlets.ActionErrorException;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -56,7 +55,7 @@ public class Upload {
      *  This function is used by GSP.
      */ 
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         
         if ( ct == null ) {
             ServletOps.errorBadRequest("No content type") ;

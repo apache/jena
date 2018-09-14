@@ -340,7 +340,7 @@ public class FusekiSystem
             //  1 - clean model, remove "fu:serviceUpdate", "fu:serviceUpload", "fu:serviceReadGraphStore", "fu:serviceReadWriteGraphStore"
             //  2 - set a flag on DataAccessPoint
         }
-        DataAccessPoint dap = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+        DataAccessPoint dap = FusekiConfig.buildDataAccessPoint(subject, registry) ;
         return dap ;
     }
     

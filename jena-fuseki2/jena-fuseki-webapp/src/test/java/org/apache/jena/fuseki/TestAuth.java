@@ -34,8 +34,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.DatasetAccessor ;
 import org.apache.jena.query.DatasetAccessorFactory ;
 import org.apache.jena.query.QueryExecutionFactory ;
@@ -62,7 +61,7 @@ public class TestAuth {
     
     // Use different port etc because sometimes the previous testing servers
     // don't release ports fast enough (OS issue / Linux)
-    public static final int authPort             = FusekiLib.choosePort() ;
+    public static final int authPort             = FusekiNetLib.choosePort() ;
     public static final String authUrlRoot       = "http://localhost:"+authPort+"/" ;
     public static final String authDatasetPath   = "/dataset" ;
     public static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update" ; 

@@ -24,7 +24,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
@@ -78,7 +78,7 @@ public class ExtendFuseki_AddService_1 {
     // Choose free port for the example
     // Normally, this is fixed and published, and fixed in URLs.
     // To make the example portable, we ask the OS for a free port.
-    static int PORT             = FusekiLib.choosePort();
+    static int PORT             = WebLib.choosePort();
     
     // The server
     static String SERVER_URL    = "http://localhost:"+PORT+"/";

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
-import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -41,16 +41,16 @@ public class TestBuilder {
 	@Test
 	public void testVerifySameDatasetObjectForSameDescription() {
 		
-		Dataset ds1 = FusekiBuilder.getDataset(dsDesc1, registry);
-		Dataset ds2 = FusekiBuilder.getDataset(dsDesc1, registry);
+		Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
+		Dataset ds2 = FusekiConfig.getDataset(dsDesc1, registry);
 		assertEquals(ds1, ds2);
 	}
 	
 	@Test
 	public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
 		
-		Dataset ds1 = FusekiBuilder.getDataset(dsDesc1, registry);
-		Dataset ds2 = FusekiBuilder.getDataset(dsDesc2, registry);
+		Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
+		Dataset ds2 = FusekiConfig.getDataset(dsDesc2, registry);
 		assertNotEquals(ds1, ds2);		
 	}
 	

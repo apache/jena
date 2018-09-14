@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.main.examples;
 
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
@@ -44,7 +44,7 @@ public class ExtendFuseki_AddService_2 {
     static { LogCtl.setLog4j(); }
 
     // Endpoint dispatch only.
-    static int PORT             = FusekiLib.choosePort();
+    static int PORT             = WebLib.choosePort();
     
     // The server
     static String SERVER_URL    = "http://localhost:"+PORT+"/";

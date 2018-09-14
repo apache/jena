@@ -21,7 +21,7 @@ package org.apache.jena.fuseki.main;
 import java.util.Objects;
 
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -77,7 +77,7 @@ import org.junit.Assert;
  * large test suite may end up quite slow.
  */
 public class FusekiTestAuth {
-    private static int currentPort = FusekiLib.choosePort() ;
+    private static int currentPort = WebLib.choosePort() ;
     
     public static int port() {
         return currentPort ;

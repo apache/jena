@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetailsWithName;
 import org.apache.jena.graph.Node ;
@@ -138,9 +138,9 @@ public class SPARQL_Upload extends ActionService
         action.beginWrite() ;
         try {
             if ( gn != null )
-                FusekiLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
+                FusekiNetLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
             else
-                FusekiLib.addDataInto(dataTmp, action.getActiveDSG()) ;
+                FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG()) ;
 
             action.commit() ;
             return count ;

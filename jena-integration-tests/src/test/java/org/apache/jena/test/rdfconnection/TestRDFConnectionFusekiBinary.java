@@ -21,7 +21,8 @@ package org.apache.jena.test.rdfconnection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -50,16 +51,16 @@ public class TestRDFConnectionFusekiBinary {
         Model model = ModelFactory.createDefaultModel();
         model.getGraph().add(triple);
         
-        int PORT = FusekiLib.choosePort();
+        int PORT = WebLib.choosePort();
         FusekiServer server = createFusekiServer(PORT).build().start();
         try {
             String dsURL = "http://localhost:"+PORT+"/ds" ;
-            assertTrue(FusekiLib.isFuseki(dsURL)); 
+            assertTrue(Fuseki.isFuseki(dsURL)); 
 
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
 
             try (RDFConnectionFuseki conn = (RDFConnectionFuseki)builder.build()) {
-                assertTrue(FusekiLib.isFuseki(conn));
+                assertTrue(Fuseki.isFuseki(conn));
                 // GSP
                 conn.put(model);
                 checkModel(conn, "b3456");

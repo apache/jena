@@ -33,7 +33,7 @@ import org.apache.http.entity.EntityTemplate ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.FusekiLib;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.Operation ;
@@ -94,7 +94,7 @@ public class TestEmbeddedFuseki {
     // Different dataset name.
     @Test public void embedded_03() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
             .port(port)
             .add("/ds1", dsg) 
@@ -128,7 +128,7 @@ public class TestEmbeddedFuseki {
         dataService.addEndpoint(Operation.Quads_RW, "");
         dataService.addEndpoint(Operation.Query, "");
         dataService.addEndpoint(Operation.Update, "");
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
         
         FusekiServer server = FusekiServer.create()
             .port(port)
@@ -168,7 +168,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_05() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
             .port(port)
             .add("/ds0", dsg) 
@@ -183,7 +183,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_06() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
         FusekiServer server = FusekiServer.create()
             .port(port)
             .add("/ds0", dsg)
@@ -199,7 +199,7 @@ public class TestEmbeddedFuseki {
     // Context path.
     @Test public void embedded_07() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
         
         FusekiServer server = FusekiServer.create()
             .port(port)
@@ -217,7 +217,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_08() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
 
         FusekiServer server = FusekiServer.create()
             .port(port)
@@ -231,7 +231,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_09() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
 
         FusekiServer server = FusekiServer.create()
             .port(port)
@@ -252,7 +252,7 @@ public class TestEmbeddedFuseki {
 
     @Test public void embedded_20() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
         dSrv.addEndpoint(Operation.Query, "q") ;
@@ -271,7 +271,7 @@ public class TestEmbeddedFuseki {
     
     @Test public void embedded_21() {
         DatasetGraph dsg = dataset() ;
-        int port = FusekiLib.choosePort() ;
+        int port = WebLib.choosePort() ;
 
         DataService dSrv = new DataService(dsg) ;
         dSrv.addEndpoint(Operation.Query, "q") ;

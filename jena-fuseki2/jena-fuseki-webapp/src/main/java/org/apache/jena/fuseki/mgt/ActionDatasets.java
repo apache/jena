@@ -26,7 +26,11 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest ;
 
@@ -41,9 +45,8 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.DatasetDescriptionRegistry;
-import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.FusekiConst;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
 import org.apache.jena.fuseki.ctl.JsonDescription;
@@ -54,6 +57,7 @@ import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.webapp.FusekiSystem;
 import org.apache.jena.fuseki.webapp.SystemState;
@@ -62,7 +66,11 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.shared.uuid.JenaUUID ;
@@ -121,7 +129,7 @@ public class ActionDatasets extends ActionContainerItem {
         JenaUUID uuid = JenaUUID.generate() ;
         DatasetDescriptionRegistry registry = new DatasetDescriptionRegistry() ;
         
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         
         boolean hasParams = action.request.getParameterNames().hasMoreElements();
         
@@ -219,7 +227,7 @@ public class ActionDatasets extends ActionContainerItem {
 //            modelSys.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint dataAccessPoint = FusekiBuilder.buildDataAccessPoint(subject, registry) ;
+            DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject, registry) ;
             dataAccessPoint.getDataService().goActive();
             if ( ! datasetPath.equals(dataAccessPoint.getName()) )
                 FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
@@ -487,7 +495,7 @@ public class ActionDatasets extends ActionContainerItem {
     private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
         HttpServletRequest request = action.request ;
         String base = ActionLib.wholeRequestURL(request) ;
-        ContentType ct = FusekiLib.getContentType(request) ;
+        ContentType ct = FusekiNetLib.getContentType(request) ;
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null ) {
             ServletOps.errorBadRequest("Unknown content type for triples: " + ct) ;
