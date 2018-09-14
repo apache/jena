@@ -19,8 +19,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <name>Apache Jena - Fuseki Data Access Control</name>
-  <artifactId>jena-fuseki-access</artifactId>
+  <name>Apache Jena - Fuseki Server</name>
+  <artifactId>jena-fuseki-main</artifactId>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -29,22 +29,75 @@
   </parent> 
 
   <packaging>jar</packaging>
-  
-  <properties>
-    <automatic.module.name>org.apache.jena.jena-fuseki-access</automatic.module.name>
-  </properties>
 
-  <dependencies>
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-main</automatic.module.name>
+  </properties>
+  
+  <dependencies> 
+
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-main</artifactId>
+      <artifactId>jena-fuseki-core</artifactId>
+      <version>3.9.0-SNAPSHOT</version>
+
+      <exclusions>
+        
+        <!-- Parts of Jena not needed but picked up via jena-fuseki-core.
+             The application can put back any of these if it wants to use
+             them, e.g. a text-indexed dataset, providing the version is compatible.
+	      -->
+
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-text</artifactId>
+        </exclusion>
+
+        <!-- Jena uses SLF4J as its API. Exclude any logging bindings picked up via Jena.
+          For example, jena-fuseki-core has logging output and so some logging provider.
+          For embedded use, it is the enclosing application that chooses the kind of
+          logging system.    
+        --> 
+        <!--
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-jdk14</artifactId>
+        </exclusion>
+        -->
+      </exclusions>
+      
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-cmds</artifactId>
       <version>3.9.0-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId> 
+      <optional>true</optional>
+    </dependency>
+    
   </dependencies>
 
   <build>
     <plugins>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -96,15 +149,6 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteIfNewer>true</overWriteIfNewer>
         </configuration>
       </plugin>
 

@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.access;
 
+import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.FusekiLib;
-import org.apache.jena.fuseki.embedded.FusekiServer;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QuerySolution;

@@ -130,7 +130,7 @@
         </executions>
       </plugin>
 
-      <!-- Testing is done in jena-fuseki-webapp and jena-fuseki-embedded -->
+      <!-- Testing is done in jena-fuseki-webapp and jena-fuseki-main -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
