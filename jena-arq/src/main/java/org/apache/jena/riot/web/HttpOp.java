@@ -127,7 +127,7 @@ public class HttpOp {
      */
     private static HttpResponseHandler nullHandler = HttpResponseLib.nullResponse;
 
-	private static HttpRequestTransformer reqTransformer = null;
+    private static HttpRequestTransformer reqTransformer = null;
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
@@ -214,9 +214,9 @@ public class HttpOp {
      * @return the previous HttpRequestTransformer in use
      */
     public static HttpRequestTransformer setRequestTransformer(HttpRequestTransformer tform) {
-    	HttpRequestTransformer tmp = reqTransformer;
-    	reqTransformer = tform;
-    	return tmp;
+        HttpRequestTransformer tmp = reqTransformer;
+        reqTransformer = tform;
+        return tmp;
     }
 
     /**
