@@ -190,14 +190,27 @@ public class TestEmbeddedFuseki {
             .enableStats(true)
             .build() ;
         server.start() ;
-        // No stats
         String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/stats") ;
         assertNotNull(x) ;
         server.stop() ;
     }
 
-    // Context path.
     @Test public void embedded_07() {
+        DatasetGraph dsg = dataset() ;
+        int port = WebLib.choosePort() ;
+        FusekiServer server = FusekiServer.create()
+            .port(port)
+            .add("/ds0", dsg)
+            .enablePing(true)
+            .build() ;
+        server.start() ;
+        String x = HttpOp.execHttpGetString("http://localhost:"+port+"/$/ping") ;
+        assertNotNull(x) ;
+        server.stop() ;
+    }
+
+    // Context path.
+    @Test public void embedded_08() {
         DatasetGraph dsg = dataset() ;
         int port = WebLib.choosePort() ;
         
@@ -215,7 +228,7 @@ public class TestEmbeddedFuseki {
         } finally { server.stop() ; }
     }
     
-    @Test public void embedded_08() {
+    @Test public void embedded_09() {
         DatasetGraph dsg = dataset() ;
         int port = WebLib.choosePort() ;
 
@@ -229,7 +242,7 @@ public class TestEmbeddedFuseki {
         } finally { server.stop() ; } 
     }
     
-    @Test public void embedded_09() {
+    @Test public void embedded_10() {
         DatasetGraph dsg = dataset() ;
         int port = WebLib.choosePort() ;
 
