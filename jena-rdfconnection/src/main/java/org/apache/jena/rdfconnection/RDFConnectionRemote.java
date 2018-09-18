@@ -31,6 +31,7 @@ import org.apache.http.entity.EntityTemplate;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -56,21 +57,21 @@ import org.apache.jena.web.HttpSC;
  */
 public class RDFConnectionRemote implements RDFConnection {
     // Adds a Builder to help with HTTP details.
-    
+
     private static final String fusekiDftSrvQuery   = "sparql";
     private static final String fusekiDftSrvUpdate  = "update";
     private static final String fusekiDftSrvGSP     = "data";
-    
+
     private boolean isOpen = true; 
     protected final String destination;
     protected final String svcQuery;
     protected final String svcUpdate;
     protected final String svcGraphStore;
-    
+
     protected final Transactional txnLifecycle;
     protected final HttpClient httpClient;
     protected final HttpContext httpContext;
-    
+
     // On-the-wire settings.
     protected final RDFFormat outputQuads; 
     protected final RDFFormat outputTriples;
@@ -79,7 +80,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected final String acceptSparqlResults;
     protected final String acceptSelectResult;
     protected final String acceptAskResult;
-    
+
     // Whether to check SPARQL queries given as strings by parsing them.
     protected final boolean parseCheckQueries;
     // Whether to check SPARQL updates given as strings by parsing them.
@@ -97,7 +98,7 @@ public class RDFConnectionRemote implements RDFConnection {
     public static RDFConnectionRemoteBuilder create(RDFConnectionRemote base) {
         return new RDFConnectionRemoteBuilder(base);
     }
-    
+
     /**
      * Create connection that will use the {@link HttpClient} using URL of the dataset and
      * default service names
@@ -138,7 +139,7 @@ public class RDFConnectionRemote implements RDFConnection {
     public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
         this(null, sQuery, sUpdate, sGSP);
     }
-    
+
     /**
      * Create connection, using URL of the dataset and names for the services. Short names
      * are expanded against the destination. Absolute URIs are left unchanged.
@@ -150,7 +151,7 @@ public class RDFConnectionRemote implements RDFConnection {
     public RDFConnectionRemote(String destination, String sQuery, String sUpdate, String sGSP) {
         this(null, destination, sQuery, sUpdate, sGSP);
     }
-    
+
     /**
      * Create connection, using URL of the dataset and names for the services. Short names
      * are expanded against the destination. Absolute URIs are left unchanged.
@@ -166,6 +167,7 @@ public class RDFConnectionRemote implements RDFConnection {
             null,
             QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(),
             true, true);
+        Log.warn(this, "** public RDFConnectionRemote constructors will be removed - use RDFConnectionRemoteBuilder **");
     }
 
     // Used by the builder.
@@ -204,7 +206,7 @@ public class RDFConnectionRemote implements RDFConnection {
     public HttpContext getHttpContext() {
         return httpContext;
     }
-    
+
     /** Return the destination URL for the connection. */
     public String getDestination() {
         return destination;
@@ -215,13 +217,13 @@ public class RDFConnectionRemote implements RDFConnection {
         Objects.requireNonNull(queryString);
         return queryExec(null, queryString);
     }
-    
+
     @Override
     public QueryExecution query(Query query) {
         Objects.requireNonNull(query);
         return queryExec(query, null);
     }
-    
+
     private QueryExecution queryExec(Query query, String queryString) {
         checkQuery();
         if ( query == null && queryString == null )
@@ -230,12 +232,12 @@ public class RDFConnectionRemote implements RDFConnection {
             if ( parseCheckQueries )
                 QueryFactory.create(queryString);
         }
-        
+    
         // Use the query string as provided if possible, otherwise serialize the query.
         String queryStringToSend = ( queryString != null ) ?  queryString : query.toString();
         return exec(()-> createQueryExecution(query, queryStringToSend));
     }
-    
+
     // Create the QueryExecution
     private QueryExecution createQueryExecution(Query query, String queryStringToSend) {
         QueryExecution qExec = new QueryEngineHTTP(svcQuery, queryStringToSend, httpClient, httpContext);
@@ -265,13 +267,13 @@ public class RDFConnectionRemote implements RDFConnection {
         Objects.requireNonNull(updateString);
         updateExec(null, updateString);
     }
-    
+
     @Override
     public void update(UpdateRequest update) {
         Objects.requireNonNull(update);
         updateExec(update, null);
     }
-    
+
     private void updateExec(UpdateRequest update, String updateString ) {
         checkUpdate();
         if ( update == null && updateString == null )
@@ -284,7 +286,7 @@ public class RDFConnectionRemote implements RDFConnection {
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
         exec(()->HttpOp.execHttpPost(svcUpdate, WebContent.contentTypeSPARQLUpdate, updateStringToSend, this.httpClient, this.httpContext));
     }
-    
+
     @Override
     public Model fetch(String graphName) {
         checkGSP();
@@ -292,13 +294,13 @@ public class RDFConnectionRemote implements RDFConnection {
         Graph graph = fetch$(url);
         return ModelFactory.createModelForGraph(graph);
     }
-    
+
     @Override
     public Model fetch() {
         checkGSP();
         return fetch(null);
     }
-    
+
     private Graph fetch$(String url) {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler();
         exec(()->HttpOp.execHttpGet(url, acceptGraph, graph, this.httpClient, this.httpContext));
@@ -310,35 +312,35 @@ public class RDFConnectionRemote implements RDFConnection {
         checkGSP();
         upload(graph, file, false);
     }
-    
+
     @Override
     public void load(String file) {
         checkGSP();
         upload(null, file, false);
     }
-    
+
     @Override
     public void load(Model model) {
         doPutPost(model, null, false);
     }
-    
+
     @Override
     public void load(String graphName, Model model) {
         doPutPost(model, graphName, false);
     }
-    
+
     @Override
     public void put(String graph, String file) {
         checkGSP();
         upload(graph, file, true);
     }
-    
+
     @Override
     public void put(String file) { 
         checkGSP();
         upload(null, file, true); 
     }
-    
+
     @Override
     public void put(String graphName, Model model) {
         checkGSP();
@@ -350,7 +352,7 @@ public class RDFConnectionRemote implements RDFConnection {
         checkGSP();
         doPutPost(model, null, true);
     }
-    
+
     /** Send a file to named graph (or "default" or null for the default graph).
      * <p>
      * The Content-Type is inferred from the file extension.
@@ -382,7 +384,7 @@ public class RDFConnectionRemote implements RDFConnection {
         exec(()->{
             if ( replace )
                 HttpOp.execHttpPut(url, lang.getContentType().getContentType(), source, length, httpClient, this.httpContext);
-            else    
+            else
                 HttpOp.execHttpPost(url, lang.getContentType().getContentType(), source, length, null, null, httpClient, this.httpContext);
         });
     }
@@ -399,7 +401,7 @@ public class RDFConnectionRemote implements RDFConnection {
             Graph graph = model.getGraph();
             if ( replace )
                 HttpOp.execHttpPut(url, graphToHttpEntity(graph), httpClient, this.httpContext);
-            else    
+            else
                 HttpOp.execHttpPost(url, graphToHttpEntity(graph), null, null, httpClient, this.httpContext);
         });
     }
@@ -436,7 +438,7 @@ public class RDFConnectionRemote implements RDFConnection {
             throw new ARQException("Dataset operations not available - no dataset URl provided"); 
         doPutPostDataset(file, false); 
     }
-    
+
     @Override
     public void loadDataset(Dataset dataset) {
         if ( destination == null )
@@ -450,7 +452,7 @@ public class RDFConnectionRemote implements RDFConnection {
             throw new ARQException("Dataset operations not available - no dataset URl provided"); 
         doPutPostDataset(file, true);
     }
-    
+
     @Override
     public void putDataset(Dataset dataset) {
         if ( destination == null )
@@ -472,7 +474,7 @@ public class RDFConnectionRemote implements RDFConnection {
             InputStream source = IO.openFile(file);
             if ( replace )
                 HttpOp.execHttpPut(destination, lang.getContentType().getContentType(), source, length, httpClient, httpContext);
-            else    
+            else
                 HttpOp.execHttpPost(destination, lang.getContentType().getContentType(), source, length, null, null, httpClient, httpContext);
         });
     }
@@ -487,7 +489,7 @@ public class RDFConnectionRemote implements RDFConnection {
             DatasetGraph dsg = dataset.asDatasetGraph();
             if ( replace )
                 HttpOp.execHttpPut(destination, datasetToHttpEntity(dsg), httpClient, null);
-            else    
+            else
                 HttpOp.execHttpPost(destination, datasetToHttpEntity(dsg), httpClient, null);
         });
     }
@@ -497,19 +499,19 @@ public class RDFConnectionRemote implements RDFConnection {
         if ( svcQuery == null )
             throw new ARQException("No query service defined for this RDFConnection");
     }
-    
+
     protected void checkUpdate() {
         checkOpen();
         if ( svcUpdate == null )
             throw new ARQException("No update service defined for this RDFConnection");
     }
-    
+
     protected void checkGSP() {
         checkOpen();
         if ( svcGraphStore == null )
             throw new ARQException("No SPARQL Graph Store service defined for this RDFConnection");
     }
-    
+
     protected void checkDataset() {
         checkOpen();
         if ( destination == null )
@@ -535,7 +537,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected HttpEntity graphToHttpEntity(Graph graph) {
         return graphToHttpEntity(graph, outputTriples);
     }
-    
+
     /** Create an HttpEntity for the graph */
     protected HttpEntity graphToHttpEntity(Graph graph, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, graph, syntax));
@@ -548,7 +550,7 @@ public class RDFConnectionRemote implements RDFConnection {
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset) {
         return datasetToHttpEntity(dataset, outputQuads);
     }
-    
+
     /** Create an HttpEntity for the dataset */  
     protected HttpEntity datasetToHttpEntity(DatasetGraph dataset, RDFFormat syntax) {
         EntityTemplate entity = new EntityTemplate((out)->RDFDataMgr.write(out, dataset, syntax));
