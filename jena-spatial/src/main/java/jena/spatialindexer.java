@@ -18,18 +18,15 @@
 
 package jena;
 
-import java.util.Iterator;
-
 import arq.cmdline.CmdARQ;
 import jena.cmd.ArgDecl ;
 import jena.cmd.CmdException ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.spatial.DatasetGraphSpatial;
 import org.apache.jena.query.spatial.SpatialDatasetFactory;
 import org.apache.jena.query.spatial.SpatialIndex;
 import org.apache.jena.query.spatial.SpatialIndexContext;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.system.Txn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,18 +101,12 @@ public class spatialindexer extends CmdARQ {
 
 	@Override
 	protected void exec() {
-		// Set<Node> properties = getIndexedProperties() ;
 		spatialIndex.startIndexing();
-
-		Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, Node.ANY,
-				Node.ANY);
-		for (; quadIter.hasNext();) {
-			Quad quad = quadIter.next();
-			context.index(quad.getGraph(), quad.getSubject(), quad.getPredicate(),
-					quad.getObject());
+		Txn.executeRead(dataset, () -> dataset.find().forEachRemaining(quad -> {
+			context.index(quad);
 			progressMonitor.progressByOne();
 
-		}
+		}));
 		spatialIndex.finishIndexing();
 		progressMonitor.close();
 	}
