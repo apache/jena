@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,28 +18,31 @@
 
 package arq.examples.riot;
 
-import static org.apache.jena.riot.RDFLanguages.TRIG ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.riot.* ;
 
-/** Example of using RIOT : reading data into datasets. */
-public class ExRIOT_3
+/** Example writing a model with RIOT */
+public class ExRIOTw1_writeModel
 {
-    public static void main(String...argv)
+    public static void main(String[] args)
     {
-        Dataset ds = null ;
+        Model model = RDFDataMgr.loadModel("D.ttl") ;
         
-        // Read a TriG file into quad storage in-memory.
-        ds = RDFDataMgr.loadDataset("data.trig") ;
+        System.out.println() ;
+        System.out.println("#### ---- Write as Turtle") ;
+        System.out.println() ;
+        RDFDataMgr.write(System.out, model, Lang.TURTLE) ;
         
-        // read some (more) data into a dataset graph.
-        RDFDataMgr.read(ds, "data2.trig") ;
+        System.out.println() ;
+        System.out.println("#### ---- Write as Turtle (streaming)") ;
+        System.out.println() ;
+        RDFDataMgr.write(System.out, model, RDFFormat.TURTLE_BLOCKS) ;
         
-        // Create a dataset,
-        Dataset ds2 = DatasetFactory.createTxnMem() ;
-        // read in data, indicating the syntax in case the remote end does not
-        // correctly provide the HTTP content type.
-        RDFDataMgr.read(ds2, "http://host/data2.unknown", TRIG) ;
+        System.out.println() ;
+        System.out.println("#### ---- Write as Turtle via model.write") ;
+        System.out.println() ;
+        model.write(System.out, "TTL") ;
     }
+
 }
+

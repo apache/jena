@@ -24,7 +24,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 
 /** Other writer examples */
-public class ExRIOT_out2
+public class ExRIOTw2_writeRDF
 {
     public static void main(String[] args)
     {
@@ -32,7 +32,7 @@ public class ExRIOT_out2
         System.out.println() ;
         System.out.println("#### ---- Write as TriG") ;
         System.out.println() ;
-        // This wil be the default graph of the dataset written.
+        // This will be the default graph of the dataset written.
         RDFDataMgr.write(System.out, model, Lang.TRIG) ;
         
         // Loading Turtle as Trig reads into the default graph.

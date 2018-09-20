@@ -32,7 +32,7 @@ import org.apache.jena.riot.lang.CollectorStreamTriples;
  * 
  * @see CollectorStreamBase
  */
-public class ExRIOT_7 {
+public class ExRIOT5_StreamRDFCollect {
 
     public static void main(String... argv) {
         final String filename = "data.ttl";

@@ -26,7 +26,7 @@ import org.apache.jena.riot.RDFLanguages ;
 /** Example of using RIOT with Jena readers.
  * An application can use model.read or RDFDataMgr.
  */
-public class ExRIOT_1
+public class ExRIOT1_ReadModel
 {
     public static void main(String...argv)
     {
@@ -46,7 +46,7 @@ public class ExRIOT_1
         
         
         // Read some data but also give a hint for the synatx if it is not
-        // discovered by inspectying the file or by HTTP content negotiation.  
+        // discovered by inspecting the file or by HTTP content negotiation.  
         RDFDataMgr.read(m2, "some-more-data.out", RDFLanguages.TURTLE) ;
     }
 }

@@ -33,7 +33,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
  * The parsers produce a stream of triples and quads so processing does not need
  * to hold everything in memory at the same time. See also {@code ExRIOT_4}
  */
-public class ExRIOT_2
+public class ExRIOT3_RDFParser
 {
     public static void main(String...argv) throws IOException
     {

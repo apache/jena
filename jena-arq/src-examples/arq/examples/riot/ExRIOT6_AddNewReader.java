@@ -47,7 +47,7 @@ import org.apache.jena.sparql.sse.builders.BuilderGraph;
 import org.apache.jena.sparql.util.Context;
 
 /** Example of using RIOT : register a new input language */
-public class ExRIOT_5
+public class ExRIOT6_AddNewReader
 {
     static { LogCtl.setCmdLogging(); }
     

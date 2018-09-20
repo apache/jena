@@ -41,10 +41,10 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 /** Example writing as JSON-LD */
-public class ExJsonLD
+public class Ex_WriteJsonLD
 {
     public static void main(String[] args) {
-        (new ExJsonLD()).doIt();
+        (new Ex_WriteJsonLD()).doIt();
     }
 
     void doIt() {
