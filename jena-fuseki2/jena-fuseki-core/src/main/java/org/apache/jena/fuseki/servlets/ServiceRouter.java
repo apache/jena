@@ -27,10 +27,10 @@ import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.conneg.ConNeg;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.riot.web.HttpNames;
 
 /**

@@ -34,7 +34,7 @@ import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;

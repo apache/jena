@@ -39,7 +39,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-        <include>org.apache.jena:jena-fuseki-server:jar</include>
+        <include>org.apache.jena:jena-fuseki-fulljar:jar</include>
       </includes>
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
 

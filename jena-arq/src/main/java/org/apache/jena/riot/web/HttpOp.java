@@ -507,7 +507,7 @@ public class HttpOp {
      *            HTTP Context
      */
     public static void execHttpPost(String url, String contentType, String content, String acceptType,
-            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
+                                    HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         StringEntity e = null;
         try {
             e = new StringEntity(content, StandardCharsets.UTF_8);
@@ -571,7 +571,7 @@ public class HttpOp {
      *            Response handler called to process the response
      */
     public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-            HttpResponseHandler handler) {
+                                    HttpResponseHandler handler) {
         execHttpPost(url, contentType, input, length, acceptType, handler, null, null);
     }
 
@@ -601,17 +601,17 @@ public class HttpOp {
      *
      */
     public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
+                                    HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         InputStreamEntity e = new InputStreamEntity(input, length);
-        e.setContentType(contentType);
-        e.setContentEncoding("UTF-8");
+        String ct = decideContentType(contentType);
+        e.setContentType(ct);
         try {
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext);
         } finally {
             closeEntity(e);
         }
     }
-
+    
     /**
      * Executes a HTTP POST of the given entity
      * 
@@ -946,8 +946,8 @@ public class HttpOp {
     public static void execHttpPut(String url, String contentType, InputStream input, long length, HttpClient httpClient,
             HttpContext httpContext) {
         InputStreamEntity e = new InputStreamEntity(input, length);
-        e.setContentType(contentType);
-        e.setContentEncoding("UTF-8");
+        String ct = decideContentType(contentType);
+        e.setContentType(ct);
         try {
             execHttpPut(url, e, httpClient, httpContext);
         } finally {
@@ -1140,6 +1140,16 @@ public class HttpOp {
             entity.getContent().close();
         } catch (Exception e) {
         }
+    }
+
+    /**
+     * Content-Type, ensuring charset is present, defaulting to UTF-8.
+     */
+    private static String decideContentType(String contentType) {
+        String ct = contentType;
+        if ( ct != null && ! ct.contains("charset=") )
+            ct = ct+"; charset=UTF-8";
+        return ct;
     }
 
     /**

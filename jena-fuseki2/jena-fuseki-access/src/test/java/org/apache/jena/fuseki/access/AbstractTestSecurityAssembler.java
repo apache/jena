@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.access;
 
+import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,8 +32,8 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.FusekiLib;
-import org.apache.jena.fuseki.embedded.FusekiServer;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QuerySolution;
@@ -102,7 +102,7 @@ public abstract class AbstractTestSecurityAssembler {
     }
     
     private static FusekiServer setup(String assembler, boolean sharedDatabase) {
-        int port = FusekiLib.choosePort();
+        int port = FusekiNetLib.choosePort();
         FusekiServer server = DataAccessCtl.fusekiBuilder((a)->user.get())
             .port(port)
             .parseConfigFile(assembler)

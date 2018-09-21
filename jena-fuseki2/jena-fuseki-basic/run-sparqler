@@ -1,8 +1,0 @@
-#!/bin/bash
-## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
-
-(
-    #echo "cd sparqler"
-    cd sparqler
-    env BACKGROUND=0 ./run-sparqler "$@"
-)

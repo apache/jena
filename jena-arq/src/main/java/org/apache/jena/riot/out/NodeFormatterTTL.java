@@ -30,7 +30,7 @@ import org.apache.jena.iri.IRIRelativize ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.RiotChars ;
+import static org.apache.jena.riot.system.RiotChars.* ;
 
 /** Node formatter for Turtle using single line strings */ 
 public class NodeFormatterTTL extends NodeFormatterNT
@@ -178,29 +178,11 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return (idx == N) ;
     }
 
-    private static boolean is_PN_CHARS_BASE(int ch) {
-        return RiotChars.isAlpha(ch) ;
-    }
-
-    private static boolean is_PN_CHARS_U(int ch) {
-        return is_PN_CHARS_BASE(ch) || ch == '_' ;
-    }
-
-    // TODO Merge to RiotChars
-    
-    private static boolean is_PN_CHARS(int ch) {
-        return is_PN_CHARS_U(ch) || ch == '-' || RiotChars.isDigit(ch) || isCharsExtra(ch) ;
-    }
-
-    private static boolean isCharsExtra(int ch) {
-        return ch == '\u00B7' || RiotChars.range(ch, '\u0300', '\u036F') || RiotChars.range(ch, '\u203F', '\u2040') ;
-    }
-
     // ---- Prefix name : prefix part
     
     private static int skip1_PN_CHARS_BASE(String str, int idx) {
         char ch = str.charAt(idx) ;
-        if ( is_PN_CHARS_BASE(ch) )
+        if ( isPNCharsBase(ch) )
             return idx + 1 ;
         return -1 ;
     }
@@ -208,7 +190,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private static int skipAny_PN_CHARS_or_DOT(String str, int idx, int max) {
         for (int i = idx; i < max; i++) {
             char ch = str.charAt(i) ;
-            if ( !is_PN_CHARS(ch) && ch != '.' )
+            if ( !isPNChars(ch) && ch != '.' )
                 return i ;
         }
         return max ;
@@ -216,7 +198,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     private static int skip1_PN_CHARS(String str, int idx) {
         char ch = str.charAt(idx) ;
-        if ( is_PN_CHARS(ch) )
+        if ( isPNChars(ch) )
             return idx + 1 ;
         return -1 ;
     }
@@ -225,9 +207,9 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     private static int skip1_PN_CHARS_U_or_digit_or_COLON(String str, int idx) {
         char ch = str.charAt(idx) ;
-        if ( is_PN_CHARS_U(ch) )
+        if ( isPNChars_U(ch) )
             return idx + 1 ;
-        if ( RiotChars.isDigit(ch) )
+        if ( isDigit(ch) )
             return idx + 1 ;
         if ( ch == ':' )
             return idx + 1 ;
@@ -237,7 +219,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private static int skipAny_PN_CHARS_or_DOT_or_COLON(String str, int idx, int max) {
         for (int i = idx; i < max; i++) {
             char ch = str.charAt(i) ;
-            if ( !is_PN_CHARS(ch) && ch != '.' && ch != ':' )
+            if ( !isPNChars(ch) && ch != '.' && ch != ':' )
                 return i ;
         }
         return max ;
@@ -245,7 +227,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     private static int skip1_PN_CHARS_or_COLON(String str, int idx) {
         char ch = str.charAt(idx) ;
-        if ( is_PN_CHARS(ch) )
+        if ( isPNChars(ch) )
             return idx + 1 ;
         if ( ch == ':' )
             return idx + 1 ;
@@ -391,7 +373,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         int N = str.length() ;
         for (int i = start; i < N; i++) {
             char ch = str.charAt(i) ;
-            if ( !RiotChars.isDigit(ch) )
+            if ( ! isDigit(ch) )
                 return i ;
         }
         return N ;
