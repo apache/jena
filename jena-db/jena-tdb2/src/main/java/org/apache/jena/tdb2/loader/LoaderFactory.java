@@ -45,7 +45,7 @@ public class LoaderFactory {
      * A simple loader that streams data into a dataset as a plain "read" operation.
      * Data is read inside a transaction.
      * <p>
-     * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
+     * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
      * or {@code null} for no output. 
      */
     public static DataLoader basicLoader(DatasetGraph dsg, MonitorOutput output) {
@@ -75,14 +75,14 @@ public class LoaderFactory {
 
     /** A loader that takes all the data into the primary indexes in one phase, then 
      * calculates/updates secondary indexes. This can make more efficient use of memory
-     * so that one datastructure is being owkred on at a time. 
+     * so that one datastructure is being worked on at a time. 
      * <p>
      * This loader uses one thread.
      * <p>
      * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
      * <p> 
-     * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
+     * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
      * or {@code null} for no output. 
      */
     public static DataLoader sequentialLoader(DatasetGraph dsg, MonitorOutput output) {
@@ -122,7 +122,7 @@ public class LoaderFactory {
      * * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
      * <p>
-     * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
+     * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
      * or {@code null} for no output.
      */
     
@@ -163,7 +163,7 @@ public class LoaderFactory {
      * * The dataset can not be used for other operations - the code will block other transactions
      * as necessary and release then when loading has finished.
      * <p>
-     * Supply a {@link MonitorOutput} for the desirabled progress and summary output messages
+     * Supply a {@link MonitorOutput} for the desirable progress and summary output messages
      * or {@code null} for no output.
      */
     public static DataLoader parallelLoader(DatasetGraph dsg, MonitorOutput output) {
