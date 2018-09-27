@@ -316,7 +316,7 @@ public class LogCtl {
         setJavaLoggingDft();
     }
 
-    private static void readConfiguration(InputStream details) throws Exception {
+    private static void readJavaLoggingConfiguration(InputStream details) throws Exception {
         System.setProperty(JUL_PROPERTY, "set");
         java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
     }
@@ -326,7 +326,7 @@ public class LogCtl {
         InputStream in = LogCtl.class.getClassLoader().getResourceAsStream(resourceName);
         if ( in != null ) {
             try {
-                readConfiguration(in) ;
+                readJavaLoggingConfiguration(in) ;
                 return true; 
             } catch (Exception ex) {
                 throw new AtlasException(ex) ;
@@ -339,7 +339,7 @@ public class LogCtl {
         try {
             InputStream details = new FileInputStream(file) ;
             details = new BufferedInputStream(details) ;
-            readConfiguration(details) ;
+            readJavaLoggingConfiguration(details) ;
         } catch (Exception ex) {
             throw new AtlasException(ex) ;
         }
@@ -348,7 +348,7 @@ public class LogCtl {
     public static void setJavaLoggingDft() {
         try {
             InputStream details = new ByteArrayInputStream(defaultProperties.getBytes("UTF-8")) ;
-            readConfiguration(details) ;
+            readJavaLoggingConfiguration(details) ;
         } catch (Exception ex) {
             throw new AtlasException(ex) ;
         }
