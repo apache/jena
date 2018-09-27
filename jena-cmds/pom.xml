@@ -67,16 +67,20 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
-    <!-- Require a logging implementation -->
+    <!-- Require a logging implementation 
+         It is <scope>test</scope> from the parent otherwise.
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency> 
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
