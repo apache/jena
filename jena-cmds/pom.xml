@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.10.0-SNAPSHOT</version>
+    <version>3.9.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Command line tools</name>
   <artifactId>jena-cmds</artifactId>
-  <version>3.10.0-SNAPSHOT</version>
+  <version>3.9.0-SNAPSHOT</version>
 
   <description>Command line tools</description>
 
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.9.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.9.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.9.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.10.0-SNAPSHOT</version>
+      <version>3.9.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
