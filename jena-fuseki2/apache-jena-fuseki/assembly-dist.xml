@@ -95,7 +95,7 @@
     </fileSet>
 
     <fileSet>
-      <directory>../jena-fuseki-core/src/main/webapp</directory>
+      <directory>../jena-fuseki-webapp/src/main/webapp</directory>
       <outputDirectory>webapp</outputDirectory>
     </fileSet>
 
