@@ -25,7 +25,7 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <name>Apache Jena - Fuseki Server Engine</name>
+  <name>Apache Jena - Fuseki Core Engine</name>
   <artifactId>jena-fuseki-core</artifactId>
   <packaging>jar</packaging>
 
