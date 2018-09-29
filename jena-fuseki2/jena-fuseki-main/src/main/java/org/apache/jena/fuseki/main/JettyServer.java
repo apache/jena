@@ -156,7 +156,7 @@ public class JettyServer {
         }
     }
 
-    protected static class Builder {
+    public static class Builder {
         private int                      port               = -1;
         private boolean                  loopback           = false;
         protected boolean                verbose            = false;
@@ -171,6 +171,8 @@ public class JettyServer {
         private ErrorHandler             errorHandler       = new PlainErrorHandler();
         private Map<String, Object>      servletAttr        = new HashMap<>();
 
+        public Builder() {}
+        
         /** Set the port to run on. */
         public Builder port(int port) {
             if ( port < 0 )
