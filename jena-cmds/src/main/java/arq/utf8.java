@@ -22,7 +22,7 @@ package arq;
 public class utf8
 {
     /** Simple program to help hunt down bad UTF-8 encoded characters */
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         riotcmd.utf8.main(args) ;
     }
