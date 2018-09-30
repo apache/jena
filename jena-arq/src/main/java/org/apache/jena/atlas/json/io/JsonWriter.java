@@ -104,6 +104,8 @@ public class JsonWriter implements JsonVisitor
         // Just after the opening { 
         boolean first = true ;
         out.println() ;
+        if ( out.inFlatMode() )
+            out.print(SPC);
         for ( String k : x ) {
             if ( ! first ) {    
                 out.print(ObjectSep) ;

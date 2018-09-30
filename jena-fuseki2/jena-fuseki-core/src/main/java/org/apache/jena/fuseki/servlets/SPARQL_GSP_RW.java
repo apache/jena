@@ -24,14 +24,17 @@ import static org.apache.jena.riot.WebContent.matchContentType ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.servlets.UploadDetails.PreState ;
+import org.apache.jena.fuseki.system.ConNeg;
+import org.apache.jena.fuseki.system.FusekiNetLib;
+import org.apache.jena.fuseki.system.Upload;
+import org.apache.jena.fuseki.system.UploadDetails;
+import org.apache.jena.fuseki.system.UploadDetails.PreState;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.web.HttpSC ;
 
@@ -53,7 +56,8 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     protected void doDelete(HttpAction action) {
         action.beginWrite() ;
         try {
-            Target target = determineTarget(action) ;
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug("DELETE->"+target) ;
             boolean existedBefore = target.exists() ; 
@@ -66,7 +70,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             deleteGraph(action) ;
             action.commit() ;
         }
-        finally { action.endWrite() ; }
+        finally { action.end() ; }
         ServletOps.successNoContent(action) ;
     }
 
@@ -77,7 +81,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     protected void doPost(HttpAction action)        { doPutPost(action, false) ; }
 
     private void doPutPost(HttpAction action, boolean overwrite) {
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:") ;
 
@@ -111,10 +115,11 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
      * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand
      */
-    protected static UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {   
+    protected UploadDetails addDataIntoTxn(HttpAction action, boolean overwrite) {   
         action.beginWrite();
         try {
-            Target target = determineTarget(action) ;
+            DatasetGraph dsg = decideDataset(action);
+            Target target = determineTarget(dsg, action) ;
             if ( action.log.isDebugEnabled() )
                 action.log.debug(action.request.getMethod().toUpperCase()+"->"+target) ;
             boolean existedBefore = target.exists() ;
@@ -141,7 +146,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             ServletOps.errorOccurred(ex.getMessage()) ;
             return null ;
         } finally {
-            action.endWrite() ;
+            action.end() ;
         }
     }
     
@@ -154,7 +159,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
      * @return whether the target existed beforehand.
      */
     
-    protected static UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
+    protected UploadDetails addDataIntoNonTxn(HttpAction action, boolean overwrite) {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
 
@@ -166,7 +171,8 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
         }
         // Now insert into dataset
         action.beginWrite() ;
-        Target target = determineTarget(action) ;
+        DatasetGraph dsg = decideDataset(action);
+        Target target = determineTarget(dsg, action) ;
         boolean existedBefore = false ;
         try {
             if ( action.log.isDebugEnabled() )
@@ -174,7 +180,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             existedBefore = target.exists() ; 
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
-            FusekiLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
+            FusekiNetLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
             details.setExistedBefore(existedBefore) ;
             action.commit() ;
             return details ;
@@ -186,14 +192,15 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             try { action.abort() ; } catch (Exception ex2) {} 
             ServletOps.errorOccurred(ex.getMessage()) ;
             return null ;            
-        } finally { action.endWrite() ; }
+        } finally { action.end() ; }
     }
     
     /** Delete a graph. This removes the storage choice and looses the setup.
      * The default graph is cleared, not removed.
      */
-    protected static void deleteGraph(HttpAction action) {
-        Target target = determineTarget(action) ;
+    protected void deleteGraph(HttpAction action) {
+        DatasetGraph dsg = decideDataset(action);
+        Target target = determineTarget(dsg, action) ;
         if ( target.isDefault )
             clearGraph(target) ;
         else
@@ -201,7 +208,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     }
 
     /** Clear a graph - this leaves the storage choice and setup in-place */ 
-    protected static void clearGraph(Target target) {
+    protected void clearGraph(Target target) {
         Graph g = target.graph() ;
         g.getPrefixMapping().clearNsPrefixMap() ;
         g.clear() ;

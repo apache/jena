@@ -67,8 +67,10 @@ public abstract class ActionService extends ActionBase {
                 return;
             }
         } else {
-            dataAccessPoint = null;
-            dSrv = DataService.serviceOnlyDataService();
+            // Routed to this URL; no registered dataset on this URL.
+            // e.g. General query servlet
+            dSrv = ServiceOnly.dataService();
+            dataAccessPoint = ServiceOnly.dataAccessPoint();
         }
 
         action.setRequest(dataAccessPoint, dSrv);
@@ -79,7 +81,7 @@ public abstract class ActionService extends ActionBase {
         if ( !endpointName.isEmpty() ) {
             operation = chooseOperation(action, dSrv, endpointName);
             if ( operation == null )
-                ServletOps.errorNotFound(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
+                ServletOps.errorBadRequest(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
 
         } else {
             operation = chooseOperation(action, dSrv);
@@ -100,7 +102,8 @@ public abstract class ActionService extends ActionBase {
     // Overridden by the ServiceRouter.
     protected Operation chooseOperation(HttpAction action, DataService dataService, String serviceName) {
         // This default implementation is plain service name to operation based on the
-        // DataService as would be used by operation servlets bound by web.xml.
+        // DataService as would be used by operation servlets bound by web.xml
+        // except Fuseki can add and delete mapping while running.
         Endpoint ep = dataService.getEndpoint(serviceName);
         Operation operation = ep.getOperation();
         return operation;

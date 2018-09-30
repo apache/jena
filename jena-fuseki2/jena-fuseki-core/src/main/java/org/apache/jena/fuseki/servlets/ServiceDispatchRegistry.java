@@ -25,12 +25,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.riot.WebContent;
 
-/** 
- * The global mapping of content-type to Operation and operation to implementation.
+/**
+ * Mapping of dispatching operations. {@link Operation} is the operation reference (name)
+ * but the {@link Operation} does not carry the implementation. The registry, which is
+ * per-server, maps:
+ * <ul>
+ * <li>Content-type to {@code Operation}.
+ * <li>{@code Operation} to {@link ActionService} implementation
+ * </ul>
  */
 
 public class ServiceDispatchRegistry {
@@ -94,28 +101,39 @@ public class ServiceDispatchRegistry {
      * Register a new {@link Operation}, with its {@code Content-Type} (may be null,
      * meaning no dispatch by content type), and the implementation handler.
      * <p>
-     * The application needs to enable an operation on a service endpoint. 
+     * The application needs to enable an operation on a service endpoint.
+     * <p>
+     * Replaces any existing registration.  
      */
     public void register(Operation operation, String contentType, ActionService action) {
         Objects.requireNonNull(operation);
         Objects.requireNonNull(action);
         if ( contentType != null )
             contentTypeToOperation.put(contentType, operation);
+        else
+            // Remove any mapping.
+            contentTypeToOperation.values().remove(operation);
         operationToHandler.put(operation, action);
     }
     
-    // The server DataAccessPointRegistry is held in the ServletContext for the server.
-    
-    private static final String attrServiceRegistry = "jena-fuseki:ServiceDispatchRegistry" ;
+    /**
+     * Remove the registration for an operation.
+     */
+    public void unregister(Operation operation) {
+        Objects.requireNonNull(operation);
+        operationToHandler.remove(operation);
+        contentTypeToOperation.values().remove(operation);
+    }
 
+    // The server DataAccessPointRegistry is held in the ServletContext for the server.
     public static ServiceDispatchRegistry get(ServletContext servletContext) {
-        ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(attrServiceRegistry) ;
+        ServiceDispatchRegistry registry = (ServiceDispatchRegistry)servletContext.getAttribute(Fuseki.attrServiceRegistry) ;
         if ( registry == null )
             Log.warn(ServiceDispatchRegistry.class, "No service registry for ServletContext") ;
         return registry ;
     }
     
     public static void set(ServletContext cxt, ServiceDispatchRegistry registry) {
-        cxt.setAttribute(attrServiceRegistry, registry) ;
+        cxt.setAttribute(Fuseki.attrServiceRegistry, registry) ;
     }
 }

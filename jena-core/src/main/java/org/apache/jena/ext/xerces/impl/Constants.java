@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 /**
  * Commonly used constants.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author Andy Clark, IBM
  *
@@ -457,7 +457,7 @@ public final class Constants {
     
     /**
      * Boolean indicating whether a character is a probable white space
-     * character (ch <= 0x20) that was the replacement text of a character 
+     * character (ch {@literal <=} 0x20) that was the replacement text of a character 
      * reference is stored in augmentations using the string "CHAR_REF_PROBABLE_WS". 
      * The absence of this augmentation indicates that the character is not 
      * probable white space and/or was not included from a character reference.

@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.syntax;
 
-import junit.framework.TestCase ;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -31,7 +33,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestSSE_Forms extends TestCase
+public class TestSSE_Forms
 {
     static PrefixMapping pmap = new PrefixMappingImpl() ;
     static { 

@@ -45,7 +45,6 @@ public class DatasetOne extends DatasetImpl {
         this.defaultModel = model;
     }
 
-
     @Override
     public Model getDefaultModel() {
         return defaultModel;

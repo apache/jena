@@ -60,15 +60,14 @@ public class BuilderBinding
             // undef
             if ( cdr.isSymbolIgnoreCase(Tags.tagUndef) || cdr.isSymbolIgnoreCase(Tags.tagNull) )
                 continue ;
-            
-            BuilderLib.checkNode(cdr) ;
+
             Node node = BuilderNode.buildNode(item.getList().get(1)) ;
             if ( node == null )
                 BuilderLib.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
             if ( node.isVariable() )
                 BuilderLib.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
             if ( !node.isConcrete() )
-                BuilderLib.broken(item.getList().get(1), "Ony concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
+                BuilderLib.broken(item.getList().get(1), "Only concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
             binding.add(v, node) ;
         }
         return binding ;

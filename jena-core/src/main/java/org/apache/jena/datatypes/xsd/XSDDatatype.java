@@ -167,7 +167,7 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:dateTime */
     public static final XSDDatatype XSDdateTime = new XSDDateTimeType("dateTime");
 
-    /** Datatype representing xsd:dateTime */
+    /** Datatype representing xsd:dateTimeStamp */
     public static final XSDDatatype XSDdateTimeStamp = new XSDDateTimeStampType("dateTimeStamp");
 
     /** Datatype representing xsd:duration */
@@ -484,7 +484,7 @@ public class XSDDatatype extends BaseDatatype {
 
     /**
      * Test whether the given LiteralLabel is a valid instance
-     * of this datatype. This takes into accound typing information
+     * of this datatype. This takes into account typing information
      * as well as lexical form - for example an xsd:string is
      * never considered valid as an xsd:integer (even if it is
      * lexically legal like "1").

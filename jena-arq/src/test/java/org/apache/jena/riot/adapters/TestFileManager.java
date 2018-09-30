@@ -26,7 +26,7 @@ import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.stream.TestLocationMapper ;
+import org.apache.jena.riot.stream.TestLocationMapper;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.NotFoundException ;
 import org.apache.jena.util.FileManager ;

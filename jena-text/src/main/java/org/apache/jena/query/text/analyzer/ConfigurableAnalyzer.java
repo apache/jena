@@ -40,7 +40,6 @@ import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 
-
 /** 
  * Lucene Analyzer implementation that can be configured with different
  * Tokenizer and (optionally) TokenFilter implementations.

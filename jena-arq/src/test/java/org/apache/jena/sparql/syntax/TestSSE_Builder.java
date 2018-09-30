@@ -19,30 +19,37 @@
 package org.apache.jena.sparql.syntax;
 
 
-import junit.framework.TestCase ;
+import static org.junit.Assert.*;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.algebra.op.OpNull ;
 import org.apache.jena.sparql.algebra.op.OpTable ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_IsNumeric ;
 import org.apache.jena.sparql.expr.E_SameTerm ;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderNode ;
+import org.apache.jena.sparql.sse.builders.ExprBuildException;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.Test ;
 
-public class TestSSE_Builder extends TestCase
+public class TestSSE_Builder
 {
     @Test public void test_01() { SSE.parseTriple("[triple ?s ?p ?o]") ; }
     @Test public void test_02() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_03() { SSE.parseTriple("[?s ?p ?o]") ; }
     @Test public void test_04() { SSE.parseTriple("(?s ?p ?o)") ; }
+    
     @Test public void test_05() { SSE.parseQuad("(_ ?s ?p ?o)") ; }
     @Test public void test_06() { SSE.parseQuad("(quad _ ?s ?p ?o)") ; }
     
-    @Test public void test_07() { SSE.parseExpr("1") ; }
-    @Test public void test_08() { SSE.parseExpr("(+ 1 2)") ; }
+    @Test public void test_10() { SSE.parseExpr("1") ; }
+    @Test public void test_11() { SSE.parseExpr("(+ 1 2)") ; }
     
     @Test public void testOp_01() { opSame("(null)") ; }
     @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
@@ -78,6 +85,54 @@ public class TestSSE_Builder extends TestCase
         Item item = SSE.parseItem("_") ;
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(23, i) ;
+    }
+
+    @Test
+    public void testBuildNode_01() {
+        Item item = SSE.parseItem("ANY") ;
+        Node n = BuilderNode.buildNode(item);
+        assertSame(Node.ANY, n);
+    }
+
+    @Test
+    public void testBuildNode_02() {
+        Item item = SSE.parseItem("_") ;
+        Node n = BuilderNode.buildNode(item);
+        assertSame(Node.ANY, n);
+    }
+    
+    @Test
+    public void testBuildNode_03() {
+        Item item = SSE.parseItem("<http://example/>") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isURI());
+        assertEquals("http://example/", n.getURI());
+    }
+
+    @Test
+    public void testBuildNode_04() {
+        // Jena skolemized blank node.
+        Item item = SSE.parseItem("<_:cba>") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isBlank());
+        assertEquals("cba", n.getBlankNodeLabel());
+    }
+
+    @Test
+    public void testBuildNode_05() {
+        Item item = SSE.parseItem("?variable") ;
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(Var.isVar(n));
+        assertEquals("variable", ((Var)n).getVarName());
+    }
+    
+    @Test
+    public void testBuildNode_06() {
+        Item item = SSE.parseItem("true");
+        Node n = BuilderNode.buildNode(item);
+        assertTrue(n.isLiteral());
+        assertEquals("true", n.getLiteralLexicalForm());
+        assertEquals(XSD.xboolean.getURI(), n.getLiteralDatatype().getURI());
     }
 
     @Test
@@ -191,4 +246,42 @@ public class TestSSE_Builder extends TestCase
                       "(!= ?x ?y)") ;
     }
 
+    @Test
+    public void testBuildTable_01() {
+        Op expected = OpTable.unit();
+        Op actual = SSE.parseOp("(table unit)");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBuildTable_02() {
+        Op expected = OpTable.empty();
+        Op actual = SSE.parseOp("(table empty)");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBuildTable_03() {
+        Op expected = OpTable.create(TableFactory.create(Var.alloc("x"), NodeConst.nodeTrue));
+        Op actual = SSE.parseOp("(table (vars ?x) (row (?x true)))");
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testBuildTable_04() {
+        // Can't test for equality because can't create a BNode in a way that equality will
+        // succeed because OpTable does strict equality and ignores NodeIsomorphismMap
+        SSE.parseOp("(table (vars ?x) (row (?x _:test)))");
+    }
+
+    @Test(expected = ExprBuildException.class)
+    public void testBuildTableBad_01() {
+        SSE.parseOp("(table (vars ?x) (row (?x (table unit))))");
+
+    }
+
+    @Test(expected = ExprBuildException.class)
+    public void testBuildTableBad_02() {
+        SSE.parseOp("(table (vars ?x) (row (?x _)))");
+    }
 }

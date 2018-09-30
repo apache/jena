@@ -20,7 +20,9 @@ package org.apache.jena.query;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +32,7 @@ import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
@@ -141,6 +143,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     private Map<String, Node> params = new HashMap<>();
     private Map<Integer, Node> positionalParams = new HashMap<>();
     private PrefixMapping prefixes;
+    private Map<String, ValueReplacement> valuesReplacements = new HashMap<>();
 
     /**
      * Creates a new parameterized string
@@ -1156,14 +1159,15 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Clears the value for a variable parameter so the given variable will not
-     * have a value injected
+     * Clears the value for a variable or values parameter so the given variable
+     * will not     * have a value injected
      * 
      * @param var
      *            Variable
      */
     public void clearParam(String var) {
         this.params.remove(var);
+        this.valuesReplacements.remove(var);
     }
 
     /**
@@ -1177,10 +1181,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Clears all values for both variable and positional parameters
+     * Clears all values for variable, values and positional parameters
      */
     public void clearParams() {
         this.params.clear();
+        this.valuesReplacements.clear();
         this.positionalParams.clear();
     }
 
@@ -1328,6 +1333,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
             command = p.matcher(command).replaceAll(Matcher.quoteReplacement(this.stringForNode(n, context)) + "$2");
         }
 
+        // Inject Values Parameters
+        command = applyValues(command, context);
+        
         // Then inject Positional Parameters
         // To do this we need to find the ? we will replace
         p = Pattern.compile("(\\?)[\\s;,.]");
@@ -1734,4 +1742,205 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
     }
+    
+    /**
+     * Assign a VALUES valueName with a multiple items.<br>
+     * Can be used to assign multiple values to a single variable or single
+     * value to multiple variables (if using a List) in the SPARQL query.<br>
+     * See setRowValues to assign multiple values to multiple variables.<br>
+     * Using "valueName" with list(prop_A, obj_A) on query "VALUES (?p ?o)
+     * {?valueName}"     * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
+     *
+     *
+     * @param valueName
+     * @param items
+     */
+    public void setValues(String valueName, Collection<? extends RDFNode> items) {
+        items.forEach(item -> validateParameterValue(item.asNode()));
+
+        //Ensure that a list is used for the items.
+        Collection<List<? extends RDFNode>> rowItems = new ArrayList<>();
+        if (items instanceof List) {
+            rowItems.add((List<? extends RDFNode>)items);
+        } else {
+            rowItems.add(new ArrayList<>(items));
+        }
+        this.valuesReplacements.put(valueName, new ValueReplacement(valueName, rowItems));
+    }
+
+    /**
+     * Assign a VALUES valueName with a single item.<br>
+     * Using "valueName" with Literal obj_A on query "VALUES ?o {?valueName}"
+     * would produce     * "VALUES ?o {obj_A}".
+     *
+     * @param valueName
+     * @param item
+     */
+    public void setValues(String valueName, RDFNode item) {
+        setValues(valueName, Arrays.asList(item));
+    }
+
+    /**
+     * **
+     * Sets a map of VALUES valueNames and their items.<br>
+     * Can be used to assign multiple values to a single variable or single
+     * value to multiple variables (if using a List) in the SPARQL query.<br>
+     * See setRowValues to assign multiple values to multiple variables.
+     *
+     * @param itemsMap
+     */
+    public void setValues(Map<String, Collection<? extends RDFNode>> itemsMap) {
+        itemsMap.forEach(this::setValues);
+    }
+
+    /**
+     * Allocate multiple lists of variables to a single VALUES valueName.<br>
+     * Using "valuesName" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on
+     * query "VALUES (?p ?o) {?valuesName}" would produce "VALUES (?p ?o)
+     * {(prop_A obj_A)     * (prop_B obj_B)}".
+     *
+     * @param valueName
+     * @param rowItems
+     */
+    public void setRowValues(String valueName, Collection<List<? extends RDFNode>> rowItems) {
+        rowItems.forEach(collection -> collection.forEach(item -> validateParameterValue(item.asNode())));
+        this.valuesReplacements.put(valueName, new ValueReplacement(valueName, rowItems));
+    }
+
+    private String applyValues(String command, SerializationContext context) {
+
+        for (ValueReplacement valueReplacement : valuesReplacements.values()) {
+            command = valueReplacement.apply(command, context);
+        }
+        return command;
+    }
+
+    private static final String VALUES_KEYWORD = "values";
+
+    protected static String[] extractTargetVars(String command, String valueName) {
+        String[] targetVars = new String[]{};
+
+        int valueIndex = command.indexOf(valueName);
+        if (valueIndex > -1) {
+            String subCmd = command.substring(0, valueIndex).toLowerCase(); //Truncate the command at the valueName. Lowercase to search both cases of VALUES keyword.
+            int valuesIndex = subCmd.lastIndexOf(VALUES_KEYWORD);
+            int openBracesIndex = subCmd.lastIndexOf("{");
+            int closeBracesIndex = subCmd.lastIndexOf("}");
+            if (valuesIndex > -1 && valuesIndex < openBracesIndex && closeBracesIndex < valuesIndex) { //Ensure that VALUES keyword is found, open braces index is located after the VALUES and any close braces is located before the VALUES.
+                String vars = command.substring(valuesIndex + VALUES_KEYWORD.length(), openBracesIndex);
+                targetVars = vars.replaceAll("[(?$)]", "").trim().split(" ");
+            }
+        }
+        return targetVars;
+    }
+
+    /**
+     * Performs replacement of VALUES in query string.
+     *
+     */
+    private class ValueReplacement {
+
+        private final String valueName;
+        private final Collection<List<? extends RDFNode>> rowItems;
+
+        public ValueReplacement(String valueName, Collection<List<? extends RDFNode>> rowItems) {
+            this.valueName = valueName;
+            this.rowItems = rowItems;
+        }
+
+        public String apply(String command, SerializationContext context) {
+
+            if (rowItems.isEmpty()) {
+                return command;
+            }
+
+            String[] targetVars = extractTargetVars(command, valueName);
+            if (targetVars.length == 0) {
+                //VALUES keyword has not been found or there is another issue so do not modify the command.
+                return command;
+            }
+
+            validateValuesSafeToInject(command, targetVars);
+
+            String target = createTarget();
+            String replacement = buildReplacement(targetVars.length, context);
+
+            return command.replaceAll(target, replacement);
+        }
+
+        private String buildReplacement(int targetVarCount, SerializationContext context) {
+
+            StringBuilder replacement = new StringBuilder("");
+
+            if (targetVarCount == 1) {
+                for (List<? extends RDFNode> row : rowItems) {
+                    for (RDFNode item : row) {
+                        replacement.append("(");
+                        String insert = stringForNode(item.asNode(), context);
+                        replacement.append(insert);
+                        replacement.append(") ");
+                    }
+                }
+            } else {
+                for (List<? extends RDFNode> row : rowItems) {
+                    replacement.append("(");
+                    for (RDFNode item : row) {
+                        String insert = stringForNode(item.asNode(), context);
+                        replacement.append(insert);
+                        replacement.append(" ");
+                    }
+                    replacement.deleteCharAt(replacement.length() - 1);
+                    replacement.append(") ");
+                }
+            }
+            replacement.deleteCharAt(replacement.length() - 1);
+
+            return replacement.toString();
+        }
+
+        /**
+         * Tidy up valueName if doesn't start with a ? or $.
+         *
+         * @param valueName
+         * @return
+         */
+        private String createTarget() {
+            String target;
+
+            if (valueName.startsWith("?") || valueName.startsWith("$")) {
+                target = valueName;
+            } else {
+                target = "[?$]" + valueName;
+            }
+            return target;
+        }
+
+        protected void validateValuesSafeToInject(String command, String[] targetVars) {
+
+            if (targetVars.length == 1) {
+                //Single var with one or more items so all checked against the same var.
+                String targetVar = targetVars[0];
+                for (List<? extends RDFNode> row : rowItems) {
+                    for (RDFNode item : row) {
+                        validateSafeToInject(command, targetVar, item.asNode());
+                    }
+                }
+            } else {
+                //Multiple var with one or more rows.
+                for (int i = 0; i < targetVars.length; i++) {
+                    String targetVar = targetVars[i];
+                    for (List<? extends RDFNode> row : rowItems) {
+                        if (targetVars.length == row.size()) {
+                            RDFNode item = row.get(i);
+                            validateSafeToInject(command, targetVar, item.asNode());
+                        } else {
+                            String rowString = row.stream().map(RDFNode::toString).collect(Collectors.joining(","));
+                            throw new ARQException("Number of VALUES variables (" + String.join(", ", targetVars) + ") does not equal replacement row (" + rowString + ").");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 }

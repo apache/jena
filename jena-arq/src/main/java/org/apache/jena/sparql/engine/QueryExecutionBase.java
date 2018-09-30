@@ -33,8 +33,11 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -52,19 +55,20 @@ import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.Template;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.DatasetUtils;
 import org.apache.jena.sparql.util.ModelUtils;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
 public class QueryExecutionBase implements QueryExecution
 {
-    private Query                    query;
-    private Dataset                  dataset;
-    private QueryEngineFactory       qeFactory;
+    private final Query              query;
+    private final QueryEngineFactory qeFactory;
+    private final Context            context;
+    private final Dataset            dataset;
+    private final DatasetGraph       dsg;
+    
     private QueryIterator            queryIterator    = null;
     private Plan                     plan             = null;
-    private Context                  context;
     private QuerySolution            initialBinding   = null;
 
     // Set if QueryIterator.cancel has been called
@@ -82,18 +86,41 @@ public class QueryExecutionBase implements QueryExecution
     private long                     timeout2         = TIMEOUT_UNSET;
     private final AlarmClock         alarmClock       = AlarmClock.get();
 
-    public QueryExecutionBase(Query query, Dataset dataset, 
+    public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryEngineFactory qeFactory) {
+        this(query, dataset, null, context, qeFactory);
+    }
+
+    public QueryExecutionBase(Query query, DatasetGraph datasetGraph, Context context, QueryEngineFactory qeFactory) {
+        this(query, null, datasetGraph, context, qeFactory);
+    }
+
+    public QueryExecutionBase(Query query, Dataset dataset, DatasetGraph datasetGraph, 
                               Context context, QueryEngineFactory qeFactory) {
         this.query = query;
-        this.dataset = dataset ;
-        this.context = context ;
+        this.dataset = formDataset(dataset, datasetGraph);
         this.qeFactory = qeFactory ;
+        this.dsg = formDatasetGraph(datasetGraph, dataset);
+        this.context = Context.setupContextExec(context, dsg) ;
         init() ;
     }
     
+    private static Dataset formDataset(Dataset dataset, DatasetGraph datasetGraph) {
+        if ( dataset != null ) 
+            return dataset;
+        if ( datasetGraph != null )
+            return DatasetFactory.wrap(datasetGraph);
+        return null;
+    }
+
+    private static DatasetGraph formDatasetGraph(DatasetGraph datasetGraph, Dataset dataset) {
+        if ( datasetGraph != null ) 
+            return datasetGraph;
+        if ( dataset != null )
+            return dataset.asDatasetGraph();
+        return null;
+    }
+    
     private void init() {
-        DatasetGraph dsg = (dataset == null) ? null : dataset.asDatasetGraph() ;
-        context = Context.setupContextExec(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
         // NB: Setting timeouts via the context after creating a QueryExecutionBase 
@@ -557,7 +584,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Plan getPlan() {
         if ( plan == null ) {
-            DatasetGraph dsg = prepareDataset(dataset, query);
             Binding inputBinding = null;
             if ( initialBinding != null )
                 inputBinding = BindingUtils.asBinding(initialBinding);
@@ -595,6 +621,7 @@ public class QueryExecutionBase implements QueryExecution
         if ( q.isConstructType() )  return "CONSTRUCT" ; 
         if ( q.isDescribeType() )   return "DESCRIBE" ; 
         if ( q.isAskType() )        return "ASK" ;
+        if ( q.isJsonType() )       return "JSON" ;
         return "<<unknown>>" ;
     }
 
@@ -607,22 +634,6 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Query getQuery()     { return query ; }
 
-    private static DatasetGraph prepareDataset(Dataset dataset, Query query) {
-        if ( dataset != null )
-            return dataset.asDatasetGraph();
-
-        if ( ! query.hasDatasetDescription() ) 
-            //Query.Log.warn(this, "No data for query (no URL, no model)");
-            throw new QueryExecException("No dataset description for query");
-        
-        String baseURI = query.getBaseURI() ;
-        if ( baseURI == null )
-            baseURI = IRIResolver.chooseBaseURI().toString() ;
-        
-        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(), baseURI ) ;
-        return dsg ;
-    }
-    
     @Override
     public void setInitialBinding(QuerySolution startSolution) {
         initialBinding = startSolution ;

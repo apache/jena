@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import static org.junit.Assert.*;
+
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.Syntax ;
@@ -30,8 +31,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.FmtUtils ;
 import org.junit.Test ;
 
-
-public class TestSerialization extends BaseTest
+public class TestSerialization
 {
     static PrefixMapping pmap1 = new PrefixMappingImpl() ;
     {

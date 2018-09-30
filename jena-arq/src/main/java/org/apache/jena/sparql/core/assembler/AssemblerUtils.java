@@ -119,7 +119,7 @@ public class AssemblerUtils
         try {
             root = GraphUtils.findRootByType(spec, type) ;
             if ( root == null )
-                return null ;
+                throw new ARQException("No such type: <"+type+">");
             
         } catch (TypeNotUniqueException ex)
         { throw new ARQException("Multiple types for: "+tDataset) ; }

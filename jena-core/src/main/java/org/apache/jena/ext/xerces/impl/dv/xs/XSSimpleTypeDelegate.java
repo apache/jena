@@ -23,7 +23,7 @@ import org.apache.jena.ext.xerces.xs.*;
 /**
  * Base class for XSSimpleType wrapper implementations.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @version $Id: XSSimpleTypeDelegate.java 1024038 2010-10-18 22:06:35Z sandygao $
  */

@@ -23,12 +23,12 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.10.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>19</version>
+    <version>21</version>
   </parent>
 
   <licenses>
@@ -60,14 +60,15 @@
          artifacts so the versions must align. Consult jsonld-java's 
          POM for the correct dependency versions 
     -->
-    <ver.jsonldjava>0.12.0</ver.jsonldjava>
-    <ver.jackson>2.9.5</ver.jackson>
+    <ver.jsonldjava>0.12.1</ver.jsonldjava>
+    <ver.jackson>2.9.6</ver.jackson>
 
     <ver.commonsio>2.6</ver.commonsio>
     <ver.commonscli>1.4</ver.commonscli>
     <ver.commonslang3>3.4</ver.commonslang3>
     <ver.commonscsv>1.5</ver.commonscsv>
     <ver.commons-codec>1.11</ver.commons-codec>
+    <ver.commons-compress>1.17</ver.commons-compress>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
 
@@ -88,7 +89,7 @@
     <ver.spatial4j>0.6</ver.spatial4j>
 
     <ver.mockito>1.9.5</ver.mockito>
-    <ver.awaitility>1.7.0</ver.awaitility>
+    <ver.awaitility>3.1.0</ver.awaitility>
 
     <jdk.version>1.8</jdk.version>
     <targetJdk>${jdk.version}</targetJdk>
@@ -262,7 +263,7 @@
         <!-- Slow building modules -->
         <module>jena-jdbc</module>
         <!--  Fails when building with Java9 JDK because it requires 
-             system jar jdk.tools which is not available in Java9.
+             system jar jdk.tools which is not available in Java9 onwards
         -->
         <module>jena-elephas</module>
         <module>apache-jena-osgi</module>
@@ -315,6 +316,12 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${ver.commonsio}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${ver.commons-compress}</version>
       </dependency>
       
       <dependency>
@@ -459,6 +466,7 @@
         <version>${ver.log4j2}</version>
       </dependency>
       
+      <!-- Intercept direct use of log4j2 -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
@@ -478,12 +486,9 @@
         <version>${ver.slf4j}</version>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging 
-           e.g. Apache Common HTTP client. 
-      -->
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
+        <artifactId>slf4j-jdk14</artifactId>
         <version>${ver.slf4j}</version>
       </dependency>
 
@@ -491,6 +496,16 @@
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${ver.log4j}</version>
+      </dependency>
+
+      <!-- And intercept any uses of Jakarta Commons Logging 
+           e.g. Apache Common HTTP client. 
+      -->
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${ver.slf4j}</version>
       </dependency>
 
       <dependency>
@@ -527,7 +542,7 @@
       </dependency>
       
       <dependency>
-        <groupId>com.jayway.awaitility</groupId>
+        <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${ver.awaitility}</version>
       </dependency>
@@ -551,13 +566,15 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <optional>true</optional>
+      <!-- <optional>true</optional> -->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <optional>true</optional>
+      <!-- <optional>true</optional> -->
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -744,7 +761,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
+          <version>2.21.0</version>
         </plugin>
 
         <plugin>
@@ -780,20 +797,16 @@
             </execution>
           </executions>
           <configuration>
-
-            <!-- Java8 and later -->
-            <!-- javadoc-plug v2.x way to do this
-                 <additionalparam>-Xdoclint:none</additionalparam>
+            <!-- Java 10
+                 <additionalOptions>-html5</additionalOptions>
             -->
-            <!-- The javadoc-plugin v3 way to do this -->
+
             <doclint>none</doclint>
-            
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
             <version>true</version>
             <show>public</show>
-            <quiet>true</quiet>
             <encoding>UTF-8</encoding>
             <windowtitle>${project.name} ${project.version}</windowtitle>
             <doctitle>${project.name} ${project.version}</doctitle>
@@ -803,11 +816,10 @@
               <link>http://jena.apache.org/documentation/javadoc/arq/</link>
               <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
               <link>http://jena.apache.org/documentation/javadoc/text/</link>
-              <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
+              <link>http://jena.apache.org/documentation/javadoc/rdfconnection/</link>
               <link>http://jena.apache.org/documentation/javadoc/fuseki2/</link>
               <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
-              <link>http://jena.apache.org/documentation/javadoc/elephas/</link>
             </links>
           </configuration>
         </plugin>

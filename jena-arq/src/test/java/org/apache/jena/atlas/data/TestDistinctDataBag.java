@@ -24,7 +24,6 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Random ;
 
-import junit.framework.TestCase ;
 import org.apache.jena.atlas.data.DistinctDataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicyCount ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -43,8 +42,9 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
 import org.apache.jena.sparql.util.NodeUtils ;
+import static org.junit.Assert.*;
 
-public class TestDistinctDataBag extends TestCase
+public class TestDistinctDataBag
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     Random random = new Random();

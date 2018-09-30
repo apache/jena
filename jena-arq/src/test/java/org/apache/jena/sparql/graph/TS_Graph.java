@@ -27,6 +27,8 @@ import org.junit.runners.Suite ;
     , TestGraphsMem.class
     , TestGraphsDataBag.class
     , TestGraphUnionRead.class
+    , TestPrefixMappingMem.class
+    , TestPrefixMappingPrefixMap.class
 })
 public class TS_Graph
 {

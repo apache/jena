@@ -582,16 +582,14 @@ public abstract class NodeValue extends ExprNode
     }
     
     /** Compare by value (and only value) if possible.
-     *  Supports <, <=, >, >= but not = nor != (which are sameValueAs and notSameValueAs)
+     *  Supports &lt;, &lt;=, &gt;, &gt;= but not = nor != (which are sameValueAs and notSameValueAs)
      * @param nv1
      * @param nv2
-     * @return negative, 0 , or positive for not possible, less than, equal, greater than.
+     * @return Expr.CMP_INDETERMINATE(+2), Expr.CMP_LESS(-1), Expr.CMP_EQUAL(0) or Expr.CMP_GREATER(+1)
      * @throws ExprNotComparableException  
      */
     public static int compare(NodeValue nv1, NodeValue nv2)
     {
-        // Called from E_LessThat etc
-        // and NodeUtils.comparLiteralsByValue 
         if ( nv1 == null || nv2 == null )
             //raise(new ExprEvalException("Attempt to notSameValueAs on null") ;
             throw new ARQInternalErrorException("Attempt to compare on null") ;
@@ -622,7 +620,7 @@ public abstract class NodeValue extends ExprNode
         ValueSpaceClassification compType = classifyValueOp(nv1, nv2) ;
         
         // Special case - date/dateTime comparison is affected by timezones and may be
-        // interdeterminate based on the value of the dateTime/date.
+        // indeterminate based on the value of the dateTime/date.
         // Do this first, 
         
         switch (compType)

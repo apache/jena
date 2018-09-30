@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.xs.XSConstants;
 /**
  * the factory to create/return built-in schema DVs and create user-defined DVs
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

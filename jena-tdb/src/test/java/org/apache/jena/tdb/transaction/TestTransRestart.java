@@ -33,10 +33,10 @@ import org.apache.jena.tdb.base.block.FileMode ;
 import org.apache.jena.tdb.base.file.FileFactory ;
 import org.apache.jena.tdb.base.file.Location ;
 import org.apache.jena.tdb.base.objectfile.ObjectFile ;
+import org.apache.jena.tdb.setup.DatasetBuilderStd;
 import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.Names ;
 import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.sys.TDBMaker ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -70,14 +70,13 @@ public class TestTransRestart extends BaseTest {
         cleanup() ;
     }
     
-    private static DatasetGraphTDB createPlain(Location location) { return TDBMaker.createDatasetGraphTDB(location, null) ; }
+    private static DatasetGraphTDB createPlain(Location location) { return DatasetBuilderStd.create(location) ; }
     
     private void setupPlain() {
         // Make without transactions.
         DatasetGraphTDB dsg = createPlain(location) ;
         dsg.add(quad1) ; 
         dsg.close() ;
-        StoreConnection.release(location) ; 
         return ;
     }
 

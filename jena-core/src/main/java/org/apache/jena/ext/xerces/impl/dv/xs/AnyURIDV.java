@@ -24,7 +24,7 @@ import org.apache.jena.ext.xerces.util.URI;
 /**
  * Represent the schema type "anyURI"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

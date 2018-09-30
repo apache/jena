@@ -18,17 +18,29 @@
 
 package org.apache.jena.fuseki ;
 
+import java.io.IOException;
 import java.util.Calendar ;
 import java.util.TimeZone ;
 import java.util.concurrent.TimeUnit ;
 
 import javax.servlet.ServletContext;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.DateTimeUtils ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.ARQ ;
+import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
+import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
@@ -184,8 +196,12 @@ public class Fuseki {
      */
     public static boolean             verboseLogging    = false ;
 
-    /** ServletContext attibute for "verbose" - the value of the attirbiye is a Boolean */
-    public static String attrVerbose = "jena-fuseki:verbose" ;
+    // Servlet context attribute names,
+
+    public static final String attrVerbose                 = "org.apache.jena.fuseki:verbose";
+    public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
+    public static final String attrServiceRegistry         = "org.apache.jena.fuseki:ServiceDispatchRegistry";
+    public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));
@@ -273,5 +289,69 @@ public class Fuseki {
     // Force a call to init.
     static {
         init() ;
+    }
+
+    /** Retrun a free port */
+    public static int choosePort() {
+        return FusekiNetLib.choosePort();
+    }
+    
+    /**
+     * Test whether a URL identifies a Fuseki server. This operation can not guarantee to
+     * detect a Fuseki server - for example, it may be behind a reverse proxy that masks
+     * the signature.
+     */
+    public static boolean isFuseki(String datasetURL) {
+        HttpOptions request = new HttpOptions(datasetURL);
+        HttpClient httpClient = HttpOp.getDefaultHttpClient();
+        if ( httpClient == null ) 
+            httpClient = HttpClients.createSystem();
+        return isFuseki(request, httpClient, null);
+    }
+
+    /**
+     * Test whether a {@link RDFConnectionRemote} connects to a Fuseki server. This
+     * operation can not guaranttee to detech a Fuseki server - for example, it may be
+     * behind a reverse proxy that masks the signature.
+     */
+    public static boolean isFuseki(RDFConnectionRemote connection) {
+        HttpOptions request = new HttpOptions(connection.getDestination());
+        HttpClient httpClient = connection.getHttpClient();
+        if ( httpClient == null ) 
+            httpClient = HttpClients.createSystem();
+        HttpContext httpContext = connection.getHttpContext();
+        return isFuseki(request, httpClient, httpContext);
+    }
+
+    private static boolean isFuseki(HttpOptions request, HttpClient httpClient, HttpContext httpContext) {
+        try {
+            HttpResponse response = httpClient.execute(request);
+            // Fuseki does not send "Server" in release mode.
+            // (best practice).
+            // All we can do is try for the "Fuseki-Request-ID" 
+            String reqId = safeGetHeader(response, "Fuseki-Request-ID");
+            if ( reqId != null )
+                return true;
+    
+            // If returning "Server"
+            String serverIdent = safeGetHeader(response, "Server");
+            if ( serverIdent != null ) {
+                Log.debug(ARQ.getHttpRequestLogger(), "Server: "+serverIdent);
+                boolean isFuseki = serverIdent.startsWith("Apache Jena Fuseki");
+                if ( !isFuseki )
+                    isFuseki = serverIdent.toLowerCase().contains("fuseki");
+                return isFuseki;
+            }
+            return false; 
+        } catch (IOException ex) {
+            throw new HttpException("Failed to check for a Fuseki server", ex);
+        }
+    }
+
+    static String safeGetHeader(HttpResponse response, String header) {
+        Header h = response.getFirstHeader(header);
+        if ( h == null )
+            return null;
+        return h.getValue();
     }
 }

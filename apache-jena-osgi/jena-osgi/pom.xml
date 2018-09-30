@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>apache-jena-osgi</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
   </parent>
   <artifactId>jena-osgi</artifactId>  
   <packaging>bundle</packaging>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <!-- These are all embedded within httpclient-osgi -->
@@ -106,35 +106,35 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shaded-guava</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!--
@@ -147,7 +147,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -251,7 +251,19 @@
             <Export-Package>org.apache.jena.*,!org.apache.jena.ext.*</Export-Package>            
             <Embed-Dependency>artifactId=jena*;inline=true</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.jena.ext.*,sun.misc;resolution:=optional,com.google.errorprone.annotations.concurrent;resolution:=optional,*</Import-Package>
+            <Import-Package>
+              org.osgi.framework.*,
+              !sun.io,
+              !org.apache.avalon.framework.logger,
+              !com.ibm.uvm.tools,
+              !com.sun.jdmk.comm,
+              !org.apache.log,
+              !org.apache.jena.ext.*,
+              !org.checkerframework.checker.*,
+              !com.google.errorprone.annotations.*,
+              sun.misc;resolution:=optional,
+              *
+            </Import-Package>
             <!--
             <Import-Package>org.osgi.framework.*,!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.jena.ext.*,sun.misc;resolution:=optional,*</Import-Package>
             -->

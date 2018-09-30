@@ -29,7 +29,9 @@ public class Operation {
     
     // Create intern'ed symbols. 
     static private NameMgr<Operation> mgr = new NameMgr<>(); 
-    static public Operation register(String name, String description) { return mgr.register(name, (x)->new Operation(x, description)); }
+    static public Operation register(String name, String description) {
+        return mgr.register(name, (x)->new Operation(x, description));
+    }
     
     public static final Operation Query          = register("Query", "SPARQL Query");
     public static final Operation Update         = register("Update", "SPARQL Update");
@@ -39,7 +41,7 @@ public class Operation {
     public static final Operation Quads_R        = register("Quads_R", "HTTP Quads (Read)");
     public static final Operation Quads_RW       = register("Quads_RW", "HTTP Quads");
     
-    // Plain REST operations on the datset URL 
+    // Plain REST operations on the dataset URL 
     public static final Operation DatasetRequest_R  = Quads_R;
     public static final Operation DatasetRequest_RW = Quads_RW;
     

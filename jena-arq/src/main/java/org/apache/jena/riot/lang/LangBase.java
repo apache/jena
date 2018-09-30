@@ -47,9 +47,4 @@ public abstract class LangBase extends LangEngine implements LangRIOT
 
     /** Run the parser - events have been handled. */
     protected abstract void runParser();
-
-    @Override
-    public ParserProfile getProfile() {
-        return profile;
-    }
 }

@@ -21,6 +21,7 @@ import java.io.IOException ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
@@ -43,6 +44,7 @@ public class Transaction
     
     private final List<ObjectFileTrans> objectFileTrans = new ArrayList<>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
+    private final List<TransactionLifecycle> others = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
     private final long version ;
@@ -147,6 +149,16 @@ public class Transaction
                             SystemTDB.errlog.warn("Exception during 'commit' : transaction status not known (but not a partial commit): ",ex) ;
                         throw new TDBTransactionException("Exception at commit point", ex) ;
                     }
+                    
+                    try {
+                       committed() ;
+                    } catch (RuntimeException ex) {
+                        if ( isIOException(ex) )
+                            SystemTDB.errlog.warn("IOException during 'committed'"+ex.getMessage()) ;
+                        else
+                            SystemTDB.errlog.warn("Exception during 'committed': "+ex.getMessage(), ex) ;
+                        throw new TDBTransactionException("Exception during 'committed' - transaction did commit", ex) ;
+                    }
                     outcome = TxnOutcome.W_COMMITED ;
                     break ;
             }
@@ -173,13 +185,20 @@ public class Transaction
         }
         return false ;
     }
+    
+    /*package*/ void forAllComponents(Consumer<TransactionLifecycle> action) {
+        objectFileTrans.forEach(action);
+        blkMgrs.forEach(action);
+        others.forEach(action);
+    }
 
     private void prepare() {
         state = TxnState.PREPARING ;
-        for ( TransactionLifecycle x : objectFileTrans )
-            x.commitPrepare(this) ;
-        for ( TransactionLifecycle x : blkMgrs )
-            x.commitPrepare(this) ;
+        forAllComponents(x->x.commitPrepare(this));
+    }
+
+    private void committed() {
+        forAllComponents(x->x.committed(this));
     }
 
     public void abort() {
@@ -193,11 +212,7 @@ public class Transaction
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted") ;
                     try {
-                        // Clearup.
-                        for ( TransactionLifecycle x : objectFileTrans )
-                            x.abort(this) ;
-                        for ( TransactionLifecycle x : blkMgrs )
-                            x.abort(this) ;
+                        forAllComponents(x->x.abort(this)) ;
                     }
                     catch (RuntimeException ex) {
                         if ( isIOException(ex) )
@@ -317,13 +332,7 @@ public class Transaction
         }
     }
     
-    /** Return the list of items registered for the transaction lifecycle */ 
-    public List<TransactionLifecycle> lifecycleComponents() {
-        List<TransactionLifecycle> x = new ArrayList<>() ;
-        x.addAll(objectFileTrans) ;
-        x.addAll(blkMgrs) ;
-        return x ;
-    }
+    // For development and tracking, keep these as separate lists.
     
     /*package*/ void addComponent(ObjectFileTrans oft) {
         objectFileTrans.add(oft);
@@ -331,6 +340,10 @@ public class Transaction
 
     /*package*/ void addComponent(BlockMgrJournal blkMgr) {
         blkMgrs.add(blkMgr) ;
+    }
+    
+    /*package*/ void addAdditionaComponent(TransactionLifecycle tlc) {
+        others.add(tlc) ;
     }
 
     public DatasetGraphTDB getBaseDataset() {

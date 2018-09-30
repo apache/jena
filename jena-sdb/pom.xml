@@ -21,12 +21,12 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.10.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
@@ -44,20 +44,20 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Need the tests as well -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -66,7 +66,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -74,7 +74,7 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
       <classifier>tests</classifier>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -188,28 +188,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <tarLongFileMode>gnu</tarLongFileMode>    
-        </configuration>
-        <executions>
-          <execution>
-            <id>create-distribution</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <tarLongFileMode>posix</tarLongFileMode>
-              <descriptors>
-                <descriptor>assembly.xml</descriptor>
-              </descriptors>
-              <tarLongFileFormat>gnu</tarLongFileFormat>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>

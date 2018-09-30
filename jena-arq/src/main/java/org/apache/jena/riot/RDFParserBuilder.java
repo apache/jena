@@ -278,7 +278,7 @@ public class RDFParserBuilder {
     public RDFParserBuilder base(String base) { this.baseUri = base ; return this; }
 
     /** Choose whether to resolve URIs.<br/>
-     *  This does not affect all langages: N-Triples and N-Quads never resolve URIs.<br/>
+     *  This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
      *  Relative URIs are bad data.<br/>
      *  Only set this to false for debugging and development purposes. 
      */ 
@@ -321,8 +321,8 @@ public class RDFParserBuilder {
      * </pre>
      * 
      * The canonical forms follow XSD 1.1
-     * <href="https://www.w3.org/TR/xmlschema11-2/#canonical-lexical-representation">2.3.1
-     * Canonical Mapping</a> except in the case of xsd:decimal where it follows the older
+     * {@literal <href="https://www.w3.org/TR/xmlschema11-2/#canonical-lexical-representation">2.3.1
+     * Canonical Mapping</a>} except in the case of xsd:decimal where it follows the older
      * XSD 1.0 which makes it legal for Turtle's short form ({@code "1.0"^^xsd:Decimal}
      * rather than {@code "1"^^xsd:decimal}). See XSD 1.0 <a href=
      * "https://www.w3.org/TR/xmlschema-2/#decimal-canonical-representation">3.2.3.2

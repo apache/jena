@@ -23,7 +23,7 @@
 @prefix rdft:   <http://www.w3.org/ns/rdftest#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Turtle test cases - from the Turtle submission then cleaned up" ;
+    rdfs:comment "Turtle submission test cases, updated to Turtle RDF 1.1" ;
     mf:entries
     (
 ## Omit because the results depend on the base URI.

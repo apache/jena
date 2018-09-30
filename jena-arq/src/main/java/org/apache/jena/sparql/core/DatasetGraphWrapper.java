@@ -40,13 +40,28 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
         return get();
     }
     
-    /** Recursively unwrap a DatasetGraphWrapped.
+    /** Recursively unwrap a {@link DatasetGraphWrapper}.
      * 
      * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
      */
     public final DatasetGraph getBase() { 
         DatasetGraph dsgw = dsg;
         while (dsgw instanceof DatasetGraphWrapper) {
+            dsgw = ((DatasetGraphWrapper)dsg).getWrapped();
+        }
+        return dsgw;
+    }
+    
+    /** Recursively unwrap a {@link DatasetGraphWrapper}, stopping at a {@link DatasetGraphWrapper}
+     * that indicate it is "view changing", ie shows quads to the base dataset graph.  
+     * 
+     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+     */
+    public final DatasetGraph getBaseForQuery() {
+        DatasetGraph dsgw = dsg;
+        while (dsgw instanceof DatasetGraphWrapper) {
+            if ( dsgw instanceof DatasetGraphWrapperView )
+                break;
             dsgw = ((DatasetGraphWrapper)dsg).getWrapped();
         }
         return dsgw;

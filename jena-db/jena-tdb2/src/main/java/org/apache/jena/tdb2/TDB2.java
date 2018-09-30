@@ -159,11 +159,11 @@ public class TDB2 {
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
 
-    static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
+    static private String      metadataLocation = "org/apache/jena/tdb2/tdb2-properties.xml" ;
     static private Metadata    metadata         = new Metadata(metadataLocation) ;
 
     /** The root package name for TDB */
-    public static final String PATH             = "org.apache.jena.tdb" ;
+    public static final String PATH             = "org.apache.jena.tdb2" ;
 
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
 

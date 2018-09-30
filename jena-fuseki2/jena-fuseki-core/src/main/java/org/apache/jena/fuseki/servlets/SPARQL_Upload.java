@@ -20,35 +20,33 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 
-import java.io.InputStream ;
 import java.io.PrintWriter ;
-import java.util.zip.GZIPInputStream ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.commons.fileupload.FileItemIterator ;
-import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
-import org.apache.commons.fileupload.util.Streams ;
-import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.FusekiNetLib;
+import org.apache.jena.fuseki.system.Upload;
+import org.apache.jena.fuseki.system.UploadDetailsWithName;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.web.HttpSC ;
 
+/**
+ * Upload data into a graph within a dataset. This is {@code fuseki:serviceUpload}.
+ * 
+ * It is better to use GSP POST with the body being the content.
+ * 
+ * This class works with general HTML form file upload where the name is somewhere in the form and that may be
+ * after the data.
+ * 
+ * Consider this service useful for small files and use GSP POST for large ones.
+ */
 public class SPARQL_Upload extends ActionService
 {
     public SPARQL_Upload() {
@@ -120,7 +118,7 @@ public class SPARQL_Upload extends ActionService
      * are caught before inserting any data.
      */
     private static long uploadNonTxn(HttpAction action, String base) {
-        UploadDetails upload = uploadWorker(action, base) ;
+        UploadDetailsWithName upload = Upload.multipartUploadWorker(action, base) ;
         String graphName = upload.graphName ;
         DatasetGraph dataTmp = upload.data ;
         long count = upload.count ;
@@ -140,9 +138,9 @@ public class SPARQL_Upload extends ActionService
         action.beginWrite() ;
         try {
             if ( gn != null )
-                FusekiLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
+                FusekiNetLib.addDataInto(dataTmp.getDefaultGraph(), action.getActiveDSG(), gn) ;
             else
-                FusekiLib.addDataInto(dataTmp, action.getActiveDSG()) ;
+                FusekiNetLib.addDataInto(dataTmp, action.getActiveDSG()) ;
 
             action.commit() ;
             return count ;
@@ -153,125 +151,16 @@ public class SPARQL_Upload extends ActionService
             ServletOps.errorOccurred(ex.getMessage()) ;
             return -1 ;
         }
-        finally { action.endWrite() ; }
+        finally { action.end() ; }
     }
 
-     /** Transactional - we'd like data to go straight to the destination, with an abort on parse error.
-      * But file upload with a name means that the name can be after the data
-      * (it is in the Fuseki default pages).
-      * Use Graph Store protocol for bulk uploads.
-      * (It would be possible to process the incoming stream and see the graph name first.)
-      */
-     private static long uploadTxn(HttpAction action, String base) {
-         // We can't do better than the non-transaction approach.
-         return uploadNonTxn(action, base) ;
-     }
-
-     static class UploadDetails {
-         final String graphName  ;
-         final DatasetGraph data ;
-         final long count ;
-         UploadDetails(String gn, DatasetGraph dsg, long parserCount) {
-             this.graphName = gn ;
-             this.data = dsg ;
-             this.count = parserCount ;
-         }
-     }
-
-    /** Process an HTTP file upload of RDF with additional name field for the graph name.
-     *  We can't stream straight into a dataset because the graph name can be after the data.
-     *  @return graph name and count
+    // XXX Improve.  Needs Upload code rework.
+    /** 
+     * Transactional - we'd like better handle the data and go straight to the destination, with an abort on parse error.
+     * Use Graph Store protocol for bulk uploads.
      */
-
-    // ?? Combine with Upload.fileUploadWorker
-    // Difference is the handling of names for graphs.
-    static private UploadDetails uploadWorker(HttpAction action, String base) {
-        DatasetGraph dsgTmp = DatasetGraphFactory.create() ;
-        ServletFileUpload upload = new ServletFileUpload() ;
-        String graphName = null ;
-        boolean isQuads = false ;
-        long count = -1 ;
-
-        String name = null ;
-        ContentType ct = null ;
-        Lang lang = null ;
-
-        try {
-            FileItemIterator iter = upload.getItemIterator(action.request) ;
-            while (iter.hasNext()) {
-                FileItemStream item = iter.next() ;
-                String fieldName = item.getFieldName() ;
-                InputStream stream = item.openStream() ;
-                if ( item.isFormField() ) {
-                    // Graph name.
-                    String value = Streams.asString(stream, "UTF-8") ;
-                    if ( fieldName.equals(HttpNames.paramGraph) ) {
-                        graphName = value ;
-                        if ( graphName != null && !graphName.equals("") && !graphName.equals(HttpNames.valueDefault) ) {
-                            IRI iri = IRIResolver.parseIRI(value) ;
-                            if ( iri.hasViolation(false) )
-                                ServletOps.errorBadRequest("Bad IRI: " + graphName) ;
-                            if ( iri.getScheme() == null )
-                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: " + graphName) ;
-                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https") ) {
-                                // Redundant??
-                                if ( iri.getRawHost() == null )
-                                    ServletOps.errorBadRequest("Bad IRI: no host name: " + graphName) ;
-                                if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
-                                    ServletOps.errorBadRequest("Bad IRI: no path: " + graphName) ;
-                                if ( iri.getRawPath().charAt(0) != '/' )
-                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': " + graphName) ;
-                            }
-                        }
-                    } else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
-                        graphName = null ;
-                    else
-                        // Add file type?
-                        action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
-                } else {
-                    // Process the input stream
-                    name = item.getName() ;
-                    if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") )
-                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax") ;
-
-                    String contentTypeHeader = item.getContentType() ;
-                    ct = ContentType.create(contentTypeHeader) ;
-
-                    lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
-                    if ( lang == null ) {
-                        lang = RDFLanguages.filenameToLang(name) ;
-
-                        // JENA-600 filenameToLang() strips off certain
-                        // extensions such as .gz and
-                        // we need to ensure that if there was a .gz extension
-                        // present we wrap the stream accordingly
-                        if ( name.endsWith(".gz") )
-                            stream = new GZIPInputStream(stream) ;
-                    }
-
-                    if ( lang == null )
-                        // Desperate.
-                        lang = RDFLanguages.RDFXML ;
-
-                    isQuads = RDFLanguages.isQuads(lang) ;
-
-                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", action.id, name,
-                                           ct.getContentType(), ct.getCharset(), lang.getName())) ;
-
-                    StreamRDF x = StreamRDFLib.dataset(dsgTmp) ;
-                    StreamRDFCounting dest = StreamRDFLib.count(x) ;
-                    ActionLib.parse(action, dest, stream, lang, base) ;
-                    count = dest.count() ;
-                }
-            }
-
-            if ( graphName == null || graphName.equals("") )
-                graphName = HttpNames.valueDefault ;
-            if ( isQuads )
-                graphName = null ;
-            return new UploadDetails(graphName, dsgTmp, count) ;
-        }
-        catch (ActionErrorException ex) { throw ex ; }
-        catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
+    private static long uploadTxn(HttpAction action, String base) {
+        return uploadNonTxn(action, base) ;
     }
+
 }

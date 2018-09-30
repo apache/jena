@@ -24,11 +24,12 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /**
- * Transaction version of {@link GraphTDB}.
- * Valid across transactions except where noted.
+ * Transaction-capable version of {@link GraphTDB}.
+ * Valid across transactions except where noted (caution: prefix mappings are not).
+ * Valid to use when TDB is not transactional.
  * 
  * @see GraphTDB  
- * @see GraphTxnTDB  
+ * @see GraphNonTxnTDB  
 
  */
 public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
@@ -38,6 +39,11 @@ public class GraphTxnTDB extends GraphTDB implements Closeable, Sync {
     public GraphTxnTDB(DatasetGraphTransaction dataset, Node graphName) {
         super(dataset, graphName) ;
         this.dataset = dataset ;
+    }
+
+    @Override
+    public DatasetGraphTransaction getDatasetGraphTransaction() {
+        return dataset;
     }
 
     @Override

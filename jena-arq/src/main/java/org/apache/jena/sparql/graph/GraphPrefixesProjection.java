@@ -20,96 +20,143 @@ package org.apache.jena.sparql.graph;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.core.DatasetPrefixStorage ;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.DatasetPrefixStorage;
 
-/** View of a dataset's prefixes for a particular graph */
-
-public class GraphPrefixesProjection extends PrefixMappingImpl
-{
-    // super.PrefixMappingImpl is the in-memory copy of the prefixes.
-    // It is a complete copy, rather than a cache.
-    // See JENA-81.
-    
-    // Maybe we should have own cache and completely replace using storage from PrefixMappingImpl?
-
-    private String graphName ;
-    private DatasetPrefixStorage prefixes ; 
+public class GraphPrefixesProjection implements PrefixMapping {
+    private final String graphName;
+    private final DatasetPrefixStorage prefixes; 
 
     public GraphPrefixesProjection(String graphName, DatasetPrefixStorage prefixes)
     { 
-        this.graphName = graphName ;
-        this.prefixes = prefixes ;
-        // Force into in-memory copy.
-        // See JENA-81
-        getNsPrefixMap() ;
-    }
-
-    //@Override protected void regenerateReverseMapping() {}
-
-    @Override
-    public String getNsURIPrefix( String uri )
-    {
-        String x = super.getNsURIPrefix(uri) ;
-        if ( x !=  null )
-            return x ;
-        // Do a reverse read.
-        x = prefixes.readByURI(graphName, uri) ;
-        if ( x != null )
-            super.set(x, uri) ;
-        return x ;
-    }
-
-
-    @Override 
-    public Map<String, String> getNsPrefixMap()
-    {
-        Map<String, String> m =  prefixes.readPrefixMap(graphName) ;
-        // Force into the cache
-        for ( Entry<String, String> e : m.entrySet() ) 
-            super.set(e.getKey(), e.getValue()) ;
-        return m ;
+        this.graphName = graphName;
+        this.prefixes = prefixes;
     }
 
     @Override
-    protected void set(String prefix, String uri)
-    {
-        // Delete old one if present and different.
-        String x = get(prefix) ;
-        if ( x != null )
+    public PrefixMapping setNsPrefix(String prefix, String uri) {
+        prefixes.insertPrefix(graphName, prefix, uri); 
+        return this;
+    }
+
+    @Override
+    public PrefixMapping removeNsPrefix(String prefix) {
+        prefixes.removeFromPrefixMap(graphName, prefix);
+        return this;
+    }
+
+    @Override
+    public PrefixMapping clearNsPrefixMap() {
+        prefixes.removeAllFromPrefixMap(graphName);
+        return this;
+    }
+
+    @Override
+    public PrefixMapping setNsPrefixes(PrefixMapping other) {
+        setNsPrefixes(other.getNsPrefixMap());
+        return this;
+    }
+
+    @Override
+    public PrefixMapping setNsPrefixes(Map<String, String> map) {
+        map.entrySet().forEach(entry->{
+            setNsPrefix(entry.getKey(), entry.getValue());
+        });
+        return this;
+    }
+
+    @Override
+    public PrefixMapping withDefaultMappings(PrefixMapping other) {
+        other.getNsPrefixMap().entrySet().forEach(entry->{
+            String prefix = entry.getKey();
+            String uri = entry.getValue();
+            if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
+                setNsPrefix( prefix, uri );
+        });
+        return this;
+    }
+
+    @Override
+    public String getNsPrefixURI(String prefix) {
+        return prefixes.readPrefix(graphName, prefix);
+    }
+
+    @Override
+    public String getNsURIPrefix(String uri) {
+        return prefixes.readByURI(graphName, uri);
+    }
+
+    @Override
+    public Map<String, String> getNsPrefixMap() {
+        return prefixes.readPrefixMap(graphName);
+    }
+
+    // From PrefixMappingImpl
+    @Override
+    public String expandPrefix(String prefixed) {
         {
-            if(x.equals(uri))
-                // Already there - no-op (thanks to Eric Diaz for pointing this out)
-                return;
-            // Remove from cache.
-            prefixes.removeFromPrefixMap(graphName, prefix) ;
+            int colon = prefixed.indexOf(':');
+            if ( colon < 0 )
+                return prefixed;
+            else {
+                String prefix = prefixed.substring(0, colon);
+                String uri = prefixes.readPrefix(graphName, prefix);
+                return uri == null ? prefixed : uri + prefixed.substring(colon + 1);
+            }
         }
-        // Persist
-        prefixes.insertPrefix(graphName, prefix, uri) ;
-        // Add to caches. 
-        super.set(prefix, uri) ;
     }
 
     @Override
-    protected String get(String prefix)
+    public String qnameFor(String uri) {
+        int split = Util.splitNamespaceXML(uri);
+        String ns = uri.substring(0, split); 
+        String local = uri.substring(split);
+        if ( local.equals("") )
+            return null;
+        String prefix = prefixes.readByURI(graphName, ns);
+        return prefix == null ? null : prefix + ":" + local;
+    }
+    
+    @Override
+    public String shortForm(String uri) {
+        Optional<Entry<String, String>> e = findMapping(uri, true);
+        if ( ! e.isPresent() )
+            return uri;
+        return e.get().getKey() + ":" + uri.substring((e.get().getValue()).length());
+    }
+
+    @Override
+    public boolean hasNoMappings() {
+        return getNsPrefixMap().isEmpty();
+    }
+    
+    @Override
+    public int numPrefixes() {
+        return getNsPrefixMap().size();
+    }
+
+    private Optional<Entry<String, String>> findMapping( String uri, boolean partial )
     {
-        String x = super.get(prefix) ;
-        if ( x != null )
-            return x ;
-        // In case it has been updated.
-        x = prefixes.readPrefix(graphName, prefix) ;
-        if ( x != null )
-            super.set(prefix, x) ;
-        return x ;
+        return getNsPrefixMap().entrySet().stream().sequential().filter(e->{
+            String ss = e.getValue();
+            if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) 
+                return true;
+            return false;
+        }).findFirst();
+    }    
+    
+    @Override
+    public PrefixMapping lock() {
+        return this;
     }
 
     @Override
-    protected void remove(String prefix) {
-        String uri = super.getNsPrefixURI(prefix) ;
-        if ( uri != null ) {
-            prefixes.removeFromPrefixMap(graphName, prefix) ;
-            super.remove(prefix);
-        }
+    public boolean samePrefixMappingAs(PrefixMapping other) {
+        return this.getNsPrefixMap().equals(other.getNsPrefixMap());
     }
+
 }
+

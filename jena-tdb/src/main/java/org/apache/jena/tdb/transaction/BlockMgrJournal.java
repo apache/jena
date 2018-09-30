@@ -93,11 +93,20 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeJournalEntry(blk) ;
         this.active = false ;
     }
+    
+    @Override
+    public void committed(Transaction txn)
+    {}
 
     @Override
-    public void commitEnact(Transaction txn)
-    {
+    public void enactCommitted(Transaction txn) {
         // No-op : this is done by playing the master journal.
+    }
+
+    @Override
+    public void clearupCommitted(Transaction txn) {
+        // Persistent state is in the system journal.
+        clear(txn) ;
     }
 
     @Override
@@ -106,13 +115,6 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         checkActive() ;
         this.active = false ;
         // Do clearup of in-memory structures in clearup().
-    }
-    
-    @Override
-    public void commitClearup(Transaction txn)
-    {
-        // Persistent state is in the system journal.
-        clear(txn) ;
     }
     
     /** Set, or reset, this BlockMgr.

@@ -46,9 +46,6 @@ public class Build
     
     public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
     {
-        // XXX replace with:
-        // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
-        // All this to BuilderDB.
         StoreParamsBuilder spb = StoreParams.builder() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
@@ -68,7 +65,6 @@ public class Build
         return dbBuild.makeNodeTable(location, params) ; 
     }
     
-    //XXX Reorg all calls to NodeTableBuilder to this argument order.
     public static NodeTable makeNodeTable(Location location, 
                                           String indexNode2Id, int node2NodeIdCacheSize,
                                           String indexId2Node, int nodeId2NodeCacheSize,
@@ -80,8 +76,7 @@ public class Build
         return makeNodeTable(location, spb.build()) ; 
     }
     
-    /** Choose the StoreParams.  This is the policy applied when creating or reattaching to a database.
-     *  (extracted and put here to keep the size of DatasetBuildStd  
+    /** Choose the StoreParams.  This is the policy applied when creating or re-attaching to a database.
      * <p>
      * If the location has parameters in a <tt>tdb.cfg</tt> file, use them, as modified by any
      * application-supplied internal parameters.
@@ -107,13 +102,13 @@ public class Build
      * providing some parameters in the {@link TDBFactory} call.
      * <p>
      * This includes changing filenames,  indexing choices and block size. 
-     * Otherwise, the database may be permanetly and irrecovably corrupted.
+     * Otherwise, the database may be permanently and irrevocably corrupted.
      * You have been warned. 
      * 
      * @param location The place where the database is or will be.
      * @param isNew  Whether the database is being created or whether there is an existing database.
      * @param pApp   Application-provide store parameters.
-     * @param pLoc   Store parameters foud at the location.
+     * @param pLoc   Store parameters found at the location.
      * @param pDft   System default store parameters.
      * @return       StoreParams
      * 

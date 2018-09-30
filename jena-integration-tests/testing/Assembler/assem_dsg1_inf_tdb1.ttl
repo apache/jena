@@ -28,4 +28,3 @@ PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 <#tdbDataset> rdf:type tdb:DatasetTDB ;
     tdb:location "--mem--" ;
     .
-

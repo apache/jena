@@ -21,6 +21,7 @@ package org.apache.jena.sparql.util.graph ;
 import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -190,10 +191,9 @@ public class GraphUtils {
 
     public static Resource findRootByType(Model model, Resource atype) {
         String s = String.join("\n", 
-                                    "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-                                    "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-                                    "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
-
+            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
         Query q = QueryFactory.create(s) ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("ATYPE", atype) ;
@@ -203,6 +203,21 @@ public class GraphUtils {
         }
     }
 
+    public static List<Resource> findRootsByType(Model model, Resource atype) {
+        String s = String.join("\n", 
+            "PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+            "PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?root { { ?root rdf:type ?ATYPE } UNION { ?root rdf:type ?t . ?t rdfs:subClassOf ?ATYPE } }") ;
+        Query q = QueryFactory.create(s) ;
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        qsm.add("ATYPE", atype) ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(q, model, qsm)) {
+            return ListUtils.toList(
+                    QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
+            
+        }
+    }
+    
     public static String fmtURI(Resource r) {
         return r.getModel().shortForm(r.getURI()) ;
     }

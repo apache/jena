@@ -98,8 +98,8 @@ public abstract class IRIResolver
      * @param isWarning Whether it is to be treated a warning.
      */
     private static void setErrorWarning(IRIFactory factory, int code, boolean isError, boolean isWarning) {
-        factory.setIsError(code, isError);
         factory.setIsWarning(code, isWarning);
+        factory.setIsError(code, isError);
     }
     
     private static void printSetting(IRIFactory factory) {
@@ -125,7 +125,7 @@ public abstract class IRIResolver
     
     /** The IRI checker setup, focused on parsing and languages.
      *  This is a clean version of jena-iri {@link IRIFactory#iriImplementation()} 
-     *  modified to allow unregistered schemes and allow <file:relative> IRIs.
+     *  modified to allow unregistered schemes and allow {@code <file:relative>} IRIs.
      *  
      *  @see IRIFactory
      */

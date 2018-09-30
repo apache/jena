@@ -24,10 +24,12 @@ import jena.cmd.ArgDecl;
 import jena.cmd.CmdArgModule;
 import jena.cmd.CmdException;
 import jena.cmd.CmdGeneral;
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.query.LabelExistsException ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.util.DatasetUtils ;
 import org.apache.jena.system.Txn;
@@ -102,8 +104,11 @@ public class ModDatasetGeneral extends ModDataset
                         RDFDataMgr.read(ds, url);
                 }
             }
-            if ( hasEntries(graphURLs) ||  hasEntries(namedGraphURLs) )
-                DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, null) ;
+            if ( hasEntries(graphURLs) ||  hasEntries(namedGraphURLs) ) {
+                // Resolve named graph URLs so the graphname is an absolute IRI.
+                List<String> x = ListUtils.toList(namedGraphURLs.stream().map(IRIResolver::resolveFileURL));
+                DatasetUtils.addInGraphs(ds, graphURLs, x, null) ;
+            }
         } 
         catch (LabelExistsException ex)
         { throw new CmdException(ex.getMessage()) ; }

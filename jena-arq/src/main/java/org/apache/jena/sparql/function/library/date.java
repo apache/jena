@@ -24,7 +24,7 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase1 ;
 
-/** date(expression) => XSD dateTime 
+/** date(expression) {@literal =>} XSD dateTime 
  *  Attempt to convert an expression to an XSD dateTime.
  *  Supported conversions: Date as yyyy-mm-dd
  */ 

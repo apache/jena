@@ -51,7 +51,7 @@ public class StageGeneratorDirectTDB implements StageGenerator
         
         if ( g instanceof GraphViewSwitchable ) {
             GraphViewSwitchable gvs = (GraphViewSwitchable)g;
-            g = gvs.getGraph();
+            g = gvs.getBaseGraph();
         }
         
         if ( ! ( g instanceof GraphTDB ) )

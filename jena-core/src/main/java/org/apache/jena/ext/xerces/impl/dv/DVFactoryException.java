@@ -21,7 +21,7 @@ package org.apache.jena.ext.xerces.impl.dv;
  * A runtime exception that's thrown if an error happens when the application
  * tries to get a DV factory instance.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @version $Id: DVFactoryException.java 446751 2006-09-15 21:54:06Z mrglavas $
  */

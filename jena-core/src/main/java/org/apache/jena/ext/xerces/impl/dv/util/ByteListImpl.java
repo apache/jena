@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.ByteList;
 /**
  * Implementation of <code>org.apache.xerces.xs.datatypes.ByteList</code>.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  * 
  * @author Ankit Pasricha, IBM
  * 

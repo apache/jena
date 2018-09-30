@@ -32,8 +32,8 @@ import org.apache.jena.system.Txn;
  * <p>{@code end()} is optional but preferred.
  * <p>
  * Helper code is available {@link Txn} so, for example:
- * <pre>Txn.executeRead(dataset, ()-> { ... sparql query ... });</pre> 
- * <pre>Txn.executeWrite(dataset, ()-> { ... sparql update ... });</pre>
+ * <pre>Txn.executeRead(dataset, {@literal ()->} { ... sparql query ... });</pre> 
+ * <pre>Txn.executeWrite(dataset, {@literal ()->} { ... sparql update ... });</pre>
  * or use one of <tt>Txn.calculateRead</tt> and <tt>Txn.executeWrite</tt>
  * to return a value for the transaction block.
  * <p>

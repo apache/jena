@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
@@ -54,7 +54,7 @@ public class DataValidatorHTML
         try {
 //            if ( log.isInfoEnabled() )
 //                log.info("data validation request") ;
-            String syntax = FusekiLib.safeParameter(httpRequest, paramSyntax) ;
+            String syntax = FusekiNetLib.safeParameter(httpRequest, paramSyntax) ;
             if ( syntax == null || syntax.equals("") )
                 syntax = RDFLanguages.NQUADS.getName() ;
 

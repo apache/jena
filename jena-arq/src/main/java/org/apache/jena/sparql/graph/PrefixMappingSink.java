@@ -18,17 +18,66 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.shared.impl.PrefixMappingImpl;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
-/** Sink PrefixMapping. Accepts chnages but does not retain state. */ 
-public class PrefixMappingSink extends PrefixMappingImpl {
-    @Override
-    protected void set(String prefix, String uri) { }
+import org.apache.jena.shared.PrefixMapping;
 
+/** Sink {@link PrefixMapping}. Accepts changes but does not retain state. */ 
+public class PrefixMappingSink extends PrefixMappingBase {
     @Override
-    protected String get(String prefix) { return null; }
+    protected void add(String prefix, String uri) { }
 
     @Override
     protected void remove(String prefix) { }
+
+    @Override
+    protected void clear() {}
+
+    @Override
+    protected boolean isEmpty() { 
+        return true;
+    }
+
+    @Override
+    protected int size() {
+        return 0;
+    }
+
+    @Override
+    protected String prefixToUri(String prefix) {
+        return null;
+    }
+
+    @Override
+    protected String uriToPrefix(String uri) {
+        return null;
+    }
+
+    @Override
+    protected Optional<Entry<String, String>> findMapping(String uri, boolean partial) {
+        return Optional.empty();
+    }
+
+    @Override
+    protected Map<String, String> asMap() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    protected Map<String, String> asMapCopy() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    protected void apply(BiConsumer<String, String> action) {}
     
+    @Override
+    public String toString() {
+        return "pm:Sink";
+    }
+
 }

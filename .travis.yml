@@ -1,9 +1,9 @@
 language: java
 sudo: false
-install: mvn dependency:go-offline
-script: mvn -Pdev verify
+install: true
+script: mvn -B clean install
 jdk:
+  - openjdk8
   - oraclejdk8
 env:
-  global:
-    - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"
+  - JAVA_OPTS="-Xmx3072M -Xms512M -XX:+UseG1GC"

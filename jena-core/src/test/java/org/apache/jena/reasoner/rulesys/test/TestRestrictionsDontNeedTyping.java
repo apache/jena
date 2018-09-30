@@ -18,6 +18,7 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import junit.framework.TestSuite;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
@@ -31,6 +32,11 @@ import org.apache.jena.vocabulary.* ;
 */
 public class TestRestrictionsDontNeedTyping extends ModelTestBase
     {
+    
+    public static TestSuite suite() {
+        return new TestSuite( TestRestrictionsDontNeedTyping.class ); 
+    } 
+    
     static final Property ANY = null;
     
     public TestRestrictionsDontNeedTyping( String name )

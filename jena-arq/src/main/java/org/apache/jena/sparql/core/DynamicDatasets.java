@@ -18,8 +18,10 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Collection ;
-import java.util.Set ;
+import static org.apache.jena.sparql.util.NodeUtils.convertToSetNodes;
+
+import java.util.Collection;
+import java.util.Set;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -28,7 +30,6 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.graph.GraphOps ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
-import org.apache.jena.sparql.util.NodeUtils ;
 
 public class DynamicDatasets
 {
@@ -46,18 +47,18 @@ public class DynamicDatasets
 
     /** Given a DatasetGraph and a query, form a DatasetGraph that 
      * is the dynamic dataset from the query.
-     * Returns the original DatasetGraph if the dataset description is null.
+     * Returns the original DatasetGraph if the dataset description is null or empty.
      */ 
     public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         if ( description == null )
             return dsg ;    
-//    	//An empty description means leave the dataset as-is
-//    	if (description.getDefaultGraphURIs().size() == 0 && description.getNamedGraphURIs().size() == 0) {
-//    		return dsg;
-//    	}
-        Set<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
-        Set<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
+    	//An empty description means leave the dataset as-is
+    	if (description.isEmpty() )
+    		return dsg;
+    	
+        Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs()) ; 
+        Set<Node> namedGraphs = convertToSetNodes(description.getNamedGraphURIs()) ;
         return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
     }
     

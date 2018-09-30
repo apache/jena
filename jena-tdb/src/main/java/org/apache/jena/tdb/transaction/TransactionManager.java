@@ -38,6 +38,7 @@ import java.util.concurrent.locks.ReadWriteLock ;
 import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.TxnType;
@@ -108,6 +109,9 @@ public class TransactionManager
     List<Transaction> commitedAwaitingFlush = new ArrayList<>() ;
     
     static AtomicLong transactionId = new AtomicLong(1) ;
+    
+    private List<TransactionLifecycle> additionalComponents = new ArrayList<>();  
+    
     // The version of the data starting at 1. The contract is that this is
     // never the same for two version (it may not be monotonic increasing).
     // Currently, it is sequentially increasing.
@@ -128,10 +132,9 @@ public class TransactionManager
     /*package*/ AtomicLong abortedWriters = new AtomicLong(0) ;
     
     // This is the DatasetGraphTDB for the first read-transaction created for
-    // a particular view.  The read DatasetGraphTDB can be used by all the readers
-    // seeing the same view.
-    // A write transaction clears this when it commits; the first reader of a 
-    // particular state creates the view datasetgraph and sets the  lastreader.
+    // a particular view. This read DatasetGraphTDB can be used by all the readers
+    // seeing the same view. A write transaction clears this when it commits; the first
+    // reader of the next state creates a new view DatasetGraph.
     private AtomicReference<DatasetGraphTDB> currentReaderView = new AtomicReference<>(null) ;
     
     // Ensure single writer. A writer calling begin(WRITE) blocks.  
@@ -279,7 +282,7 @@ public class TransactionManager
         // Not implemented
     }
     
-    // Policy for writing where a transaction takes an  MRSW at the start.
+    // Policy for writing where a transaction takes an MRSW at the start.
     // Semaphore for writer entry unnecessary.
     class TSM_MRSW_Writer extends TSM_Base
     {
@@ -313,30 +316,18 @@ public class TransactionManager
 //        committerThread.start() ;
     }
 
+    synchronized
     public void closedown() {
         processDelayedReplayQueue(null) ;
         journal.close() ;
     }
+    
+    /** Add a {@link TransactionLifecycle} to transactions createed from this point onwards. */  
+    public void addAdditionComponent(TransactionLifecycle txnLifecycle) {
+        additionalComponents.add(txnLifecycle);
+    }
 
     public /*for testing only*/ static final boolean DEBUG = false ;
-    
-    // TIM
-//    @Override
-//    public void begin(TxnMode txnMode) {
-//        if (isInTransaction()) 
-//            throw new JenaTransactionException("Transactions cannot be nested!");
-//        transactionMode.set(txnMode);
-//        ReadWrite initial = txnMode.equals(TxnMode.WRITE) ? WRITE : READ;
-//        _begin(initial);
-//    }
-//    
-//    @Override
-//    public void begin(final ReadWrite readWrite) {
-//        if (isInTransaction()) 
-//            throw new JenaTransactionException("Transactions cannot be nested!");
-//        transactionMode.set(TxnMode.convert(readWrite));
-//        _begin(readWrite) ;
-//    }
     
     public DatasetGraphTxn begin(TxnType txnType, String label) {
         return beginInternal(txnType, txnType, label);
@@ -410,9 +401,9 @@ public class TransactionManager
         if ( txn.getVersion() != version.get() )
             return null;
 
-        // Put ourselves in the serialization timeline of the dataset - that, is grab a writer
+        // Put ourselves in the serialization timeline of the dataset - that is, grab a writer
         // lock as a step toward promotion. We can then test properly because no other writer
-        // can start; readers can between acquireWriterLock and the synchronized in promote2$
+        // can start; readers can between acquireWriterLock and the synchronized in promoteSync$
         // but they don't matter.
         // Potentially blocking - must be outside 'synchronized' so that any active writer
         // can commit/abort.  Otherwise, we have deadlock.
@@ -469,19 +460,7 @@ public class TransactionManager
         ReadWrite mode = initialMode(txnType);
         DatasetGraphTxn dsgTxn = createDSGTxn(dsg, txn, mode);
         txn.setActiveDataset(dsgTxn) ;
-
-        // Empty for READ ; only WRITE transactions have components that need notifying.
-        // Promote is a WRITE transaction starting.
-        List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
-        
-        if ( mode == ReadWrite.READ ) {
-            // ---- Consistency check. View caching does not reset components.
-            if ( components.size() != 0 )
-                log.warn("read transaction, non-empty lifecycleComponents list") ;
-        }
-        
-        for ( TransactionLifecycle component : components )
-            component.begin(dsgTxn.getTransaction()) ;
+        dsgTxn.getTransaction().forAllComponents(component->component.begin(dsgTxn.getTransaction())) ;
         return dsgTxn ;
     }
     
@@ -502,6 +481,8 @@ public class TransactionManager
         if ( originalTxnType == null )
             originalTxnType = txnType;
         Transaction txn = new Transaction(dsg, version.get(), txnType, initialMode(txnType), transactionId.getAndIncrement(), originalTxnType, label, this) ;
+        // Add the extras.
+        additionalComponents.forEach(txn::addAdditionaComponent);
         return txn ;
     }
 
@@ -534,7 +515,7 @@ public class TransactionManager
         return dsgTxn ;
     }
 
-    /* Signal a transaction has commited.  The journal has a commit record
+    /* Signal a transaction has committed.  The journal has a commit record
      * and a sync to disk. The code here manages the inter-transaction stage
      * of deciding how to play the changes back to the base data
      * together with general recording of transaction details and status. 
@@ -735,12 +716,8 @@ public class TransactionManager
     /** The stage in a commit after committing - make the changes permanent in the base data */ 
     private void enactTransaction(Transaction transaction)
     {
-        // Really, really do it!
-        for ( TransactionLifecycle x : transaction.lifecycleComponents() )
-        {
-            x.commitEnact(transaction) ;
-            x.commitClearup(transaction) ;
-        }
+        transaction.forAllComponents(x->x.enactCommitted(transaction));
+        transaction.forAllComponents(x->x.clearupCommitted(transaction));
         transaction.signalEnacted() ;
     }
 
@@ -873,9 +850,12 @@ public class TransactionManager
     }
     
     private void checkReplaySafe() {
-        if ( ! checking ) return ;
-        if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
-            log.error("There are now active transactions") ;
+        if ( ! checking ) 
+            return ;
+        long r = activeReaders.get();
+        long w = activeWriters.get();
+        if ( r != 0 || w != 0 )
+            FmtLog.error(log, "checkReplaySafe: There are currently active transactions. R=%d, W=%d", r, w) ;
     }
     
     private void noteTxnStart(Transaction transaction) {

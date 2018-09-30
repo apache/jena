@@ -33,9 +33,9 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_GSP extends ActionREST
 {
-    protected final static Target determineTarget(HttpAction action) {
+    protected final static Target determineTarget(DatasetGraph dsg, HttpAction action) {
         // Delayed until inside a transaction.
-        if ( action.getActiveDSG() == null )
+        if ( dsg == null )
             ServletOps.errorOccurred("Internal error : No action graph (not in a transaction?)") ;
         
         boolean dftGraph = getOneOnly(action.request, HttpNames.paramGraphDefault) != null ;
@@ -52,16 +52,16 @@ public abstract class SPARQL_GSP extends ActionREST
                 // No name (should have been a quads operations).
                 ServletOps.errorBadRequest("Neither default graph nor named graph specified and no direct name") ;
             Node gn = NodeFactory.createURI(directName) ;
-            return namedTarget(action, directName) ;
+            return namedTarget(dsg, directName) ;
         }
         
         if ( dftGraph )
-            return Target.createDefault(action.getActiveDSG()) ;
+            return Target.createDefault(dsg) ;
         
         // Named graph
         if ( uri.equals(HttpNames.valueDefault ) )
             // But "named" default
-            return Target.createDefault(action.getActiveDSG()) ;
+            return Target.createDefault(dsg) ;
         
         // Strictly, a bit naughty on the URI resolution.  But more sensible. 
         // Base is dataset.
@@ -78,12 +78,12 @@ public abstract class SPARQL_GSP extends ActionREST
             // Bad IRI
             ServletOps.errorBadRequest("Bad IRI: "+ex.getMessage()) ;
         }
-        return namedTarget(action, absUri) ;
+        return namedTarget(dsg, absUri) ;
     }
     
-    private static Target namedTarget(HttpAction action, String graphName) {
+    private static Target namedTarget(DatasetGraph dsg, String graphName) {
         Node gn = NodeFactory.createURI(graphName) ;
-        return Target.createNamed(action.getActiveDSG(), graphName, gn) ;
+        return Target.createNamed(dsg, graphName, gn) ;
     }
 
     // struct for target

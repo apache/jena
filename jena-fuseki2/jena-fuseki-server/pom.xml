@@ -19,13 +19,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Apache Jena - Fuseki Server Standalone Jar</name>
+  <name>Apache Jena - Fuseki Server Jar</name>
   <artifactId>jena-fuseki-server</artifactId>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent> 
 
@@ -36,20 +36,31 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-core</artifactId>
+      <artifactId>jena-fuseki-main</artifactId>
       <version>${project.version}</version>
     </dependency>
 
-    <!-- Include jena-cmds in the server jar so 
-         "java -cp server-jar jena.cmd ..." works
-         as a convenience in deployments.
-    -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-access</artifactId>
+      <version>3.10.0-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    
   </dependencies>
 
   <build>
@@ -62,7 +73,7 @@
           <shadedArtifactAttached>false</shadedArtifactAttached>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>
+              <mainClass>org.apache.jena.fuseki.main.cmds.FusekiMainCmd</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />

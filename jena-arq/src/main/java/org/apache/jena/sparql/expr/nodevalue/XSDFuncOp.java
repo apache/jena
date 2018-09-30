@@ -203,20 +203,20 @@ public class XSDFuncOp
         return nv1 ;
     }
 
-    /** F&O fn:not */
+    /** {@literal F&O} fn:not */
     public static NodeValue not(NodeValue nv) {
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
         return NodeValue.booleanReturn(!b) ;
     }    
     
-    /** F&O fn:boolean */
+    /** {@literal F&O} fn:boolean */
     public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
         if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
             return nv ;
         return NodeValue.booleanReturn(booleanEffectiveValue(nv)) ;
     }
     
-    /** F&O fn:boolean */
+    /** {@literal F&O} fn:boolean */
     public static boolean booleanEffectiveValue(NodeValue nv) {
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
@@ -686,7 +686,7 @@ public class XSDFuncOp
         return NodeValue.makeString(encStr) ;
     }
 
-    /** F&O fn:concat (implicit cast to strings). */
+    /** {@literal F&O} fn:concat (implicit cast to strings). */
     public static NodeValue fnConcat(List<NodeValue> args) {
         StringBuilder sb = new StringBuilder() ;
 
@@ -990,7 +990,7 @@ public class XSDFuncOp
     public static final String defaultTimezone = "Z" ;
     
     
-    /** Strict F&O handling of compare date(times).
+    /** Strict {@literal F&O} handling of compare date(times).
      * But that means applying the "local" timezone if there is no TZ.
      * The data may have come from different timezones to the query. 
      */
@@ -1160,7 +1160,7 @@ public class XSDFuncOp
         return nv.hasDateTime() ;
     }
     
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   
@@ -1172,7 +1172,7 @@ public class XSDFuncOp
         return dateTimeCast(nv, t) ;
     }
 
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   
@@ -1199,7 +1199,7 @@ public class XSDFuncOp
         return tzStr ;
     }
     
-    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
+    /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to {@literal F&O}
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
      *   

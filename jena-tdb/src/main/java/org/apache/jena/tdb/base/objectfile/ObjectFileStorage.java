@@ -33,8 +33,9 @@ import org.apache.jena.tdb.sys.SystemTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Variable length ByteBuffer file on disk. 
- *  Buffering for delayed writes.
+/** 
+ *  Variable length ByteBuffer file on disk with 
+ *  buffering for delayed writes.
  */  
 
 public class ObjectFileStorage implements ObjectFile 
@@ -47,7 +48,7 @@ public class ObjectFileStorage implements ObjectFile
     }
     
     /* 
-     * No synchronization excpet for the write buffer.
+     * No synchronization except for the write buffer.
      * This code assumes that the caller has some appropriate lock
      * because the combination of file and cache operations needs to be thread safe.
      * 

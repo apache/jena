@@ -21,6 +21,8 @@ package org.apache.jena.atlas.lib;
 import java.util.HashSet ;
 import java.util.Set ;
 import java.util.concurrent.ConcurrentHashMap ;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Set specific operations */
 public class SetUtils
@@ -86,6 +88,11 @@ public class SetUtils
         Set<T> s3 = new HashSet<>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
+    }
+
+    /** Stream to set */ 
+    public static <T> Set<T> toSet(Stream<T> stream) {
+        return stream.collect(Collectors.toSet());
     }
 }
 

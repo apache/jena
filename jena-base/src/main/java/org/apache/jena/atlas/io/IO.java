@@ -21,9 +21,18 @@ package org.apache.jena.atlas.io;
 import java.io.* ;
 import java.nio.charset.Charset ;
 import java.nio.charset.StandardCharsets ;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.lib.IRILib ;
 
@@ -63,7 +72,7 @@ public class IO
     
     /** Open an input stream to a file; do not mask IOExceptions. 
      * If the filename is null or "-", return System.in
-     * If the filename ends in .gz, wrap in  GZIPInputStream  
+     * If the filename ends in .gz, wrap in GZIPInputStream  
      * @param filename
      * @throws FileNotFoundException 
      * @throws IOException
@@ -77,9 +86,26 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         InputStream in = new FileInputStream(filename) ;
-        if ( filename.endsWith(".gz") )
-            in = new GZIPInputStream(in) ;
+        String ext = FilenameUtils.getExtension(filename);
+        switch ( ext ) {
+            case "":        return in;
+            case "gz":      return new GZIPInputStream(in) ;
+            case "bz2":     return new BZip2CompressorInputStream(in);
+            case "sz":      return new SnappyCompressorInputStream(in);
+        }
         return in ;
+    }
+
+    private static String[] extensions = { "gz", "bz2", "sz" }; 
+    
+    /** The filename without any compression extension, or the original filename.
+     *  It tests for compression types handled by {@link #openFileEx}.
+     */
+    static public String filenameNoCompression(String filename) {
+        if ( FilenameUtils.isExtension(filename, extensions) ) {
+            return FilenameUtils.removeExtension(filename);
+        }
+        return filename;
     }
     
     /** Open a UTF8 Reader for a file. 
@@ -134,11 +160,8 @@ public class IO
     }
 
     /** Open a file for output - may include adding gzip processing. */
-    static public OutputStream openOutputFile(String filename)
-    {
-        try {
-           return openOutputFileEx(filename) ;
-        }
+    static public OutputStream openOutputFile(String filename) {
+        try { return openOutputFileEx(filename) ; }
         catch (IOException ex) { IO.exception(ex) ; return null ; }
     }
     
@@ -158,15 +181,18 @@ public class IO
             filename = IRILib.decode(filename) ;
         }
         OutputStream out = new FileOutputStream(filename) ;
-        if ( filename.endsWith(".gz") )
-            out = new GZIPOutputStream(out) ;
+        String ext = FilenameUtils.getExtension(filename);
+        switch ( ext ) {
+            case "":        return out;
+            case "gz":      return new GZIPOutputStream(out) ;
+            case "bz2":     return new BZip2CompressorOutputStream(out);
+            case "sz":      throw new UnsupportedOperationException("Snappy output");
+        }
         return out ;
     }
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrap(Writer w) { 
-        return Writer2.wrap(w) ;
-    }
+    static public AWriter wrap(Writer w)                    { return Writer2.wrap(w) ; }
     
     /** Wrap in a general writer interface */ 
     static public AWriter wrapUTF8(OutputStream out)        { return wrap(asUTF8(out)) ; } 
@@ -343,5 +369,31 @@ public class IO
             return null ;
         }
     }
-
+    
+    /** Delete everything from a {@code Path} start point, including the path itself.
+     * This function works on files or directories.
+     * This function does not follow symbolic links.
+     */  
+    public static void deleteAll(Path start) {
+        // Walks down the tree and delete directories on the way backup.
+        try { 
+            Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
+                    if (e == null) {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        throw e;
+                    }
+                }
+            });
+        }
+        catch (IOException ex) { IO.exception(ex) ; return; }
+    }
 }

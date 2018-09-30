@@ -28,10 +28,12 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
   </parent> 
 
   <properties>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.tdb2</automatic.module.name>
   </properties>
 
@@ -40,13 +42,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-trans-data</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -54,7 +56,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -62,7 +64,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -70,6 +72,23 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>org/apache/jena/tdb2/tdb2-properties.xml</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/tdb2/tdb2-properties.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
     <plugins> 
 
       <plugin>
@@ -94,8 +113,21 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <encoding>UTF-8</encoding>
+          <windowtitle>Apache Jena TDB2</windowtitle>
+          <doctitle>Apache Jena TDB2 ${project.version}</doctitle>
+          <excludePackageNames>org.apache.jena.tdb2.*</excludePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+        </configuration>
+      </plugin>
+
     </plugins>
   </build>
-
 
 </project>

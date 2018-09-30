@@ -21,7 +21,7 @@ package org.apache.jena.ext.xerces.impl.validation;
  * <p>An extension of ValidationState which can be configured to turn 
  * off checking for ID/IDREF errors and unparsed entity errors.</p>
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @author Peter McCracken, IBM
  * @version $Id: ConfigurableValidationState.java 449320 2006-09-23 22:37:56Z mrglavas $

@@ -30,15 +30,20 @@ import org.apache.jena.sparql.graph.GraphWrapper ;
 
 public class NamedGraphWrapper extends GraphWrapper implements NamedGraph {
 
-    private final Node graphName ;
+    private final Node graphName;
 
     public NamedGraphWrapper(Node graphName, Graph graph) {
-        super(graph) ;
+        super(graph);
         this.graphName = graphName;
     }
 
     @Override
     public Node getGraphName() {
-        return graphName ;
+        return graphName;
+    }
+    
+    @Override
+    public String toString() {
+        return "NamedGraphWrapper("+graphName+")";
     }
 }

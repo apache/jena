@@ -137,7 +137,7 @@ public class NodeIdInline {
 
     /** Return true if this node has a datatype that look like it is inlineable.
      * The node may still be out of range (e.g. very large integer).
-     * Only inline(Node)->NodeId can determine that. 
+     * Only inline(Node){@literal ->}NodeId can determine that. 
      */
     public static boolean hasInlineDatatype(Node node) {
         if ( ! node.isLiteral() )

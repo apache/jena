@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb2.store.NodeId;
 
-/** Node table - conceptually a two way mapping of Node<->NodeId 
+/** Node table - conceptually a two way mapping of Node{@literal <->}NodeId 
  *  where Nodes can be stored and a NodeId allocated
  *  @see NodeId
  */ 

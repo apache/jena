@@ -19,12 +19,10 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.system.ParserProfile ;
 
 /** Interface for tokenizer-based parsers */
 public interface LangRIOT
 {
     public Lang             getLang() ;
-    public ParserProfile         getProfile() ;
     public void             parse() ;    
 }

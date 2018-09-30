@@ -95,7 +95,7 @@ public class MappedLoader {
         String mappedUri = mapDynamicURI(uri);
         if (mappedUri == null)
             return null;
-        return Loader.loadClass(mappedUri, expectedClass);
+        return ClsLoader.loadClass(mappedUri, expectedClass);
     }
 
 }

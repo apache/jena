@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -29,20 +29,23 @@
   <artifactId>jena-fuseki-core</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-core</automatic.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-cmds</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
-      <type>pom</type>
+      <artifactId>jena-text</artifactId>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -52,49 +55,15 @@
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
+      <artifactId>jetty-servlet</artifactId>
       <version>${ver.jetty}</version>
     </dependency>
-
-    <!--
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-runner</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>
-    -->
 
     <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
       <version>${ver.jetty}</version>
-    </dependency>
-
-    <!-- Text and spatial -->
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-text</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-spatial</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Apache Shiro -->
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-core</artifactId>
-      <version>${ver.shiro}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-web</artifactId>
-      <version>${ver.shiro}</version>
     </dependency>
 
     <!-- Logging :  Needed because the Fuseki command line manages logging -->
@@ -106,28 +75,13 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency>
-
-    <!-- Testing -->
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-base</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -176,16 +130,27 @@
         </executions>
       </plugin>
 
+      <!-- Testing is done in jena-fuseki-webapp and jena-fuseki-main -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <includes>
-            <include>**/TS_*.java</include>
-          </includes>
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

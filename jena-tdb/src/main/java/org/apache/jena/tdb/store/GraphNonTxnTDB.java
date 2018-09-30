@@ -25,10 +25,12 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.tdb.TDB;
+import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
 
 /**
- * Non-transactional version of {@link GraphTDB}. Handed out by DatasetGraphTDB when used
- * directly.
+ * Non-transactional version of {@link GraphTDB}.
+ * Handed out by DatasetGraphTDB when used directly (e.g. by the loader)
+ * but not for API or SPARQL usage. 
  * 
  * @see GraphTDB
  * @see GraphTxnTDB
@@ -52,19 +54,24 @@ public class GraphNonTxnTDB extends GraphTDB implements Closeable, Sync {
     }
     
     @Override
+    public DatasetGraphTransaction getDatasetGraphTransaction() {
+        return null;
+    }
+    
+    @Override
     public TransactionHandler getTransactionHandler() {
-        return new TransactionHandlerTDB(this);
+        return new TransactionHandlerTDBNonTXn(this);
     }
     
     // Transaction handler for non-transactional use.
     // Does not support transactions, but syncs on commit which is the best it
     // can do without being transactional, which is striongly preferrerd.
     // For backwards compatibility only.
-    private static class TransactionHandlerTDB extends TransactionHandlerBase //implements TransactionHandler 
+    private static class TransactionHandlerTDBNonTXn extends TransactionHandlerBase //implements TransactionHandler 
     {
         private final Graph graph;
 
-        public TransactionHandlerTDB(GraphTDB graph) {
+        public TransactionHandlerTDBNonTXn(GraphTDB graph) {
             this.graph = graph ;
         }
 

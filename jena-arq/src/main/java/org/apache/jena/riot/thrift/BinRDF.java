@@ -62,8 +62,8 @@ public class BinRDF {
     }
     
     /** 
-     * Create an {@link StreamRDF} for output.  A filename ending {@code .gz} will have
-     * a gzip compressor added to the output path. A filename of "-" is {@code System.out}.
+     * Create an {@link StreamRDF} for output.  A filenames ending {@code .gz} or {@code .bz2} will have
+     * the respective compressor added to the output path. A filename of "-" is {@code System.out}.
      * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
      * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * 
@@ -73,7 +73,6 @@ public class BinRDF {
      */
     public static StreamRDF streamToFile(String filename, boolean withValues) {
         OutputStream out = IO.openOutputFile(filename) ;
-        // Is this internally buffered as well?
         BufferedOutputStream bout = new BufferedOutputStream(out, BUFSIZE_OUT) ;
         TProtocol protocol = TRDF.protocol(bout) ;
         return new StreamRDF2Thrift(protocol, withValues) ;

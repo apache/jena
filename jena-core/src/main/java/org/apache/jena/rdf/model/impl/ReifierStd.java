@@ -115,7 +115,7 @@ public class ReifierStd
     }
     
     /**
-    @return true iff there's > 0 mappings to this triple
+    @return true iff there's {@literal >} 0 mappings to this triple
      */
     public static boolean hasTriple(Graph graph, Triple t)
     {

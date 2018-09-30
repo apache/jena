@@ -39,7 +39,7 @@
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
-        <include>org.apache.jena:jena-fuseki-server:jar</include>
+        <include>org.apache.jena:jena-fuseki-fulljar:jar</include>
       </includes>
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
 
@@ -95,7 +95,7 @@
     </fileSet>
 
     <fileSet>
-      <directory>../jena-fuseki-core/src/main/webapp</directory>
+      <directory>../jena-fuseki-webapp/src/main/webapp</directory>
       <outputDirectory>webapp</outputDirectory>
     </fileSet>
 

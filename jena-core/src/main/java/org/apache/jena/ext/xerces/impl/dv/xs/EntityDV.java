@@ -24,7 +24,7 @@ import org.apache.jena.ext.xerces.util.XMLChar;
 /**
  * Represent the schema type "entity"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

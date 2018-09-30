@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.locks.ReadWriteLock ;
 import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Sys;
@@ -66,7 +67,8 @@ public class TransactionCoordinator {
     private static Logger log = Sys.syslog ;
     
     private final Journal journal ;
-    private boolean coordinatorStarted = false ;
+    // Lock on configuration changes. 
+    private boolean configurable = true ;
 
     private final ComponentGroup components = new ComponentGroup() ;
     // Components 
@@ -86,6 +88,22 @@ public class TransactionCoordinator {
     // "one exclusive, or many other" lock which happens to be called ReadWriteLock
     // See also {@code lock} which protects the datastructures during transaction management.  
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock() ;
+
+    // The version is the serialization point for a transaction.
+    // All transactions on the same view of the data get the same serialization point.
+    
+    // A read transaction can be promoted if writer does not start
+    // This TransactionCoordinator provides Serializable, Read-lock-free
+    // execution. With no item locking, a read can only be promoted
+    // if no writer started since the reader started or if it is "read committed",
+    // seeing changes made since it started and comitted at the poiont of promotion.
+    
+    /* The version of the data - incremented when transaction commits.
+     * This is the version with repest to the last commited transaction.
+     * Aborts do not cause the data version to advance. 
+     * This counter never goes backwards.
+     */ 
+    private final AtomicLong dataVersion = new AtomicLong(0) ;
 
     // Coordinator wide lock object.
     private Object coordinatorLock = new Object() ;
@@ -130,10 +148,8 @@ public class TransactionCoordinator {
      * This must be setup before recovery is attempted. 
      */
     public TransactionCoordinator add(TransactionalComponent elt) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            components.add(elt) ;
-        }
+        checklAllowModification() ;
+        components.add(elt) ;
         return this ;
     }
 
@@ -142,11 +158,32 @@ public class TransactionCoordinator {
      * @see #add 
      */
     public TransactionCoordinator remove(TransactionalComponent elt) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            components.remove(elt.getComponentId()) ;
-        }
+        checklAllowModification() ;
+        components.remove(elt.getComponentId()) ;
         return this ;
+    }
+    
+    /**
+     * Perform modification of this {@code TransactionCoordiator} after it has been
+     * started.
+     * <p>
+     * This operation enters {@linkplain #startExclusiveMode() exclusive mode}, releases the
+     * configuration lock, then calls the {@code action}. On exit from the action,
+     * it resets the configuration lock, and exits exclusive mode.
+     * <p>
+     * Do not call inside a transaction, it may cause a deadlock.
+     * <p>
+     * Use with care!
+     */
+    public void modify(Runnable action) {
+        try {
+            startExclusiveMode();
+            configurable = true;
+            action.run();
+        } finally {
+            configurable = false;
+            finishExclusiveMode();
+        }
     }
 
     /**
@@ -154,29 +191,25 @@ public class TransactionCoordinator {
      * and hence hooks may not get called.
      */
     public void add(TransactionCoordinator.ShutdownHook hook) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            shutdownHooks.add(hook) ;
-        }
+        checklAllowModification() ;
+        shutdownHooks.add(hook) ;
     }
 
     /** Remove a shutdown hook */
     public void remove(TransactionCoordinator.ShutdownHook hook) {
-        checkSetup() ;
-        synchronized(coordinatorLock) {
-            shutdownHooks.remove(hook) ;
-        }
+        checklAllowModification() ;
+        shutdownHooks.remove(hook) ;
     }
     
     public void setQuorumGenerator(QuorumGenerator qGen) {
-        checkSetup() ;
+        checklAllowModification() ;
         this.quorumGenerator = qGen ;
     }
 
     public void start() {
-        checkSetup() ;
+        checklAllowModification() ;
         recovery() ;
-        coordinatorStarted = true ;
+        configurable = false ;
     }
 
     private /*public*/ void recovery() {
@@ -262,21 +295,23 @@ public class TransactionCoordinator {
     public void shutdown() {
         if ( coordinatorLock == null )
             return ;
+        if ( countActive() > 0 )
+            FmtLog.warn(log, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
         components.forEach((id, c) -> c.shutdown()) ;
         shutdownHooks.forEach((h)-> h.shutdown()) ;
         coordinatorLock = null ;
         journal.close(); 
     }
 
-    // Are we in the initialization phase?
-    private void checkSetup() {
-        if ( coordinatorStarted )
-            throw new TransactionException("TransactionCoordinator has already been started") ;
+    // Can modifications be made? 
+    private void checklAllowModification() {
+        if ( ! configurable )
+            throw new TransactionException("TransactionCoordinator configuration is locked") ;
     }
 
     // Is this TransactionCoordinator up and running?
     private void checkActive() {
-        if ( ! coordinatorStarted )
+        if ( configurable )
             throw new TransactionException("TransactionCoordinator has not been started") ;
         checkNotShutdown();
     }
@@ -455,7 +490,6 @@ public class TransactionCoordinator {
         Objects.nonNull(txnType) ;
         checkActive() ;
         
-        // XXX Flag to bounce writers for long term "block writers"
         if ( false /* bounceWritersAtTheMoment */) {
             // Is this stil needed?
             // Switching happens as copy, not in-place compaction (at the moment).
@@ -490,24 +524,10 @@ public class TransactionCoordinator {
         return transaction;
     }
     
-    // The version is the serialization point for a transaction.
-    // All transactions on the same view of the data get the same serialization point.
-    
-    // A read transaction can be promoted if writer does not start
-    // This TransactionCoordinator provides Serializable, Read-lock-free
-    // execution. With no item locking, a read can only be promoted
-    // if no writer started since the reader started or if it is "read committed",
-    // seeing changes made since it started and comitted at the poiont of promotion.
-
-    /* The version of the data - incremented when transaction commits.
-     * This is the version with repest to the last commited transaction.
-     * Aborts do not cause the data version to advance. 
-     * This counterr never goes backwards.
-     */ 
-    private final AtomicLong dataVersion = new AtomicLong(0) ;
-    
     private Transaction begin$(TxnType txnType) {
         synchronized(coordinatorLock) {
+            // Inside the lock - check again.
+            checkActive();
             // Thread safe part of 'begin'
             // Allocate the transaction serialization point.
             TxnId txnId = txnIdGenerator.generate() ;
@@ -737,8 +757,8 @@ public class TransactionCoordinator {
     private void finishActiveTransaction(Transaction transaction) {
         synchronized(coordinatorLock) {
             // Idempotent.
-            Object x = activeTransactions.remove(transaction) ;
-            if ( x == null )
+            boolean x = activeTransactions.remove(transaction) ;
+            if ( ! x )
                 return ;
             countFinished.incrementAndGet() ;
             activeTransactionCount.decrementAndGet() ;

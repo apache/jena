@@ -37,7 +37,7 @@ public class DatasetGraphFactory
      * This implementation copies models when {@link Dataset#addNamedModel(String, Model)} is called.
      * <p>
      * This implementation provides "best effort" transactions; it only provides MRSW locking.
-     * Use {@link #createTxnMem} for a proper in-memeory transactional {@code DatasetGraph}.
+     * Use {@link #createTxnMem} for a proper in-memory transactional {@code DatasetGraph}.
      * 
      * @see #createTxnMem
      */
@@ -54,8 +54,7 @@ public class DatasetGraphFactory
      * (the implementation adds a begin/commit around each add or delete
      * so overheads can accumulate).
      * 
-     * @return a transactional, in-memory, modifiable Dataset
-     * 
+     * @return a transactional, in-memory, modifiable DatasetGraph
      */
     public static DatasetGraph createTxnMem() { return new DatasetGraphInMemory(); }
 

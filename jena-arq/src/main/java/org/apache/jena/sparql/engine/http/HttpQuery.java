@@ -232,7 +232,7 @@ public class HttpQuery extends Params {
     }
 
     /**
-     * Sets HTTP Connection timeout, any value <= 0 is taken to mean no timeout
+     * Sets HTTP Connection timeout, any value {@literal <=} 0 is taken to mean no timeout
      * 
      * @param timeout
      *            Connection Timeout
@@ -251,7 +251,7 @@ public class HttpQuery extends Params {
     }
 
     /**
-     * Sets HTTP Read timeout, any value <= 0 is taken to mean no timeout
+     * Sets HTTP Read timeout, any value {@literal <=} 0 is taken to mean no timeout
      * 
      * @param timeout
      *            Read Timeout

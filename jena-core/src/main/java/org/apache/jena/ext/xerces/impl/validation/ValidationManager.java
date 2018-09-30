@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * other validators present in the pipeline, but should understand
  * that there are others and that some coordination is required.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @author Elena Litani, IBM
  * @version $Id: ValidationManager.java 606491 2007-12-22 21:00:53Z mrglavas $

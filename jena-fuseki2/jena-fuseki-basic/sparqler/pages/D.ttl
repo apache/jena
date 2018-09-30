@@ -1,3 +1,0 @@
-@prefix : <http://example/> .
-
-:s :q 123 .

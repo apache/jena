@@ -33,7 +33,7 @@ public class Quad implements Serializable
 {    
     // Create QuadNames? GraphNames?
     
-    /** Name of the default for explict use in GRAPH */
+    /** Name of the default for explicit use in GRAPH */
     public static final Node defaultGraphIRI        =  NodeFactory.createURI("urn:x-arq:DefaultGraph") ;
 
     /** Name of the default graph as used by parsers and in quad form of algebra. 
@@ -231,7 +231,7 @@ public class Quad implements Serializable
 
     private static boolean nodeMatches(Node thisNode, Node otherNode)
     {
-        // otheNode may be Node.ANY, and this works out.
+        // otherNode may be Node.ANY, and this works out.
         return otherNode.matches(thisNode) ;
     }
 

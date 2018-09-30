@@ -27,10 +27,10 @@ import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.conneg.ConNeg;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.riot.web.HttpNames;
 
 /**
@@ -42,7 +42,7 @@ import org.apache.jena.riot.web.HttpNames;
  * for operations by service endpoint.
  * <p>
  * Normal use is to route all service operations to this servlet via {@link ActionService}.
- * It will route for operations on the dataset and the
+ * It will route for operations on the dataset.
  * <p>
  * It be attached to a dataset location and acts as a router for all SPARQL operations
  * (query, update, graph store, both direct and indirect naming, quads operations on a
@@ -120,10 +120,12 @@ public abstract class ServiceRouter extends ActionService {
             return isEnabled(action, Operation.Quads_RW);
         }
 
-        // Test whether there is a configuration that allows this action as the operation
-        // given.
-        // Ignores the operation in the action (set due to parsing - it might be "quads"
-        // which is the generic operation when just the dataset is specificed.
+        /**
+         * Test whether there is a configuration that allows this action as the operation
+         * given. Ignores the operation in the action which is set due to parsing - it
+         * might be "quads" which is the generic operation when just the dataset is
+         * specified.
+         */
         private boolean isEnabled(HttpAction action, Operation operation) {
             // Disregard the operation name of the action
             DataService dSrv = action.getDataService();
@@ -137,7 +139,10 @@ public abstract class ServiceRouter extends ActionService {
         super();
     }
 
-    // These calls should not happen because we hook in at executeAction
+    // These calls should not happen because ActionService calls chooseOperation(),
+    // looks that up in the ServiceDispatchRegistry for the servlet context,
+    // then calls executeLifecycle() on that servlet.
+    // These exceptions catch any loops. 
     @Override
     protected void validate(HttpAction action) {
         throw new FusekiException("Call to ServiceRouterServlet.validate");
@@ -201,7 +206,6 @@ public abstract class ServiceRouter extends ActionService {
      * <li>HTTP params (for ?query= and ?update=)</li>
      * <li>Content type</li>
      * </ul>
-     * 
      */
     @Override
     protected Operation chooseOperation(HttpAction action, DataService dataService) {
@@ -339,8 +343,6 @@ public abstract class ServiceRouter extends ActionService {
             ServletOps.errorMethodNotAllowed("Read-only dataset : " + action.request.getMethod());
         return null;
     }
-
-    // XXX -------------------
 
     private boolean isReadMethod(HttpServletRequest request) {
         String method = request.getMethod();

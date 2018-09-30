@@ -20,7 +20,7 @@ package org.apache.jena.ext.xerces.impl.xpath.regex;
 import java.text.CharacterIterator;
 
 /**
- * @xerces.internal
+ * {@literal @xerces.internal}
  * 
  * @version $Id: REUtil.java 828015 2009-10-21 13:56:13Z knoaman $
  */

@@ -69,4 +69,13 @@ public class Timer {
     protected String timeStr(long timePoint, long startTimePoint) {
         return timeStr(timePoint - startTimePoint) ;
     }
+
+    /** Time an operation. Return the elapsed time in milliseconds. */
+    public static long time(Runnable action) {
+        Timer timer = new Timer();
+        timer.startTimer();
+        action.run();
+        long x = timer.endTimer();
+        return x;
+    }
 }

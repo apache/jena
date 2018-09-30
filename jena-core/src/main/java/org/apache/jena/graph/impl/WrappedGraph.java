@@ -23,7 +23,7 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
-    A  wrapper class which simply defers all operations to its base.
+    A wrapper class which simply defers all operations to its base.
  */
 public class WrappedGraph implements GraphWithPerform
 {

@@ -45,7 +45,7 @@ public abstract class CmdTDBGraph extends CmdTDB
     }
 
     protected Model getModel() {
-        Dataset ds = tdbDatasetAssembler.getDataset();
+        Dataset ds = getDataset();
 
         if ( graphName != null ) {
             Model m = ds.getNamedModel(graphName);
@@ -62,9 +62,9 @@ public abstract class CmdTDBGraph extends CmdTDB
 
     protected Graph getGraph() {
         if ( graphName != null )
-            return tdbDatasetAssembler.getDataset().getNamedModel(graphName).getGraph();
+            return getDataset().getNamedModel(graphName).getGraph();
         else
-            return tdbDatasetAssembler.getDataset().getDefaultModel().getGraph();
+            return getDataset().getDefaultModel().getGraph();
     }
 
     @Override

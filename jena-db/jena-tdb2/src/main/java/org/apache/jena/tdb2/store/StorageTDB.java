@@ -18,6 +18,8 @@
 
 package org.apache.jena.tdb2.store;
 
+import java.util.Objects;
+
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.setup.StoreParams;
 
@@ -31,6 +33,13 @@ public class StorageTDB {
     
     public StorageTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, Location location, StoreParams params) {
         super();
+        
+        Objects.requireNonNull(tripleTable);
+        Objects.requireNonNull(quadTable);
+        Objects.requireNonNull(prefixes);
+        Objects.requireNonNull(location);
+        Objects.requireNonNull(params);
+        
         this.tripleTable = tripleTable;
         this.quadTable = quadTable;
         this.prefixes = prefixes;

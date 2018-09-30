@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.impl.dv.util.ByteListImpl;
 /**
  * Represent the schema type "base64Binary"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

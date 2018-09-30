@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.util ;
 
+import java.util.ArrayList;
 import java.util.List ;
 
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -73,16 +76,20 @@ public class QueryExecUtils {
             prologue = query.getPrologue() ;
         if ( prologue == null )
             prologue = dftPrologue ;
-
         if ( query.isSelectType() )
             doSelectQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isDescribeType() )
+        else if ( query.isDescribeType() )
             doDescribeQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isConstructType() )
+        else if ( query.isConstructType() )
             doConstructQuery(prologue, queryExecution, outputFormat) ;
-        if ( query.isAskType() )
+        else if ( query.isConstructQuad() )
+            doConstructQuadsQuery(prologue, queryExecution, outputFormat) ;
+        else if ( query.isAskType() )
             doAskQuery(prologue, queryExecution, outputFormat) ;
-        queryExecution.close() ;
+        else if ( query.isJsonType() )
+            doJsonQuery(prologue, queryExecution, outputFormat) ;
+        else
+            throw new QueryException("Unrecognized query form");
     }
 
     public static void execute(Op op, DatasetGraph dsg) {
@@ -191,6 +198,11 @@ public class QueryExecUtils {
         outputResultSet(results, prologue, outputFormat) ;
     }
 
+    private static void doJsonQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
+        JsonArray results = queryExecution.execJson();
+        JSON.write(System.out, results);
+    }
+
     private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
@@ -254,6 +266,41 @@ public class QueryExecUtils {
         System.err.println("Unknown format: " + outputFormat) ;
     }
 
+    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_RDF_TRIG;
+        Dataset ds = qe.execConstructDataset();
+        writeDataset(prologue, ds, outputFormat) ;
+    }
+
+    private static void writeDataset(Prologue prologue, Dataset dataset, ResultsFormat outputFormat) {
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_TEXT ;
+
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
+            return ;
+
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
+            System.out.println("# ======== ") ;
+            RDFDataMgr.write(System.out, dataset, Lang.TURTLE) ;
+            System.out.println("# ======== ") ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NQ) ) {
+            RDFDataMgr.write(System.out, dataset, Lang.NQUADS);
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TRIG) ) {
+            RDFDataMgr.write(System.out, dataset, Lang.TRIG);
+            return ;
+        }
+
+        System.err.println("Unknown format: " + outputFormat) ;
+    }
+
+    
     private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         boolean b = qe.execAsk() ;
 
@@ -359,5 +406,19 @@ public class QueryExecUtils {
                 throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
         }
         return r ;
+    }
+    
+    /**
+     * Execute, returning all matches, which may be zero.
+     */
+    public static List<RDFNode> getAll(QueryExecution qExec, String varname) {
+        ResultSet rs = qExec.execSelect() ;
+        List<RDFNode> matches = new ArrayList<>();
+        rs.forEachRemaining(qs->{
+            RDFNode r = qs.get(varname) ;
+            if ( r != null )
+                matches.add(r);
+        });
+        return matches ;
     }
 }

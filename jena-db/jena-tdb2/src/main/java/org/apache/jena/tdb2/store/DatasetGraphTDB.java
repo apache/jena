@@ -298,8 +298,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
 
     public DatasetPrefixStorage getPrefixes() {
         checkNotClosed();
-        // Need for requireWriteTxn
-        storage.prefixes.setDatasetGraphTDB(this);
         return storage.prefixes;
     }
 
@@ -449,22 +447,12 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public boolean promote() {
-        if ( txnMonitor != null ) txnMonitor.startPromote();
-        try { 
-            return txnSystem.promote() ;
-        } finally { 
-            if ( txnMonitor != null ) txnMonitor.finishPromote();
-        }
-    }
-
-    @Override
     public boolean promote(Promote txnType) {
-        if ( txnMonitor != null ) txnMonitor.startPromote();
+        if ( txnMonitor != null ) txnMonitor.startPromote(txnType);
         try { 
             return txnSystem.promote(txnType) ;
         } finally { 
-            if ( txnMonitor != null ) txnMonitor.finishPromote();
+            if ( txnMonitor != null ) txnMonitor.finishPromote(txnType);
         }
     }
 

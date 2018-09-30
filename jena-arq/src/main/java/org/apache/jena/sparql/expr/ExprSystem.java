@@ -25,7 +25,7 @@ import org.apache.jena.sparql.util.Symbol ;
 
 public abstract class ExprSystem extends ExprFunction0
 {
-    private final Symbol systemSymbol ;
+    protected final Symbol systemSymbol ;
 
     protected ExprSystem(String fName, Symbol systemSymbol)
     {
@@ -41,12 +41,11 @@ public abstract class ExprSystem extends ExprFunction0
         if ( obj == null )
             throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
         if ( ! ( obj instanceof Node ) )
-            throw new ExprEvalException("Not a Node: "+Lib.className(obj)) ;
+            throw new ExprEvalException("ExprSystem: Not a Node: "+Lib.className(obj)) ;
         
         Node n = (Node)obj ;
-//        if ( n == null )
-//            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
-        // NodeValue.makeNode could have a cache.
+        if ( n == null )
+            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }

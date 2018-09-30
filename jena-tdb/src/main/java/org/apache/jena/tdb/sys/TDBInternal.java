@@ -25,6 +25,7 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb.StoreConnection ;
 import org.apache.jena.tdb.TDBException ;
 import org.apache.jena.tdb.base.file.Location ;
@@ -40,6 +41,13 @@ import org.apache.jena.tdb.transaction.TransactionManager ;
  */
 public class TDBInternal
 {
+    /**
+     * Return true if this is a TDB1 backed DatasetGraph. 
+     */
+    public static boolean isTDB1(DatasetGraph dsg) {
+        return ( dsg instanceof DatasetGraphTransaction );
+    }
+
     /**
      * Return the NodeId for a node. Returns NodeId.NodeDoesNotExist when the
      * node is not found. Returns null when not a TDB-backed dataset.
@@ -141,6 +149,15 @@ public class TDBInternal
         throw new TDBException("Not a suitable TDB-backed DatasetGraph: " + Lib.classShortName(dsg.getClass())) ;
     }
     
+    /** Stop managing a DatasetGraph. Use with great care. */
+    public static synchronized void expel(DatasetGraph dsg) {
+        DatasetGraphTDB dsgtdb = Txn.calculate(dsg, ()->getDatasetGraphTDB(dsg));
+        if ( dsgtdb == null )
+            return;
+        StoreConnection.expel(dsgtdb.getLocation(), false);
+        // No longer valid.
+    }
+    
     /** Look at a directory and see if it is a new area */
     public static boolean isNewDatabaseArea(Location location) {
         StoreConnection sConn = StoreConnection.getExisting(location) ;
@@ -169,4 +186,5 @@ public class TDBInternal
                 return false ;
             return true ;
         } ;
+
 }

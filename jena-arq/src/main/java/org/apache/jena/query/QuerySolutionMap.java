@@ -58,7 +58,7 @@ public class QuerySolutionMap extends QuerySolutionBase
      * to the <code>QuerySolutionMap</code> and later changes to either <code>Map</code>
      * or <code>QuerySolutionMap</code> will not reflected in the other.  
      * 
-     * @return Map<String, RDFNode>
+     * @return {@literal Map<String, RDFNode>}
      */
     public Map<String, RDFNode> asMap() { 
         return new HashMap<>(map) ;

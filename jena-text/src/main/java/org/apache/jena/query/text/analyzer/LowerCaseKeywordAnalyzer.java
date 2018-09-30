@@ -22,7 +22,6 @@ import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordTokenizer ;
 import org.apache.lucene.analysis.core.LowerCaseFilter ;
 
-
 /** 
  * Lucene Analyzer implementation that works like KeywordAnalyzer (i.e.
  * doesn't tokenize the input, keeps it as a single token), but forces text

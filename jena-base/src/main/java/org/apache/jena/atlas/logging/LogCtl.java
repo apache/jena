@@ -129,6 +129,14 @@ public class LogCtl {
      * Turn on a logger (all levels). Works for Log4j and Java logging as the
      * logging provider to Apache common logging or slf4j.
      */
+    static public void disable(Logger logger) {
+        setLevel(logger.getName(), "OFF") ;
+    }
+
+    /**
+     * Turn on a logger (all levels). Works for Log4j and Java logging as the
+     * logging provider to Apache common logging or slf4j.
+     */
     static public void disable(String logger) {
         setLevel(logger, "OFF") ;
     }
@@ -259,6 +267,9 @@ public class LogCtl {
             resetLogging(defaultConfig) ;
     }
 
+    /**
+     * Reset logging (log4j).
+     */
     public static void resetLogging(String config) {
         Properties p = new Properties() ;
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(config)) ;
@@ -278,9 +289,23 @@ public class LogCtl {
         //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
         //,"org.apache.jena.atlas.logging.java.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
         ) ;
-    private static String JUL_LOGGING = "logging.properties" ;
+    // File or java resource name default.
+    private static String JUL_LOGGING = "logging.properties";
     
+    // JUL will close existing logger if logging is reset.
+    // This includes StreamHandler logging to stdout.  Stdout is closed.
+    // This property controls setJavaLogging() acting multiple times.
+    private static String JUL_PROPERTY = "java.util.logging.configuration";
+
+    /** Setup java.util.logging if it has not been set before; otherwise do nothing. */
     public static void setJavaLogging() {
+        if ( System.getProperty(JUL_PROPERTY) != null )
+            return;
+        resetJavaLogging();
+    }
+    
+    /** Reset java.util.logging - this overrided the previous configuration, if any. */  
+    public static void resetJavaLogging() {
         Path p = Paths.get(JUL_LOGGING) ;
         if ( Files.exists(p) ) {
             setJavaLogging(JUL_LOGGING) ;
@@ -291,12 +316,17 @@ public class LogCtl {
         setJavaLoggingDft();
     }
 
+    private static void readJavaLoggingConfiguration(InputStream details) throws Exception {
+        System.setProperty(JUL_PROPERTY, "set");
+        java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
+    }
+    
     private static boolean setJavaLoggingClasspath(String resourceName) {
         // Not "LogCtl.class.getResourceAsStream(resourceName)" which monkeys around with the resourceName.
         InputStream in = LogCtl.class.getClassLoader().getResourceAsStream(resourceName);
         if ( in != null ) {
             try {
-                java.util.logging.LogManager.getLogManager().readConfiguration(in) ;
+                readJavaLoggingConfiguration(in) ;
                 return true; 
             } catch (Exception ex) {
                 throw new AtlasException(ex) ;
@@ -309,7 +339,7 @@ public class LogCtl {
         try {
             InputStream details = new FileInputStream(file) ;
             details = new BufferedInputStream(details) ;
-            java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
+            readJavaLoggingConfiguration(details) ;
         } catch (Exception ex) {
             throw new AtlasException(ex) ;
         }
@@ -318,8 +348,7 @@ public class LogCtl {
     public static void setJavaLoggingDft() {
         try {
             InputStream details = new ByteArrayInputStream(defaultProperties.getBytes("UTF-8")) ;
-            java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
-    
+            readJavaLoggingConfiguration(details) ;
         } catch (Exception ex) {
             throw new AtlasException(ex) ;
         }

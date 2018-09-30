@@ -18,168 +18,135 @@
 
 package org.apache.jena.sparql.sse.builders;
 
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemList ;
-import org.apache.jena.sparql.sse.ItemLocation ;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemList;
+import org.apache.jena.sparql.sse.ItemLocation;
 
-public class BuilderLib
-{
- 
-    public static void checkNode(Item item)
-    {
-        if ( item.isNode() ) 
-            return ;
-        broken(item, "Not a node: "+item.shortString()) ;
-    }
-    
-    public static void checkSymbol(Item item)
-    {
-        if ( item.isSymbol() ) 
-            return ;
-        broken(item, "Not a symbol: "+item.shortString()) ;
-    }
-    
-    public static void checkTagged(Item item, String tag, String msg)
-    {
-        if ( item.isTagged(tag) ) return ;
-        broken(item, msg, item) ;
+public class BuilderLib {
+
+    public static void checkNode(Item item) {
+        if ( item.isNode() )
+            return;
+        broken(item, "Not a node: " + item.shortString());
     }
 
-    public static void checkTagged(Item item, int len, String tag, String msg)
-    {
-        if ( item.isTagged(tag) && item.getList().size() == len ) 
-            return ;
-        broken(item, msg, item) ;
+    public static void checkSymbol(Item item) {
+        if ( item.isSymbol() )
+            return;
+        broken(item, "Not a symbol: " + item.shortString());
     }
 
-    
-    public static void checkTag(ItemList list, String tag)
-    {
+    public static void checkTagged(Item item, String tag, String msg) {
+        if ( item.isTagged(tag) )
+            return;
+        broken(item, msg, item);
+    }
+
+    public static void checkTagged(Item item, int len, String tag, String msg) {
+        if ( item.isTagged(tag) && item.getList().size() == len )
+            return;
+        broken(item, msg, item);
+    }
+
+    public static void checkTag(ItemList list, String tag) {
         if ( list.size() == 0 )
-            broken(list, "Empty list") ;
-        if ( ! list.get(0).isSymbolIgnoreCase(tag) )
-            broken(list, "List does not start ("+tag+ "...) : "+list.shortString()) ;
+            broken(list, "Empty list");
+        if ( !list.get(0).isSymbolIgnoreCase(tag) )
+            broken(list, "List does not start (" + tag + "...) : " + list.shortString());
     }
 
-    public static void checkList(Item item)
-    {
-        if ( item.isList() ) 
-            return ;
-        broken(item, "Not a list: "+item.shortString()) ;
-    }
-
-    public static void checkList(Item item, String msg)
-    {
+    public static void checkList(Item item) {
         if ( item.isList() )
-            return ;
-        if ( msg == null && item.isSymbol())
-            msg = "Attempt to use a symbol where list expected: "+item.shortString() ;
-        if ( msg == null && item.isNode())
-            msg = "Attempt to use a node where list expected: "+item.shortString() ;
-        if ( msg == null )
-            msg = "Not a list" ;
-        broken(item, msg) ; 
-    }
-    
-    public static void warning(ItemLocation location, String msg)
-    {
-        msg = msg(location, msg) ;
-        System.err.println(msg) ;
+            return;
+        broken(item, "Not a list: " + item.shortString());
     }
 
-    public static void checkLength(int len1, int len2, ItemList list, String msg)
-    {
+    public static void checkList(Item item, String msg) {
+        if ( item.isList() )
+            return;
+        if ( msg == null && item.isSymbol() )
+            msg = "Attempt to use a symbol where list expected: " + item.shortString();
+        if ( msg == null && item.isNode() )
+            msg = "Attempt to use a node where list expected: " + item.shortString();
+        if ( msg == null )
+            msg = "Not a list";
+        broken(item, msg);
+    }
+
+    public static void checkLength(int len1, int len2, ItemList list, String msg) {
         if ( list.size() >= len1 && list.size() <= len2 )
-            return ; 
+            return;
         if ( msg == null )
-            msg =  "Wrong number of arguments: ("+len1+"-"+len2+")/"+list.size()+" : "+list.shortString() ;
+            msg = "Wrong number of arguments: (" + len1 + "-" + len2 + ")/" + list.size() + " : " + list.shortString();
         else
-            msg = msg+" : "+list.shortString() ;
-        broken(list, msg) ;
+            msg = msg + " : " + list.shortString();
+        broken(list, msg);
     }
-    
-    
-    
-    public static void checkLength(int len, ItemList list, String msg)
-    {
+
+    public static void checkLength(int len, ItemList list, String msg) {
         if ( list.size() == len )
-            return ;
-        
+            return;
+
         if ( msg == null )
-            msg =  "Wrong number of arguments: "+len+"/"+list.size()+" : "+list.shortString() ;
+            msg = "Wrong number of arguments: " + len + "/" + list.size() + " : " + list.shortString();
         else
-            msg = msg+" : "+list.shortString() ;
-        broken(list, msg) ;
+            msg = msg + " : " + list.shortString();
+        broken(list, msg);
     }
 
-    public static void checkLengthAtLeast(int len, ItemList list, String msg)
-    {
-        if ( list.size()>= len )
-            return ;
-        
+    public static void checkLengthAtLeast(int len, ItemList list, String msg) {
+        if ( list.size() >= len )
+            return;
+
         if ( msg == null )
-            msg =  "Too few arguments: want > "+len+" :got : "+list.size()+" : "+list.shortString() ;
+            msg = "Too few arguments: want > " + len + " :got : " + list.size() + " : " + list.shortString();
         else
-            msg = msg+" : "+list.shortString() ;
-        broken(list, msg) ;
-    }
-    
-    public static void broken(Item item, String msg)
-    {
-        broken(item, msg, item) ;
-    }
-    
-    public static void broken(String msg)
-    {
-        System.err.println(msg) ;
-        exception(msg) ;
-    }
-    
-    public static void exception(String msg)
-    {
-        throw new ExprBuildException(msg) ;
-    }
-    
-    public static void broken(ItemLocation location, String msg, Item item)
-    {
-        msg = msg(location, msg) ;
-        System.err.println(msg+": "+item.shortString()) ;
-        exception(msg) ;
+            msg = msg + " : " + list.shortString();
+        broken(list, msg);
     }
 
-    public static void broken(ItemList list, String msg)
-    {
-        broken(list, msg, list) ; 
+    public static void broken(Item item, String msg) {
+        broken(item, msg, item);
     }
 
-    public static void broken(ItemLocation location, String msg, ItemList list)
-    {
-        msg = msg(location, msg) ;
-        System.err.println(msg+": "+list.shortString()) ;
-        exception(msg) ;
+    public static void broken(String msg) {
+        exception(msg);
     }
-    
-    public static void broken(ItemLocation location, String msg)
-    {
-        msg = msg(location, msg) ;
-        System.err.println(msg) ;
-        exception(msg) ;
+
+    public static void exception(String msg) {
+        throw new ExprBuildException(msg);
     }
-    
-    public static String msg(ItemLocation location, String msg)
-    {
+
+    public static void broken(ItemLocation location, String msg, Item item) {
+        msg = msg(location, msg);
+        exception(msg);
+    }
+
+    public static void broken(ItemList list, String msg) {
+        broken(list, msg, list);
+    }
+
+    public static void broken(ItemLocation location, String msg, ItemList list) {
+        msg = msg(location, msg);
+        exception(msg);
+    }
+
+    public static void broken(ItemLocation location, String msg) {
+        msg = msg(location, msg);
+        exception(msg);
+    }
+
+    public static String msg(ItemLocation location, String msg) {
         if ( location != null )
-            msg = location.location()+": "+msg ;
-        return msg ;
+            msg = location.location() + ": " + msg;
+        return msg;
     }
 
-    public static ItemList skipTag(ItemList list, String tag)
-    {
-        if ( list.size() > 0 )
-        {
+    public static ItemList skipTag(ItemList list, String tag) {
+        if ( list.size() > 0 ) {
             if ( list.get(0).isSymbol(tag) )
-                list = list.cdr() ;
+                list = list.cdr();
         }
-        return list ;
+        return list;
     }
 }

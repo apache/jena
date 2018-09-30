@@ -51,6 +51,7 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.vocabulary.RDF;
 
 /** Read JSON format SPARQL Results.
  * <p>
@@ -209,8 +210,16 @@ public class ResultSetReaderJSON implements ResultSetReader {
             if ( kLiteral.equals(type) || kTypedLiteral.equals(type) ) {
                 String lang = stringOrNull(term, kXmlLang);
                 String dtStr = stringOrNull(term, kDatatype);
-                if ( lang != null && dtStr != null )
-                    throw new ResultSetException("Both language and datatype defined: " + term);
+                if ( lang != null ) {
+                    // Strictly, xml:lang=... and datatype=rdf:langString is wrong (the datatype should be absent)
+                    // The RDF specs recommend omitting the datatype. They did however come after the SPARQL 1.1 docs
+                    // it's more of a "SHOULD" than a "MUST".
+                    // datatype=xsd:string is also unnecessary.
+                    if ( dtStr != null && ! dtStr.equals(RDF.dtLangString.getURI() ) ) {
+                        // Must agree.
+                        throw new ResultSetException("Both language and datatype defined, datatype is not rdf:langString:\n" + term);
+                    }
+                }
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtStr);
                 return NodeFactory.createLiteral(v, lang, dt);
             }

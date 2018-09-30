@@ -36,7 +36,7 @@ import org.apache.jena.query.text.TextIndex ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Loader ;
+import org.apache.jena.sparql.util.ClsLoader ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 
 public class TextDatasetAssembler extends AssemblerBase implements Assembler
@@ -63,7 +63,7 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         // Null will use the default producer
         TextDocProducer textDocProducer = null ;
         if (null != textDocProducerNode) {
-            Class<?> c = Loader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
+            Class<?> c = ClsLoader.loadClass(textDocProducerNode.getURI(), TextDocProducer.class) ;
 
             String className = textDocProducerNode.getURI().substring(ARQConstants.javaClassURIScheme.length()) ;
             Constructor<?> dyadic = getConstructor(c, DatasetGraph.class, TextIndex.class);
@@ -75,10 +75,10 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
                 } else if (monadic != null) {
                     textDocProducer = (TextDocProducer) monadic.newInstance(textIndex) ;
                 } else {
-                    Log.warn(Loader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
+                    Log.warn(ClsLoader.class, "Exception during instantiation '"+className+"' no TextIndex or DatasetGraph,Index constructor" );
                 }
             } catch (Exception ex) {
-                Log.warn(Loader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
+                Log.warn(ClsLoader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
                 return null ;
             }
         }

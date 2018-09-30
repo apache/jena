@@ -60,7 +60,7 @@ public class RiotLib
     private final static String bNodeLabelStart = "_:";
     private final static boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels);
     
-    /** Implement <_:....> as a "Node IRI"
+    /** Implement {@code <_:....>} as a "Node IRI"
      * that is, use the given label as the BNode internal label.
      * Use with care.
      */

@@ -110,6 +110,7 @@ public class TestDataset2Graph {
     @Test public void dsgGraphTxn_dataset_create() {
         testOverDS(creator.create(), false);
     }
+
     private static void testInfModel(Dataset ds0) {
         Txn.executeWrite(ds0, ()->{});
         Model baseModel = ds0.getDefaultModel(); 

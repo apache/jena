@@ -21,7 +21,7 @@ package org.apache.jena.ext.xerces.impl.dv;
  * Datatype exception for invalid facet. This exception is only used by
  * schema datatypes.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

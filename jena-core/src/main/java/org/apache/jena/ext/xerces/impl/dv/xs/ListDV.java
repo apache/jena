@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.ObjectList;
 /**
  * Represent the schema list types
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

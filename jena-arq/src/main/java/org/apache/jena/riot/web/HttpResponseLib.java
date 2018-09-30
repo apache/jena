@@ -124,13 +124,8 @@ public class HttpResponseLib
     } ;
     
     /** Consume a response quietly. */
-    public static HttpResponseHandler nullResponse = new HttpResponseHandler() {
-        @Override
-        public void handle(String baseIRI , HttpResponse response ) {
-            EntityUtils.consumeQuietly(response.getEntity()) ;
-        }
-    } ;
-    
+    public static HttpResponseHandler nullResponse = (b, r) -> EntityUtils.consumeQuietly(r.getEntity());
+
     // Old world.
     // See also ResultSetFactory.load(in, fmt) 
     private static ResultsFormat contentTypeToResultsFormat(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }

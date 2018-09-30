@@ -38,74 +38,69 @@ public class TestTDBFactory extends BaseTest
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
     
-    @Before public void before()
-    {
-        StoreConnection.reset() ;
-        FileOps.clearDirectory(DIR) ; 
-    }
-    
-    @After public void after()
-    {
-        FileOps.clearDirectory(DIR) ; 
-    }
-    
-    @Test public void testTDBFactory1()
-    {
-        TDBMaker.reset() ;
-        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
-        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
-        dg1.add(quad1) ;
-        assertTrue(dg2.contains(quad1)) ;
-    }
-    
-    @Test public void testTDBFactory2()
-    {
-        TDBMaker.reset() ;
-        // The unnamed location is unique each time.
-        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        dg1.add(quad1) ;
-        assertFalse(dg2.contains(quad1)) ;
+    @Before
+    public void before() {
+        StoreConnection.reset();
+        FileOps.clearDirectory(DIR);
     }
 
-    @Test public void testTDBMakerTxn1()
-    {
-        TDBMaker.reset() ;
-        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR)) ;
-        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR)) ;
-        
-        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;
-        
-        assertSame(dgBase1, dgBase2) ;
+    @After
+    public void after() {
+        FileOps.clearDirectory(DIR);
     }
-    
-    @Test public void testTDBMakerTxn2()
-    {
+
+    @Test
+    public void testTDBFactory1() {
+        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO"));
+        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO"));
+        dg1.add(quad1);
+        assertTrue(dg2.contains(quad1));
+    }
+
+    @Test
+    public void testTDBFactory2() {
+        // The unnamed location is unique each time.
+        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem());
+        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem());
+        dg1.add(quad1);
+        assertFalse(dg2.contains(quad1));
+    }
+
+    @Test
+    public void testTDBMakerTxn1() {
+        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR));
+        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.create(DIR));
+
+        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph();
+        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph();
+
+        assertSame(dgBase1, dgBase2);
+    }
+
+    @Test
+    public void testTDBMakerTxn2() {
         // Named memory locations
-        TDBMaker.reset() ;
-        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.mem("FOO")) ;
-        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.mem("FOO")) ;
-        
-        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;
-        
-        assertSame(dgBase1, dgBase2) ;
+        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.mem("FOO"));
+        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.mem("FOO"));
+
+        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph();
+        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph();
+
+        assertSame(dgBase1, dgBase2);
     }
-    
-    @Test public void testTDBMakerTxn3()
-    {
+
+    @Test
+    public void testTDBMakerTxn3() {
         // Un-named memory locations
-        TDBMaker.reset() ;
-        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.mem()) ;
-        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.mem()) ;
-        
-        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
-        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;
-        
-        assertNotSame(dgBase1, dgBase2) ;
+        DatasetGraph dg1 = TDBMaker.createDatasetGraphTransaction(Location.mem());
+        DatasetGraph dg2 = TDBMaker.createDatasetGraphTransaction(Location.mem());
+
+        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph();
+        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph();
+
+        assertNotSame(dgBase1, dgBase2);
     }
-    
+
     @Test public void testTDBFresh01() {
         boolean b = TDBFactory.inUseLocation(DIR) ;
         assertFalse("Expect false before any creation attempted", b) ;

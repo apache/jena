@@ -18,7 +18,7 @@
 
 package org.apache.jena.atlas.lib ;
 
-import static com.jayway.awaitility.Awaitility.await ;
+import static org.awaitility.Awaitility.await ;
 import static org.apache.jena.atlas.lib.Lib.sleep ;
 
 import java.util.concurrent.TimeUnit ;

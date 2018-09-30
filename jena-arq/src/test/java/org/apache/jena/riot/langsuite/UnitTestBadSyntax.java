@@ -19,17 +19,17 @@
 package org.apache.jena.riot.langsuite;
 
 import static org.apache.jena.riot.SysRIOT.fmtMessage ;
+
 import org.apache.jena.atlas.legacy.BaseTest2 ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.junit.EarlReport ;
 
 public class UnitTestBadSyntax extends LangTestCase
@@ -37,7 +37,7 @@ public class UnitTestBadSyntax extends LangTestCase
     private final String uri ;
     private final Lang lang ;
 
-    protected UnitTestBadSyntax(String name, String testURI, String uri, Lang lang, EarlReport earl)
+    public UnitTestBadSyntax(String name, String testURI, String uri, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
         this.uri = uri ;
@@ -84,10 +84,11 @@ public class UnitTestBadSyntax extends LangTestCase
     }
     
     private void run3() {
-        Model model = ModelFactory.createDefaultModel() ;
+        Graph graph = GraphFactory.createDefaultGraph(); 
         try {
-            RDFDataMgr.read(model, uri, uri, lang) ;
-        } catch (RiotException ex) { return ; }
+            Parse.parse(graph, uri, lang);
+        } 
+        catch (RiotException ex) { return ; }
         catch (RuntimeException ex) {
             ex.printStackTrace(System.err) ;
             fail("Unexpected exception") ;
@@ -96,9 +97,9 @@ public class UnitTestBadSyntax extends LangTestCase
     }
     
     private void run4() {
-        Dataset ds = DatasetFactory.createGeneral() ;
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral() ;
         try {
-            RDFDataMgr.read(ds, uri, uri, lang) ;
+            Parse.parse(dsg, uri, lang) ;
         } catch (RiotException ex) { return ; }
         catch (RuntimeException ex) {
             ex.printStackTrace(System.err) ;

@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-
 public class FusekiConfigException extends FusekiException
 {
     public FusekiConfigException(String msg, Throwable cause)    { super(msg, cause) ; }

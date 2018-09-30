@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>3.8.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Command line tools</name>
   <artifactId>jena-cmds</artifactId>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.10.0-SNAPSHOT</version>
 
   <description>Command line tools</description>
 
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -67,22 +67,28 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     
-    <!-- Require a logging implementation -->
+    <!-- Require a logging implementation 
+         It is <scope>test</scope> from the parent otherwise.
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <optional>false</optional>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-    </dependency> 
+      <optional>false</optional>
+      <scope>compile</scope>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -90,7 +96,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -98,7 +104,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-base</artifactId>
-      <version>3.8.0-SNAPSHOT</version>
+      <version>3.10.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

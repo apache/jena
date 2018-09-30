@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBLoader ;
-import org.apache.jena.tdb.store.GraphNonTxnTDB ;
+import org.apache.jena.tdb.store.GraphTDB;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 
@@ -124,7 +124,7 @@ public class tdbloader extends CmdTDBGraph {
 //    }
 
     void loadNamedGraph(List<String> urls) {
-        GraphNonTxnTDB graph = getGraph() ;
+        GraphTDB graph = getGraph() ;
         TDBLoader.load(graph, urls, showProgress) ;
         return ;
     }

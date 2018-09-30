@@ -22,7 +22,7 @@ import java.text.CharacterIterator;
 /**
  * An instance of this class has ranges captured in matching.
  * 
- * @xerces.internal
+ * {@literal @xerces.internal}
  *
  * @see RegularExpression#matches(char[], int, int, Match)
  * @see RegularExpression#matches(char[], Match)

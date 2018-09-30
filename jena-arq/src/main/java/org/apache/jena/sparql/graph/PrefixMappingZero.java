@@ -18,20 +18,23 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.shared.PrefixMapping;
 
-/** Immutable empty PrefixMapping. */
-public class PrefixMappingZero extends PrefixMappingImpl {
+/** Immutable empty {@link PrefixMapping}. */
+public class PrefixMappingZero extends PrefixMappingSink {
+
     @Override
-    protected void set(String prefix, String uri) {
-        throw new UnsupportedOperationException("set prefix");
+    protected void add(String prefix, String uri) {
+        throw new UnsupportedOperationException("add prefix");
     }
 
     @Override
-    protected String get(String prefix) { return null; }
-
-    @Override
-    protected void remove(String prefix) { 
+    protected void remove(String prefix) {
         throw new UnsupportedOperationException("remove prefix");
+    }
+    
+    @Override
+    public String toString() {
+        return "pm:Zero";
     }
 }

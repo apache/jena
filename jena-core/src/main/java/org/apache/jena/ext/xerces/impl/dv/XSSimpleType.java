@@ -26,7 +26,7 @@ import org.apache.jena.ext.xerces.xs.XSSimpleTypeDefinition;
  * Any simple type (atomic, list or union) will implement this interface.
  * It inherits from <code>XSTypeDecl</code>.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *

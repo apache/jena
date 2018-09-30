@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.HashMap ;
 import java.util.Map ;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
@@ -31,6 +31,9 @@ import org.apache.jena.sparql.graph.GraphReadOnly ;
  */
 public class DatasetGraphReadOnly extends DatasetGraphWrapper
 {
+    // Add a read-only wrapper any graphs returned.
+    // Block write access at getW().
+
     public DatasetGraphReadOnly(DatasetGraph dsg) { super(dsg) ; }
     
     private Graph dftGraph = null ;
@@ -50,10 +53,12 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
         get().begin(mode) ; 
     }
     
-    private Map<Node, Graph> namedGraphs = new HashMap<>() ;
+    private Map<Node, Graph> namedGraphs = new ConcurrentHashMap<>() ;
 
     @Override
     public Graph getGraph(Node graphNode) {
+        // Cache GraphReadOnly wrappers. This also makes == work (a nicety)
+        // if the underlying DatasetGraph isn't changing.
         if ( namedGraphs.containsKey(graphNode) ) {
             if ( !super.containsGraph(graphNode) ) {
                 namedGraphs.remove(graphNode) ;
@@ -69,18 +74,6 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
         namedGraphs.put(graphNode, g) ;
         return g ;
     }
-
-    @Override
-    public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("read-only dataset") ; }
-
-    @Override
-    public void addGraph(Node graphName, Graph graph)
-    { throw new UnsupportedOperationException("read-only dataset") ; }
-
-    @Override
-    public void removeGraph(Node graphName)
-    { throw new UnsupportedOperationException("read-only dataset") ; }
 
     /** For operations that write the DatasetGraph. */
     @Override

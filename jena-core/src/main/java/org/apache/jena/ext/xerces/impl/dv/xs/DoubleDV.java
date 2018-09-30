@@ -24,7 +24,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.XSDouble;
 /**
  * Represent the schema type "double"
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

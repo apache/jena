@@ -39,7 +39,7 @@ import org.apache.jena.graph.NodeFactory;
  * fed to a digest to give a bit string, (currently MD5, to get a 128bit bit
  * string) that is used to form a bNode AnonId of hex digits.
  * <p>
- * In addition there is a cache of label->node allocations, using the natural
+ * In addition, there is a cache of label{@literal ->}node allocations, using the natural
  * tendency to locality in a database dump. (subject bNodes, bNodes in lists
  * and other data values structures like unit values).
  * <p>

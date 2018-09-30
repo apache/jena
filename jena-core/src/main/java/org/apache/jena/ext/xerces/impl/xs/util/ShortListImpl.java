@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.xs.XSException;
 /**
  * Contains a list of shorts.
  *
- * @xerces.internal 
+ * {@literal @xerces.internal} 
  *
  * @author Sandy Gao, IBM
  *
