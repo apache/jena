@@ -892,6 +892,41 @@ public class WhereClauseTest<T extends WhereClause<?>> extends
 		query.getQueryPattern().visit( visitor );
 		assertTrue( visitor.matching );
 	}	
+	
+	@ContractTest
+	public void testAddWhereValueVars_InSubQuery()
+	{
+		final Var v = Var.alloc("v");
+		Map<Object,List<?>> map = new HashMap<Object, List<?>>();
+		
+		map.put( Var.alloc("v"), Arrays.asList( "<one>", "<two>"));
+		map.put( "?x", Arrays.asList( "three", "four"));
+			
+		WhereClause<?> whereClause = getProducer().newInstance();
+		WhereClause<?> whereClause2 = getProducer().newInstance();
+		
+		AbstractQueryBuilder<?> builder =  whereClause.addWhereValueVars( map );
+		builder = whereClause2.addSubQuery(builder);
+		
+		Query query = builder.build();
+
+		Var x = Var.alloc("x");
+		ElementData edat = new ElementData();
+		edat.add( x );
+		edat.add( v );		
+		BindingHashMap binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "one" ));
+		binding.add( x, NodeFactory.createLiteral("three"));
+		edat.add( binding );
+		binding = new BindingHashMap();
+		binding.add( v, NodeFactory.createURI( "two" ));
+		binding.add( x, NodeFactory.createLiteral("four"));
+		edat.add( binding );
+
+		WhereValidator visitor = new WhereValidator( edat );
+		query.getQueryPattern().visit( visitor );
+		assertTrue( visitor.matching );
+	}
 
 	@ContractTest
 	public void testAddWhereValueVars_Node_Variable()
