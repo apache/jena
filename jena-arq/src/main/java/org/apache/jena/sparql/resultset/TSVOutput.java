@@ -50,7 +50,6 @@ public class TSVOutput extends OutputBase
     
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
-        // Use a Turtle formatter to format terms
         NodeFormatter formatter = createNodeFormatter();
 
         AWriter w = IO.wrapUTF8(out);
