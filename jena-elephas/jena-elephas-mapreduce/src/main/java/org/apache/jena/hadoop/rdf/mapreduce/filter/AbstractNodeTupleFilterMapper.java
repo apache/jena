@@ -28,9 +28,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 /**
  * Abstract mapper implementation which helps in filtering tuples from the
  * input, derived implementations provide an implementation of the
- * {@link #accepts(TKey, T)}
- * 
- * 
+ * {@link #accepts(Object, AbstractNodeTupleWritable)}
  * 
  * @param <TKey>
  *            Key type
@@ -39,7 +37,6 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
  * @param <T>
  *            Writable tuple type
  */
-@SuppressWarnings("javadoc")
 public abstract class AbstractNodeTupleFilterMapper<TKey, TValue, T extends AbstractNodeTupleWritable<TValue>> extends
         Mapper<TKey, T, TKey, T> {
 

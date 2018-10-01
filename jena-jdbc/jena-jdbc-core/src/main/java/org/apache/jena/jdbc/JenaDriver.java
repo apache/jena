@@ -198,7 +198,7 @@ public abstract class JenaDriver implements Driver {
      * When not set this defaults to the special value <strong>no-auto</strong>
      * provided by the constant {@link #NO_AUTO_LOGGING_CONFIGURATION} that
      * indicates that the driver should not configure any logging. This is
-     * useful if you want to have your application managed its own
+     * useful if you want to have your application manage its own
      * configuration.
      * </p>
      */

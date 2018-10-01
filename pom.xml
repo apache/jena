@@ -787,7 +787,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.0.1</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -821,6 +821,7 @@
               <link>http://jena.apache.org/documentation/javadoc/permissions/</link>
               <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
             </links>
+            <additionalOptions>-html5</additionalOptions>
           </configuration>
         </plugin>
 
