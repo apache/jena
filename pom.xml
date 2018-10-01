@@ -797,9 +797,7 @@
             </execution>
           </executions>
           <configuration>
-            <!-- Java 10
-                 <additionalOptions>-html5</additionalOptions>
-            -->
+            <additionalOptions>-html5</additionalOptions>
 
             <doclint>none</doclint>
             <!-- To allow the build to keep going despite javadoc problems:

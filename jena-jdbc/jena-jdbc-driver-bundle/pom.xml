@@ -176,7 +176,6 @@
 							<packages>org.apache.jena.jdbc.remote*</packages>
 						</group>
 					</groups>
-					<additionalOptions>-html5</additionalOptions>
 				</configuration>
 				<executions>
 					<execution>

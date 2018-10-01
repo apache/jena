@@ -69,7 +69,6 @@
             <link>http://jena.apache.org/documentation/javadoc/jena/</link>
             <link>http://jena.apache.org/documentation/javadoc/arq/</link>
           </links>
-          <additionalOptions>-html5</additionalOptions>
         </configuration>
       </plugin>
     </plugins>

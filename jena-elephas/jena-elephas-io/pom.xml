@@ -85,7 +85,6 @@
             <link>http://jena.apache.org/documentation/javadoc/arq/</link>
             <link>http://jena.apache.org/documentation/javadoc/elephas/common/</link>
           </links>
-          <additionalOptions>-html5</additionalOptions>
         </configuration>
       </plugin>
       <plugin>

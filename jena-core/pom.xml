@@ -204,7 +204,6 @@
               <packages>org.apache.jena.assembler</packages>
             </group>
           </groups>
-          <additionalOptions>-html5</additionalOptions>
         </configuration>
       </plugin>
 

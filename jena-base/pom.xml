@@ -166,7 +166,6 @@
           <windowtitle>Apache Jena Base </windowtitle>
           <doctitle>Apache Jena Base ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
-          <additionalOptions>-html5</additionalOptions>
         </configuration>
       </plugin>
       

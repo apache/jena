@@ -106,7 +106,6 @@
             </tag>
           </tags>
           <overview>${basedir}/src/main/overview.html</overview>
-          <additionalOptions>-html5</additionalOptions>
         </configuration>
         <executions>
           <execution>
