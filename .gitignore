@@ -14,7 +14,7 @@ buildNumber.properties
 .project
 .settings
 .recommenders
-.metadat
+.metadata
 **/*/META-INF
 **/.externalToolBuilders/
 **/maven-eclipse.xml
