@@ -15,6 +15,9 @@ buildNumber.properties
 .settings
 .recommenders
 .metadata
+**/*/META-INF
+**/.externalToolBuilders/
+**/maven-eclipse.xml
 
 # Idea IntelliJ
 *.ipr
