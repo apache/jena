@@ -50,17 +50,23 @@ public class TestAdminAPI extends AbstractFusekiTest {
     }
     
     @Test public void add_delete_api_2() throws Exception {
+        // Deleted mmap files on Windows does not go away until the JVM exits. 
+        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
+            return;
         testAddDelete("db_tdb", "tdb", true);
     }
 
     @Test public void add_delete_api_3() throws Exception {
+        // Deleted mmap files on Windows does not go away until the JVM exits. 
+        if ( org.apache.jena.tdb2.sys.SystemTDB.isWindows )
+            return;
         testAddDelete("db_tdb2", "tdb2", true);
     }
 
     private static void testAddDelete(String dbName, String dbType, boolean hasFiles) {
         String datasetURL = ServerCtl.urlRoot()+dbName;
         String admin = ServerCtl.urlRoot()+"$/";
-        HttpEntity e = createFormEntity(dbName, "tdb");
+        HttpEntity e = createFormEntity(dbName, dbType);
         
         assertFalse(exists(datasetURL));
         
