@@ -34,10 +34,14 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     private final long   tickPoint;
     private final int    superTick;
     private final Timer  timer;
+    private Timer getTimer() { return timer; } 
+
     private final String label;
 
+    // Counters - this monitor.
     private long  counterBatch = 0;
     private long  counterTotal = 0;
+    //private final ProgressMonitorContext context;
 
     private long  lastTime     = -1;
     private long  timeTotalMillis = -1;
@@ -92,27 +96,29 @@ public class ProgressMonitorOutput implements ProgressMonitor {
     @Override
     public void finishMessage(String msg) {
         // Elapsed.
-        long timePoint = timer.getTimeInterval();
+        long timePoint = getTimer().getTimeInterval();
+        long counterTotalMsg = getRunningTotal();
 
         // /1000L is milli to second conversion
         if ( timePoint != 0 ) {
             double time = timePoint / 1000.0;
-            long runAvgRate = (counterTotal * 1000L) / timePoint;
+            long runAvgRate = (counterTotalMsg * 1000L) / timePoint;
 
-            print("%s: %,d %s %.2fs (Avg: %,d)", msg, counterTotal, label, time, runAvgRate);
+            print("%s: %,d %s %.2fs (Avg: %,d)", msg, counterTotalMsg, label, time, runAvgRate);
         } else
-            print("%s: %,d %s (Avg: ----)", msg, counterTotal, label);
+            print("%s: %,d %s (Avg: ----)", msg, counterTotalMsg, label);
     }
 
     @Override
     public void start() {
-        timer.startTimer();
+        // XXX
+        getTimer().startTimer();
         lastTime = 0;
     }
 
     @Override
     public void finish() {
-        timeTotalMillis = timer.endTimer();
+        timeTotalMillis = getTimer().endTimer();
     }
 
     @Override
@@ -120,22 +126,22 @@ public class ProgressMonitorOutput implements ProgressMonitor {
         counterBatch++;
         counterTotal++;
     
-        if ( tickPoint(counterTotal, tickPoint) ) {
-            long timePoint = timer.readTimer();
+        if ( tickPoint(getRunningTotal(), tickPoint) ) {
+            long timePoint = getTimer().readTimer();
             long thisTime = timePoint - lastTime;
     
             // *1000L is milli to second conversion
             if ( thisTime != 0 && timePoint != 0 ) {
                 long batchAvgRate = (counterBatch * 1000L) / thisTime;
-                long runAvgRate = (counterTotal * 1000L) / timePoint;
-                print("Add: %,d %s (Batch: %,d / Avg: %,d)", counterTotal, label, batchAvgRate, runAvgRate);
+                long runAvgRate = (getRunningTotal() * 1000L) / timePoint;
+                print("Add: %,d %s (Batch: %,d / Avg: %,d)", getRunningTotal(), label, batchAvgRate, runAvgRate);
             } else {
-                print("Add: %,d %s (Batch: ---- / Avg: ----)", counterTotal, label);
+                print("Add: %,d %s (Batch: ---- / Avg: ----)", getRunningTotal(), label);
             }
     
             lastTime = timePoint;
     
-            if ( tickPoint(counterTotal, superTick * tickPoint) )
+            if ( tickPoint(getRunningTotal(), superTick * tickPoint) )
                 elapsed(timePoint);
             counterBatch = 0;
             lastTime = timePoint;
@@ -144,6 +150,10 @@ public class ProgressMonitorOutput implements ProgressMonitor {
 
     @Override
     public long getTicks() {
+        return counterTotal;
+    }
+
+    private long getRunningTotal() {
         return counterTotal;
     }
 

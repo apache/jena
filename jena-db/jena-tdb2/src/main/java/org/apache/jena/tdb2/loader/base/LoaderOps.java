@@ -78,7 +78,7 @@ public class LoaderOps {
         return new ProgressStreamRDF(dest, monitor);
     }
 
-    /** Calculate a label for a progress montior. */
+    /** Calculate a label for a progress monitor. */
     private static String label(String fileName) {
         String basename = FileOps.splitDirFile(fileName).get(1);
         return basename;
