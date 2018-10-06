@@ -35,7 +35,6 @@ import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.main.StageBuilder ;
 import org.apache.jena.sparql.engine.main.StageGenerator ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
@@ -50,6 +49,7 @@ import org.apache.jena.tdb.store.DatasetGraphTDB ;
 import org.apache.jena.tdb.sys.EnvTDB ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
