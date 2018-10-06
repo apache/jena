@@ -62,6 +62,27 @@ public class LoaderPlans {
         );
     
     /**
+     * Lightly parallel, intermediate plan: for triples, this is two threaded. It aims to
+     * speed up the data phase on a machine where an index is larger than the size of
+     * available RAM (not heap). In this case it is better to use RAM for better caching a
+     * single index than trying to work in parallel on two or more indexes. Like all load
+     * plans, data shape and machine characteristics affect speed so experimentation is
+     * recommended.
+     * <p>
+     * Data phase: One thread for parser and building the node table, and one thread for
+     * each primary index.
+     * <p>
+     * Index phase: Secondary indexes: one by one.
+     */
+    public static LoaderPlan loaderPlanLight = new LoaderPlan(
+        InputStage.PARSE_NODE,
+        new String[]{ "SPO" },
+        new String[]{ "GSPO" },
+        new String[][]{ { "POS" }, { "OSP" } },
+        new String[][]{ { "GPOS" }, { "GOSP" }, { "SPOG" }, { "POSG" } , { "OSPG" } }
+        );
+    
+    /**
      * A nearly sequential process, as a loader plan including single threaded first
      * phase. Each index is calculated separately but on a separate thread.
      * <p>

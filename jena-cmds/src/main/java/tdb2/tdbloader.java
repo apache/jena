@@ -36,6 +36,7 @@ import org.apache.jena.tdb2.loader.DataLoader;
 import org.apache.jena.tdb2.loader.LoaderFactory;
 import org.apache.jena.tdb2.loader.base.LoaderOps;
 import org.apache.jena.tdb2.loader.base.MonitorOutput;
+import org.apache.jena.tdb2.loader.main.LoaderPlans;
 import tdb2.cmdline.CmdTDB;
 import tdb2.cmdline.CmdTDBGraph;
 
@@ -43,7 +44,7 @@ public class tdbloader extends CmdTDBGraph {
     private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats");
     private static final ArgDecl argLoader = new ArgDecl(ArgDecl.HasValue, "loader");
     
-    private enum LoaderEnum { Basic, Parallel, Sequential, Phased }
+    private enum LoaderEnum { Basic, Parallel, Sequential, Light, Phased }
     
     private boolean showProgress = true;
     private boolean generateStats = false;
@@ -57,7 +58,7 @@ public class tdbloader extends CmdTDBGraph {
     protected tdbloader(String[] argv) {
         super(argv);
 //        super.add(argStats, "Generate statistics");
-        super.add(argLoader, "--loader=", "Loader to use: 'basic', 'phased' (default), 'sequential' or 'parallel'");
+        super.add(argLoader, "--loader=", "Loader to use: 'basic', 'phased' (default), 'sequential', 'parallel' or 'light'");
     }
 
     @Override
@@ -74,6 +75,10 @@ public class tdbloader extends CmdTDBGraph {
                 loader = LoaderEnum.Sequential;
             else if ( loadername.matches("para.*") )
                 loader = LoaderEnum.Parallel;
+            else if ( loadername.matches("para.*") )
+                loader = LoaderEnum.Parallel;
+            else if ( loadername.matches("light") )
+                loader = LoaderEnum.Light;
             else
                 throw new CmdException("Unrecognized value for --loader: "+loadername);
         }
@@ -174,6 +179,8 @@ public class tdbloader extends CmdTDBGraph {
                 return LoaderFactory.parallelLoader(dsg, gn, output);
             case Sequential :
                 return LoaderFactory.sequentialLoader(dsg, gn, output);
+            case Light :
+                return LoaderFactory.createLoader(LoaderPlans.loaderPlanLight, dsg, output);
             case Basic :
                 return LoaderFactory.basicLoader(dsg, gn, output);
             default :

@@ -133,7 +133,8 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     }
 
     /**
-     * Create data ingestion and primary index building of a {@link LoaderPlan}. 
+     * Create data ingestion and primary index building of a {@link LoaderPlan}.
+     * Separate threads for parsing, node table loading and primary index building.  
      */
     private static StreamRDFCounting executeData(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
         DatasetPrefixesTDB dps = (DatasetPrefixesTDB)dsgtdb.getPrefixes();
@@ -165,6 +166,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
 
     /**
      * Create data ingestion and primary index building of a {@link LoaderPlan}.
+     * One thread for parsing and node table building and one for each primary index building.  
      * This version uses a thread for parse/NodeTable/Tuple and a thread for each of triple and quad index for phase one.  
      */
     private static StreamRDFCounting executeDataParseId(LoaderPlan loaderPlan, DatasetGraphTDB dsgtdb, Map<String, TupleIndex> indexMap, List<BulkStartFinish> dataProcess, MonitorOutput output) {
