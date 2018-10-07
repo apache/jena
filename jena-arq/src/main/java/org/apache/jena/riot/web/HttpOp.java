@@ -120,12 +120,14 @@ public class HttpOp {
     /**
      * User-Agent header to use
      */
-    static private String userAgent = ARQ_USER_AGENT;
+    private static String userAgent = ARQ_USER_AGENT;
 
     /**
      * "Do nothing" response handler.
      */
-    static private HttpResponseHandler nullHandler = HttpResponseLib.nullResponse;
+    private static HttpResponseHandler nullHandler = HttpResponseLib.nullResponse;
+
+    private static HttpRequestTransformer reqTransformer = null;
 
     /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
@@ -204,7 +206,19 @@ public class HttpOp {
     public static void setDefaultHttpClient(HttpClient client) {
         defaultHttpClient = firstNonNull(client, initialDefaultHttpClient);
     }
-    
+
+    /**
+     * Setting an {@link HttpRequestTransformer} allows manipulation or enhancement of HTTP requests.
+     * 
+     * @param tform HttpRequestTransformer to use, {@code null} for none (the default)
+     * @return the previous HttpRequestTransformer in use
+     */
+    public static HttpRequestTransformer setRequestTransformer(HttpRequestTransformer tform) {
+        HttpRequestTransformer tmp = reqTransformer;
+        reqTransformer = tform;
+        return tmp;
+    }
+
     /**
      * Create an HttpClient that performs connection pooling. This can be used
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
@@ -493,7 +507,7 @@ public class HttpOp {
      *            HTTP Context
      */
     public static void execHttpPost(String url, String contentType, String content, String acceptType,
-            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
+                                    HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         StringEntity e = null;
         try {
             e = new StringEntity(content, StandardCharsets.UTF_8);
@@ -557,7 +571,7 @@ public class HttpOp {
      *            Response handler called to process the response
      */
     public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-            HttpResponseHandler handler) {
+                                    HttpResponseHandler handler) {
         execHttpPost(url, contentType, input, length, acceptType, handler, null, null);
     }
 
@@ -587,17 +601,17 @@ public class HttpOp {
      *
      */
     public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
+                                    HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
         InputStreamEntity e = new InputStreamEntity(input, length);
-        e.setContentType(contentType);
-        e.setContentEncoding("UTF-8");
+        String ct = decideContentType(contentType);
+        e.setContentType(ct);
         try {
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext);
         } finally {
             closeEntity(e);
         }
     }
-
+    
     /**
      * Executes a HTTP POST of the given entity
      * 
@@ -932,8 +946,8 @@ public class HttpOp {
     public static void execHttpPut(String url, String contentType, InputStream input, long length, HttpClient httpClient,
             HttpContext httpContext) {
         InputStreamEntity e = new InputStreamEntity(input, length);
-        e.setContentType(contentType);
-        e.setContentEncoding("UTF-8");
+        String ct = decideContentType(contentType);
+        e.setContentType(ct);
         try {
             execHttpPut(url, e, httpClient, httpContext);
         } finally {
@@ -1058,15 +1072,15 @@ public class HttpOp {
     }
 
     // ---- Perform the operation!
-    private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
-        // whether we should close the client after request execution
-        // only true if we built the client right here
+    private static void exec(String url, HttpUriRequest req, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext) {
+        // we should close the client after request execution if we built the client right here
         httpClient = firstNonNull(httpClient, getDefaultHttpClient());
-        // and also only true if the handler won't close the client for us
+        // or if the handler won't close the client for us
         try {
             if (handler == null)
                 // This cleans up left-behind streams
                 handler = nullHandler;
+            HttpUriRequest request = reqTransformer  == null ? req : reqTransformer.apply(req);
 
             long id = counter.incrementAndGet();
             String baseURI = determineBaseIRI(url);
@@ -1085,8 +1099,7 @@ public class HttpOp {
             int statusCode = statusLine.getStatusCode();
             if (HttpSC.isClientError(statusCode) || HttpSC.isServerError(statusCode)) {
                 log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
-                // Error responses can have bodies so it is important to clear
-                // up.
+                // Error responses can have bodies so it is important to clear up.
 				final String contentPayload = readPayload(response.getEntity());
 				throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase(), contentPayload);
             }
@@ -1127,6 +1140,16 @@ public class HttpOp {
             entity.getContent().close();
         } catch (Exception e) {
         }
+    }
+
+    /**
+     * Content-Type, ensuring charset is present, defaulting to UTF-8.
+     */
+    private static String decideContentType(String contentType) {
+        String ct = contentType;
+        if ( ct != null && ! ct.contains("charset=") )
+            ct = ct+"; charset=UTF-8";
+        return ct;
     }
 
     /**

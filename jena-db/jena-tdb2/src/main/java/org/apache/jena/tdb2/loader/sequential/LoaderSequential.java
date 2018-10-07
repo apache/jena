@@ -32,7 +32,7 @@ import org.apache.jena.tdb2.loader.base.MonitorOutput;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
 
-/** Bulk loader. Algorithm: Parser to primaryindexes, then build secondary indexes. */ 
+/** Bulk loader. Algorithm: Parser to primary indexes, then builds secondary indexes one at a time. */ 
 public class LoaderSequential extends LoaderBase {
     
     public static final int DataTickPoint   = 100_000;

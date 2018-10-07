@@ -24,8 +24,8 @@ import static org.apache.jena.riot.WebContent.matchContentType ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.fuseki.system.ConNeg;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.fuseki.system.UploadDetails.PreState;
@@ -81,7 +81,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     protected void doPost(HttpAction action)        { doPutPost(action, false) ; }
 
     private void doPutPost(HttpAction action, boolean overwrite) {
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:") ;
 
@@ -180,7 +180,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
             existedBefore = target.exists() ; 
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
-            FusekiLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
+            FusekiNetLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
             details.setExistedBefore(existedBefore) ;
             action.commit() ;
             return details ;

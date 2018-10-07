@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
-
+import org.apache.jena.sparql.core.Quad;
 import org.locationtech.spatial4j.shape.Shape;
 
 public class SpatialIndexContext {
@@ -40,6 +40,10 @@ public class SpatialIndexContext {
 		this.defn = indexer.getDocDef();
 		this.indexer = indexer;
 		this.spatialPredicatePairValues = new HashMap<>();
+	}
+
+	public void index(Quad q) {
+		index(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
 	}
 
 	@SuppressWarnings("deprecation")

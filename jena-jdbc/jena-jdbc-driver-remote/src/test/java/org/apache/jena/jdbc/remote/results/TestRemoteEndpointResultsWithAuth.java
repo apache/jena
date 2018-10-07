@@ -28,7 +28,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.jena.fuseki.embedded.FusekiTestAuth;
+import org.apache.jena.fuseki.main.FusekiTestAuth;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;

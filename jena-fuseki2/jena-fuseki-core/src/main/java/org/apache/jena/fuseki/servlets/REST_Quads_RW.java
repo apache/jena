@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.servlets ;
 
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
 import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.riot.RiotException ;
@@ -131,7 +131,7 @@ public class REST_Quads_RW extends REST_Quads_R {
             DatasetGraph dsg = decideDataset(action);
             if ( clearFirst )
                 dsg.clear() ;
-            FusekiLib.addDataInto(dsgTmp, dsg) ;
+            FusekiNetLib.addDataInto(dsgTmp, dsg) ;
             action.commit() ;
             ServletOps.success(action) ;
         } catch (Exception ex) {

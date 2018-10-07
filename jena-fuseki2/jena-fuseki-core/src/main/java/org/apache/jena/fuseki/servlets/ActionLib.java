@@ -25,11 +25,13 @@ import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.web.AcceptList ;
+import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.fuseki.system.ConNeg;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserRegistry;
@@ -210,6 +212,14 @@ public class ActionLib {
             throw ex;
         }
         catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
+    }
+
+    /** Get the content type of an action or return the default.
+     * @param  action
+     * @return ContentType
+     */
+    public static ContentType getContentType(HttpAction action) {
+        return FusekiNetLib.getContentType(action.request) ;
     }
 }
 

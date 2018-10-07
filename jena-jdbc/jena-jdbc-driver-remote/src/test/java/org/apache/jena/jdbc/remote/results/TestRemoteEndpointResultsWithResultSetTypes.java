@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.jena.fuseki.embedded.FusekiTestServer ;
+import org.apache.jena.fuseki.main.FusekiTestServer ;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;

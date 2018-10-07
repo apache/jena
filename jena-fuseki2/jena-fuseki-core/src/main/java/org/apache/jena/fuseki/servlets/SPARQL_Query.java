@@ -49,7 +49,7 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -159,7 +159,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      */
     protected void validateParams(HttpAction action, Collection<String> params) {
         HttpServletRequest request = action.request ;
-        ContentType ct = FusekiLib.getContentType(request) ;
+        ContentType ct = FusekiNetLib.getContentType(request) ;
         boolean mustHaveQueryParam = true ;
         if ( ct != null ) {
             String incoming = ct.getContentType() ;
@@ -218,7 +218,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
 
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
 
         // POST application/x-www-form-url
         // POST ?query= and no Content-Type

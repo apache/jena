@@ -29,7 +29,7 @@ import org.apache.jena.riot.system.IRIResolver ;
 public class iri
 {
 
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         //IRIFactory iriFactory = IRIFactory.iriImplementation() ;
         IRIFactory iriFactory = IRIResolver.iriFactory() ;
