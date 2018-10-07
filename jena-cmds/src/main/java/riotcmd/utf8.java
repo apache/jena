@@ -28,7 +28,7 @@ import org.apache.jena.atlas.io.InputStreamBuffered ;
 public class utf8
 {
     /** Simple program to help hunt down bad UTF-8 encoded characters */
-    public static void main(String[] args) {
+    public static void main(String... args) {
         long INIT_LINE = 1 ;
         long INIT_COL = 1 ;
 

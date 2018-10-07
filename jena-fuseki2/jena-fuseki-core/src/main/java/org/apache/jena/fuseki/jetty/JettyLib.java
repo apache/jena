@@ -107,14 +107,13 @@ public class JettyLib {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
         Objects.requireNonNull(role);
-        PropertyUserStore propertyUserStore = new PropertyUserStore();
+        UserStore userStore = new UserStore();
         String[] roles = role == null ? null : new String[]{role};
         Credential cred  = new Password(password);
-        propertyUserStore.addUser(user, cred, roles);
-        
-        try { propertyUserStore.start(); }
+        userStore.addUser(user, cred, roles);
+        try { userStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
-        return propertyUserStore;
+        return userStore;
     }
     
     /** Add or append a {@link Handler} to a Jetty {@link Server}. */

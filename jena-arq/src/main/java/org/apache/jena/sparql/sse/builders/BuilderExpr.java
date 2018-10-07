@@ -226,15 +226,15 @@ public class BuilderExpr
         dispatch.put(Tags.tagLE, buildLE) ;
         dispatch.put(Tags.symGE, buildGE) ;
         dispatch.put(Tags.tagGE, buildGE) ;
-        dispatch.put(Tags.symOr, buildOr) ;     // Same builders for (or ..) and (|| ..)
+        dispatch.put(Tags.symOr, buildOr) ;
         dispatch.put(Tags.tagOr, buildOr) ;
-        dispatch.put(Tags.symAnd, buildAnd) ;   // Same builders for (and ..) and (&& ..)
+        dispatch.put(Tags.symAnd, buildAnd) ;
         dispatch.put(Tags.tagAnd, buildAnd) ;
         dispatch.put(Tags.symPlus, buildPlus) ;
         dispatch.put(Tags.tagAdd,  buildPlus) ;
         dispatch.put(Tags.symMinus, buildMinus) ;
-        dispatch.put(Tags.tagSubtract, buildMinus) ;    // Not to be confused with Op for SPARQL MINUS
-        dispatch.put(Tags.tagMinus, buildMinus) ;
+        dispatch.put(Tags.tagSubtract, buildMinus) ;
+        dispatch.put(Tags.tagMinus, buildMinus) ;    // Not to be confused with Op for SPARQL MINUS
 
         dispatch.put(Tags.tagUnaryPlus, buildUnaryPlus) ;
         dispatch.put(Tags.tagUnaryMinus, buildUnaryMinus) ;
@@ -247,11 +247,10 @@ public class BuilderExpr
         
         dispatch.put(Tags.tagNot, buildNot) ;   // Same builders for (not ..) and (! ..)
         dispatch.put(Tags.symNot, buildNot) ;
+        
         dispatch.put(Tags.tagStr, buildStr) ;
         dispatch.put(Tags.tagStrLang, buildStrLang) ;
         dispatch.put(Tags.tagStrDatatype, buildStrDatatype) ;
-        dispatch.put(Tags.tagStr, buildStr) ;
-        dispatch.put(Tags.tagRand, buildRand) ;
 
         dispatch.put(Tags.tagYear, buildYear) ;
         dispatch.put(Tags.tagMonth, buildMonth) ;
@@ -262,6 +261,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagTimezone, buildTimezone) ;
         dispatch.put(Tags.tagTZ, buildTZ) ;
         
+        dispatch.put(Tags.tagRand, buildRand) ;
         dispatch.put(Tags.tagNow, buildNow) ;
         dispatch.put(Tags.tagUUID, buildUUID) ;
         dispatch.put(Tags.tagStrUUID, buildStrUUID) ;

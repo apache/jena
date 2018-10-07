@@ -25,16 +25,20 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>3.9.0-SNAPSHOT</version>
+    <version>3.10.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
+  
+  <properties>
+    <automatic.module.name>org.apache.jena.jena-fuseki-access</automatic.module.name>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki-embedded</artifactId>
-      <version>3.9.0-SNAPSHOT</version>
+      <artifactId>jena-fuseki-main</artifactId>
+      <version>3.10.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
@@ -49,6 +53,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
         <executions>
           <execution>
             <goals>

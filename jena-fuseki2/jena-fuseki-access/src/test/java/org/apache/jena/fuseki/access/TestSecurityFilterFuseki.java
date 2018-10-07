@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.apache.jena.fuseki.access.AccessTestLib.*;
+import static org.apache.jena.fuseki.access.AccessTestLib.addTestData;
+import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
+import static org.apache.jena.fuseki.access.AccessTestLib.s0;
+import static org.apache.jena.fuseki.access.AccessTestLib.s1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -31,9 +34,9 @@ import java.util.Set;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.fuseki.FusekiLib;
-import org.apache.jena.fuseki.embedded.FusekiServer;
 import org.apache.jena.fuseki.jetty.JettyLib;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
@@ -78,7 +81,7 @@ public class TestSecurityFilterFuseki {
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
     @BeforeClass public static void beforeClass() {
-        int port = FusekiLib.choosePort();
+        int port = FusekiNetLib.choosePort();
         addTestData(testdsg1);
         addTestData(testdsg2);
         addTestData(testdsg3);

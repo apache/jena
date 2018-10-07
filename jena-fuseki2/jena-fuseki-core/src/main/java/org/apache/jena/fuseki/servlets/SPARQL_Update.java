@@ -48,7 +48,6 @@ import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.iri.IRI ;
@@ -98,7 +97,7 @@ public class SPARQL_Update extends SPARQL_Protocol
 
     @Override
     protected void perform(HttpAction action) {
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;
 
@@ -127,7 +126,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST") ;
 
-        ContentType ct = FusekiLib.getContentType(action) ;
+        ContentType ct = ActionLib.getContentType(action) ;
         if ( ct == null )
             ct = ctSPARQLUpdate ;
 

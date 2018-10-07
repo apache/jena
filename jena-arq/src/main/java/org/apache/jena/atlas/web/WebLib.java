@@ -18,6 +18,9 @@
 
 package org.apache.jena.atlas.web;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 public class WebLib
 {
     /** Split a string, removing whitespace around the split string.
@@ -31,6 +34,15 @@ public class WebLib
             x[i] = x[i].trim() ;
         }
         return x ;
+    }
+
+    /** Choose an unused port for a server to listen on */
+    public static int choosePort() {
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to find a port");
+        }
     }
 
 }
