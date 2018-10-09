@@ -20,13 +20,13 @@ package org.apache.jena.query.text;
 
 import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.pfunction.PropertyFunction ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.util.Metadata;
 
 public class TextQuery
 {

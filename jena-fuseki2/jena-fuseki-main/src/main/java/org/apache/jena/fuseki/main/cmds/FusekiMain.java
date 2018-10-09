@@ -430,7 +430,7 @@ public class FusekiMain extends CmdARQ {
                 buildDate = DateTimeUtils.nowAsXSDDateTimeString() ;
             
             String name = Fuseki.NAME;
-            name = name +" (basic server)";
+            //name = name +" (basic server)";
             
             if ( version != null ) {
                 if ( Fuseki.developmentMode && buildDate != null )
