@@ -32,13 +32,12 @@ public class Timer {
     public void startTimer() {
         if ( inTimer )
             throw new AtlasException("Already in timer") ;
-
         timeStart = System.currentTimeMillis() ;
         timeFinish = -1 ;
         inTimer = true ;
     }
 
-    /** Return time in milliseconds */
+    /** Stop timing and return the elapsed time in milliseconds */
     public long endTimer() {
         if ( !inTimer )
             throw new AtlasException("Not in timer") ;
@@ -47,21 +46,30 @@ public class Timer {
         return getTimeInterval() ;
     }
 
+    /** Read the timer - either the instantanious value (if running) or elapsed time (if finished). */  
+    public long read() {
+        return inTimer
+            ? System.currentTimeMillis() - timeStart
+            : timeFinish - timeStart;
+    }
+    
+    /** Read a running timer */
     public long readTimer() {
         if ( !inTimer )
             throw new AtlasException("Not in timer") ;
-        return System.currentTimeMillis() - timeStart ;
+        return read() ;
     }
 
+    /** Read an elapsed timer */
     public long getTimeInterval() {
         if ( inTimer )
             throw new AtlasException("Still timing") ;
         if ( timeFinish == -1 )
             throw new AtlasException("No valid interval") ;
-
-        return timeFinish - timeStart ;
+        return read() ;
     }
 
+    /** Helper function to format milliseconds as "%.3f" seconds */
     static public String timeStr(long timeInterval) {
         return String.format("%.3f", timeInterval / 1000.0) ;
     }

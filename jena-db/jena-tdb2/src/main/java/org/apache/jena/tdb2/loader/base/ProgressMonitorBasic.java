@@ -19,19 +19,23 @@
 package org.apache.jena.tdb2.loader.base;
 
 import org.apache.jena.atlas.lib.Timer;
+import org.apache.jena.tdb2.TDBException;
 
 /** Simple {@link ProgressMonitor} that records time and ticks but does not print anything */ 
 public class ProgressMonitorBasic implements ProgressMonitor {
-
+    // Overall
     private Timer timer = new Timer(); 
     private long timeInMillis = -1;  
     private long tickCounter = 0;
+    //Section
+    private boolean inSection = false;
+    private int sectionCounter = 0;
+    private Timer sectionTimer = null; 
+    private long sectionTimeInMillis = -1;  
+    private long sectionTickCounter = 0;
     
     public ProgressMonitorBasic() {}
     
-    @Override
-    public void startMessage() {}
-
     @Override
     public void startMessage(String message) {}
 
@@ -49,7 +53,30 @@ public class ProgressMonitorBasic implements ProgressMonitor {
     }
 
     @Override
-    public void tick() { tickCounter++; }
+    public void startSection() {
+        if ( inSection )
+            throw new TDBException("startSection: Already in section");
+        inSection = true;
+        sectionCounter++;
+        sectionTimer = new Timer();
+        sectionTimeInMillis = 0;
+        sectionTickCounter = 0;
+    }
+
+    @Override
+    public void finishSection() {
+        if ( ! inSection )
+            throw new TDBException("finishSection: Not in section");
+        inSection = false;
+        sectionTimeInMillis = sectionTimer.endTimer();
+    }
+
+    @Override
+    public void tick() { 
+        tickCounter++;
+        if ( inSection )
+            sectionTickCounter++;
+    }
 
     @Override
     public long getTicks() {
@@ -61,4 +88,15 @@ public class ProgressMonitorBasic implements ProgressMonitor {
         return timeInMillis;
     }
 
+    @Override
+    public long getSectionTicks() {
+        return sectionTickCounter;
+    }
+    @Override
+    public long getSectionTime() {
+        return sectionTimeInMillis;
+    }
+
+    @Override
+    public void setLabel(String label) {}
 }

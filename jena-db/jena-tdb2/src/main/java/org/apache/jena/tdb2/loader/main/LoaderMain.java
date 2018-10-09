@@ -96,16 +96,16 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     public static final int DataSuperTick   = 10;
     public static final int IndexTickPoint  = 1_000_000;
     public static final int IndexSuperTick  = 10;
-    
+
     private final LoaderPlan loaderPlan;
-    
+
     private final DatasetGraphTDB dsgtdb;
     private final StreamRDF stream;
     private final Map<String, TupleIndex> indexMap;
 
     private final StreamRDFCounting dataInput;
     private final List<BulkStartFinish> dataProcess = new ArrayList<>();
-    
+
     public LoaderMain(LoaderPlan loaderPlan, DatasetGraph dsg, MonitorOutput output) {
         this(loaderPlan, dsg, null, output);
     }
@@ -284,7 +284,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         // Add to processes - we can wait later if we do not touched indexes being built.
         processes.add(indexer);
         PhasedOps.ReplayResult result = PhasedOps.replay(srcIdx, dest, output);
-        // End read tranaction on srcIdx
+        // End read transaction on srcIdx
         transaction.end();
         
         String timeStr = "---";
@@ -327,7 +327,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     }
 
     @Override
-    protected void loadOne(String filename) {
-        LoaderOps.inputFile(stream, filename, output, DataTickPoint, DataSuperTick);
+    protected ProgressMonitor createProgressMonitor(MonitorOutput output) {
+        return ProgressMonitorOutput.create(output, "<unset>", DataTickPoint, DataSuperTick);
     }
 }

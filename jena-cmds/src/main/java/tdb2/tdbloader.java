@@ -18,12 +18,16 @@
 
 package tdb2;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -109,6 +113,8 @@ public class tdbloader extends CmdTDBGraph {
         List<String> urls = getPositional();
         if ( urls.size() == 0 )
             urls.add("-");
+        else
+            checkFiles(urls);
 
         if ( graphName == null ) {
             loadQuads(urls);
@@ -126,6 +132,20 @@ public class tdbloader extends CmdTDBGraph {
         }
         
         loadTriples(graphName, urls);
+    }
+
+    // Check files exists before starting.
+    private void checkFiles(List<String> urls) {
+        List<String> problemFiles = 
+            ListUtils.toList(
+                urls.stream()
+                .map(Paths::get)
+                .filter(p-> !Files.exists(p) || !Files.isRegularFile(p /*follow links*/) || !Files.isReadable(p) )
+                .map(Path::toString)
+                );
+        if ( ! problemFiles.isEmpty() ) {
+            throw new CmdException("Can't read files : ["+problemFiles+"]"); 
+        }
     }
 
     private void loadTriples(String graphName, List<String> urls) {
