@@ -78,8 +78,8 @@ public class LoaderOps {
         return new ProgressStreamRDF(dest, monitor);
     }
 
-    /** Calculate a label for a progress montior. */
-    private static String label(String fileName) {
+    /** Calculate a label for a progress monitor. */
+    public static String label(String fileName) {
         String basename = FileOps.splitDirFile(fileName).get(1);
         return basename;
     }
@@ -100,17 +100,16 @@ public class LoaderOps {
      * "no output".
      */
     public static void inputFile(StreamRDF sink, String source, ProgressMonitor monitor) {
-
         if ( monitor != null ) {
             sink = new ProgressStreamRDF(sink, monitor);
-            monitor.start();
+            //monitor.start();
         }
         sink.start();
         RDFDataMgr.parse(sink, source);
         sink.finish();
         if ( monitor != null ) {
-            monitor.finish();
-            monitor.finishMessage("Data: " + source);
+            //monitor.finish();
+            //monitor.finishMessage("Data");
         }
     }
 

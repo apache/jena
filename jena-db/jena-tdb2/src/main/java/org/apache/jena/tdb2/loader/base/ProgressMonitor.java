@@ -20,25 +20,31 @@ package org.apache.jena.tdb2.loader.base;
 
 /** Interface {@code ProgressMonitor} - monitor progress.*/
 public interface ProgressMonitor {
-    public void startMessage();
-
     /** Output the starting message.
      * The format is implementation dependent.
      */
     public void startMessage(String message);
-
+    
     /** 
      * Output the finishing message.
      * The format is implementation dependent.
      */
     public void finishMessage(String message);
 
+    public void setLabel(String label); 
+    
     /** Start and start timing. This should be paired with a call to {@link #finish()}. */
     public void start();
+    
+    /** Start a section within the overall start-finish. */
+    public void startSection();
 
+    /** Finish a section within the overall start-finish. */
+    public void finishSection();
+    
     /**
      * Finish and stop timing. The total time is available with {@link #getTime} and the
-     * numbe rof items processes with {@link #getTicks()}.
+     * number of items processes with {@link #getTicks()}.
      */
     public void finish();
 
@@ -51,4 +57,9 @@ public interface ProgressMonitor {
     /** Return the elapsed time taken - this is only valid after {@link #finish()} has been called. */ 
     public long getTime();
 
+    /** Return the number of ticks. Valid after {@link #startSection()} has been called. */
+    public long getSectionTicks();
+    
+    /** Return the elapsed section time taken. */
+    public long getSectionTime();
 }
