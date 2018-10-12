@@ -76,6 +76,13 @@
       
     </dependency>
 
+    <!-- For parsing Jetty configuration files -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>

@@ -24,13 +24,13 @@ import org.apache.jena.riot.system.stream.LocatorFTP ;
 import org.apache.jena.riot.system.stream.LocatorHTTP ;
 import org.apache.jena.riot.system.stream.StreamManager ;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.lib.Metadata ;
 import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.transaction.TransactionManager ;
+import org.apache.jena.util.Metadata;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

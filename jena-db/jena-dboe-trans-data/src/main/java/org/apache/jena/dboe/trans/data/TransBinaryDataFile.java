@@ -217,6 +217,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
 
     @Override
     public void close() {
+        stateMgr.close();
         binFile.close() ;
     }
 

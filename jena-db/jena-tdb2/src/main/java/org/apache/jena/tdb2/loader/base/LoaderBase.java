@@ -26,13 +26,13 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.DataLoader;
 
-/** Simple bulk loader framework.
+/**
+ * Bulk loader framework.
  * <p>
  * It puts a write-transaction around the whole process if {@link #bulkUseTransaction}
- * returns true and then calls abstract {@link #loadOne(String)}
- * for each file.
+ * returns true. It calls {@link #loadOne} for each file.
  * <p>
- * If a graph name is provided, it converts triples to quads in that named graph.  
+ * If a graph name is provided, it converts triples to quads in that named graph.
  */ 
 public abstract class LoaderBase implements DataLoader {
 
@@ -62,7 +62,7 @@ public abstract class LoaderBase implements DataLoader {
             dsg.end();
         }
         long totalElapsed = timer.endTimer();
-        outputTime(totalElapsed);
+        outputSummary(totalElapsed);
     }
 
     @Override
@@ -75,21 +75,57 @@ public abstract class LoaderBase implements DataLoader {
 
     @Override
     public void load(List<String> filenames) {
-        // Default implementation.
+        if ( filenames.isEmpty() ) {
+            output.print("No files to load");
+            return;
+        }
+        
+        ProgressMonitor monitor = createProgressMonitor(output);
+        
+        boolean multipleFiles = (filenames.size()>1);
+        
+        String file1 = null;
+        if ( ! multipleFiles ) {
+            file1 = filenames.get(0);
+            if ( file1.equals("-") )
+                file1 = "stdin";
+        }
         try {
-            filenames.forEach(fn->loadOne(fn));
+            if ( multipleFiles )
+                monitor.startMessage("Start: "+filenames.size()+" files");
+            else
+                monitor.startMessage("Start: "+file1);
+            monitor.start();
+            filenames.forEach(fn->{
+                if ( multipleFiles )
+                    monitor.startSection();
+                loadOne(fn, monitor);   
+                if ( multipleFiles )
+                    monitor.finishSection();
+            });
+            monitor.finish();
+            if ( multipleFiles )
+                monitor.finishMessage("Finished: "+filenames.size()+" files");
+            else
+                monitor.finishMessage("Finished: "+file1);
         } catch (Exception ex) {
             finishException(ex);
             throw ex;
         }
     }
 
+    protected abstract ProgressMonitor createProgressMonitor(MonitorOutput output);
+
     /** Subclasses must provide a setting. */ 
     protected abstract boolean bulkUseTransaction();
 
-    protected abstract void loadOne(String filename);
+    protected void loadOne(String filename, ProgressMonitor monitor) {
+        String label = LoaderOps.label(filename);
+        monitor.setLabel(label);
+        LoaderOps.inputFile(stream(), filename, monitor);
+    }
     
-    protected void outputTime(long totalElapsed) {
+    protected void outputSummary(long totalElapsed) {
         if ( output != null ) {
             long count = countTriples()+countQuads(); 
             String label = "Triples/Quads";
