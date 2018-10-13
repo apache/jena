@@ -106,8 +106,7 @@ public class ElementRewriter extends AbstractRewriter<Element> implements
 		for (Var v : el.getVars()) {
 			retval.add(v);
 		}
-		for (Binding binding : el.getRows())
-		{
+		for (Binding binding : el.getRows()) {
 			retval.add( binding );
 		}		
 		push(retval);
