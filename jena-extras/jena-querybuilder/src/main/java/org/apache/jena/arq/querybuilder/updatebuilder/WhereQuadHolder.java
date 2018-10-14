@@ -48,7 +48,7 @@ import org.apache.jena.vocabulary.RDF;
  *      SPARQL 11 Query Language - Group Graph Pattern</a>
  *
  */
-public class WhereProcessor implements QuadHolder {
+public class WhereQuadHolder implements QuadHolder {
 
 	private Element whereClause;
 	private final PrefixHandler prefixHandler;
@@ -59,7 +59,7 @@ public class WhereProcessor implements QuadHolder {
 	 * @param prefixHandler
 	 *            the prefix handler to use.
 	 */
-	public WhereProcessor(PrefixHandler prefixHandler) {
+	public WhereQuadHolder(PrefixHandler prefixHandler) {
 		this.prefixHandler = prefixHandler;
 	}
 
@@ -374,7 +374,7 @@ public class WhereProcessor implements QuadHolder {
 	 *            the value map to use
 	 * @return A new Element instance with the values changed.
 	 */
-	public WhereProcessor setVars(Map<Var, Node> values) {
+	public WhereQuadHolder setVars(Map<Var, Node> values) {
 		if ( whereClause != null) {
 		/* process when values are empty as rewriter handles Node_Variable to Var translation.
 		 * 

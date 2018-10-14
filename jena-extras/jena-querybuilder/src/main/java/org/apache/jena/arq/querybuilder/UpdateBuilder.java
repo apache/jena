@@ -29,16 +29,19 @@ import java.util.function.Function;
 import org.apache.jena.arq.querybuilder.clauses.PrologClause;
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.arq.querybuilder.updatebuilder.CollectionQuadHolder;
+import org.apache.jena.arq.querybuilder.updatebuilder.ModelQuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.PrefixHandler;
 import org.apache.jena.arq.querybuilder.updatebuilder.QBQuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.QuadHolder;
 import org.apache.jena.arq.querybuilder.updatebuilder.SingleQuadHolder;
-import org.apache.jena.arq.querybuilder.updatebuilder.WhereProcessor;
+import org.apache.jena.arq.querybuilder.updatebuilder.WhereQuadHolder;
 import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryParseException;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
@@ -65,7 +68,7 @@ import org.apache.jena.vocabulary.RDF;
 public class UpdateBuilder {
 
 	private final PrefixHandler prefixHandler;
-	private final WhereProcessor whereProcessor;
+	private final WhereQuadHolder whereProcessor;
 	private List<QuadHolder> inserts = new ArrayList<QuadHolder>();
 	private List<QuadHolder> deletes = new ArrayList<QuadHolder>();
 	private Map<Var, Node> values;
@@ -76,7 +79,7 @@ public class UpdateBuilder {
 	 */
 	public UpdateBuilder() {
 		this.prefixHandler = new PrefixHandler();
-		this.whereProcessor = new WhereProcessor(prefixHandler);
+		this.whereProcessor = new WhereQuadHolder(prefixHandler);
 		this.values = new HashMap<Var, Node>();
 		this.with = null;
 	}
@@ -101,7 +104,7 @@ public class UpdateBuilder {
 	 */
 	public UpdateBuilder(PrefixMapping pMap) {
 		this.prefixHandler = new PrefixHandler(pMap);
-		this.whereProcessor = new WhereProcessor(prefixHandler);
+		this.whereProcessor = new WhereQuadHolder(prefixHandler);
 	}
 
 	// conver a collection of QuadHolder to an iterator on quads.
@@ -358,7 +361,85 @@ public class UpdateBuilder {
 		inserts.add(new SingleQuadHolder(q));
 		return this;
 	}
+	
+	/**
+	 * Add all the statements in the model to the insert statement.
+	 * 
+	 * @param model The model to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Model model) {
+		inserts.add(new ModelQuadHolder( model ));
+		return this;
+	}
 
+	/**
+	 * Add all the statements in the model to the insert statement.
+	 * 
+	 * @param collection The triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Collection<Triple> collection) {
+		inserts.add(new CollectionQuadHolder( collection ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model to the insert statement.
+	 * 
+	 * @param iter The iterator of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Iterator<Triple> iter) {
+		inserts.add(new CollectionQuadHolder( iter ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model a specified graph to the insert statement.
+	 * 
+	 * The graph object is converted by a call to makeNode().
+	 * 
+	 * @see #makeNode(Object)
+	 * @param g
+	 *            the graph for the triple.
+	 * @param model
+	 *            the model to add.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Object g, Model model) {
+		inserts.add( new ModelQuadHolder(
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				model));
+		return this;
+	}
+
+	/**
+	 * Add all the statements in the model to the insert statement.
+	 * 
+	 * @param collection The triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Object g, Collection<Triple> collection) {
+		inserts.add(new CollectionQuadHolder( 
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				collection ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model to the insert statement.
+	 * 
+	 * @param iter The iterator of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addInsert(Object g, Iterator<Triple> iter) {
+		inserts.add(new CollectionQuadHolder( 
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				iter ));
+		return this;
+	}
+	
 	/**
 	 * Add the statements from the where clause in the specified query builder
 	 * to the insert statement.
@@ -476,6 +557,89 @@ public class UpdateBuilder {
 	public UpdateBuilder addDelete(Object g, Triple t) {
 		Quad q = new Quad(AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()), t);
 		deletes.add(new SingleQuadHolder(q));
+		return this;
+	}
+
+	/**
+	 * Add all the statements in the model to the delete statement.
+	 * 
+	 * @param model The model to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Model model) {
+		deletes.add(new ModelQuadHolder( model ));
+		return this;
+	}
+
+	/**
+	 * Add all the statements in the model to the delete statement.
+	 * 
+	 * @param collection The collection of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Collection<Triple> collection) {
+		deletes.add(new CollectionQuadHolder( collection ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model to the delete statement.
+	 * 
+	 * @param iter The iterator of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Iterator<Triple> iter) {
+		deletes.add(new CollectionQuadHolder( iter ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model a specified graph to the delete statement.
+	 * 
+	 * The graph object is converted by a call to makeNode().
+	 * 
+	 * @see #makeNode(Object)
+	 * @param g
+	 *            the graph for the triples.
+	 * @param model
+	 *            the model to add.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Object g, Model model) {
+		deletes.add( new ModelQuadHolder(
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				model));
+		return this;
+	}
+
+
+	/**
+	 * Add all the statements in the model to the delete statement.
+	 * 
+	 * @param g
+	 *            the graph for the triples.
+	 * @param collection The collection of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Object g, Collection<Triple> collection) {
+		deletes.add(new CollectionQuadHolder( 
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				collection ));
+		return this;
+	}
+	
+	/**
+	 * Add all the statements in the model to the delete statement.
+	 * 
+	 * @param g
+	 *            the graph for the triples.
+	 * @param iter The iterator of triples to insert.
+	 * @return this builder for chaining.
+	 */
+	public UpdateBuilder addDelete(Object g, Iterator<Triple> iter) {
+		deletes.add(new CollectionQuadHolder( 
+				AbstractQueryBuilder.makeNode(g, prefixHandler.getPrefixes()),
+				iter ));
 		return this;
 	}
 
