@@ -14,7 +14,7 @@
     fuseki:serviceQuery          "sparql";
     fuseki:serviceUpdate         "update";
     fuseki:serviceUpload         "upload" ;
-    fuseki:serviceReadGraphStore "data" ;
+    fuseki:serviceReadWriteGraphStore "data" ;
     fuseki:serviceReadGraphStore "get" ;
     fuseki:dataset <#dataset> ;
 .
