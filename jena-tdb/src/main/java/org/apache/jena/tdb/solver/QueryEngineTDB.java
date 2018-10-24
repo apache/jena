@@ -31,8 +31,6 @@ import org.apache.jena.sparql.engine.QueryEngineFactory ;
 import org.apache.jena.sparql.engine.QueryEngineRegistry ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
 import org.apache.jena.sparql.mgt.Explain ;
 import org.apache.jena.sparql.util.Context ;
@@ -102,31 +100,8 @@ public class QueryEngineTDB extends QueryEngineMain
             Explain.explain("REWRITE(Union default graph)", op, context) ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;
-        results = new QueryIteratorMaterializeBinding(results) ;
         return results ; 
     }
-    
-    /** Copy from any TDB internal BindingTDB to a Binding that
-     *  does not have any connection to the database.   
-     */
-    static class QueryIteratorMaterializeBinding extends QueryIteratorWrapper
-    {
-        public QueryIteratorMaterializeBinding(QueryIterator qIter)
-        {
-            super(qIter) ;
-        }
-        
-        @Override
-        protected Binding moveToNextBinding()
-        { 
-            Binding b = super.moveToNextBinding() ;
-            b = BindingFactory.materialize(b) ;
-            return b ;
-        }
-    }
-    
-    // Execution time (needs wiring to ARQ).
-    public long getMillis() { return -1 ; }
     
     // ---- Factory
     protected static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;
