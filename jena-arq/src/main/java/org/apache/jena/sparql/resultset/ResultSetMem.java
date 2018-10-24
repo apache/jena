@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.ResultBinding ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingUtils;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
 
 /** A result set held in-memory. rewindable.  
  */
@@ -66,8 +66,8 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
         if ( takeCopy )
             rows.addAll(imrs2.rows);
         else
-                        // Share results (not the iterator).
-                        rows = imrs2.rows;
+            // Share results (not the iterator).
+            rows = imrs2.rows;
         reset();
     }
 
@@ -75,7 +75,7 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
      * Create an in-memory result set from any ResultSet object. If the
      * ResultSet is an in-memory one already, then no copying is done - the
      * necessary internal datastructures are shared. This operation destroys
-     * (uses up) a ResultSet object that is not an in memory one.
+     * (uses up) a ResultSet object that is not an in-memory one.
      */
 
     public ResultSetMem(ResultSet qr) {
@@ -88,8 +88,7 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
             varNames = qr.getResultVars();
             List<Var> vars = Var.varList(varNames);
             while (qr.hasNext()) {
-                Binding rb = qr.nextBinding();
-                BindingUtils.materialize(vars, rb);
+                Binding rb = BindingFactory.copy(qr.nextBinding());
                 rows.add(rb);
             }
         }
