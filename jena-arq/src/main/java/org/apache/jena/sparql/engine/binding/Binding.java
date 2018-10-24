@@ -41,5 +41,4 @@ public interface Binding
 
     /** Is this an empty binding?  No variables. */
     public boolean isEmpty() ;
-
 }
