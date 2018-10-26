@@ -222,19 +222,9 @@
   <!-- Admin controls-->
 
   <servlet>
-    <servlet-name>DumpServlet</servlet-name>
-    <servlet-class>org.apache.jena.fuseki.mgt.DumpServlet</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>ServerStatusServlet</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionServerStatus</servlet-class>
   </servlet>
-
-  <servlet-mapping>
-    <servlet-name>DumpServlet</servlet-name>
-    <url-pattern>/$/dump</url-pattern>
-  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>ServerStatusServlet</servlet-name>
