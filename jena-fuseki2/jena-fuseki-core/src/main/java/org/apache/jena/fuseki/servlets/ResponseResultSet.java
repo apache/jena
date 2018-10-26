@@ -225,8 +225,11 @@ public class ResponseResultSet
                 proc.output(out) ;
                 out.flush() ;
             } catch (QueryCancelledException ex) {
-                // Bother.  Status code 200 already sent.
-                action.log.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
+                // Status code 200 may have already been sent.
+                // We can try to set the HTTP response code anyway.
+                // Breaking the results is the best we can do to indicate the timeout. 
+                action.response.setStatus(HttpSC.BAD_REQUEST_400);
+                action.log.info(format("[%d] Query Cancelled - results truncated (but 200 may have already been sent)", action.id)) ;
                 out.println() ;
                 out.println("##  Query cancelled due to timeout during execution   ##") ;
                 out.println("##  ****          Incomplete results           ****   ##") ;

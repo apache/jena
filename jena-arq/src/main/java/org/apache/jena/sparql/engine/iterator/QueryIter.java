@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /**
- * This class provides the general machinary for iterators. */
+ * This class provides the general machinery for iterators. */
 public abstract class QueryIter extends QueryIteratorBase
 {
     // Volatile just to make it safe to concurrent updates

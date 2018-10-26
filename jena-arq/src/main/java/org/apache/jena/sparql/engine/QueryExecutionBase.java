@@ -88,6 +88,7 @@ public class QueryExecutionBase implements QueryExecution
     private long                     timeout1         = TIMEOUT_UNSET;
     private long                     timeout2         = TIMEOUT_UNSET;
     private final AlarmClock         alarmClock       = AlarmClock.get();
+    private long                     queryStartTime;
 
     public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryEngineFactory qeFactory) {
         this(query, dataset, null, context, qeFactory);
@@ -140,34 +141,12 @@ public class QueryExecutionBase implements QueryExecution
                 setTimeout(x);
             } else if ( obj instanceof String ) {
                 String str = obj.toString();
-                parseSetTimeout(this, str, TimeUnit.MILLISECONDS);
+                // Set, not merge.
+                EngineLib.parseSetTimeout(this, str, TimeUnit.MILLISECONDS, false);
             } else
                 Log.warn(this, "Can't interpret timeout: " + obj);
         }
-    }
-    
-    /** Parse string in the format "number" or "number,number" and apply this to the {@code QueryExecution} object. */ 
-    private static void parseSetTimeout(QueryExecution qExec, String str, TimeUnit unit) {
-        if ( str == null )
-            return ;
-        try {
-            if ( str.contains(",") ) {
-                String[] a = str.split(",");
-                if ( a.length > 2 ) {
-                    Log.warn(qExec, "Can't interpret string for timeout: " + str);
-                    throw new QueryBuildException();
-                }
-                long x1 = Long.parseLong(a[0]);
-                long x2 = Long.parseLong(a[1]);
-                qExec.setTimeout(x1, x2);
-            } else {
-                long x = Long.parseLong(str);
-                qExec.setTimeout(x);
-            }
-        }
-        catch (RuntimeException ex) {
-            Log.warn(qExec, "Can't interpret string for timeout: " + str);
-        }
+        queryStartTime = System.currentTimeMillis();
     }
     
     @Override
@@ -511,7 +490,7 @@ public class QueryExecutionBase implements QueryExecution
                     // This cause timeout1 not to call .abort and hence not set isCancelled 
 
                     // But if timeout1 went off after moveToNextBinding, before expectedCallback is set,
-                    // then forget the row and cacnel the query. 
+                    // then forget the row and cancel the query. 
                     if ( isCancelled.get() )
                         // timeout1 went off after the binding was yielded but 
                         // before we got here.
@@ -523,9 +502,8 @@ public class QueryExecutionBase implements QueryExecution
 
                     // Now arm the second timeout, if any.
                     if ( timeout2 > 0 ) {
-                        long t = timeout2;
-                        if ( timeout1 > 0 )
-                            t = t - timeout1;
+                        // Set to time remaining.
+                        long t = timeout2 - (System.currentTimeMillis()-queryStartTime);
                         // Not first timeout - finite second timeout for remaining time. 
                         timeout2Alarm = alarmClock.add(callback, t) ;
                     }
@@ -569,6 +547,7 @@ public class QueryExecutionBase implements QueryExecution
         }
 
         if ( !isTimeoutSet(timeout1) && isTimeoutSet(timeout2) ) {
+            // Case -1,N
             // Single overall timeout.
             TimeoutCallback callback = new TimeoutCallback() ; 
             expectedCallback.set(callback) ; 
@@ -579,6 +558,8 @@ public class QueryExecutionBase implements QueryExecution
             return ;
         }
 
+        // Case N,-1 
+        // Case N,M 
         // Case isTimeoutSet(timeout1)
         //   Whether timeout2 is set is determined by QueryIteratorTimer2
         //   Subcase 2: ! isTimeoutSet(timeout2)
@@ -592,12 +573,12 @@ public class QueryExecutionBase implements QueryExecution
         // it might be necessary)
         queryIterator = getPlan().iterator() ;
         
-        // Add the timeout1 resetter wrapper.
+        // Add the timeout1->timeout2 resetter wrapper.
         queryIterator = new QueryIteratorTimer2(queryIterator) ;
 
-        // Minor optimization - the first call of hasNext() or next() will
-        // throw QueryCancelledExcetion anyway.  This just makes it a bit earlier
-        // in the case when the timeout (timoeut1) is so short it's gone off already.
+        // Minor optimization - timeout has already occurred. The first call of hasNext() or next()
+        // will throw QueryCancelledExcetion anyway. This just makes it a bit earlier
+        // in the case when the timeout (timeout1) is so short it's gone off already.
         
         if ( isCancelled.get() )
             queryIterator.cancel() ;
