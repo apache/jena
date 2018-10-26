@@ -393,28 +393,49 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // See also QueryExecutionBase.setTimeouts to parse and process N,M form.
         // ?? Set only if lower than any settings from the dataset or global contexts already in
         // the QueryExecution.
-        // Add context setting for "allow increases".
-        // Documentation.
         long desiredTimeout = Long.MAX_VALUE ;
+        
         String timeoutHeader = action.request.getHeader("Timeout") ;
         String timeoutParameter = action.request.getParameter("timeout") ;
         if ( timeoutHeader != null ) {
             try {
-                desiredTimeout = (int)(Float.parseFloat(timeoutHeader) * 1000) ;
+                desiredTimeout = (long)(Float.parseFloat(timeoutHeader) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("Timeout header must be a number", e) ;
             }
         } else if ( timeoutParameter != null ) {
             try {
-                desiredTimeout = (int)(Float.parseFloat(timeoutParameter) * 1000) ;
+                desiredTimeout = (long)(Float.parseFloat(timeoutParameter) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("timeout parameter must be a number", e) ;
             }
         }
-
-//        desiredTimeout = Math.min(action.getDataService().maximumTimeoutOverride, desiredTimeout) ;
-        if ( desiredTimeout != Long.MAX_VALUE )
-            qexec.setTimeout(desiredTimeout) ;
+        
+        if ( desiredTimeout == Long.MAX_VALUE )
+           return;
+        
+        if ( qexec.getTimeout1() != -1 )
+            desiredTimeout = Math.min(qexec.getTimeout2(), desiredTimeout) ;
+        mergeTimeouts(qexec, -1, desiredTimeout) ;
+    }
+    
+    // Times in millseconds.
+    private static void mergeTimeouts(QueryExecution qexec, long timeout1, long timeout2) {
+        // Bound timeout if the QueryExecution alredy has a setting
+        if ( timeout1 >= 0 ) { 
+            if ( qexec.getTimeout1() != -1 ) 
+                timeout1 = Math.min(qexec.getTimeout1(), timeout1) ;
+        }
+        else
+            timeout1 = qexec.getTimeout1();
+            
+        if ( timeout2 >= 0 ) { 
+            if ( qexec.getTimeout2() != -1 ) 
+                timeout2 = Math.min(qexec.getTimeout2(), timeout2) ;
+        }
+        else
+            timeout2 = qexec.getTimeout2();
+        qexec.setTimeout(timeout1, timeout2);
     }
 
     /** Choose the dataset for this SPARQL Query request.

@@ -207,7 +207,7 @@ public class ResponseResultSet
             }
             if ( resultSet != null )
                 rw.write(out, resultSet) ;
-            if (  booleanResult != null )
+            if ( booleanResult != null )
                 rw.write(out, booleanResult.booleanValue()) ;
             if ( callback != null )
                 out.println(")") ;
