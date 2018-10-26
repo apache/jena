@@ -104,7 +104,39 @@
 
   <build>
     <plugins>
-      
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <!--<version>0.12</version>-->
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/README.*</exclude>
+            <exclude>**/META-INF/services/*</exclude>
+            <exclude>**/dependency-reduced-pom.xml</exclude>
+
+            <exclude>fuseki.classpath</exclude>
+            <exclude>testing/**/*.ttl</exclude>
+            <exclude>testing/**/*.txt</exclude>
+            <exclude>sparqler/data/empty.nt</exclude>
+            <exclude>sparqler/pages/robots.txt</exclude>
+            <exclude>sparqler/pages/crossdomain.xml</exclude>
+
+          </excludes>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
