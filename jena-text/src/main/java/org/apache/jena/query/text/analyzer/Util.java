@@ -21,13 +21,19 @@ package org.apache.jena.query.text.analyzer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.lucene.analysis.Analyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class Util {
 
+	private static Logger log = LoggerFactory.getLogger(Util.class) ;
+	
     private static Hashtable<String, Class<?>> analyzersClasses; //mapping between BCP-47 language tags and lucene analyzersClasses
     private static Hashtable<String, Analyzer> cache = new Hashtable<>(); //to avoid unnecessary multiple analyzer instantiations
     
@@ -42,6 +48,9 @@ public class Util {
     
     // map of auxiliary index info
     private static Hashtable<String, List<String>> auxIndexes = new Hashtable<>();
+    
+    // cache of effective fields
+    private static Hashtable<String, Hashtable<String,String>> effectiveFields = new Hashtable<>();
 
     static {
         initAnalyzerDefs();
@@ -114,6 +123,35 @@ public class Util {
     public static void addAuxIndexes(String tag, List<String> tags) {
         auxIndexes.put(tag, tags);
     }
+
+	public static void finishCaching() {
+		log.trace("call finishCaching()");
+		for (final Entry<String,List<String>> auxIndexesE : auxIndexes.entrySet()) {
+			final String tag = auxIndexesE.getKey(); // ex: zh-hans
+			final List<String> auxIndexesL = auxIndexesE.getValue();
+			log.trace("finishCaching: tag: {}", tag);
+			for (final String auxIndexTag : auxIndexesL) { // ex: auxIndexTag: zh-aux-han2pinyin
+				log.trace("finishCaching: auxIndexTag: {}", auxIndexTag);
+				for (final String searchForTag : searchForTags.get(auxIndexTag)) { // ex: zh-latn-pinyin
+					final Hashtable<String,String> res = effectiveFields.computeIfAbsent(tag, x -> new Hashtable<String,String>());
+					log.trace("add effectiveField mapping: d:{} + q:{} = e:{}", tag, searchForTag, auxIndexTag);
+					res.put(searchForTag, auxIndexTag);
+				}
+			}
+		}
+	}
+
+	public static String getEffectiveLang(final String docLang, final String queryLang) {
+		final Hashtable<String,String> m = effectiveFields.get(docLang);
+		if (m == null)
+			return docLang;
+		final String tag = m.get(queryLang);
+		if (tag == null) {
+			log.info("getEffectiveFields got map for {} but couldn't find effective tag for {}", docLang, queryLang);
+			return docLang;
+		}
+		return tag;
+	}
 
     private static void initAnalyzerDefs() {
         analyzersClasses = new Hashtable<>();
