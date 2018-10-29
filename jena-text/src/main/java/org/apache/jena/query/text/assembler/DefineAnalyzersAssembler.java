@@ -165,7 +165,7 @@ public class DefineAnalyzersAssembler {
             
             current = (Resource) rest;
         }
-        
+        Util.finishCaching();
         return isMultilingualSupport;
     }
 }

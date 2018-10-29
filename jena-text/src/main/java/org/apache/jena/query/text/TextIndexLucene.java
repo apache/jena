@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry ;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -484,6 +485,7 @@ public class TextIndexLucene implements TextIndex {
         String start = RIGHT_ARROW;
         String end = LEFT_ARROW;
         String fragSep = DIVIDES;
+        String patternExpr = null;
         boolean joinHi = true;
         boolean joinFrags = true;
         
@@ -517,23 +519,26 @@ public class TextIndexLucene implements TextIndex {
                     }
                 }
             }
+            patternExpr = end+Z_MORE_SEPS+start;
         }
     }
 
-    private String frags2string(TextFragment[] frags, HighlightOpts opts) {
-        String sep = "";
-        String rez = "";
-        
-        for (TextFragment f : frags) {
-            String s = opts.joinHi ? f.toString().replaceAll(opts.end+Z_MORE_SEPS+opts.start, "$1") : f.toString();
-            rez += sep + s;
+    private String frags2string(final TextFragment[] frags, final HighlightOpts opts) {
+    	final StringBuilder sb = new StringBuilder();
+    	String sep = "";
+
+        for (final TextFragment f : frags) {
+        	final String fragStr = f.toString();
+        	log.trace("found fragment {}", f);
+        	sb.append(sep);
+            sb.append(opts.joinHi ? fragStr.replaceAll(opts.patternExpr, "$1") : fragStr);
             sep = opts.fragSep;
         }
-        
-        return rez;
+
+        return sb.toString();
     }
     
-    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field, String highlight, boolean useDocLang) 
+    private List<TextHit> highlightResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field, String highlight, boolean useDocLang, String queryLang) 
             throws IOException, InvalidTokenOffsetsException { 
         List<TextHit> results = new ArrayList<>() ;
         
@@ -550,13 +555,14 @@ public class TextIndexLucene implements TextIndex {
             Node literal = null;
             String lexical = doc.get(field) ;
             String docLang = doc.get(docDef.getLangField()) ;
-            String effectiveField = useDocLang ? field + "_" + docLang : field;
+            String effectiveField = useDocLang ? field + "_" + Util.getEffectiveLang(docLang, queryLang) : field;
             log.trace("highlightResults[{}]: {}, field: {}, lexical: {}, docLang: {}, effectiveField: {}", sd.doc, doc, field, lexical, docLang, effectiveField) ;
             if (lexical != null) {
-                TokenStream tokenStream = queryAnalyzer.tokenStream(effectiveField, lexical);
+                TokenStream tokenStream = indexAnalyzer.tokenStream(effectiveField, lexical);
+                log.trace("tokenStream: {}", tokenStream.toString());
                 TextFragment[] frags = highlighter.getBestTextFragments(tokenStream, lexical, opts.joinFrags, opts.maxFrags);
                 String rez = frags2string(frags, opts);
-                
+                log.trace("result: {}, #frags: {}", rez, frags.length) ;
                 literal = NodeFactory.createLiteral(rez, docLang);
             }
 
@@ -639,7 +645,7 @@ public class TextIndexLucene implements TextIndex {
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
         
         if (highlight != null) {
-            return highlightResults(sDocs, indexSearcher, query, textField, highlight, usingSearchFor);
+            return highlightResults(sDocs, indexSearcher, query, textField, highlight, usingSearchFor, lang);
         } else {
             return simpleResults(sDocs, indexSearcher, query, textField);
         }
