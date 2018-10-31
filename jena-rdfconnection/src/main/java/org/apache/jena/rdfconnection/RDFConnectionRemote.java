@@ -18,8 +18,6 @@
 
 package org.apache.jena.rdfconnection;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Objects;
@@ -31,7 +29,6 @@ import org.apache.http.entity.EntityTemplate;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -97,77 +94,6 @@ public class RDFConnectionRemote implements RDFConnection {
      */
     public static RDFConnectionRemoteBuilder create(RDFConnectionRemote base) {
         return new RDFConnectionRemoteBuilder(base);
-    }
-
-    /**
-     * Create connection that will use the {@link HttpClient} using URL of the dataset and
-     * default service names
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder}.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(HttpClient httpClient, String destination) {
-        this(httpClient,
-             requireNonNull(destination),
-             fusekiDftSrvQuery, 
-             fusekiDftSrvUpdate,
-             fusekiDftSrvGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and default service names
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(String destination) {
-        this(requireNonNull(destination),
-             fusekiDftSrvQuery, 
-             fusekiDftSrvUpdate,
-             fusekiDftSrvGSP);
-    }
-
-    /**
-     * Create connection, using full URLs for services. Pass a null for "no service
-     * endpoint".
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated 
-    public RDFConnectionRemote(String sQuery, String sUpdate, String sGSP) {
-        this(null, sQuery, sUpdate, sGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and names for the services. Short names
-     * are expanded against the destination. Absolute URIs are left unchanged.
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated
-    public RDFConnectionRemote(String destination, String sQuery, String sUpdate, String sGSP) {
-        this(null, destination, sQuery, sUpdate, sGSP);
-    }
-
-    /**
-     * Create connection, using URL of the dataset and names for the services. Short names
-     * are expanded against the destination. Absolute URIs are left unchanged.
-     * 
-     * @deprecated Use {@link RDFConnectionRemoteBuilder} or an
-     *             {@link RDFConnectionFactory} operation.
-     */
-    @Deprecated
-    public RDFConnectionRemote(HttpClient httpClient, String destination, String sQuery, String sUpdate, String sGSP) {
-        this(null, httpClient, null, destination, sQuery, sUpdate, sGSP,
-            RDFFormat.NQUADS, RDFFormat.NTRIPLES,
-            WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
-            null,
-            QueryEngineHTTP.defaultSelectHeader(), QueryEngineHTTP.defaultAskHeader(),
-            true, true);
-        Log.warn(this, "** public RDFConnectionRemote constructors will be removed - use RDFConnectionRemoteBuilder **");
     }
 
     // Used by the builder.
