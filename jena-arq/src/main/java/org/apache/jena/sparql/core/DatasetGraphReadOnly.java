@@ -49,7 +49,7 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
     @Override public void begin(ReadWrite mode)         {
         if ( mode == ReadWrite.WRITE )
             //throw new JenaTransactionException("read-only dataset : no write transactions") ;
-            Log.warn(this,  "Write transaction on a read-only dataset") ;
+            Log.warn(this, "Write transaction on a read-only dataset") ;
         get().begin(mode) ; 
     }
     

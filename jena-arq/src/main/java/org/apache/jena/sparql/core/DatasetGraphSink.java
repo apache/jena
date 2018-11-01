@@ -18,13 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Iterator;
-
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.graph.GraphSink;
 
 
@@ -33,55 +28,19 @@ import org.apache.jena.sparql.graph.GraphSink;
  * 
  * @see DatasetGraphZero - a DSG that does not allow changes.
  */
-public class DatasetGraphSink extends DatasetGraphBaseFind {
+public class DatasetGraphSink extends DatasetGraphNull {
 
     public static DatasetGraph create() { return new DatasetGraphSink(); }
     
-    private Graph dftGraph = GraphSink.instance();
+    @Override
+    protected Graph createGraph() {
+        return GraphSink.instance();
+    }
     
     public DatasetGraphSink() {}
     
-    private Transactional txn                           = TransactionalNull.create();
-    @Override public void begin(TxnType txnType)        { txn.begin(txnType); }
-    @Override public void begin(ReadWrite mode)         { txn.begin(mode); }
-    @Override public boolean promote(Promote txnType)   { return txn.promote(txnType); }
-    @Override public void commit()                      { txn.commit(); }
-    @Override public void abort()                       { txn.abort(); }
-    @Override public boolean isInTransaction()          { return txn.isInTransaction(); }
-    @Override public void end()                         { txn.end(); }
-    @Override public ReadWrite transactionMode()        { return txn.transactionMode(); }
-    @Override public TxnType transactionType()          { return txn.transactionType(); }
-    @Override public boolean supportsTransactions()     { return true; }
-    @Override public boolean supportsTransactionAbort() { return true; }
+    // Ignore all updates.
     
-    @Override
-    public Iterator<Node> listGraphNodes() {
-        return Iter.nullIterator();
-    }
-    
-    @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        return Iter.nullIterator();
-    }
-    
-    @Override
-    protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
-        return Iter.nullIterator();
-    }
-    
-    @Override
-    protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
-        return Iter.nullIterator();
-    }
-    
-    @Override
-    public Graph getDefaultGraph() {
-        return dftGraph;
-    }
-    @Override
-    public Graph getGraph(Node graphNode) {
-        return null;
-    }
     @Override
     public void add(Quad quad) { /* ignore */ } 
     
