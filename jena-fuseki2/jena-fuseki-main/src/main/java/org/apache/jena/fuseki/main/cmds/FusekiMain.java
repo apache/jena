@@ -390,6 +390,7 @@ public class FusekiMain extends CmdARQ {
             builder.loopback(serverConfig.loopback);
             
             if ( serverConfig.addGeneral != null )
+                // Add SPARQL_QueryGeneral as a general servlet, not reached by the service router. 
                 builder.addServlet(serverConfig.addGeneral,  new SPARQL_QueryGeneral());
             
             if ( serverConfig.validators ) {
