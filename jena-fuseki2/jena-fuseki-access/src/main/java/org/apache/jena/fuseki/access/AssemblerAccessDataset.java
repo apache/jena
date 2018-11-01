@@ -53,10 +53,10 @@ public class AssemblerAccessDataset extends AssemblerBase {
         DatasetGraph dsg = new DatasetGraphAccessControl(ds.asDatasetGraph(), sr);
         ds = DatasetFactory.wrap(dsg);
         
-//        // Add marker
-//        ds.getContext().set(DataAccessCtl.symControlledAccess, true);
-//        // Add security registry
-//        ds.getContext().set(DataAccessCtl.symSecurityRegistry, sr);
+        // Add marker
+        // ds.getContext().set(DataAccessCtl.symControlledAccess, true);
+        // Add security registry : if this dadaset is wrapped then this means the AuthorizationService is still accessible.
+        ds.getContext().set(DataAccessCtl.symAuthorizationService, sr);
         return ds;
     }
     

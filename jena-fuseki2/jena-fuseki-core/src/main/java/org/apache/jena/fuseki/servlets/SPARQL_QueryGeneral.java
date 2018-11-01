@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.sparql.core.DatasetDescription ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query {
@@ -64,22 +65,20 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
         return Operation.Query;
     }
 
-    private static Dataset ds = DatasetFactory.wrap(new DatasetGraphZero());
     @Override
-    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) {
+    protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetDescription datasetDesc = getDatasetDescription(action, query) ;
         if ( datasetDesc == null )
             //ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
-            return ds;
+            return new DatasetGraphZero();
         return datasetFromDescriptionWeb(action, datasetDesc) ;
     }
 
     /**
-     * Construct a Dataset based on a dataset description. Loads graph from the
-     * web.
+     * Construct a Dataset based on a dataset description.
+     * Loads graph from the web.
      */
-
-    protected Dataset datasetFromDescriptionWeb(HttpAction action, DatasetDescription datasetDesc) {
+    protected DatasetGraph datasetFromDescriptionWeb(HttpAction action, DatasetDescription datasetDesc) {
         try {
             if ( datasetDesc == null )
                 return null ;
@@ -140,7 +139,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query {
                 }
             }
 
-            return dataset ;
+            return dataset.asDatasetGraph() ;
 
         }
         catch (ActionErrorException ex) {

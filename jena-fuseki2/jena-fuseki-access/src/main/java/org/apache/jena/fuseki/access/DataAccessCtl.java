@@ -42,16 +42,17 @@ import org.eclipse.jetty.security.SecurityHandler;
 public class DataAccessCtl {
     static { JenaSystem.init(); }
     
-    /**
-     * Flag for whether this is data access controlled or not - boolean false or undef for "not
-     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
-     */
-    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
+//    /**
+//     * Flag for whether this is data access controlled or not - boolean false or undef for "not
+//     * controlled". This is an alternative to {@link DatasetGraphAccessControl}.
+//     * @see #isAccessControlled(DatasetGraph)
+//     */
+//    public static final Symbol   symControlledAccess        = Symbol.create(VocabSecurity.getURI() + "controlled");
     
     /**
-     * Symbol for the {@link AuthorizationService}. Must be present if
-     * {@link #symControlledAccess} indicates data access control.
+     * Symbol for the {@link AuthorizationService}.
      * This is an alternative to {@link DatasetGraphAccessControl}.
+     * @see #isAccessControlled(DatasetGraph)
      */
     public static final Symbol   symAuthorizationService    = Symbol.create(VocabSecurity.getURI() + "authService");
 
@@ -69,7 +70,7 @@ public class DataAccessCtl {
      * {@link DatasetGraph}'s {@link Context}.
      */
     private static void addAuthorizatonService(DatasetGraph dsg, AuthorizationService authService) {
-        dsg.getContext().set(symControlledAccess, true);
+        //dsg.getContext().set(symControlledAccess, true);
         dsg.getContext().set(symAuthorizationService, authService);
     }
 
@@ -118,6 +119,11 @@ public class DataAccessCtl {
         builder.registerOperation(Operation.Query, WebContent.contentTypeSPARQLQuery, new Filtered_SPARQL_QueryDataset(determineUser));
         builder.registerOperation(Operation.GSP_R, new Filtered_SPARQL_GSP_R(determineUser));
         builder.registerOperation(Operation.Quads_R, new Filtered_REST_Quads_R(determineUser));
+        
+        // Block updates
+        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
+        builder.registerOperation(Operation.GSP_RW, null);
+        builder.registerOperation(Operation.Quads_RW, null);
         return builder;
     }
 
@@ -127,17 +133,28 @@ public class DataAccessCtl {
      * (It is better to create the server via {@link #DataAccessCtl.builder} first rather than modify afterwards.) 
      */
     public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
-        /* 
-         * Reconfigure standard Jena Fuseki, replacing the default implementation of "query"
-         * with a filtering one.  This for this server only. 
+        /*
+         * Reconfigure standard Jena Fuseki, replacing the default implementations with
+         * filtering ones. This for this server only, not system-wide.
          */
         // The mapping operation to handler is in the ServiceDispatchRegistry and is per
-        // server (per servlet context). "registerOrReplace" would be a better name,
+        // server (per servlet context). "registerOrReplace" might be a better name,
         ActionService queryServletAccessFilter = new Filtered_SPARQL_QueryDataset(determineUser);
         ServletContext cxt = server.getServletContext();
-        ServiceDispatchRegistry.get(cxt).register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServletAccessFilter);
-        ServiceDispatchRegistry.get(cxt).register(Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
-        ServiceDispatchRegistry.get(cxt).register(Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
+        ServiceDispatchRegistry reg = ServiceDispatchRegistry.get(cxt);
+        
+        if ( reg.isRegistered(Operation.Query) )
+            reg.register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServletAccessFilter);
+        if ( reg.isRegistered(Operation.GSP_R) )
+            reg.register(Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
+        if ( reg.isRegistered(Operation.Quads_R) )
+            reg.register(Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
+        
+        // Block updates
+        //reg.register(Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
+        reg.unregister(Operation.Update);
+        reg.unregister(Operation.GSP_RW);
+        reg.unregister(Operation.Quads_RW);
     }
     
     /**
@@ -147,8 +164,8 @@ public class DataAccessCtl {
     public static boolean isAccessControlled(DatasetGraph dsg) {
         if ( dsg instanceof DatasetGraphAccessControl )
             return true;
-        if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
-            return true;
+//        if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
+//            return true;
         if ( dsg.getContext().isDefined(DataAccessCtl.symAuthorizationService) )
             return true;
         return false;

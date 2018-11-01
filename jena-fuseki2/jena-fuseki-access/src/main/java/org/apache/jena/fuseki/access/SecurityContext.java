@@ -18,11 +18,12 @@
 
 package org.apache.jena.fuseki.access;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
@@ -45,14 +46,14 @@ public class SecurityContext {
     public static SecurityContext NONE = new SecurityContext();
     public static SecurityContext DFT_GRAPH = new SecurityContext(true);
 
-    private final Collection<Node> graphNames = ConcurrentHashMap.newKeySet();
+    private final Collection<Node> graphNames = new ArrayList<>();
     private final boolean matchDefaultGraph;
     
-    public SecurityContext() {
+    private SecurityContext() {
         this(false);
     }
 
-    public SecurityContext(boolean matchDefaultGraph) {
+    private SecurityContext(boolean matchDefaultGraph) {
         this.matchDefaultGraph = matchDefaultGraph;
     }
 
@@ -76,6 +77,12 @@ public class SecurityContext {
     public Collection<Node> visibleGraphs() {
         return Collections.unmodifiableCollection(graphNames);
     }
+    public Collection<String> visibleGraphNames() {
+        return graphNames.stream()
+                .filter(Node::isURI)
+                .map(Node::getURI)
+                .collect(Collectors.toList()) ;
+    }
     
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
@@ -91,7 +98,10 @@ public class SecurityContext {
     }
     
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        if ( ! ( dsg instanceof DatasetGraphAccessControl ) ) {
+        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
+//            throw new InternalErrorException("SecurityContext.createQueryExecution called on an unsecured DatasetGraph");
+//            // Internal error?
+            // Already setup or no security context.
             return QueryExecutionFactory.create(query, dsg);
         }
         if ( isAccessControlledTDB(dsg) ) {
@@ -100,8 +110,9 @@ public class SecurityContext {
             return qExec;
         }
         
+        // XXX Does not work on GRAPH ?g {}
         DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
-        return QueryExecutionFactory.create(query, dsgA); 
+        return QueryExecutionFactory.create(query, dsgA);
     }
     
     @Override

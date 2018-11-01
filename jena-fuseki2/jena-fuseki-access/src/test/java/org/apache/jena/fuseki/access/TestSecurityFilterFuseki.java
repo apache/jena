@@ -49,8 +49,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.PropertyUserStore;
-import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
@@ -98,7 +98,8 @@ public class TestSecurityFilterFuseki {
         testdsg3 = DataAccessCtl.controlledDataset(testdsg3, reg);
         
         UserStore userStore = userStore();
-        SecurityHandler sh = JettyLib.makeSecurityHandler("/*", "DatasetRealm", userStore);
+        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("*", userStore);
+        JettyLib.addPathConstraint(sh, "/*");
         
         fusekiServer = DataAccessCtl.fusekiBuilder(sh,  DataAccessCtl.requestUserServlet)
             .port(port)

@@ -18,28 +18,19 @@
 
 package org.apache.jena.fuseki.access;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.Fuseki;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestSecurityFilterLocal.class
-    , TestSecurityFilterFuseki.class
-    , TestSecurityAssemblerBuild.class
-    , TestAssemblerSeparate.class
-    , TestAssemblerShared.class
-    , TestPasswordAccess.class
-})
-
-public class TS_SecurityFiltering {
-    @BeforeClass public static void setupForFusekiServer() {
-        LogCtl.setLevel(Fuseki.serverLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.actionLogName,   "WARN");
-        LogCtl.setLevel(Fuseki.requestLogName,  "WARN");
-        LogCtl.setLevel(Fuseki.adminLogName,    "WARN");
-        LogCtl.setLevel("org.eclipse.jetty",    "WARN");
+/** Struct for the authentication information */
+public class AuthSetup {
+    public final String host;
+    public final int port;
+    public final String user;
+    public final String password;
+    public final String realm;
+    
+    public AuthSetup(String host, int port, String user, String password, String realm) {
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.realm = realm;
     }
 }

@@ -24,6 +24,9 @@ import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.security.authentication.DigestAuthenticator;
+//import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+//import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -42,46 +45,81 @@ import org.eclipse.jetty.util.security.Password;
  */
 public class JettyLib {
     
-    /** Create a Jetty {@link SecurityHandler} for basic authentication. */
-    public static SecurityHandler makeSecurityHandler(String pathSpec, String realm, UserStore userStore) {
-        return makeSecurityHandler(pathSpec, realm, userStore, "**");
+    /** Create a Jetty {@link SecurityHandler} for a specific pathSpace, e.g {@code /database}. */
+    public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore) {
+        ConstraintSecurityHandler sh = makeSecurityHandler(realm, userStore);
+        addPathConstraint(sh, pathSpec);
+        return sh;
     }
     
-    /** Create a Jetty {@link SecurityHandler} for basic authentication. */
-    public static SecurityHandler makeSecurityHandler(String pathSpec, String realm, UserStore userStore, String role) {
+//    /** Create a Jetty {@link SecurityHandler} for basic authentication. */
+//    @Deprecated
+//    public static SecurityHandler makeSecurityHandlerForPathspec(String pathSpec, String realm, UserStore userStore, String role) {
+//        ConstraintSecurityHandler securityHandler = makeSecurityHandler(realm, userStore, role);
+//        // Pathspec based.
+//        addDatasetConstraint(securityHandler, pathSpec);
+//        return securityHandler;
+//    }
+    
+    /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+     * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
+     * for adding the {@code pathspec} to apply it to.
+     */
+     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore) {
+         return makeSecurityHandler(realm, userStore, "**");
+     }
+
+    /**
+     * Digest requires an extra round trip so it is unfriendly to API
+     * or scripts that stream.
+     */
+     // [AuthScheme] Default
+     public static AuthMode authMode = AuthMode.DIGEST; 
+
+      /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+     * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
+     * for adding the {@code pathspec} to apply it to.
+     */
+     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role) {
         // role can be "**" for any authenticated user.
-        Objects.requireNonNull(pathSpec);
         Objects.requireNonNull(userStore);
         Objects.requireNonNull(role);
         
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        String[] roles = new String[]{role};
-        constraint.setRoles(roles);
-        constraint.setAuthenticate(true);
-
-        ConstraintMapping mapping = new ConstraintMapping();
-        mapping.setConstraint(constraint);
-        mapping.setPathSpec(pathSpec);
+        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
 
         IdentityService identService = new DefaultIdentityService();
-        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-        securityHandler.addConstraintMapping(mapping);
         securityHandler.setIdentityService(identService);
-        
+
         // ---- HashLoginService
-        
-        HashLoginService loginService = new HashLoginService("Authentication");
+        HashLoginService loginService = new HashLoginService(realm);
         loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
         
-        // ----
+        // [AuthScheme]
         securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator(new BasicAuthenticator());
+        securityHandler.setAuthenticator( authMode == AuthMode.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
         if ( realm != null )
             securityHandler.setRealmName(realm);
-        
         return securityHandler;
+    }
+    
+     public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec) {
+         addPathConstraint(securityHandler, pathSpec, "**");
+     }
+     
+    public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec, String role) {
+        Objects.requireNonNull(securityHandler);
+        Objects.requireNonNull(pathSpec);
+        
+        ConstraintMapping mapping = new ConstraintMapping();
+        Constraint constraint = new Constraint();
+        String[] roles = new String[]{role};
+        constraint.setRoles(roles);
+        constraint.setName(securityHandler.getAuthenticator().getAuthMethod());
+        constraint.setAuthenticate(true);
+        mapping.setConstraint(constraint);
+        mapping.setPathSpec(pathSpec);
+        securityHandler.addConstraintMapping(mapping);
     }
 
     /**
@@ -91,7 +129,7 @@ public class JettyLib {
     public static UserStore makeUserStore(String passwordFile) {
         PropertyUserStore propertyUserStore = new PropertyUserStore();
         propertyUserStore.setConfig(passwordFile);
-        propertyUserStore.setHotReload(false);
+        propertyUserStore.setHotReload(true);
         try { propertyUserStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
         return propertyUserStore;

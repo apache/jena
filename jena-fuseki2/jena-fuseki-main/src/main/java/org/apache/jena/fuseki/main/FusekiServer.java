@@ -272,7 +272,7 @@ public class FusekiServer {
             return staticFileBase(directory);
         }
 
-        /** Set the location (filing system directory) to serve static file from. */
+        /** Set the location (filing system directory) to serve static files from. */
         public Builder staticFileBase(String directory) {
             requireNonNull(directory, "directory");
             this.staticContentDir = directory;

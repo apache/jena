@@ -44,6 +44,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
@@ -274,7 +275,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Assumes finished whole thing by end of sendResult.
         try {
             action.beginRead() ;
-            Dataset dataset = decideDataset(action, query, queryStringLog) ;
+            DatasetGraph dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(action, query, dataset) ; ) {
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
                 // Deals with exceptions itself.
@@ -301,24 +302,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
     /** Create the {@link QueryExecution} for this operation.
-     * @param query
-     * @param dataset
-     * @return QueryExecution
-     * @deprecated Use {@link #createQueryExecution(HttpAction, Query, Dataset)}
-     */
-    @Deprecated
-    protected QueryExecution createQueryExecution(Query query, Dataset dataset) {
-        return QueryExecutionFactory.create(query, dataset) ;
-    }
-
-    /** Create the {@link QueryExecution} for this operation.
      * @param action
      * @param query
      * @param dataset
      * @return QueryExecution
      */
-    protected QueryExecution createQueryExecution(HttpAction action, Query query, Dataset dataset) {
-        return createQueryExecution(query, dataset);
+    protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dataset) {
+        return QueryExecutionFactory.create(query, dataset) ;
     }
 
     /** Perform the {@link QueryExecution} once.
@@ -398,7 +388,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
      * @param queryStringLog
      * @return {@link Dataset}
      */
-    protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
+    protected abstract DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
     /** Ship the results to the remote caller.
      * @param action

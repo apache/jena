@@ -24,14 +24,14 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
 /** DatasetGraph layer that carries an {@link AuthorizationService}. */ 
-class DatasetGraphAccessControl extends DatasetGraphWrapper {
+public class DatasetGraphAccessControl extends DatasetGraphWrapper {
     
     private AuthorizationService registry = null; 
 
-    public DatasetGraphAccessControl(DatasetGraph dsg, AuthorizationService authService) {
+    /*package*/ DatasetGraphAccessControl(DatasetGraph dsg, AuthorizationService authService) {
         super(Objects.requireNonNull(dsg));
         this.registry = Objects.requireNonNull(authService); 
-    }
+   }
     
     public AuthorizationService getAuthService() {
         return registry;
