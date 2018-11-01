@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Map ;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -36,42 +33,26 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
 
     public DatasetGraphReadOnly(DatasetGraph dsg) { super(dsg) ; }
     
-    private Graph dftGraph = null ;
+    private Graph dftGraph = new GraphReadOnly(super.getDefaultGraph()) ;
     
     @Override
-    public Graph getDefaultGraph()
-    {
-        if ( dftGraph == null )
-            dftGraph = new GraphReadOnly(super.getDefaultGraph()) ;
+    public Graph getDefaultGraph() {
         return dftGraph ;
     }
 
-    @Override public void begin(ReadWrite mode)         {
+    @Override public void begin(ReadWrite mode) {
         if ( mode == ReadWrite.WRITE )
             //throw new JenaTransactionException("read-only dataset : no write transactions") ;
             Log.warn(this, "Write transaction on a read-only dataset") ;
         get().begin(mode) ; 
     }
     
-    private Map<Node, Graph> namedGraphs = new ConcurrentHashMap<>() ;
-
     @Override
     public Graph getGraph(Node graphNode) {
-        // Cache GraphReadOnly wrappers. This also makes == work (a nicety)
-        // if the underlying DatasetGraph isn't changing.
-        if ( namedGraphs.containsKey(graphNode) ) {
-            if ( !super.containsGraph(graphNode) ) {
-                namedGraphs.remove(graphNode) ;
-                return null ;
-            }
-            return namedGraphs.get(graphNode) ;
-        }
-
-        Graph g = super.getGraph(graphNode) ;
+        Graph g = get().getGraph(graphNode) ;
         if ( g == null )
             return null ;
         g = new GraphReadOnly(g) ;
-        namedGraphs.put(graphNode, g) ;
         return g ;
     }
 

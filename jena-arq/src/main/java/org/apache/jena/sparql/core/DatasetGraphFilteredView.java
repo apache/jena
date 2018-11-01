@@ -152,8 +152,8 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
         return ! this.find().hasNext(); 
     }
     
-//    @Override public String toString() {
-//        return  
-//    }
+    @Override public String toString() {
+        return "Filtered:\n"+super.toString();  
+    }
 
 }
