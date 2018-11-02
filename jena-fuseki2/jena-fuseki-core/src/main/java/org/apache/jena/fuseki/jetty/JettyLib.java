@@ -146,13 +146,25 @@ public class JettyLib {
         Objects.requireNonNull(password);
         Objects.requireNonNull(role);
         UserStore userStore = new UserStore();
-        String[] roles = role == null ? null : new String[]{role};
-        Credential cred  = new Password(password);
-        userStore.addUser(user, cred, roles);
+        addUser(userStore, user, password, role);
         try { userStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
         return userStore;
     }
+    public static UserStore addUser(UserStore userStore, String user, String password) {
+        return addUser(userStore, user, password, "**");
+    }
+
+    /** Make a {@link UserStore} for a single user,password,role*/
+    public static UserStore addUser(UserStore userStore, String user, String password, String role) {
+        String[] roles = role == null ? null : new String[]{role};
+        Credential cred  = new Password(password);
+        userStore.addUser(user, cred, roles);
+        return userStore;
+
+    }
+    
+    
     
     /** Add or append a {@link Handler} to a Jetty {@link Server}. */
     public static void addHandler(Server server, Handler handler) {

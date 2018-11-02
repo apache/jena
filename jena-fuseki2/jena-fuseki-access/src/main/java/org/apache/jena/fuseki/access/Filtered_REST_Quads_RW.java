@@ -18,52 +18,32 @@
 
 package org.apache.jena.fuseki.access;
 
-import java.io.InputStream;
 import java.util.function.Function;
 
-import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_Update;
+import org.apache.jena.fuseki.servlets.REST_Quads_R;
+import org.apache.jena.fuseki.servlets.REST_Quads_RW;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** An Update {@link ActionService} that denies SPAQR Update in access controlled datasets. */
-final
-public class Filtered_SPARQL_Update extends SPARQL_Update {
+/**
+ * Filter for {@link REST_Quads_R} that inserts a security filter on read-access to the
+ * {@link DatasetGraph}.
+ */
+public class Filtered_REST_Quads_RW extends REST_Quads_RW {
+    
     private final Function<HttpAction, String> requestUser;
-
-    public Filtered_SPARQL_Update(Function<HttpAction, String> requestUser) {
-        this.requestUser = requestUser; 
+    
+    public Filtered_REST_Quads_RW(Function<HttpAction, String> determineUser) {
+        this.requestUser = determineUser; 
     }
 
     @Override
     protected void validate(HttpAction action) {
         super.validate(action);
-        
         DatasetGraph dsg = action.getDataset();
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return;
-        ServletOps.errorBadRequest("SPARQL Update not supported");
-    }
-    
-    @Override
-    protected void perform(HttpAction action) {
-        DatasetGraph dsg = action.getDataset() ;
-        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
-            super.perform(action);
-            return;
-        }
-        ServletOps.errorBadRequest("SPARQL Update not supported");
-    }
-    
-    @Override
-    protected void execute(HttpAction action, InputStream input) {
-        DatasetGraph dsg = action.getDataset() ;
-        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
-            super.execute(action, input);
-            return;
-        }
-        ServletOps.errorBadRequest("SPARQL Update not supported");
+        ServletOps.errorBadRequest("REST update of the dataset not supported");
     }
 }
-

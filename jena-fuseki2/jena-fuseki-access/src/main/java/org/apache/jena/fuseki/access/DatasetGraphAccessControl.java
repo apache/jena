@@ -37,6 +37,13 @@ public class DatasetGraphAccessControl extends DatasetGraphWrapper {
         return registry;
     }
 
+    // XXX Settings will be pushed down to the wrapped dataset.
+    // A problem for DataAccessCtl.symAuthorizationService.
+//    @Override
+//    public Context getContext() {
+//        return super.getContext();
+//    }
+    
     /**
      * Return the underlying {@code DatasetGraph}. If the argument is not a
      * {@code DatasetGraphAccessControl}, return the argument.

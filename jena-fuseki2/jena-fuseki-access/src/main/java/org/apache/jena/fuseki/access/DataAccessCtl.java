@@ -120,10 +120,10 @@ public class DataAccessCtl {
         builder.registerOperation(Operation.GSP_R, new Filtered_SPARQL_GSP_R(determineUser));
         builder.registerOperation(Operation.Quads_R, new Filtered_REST_Quads_R(determineUser));
         
-        // Block updates
+        // Block updates (can just not register these operations).
         builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
-        builder.registerOperation(Operation.GSP_RW, null);
-        builder.registerOperation(Operation.Quads_RW, null);
+        builder.registerOperation(Operation.GSP_RW, new Filtered_SPARQL_GSP_RW(determineUser));
+        builder.registerOperation(Operation.Quads_RW, new Filtered_REST_Quads_RW(determineUser));
         return builder;
     }
 
@@ -139,22 +139,26 @@ public class DataAccessCtl {
          */
         // The mapping operation to handler is in the ServiceDispatchRegistry and is per
         // server (per servlet context). "registerOrReplace" might be a better name,
-        ActionService queryServletAccessFilter = new Filtered_SPARQL_QueryDataset(determineUser);
         ServletContext cxt = server.getServletContext();
         ServiceDispatchRegistry reg = ServiceDispatchRegistry.get(cxt);
         
-        if ( reg.isRegistered(Operation.Query) )
-            reg.register(Operation.Query, WebContent.contentTypeSPARQLQuery, queryServletAccessFilter);
-        if ( reg.isRegistered(Operation.GSP_R) )
-            reg.register(Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
-        if ( reg.isRegistered(Operation.Quads_R) )
-            reg.register(Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
-        
+        resetOperation(reg, Operation.Query, WebContent.contentTypeSPARQLQuery, new Filtered_SPARQL_QueryDataset(determineUser));
+        resetOperation(reg, Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
+        resetOperation(reg, Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
+
         // Block updates
-        //reg.register(Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
-        reg.unregister(Operation.Update);
-        reg.unregister(Operation.GSP_RW);
-        reg.unregister(Operation.Quads_RW);
+        resetOperation(reg, Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
+        resetOperation(reg, Operation.GSP_RW, null, new Filtered_SPARQL_GSP_RW(determineUser));
+        resetOperation(reg, Operation.Quads_RW, null, new Filtered_SPARQL_Update(determineUser));
+        
+//        reg.unregister(Operation.Update);
+//        reg.unregister(Operation.GSP_RW);
+//        reg.unregister(Operation.Quads_RW);
+    }
+    
+    private static void resetOperation(ServiceDispatchRegistry reg, Operation operation, String contentType, ActionService service) {
+        if ( reg.isRegistered(operation) )
+            reg.register(operation, contentType, service);
     }
     
     /**
