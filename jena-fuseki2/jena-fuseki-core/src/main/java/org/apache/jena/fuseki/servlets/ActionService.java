@@ -57,11 +57,21 @@ public abstract class ActionService extends ActionBase {
         String datasetUri = mapRequestToDataset(action);
         if ( datasetUri != null ) {
             dataAccessPoint = action.getDataAccessPointRegistry().get(datasetUri);
+            
             if ( dataAccessPoint == null ) {
                 ServletOps.errorNotFound("No dataset for URI: " + datasetUri);
                 return;
             }
             dSrv = dataAccessPoint.getDataService();
+            
+            if ( dSrv.getAllowedUsers() != null ) {
+                String user = action.request.getRemoteUser();
+                if ( user == null )
+                    ServletOps.errorForbidden();
+                if ( ! dSrv.getAllowedUsers().contains(user) ) {
+                    ServletOps.errorForbidden();
+                }
+            }
             if ( !dSrv.isAcceptingRequests() ) {
                 ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
                 return;

@@ -203,6 +203,25 @@ public class TestSecurityFilterFuseki {
         query401("user0", "not-the-password", queryAll);
     }
 
+    // More queries. DevSecureNG.java // FROM, "GRAPH ?g" and non-graph (also TestSecurityFilterLocal)
+    
+//    query(connx, "SELECT * FROM <http://host/graphname1> { GRAPH ?g {} }");
+//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
+//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { GRAPH <http://host/graphname1> { ?s ?p ?o } }");
+//    query(connx, "SELECT * { GRAPH ?g {} }");
+//    query(connx, "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
+//    query(connx, "SELECT * FROM <http://host/graphname1> { ?s ?p ?o }");
+//    query(connx, "SELECT * FROM <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
+//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
+//    query(connx, "SELECT * { GRAPH <http://host/graphname1> { ?s ?p ?o }}");
+//    
+//    query(connx, "SELECT * FROM <http://host/graphname4> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
+//    query(connx, "SELECT * { GRAPH <http://host/graphname4> { ?s ?p ?o }}");
+//    
+//    query(connx, "SELECT * { GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }");
+//    query(connx, "SELECT * FROM <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o }");
+
+    
     private Set<Node> gsp(String user, String password, String graphName) {
         Set<Node> results = new HashSet<>();
         try (RDFConnection conn = RDFConnectionFactory.connectPW(baseUrl, user, password)) {

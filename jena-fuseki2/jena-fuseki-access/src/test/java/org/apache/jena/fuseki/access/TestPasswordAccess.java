@@ -20,18 +20,25 @@ package org.apache.jena.fuseki.access;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+
+import java.util.Arrays;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.web.HttpCaptureResponse;
 import org.apache.jena.riot.web.HttpOp;
 import org.apache.jena.riot.web.HttpOp.CaptureInput;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
@@ -40,13 +47,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Tests for password access to a server. */
+/** Tests for password access to a server and to services. */
 public class TestPasswordAccess {
 
     private static FusekiServer fusekiServer = null;
     private static int port = WebLib.choosePort();
     private static String serverURL = "http://localhost:"+port+"/";
-    private static AuthSetup authSetup = new AuthSetup("localhost", port, "user1", "pw1", "TripleStore");
+    private static AuthSetup authSetup1 = new AuthSetup("localhost", port, "user1", "pw1", "TripleStore");
+    private static AuthSetup authSetup2 = new AuthSetup("localhost", port, "user2", "pw2", "TripleStore");
+    // Not in the user store.
+    private static AuthSetup authSetupX = new AuthSetup("localhost", port, "userX", "pwX", "TripleStore");
+    
+    // All users must log in to access any resource. Disables some "open" tests.
+    private static boolean ConstraintServer = true;
     
     @BeforeClass
     public static void beforeClass() {
@@ -54,18 +67,37 @@ public class TestPasswordAccess {
             // To watch the HTTP headers
             LogCtl.enable("org.apache.http.headers");
         
-        UserStore userStore = JettyLib.makeUserStore(authSetup.user, authSetup.password);
-        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler(authSetup.realm, userStore);
+        // Two authorized users.
+        UserStore userStore = new UserStore();
+        JettyLib.addUser(userStore, authSetup1.user, authSetup1.password);
+        JettyLib.addUser(userStore, authSetup2.user, authSetup2.password);
+        try { userStore.start(); }
+        catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
+        
+        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler(authSetup1.realm, userStore);
         
         // Secure these areas.
         JettyLib.addPathConstraint(sh, "/ds");
+        // Allow auth control even through there isn't anything there 
         JettyLib.addPathConstraint(sh, "/nowhere");
+
+        JettyLib.addPathConstraint(sh, "/ctl");
+        // Not controlled: JettyLib.addPathConstraint(sh, "/open");
+        
+        // Server wide (breaks "open" tests)
+        if ( ConstraintServer )
+            JettyLib.addPathConstraint(sh, "/*");
+        
+        DataService dSrv = new DataService(DatasetGraphFactory.createTxnMem());
+        FusekiBuilder.populateStdServices(dSrv, false);
+        dSrv.setAllowedUsers(Arrays.asList("user1"));
         
         fusekiServer =
             FusekiServer.create()
                 .port(port)
                 .add("/ds", DatasetFactory.createTxnMem())
                 .add("/open", DatasetFactory.createTxnMem())
+                .add("/ctl", dSrv)
                 .securityHandler(sh)
                 //.staticFileBase(".")
                 .build();
@@ -87,9 +119,13 @@ public class TestPasswordAccess {
         HttpOp.setDefaultHttpClient(hc);
     }
     
+    // Server authentication.
+    
     @Test public void access_server() {
+        assumeFalse(ConstraintServer);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL) ) {
             assertNotNull(in);
+            fail("Didn't expect to succeed");
         } catch (HttpException ex) {
             // 404 is OK - no static file area. 
             if ( ex.getResponseCode() != HttpSC.NOT_FOUND_404 )
@@ -98,15 +134,32 @@ public class TestPasswordAccess {
     }
 
     @Test public void access_open() {
+        assumeFalse(ConstraintServer);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"open") ) {
             assertNotNull(in);
         }
     }
 
+    @Test public void access_open_user1() {
+        // OK.
+        LibSec.withAuth(serverURL+"open", authSetup1, (conn)->{
+            conn.queryAsk("ASK{}");
+        });
+    }
+
+    @Test public void access_open_userX() {
+        assumeFalse(ConstraintServer);
+        // OK.
+        LibSec.withAuth(serverURL+"open", authSetupX, (conn)->{
+            conn.queryAsk("ASK{}");
+        });
+    }
+
+
     // Should fail.
     @Test public void access_deny_ds() {
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ds") ) {
-            assertNotNull(in);
+            fail("Didn't expect to succeed");
         } catch (HttpException ex) {
             if ( ex.getResponseCode() != HttpSC.UNAUTHORIZED_401 )
                 throw ex;
@@ -116,7 +169,7 @@ public class TestPasswordAccess {
     // Should be 401, not be 404.
     @Test public void access_deny_nowhere() {
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"nowhere") ) {
-            assertNotNull(in);
+            fail("Didn't expect to succeed");
         } catch (HttpException ex) {
             if ( ex.getResponseCode() != HttpSC.UNAUTHORIZED_401 )
                 throw ex;
@@ -124,7 +177,7 @@ public class TestPasswordAccess {
     }
     
     @Test public void access_allow_nowhere() {
-        HttpClient hc = LibSec.httpClient(authSetup);
+        HttpClient hc = LibSec.httpClient(authSetup1);
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"nowhere", null, hc, null) ) {
             // null for 404.
@@ -136,10 +189,42 @@ public class TestPasswordAccess {
     }
     
     @Test public void access_allow_ds() {
-        HttpClient hc = LibSec.httpClient(authSetup);
+        HttpClient hc = LibSec.httpClient(authSetup1);
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput();
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ds", null, hc, null) ) {
             assertNotNull(in);
+        }
+    }
+    
+    // Service level : ctl.
+    
+    @Test public void access_service_ctl_user1() {
+        // user1 -- allowed.
+        HttpClient hc = LibSec.httpClient(authSetup1);
+        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
+            assertNotNull(in);
+        }
+    }
+    
+    @Test public void access_service_ctl_user2() {
+        // user2 -- can login, not allowed.
+        HttpClient hc = LibSec.httpClient(authSetup2);
+        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
+            fail("Didn't expect to succeed");
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() != HttpSC.FORBIDDEN_403)
+                throw ex;
+        }
+    }
+
+    @Test public void access_service_ctl_userX() {
+        // userX -- can't login, not allowed.
+        HttpClient hc = LibSec.httpClient(authSetupX);
+        try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"ctl", null, hc, null) ) {
+            fail("Didn't expect to succeed");
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() != HttpSC.UNAUTHORIZED_401)
+                throw ex;
         }
     }
 }

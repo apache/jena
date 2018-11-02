@@ -38,6 +38,7 @@ public class DataService {
 
     private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();
     private Map<String, Endpoint> endpoints               = new HashMap<>();
+    private Collection<String> allowedUsers             = null;
 
     /**
      * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
@@ -212,5 +213,11 @@ public class DataService {
         } else
             dataset.close();
     }
+
+    public void setAllowedUsers(Collection<String> allowedUsers) { this.allowedUsers= allowedUsers; }
+    
+    /** Returning null implies no access control */
+    public Collection<String> getAllowedUsers() { return allowedUsers; }
+
 }
 

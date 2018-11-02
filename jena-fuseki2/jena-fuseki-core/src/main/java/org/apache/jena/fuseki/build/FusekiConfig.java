@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.build ;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static org.apache.jena.fuseki.server.FusekiVocab.*;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang;
 import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
@@ -31,6 +32,7 @@ import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
 import java.util.ArrayList ;
+import java.util.Collection;
 import java.util.Collections ;
 import java.util.List ;
 
@@ -41,12 +43,23 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.DataServiceStatus;
+import org.apache.jena.fuseki.server.FusekiVocab;
+import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.FmtUtils;
@@ -208,19 +221,49 @@ public class FusekiConfig {
         if ( ! n.isLiteral() )
             throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
         Literal object = n.asLiteral() ;
-
+        
         if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
             Fuseki.configLog.error(format("Service name '%s' is not a string", FmtUtils.stringForRDFNode(object)));
+
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
-
-        DataService dataService = buildDataServiceCustom(svc, dsDescMap) ;
+        DataService dataService = buildDataService(svc, dsDescMap) ;
+        Collection<String> allowedUsers = getAllowedUsers(svc);
+        dataService.setAllowedUsers(allowedUsers);
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
+    
+    /** Get the allowed users on some resources.
+     *  
+     * @param resource
+     * @return Collection<String>
+     */
+    public static Collection<String> getAllowedUsers(Resource resource) {
+        Collection<RDFNode> allowedUsers = FusekiBuildLib.getAll(resource, "fu:"+pAllowedUsers.getLocalName());
+        Collection<String> userNames = null;
+        if ( allowedUsers != null ) {
+            // Check all values are simple strings  
+            List<String> bad = allowedUsers.stream()
+                .map(RDFNode::asNode)
+                .filter(rn -> ! Util.isSimpleString(rn))
+                .map(rn->rn.toString())
+                .collect(toList());
+            if ( ! bad.isEmpty() ) {
+                //Fuseki.configLog.error(format("User names must be a simple string: bad = %s", bad));
+                throw new FusekiConfigException(format("User names should be a simple string: bad = %s", bad));
+            }
+            // RDFNodes/literals to strings.
+            userNames = allowedUsers.stream()
+                .map(RDFNode::asNode)
+                .map(Node::getLiteralLexicalForm)
+                .collect(toList());
+        }
+        return userNames;
+    }
 
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
-    private static DataService buildDataServiceCustom(Resource svc, DatasetDescriptionRegistry dsDescMap) {
+    private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         Resource datasetDesc = ((Resource)FusekiBuildLib.getOne(svc, "fu:dataset")) ;
         Dataset ds = getDataset(datasetDesc, dsDescMap);
  
@@ -258,7 +301,6 @@ public class FusekiConfig {
 //                sDesc.maximumTimeoutOverride = (int)(svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000) ;
 //            }
 //        }
-
         return dataService ;
     }
     

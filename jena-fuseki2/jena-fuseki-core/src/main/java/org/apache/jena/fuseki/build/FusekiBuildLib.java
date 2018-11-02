@@ -18,12 +18,18 @@
 
 package org.apache.jena.fuseki.build;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.RDFS ;
 
@@ -92,6 +98,28 @@ public class FusekiBuildLib {
         if ( rs.hasNext() )
             throw new FusekiConfigException("Multiple properties '" + property + "' for service " + FusekiBuildLib.nodeLabel(svc)) ;
         return x ;
+    }
+
+    /**
+     * Get all object of a subject/property, whether repeated triples or RDF Lists or a
+     * mixture. If the subject/property isn't present, return null, so a caller can tell
+     * the difference between "not present" and an empty list value.
+     */
+    public static Collection<RDFNode> getAll(Resource svc, String property) {
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
+        if ( ! rs.hasNext() )
+            return null;
+        List<RDFNode> results = new ArrayList<>();
+        rs.forEachRemaining(qs->{
+            RDFNode n = qs.get("x");
+            try {
+                RDFList list = n.as(RDFList.class);
+                results.addAll(list.asJavaList());
+            } catch (JenaException x) {
+                results.add(n);
+            }
+        });
+        return results ;
     }
 
     // Node presentation
