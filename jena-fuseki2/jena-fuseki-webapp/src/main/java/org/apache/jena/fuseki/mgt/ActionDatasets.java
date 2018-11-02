@@ -59,7 +59,7 @@ import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.system.Upload;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -160,7 +160,7 @@ public class ActionDatasets extends ActionContainerItem {
             // ----
             // Keep a persistent copy immediately.  This is not used for
             // anything other than being "for the record".
-            systemFileCopy = FusekiSystem.dirFileArea.resolve(uuid.asString()).toString() ;
+            systemFileCopy = FusekiWebapp.dirFileArea.resolve(uuid.asString()).toString() ;
             try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                 RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             }
@@ -210,8 +210,8 @@ public class ActionDatasets extends ActionContainerItem {
             
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
 
-            configFile = FusekiSystem.generateConfigurationFilename(datasetPath) ;
-            List<String> existing = FusekiSystem.existingConfigurationFile(datasetPath) ;
+            configFile = FusekiWebapp.generateConfigurationFilename(datasetPath) ;
+            List<String> existing = FusekiWebapp.existingConfigurationFile(datasetPath) ;
             if ( ! existing.isEmpty() )
                 ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists") ;
 
@@ -325,7 +325,7 @@ public class ActionDatasets extends ActionContainerItem {
                 ServletOps.errorNotFound("No such dataset registered: "+name);
             
             String filename = name.startsWith("/") ? name.substring(1) : name;
-            List<String> configurationFiles = FusekiSystem.existingConfigurationFile(filename);
+            List<String> configurationFiles = FusekiWebapp.existingConfigurationFile(filename);
             if  ( configurationFiles.size() != 1 ) {
                 // This should not happen.
                 action.log.warn(format("[%d] There are %d configuration files, not one.", action.id, configurationFiles.size()));
@@ -363,7 +363,7 @@ public class ActionDatasets extends ActionContainerItem {
                 // Delete databases created by the UI, or the admin operation, which are
                 // in predictable, unshared location on disk.
                 // There may not be any database files, the in-memory case.
-                Path pDatabase = FusekiSystem.dirDatabases.resolve(filename);
+                Path pDatabase = FusekiWebapp.dirDatabases.resolve(filename);
                 if ( Files.exists(pDatabase)) {
                     try {
                         if ( Files.isSymbolicLink(pDatabase)) {
@@ -423,7 +423,7 @@ public class ActionDatasets extends ActionContainerItem {
             params.put(Template.NAME, dbName.substring(1)) ;
         else
             params.put(Template.NAME, dbName) ;
-        FusekiSystem.addGlobals(params); 
+        FusekiWebapp.addGlobals(params); 
         
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
         

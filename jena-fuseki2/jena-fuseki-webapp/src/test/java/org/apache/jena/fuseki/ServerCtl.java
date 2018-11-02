@@ -36,7 +36,7 @@ import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -233,11 +233,11 @@ public class ServerCtl {
         // in the case of starting in the same location. FusekiSystem has statics.
         // Fuseki-full is designed to be the only server, not restartable.
         // Here, we want to reset for testing.
-        emptyDirectory(FusekiSystem.dirSystemDatabase);
-        emptyDirectory(FusekiSystem.dirBackups);
-        emptyDirectory(FusekiSystem.dirLogs);
-        emptyDirectory(FusekiSystem.dirConfiguration);
-        emptyDirectory(FusekiSystem.dirDatabases);
+        emptyDirectory(FusekiWebapp.dirSystemDatabase);
+        emptyDirectory(FusekiWebapp.dirBackups);
+        emptyDirectory(FusekiWebapp.dirLogs);
+        emptyDirectory(FusekiWebapp.dirConfiguration);
+        emptyDirectory(FusekiWebapp.dirDatabases);
         
         setupServer(port(), null, datasetPath(), updateable) ;
     }
@@ -272,7 +272,7 @@ public class ServerCtl {
         if ( server != null ) {
             // Clear out the registry.
             server.getDataAccessPointRegistry().clear() ;
-            FileOps.clearAll(FusekiSystem.dirConfiguration.toFile()) ;
+            FileOps.clearAll(FusekiWebapp.dirConfiguration.toFile()) ;
             server.stop() ;
         }
         server = null ;

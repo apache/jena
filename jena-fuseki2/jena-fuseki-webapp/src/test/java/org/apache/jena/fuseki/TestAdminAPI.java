@@ -31,7 +31,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFactory;
@@ -77,7 +77,7 @@ public class TestAdminAPI extends AbstractFusekiTest {
         int x1 = count(conn);
         assertEquals(1, x1);
         
-        Path pathDB = FusekiSystem.dirDatabases.resolve(dbName);
+        Path pathDB = FusekiWebapp.dirDatabases.resolve(dbName);
             
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));

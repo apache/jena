@@ -29,7 +29,7 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.webapp.FusekiSystem;
+import org.apache.jena.fuseki.webapp.FusekiWebapp;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -53,7 +53,7 @@ public class Backup
 
         String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
         String filename = ds + "_" + timestamp ;
-        filename = FusekiSystem.dirBackups.resolve(filename).toString() ;
+        filename = FusekiWebapp.dirBackups.resolve(filename).toString() ;
         return filename ;
     }
     

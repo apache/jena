@@ -62,7 +62,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.tdb.sys.Names ;
 
-public class FusekiSystem
+public class FusekiWebapp
 {
     // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnv.setEnvironment()
     // so that the code is independent of any logging.  FusekiLogging can use
@@ -209,7 +209,7 @@ public class FusekiSystem
     public static void copyFileFromResource(String fn, Path dstFile) {
         try {
             // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
-            URL url = FusekiSystem.class.getResource(fn) ;
+            URL url = FusekiWebapp.class.getResource(fn) ;
             if ( url == null )
                 throw new FusekiConfigException("Failed to find resource '"+fn+"'") ; 
             InputStream in = url.openStream() ;
@@ -281,8 +281,8 @@ public class FusekiSystem
         Model model = AssemblerUtils.readAssemblerFile(configFilename) ;
         if ( model.size() == 0 )
             return Collections.emptyList() ;
-        FusekiConfig.processServerConfig(model);
-        return FusekiConfig.servicesAndDatasets(model) ;
+        List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, Fuseki.getContext());
+        return x;
     }
     
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath, 
@@ -453,7 +453,7 @@ public class FusekiSystem
         // Without "/"
         if ( filename.startsWith("/"))
             filename = filename.substring(1) ;
-        Path p = FusekiSystem.dirConfiguration.resolve(filename+".ttl") ;
+        Path p = FusekiWebapp.dirConfiguration.resolve(filename+".ttl") ;
         return p.toString();
     }
 
@@ -461,12 +461,12 @@ public class FusekiSystem
     public static List<String> existingConfigurationFile(String baseFilename) {
         try { 
             List<String> paths = new ArrayList<>() ;
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiSystem.dirConfiguration, baseFilename+".*") ) {
-                stream.forEach((p)-> paths.add(FusekiSystem.dirConfiguration.resolve(p).toString() ));
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiWebapp.dirConfiguration, baseFilename+".*") ) {
+                stream.forEach((p)-> paths.add(FusekiWebapp.dirConfiguration.resolve(p).toString() ));
             }
             return paths ;
         } catch (IOException ex) {
-            throw new InternalErrorException("Failed to read configuration directory "+FusekiSystem.dirConfiguration) ;
+            throw new InternalErrorException("Failed to read configuration directory "+FusekiWebapp.dirConfiguration) ;
         }
     }
 }
