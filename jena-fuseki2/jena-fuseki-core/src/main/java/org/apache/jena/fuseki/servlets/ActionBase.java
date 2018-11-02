@@ -70,7 +70,7 @@ public abstract class ActionBase extends ServletBase
             response = action.response ;
             initResponse(request, response) ;
             try {
-                action.startRequest();
+                startRequest(action);
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
                 // To put in the action timeout, need (1) global, (2) dataset and (3) protocol settings.

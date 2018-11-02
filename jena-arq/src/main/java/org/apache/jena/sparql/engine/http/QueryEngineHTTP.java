@@ -345,8 +345,7 @@ public class QueryEngineHTTP implements QueryExecution {
         return new ResultSetCheckCondition(rs, this) ;
     }
     
-   private ResultSet execResultSetInner() {
-        
+	private ResultSet execResultSetInner() {
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(chooseAcceptHeader(acceptHeader, selectContentType));
         InputStream in = httpQuery.exec();
@@ -383,7 +382,7 @@ public class QueryEngineHTTP implements QueryExecution {
         return result;
     }
 
-   // XXX Move
+    //  XXX Move
     private static String chooseAcceptHeader(String acceptHeader, String contentType) {
         if ( acceptHeader != null )
             return acceptHeader;

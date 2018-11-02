@@ -389,6 +389,14 @@ public class FusekiServer {
             if ( dataAccessPoints.isRegistered(name) )
                 throw new FusekiConfigException("Data service name already registered: "+name);
             DataAccessPoint dap = new DataAccessPoint(name, dataService);
+            addDataAccessPoint(dap);
+            return this;
+        }
+
+        /** Add a {@link DataAccessPoint}. */
+        private Builder addDataAccessPoint(DataAccessPoint dap) {
+            if ( dataAccessPoints.isRegistered(dap.getName()) )
+                throw new FusekiConfigException("Data service name already registered: "+dap.getName());
             dataAccessPoints.register(dap);
             return this;
         }
@@ -411,8 +419,7 @@ public class FusekiServer {
 
             // Process services, whether via server ja:services or, if absent, by finding by type.
             List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(model);
-            // Unbundle so that they accumulate.
-            x.forEach(dap->add(dap.getName(), dap.getDataService()));
+            x.forEach(dap->addDataAccessPoint(dap));
             return this;
         }
 

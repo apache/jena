@@ -89,7 +89,7 @@ public class ActionDatasets extends ActionContainerItem {
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     
     static private Property pServiceName = FusekiVocab.pServiceName ;
-    static private Property pStatus = FusekiVocab.pStatus ;
+    //static private Property pStatus = FusekiVocab.pStatus ;
 
     private static final String paramDatasetName    = "dbName" ;
     private static final String paramDatasetType    = "dbType" ;
