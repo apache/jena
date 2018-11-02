@@ -43,25 +43,17 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.DataServiceStatus;
-import org.apache.jena.fuseki.server.FusekiVocab;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.vocabulary.RDF;
@@ -72,27 +64,59 @@ public class FusekiConfig {
     
     private static Logger log = Fuseki.configLog ;
     
-    /** Process the server section, if any, of a configuration file.
-     * This includes setting global context and ja:loadClass.
-     * It does not include services - see {@link #servicesAndDatasets}
+    /**
+     * Process a configuration file and return the {@link DataAccessPoint
+     * DataAccessPoints}; set the context provided for server-wide settings.
+     * 
+     * This bundles together the steps:
+     * <ul>
+     * <li>{@link #findServer}
+     * <li>{@link #processContext}
+     * <li>{@link #processLoadClass} (legacy)
+     * <li>{@link #servicesAndDatasets}
+     * </ul>
      */ 
-    public static void processServerConfig(Model model) {
-        // Find one server.
+    public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
+        Resource server = FusekiConfig.findServer(configuration);
+        FusekiConfig.processContext(server, context);
+        FusekiConfig.processLoadClass(server);
+        // Process services, whether via server ja:services or, if absent, by finding by type.
+        List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(configuration);
+        return x;
+    }
+
+    /* Find the server resource in a configuration file.
+     * Returns null if there isn't one.
+     * Raises {@link FusekiConfigException} is there are more than one.
+     */
+    public static Resource findServer(Model model) {
         List<Resource> servers = GraphUtils.listResourcesByType(model, FusekiVocab.tServer) ;
         if ( servers.size() == 0 )
-            return ; 
+            // "No server" is fine.
+            return null;
         if ( servers.size() > 1 )
             throw new FusekiConfigException(servers.size()
                                             + " servers found (must be exactly one in a configuration file)") ;
         // ---- Server
         Resource server = servers.get(0) ;
-        processServer(server) ;
+        return server ; 
     }
-
-    private static void processServer(Resource server) {
-        // Global, currently.
-        AssemblerUtils.setContext(server, Fuseki.getContext()) ;
-
+    
+    /**
+     * Process the configuration file declarations for {@link Context} settings.   
+     */
+    public static void processContext(Resource server, Context cxt) {
+        if ( server == null )
+            return ;
+        AssemblerUtils.setContext(server, cxt) ;
+    }
+    
+    /**
+     * Process any {@code ja:loadClass}
+     */
+    public static void processLoadClass(Resource server) {
+        if ( server == null )
+            return ;
         StmtIterator sIter = server.listProperties(JA.loadClass) ;
         for ( ; sIter.hasNext() ; ) {
             Statement s = sIter.nextStatement() ;
@@ -120,12 +144,17 @@ public class FusekiConfig {
     /** Find and process datasets and services in a configuration file.
      * This can be a Fuseki server configuration file or a services-only configuration file.
      * It looks {@code fuseki:services ( .... )} then, if not found, all {@code rtdf:type fuseki:services}. 
+     * This is the main entry point to processing Fuseki configuration files.
      */
     public static List<DataAccessPoint> servicesAndDatasets(Model model) {
+        Resource server = findServer(model);
+        if ( server != null )
+            AssemblerUtils.setContext(server, Fuseki.getContext()) ;
+        
         // Old style configuration file : server to services.
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry();
         // ---- Services
-        ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model) ;
+        ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
         if ( ! rs.hasNext() )
@@ -323,6 +352,7 @@ public class FusekiConfig {
     // ---- System database
     /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
+        // Webapp only.
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry() ;
         String qs = StrUtils.strjoinNL
             (FusekiConst.PREFIXES ,

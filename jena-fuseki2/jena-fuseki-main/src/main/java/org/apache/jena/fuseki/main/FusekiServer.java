@@ -20,11 +20,7 @@ package org.apache.jena.fuseki.main;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -43,17 +39,14 @@ import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
-import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -412,13 +405,9 @@ public class FusekiServer {
             requireNonNull(filename, "filename");
             Model model = AssemblerUtils.readAssemblerFile(filename);
 
-            // Process server context
-            Resource server = GraphUtils.getResourceByType(model, FusekiVocab.tServer);
-            if ( server != null )
-                AssemblerUtils.setContext(server, Fuseki.getContext()) ;
-
             // Process services, whether via server ja:services or, if absent, by finding by type.
-            List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(model);
+            // Side effect - sets global context.
+            List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, Fuseki.getContext());
             x.forEach(dap->addDataAccessPoint(dap));
             return this;
         }

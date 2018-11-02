@@ -62,7 +62,7 @@ public class FusekiBuildLib {
     public static ResultSet query(String string, Model m, String varName, RDFNode value) {
         Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
-        if ( varName != null )
+        if ( varName != null && value != null )
             initValues = querySolution(varName, value) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ) {
             return ResultSetFactory.copyResults(qExec.execSelect()) ;
@@ -72,7 +72,7 @@ public class FusekiBuildLib {
     public static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
         Query query = QueryFactory.create(FusekiConst.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
-        if ( varName != null )
+        if ( varName != null && value != null )
             initValues = querySolution(varName, value) ;
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds, initValues) ) {
             return ResultSetFactory.copyResults(qExec.execSelect()) ;
