@@ -25,6 +25,7 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
+/** Test parsing of assembers with security aspects */ 
 public class TestSecurityAssemblerBuild {
     static { JenaSystem.init(); }
     static final String DIR = "testing/Access/";

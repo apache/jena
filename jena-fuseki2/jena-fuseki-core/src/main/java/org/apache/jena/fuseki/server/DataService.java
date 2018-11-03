@@ -29,6 +29,7 @@ import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.query.text.DatasetGraphText;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -38,7 +39,7 @@ public class DataService {
 
     private ListMultimap<Operation, Endpoint> operations  = ArrayListMultimap.create();
     private Map<String, Endpoint> endpoints               = new HashMap<>();
-    private Collection<String> allowedUsers             = null;
+    private RequestAuthorization requestAuth              = null;
 
     /**
      * Record which {@link DataAccessPoint DataAccessPoints} this {@code DataService} is
@@ -214,10 +215,10 @@ public class DataService {
             dataset.close();
     }
 
-    public void setAllowedUsers(Collection<String> allowedUsers) { this.allowedUsers= allowedUsers; }
+    public void setAllowedUsers(RequestAuthorization allowedUsers) { this.requestAuth = allowedUsers; }
     
     /** Returning null implies no access control */
-    public Collection<String> getAllowedUsers() { return allowedUsers; }
+    public RequestAuthorization allowedUsers() { return requestAuth; }
 
 }
 

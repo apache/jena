@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.access;
 
-public class TestAssemblerSeparate extends AbstractTestSecurityAssembler {
+public class TestGraphSecurityAssemblerSeparate extends AbstractTestGraphSecurityAssembler {
 
-    public TestAssemblerSeparate() {
+    public TestGraphSecurityAssemblerSeparate() {
         super(DIR+"assem-security.ttl", false);
     }
 }

@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.main;
 import static java.util.Objects.requireNonNull;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -32,6 +33,7 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
@@ -41,12 +43,15 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.fuseki.servlets.AuthFilter;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -189,6 +194,7 @@ public class FusekiServer {
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
+        private RequestAuthorization     serverAllowedUsers = null;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
@@ -405,7 +411,10 @@ public class FusekiServer {
             requireNonNull(filename, "filename");
             Model model = AssemblerUtils.readAssemblerFile(filename);
 
-            // Process services, whether via server ja:services or, if absent, by finding by type.
+            Resource server = FusekiConfig.findServer(model);
+            serverAllowedUsers = FusekiBuilder.allowedUsers(server);
+            
+            // Process server and services, whether via server ja:services or, if absent, by finding by type.
             // Side effect - sets global context.
             List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, Fuseki.getContext());
             x.forEach(dap->addDataAccessPoint(dap));
@@ -534,15 +543,27 @@ public class FusekiServer {
             context.setDisplayName(Fuseki.servletRequestLogName);
             context.setErrorHandler(new FusekiErrorHandler1());
             context.setContextPath(contextPath);
-            if ( securityHandler != null )
+            if ( securityHandler != null ) {
                 context.setSecurityHandler(securityHandler);
+                if ( serverAllowedUsers != null ) {
+                    ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
+                    JettyLib.addPathConstraint(csh, "/*");
+                }
+            }
             return context;
         }
 
         /** Add servlets and servlet filters, including the {@link FusekiFilter} */ 
         private void servletsAndFilters(ServletContextHandler context) {
             // Fuseki dataset services filter
-            // This goes as the filter at the end of any filter chaining.
+            // First in chain.
+            if ( serverAllowedUsers != null ) {
+                Predicate<String> auth = serverAllowedUsers::isAllowed; 
+                AuthFilter authFilter = new AuthFilter(auth);
+                addFilter(context, "/*", authFilter);
+                //JettyLib.addPathConstraint(null, contextPath);
+            }
+            // Second in chain.
             FusekiFilter ff = new FusekiFilter();
             addFilter(context, "/*", ff);
 
@@ -552,6 +573,7 @@ public class FusekiServer {
                 addServlet(context, "/$/ping", new ActionPing());
 
             servlets.forEach(p->addServlet(context, p.getLeft(), p.getRight()));
+            // Order/place?
             filters.forEach (p-> addFilter(context, p.getLeft(), p.getRight()));
 
             if ( staticContentDir != null ) {

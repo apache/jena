@@ -91,7 +91,9 @@ public class FusekiFilter implements Filter {
                     }
                 } 
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+            log.info("Filter: expected exception: "+ex.getMessage(),ex);
+        }
         
         if ( LogFilter )
             log.info("Filter: pass to chain") ;

@@ -64,13 +64,10 @@ public abstract class ActionService extends ActionBase {
             }
             dSrv = dataAccessPoint.getDataService();
             
-            if ( dSrv.getAllowedUsers() != null ) {
+            if ( dSrv.allowedUsers() != null ) {
                 String user = action.request.getRemoteUser();
-                if ( user == null )
+                if ( ! dSrv.allowedUsers().isAllowed(user) )
                     ServletOps.errorForbidden();
-                if ( ! dSrv.getAllowedUsers().contains(user) ) {
-                    ServletOps.errorForbidden();
-                }
             }
             if ( !dSrv.isAcceptingRequests() ) {
                 ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");

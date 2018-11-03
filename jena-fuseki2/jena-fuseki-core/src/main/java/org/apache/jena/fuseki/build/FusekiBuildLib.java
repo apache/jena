@@ -33,7 +33,9 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.RDFS ;
 
-/** Library code for operations specific to building Fuseki servers and services. */
+/**
+ * Library code for operations related to building Fuseki servers and services.
+ */
 public class FusekiBuildLib {
 
     // ---- Helper code

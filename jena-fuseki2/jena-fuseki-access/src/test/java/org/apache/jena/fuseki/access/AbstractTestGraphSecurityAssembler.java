@@ -61,7 +61,7 @@ import org.junit.Test;
  * @see TestSecurityFilterFuseki TestSecurityFilterFuseki for other HTTP tests.
  */
 
-public abstract class AbstractTestSecurityAssembler {
+public abstract class AbstractTestGraphSecurityAssembler {
     static { JenaSystem.init(); }
     static final String DIR = "testing/Access/";
 
@@ -134,7 +134,7 @@ public abstract class AbstractTestSecurityAssembler {
         return server;
     }
     
-    protected AbstractTestSecurityAssembler(String assemberFile, boolean sharedDatabase) {
+    protected AbstractTestGraphSecurityAssembler(String assemberFile, boolean sharedDatabase) {
         this.assemblerFile = assemberFile;
         this.sharedDatabase = sharedDatabase ;
     }

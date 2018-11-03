@@ -27,17 +27,10 @@ import java.util.stream.Stream;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Actions on a {@link FusekiServer} */
 public class FusekiLib {
-
-    /** Choose a free port */
-    public static int choosePort() {
-        return FusekiNetLib.choosePort();
-    }
-
     /**
      * Return a collection of the names registered. This collection does not change as the
      * server changes.

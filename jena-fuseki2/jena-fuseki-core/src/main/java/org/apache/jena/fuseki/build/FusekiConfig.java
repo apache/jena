@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.build ;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 import static org.apache.jena.fuseki.server.FusekiVocab.*;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang;
 import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
@@ -31,10 +30,7 @@ import java.nio.file.DirectoryStream ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
-import java.util.ArrayList ;
-import java.util.Collection;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.*;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA ;
@@ -44,13 +40,11 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.server.*;
-import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sparql.util.Context;
@@ -84,6 +78,29 @@ public class FusekiConfig {
         List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(configuration);
         return x;
     }
+
+    /**
+     * Process a configuration file, starting {@code server}.
+     * Return the {@link DataAccessPoint DataAccessPoints}
+     * set the context provided for server-wide settings.
+     * 
+     * This bundles together the steps:
+     * <ul>
+     * <li>{@link #findServer}
+     * <li>{@link #processContext}
+     * <li>{@link #processLoadClass} (legacy)
+     * <li>{@link #servicesAndDatasets}
+     * </ul>
+     */ 
+    public static List<DataAccessPoint> processServerConfiguration(Resource server, Context context) {
+        Objects.requireNonNull(server);
+        FusekiConfig.processContext(server, context);
+        FusekiConfig.processLoadClass(server);
+        // Process services, whether via server ja:services or, if absent, by finding by type.
+        List<DataAccessPoint> x = FusekiConfig.servicesAndDatasets(server);
+        return x;
+    }
+
 
     /* Find the server resource in a configuration file.
      * Returns null if there isn't one.
@@ -144,24 +161,36 @@ public class FusekiConfig {
     /** Find and process datasets and services in a configuration file.
      * This can be a Fuseki server configuration file or a services-only configuration file.
      * It looks {@code fuseki:services ( .... )} then, if not found, all {@code rtdf:type fuseki:services}. 
-     * This is the main entry point to processing Fuseki configuration files.
+     * @see #processServerConfiguration
      */
     public static List<DataAccessPoint> servicesAndDatasets(Model model) {
         Resource server = findServer(model);
-        if ( server != null )
-            AssemblerUtils.setContext(server, Fuseki.getContext()) ;
-        
-        // Old style configuration file : server to services.
+        return servicesAndDatasets$(server, model);
+    }
+    
+    /** Find and process datasets and services in a configuration file
+     * starting from {@code server} which can have a {@code fuseki:services ( .... )}
+     * but, if not found, all {@code rtdf:type fuseki:services} are processed. 
+     */
+    public static List<DataAccessPoint> servicesAndDatasets(Resource server) {
+        Objects.requireNonNull(server);
+        return servicesAndDatasets$(server, server.getModel());
+    }   
+    
+    private static List<DataAccessPoint> servicesAndDatasets$(Resource server, Model model) {        
         DatasetDescriptionRegistry dsDescMap = new DatasetDescriptionRegistry();
         // ---- Services
+        // Server to services.
         ResultSet rs = FusekiBuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server) ;
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
+        // If none, look for services by type.
         if ( ! rs.hasNext() )
             // No "fu:services ( .... )" so try looking for services directly.
             // This means Fuseki2, service configuration files (no server section) work for --conf. 
             rs = FusekiBuildLib.query("SELECT ?service { ?service a fu:Service }", model) ;
 
+        // rs is a result set of services to process.
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("service") ;
@@ -257,40 +286,12 @@ public class FusekiConfig {
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
         DataService dataService = buildDataService(svc, dsDescMap) ;
-        Collection<String> allowedUsers = getAllowedUsers(svc);
+        RequestAuthorization allowedUsers = FusekiBuilder.allowedUsers(svc);
         dataService.setAllowedUsers(allowedUsers);
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }
     
-    /** Get the allowed users on some resources.
-     *  
-     * @param resource
-     * @return Collection<String>
-     */
-    public static Collection<String> getAllowedUsers(Resource resource) {
-        Collection<RDFNode> allowedUsers = FusekiBuildLib.getAll(resource, "fu:"+pAllowedUsers.getLocalName());
-        Collection<String> userNames = null;
-        if ( allowedUsers != null ) {
-            // Check all values are simple strings  
-            List<String> bad = allowedUsers.stream()
-                .map(RDFNode::asNode)
-                .filter(rn -> ! Util.isSimpleString(rn))
-                .map(rn->rn.toString())
-                .collect(toList());
-            if ( ! bad.isEmpty() ) {
-                //Fuseki.configLog.error(format("User names must be a simple string: bad = %s", bad));
-                throw new FusekiConfigException(format("User names should be a simple string: bad = %s", bad));
-            }
-            // RDFNodes/literals to strings.
-            userNames = allowedUsers.stream()
-                .map(RDFNode::asNode)
-                .map(Node::getLiteralLexicalForm)
-                .collect(toList());
-        }
-        return userNames;
-    }
-
     /** Build a DatasetRef starting at Resource svc, having the services as described by the descriptions. */
     private static DataService buildDataService(Resource svc, DatasetDescriptionRegistry dsDescMap) {
         Resource datasetDesc = ((Resource)FusekiBuildLib.getOne(svc, "fu:dataset")) ;

@@ -18,15 +18,25 @@
 
 package org.apache.jena.fuseki.build;
 
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
+import static org.apache.jena.fuseki.server.FusekiVocab.pAllowedUsers;
+
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.rdf.model.Property ;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.sparql.core.DatasetGraph ;
 
 /**
@@ -100,6 +110,37 @@ public class FusekiBuilder
     public static void removeDataset(DataAccessPointRegistry dataAccessPoints, String name) {
         name = DataAccessPoint.canonical(name);
         dataAccessPoints.remove(name);
+    }
+
+    /** Get the allowed users on some resources.
+     *  Returns null if the resource is null or if there were no settings. 
+     *  
+     * @param resource
+     * @return RequestAuthorization
+     */
+    public static RequestAuthorization allowedUsers(Resource resource) {
+        if ( resource == null )
+            return null;
+        Collection<RDFNode> allowedUsers = FusekiBuildLib.getAll(resource, "fu:"+pAllowedUsers.getLocalName());
+        if ( allowedUsers == null )
+            // Indicate no settings.
+            return null;
+        // Check all values are simple strings  
+        List<String> bad = allowedUsers.stream()
+            .map(RDFNode::asNode)
+            .filter(rn -> ! Util.isSimpleString(rn))
+            .map(rn->rn.toString())
+            .collect(toList());
+        if ( ! bad.isEmpty() ) {
+            //Fuseki.configLog.error(format("User names must be a simple string: bad = %s", bad));
+            throw new FusekiConfigException(format("User names should be a simple string: bad = %s", bad));
+        }
+        // RDFNodes/literals to strings.
+        Collection<String> userNames = allowedUsers.stream()
+            .map(RDFNode::asNode)
+            .map(Node::getLiteralLexicalForm)
+            .collect(toList());
+        return RequestAuthorization.policyAllowSpecific(userNames);
     }
 }
 

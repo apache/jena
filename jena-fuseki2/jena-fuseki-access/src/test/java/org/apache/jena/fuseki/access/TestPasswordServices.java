@@ -21,9 +21,6 @@ package org.apache.jena.fuseki.access;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-
-import java.util.Arrays;
 
 import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -31,6 +28,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.build.FusekiBuilder;
+import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
@@ -47,8 +45,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Tests for password access to a server and to services. */
-public class TestPasswordAccess {
+/**
+ * Tests for password access to services when there is no server-level access control
+ * and also programmatic setup.
+ * <p>
+ * See {@link TestPasswordServer} for tests with server-level access control
+ * and also access control by assembler
+ * <p>
+ * See {@link TestSecurityFilterFuseki} for graph-level access control.
+ *
+ */
+public class TestPasswordServices {
 
     private static FusekiServer fusekiServer = null;
     private static int port = WebLib.choosePort();
@@ -57,9 +64,6 @@ public class TestPasswordAccess {
     private static AuthSetup authSetup2 = new AuthSetup("localhost", port, "user2", "pw2", "TripleStore");
     // Not in the user store.
     private static AuthSetup authSetupX = new AuthSetup("localhost", port, "userX", "pwX", "TripleStore");
-    
-    // All users must log in to access any resource. Disables some "open" tests.
-    private static boolean ConstraintServer = true;
     
     @BeforeClass
     public static void beforeClass() {
@@ -77,20 +81,19 @@ public class TestPasswordAccess {
         ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler(authSetup1.realm, userStore);
         
         // Secure these areas.
+        // User needs to be logged in.
         JettyLib.addPathConstraint(sh, "/ds");
         // Allow auth control even through there isn't anything there 
         JettyLib.addPathConstraint(sh, "/nowhere");
-
+        // user1 only.
         JettyLib.addPathConstraint(sh, "/ctl");
-        // Not controlled: JettyLib.addPathConstraint(sh, "/open");
         
-        // Server wide (breaks "open" tests)
-        if ( ConstraintServer )
-            JettyLib.addPathConstraint(sh, "/*");
+        // Not controlled: "/open"
         
         DataService dSrv = new DataService(DatasetGraphFactory.createTxnMem());
         FusekiBuilder.populateStdServices(dSrv, false);
-        dSrv.setAllowedUsers(Arrays.asList("user1"));
+        RequestAuthorization reqAuth = RequestAuthorization.policyAllowSpecific("user1");
+        dSrv.setAllowedUsers(reqAuth);
         
         fusekiServer =
             FusekiServer.create()
@@ -122,7 +125,6 @@ public class TestPasswordAccess {
     // Server authentication.
     
     @Test public void access_server() {
-        assumeFalse(ConstraintServer);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL) ) {
             assertNotNull(in);
             fail("Didn't expect to succeed");
@@ -134,7 +136,6 @@ public class TestPasswordAccess {
     }
 
     @Test public void access_open() {
-        assumeFalse(ConstraintServer);
         try( TypedInputStream in = HttpOp.execHttpGet(serverURL+"open") ) {
             assertNotNull(in);
         }
@@ -148,7 +149,6 @@ public class TestPasswordAccess {
     }
 
     @Test public void access_open_userX() {
-        assumeFalse(ConstraintServer);
         // OK.
         LibSec.withAuth(serverURL+"open", authSetupX, (conn)->{
             conn.queryAsk("ASK{}");

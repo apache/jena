@@ -1,0 +1,43 @@
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX access:  <http://jena.apache.org/access#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:allowedUsers  "*";
+   fuseki:services (
+     <#service_tdb2>
+     <#service_plain>
+   ) .
+
+<#service_tdb2> rdf:type fuseki:Service ;
+    rdfs:label                      "Access controlled dataset" ;
+    fuseki:allowedUsers             "user1", "user3";
+    fuseki:name                     "database1" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceReadGraphStore    "get" ;
+    fuseki:dataset                  <#dataset1>;
+    .
+
+## Own database
+<#dataset1> rdf:type  ja:MemoryDataset ;
+    .
+
+## Dataset 2
+## No service
+<#service_plain> rdf:type fuseki:Service ;
+    fuseki:name                  "database2";
+    fuseki:serviceQuery          "query";
+    fuseki:serviceQuery          "sparql";
+    fuseki:serviceReadGraphStore "get" ;
+    fuseki:dataset <#tdb_dataset> ;
+    .
+    
+<#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
+    .
+    

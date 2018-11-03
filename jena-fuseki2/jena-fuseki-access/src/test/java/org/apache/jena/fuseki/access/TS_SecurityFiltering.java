@@ -26,12 +26,17 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestSecurityFilterLocal.class
+    TestAuthorizedRequest.class
+    
+    , TestSecurityFilterLocal.class
     , TestSecurityFilterFuseki.class
+    
     , TestSecurityAssemblerBuild.class
-    , TestAssemblerSeparate.class
-    , TestAssemblerShared.class
-    , TestPasswordAccess.class
+    , TestGraphSecurityAssemblerSeparate.class
+    , TestGraphSecurityAssemblerShared.class
+    
+    , TestPasswordServer.class
+    , TestPasswordServices.class
 })
 
 public class TS_SecurityFiltering {
