@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.compose.Union;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.ARQConstants ;
@@ -64,16 +65,32 @@ public class DynamicDatasets
     
     /** Given a DatasetGraph and a query, form a DatasetGraph that 
      * is the dynamic dataset from the collection of graphs from the dataset
-     * that go to make up the default graph (union) and named graphs.  
+     * that go to make up the default graph and named graphs.  
      */
     public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
-    {
-        Graph dft = new GraphUnionRead(dsg, defaultGraphs) ;
-        DatasetGraph dsg2 = new DatasetGraphMapLink(dft) ;
+   {
+        Graph dft;
+        if ( defaultUnionGraph || defaultGraphs.contains(Quad.unionGraph) ) {
+            if ( defaultGraphs.contains(Quad.defaultGraphIRI) )
+                dft = new Union(dsg.getUnionGraph(), dsg.getDefaultGraph());
+            else
+                // Any other FROM graphs don't matter - they are in the union graph.
+                dft = dsg.getUnionGraph();
+        } else
+            dft = new GraphUnionRead(dsg, defaultGraphs);
+        
+        DatasetGraph dsg2 = new DatasetGraphMapLink(dft);
         
         // The named graphs.
         for ( Node gn : namedGraphs )
         {
+            if ( Quad.isUnionGraph(gn) ) {
+                // Special case - don't put an explicitly named union graph into the name
+                // graphs because union is an operation over all named graphs ... which
+                // includes itself.
+                // In practical terms, it can lead to stackoveflow in execution.  
+                continue;
+            }
             Graph g = GraphOps.getGraph(dsg, gn) ;
             if ( g != null )
                 dsg2.addGraph(gn, g) ;
@@ -82,50 +99,27 @@ public class DynamicDatasets
         if ( dsg.getContext() != null )
             dsg2.getContext().putAll(dsg.getContext()) ;
 
-        if ( defaultUnionGraph && defaultGraphs.size() == 0 )
-        {
-            // Create a union graph - there were no defaultGraphs explicitly named.
-            Graph unionGraph = new GraphUnionRead(dsg, namedGraphs) ;
-            dsg2.setDefaultGraph(unionGraph) ;
-        }
-
-        // read-only, <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph> processing.
-        dsg2 = new DynamicDatasetGraph(dsg2) ;
+        // Wrap with marker.
+        dsg2 = new DynamicDatasetGraph(dsg2, dsg);
+        
         // Record what we've done.
-        // c.f. "ARQConstants.sysDatasetDescription" which is used to pass in a  DatasetDescription
+        // c.f. "ARQConstants.sysDatasetDescription" which is used to pass in a DatasetDescription
         dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs) ;
         dsg2.getContext().set(ARQConstants.symDatasetNamedGraphs,   namedGraphs) ;
         return dsg2 ;
     }
-    
-    public static class DynamicDatasetGraph extends DatasetGraphReadOnly
-    {
-        public DynamicDatasetGraph(DatasetGraph dsg) {
-            super(dsg) ;
+
+    // DatasetGraphWrapperView
+    public static class DynamicDatasetGraph extends DatasetGraphReadOnly {
+        private final DatasetGraph projected;
+
+        public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph baseDSG) {
+            super(viewDSG, baseDSG.getContext().copy());
+            this.projected = baseDSG;
         }
-
-        private Graph unionGraph = null ;
-
-        @Override
-        public boolean containsGraph(Node graphNode) {
-            if ( Quad.isUnionGraph(graphNode) ) return true ;
-            if ( Quad.isDefaultGraphExplicit(graphNode)) return true ;
-            return super.containsGraph(graphNode) ;
-        }
-
-        // See also the GraphOps
-        @Override
-        public Graph getGraph(Node graphNode)
-        {
-            if ( Quad.isUnionGraph(graphNode) ) {
-                if ( unionGraph == null )
-                    unionGraph = GraphOps.unionGraph(super.getWrapped()) ;
-                return unionGraph ;
-            }
-            if ( Quad.isDefaultGraph(graphNode))
-                return getDefaultGraph() ;
-
-            return super.getGraph(graphNode) ;
+        
+        public DatasetGraph getProjected() {
+            return projected;
         }
     }
 }

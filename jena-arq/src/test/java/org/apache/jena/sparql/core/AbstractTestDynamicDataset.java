@@ -120,6 +120,90 @@ public abstract class AbstractTestDynamicDataset extends BaseTest
                                                  2, dataset) ; 
                                      }
 
+    // -- Union graph.
+    
+    // No FROM <union> the underlying dataset.
+    @Test public void dynamic_union_1() { 
+        testCount("SELECT * FROM <urn:x-arq:UnionGraph> { ?s <uri:p> ?o }", 5, dataset) ; 
+    } 
+    
+    // Should be able to see two graphs in the union.
+    @Test public void dynamic_union_2() {
+        testCount("SELECT * FROM NAMED <graph:1> FROM NAMED <graph:2> FROM <graph:3>" + 
+                  "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
+            2, dataset);
+    }
+
+    @Test public void dynamic_union_3() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:UnionGraph> { GRAPH <urn:x-arq:UnionGraph> { } }", 1, dataset);
+    }
+    
+    // The union graph isn't in the named set, even if placed there explicitly.
+    @Test
+    public void dynamic_union_4() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:UnionGraph> { GRAPH ?g { } }", 0, dataset);
+    }
+
+    @Test
+    public void dynamic_union5() {
+        testCount("SELECT * " + "FROM NAMED <urn:x-arq:UnionGraph> " + "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }", 0, dataset);
+    }
+
+    // GRAPH <union> is the union over the view dataset (FROM NAMED)
+    @Test
+    public void dynamic_union_6() {
+        testCount("SELECT * " + "FROM NAMED <urn:x-arq:UnionGraph> " + "FROM NAMED <graph:4> "
+                  + "{ GRAPH <urn:x-arq:UnionGraph> { ?s <uri:p> ?o } }",
+            1, dataset);
+    }
+
+    // -- dft graph
+
+    @Test
+    public void dynamic_dft_1() {
+        testCount("SELECT * FROM <urn:x-arq:DefaultGraph> { ?s <uri:p> 0 }", 1, dataset);
+    }
+
+    @Test
+    public void dynamic_dft_2() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:DefaultGraph> { ?s <uri:p> 0 }", 0, dataset);
+    }
+
+    @Test
+    public void dynamic_dft_3() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:DefaultGraph> { GRAPH ?g { } }",
+            1, dataset);
+    }
+
+    // No FROM -> empty default.
+    @Test
+    public void dynamic_dft_4() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:DefaultGraph> { GRAPH ?g { ?s <uri:p> 0 } }",
+            0, dataset);
+    }
+
+    // No FROM -> empty default.
+    @Test
+    public void dynamic_dft_5() {
+        testCount("SELECT * FROM NAMED <urn:x-arq:DefaultGraph> "+
+                  "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> 0 } }",
+                  0, dataset);
+    }
+
+    @Test
+    public void dynamic_dft_6() {
+        testCount("SELECT * " + "FROM <graph:1> FROM <graph:2> " + "FROM NAMED <urn:x-arq:DefaultGraph> "+
+                  "{ GRAPH ?g { ?s <uri:p> ?o .FILTER ( ?o IN ( 1, 2) ) } }",
+                  2, dataset);
+    }
+
+    @Test
+    public void dynamic_dft_7() {
+        testCount("SELECT * " + "FROM <graph:1> FROM <graph:2> " + "FROM NAMED <urn:x-arq:DefaultGraph> "+
+                  "{ GRAPH <urn:x-arq:DefaultGraph> { ?s <uri:p> ?o . FILTER ( ?o IN ( 1, 2) ) } }",
+                  2, dataset);
+    }
+    
     private static void testCount(String queryString, int expected, Dataset ds)
     {
         Query query = QueryFactory.create(queryString) ;

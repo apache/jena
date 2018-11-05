@@ -20,7 +20,6 @@ package org.apache.jena.tdb.store;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
-import org.apache.jena.tdb.TDB ;
 import org.apache.jena.tdb.TDBFactory ;
 
 public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
@@ -33,9 +32,5 @@ public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
     
     @Override
     protected void releaseDataset(Dataset ds) {}
-    
-    protected void startDynamicAndUnionTest()    { TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ; }
-
-    protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
 }
 

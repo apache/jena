@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
 
 /** <b>This class is not in the test suite (it tests for currently unavailable features)</b>.
- * TDB does support this feature and uses AbstractTestDynamicDatase
+ * TDB does support this feature and uses AbstractTestDynamicDatabase
  */
 @RunWith(Parameterized.class)
 public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
