@@ -158,9 +158,9 @@ public class DatasetGraphFactory
     public static GraphMaker graphMakerNull = (name) -> null ;
 
     /** A graph maker that creates unnamed Jena default graphs */ 
-    /*package*/ static GraphMaker graphMakerMem = (name) -> GraphFactory.createDefaultGraph() ;
+    public static GraphMaker graphMakerMem = (name) -> GraphFactory.createDefaultGraph() ;
     
-    /** A graph maker that create {@link NamedGraph}s around a Jena default graphs */ 
+    /** A graph maker that creates {@link NamedGraph}s around a Jena default graphs */ 
     public static GraphMaker graphMakerNamedGraphMem = (name) -> {
         Graph g = GraphFactory.createDefaultGraph() ;
         return new NamedGraphWrapper(name, g);

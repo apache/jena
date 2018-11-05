@@ -34,8 +34,10 @@ import org.apache.jena.sparql.graph.GraphUnionRead ;
 
 public class DynamicDatasets
 {
-    /** Given a Dataset and a query, form a Dataset that 
-     * is the dynamic dataset from the query.
+    /**
+     * Given a DatasetDescription, form a Dataset that is the dynamic dataset over the
+     * base dataset. Returns the original Dataset if the dataset description is null or
+     * empty.
      */ 
     public static Dataset dynamicDataset(DatasetDescription description, Dataset ds, boolean defaultUnionGraph)
     {
@@ -46,10 +48,11 @@ public class DynamicDatasets
         return DatasetFactory.wrap(dsg2) ;
     }
 
-    /** Given a DatasetGraph and a query, form a DatasetGraph that 
-     * is the dynamic dataset from the query.
-     * Returns the original DatasetGraph if the dataset description is null or empty.
-     */ 
+    /**
+     * Given a DatasetDescription, form a Dataset that is the dynamic dataset over the
+     * base dataset. Returns the original DatasetGraph if the dataset description is null
+     * or empty.
+     */
     public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph)
     {
         if ( description == null )
@@ -63,9 +66,9 @@ public class DynamicDatasets
         return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
     }
     
-    /** Given a DatasetGraph and a query, form a DatasetGraph that 
-     * is the dynamic dataset from the collection of graphs from the dataset
-     * that go to make up the default graph and named graphs.  
+    /**
+     * Form a {@link DatasetGraph} that is the dynamic dataset from the collections of
+     * graphs from the dataset that go to make up the default graph and named graphs.
      */
     public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
    {
@@ -99,7 +102,6 @@ public class DynamicDatasets
         if ( dsg.getContext() != null )
             dsg2.getContext().putAll(dsg.getContext()) ;
 
-        // Wrap with marker.
         dsg2 = new DynamicDatasetGraph(dsg2, dsg);
         
         // Record what we've done.
@@ -109,8 +111,7 @@ public class DynamicDatasets
         return dsg2 ;
     }
 
-    // DatasetGraphWrapperView
-    public static class DynamicDatasetGraph extends DatasetGraphReadOnly {
+    public static class DynamicDatasetGraph extends DatasetGraphReadOnly implements DatasetGraphWrapperView {
         private final DatasetGraph projected;
 
         public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph baseDSG) {
@@ -118,7 +119,7 @@ public class DynamicDatasets
             this.projected = baseDSG;
         }
         
-        public DatasetGraph getProjected() {
+        private DatasetGraph getProjected() {
             return projected;
         }
     }

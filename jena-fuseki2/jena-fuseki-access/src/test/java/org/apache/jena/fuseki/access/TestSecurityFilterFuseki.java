@@ -18,18 +18,11 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.apache.jena.fuseki.access.AccessTestLib.addTestData;
-import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
-import static org.apache.jena.fuseki.access.AccessTestLib.s0;
-import static org.apache.jena.fuseki.access.AccessTestLib.s1;
+import static org.apache.jena.fuseki.access.AccessTestLib.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
@@ -92,6 +85,7 @@ public class TestSecurityFilterFuseki {
         reg.put("user0", new SecurityContext(Quad.defaultGraphIRI.getURI()));
         reg.put("user1", new SecurityContext("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityContext("http://test/g1", "http://test/g2", "http://test/g3"));
+        reg.put("user3", new SecurityContext(Quad.defaultGraphIRI.getURI(), "http://test/g2", "http://test/g3"));
         
         testdsg1 = DataAccessCtl.controlledDataset(testdsg1, reg);
         testdsg2 = DataAccessCtl.controlledDataset(testdsg2, reg);
@@ -122,6 +116,7 @@ public class TestSecurityFilterFuseki {
         addUserPassword(propertyUserStore, "user0",    "pw0",    roles);
         addUserPassword(propertyUserStore, "user1",    "pw1",    roles);
         addUserPassword(propertyUserStore, "user2",    "pw2",    roles);
+        addUserPassword(propertyUserStore, "user3",    "pw3",    roles);
         return propertyUserStore;
     }
 
@@ -203,24 +198,36 @@ public class TestSecurityFilterFuseki {
         query401("user0", "not-the-password", queryAll);
     }
 
-    // More queries. DevSecureNG.java // FROM, "GRAPH ?g" and non-graph (also TestSecurityFilterLocal)
+    // Visibility of data.
     
-//    query(connx, "SELECT * FROM <http://host/graphname1> { GRAPH ?g {} }");
-//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
-//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { GRAPH <http://host/graphname1> { ?s ?p ?o } }");
-//    query(connx, "SELECT * { GRAPH ?g {} }");
-//    query(connx, "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
-//    query(connx, "SELECT * FROM <http://host/graphname1> { ?s ?p ?o }");
-//    query(connx, "SELECT * FROM <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
-//    query(connx, "SELECT * FROM NAMED <http://host/graphname1> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
-//    query(connx, "SELECT * { GRAPH <http://host/graphname1> { ?s ?p ?o }}");
-//    
-//    query(connx, "SELECT * FROM <http://host/graphname4> { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
-//    query(connx, "SELECT * { GRAPH <http://host/graphname4> { ?s ?p ?o }}");
-//    
-//    query(connx, "SELECT * { GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }");
-//    query(connx, "SELECT * FROM <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o }");
+    @Test public void query_dyn_1() {
+        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g1> { ?s ?p ?o }");
+        assertSeen(results, s1);
+    }
 
+    @Test public void query_dyn_2() {
+        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g2> { ?s ?p ?o }");
+        assertSeen(results);
+    }
+
+    @Test public void query_dyn_3() {
+        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g1> FROM <http://test/g2> { ?s ?p ?o }");
+        assertSeen(results,s1);
+    }
+    
+    @Test public void query_dyn_4() {
+        Set<Node> results = query("user3", "pw3", "SELECT * FROM <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o }");
+        assertSeen(results, s2, s3);
+        Set<Node> results2 = query("user3", "pw3", "SELECT * { GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }");
+        assertEquals(results, results2);
+    }
+
+    @Test public void query_dyn_5() {
+        Set<Node> results = query("user3", "pw3", "SELECT * FROM NAMED <http://test/g1> { ?s ?p ?o }");
+        assertSeen(results);
+        Set<Node> results2 = query("user3", "pw3", "SELECT * { GRAPH <http://test/g1> { ?s ?p ?o } }");
+        assertEquals(results, results2);
+    }
     
     private Set<Node> gsp(String user, String password, String graphName) {
         Set<Node> results = new HashSet<>();

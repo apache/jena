@@ -84,6 +84,10 @@ public class SecurityContext {
                 .collect(Collectors.toList()) ;
     }
     
+    public boolean visableDefaultGraph() {
+        return matchDefaultGraph;
+    }
+
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
      * {@link QueryExecution}. This does not modify the {@link DatasetGraph}
@@ -98,19 +102,12 @@ public class SecurityContext {
     }
     
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        if ( ! DataAccessCtl.isAccessControlled(dsg) ) {
-//            throw new InternalErrorException("SecurityContext.createQueryExecution called on an unsecured DatasetGraph");
-//            // Internal error?
-            // Already setup or no security context.
-            return QueryExecutionFactory.create(query, dsg);
-        }
         if ( isAccessControlledTDB(dsg) ) {
             QueryExecution qExec = QueryExecutionFactory.create(query, dsg);
             filterTDB(dsg, qExec);
             return qExec;
         }
-        
-        // XXX Does not work on GRAPH ?g {}
+        // Not TDB - do by selecting graphs.
         DatasetGraph dsgA = DataAccessCtl.filteredDataset(dsg, this);
         return QueryExecutionFactory.create(query, dsgA);
     }
@@ -150,7 +147,7 @@ public class SecurityContext {
         throw new IllegalArgumentException("Not a TDB1 or TDB2 database: "+dsg.getClass().getSimpleName());
     }
 
-    public boolean isAccessControlledTDB(DatasetGraph dsg) {
+    private static boolean isAccessControlledTDB(DatasetGraph dsg) {
         DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
         if ( dsgBase == null )
             return false;
