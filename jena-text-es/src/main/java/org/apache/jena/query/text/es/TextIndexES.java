@@ -34,7 +34,7 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -134,13 +134,13 @@ public class TextIndexES implements TextIndex {
                 LOGGER.debug("Initializing the Elastic Search Java Client with settings: " + esSettings);
                 Settings settings = Settings.builder()
                         .put(CLUSTER_NAME_PARAM, esSettings.getClusterName()).build();
-                List<InetSocketTransportAddress> addresses = new ArrayList<>();
+                List<TransportAddress> addresses = new ArrayList<>();
                 for(String host: esSettings.getHostToPortMapping().keySet()) {
-                    InetSocketTransportAddress addr = new InetSocketTransportAddress(InetAddress.getByName(host), esSettings.getHostToPortMapping().get(host));
+                    TransportAddress addr = new TransportAddress(InetAddress.getByName(host), esSettings.getHostToPortMapping().get(host));
                     addresses.add(addr);
                 }
 
-                InetSocketTransportAddress socketAddresses[] = new InetSocketTransportAddress[addresses.size()];
+                TransportAddress socketAddresses[] = new TransportAddress[addresses.size()];
                 TransportClient tc = new PreBuiltTransportClient(settings);
                 tc.addTransportAddresses(addresses.toArray(socketAddresses));
                 client = tc;

@@ -54,7 +54,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser ;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
@@ -371,7 +370,8 @@ public class TextIndexLucene implements TextIndex {
             case "QueryParser":
                 return new QueryParser(docDef.getPrimaryField(), analyzer) ;
             case "AnalyzingQueryParser":
-                return new AnalyzingQueryParser(docDef.getPrimaryField(), analyzer) ;
+                // AnalyzingQueryParser is deprecated in Lucene 7, switching to QueryParser
+                return new QueryParser(docDef.getPrimaryField(), analyzer) ;
             case "ComplexPhraseQueryParser":
                 return new ComplexPhraseQueryParser(docDef.getPrimaryField(), analyzer);
             default:

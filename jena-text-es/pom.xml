@@ -140,12 +140,13 @@
         <groupId>com.github.alexcojocaru</groupId>
         <artifactId>elasticsearch-maven-plugin</artifactId>
         <!-- REPLACE THE FOLLOWING WITH THE PLUGIN VERSION YOU NEED -->
-        <version>5.2</version>
+        <version>6.8</version>
         <configuration>
           <clusterName>elasticsearch</clusterName>
           <transportPort>9500</transportPort>
           <httpPort>9400</httpPort>
           <timeout>${es.startup.timeout}</timeout>
+          <version>6.4.2</version>
         </configuration>
         <executions>
           <!--

@@ -80,9 +80,9 @@
     <ver.httpcore-osgi>${ver.httpcore}</ver.httpcore-osgi>
     <ver.httpclient-osgi>${ver.httpclient}</ver.httpclient-osgi>
 
-    <ver.lucene>6.4.1</ver.lucene>
+    <ver.lucene>7.4.0</ver.lucene>
 
-    <ver.elasticsearch>5.2.2</ver.elasticsearch>
+    <ver.elasticsearch>6.4.2</ver.elasticsearch>
     <!-- elasticsearch uses this by reflection -->
     <ver.log4j2>2.7</ver.log4j2>
 
@@ -422,6 +422,12 @@
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-queryparser</artifactId>
+        <version>${ver.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-highlighter</artifactId>
         <version>${ver.lucene}</version>
       </dependency>
 

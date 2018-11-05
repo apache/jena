@@ -257,8 +257,8 @@ public class TextIndexESIT extends BaseESTest {
         GetResponse response = addEntity(entityToAdd);
         Assert.assertTrue(response.getSource().containsKey(key));
         Assert.assertEquals(value, ((List<?>)response.getSource().get(key)).get(0));
-
     }
+    
     private void querySpecialCharacterQuery(Node label, String queryString, String lang, int limit, int expectedResults) {
         List<TextHit> result = classToTest.query(label, queryString, null, lang, limit);
         Assert.assertNotNull(result);
@@ -520,8 +520,8 @@ public class TextIndexESIT extends BaseESTest {
 
         Assert.assertNotNull(response);
         Assert.assertEquals(entityToAdd.getId(), response.getId());
+        try { TimeUnit.SECONDS.sleep(1); } catch (Exception ex) { } // delay to allow ES to complete the add
         return response;
-
     }
 
 }
