@@ -21,7 +21,6 @@
   <artifactId>jena-text-es</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Text Search - Elasticsearch</name>
-  <version>3.10.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -140,13 +139,13 @@
         <groupId>com.github.alexcojocaru</groupId>
         <artifactId>elasticsearch-maven-plugin</artifactId>
         <!-- REPLACE THE FOLLOWING WITH THE PLUGIN VERSION YOU NEED -->
-        <version>6.8</version>
+        <version>${ver.elasticsearch.maven.plugin}</version>
         <configuration>
           <clusterName>elasticsearch</clusterName>
           <transportPort>9500</transportPort>
           <httpPort>9400</httpPort>
           <timeout>${es.startup.timeout}</timeout>
-          <version>6.4.2</version>
+          <version>${ver.elasticsearch}</version>
         </configuration>
         <executions>
           <!--

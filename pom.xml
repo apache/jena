@@ -83,6 +83,8 @@
     <ver.lucene>7.4.0</ver.lucene>
 
     <ver.elasticsearch>6.4.2</ver.elasticsearch>
+    <!-- make sure that the plugin version is compatible with the elasticsearch version -->
+    <ver.elasticsearch.maven.plugin>6.8</ver.elasticsearch.maven.plugin>
     <!-- elasticsearch uses this by reflection -->
     <ver.log4j2>2.7</ver.log4j2>
 
