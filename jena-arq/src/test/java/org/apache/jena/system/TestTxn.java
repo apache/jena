@@ -312,18 +312,42 @@ public class TestTxn {
         });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void txn_nested_10() {
         Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
-            // Must the same type to nest Txn.
+            // Can promote outer.
             Txn.exec(counter, TxnType.WRITE, ()->{});
         });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void txn_nested_11() {
         Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
-            // Must the same type to nest Txn.
+            // Can promote outer.
+            Txn.exec(counter, TxnType.WRITE, ()->{});
+        });
+    }
+    
+    @Test(expected=JenaTransactionException.class)
+    public void txn_nested_12() {
+        Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
+            // Block promote by doing a W txn on another thread.
+            ThreadAction.create(
+                ()->Txn.executeWrite(counter, ()->counter.inc())
+                ).run();
+            // Can not promote outer.
+            Txn.exec(counter, TxnType.WRITE, ()->{});
+        });
+    }
+    
+    @Test
+    public void txn_nested_13() {
+        Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
+            // Does not block promote
+            ThreadAction.create(
+                ()->Txn.executeWrite(counter, ()->counter.inc())
+                ).run();
+            // Can promote outer.
             Txn.exec(counter, TxnType.WRITE, ()->{});
         });
     }
