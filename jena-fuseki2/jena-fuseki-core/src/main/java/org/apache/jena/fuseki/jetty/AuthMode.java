@@ -18,4 +18,17 @@
 
 package org.apache.jena.fuseki.jetty;
 
-public enum AuthMode { BASIC, DIGEST }
+/** Authorization scheme */
+public enum AuthMode { BASIC, DIGEST ;
+    public static AuthMode scheme(String name) {
+        if ( name == null )
+            return null;
+        name = name.toLowerCase();
+        switch(name) {
+            case "basic": return BASIC;
+            case "digest": return DIGEST;
+            default:
+                throw new IllegalArgumentException("no recognized as an authorization scheme: "+name);
+        }
+    }
+}

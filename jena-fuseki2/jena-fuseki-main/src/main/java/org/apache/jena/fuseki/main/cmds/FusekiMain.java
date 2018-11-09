@@ -33,6 +33,8 @@ import arq.cmdline.ModDatasetAssembler;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -55,14 +57,14 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDB;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.transaction.TransactionManager;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
-        private static int defaultPort = 3030;
+        private static int defaultPort          = 3030;
+        private static int defaultHttpsPort     = 3043;
         
         private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem");
         private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
@@ -74,13 +76,21 @@ public class FusekiMain extends CmdARQ {
         
         // No SPARQL dataset or services
         private static ArgDecl  argEmpty        = new ArgDecl(ArgDecl.NoValue,  "empty", "no-dataset");
+        private static ArgDecl  argGeneralQuerySvc = new ArgDecl(ArgDecl.HasValue, "general");
+        
         private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port");
         private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue,  "localhost", "local");
         private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout");
         private static ArgDecl  argConfig       = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
-        private static ArgDecl  argGeneralQuerySvc = new ArgDecl(ArgDecl.HasValue, "general");
+        
+        private static ArgDecl  argHttps        = new ArgDecl(ArgDecl.HasValue, "https");
+        private static ArgDecl  argHttpsPort    = new ArgDecl(ArgDecl.HasValue, "httpsPort", "httpsport", "sport");
+        
+        private static ArgDecl  argPasswdFile   = new ArgDecl(ArgDecl.HasValue, "passwd");
+        private static ArgDecl  argRealm        = new ArgDecl(ArgDecl.HasValue, "realm");
+        
         
         // Same as --empty --validators --general=/sparql, --files=ARG
         
@@ -100,7 +110,7 @@ public class FusekiMain extends CmdARQ {
             return inner.buildServer();
         }
 
-        static void innerMain(String... argv) {
+        static void run(String... argv) {
             JenaSystem.init();
             new FusekiMain(argv).mainRun();
         }
@@ -144,8 +154,14 @@ public class FusekiMain extends CmdARQ {
             add(argSparqler, "--sparqler=DIR",
                 "Run with SPARQLer services Directory for static content");
             add(argValidators, "--validators", "Install validators");
+            
+            add(argHttps, "--https=CONF", "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
+            add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
-            super.modVersion.addClass(TDB.class);
+            // Disable - put in the configuration file.
+//            add(argPasswdFile, "--passwd=FILE", "Password file");
+//            add(argRealm, "--realm=REALM", "Realm name");
+
             super.modVersion.addClass(Fuseki.class);
         }
 
@@ -208,15 +224,9 @@ public class FusekiMain extends CmdARQ {
             // ---- Port
             serverConfig.port = defaultPort;
             
-            if ( contains(argPort) ) {
-                String portStr = getValue(argPort);
-                try {
-                    int port = Integer.parseInt(portStr);
-                    serverConfig.port = port;
-                } catch (NumberFormatException ex) {
-                    throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
-                }
-            }
+            if ( contains(argPort) )
+                serverConfig.port = portNumber(argPort);
+
             if ( contains(argLocalhost) )
                 serverConfig.loopback = true;
 
@@ -337,6 +347,30 @@ public class FusekiMain extends CmdARQ {
                 serverConfig.contentDirectory = filebase;
             }
 
+            if ( contains(argPasswdFile) )
+                serverConfig.passwdFile = getValue(argPasswdFile);
+            if ( contains(argRealm) )
+                serverConfig.realm =  getValue(argRealm);
+            
+            if ( contains(argHttpsPort) && ! contains(argHttps) )
+                throw new CmdException("https port given but not certificate dtails via --"+argHttps.getKeyName());
+            
+            if ( contains(argHttps) ) {
+                serverConfig.httpsPort = defaultHttpsPort;
+                if (  contains(argHttpsPort) )
+                    serverConfig.httpsPort = portNumber(argHttpsPort);
+                String httpsSetup = getValue(argHttps);
+                // The details go in a separate file that can be secured. 
+                JsonObject httpsConf = JSON.read(httpsSetup);
+                Path path = Paths.get(httpsSetup).toAbsolutePath();
+                String keystore = httpsConf.get("keystore").getAsString().value();
+                // Resolve relative to the https setup file.  
+                serverConfig.httpsKeystore = path.getParent().resolve(keystore).toString();
+                
+                serverConfig.httpsKeystorePasswd = httpsConf.get("passwd").getAsString().value();
+              
+            }
+            
 //            if ( contains(argGZip) ) {
 //                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
 //                    throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip));
@@ -344,11 +378,22 @@ public class FusekiMain extends CmdARQ {
 //            }
         }
         
+        private int portNumber(ArgDecl arg) {
+            String portStr = getValue(arg);
+            try {
+                int port = Integer.parseInt(portStr);
+                return port;
+            } catch (NumberFormatException ex) {
+                throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
+            }
+
+        }
+        
         @Override
         protected void exec() {
             try {
                 FusekiServer server = buildServer(serverConfig);
-                info(server, serverConfig);
+                info(server);
                 try {
                     server.start();
                 } catch (FusekiException ex) {
@@ -413,10 +458,19 @@ public class FusekiMain extends CmdARQ {
             if ( serverConfig.contentDirectory != null )
                 builder.staticFileBase(serverConfig.contentDirectory) ;
 
+            if ( serverConfig.passwdFile != null )
+                builder.passwordFile(serverConfig.passwdFile);
+
+            if ( serverConfig.realm != null )
+                builder.realm(serverConfig.realm);
+            
+            if ( serverConfig.httpsKeystore != null )
+                builder.https(serverConfig.httpsPort, serverConfig.httpsKeystore, serverConfig.httpsKeystorePasswd);
+           
             return builder.build();
         }
 
-        private void info(FusekiServer server, ServerConfig serverConfig) {
+        private void info(FusekiServer server) {
             if ( super.isQuiet() )
                 return;
 

@@ -34,8 +34,12 @@ public class FusekiVocab
 
     public static final Property pServices          = property("services");
     public static final Property pServiceName       = property("name");
-    public static final Property pAllowedUsers      = property("allowedUsers");
     
+    public static final Property pAllowedUsers      = property("allowedUsers");
+    public static final Property pPasswordFile      = property("passwd");
+    public static final Property pRealm             = property("realm");
+    public static final Property pAuth              = property("auth");
+
     public static final Property pServiceQueryEP                = property("serviceQuery");
     public static final Property pServiceUpdateEP               = property("serviceUpdate");
     public static final Property pServiceUploadEP               = property("serviceUpload");

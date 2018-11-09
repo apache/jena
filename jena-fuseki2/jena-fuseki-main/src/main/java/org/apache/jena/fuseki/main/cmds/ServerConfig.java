@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
  *  This is processed by {@link FusekiMain#buildServer}.
  */
 class ServerConfig {
-    /** Server port */
+    /** Server port. This is the http port when both http and https are active. */
     public int port;
     /** Loopback */
     public boolean loopback           = false;
@@ -48,4 +48,13 @@ class ServerConfig {
     /** An informative label */
     public String datasetDescription;
     public String contentDirectory    = null;
+    
+    // Server authentication
+    public String passwdFile          = null;
+    public String realm               = null;
+    
+    // https
+    public int httpsPort              = -1;
+    public String httpsKeystore       = null;
+    public String httpsKeystorePasswd = null;
 }

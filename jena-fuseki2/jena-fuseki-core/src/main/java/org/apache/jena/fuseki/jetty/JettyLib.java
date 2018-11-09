@@ -25,8 +25,6 @@ import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
-//import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-//import org.eclipse.jetty.security.authentication.DigestAuthenticator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -66,21 +64,28 @@ public class JettyLib {
      * for adding the {@code pathspec} to apply it to.
      */
      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore) {
-         return makeSecurityHandler(realm, userStore, "**");
+         return makeSecurityHandler(realm, userStore, "**", dftAuthMode);
      }
 
-    /**
+     /** Create a Jetty {@link SecurityHandler} for basic authentication. 
+      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
+      * for adding the {@code pathspec} to apply it to.
+      */
+      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthMode authMode) {
+          return makeSecurityHandler(realm, userStore, "**", authMode);
+      }
+
+      /**
      * Digest requires an extra round trip so it is unfriendly to API
      * or scripts that stream.
      */
-     // [AuthScheme] Default
-     public static AuthMode authMode = AuthMode.DIGEST; 
+     public static AuthMode dftAuthMode = AuthMode.DIGEST; 
 
       /** Create a Jetty {@link SecurityHandler} for basic authentication. 
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
-     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role) {
+     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role, AuthMode authMode) {
         // role can be "**" for any authenticated user.
         Objects.requireNonNull(userStore);
         Objects.requireNonNull(role);
@@ -95,7 +100,6 @@ public class JettyLib {
         loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
         
-        // [AuthScheme]
         securityHandler.setLoginService(loginService);
         securityHandler.setAuthenticator( authMode == AuthMode.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
         if ( realm != null )

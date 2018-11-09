@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.main;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -36,12 +37,11 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
+import org.apache.jena.fuseki.jetty.AuthMode;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
+import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.AuthFilter;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
@@ -51,8 +51,11 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -115,22 +118,31 @@ public class FusekiServer {
     }
 
     public final Server server;
-    private int port;
+    private final int httpPort;
+    private final int httpsPort;
+    private final ServletContext servletContext;
 
-    private FusekiServer(int port, Server server) {
+    private FusekiServer(int httpPort, Server server) {
+        this(httpPort, -1, server, 
+            ((ServletContextHandler)server.getHandler()).getServletContext()
+            );
+    }
+
+    private FusekiServer(int httpPort, int httpsPort, Server server, ServletContext fusekiServletContext) {
         this.server = server;
-        // This should be the same.
-        //this.port = ((ServerConnector)server.getConnectors()[0]).getPort();
-        this.port = port;
+        this.httpPort = httpPort;
+        this.httpsPort = httpsPort;
+        this.servletContext = fusekiServletContext;
     }
 
     /**
-     * Return the port begin used.
+     * Return the port being used.
      * This will be the give port, which defaults to 3330, or
      * the one actually allocated if the port was 0 ("choose a free port").
+     * If https in use, this is the HTTPS port.
      */
     public int getPort() {
-        return port;
+        return httpsPort > 0 ? httpsPort : httpPort;
     }
 
     /** Get the underlying Jetty server which has also been set up. */
@@ -138,11 +150,11 @@ public class FusekiServer {
         return server;
     }
 
-    /** Get the {@link ServletContext}.
+    /** Get the {@link ServletContext} used for Fuseki processing.
      * Adding new servlets is possible with care.
      */
     public ServletContext getServletContext() {
-        return ((ServletContextHandler)server.getHandler()).getServletContext();
+        return servletContext;
     }
 
     /** Get the {@link DataAccessPointRegistry}.
@@ -164,16 +176,29 @@ public class FusekiServer {
      */
     public FusekiServer start() {
         try { server.start(); }
-        catch (Exception e) { throw new FusekiException(e); }
-        if ( port == 0 )
-            port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();
-        Fuseki.serverLog.info("Start Fuseki (port="+port+")");
+        
+        catch (IOException ex) {
+            if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
+                // Unbundle for clearer message.
+                throw new FusekiException(ex.getMessage());
+            throw new FusekiException(ex);
+        }
+        catch (IllegalStateException ex) {
+            throw new FusekiException(ex.getMessage());
+        }
+        catch (Exception ex) {
+            throw new FusekiException(ex);
+        }
+        if ( httpsPort > 0 )
+            Fuseki.serverLog.info("Start Fuseki (port="+httpPort+"/"+httpsPort+")");
+        else
+            Fuseki.serverLog.info("Start Fuseki (port="+getPort()+")");
         return this;
     }
 
     /** Stop the server. */
     public void stop() {
-        Fuseki.serverLog.info("Stop Fuseki (port="+port+")");
+        Fuseki.serverLog.info("Stop Fuseki (port="+getPort()+")");
         try { server.stop(); }
         catch (Exception e) { throw new FusekiException(e); }
     }
@@ -190,11 +215,17 @@ public class FusekiServer {
         private final ServiceDispatchRegistry  serviceDispatch;
         // Default values.
         private int                      serverPort         = 3330;
+        private int                      serverHttpsPort    = -1;
         private boolean                  networkLoopback    = false;
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
         private RequestAuthorization     serverAllowedUsers = null;
+        private String                   passwordFile       = null;
+        private String                   realm              = null;
+        private AuthMode                 authMode           = null;
+        private String                   httpsKeystore        = null;
+        private String                   httpsKeystorePasswd  = null;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
@@ -412,7 +443,7 @@ public class FusekiServer {
             Model model = AssemblerUtils.readAssemblerFile(filename);
 
             Resource server = FusekiConfig.findServer(model);
-            serverAllowedUsers = FusekiBuilder.allowedUsers(server);
+            processServerLevel(server);
             
             // Process server and services, whether via server ja:services or, if absent, by finding by type.
             // Side effect - sets global context.
@@ -421,6 +452,58 @@ public class FusekiServer {
             return this;
         }
 
+        /**
+         * Server level setting specific to Fuseki main.
+         * General settings done by {@link FusekiConfig#processServerConfiguration}.
+         */
+        private void processServerLevel(Resource server) {
+            if ( server == null )
+                return;
+            // Extract settings - the server building is done in buildSecurityHandler,
+            // buildAccessControl.  Dataset and graph level happen in assemblers. 
+            passwordFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
+            if ( passwordFile != null )
+                passwordFile(passwordFile);
+            realm = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
+            if ( realm == null )
+                realm = "TripleStore"; 
+            realm(realm);
+            
+            String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
+            authMode = AuthMode.scheme(authStr);
+            
+            serverAllowedUsers = FusekiBuilder.allowedUsers(server);
+        }
+
+        /**
+         * Set the realm used for HTTP digest authentication.
+         * The default is "TripleStore". 
+         */
+        public Builder realm(String realm) {
+            this.realm = realm;
+            return this;
+        }
+
+        /**
+         * Set the password file. This will be used to build a {@link #securityHandler
+         * security handler} if one is not supplied. Setting null clears any previous entry.
+         * The file should be 
+         * <a href="https://www.eclipse.org/jetty/documentation/current/configuring-security.html#hash-login-service">Eclipse jetty password file</a>.
+         */
+        public Builder passwordFile(String passwordFile) {
+            this.passwordFile = passwordFile;
+            return this;
+        }
+
+        public Builder https(int httpsPort, String certStore, String certStorePasswd) {
+            requireNonNull(certStore, "certStore");
+            requireNonNull(certStorePasswd, "certStorePasswd");
+            this.httpsKeystore = certStore;
+            this.httpsKeystorePasswd = certStorePasswd;
+            this.serverHttpsPort = httpsPort;
+            return this;
+        }
+        
         /**
          * Add the given servlet with the {@code pathSpec}. These servlets are added so
          * that they are checked after the Fuseki filter for datasets and before the
@@ -510,27 +593,66 @@ public class FusekiServer {
          * Build a server according to the current description.
          */
         public FusekiServer build() {
+            if ( securityHandler == null && passwordFile != null )
+                securityHandler = buildSecurityHandler();
             ServletContextHandler handler = buildFusekiContext();
-            // Use HandlerCollection for several ServletContextHandlers and thus several ServletContext.
-            Server server = jettyServer(serverPort, networkLoopback);
-            server.setHandler(handler);
-            return new FusekiServer(serverPort, server);
+            
+            Server server;
+            if ( serverHttpsPort == -1 ) {
+                // HTTP
+                server = jettyServer(handler, serverPort);
+            } else {
+                // HTTPS, no http redirection.
+                server = jettyServerHttps(handler, serverPort, serverHttpsPort, httpsKeystore, httpsKeystorePasswd);
+            }
+            if ( networkLoopback ) 
+                applyLocalhost(server);
+            return new FusekiServer(serverPort, serverHttpsPort, server, handler.getServletContext());
         }
 
-        /** Build one configured Fuseki in one unit - same ServletContext, same dispatch ContextPath */  
+        /** Build one configured Fuseki processor (ServletContext), same dispatch ContextPath */  
         private ServletContextHandler buildFusekiContext() {
             ServletContextHandler handler = buildServletContext(contextPath);
             ServletContext cxt = handler.getServletContext();
             Fuseki.setVerbose(cxt, verbose);
             servletAttr.forEach((n,v)->cxt.setAttribute(n, v));
-            // Clone to isolate from any future changes.
+            
+            // Clone to isolate from any future changes (reusing the builder).
             ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
             DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));
             JettyLib.setMimeTypes(handler);
             servletsAndFilters(handler);
+            buildAccessControl(cxt);
+            
             // Start services.
             DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
             return handler;
+        }
+        
+        private ConstraintSecurityHandler buildSecurityHandler() {
+            if ( passwordFile == null )
+                return null;
+            UserStore userStore = JettyLib.makeUserStore(passwordFile);
+            return JettyLib.makeSecurityHandler(realm, userStore, authMode);
+        }
+        
+        private void buildAccessControl(ServletContext cxt) {
+            // -- Access control
+            if ( securityHandler != null && securityHandler instanceof ConstraintSecurityHandler ) {
+                ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
+               if ( serverAllowedUsers != null )
+                   JettyLib.addPathConstraint(csh, "/*");
+               else {
+                    DataAccessPointRegistry.get(cxt).forEach((name, dap)-> {
+                        DatasetGraph dsg = dap.getDataService().getDataset();
+                        if ( dap.getDataService().allowedUsers() != null ) {
+                            // Not need if whole server ACL'ed.
+                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
+                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
+                        }
+                    });
+               }
+            }
         }
         
         /** Build a ServletContextHandler */
@@ -595,7 +717,7 @@ public class FusekiServer {
         }
 
         /** Jetty server with one connector/port. */
-        private static Server jettyServer(int port, boolean loopback) {
+        private static Server jettyServer(ServletContextHandler handler, int port) {
             Server server = new Server();
             HttpConnectionFactory f1 = new HttpConnectionFactory();
             // Some people do try very large operations ... really, should use POST.
@@ -607,9 +729,23 @@ public class FusekiServer {
             ServerConnector connector = new ServerConnector(server, f1);
             connector.setPort(port);
             server.addConnector(connector);
-            if ( loopback )
-                connector.setHost("localhost");
+            server.setHandler(handler);
             return server;
+        }
+        
+        /** Jetty server with https. */
+        private static Server jettyServerHttps(ServletContextHandler handler, int httpPort, int httpsPort, String keystore, String certPassword) {
+            return JettyHttps.jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort);
+        }
+
+        /** Restrict connectors to localhost */
+        private static void applyLocalhost(Server server) {
+            Connector[] connectors = server.getConnectors();
+            for ( int i = 0 ; i < connectors.length ; i++ ) {
+                if ( connectors[i] instanceof ServerConnector ) {
+                    ((ServerConnector)connectors[i]).setHost("localhost");
+                }
+            }
         }
     }
 }
