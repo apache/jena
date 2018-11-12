@@ -18,30 +18,23 @@
 
 package org.apache.jena.fuseki.access;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
-/** Test parsing of assembers with security aspects */ 
-public class TestSecurityAssemblerBuild {
+/** Test parsing of assemblers with security aspects */ 
+public class TestServiceRegistry {
     static { JenaSystem.init(); }
-    static final String DIR = "testing/Access/";
+    static final String DIR = "testing/SecurityRegistry/";
 
-    @Test public void assembler1() {
-        assemblerFile(DIR+"assem-security.ttl");
-    }
-    
-    @Test public void assembler2() {
-        assemblerFile(DIR+"assem-security-shared.ttl");
-    }
-    
-    private void assemblerFile(String assemblerFile) { 
-        Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, VocabSecurity.tAccessControlledDataset);
-        DatasetGraphAccessControl dsg = (DatasetGraphAccessControl)ds.asDatasetGraph();
-        AuthorizationService securityRegistry = dsg.getAuthService();
-        assertNotNull(securityRegistry);
+    @Test public void assemblerFile() { 
+        AuthorizationService authService = (AuthorizationService)AssemblerUtils.build(DIR+"assem-security-registry.ttl", VocabSecurity.tSecurityRegistry);
+        assertNotNull(authService);
+        SecurityRegistry sReg = (SecurityRegistry)authService;
+        assertEquals(4, sReg.keys().size());
+        assertEquals(3, sReg.get("user1").visibleGraphs().size());
     }
 }

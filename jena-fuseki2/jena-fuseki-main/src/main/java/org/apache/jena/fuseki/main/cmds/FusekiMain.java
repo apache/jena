@@ -122,7 +122,7 @@ public class FusekiMain extends CmdARQ {
                 // Consider ...
                 TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2;
 
-            getUsage().startCategory("Fuseki");
+            getUsage().startCategory("Fuseki Main");
             addModule(modDataset);
             add(argMem, "--mem",
                 "Create an in-memory, non-persistent dataset for the server");

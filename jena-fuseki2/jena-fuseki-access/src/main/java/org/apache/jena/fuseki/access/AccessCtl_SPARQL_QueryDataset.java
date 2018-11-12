@@ -36,10 +36,10 @@ import org.apache.jena.sparql.core.DynamicDatasets.DynamicDatasetGraph;
 
 /** A Query {@link ActionService} that inserts a security filter on each query. */
 final
-public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
+public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     private final Function<HttpAction, String> requestUser;
 
-    public Filtered_SPARQL_QueryDataset(Function<HttpAction, String> requestUser) {
+    public AccessCtl_SPARQL_QueryDataset(Function<HttpAction, String> requestUser) {
         this.requestUser = requestUser; 
     }
 
@@ -57,6 +57,9 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     @Override
     protected DatasetGraph decideDataset(HttpAction action, Query query, String queryStringLog) {
         DatasetGraph dsg = action.getActiveDSG();
+        if ( ! DataAccessCtl.isAccessControlled(dsg) )
+            return super.decideDataset(action, query, queryStringLog);
+        
         DatasetDescription dsDesc0 = getDatasetDescription(action, query);
         SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
         return dynamicDataset(action, query, dsg, dsDesc0, sCxt);
@@ -74,8 +77,8 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         if ( dsDesc1.isEmpty() )
             return DatasetGraphZero.create();
 
-        // Fix up the union graph in the graphs
-        // (named graph union graph is ignored by DynamicDatasets)
+        // Fix up the union graph in the graphs if in FROM.
+        // (FROM NAMED <union graph> is done by DynamicDatasets).
         if ( dsDesc1.getDefaultGraphURIs().contains(Quad.unionGraph.getURI())) {
             dsDesc1.getDefaultGraphURIs().remove(Quad.unionGraph.getURI());
             dsDesc1.getDefaultGraphURIs().addAll(sCxt.visibleGraphNames());
@@ -92,6 +95,8 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     // Pass only those graphURIs in the security context.
     private List<String> mask(List<String> graphURIs, SecurityContext sCxt) {
         Collection<String> names = sCxt.visibleGraphNames();
+        if ( names == null )
+            return graphURIs; 
         return graphURIs.stream()
             .filter(gn->names.contains(gn)
                         || ( sCxt.visableDefaultGraph() && Quad.defaultGraphIRI.getURI().equals(gn))
@@ -102,13 +107,14 @@ public class Filtered_SPARQL_QueryDataset extends SPARQL_QueryDataset {
 
     @Override
     protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph target) {
-        if ( target instanceof DynamicDatasetGraph ) {
-            // Protocol query/FROM should have been caught by decideDataset
-            // but specialised setups might have DynamicDatasetGraph as the base dataset.
-            if ( ! ALLOW_FROM )
+        if ( ! ALLOW_FROM ) {
+            if ( target instanceof DynamicDatasetGraph )
+                // Protocol query/FROM should have been caught by decideDataset
+                // but specialised setups might have DynamicDatasetGraph as the base dataset.
                 ServletOps.errorBadRequest("FROM/FROM NAMED is not compatible with data access control.");
         }
         
+        // Dataset of the service, not computed by decideDataset.
         DatasetGraph dsg = action.getActiveDSG();
         if ( dsg == null )
             return super.createQueryExecution(action, query, target);

@@ -18,12 +18,10 @@
 
 package org.apache.jena.fuseki.access;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
@@ -37,40 +35,13 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.jetty.AuthMode;
-import org.apache.jena.fuseki.jetty.JettyLib;
-import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.query.Dataset;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.riot.web.HttpOp;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.UserStore;
 
-/** Library for data access security */ 
+/** Library for client side use of access control. */ 
 public class LibSec {
     // See also DataAccessLib (package lib)
-    
-    /** Create a {@link FusekiServer} - setup with one dataset. The returned server has not been started. */
-    public static FusekiServer fuseki(int port, String dsName, Dataset ds, AuthorizationService reg, UserStore userStore) {
-        Objects.requireNonNull(dsName); 
-        Objects.requireNonNull(ds); 
-        Objects.requireNonNull(reg);
-        Objects.requireNonNull(userStore);
-        
-        Dataset dsx = DataAccessCtl.controlledDataset(ds, reg);
-        FusekiServer.Builder builder = DataAccessCtl.fusekiBuilder(DataAccessCtl.requestUserServlet)
-            .port(port)
-            .add(dsName, dsx, false);
-        
-        if ( dsName.startsWith("/") )
-            dsName = dsName.substring(1);
-        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("Dataset:"+dsName, userStore);
-        JettyLib.addPathConstraint(sh, "/"+dsName);
-        builder.securityHandler(sh);
-        return builder.build();
-    }
-
-    // HttpClientLibSec.
     
     // [AuthScheme] default
     public static AuthMode authMode = AuthMode.DIGEST;
@@ -114,7 +85,7 @@ public class LibSec {
     }
     
     /** Create digest auth {@link DigestScheme} */
-    public static DigestScheme authDigestScheme(String realm) {
+    private static DigestScheme authDigestScheme(String realm) {
         //Objects.requireNonNull(realm);
         DigestScheme authScheme = new DigestScheme();
         authScheme.overrideParamter("realm", realm);
@@ -123,27 +94,28 @@ public class LibSec {
     }
 
     /** Create basic auth {@link BasicScheme} */
-    public static BasicScheme authBasicScheme(String realm) {
+    private static BasicScheme authBasicScheme(String realm) {
         BasicScheme authScheme = new BasicScheme();
         return authScheme;
     }
 
+    /**
+     * Create an {@link HttpClient} with authentication as given by
+     * the {@link AuthSetup} for a particular host and port.
+     */
     public static HttpClient httpClient(AuthSetup auth) {
         // HttpClient with password.
         CredentialsProvider credsProvider = credsProvider(auth);
-        Credentials credentials = new UsernamePasswordCredentials(auth.user, auth.password);
-        
-        String schemeAuthScope = authMode == AuthMode.BASIC ? "basic" : "digest";  
-        AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM, schemeAuthScope);
-        //AuthScope authScope = AuthScope.ANY;
-        
-        credsProvider.setCredentials(AuthScope.ANY, credentials);
         HttpClient client = HttpOp.createPoolingHttpClientBuilder()
             .setDefaultCredentialsProvider(credsProvider)
             .build();
         return client;
     }
     
+    /**
+     * Create an {@link HttpClient} with authentication by user/password
+     * a particular host and port.
+     */
     public static HttpClient httpClient(String host, int port, String user, String password, String realm) {
         AuthSetup auth = new AuthSetup(host, port, user, password, realm);
         return httpClient(auth);

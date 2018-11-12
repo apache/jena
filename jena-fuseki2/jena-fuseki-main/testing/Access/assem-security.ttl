@@ -1,3 +1,19 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 PREFIX :        <#>
 PREFIX fuseki:  <http://jena.apache.org/fuseki#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -26,7 +42,13 @@ PREFIX access:  <http://jena.apache.org/access#>
 ## Access control
 <#access_dataset>  rdf:type access:AccessControlledDataset ;
     access:registry   <#securityRegistry> ;
-    access:dataset    <#tdb_dataset_shared> ;
+    access:dataset    <#tdb_dataset_read> ;
+    .
+
+## Own database
+<#tdb_dataset_read> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
+    tdb2:unionDefaultGraph true ;
     .
 
 <#securityRegistry> rdf:type access:SecurityRegistry ;
@@ -37,6 +59,7 @@ PREFIX access:  <http://jena.apache.org/access#>
     access:entry [ access:user "user3" ; access:graphs <http://host/graphname5> ] ;
     access:entry [ access:user "userZ" ; access:graphs <http://host/graphnameZ> ] ;
     .
+
 ## Dataset 2
 ## No data access control.
 <#service_plain> rdf:type fuseki:Service ;
@@ -45,14 +68,12 @@ PREFIX access:  <http://jena.apache.org/access#>
     fuseki:serviceQuery          "sparql";
     fuseki:serviceUpdate         "update";
     fuseki:serviceUpload         "upload" ;
-    fuseki:serviceReadGraphStore "data" ;
+    fuseki:serviceReadWriteGraphStore "data" ;
     fuseki:serviceReadGraphStore "get" ;
-    fuseki:dataset <#tdb_dataset_shared> ;
+    fuseki:dataset <#tdb_dataset> ;
     .
-
-## Shared database.
-<#tdb_dataset_shared> rdf:type      tdb2:DatasetTDB2 ;
-    tdb2:location "--mem--/DB" ;
-    tdb2:unionDefaultGraph true ;
+    
+<#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
     .
-
+    

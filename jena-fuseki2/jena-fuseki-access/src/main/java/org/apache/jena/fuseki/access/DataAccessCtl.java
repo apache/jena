@@ -18,25 +18,22 @@
 
 package org.apache.jena.fuseki.access;
 
+import java.util.Collection;
 import java.util.function.Function;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.server.Operation;
-import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFilteredView;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
-import org.eclipse.jetty.security.SecurityHandler;
 
 /** A library of operations related to data access security for Fuseki */  
 public class DataAccessCtl {
@@ -100,68 +97,6 @@ public class DataAccessCtl {
     } 
 
     /**
-     * Return a {@code FusekiServer.Builder} setup for data access control
-     * but with no Jetty security handler.
-     */
-    public static FusekiServer.Builder fusekiBuilder(Function<HttpAction, String> determineUser) {
-        return fusekiBuilder(null, determineUser);
-    }
-
-    /**
-     * Return a {@code FusekiServer.Builder} setup for data access control and with a
-     * Jetty security handler.
-     */
-    public static FusekiServer.Builder fusekiBuilder(SecurityHandler securityHandler, Function<HttpAction, String> determineUser) {
-        FusekiServer.Builder builder = FusekiServer.create();
-        if ( securityHandler != null )
-            builder.securityHandler(securityHandler);
-        // Replace the standard operations with the SecurityRegistry processing ones. 
-        builder.registerOperation(Operation.Query, WebContent.contentTypeSPARQLQuery, new Filtered_SPARQL_QueryDataset(determineUser));
-        builder.registerOperation(Operation.GSP_R, new Filtered_SPARQL_GSP_R(determineUser));
-        builder.registerOperation(Operation.Quads_R, new Filtered_REST_Quads_R(determineUser));
-        
-        // Block updates (can just not register these operations).
-        builder.registerOperation(Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
-        builder.registerOperation(Operation.GSP_RW, new Filtered_SPARQL_GSP_RW(determineUser));
-        builder.registerOperation(Operation.Quads_RW, new Filtered_REST_Quads_RW(determineUser));
-        return builder;
-    }
-
-    /**
-     * Modify in-place an existing {@link FusekiServer} so that the read-operations for
-     * query/GSP/Quads go to the data-filtering versions of the {@link ActionService ActionServices}.
-     * (It is better to create the server via {@link #DataAccessCtl.builder} first rather than modify afterwards.) 
-     */
-    public static void modifyForAccessCtl(FusekiServer server, Function<HttpAction, String> determineUser) {
-        /*
-         * Reconfigure standard Jena Fuseki, replacing the default implementations with
-         * filtering ones. This for this server only, not system-wide.
-         */
-        // The mapping operation to handler is in the ServiceDispatchRegistry and is per
-        // server (per servlet context). "registerOrReplace" might be a better name,
-        ServletContext cxt = server.getServletContext();
-        ServiceDispatchRegistry reg = ServiceDispatchRegistry.get(cxt);
-        
-        resetOperation(reg, Operation.Query, WebContent.contentTypeSPARQLQuery, new Filtered_SPARQL_QueryDataset(determineUser));
-        resetOperation(reg, Operation.GSP_R, null, new Filtered_SPARQL_GSP_R(determineUser));
-        resetOperation(reg, Operation.Quads_R, null, new Filtered_REST_Quads_R(determineUser));
-
-        // Block updates
-        resetOperation(reg, Operation.Update, WebContent.contentTypeSPARQLUpdate, new Filtered_SPARQL_Update(determineUser));
-        resetOperation(reg, Operation.GSP_RW, null, new Filtered_SPARQL_GSP_RW(determineUser));
-        resetOperation(reg, Operation.Quads_RW, null, new Filtered_SPARQL_Update(determineUser));
-        
-//        reg.unregister(Operation.Update);
-//        reg.unregister(Operation.GSP_RW);
-//        reg.unregister(Operation.Quads_RW);
-    }
-    
-    private static void resetOperation(ServiceDispatchRegistry reg, Operation operation, String contentType, ActionService service) {
-        if ( reg.isRegistered(operation) )
-            reg.register(operation, contentType, service);
-    }
-    
-    /**
      * Return whether a {@code DatasetGraph} has access control, either because it is wrapped in
      * {@link DatasetGraphAccessControl} or because it has the context settings.
      */
@@ -178,7 +113,22 @@ public class DataAccessCtl {
     /**
      * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityContext}.
      */
-    public static DatasetGraphFilteredView filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
+    public static DatasetGraph filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
+        if ( sCxt instanceof SecurityContextAllowAll )
+            return dsg;
+        if ( sCxt instanceof SecurityContextAllowNone ) {
+            return new DatasetGraphZero();
+        }
+        // Nothing special done for SecurityContextAllowNamedGraphs currently.
+        // Unfortunately that means find all named graphs.
+//        if ( sCxt instanceof SecurityContextAllowNamedGraphs ) {
+//        }
+        
+        Collection<Node> names = sCxt.visibleGraphs();
+        if ( names == null )
+            // XXX does not scale.
+            names = Iter.toList(dsg.listGraphNodes());
+        
         return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());
     }
 }

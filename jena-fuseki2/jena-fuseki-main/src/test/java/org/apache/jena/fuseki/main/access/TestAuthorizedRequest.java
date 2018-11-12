@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +33,6 @@ import org.junit.Test;
 public class TestAuthorizedRequest {
     
     static Model model = RDFDataMgr.loadModel("testing/Access/allowedUsers.ttl");
-
     
     @Test public void authrequest_anon() {
         RequestAuthorization req = RequestAuthorization.policyAllowAnon();

@@ -32,6 +32,7 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.RequestAuthorization;
@@ -121,18 +122,27 @@ public class FusekiServer {
     private final int httpPort;
     private final int httpsPort;
     private final ServletContext servletContext;
+    private final boolean accessCtlRequest;
+    private final boolean accessCtlData;
 
-    private FusekiServer(int httpPort, Server server) {
-        this(httpPort, -1, server, 
-            ((ServletContextHandler)server.getHandler()).getServletContext()
-            );
-    }
+//    private FusekiServer(int httpPort, Server server) {
+//        this(httpPort, -1, server, 
+//            ((ServletContextHandler)server.getHandler()).getServletContext()
+//            );
+//    }
 
-    private FusekiServer(int httpPort, int httpsPort, Server server, ServletContext fusekiServletContext) {
+    private FusekiServer(int httpPort, int httpsPort, Server server,
+//                         boolean accessCtlRequest,
+//                         boolean accessCtlData,
+                         ServletContext fusekiServletContext) {
         this.server = server;
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
         this.servletContext = fusekiServletContext;
+//        this.accessCtlRequest = accessCtlRequest;
+//        this.accessCtlData = accessCtlData;
+      this.accessCtlRequest = false;
+      this.accessCtlData = false;
     }
 
     /**
@@ -169,6 +179,11 @@ public class FusekiServer {
      */
     public ServiceDispatchRegistry getServiceDispatchRegistry() {
         return ServiceDispatchRegistry.get(getServletContext());
+    }
+    
+    /** Return whether this server has any access control enabled. */
+    public boolean hasUserAccessControl() {
+        return accessCtlRequest || accessCtlData;
     }
 
     /** Start the server - the server continues to run after this call returns.
@@ -593,21 +608,74 @@ public class FusekiServer {
          * Build a server according to the current description.
          */
         public FusekiServer build() {
-            if ( securityHandler == null && passwordFile != null )
-                securityHandler = buildSecurityHandler();
-            ServletContextHandler handler = buildFusekiContext();
-            
-            Server server;
-            if ( serverHttpsPort == -1 ) {
-                // HTTP
-                server = jettyServer(handler, serverPort);
-            } else {
-                // HTTPS, no http redirection.
-                server = jettyServerHttps(handler, serverPort, serverHttpsPort, httpsKeystore, httpsKeystorePasswd);
+            buildStart();
+            try { 
+                validate();
+                if ( securityHandler == null && passwordFile != null )
+                    securityHandler = buildSecurityHandler();
+                ServletContextHandler handler = buildFusekiContext();
+
+                Server server;
+                if ( serverHttpsPort == -1 ) {
+                    // HTTP
+                    server = jettyServer(handler, serverPort);
+                } else {
+                    // HTTPS, no http redirection.
+                    server = jettyServerHttps(handler, serverPort, serverHttpsPort, httpsKeystore, httpsKeystorePasswd);
+                }
+                if ( networkLoopback ) 
+                    applyLocalhost(server);
+                boolean accessCtlRequest = securityHandler != null;
+                boolean accessCtlData = false;
+                return new FusekiServer(serverPort, serverHttpsPort, server, handler.getServletContext());
+            } finally {
+                buildFinish();
             }
-            if ( networkLoopback ) 
-                applyLocalhost(server);
-            return new FusekiServer(serverPort, serverHttpsPort, server, handler.getServletContext());
+        }
+        
+        // Only valid during the build() process.
+        private boolean hasAuthenication = false;
+        private boolean hasAllowedUsers = false;
+        private boolean hasDataAccessControl = false;
+        private List<DatasetGraph> datasets = null;
+
+        private void buildStart() {
+            // -- Server, dataset authentication 
+            hasAuthenication = (passwordFile != null) || (securityHandler != null) ;
+            
+            // See if there are any DatasetGraphAccessControl.
+            hasDataAccessControl = 
+                dataAccessPoints.keys().stream().map(name-> dataAccessPoints.get(name).getDataService().getDataset())
+                    .filter(DataAccessCtl::isAccessControlled)
+                    .findFirst()
+                    .isPresent();
+
+            hasAllowedUsers = ( serverAllowedUsers != null );
+            if ( ! hasAllowedUsers ) {
+                // Any datasets with allowedUsers?
+                hasAllowedUsers =
+                    dataAccessPoints.keys().stream().map(name-> dataAccessPoints.get(name).getDataService())
+                        .anyMatch(dSvc->dSvc.allowedUsers() != null);
+            }
+        }
+        
+        private void buildFinish() {
+            hasAuthenication = false;
+            hasDataAccessControl = false;
+            datasets = null;
+        }
+        
+        /** Do some checking to make sure setup is consistent. */ 
+        private void validate() {
+            if ( ! hasAuthenication ) {
+                if ( hasAllowedUsers ) {
+                    Fuseki.configLog.warn("'allowedUsers' is set but there is no authentication setup (e.g. password file)");
+                }
+                
+                if ( hasDataAccessControl ) {
+                    Fuseki.configLog.warn("Data-level access control is configured but there is no authentication setup (e.g. password file)");
+                }
+            }
         }
 
         /** Build one configured Fuseki processor (ServletContext), same dispatch ContextPath */  
@@ -618,14 +686,23 @@ public class FusekiServer {
             servletAttr.forEach((n,v)->cxt.setAttribute(n, v));
             
             // Clone to isolate from any future changes (reusing the builder).
-            ServiceDispatchRegistry.set(cxt, new ServiceDispatchRegistry(serviceDispatch));
-            DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(dataAccessPoints));
+            DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry(dataAccessPoints);
+            ServiceDispatchRegistry svcRegistry = new ServiceDispatchRegistry(serviceDispatch);
+            
+            
+            ServiceDispatchRegistry.set(cxt, svcRegistry);
+            DataAccessPointRegistry.set(cxt, dapRegistry);
             JettyLib.setMimeTypes(handler);
             servletsAndFilters(handler);
             buildAccessControl(cxt);
             
+            if ( hasDataAccessControl ) {
+                // Consider making this "always" and changing the standard operation bindings. 
+                FusekiLib.modifyForAccessCtl(svcRegistry, DataAccessCtl.requestUserServlet);
+            }
+
             // Start services.
-            DataAccessPointRegistry.get(cxt).forEach((name, dap)->dap.getDataService().goActive());
+            dapRegistry.forEach((name, dap)->dap.getDataService().goActive());
             return handler;
         }
         

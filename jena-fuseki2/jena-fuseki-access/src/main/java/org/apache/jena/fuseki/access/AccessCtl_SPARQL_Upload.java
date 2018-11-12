@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.REST_Quads_R;
-import org.apache.jena.fuseki.servlets.SPARQL_GSP_RW;
+import org.apache.jena.fuseki.servlets.SPARQL_Upload;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -30,11 +30,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
  * Filter for {@link REST_Quads_R} that inserts a security filter on read-access to the
  * {@link DatasetGraph}.
  */
-public class Filtered_SPARQL_GSP_RW extends SPARQL_GSP_RW {
+public class AccessCtl_SPARQL_Upload extends SPARQL_Upload {
     
     private final Function<HttpAction, String> requestUser;
     
-    public Filtered_SPARQL_GSP_RW(Function<HttpAction, String> determineUser) {
+    public AccessCtl_SPARQL_Upload(Function<HttpAction, String> determineUser) {
         this.requestUser = determineUser; 
     }
 
@@ -44,6 +44,6 @@ public class Filtered_SPARQL_GSP_RW extends SPARQL_GSP_RW {
         DatasetGraph dsg = action.getDataset();
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return;
-        ServletOps.errorBadRequest("SPARQL Graph Store Protocol update not supported");
+        ServletOps.errorBadRequest("Upload not supported");
     }
 }

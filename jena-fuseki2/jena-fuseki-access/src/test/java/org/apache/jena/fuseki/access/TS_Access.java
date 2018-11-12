@@ -18,9 +18,16 @@
 
 package org.apache.jena.fuseki.access;
 
-public class TestGraphSecurityAssemblerSeparate extends AbstractTestGraphSecurityAssembler {
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-    public TestGraphSecurityAssemblerSeparate() {
-        super(DIR+"assem-security.ttl", false);
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    // Much of testing can only be done with a running server.
+    // These integration test are in jena-fuseki-main:org.apache.jena.fuseki.main.access
+    TestSecurityFilterLocal.class
+    , TestServiceRegistry.class
+})
+    
+public class TS_Access {
 }

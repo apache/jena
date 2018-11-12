@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.REST_Quads_R;
-import org.apache.jena.fuseki.servlets.SPARQL_Upload;
+import org.apache.jena.fuseki.servlets.REST_Quads_RW;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 
@@ -30,11 +30,11 @@ import org.apache.jena.sparql.core.DatasetGraph;
  * Filter for {@link REST_Quads_R} that inserts a security filter on read-access to the
  * {@link DatasetGraph}.
  */
-public class Filtered_SPARQL_Upload extends SPARQL_Upload {
+public class AccessCtl_REST_Quads_RW extends REST_Quads_RW {
     
     private final Function<HttpAction, String> requestUser;
     
-    public Filtered_SPARQL_Upload(Function<HttpAction, String> determineUser) {
+    public AccessCtl_REST_Quads_RW(Function<HttpAction, String> determineUser) {
         this.requestUser = determineUser; 
     }
 
@@ -44,6 +44,6 @@ public class Filtered_SPARQL_Upload extends SPARQL_Upload {
         DatasetGraph dsg = action.getDataset();
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
             return;
-        ServletOps.errorBadRequest("Upload not supported");
+        ServletOps.errorBadRequest("REST update of the dataset not supported");
     }
 }

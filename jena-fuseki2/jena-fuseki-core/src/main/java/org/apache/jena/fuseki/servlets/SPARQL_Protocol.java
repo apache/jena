@@ -36,6 +36,9 @@ import org.apache.jena.sparql.core.DatasetDescription ;
 
 /**
  * Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
+ * <p>
+ * When data-level access control is in use, the ActionService's are
+ * {@code AccessCtl_SPARQL_QueryDataset} etc.
  */
 public abstract class SPARQL_Protocol extends ActionService {
 

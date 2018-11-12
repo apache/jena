@@ -29,10 +29,10 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 /** An Update {@link ActionService} that denies SPAQR Update in access controlled datasets. */
 final
-public class Filtered_SPARQL_Update extends SPARQL_Update {
+public class AccessCtl_SPARQL_Update extends SPARQL_Update {
     private final Function<HttpAction, String> requestUser;
 
-    public Filtered_SPARQL_Update(Function<HttpAction, String> requestUser) {
+    public AccessCtl_SPARQL_Update(Function<HttpAction, String> requestUser) {
         this.requestUser = requestUser; 
     }
 

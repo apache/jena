@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestFusekiTestAuth {
-    // Old tests 
+    // ** Old tests 
     // Predates full access control support in Fuseki.
     // Superseded.
     static {

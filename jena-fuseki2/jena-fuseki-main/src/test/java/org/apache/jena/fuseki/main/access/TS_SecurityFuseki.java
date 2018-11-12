@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
@@ -27,11 +27,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestAuthorizedRequest.class
-    
-    , TestSecurityFilterLocal.class
     , TestSecurityFilterFuseki.class
-    
-    , TestSecurityAssemblerBuild.class
     , TestGraphSecurityAssemblerSeparate.class
     , TestGraphSecurityAssemblerShared.class
     
@@ -39,8 +35,9 @@ import org.junit.runners.Suite;
     , TestPasswordServices.class
 })
 
-public class TS_SecurityFiltering {
+public class TS_SecurityFuseki {
     @BeforeClass public static void setupForFusekiServer() {
+        LogCtl.setLevel(Fuseki.configLogName,   "ERROR");
         LogCtl.setLevel(Fuseki.serverLogName,   "WARN");
         LogCtl.setLevel(Fuseki.actionLogName,   "WARN");
         LogCtl.setLevel(Fuseki.requestLogName,  "WARN");

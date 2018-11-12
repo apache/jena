@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
-import static org.apache.jena.fuseki.access.AccessTestLib.assertSeen;
+import static org.apache.jena.fuseki.main.access.AccessTestLib.assertSeen;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -32,6 +32,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Node;
@@ -65,13 +66,6 @@ public abstract class AbstractTestGraphSecurityAssembler {
     static { JenaSystem.init(); }
     static final String DIR = "testing/Access/";
 
-//    @Parameters(name = "{index}: {0}")
-//    public static Iterable<Object[]> data() {
-//        Object[] obj1 = { DIR+"assem-security.ttl" , false };
-//        Object[] obj2 = { DIR+"assem-security-shared.ttl" , true };
-//        return Arrays.asList(obj1, obj2);
-//    }
-
     private final String assemblerFile;
     private static AtomicReference<String> user = new AtomicReference<>();
 
@@ -103,10 +97,13 @@ public abstract class AbstractTestGraphSecurityAssembler {
     
     private static FusekiServer setup(String assembler, boolean sharedDatabase) {
         int port = FusekiNetLib.choosePort();
-        FusekiServer server = DataAccessCtl.fusekiBuilder((a)->user.get())
+        
+        FusekiServer server = FusekiServer.create()
             .port(port)
             .parseConfigFile(assembler)
             .build();
+        // Special way to get the servelty remote user (the authorized principle). 
+        FusekiLib.modifyForAccessCtl(server, (a)->user.get());
         server.start();
         
         if ( sharedDatabase ) {

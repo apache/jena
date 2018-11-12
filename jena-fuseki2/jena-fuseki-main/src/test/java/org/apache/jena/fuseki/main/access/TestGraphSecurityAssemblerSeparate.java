@@ -16,24 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
-import java.util.function.Function;
+public class TestGraphSecurityAssemblerSeparate extends AbstractTestGraphSecurityAssembler {
 
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.SPARQL_GSP_R;
-import org.apache.jena.sparql.core.DatasetGraph;
-
-public class Filtered_SPARQL_GSP_R extends SPARQL_GSP_R {
-    
-    private final Function<HttpAction, String> requestUser;
-
-    public Filtered_SPARQL_GSP_R(Function<HttpAction, String> determineUser) {
-        this.requestUser = determineUser;
-    }
-
-    @Override
-    protected DatasetGraph decideDataset(HttpAction action) {
-        return DataAccessLib.decideDataset(action, requestUser);
+    public TestGraphSecurityAssemblerSeparate() {
+        super(DIR+"assem-security.ttl", false);
     }
 }

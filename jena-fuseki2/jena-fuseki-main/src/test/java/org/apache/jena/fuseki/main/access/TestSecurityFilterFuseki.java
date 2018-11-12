@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
-import static org.apache.jena.fuseki.access.AccessTestLib.*;
+import static org.apache.jena.fuseki.main.access.AccessTestLib.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -27,6 +27,10 @@ import java.util.*;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.access.DataAccessCtl;
+import org.apache.jena.fuseki.access.SecurityContext;
+import org.apache.jena.fuseki.access.SecurityContextView;
+import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiNetLib;
@@ -81,11 +85,11 @@ public class TestSecurityFilterFuseki {
         
         SecurityRegistry reg = new SecurityRegistry();
         reg.put("userNone", SecurityContext.NONE);
-        reg.put("userDft", SecurityContext.DFT_GRAPH);
-        reg.put("user0", new SecurityContext(Quad.defaultGraphIRI.getURI()));
-        reg.put("user1", new SecurityContext("http://test/g1", Quad.defaultGraphIRI.getURI()));
-        reg.put("user2", new SecurityContext("http://test/g1", "http://test/g2", "http://test/g3"));
-        reg.put("user3", new SecurityContext(Quad.defaultGraphIRI.getURI(), "http://test/g2", "http://test/g3"));
+        reg.put("userDft", SecurityContextView.DFT_GRAPH);
+        reg.put("user0", new SecurityContextView(Quad.defaultGraphIRI.getURI()));
+        reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
+        reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
+        reg.put("user3", new SecurityContextView(Quad.defaultGraphIRI.getURI(), "http://test/g2", "http://test/g3"));
         
         testdsg1 = DataAccessCtl.controlledDataset(testdsg1, reg);
         testdsg2 = DataAccessCtl.controlledDataset(testdsg2, reg);
@@ -95,7 +99,8 @@ public class TestSecurityFilterFuseki {
         ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("*", userStore);
         JettyLib.addPathConstraint(sh, "/*");
         
-        fusekiServer = DataAccessCtl.fusekiBuilder(sh,  DataAccessCtl.requestUserServlet)
+        fusekiServer = FusekiServer.create()
+            .securityHandler(sh)
             .port(port)
             .add("data1", testdsg1)
             .add("data2", testdsg2)

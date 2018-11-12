@@ -21,29 +21,19 @@ package org.apache.jena.fuseki.access;
 import java.util.function.Function;
 
 import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.REST_Quads_R;
-import org.apache.jena.fuseki.servlets.REST_Quads_RW;
-import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.servlets.SPARQL_GSP_R;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/**
- * Filter for {@link REST_Quads_R} that inserts a security filter on read-access to the
- * {@link DatasetGraph}.
- */
-public class Filtered_REST_Quads_RW extends REST_Quads_RW {
+public class AccessCtl_SPARQL_GSP_R extends SPARQL_GSP_R {
     
     private final Function<HttpAction, String> requestUser;
-    
-    public Filtered_REST_Quads_RW(Function<HttpAction, String> determineUser) {
-        this.requestUser = determineUser; 
+
+    public AccessCtl_SPARQL_GSP_R(Function<HttpAction, String> determineUser) {
+        this.requestUser = determineUser;
     }
 
     @Override
-    protected void validate(HttpAction action) {
-        super.validate(action);
-        DatasetGraph dsg = action.getDataset();
-        if ( ! DataAccessCtl.isAccessControlled(dsg) )
-            return;
-        ServletOps.errorBadRequest("REST update of the dataset not supported");
+    protected DatasetGraph decideDataset(HttpAction action) {
+        return DataAccessLib.decideDataset(action, requestUser);
     }
 }

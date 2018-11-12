@@ -61,7 +61,8 @@ import org.slf4j.LoggerFactory;
  * Static RDF types by file extension can be enabled.
  */
 public class JettyServer {
-    // Use this for the super class of FusekiServer or as implementation inheritance.
+    // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer 
+    // as implementation inheritance.
     // Caution : there are small differences e.g. in building where order matters.
 
     private static Logger LOG = LoggerFactory.getLogger("HTTP");

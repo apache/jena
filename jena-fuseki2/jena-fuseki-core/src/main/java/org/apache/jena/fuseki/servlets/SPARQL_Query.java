@@ -50,10 +50,14 @@ import org.apache.jena.sparql.engine.EngineLib;
 import org.apache.jena.sparql.resultset.SPARQLResult ;
 import org.apache.jena.web.HttpSC ;
 
-/** Handle SPARQL Query requests over the SPARQL Protocol.
- * Subclasses provide this algorithm with the actual dataset to query, whether
- * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or
- * specified in the protocol request ({@link SPARQL_QueryGeneral}).
+/**
+ * Handle SPARQL Query requests over the SPARQL Protocol. Subclasses provide this
+ * algorithm with the actual dataset to query, whether a dataset hosted by this server
+ * ({@link SPARQL_QueryDataset}) or specified in the protocol request
+ * ({@link SPARQL_QueryGeneral}).
+ * <p>
+ * When data-level access control is in use, the ActionService's are
+ * {@code AccessCtl_SPARQL_QueryDataset} etc.
  */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
