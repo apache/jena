@@ -56,8 +56,8 @@ public final class BPT {
 
     /** Output a lot of detailed information. */
     public static void infoAll(boolean onOrOff) { 
-        DumpTree = true ;
-        Logging = true ;
+        DumpTree = onOrOff ;
+        Logging = onOrOff ;
     }
 
     static boolean logging(Logger log) {
@@ -123,7 +123,7 @@ public final class BPT {
                 List<AccessStep> y = path.getPath().subList(0, path.getPath().size()-2) ;
                 Optional<AccessStep> z = y.stream().filter(e -> e.node.isLeaf() ).findFirst() ;
                 if ( z.isPresent() )
-                    error("promote: Leaf %s found in path but not at the tail: %s") ;
+                    error("promote: Leaf %s found in path but not at the tail: %s", z.get(), path) ;
             }
             // Check the page/index pointers
             Optional<AccessStep> z2 = path.getPath().stream().filter(e -> e.node.ptrs.get(e.idx) != e.page.getId()).findFirst() ;
