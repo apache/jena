@@ -70,7 +70,6 @@ public class QueryExecUtils {
     }
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
-
         Query query = queryExecution.getQuery() ;
         if ( prologue == null )
             prologue = query.getPrologue() ;
@@ -80,10 +79,11 @@ public class QueryExecUtils {
             doSelectQuery(prologue, queryExecution, outputFormat) ;
         else if ( query.isDescribeType() )
             doDescribeQuery(prologue, queryExecution, outputFormat) ;
+        else if ( query.isConstructQuad() )
+            // Before isConstructType.
+            doConstructQuadsQuery(prologue, queryExecution, outputFormat) ;
         else if ( query.isConstructType() )
             doConstructQuery(prologue, queryExecution, outputFormat) ;
-        else if ( query.isConstructQuad() )
-            doConstructQuadsQuery(prologue, queryExecution, outputFormat) ;
         else if ( query.isAskType() )
             doAskQuery(prologue, queryExecution, outputFormat) ;
         else if ( query.isJsonType() )
@@ -212,11 +212,21 @@ public class QueryExecUtils {
     }
 
     private static void doConstructQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+        if ( qe.getQuery().isConstructQuad() ) {
+            doConstructQuadsQuery(prologue, qe, outputFormat);
+            return;
+        }
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
-
         Model r = qe.execConstruct() ;
         writeModel(prologue, r, outputFormat) ;
+    }
+
+    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_RDF_TRIG;
+        Dataset ds = qe.execConstructDataset();
+        writeDataset(prologue, ds, outputFormat) ;
     }
 
     private static void writeModel(Prologue prologue, Model model, ResultsFormat outputFormat) {
@@ -264,13 +274,6 @@ public class QueryExecUtils {
         }
 
         System.err.println("Unknown format: " + outputFormat) ;
-    }
-
-    private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
-        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
-            outputFormat = ResultsFormat.FMT_RDF_TRIG;
-        Dataset ds = qe.execConstructDataset();
-        writeDataset(prologue, ds, outputFormat) ;
     }
 
     private static void writeDataset(Prologue prologue, Dataset dataset, ResultsFormat outputFormat) {
