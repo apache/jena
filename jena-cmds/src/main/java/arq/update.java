@@ -24,14 +24,12 @@ import arq.cmdline.CmdUpdate;
 import jena.cmd.ArgDecl;
 import jena.cmd.CmdException;
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.sparql.core.TransactionalNull;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
@@ -73,20 +71,10 @@ public class update extends CmdUpdate
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do");
 
-        Transactional transactional = (graphStore.supportsTransactionAbort()) ? graphStore : new TransactionalNull();
-
-        for ( String filename : requestFiles ) {
-            try {
-                transactional.begin(ReadWrite.WRITE);
-                execOneFile(filename, graphStore);
-                transactional.commit();
-            }
-            catch (Throwable ex) { 
-                try { transactional.abort(); } catch (Exception ex2) {}
-                throw ex;
-            }
-            finally { transactional.end(); }
-        }
+        Transactional transactional = graphStore;
+        
+        for ( String filename : requestFiles )
+            Txn.executeWrite(transactional, ()->execOneFile(filename, graphStore));
 
         for ( String requestString : super.getPositional() ) {
             String requestString2 = indirect(requestString);
@@ -94,18 +82,19 @@ public class update extends CmdUpdate
         }
         
         if ( ! ( transactional instanceof DatasetGraph ) )
+            // Unlikely/impossible in Jena 3.7.0 onwards.
             SystemARQ.sync(graphStore);
 
         if ( dump )
             RDFDataMgr.write(System.out, graphStore, Lang.NQUADS);
     }
 
-    private void execOneFile(String filename, DatasetGraph store) {
+    protected void execOneFile(String filename, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.read(filename, updateSyntax);
         UpdateExecutionFactory.create(req, store).execute();
     }
 
-    private void execOne(String requestString, DatasetGraph store) {
+    protected void execOne(String requestString, DatasetGraph store) {
         UpdateRequest req = UpdateFactory.create(requestString, updateSyntax);
         UpdateExecutionFactory.create(req, store).execute();
     }
