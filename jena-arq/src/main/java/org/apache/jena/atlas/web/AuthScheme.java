@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.jetty;
+package org.apache.jena.atlas.web;
 
 /** Authorization scheme */
-public enum AuthMode { BASIC, DIGEST ;
-    public static AuthMode scheme(String name) {
+public enum AuthScheme { 
+    BASIC, 
+    DIGEST ;
+    
+    public static AuthScheme scheme(String name) {
         if ( name == null )
             return null;
         name = name.toLowerCase();

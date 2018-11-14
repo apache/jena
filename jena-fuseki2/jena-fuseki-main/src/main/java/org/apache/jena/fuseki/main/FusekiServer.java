@@ -29,6 +29,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
@@ -38,7 +39,6 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
-import org.apache.jena.fuseki.jetty.AuthMode;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
 import org.apache.jena.fuseki.jetty.JettyHttps;
 import org.apache.jena.fuseki.jetty.JettyLib;
@@ -238,7 +238,7 @@ public class FusekiServer {
         private RequestAuthorization     serverAllowedUsers = null;
         private String                   passwordFile       = null;
         private String                   realm              = null;
-        private AuthMode                 authMode           = null;
+        private AuthScheme                 authMode           = null;
         private String                   httpsKeystore        = null;
         private String                   httpsKeystorePasswd  = null;
         // Other servlets to add.
@@ -485,7 +485,7 @@ public class FusekiServer {
             realm(realm);
             
             String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
-            authMode = AuthMode.scheme(authStr);
+            authMode = AuthScheme.scheme(authStr);
             
             serverAllowedUsers = FusekiBuilder.allowedUsers(server);
         }

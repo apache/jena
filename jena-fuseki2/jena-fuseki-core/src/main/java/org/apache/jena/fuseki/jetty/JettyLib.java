@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.jetty;
 
 import java.util.Objects;
 
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.*;
@@ -71,7 +72,7 @@ public class JettyLib {
       * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
       * for adding the {@code pathspec} to apply it to.
       */
-      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthMode authMode) {
+      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthScheme authMode) {
           return makeSecurityHandler(realm, userStore, "**", authMode);
       }
 
@@ -79,13 +80,13 @@ public class JettyLib {
      * Digest requires an extra round trip so it is unfriendly to API
      * or scripts that stream.
      */
-     public static AuthMode dftAuthMode = AuthMode.DIGEST; 
+     public static AuthScheme dftAuthMode = AuthScheme.DIGEST; 
 
       /** Create a Jetty {@link SecurityHandler} for basic authentication. 
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
-     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role, AuthMode authMode) {
+     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role, AuthScheme authMode) {
         // role can be "**" for any authenticated user.
         Objects.requireNonNull(userStore);
         Objects.requireNonNull(role);
@@ -101,7 +102,7 @@ public class JettyLib {
         loginService.setIdentityService(identService);
         
         securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator( authMode == AuthMode.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
+        securityHandler.setAuthenticator( authMode == AuthScheme.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
         if ( realm != null )
             securityHandler.setRealmName(realm);
         return securityHandler;

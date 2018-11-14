@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.rdfconnection;
 
 import java.util.function.Consumer;
 
@@ -34,17 +34,16 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.fuseki.jetty.AuthMode;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.rdfconnection.RDFConnectionRemote;
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.riot.web.HttpOp;
+import org.apache.jena.web.AuthSetup;
 
 /** Library for client side use of access control. */ 
 public class LibSec {
     // See also DataAccessLib (package lib)
     
     // [AuthScheme] default
-    public static AuthMode authMode = AuthMode.DIGEST;
+    public static AuthScheme authMode = AuthScheme.DIGEST;
     
     public static void withAuth(String urlStr, AuthSetup auth, Consumer<RDFConnection> action) {
         CredentialsProvider credsProvider = credsProvider(auth);
@@ -54,7 +53,7 @@ public class LibSec {
         
         // [AuthScheme]
         AuthCache authCache = new BasicAuthCache();
-        if ( LibSec.authMode == AuthMode.BASIC ) {
+        if ( LibSec.authMode == AuthScheme.BASIC ) {
             RFC2617Scheme authScheme = authScheme(auth.realm);
             // Can force the client to use basic first time by setting authCache.
             // This does not work for digest because the nonce's will be wrong.

@@ -16,9 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.web;
 
-/** Struct for the authentication information */
+import org.apache.http.auth.AuthScope;
+
+/** Struct for the authentication information.
+ * See {@link AuthScope} for "ANY" constants.
+ */
 public class AuthSetup {
     public final String host;
     public final int port;
@@ -26,11 +30,21 @@ public class AuthSetup {
     public final String password;
     public final String realm;
     
-    public AuthSetup(String host, int port, String user, String password, String realm) {
-        this.host = host;
-        this.port = port;
+    public AuthSetup(String host, Integer port, String user, String password, String realm) {
+        this.host = any(host, AuthScope.ANY_HOST);
+        this.port = (port == null || port <= 0 ) ? AuthScope.ANY_PORT : port; 
         this.user = user;
         this.password = password;
-        this.realm = realm;
+        this.realm = any(host, AuthScope.ANY_REALM);
+    }
+    
+    public AuthScope authScope() {
+        return new AuthScope(host, port, realm, AuthScope.ANY_SCHEME);
+    }
+    
+    private <X> X any(X value, X anyVal) {
+        if ( value == null )
+            return anyVal;
+        return value;
     }
 }
