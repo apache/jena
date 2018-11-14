@@ -38,6 +38,7 @@ import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -85,12 +86,13 @@ public class FusekiMain extends CmdARQ {
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
         
+        private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
+        
         private static ArgDecl  argHttps        = new ArgDecl(ArgDecl.HasValue, "https");
         private static ArgDecl  argHttpsPort    = new ArgDecl(ArgDecl.HasValue, "httpsPort", "httpsport", "sport");
         
         private static ArgDecl  argPasswdFile   = new ArgDecl(ArgDecl.HasValue, "passwd");
         private static ArgDecl  argRealm        = new ArgDecl(ArgDecl.HasValue, "realm");
-        
         
         // Same as --empty --validators --general=/sparql, --files=ARG
         
@@ -155,11 +157,12 @@ public class FusekiMain extends CmdARQ {
                 "Run with SPARQLer services Directory for static content");
             add(argValidators, "--validators", "Install validators");
             
+            add(argAuth, "--auth=[basic|Digest]", "Run the server using basic or digest authentication (dft: digest).");
             add(argHttps, "--https=CONF", "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
             add(argHttpsPort, "--httpsPort=NUM", "https port (default port is 3043)");
 
-            // Disable - put in the configuration file.
-//            add(argPasswdFile, "--passwd=FILE", "Password file");
+            add(argPasswdFile, "--passwd=FILE", "Password file");
+            // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
 
             super.modVersion.addClass(Fuseki.class);
@@ -196,7 +199,7 @@ public class FusekiMain extends CmdARQ {
                 throw new CmdException("No dataset specified on the command line.");
 
             if ( numDefinitions > 1 )
-                throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc");
+                throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --conf");
 
             if ( numDefinitions > 0 && allowEmpty )
                 throw new CmdException("Dataset provided but 'no dataset' flag given");
@@ -349,6 +352,7 @@ public class FusekiMain extends CmdARQ {
 
             if ( contains(argPasswdFile) )
                 serverConfig.passwdFile = getValue(argPasswdFile);
+            
             if ( contains(argRealm) )
                 serverConfig.realm =  getValue(argRealm);
             
@@ -368,7 +372,11 @@ public class FusekiMain extends CmdARQ {
                 serverConfig.httpsKeystore = path.getParent().resolve(keystore).toString();
                 
                 serverConfig.httpsKeystorePasswd = httpsConf.get("passwd").getAsString().value();
-              
+            }
+            
+            if ( contains(argAuth) ) {
+                String schemeStr = getValue(argAuth);
+                serverConfig.authScheme = AuthScheme.scheme(schemeStr); 
             }
             
 //            if ( contains(argGZip) ) {
@@ -467,6 +475,9 @@ public class FusekiMain extends CmdARQ {
             if ( serverConfig.httpsKeystore != null )
                 builder.https(serverConfig.httpsPort, serverConfig.httpsKeystore, serverConfig.httpsKeystorePasswd);
            
+            if ( serverConfig.authScheme != null )
+                builder.auth(serverConfig.authScheme);
+            
             return builder.build();
         }
 

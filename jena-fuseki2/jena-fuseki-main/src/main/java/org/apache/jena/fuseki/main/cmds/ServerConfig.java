@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
+import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Setup details (command line, config file) from command line processing.
@@ -50,6 +51,7 @@ class ServerConfig {
     public String contentDirectory    = null;
     
     // Server authentication
+    public AuthScheme authScheme      = null;
     public String passwdFile          = null;
     public String realm               = null;
     

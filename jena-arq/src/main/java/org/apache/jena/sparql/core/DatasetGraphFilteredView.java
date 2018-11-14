@@ -83,6 +83,8 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
     }
 
     private Iterator<Quad> filter(Iterator<Quad> iter) {
+        if ( this.quadFilter == null )
+            return iter;
         return Iter.filter(iter, this::filter);
     }
     

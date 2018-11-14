@@ -60,12 +60,20 @@ public class JettyLib {
 //        return securityHandler;
 //    }
     
+    /**
+     * Digest requires an extra round trip so it is unfriendly to API
+     * or scripts that stream.
+     */
+    public final static AuthScheme dftAuthMode = AuthScheme.DIGEST;
+    /** Current auth mode */
+    public static AuthScheme authMode = dftAuthMode;
+
     /** Create a Jetty {@link SecurityHandler} for basic authentication. 
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore) {
-         return makeSecurityHandler(realm, userStore, "**", dftAuthMode);
+         return makeSecurityHandler(realm, userStore, "**", authMode);
      }
 
      /** Create a Jetty {@link SecurityHandler} for basic authentication. 
@@ -75,12 +83,6 @@ public class JettyLib {
       public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthScheme authMode) {
           return makeSecurityHandler(realm, userStore, "**", authMode);
       }
-
-      /**
-     * Digest requires an extra round trip so it is unfriendly to API
-     * or scripts that stream.
-     */
-     public static AuthScheme dftAuthMode = AuthScheme.DIGEST; 
 
       /** Create a Jetty {@link SecurityHandler} for basic authentication. 
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}

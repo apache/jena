@@ -48,20 +48,20 @@ public class TestSecurityRegistry {
         AuthorizationService authService = (AuthorizationService)AssemblerUtils.build(DIR+"assem-security-registry-2.ttl", VocabSecurity.tSecurityRegistry);
         assertNotNull(authService);
 
-//        {
-//            SecurityContext sCxt = authService.get("user1");
-//            assertEquals(1, sCxt.visibleGraphs().size());
-//            Node x = sCxt.visibleGraphs().stream().findFirst().get();
-//            assertEquals(SecurityContext.allNamedGraphs, x);
-//        }
-//        
-//        {
-//            SecurityContext sCxt = authService.get("user2");
-//            assertEquals(1, sCxt.visibleGraphs().size());
-//            Node x = sCxt.visibleGraphs().stream().findFirst().get();
-//            assertEquals(SecurityContext.allGraphs, x);
-//        }
-//        
+        {
+            SecurityContext sCxt = authService.get("user1");
+            assertEquals(1, sCxt.visibleGraphs().size());
+            Node x = sCxt.visibleGraphs().stream().findFirst().get();
+            assertEquals(SecurityContext.allNamedGraphs, x);
+        }
+        
+        {
+            SecurityContext sCxt = authService.get("user2");
+            assertEquals(1, sCxt.visibleGraphs().size());
+            Node x = sCxt.visibleGraphs().stream().findFirst().get();
+            assertEquals(SecurityContext.allGraphs, x);
+        }
+        
         {
             SecurityContext sCxt = authService.get("user3");
             assertEquals(1, sCxt.visibleGraphs().size());
@@ -75,8 +75,5 @@ public class TestSecurityRegistry {
             String x = sCxt.visibleGraphNames().stream().findFirst().get();
             assertEquals("http://host/graphname1", x);
         }            
-        
-        
     }
-
 }

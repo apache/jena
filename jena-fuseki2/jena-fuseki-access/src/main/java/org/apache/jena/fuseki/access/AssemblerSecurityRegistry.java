@@ -28,6 +28,7 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node;
@@ -139,10 +140,13 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
         return x;
     }
     
+    // Unfinished.
+    private final static boolean SKIP_ALLGRAPH = true; 
+    
     private void accessEntries(Resource root, Multimap<String, Node> map, String user, List<Node> _graphs) {
         // Convert string names for graphs to URIs. 
         Set<Node> graphs = _graphs.stream().map(n->graphLabel(n, root)).collect(Collectors.toSet());
-        
+
         if ( graphs.contains(SecurityContext.allGraphs) ) {
             map.removeAll(user);
             map.put(user, SecurityContext.allGraphs);
@@ -158,6 +162,18 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             map.put(user, x);
             return;
         }
+        
+        if ( SKIP_ALLGRAPH ) {
+            if ( graphs.contains(SecurityContext.allGraphs) ) {
+                Log.warn(this, "Graph name '"+SecurityContext.allGraphsStr+"' not supported yet"); 
+                graphs.remove(SecurityContext.allGraphs);
+            }
+            if ( graphs.contains(SecurityContext.allNamedGraphs) ) {
+                Log.warn(this, "Graph name '"+SecurityContext.allNamedGraphsStr+"' not supported yet"); 
+                graphs.remove(SecurityContext.allNamedGraphs);
+            }
+        }
+        
         map.putAll(user, graphs);
     }
 

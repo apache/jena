@@ -238,9 +238,9 @@ public class FusekiServer {
         private RequestAuthorization     serverAllowedUsers = null;
         private String                   passwordFile       = null;
         private String                   realm              = null;
-        private AuthScheme                 authMode           = null;
-        private String                   httpsKeystore        = null;
-        private String                   httpsKeystorePasswd  = null;
+        private AuthScheme               authScheme             = null;
+        private String                   httpsKeystore          = null;
+        private String                   httpsKeystorePasswd    = null;
         // Other servlets to add.
         private List<Pair<String, HttpServlet>> servlets    = new ArrayList<>();
         private List<Pair<String, Filter>> filters          = new ArrayList<>();
@@ -249,7 +249,6 @@ public class FusekiServer {
         private String                   staticContentDir   = null;
         private SecurityHandler          securityHandler    = null;
         private Map<String, Object>      servletAttr        = new HashMap<>();
-
         // Builder with standard operation-action mapping.  
         Builder() {
             this.serviceDispatch = new ServiceDispatchRegistry(true);
@@ -485,9 +484,17 @@ public class FusekiServer {
             realm(realm);
             
             String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
-            authMode = AuthScheme.scheme(authStr);
+            authScheme = AuthScheme.scheme(authStr);
             
             serverAllowedUsers = FusekiBuilder.allowedUsers(server);
+        }
+
+        /**
+         * Choose the HTTP authentication scheme. 
+         */
+        public Builder auth(AuthScheme authScheme) {
+            this.authScheme = authScheme;
+            return this;
         }
 
         /**
@@ -645,17 +652,23 @@ public class FusekiServer {
             
             // See if there are any DatasetGraphAccessControl.
             hasDataAccessControl = 
-                dataAccessPoints.keys().stream().map(name-> dataAccessPoints.get(name).getDataService().getDataset())
-                    .filter(DataAccessCtl::isAccessControlled)
-                    .findFirst()
-                    .isPresent();
+                dataAccessPoints.keys().stream()
+                    .map(name-> dataAccessPoints.get(name).getDataService().getDataset())
+                    .anyMatch(DataAccessCtl::isAccessControlled);
 
             hasAllowedUsers = ( serverAllowedUsers != null );
             if ( ! hasAllowedUsers ) {
                 // Any datasets with allowedUsers?
                 hasAllowedUsers =
-                    dataAccessPoints.keys().stream().map(name-> dataAccessPoints.get(name).getDataService())
+                    dataAccessPoints.keys().stream()
+                        .map(name-> dataAccessPoints.get(name).getDataService())
                         .anyMatch(dSvc->dSvc.allowedUsers() != null);
+            }
+            
+            // If only a password file given, and nothing else, set the server to allowedUsers="*" (must log in).  
+            if ( passwordFile != null && ! hasAllowedUsers ) {
+                hasAllowedUsers = true;
+                serverAllowedUsers = RequestAuthorization.policyAllowAuthenticated();
             }
         }
         
@@ -689,7 +702,6 @@ public class FusekiServer {
             DataAccessPointRegistry dapRegistry = new DataAccessPointRegistry(dataAccessPoints);
             ServiceDispatchRegistry svcRegistry = new ServiceDispatchRegistry(serviceDispatch);
             
-            
             ServiceDispatchRegistry.set(cxt, svcRegistry);
             DataAccessPointRegistry.set(cxt, dapRegistry);
             JettyLib.setMimeTypes(handler);
@@ -710,16 +722,16 @@ public class FusekiServer {
             if ( passwordFile == null )
                 return null;
             UserStore userStore = JettyLib.makeUserStore(passwordFile);
-            return JettyLib.makeSecurityHandler(realm, userStore, authMode);
+            return JettyLib.makeSecurityHandler(realm, userStore, authScheme);
         }
         
         private void buildAccessControl(ServletContext cxt) {
             // -- Access control
             if ( securityHandler != null && securityHandler instanceof ConstraintSecurityHandler ) {
                 ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
-               if ( serverAllowedUsers != null )
-                   JettyLib.addPathConstraint(csh, "/*");
-               else {
+                if ( serverAllowedUsers != null )
+                    JettyLib.addPathConstraint(csh, "/*");
+                else {
                     DataAccessPointRegistry.get(cxt).forEach((name, dap)-> {
                         DatasetGraph dsg = dap.getDataService().getDataset();
                         if ( dap.getDataService().allowedUsers() != null ) {
@@ -728,7 +740,7 @@ public class FusekiServer {
                             JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
                         }
                     });
-               }
+                }
             }
         }
         
