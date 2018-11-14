@@ -56,14 +56,14 @@ import org.eclipse.jetty.xml.XmlConfiguration ;
  * instances of the server and server configuration. Finally we can obtain 
  * instances of {@link org.apache.jena.fuseki.jetty.JettyServerConfig}.
  */
-public class JettyFuseki {
+public class JettyFusekiWebapp {
     // Jetty specific.
     // This class is becoming less important - it now sets up a Jetty server for in-process use
     // either for the command line in development  
     // and in testing but not direct webapp deployments. 
     static { Fuseki.init() ; }
 
-    public static JettyFuseki  instance    = null ;
+    public static JettyFusekiWebapp  instance    = null ;
 
     private ServerConnector serverConnector = null ;
     // If a separate ...
@@ -91,10 +91,10 @@ public class JettyFuseki {
      */
     
     public static void initializeServer(JettyServerConfig config) {
-        instance = new JettyFuseki(config) ;
+        instance = new JettyFusekiWebapp(config) ;
     }
     
-    private JettyFuseki(JettyServerConfig config) {
+    private JettyFusekiWebapp(JettyServerConfig config) {
         this.serverConfig = config ;
         buildServerWebapp(serverConfig.contextPath, serverConfig.jettyConfigFile) ;
         if ( mgtConnector == null )
@@ -108,7 +108,7 @@ public class JettyFuseki {
     }
 
     /**
-     * Initialize the {@link JettyFuseki} instance.
+     * Initialize the {@link JettyFusekiWebapp} instance.
      */
     public void start() {
         
@@ -148,7 +148,7 @@ public class JettyFuseki {
     }
 
     /**
-     * Sync with the {@link JettyFuseki} instance.
+     * Sync with the {@link JettyFusekiWebapp} instance.
      * Returns only if the server exits cleanly 
      */
     public void join() {
@@ -158,7 +158,7 @@ public class JettyFuseki {
     }
 
         /**
-     * Stop the {@link JettyFuseki} instance.
+     * Stop the {@link JettyFusekiWebapp} instance.
      */
     public void stop() {
         String now = DateTimeUtils.nowAsString() ;

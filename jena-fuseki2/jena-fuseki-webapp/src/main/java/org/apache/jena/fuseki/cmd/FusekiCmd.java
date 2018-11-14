@@ -368,9 +368,9 @@ public class FusekiCmd {
     /** Configure and run a Fuseki server - this function does not return except for error starting up*/  
     public static void runFuseki(FusekiInitialConfig serverConfig, JettyServerConfig jettyConfig) {
         FusekiServerListener.initialSetup = serverConfig ;
-        JettyFuseki.initializeServer(jettyConfig) ;
-        JettyFuseki.instance.start() ;
-        JettyFuseki.instance.join() ;
+        JettyFusekiWebapp.initializeServer(jettyConfig) ;
+        JettyFusekiWebapp.instance.start() ;
+        JettyFusekiWebapp.instance.join() ;
     }
     
 

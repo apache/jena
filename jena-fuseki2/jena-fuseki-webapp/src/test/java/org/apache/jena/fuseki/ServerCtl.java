@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient ;
 import org.apache.http.impl.client.CloseableHttpClient ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.fuseki.cmd.JettyFuseki;
+import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.server.FusekiInitialConfig;
 import org.apache.jena.fuseki.system.FusekiNetLib;
@@ -210,7 +210,7 @@ public class ServerCtl {
     
     // reference count of start/stop server
     private static AtomicInteger countServer = new AtomicInteger() ; 
-    private static JettyFuseki server        = null ;
+    private static JettyFusekiWebapp server        = null ;
     
     /*package*/ static void allocServer() {
         if ( countServer.getAndIncrement() == 0 )
@@ -263,9 +263,9 @@ public class ServerCtl {
         
         JettyServerConfig config = make(port, true, true) ;
         config.authConfigFile = authConfigFile ;
-        JettyFuseki.initializeServer(config);
-        JettyFuseki.instance.start() ;
-        server = JettyFuseki.instance ;
+        JettyFusekiWebapp.initializeServer(config);
+        JettyFusekiWebapp.instance.start() ;
+        server = JettyFusekiWebapp.instance ;
     }
     
     /*package*/ static void teardownServer() {
