@@ -21,6 +21,8 @@ package org.apache.jena.fuseki.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
@@ -29,7 +31,6 @@ import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
 import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -42,7 +43,7 @@ import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerSecurityRegistry extends AssemblerBase {
-
+    
     /**
      * SecurityRegistry.
      * Builds a SecurityRegistry - a map fron user name to 
@@ -57,14 +58,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
      * ## Drop?
      * access:entry [ :user "user2" ; :graphs (<http://host/graphname3> ) ] ;
      */
-    
-    
-    private static Node allGraphsURI = NodeFactory.createURI("urn:jena:accessAllGraphs");
-    private static Node allNamedGraphsURI = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
 
-    private static Node allNamedGraphs = NodeFactory.createLiteral("*");
-    private static Node allGraphs = NodeFactory.createLiteral("**");
-    
     @Override
     public AuthorizationService open(Assembler a, Resource root, Mode mode) {
         SecurityRegistry registry = new SecurityRegistry();
@@ -125,14 +119,12 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             List<Node> graphs = new ArrayList<>();
             if ( x.isURIResource() ) {
                 //System.out.printf("S: user %s : access : %s\n", user, x.asNode());
-                Node n = graphLabel(x.asNode(), root);
-                graphs.add(n);
+                graphs.add(x.asNode());
             } else {
                 // List?
                 RDFList list = x.as(RDFList.class);
                     list.iterator().forEachRemaining(rn->{
-                        Node n = graphLabel(rn.asNode(), root);
-                        graphs.add(n);
+                        graphs.add(rn.asNode());
                     });
             }
             accessEntries(root, map, user, graphs);
@@ -140,25 +132,30 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
     }
     
     private Node graphLabel(Node x, Resource root) {
-        if ( allGraphs.equals(x) ) x = allGraphsURI;
-        if ( allNamedGraphs.equals(x) ) x = allNamedGraphsURI;
+        if ( SecurityContext.allGraphsStr.equals(x) ) x = SecurityContext.allGraphs;
+        if ( SecurityContext.allNamedGraphsStr.equals(x) ) x = SecurityContext.allNamedGraphs;
         if ( ! x.isURI() )
             throw new AssemblerException(root, "Not a graph name: "+x);
         return x;
     }
     
-    private void accessEntries(Resource root, Multimap<String, Node> map, String user, List<Node> graphs) {
-        if ( graphs.contains(allGraphsURI) ) {
+    private void accessEntries(Resource root, Multimap<String, Node> map, String user, List<Node> _graphs) {
+        // Convert string names for graphs to URIs. 
+        Set<Node> graphs = _graphs.stream().map(n->graphLabel(n, root)).collect(Collectors.toSet());
+        
+        if ( graphs.contains(SecurityContext.allGraphs) ) {
             map.removeAll(user);
-            map.put(user, allGraphsURI);
+            map.put(user, SecurityContext.allGraphs);
             return;
         }
-        if ( graphs.contains(allNamedGraphsURI) ) {
-            boolean dft = dftPresent(map.get(user));
-            map.removeAll(user);
-            map.put(user, allNamedGraphsURI);
+        if ( graphs.contains(SecurityContext.allNamedGraphs) ) {
+            boolean dft = dftPresent(graphs);
+            Node x = SecurityContext.allNamedGraphs;
             if ( dft )
-                map.put(user, Quad.defaultGraphIRI);
+                // Put in "*" instead. 
+                x = SecurityContext.allGraphs;
+            map.removeAll(user);
+            map.put(user, x);
             return;
         }
         map.putAll(user, graphs);

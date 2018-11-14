@@ -54,4 +54,11 @@ public class SecurityContextAllowAll implements SecurityContext {
      */
     @Override
     public Predicate<Quad> predicateQuad() { return q->true; }
+    
+    @Override
+    public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+        // No filter necessary.
+//        Predicate<?> pred = tuple->true;
+//        qExec.getContext().set(GraphFilter.getContextKey(dsg), pred);
+    }
 }

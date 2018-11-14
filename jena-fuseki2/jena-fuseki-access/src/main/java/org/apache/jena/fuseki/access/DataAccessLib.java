@@ -38,6 +38,9 @@ class DataAccessLib {
 
         SecurityContext sCxt = null;
         String user = requestUser.apply(action);
+        
+        // User "*", users "_";
+        
         sCxt = registry.get(user);
         if ( sCxt == null )
             sCxt = noSecurityPolicy();

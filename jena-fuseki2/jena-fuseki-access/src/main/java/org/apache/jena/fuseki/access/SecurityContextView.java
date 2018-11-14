@@ -105,9 +105,10 @@ public class SecurityContextView implements SecurityContext {
     
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
-     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}
+     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.
      */
-    /*package*/ void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+    @Override
+    public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
         GraphFilter<?> predicate = predicate(dsg);
         qExec.getContext().set(predicate.getContextKey(), predicate);
     }
@@ -137,7 +138,7 @@ public class SecurityContextView implements SecurityContext {
      *             if not a TDB database, or a {@link DatasetGraphAccessControl} wrapped
      *             TDB database.
      */
-    private GraphFilter<?> predicate(DatasetGraph dsg) {
+    protected GraphFilter<?> predicate(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         // dsg has to be the database dataset, not wrapped.
         //  DatasetGraphSwitchable is wrapped but should not be unwrapped. 
@@ -148,7 +149,7 @@ public class SecurityContextView implements SecurityContext {
         throw new IllegalArgumentException("Not a TDB1 or TDB2 database: "+dsg.getClass().getSimpleName());
     }
 
-    private static boolean isAccessControlledTDB(DatasetGraph dsg) {
+    protected static boolean isAccessControlledTDB(DatasetGraph dsg) {
         DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
         if ( dsgBase == null )
             return false;

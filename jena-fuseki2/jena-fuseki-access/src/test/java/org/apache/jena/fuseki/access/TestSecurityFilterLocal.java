@@ -21,12 +21,7 @@ package org.apache.jena.fuseki.access;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -104,6 +99,12 @@ public class TestSecurityFilterLocal {
         reg.put("user0", new SecurityContextView(Quad.defaultGraphIRI.getURI()));
         reg.put("user1", new SecurityContextView("http://test/g1", Quad.defaultGraphIRI.getURI()));
         reg.put("user2", new SecurityContextView("http://test/g1", "http://test/g2", "http://test/g3"));
+        
+        // and graphs "**", "*" 
+        reg.put("*", new SecurityContextView("http://test/g1"));
+        reg.put("_", new SecurityContextView("http://test/g1"));
+        
+        
         testdsg = DataAccessCtl.controlledDataset(dsgBase, reg);
         this.applyFilterTDB = applyFilterTDB;
         this.applyFilterDSG = ! applyFilterTDB;
@@ -124,8 +125,11 @@ public class TestSecurityFilterLocal {
         return
             Txn.calculateRead(ds, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryString, ds)) {
+//                    if ( applyFilterTDB && ! sCxt.equals(SecurityContext.NONE)) {
+//                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
+//                    }
                     if ( applyFilterTDB )
-                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
+                        sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream()
                         .map(qs->qs.get("s"))
@@ -141,12 +145,15 @@ public class TestSecurityFilterLocal {
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
         Graph graph = graphChoice.apply(dsg1);
+        if ( graph == null )
+            // Can't see the graph.
+            return Collections.emptySet();
         Model model = ModelFactory.createModelForGraph(graph);
         return
             Txn.calculateRead(testdsg, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryString, model)) {
                     if ( applyFilterTDB )
-                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
+                        sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream().map(qs->qs.get("s")).filter(Objects::nonNull).map(RDFNode::asNode);
                     return SetUtils.toSet(stream);
@@ -155,6 +162,7 @@ public class TestSecurityFilterLocal {
     }
 
     private Set<Node> graphs(DatasetGraph dsg, SecurityContext sCxt) {
+        // Either applyFilterDSG or applyFilterTDB
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -163,7 +171,7 @@ public class TestSecurityFilterLocal {
             Txn.calculateRead(ds, ()->{
                 try(QueryExecution qExec = QueryExecutionFactory.create(queryGraphNames, ds)) {
                     if ( applyFilterTDB )
-                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
+                        sCxt.filterTDB(dsg1, qExec);
                     List<QuerySolution> results = Iter.toList(qExec.execSelect());
                     Stream<Node> stream = results.stream().map(qs->qs.get("g")).filter(Objects::nonNull).map(RDFNode::asNode);
                     return SetUtils.toSet(stream);

@@ -16,11 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.access;
+package org.apache.jena.fuseki.access;
 
-public class TestGraphSecurityAssemblerSeparate extends AbstractTestGraphSecurityAssembler {
+public class Users {
+    
+    
+    /**
+     * Reserved user role name: Name of the user role for any authenticated user of the system.
+     * In the servlet API, this equates to {@code getRemoteUser() != null}.
+     */
+    public static String UserAnyLoggedIn = "*" ; 
 
-    public TestGraphSecurityAssemblerSeparate() {
-        super(DIR+"assem-security.ttl", false);
-    }
+    /** 
+     * Reserved user role name: Name of the user role for any authenticated user of the system
+     * In the servlet API, this includes {@code getRemoteUser() != null}.
+     */
+    public static String UserAny = "_" ; 
 }

@@ -47,7 +47,13 @@ public class SecurityContextAllowNone implements SecurityContext {
     public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
         return QueryExecutionFactory.create(query, new DatasetGraphSink());
     }
-
+    
     @Override
-    public Predicate<Quad> predicateQuad() { return q->! Quad.isDefaultGraph(q.getGraph()); }
+    public Predicate<Quad> predicateQuad() { return q -> false ; }
+    
+    @Override
+    public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+        Predicate<?> pred = tuple->false;
+        qExec.getContext().set(GraphFilter.getContextKey(dsg), pred);
+    }
 }

@@ -112,6 +112,8 @@ public class DataAccessCtl {
 
     /**
      * Return a read-only {@link DatasetGraphFilteredView} that fulfils the {@link SecurityContext}.
+     * See also {@link SecurityContext#filterTDB} which is more efficient.
+     * This code creates a general solution.
      */
     public static DatasetGraph filteredDataset(DatasetGraph dsg, SecurityContext sCxt) {
         if ( sCxt instanceof SecurityContextAllowAll )

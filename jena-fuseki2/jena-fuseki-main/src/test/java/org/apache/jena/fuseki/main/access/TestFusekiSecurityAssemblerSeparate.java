@@ -16,18 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.main.access;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+public class TestFusekiSecurityAssemblerSeparate extends AbstractTestFusekiSecurityAssembler {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Much of testing can only be done with a running server.
-    // These integration test are in jena-fuseki-main:org.apache.jena.fuseki.main.access
-    TestSecurityFilterLocal.class
-    , TestSecurityRegistry.class
-})
-    
-public class TS_Access {
+    public TestFusekiSecurityAssemblerSeparate() {
+        super(DIR+"assem-security.ttl", false);
+    }
 }

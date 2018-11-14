@@ -28,8 +28,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     TestAuthorizedRequest.class
     , TestSecurityFilterFuseki.class
-    , TestGraphSecurityAssemblerSeparate.class
-    , TestGraphSecurityAssemblerShared.class
+    , TestFusekiSecurityAssemblerSeparate.class
+    , TestFusekiSecurityAssemblerShared.class
     
     , TestPasswordServer.class
     , TestPasswordServices.class

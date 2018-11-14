@@ -24,24 +24,31 @@ import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /** A {@link SecurityContext} is the things actor (user, role) is allowed to do. 
  * Currently version: the set of graphs, by graph name, they can access.
  * It can be inverted into a "deny" policy with {@link Predicate#negate()}.
  */ 
 public interface SecurityContext {
-    public static SecurityContext NONE = new SecurityContextAllowNone();
-    public static SecurityContext ALL = new SecurityContextAllowAll();
+    public static final SecurityContext NONE = new SecurityContextAllowNone();
+    public static final SecurityContext ALL = new SecurityContextAllowAll();
     public static SecurityContext ALL_NG(DatasetGraph dsg) { 
         Collection<Node> names = Iter.toList(dsg.listGraphNodes());
         //return new SecurityContextAllowNamedGraphs(dsg);
         return new SecurityContextView(names);
     }
+
+    public static final Node allGraphs = NodeFactory.createURI("urn:jena:accessAllGraphs");
+    public static final Node allNamedGraphs = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
+    public static final Node allNamedGraphsStr = NodeFactory.createLiteral("*");
+    public static final Node allGraphsStr = NodeFactory.createLiteral("**");
     
     /**
      * Collection of visible graph names. This method return null for null for "all" to avoid
@@ -76,5 +83,16 @@ public interface SecurityContext {
      * efficient.
      */
     public Predicate<Quad> predicateQuad();
-
+    
+    /**
+     * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
+     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.
+     * Throws {@link IllegalArgumentException} if {@link DatasetGraph} is not a TDB1 or TDB2 backed dataset.
+     * May throw {@link UnsupportedOperationException}.
+     */
+    public default void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+        if ( ! org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
+            throw new IllegalArgumentException("Not a TDB database");
+        throw new UnsupportedOperationException();
+    }
 }

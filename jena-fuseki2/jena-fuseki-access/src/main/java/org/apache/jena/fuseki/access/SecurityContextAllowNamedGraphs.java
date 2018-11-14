@@ -54,5 +54,5 @@ public class SecurityContextAllowNamedGraphs implements SecurityContext {
      * efficient.
      */
     @Override
-    public Predicate<Quad> predicateQuad() { return q->true; }
+    public Predicate<Quad> predicateQuad() { return q-> ! Quad.isDefaultGraph(q.getGraph()); }
 }
