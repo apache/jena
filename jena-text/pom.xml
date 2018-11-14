@@ -86,11 +86,11 @@
       <artifactId>lucene-highlighter</artifactId>
     </dependency>
 
-	<dependency>
-	    <groupId>org.apache.lucene</groupId>
-	    <artifactId>lucene-backward-codecs</artifactId>
-	    <version>${ver.lucene}</version>
-	</dependency>
+    <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-backward-codecs</artifactId>
+        <version>${ver.lucene}</version>
+    </dependency>
 
   </dependencies>
 
