@@ -28,6 +28,7 @@ public class TextIndexConfig {
     String queryParser;
     boolean multilingualSupport;
     boolean valueStored;
+    boolean ignoreIndexErrors;
 
     public TextIndexConfig(EntityDefinition entDef) {
         this.entDef = entDef;
@@ -75,5 +76,13 @@ public class TextIndexConfig {
 
     public void setValueStored(boolean valueStored) {
         this.valueStored = valueStored;
+    }
+
+    public boolean isIgnoreIndexErrors() {
+        return ignoreIndexErrors;
+    }
+
+    public void setIgnoreIndexErrors(boolean ignore) {
+        this.ignoreIndexErrors = ignore;
     }
 }

@@ -85,6 +85,7 @@ public class TestTextMultilingualEnhancements extends AbstractTestDatasetWithTex
                     "    text:storeValues true ;",
                     "    text:entityMap :entMap ;",
                     "    text:multilingualSupport true ;", 
+                    "    text:ignoreIndexErrors true ;", 
                     "    text:defineAnalyzers (",
                     "      [ text:defineAnalyzer :folding ;",
                     "        text:analyzer [",
