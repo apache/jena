@@ -30,7 +30,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <automatic.module.name>org.apache.jena.fuseki2.core</automatic.module.name>
+    <automatic.module.name>org.apache.jena.fuseki.core</automatic.module.name>
   </properties>
 
   <dependencies>
