@@ -21,7 +21,6 @@
 
 require 'optparse'
 require 'net/http'
-require 'openssl'
 require 'uri'
 require 'cgi'
 require 'pp'
@@ -43,7 +42,7 @@ $proxy = ENV['http_proxy'] ? URI.parse(ENV['http_proxy']) : OpenStruct.new
 # What about direct naming?
 
 # Names
-$mtTurtle           = 'text/turtle;charset=utf-8'
+$mtTurtle           = 'text/turtle'
 $mtRDF              = 'application/rdf+xml'
 $mtText             = 'text/plain'
 $mtNTriples         = 'application/n-triples'
@@ -63,7 +62,7 @@ $mtSparqlQuery      = "application/sparql-query" ;
 # Global media type table.
 $fileMediaTypes = {}
 $fileMediaTypes['ttl']   = $mtTurtle
-$fileMediaTypes['n3']    = 'text/n3; charset=utf-8'
+$fileMediaTypes['n3']    = 'text/n3'
 $fileMediaTypes['nt']    = $mtText
 $fileMediaTypes['rdf']   = $mtRDF
 $fileMediaTypes['owl']   = $mtRDF
@@ -76,6 +75,7 @@ $fileMediaTypes['jsonld']  = $mtJSONLD
 $charsetUTF8      = 'utf-8'
 $charset = {}
 $charset[$mtTurtle]   = 'utf-8'
+$charset['text/n3']   = 'utf-8'
 $charset[$mtText]     = 'ascii'
 $charset[$mtTriG]     = 'utf-8'
 $charset[$mtNQuads]   = 'utf-8'
@@ -216,15 +216,13 @@ def response_no_body(uri, request)
   http = Net::HTTP::Proxy($proxy.host,$proxy.port).new(uri.host, uri.port)
   http.read_timeout = nil
   # check we can connect.
-  begin http.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-      response = http.request(request)
-    end
+  begin http.start
   rescue Exception => e  
     # puts e.message  
     #puts e.backtrace.inspect  
     warn_exit "Failed to connect: #{uri.host}:#{uri.port}: #{e.message}", 3
   end
-  #response = http.request(request)
+  response = http.request(request)
   print_http_response(response)
   case response
   when Net::HTTPSuccess, Net::HTTPRedirection
@@ -241,16 +239,16 @@ def response_no_body(uri, request)
 end
 
 def response_print_body(uri, request)
-  http = Net::HTTP.new(uri.host, uri.port)
-  if uri.scheme == 'https'
-    http.use_ssl = uri.scheme == 'https'
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  http = Net::HTTP::Proxy($proxy.host,$proxy.port).new(uri.host, uri.port)
+  http.read_timeout = nil
+  # check we can connect.
+  begin http.start
+  rescue => e  
+    #puts e.backtrace.inspect  
+    #print e.class
+    warn_exit "Failed to connect: #{uri.host}:#{uri.port}: #{e.message}", 3
   end
-  http.start do |http|
-    request = Net::HTTP::Get.new uri
-    response = http.request request
-  end
-  
+
   # Add a blank line if headers were output.
   print "\n" if $http_print ;
 
