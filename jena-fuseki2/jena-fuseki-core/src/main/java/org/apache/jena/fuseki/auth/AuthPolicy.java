@@ -16,12 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.auth;
 
-/** 
- * Tests in jena-fuseki-main and jena-fuseki-webapp
- * because so many rely on having a server to run.
- */  
-public class Dummy {
+/**
+ * Policy for authorization to a resource.
+ * Assumes the user has already been authenticated.
+ */
+public interface AuthPolicy {
+    /** 
+     * Is the use authorized for this resource?
+     */
+    public boolean isAllowed(String user);
 
+    /**
+     * Is the use denied for this resource? Both {@linkplain #isAllowed} and
+     * {@linkplain #isDenied} could be false if the policy does not knwo one way of the
+     * other.
+     */
+    public default boolean isDenied(String user) {
+        return !isAllowed(user);
+    }
 }

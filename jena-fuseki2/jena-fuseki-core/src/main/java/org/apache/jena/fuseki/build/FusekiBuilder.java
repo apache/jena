@@ -26,13 +26,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.auth.Auth;
+import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource ;
@@ -45,7 +45,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
  */
 public class FusekiBuilder
 {
-    /** Build a DataService starting at Resource svc, with the standard (default) set of services */
+    /** Build a DataService starting at Resource svc, with the standard (default) set of services. */
     public static DataService buildDataServiceStd(DatasetGraph dsg, boolean allowUpdate) {
         DataService dataService = new DataService(dsg) ;
         populateStdServices(dataService, allowUpdate);
@@ -70,7 +70,12 @@ public class FusekiBuilder
 
     /** Add an operation to a {@link DataService} with a given endpoint name */
     public static void addServiceEP(DataService dataService, Operation operation, String endpointName) {
-        dataService.addEndpoint(operation, endpointName) ; 
+        dataService.addEndpoint(operation, endpointName) ;
+    }
+
+    /** Add an operation to a {@link DataService} with a given endpoint name */
+    public static void addServiceEP(DataService dataService, Operation operation, String endpointName, AuthPolicy requestAuth) {
+        dataService.addEndpoint(operation, endpointName, requestAuth) ;
     }
 
     public static void addServiceEP(DataService dataService, Operation operation, Resource svc, Property property) {
@@ -78,8 +83,24 @@ public class FusekiBuilder
         ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
-            String epName = soln.getLiteral("ep").getLexicalForm() ;
-            addServiceEP(dataService, operation, epName); 
+            AuthPolicy requestAuth = null;
+            RDFNode ep = soln.get("ep");
+            String epName = null;
+            if ( ep.isLiteral() )
+                epName = soln.getLiteral("ep").getLexicalForm() ;
+            else if ( ep.isResource() ) {
+                Resource r = (Resource)ep;
+                try {
+                    // [AuthAll]
+                    // [ fuseki:name "" ; fuseki:allowedUsers ( "" "" ) ]
+                    Resource x = r.getProperty(FusekiVocab.pAllowedUsers).getResource();
+                    requestAuth = FusekiBuilder.allowedUsers(x);
+                    epName = ((Literal)r.getProperty(FusekiVocab.pServiceName)).getLexicalForm();
+                } catch(Exception x) {}                
+            } else {
+                throw new FusekiConfigException("Unrecognized: "+ep);
+            }
+            addServiceEP(dataService, operation, epName, requestAuth); 
             //log.info("  " + operation.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }
     }
@@ -112,13 +133,13 @@ public class FusekiBuilder
         dataAccessPoints.remove(name);
     }
 
-    /** Get the allowed users on some resources.
+    /** Get the allowed users on a resource.
      *  Returns null if the resource is null or if there were no settings. 
      *  
      * @param resource
      * @return RequestAuthorization
      */
-    public static RequestAuthorization allowedUsers(Resource resource) {
+    public static AuthPolicy allowedUsers(Resource resource) {
         if ( resource == null )
             return null;
         Collection<RDFNode> allowedUsers = FusekiBuildLib.getAll(resource, "fu:"+pAllowedUsers.getLocalName());
@@ -140,7 +161,7 @@ public class FusekiBuilder
             .map(RDFNode::asNode)
             .map(Node::getLiteralLexicalForm)
             .collect(toList());
-        return RequestAuthorization.policyAllowSpecific(userNames);
+        return Auth.policyAllowSpecific(userNames);
     }
 }
 

@@ -24,11 +24,14 @@ import static org.apache.jena.fuseki.server.CounterName.RequestsBad;
 import static org.apache.jena.fuseki.server.CounterName.RequestsGood;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 
 import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.web.HttpSC;
@@ -50,6 +53,7 @@ public abstract class ActionService extends ActionBase {
      * executes the HTTP Action life cycle.
      */
     @Override
+    final
     protected void execCommonWorker(HttpAction action) {
         DataAccessPoint dataAccessPoint;
         DataService dSrv;
@@ -63,12 +67,7 @@ public abstract class ActionService extends ActionBase {
                 return;
             }
             dSrv = dataAccessPoint.getDataService();
-            
-            if ( dSrv.allowedUsers() != null ) {
-                String user = action.request.getRemoteUser();
-                if ( ! dSrv.allowedUsers().isAllowed(user) )
-                    ServletOps.errorForbidden();
-            }
+
             if ( !dSrv.isAcceptingRequests() ) {
                 ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
                 return;
@@ -81,42 +80,96 @@ public abstract class ActionService extends ActionBase {
         }
 
         action.setRequest(dataAccessPoint, dSrv);
+        // Endpoint Name is "" for GSP or quads.
+        // Endpoint name is not "", but unknown for GSP direct naming (which is usually disabled).
         String endpointName = mapRequestToOperation(action, dataAccessPoint);
-
+        
         // ServiceRouter dispatch
         Operation operation = null;
         if ( !endpointName.isEmpty() ) {
             operation = chooseOperation(action, dSrv, endpointName);
             if ( operation == null )
-                ServletOps.errorBadRequest(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
-
+                if ( ! Fuseki.GSP_DIRECT_NAMING ) 
+                    ServletOps.errorBadRequest(format("dataset=%s, service=%s", dataAccessPoint.getName(), endpointName));
+                else
+                    throw new InternalErrorException("Inconsistent: GSP_DIRECT_NAMING but no operation");
         } else {
+            // Endpoint ""
             operation = chooseOperation(action, dSrv);
             if ( operation == null )
                 ServletOps.errorBadRequest(format("dataset=%s", dataAccessPoint.getName()));
         }
 
+        // ---- Auth checking.
+        // -- Server-level auhtorization.
+        // Checking was carried out by servlet filter AuthFilter.
+        // Need to check Data service and endpoint authorization policies.
+        String user = action.getUser();
+        // -- Data service level authorization
+        if ( dSrv.authPolicy() != null ) {
+            if ( ! dSrv.authPolicy().isAllowed(user) )
+                ServletOps.errorForbidden();
+        }
+        
+        // -- Endpoint level authorization
+        // Make sure all contribute authentication.
+        if ( action.getEndpoint() != null ) {
+            // Specific endpoint chosen.
+            Auth.allow(user, action.getEndpoint().getAuthPolicy(), ServletOps::errorForbidden);
+        } else {
+            // No Endpoint name given; there may be several endpoints for the operation.
+            // authorization is the AND of all endpoints.
+            Collection<Endpoint> x = getEndpoints(dSrv, operation);
+            if ( x.isEmpty() )
+                throw new InternalErrorException("Inconsistent: no endpoints for "+operation);
+            x.forEach(ep->{
+                Auth.allow(user, ep.getAuthPolicy(), ServletOps::errorForbidden);
+            });
+        }
+        // ---- End auth checking.
+
         ActionService handler = action.getServiceDispatchRegistry().findHandler(operation);
         if ( handler == null )
             ServletOps.errorBadRequest(format("dataset=%s: op=%s", dataAccessPoint.getName(), operation.getName()));
-        // XXX -- replace action.setEndpoint
-        Endpoint ep = dSrv.getEndpoint(endpointName);
-        action.setEndpoint(ep, endpointName);
         handler.executeLifecycle(action);
         return;
     }
 
-    // Overridden by the ServiceRouter.
-    protected Operation chooseOperation(HttpAction action, DataService dataService, String serviceName) {
+    // Find the endpoints for an operation.
+    // This is GSP_R/GSP_RW and Quads_R/Quads_RW aware.
+    // If asked for GSP_R and there are no endpoints for GSP_R, try GSP_RW.
+    // Ditto Quads_R -> Quads_RW.
+    private Collection<Endpoint> getEndpoints(DataService dSrv, Operation operation) {
+        Collection<Endpoint> x = dSrv.getEndpoints(operation);
+        if ( x == null || x.isEmpty() ) {
+            if ( operation == Operation.GSP_R )
+                x = dSrv.getEndpoints(Operation.GSP_RW);
+            else if ( operation == Operation.Quads_R )
+                x = dSrv.getEndpoints(Operation.Quads_RW);
+        }
+        return x;
+    }
+    
+    /**
+     * Return the operation that corresponds to the endpoint name for a given data service.
+     * Side effect: This operation should set the selected endpoint in the HttpAction
+     * if this operation is determined to be a specific endpoint.
+     */
+    protected Operation chooseOperation(HttpAction action, DataService dataService, String endpointName) {
+        // Overridden by the ServiceRouter.
         // This default implementation is plain service name to operation based on the
         // DataService as would be used by operation servlets bound by web.xml
         // except Fuseki can add and delete mapping while running.
-        Endpoint ep = dataService.getEndpoint(serviceName);
+        Endpoint ep = dataService.getEndpoint(endpointName);
         Operation operation = ep.getOperation();
+        action.setEndpoint(ep);
         return operation;
     }
 
-    // Overridden by the ServiceRouter.
+    /**
+     * Return the operation that corresponds to the request when there is no endpoint name. 
+     * This operation does not set the selected endpoint in the HttpAction.
+     */
     protected Operation chooseOperation(HttpAction action, DataService dataService) {
         // No default implementation for directly bound services operation servlets.
         return null;

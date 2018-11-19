@@ -39,6 +39,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
+import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.query.QuerySolution ;
@@ -286,8 +287,8 @@ public class FusekiConfig {
         String name = object.getLexicalForm() ;
         name = DataAccessPoint.canonical(name) ;
         DataService dataService = buildDataService(svc, dsDescMap) ;
-        RequestAuthorization allowedUsers = FusekiBuilder.allowedUsers(svc);
-        dataService.setAllowedUsers(allowedUsers);
+        AuthPolicy allowedUsers = FusekiBuilder.allowedUsers(svc);
+        dataService.setAuthPolicy(allowedUsers);
         DataAccessPoint dataAccess = new DataAccessPoint(name, dataService) ;
         return dataAccess ;
     }

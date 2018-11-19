@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestAuthorizedRequest.class
+    TestAuthorized.class
     , TestSecurityFilterFuseki.class
     , TestFusekiSecurityAssemblerSeparate.class
     , TestFusekiSecurityAssemblerShared.class

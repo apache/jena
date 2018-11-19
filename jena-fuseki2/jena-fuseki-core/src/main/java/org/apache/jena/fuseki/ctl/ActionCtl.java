@@ -49,7 +49,7 @@ public abstract class ActionCtl extends ActionBase {
         }
         
         action.setControlRequest(dataAccessPoint, datasetUri) ;
-        action.setEndpoint(null, null) ;   // No operation or service name.
+        action.setEndpoint(null) ;   // No operation or service name.
         executeAction(action) ;
     }
 

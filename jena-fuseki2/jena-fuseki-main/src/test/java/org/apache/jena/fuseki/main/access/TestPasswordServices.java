@@ -27,8 +27,9 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.auth.Auth;
+import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiBuilder;
-import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
@@ -94,8 +95,8 @@ public class TestPasswordServices {
         
         DataService dSrv = new DataService(DatasetGraphFactory.createTxnMem());
         FusekiBuilder.populateStdServices(dSrv, false);
-        RequestAuthorization reqAuth = RequestAuthorization.policyAllowSpecific("user1");
-        dSrv.setAllowedUsers(reqAuth);
+        AuthPolicy reqAuth = Auth.policyAllowSpecific("user1");
+        dSrv.setAuthPolicy(reqAuth);
         
         fusekiServer =
             FusekiServer.create()

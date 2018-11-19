@@ -34,9 +34,10 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.access.DataAccessCtl;
+import org.apache.jena.fuseki.auth.Auth;
+import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiBuilder;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.ctl.ActionPing;
 import org.apache.jena.fuseki.ctl.ActionStats;
 import org.apache.jena.fuseki.jetty.FusekiErrorHandler1;
@@ -235,7 +236,7 @@ public class FusekiServer {
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
-        private RequestAuthorization     serverAllowedUsers = null;
+        private AuthPolicy               serverAuth         = null;
         private String                   passwordFile       = null;
         private String                   realm              = null;
         private AuthScheme               authScheme             = null;
@@ -457,7 +458,8 @@ public class FusekiServer {
             Model model = AssemblerUtils.readAssemblerFile(filename);
 
             Resource server = FusekiConfig.findServer(model);
-            processServerLevel(server);
+            // [AuthAll]
+            processServerLevel(server); 
             
             // Process server and services, whether via server ja:services or, if absent, by finding by type.
             // Side effect - sets global context.
@@ -486,9 +488,20 @@ public class FusekiServer {
             String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
             authScheme = AuthScheme.scheme(authStr);
             
-            serverAllowedUsers = FusekiBuilder.allowedUsers(server);
+            serverAuth = FusekiBuilder.allowedUsers(server);
         }
 
+        /** Process password file, auth and rela settings on the server description. **/
+        private void processAuthentication(Resource server) {
+            passwordFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
+            if ( passwordFile != null )
+                passwordFile(passwordFile);
+            realm = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
+            if ( realm == null )
+                realm = "TripleStore"; 
+            realm(realm);
+        }
+        
         /**
          * Choose the HTTP authentication scheme. 
          */
@@ -656,19 +669,19 @@ public class FusekiServer {
                     .map(name-> dataAccessPoints.get(name).getDataService().getDataset())
                     .anyMatch(DataAccessCtl::isAccessControlled);
 
-            hasAllowedUsers = ( serverAllowedUsers != null );
+            hasAllowedUsers = ( serverAuth != null );
             if ( ! hasAllowedUsers ) {
                 // Any datasets with allowedUsers?
                 hasAllowedUsers =
                     dataAccessPoints.keys().stream()
                         .map(name-> dataAccessPoints.get(name).getDataService())
-                        .anyMatch(dSvc->dSvc.allowedUsers() != null);
+                        .anyMatch(dSvc->dSvc.authPolicy() != null);
             }
             
             // If only a password file given, and nothing else, set the server to allowedUsers="*" (must log in).  
             if ( passwordFile != null && ! hasAllowedUsers ) {
                 hasAllowedUsers = true;
-                serverAllowedUsers = RequestAuthorization.policyAllowAuthenticated();
+                serverAuth = Auth.ANY_USER;
             }
         }
         
@@ -729,12 +742,12 @@ public class FusekiServer {
             // -- Access control
             if ( securityHandler != null && securityHandler instanceof ConstraintSecurityHandler ) {
                 ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
-                if ( serverAllowedUsers != null )
+                if ( serverAuth != null )
                     JettyLib.addPathConstraint(csh, "/*");
                 else {
                     DataAccessPointRegistry.get(cxt).forEach((name, dap)-> {
                         DatasetGraph dsg = dap.getDataService().getDataset();
-                        if ( dap.getDataService().allowedUsers() != null ) {
+                        if ( dap.getDataService().authPolicy() != null ) {
                             // Not need if whole server ACL'ed.
                             JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
                             JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
@@ -756,7 +769,7 @@ public class FusekiServer {
             context.setContextPath(contextPath);
             if ( securityHandler != null ) {
                 context.setSecurityHandler(securityHandler);
-                if ( serverAllowedUsers != null ) {
+                if ( serverAuth != null ) {
                     ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
                     JettyLib.addPathConstraint(csh, "/*");
                 }
@@ -768,8 +781,8 @@ public class FusekiServer {
         private void servletsAndFilters(ServletContextHandler context) {
             // Fuseki dataset services filter
             // First in chain.
-            if ( serverAllowedUsers != null ) {
-                Predicate<String> auth = serverAllowedUsers::isAllowed; 
+            if ( serverAuth != null ) {
+                Predicate<String> auth = serverAuth::isAllowed; 
                 AuthFilter authFilter = new AuthFilter(auth);
                 addFilter(context, "/*", authFilter);
                 //JettyLib.addPathConstraint(null, contextPath);

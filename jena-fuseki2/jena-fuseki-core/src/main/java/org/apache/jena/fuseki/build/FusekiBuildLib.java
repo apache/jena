@@ -118,6 +118,7 @@ public class FusekiBuildLib {
                 RDFList list = n.as(RDFList.class);
                 results.addAll(list.asJavaList());
             } catch (JenaException x) {
+                // Not a list.
                 results.add(n);
             }
         });

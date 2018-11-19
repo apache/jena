@@ -16,20 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.auth;
 
 public class Users {
-    
-    
     /**
      * Reserved user role name: Name of the user role for any authenticated user of the system.
      * In the servlet API, this equates to {@code getRemoteUser() != null}.
      */
-    public static String UserAnyLoggedIn = "*" ; 
+    public static String UserAnyLoggedIn = "*"; 
 
     /** 
      * Reserved user role name: Name of the user role for any authenticated user of the system
-     * In the servlet API, this includes {@code getRemoteUser() != null}.
+     * In the servlet API, this includes {@code getRemoteUser() == null}
      */
-    public static String UserAny = "_" ; 
+    public static String UserAnyAnon = "_" ; 
 }

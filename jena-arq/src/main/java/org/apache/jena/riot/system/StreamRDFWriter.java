@@ -40,7 +40,9 @@ import org.apache.jena.sparql.core.Quad ;
 
 /** Write RDF in a streaming fashion.
  *  {@link RDFDataMgr} operations do not provide this guarantee.
- *  See {@link  RDFWriterRegistry} for general purpose writers.
+ *  See {@link RDFWriterRegistry} for general purpose writers. 
+ *  {@link StreamRDFWriter} returns the same writer as {@link RDFWriterRegistry}
+ *  if the {@link RDFFormat} is a streaming format. 
  *  
  * @see RDFDataMgr 
  * @see RDFWriterRegistry 
@@ -152,11 +154,11 @@ public class StreamRDFWriter {
         register(RDFFormat.RDFNULL,         streamWriterFactoryNull) ;
     }
 
-    /** Get a StreamRDF destination that will output in syntax <tt>Lang</tt>
+    /** Get a StreamRDF destination that will output in syntax {@code Lang}
      *  and is guaranteed to do so in a scaling, streaming fashion.    
      * @param output OutputStream
      * @param lang   The syntax 
-     * @return       StreamRDF
+     * @return       StreamRDF, or null if Lang does not have a streaming format.
      * @see StreamOps#graphToStream
      * @see StreamOps#datasetToStream
      */
@@ -165,11 +167,11 @@ public class StreamRDFWriter {
         return getWriterStream(output, fmt) ;
     }
 
-    /** Get a StreamRDF destination that will output in syntax <tt>RDFFormat</tt>
+    /** Get a StreamRDF destination that will output in syntax {@code RDFFormat}
      *  and is guaranteed to do so in a scaling, streaming fashion.    
      * @param output OutputStream
      * @param format  The syntax (as an {@link RDFFormat}) 
-     * @return       StreamRDF
+     * @return       StreamRDF, or null if format is not registered for streaming.
      * @see StreamOps#graphToStream
      * @see StreamOps#datasetToStream
      */
