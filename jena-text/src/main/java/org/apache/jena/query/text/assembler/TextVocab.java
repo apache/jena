@@ -39,6 +39,7 @@ public class TextVocab
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;
     public static final Property pStoreValues       = Vocab.property(NS, "storeValues") ;
+    public static final Property pIgnoreIndexErrors       = Vocab.property(NS, "ignoreIndexErrors") ;
     public static final Property pQueryAnalyzer     = Vocab.property(NS, "queryAnalyzer") ;
     public static final Property pQueryParser       = Vocab.property(NS, "queryParser") ;
     public static final Property pEntityMap         = Vocab.property(NS, "entityMap") ;

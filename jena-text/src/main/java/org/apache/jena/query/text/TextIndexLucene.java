@@ -102,6 +102,7 @@ public class TextIndexLucene implements TextIndex {
     private final FieldType        ftText ;
     private final FieldType        ftTextNotStored ; // used for lang derived fields
     private final boolean          isMultilingual ;
+    private final boolean          ignoreIndexErrors ;
     
     private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
 
@@ -126,6 +127,9 @@ public class TextIndexLucene implements TextIndex {
             //multilingual index cannot work without lang field
             docDef.setLangField("lang");
         }
+        
+        this.ignoreIndexErrors = config.ignoreIndexErrors ;
+
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and the configured analyzer(s) for all other
@@ -258,7 +262,16 @@ public class TextIndexLucene implements TextIndex {
     protected void updateDocument(Entity entity) throws IOException {
         Document doc = doc(entity);
         Term term = new Term(docDef.getEntityField(), entity.getId());
-        indexWriter.updateDocument(term, doc);
+        try {
+            indexWriter.updateDocument(term, doc) ;
+        } catch (Exception ex) {
+            log.error("Error updating {} with term: {} message: {}", doc, term, ex.getMessage());
+            if (ignoreIndexErrors) {
+                return;
+            } else {
+                throw ex; // the original behavior
+            }
+        }
         log.trace("updated: {}", doc) ;
     }
 
@@ -279,7 +292,16 @@ public class TextIndexLucene implements TextIndex {
 
     protected void addDocument(Entity entity) throws IOException {
         Document doc = doc(entity) ;
-        indexWriter.addDocument(doc) ;
+        try {
+            indexWriter.addDocument(doc) ;
+        } catch (Exception ex) {
+            log.error("Error adding {} message: {}", doc, ex.getMessage());
+            if (ignoreIndexErrors) {
+                return;
+            } else {
+                throw ex; // the original behavior
+            }
+        }
         log.trace("added: {}", doc) ;
     }
 
