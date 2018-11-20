@@ -24,11 +24,11 @@ import java.util.*;
  * Policy for allowing users to execute a request. 
  * Assumes the user has been authenticated.
  */
-class RequestAuthorization implements AuthPolicy {
+class AuthUserList implements AuthPolicy {
 
     private final Set<String>  allowedUsers;
 
-    /*package*/ RequestAuthorization(Collection<String> allowed) {
+    /*package*/ AuthUserList(Collection<String> allowed) {
         this.allowedUsers = (allowed == null) ? Collections.emptySet() : new HashSet<>(allowed);
     }
     

@@ -236,7 +236,7 @@ public class FusekiServer {
         private boolean                  verbose            = false;
         private boolean                  withStats          = false;
         private boolean                  withPing           = false;
-        private AuthPolicy               serverAuth         = null;
+        private AuthPolicy               serverAuth         = null;     // Server level policy.
         private String                   passwordFile       = null;
         private String                   realm              = null;
         private AuthScheme               authScheme             = null;
@@ -458,8 +458,7 @@ public class FusekiServer {
             Model model = AssemblerUtils.readAssemblerFile(filename);
 
             Resource server = FusekiConfig.findServer(model);
-            // [AuthAll]
-            processServerLevel(server); 
+            processServerLevel(server);
             
             // Process server and services, whether via server ja:services or, if absent, by finding by type.
             // Side effect - sets global context.
@@ -477,29 +476,27 @@ public class FusekiServer {
                 return;
             // Extract settings - the server building is done in buildSecurityHandler,
             // buildAccessControl.  Dataset and graph level happen in assemblers. 
-            passwordFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
-            if ( passwordFile != null )
-                passwordFile(passwordFile);
-            realm = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
-            if ( realm == null )
-                realm = "TripleStore"; 
-            realm(realm);
+            String passwdFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
+            if ( passwdFile != null )
+                passwordFile(passwdFile);
+            String realmStr = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
+            if ( realmStr != null )
+                realm(realmStr);
             
             String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
-            authScheme = AuthScheme.scheme(authStr);
-            
+            if ( authStr != null )
+                auth(AuthScheme.scheme(authStr));
             serverAuth = FusekiBuilder.allowedUsers(server);
         }
 
-        /** Process password file, auth and rela settings on the server description. **/
+        /** Process password file, auth and realm settings on the server description. **/
         private void processAuthentication(Resource server) {
-            passwordFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
-            if ( passwordFile != null )
-                passwordFile(passwordFile);
-            realm = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
-            if ( realm == null )
-                realm = "TripleStore"; 
-            realm(realm);
+            String passwdFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
+            if ( passwdFile != null )
+                passwordFile(passwdFile);
+            String realmStr = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
+            if ( realmStr != null )
+                realm(realmStr);
         }
         
         /**
@@ -512,7 +509,6 @@ public class FusekiServer {
 
         /**
          * Set the realm used for HTTP digest authentication.
-         * The default is "TripleStore". 
          */
         public Builder realm(String realm) {
             this.realm = realm;
@@ -645,23 +641,31 @@ public class FusekiServer {
                 }
                 if ( networkLoopback ) 
                     applyLocalhost(server);
-                boolean accessCtlRequest = securityHandler != null;
-                boolean accessCtlData = false;
                 return new FusekiServer(serverPort, serverHttpsPort, server, handler.getServletContext());
             } finally {
                 buildFinish();
             }
         }
         
+        private ConstraintSecurityHandler buildSecurityHandler() {
+            if ( passwordFile == null )
+                return null;
+            UserStore userStore = JettyLib.makeUserStore(passwordFile);
+            return JettyLib.makeSecurityHandler(realm, userStore, authScheme);
+        }
+
         // Only valid during the build() process.
-        private boolean hasAuthenication = false;
-        private boolean hasAllowedUsers = false;
+        private boolean hasAuthenticationHandler = false;
+        private boolean hasAuthenticationUse = false;
         private boolean hasDataAccessControl = false;
         private List<DatasetGraph> datasets = null;
-
+        
         private void buildStart() {
             // -- Server, dataset authentication 
-            hasAuthenication = (passwordFile != null) || (securityHandler != null) ;
+            hasAuthenticationHandler = (passwordFile != null) || (securityHandler != null) ;
+
+            if ( realm == null )
+                realm = Auth.dftRealm;
             
             // See if there are any DatasetGraphAccessControl.
             hasDataAccessControl = 
@@ -669,32 +673,38 @@ public class FusekiServer {
                     .map(name-> dataAccessPoints.get(name).getDataService().getDataset())
                     .anyMatch(DataAccessCtl::isAccessControlled);
 
-            hasAllowedUsers = ( serverAuth != null );
-            if ( ! hasAllowedUsers ) {
+            // Server level.
+            hasAuthenticationUse = ( serverAuth != null );
+            // Dataset level.
+            if ( ! hasAuthenticationUse ) {
                 // Any datasets with allowedUsers?
-                hasAllowedUsers =
-                    dataAccessPoints.keys().stream()
+                hasAuthenticationUse = dataAccessPoints.keys().stream()
                         .map(name-> dataAccessPoints.get(name).getDataService())
                         .anyMatch(dSvc->dSvc.authPolicy() != null);
             }
+            // Endpoint level.
+            if ( ! hasAuthenticationUse ) {
+                hasAuthenticationUse = dataAccessPoints.keys().stream()
+                    .map(name-> dataAccessPoints.get(name).getDataService())
+                    .flatMap(dSrv->dSrv.getEndpoints().stream())
+                    .anyMatch(ep->ep.getAuthPolicy()!=null);
+            }
             
             // If only a password file given, and nothing else, set the server to allowedUsers="*" (must log in).  
-            if ( passwordFile != null && ! hasAllowedUsers ) {
-                hasAllowedUsers = true;
-                serverAuth = Auth.ANY_USER;
-            }
+            if ( passwordFile != null && ! hasAuthenticationUse )
+                hasAuthenticationUse = true;
         }
         
         private void buildFinish() {
-            hasAuthenication = false;
+            hasAuthenticationHandler = false;
             hasDataAccessControl = false;
             datasets = null;
         }
         
         /** Do some checking to make sure setup is consistent. */ 
         private void validate() {
-            if ( ! hasAuthenication ) {
-                if ( hasAllowedUsers ) {
+            if ( ! hasAuthenticationHandler ) {
+                if ( hasAuthenticationUse ) {
                     Fuseki.configLog.warn("'allowedUsers' is set but there is no authentication setup (e.g. password file)");
                 }
                 
@@ -719,7 +729,7 @@ public class FusekiServer {
             DataAccessPointRegistry.set(cxt, dapRegistry);
             JettyLib.setMimeTypes(handler);
             servletsAndFilters(handler);
-            buildAccessControl(cxt);
+            buildAccessControl(handler);
             
             if ( hasDataAccessControl ) {
                 // Consider making this "always" and changing the standard operation bindings. 
@@ -731,28 +741,34 @@ public class FusekiServer {
             return handler;
         }
         
-        private ConstraintSecurityHandler buildSecurityHandler() {
-            if ( passwordFile == null )
-                return null;
-            UserStore userStore = JettyLib.makeUserStore(passwordFile);
-            return JettyLib.makeSecurityHandler(realm, userStore, authScheme);
-        }
-        
-        private void buildAccessControl(ServletContext cxt) {
+        private void buildAccessControl(ServletContextHandler cxt) {
             // -- Access control
-            if ( securityHandler != null && securityHandler instanceof ConstraintSecurityHandler ) {
-                ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
-                if ( serverAuth != null )
-                    JettyLib.addPathConstraint(csh, "/*");
-                else {
-                    DataAccessPointRegistry.get(cxt).forEach((name, dap)-> {
-                        DatasetGraph dsg = dap.getDataService().getDataset();
-                        if ( dap.getDataService().authPolicy() != null ) {
-                            // Not need if whole server ACL'ed.
-                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
-                            JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
-                        }
-                    });
+            if ( securityHandler != null ) {
+                cxt.setSecurityHandler(securityHandler);
+                if ( securityHandler instanceof ConstraintSecurityHandler ) {
+                    ConstraintSecurityHandler csh = (ConstraintSecurityHandler)securityHandler;
+                    if ( serverAuth != null )
+                        JettyLib.addPathConstraint(csh, "/*");
+                    else {
+                        // Find datatsets than need filters. 
+                        DataAccessPointRegistry.get(cxt.getServletContext()).forEach((name, dap)-> {
+                            DatasetGraph dsg = dap.getDataService().getDataset();
+                            if ( dap.getDataService().authPolicy() != null ) {
+                                JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name));
+                                JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/*");
+                            }
+                            else {
+                                // Endpoint level.
+                                dap.getDataService().getEndpoints().forEach(ep->{
+                                   if ( ep.getAuthPolicy()!=null ) {
+                                       JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName());
+                                       if ( Fuseki.GSP_DIRECT_NAMING )
+                                           JettyLib.addPathConstraint(csh, DataAccessPoint.canonical(name)+"/"+ep.getName()+"/*");
+                                   }
+                                });
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -787,7 +803,7 @@ public class FusekiServer {
                 addFilter(context, "/*", authFilter);
                 //JettyLib.addPathConstraint(null, contextPath);
             }
-            // Second in chain.
+            // Second in chain?.
             FusekiFilter ff = new FusekiFilter();
             addFilter(context, "/*", ff);
 

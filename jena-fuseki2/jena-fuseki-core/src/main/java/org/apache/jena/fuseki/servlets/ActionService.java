@@ -101,7 +101,7 @@ public abstract class ActionService extends ActionBase {
         }
 
         // ---- Auth checking.
-        // -- Server-level auhtorization.
+        // -- Server-level authorization.
         // Checking was carried out by servlet filter AuthFilter.
         // Need to check Data service and endpoint authorization policies.
         String user = action.getUser();

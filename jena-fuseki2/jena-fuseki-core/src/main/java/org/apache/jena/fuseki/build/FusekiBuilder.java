@@ -32,12 +32,11 @@ import org.apache.jena.fuseki.server.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.util.graph.GraphUtils;
 
 /**
  * Helper functions use to construct Fuseki servers.
@@ -91,12 +90,17 @@ public class FusekiBuilder
             else if ( ep.isResource() ) {
                 Resource r = (Resource)ep;
                 try {
-                    // [AuthAll]
+                    // Look for possible:
                     // [ fuseki:name "" ; fuseki:allowedUsers ( "" "" ) ]
-                    Resource x = r.getProperty(FusekiVocab.pAllowedUsers).getResource();
-                    requestAuth = FusekiBuilder.allowedUsers(x);
-                    epName = ((Literal)r.getProperty(FusekiVocab.pServiceName)).getLexicalForm();
-                } catch(Exception x) {}                
+                    epName = r.getProperty(FusekiVocab.pServiceName).getString();
+                    List<RDFNode> x = GraphUtils.multiValue(r, FusekiVocab.pAllowedUsers);
+                    if ( x.size() > 1 )
+                        throw new FusekiConfigException("Multiple fuseki:"+FusekiVocab.pAllowedUsers.getLocalName()+" for "+r); 
+                    if ( ! x.isEmpty() )
+                        requestAuth = FusekiBuilder.allowedUsers(r);
+                } catch(JenaException | ClassCastException ex) {
+                    throw new FusekiConfigException("Failed to parse endpoint: "+r);
+                }
             } else {
                 throw new FusekiConfigException("Unrecognized: "+ep);
             }

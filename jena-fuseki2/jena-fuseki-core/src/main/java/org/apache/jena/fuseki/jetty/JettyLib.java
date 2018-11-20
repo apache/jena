@@ -93,6 +93,9 @@ public class JettyLib {
         Objects.requireNonNull(userStore);
         Objects.requireNonNull(role);
         
+        if ( authMode == null )
+            authMode = dftAuthMode;
+        
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
 
         IdentityService identService = new DefaultIdentityService();

@@ -31,8 +31,8 @@ import org.junit.runners.Suite;
     , TestFusekiSecurityAssemblerSeparate.class
     , TestFusekiSecurityAssemblerShared.class
     
-    , TestPasswordServer.class
-    , TestPasswordServices.class
+    , TestSecurityConfig.class
+    , TestSecurityBuilderSetup.class
 })
 
 public class TS_SecurityFuseki {

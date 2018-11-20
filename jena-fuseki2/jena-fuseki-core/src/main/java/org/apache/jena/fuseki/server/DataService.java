@@ -109,6 +109,10 @@ public class DataService {
         return endpoints.get(endpointName);
     }
 
+    public Collection<Endpoint> getEndpoints() {
+        return operations.values();
+    }
+    
     public List<Endpoint> getEndpoints(Operation operation) {
         List<Endpoint> x = operations.get(operation);
         if ( x == null )

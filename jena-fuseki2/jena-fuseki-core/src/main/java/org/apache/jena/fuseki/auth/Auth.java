@@ -29,6 +29,8 @@ import org.apache.jena.fuseki.FusekiConfigException;
  * See {@link Users} for special user names.
  */
 public class Auth {
+    public static final String dftRealm = "TripleStore";   
+
     /** Any authenticated user. */
     public static AuthPolicy ANY_USER = (user) -> user != null;
 
@@ -42,7 +44,7 @@ public class Auth {
     public static AuthPolicy policyAllowSpecific(String... allowedUsers) {
         return Auth.policyAllowSpecific(Arrays.asList(allowedUsers));
     }
-
+    
     /** 
      * A policy that allows specific users.
      * <ul>
@@ -65,7 +67,7 @@ public class Auth {
 
         if ( allowedUsers.stream().anyMatch(Objects::isNull) )
             throw new FusekiConfigException("null user found : "+allowedUsers);  
-        return new RequestAuthorization(allowedUsers);
+        return new AuthUserList(allowedUsers);
     }
 
     /**

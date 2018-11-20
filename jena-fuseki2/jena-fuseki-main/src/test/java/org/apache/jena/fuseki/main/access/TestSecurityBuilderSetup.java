@@ -49,16 +49,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests for password access to services when there is no server-level access control
- * and also programmatic setup.
+ * Tests for access to services using programmatic setup.
  * <p>
- * See {@link TestPasswordServer} for tests with server-level access control
- * and also access control by assembler
+ * See {@link TestSecurityConfig} for tests with server-level access control and also
+ * access control by assembler
  * <p>
  * See {@link TestSecurityFilterFuseki} for graph-level access control.
- *
  */
-public class TestPasswordServices {
+public class TestSecurityBuilderSetup {
 
     private static FusekiServer fusekiServer = null;
     private static int port = WebLib.choosePort();
@@ -116,7 +114,6 @@ public class TestPasswordServices {
         HttpClient hc = HttpOp.createDefaultHttpClient();
         HttpOp.setDefaultHttpClient(hc);
     }
-    
 
     @AfterClass
     public static void afterClass() {
@@ -200,7 +197,6 @@ public class TestPasswordServices {
     }
     
     // Service level : ctl.
-    
     @Test public void access_service_ctl_user1() {
         // user1 -- allowed.
         HttpClient hc = LibSec.httpClient(authSetup1);

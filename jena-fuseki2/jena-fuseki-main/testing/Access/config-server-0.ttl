@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Use in TestFusekiSecurityAssemblerShared
-# Tests on the assembler for graph-level data access control.
+# Used by TestSecurityConfig
+# No server level security, only service level.
 
 PREFIX :        <#>
 PREFIX fuseki:  <http://jena.apache.org/fuseki#>
@@ -33,45 +33,29 @@ PREFIX access:  <http://jena.apache.org/access#>
 
 <#service_tdb2> rdf:type fuseki:Service ;
     rdfs:label                      "Access controlled dataset" ;
-    fuseki:name                     "database" ;
-    ## Read-only operations.
+    fuseki:allowedUsers             "user1", "user3";
+    fuseki:name                     "database1" ;
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
     fuseki:serviceReadGraphStore    "get" ;
-    fuseki:dataset                  <#access_dataset>;
+    fuseki:dataset                  <#dataset1>;
     .
 
-## Dataset 1
-## Access control
-<#access_dataset>  rdf:type access:AccessControlledDataset ;
-    access:registry   <#securityRegistry> ;
-    access:dataset    <#tdb_dataset_shared> ;
+## Own database
+<#dataset1> rdf:type  ja:MemoryDataset ;
     .
 
-<#securityRegistry> rdf:type access:SecurityRegistry ;
-    access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ) ;
-    access:entry ("user1" <http://host/graphname3> ) ;
-    access:entry ("user2" <http://host/graphname9> ) ;
-    access:entry [ access:user "user3" ; access:graphs (<http://host/graphname3> <http://host/graphname4> ) ] ;
-    access:entry [ access:user "user3" ; access:graphs <http://host/graphname5> ] ;
-    access:entry [ access:user "userZ" ; access:graphs <http://host/graphnameZ> ] ;
-    .
 ## Dataset 2
-## No data access control.
+## No service
 <#service_plain> rdf:type fuseki:Service ;
-    fuseki:name                  "plain";
+    fuseki:name                  "database2";
     fuseki:serviceQuery          "query";
     fuseki:serviceQuery          "sparql";
-    fuseki:serviceUpdate         "update";
-    fuseki:serviceUpload         "upload" ;
-    fuseki:serviceReadGraphStore "data" ;
     fuseki:serviceReadGraphStore "get" ;
-    fuseki:dataset <#tdb_dataset_shared> ;
+    fuseki:dataset <#tdb_dataset> ;
     .
-
-## Shared database.
-<#tdb_dataset_shared> rdf:type      tdb2:DatasetTDB2 ;
-    tdb2:location "--mem--/DB" ;
-    tdb2:unionDefaultGraph true ;
+    
+<#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "--mem--" ;
     .
-
+    
