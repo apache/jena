@@ -82,6 +82,7 @@ public class FusekiBuilder
         ResultSet rs = FusekiBuildLib.query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
+            // No policy yet - set below if one is found.
             AuthPolicy requestAuth = null;
             RDFNode ep = soln.get("ep");
             String epName = null;

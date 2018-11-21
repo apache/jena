@@ -30,7 +30,7 @@ public interface AuthPolicy {
 
     /**
      * Is the use denied for this resource? Both {@linkplain #isAllowed} and
-     * {@linkplain #isDenied} could be false if the policy does not knwo one way of the
+     * {@linkplain #isDenied} could be false if the policy does not know one way of the
      * other.
      */
     public default boolean isDenied(String user) {
