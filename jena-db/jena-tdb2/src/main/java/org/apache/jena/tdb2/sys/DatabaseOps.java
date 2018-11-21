@@ -73,12 +73,12 @@ public class DatabaseOps {
      * It is important to go via {@code DatabaseConnection} to avoid
      * duplicate {@code DatasetGraphSwitchable}s for the same location.
      */
-    /*package*/ static DatasetGraph create(Location location) {
+    /*package*/ static DatasetGraph create(Location location, StoreParams params) {
         // Hide implementation class.
-        return createSwitchable(location);
+        return createSwitchable(location, params);
     }
     
-    private static DatasetGraphSwitchable createSwitchable(Location location) {
+    private static DatasetGraphSwitchable createSwitchable(Location location, StoreParams params) {
         if ( location.isMem() ) {
             DatasetGraph dsg = StoreConnection.connectCreate(location).getDatasetGraph();
             return new DatasetGraphSwitchable(null, location, dsg);
@@ -89,14 +89,12 @@ public class DatabaseOps {
        Path path = IOX.asPath(location);
        // Scan for DBs
        Path db = findLocation(path, dbPrefix);
-       // XXX [StoreParams]
-       StoreParams params;
        if ( db == null ) {
            db = path.resolve(dbPrefix+SEP+startCount);
            IOX.createDirectory(db);
        }
        Location loc2 = IOX.asLocation(db);
-       DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
+       DatasetGraphTDB dsg = StoreConnection.connectCreate(loc2, params).getDatasetGraphTDB();
        DatasetGraphSwitchable appDSG = new DatasetGraphSwitchable(path, location, dsg);
        return appDSG;
     }
