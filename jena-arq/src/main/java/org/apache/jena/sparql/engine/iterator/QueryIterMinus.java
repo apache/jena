@@ -34,7 +34,7 @@ public class QueryIterMinus extends QueryIter2 {
 
     public static QueryIterator create(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt) {
         if ( ! right.hasNext() )
-            // Empty MINUS left 
+            // Empty MINUS -> return left 
             return left ;
         return new QueryIterMinus(left, right, commonVars, qCxt) ;
     }

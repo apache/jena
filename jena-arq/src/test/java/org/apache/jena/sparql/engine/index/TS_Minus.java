@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,20 +18,14 @@
 
 package org.apache.jena.sparql.engine.index;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Interface for indexes that are used for identifying matching
- * {@link org.apache.jena.sparql.engine.binding.Binding}s when
- * {@link org.apache.jena.sparql.engine.iterator.QueryIterMinus} is trying to determine
- * which Bindings need to be removed.
- */
-public interface IndexTable {
-    // Contribution from P Gearon
-    /**
-     * Is there a binding in the table that has a shared domain (variables in common) and
-     * is join-compatible? This is teh condition for MINUS to exclude the argument
-     * binding.
-     */
-	public abstract boolean containsCompatibleWithSharedDomain(Binding binding);
-}
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestIndexTable.class
+    , TestMinus.class
+})
+public class TS_Minus {}
+
