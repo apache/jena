@@ -35,7 +35,7 @@ import org.eclipse.jetty.security.SecurityHandler;
  * filter chain.
  * <p>
  * Either the user from {@link HttpServletRequest#getRemoteUser() getRemoteUser} is null,
- * no authentication, or it has been validated. Failed authentication wil have been
+ * no authentication, or it has been validated. Failed authentication will have been
  * handled and rejected by the {@link SecurityHandler security handler} before they get to
  * the filter chain.
  */

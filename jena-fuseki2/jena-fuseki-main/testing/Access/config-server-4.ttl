@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # Used by TestSecurityConfig
-# Server is "user1", "user2
+# Endpoint ACLs only.
 
 PREFIX :        <#>
 PREFIX fuseki:  <http://jena.apache.org/fuseki#>
@@ -25,38 +25,21 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX access:  <http://jena.apache.org/access#>
 
-[] rdf:type fuseki:Server ;
-   fuseki:allowedUsers  "user1", "user2";
-   fuseki:services (
-     <#service_tdb2>
-     <#service_plain>
-   ) .
-
-<#service_tdb2> rdf:type fuseki:Service ;
-    rdfs:label                      "Access controlled dataset" ;
-    fuseki:allowedUsers             "user1", "user3";
-    fuseki:name                     "database1" ;
-    fuseki:serviceQuery             "query" ;
-    fuseki:serviceQuery             "sparql" ;
-    fuseki:serviceReadGraphStore    "get" ;
-    fuseki:dataset                  <#dataset1>;
+<#service> rdf:type fuseki:Service ;
+    rdfs:label                "Access controlled dataset" ;
+    fuseki:name               "db2" ;
+    fuseki:serviceQuery       [ fuseki:name "query1" ;
+                                fuseki:allowedUsers ("user1" "user2")
+                              ] ;
+    fuseki:serviceQuery       [ fuseki:name "query2" ;
+                                # Not accessible - service is 1&3
+                                fuseki:allowedUsers ("user1" "user2")
+                              ] ;
+    fuseki:serviceQuery       [ fuseki:name "query3" ;
+                                fuseki:allowedUsers ("user3")
+                              ] ;
+    fuseki:serviceQuery       [ fuseki:name "open" ;
+                                fuseki:allowedUsers ("*")
+                              ] ;
+    fuseki:dataset            [ rdf:type  ja:MemoryDataset ];
     .
-
-## Own database
-<#dataset1> rdf:type  ja:MemoryDataset ;
-    .
-
-## Dataset 2
-## No service
-<#service_plain> rdf:type fuseki:Service ;
-    fuseki:name                  "database2";
-    fuseki:serviceQuery          "query";
-    fuseki:serviceQuery          "sparql";
-    fuseki:serviceReadGraphStore "get" ;
-    fuseki:dataset <#tdb_dataset> ;
-    .
-    
-<#tdb_dataset> rdf:type      tdb2:DatasetTDB2 ;
-    tdb2:location "--mem--" ;
-    .
-    

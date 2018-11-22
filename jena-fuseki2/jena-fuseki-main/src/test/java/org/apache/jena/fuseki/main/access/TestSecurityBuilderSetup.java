@@ -27,8 +27,9 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.auth.Auth;
+import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiBuilder;
-import org.apache.jena.fuseki.build.RequestAuthorization;
 import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
@@ -48,16 +49,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests for password access to services when there is no server-level access control
- * and also programmatic setup.
+ * Tests for access to services using programmatic setup.
  * <p>
- * See {@link TestPasswordServer} for tests with server-level access control
- * and also access control by assembler
+ * See {@link TestSecurityConfig} for tests with server-level access control and also
+ * access control by assembler
  * <p>
  * See {@link TestSecurityFilterFuseki} for graph-level access control.
- *
  */
-public class TestPasswordServices {
+public class TestSecurityBuilderSetup {
 
     private static FusekiServer fusekiServer = null;
     private static int port = WebLib.choosePort();
@@ -94,8 +93,8 @@ public class TestPasswordServices {
         
         DataService dSrv = new DataService(DatasetGraphFactory.createTxnMem());
         FusekiBuilder.populateStdServices(dSrv, false);
-        RequestAuthorization reqAuth = RequestAuthorization.policyAllowSpecific("user1");
-        dSrv.setAllowedUsers(reqAuth);
+        AuthPolicy reqAuth = Auth.policyAllowSpecific("user1");
+        dSrv.setAuthPolicy(reqAuth);
         
         fusekiServer =
             FusekiServer.create()
@@ -115,7 +114,6 @@ public class TestPasswordServices {
         HttpClient hc = HttpOp.createDefaultHttpClient();
         HttpOp.setDefaultHttpClient(hc);
     }
-    
 
     @AfterClass
     public static void afterClass() {
@@ -199,7 +197,6 @@ public class TestPasswordServices {
     }
     
     // Service level : ctl.
-    
     @Test public void access_service_ctl_user1() {
         // user1 -- allowed.
         HttpClient hc = LibSec.httpClient(authSetup1);

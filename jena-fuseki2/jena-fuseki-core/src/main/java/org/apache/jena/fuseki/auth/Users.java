@@ -16,12 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.auth;
 
-/** 
- * Tests in jena-fuseki-main and jena-fuseki-webapp
- * because so many rely on having a server to run.
- */  
-public class Dummy {
+public class Users {
+    /**
+     * Reserved user role name: Name of the user role for any authenticated user of the system.
+     * In the servlet API, this equates to {@code getRemoteUser() != null}.
+     */
+    public static String UserAnyLoggedIn = "*"; 
 
+    /** 
+     * Reserved user role name: Name of the user role for any authenticated user of the system
+     * In the servlet API, this includes {@code getRemoteUser() == null}
+     */
+    public static String UserAnyAnon = "_" ; 
 }

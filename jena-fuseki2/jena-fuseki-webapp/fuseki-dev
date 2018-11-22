@@ -58,7 +58,7 @@ then
 fi
 
 # Prepend any development directories here
-DEVDIRS="jena-core jena-tdb jena-arq jena-text"
+DEVDIRS="jena-core jena-tdb jena-arq jena-text jena-fuseki2/jena-fuseki-core jena-fuseki2/jena-fuseki-webapp"
 for X in $DEVDIRS
 do
     CPX="$FUSEKI_HOME/../../$X/target/classes"

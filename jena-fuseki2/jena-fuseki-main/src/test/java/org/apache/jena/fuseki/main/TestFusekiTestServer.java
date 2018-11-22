@@ -53,7 +53,8 @@ public class TestFusekiTestServer {
         // No auth set - should work.
         try ( TypedInputStream in = HttpOp.execHttpGet(FusekiTestServer.urlDataset(), "*/*") ) {}
         catch (HttpException ex) {
-            Assert.assertTrue(ex.getResponseCode() == HttpSC.FORBIDDEN_403 || ex.getResponseCode() == HttpSC.UNAUTHORIZED_401 );
+            if ( ex.getResponseCode() == HttpSC.FORBIDDEN_403 || ex.getResponseCode() == HttpSC.UNAUTHORIZED_401 ) 
+                return;
             throw ex;
         }
     }

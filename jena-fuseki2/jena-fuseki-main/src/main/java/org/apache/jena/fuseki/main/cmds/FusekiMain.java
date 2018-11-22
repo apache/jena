@@ -547,7 +547,7 @@ public class FusekiMain extends CmdARQ {
                 DataService dSrv = dap.getDataService();
                 dSrv.getOperations().forEach((op)->{
                     dSrv.getEndpoints(op).forEach(ep-> {
-                        String x = ep.getEndpoint();
+                        String x = ep.getName();
                         if ( x.isEmpty() )
                             x = "quads";
                         endpoints.add(x);   

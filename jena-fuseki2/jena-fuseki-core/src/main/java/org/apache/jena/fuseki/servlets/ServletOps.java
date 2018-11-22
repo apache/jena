@@ -24,6 +24,7 @@ import java.io.PrintWriter ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.system.UploadDetails;
@@ -193,8 +194,12 @@ public class ServletOps {
             ServletOutputStream out = response.getOutputStream() ;
             response.setContentType(WebContent.contentTypeJSON);
             response.setCharacterEncoding(WebContent.charsetUTF8) ;
-            JSON.write(out, v) ;
-            out.println() ; 
+            
+            IndentedWriter iOut = new IndentedWriter(out) ;
+            JSON.write(iOut, v) ;
+            // Make sure we end with a newline.
+            iOut.ensureStartOfLine();
+            iOut.flush() ;
             out.flush() ;
         } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
     }

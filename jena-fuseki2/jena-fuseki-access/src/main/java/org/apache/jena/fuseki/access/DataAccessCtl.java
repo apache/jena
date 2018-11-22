@@ -54,7 +54,7 @@ public class DataAccessCtl {
     public static final Symbol   symAuthorizationService    = Symbol.create(VocabSecurity.getURI() + "authService");
 
     /** Get the user from the servlet context via {@link HttpServletRequest#getRemoteUser} */ 
-    public static final Function<HttpAction, String> requestUserServlet = (action)->action.request.getRemoteUser();
+    public static final Function<HttpAction, String> requestUserServlet = (action)->action.getUser();
 
     /**
      * Get the user from {@code ?user} query string parameter. Use carefully; for situations where the user name has

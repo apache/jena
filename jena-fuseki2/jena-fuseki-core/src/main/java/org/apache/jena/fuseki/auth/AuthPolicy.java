@@ -16,20 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.access;
+package org.apache.jena.fuseki.auth;
 
-public class Users {
-    
-    
-    /**
-     * Reserved user role name: Name of the user role for any authenticated user of the system.
-     * In the servlet API, this equates to {@code getRemoteUser() != null}.
-     */
-    public static String UserAnyLoggedIn = "*" ; 
-
+/**
+ * Policy for authorization to a resource.
+ * Assumes the user has already been authenticated.
+ */
+public interface AuthPolicy {
     /** 
-     * Reserved user role name: Name of the user role for any authenticated user of the system
-     * In the servlet API, this includes {@code getRemoteUser() != null}.
+     * Is the use authorized for this resource?
      */
-    public static String UserAny = "_" ; 
+    public boolean isAllowed(String user);
+
+    /**
+     * Is the use denied for this resource? Both {@linkplain #isAllowed} and
+     * {@linkplain #isDenied} could be false if the policy does not know one way of the
+     * other.
+     */
+    public default boolean isDenied(String user) {
+        return !isAllowed(user);
+    }
 }

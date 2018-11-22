@@ -53,7 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test on the assembler for data access control.
+ * Tests on the assembler for data access control.
  * <ul>
  * <li>assem-security.ttl - two services "/database" and "/plain" each with their own dataset. 
  * <li>assem-security-shared.ttl - two services "/database" and "/plain" with a shared dataset.
