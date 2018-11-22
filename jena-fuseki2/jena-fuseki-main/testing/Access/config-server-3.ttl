@@ -25,11 +25,6 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX access:  <http://jena.apache.org/access#>
 
-# Defaults to 
-#[] rdf:type fuseki:Server ;
-#   fuseki:allowedUsers  "*";
-#   .
-   
 <#service> rdf:type fuseki:Service ;
     rdfs:label                "Access controlled dataset" ;
     fuseki:allowedUsers       "user1", "user3";
