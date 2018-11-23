@@ -18,44 +18,29 @@
 
 package riotcmd;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.riot.Lang;
 
 /**
- * Guess the syntax from the filename. 
+ * Guess the syntax from the filename.
  */
-public class riot extends CmdLangParse
-{
-    public static void main(String... argv)
-    {
-        new riot(argv).mainRun() ;
-    }        
-
-    protected riot(String[] argv)
-    {
-        super(argv) ;
+public class riot extends CmdLangParse {
+    public static void main(String...argv) {
+        new riot(argv).mainRun();
     }
-    
-    @Override
-    protected Lang selectLang(String filename, ContentType contentType, Lang dftLang)
-    {
-        if ( contentType != null && ! WebContent.matchContentType(WebContent.ctTextPlain, contentType) )
-            return RDFLanguages.contentTypeToLang(contentType) ;
-        
-        if ( filename != null ) {
-            Lang lang =  RDFLanguages.filenameToLang(filename) ;
-            if ( lang != null )
-                return lang;
-        }
-        return dftLang;
+
+    protected riot(String[] argv) {
+        super(argv);
     }
 
     @Override
-    protected String getCommandName()
+    protected Lang dftLang() 
     {
-        return Lib.classShortName(riot.class) ;
+        return Lang.NQUADS;  
+    }
+
+    @Override
+    protected String getCommandName() {
+        return Lib.classShortName(riot.class);
     }
 }
