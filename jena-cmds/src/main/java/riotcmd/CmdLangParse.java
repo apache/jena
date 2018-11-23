@@ -36,7 +36,6 @@ import org.apache.jena.Jena ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
@@ -222,9 +221,12 @@ public abstract class CmdLangParse extends CmdGeneral
             // Always use the command line specified syntax.
             builder.forceLang(modLangParse.getLang());
         else {
-            // Otherwise, use the command selected langauge, with N-Quads as the ultimate fallback.  
-            Lang lang = selectLang(null, null, RDFLanguages.NQUADS) ;
-            builder.lang(RDFLanguages.NQUADS);
+            // Otherwise, use the command selected language, with N-Quads as the ultimate fallback.  
+            Lang lang = dftLang() ;
+            if ( lang == null )
+                lang = Lang.NQUADS;
+            // Fall back lang if RIOT can't guess it.
+            builder.lang(lang);
         }
 
         // Set the source.
@@ -240,7 +242,9 @@ public abstract class CmdLangParse extends CmdGeneral
         return parseRIOT(builder, filename);
     }
 
-    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang) ;
+    // Return the default (fall-back) language used if no other choice is made.
+    // Contrast with --syntax=.. which forces the language.
+    protected abstract Lang dftLang() ;
 
     protected ParseRecord parseRIOT(RDFParserBuilder builder, /*Info for the ProcessOutcome*/ String filename) {
         boolean checking = true ;
