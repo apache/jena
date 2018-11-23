@@ -28,5 +28,10 @@ import org.apache.jena.sparql.engine.binding.Binding ;
  */
 public interface IndexTable {
     // Contribution from P Gearon
+    /**
+     * Is there a binding in the table that has a shared domain (variables in common) and
+     * is join-compatible? This is teh condition for MINUS to exclude the argument
+     * binding.
+     */
 	public abstract boolean containsCompatibleWithSharedDomain(Binding binding);
 }

@@ -108,5 +108,10 @@ public class LinearIndex implements IndexTable {
 		}
 		return b ;
 	}
+	
+	@Override
+	public String toString() {
+	    return "LinearIndex: "+commonVars+" "+table;
+	}
 }
 
