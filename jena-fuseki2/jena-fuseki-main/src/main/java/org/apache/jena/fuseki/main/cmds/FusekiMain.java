@@ -86,6 +86,9 @@ public class FusekiMain extends CmdARQ {
         private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
         private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
         
+        private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue, "withPing", "ping");
+        private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue, "withStats", "stats");
+        
         private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
         
         private static ArgDecl  argHttps        = new ArgDecl(ArgDecl.HasValue, "https");
@@ -164,6 +167,9 @@ public class FusekiMain extends CmdARQ {
             add(argPasswdFile, "--passwd=FILE", "Password file");
             // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
+            
+//            add(argWithPing,    "--ping",   "Enable /$/ping");
+//            add(argWithStats,   "--stats",  "Enable /$/stats");
 
             super.modVersion.addClass(Fuseki.class);
         }
@@ -379,6 +385,9 @@ public class FusekiMain extends CmdARQ {
                 serverConfig.authScheme = AuthScheme.scheme(schemeStr); 
             }
             
+            serverConfig.withPing = contains(argWithPing);
+            serverConfig.withStats = contains(argWithStats);
+            
 //            if ( contains(argGZip) ) {
 //                if ( !hasValueOfTrue(argGZip) && !hasValueOfFalse(argGZip) )
 //                    throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip));
@@ -477,6 +486,12 @@ public class FusekiMain extends CmdARQ {
            
             if ( serverConfig.authScheme != null )
                 builder.auth(serverConfig.authScheme);
+
+            if ( serverConfig.withPing )
+                builder.enablePing(true);
+
+            if ( serverConfig.withStats )
+                builder.enableStats(true);
             
             return builder.build();
         }

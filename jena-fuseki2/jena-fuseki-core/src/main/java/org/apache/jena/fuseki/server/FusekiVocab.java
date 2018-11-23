@@ -39,6 +39,10 @@ public class FusekiVocab
     public static final Property pPasswordFile      = property("passwd");
     public static final Property pRealm             = property("realm");
     public static final Property pAuth              = property("auth");
+    
+    // Server endpoints.
+    public static final Property pServerPing        = property("pingEP");
+    public static final Property pServerStats       = property("statsEP");
 
     public static final Property pServiceQueryEP                = property("serviceQuery");
     public static final Property pServiceUpdateEP               = property("serviceUpdate");

@@ -35,6 +35,9 @@ class ServerConfig {
     /** Allow update */
     public boolean   allowUpdate      = false;
     
+    public boolean withPing           = false;
+    public boolean withStats          = false;
+    
     // This is set ...
     public DatasetGraph dsg           = null;
     // ... or this.
