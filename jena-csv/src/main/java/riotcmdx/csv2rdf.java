@@ -19,7 +19,6 @@
 package riotcmdx;
 
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.lang.csv.CSV2RDF;
 import org.apache.jena.riot.Lang ;
 import riotcmd.CmdLangParse ;
@@ -29,7 +28,7 @@ import riotcmd.CmdLangParse ;
  * with no intermediary Graph or PropertyTable.
  */
 public class csv2rdf extends CmdLangParse{
-	
+    
     public static void main(String... argv)
     {
         new csv2rdf(argv).mainRun() ;
@@ -39,14 +38,14 @@ public class csv2rdf extends CmdLangParse{
     {
         super(argv) ;
     }
-	
-	@Override
-	protected Lang selectLang(String filename, ContentType contentType, Lang dftLang) {
-		return CSV2RDF.CSV;
-	}
+    
+    @Override
+    protected Lang dftLang() {
+        return CSV2RDF.CSV;
+    }
 
-	@Override
-	protected String getCommandName() {
-		return Lib.classShortName(csv2rdf.class) ;
-	}
+    @Override
+    protected String getCommandName() {
+        return Lib.classShortName(csv2rdf.class) ;
+    }
 }
