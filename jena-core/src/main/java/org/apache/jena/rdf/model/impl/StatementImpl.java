@@ -129,6 +129,11 @@ public class StatementImpl  extends StatementBase implements Statement {
         return object.as( Seq.class );
     }    
     
+    @Override
+    public RDFList getList() {
+        return object.as( RDFList.class );
+    }
+    
     /** it turns out to be handy to return the new StatementImpl as the result */ 
     @Override protected StatementImpl replace( RDFNode n )  {
     	StatementImpl s = new StatementImpl( subject, predicate, n, model );

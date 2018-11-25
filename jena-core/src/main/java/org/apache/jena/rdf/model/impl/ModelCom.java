@@ -876,12 +876,12 @@ implements Model, PrefixMapping, Lock
 
     /**
         Answer a (the) new empty list
+        Until this is made the object or subject in the model, it will not appear in a written form.  
         @return An RDF-encoded list of no elements (ie nil)
      */
     @Override
     public RDFList createList() 
     { return getResource( RDF.nil.getURI() ).as( RDFList.class ); }
-
 
     /**
      * <p>Answer a new list containing the resources from the given iterator, in order.</p>
@@ -914,7 +914,7 @@ implements Model, PrefixMapping, Lock
      * @return An RDF-encoded list 
      */
     @Override
-    public RDFList createList( RDFNode[] members ) {
+    public RDFList createList( RDFNode... members ) {
         return createList( Arrays.asList( members ).iterator() );
     }
 
@@ -953,6 +953,14 @@ implements Model, PrefixMapping, Lock
     public Bag getBag( Resource r )  
     { return r.inModel( this ).as( Bag.class ); }
 
+    @Override
+    public RDFList getList( String uri )  
+    { return (RDFList)IteratorFactory.asResource( makeURI( uri ), RDFList.class, this ); }
+    
+    @Override
+    public RDFList getList( Resource r )  
+    { return r.inModel( this ).as( RDFList.class ); }
+    
     static private Node makeURI(String uri) 
     { return uri == null ? NodeFactory.createBlankNode() : NodeFactory.createURI( uri ); }
 

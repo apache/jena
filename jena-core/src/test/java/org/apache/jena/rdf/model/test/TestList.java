@@ -50,8 +50,7 @@ public class TestList extends AbstractModelTestBase
 	public static final String NS = "uri:urn:x-rdf:test#";
 
 	/** Test that an iterator delivers the expected values */
-	protected static void iteratorTest( final Iterator<?> i,
-			final Object[] expected )
+	protected static void iteratorTest( final Iterator<?> i, final Object[] expected )
 	{
 		final Logger logger = LoggerFactory.getLogger(TestList.class);
 		final List<Object> expList = new ArrayList<>();
@@ -757,7 +756,6 @@ public class TestList extends AbstractModelTestBase
 
 	public void testValidity()
 	{
-
 		final Resource root = model.createResource(TestList.NS + "root");
 		final Property p = model.createProperty(TestList.NS, "p");
 
@@ -783,125 +781,58 @@ public class TestList extends AbstractModelTestBase
 
 		model.add(badList, RDF.rest, nil);
 		checkValid("valid5", l1, true);
+	}
+	
+	public void testStmtGetList()
+	{
+	    Resource root = model.createResource(TestList.NS + "root");
+	    Property p = model.createProperty(TestList.NS, "p");
+	    Resource r = model.createResource(TestList.NS + "r");
+	    Resource r1 = model.createResource(TestList.NS + "r1");
+	    Resource r2 = model.createResource(TestList.NS + "r2");
+	    
+	    RDFList list0 = model.createList(r1, r2);
+        model.add(r, p, list0);
+        
+        Resource obj = model.listStatements(r, p, (Resource)null).next().getResource();
+        
+        RDFList list1 = model.getList(obj);
+        
+        boolean b = list0.sameListAs(list1);
+        assertTrue("Different lists: expected: "+list0+" : got: "+list1, b);
+	}
+	
+	public void testModelGetList()
+	{
+	    Resource root = model.createResource(TestList.NS + "root");
+	    Property p = model.createProperty(TestList.NS, "p");
+	    Resource r = model.createResource(TestList.NS + "r");
+	    Resource r1 = model.createResource(TestList.NS + "r1");
+	    Resource r2 = model.createResource(TestList.NS + "r2");
 
+	    RDFList list0 = model.createList(r1, r2);
+	    model.add(r, p, list0);
+
+	    RDFList list1 = model.listStatements(r, p, (Resource)null).next().getList();
+
+	    boolean b = list0.sameListAs(list1);
+	    assertTrue("Different lists: expected: "+list0+" : got: "+list1, b);
 	}
 
-	// public void testListSubclass() {
-	// String NS = "http://example.org/test#";
-	// Resource a = model.createResource( NS + "a" );
-	// Resource b = model.createResource( NS + "b" );
-	//
-	// Resource cell0 = model.createResource();
-	// Resource cell1 = model.createResource();
-	// cell0.addProperty( RDF.first, a );
-	// cell0.addProperty( RDF.rest, cell1 );
-	// cell1.addProperty( RDF.first, b );
-	// cell1.addProperty( RDF.rest, RDF.nil );
-	//
-	// UserList ul = getUserListInstance(cell0);
-	//
-	// assertEquals( "User list length ", 2, ul.size() );
-	// assertEquals( "head of user list ", a, ul.getHead() );
-	//
-	// RDFList l = ul.as( RDFList.class );
-	// assertNotNull( "RDFList facet of user-defined list subclass", l );
-	//
-	// }
-	//
-	// /** A simple extension to RDFList to test user-subclassing of RDFList */
-	// protected static interface UserList extends RDFList {
-	// }
-	//
-	// /** Impl of a simple extension to RDFList to test user-subclassing of
-	// RDFList */
-	// protected static class UserListImpl extends RDFListImpl implements
-	// UserList {
-	// public UserListImpl( Node n, EnhGraph g ) {
-	// super( n, g );
-	// }
-	// }
-	//
-	// public UserList getUserListInstance( Resource r )
-	// {
-	// return new UserListImpl( r.asNode(), (EnhGraph) model );
-	// }
-	//
-	// public void testUserDefinedList() {
-	// BuiltinPersonalities.model.add( UserDefList.class,
-	// UserDefListImpl.factoryForTests );
-	//
-	// String NS = "http://example.org/test#";
-	// Resource a = model.createResource( NS + "a" );
-	// Resource b = model.createResource( NS + "b" );
-	//
-	// Resource empty = model.createResource( UserDefListImpl.NIL.getURI() );
-	// UserDefList ul = empty.as( UserDefList.class );
-	// assertNotNull( "UserList facet of empty list", ul );
-	//
-	// UserDefList ul0 = (UserDefList) ul.cons( b );
-	// ul0 = (UserDefList) ul0.cons( a );
-	// assertEquals( "should be length 2", 2, ul0.size() );
-	// assertTrue( "first statement", model.contains( ul0,
-	// UserDefListImpl.FIRST, a ) );
-	// }
-	//
-	// protected static interface UserDefList extends RDFList {}
-	//
-	// protected static class UserDefListImpl extends RDFListImpl implements
-	// UserDefList {
-	// @SuppressWarnings("hiding") public static final String NS =
-	// "http://example.org/testlist#";
-	// public static final Property FIRST = ResourceFactory.createProperty(
-	// NS+"first" );
-	// public static final Property REST = ResourceFactory.createProperty(
-	// NS+"rest" );
-	// public static final Resource NIL = ResourceFactory.createResource(
-	// NS+"nil" );
-	// public static final Resource LIST = ResourceFactory.createResource(
-	// NS+"List" );
-	//
-	// /**
-	// * A factory for generating UserDefList facets from nodes in enhanced
-	// graphs.
-	// */
-	// public static Implementation factoryForTests = new Implementation() {
-	// @Override public EnhNode wrap( Node n, EnhGraph eg ) {
-	// if (canWrap( n, eg )) {
-	// UserDefListImpl impl = new UserDefListImpl( n, eg );
-	//
-	// Model model = impl.getModel();
-	// impl.m_listFirst = FIRST.inModel( model );
-	// impl.m_listRest = REST.inModel( model );
-	// impl.m_listNil = NIL.inModel( model );
-	// impl.m_listType = LIST.inModel( model );
-	//
-	// return impl;
-	// }
-	// else {
-	// throw new JenaException( "Cannot convert node " + n + " to UserDefList");
-	// }
-	// }
-	//
-	// @Override public boolean canWrap( Node node, EnhGraph eg ) {
-	// Graph g = eg.asGraph();
-	//
-	// return node.equals( NIL.asNode() ) ||
-	// g.contains( node, FIRST.asNode(), Node.ANY ) ||
-	// g.contains( node, REST.asNode(), Node.ANY ) ||
-	// g.contains( node, RDF.type.asNode(), LIST.asNode() );
-	// }
-	// };
-	//
-	// /** This method returns the Java class object that defines which
-	// abstraction facet is presented */
-	// @Override public Class<? extends RDFList> listAbstractionClass() {
-	// return UserDefList.class;
-	// }
-	//
-	// public UserDefListImpl( Node n, EnhGraph g ) {
-	// super( n, g );
-	// }
-	//
-	// }
+	public void testModelGetEmptyList()
+	{
+	    Resource root = model.createResource(TestList.NS + "root");
+	    Property p = model.createProperty(TestList.NS, "p");
+	    Resource r = model.createResource(TestList.NS + "r");
+	    
+	    RDFList list0 = model.createList();
+	    model.add(r, p, list0);
 
+	    RDFList list1 = model.listStatements(r, p, (Resource)null).next().getList();
+
+	    boolean b = list0.sameListAs(list1);
+	    assertTrue("Different lists: expected: "+list0+" : got: "+list1, b);
+	}
+
+	
 }

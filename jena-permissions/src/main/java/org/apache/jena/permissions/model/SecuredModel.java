@@ -563,7 +563,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	 *             if user is not authenticated and is required to be.
 	 */
 	@Override
-	public SecuredRDFList createList(final RDFNode[] members)
+	public SecuredRDFList createList(final RDFNode...members)
 			throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException;
 
 	/**
@@ -1096,6 +1096,32 @@ public interface SecuredModel extends Model, SecuredPrefixMapping {
 	@Override
 	public SecuredSeq getSeq(final String uri) throws ReadDeniedException, AuthenticationRequiredException;
 
+	/** Return a RDF List instance in this model.
+	 *
+	 * <p>Subsequent operations on the returned list may modify this model.</p>
+	 * <p>The list is assumed to already exist in the model.  If it does not,
+	 * <CODE>createList</CODE> should be used instead.</p>
+	 * @return a list instance
+	 * @param uri the URI of the list
+	 */ 
+	@Override
+	public SecuredRDFList getList(String uri) throws ReadDeniedException, AuthenticationRequiredException;
+
+	/** Return a RDF List based on a given resource.
+	 * 
+	 * <p> This method enables an application to treat any resource as a list.
+	 *     It is in effect an unsafe downcast.</p>
+	 *
+	 * <p>Subsequent operations on the returned list may modify this model.</p>
+	 * <p>The list is assumed to already exist in the model.  If it does not,
+	 * <CODE>createList</CODE> should be used instead.</p>
+	 * @return a list instance
+	 * @param r the resource of the list
+	 */
+	@Override
+	public SecuredRDFList getList(Resource r) throws ReadDeniedException, AuthenticationRequiredException;
+
+	
 	/**
 	 * 
 	 * @sec.graph Read

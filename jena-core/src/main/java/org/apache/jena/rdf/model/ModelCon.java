@@ -111,16 +111,17 @@ public interface ModelCon {
  *     It is in effect an unsafe downcast.</p>
  *
  * <p>Subsequent operations on the returned Alt may modify this model.</p>
- * <p>The bag is assumed to already exist in the model.  If it does not,
+ * <p>The Alt is assumed to already exist in the model.  If it does not,
  * <CODE>createAlt</CODE> should be used instead.</p>
  * @return an Alt instance
  * @param r an untyped Resource instance
  
  */ 
     Alt getAlt(Resource r) ;
+    
 /** Return a Seq instance in this model.
  *
- * <p>Subsequent operations on the returned bag may modify this model.</p>
+ * <p>Subsequent operations on the returned sequence may modify this model.</p>
  * <p>The seq is assumed to already exist in the model.  If it does not,
  * <CODE>createSeq</CODE> should be used instead.</p>
  * @return a seq instance
@@ -128,7 +129,7 @@ public interface ModelCon {
  
  */ 
     Seq getSeq(String uri) ;
-
+    
 /** Return a Seq instance based on a given resource.
  *
  * <p> This method enables an application to treat any resource as a Seq.
@@ -136,12 +137,35 @@ public interface ModelCon {
  *
  * <p>Subsequent operations on the returned Seq may modify this model.</p>
  * <p>The Seq is assumed to already exist in the model.  If it does not,
- * <CODE>createAlt</CODE> should be used instead.</p>
- * @return an Alt instance
+ * <CODE>createSeq</CODE> should be used instead.</p>
+ * @return an Seq instance
  * @param r an untyped Resource instance
  
  */ 
     Seq getSeq(Resource r) ;
+
+/** Return a RDF List instance in this model.
+ *
+ * <p>Subsequent operations on the returned list may modify this model.</p>
+ * <p>The list is assumed to already exist in the model.  If it does not,
+ * <CODE>createList</CODE> should be used instead.</p>
+ * @return a list instance
+ * @param uri the URI of the list
+ */ 
+    RDFList getList(String uri) ;
+
+/** Return a RDF List based on a given resource.
+ * 
+ * <p> This method enables an application to treat any resource as a list.
+ *     It is in effect an unsafe downcast.</p>
+ *
+ * <p>Subsequent operations on the returned list may modify this model.</p>
+ * <p>The list is assumed to already exist in the model.  If it does not,
+ * <CODE>createList</CODE> should be used instead.</p>
+ * @return a list instance
+ * @param r the resource of the list
+ */ 
+   RDFList getList(Resource r) ;
 
 /** Create a new anonymous resource with a given type.
  *
