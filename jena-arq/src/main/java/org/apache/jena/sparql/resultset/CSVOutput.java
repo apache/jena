@@ -102,7 +102,7 @@ public class CSVOutput extends OutputBase
         }
     }
 
-    private void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException 
+    protected void output(Writer w, Node n, NodeToLabelMap bnodes) throws IOException 
     {
         //String str = FmtUtils.stringForNode(n) ;
         String str = "?" ;
@@ -115,7 +115,7 @@ public class CSVOutput extends OutputBase
         w.write(str) ;
     }
 
-    private String csvSafe(String str)
+    protected String csvSafe(String str)
     {
         // Apparently, there are CSV parsers that only accept "" as an escaped quote if inside a "..."  
         if (str.contains("\"")

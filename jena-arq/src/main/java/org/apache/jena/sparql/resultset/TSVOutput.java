@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Var ;
@@ -49,8 +50,7 @@ public class TSVOutput extends OutputBase
     
     @Override
     public void format(OutputStream out, ResultSet resultSet) {
-        // Use a Turtle formatter to format terms
-        NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
+        NodeFormatter formatter = createNodeFormatter();
 
         AWriter w = IO.wrapUTF8(out);
 
@@ -90,6 +90,11 @@ public class TSVOutput extends OutputBase
         }
 
         w.flush();
+    }
+
+    protected NodeFormatter createNodeFormatter() {
+        // Use a Turtle formatter to format terms
+        return new NodeFormatterTTL(null, null);
     }
 
     static final byte[] headerBytes = StrUtils.asUTF8bytes("?_askResult" + NL);
