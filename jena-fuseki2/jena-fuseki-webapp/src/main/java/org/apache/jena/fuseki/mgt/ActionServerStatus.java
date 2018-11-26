@@ -88,22 +88,11 @@ public class ActionServerStatus extends ActionCtl
         if ( builtDateStr == null || builtDateStr.startsWith("${") )
             builtDateStr = "Unknown" ;
 
-//        builder
-//            .key(JsonConst.server)
-//            .startObject()
-//            .key(JsonConst.port).value(port)
-//            .finishObject() ;
-//        builder
-//            .key(JsonConst.admin)
-//            .startObject()
-//            .key(JsonConst.port).value(requestPort)
-//            .finishObject() ;
-
         builder
-            .key(ServerMgtConst.version).value(versionStr)
-            .key(ServerMgtConst.built).value(builtDateStr)
-            .key(ServerMgtConst.startDT).value(Fuseki.serverStartedAt())
-            .key(ServerMgtConst.uptime).value(Fuseki.serverUptimeSeconds())
+            .pair(ServerMgtConst.version,   versionStr)
+            .pair(ServerMgtConst.built,     builtDateStr)
+            .pair(ServerMgtConst.startDT,   Fuseki.serverStartedAt())
+            .pair(ServerMgtConst.uptime,    Fuseki.serverUptimeSeconds())
             ;
             
     }

@@ -231,6 +231,12 @@
     <url-pattern>/$/server</url-pattern>
   </servlet-mapping>
 
+  <!-- Alternative name mentioned in default shiro.ini -->
+  <servlet-mapping>
+    <servlet-name>ServerStatusServlet</servlet-name>
+    <url-pattern>/$/status</url-pattern>
+  </servlet-mapping>
+
   <servlet>
     <servlet-name>ActionDatasets</servlet-name>
     <servlet-class>org.apache.jena.fuseki.mgt.ActionDatasets</servlet-class>

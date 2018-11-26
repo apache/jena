@@ -50,9 +50,13 @@ import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.servlets.ServiceDispatchRegistry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.util.NotUniqueException;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -474,6 +478,10 @@ public class FusekiServer {
         private void processServerLevel(Resource server) {
             if ( server == null )
                 return;
+            
+            withPing  = argBoolean(server, FusekiVocab.pServerPing,  false);
+            withStats = argBoolean(server, FusekiVocab.pServerStats, false);
+            
             // Extract settings - the server building is done in buildSecurityHandler,
             // buildAccessControl.  Dataset and graph level happen in assemblers. 
             String passwdFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
@@ -489,6 +497,21 @@ public class FusekiServer {
             serverAuth = FusekiBuilder.allowedUsers(server);
         }
 
+        private static boolean argBoolean(Resource r, Property p, boolean dftValue) {
+            try { GraphUtils.atmostOneProperty(r, p); }
+            catch (NotUniqueException ex) {
+                throw new FusekiConfigException(ex.getMessage());
+            }
+            Statement stmt = r.getProperty(p);
+            if ( stmt == null )
+                return dftValue;
+            try { 
+                return stmt.getBoolean();
+            } catch (JenaException ex) {
+                throw new FusekiConfigException("Not a boolean for '"+p+"' : "+stmt.getObject());
+            }
+        }
+        
         /** Process password file, auth and realm settings on the server description. **/
         private void processAuthentication(Resource server) {
             String passwdFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
