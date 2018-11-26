@@ -238,6 +238,12 @@ public interface Statement extends FrontsTriple
      */    
     public Seq getSeq() ;
     
+    /** Return the object of the statement as an RDF List.
+     * <p>An exception will be thrown if the object is not an {@link RDFList}.</p>
+     * @return The object of the statement interpreted as a value as RDFList.
+     */
+    public RDFList getList() ;
+    
     /** Return the language of the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>

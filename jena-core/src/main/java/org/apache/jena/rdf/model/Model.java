@@ -287,7 +287,6 @@ public interface Model
     */
     public RDFList createList();
 
-
     /**
      * <p>Answer a new list containing the resources from the given iterator, in order.</p>
      * @param members An iterator, each value of which is expected to be an RDFNode
@@ -297,11 +296,14 @@ public interface Model
 
 
     /**
-     * <p>Answer a new list containing the nodes from the given array, in order</p>
+     * <p>Answer a new list containing the nodes from the given eleemnts, in order.
+     * If the list of elements is empty, until the list is made the object or subject in the model, or has an element added, 
+     * it will not appear in the model (e.g. when written out).  
+     *
      * @param members An array of RDF nodes that will be the members of the list
      * @return An RDF-encoded list
      */
-    public RDFList createList( RDFNode[] members );
+    public RDFList createList( RDFNode... members );
 
 
 	/** Add a statement to this model.

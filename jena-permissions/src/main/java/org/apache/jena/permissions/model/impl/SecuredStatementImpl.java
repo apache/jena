@@ -279,6 +279,18 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	}
 
 	@Override
+    public SecuredSeq getSeq() {
+    	return SecuredSeqImpl.getInstance(getModel(), holder.getBaseItem()
+    			.getSeq());
+    }
+	
+    @Override
+    public SecuredRDFList getList() {
+        return SecuredRDFListImpl.getInstance(getModel(), holder.getBaseItem()
+                .getList());
+    }
+
+    @Override
 	public boolean getBoolean() throws ReadDeniedException,
 			AuthenticationRequiredException {
 		checkRead();
@@ -408,12 +420,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 	public SecuredResource getResource(final ResourceF f) {
 		return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem()
 				.getResource(f));
-	}
-
-	@Override
-	public SecuredSeq getSeq() {
-		return SecuredSeqImpl.getInstance(getModel(), holder.getBaseItem()
-				.getSeq());
 	}
 
 	@Override
