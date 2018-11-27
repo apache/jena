@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertTrue ;
 
 import java.util.* ;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -195,6 +196,38 @@ public class TestIter
         test(it, "xx", "yy", "zz");
     }
 	
+    @Test
+    public void flatmap_01() {
+        Iterator<String> it = Iter.flatMap(data2.iterator(), item -> Arrays.asList(item+item, item).iterator());
+        test(it, "xx", "x", "yy", "y", "zz", "z");
+    }
+    
+    @Test
+    public void flatmap_02() {
+        List<Integer> data = Arrays.asList(1,2,3);
+        Iterator<Integer> it = Iter.flatMap(data.iterator(), x -> {
+            if ( x == 2 ) return Iter.nullIterator();
+            return Arrays.asList(x*x).iterator();
+        });
+        test(it, 1, 9);
+    }
+
+    @Test
+    public void flatmap_03() {
+        List<Integer> data = Arrays.asList(1,2,3);
+        Function<Integer, Iterator<String>> mapper = x -> {
+                switch(x) {
+                    case 1: return Iter.nullIterator();
+                    case 2: return Arrays.asList("two").iterator();
+                    case 3: return Iter.nullIterator();
+                    default: throw new IllegalArgumentException(); 
+                }
+            };
+            
+        Iter<String> it = Iter.iter(data.iterator()).flatMap(mapper);
+        test(it, "two");
+    }
+
     private Predicate<String> filter = item -> item.length() == 1;
    
     @Test
