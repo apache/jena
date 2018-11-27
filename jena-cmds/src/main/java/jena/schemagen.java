@@ -1815,7 +1815,7 @@ public class schemagen {
         @Override
         public String getOutputOption() { return getStringValue( OPT.OUTPUT ); }
         @Override
-        public boolean hasHeaderOption() { return isTrue( OPT.HEADER ); }
+        public boolean hasHeaderOption() { return hasValue( OPT.HEADER ); }
         @Override
         public String getHeaderOption() { return getStringValue( OPT.HEADER ); }
         @Override
