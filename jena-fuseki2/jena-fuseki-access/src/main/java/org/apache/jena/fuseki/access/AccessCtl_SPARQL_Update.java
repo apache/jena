@@ -27,7 +27,7 @@ import org.apache.jena.fuseki.servlets.SPARQL_Update;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.sparql.core.DatasetGraph;
 
-/** An Update {@link ActionService} that denies SPAQR Update in access controlled datasets. */
+/** An Update {@link ActionService} that denies SPARQL Update in access controlled datasets. */
 final
 public class AccessCtl_SPARQL_Update extends SPARQL_Update {
     private final Function<HttpAction, String> requestUser;
