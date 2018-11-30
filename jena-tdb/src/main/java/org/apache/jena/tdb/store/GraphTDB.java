@@ -53,15 +53,15 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
     }
 
     private String graphNameStr() {
-        if ( getGraphName() == null ) return DatasetPrefixesTDB.unnamedGraphURI;
-        if ( getGraphName().isURI() ) return getGraphName().getURI();
+        if ( getGraphName() == null )   return DatasetPrefixesTDB.unnamedGraphURI;
+        if ( getGraphName().isURI() )   return getGraphName().getURI();
         if ( getGraphName().isBlank() ) return RiotLib.blankNodeToIri(getGraphName()).getURI();
         throw new TDBException("Bad node for graph name: "+getGraphName());
     }
     
     /** Return the associated DatasetGraphTDB.
      * For non-transactional, that's the base storage.
-     * For transactional, it is the transactional view.
+     * For transactional, it is the current transaction wrapper {@link DatasetGraphTDB}.
      * <p>
      * Immediate validity only.
      * Not valid across transaction boundaries, nor non-transactional to transactional. 
@@ -73,8 +73,8 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
      */
     public abstract DatasetGraphTransaction getDatasetGraphTransaction() ;
 
-    /** Return the associated base DatasetGraphTDB storage.
-     * Use with great care.
+    /** Return the associated base DatasetGraphTDB storage, not the transactional level. 
+     * <em>Internal use only. Use with great care.</em>
      * <p>
      * Immediate validity only.
      */
@@ -171,7 +171,10 @@ public abstract class GraphTDB extends GraphView implements Closeable, Sync {
 
     @Override
     public void clear() {
-        getDatasetGraphTDB().deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
+        // Logically, this is "super.clear()" except the default implementation
+        // is a loop that materializes nodes. We want to call the dataset directly 
+        // so that nodes don't get materialized, just deleted from indexes.
+        getDataset().deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll) ;
     }
 

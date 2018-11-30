@@ -90,7 +90,7 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
     }
 
-    /** Return the DatasetGraph we are viewing. */
+    /** Return the {@link DatasetGraph} we are viewing. */
     public DatasetGraph getDataset() {
         return dsg ;
     }
