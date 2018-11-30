@@ -2015,6 +2015,22 @@ public class TestParameterizedSparqlString {
     }
 
     @Test
+    public void test_empty_list() {
+        // Tests two values for same variable.
+        String str = "SELECT * WHERE { VALUES (?o) {?objs} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> objs = new ArrayList<>();
+        pss.setValues("objs", objs);
+
+        String exp = "SELECT * WHERE { VALUES (?o) {} ?s ?p ?o }";
+        String res = pss.toString();
+
+        //System.out.println("Exp: " + exp);
+        //System.out.println("Res: " + res);
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
     public void test_set_values_multiple_variables() {
         // Tests two values for same variable.
         String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";

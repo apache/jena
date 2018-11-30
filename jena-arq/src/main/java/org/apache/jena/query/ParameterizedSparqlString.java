@@ -1893,7 +1893,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
                     replacement.append(") ");
                 }
             }
-            replacement.deleteCharAt(replacement.length() - 1);
+
+            if (replacement.length() > 0) {
+                replacement.deleteCharAt(replacement.length() - 1);
+            }
 
             return replacement.toString();
         }
