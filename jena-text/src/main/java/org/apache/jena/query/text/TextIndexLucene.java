@@ -101,6 +101,7 @@ public class TextIndexLucene implements TextIndex {
     private final String           queryParserType ;
     private final FieldType        ftText ;
     private final FieldType        ftTextNotStored ; // used for lang derived fields
+    private final FieldType        ftTextStoredNoIndex ; // used for lang derived fields
     private final boolean          isMultilingual ;
     private final boolean          ignoreIndexErrors ;
     
@@ -161,6 +162,10 @@ public class TextIndexLucene implements TextIndex {
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;
         // the following is used for lang derived fields
         this.ftTextNotStored = TextField.TYPE_NOT_STORED ;
+        this.ftTextStoredNoIndex = new FieldType(); 
+        this.ftTextStoredNoIndex.setIndexOptions(IndexOptions.NONE);
+        this.ftTextStoredNoIndex.setStored(true);
+        this.ftTextStoredNoIndex.freeze();
         if (config.isValueStored() && docDef.getLangField() == null)
             log.warn("Values stored but langField not set. Returned values will not have language tag or datatype.");
 
@@ -343,7 +348,10 @@ public class TextIndexLucene implements TextIndex {
         String uidField = docDef.getUidField() ;
 
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            doc.add( new Field(e.getKey(), (String) e.getValue(), ftText) );
+            String field = e.getKey();
+            String value = (String) e.getValue();
+            FieldType ft = (docDef.getNoIndex(field)) ? ftTextStoredNoIndex : ftText ;
+            doc.add( new Field(field, value, ft) );
             if (langField != null) {
                 String lang = entity.getLanguage();
                 RDFDatatype datatype = entity.getDatatype();
@@ -351,12 +359,12 @@ public class TextIndexLucene implements TextIndex {
                     doc.add(new Field(langField, lang, StringField.TYPE_STORED));
                     if (this.isMultilingual) {
                         // add a field that uses a language-specific analyzer via MultilingualAnalyzer
-                        doc.add(new Field(e.getKey() + "_" + lang, (String) e.getValue(), ftTextNotStored));
+                        doc.add(new Field(field + "_" + lang, value, ftTextNotStored));
                         // add fields for any defined auxiliary indexes
                         List<String> auxIndexes = Util.getAuxIndexes(lang);
                         if (auxIndexes != null) {
                             for (String auxTag : auxIndexes) {
-                                doc.add(new Field(e.getKey() + "_" + auxTag, (String) e.getValue(), ftTextNotStored));
+                                doc.add(new Field(field + "_" + auxTag, value, ftTextNotStored));
                             }
                         }
                     }
@@ -366,7 +374,7 @@ public class TextIndexLucene implements TextIndex {
                 }
             }
             if (uidField != null) {
-                String hash = entity.getChecksum(e.getKey(), (String) e.getValue());
+                String hash = entity.getChecksum(field, value);
                 doc.add(new Field(uidField, hash, StringField.TYPE_STORED));
             }
         }
@@ -630,32 +638,25 @@ public class TextIndexLucene implements TextIndex {
         } else {
             if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
                 textField += "_" + lang;
-            }
-            
-            if (docDef.getField(property) != null) {
+                textClause = textField + ":" + qs;
+            } else if (docDef.getField(property) != null) {
                 textClause = textField + ":" + qs;
             } else {
                 textClause = qs;
             }
-           
-            String langClause = null;
-            if (langField != null) {
-                langClause = StringUtils.isNotEmpty(lang) ? (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*") : null;
+            
+            if (langField != null && StringUtils.isNotEmpty(lang)) {
+                textClause = "(" + textClause + ") AND " + (!lang.equals("none") ? langField + ":" + lang : "-" + langField + ":*");
             }
-            if (langClause != null)
-                textClause = "(" + textClause + ") AND " + langClause ;
         }
         
-        String graphClause = null;
-        if (graphURI != null) {
-            String escaped = QueryParserBase.escape(graphURI) ;
-            graphClause = getDocDef().getGraphField() + ":" + escaped ;
-        }
         
         String queryString = textClause ;
 
-        if (graphClause != null)
-            queryString = "(" + queryString + ") AND " + graphClause ;
+        if (graphURI != null) {
+            String escaped = QueryParserBase.escape(graphURI) ;
+            queryString = "(" + queryString + ") AND " + getDocDef().getGraphField() + ":" + escaped ;
+        }
         
         Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
         Query query = parseQuery(queryString, qa) ;
