@@ -57,6 +57,7 @@ public class TextVocab
     public static final Property pMap               = Vocab.property(NS, "map") ;
     public static final Property pField             = Vocab.property(NS, "field") ;
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;
+    public static final Property pNoIndex           = Vocab.property(NS, "noIndex") ;
     public static final Property pOptional          = Vocab.property(NS, "optional") ;
     
     // Analyzers

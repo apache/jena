@@ -99,6 +99,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
 
         Multimap<String, Node> mapDefs = HashMultimap.create() ; 
         Map<String, Analyzer> analyzerDefs = new HashMap<>();
+        Map<String, Boolean> noIndexDefs = new HashMap<>();
 
         Statement listStmt = root.getProperty(TextVocab.pMap);
         while (listStmt != null) {
@@ -141,6 +142,16 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             }
             mapDefs.put(field, n.asNode()) ;
 
+            Statement noIndexStatement = listEntry.getProperty(TextVocab.pNoIndex);
+            if (noIndexStatement != null) {
+                n = noIndexStatement.getObject();
+                if (! n.isLiteral()) {
+                    throw new TextIndexException("Text map entry noIndex property must be a boolean : " + n);
+                }
+                boolean noInx = n.asLiteral().getBoolean();
+                noIndexDefs.put(field, noInx) ;
+            }
+
             Statement analyzerStatement = listEntry.getProperty(TextVocab.pAnalyzer);
             if (analyzerStatement != null) {
                 n = analyzerStatement.getObject();
@@ -170,6 +181,9 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;
+        }
+        for (String f : noIndexDefs.keySet()) {
+            docDef.setNoIndex(f, noIndexDefs.get(f));
         }
         for (String f : analyzerDefs.keySet()) {
             docDef.setAnalyzer(f, analyzerDefs.get(f));
