@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry ;
+import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -57,9 +58,12 @@ import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser ;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
 import org.apache.lucene.search.ScoreDoc ;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -454,7 +458,7 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang, int limit, String highlight) {
         try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return query$(indexReader, property, qs, graphURI, lang, limit, highlight) ;
+            return query$(indexReader, property, qs, UnaryOperator.identity(), graphURI, lang, limit, highlight) ;
         }
         catch (ParseException ex) {
             throw new TextIndexParseException(qs, ex.getMessage()) ;
@@ -462,6 +466,31 @@ public class TextIndexLucene implements TextIndex {
         catch (Exception ex) {
             throw new TextIndexException("query", ex) ;
         }
+    }
+
+    @Override
+    public List<TextHit> query(String subjectUri, Node property, String qs, String graphURI, String lang, int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            return query$(indexReader, property, qs, addUriPredicate(subjectUri), graphURI, lang, limit, highlight) ;
+        }
+        catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage()) ;
+        }
+        catch (Exception ex) {
+            throw new TextIndexException("query", ex) ;
+        }
+    }
+
+    //In a case of making text search query for concrete subject
+    //adding uri predicate will make query much more efficient
+    private UnaryOperator<Query> addUriPredicate(String subjectUri) {
+        return (Query textQuery) -> {
+            String uriField = docDef.getEntityField();
+            return new BooleanQuery.Builder()
+                    .add(textQuery, BooleanClause.Occur.MUST)
+                    .add(new TermQuery(new Term(uriField, subjectUri)), BooleanClause.Occur.FILTER)
+                    .build();
+        };
     }
 
     private List<TextHit> simpleResults(ScoreDoc[] sDocs, IndexSearcher indexSearcher, Query query, String field) 
@@ -613,8 +642,7 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
-    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, String graphURI, String lang, int limit, String highlight)
-            throws ParseException, IOException, InvalidTokenOffsetsException {
+    private List<TextHit> query$(IndexReader indexReader, Node property, String qs, UnaryOperator<Query> textQueryExtender, String graphURI, String lang, int limit, String highlight) throws ParseException, IOException, InvalidTokenOffsetsException {
         String litField = docDef.getField(property) != null ?  docDef.getField(property) : docDef.getPrimaryField();
         String textField = litField;
         String textClause = "";               
@@ -658,8 +686,9 @@ public class TextIndexLucene implements TextIndex {
             queryString = "(" + queryString + ") AND " + graphClause ;
         
         Analyzer qa = getQueryAnalyzer(usingSearchFor, lang);
-        Query query = parseQuery(queryString, qa) ;
-        
+        Query textQuery = parseQuery(queryString, qa);
+        Query query = textQueryExtender.apply(textQuery);
+
         if ( limit <= 0 )
             limit = MAX_N ;
 
