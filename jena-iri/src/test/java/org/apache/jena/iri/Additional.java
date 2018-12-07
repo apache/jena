@@ -53,6 +53,26 @@ public class Additional
        test(iri2, "http://a/b/c/foo") ;
     }
 
+    // RFC 8141 permits "/" "?" and "~".
+    // "?" is still excluded in jena-iri because it is used in URN resolution algorithms for r-component and q-component.
+    
+    // JENA-1647
+    @Test public void urn_rfc8141_slash() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc/def");
+    }
+    
+    // JENA-1647
+    @Test public void urn_rfc8141_frag() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc#frag");
+    }
+    
+    // JENA-1647
+    @Test public void urn_rfc8141_tilda() {
+        IRIFactory f = IRIFactory.iriImplementation() ;
+        IRI iri = f.construct("urn:nid:abc~xyz");
+    }
     
     private static void test(IRI iri, String iriStr) throws MalformedURLException
     {
