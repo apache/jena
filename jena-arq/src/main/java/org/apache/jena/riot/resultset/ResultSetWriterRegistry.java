@@ -27,12 +27,16 @@ import java.util.Map ;
 import java.util.Objects ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.resultset.rw.ResultSetWriterJSON;
 import org.apache.jena.riot.resultset.rw.ResultSetWriterThrift;
 import org.apache.jena.riot.resultset.rw.ResultSetWriterXML;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Prologue ;
 import org.apache.jena.sparql.resultset.CSVOutput;
 import org.apache.jena.sparql.resultset.TSVOutput;
@@ -72,9 +76,11 @@ public class ResultSetWriterRegistry {
         register(SPARQLResultSetXML,    ResultSetWriterXML.factory) ;
         register(SPARQLResultSetJSON,   ResultSetWriterJSON.factory) ;
         register(SPARQLResultSetThrift, ResultSetWriterThrift.factory) ;
+        // Build-in std factory (below).
         register(SPARQLResultSetCSV,    factory) ;
         register(SPARQLResultSetTSV,    factory) ;
         register(SPARQLResultSetText,   factory) ;
+        register(SPARQLResultSetNone,   factory) ;
     }
  
     private static ResultSetWriter writerCSV = new ResultSetWriter() {
@@ -101,7 +107,7 @@ public class ResultSetWriterRegistry {
         }
     } ;
 
-    private static ResultSetWriter writerNo = new ResultSetWriter() {
+    private static ResultSetWriter writerNone = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {}
         @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
         @Override public void write(OutputStream out, boolean result, Context context)      {}
@@ -109,27 +115,41 @@ public class ResultSetWriterRegistry {
 
     private static ResultSetWriter writerText = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) {
-            // Prefix mapp
-            TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
+            Prologue prologue = choosePrologue(resultSet, context);
+            TextOutput tFmt = new TextOutput(new SerializationContext(prologue)) ;
             tFmt.format(out, resultSet) ; 
         }
         @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; }
         @Override public void write(OutputStream out, boolean result, Context context) {
-            // Prefix mapp
             TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
             tFmt.format(out, result) ; 
         }
     } ;
     
+    /** Establish a prologue for formatting output.  Return "null" for none found. */ 
+    private static Prologue choosePrologue(ResultSet resultSet, Context context) {
+        try {
+            if ( context != null && context.get(ARQConstants.symPrologue) != null )
+                return context.get(ARQConstants.symPrologue);
+            Model m = resultSet.getResourceModel();
+            if ( m != null )
+                return new Prologue(m);
+        } catch (Exception ex) {
+            Log.warn(ARQ.getExecLogger(), "Failed to establish a 'Prologue' for text output: "+ex.getMessage()); 
+        }
+        return null;
+    }
+
     private static class ResultSetWriterFactoryStd implements ResultSetWriterFactory {
         @Override
         public ResultSetWriter create(Lang lang) {
-            lang = Objects.requireNonNull(lang, "Language must not be null") ;
-//            if ( lang.equals(SPARQLResultSetXML) )      return writerXML ;
-//            if ( lang.equals(SPARQLResultSetJSON) )     return writerJSON ;
-            if ( lang.equals(SPARQLResultSetCSV) )      return writerCSV ;
-            if ( lang.equals(SPARQLResultSetTSV) )      return writerTSV ;
-            if ( lang.equals(SPARQLResultSetText) )     return writerText ;
+            lang = Objects.requireNonNull(lang, "Language must not be null");
+//            if ( lang.equals(SPARQLResultSetXML) )      return writerXML;
+//            if ( lang.equals(SPARQLResultSetJSON) )     return writerJSON;
+            if ( lang.equals(SPARQLResultSetCSV) )      return writerCSV;
+            if ( lang.equals(SPARQLResultSetTSV) )      return writerTSV;
+            if ( lang.equals(SPARQLResultSetText) )     return writerText;
+            if ( lang.equals(SPARQLResultSetNone) )     return writerNone;
             throw new RiotException("Lang not registered (ResultSet writer)") ;
         }
     }

@@ -25,12 +25,15 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.FileUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
 public class TestLang extends BaseTest
 {
+    static { JenaSystem.init(); }
     @Test public void registration_01() { testregistration(RDFLanguages.RDFXML) ; }
     @Test public void registration_02() { testregistration(RDFLanguages.NTRIPLES) ; }
     @Test public void registration_03() { testregistration(RDFLanguages.NT) ; }
@@ -101,6 +104,9 @@ public class TestLang extends BaseTest
         {
             if ( RDFLanguages.RDFNULL.equals(l) )
                 continue ;
+            if ( ResultSetLang.SPARQLResultSetNone.equals(l) ) 
+                continue ;
+
             Assert.assertNotNull( l+" does not have file extensions defined", l.getFileExtensions());
             Assert.assertTrue( l+" does not have file extensions defined", l.getFileExtensions().size() > 0);
         }
