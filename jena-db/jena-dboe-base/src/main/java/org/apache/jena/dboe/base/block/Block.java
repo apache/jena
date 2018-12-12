@@ -56,7 +56,7 @@ public final class Block
         this.id = id ;
         this.byteBuffer = byteBuffer ;
         // this.blockRef = null ;
-        // Default - writeable, unmodified block.
+        // Default - writable, unmodified block.
         this.readOnly = false ;
         this.modified = false ;
         this.underlyingByteBuffer = null ;

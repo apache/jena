@@ -129,8 +129,6 @@ public final class BPTreeRecords extends BPTreePage {
 
         if ( promoteInPlace ) {
             bprRecordsMgr.promoteInPlace(this) ;
-            // TODO Is this needed?
-            // Is this replicated in BPTreeNode?
             if ( getBackingBlock().isReadOnly() )
                 bprRecordsMgr.getBlockMgr().promote(getBackingBlock()) ;
             return false ;

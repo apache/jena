@@ -115,7 +115,7 @@ public class BlockMgrCache extends BlockMgrSync {
 
         // A requested block may be in the other cache.
         // Writable blocks are readable.
-        // readable blocks are not writeable (see below).
+        // readable blocks are not writable (see below).
         if ( writeCache != null )
             // Might still be in the dirty blocks.
             // Leave in write cache

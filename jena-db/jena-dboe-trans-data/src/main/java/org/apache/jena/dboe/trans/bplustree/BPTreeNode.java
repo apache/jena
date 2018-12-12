@@ -52,6 +52,7 @@ public final class BPTreeNode extends BPTreePage
      */
     /*package*/int id ;             // Or block.getId()            
     
+    // Parent is a debugging aid. It records how we go to this BPTreeNode and also whether this is a root.
     private int parent ;
     private int count ;             // Number of records.  Number of pointers is +1
     
@@ -391,7 +392,7 @@ public final class BPTreeNode extends BPTreePage
     public final PtrBuffer getPtrBuffer()        { return ptrs ; }
     
     final void setParent(int parentId)           { this.parent = parentId ; } 
-    public final int getParent()                 { return parent ; }
+    final int getParent()                        { return parent ; }
 
     
     public final void setIsLeaf(boolean isLeaf)  { this.isLeaf = isLeaf ; }
@@ -748,8 +749,8 @@ public final class BPTreeNode extends BPTreePage
 
         if ( page.isMinSize() ) { 
             // Ensure that a node is at least min+1 so a delete can happen.
-            // Can't be the root - we decended in the get().
-            rebalance(path, page, y) ;  // Ignore return - need to refind.
+            // Can't be the root - we descended in the get().
+            rebalance(path, page, y) ;  // Ignore return - need to re-find.
             page.release(); // TODO But rebalance may have freed this?
             // Rebalance may have moved the record due to shuffling.  
             x = findSlot(rec) ;

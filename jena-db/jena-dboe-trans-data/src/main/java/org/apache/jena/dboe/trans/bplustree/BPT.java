@@ -36,13 +36,16 @@ import org.slf4j.Logger ;
 public final class BPT {
     public static boolean Logging = false ;                  // Turn on/off logging
     
+    /** Enable forces promotion of blocks; otherwise blocks are promoted as needed. */
     public static boolean forcePromoteModes         = false ;
+    /** Whether to duplicate a records block on a promotion call if forcePromoteModes=true */
     public static boolean promoteDuplicateRecords   = false ;
+    /** Whether to duplicate a nodes block on a promotion call if forcePromoteModes=true */
     public static boolean promoteDuplicateNodes     = false ;
 
     // Check within BPTreeNode
     public static boolean CheckingNode = false ;                      
-    // Check on exit of B+Tree modifiying operations
+    // Check on exit of B+Tree modifying operations
     // Not done?
     public static boolean CheckingConcurrency = SystemIndex.Checking ;
 

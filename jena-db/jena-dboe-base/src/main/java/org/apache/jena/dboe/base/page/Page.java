@@ -38,8 +38,8 @@ public interface Page extends Printable
     
     /**
      * The underlying block for this page has changed (e.g. it's been
-     * promoted and the promotion may have caused the block to change.
+     * promoted and the promotion may have caused the block to change).
      */
-    public abstract void reset(Block block) ;
+    public void reset(Block block) ;
 
 }
