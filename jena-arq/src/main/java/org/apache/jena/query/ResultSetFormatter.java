@@ -281,7 +281,7 @@ public class ResultSetFormatter {
     { output(System.out, resultSet, rFmt) ; }
 
     /** Output a ResultSet in some format.
-     *  To get detailed control over each format, call the appropropiate operation directly. 
+     *  To get detailed control over each format, call the appropriate operation directly. 
      * 
      * @param outStream Output
      * @param resultSet Result set

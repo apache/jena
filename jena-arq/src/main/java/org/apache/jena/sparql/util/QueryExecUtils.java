@@ -138,10 +138,14 @@ public class QueryExecUtils {
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) || outputFormat.equals(ResultsFormat.FMT_RDF_N3)
              || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
+            Lang langx = Lang.TURTLE;
+            if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) )
+                langx = Lang.RDFXML;
+            
             Model m = RDFOutput.encodeAsModel(results) ;
             m.setNsPrefixes(prologue.getPrefixMapping()) ;
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI()) ;
-            RDFDataMgr.write(System.out, m, Lang.TURTLE) ;
+            RDFDataMgr.write(System.out, m, langx) ;
             done = true ;
         }
 

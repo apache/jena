@@ -68,7 +68,7 @@ public class ReorderLib
     }
 
     /**
-     * Return a ReorderTransformation that performance some basic reordering
+     * Return a ReorderTransformation that performs some basic reordering
      * based on most grounded triples first, but otherwise leaves things
      * in query-written order. 
      */
