@@ -177,17 +177,6 @@
         <!-- Binary distribution -->
         <!-- <module>apache-jena</module>         -->
 
-        <!-- <module>jena-fuseki1</module>        -->
-        <!-- <module>jena-csv</module>            -->
-        <!-- <module>jena-sdb</module>            -->
-        <!-- <module>jena-maven-tools</module>    -->
-
-        <!-- <module>jena-permissions</module>    -->
-        <!-- <module>jena-extras</module>         -->
-        <!-- <module>jena-jdbc</module>           -->
-        <!-- <module>jena-elephas</module>        -->
-        <!-- <module>apache-jena-osgi</module>    -->
-
       </modules>
 
       <build>
@@ -251,8 +240,8 @@
         <module>apache-jena</module>
 
         <!-- Old modules -->
-        <module>jena-fuseki1</module>
-        <module>jena-csv</module>
+        <!-- Retired: <module>jena-fuseki1</module> -->
+        <!-- Retired: <module>jena-csv</module> -->
         <module>jena-sdb</module>
         <!-- apache-19 breaks this
           <module>jena-maven-tools</module>
