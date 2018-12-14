@@ -20,11 +20,17 @@ package org.apache.jena.sparql.resultset;
 
 import static org.apache.jena.riot.WebContent.* ;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.resultset.ResultSetLang ;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.util.QueryExecUtils;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sparql.util.TranslationTable ;
 
@@ -38,13 +44,11 @@ import org.apache.jena.sparql.util.TranslationTable ;
 //    FMT_UNKNOWN ;
     
 
-// Old world.  Remove in Jena3
+// Old world.
 public class ResultsFormat extends Symbol
 { 
-    // ---- Compatibility (this started pre java 1.5)
-    private ResultsFormat(String symbol)
-    {
-        super(symbol) ;
+    private ResultsFormat(String symbol) {
+        super(symbol);
     }
 
     static public ResultsFormat FMT_RS_XML       = new ResultsFormat(contentTypeResultsXML) ;
@@ -57,6 +61,7 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_TEXT         = new ResultsFormat("text") ;
     static public ResultsFormat FMT_TUPLES       = new ResultsFormat("tuples") ;
     static public ResultsFormat FMT_COUNT        = new ResultsFormat("count") ;
+    // Also used for output of result sets as RDF.
     static public ResultsFormat FMT_RDF_XML      = new ResultsFormat(contentTypeRDFXML) ;
     static public ResultsFormat FMT_RDF_N3       = new ResultsFormat(contentTypeN3) ;
     static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
@@ -186,16 +191,59 @@ public class ResultsFormat extends Symbol
         return names.lookup(s);
     }
 
+    /**
+     * Mapping from old-style {@link ResultsFormat} to {@link ResultSetLang} or other
+     * {@link Lang}. See also {@link QueryExecUtils#outputResultSet} for dispatch of some old,
+     * specialized types such as results encoded in RDF.
+     */ 
     static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;
     static {
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV, ResultSetLang.SPARQLResultSetCSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV, ResultSetLang.SPARQLResultSetTSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML, ResultSetLang.SPARQLResultSetXML) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON, ResultSetLang.SPARQLResultSetJSON) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,      ResultSetLang.SPARQLResultSetNone) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,    ResultSetLang.SPARQLResultSetCSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,    ResultSetLang.SPARQLResultSetTSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,    ResultSetLang.SPARQLResultSetXML) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,   ResultSetLang.SPARQLResultSetJSON) ;
         mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT, ResultSetLang.SPARQLResultSetThrift) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,      ResultSetLang.SPARQLResultSetText);
     }
 
     public static Lang convert(ResultsFormat fmt) {
         return mapResultsFormatToLang.get(fmt) ;
+    }
+    
+    /** Write a {@link ResultSet} in various old style formats no longer recommended.
+     * Return true if the format was handled else false.
+     */ 
+    public static boolean oldWrite(OutputStream out, ResultsFormat outputFormat, Prologue prologue, ResultSet resultSet) {
+        if ( outputFormat.equals(ResultsFormat.FMT_COUNT) ) {
+            int count = ResultSetFormatter.consume(resultSet) ;
+            PrintStream pOut = new PrintStream(out);
+            pOut.println("Count = " + count) ;
+            return true ;
+        }
+        
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ) {
+            RDFOutput.outputAsRDF(out, "RDF/XML-ABBREV", resultSet) ;
+            return true;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
+            RDFOutput.outputAsRDF(out, "TTL", resultSet) ;
+            return true;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
+            RDFOutput.outputAsRDF(out, "N-TRIPLES", resultSet) ;
+            return true;
+        }
+        
+        if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) ) {
+            PlainFormat pFmt = new PlainFormat(out, prologue) ;
+            ResultSetApply a = new ResultSetApply(resultSet, pFmt) ;
+            a.apply() ;
+            return true;
+        }
+
+        return false;
     }
 }

@@ -90,7 +90,7 @@ public class ResultsWriter {
         } catch (IOException ex) { IO.exception(ex); }
     }
     
-    /** Write a result set, using the configurartion of the {@code ResultWriter}, to an {@code OutputStream}. */ 
+    /** Write a result set, using the configuration of the {@code ResultWriter}, to an {@code OutputStream}. */ 
     public void write(OutputStream output, ResultSet resultSet) {
         Objects.requireNonNull(output);
         Objects.requireNonNull(resultSet);
