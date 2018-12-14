@@ -54,8 +54,7 @@ public class TransactionManager
     private static boolean checking = true ;
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
-    private Set<Transaction> activeTransactions = ConcurrentHashMap.newKeySet();
-    synchronized public boolean activeTransactions() { return !activeTransactions.isEmpty() ; }
+    private Set<Transaction> currentActiveTransactions = ConcurrentHashMap.newKeySet();
     
     // Setting this true cause the TransactionManager to keep lists of transactions
     // and what has happened.  Nothing is thrown away, but eventually it will
@@ -118,11 +117,16 @@ public class TransactionManager
     // Set on each commit.
     private AtomicLong version = new AtomicLong(0) ;
     
+    // This counter is 0 when quiet, else >0 
+    private AtomicLong activeTransactions = new AtomicLong(0) ;
+    // Not based on activeTransactionsSet.isEmpty() which does a count
+    public boolean activeTransactions()     { return activeTransactions.get() != 0; }
+
     // Accessed by SysTxnState
-    // These must be AtomicLong
+    // Because there are two counters, these can be slightly out of step.
+    // The test (activeReaders==0 & activeWriters==0) isn't atomic overall.
     /*package*/ AtomicLong activeReaders = new AtomicLong(0) ; 
     /*package*/ AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
-    
     public long getCountActiveReaders()     { return activeReaders.get() ; }
     public long getCountActiveWriters()     { return activeWriters.get() ; }
     
@@ -205,26 +209,32 @@ public class TransactionManager
         @Override public void readerStarts(Transaction txn)         { logInternal("start",  txn) ; }
         @Override public void readerFinishes(Transaction txn)       { logInternal("finish", txn) ; }
         @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew)
-        { logInternal("promote(old)", txnOld) ; logInternal("promote(new)", txnNew) ; }  
+        { logInternal("promote(old)", txnOld) ; logInternal("promote(new)", txnNew) ; }
         @Override public void writerStarts(Transaction txn)         { logInternal("begin",  txn) ; }
         @Override public void writerCommits(Transaction txn)        { logInternal("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { logInternal("abort",  txn) ; }
     }
     
     class TSM_Counters implements TSM {
+        // activeTransactions must be in read/writer ending operation, not transactionFinishes
+        // because the check in checkReplaySafe happens after readerFinishes/writerCommits/writerAborts
+        // but before transactionFinishes.
         TSM_Counters() {}
-        @Override public void transactionStarts(Transaction txn)    { activeTransactions.add(txn) ; }
-        @Override public void transactionFinishes(Transaction txn)  { activeTransactions.remove(txn) ; }
+        @Override public void transactionStarts(Transaction txn)    { currentActiveTransactions.add(txn) ; }
+        @Override public void transactionFinishes(Transaction txn)  { currentActiveTransactions.remove(txn) ; }
         @Override public void transactionCloses(Transaction txn)    { }
-        @Override public void readerStarts(Transaction txn)         { inc(activeReaders) ; }
-        @Override public void readerFinishes(Transaction txn)       { dec(activeReaders) ; inc(finishedReaders); }
+        @Override public void readerStarts(Transaction txn)         { inc(activeTransactions); inc(activeReaders) ; }
+        @Override public void readerFinishes(Transaction txn)       { dec(activeReaders) ; inc(finishedReaders); dec(activeTransactions); }
         
-        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew)
-        { dec(activeReaders) ; inc(finishedReaders); inc(activeWriters); }
+        @Override public void transactionPromotes(Transaction txnOld, Transaction txnNew) {
+            // Add first so the set is not momentarily empty.
+            currentActiveTransactions.add(txnNew); currentActiveTransactions.remove(txnOld) ;
+            dec(activeReaders) ; inc(finishedReaders); inc(activeWriters);
+        }
         
-        @Override public void writerStarts(Transaction txn)         { inc(activeWriters) ; }
-        @Override public void writerCommits(Transaction txn)        { dec(activeWriters) ; inc(committedWriters) ; }
-        @Override public void writerAborts(Transaction txn)         { dec(activeWriters) ; inc(abortedWriters) ; }
+        @Override public void writerStarts(Transaction txn)         { inc(activeTransactions); inc(activeWriters) ; }
+        @Override public void writerCommits(Transaction txn)        { dec(activeWriters) ; inc(committedWriters) ; dec(activeTransactions); }
+        @Override public void writerAborts(Transaction txn)         { dec(activeWriters) ; inc(abortedWriters) ; dec(activeTransactions); }
     }
     
     // Short name: x++
@@ -523,7 +533,7 @@ public class TransactionManager
     /*package*/ void notifyCommit(Transaction transaction) {
         boolean excessiveQueue = false ;
         synchronized(this) {
-            if ( ! activeTransactions.contains(transaction) )
+            if ( ! currentActiveTransactions.contains(transaction) )
                 SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
 
             noteTxnCommit(transaction) ;
@@ -561,7 +571,7 @@ public class TransactionManager
     synchronized
     /*package*/ void notifyAbort(Transaction transaction) {
         // Transaction has done the abort on all the transactional elements.
-        if ( ! activeTransactions.contains(transaction) )
+        if ( ! currentActiveTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         
         noteTxnAbort(transaction) ;
@@ -852,10 +862,13 @@ public class TransactionManager
     private void checkReplaySafe() {
         if ( ! checking ) 
             return ;
+        long x = activeTransactions.get();
+        if ( x == 0 )
+            return ;
+        // Not a consistent view.
         long r = activeReaders.get();
         long w = activeWriters.get();
-        if ( r != 0 || w != 0 )
-            FmtLog.error(log, "checkReplaySafe: There are currently active transactions. R=%d, W=%d", r, w) ;
+        FmtLog.error(log, "checkReplaySafe: There are currently active transactions. C=%d (R=%d, W=%d)", x, r, w) ;
     }
     
     private void noteTxnStart(Transaction transaction) {
@@ -868,8 +881,6 @@ public class TransactionManager
     }
 
     private void noteTxnPromote(Transaction transaction, Transaction transaction2) {
-        activeTransactions.remove(transaction);
-        activeTransactions.add(transaction2);
         transactionPromotes(transaction, transaction2) ;
     }
 
