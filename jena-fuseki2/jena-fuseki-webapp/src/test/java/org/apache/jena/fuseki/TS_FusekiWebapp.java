@@ -46,7 +46,7 @@ import org.junit.runners.Suite ;
     , TestBuilder.class
 })
 
-public class TS_Fuseki extends ServerTest
+public class TS_FusekiWebapp extends ServerTest
 {
     public static final String FusekiTestHome = "target/FusekiHome" ;
     public static final String FusekiTestBase = FusekiTestHome+"/run" ;

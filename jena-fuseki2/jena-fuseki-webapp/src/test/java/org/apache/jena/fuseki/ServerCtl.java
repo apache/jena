@@ -223,11 +223,11 @@ public class ServerCtl {
     }
     
     protected static void setupServer(boolean updateable) {
-        FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
+        FusekiEnv.FUSEKI_HOME = Paths.get(TS_FusekiWebapp.FusekiTestHome).toAbsolutePath() ;
         FileOps.ensureDir("target");
-        FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
-        FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
-        FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
+        FileOps.ensureDir(TS_FusekiWebapp.FusekiTestHome);
+        FileOps.ensureDir(TS_FusekiWebapp.FusekiTestBase) ;
+        FusekiEnv.FUSEKI_BASE = Paths.get(TS_FusekiWebapp.FusekiTestBase).toAbsolutePath() ;
         // Must have shiro.ini.
         // This fakes the state after FusekiSystem initialization
         // in the case of starting in the same location. FusekiSystem has statics.
