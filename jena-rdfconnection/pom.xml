@@ -162,7 +162,6 @@
         <configuration>
           <version>true</version>
           <show>public</show>
-          <quiet>true</quiet>
           <encoding>UTF-8</encoding>
           <windowtitle>Apache Jena RDF Connection</windowtitle>
           <doctitle>Apache Jena RDF Connection ${project.version}</doctitle>

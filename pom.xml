@@ -804,7 +804,7 @@
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
-
+            <quiet>true</quiet>
             <doclint>none</doclint>
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
