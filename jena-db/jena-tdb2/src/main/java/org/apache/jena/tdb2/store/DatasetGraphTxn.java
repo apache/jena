@@ -24,12 +24,4 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 /** Transaction representation of a DatasetGraph */ 
 public interface DatasetGraphTxn extends DatasetGraph, Transactional {
     // Combines org.apache.jena.dboe.transaction.Transactional and org.apache.jena.sparql.core.Transactional.
-    //    o.a.j.dboe.transaction.Transactional add promote()
-    
-    @Override
-    public default boolean supportsTransactions()       { return true ; }
-    
-    @Override
-    public default boolean supportsTransactionAbort()   { return true ; }
-
 }
