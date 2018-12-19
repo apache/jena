@@ -423,6 +423,7 @@ but rather use the appropriate %-encoding for each character.
 </text></require>
            
            <pattern component="PATH" reserved="/~">(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:.*</pattern>
+           <pattern compoentent="QUERY">[+=].*</pattern>
            <good>urn:x-hp:foo<unicode>00E9</unicode></good>
            <bad>urn:x-hp:foo/bar</bad>
            <bad>urn:urn:foo</bad>
