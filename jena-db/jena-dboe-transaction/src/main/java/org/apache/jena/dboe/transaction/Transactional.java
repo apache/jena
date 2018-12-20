@@ -21,5 +21,5 @@ package org.apache.jena.dboe.transaction;
 public interface Transactional extends org.apache.jena.sparql.core.Transactional
 {
     // Placeholder in case we need to add methods specific for DBOE/TDB2
-    // before they migrate to sparql.core.Transactional
+    // or before methods migrate to sparql.core.Transactional
 }
