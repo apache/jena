@@ -281,7 +281,6 @@ public class LiteralImpl extends EnhNode implements Literal {
                 message +=" which is not an xsd type.";
             }
             message += " \n";
-            String type = 
             message += "Java representation type is " + (value == null ? "null" : value.getClass().toString());
             throw new DatatypeFormatException(message);
         }
