@@ -304,6 +304,46 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    /**
+     * A comment in a certain language. But no language specified in schemagen.
+     */
+    @Test
+    public void testComment4() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"comentario\"@pt .";
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-a", "http://example.com/sg#", "--owl"},
+                new String[] {" */\\*\\* <p>comentario</p> \\*/ *"},
+                new String[] {} );
+    }
+
+    /**
+     * Comments in certain languages. A different language specified in schemagen.
+     */
+    @Test
+    public void testComment5() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"comentario\"@pt ; rdfs:comment \"comment\"@en .";
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-l", "es", "-a", "http://example.com/sg#", "--owl"},
+                new String[] {},
+                new String[] {" */\\*\\* <p>comment</p> \\*/ *"} );
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-l", "es", "-a", "http://example.com/sg#", "--owl"},
+                new String[] {},
+                new String[] {" */\\*\\* <p>comentario</p> \\*/ *"} );
+    }
+
+    /**
+     * Comments in certain languages. One of these languages specified in schemagen.
+     */
+    @Test
+    public void testComment6() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"comentario\"@pt ; rdfs:comment \"comment\"@en .";
+        testSchemagenOutput( SOURCE, null,
+                new String[] {"-l", "pt", "-a", "http://example.com/sg#", "--owl"},
+                new String[] {" */\\*\\* <p>comentario</p> \\*/ *"},
+                new String[] {} );
+    }
+
     @Test
     public void testOntClass0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
