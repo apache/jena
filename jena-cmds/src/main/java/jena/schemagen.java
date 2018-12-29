@@ -432,7 +432,7 @@ public class schemagen {
     }
 
     /** Add the appropriate indent to a buffer */
-    protected int indentTo( int i, StringBuffer buf ) {
+    protected int indentTo( int i, StringBuilder buf ) {
         int indent = i * m_indentStep;
         for (int j = 0;  j < indent; j++) {
             buf.append( ' ' );
@@ -463,7 +463,7 @@ public class schemagen {
 
     /** Determine the list of imports to include in the file */
     protected String getImports() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "import org.apache.jena.rdf.model.*;" );
         buf.append( m_nl );
 
@@ -538,7 +538,7 @@ public class schemagen {
 
     /** Converts to a legal Java identifier; capitalise first char if cap is true */
     protected String asLegalJavaID( String s, boolean cap ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int i = 0;
 
         // treat the first character specially - must be able to start a Java ID, may have to up-case
@@ -1159,7 +1159,7 @@ public class schemagen {
 
     /** Answer all of the commentary on the given resource, as a string */
     protected String getComment( Resource r ) {
-        StringBuffer comment = new StringBuffer();
+        StringBuilder comment = new StringBuilder();
 
         // collect any RDFS or DAML comments attached to the node
         for (NodeIterator ni = m_source.listObjectsOfProperty( r, RDFS.comment );  ni.hasNext(); ) {
@@ -1177,7 +1177,7 @@ public class schemagen {
 
     /** Format the comment as Javadoc, and limit the line width */
     protected String formatComment( String comment ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append( "/** <p>" );
 
         boolean inSpace = false;
@@ -1330,7 +1330,7 @@ public class schemagen {
 
     /** Answer the local name of resource r mapped to upper case */
     protected String getUCValueName( Resource r ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         String localName = r.getLocalName();
         char lastChar = 0;
 
