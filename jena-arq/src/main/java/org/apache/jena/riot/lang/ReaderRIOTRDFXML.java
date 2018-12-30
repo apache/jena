@@ -99,7 +99,7 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
     // RDF 1.1 is based on URIs/IRIs, where space are not allowed.
     // RDF 1.0 (and RDF/XML) was based on "RDF URI References" which did allow spaces.
 
-    // Use with TDB erquires this to be "true" - it is set by InitTDB.
+    // Use with TDB requires this to be "true" - it is set by InitTDB.
     public static boolean RiotUniformCompatibility = false ;
     // Warnings in ARP that should be errors to be compatible with
     // non-XML-based languages.  e.g. language tags should be
