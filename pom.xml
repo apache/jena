@@ -243,7 +243,9 @@
         <!-- Retired: <module>jena-fuseki1</module> -->
         <!-- Retired: <module>jena-csv</module> -->
         <module>jena-sdb</module>
-        <module>jena-maven-tools</module>
+        <!-- apache-19 breaks this
+          <module>jena-maven-tools</module>
+        -->
 
         <!-- Other -->
         <module>jena-permissions</module>
