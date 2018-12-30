@@ -365,6 +365,11 @@ public class SourceParameterTest
                 expected = true;
                 break;
 
+            case LANG:
+                s.setLang( optionName );
+
+                expected = optionName;
+                break;
         }
     }
 
