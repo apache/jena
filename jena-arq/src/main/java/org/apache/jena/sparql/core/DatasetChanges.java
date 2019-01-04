@@ -39,4 +39,15 @@ public interface DatasetChanges
     /** Release any resources */
     public void reset() ;
 
+    /** A transaction has begun. */
+    default void begin() {}
+
+    /** The current transaction has been committed. */
+    default void commit() {}
+
+    /** The current transaction has been aborted. */
+    default void abort() {}
+
+    /** The current transaction has been ended. */
+    default void end() {}
 }

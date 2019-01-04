@@ -26,6 +26,8 @@ import java.util.List ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
@@ -198,6 +200,47 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     public void sync() {
         SystemARQ.syncObject(monitor) ;
         super.sync() ;
+    }
+
+    @Override
+    public void begin() {
+    	super.begin();
+    	monitor.begin();
+    }
+
+    @Override
+    public void begin(TxnType type)
+    {
+    	super.begin(type);
+    	monitor.begin();
+    }
+
+    @Override
+    public void begin(ReadWrite readWrite)
+    {
+    	super.begin(readWrite);
+    	monitor.begin();
+    }
+
+    @Override
+    public void commit()
+    {
+        super.commit();
+        monitor.commit();
+    }
+
+    @Override
+    public void abort()
+    {
+        super.abort();
+        monitor.abort();
+    }
+
+    @Override
+    public void end()
+    {
+        super.end();
+        monitor.end();
     }
 }
 
