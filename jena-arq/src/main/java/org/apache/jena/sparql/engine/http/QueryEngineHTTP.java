@@ -473,6 +473,8 @@ public class QueryEngineHTTP implements QueryExecution {
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(chooseAcceptHeader(acceptHeader, contentType));
         InputStream in = httpQuery.exec();
+
+        retainedConnection = in; // This will be closed on close()
         
         // Don't assume the endpoint actually gives back the content type we
         // asked for
@@ -542,6 +544,9 @@ public class QueryEngineHTTP implements QueryExecution {
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(WebContent.contentTypeJSON);
         InputStream in = httpQuery.exec();
+
+        retainedConnection = in; // This will be closed on close()
+
         JsonValue v = JSON.parseAny(in);
         if ( ! v.isArray() )
             throw new QueryExecException("Return from a JSON query isn't an array");
