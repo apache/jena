@@ -536,6 +536,7 @@ public class QueryEngineHTTP implements QueryExecution {
             log.warn("Failed to close connection", e);
             return false ;
         }
+        finally { this.close(); }
     }
 
     @Override
