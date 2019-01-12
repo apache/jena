@@ -61,7 +61,6 @@ public class FileOps {
         catch (SecurityException ex) {
             Log.warn(FileOps.class, "delete: " + f + ": Security exception; " + ex.getMessage()) ;
         }
-
     }
 
     /** Delete all files in a directory */
