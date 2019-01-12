@@ -20,6 +20,8 @@ package org.apache.jena.tdb.store;
 
 import java.math.BigDecimal ;
 import java.nio.ByteBuffer ;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.atlas.lib.Bytes ;
@@ -166,35 +168,46 @@ public class NodeId
         }
     }
     
-    /** Datatypes that are candidates for inlining */ 
-    private static RDFDatatype[] datatypes = { 
-        XSDDatatype.XSDdecimal,
-        XSDDatatype.XSDinteger,
-        
-        XSDDatatype.XSDlong,
-        XSDDatatype.XSDint,
-        XSDDatatype.XSDshort,
-        XSDDatatype.XSDbyte,
-        
-        XSDDatatype.XSDunsignedLong,
-        XSDDatatype.XSDunsignedInt,
-        XSDDatatype.XSDunsignedShort,
-        XSDDatatype.XSDunsignedByte,
-        
-        XSDDatatype.XSDdateTime,
-        XSDDatatype.XSDdate,
-        XSDDatatype.XSDboolean
+    /** Datatypes that are candidates for inlining */
+    private static Set<RDFDatatype> datatypes = new HashSet<>();
+    static {
+        datatypes.add(XSDDatatype.XSDdecimal);
+        datatypes.add(XSDDatatype.XSDinteger);
+        datatypes.add(XSDDatatype.XSDdate);
+        datatypes.add(XSDDatatype.XSDdateTime);
+        datatypes.add(XSDDatatype.XSDboolean);
+
+        // Derived types. TDB1 does not retain the exact datatype.
+
+        // Derived types of xsd:integer
+        datatypes.add(XSDDatatype.XSDlong);
+        datatypes.add(XSDDatatype.XSDint);
+        datatypes.add(XSDDatatype.XSDshort);
+        datatypes.add(XSDDatatype.XSDbyte);
+
+        datatypes.add(XSDDatatype.XSDunsignedLong);
+        datatypes.add(XSDDatatype.XSDunsignedInt);
+        datatypes.add(XSDDatatype.XSDunsignedShort);
+        datatypes.add(XSDDatatype.XSDunsignedByte);
+
+        datatypes.add(XSDDatatype.XSDpositiveInteger);
+        datatypes.add(XSDDatatype.XSDnegativeInteger);
+
+        datatypes.add(XSDDatatype.XSDnonPositiveInteger);
+        datatypes.add(XSDDatatype.XSDnonNegativeInteger);
+
+        // Derived types of xsd:dateTime
+        datatypes.add(XSDDatatype.XSDdateTimeStamp);
+
     } ;
 
     /** Return true if this node has a datatype that looks like it is inlineable.
      * The node may still be out of range (e.g. very large integer).
-     * Only inline(Node)->NodeId can determine that. 
+     * Only inline(Node)->NodeId can determine that.
      */
     public static boolean hasInlineDatatype(Node node) {
         RDFDatatype dtn = node.getLiteralDatatype() ;
-        for ( RDFDatatype dt : datatypes )
-            if ( dt.equals(dtn) ) return true ;
-        return false ;
+        return datatypes.contains(dtn);
     }
      
     private static NodeId inline$(Node node) {
