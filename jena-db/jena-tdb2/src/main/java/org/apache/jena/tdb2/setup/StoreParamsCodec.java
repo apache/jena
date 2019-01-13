@@ -25,10 +25,10 @@ import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.* ;
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Names;
@@ -63,9 +63,11 @@ public class StoreParamsCodec {
         try {
             JsonObject obj = JSON.read(filename) ;
             return StoreParamsCodec.decode(obj) ;
-        } 
-        catch (JsonParseException ex) { return null ; }
-        catch (AtlasException ex) { return null ; }
+        }
+        catch (JsonParseException ex) {
+            FmtLog.warn(StoreParamsCodec.class, "Ignoring store params : Syntax error in '%s': [line:%d, col:%d] %s", filename, ex.getLine(), ex.getColumn(), ex.getMessage());
+            return null ;
+        }
     }
     
     public static JsonObject encodeToJson(StoreParams params) {
