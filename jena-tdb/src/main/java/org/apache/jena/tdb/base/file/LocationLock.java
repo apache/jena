@@ -103,6 +103,11 @@ public class LocationLock {
             // Can read lock owner from the file
             try {
                 String rawLockInfo = IO.readWholeFileAsUTF8(lockFile.getAbsolutePath());
+                if (rawLockInfo.endsWith("\n")) {
+                    // This is most likely down to trying to open a TDB2 database with TDB1
+                    throw new FileException("Unable to check TDB lock owner, the lock file contents appear to be for a TDB2 database.  Please try loading this location as a TDB2 database.");
+                }
+                
                 int owner = Integer.parseInt(rawLockInfo);
                 return owner;
             } catch (IOException e) {
