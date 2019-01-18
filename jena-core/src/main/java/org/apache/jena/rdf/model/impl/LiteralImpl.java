@@ -275,15 +275,14 @@ public class LiteralImpl extends EnhNode implements Literal {
         if (value instanceof Number) {
             return ((Number)value);
         } else {
-            String message = "Error converting typed value to a number. \n";
-            message += "Datatype is: " + getDatatypeURI();
+            StringBuilder message = new StringBuilder("Error converting typed value to a number. \n");
+            message.append("Datatype is: " + getDatatypeURI());
             if ( getDatatypeURI() == null || ! getDatatypeURI().startsWith(XSDDatatype.XSD)) {
-                message +=" which is not an xsd type.";
+                message.append(" which is not an xsd type.");
             }
-            message += " \n";
-            String type = 
-            message += "Java representation type is " + (value == null ? "null" : value.getClass().toString());
-            throw new DatatypeFormatException(message);
+            message.append(" \n");
+            message.append("Java representation type is " + (value == null ? "null" : value.getClass().toString()));
+            throw new DatatypeFormatException(message.toString());
         }
     }    
     private byte byteValue( Number n )

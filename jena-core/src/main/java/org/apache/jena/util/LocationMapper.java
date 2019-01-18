@@ -72,7 +72,7 @@ public class LocationMapper
         return theMapper ;
     }
     
-    /** Set the global lcoation mapper. (as returned by get())
+    /** Set the global location mapper. (as returned by get())
      * If called before any call to get(), then the usual default global location mapper is not created 
      * @param globalLocationMapper
      */

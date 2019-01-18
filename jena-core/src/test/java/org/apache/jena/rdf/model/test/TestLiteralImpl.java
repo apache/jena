@@ -18,11 +18,16 @@
 
 package org.apache.jena.rdf.model.test;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.TypeMapper ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.impl.AdhocDatatype ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.LiteralRequiredException ;
 import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.test.JenaTestBase ;
@@ -96,6 +101,38 @@ public class TestLiteralImpl extends AbstractModelTestBase
 			JenaTestBase.pass();
 		}
 	}
+
+    /**
+     * Test that a literal node can be as'ed into a number
+     */
+    public void testAsNumber()
+    {
+        int number = ModelHelper.literal(model, "17").getInt();
+        assertEquals(17, number);
+    }
+
+    /**
+     * Test that a literal that is not a number cannot be as'ed into a number
+     */
+    public void testCannotAsNonNumber()
+    {
+        try {
+            Node node = NodeFactory.createLiteral("1984", XSDDatatype.XSDgYear);
+            RDFNode rdfNode = model.asRDFNode(node);
+            Literal literal = rdfNode.asLiteral();
+            // XSDDateTime is not a Number, so getInt will fail, instead of returning 1984
+            literal.getInt();
+            fail("Expected DatatypeFormatException");
+        } catch (DatatypeFormatException e) {
+            final String message = e.getMessage();
+            // displays error message
+            assertTrue(message.contains("Error converting typed value to a number"));
+            // displays the datatype URI
+            assertTrue(message.contains("http://www.w3.org/2001/XMLSchema#gYear"));
+            // displays the Java class name (ignoring the package)
+            assertTrue(message.contains("XSDDateTime"));
+        }
+    }
 
 	public void testInModel()
 	{

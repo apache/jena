@@ -45,7 +45,7 @@ public class TDB2 {
     private TDB2() {}
 
     /** IRI for TDB */
-    public static final String  tdbIRI                           = "http://jena.apache.org/#tdb" ;
+    public static final String  tdbIRI                           = "http://jena.apache.org/#tdb2" ;
 
     /** Root of TDB-defined parameter names */
     public static final String  tdbParamNS                       = SystemTDB.symbolNamespace;
@@ -57,7 +57,7 @@ public class TDB2 {
     private static final Logger log                              = LoggerFactory.getLogger(TDB2.class) ;
 
     /** Logger for loading information */
-    public static final String  logLoaderName                    = "org.apache.jena.tdb.loader" ;
+    public static final String  logLoaderName                    = "org.apache.jena.tdb2.loader" ;
     /** Logger for loading information */
     public static final Logger  logLoader                        = LoggerFactory.getLogger(logLoaderName) ;
 
@@ -71,6 +71,7 @@ public class TDB2 {
     // /** Logger for execution information */
     // public static final Logger logExec = LoggerFactory.getLogger(logExecName);
 
+    /** Used by the assembler */
     public final static String  namespace                        = "http://jena.apache.org/2016/tdb#" ;
 
     // Union default graph symbols for context setting.

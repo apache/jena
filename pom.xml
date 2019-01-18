@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>3.10.0-SNAPSHOT</version>
+  <version>3.11.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
@@ -44,9 +44,9 @@
   </organization>
 
   <scm>
-    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf/jena.git</url>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/jena.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/jena.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf/jena.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -804,7 +804,7 @@
             <!-- Java 10
                  <additionalOptions>-html5</additionalOptions>
             -->
-
+            <quiet>true</quiet>
             <doclint>none</doclint>
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
