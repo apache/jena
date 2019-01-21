@@ -42,10 +42,10 @@ public class SystemARQ
     // Various system wide settings, "constants" that might change e.g. test setups
     // ** This can be loaded before the rest of ARQ is initialized **
 
-    // NodeValues work without the context so somethings only have global settings.
+    // NodeValues work without the context so some things only have global settings.
     
-    /** Control whether additon datatypes, over and above strict, minimal SPARQL compliance, are handled.
-     *  Examples incldue xsd;date and simple literal/xsd:string.
+    /** Control whether addition datatypes, over and above strict, minimal SPARQL compliance, are handled.
+     *  Examples include xsd:date and simple literal/xsd:string.
      */
     public static boolean ValueExtensions       = true ;
 

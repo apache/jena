@@ -23,10 +23,6 @@ import java.util.ArrayList ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import org.apache.jena.sparql.function.FunctionEnvBase ;
-import org.apache.jena.sparql.function.user.UserDefinedFunction ;
-import org.apache.jena.sparql.function.user.UserDefinedFunctionDefinition ;
-import org.apache.jena.sparql.function.user.UserDefinedFunctionFactory ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
@@ -85,7 +81,7 @@ public class TestFunctionNonExpansion {
         f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
         
         Expr actual = f.getActualExpr();
-        NodeValue result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
+        NodeValue result = actual.eval(BindingFactory.create(), LibTestExpr.createTest());
         Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
         
         //Change the definition of the function we depend on
@@ -94,7 +90,7 @@ public class TestFunctionNonExpansion {
         f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
         
         actual = f.getActualExpr();
-        result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
+        result = actual.eval(BindingFactory.create(), LibTestExpr.createTest());
         Assert.assertEquals(4, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
 }

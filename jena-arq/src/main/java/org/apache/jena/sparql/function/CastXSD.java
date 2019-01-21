@@ -143,7 +143,6 @@ public class CastXSD extends FunctionBase1 implements FunctionFactory {
                     if ( nv.isYearMonthDuration() )
                         return NodeValue.makeNode("PT0S", castType) ;
                     Duration d2 =  NodeValue.xmlDatatypeFactory.newDuration
-                        
                         (d.getSign()>=0,
                         null, null, (BigInteger)d.getField(DatatypeConstants.DAYS),
                         (BigInteger)d.getField(DatatypeConstants.HOURS), (BigInteger)d.getField(DatatypeConstants.MINUTES), (BigDecimal)d.getField(DatatypeConstants.SECONDS)) ;
