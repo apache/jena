@@ -1211,7 +1211,9 @@ public class RDFDataMgr
     /** Create a writer for an RDF language
      * @param lang   Language for the serialization.
      * @return WriterGraphRIOT
+     * @deprecated Use {@code RDFWriter.create().lang(Lang).source(graph).build()}
      */
+    @Deprecated
     public static WriterGraphRIOT createGraphWriter(Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
         return createGraphWriter$(serialization);
@@ -1220,7 +1222,9 @@ public class RDFDataMgr
     /** Create a writer for an RDF language
      * @param serialization Serialization format
      * @return WriterGraphRIOT
+     * @deprecated Use {@code RDFWriter.create().format(serialization).source(graph).build()}
      */
+    @Deprecated
     public static WriterGraphRIOT createGraphWriter(RDFFormat serialization) {
         return createGraphWriter$(serialization);
     }
@@ -1228,7 +1232,9 @@ public class RDFDataMgr
     /** Create a writer for an RDF language
      * @param lang   Language for the serialization.
      * @return WriterGraphRIOT
+     * @deprecated Use {@code RDFWriter.create().lang(lang).source(datasetGraph).build()}
      */
+    @Deprecated
     public static WriterDatasetRIOT createDatasetWriter(Lang lang) {
         RDFFormat serialization = langToFormatOrException(lang);
         return createDatasetWriter$(serialization);
@@ -1237,7 +1243,9 @@ public class RDFDataMgr
     /** Create a writer for an RDF language
      * @param serialization Serialization format
      * @return WriterGraphRIOT
+     * @deprecated Use {@code RDFWriter.create().format(serialization).source(datasetGraph).build()}
      */
+    @Deprecated
     public static WriterDatasetRIOT createDatasetWriter(RDFFormat serialization) {
         return createDatasetWriter$(serialization);
     }

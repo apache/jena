@@ -32,9 +32,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.JsonLDWriteContext;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.WriterDatasetRIOT;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
@@ -313,11 +311,13 @@ public class Ex_WriteJsonLD
      * @param ctx the object that allows to control the writing process (a set of parameters)
      */
     void write(OutputStream out, DatasetGraph g, RDFFormat f, Context ctx) {
-        // create a WriterDatasetRIOT with the RDFFormat
-        WriterDatasetRIOT w = RDFDataMgr.createDatasetWriter(f) ;
-        PrefixMap pm = RiotLib.prefixMap(g);
-        String base = null;
-        w.write(out, g, pm, base, ctx) ;     
+        RDFWriter w =
+            RDFWriter.create()
+            .format(f)
+            .source(g)
+            .context(ctx)
+            .build();
+        w.output(out);
     }
 
     /** Write RDF data to the console */

@@ -183,7 +183,6 @@ public class RDFWriter {
     }    
 
     // Allowing an externally set PrefixMap was (probably) a mistake. 
-    
     private static WriterGraphRIOT createGraphWriter$(RDFFormat serialization) {
         WriterGraphRIOTFactory wf = RDFWriterRegistry.getWriterGraphFactory(serialization);
         if ( wf == null )
