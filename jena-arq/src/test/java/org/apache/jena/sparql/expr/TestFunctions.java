@@ -27,12 +27,12 @@ import java.text.ParseException ;
 import java.text.SimpleDateFormat ;
 import java.util.Date ;
 import java.util.TimeZone ;
+import java.util.function.Predicate;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.function.FunctionEnvBase ;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
@@ -104,7 +104,7 @@ public class TestFunctions
     private static void test_exprSprintf_tz_exact(String nodeStr) {
         String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
         assertTrue(r.isString()) ;
         String s = r.getString() ;
         // Parse the date
@@ -126,7 +126,7 @@ public class TestFunctions
     private static void test_exprSprintf_tz_possibilites(String nodeStr, String... possible) {
         String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
         assertTrue(r.isString()) ;
         String s = r.getString() ;
         // Timezones! The locale data can be -1, 0, +1 from the Z day.
@@ -394,17 +394,17 @@ public class TestFunctions
                 "fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
     }
 
-    @Test public void exprAdjustDatetimeToTz_03(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T10:00:00-10:00"));}
+    @Test public void exprAdjustDatetimeToTz_03() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T10:00:00-10:00"));}
 
-    @Test public void exprAdjustDatetimeToTz_04(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T07:00:00-10:00"));}
+    @Test public void exprAdjustDatetimeToTz_04() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-07T07:00:00-10:00"));}
 
-    @Test public void exprAdjustDatetimeToTz_05(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-08T03:00:00+10:00"));}
+    @Test public void exprAdjustDatetimeToTz_05() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-08T03:00:00+10:00"));}
 
-    @Test public void exprAdjustDatetimeToTz_06(){test("fn:adjust-dateTime-to-timezone('2002-03-07T00:00:00+01:00'^^xsd:dateTime,'-PT8H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-06T15:00:00-08:00"));}
+    @Test public void exprAdjustDatetimeToTz_06() { test("fn:adjust-dateTime-to-timezone('2002-03-07T00:00:00+01:00'^^xsd:dateTime,'-PT8H'^^xsd:dayTimeDuration)",NodeValue.makeDateTime("2002-03-06T15:00:00-08:00"));}
 
-    @Test public void exprAdjustDatetimeToTz_07(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
+    @Test public void exprAdjustDatetimeToTz_07() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
 
-    @Test public void exprAdjustDatetimeToTz_08(){test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
+    @Test public void exprAdjustDatetimeToTz_08() { test("fn:adjust-dateTime-to-timezone('2002-03-07T10:00:00-07:00'^^xsd:dateTime,'')",NodeValue.makeDateTime("2002-03-07T10:00:00"));}
 
     @Test public void exprAdjustDateToTz_01(){
         testEqual(
@@ -418,13 +418,13 @@ public class TestFunctions
                 "fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
     }
 
-    @Test public void exprAdjustDateToTz_03(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-07-10:00"));}
+    @Test public void exprAdjustDateToTz_03() { test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-07-10:00"));}
 
-    @Test public void exprAdjustDateToTz_04(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-06-10:00"));}
+    @Test public void exprAdjustDateToTz_04() { test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeDate("2002-03-06-10:00"));}
 
-    @Test public void exprAdjustDateToTz_05(){test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+    @Test public void exprAdjustDateToTz_05() { test("fn:adjust-date-to-timezone('2002-03-07'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
 
-    @Test public void exprAdjustDateToTz_06(){test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
+    @Test public void exprAdjustDateToTz_06() { test("fn:adjust-date-to-timezone('2002-03-07-07:00'^^xsd:date,'')",NodeValue.makeDate("2002-03-07"));}
 
     @Test public void exprAdjustTimeToTz_01(){
         testEqual(
@@ -438,23 +438,33 @@ public class TestFunctions
                 "fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'"+getDynamicDurationString()+"'^^xsd:dayTimeDuration)");
     }
 
-    @Test public void exprAdjustTimeToTz_03(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("10:00:00-10:00",XSDDatatype.XSDtime));}
+    @Test public void exprAdjustTimeToTz_03() { test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("10:00:00-10:00",XSDDatatype.XSDtime));}
 
-    @Test public void exprAdjustTimeToTz_04(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("07:00:00-10:00",XSDDatatype.XSDtime));}
+    @Test public void exprAdjustTimeToTz_04() { test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'-PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("07:00:00-10:00",XSDDatatype.XSDtime));}
 
-    @Test public void exprAdjustTimeToTz_05(){test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+    @Test public void exprAdjustTimeToTz_05() { test("fn:adjust-time-to-timezone('10:00:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
 
-    @Test public void exprAdjustTimeToTz_06(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
+    @Test public void exprAdjustTimeToTz_06() { test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
 
-    @Test public void exprAdjustTimeToTz_07(){test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
+    @Test public void exprAdjustTimeToTz_07() { test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
     //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
+    
+    @Test public void localTimezone_1() { test("fn:implicit-timezone()", nv->nv.isDayTimeDuration()); }
+    
+    // Better name!
+    @Test public void localTimezone_2() { test("afn:timezone()", nv->nv.isDayTimeDuration()); }
+    
+    @Test public void localDateTime_1() { test("afn:nowtz()", nv-> nv.isDateTime()); }
+    // Test field defined.
+    @Test public void localDateTime_2() { test("afn:nowtz()", nv-> nv.getDateTime().getTimezone() > -1 ); }
+
+    @Test public void localDateTime_3() { test("afn:nowtz() = NOW()", NodeValue.TRUE); }
     
     private static void testNumberFormat(String expression, String expected) {
         Expr expr = ExprUtils.parse(expression) ;
-        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
         Assert.assertTrue(r.isString());
         Assert.assertEquals(expected, r.getString()) ;
-        
     }
     
     @Test public void formatNumber_01()     { testNumberFormat("fn:format-number(0,'#')", "0") ; }
@@ -542,20 +552,26 @@ public class TestFunctions
 
     private void test(String exprStr, NodeValue result) {
         Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
         assertEquals(result, r) ;
     }
     
+    private void test(String exprStr, Predicate<NodeValue> test) {
+        Expr expr = ExprUtils.parse(exprStr) ;
+        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
+        assertTrue(exprStr, test.test(r));
+    }
+
     private void testEqual(String exprStr, String exprStrExpected) {
         Expr expr = ExprUtils.parse(exprStrExpected) ;
-        NodeValue rExpected = expr.eval(null, FunctionEnvBase.createTest()) ;
+        NodeValue rExpected = expr.eval(null, LibTestExpr.createTest()) ;
         test(exprStr, rExpected) ;
     }
     
     private void testEvalException(String exprStr) {
         Expr expr = ExprUtils.parse(exprStr) ;
         try {
-            NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
+            NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
             fail("No exception raised") ;
         }
         catch (ExprEvalException ex) {}

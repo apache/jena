@@ -37,6 +37,7 @@ import java.text.DecimalFormat ;
 import java.text.DecimalFormatSymbols ;
 import java.text.Normalizer;
 import java.text.NumberFormat ;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
@@ -230,9 +231,9 @@ public class XSDFuncOp
             // Plain literals.
             return ! nv.getString().isEmpty() ;
         if ( nv.isInteger() )
-            return !nv.getInteger().equals(NodeValue.IntegerZERO) ;
+            return !nv.getInteger().equals(BigInteger.ZERO) ;
         if ( nv.isDecimal() )
-            return !nv.getDecimal().equals(NodeValue.DecimalZERO) ;
+            return !nv.getDecimal().equals(BigDecimal.ZERO) ;
         if ( nv.isDouble() )
             return nv.getDouble() != 0.0 ;
         NodeValue.raise(new ExprEvalException("Not a boolean effective value (wrong type): " + nv)) ;
@@ -1542,7 +1543,7 @@ public class XSDFuncOp
     }
 
     private static NodeValue accessDuration(NodeValue nv, Field field) {
-        Duration dur = valueCanonicalDuration(nv) ;
+        Duration dur = nv.getDuration();
         // if ( ! nv.isDuration() )
         // throw new ExprEvalException("Not a duration: "+nv) ;
         Number x = dur.getField(field) ;
@@ -1558,34 +1559,28 @@ public class XSDFuncOp
         return NodeValue.makeInteger((BigInteger)x) ;
     }
     
-    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(0) ;
-    private static Duration valueCanonicalDuration(NodeValue nv) {
-        // Unclear.
-        /* This semi-normalizes a duration value - the time part is normalized.
-         * Maybe > 24 hours -> set days, but not done here.
-         * Because months are variable, XSD F&O does not define 
-         */
-        // TODO - note that the accessors return 0 for unset fields.
-        Duration dur = nv.getDuration() ;
-//        Number xHours = dur.getField(DatatypeConstants.HOURS) ;
-//        Number xMins = dur.getField(DatatypeConstants.MINUTES) ;
-//        Number xSeconds = dur.getField(DatatypeConstants.SECONDS) ;
-//        boolean normalize = 
-//            ( xHours == null || xHours.longValue() >= 24 ) ||  
-//            ( xMins == null || xMins.longValue() >= 60 ) ||
-//            ( xSeconds == null || xSeconds.longValue() >= 60 ) ;
-//        if ( normalize )
-//            dur = ... 
-        return dur ;
+    public static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+    
+    public static NodeValue localTimezone() {
+        Duration dur = localTimezoneDuration();
+        NodeValue nv = NodeValue.makeDuration(dur);
+        return nv;
     }
-
+    
+    /** Local (query engine) timezone including DST */ 
+    private static Duration localTimezoneDuration() {
+        ZonedDateTime zdt = ZonedDateTime.now();
+        int tzDurationInSeconds = zdt.getOffset().getTotalSeconds();
+        Duration dur = NodeFunctions.duration(tzDurationInSeconds);
+        return dur; 
+    }
+    
     public static NodeValue adjustDatetimeToTimezone(NodeValue nv1,NodeValue nv2){
         if(nv1 == null)
             return null;
 
-        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime()){
+        if(!nv1.isDateTime() && !nv1.isDate() && !nv1.isTime())
             throw new ExprEvalException("Not a valid date, datetime or time:"+nv1);
-        }
 
         XMLGregorianCalendar calValue = nv1.getDateTime();
         Boolean hasTz = calValue.getTimezone() != DatatypeConstants.FIELD_UNDEFINED;

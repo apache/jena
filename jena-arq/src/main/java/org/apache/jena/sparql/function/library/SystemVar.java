@@ -18,48 +18,41 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.Function ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase0;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Function that returns the value of a system variable.
  */
-public class SystemVar implements Function
-{
-    private Symbol systemSymbol ;
-    protected SystemVar(Symbol systemSymbol)
-    {
+public class SystemVar extends FunctionBase0 {
+    private Symbol systemSymbol;
+
+    protected SystemVar(Symbol systemSymbol) {
         if ( systemSymbol == null )
-            throw new ExprException("System symbol is null ptr") ;
-        this.systemSymbol = systemSymbol ;
-    }
-    
-    // Need to intercept exec so we can get to the FunctionEnv
-    @Override
-    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
-        // Ignore arguments.
-        Object obj = env.getContext().get(systemSymbol) ;
-        if ( obj == null )
-            throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
-        if ( ! ( obj instanceof Node ) )
-            throw new ExprEvalException("Not a Node: "+Lib.className(obj)) ;
-        
-        Node n = (Node)obj ;
-//        if ( n == null )
-//            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
-        // NodeValue.makeNode could have a cache.
-        NodeValue nv = NodeValue.makeNode(n) ;
-        return nv ;
+            throw new ExprException("System symbol is null ptr");
+        this.systemSymbol = systemSymbol;
     }
 
+    // Need to intercept exec so we can get to the FunctionEnv
     @Override
-    public void build(String uri, ExprList args) {}
+    public NodeValue exec() {
+        return get(systemSymbol, super.functionEnv);
+    }
+
+    public static NodeValue get(Symbol symbol, FunctionEnv env) {
+        Object obj = env.getContext().get(symbol);
+        if ( obj == null )
+            throw new ExprEvalException("null for symbol: " + symbol);
+        if ( !(obj instanceof Node) )
+            throw new ExprEvalException("Not a Node: " + Lib.className(obj));
+        Node n = (Node)obj;
+        NodeValue nv = NodeValue.makeNode(n);
+        return nv;
+    }
 }

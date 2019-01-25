@@ -198,6 +198,11 @@ public class StandardFunctions
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time
         
+        
+//        15.6 fn:implicit-timezone -> xsd:dayTimeDuration
+        add(registry, xfn+"implicit-timezone",  FN_Timezone.class) ;
+        // Also available as afn:timezone.
+        
         // math:
 //        4.8 Trigonometric and exponential functions
 //        4.8.1 math:pi
@@ -241,7 +246,6 @@ public class StandardFunctions
         add(registry, xfn+"apply",           FN_Apply.class);
         add(registry, xfn+"collation-key",   FN_CollationKey.class);
 
-        
         // And add op:'s
 //        4.2.1 op:numeric-add
 //        4.2.2 op:numeric-subtract
