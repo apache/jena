@@ -68,6 +68,8 @@ public class SDB
     // See also SDBConstants.jdbcFetchSizeOff
     
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
+
+    public static final Symbol optimizeSubqueryFragments = SDBConstants.allocSymbol("optimizeSubqueryFragments") ;
     // ----------------------------------
     
     // Global context is the ARQ context.
